@@ -2,13 +2,14 @@
 
 ## 1. Executive Summary
 
-**Woodworking Plan** (working name) is a subscription-based web and mobile
-application that acts as a searchable repository of woodworking plans and
-builds — from simple cutting boards to end-grain cutting boards, bed
-frames, sheds, and beyond. Users log in, browse or search a large catalog
-of vetted plans, save the ones they like into personal categorized
-collections, and like/favorite builds to help the community and the
-recommendation engine surface the best content.
+**Woodworking Plan** (working name) is a subscription-based, mobile-first
+application (built and launched as a Progressive Web App) that acts as a
+searchable repository of woodworking plans and builds — from simple
+cutting boards to end-grain cutting boards, bed frames, sheds, and beyond.
+Users log in, browse or search a large catalog of vetted plans, save the
+ones they like into personal categorized collections, and like/favorite
+builds to help the community and the recommendation engine surface the
+best content.
 
 The product sits at the intersection of two proven markets: hobbyist
 "how-to" content platforms (e.g., Instructables, YouTube woodworking
@@ -78,7 +79,40 @@ These map directly to the requirements you specified:
    - Step-by-step instructions, diagrams/cut lists, and photos
    - Skill/difficulty rating
 
-## 5. Content Strategy (how the repository gets built)
+## 5. Platform Strategy: Mobile-First PWA, Not App-Store-First
+
+Real-world usage pattern drove this decision: woodworkers use their phone,
+not a laptop, in the moments this app matters most — in the workshop
+(often with weak wifi), outdoors on a job site, and at the hardware store
+comparing lumber against a saved plan. The platform strategy is built
+around that.
+
+**Launch approach:** a mobile-optimized responsive website built as a
+**Progressive Web App (PWA)** rather than a native iOS/Android app.
+
+- **"Install" to home screen** like a native app, without an app store.
+- **Offline support via service worker caching** — plans a user has
+  already saved remain viewable with no signal, which is the single most
+  important capability for shop/outdoor/hardware-store use.
+- **One codebase** (web) instead of three (web + iOS + Android), which
+  materially lowers MVP build cost and speeds up iteration — every update
+  ships instantly, with no app store review delay.
+- **No app store fees or gatekeeping** (Apple's $99/yr developer fee,
+  Google Play review cycles, 15–30% platform cut on in-app purchases —
+  a real hit to subscription margin that a PWA avoids entirely).
+
+**Trade-off being accepted:** native apps still win on guaranteed push
+notification delivery (PWA push support, especially historically on iOS,
+is less consistent), deeper offline-first architecture, and app-store
+discoverability/trust — some users specifically search "woodworking app"
+in the App Store rather than searching the web.
+
+**Recommendation:** launch mobile-first PWA only. Revisit a native app in
+Phase 3/4 (see roadmap below) if push notifications or app-store discovery
+prove to be a real growth lever once the product has traction — not
+before.
+
+## 6. Content Strategy (how the repository gets built)
 
 A search/save/like app is only as good as its catalog. Recommended mix:
 
@@ -96,7 +130,7 @@ A search/save/like app is only as good as its catalog. Recommended mix:
   to normalize tools/materials/time/cost fields before publishing, so
   search and filters remain trustworthy.
 
-## 6. Monetization Model
+## 7. Monetization Model
 
 Recommended: **Freemium subscription**, since the core save/search/like
 loop needs a logged-in habit before people will pay.
@@ -117,7 +151,7 @@ Secondary revenue streams:
   with the XYZ table saw" plan).
 - **Display ads** on the free tier only (kept minimal to protect UX).
 
-## 7. Monthly Profit Estimation
+## 8. Monthly Profit Estimation
 
 These are **planning-level estimates**, not guarantees — actual results
 depend heavily on marketing spend, conversion rates, and content quality.
@@ -165,7 +199,7 @@ biggest levers on profit are (a) affiliate attach rate, since it's
 close to pure margin, and (b) creator-submitted content, which scales
 the catalog without linearly scaling headcount cost.
 
-## 8. Competitive Landscape
+## 9. Competitive Landscape
 
 | Competitor | Strength | Gap this app fills |
 |---|---|---|
@@ -180,9 +214,9 @@ cost tier) across every single plan, purpose-built organization
 actually decide what to build next ("what can I build this weekend with
 what I own for under $50?").
 
-## 9. Core Features vs. Future Roadmap
+## 10. Core Features vs. Future Roadmap
 
-### Launch (MVP) — see Section 4 above
+### Launch (MVP) — see Section 4 above, delivered as a mobile-first PWA (Section 5)
 
 ### Phase 2 (3–6 months post-launch)
 - User reviews/ratings and build photos ("I made this")
@@ -190,7 +224,8 @@ what I own for under $50?").
 - Shopping list generator (aggregate materials across multiple saved
   plans into one buyable list, with affiliate links)
 - Print-friendly / offline PDF export of plans
-- Mobile app (iOS/Android) companion to the web app
+- Expanded offline mode (pre-cache entire saved-plan library, not just
+  last-viewed plans, for zero-signal shop/outdoor use)
 
 ### Phase 3 (6–12 months post-launch)
 - Creator marketplace: vetted third-party creators publish and monetize
@@ -199,6 +234,8 @@ what I own for under $50?").
 - Project cost estimator that factors in local lumber prices
 - Makerspace/team accounts (shared libraries, seat-based billing)
 - Skill-building learning paths ("Beginner → Intermediate joinery")
+- Re-evaluate native iOS/Android app (only if push notifications or app
+  store discovery prove necessary for growth — see Section 5)
 
 ### Phase 4 (12+ months)
 - AI-assisted plan customization (resize a plan to custom dimensions,
@@ -209,7 +246,7 @@ what I own for under $50?").
 - Tool-inventory-aware search ("show me only plans I can build with the
   tools I've told you I own")
 
-## 10. Key Success Metrics (KPIs)
+## 11. Key Success Metrics (KPIs)
 
 - **Catalog health:** number of plans, % with complete metadata
   (tools/materials/time/cost), average plan rating
@@ -219,7 +256,7 @@ what I own for under $50?").
   click-through/attach rate, churn rate
 - **Growth:** MAU, new signups/month, organic vs. paid acquisition split
 
-## 11. Risks & Mitigations
+## 12. Risks & Mitigations
 
 | Risk | Mitigation |
 |---|---|
@@ -228,3 +265,4 @@ what I own for under $50?").
 | Content/IP disputes with plan creators | Clear creator agreements, revenue share or licensing fees, attribution |
 | Competing free content (YouTube/blogs) | Win on organization/search/filtering, not on being the only source |
 | High CAC in a niche hobby market | Lean on affiliate/community partnerships (tool brands, woodworking YouTubers) instead of broad paid ads |
+| PWA limitations (inconsistent push notifications, no app-store discovery) reduce engagement/growth vs. a native app | Invest early in offline-caching quality (the feature users actually need in the shop); revisit native app in Phase 3/4 if data shows push/discovery is the growth bottleneck |
