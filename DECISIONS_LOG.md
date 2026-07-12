@@ -21,6 +21,22 @@ contingent on push-notification/discovery needs.
 **Status:** Confirmed by user (selected from 3 offered options: Proprietary, MIT, or no license file).
 **Source:** Chosen given the business plan's monetization strategy — see `LICENSE`.
 
+### 2026-07-12 — Frontend framework: React + Next.js
+**Status:** Confirmed by user (selected from 3 recommended options: React + Next.js, Vue + Nuxt, SvelteKit).
+**Source:** `BUILD_PLAN.md` §3, decision #1. Rationale: best PWA/offline tooling maturity, pairs with the mobile-first PWA strategy already confirmed.
+
+### 2026-07-12 — Backend framework: Node.js + TypeScript
+**Status:** Confirmed by user (selected from 3 recommended options: Node.js + TypeScript, Python/FastAPI/Django, Go).
+**Source:** `BUILD_PLAN.md` §3, decision #2. Rationale: one language across front and back end.
+
+### 2026-07-12 — Database: PostgreSQL
+**Status:** Confirmed by user (selected from 3 recommended options: PostgreSQL, MongoDB, MySQL).
+**Source:** `BUILD_PLAN.md` §3, decision #3. Rationale: relational fit for structured plan metadata, mature full-text search.
+
+### 2026-07-12 — Hosting/infra: managed platform (Render/Railway/Vercel)
+**Status:** Confirmed by user (selected from 3 recommended options: managed platform, AWS/GCP/Azure directly, self-hosted/VPS).
+**Source:** `BUILD_PLAN.md` §3, decision #4. Rationale: low ops burden, fits the lean early-stage cost profile in `BUSINESS_PLAN.md` §8.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes
@@ -53,7 +69,9 @@ explicitly signs off (per `BUILD_PLAN.md` §1.1, factual reasoning only).
 
 ## Pending — Pre-Sprint-0 Decisions
 
-See `BUILD_PLAN.md` §3 for the full list (frontend framework, backend
-framework, database, hosting, auth build-vs-buy, payment processor,
-content admin approach, branding/domain, budget ceiling). None are
-answered yet; entries will be added here as each is confirmed.
+See `BUILD_PLAN.md` §3 for the full list. Frontend framework, backend
+framework, database, and hosting (#1-4) are confirmed above. Still open:
+auth build-vs-buy (#5, blocks Sprint 2), payment processor (#6, not
+urgent), plan-content admin/CMS approach (#7, blocks Sprint 1),
+branding/domain (#8), and MVP infra/tooling budget ceiling (#9, blocks
+Sprint 0 provisioning).
