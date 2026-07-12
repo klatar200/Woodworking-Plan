@@ -76,19 +76,21 @@ Recommendation is given for each; none are assumed without your answer.
 | # | Decision | Blocks | Recommendation | Status |
 |---|---|---|---|---|
 | 1 | Frontend framework | Sprint 0 | React (with a PWA-capable meta-framework, e.g. Next.js or Vite + Workbox) — matches the mobile-first PWA strategy in `BUSINESS_PLAN.md` §5, huge hiring/ecosystem pool | **Confirmed: React + Next.js** |
-| 2 | Backend language/framework | Sprint 0 | Node.js (TypeScript, e.g. NestJS or a lean Express/Fastify setup) — one language across front and back end, minimizes context-switching for a small early team | **Confirmed: Node.js + TypeScript** |
-| 3 | Database | Sprint 0 | PostgreSQL — relational fit for structured plan metadata (tools/materials/time/cost/category/difficulty) and mature full-text search support for keyword search | **Confirmed: PostgreSQL** |
-| 4 | Hosting/infra | Sprint 0 | A managed platform (e.g. Render, Railway, or Vercel + a managed Postgres) over self-managed cloud infra — lower ops burden matches the lean early-stage cost profile in `BUSINESS_PLAN.md` §8 | **Confirmed: managed platform (Render/Railway/Vercel)** |
-| 5 | Auth: build vs. buy | Sprint 2 | Buy (e.g. Auth0, Clerk, or Supabase Auth) over building auth from scratch — auth bugs are high-severity and low-differentiation for this product | **Open** |
-| 6 | Payment processor | Needed before any billing sprint (Phase 1 hardening or Phase 2, not Sprint 0) | Stripe — de facto standard for subscription billing, handles the tiered plans in `BUSINESS_PLAN.md` §7 | **Open, not urgent** |
+| 2 | Backend language/framework | Sprint 0 | Node.js (TypeScript, e.g. NestJS or a lean Express/Fastify setup) — one language across front and back end, minimizes context-switching for a small early team | **Confirmed: Node.js + TypeScript, delivered as Next.js API routes on Vercel (no second host)** |
+| 3 | Database | Sprint 0 | PostgreSQL — relational fit for structured plan metadata (tools/materials/time/cost/category/difficulty) and mature full-text search support for keyword search | **Confirmed: PostgreSQL (via Neon, free tier)** |
+| 4 | Hosting/infra | Sprint 0 | A managed platform (e.g. Render, Railway, or Vercel + a managed Postgres) over self-managed cloud infra — lower ops burden matches the lean early-stage cost profile in `BUSINESS_PLAN.md` §8 | **Confirmed: Vercel (free Hobby tier)** |
+| 5 | Auth: build vs. buy | Sprint 2 | Buy (e.g. Auth0, Clerk, or Supabase Auth) over building auth from scratch — auth bugs are high-severity and low-differentiation for this product | **Confirmed: Clerk (free tier, up to 10k MAU)** |
+| 6 | Payment processor | Needed before any billing sprint (Phase 1 hardening or Phase 2, not Sprint 0) | Stripe — de facto standard for subscription billing, handles the tiered plans in `BUSINESS_PLAN.md` §7 | **Open, deferred — no billing work until launch economics are discussed, per decision #9** |
 | 7 | Plan-content admin/CMS | Sprint 1 | A lightweight custom admin panel over a general headless CMS — plan metadata (tools/materials/cost tier/time/difficulty) is a fixed, opinionated schema a generic CMS doesn't model well out of the box | **Open** |
 | 8 | Branding/app name/domain | Before any public-facing UI copy or launch marketing | No recommendation — this is a pure brand decision only you can make | **Open** |
-| 9 | MVP infra/tooling budget ceiling | Sprint 0 | N/A — needed to choose between the hosting/vendor options above | **Open** |
+| 9 | MVP infra/tooling budget ceiling | Sprint 0 | N/A — needed to choose between the hosting/vendor options above | **Confirmed: $0 during development — every tool/vendor must be a genuine free tier, not a trial or time-limited free tier. Revisit at launch.** |
 
-Decisions 1-4 are confirmed (see `DECISIONS_LOG.md`). **Sprint 0 can now
-begin** once decision #9 (budget ceiling) is answered — it doesn't block
-architecture choices the way 1-4 did, but it does gate which specific
-managed-hosting tier/plan Sprint 0 provisions.
+Decisions 1-5 and 9 are confirmed (see `DECISIONS_LOG.md`). **Sprint 0 is
+unblocked and can begin.** Decisions #7 (content admin/CMS) and #8
+(branding) remain open but don't block Sprint 0 — #7 blocks Sprint 1,
+#8 blocks any public-facing copy/marketing. #6 (payment processor) is
+explicitly deferred: no billing-related work starts until the user
+revisits launch economics, per the $0-during-development decision.
 
 **These are asked as a batch immediately following this document's
 publication** — see the end of this build plan's introduction message
@@ -115,10 +117,14 @@ feature the business plan doesn't actually specify.
 
 ### Phase 0 — Setup (gated on Section 3 decisions)
 
-- **Sprint 0: Environment & Architecture** — repo structure for the
-  chosen stack, CI pipeline (lint/typecheck/test on every push), local
-  dev environment, deployment pipeline skeleton (can deploy an empty
-  "hello world" to the chosen host), environment/secrets management.
+- **Sprint 0: Environment & Architecture** — Next.js (TypeScript) repo
+  structure covering both frontend and API routes, Neon Postgres
+  provisioned on its free tier, Clerk configured on its free tier, CI
+  pipeline (lint/typecheck/test on every push), local dev environment,
+  deployment pipeline to Vercel's free Hobby tier (can deploy an empty
+  "hello world" end to end), environment/secrets management. Every
+  service provisioned in this sprint must be confirmed as a genuine free
+  tier before use — see decision #9: **no costs during development.**
 
 ### Phase 1 — MVP / Launch (`BUSINESS_PLAN.md` §4, delivered as a PWA per §5)
 

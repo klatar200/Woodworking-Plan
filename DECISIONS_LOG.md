@@ -28,6 +28,11 @@ contingent on push-notification/discovery needs.
 ### 2026-07-12 — Backend framework: Node.js + TypeScript
 **Status:** Confirmed by user (selected from 3 recommended options: Node.js + TypeScript, Python/FastAPI/Django, Go).
 **Source:** `BUILD_PLAN.md` §3, decision #2. Rationale: one language across front and back end.
+**Superseded/clarified 2026-07-12:** given the $0-during-development
+constraint below, the backend will be delivered as Next.js API routes
+running on Vercel rather than a separately-hosted Node service — still
+Node.js + TypeScript, just without a second host to pay for or operate.
+See the free-tier stack decision below.
 
 ### 2026-07-12 — Database: PostgreSQL
 **Status:** Confirmed by user (selected from 3 recommended options: PostgreSQL, MongoDB, MySQL).
@@ -36,6 +41,31 @@ contingent on push-notification/discovery needs.
 ### 2026-07-12 — Hosting/infra: managed platform (Render/Railway/Vercel)
 **Status:** Confirmed by user (selected from 3 recommended options: managed platform, AWS/GCP/Azure directly, self-hosted/VPS).
 **Source:** `BUILD_PLAN.md` §3, decision #4. Rationale: low ops burden, fits the lean early-stage cost profile in `BUSINESS_PLAN.md` §8.
+**Narrowed 2026-07-12:** specific provider selected — see the free-tier stack decision below.
+
+### 2026-07-12 — Development-phase budget: $0, hard constraint
+**Status:** Confirmed by user.
+**Source:** User instruction: "There should be no startup costs while
+developing the application. When it goes live, we can discuss it then
+but during the build there should be absolutely no costs." This
+resolves `BUILD_PLAN.md` §3 decision #9. Every vendor/tooling choice
+during the build phases (Phase 0 through at least the end of Phase 1)
+must use a genuinely free tier — not a free trial or a tier with a
+time-limited or usage-limited expiry that would force a paid upgrade
+mid-build. Hosting/monetization economics get revisited explicitly at
+launch, per the user's instruction — not before.
+
+### 2026-07-12 — Free-tier stack: Vercel + Neon Postgres + Clerk
+**Status:** Confirmed by user (selected from 3 recommended options: Vercel + Neon + Clerk, Render + Supabase Auth, Supabase all-in-one + Vercel).
+**Source:** `BUILD_PLAN.md` §3, decisions #4 (hosting, narrowed) and #5
+(auth, now resolved). Rationale: Vercel hosts both the Next.js frontend
+and its API routes on one free Hobby-tier account (no second host to
+pay for); Neon provides a Postgres free tier with no auto-expiry
+(idles/cold-starts, does not delete data or force an upgrade); Clerk's
+free tier covers up to 10,000 monthly active users, far beyond
+development needs. All three are real perpetual free tiers as of this
+writing — re-verify current terms at the start of Sprint 0, since
+vendor free-tier terms can change.
 
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
@@ -69,9 +99,10 @@ explicitly signs off (per `BUILD_PLAN.md` §1.1, factual reasoning only).
 
 ## Pending — Pre-Sprint-0 Decisions
 
-See `BUILD_PLAN.md` §3 for the full list. Frontend framework, backend
-framework, database, and hosting (#1-4) are confirmed above. Still open:
-auth build-vs-buy (#5, blocks Sprint 2), payment processor (#6, not
-urgent), plan-content admin/CMS approach (#7, blocks Sprint 1),
-branding/domain (#8), and MVP infra/tooling budget ceiling (#9, blocks
-Sprint 0 provisioning).
+See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,
+backend framework, database, hosting/auth stack, and budget (#1-5, #9).
+Still open: payment processor (#6, not urgent — deferred until launch
+per the $0-during-development decision above), plan-content admin/CMS
+approach (#7, blocks Sprint 1), and branding/domain (#8, blocks
+public-facing copy, not Sprint 0). **Sprint 0 is unblocked and can
+begin.**
