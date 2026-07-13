@@ -1,16 +1,24 @@
 // Woodworking Plan — Prisma schema.
 //
-// SPRINT 0 SCOPE: this file intentionally contains NO models.
+// SPRINT 1 SCOPE: the plan data model + the content ingestion path.
+// Maps directly to BUSINESS_PLAN.md §4.8 (Structured Plan Data).
 //
-// The plan data model (title, category, difficulty 1-5, tools, materials,
-// time estimate, cost tier, itemized cost range, instructions, images) is a
-// Sprint 1 deliverable per BUILD_PLAN.md §4, and the user/account model is a
-// Sprint 2 deliverable. Adding either here would be scope drift.
+// Deliberately NOT here yet:
+//   - User / account models  → Sprint 2 (Accounts & Auth, Clerk owns identity)
+//   - SavedPlan / Category folders → Sprint 6
+//   - Like / like counts     → Sprint 7
+// Adding any of those now would be scope drift.
 //
-// Sprint 0 needs exactly one thing from the database: proof that the app can
-// connect to Neon Postgres end to end. That is done with a raw `SELECT 1`
-// health check (src/lib/db.ts), which requires a configured datasource but
-// no tables.
+// Design notes that matter:
+//   - MONEY IS STORED AS INTEGER CENTS. Never floats. A cost range of
+//     $45.00–$60.00 is 4500–6000. Floats silently lose precision and this data
+//     feeds a cost estimator that makers price real work against.
+//   - Tools are a normalized table, not free text. BUSINESS_PLAN.md §4.6 requires
+//     "only show plans I can build with tools I own" — that is impossible to do
+//     reliably against free-text tool names. Sprint 5 depends on this.
+//   - Time is stored as min/max MINUTES (integers) so it can be filtered and
+//     sorted. A human label ("6–8 hrs", "2 weekends") is stored alongside for
+//     display, because "2 weekends" is not 960 minutes of shop time.
 
 generator client {
   provider = "prisma-client-js"
@@ -19,4 +27,192 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+/// Cost tier from BUSINESS_PLAN.md §4.8 — $ (cheap) through $$$$$ (expensive).
+/// Kept as an enum because the 5-tier scale is a fixed product concept, not data.
+enum CostTier {
+  TIER_1 // $
+  TIER_2 // $$
+  TIER_3 // $$$
+  TIER_4 // $$$$
+  TIER_5 // $$$$$
+}
+
+/// A browsable catalog category (cutting boards, furniture, outdoor, storage...).
+/// A table rather than an enum: the catalog will grow, and adding a category
+/// should not require a schema migration.
+model Category {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String?
+  /// Controls display order in browse UI (Sprint 3). Lower sorts first.
+  sortOrder   Int     @default(0)
+
+  plans Plan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+/// A tool a plan requires. Normalized so tool-based filtering is exact.
+model Tool {
+  id   String @id @default(cuid())
+  slug String @unique
+  name String
+
+  /// Grouping for the tool filter UI, e.g. "Power Saw", "Hand Tool", "Clamping".
+  category String?
+
+  plans PlanTool[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Plan {
+  id      String @id @default(cuid())
+  /// Stable, human-readable identifier. This is the seed pipeline's upsert key —
+  /// re-seeding updates the existing plan instead of creating a duplicate.
+  slug    String @unique
+  title   String
+  /// One-line hook for catalog cards (Sprint 3).
+  summary String
+  /// Full prose intro. Markdown.
+  description String
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  /// 1 (beginner) – 5 (advanced). BUSINESS_PLAN.md §4.6.
+  difficulty Int
+
+  /// Filterable/sortable shop time, in minutes.
+  timeMinMinutes Int
+  /// Human-facing label — "2 weekends" is not expressible in minutes.
+  timeLabel      String
+  timeMaxMinutes Int
+
+  costTier CostTier
+  /// Itemized estimated material cost range, in INTEGER CENTS.
+  costMinCents Int
+  costMaxCents Int
+
+  /// Free-form keywords. Feeds keyword search (Sprint 4).
+  tags String[]
+
+  /// Unpublished plans are invisible to the catalog. Lets content be staged.
+  published   Boolean   @default(true)
+  publishedAt DateTime?
+
+  tools     PlanTool[]
+  materials Material[]
+  cutList   CutListItem[]
+  steps     Step[]
+  images    Image[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([difficulty])
+  @@index([costTier])
+  @@index([published])
+}
+
+/// Join table: which tools a plan needs, and whether each is truly required.
+/// The `essential` flag is what makes "plans I can build with what I own"
+/// answerable — an optional tool should not exclude a plan from your results.
+model PlanTool {
+  id     String @id @default(cuid())
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  toolId String
+  tool   Tool   @relation(fields: [toolId], references: [id])
+
+  essential Boolean @default(true)
+  /// e.g. "A track saw works too" / "Only needed for the optional chamfer".
+  note      String?
+
+  @@unique([planId, toolId])
+  @@index([toolId])
+}
+
+/// A material line item: lumber, hardware, glue, finish.
+model Material {
+  id     String @id @default(cuid())
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  name     String
+  /// "board feet", "linear feet", "each", "oz", "sheet"...
+  unit     String
+  quantity Float
+
+  /// Wood species where relevant (Maple, Walnut, Pine). Null for hardware/finish.
+  species  String?
+  /// Estimated cost for THIS line, in integer cents. Null when it genuinely
+  /// varies too much to estimate (e.g. "scrap you already have").
+  costCents Int?
+  note      String?
+
+  sortOrder Int @default(0)
+
+  @@index([planId])
+}
+
+/// A single part to cut, with finished dimensions. Stored in INCHES as floats —
+/// unlike money, fractional inches are the natural unit and 0.75" is exact.
+model CutListItem {
+  id     String @id @default(cuid())
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  part     String
+  quantity Int
+
+  thicknessIn Float
+  widthIn     Float
+  lengthIn    Float
+
+  material String?
+  note     String?
+
+  sortOrder Int @default(0)
+
+  @@index([planId])
+}
+
+/// One step of the build instructions. Markdown body.
+model Step {
+  id     String @id @default(cuid())
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  stepNumber Int
+  title      String
+  body       String
+
+  @@unique([planId, stepNumber])
+  @@index([planId])
+}
+
+/// A photo or diagram. Sprint 1 stores URLs only — no upload pipeline yet.
+model Image {
+  id     String @id @default(cuid())
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  url String
+  /// Required, not optional: an accessible catalog is cheaper to build than to
+  /// retrofit (Sprint 9 does an accessibility pass and will not have to fix this).
+  alt String
+
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  @@index([planId])
 }
