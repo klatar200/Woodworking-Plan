@@ -29,7 +29,7 @@ export default async function ProfilePage() {
   });
 
   return (
-    <main className="page">
+    <main id="main" className="page">
       <h1>Your profile</h1>
       <p className="subtitle">Account details. Managed through your Clerk account.</p>
 

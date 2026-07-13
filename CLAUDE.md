@@ -153,8 +153,19 @@ with it.
 - **Sprint 7 (Liking): COMPLETE — 99/100.** `Like` model, like/unlike, and a
   "Popular" sort. **No denormalized `likeCount` column** — counts are computed on
   read, so there is nothing to backfill and nothing that can drift. 178 tests green.
-- **Next up:** Sprint 8 — PWA Shell (installable, service-worker offline caching of
-  saved plans, mobile-first UI pass). Not blocked.
+- **Sprint 8 (PWA Shell): COMPLETE — 98/100.** Installable, service-worker offline
+  caching of plan content, mobile-first pass. Verified on a real phone in airplane
+  mode. 197 tests green.
+- **Next up:** Sprint 9 — Hardening & Launch Readiness (OWASP pass, accessibility
+  pass, performance pass, end-to-end QA). **This is the LAST sprint of Phase 1.**
+  Not blocked.
+
+### Offline caching rule (established Sprint 8 — do not violate)
+
+**A service worker cache is unencrypted and survives sign-out.** Cache PUBLIC
+content only. `/saved`, `/profile`, `/api/*`, and the auth flows are NEVER cached,
+and the policy fails closed. The rules live in `src/lib/offline.ts` (tested) and
+are mirrored in `public/sw.js` (shipped) — **change one, change both.**
 
 ### Derived data rule (why Sprint 7 shipped clean)
 

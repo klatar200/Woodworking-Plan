@@ -691,3 +691,65 @@ reshuffling between pages.
 
 **Result: PASS (99 ≥ 95).** The first sprint since Sprint 3 to ship without a
 production defect — because the trap was designed out rather than deployed into.
+
+---
+
+## Sprint 8: PWA Shell
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** installable to home screen; service-worker
+offline caching of saved plans; responsive mobile-first UI pass.
+
+**Status: COMPLETE — 98/100, Attempt 1. Pass.**
+
+### The security decision that shaped the whole sprint
+
+A service worker cache is **unencrypted, origin-scoped, and survives sign-out**.
+Whatever lands in it is readable by anyone holding the phone.
+
+So the rule: **cache PUBLIC content only. Never cache anything visible only
+because of who you are.**
+
+| | |
+|---|---|
+| **Cached** | Plan pages, the catalog, static assets. Already public — `BUSINESS_PLAN.md` §12 gates saves, not content — so caching them leaks nothing that signing out was ever protecting. |
+| **Never cached** | `/saved`, `/profile`, `/api/*`, `/sign-in`, `/sign-up`, any non-GET, any response with `Set-Cookie` or `Cache-Control: private`. |
+
+**The cost, accepted deliberately: the `/saved` PAGE does not work offline, but
+every plan you saved does.** §5 asks for "plans a user has already saved remain
+viewable with no signal" — the plan content, in the workshop. It does not ask for
+a private library to be written to disk in cleartext. The offline page says this
+out loud rather than pretending otherwise.
+
+### Two other calls worth defending
+
+**Network-first, not cache-first.** A woodworking plan is not immutable — a cut
+list can be corrected. Serving a stale dimension to someone standing at a table
+saw is a genuinely bad outcome. Fresh when there is signal, cached when there is
+not. The cache is a safety net, not a source of truth.
+
+**Pre-cache on SAVE, not on view.** You save a plan at home on wifi and it is on
+the device before you reach the workshop. Waiting for the user to open it while
+offline would be exactly too late — that is the moment they have no signal.
+
+### Attempt 1 — 2026-07-13
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | All three §4 Sprint 8 bullets: installable (manifest, icons, `display: standalone`, verified installed to a real home screen), service-worker offline caching of saved plans (verified in airplane mode on a real device), and a mobile-first UI pass (sticky header, safe-area insets, larger step text and cut-list padding under 40rem, print styles). Nothing out of scope — no push notifications (§5 explicitly defers them), no expanded offline library (Phase 2). |
+| Correctness & functionality (/20) | **20** | Verified by the user **on a physical phone**, which is the only verification that counts for this sprint: installed to home screen, saved a plan, enabled airplane mode, opened the installed app, and read the full cut list and steps offline. `/saved` correctly showed the offline page rather than the library — the security boundary working, observed. Locally: 197/197 tests, `tsc` 0, `eslint` 0, build passes. No migration, so no production data step. |
+| Automated test coverage (/15) | **14** | `offline.test.ts` (24 cases), written as a **security** test file rather than a feature one. Proves: `/saved`, `/profile`, `/api/*`, `/sign-in`, `/sign-up` are never cacheable, including their sub-paths; that a prefix match (not a substring match) is used, so `/plans/api-cabinet` **is** cacheable while `/saved/export` is not; that non-GETs and cross-origin responses are refused; that a malformed URL returns false rather than throwing; and the response gate — a `Set-Cookie`, a `no-store`, or any non-200 is never stored (caching a 404 would serve it back forever: an outage that outlives the outage). **−1: the service worker itself cannot be imported into a test.** The policy is unit-tested in `src/lib/offline.ts` and *mirrored* in `sw.js`. |
+| Security (/15) | **15** | The policy **fails closed**: anything not positively identified as public, same-origin, and GET is refused. Two independent gates — one on the request (path/method/origin) and one on the response (status/headers) — so a mistake in either is survivable. `/offline` was added to the public-routes allowlist deliberately and with a stated reason (it is pre-cached before anyone signs in; it contains no user data). The service worker validates URLs from `postMessage` rather than trusting them — a compromised page must not be able to ask us to cache `/profile`. |
+| Code quality & simplicity (/10) | **9** | The registration component is the app's **only** client component, and it renders nothing — everything else remains server-rendered and works with JS off. The save button became a client component for exactly one reason (pre-cache on save), and **the save itself still works with JavaScript disabled**; only the offline copy needs JS. An offline enhancement must never become an online dependency. **−1: the caching rules exist twice** — in `offline.ts` (tested) and in `sw.js` (shipped). That duplication is a real smell and a genuine drift risk. It is deliberate (a service worker cannot import an ES module in every browser we care about) and flagged in both files, but it is still two copies of a security rule. |
+| Mobile/offline behavior (/10) | **10** | This is the sprint for it, and it was verified on a real device rather than a viewport emulator. Sticky header so "back to the catalog" is reachable from the middle of a nine-step build; `env(safe-area-inset-top)` so the notch doesn't eat the nav in standalone mode; larger step text and cut-list row padding on small screens, because that content is read at arm's length off a phone propped against a vise; and print styles that strip the header, filters, and pagination — a plan taped to a workshop wall is a real use case, and a printed sheet with a filter panel on it is a wasted sheet. |
+| Documentation & handoff (/5) | **5** | The security boundary is stated at the top of `offline.ts`, restated in `sw.js`, and explained *to the user* on the offline page itself. The icon placeholders are flagged in `layout.tsx` as needing replacement before launch (branding decision #8 remains open). |
+| **Total (/100)** | **98** | |
+
+**Result: PASS (98 ≥ 95).**
+
+### Known follow-ups
+- **`offline.ts` and `sw.js` duplicate the caching rules.** If one changes and the
+  other does not, the tests will pass while the shipped worker misbehaves. A build
+  step that generates `sw.js` from the module would remove the risk. Worth doing
+  before launch.
+- **The PWA icons are placeholders, not a logo.** Branding (decision #8) is still
+  open. They must be replaced before any public launch.

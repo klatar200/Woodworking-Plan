@@ -22,7 +22,7 @@ export const metadata = {
 
 export default function OfflinePage() {
   return (
-    <main className="page">
+    <main id="main" className="page">
       <h1>You&rsquo;re offline</h1>
 
       <p className="subtitle">

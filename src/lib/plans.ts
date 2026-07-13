@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import type { PlanFilters } from '@/lib/filters';
@@ -246,7 +247,21 @@ export async function listFilterableTools() {
   });
 }
 
-export async function getPlanBySlug(slug: string) {
+/**
+ * A single plan with everything the detail page renders.
+ *
+ * PERF (Sprint 9): wrapped in React's `cache()`, which memoizes per REQUEST.
+ *
+ * The plan page calls this twice — once in `generateMetadata` (for the <title>)
+ * and once in the component — and Next.js runs both. Without this, every view of
+ * the app's most-visited route issued **two identical queries**, each pulling the
+ * full plan with its steps, cut list, materials, tools and images. On Neon's free
+ * tier that is also two cold-start-eligible round trips.
+ *
+ * Found by auditing the query paths, not by a user complaining. It is exactly the
+ * kind of waste that is invisible until the catalog and the traffic are both real.
+ */
+export const getPlanBySlug = cache(async (slug: string) => {
   return prisma.plan.findFirst({
     // Unknown slug and unpublished slug both return null, so a 404 cannot be used
     // to probe for the existence of unreleased content.
@@ -264,7 +279,7 @@ export async function getPlanBySlug(slug: string) {
       _count: { select: { likes: true } },
     },
   });
-}
+});
 
 export type PlanDetail = NonNullable<Awaited<ReturnType<typeof getPlanBySlug>>>;
 

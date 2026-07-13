@@ -72,7 +72,7 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
   );
 
   return (
-    <main className="page page-wide">
+    <main id="main" className="page page-wide">
       <p className="breadcrumb">
         <Link href="/">← All plans</Link>
       </p>

@@ -44,7 +44,7 @@ export default async function SavedPage({
   const activeCollection = collections.find((c) => c.id === collectionId);
 
   return (
-    <main className="page page-wide">
+    <main id="main" className="page page-wide">
       <h1>Saved plans</h1>
 
       {/* ---------------- folders ---------------- */}

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import type { User } from '@prisma/client';
 import { prisma } from '@/lib/db';
@@ -32,8 +33,18 @@ import { prisma } from '@/lib/db';
  *
  * Idempotent: safe to call on every request. `upsert` on the unique `clerkId`
  * means concurrent requests from the same user cannot create duplicate rows.
+ *
+ * PERF (Sprint 9): wrapped in React's `cache()`, memoized per REQUEST.
+ *
+ * This function is not cheap — it calls Clerk's API *and* upserts a row. A single
+ * plan page used to invoke it three times (once directly, once inside
+ * `isPlanSaved`, once inside `isPlanLiked`), so one page view meant three Clerk
+ * round trips and three redundant writes. Now: one of each, per request.
+ *
+ * `cache()` is per-request, not global — so a stale session is impossible. Two
+ * different users' requests never share a memo.
  */
-export async function getCurrentUser(): Promise<User | null> {
+export const getCurrentUser = cache(async (): Promise<User | null> => {
   const { userId } = await auth();
   if (!userId) return null;
 
@@ -62,7 +73,7 @@ export async function getCurrentUser(): Promise<User | null> {
       imageUrl: clerkUser.imageUrl ?? null,
     },
   });
-}
+});
 
 /**
  * Same as getCurrentUser, but throws when there is no session.

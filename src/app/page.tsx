@@ -65,7 +65,8 @@ export default async function CatalogPage({
   const isNarrowed = isSearching || isFiltering;
 
   return (
-    <main className="page page-wide">
+    {/* id="main" is the skip link's target (WCAG 2.4.1). */}
+    <main id="main" className="page page-wide">
       <h1>Plans</h1>
 
       <SearchBox query={query} />
@@ -117,11 +118,21 @@ export default async function CatalogPage({
           )}
         </p>
       ) : (
-        <ul className="plan-grid">
-          {plans.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} />
-          ))}
-        </ul>
+        <>
+          {/*
+            Heading order (WCAG 1.3.1 / 2.4.6): the cards render <h3> titles, and
+            without this the page jumped h1 → h3. A screen-reader user navigating
+            by heading would hear a level skipped and assume they had missed a
+            section. Visually hidden — sighted users get the same information from
+            the layout.
+          */}
+          <h2 className="visually-hidden">Results</h2>
+          <ul className="plan-grid">
+            {plans.map((plan) => (
+              <PlanCard key={plan.id} plan={plan} />
+            ))}
+          </ul>
+        </>
       )}
 
       {totalPages > 1 && (
