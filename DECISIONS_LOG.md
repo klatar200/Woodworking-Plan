@@ -241,6 +241,107 @@ saves or categories. That constraint is on the build agent, not on this decision
 Vercel Hobby → Pro move and decision #6, payment processor). Pricing and tier
 limits should be confirmed together, not piecemeal.
 
+### 2026-07-13 — LAUNCH ECONOMICS: stay on Vercel Hobby, no monetization for now
+**Status:** Confirmed by user, after a costed analysis (`LAUNCH_ECONOMICS.md`) with
+all vendor pricing verified against current terms on 2026-07-13.
+
+**Two linked answers:**
+1. **Hosting: stay on Vercel Hobby.** Do not move to Pro ($20/mo). Consequently,
+   **drop affiliate links.**
+2. **Pricing: deferred.** No billing, no subscription tiers, no payment processor.
+
+**What this means, stated plainly.** The product carries **no monetization at all**:
+no ads, no affiliate links, no payments. That is what makes staying on Hobby legal —
+Vercel's commercial-use prohibition covers exactly those three things.
+
+**What is given up, for now.** `BUSINESS_PLAN.md` §8 names affiliate attach rate as
+one of the two biggest profit levers ("close to pure margin"). Forgoing it is a real
+cost, accepted deliberately in exchange for a $0 run rate and no pricing commitment
+made before there is usage data.
+
+**What this UNBLOCKS.** Everything in Phase 2 except billing:
+- Reviews/ratings and build photos
+- Personalized recommendations
+- Shopping-list generator — **still valuable without affiliate links**; aggregating
+  materials across saved plans into one buyable list is the useful part
+- Print-friendly / PDF export
+- Expanded offline mode
+
+**The gate is NOT lifted — it is now sharper.** The moment ANY of the following is
+added, the project must move to Vercel Pro (or an equivalent commercial-use-permitted
+host) **first**:
+- any advertisement,
+- any affiliate link,
+- any payment taken from a visitor.
+
+**Honest caveat the build agent must record.** Vercel's clause is worded around
+"financial gain of anyone involved in any part of the production of the project."
+A genuinely free, unmonetized product is defensible under it. But a *public launch*
+of a project intended to become a business is a grayer area than a private one, and
+the build agent's original gate (2026-07-12) named "any public launch" as a trigger
+out of caution. **That caution stands: going publicly live is Keagan's call to make
+with eyes open, not something the build agent will do implicitly.** `robots: noindex`
+remains set sitewide until decision #8 (branding) resolves anyway.
+
+**Superseded, pending revision by Keagan:**
+- `BUSINESS_PLAN.md` §7 (pricing tiers) — remains an unconfirmed recommendation. No
+  billing work will be started against it.
+- `BUSINESS_PLAN.md` §8 (profit estimates) — its revenue lines assume subscription
+  and affiliate income that now do not exist. Its **cost** lines are also wrong in
+  the other direction: it budgets $150/mo of early-stage infra; the real figure is
+  **$0** on the current stack (Vercel Hobby, Neon free, Clerk free to 50k users).
+
+**Decision #6 (payment processor) remains deferred.** Nothing to decide until there
+is something to charge for.
+
+### 2026-07-13 — Rate limiting: Upstash Redis (free tier)
+**Status:** Confirmed by user.
+**Source:** The Sprint 9 OWASP audit found no rate limiting on server actions —
+anyone can hammer `likePlanAction` or `createCollectionAction` in a loop.
+
+**Why a vendor at all.** An in-memory limiter is **theatre on serverless**: each
+Vercel instance has its own memory, so the limit is per-instance and effectively no
+limit. Shipping one would have looked like a fix while leaving the hole open, which
+is worse than none — it closes the issue in everyone's mind. Rate limiting requires
+shared state; shared state requires a store.
+
+**The choice.** Upstash Redis — genuine perpetual free tier (**500K commands/month**,
+256MB), which is far beyond what rate limiting needs at this scale. **$0**, so the
+$0-during-development constraint holds.
+
+### 2026-07-13 — Phase 2 begins: Sprint 10 = Reviews, ratings & build photos
+**Status:** Confirmed by user.
+**Source:** `BUSINESS_PLAN.md` §10 lists it first in Phase 2. `BUSINESS_PLAN.md` §12
+names "thin/low-quality catalog kills trust" as the **top risk to the product**, and
+"I made this" build photos are the strongest available answer to it.
+
+**This unblocks a new vendor decision: image storage.** Build photos are user-uploaded
+files, and there is nowhere to put them today. See the next entry.
+
+### 2026-07-13 — Image storage: Cloudflare R2 (free tier)
+**Status:** Confirmed by user (chosen from 3: Cloudflare R2 [recommended], Vercel
+Blob, UploadThing). Free tiers verified 2026-07-13.
+
+**The decision.** Cloudflare R2 for user-uploaded build photos. **10 GB storage and
+$0 egress**, S3-compatible.
+
+**Rationale.** Build photos are **read constantly and written rarely** — precisely the
+pattern where every other provider's bandwidth meter bites. R2 charges **nothing** for
+egress; Vercel Blob allows 10 GB/mo and UploadThing only 1 GB/mo. On storage, R2's
+10 GB is 10× Vercel Blob's 1 GB (roughly 300–500 photos before that becomes a
+problem). S3-compatible, so outgrowing it is a config change, not a rewrite.
+
+**$0**, so the $0-during-development constraint holds. **Not needed until Sprint 10
+actually implements uploads.**
+
+### 2026-07-13 — Sequencing: rate limiting shipped standalone, BEFORE Sprint 10
+**Status:** Confirmed by user.
+
+Rate limiting is closed as its own hardening task rather than folded into Sprint 10.
+Reason: it keeps the Sprint 10 scorecard honest (Sprint 10 gets judged on reviews and
+photos, not on a security fix bolted on at the end), and it stops the security work
+being rushed to finish a bigger sprint.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

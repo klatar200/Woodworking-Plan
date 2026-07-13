@@ -156,9 +156,47 @@ with it.
 - **Sprint 8 (PWA Shell): COMPLETE — 98/100.** Installable, service-worker offline
   caching of plan content, mobile-first pass. Verified on a real phone in airplane
   mode. 197 tests green.
-- **Next up:** Sprint 9 — Hardening & Launch Readiness (OWASP pass, accessibility
-  pass, performance pass, end-to-end QA). **This is the LAST sprint of Phase 1.**
-  Not blocked.
+- **Sprint 9 (Hardening & Launch Readiness): COMPLETE — 95/100** (Attempt 1: 93,
+  shipped a build that didn't compile; Attempt 2: 95). OWASP pass, nonce-based CSP,
+  HSTS, WCAG skip link + heading order, and two real query wastes removed via React
+  `cache()`. 205 tests green.
+
+## PHASE 1 COMPLETE. Phase 2 unblocked — with one hard constraint.
+
+**Launch economics decided 2026-07-13 (`DECISIONS_LOG.md`, `LAUNCH_ECONOMICS.md`):
+stay on Vercel Hobby, NO MONETIZATION.** No ads, no affiliate links, no billing.
+That is what keeps Hobby legal. Run rate: **$0/mo**.
+
+### 🛑 THE HARD CONSTRAINT — never violate
+
+**The moment an ad, an affiliate link, or a payment appears, the project MUST be on
+Vercel Pro (or an equivalent commercial-use-permitted host) FIRST.** Vercel's Hobby
+tier prohibits all three, and enforcement is account suspension.
+
+So: **the Phase 2 shopping-list generator ships WITHOUT affiliate links.** Aggregating
+materials across saved plans into one buyable list is the useful part; the affiliate
+links are not, until the host changes.
+
+**Pricing (#7) and the payment processor (#6) remain deferred.** Do not build billing,
+tier gating, or save/collection limits. There is nothing to charge for yet.
+
+### Still open
+
+- **Branding/domain (#8).** PWA icons are placeholders; `robots: noindex` is set
+  sitewide because of it. Blocks SEO and HSTS preload.
+- **Going publicly live is Keagan's call, explicitly.** A free unmonetized product on
+  Hobby is defensible, but "public launch" was named as a gate trigger out of caution
+  and that caution stands.
+
+### Open launch blockers
+
+- **No rate limiting on server actions.** Anyone can hammer `likePlanAction`. A real
+  fix needs a shared store (Upstash Redis — free tier, 500K commands/mo). It is a new
+  vendor, so it is Keagan's call. **An in-memory limiter is theatre on serverless** —
+  each instance has its own memory, so the limit is per-instance and no limit at all.
+- **Clerk deletion webhook** — a user deleted in Clerk leaves their `User` row and
+  cached email in our DB. A data-retention problem once there are real users.
+- **`offline.ts` and `sw.js` duplicate the caching rules.** Change one, change both.
 
 ### Offline caching rule (established Sprint 8 — do not violate)
 

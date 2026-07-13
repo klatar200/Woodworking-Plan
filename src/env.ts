@@ -57,6 +57,18 @@ const serverSchema = z.object({
     .string()
     .startsWith('pk_', { message: 'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY must start with pk_' })
     .optional(),
+
+  // Upstash Redis — rate limiting for server actions.
+  //
+  // OPTIONAL EVERYWHERE, including production. That is deliberate: the limiter
+  // FAILS OPEN (see src/lib/rate-limit.ts). It is an abuse control, not an
+  // authorization control — authorization is requireUser(), and that fails closed.
+  // Making these required would mean a missing env var takes the whole app down,
+  // which trades a real outage for a hypothetical abuse problem.
+  //
+  // They ARE required for the limiter to do anything, and their absence is logged.
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof serverSchema>;

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { likePlan, unlikePlan } from '@/lib/likes';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 /**
  * Like/unlike server actions — Sprint 7.
@@ -30,6 +31,9 @@ function requiredString(formData: FormData, key: string): string {
 }
 
 export async function likePlanAction(formData: FormData): Promise<void> {
+  // FIRST — before any database work. Avoiding the database work is the point.
+  await enforceRateLimit('toggle');
+
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
 
@@ -43,6 +47,8 @@ export async function likePlanAction(formData: FormData): Promise<void> {
 }
 
 export async function unlikePlanAction(formData: FormData): Promise<void> {
+  await enforceRateLimit('toggle');
+
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
 

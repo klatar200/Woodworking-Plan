@@ -11,6 +11,7 @@ import {
   addPlanToCollection,
   removePlanFromCollection,
 } from '@/lib/saves';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 /**
  * Server actions — the write boundary for saves and collections.
@@ -42,6 +43,9 @@ function requiredString(formData: FormData, key: string): string {
 }
 
 export async function savePlanAction(formData: FormData): Promise<void> {
+  // FIRST — before any database work. Avoiding the database work is the point.
+  await enforceRateLimit('toggle');
+
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
 
@@ -55,6 +59,8 @@ export async function savePlanAction(formData: FormData): Promise<void> {
 }
 
 export async function unsavePlanAction(formData: FormData): Promise<void> {
+  await enforceRateLimit('toggle');
+
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
 
@@ -67,11 +73,17 @@ export async function unsavePlanAction(formData: FormData): Promise<void> {
 }
 
 export async function createCollectionAction(formData: FormData): Promise<void> {
+  // 'create', not 'toggle' — this makes a ROW that persists, and a spammed row is
+  // something a human eventually has to look at.
+  await enforceRateLimit('create');
+
   await createCollection(requiredString(formData, 'name'));
   revalidatePath('/saved');
 }
 
 export async function deleteCollectionAction(formData: FormData): Promise<void> {
+  await enforceRateLimit('create');
+
   await deleteCollection(requiredString(formData, 'collectionId'));
 
   // The user may have been viewing the folder they just deleted.
@@ -80,6 +92,8 @@ export async function deleteCollectionAction(formData: FormData): Promise<void> 
 }
 
 export async function renameCollectionAction(formData: FormData): Promise<void> {
+  await enforceRateLimit('create');
+
   await renameCollection(
     requiredString(formData, 'collectionId'),
     requiredString(formData, 'name'),
@@ -88,6 +102,8 @@ export async function renameCollectionAction(formData: FormData): Promise<void> 
 }
 
 export async function addToCollectionAction(formData: FormData): Promise<void> {
+  await enforceRateLimit('toggle');
+
   await addPlanToCollection(
     requiredString(formData, 'planId'),
     requiredString(formData, 'collectionId'),
@@ -96,6 +112,8 @@ export async function addToCollectionAction(formData: FormData): Promise<void> {
 }
 
 export async function removeFromCollectionAction(formData: FormData): Promise<void> {
+  await enforceRateLimit('toggle');
+
   await removePlanFromCollection(
     requiredString(formData, 'planId'),
     requiredString(formData, 'collectionId'),

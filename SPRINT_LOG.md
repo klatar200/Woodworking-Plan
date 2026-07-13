@@ -753,3 +753,127 @@ offline would be exactly too late — that is the moment they have no signal.
   before launch.
 - **The PWA icons are placeholders, not a logo.** Branding (decision #8) is still
   open. They must be replaced before any public launch.
+
+---
+
+## Sprint 9: Hardening & Launch Readiness
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** security review (OWASP Top 10 pass);
+accessibility pass; performance pass (mobile network conditions); end-to-end QA
+across the full MVP feature set.
+
+**Status: COMPLETE — Attempt 1: 93 (FAIL, shipped a broken build). Attempt 2: 95
+(PASS). This is the LAST sprint of Phase 1.**
+
+### OWASP Top 10 — audited against the code, not from memory
+
+| | Finding |
+|---|---|
+| **A01 Broken Access Control** | **Clean.** Grepped for any function taking a `userId` — none exist. Grepped for `.delete({ id })` / `.update({ id })` — none; every destructive path uses `deleteMany`/`updateMany` scoped by the session-derived user. |
+| **A02 Cryptographic Failures** | **Clean.** Only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is client-exposed, which is correct — it is public by design. No secret ever crosses the `NEXT_PUBLIC_` boundary. |
+| **A03 Injection** | **Clean.** No `$queryRawUnsafe`, no `dangerouslySetInnerHTML`, no `eval`, no `new Function`. The one raw SQL query is a tagged template with bound parameters. |
+| **A04 Insecure Design** | **Gap found — see rate limiting below.** |
+| **A05 Security Misconfiguration** | **GAP FOUND: no Content-Security-Policy, no HSTS.** Both fixed. |
+| **A06 Vulnerable Components** | **Clean.** `npm audit`: 0 vulnerabilities (the postcss CVE was fixed in Sprint 4). |
+| **A07 Auth Failures** | **Clean.** Clerk owns credentials, sessions, and resets. No hand-rolled auth anywhere. |
+| **A08 Integrity Failures** | **Clean.** No dynamic code loading; lockfile committed; `npm ci` in CI and on deploy. |
+| **A09 Logging Failures** | **Clean.** The one `console.error` scrubs the Neon connection string (asserted by a test). No secret is ever logged. |
+| **A10 SSRF** | **Clean.** No outbound fetch to any user-controlled URL. |
+
+### What was fixed
+
+**Content-Security-Policy — nonce-based, per request, set in middleware.** It could
+not go in `next.config.ts` because a strong CSP needs a per-request nonce and a
+static config cannot generate one. `script-src 'unsafe-inline'` would have been a
+CSP in name only: it permits precisely the thing CSP exists to stop. `'strict-dynamic'`
+lets Clerk's loader pull its own bundle without allowlisting every URL it might use.
+`style-src 'unsafe-inline'` is kept deliberately — Next and Clerk both inject inline
+styles, and inline *styles* risk CSS exfiltration while inline *scripts* risk code
+execution. Verified live: Google sign-in, email sign-in, and the account menu all work.
+
+**HSTS** (2 years, `includeSubDomains`, **no `preload`** — preloading hard-codes a
+domain into browser binaries and is painful to reverse; that is a decision for a
+real domain, and branding #8 is still open).
+
+**`/sw.js` is now `no-store`.** If a browser caches the service worker, a broken
+worker keeps serving from the old cache and **there is no way to reach the user with
+a fix.** Arguably the single most important header on the site.
+
+### Performance — two real wastes, found by auditing query paths
+
+- **`getPlanBySlug` ran TWICE on every plan page** — once in `generateMetadata`, once
+  in the component. Two identical queries, each pulling the full plan with its steps,
+  cut list, materials, tools and images, on the app's most-visited route.
+- **`getCurrentUser` ran THREE TIMES on every plan page** — directly, then again
+  inside `isPlanSaved`, then again inside `isPlanLiked`. Each call hits **Clerk's API
+  and upserts a row**. Three round trips and three redundant writes per page view.
+
+Both wrapped in React's `cache()` (per-request memoization, so a stale session is
+impossible — two users never share a memo). Nobody had complained; this is exactly
+the waste that stays invisible until the catalog and the traffic are both real.
+
+### Accessibility (WCAG 2.1 AA)
+
+- **Skip link** (2.4.1 Bypass Blocks) + `id="main"` on all seven pages. Without it a
+  keyboard user tabs through the header, the search box and thirty tool checkboxes on
+  every page just to reach the plan they came for.
+- **Heading order** (1.3.1): the catalog jumped **h1 → h3**, because the cards render
+  `<h3>`. A screen-reader user navigating by heading would hear a level skipped and
+  assume they had missed a section. Fixed with a visually-hidden `<h2>`.
+- Verified already-correct: real `<label>`s on every control (a placeholder is not a
+  label), visible focus states, `aria-pressed` on both toggles, mandatory image alt
+  text (enforced by the seed schema since Sprint 1), 44px touch targets throughout.
+
+### ⚠️ NOT FIXED — escalated instead: no rate limiting on server actions
+
+Anyone can hammer `likePlanAction` or `createCollectionAction`. Doing it properly
+needs a shared store (Upstash/Redis or equivalent) — **a new vendor, which is a
+money/vendor decision under `BUILD_PLAN.md` §2.** The build agent does not make
+those.
+
+An in-memory limiter would be **theatre** on serverless: each Vercel instance has its
+own memory, so the limit is per-instance and effectively no limit at all. Shipping one
+would have looked like a fix and been worse than none, because it would have closed
+the issue.
+
+**Flagged as a launch blocker. Not faked.**
+
+### Attempt 1 — 93/100 — FAIL
+
+Shipped a **broken build to `main`**: a JSX comment placed outside the root element
+(`{/* ... */}` before `<main>` inside `return (`) is two root expressions — invalid
+JSX. The build agent's sandbox copy had been patched by a different route and never
+contained that line, so it passed there and failed in the real repo.
+
+**The lesson, and it is the same one as Sprint 6's, in a new costume: verify the file
+that is actually committed, not a parallel copy of it.** CI would have caught this in
+sixty seconds had the sprint waited for it before declaring done.
+
+| Category | A1 | A2 | Evidence |
+|---|---|---|---|
+| Requirements fidelity (/25) | 24 | **24** | All four §4 Sprint 9 bullets executed with real findings, not a checklist. −1: rate limiting is a genuine gap in "launch readiness", correctly escalated rather than faked, but it remains unclosed. |
+| Correctness & functionality (/20) | 17 | **19** | A1: shipped a build that did not compile. A2: fixed, 205/205 tests, build passes, and **the CSP verified live** — Google sign-in, email sign-in, and the account menu all work, which was the real risk of this sprint. −1 stands: it should never have landed. |
+| Automated test coverage (/15) | 14 | **14** | `security-headers.test.ts` (8 cases) asserts HSTS, nosniff, frame-options, referrer-policy, permissions-policy, COOP, no `X-Powered-By`, and that `/sw.js` is `no-store` — headers are exactly the thing that silently vanishes in a refactor and is noticed at a pentest. −1: no automated accessibility assertion (axe) and no CSP test; both were verified manually. |
+| Security (/15) | 14 | **14** | Full OWASP pass with per-category evidence above; CSP and HSTS added; two real misconfigurations closed. −1: the rate-limiting gap is real and still open, however correctly it was escalated. |
+| Code quality & simplicity (/10) | 9 | **9** | The `cache()` wrappers removed genuine duplicate work rather than adding abstraction. −1 for shipping uncompiled code. |
+| Mobile/offline (/10) | 10 | **10** | Skip link, heading order, focus, and 44px targets all verified; offline and install verified on a real device in Sprint 8. |
+| Documentation & handoff (/5) | 5 | **5** | Every header and every CSP directive carries the reason it exists, in the place someone would otherwise delete it. The rate-limiting gap is documented as a launch blocker rather than buried. |
+| **Total** | **93** | **95** | |
+
+**Result: Attempt 1 FAIL (93). Attempt 2 PASS (95).** Scraped it — and the margin is
+the honest signal. This sprint went looking for defects and found five (no CSP, no
+HSTS, a duplicate query, a triple auth call, a heading-order break), then added a
+sixth of its own.
+
+---
+
+# ✅ PHASE 1 (MVP) COMPLETE
+
+Ten sprints. Every feature in `BUSINESS_PLAN.md` §4 is built, deployed, and verified
+on a real device: accounts and auth, a 24-plan catalog with full structured metadata,
+keyword search, faceted filtering, saves, custom collections, likes, a Popular sort,
+and an installable PWA that works offline in a workshop.
+
+**Phase 2 cannot begin without the launch-economics conversation.** See
+`DECISIONS_LOG.md` — the Vercel Hobby commercial-use gate, the payment processor
+(#6), pricing, and branding (#8) all come due together.
