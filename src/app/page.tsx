@@ -65,7 +65,7 @@ export default async function CatalogPage({
   const isNarrowed = isSearching || isFiltering;
 
   return (
-    {/* id="main" is the skip link's target (WCAG 2.4.1). */}
+    // id="main" is the skip link's target (WCAG 2.4.1).
     <main id="main" className="page page-wide">
       <h1>Plans</h1>
 
