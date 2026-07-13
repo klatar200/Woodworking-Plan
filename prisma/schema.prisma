@@ -26,7 +26,22 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+
+  /// POOLED connection (host contains `-pooler`). Used at runtime by the app.
+  /// Vercel's serverless functions open many short-lived connections; the pooled
+  /// endpoint is what survives that.
+  url = env("DATABASE_URL")
+
+  /// DIRECT connection (same host, WITHOUT `-pooler`). Used only by
+  /// `prisma migrate` and `prisma db push`.
+  ///
+  /// Why both: Neon's pooled endpoint is PgBouncer in transaction mode, which
+  /// does not support the session-level operations a migration needs (advisory
+  /// locks, CREATE DATABASE for the shadow db, DDL in a session). Running
+  /// migrations through the pooler fails with `P1017 Server has closed the
+  /// connection` — which is exactly what happened. Prisma reads directUrl for
+  /// migrations and url for everything else.
+  directUrl = env("DIRECT_URL")
 }
 
 /// An application user.

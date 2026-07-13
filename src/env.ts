@@ -35,6 +35,18 @@ const serverSchema = z.object({
     .optional(),
 
   // Clerk secret key. Server-side only — must never reach the browser.
+  // Direct (non-pooled) Neon connection. Used ONLY by `prisma migrate` — the
+  // pooled endpoint cannot run migrations. Not required by the running app, so
+  // it is not in REQUIRED_IN_PRODUCTION: Vercel needs it at build time (for
+  // `migrate deploy`), not at request time.
+  DIRECT_URL: z
+    .string()
+    .url()
+    .refine((v) => v.startsWith('postgres://') || v.startsWith('postgresql://'), {
+      message: 'DIRECT_URL must be a postgres:// or postgresql:// connection string',
+    })
+    .optional(),
+
   CLERK_SECRET_KEY: z
     .string()
     .startsWith('sk_', { message: 'CLERK_SECRET_KEY must start with sk_' })
