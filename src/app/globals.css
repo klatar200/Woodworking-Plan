@@ -1256,6 +1256,182 @@ code {
   }
 }
 
+/* ---------------------------------------------------------------------------
+ * Sprint 13 — the print view (/plans/[slug]/print).
+ *
+ * This is the sheet that ends up taped to a wall next to a table saw. It is
+ * designed for PAPER, not for a screen that happens to be printable.
+ * ------------------------------------------------------------------------- */
+
+.print-page {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.print-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.print-controls nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.print-header h1 {
+  margin-bottom: 0.25rem;
+}
+
+.print-summary {
+  margin: 0 0 1rem;
+}
+
+.print-glance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 0 0 1.5rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.print-glance dt {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted, #6b6b6b);
+}
+
+.print-glance dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.print-section {
+  margin-bottom: 2rem;
+}
+
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.print-table th,
+.print-table td {
+  padding: 0.45rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.print-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.print-table .numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.print-table .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+}
+
+/* The tick column. A pencil is the interaction model on paper. */
+.print-tick {
+  width: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.print-note {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted, #6b6b6b);
+}
+
+.print-tools {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.print-steps ol {
+  padding-left: 1.2rem;
+}
+
+.print-steps li {
+  margin-bottom: 1.2rem;
+}
+
+.print-steps h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.print-footer {
+  margin-top: 2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted, #6b6b6b);
+}
+
+@media print {
+  /* Black on white. A dark-theme page printed as-is wastes an entire toner
+     cartridge and comes out unreadable. */
+  .print-page {
+    max-width: none;
+    padding: 0;
+    color: #000;
+    background: #fff;
+  }
+
+  .print-page * {
+    color: #000 !important;
+    background: transparent !important;
+  }
+
+  .print-table th,
+  .print-table td,
+  .print-glance,
+  .print-footer {
+    border-color: #999 !important;
+  }
+
+  /* A row split across a page break is a cut list you cannot read. */
+  .print-table tr,
+  .print-steps li {
+    break-inside: avoid;
+  }
+
+  .print-table thead {
+    display: table-header-group; /* repeat the header on every page */
+  }
+
+  /* The cut list and materials are the workshop sheet — keep them off the same
+     page as the prose if the prose would push them apart. */
+  .print-steps {
+    break-before: page;
+  }
+
+  .print-page h2 {
+    break-after: avoid;
+  }
+
+  @page {
+    margin: 15mm;
+  }
+}
+
 .btn-danger {
   color: var(--err, #b3261e);
 }

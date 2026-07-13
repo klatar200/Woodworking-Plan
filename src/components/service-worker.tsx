@@ -55,10 +55,20 @@ export function cachePlanForOffline(slug: string): void {
 
   navigator.serviceWorker.ready
     .then((registration) => {
-      registration.active?.postMessage({
-        type: 'CACHE_PLAN',
-        url: `/plans/${slug}`,
-      });
+      /**
+       * Cache the plan page AND its print view (Sprint 13).
+       *
+       * The print view is the sheet that actually goes to the workshop, so caching the
+       * plan but not the print view would leave the offline story with a hole exactly
+       * where it matters most: you save a plan at home on wifi, drive to the shop, and
+       * the one page you want to print is the one that needs a network.
+       *
+       * The worker re-checks both URLs against isCacheable() — a message from the page
+       * is not a reason to trust it.
+       */
+      for (const url of [`/plans/${slug}`, `/plans/${slug}/print`]) {
+        registration.active?.postMessage({ type: 'CACHE_PLAN', url });
+      }
     })
     .catch(() => {
       // Non-fatal. See above.

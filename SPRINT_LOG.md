@@ -1101,3 +1101,42 @@ worked out needed doing.
 **🛑 NOT LIVE UNTIL PRODUCTION IS RE-SEEDED.** A content change is a *data* change, and
 data does not flow to production on deploy — the same trap that shipped an empty
 `searchVector` in Sprint 4 and hid for three sprints. See `DEPLOYMENT.md`.
+
+**Verified live 2026-07-13:** production plan page now serves `Waterproof wood glue` and
+`Sandpaper, assorted grits`. Checked by fetching the live URL rather than asking — a
+green deploy is not evidence that the data moved.
+
+---
+
+## Sprint 13: Print-friendly / offline PDF export
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 2):** "Print-friendly / offline PDF export of plans."
+
+### Attempt 1 — 97/100 ✅
+
+**The decision that shaped the sprint:** a **server-generated PDF requires a network
+round-trip to produce**, which makes it the *least* offline-capable option available — in
+the one sprint whose entire purpose is a plan usable with no signal. It would have been
+useless in exactly the workshop it was built for.
+
+So: a print-optimized **page**, at `/plans/[slug]/print`. It is a public route, so the
+Sprint 8 service worker caches it like any other plan content. `Ctrl+P → Save as PDF`
+then works with **zero signal**, produces better output than any library we'd bundle, and
+costs nothing on Hobby. What we gave up: a one-click "Download PDF" button.
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Delivers the Phase 2 bullet, and delivers the *point* of it. Two layouts, both escalated and confirmed: the full plan, and a **cut-list one-pager** — the sheet you reference every thirty seconds at the saw, which has no business being on page 2 of 4. No PDF library, no new dependency, no new vendor. |
+| Correctness (/20) | **19** | Cut list renders **tape-measure fractions** (13/16″, never 0.8125″) — asserted directly, and it is the standing Sprint 1 rule that matters most on the sheet that goes to the saw. Unpriced materials print "—", not "$0.00" (which would claim the glue is free). Totals marked `≈` per Sprint 12. **−1: awaiting Keagan's live check, including an actual print preview.** |
+| Test coverage (/15) | **15** | `tests/print.test.tsx` (+9) and `tests/offline.test.ts` (+4). **319 green.** The offline tests are the ones that carry the sprint's whole argument: `/plans/x/print` and `?view=cutlist` are cacheable; `?_rsc=` is still refused; and `/saved/print` would still be refused — adding a print view must never become a way to smuggle private data onto an unencrypted disk cache. |
+| Security (/15) | **15** | The print route inherits `getPlanBySlug()`, so an unpublished plan 404s here exactly as it does on the detail page — a print route is not a back door into staged content, and that is *inherited* rather than re-implemented (and therefore cannot be forgotten). No new inputs beyond `?view`, which falls back to the full plan on anything unrecognized. No allowlist change was needed: `/plans(.*)` already covers it. |
+| Code quality (/10) | **10** | Reuses `getPlanBySlug`, `formatDimensions`, `formatCents`. **Zero new dependencies** — the alternative would have added a PDF renderer to the serverless bundle to produce a worse artifact. Print CSS lives with the rest of the print rules. |
+| Mobile/offline (/10) | **10** | **This is the sprint that finally makes the offline story whole for plan content.** Saving a plan now pre-caches its print view alongside the plan page — otherwise you'd save at home on wifi, drive to the shop, and find the one page you want to print is the one that needs a network. `@page` margins, repeated table headers across pages, `break-inside: avoid` on rows (a cut-list row split across a page break is a cut list you cannot read), and forced black-on-white (printing the dark theme as-is wastes a toner cartridge and comes out unreadable). |
+| Documentation (/5) | **5** | Both decisions logged with the offline argument spelled out, since it is the non-obvious part and the next person will otherwise "improve" this into a PDF endpoint. |
+
+**Total: 97/100. PASS.**
+
+**Note on the remaining offline gap:** this sprint fixes offline *plans*. The **shopping
+list still does not work offline** — it is a private route and the caching policy
+correctly refuses private routes. That tension is Sprint 14's to resolve, and it is now
+the last thing standing between the app and the `BUSINESS_PLAN.md` §5 promise.

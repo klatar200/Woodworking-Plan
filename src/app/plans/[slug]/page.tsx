@@ -116,6 +116,14 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
             likeCount={plan._count.likes}
             isSignedIn={user !== null}
           />
+
+          {/* Sprint 13. A public route, so the service worker caches it like any other
+              plan content — which is exactly why we chose a print PAGE over a
+              server-generated PDF. A PDF endpoint needs a network round-trip and would
+              be useless in the workshop it was built for. */}
+          <Link href={`/plans/${plan.slug}/print`} className="btn btn-ghost">
+            Print / PDF
+          </Link>
         </div>
       </header>
 

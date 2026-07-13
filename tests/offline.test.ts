@@ -196,6 +196,40 @@ describe('RSC payloads are never intercepted (production bug, fixed)', () => {
   });
 });
 
+describe('SPRINT 13: the PRINT view is cacheable — this is the whole argument', () => {
+  it('caches /plans/x/print, so the workshop sheet works with no signal', () => {
+    // This is WHY the sprint chose a print PAGE over a server-generated PDF. A PDF
+    // endpoint requires a network round-trip to produce, which makes it the LEAST
+    // offline-capable option — in the one sprint whose entire purpose is offline.
+    //
+    // A print page is public plan content, so the existing policy caches it for free.
+    expect(isCacheable(req('/plans/edge-grain-maple-cutting-board/print'))).toBe(true);
+  });
+
+  it('caches the cut-list-only variant too', () => {
+    // The query string is part of the cache key, so this is a distinct entry — and it
+    // is the ONE sheet most likely to be wanted at the saw.
+    expect(
+      isCacheable(req('/plans/edge-grain-maple-cutting-board/print?view=cutlist')),
+    ).toBe(true);
+  });
+
+  it('still refuses an RSC payload for the print route', () => {
+    // The Sprint 8 RSC exclusion must not be accidentally bypassed by a new path.
+    expect(
+      isCacheable(req('/plans/edge-grain-maple-cutting-board/print?_rsc=abc')),
+    ).toBe(false);
+  });
+
+  it('a print route under a PRIVATE prefix would still be refused', () => {
+    // Defence in depth: if someone ever adds /saved/print, the denylist wins. The
+    // policy is prefix-based and fails closed, and adding a print view must not become
+    // a way to smuggle private data onto disk.
+    expect(isCacheable(req('/saved/print'))).toBe(false);
+    expect(isCacheable(req('/profile/print'))).toBe(false);
+  });
+});
+
 describe('cache versioning', () => {
   it('has a versioned cache name so a deploy can invalidate stale plans', () => {
     // A plan is not immutable — a cut list can be corrected. Bumping this is how

@@ -207,7 +207,28 @@ with it.
 - **Sprint 12 (Shopping list generator): COMPLETE — 97/100.** Aggregates materials
   across saved plans, per collection or whole library. Stateless, printable.
   **NO AFFILIATE LINKS** (Vercel Hobby prohibits commercial use). 303 tests green.
-- **NEXT: Sprint 13 — Print-friendly / offline PDF export** (`BUILD_PLAN.md` §4).
+- **Sprint 13 (Print-friendly / offline PDF export): COMPLETE — 97/100.**
+  `/plans/[slug]/print` + `?view=cutlist` one-pager. **A print PAGE, not a generated
+  PDF** — see the rule below. Pre-cached when a plan is saved. 319 tests green.
+- **NEXT: Sprint 14 — Expanded offline mode** (`BUILD_PLAN.md` §4). The last Phase 2
+  sprint, and it owns the **shopping-list offline gap**.
+
+### Print rule (Sprint 13): a server-generated PDF CANNOT work offline
+
+**Do not "improve" the print view into a PDF endpoint.** A server-generated PDF requires
+a network round-trip to produce, which makes it the *least* offline-capable option — in
+the feature whose entire purpose is a plan you can use with no signal.
+
+The print view is a **public route**, so the Sprint 8 service worker caches it like any
+other plan content. `Ctrl+P → Save as PDF` works with **zero signal**, produces better
+output than any library we'd bundle, and costs nothing on Hobby. Saving a plan pre-caches
+its print view too (`src/components/service-worker.tsx`) — otherwise you save at home on
+wifi and find, in the shop, that the one page you want needs a network.
+
+**Print CSS non-negotiables:** black-on-white (printing the dark theme wastes a toner
+cartridge and is unreadable), `break-inside: avoid` on cut-list rows (a row split across
+a page break is a cut list you cannot read), repeated table headers, and **tape-measure
+fractions** — 13/16″, never 0.8125″.
 
 ### Shopping-list rules (Sprint 12) — BOTH halves matter
 

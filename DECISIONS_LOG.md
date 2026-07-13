@@ -531,6 +531,35 @@ signal that does that job, to avoid a precision nobody ever asked for.
 items that have no estimate ("2 items have no estimate, so the real total will be
 higher"). The honesty lives in the `≈` and the count — **not in refusing to answer.**
 
+### 2026-07-13 — Sprint 13: print CSS + browser Save-as-PDF, NOT a server-generated PDF
+**Status:** Confirmed by user (chosen from 3: print CSS + browser save [recommended],
+server-generated `.pdf` endpoint, both).
+
+**The argument that decided it:** a server-generated PDF **requires a network round-trip
+to produce**, which makes it the *least* offline-capable option available — in a sprint
+whose entire purpose is a plan you can use with no signal. It would be useless in exactly
+the workshop it was built for.
+
+A print-optimized *page* is a **public route**, so the Sprint 8 service worker can cache
+it. `Ctrl+P → Save as PDF` then works with **zero signal**, produces better output than
+any library we would ship, costs nothing on Vercel Hobby, and adds no dependency to the
+serverless bundle.
+
+**What we give up:** a one-click "Download PDF" button, and a server-side file to email
+or archive. Worth revisiting if users ask for it — but not at the cost of the offline
+capability `BUSINESS_PLAN.md` §5 calls the most important thing this product does.
+
+### 2026-07-13 — Sprint 13: two print layouts — full plan, and a cut-list one-pager
+**Status:** Confirmed by user (chosen from 3: full + cut-list one-pager [recommended],
+full only, cut list only).
+
+The **full plan** (materials, cut list, every step) for reading. And a **single-page cut
+list + materials** for taping to the wall next to the saw.
+
+**Rationale.** The cut list is what you actually reference every thirty seconds mid-build.
+Burying it on page 2 of 4 means flipping pages with sawdust on your hands. These are two
+different jobs and they want two different pieces of paper.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes
