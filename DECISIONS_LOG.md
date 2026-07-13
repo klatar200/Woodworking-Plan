@@ -194,6 +194,26 @@ constraint.
 
 Setup steps are in `DEPLOYMENT.md` §5.5.
 
+### 2026-07-12 — Sign-in methods: email/password + Google OAuth
+**Status:** Confirmed by user (chosen from 3 options: Email + Google
+[recommended]; Email + Google + Apple; email/password only).
+**Source:** `BUSINESS_PLAN.md` §4.1 specifies "sign up/login (email + OAuth)" but
+does not name the providers. This resolves that gap for Sprint 2.
+
+**The decision.** Clerk is configured with **email/password + Google OAuth**.
+
+**Rationale.** Google covers the overwhelming majority of the target demographic
+in `BUSINESS_PLAN.md` §3 (30–65, homeowners, existing DIY/YouTube audience) and is
+a single toggle in Clerk. Email/password remains for anyone who won't use a social
+login.
+
+**Apple sign-in explicitly rejected — and this one is a cost issue, not a taste
+issue.** Apple OAuth requires an Apple Developer account at **$99/year**, which
+would breach the $0-during-development constraint. Revisit only if a native iOS
+app happens (Phase 3, deferred): Apple *requires* Sign in with Apple on any iOS app
+that offers other social logins, so the cost would become unavoidable then — but
+not before.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

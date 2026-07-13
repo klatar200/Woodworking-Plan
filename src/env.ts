@@ -7,15 +7,17 @@ import { z } from 'zod';
  * to ship a broken or insecure deploy. Validating them at startup turns a
  * silent production misconfiguration into a loud, immediate failure.
  *
- * Sprint 0 rules:
+ * Rules:
  *  - DATABASE_URL (Neon) and the Clerk keys are OPTIONAL in development and
- *    test, so the app can be run and verified locally before the user has
- *    provisioned the vendor accounts (see DEPLOYMENT.md).
+ *    test, so the app and its test suite can run without vendor credentials.
  *  - They are REQUIRED in production. A production deploy missing them fails
  *    fast rather than serving a half-working app.
  *
- * Sprint 2 (Accounts & Auth) should tighten the Clerk keys to required
- * everywhere once auth is actually a feature.
+ * SPRINT 2 SECURITY NOTE: Clerk is now a hard dependency — auth is a real
+ * feature, not a stub. The production check below is what guarantees the app
+ * cannot boot in production without it. An app that silently serves unprotected
+ * pages because a key was missing is far more dangerous than one that refuses
+ * to start, so this fails closed on purpose.
  */
 
 const isProduction = process.env.NODE_ENV === 'production';

@@ -29,6 +29,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// An application user.
+///
+/// SPRINT 2. Clerk is the source of truth for *identity* — credentials, sessions,
+/// password resets, OAuth. This table is NOT a copy of that, and deliberately
+/// stores no password, no session, and no OAuth token. It exists for one reason:
+/// application data needs a stable foreign key to own rows against.
+///
+/// Sprints 6 and 7 (saved plans, user categories, likes) hang off this. Getting
+/// it in now, keyed correctly, is what stops those sprints from bolting identity
+/// on sideways.
+///
+/// `clerkId` is the join key and the only trustworthy identifier. It comes from a
+/// verified session server-side and is never accepted from a client.
+model User {
+  id      String @id @default(cuid())
+  /// Clerk's user id (`user_xxx`). Unique, immutable, server-derived.
+  clerkId String @unique
+
+  /// Cached from Clerk for display, so rendering a page doesn't require a
+  /// round-trip to Clerk's API. Clerk remains the source of truth; these are a
+  /// convenience mirror, refreshed on sign-in.
+  email       String?
+  displayName String?
+  imageUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clerkId])
+}
+
 /// Cost tier from BUSINESS_PLAN.md §4.8 — $ (cheap) through $$$$$ (expensive).
 /// Kept as an enum because the 5-tier scale is a fixed product concept, not data.
 enum CostTier {

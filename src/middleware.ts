@@ -1,28 +1,23 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
-import { NextResponse, type NextRequest, type NextFetchEvent } from 'next/server';
-import { isClerkConfigured } from '@/env';
+import { isPublicRoute } from '@/lib/public-routes';
 
 /**
- * Clerk middleware.
+ * Clerk middleware — the primary authorization boundary.
  *
- * SPRINT 0 SCOPE: Clerk is *configured and wired*, but NO route is protected
- * and no auth feature exists. Sign up / login / session handling / user profile
- * are Sprint 2 deliverables (BUILD_PLAN.md §4) — building them here would be
- * scope drift.
+ * SPRINT 2. The Sprint 0 "is Clerk configured?" guard is gone: Clerk is now a
+ * hard dependency, and `src/env.ts` fails the boot in production if its keys are
+ * missing. An app that silently runs without auth because a key was absent is a
+ * far worse failure than an app that refuses to start.
  *
- * `clerkMiddleware()` with no route matcher makes every route public by
- * default. Sprint 2 adds `createRouteMatcher` + `auth.protect()` here.
- *
- * The config guard exists for the same reason as the one in layout.tsx: the
- * Clerk account may not be provisioned yet (see DEPLOYMENT.md), and
- * clerkMiddleware throws without keys. Sprint 2 removes the guard.
+ * Routes are protected by DEFAULT — see src/lib/public-routes.ts for the
+ * allowlist and the reasoning behind that direction.
  */
-export default function middleware(request: NextRequest, event: NextFetchEvent) {
-  if (!isClerkConfigured()) {
-    return NextResponse.next();
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    // Redirects anonymous browsers to sign-in; returns 404/401 for API routes.
+    await auth.protect();
   }
-  return clerkMiddleware()(request, event);
-}
+});
 
 export const config = {
   matcher: [
