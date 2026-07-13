@@ -114,6 +114,14 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
           <Link href={`/plans/${plan.slug}/print`} className="btn btn-ghost">
             Print / PDF
           </Link>
+
+          {/* Sprint 15. Only offered when there IS a cut list to optimize — a "board
+              plan" button on a plan with no parts is a promise of a blank page. */}
+          {plan.cutList.length > 0 && (
+            <Link href={`/plans/${plan.slug}/boards`} className="btn btn-ghost">
+              Board plan
+            </Link>
+          )}
         </div>
       </header>
 

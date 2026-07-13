@@ -67,7 +67,18 @@ export function cachePlanForOffline(slug: string): void {
        * The worker re-checks both URLs against isCacheable() — a message from the page
        * is not a reason to trust it.
        */
-      for (const url of [`/plans/${slug}`, `/plans/${slug}/print`]) {
+      /**
+       * The plan page, its print view (Sprint 13), and its BOARD PLAN (Sprint 15).
+       *
+       * The board plan is the sheet you want at the LUMBERYARD, and a lumberyard is a
+       * warehouse with no signal. Caching the plan but not the board plan would leave
+       * the hole exactly where it hurts.
+       */
+      for (const url of [
+        `/plans/${slug}`,
+        `/plans/${slug}/print`,
+        `/plans/${slug}/boards`,
+      ]) {
         registration.active?.postMessage({ type: 'CACHE_PLAN', url });
       }
     })

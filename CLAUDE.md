@@ -520,6 +520,28 @@ Backfill procedure is in `DEPLOYMENT.md`. Bare `npx prisma` does **not** read
 - **Money is integer cents. Dimensions render as tape-measure fractions.** A
   decimal cut list is unusable in a workshop.
 
+### 🪚 Cut-list optimizer rule (Sprint 15) — the buying list must be BUYABLE
+
+`src/lib/cut-optimizer.ts`. Pure module, no deps. Five things it must never get wrong:
+
+1. **KERF.** Every cut eats ~1/8″. Six 16″ parts do **not** fit on a 96″ board, and an
+   optimizer that says they do puts someone at a saw with a ruined final piece.
+2. **RIPPING. Nobody sells a 2″-wide hardwood board.** Narrow parts are ripped from wider
+   stock. The first version grouped by part width and assumed you could buy it — it would
+   have told people to buy stock that does not exist. `stockWidthIn` fixes this.
+3. **`totalBoards()` sums `physicalBoards`, NOT `boards.length`.** `boards` is a list of
+   **lanes**; four ripped lanes are ONE board. Summing lanes over-buys by the rip factor.
+4. **Impossible parts are reported LOUDLY**, never dropped. A confident buying list that
+   cannot build the thing is worse than no tool.
+5. **Grain does not rotate.** Length packing stays 1-D. A 2-D packer would lay a 30″ part
+   across a 6″ board "because it fits". That is firewood.
+
+**FFD, not something cleverer.** It is deterministic and eyeball-checkable, and the user
+must be able to look at the layout and see it is sane. That beats the last 3% of yield.
+
+**Known gap:** `yieldRatio` measures LENGTH usage only. Ripping 4 lanes when you need 3
+wastes the 4th lane's width, and that is not reported.
+
 ### 💲 Cost display rule (Phase 3, 2026-07-13) — TIERS ONLY, NO DOLLAR AMOUNTS
 
 **The public UI never shows a dollar figure.** Not on cards, not on plan pages, not in

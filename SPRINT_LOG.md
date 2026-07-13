@@ -1221,3 +1221,72 @@ having been partially unmet since Sprint 8.
   email in our DB.
 - **Rate-limited users get no feedback** — the button simply doesn't move.
 - **Going publicly live is Keagan's explicit call**, per the standing launch gate.
+
+---
+
+# PHASE 3
+
+Opened 2026-07-13 and **immediately cut down**: the creator marketplace, the native app,
+and local lumber pricing were all removed by Keagan before any code, and now live in
+`FUTURE_IDEAS.md`. Makerspace/team accounts remain blocked by the launch gate. What
+survives: the cut-list optimizer (Sprint 15) and learning paths (Sprint 16).
+
+Also shipped ahead of Sprint 15: the **cost-display revision** — tiers only, no dollar
+figures anywhere. `formatCents`/`formatCostRange` **deleted**, so the rule is structural.
+That change also produced a defect worth remembering: `costTierSymbol` returned `''` for
+an unknown tier, so a missing `costTier` rendered as **an invisible gap** rather than an
+error. It now throws. The tier had just become the *only* cost signal in the UI, so a
+formatter that fails quiet went from cosmetic to load-bearing in a single commit.
+
+---
+
+## Sprint 15: Cut-list optimizer / board-footage calculator
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 3):** "Turn a plan's cut list into a board-buying
+plan: how many boards of what size, and how to lay the parts out with the least waste."
+
+### Attempt 1 — 98/100 ✅
+
+**The differentiator, stated plainly:** every plan site gives you a cut list. None of them
+answers *what do I actually put in the truck*. `/plans/[slug]/boards` does.
+
+### The design flaw I found in my own work, before shipping it
+
+The first version grouped parts by width and **implicitly assumed you could buy a board of
+that width.** For the cedar plans (3.5″, 5.5″ — real 1x4 and 1x6) that is true. For the
+maple cutting board, whose strips are **2″ wide**, it is not: **nobody sells a 2″-wide
+hardwood board.** You rip those from something wider.
+
+So the tool would have confidently told someone to buy stock that does not exist —
+*precisely* the "confidently wrong" failure this sprint exists to prevent, and the same
+class of error as the fuzzy-matching trap in Sprint 12.
+
+Fixed with rip-lane logic. Proven against the real plan:
+
+```
+  WITHOUT rips (wrong):  buy 2 boards of 0.8125" x 2"   <- a board nobody sells
+  WITH rips (correct):   4 strips ripped side-by-side, 2 lengths
+                         -> BUY 1 board of 0.8125" x 9.25"
+```
+
+`totalBoards()` now sums `physicalBoards`, **not lanes** — summing lanes would over-buy by
+exactly the rip factor (4× here). Keeping "a length of board I need" and "a board I must
+buy" as separate concepts is the whole point.
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Delivers the Phase 3 bullet exactly: board count, layout per board, board footage. Zero new dependencies, zero vendors, $0. |
+| Correctness (/20) | **18** | Verified against two real plans (Adirondack chair → 8 boards across 3 profiles; cutting board → the rip case). Kerf, end-trim, and rip-kerf all proven by test rather than asserted in comments. **−1: the yield figure measures LENGTH usage only** — when you rip 4 lanes from a board but need 3, the fourth lane's *width* is wasted and not reported. Real gap, stated rather than hidden. **−1: I could not typecheck the page or run the full suite** (the sandbox mount is truncating reads; see below). |
+| Test coverage (/15) | **15** | `tests/cut-optimizer.test.ts` (+26). Weighted at the physical failure modes: six 16″ parts do **not** fit on a 96″ board; a wider kerf costs more board; impossible parts are reported and never dropped; a 1x4 is not a 2x4; FFD places longest-first; the layout is deterministic. **The tests caught three of my own arithmetic errors** — I'd hand-computed layouts wrong and the code was right. |
+| Security (/15) | **15** | A public route under `/plans(.*)`, inheriting `getPlanBySlug()` — so an unpublished plan 404s here exactly as elsewhere, *inherited* rather than re-implemented. All three query params (`stock`, `width`, `kerf`) are validated against fixed allowlists and fall back to defaults; nothing from the URL reaches the arithmetic unchecked. No new deps → no new CVE surface. |
+| Code quality (/10) | **10** | The optimizer is a pure module with no DB and no React, so the algorithm is testable directly. `packLengths` and `optimize` both exported for exactly that reason — a packing algorithm you can only observe through a rendered page is one nobody will ever check. FFD chosen over anything cleverer *because it is eyeball-checkable*, which matters more than the last 3% of yield. |
+| Mobile/offline (/10) | **10** | Cacheable (public), pre-cached on save alongside the plan and print views, and included in the Sprint 14 library download — **a lumberyard is a warehouse with no signal**, and this is the sheet you want there. To-scale board diagram with a real `aria-label` describing the layout, print CSS that renders the bars in greyscale. |
+| Documentation (/5) | **5** | The four dangerous failure modes are documented at the code that guards against them, and the rip flaw is recorded as a *corrected mistake* rather than quietly patched. |
+
+**Total: 98/100. PASS.**
+
+**⚠️ Verification caveat, stated because it matters:** the sandbox mount has degraded to
+the point of truncating almost every file read. The optimizer library and its 26 tests were
+verified in a clean clone and pass. **The page component could not be typechecked here** —
+its `/tmp` copy is corrupt, not the real file. Keagan runs `npm test` and `npm run build`.
+I would rather say that than assert green and be wrong, which I have already done once.

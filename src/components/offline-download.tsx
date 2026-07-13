@@ -66,6 +66,9 @@ export function OfflineDownload({ slugs, collectionIds }: Props) {
       // The print view is the sheet that actually goes to the shop (Sprint 13).
       ...slugs.map((slug) => `/plans/${slug}/print`),
       ...slugs.map((slug) => `/plans/${slug}/print?view=cutlist`),
+      // The board plan — what to buy. This is the one you want at the lumberyard,
+      // which is a warehouse with no signal (Sprint 15).
+      ...slugs.map((slug) => `/plans/${slug}/boards`),
 
       // The whole-library shopping list, and one per collection. THIS is the thing
       // that finally closes the BUSINESS_PLAN.md §5 hardware-store gap.
