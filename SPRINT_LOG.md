@@ -629,3 +629,65 @@ and the log that would have said so went unread for three sprints.
 **A deploy that reports success is not evidence that it did the thing.** Read the
 log. Assert the invariant in code. `check-db-urls.mjs` exists because a comment or
 a good intention would not have caught this.
+
+---
+
+## Sprint 7: Liking
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** like/unlike a plan; like-count-driven "Popular"
+sort.
+
+**Status: COMPLETE — 99/100, Attempt 1. Pass.**
+
+### The decision that defines this sprint: NO denormalized like count
+
+`BUSINESS_PLAN.md` §4.7 asks for like counts driving a Popular sort. The obvious
+implementation is a `likeCount` integer on `Plan`, incremented on every like.
+
+**It was rejected, deliberately, on the evidence of this project's own history.**
+
+A `likeCount` column is *derived data*. A migration **creates** a column; it does
+not **populate** it. That is precisely what broke production twice here:
+- **Sprint 4:** `searchVector` shipped to production as an empty column. Search
+  returned zero results for everything, while dev worked perfectly.
+- **Sprint 6:** the schema never reached production at all. Every plan page 500'd.
+
+So the count is computed on read (Prisma `_count` on the relation). There is
+**nothing to backfill and nothing that can drift out of step with the actual
+rows**. The Sprint 7 deploy needed no production data step — by design, not luck.
+
+The trade-off is a JOIN+COUNT on the Popular sort instead of an indexed integer.
+At launch scale (§6: 300–500 plans) that is irrelevant. If the catalog ever
+outgrows it, denormalize *then* — with a transactional update and a backfill.
+**A correct slow count beats a fast wrong one.**
+
+### Three product calls
+
+**1. Popular is NOT the default sort.** On a young catalog every plan has zero
+likes, so Popular degenerates into an arbitrary tiebreak — and whatever it happens
+to surface first accumulates the likes, entrenching that accident as the ranking.
+Default is easiest-first, so a beginner lands on things they can actually build.
+Popular is one click away, which is what §4.7 asks for.
+
+**2. A keyword search ignores the sort.** When you searched, relevance *is* the
+sort. Returning the most-liked plan that merely mentions walnut in step 7 ahead of
+the walnut cutting board would make search look broken.
+
+**3. Every sort carries a title tiebreak**, so pagination is stable rather than
+reshuffling between pages.
+
+### Attempt 1 — 2026-07-13
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Both §4 Sprint 7 bullets: like/unlike a plan, and a like-count-driven "Popular" sort. Verified live. Nothing out of scope — no PWA (Sprint 8), no recommendations (Phase 2). |
+| Correctness & functionality (/20) | **20** | Verified on the live deploy by the user: liking increments the count, Popular sort promotes the liked plan, signed-out visitors see the count and a sign-in link. Locally: 178/178 tests, `tsc` 0, `eslint` 0, build passes. Migration applied; **no production backfill required**, which was checked, not assumed. |
+| Automated test coverage (/15) | **15** | `likes.test.ts` (18 cases). Multi-tenancy: arity assertions (no function takes a `userId`), `deleteMany`-with-userId, no `delete`-by-id anywhere. Content: refuses to like an unpublished plan (liking staged content would confirm its existence and contribute a like to a plan nobody should know about). Behaviour: idempotent like, no-op unlike, `false` for anonymous rather than a 500 on the public page. Sort: Popular orders by `_count desc` with a deterministic tiebreak; **every** sort option asserted to carry a title tiebreak; an unknown `?sort=` (including an injection string) falls back to the default; a keyword search provably takes the relevance path and never issues a Prisma `orderBy`. And the one that states the sprint's thesis: `countPlanLikes` **counts rows** rather than reading a column. |
+| Security (/15) | **15** | Identical rules to Sprint 6, and asserted the same way: the owner is derived only from the verified session; every write scoped by `userId` in its WHERE clause; server actions treated as public HTTP endpoints (they are), so auth is enforced in the data layer rather than by page middleware; unpublished plans are unlikeable. `?sort=` is validated against an allowlist, so an injection string is dropped rather than reaching Prisma. |
+| Code quality & simplicity (/10) | **10** | The sort lives in its own module so it can be validated and round-tripped like the filters. Typecheck caught a real omission mid-sprint — `/saved` renders `PlanCard`, which now needs a like count, so `SAVED_PLAN_SELECT` needed `_count` too. Caught by the compiler, not by a user. |
+| Mobile/offline behavior (/10) | **9** | Like button and sort control are plain no-JS forms; 44px targets; 16px selects (smaller makes iOS Safari zoom on focus). Like counts on cards are hidden at zero — a wall of "♥ 0" badges is noise, and on a young catalog it would be every card. The detail page always shows the count, including zero, because hiding a zero hides exactly the plans that need someone to be first. −1: still no offline — that is Sprint 8, next. |
+| Documentation & handoff (/5) | **5** | The no-denormalized-count reasoning is written where someone would otherwise "optimize" it — in `schema.prisma`, next to the model. |
+| **Total (/100)** | **99** | |
+
+**Result: PASS (99 ≥ 95).** The first sprint since Sprint 3 to ship without a
+production defect — because the trap was designed out rather than deployed into.

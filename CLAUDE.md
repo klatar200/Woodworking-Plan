@@ -150,7 +150,19 @@ with it.
   `Collection`, `CollectionPlan`. No function takes a `userId` — the owner always
   comes from the session. No save/collection limits (pricing unconfirmed). 161
   tests green.
-- **Next up:** Sprint 7 — Liking. Not blocked.
+- **Sprint 7 (Liking): COMPLETE — 99/100.** `Like` model, like/unlike, and a
+  "Popular" sort. **No denormalized `likeCount` column** — counts are computed on
+  read, so there is nothing to backfill and nothing that can drift. 178 tests green.
+- **Next up:** Sprint 8 — PWA Shell (installable, service-worker offline caching of
+  saved plans, mobile-first UI pass). Not blocked.
+
+### Derived data rule (why Sprint 7 shipped clean)
+
+**Prefer computing on read over a denormalized column.** A migration creates a
+column; it does not populate it. Sprint 4 (`searchVector`) and Sprint 6 both broke
+production that way. Sprint 7 needed a like count and used Prisma `_count` instead
+of a `likeCount` integer — no backfill, no drift, nothing to get wrong. Denormalize
+only when measurements demand it, and then with a transaction *and* a backfill.
 
 ### Deploy rule (Sprint 6 broke production; do not repeat it)
 

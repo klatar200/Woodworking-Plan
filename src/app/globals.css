@@ -142,6 +142,14 @@ code {
  * shouldn't have to undo damage done here.
  * ------------------------------------------------------------------------- */
 
+/* ---------------------------------------------------------------------------
+ * Sprint 8 — mobile-first pass.
+ *
+ * The app is used one-handed, on a phone, in a workshop, sometimes with sawdust
+ * on the screen and sometimes with gloves on. That is not a hypothetical persona
+ * — it is BUSINESS_PLAN.md §5, and it is why this is a PWA at all.
+ * ------------------------------------------------------------------------- */
+
 .site-header {
   display: flex;
   align-items: center;
@@ -149,6 +157,15 @@ code {
   gap: 1rem;
   padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--border);
+
+  /* Sticky: on a long plan page, "back to the catalog" and the account menu
+     should never require scrolling to the top of a 9-step build. */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  /* Respect the notch when installed to the home screen (viewport-fit=cover). */
+  padding-top: calc(0.75rem + env(safe-area-inset-top));
 }
 
 .brand {
@@ -757,6 +774,61 @@ code {
 .sort-form select:focus-visible {
   outline: 2px solid var(--ok);
   outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Sprint 8 — offline + print.
+ * ------------------------------------------------------------------------- */
+
+/* Steps get generous vertical space and larger text: this is the part you read
+   at arm's length, mid-cut, glancing back at a phone propped against a vise. */
+@media (max-width: 40rem) {
+  .step {
+    padding: 1.5rem 0;
+  }
+
+  .step-title {
+    font-size: 1.125rem;
+  }
+
+  .prose p {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  /* The cut list is the single most-consulted table in the shop. Give it room. */
+  .data-table th,
+  .data-table td {
+    padding: 0.875rem 1rem;
+  }
+}
+
+/* Print: a plan taped to the wall of a workshop is a real use case, and a printed
+   page with a sticky header and a nav bar on it is a wasted sheet. */
+@media print {
+  .site-header,
+  .plan-actions,
+  .breadcrumb,
+  .search-box,
+  .filters,
+  .sort-form,
+  .pagination {
+    display: none !important;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+  }
+
+  .step {
+    /* Don't split a step across two sheets. */
+    break-inside: avoid;
+  }
+
+  .table-scroll {
+    overflow: visible;
+  }
 }
 
 .collection-tabs {

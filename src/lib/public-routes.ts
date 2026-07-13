@@ -45,6 +45,17 @@ export const PUBLIC_ROUTES = [
   // Uptime/monitoring. Reports only *whether* services are configured — never a
   // key, never a connection string. See src/app/api/health/route.ts.
   '/api/health',
+
+  // Sprint 8: the offline fallback page.
+  //
+  // The service worker pre-caches it at install — which happens before anyone
+  // signs in — so it MUST be reachable without a session, or the offline
+  // experience is a login redirect that also cannot load.
+  //
+  // Safe: it contains no user data whatsoever. It deliberately tells the reader
+  // that their saved *list* is NOT available offline, precisely because we refuse
+  // to write a private library to an unencrypted device cache.
+  '/offline',
 ] as const;
 
 export const isPublicRoute = createRouteMatcher([...PUBLIC_ROUTES]);

@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { savePlanAction, unsavePlanAction } from '@/app/actions/saves';
+import { cachePlanForOffline } from '@/components/service-worker';
 
 interface Props {
   planId: string;
@@ -9,17 +12,23 @@ interface Props {
 }
 
 /**
- * Save / unsave toggle — Sprint 6.
+ * Save / unsave toggle.
  *
- * A plain <form> posting to a server action. No client component, no useState,
- * no optimistic UI. It works with JavaScript disabled and on a bad connection,
- * which is where this app is actually used (BUSINESS_PLAN.md §5).
+ * SPRINT 8: became a client component for exactly ONE reason — when you save a
+ * plan, we ask the service worker to pre-cache it. That is what makes
+ * BUSINESS_PLAN.md §5's promise real: you save a plan at home on wifi and it is
+ * on your phone before you get to the workshop. Waiting until you *open* it
+ * offline would be too late — that is precisely when you have no signal.
  *
- * FOR ANONYMOUS VISITORS it renders a link to sign-in, not a disabled button.
- * The plan page is public by design (§12 gates saves, not content), so a stranger
- * reaching this needs a door, not a wall. `?redirect_url` brings them back to the
- * plan they were looking at — losing their place would be the one thing
- * guaranteed to make them not sign up.
+ * It is still a plain <form> posting to a server action. **The save works with
+ * JavaScript disabled**; only the offline pre-cache needs JS. The enhancement is
+ * additive, and its failure costs you nothing but the offline copy — which gets
+ * cached anyway the next time you open the plan with signal.
+ *
+ * For anonymous visitors it renders a sign-in link, not a disabled button. The
+ * plan page is public by design (§12 gates saves, not content), so a stranger
+ * reaching this needs a door, not a wall. `redirect_url` brings them back to the
+ * plan they were reading.
  */
 export function SaveButton({ planId, slug, isSaved, isSignedIn }: Props) {
   if (!isSignedIn) {
@@ -36,7 +45,14 @@ export function SaveButton({ planId, slug, isSaved, isSignedIn }: Props) {
   const action = isSaved ? unsavePlanAction : savePlanAction;
 
   return (
-    <form action={action}>
+    <form
+      action={action}
+      onSubmit={() => {
+        // Pre-cache on save, not on unsave. Fire-and-forget: the server action is
+        // the thing that actually saves, and it is already on its way.
+        if (!isSaved) cachePlanForOffline(slug);
+      }}
+    >
       <input type="hidden" name="planId" value={planId} />
       <input type="hidden" name="slug" value={slug} />
       <button
