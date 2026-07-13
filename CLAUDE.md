@@ -137,7 +137,19 @@ with it.
   `User` model keyed on `clerkId`, lazy identity sync, protected `/profile`.
   Routes are private by default via an allowlist. 62 tests green. Verified on the
   live deploy.
-- **Next up:** Sprint 3 — Plan Repository & Browse/Detail Views. Not blocked.
+- **Sprint 3 (Plan Repository & Browse/Detail): COMPLETE — 97/100.** Catalog at
+  `/` (paginated cards), detail at `/plans/[slug]` rendering every Sprint 1 field.
+  `published: true` enforced in the data layer. 99 tests green.
+- **Next up:** Sprint 4 — Keyword Search. Not blocked.
+
+### Standing data rules (established Sprint 3 — do not violate)
+
+- **`published: true` belongs in `src/lib/plans.ts`, not in pages.** Every read
+  goes through that module. Sprints 4–5 must EXTEND those functions, never bypass
+  them with their own `prisma.plan` queries — one forgotten filter exposes staged
+  content and still "works", so nobody notices.
+- **Money is integer cents. Dimensions render as tape-measure fractions.** A
+  decimal cut list is unusable in a workshop.
 
 ### Standing security rules (established Sprint 2 — do not violate)
 
