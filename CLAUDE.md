@@ -133,14 +133,33 @@ with it.
 - **Sprint 1 (Plan Data Model & Content Pipeline): COMPLETE — 98/100.** Schema +
   migration `0_init` + idempotent seed pipeline. 24 real plans, 6 categories, 32
   tools, live in Neon. 48 tests green.
-- **Next up:** Sprint 2 — Accounts & Auth (Clerk). Not blocked.
+- **Sprint 2 (Accounts & Auth): COMPLETE — 97/100.** Clerk (email + Google),
+  `User` model keyed on `clerkId`, lazy identity sync, protected `/profile`.
+  Routes are private by default via an allowlist. 62 tests green. Verified on the
+  live deploy.
+- **Next up:** Sprint 3 — Plan Repository & Browse/Detail Views. Not blocked.
 
-### Open risk to fix before Sprint 2
+### Standing security rules (established Sprint 2 — do not violate)
 
-**Dev and production share one Neon database.** Fine while the only data is
-reproducible seed content; a real hazard the moment Sprint 2 puts user records in
-it — a local `db:seed` or a bad `migrate` would hit live users. Fix: a Neon dev
-branch with its own `DATABASE_URL` in `.env.local` (free tier includes 10).
+- **`src/lib/public-routes.ts` is an ALLOWLIST.** Everything not on it requires a
+  session. Adding an entry is a security decision. Never invert this to a
+  denylist — an allowlist fails closed, a denylist fails open.
+- **Never accept a `userId` (or any identity) from client input.** The current
+  user comes only from `getCurrentUser()` / `requireUser()`, which derive it from
+  the verified Clerk session. If a function signature ever takes a `userId`
+  parameter, that is an IDOR bug.
+- Sprints 6–7 (saves, categories, likes) must scope every query by the
+  session-derived user. No exceptions.
+
+### Database connection rules (established Sprint 2)
+
+- **`DATABASE_URL` = pooled** (host has `-pooler`). Used by the running app.
+  Serverless functions would exhaust a direct connection.
+- **`DIRECT_URL` = direct** (no `-pooler`). Used only by `prisma migrate`. The
+  pooled endpoint is PgBouncer and **cannot** run migrations — it fails with
+  `P1017`.
+- Both are needed. Neither substitutes for the other. Both exist in `.env.local`
+  (dev branch) and in Vercel (production branch).
 
 ### Environment gotchas learned in Sprint 1
 

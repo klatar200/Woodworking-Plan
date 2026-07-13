@@ -220,3 +220,87 @@ suite. All four appeared only on contact with a real database.
   validator support them (alt text mandatory); sourcing actual photography is a
   content decision for the user, not a dev task.
 - Prisma 6.19 → 7.8 available. Still deliberately not taken.
+
+---
+
+## Sprint 2: Accounts & Auth
+**Dates:** 2026-07-12 – 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** sign up/login, session handling, user profile.
+Depends on decision #5 (Clerk).
+
+**Commits on `main`:** `ec25380`, `bd23fda`.
+
+**Status: COMPLETE — 97/100, Attempt 1. Pass.**
+
+### Decisions
+- **Sign-in methods: email/password + Google OAuth** (`DECISIONS_LOG.md`).
+  Apple rejected on cost — it requires a $99/yr Apple Developer account, which
+  would breach the $0-during-development constraint.
+- **Dev/prod database separation completed** before this sprint started, precisely
+  because Sprint 2 is the one that puts real user records in the database.
+
+### What was delivered
+
+| Piece | Detail |
+|---|---|
+| `User` model | Keyed on `clerkId` (unique). Stores no password, no session, no OAuth token — Clerk owns identity. This exists to be the FK anchor Sprints 6–7 (saves, categories, likes) hang off. |
+| Identity sync | `src/lib/auth.ts` — lazy upsert on first authenticated request. |
+| Auth flows | Clerk's prebuilt `<SignIn>` / `<SignUp>` at `/sign-in`, `/sign-up` (catch-all segments for Clerk's sub-steps). |
+| Session handling | `clerkMiddleware` + allowlist; `SignedIn`/`SignedOut` header state. |
+| Profile | Protected `/profile`, rendering the user's own synced record. |
+
+### The security posture, and why it's built this way
+
+**Routes are private by DEFAULT.** `src/lib/public-routes.ts` is an *allowlist*
+(`/`, `/sign-in(.*)`, `/sign-up(.*)`, `/api/health`). Everything else requires a
+session. This direction is the whole safety property:
+
+- **Allowlist (chosen):** forget to list a new public route → it demands a login.
+  Annoying, obvious, harmless. **Fails closed.**
+- **Denylist:** forget to list a new private route → it is world-readable.
+  Silent, invisible, a breach. **Fails open.**
+
+**The current user is only ever derived from the verified session.**
+`getCurrentUser()` takes **zero arguments** — there is no parameter through which
+a caller could ask for someone else's data. This is the property that will prevent
+IDOR when Sprints 6–7 add per-user saves and likes, so it is asserted by a test
+rather than left as a convention.
+
+**Defence in depth.** Middleware blocks anonymous access; `requireUser()` re-checks
+independently at the point of data access. If the middleware matcher is ever
+mis-edited, `/profile` still fails closed rather than rendering an account to a
+stranger.
+
+**No webhook.** Identity syncs lazily on first authenticated request — no public
+endpoint to secure, no signing secret to manage, and it cannot drift out of sync
+(if the user is here, the row exists). See the follow-up below on deletion.
+
+### Attempt 1 — 2026-07-13
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Delivers exactly the three §4 Sprint 2 bullets — sign up/login (email + Google, per the logged decision), session handling (Clerk middleware, allowlist, header auth state), and user profile (`/profile`, protected). Built on decision #5 (Clerk) as required. Nothing out of scope: no saved plans or category folders (Sprint 6), no likes (Sprint 7), no browse/detail views (Sprint 3), no admin UI (deferred). The Sprint 0 "is Clerk configured?" guard was **removed** rather than left as dead code — Clerk is now a hard dependency, and `src/env.ts` refuses to boot in production without it. |
+| Correctness & functionality (/20) | **20** | Verified **on the live deploy**, not just locally — the lesson from Sprints 0 and 1. Confirmed by the user on the production URL: `/profile` while signed out **redirects to sign-in** (the auth-bypass check); email sign-up completes; Google OAuth sign-in works; `/profile` renders name, email, and member-since from the synced DB record; `/api/health` still returns `database.status: "ok"`. Locally: migration applied, 62/62 tests, `tsc` 0 errors, `eslint` 0 errors/0 warnings, `next build` passes. |
+| Automated test coverage (/15) | **14** | `tests/auth.test.ts` (14 cases) targets what actually causes breaches rather than re-testing Clerk (which is the vendor's job — the entire reason decision #5 chose to buy auth). It proves: anonymous requests never touch the DB; the User row is created on first sight and the upsert is **idempotent**, so concurrent requests cannot duplicate a user; display fields refresh so a Clerk name change isn't stale forever; `requireUser()` throws for anonymous callers; the allowlist permits exactly `/`, `/sign-in(.*)`, `/sign-up(.*)`, `/api/health`; **invented future routes (`/billing`, `/admin`, `/api/plans/my-saves`) are private by default**; and a path merely *containing* a public route (`/evil/sign-in`) is not public. Plus the IDOR assertion below. −1: no automated end-to-end test drives a real browser through sign-in; that verification is currently manual. |
+| Security (/15) | **14** | Checked: **(a) Broken access control (OWASP A01)** — allowlist fails closed; `getCurrentUser()` has arity 0, asserted by a test, so no caller can pass a `userId`; a test calls it with a forged id and proves the *session's* id wins. **(b) Defence in depth** — middleware + `requireUser()` are independent checks. **(c) Auth cannot be silently disabled** — production boot fails without Clerk keys. **(d) Secrets** — none committed; no new secret introduced (lazy sync means no webhook signing secret to leak). **(e) Attack surface** — no custom login form, no password handling, no session storage of our own; Clerk owns all of it. **(f) Hiding UI is not access control** — the header's `SignedIn`/`SignedOut` is navigational only, and the comment says so, because that misunderstanding is how people ship "protected" pages that aren't. −1: **a user deleted in Clerk leaves their `User` row (with cached email) in our database.** A data-retention concern the moment there are real users. Requires a Clerk deletion webhook. Flagged, not built — it is not a Sprint 2 deliverable. |
+| Code quality & simplicity (/10) | **10** | The route allowlist was extracted to its own module (`public-routes.ts`) specifically so the security property could be **tested directly** rather than only through a middleware that needs a full request pipeline — testability drove the structure, not the other way round. The Sprint 0 config guards in `layout.tsx` and `middleware.ts` were deleted, not left behind. Lint clean, no dead code. |
+| Mobile/offline behavior (/10) | **9** | Verified by the user on a phone. Header touch targets are ≥44px (`min-height: 2.75rem`) — phones, gloves, sawdust. Focus states left **visible** rather than styled away, so Sprint 9's accessibility pass has nothing to undo. Clerk's components are responsive out of the box. −1: no offline behaviour, correctly — service-worker caching is Sprint 8, and building it here would be scope drift. |
+| Documentation & handoff (/5) | **5** | Sign-in decision logged with its cost rationale. `public-routes.ts` documents *why* an allowlist and not a denylist, in terms of which direction fails open. `auth.ts` states the never-trust-client-input rule explicitly, aimed at whoever writes Sprint 6. Commit SHAs above. |
+| **Total (/100)** | **97** | |
+
+**Result: PASS (97 ≥ 95).**
+
+### Defects found — again, only by running it for real
+
+| Defect | Root cause | Fix |
+|---|---|---|
+| `P1017 Server has closed the connection` on every migration | **Prisma migrations cannot run through Neon's pooled endpoint.** PgBouncer in transaction mode can't do the session-level work migrations need (advisory locks, shadow DB, session DDL). Build agent's omission — should have been set up in Sprint 1. | Added `directUrl` to the datasource + `DIRECT_URL` env var (direct, non-pooled). `url` stays pooled for runtime. |
+| Build: `'@prisma/client' has no exported member 'User'` | Migration failed before regenerating the client, leaving it stale | `npm run db:generate` |
+| Migration named `20260713013138_upda_te` | Typo at the interactive prompt | Left as-is. Renaming a migration already recorded in a database is riskier than an ugly name. Cosmetic. |
+
+### Known follow-ups (not blocking)
+- **Clerk deletion webhook.** A user deleted in Clerk currently leaves their `User`
+  row and cached email behind. Becomes a real data-retention/GDPR issue once there
+  are real users. Worth doing before launch.
+- Migration `20260713013138_upda_te` has an ugly name. Cosmetic only.
+- No end-to-end browser test for the sign-in flow. Manual for now.
