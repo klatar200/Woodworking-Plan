@@ -67,6 +67,108 @@ development needs. All three are real perpetual free tiers as of this
 writing — re-verify current terms at the start of Sprint 0, since
 vendor free-tier terms can change.
 
+### 2026-07-12 — Sprint 0 free-tier re-verification (Vercel / Neon / Clerk)
+**Status:** Verified by build agent at the start of Sprint 0, as required by the
+free-tier stack decision above.
+
+- **Neon (Postgres):** Still a genuine perpetual free tier — not a trial, no
+  expiry, no forced upgrade. Free plan as of July 2026: 0.5 GB storage/project,
+  100 CU-hours/project/month, autoscale to 2 CU, scale-to-zero after 5 min idle.
+  No commercial-use restriction. **No change needed.**
+- **Clerk (auth):** Free tier has *improved* since the stack decision was logged.
+  Clerk's 2026-02-05 pricing change raised the free allowance from 10,000 to
+  **50,000 monthly retained users**. Strictly better than what was logged; no
+  decision required. **The "up to 10k MAU" figure in `BUILD_PLAN.md` §3 decision
+  #5 is now stale — the real figure is 50k.**
+- **Vercel (hosting):** Hobby is genuinely free, but carries a commercial-use
+  restriction that was not known when the stack was chosen — see the decision
+  immediately below.
+
+### 2026-07-12 — Vercel Hobby commercial-use restriction: build on Hobby, hard gate before launch
+**Status:** Confirmed by user (chosen from 3 options: stay on Hobby and revisit
+at launch [recommended]; switch to a host with no commercial-use ban; pay for
+Vercel Pro now).
+
+**The conflict.** Vercel's Hobby plan is free but restricted to non-commercial,
+personal use. Vercel defines commercial usage broadly — explicitly including
+"any method of requesting or processing payment from visitors of the site" and
+"the inclusion of advertisements." Both are core to `BUSINESS_PLAN.md` §7
+(subscription tiers, affiliate links, ads on the free tier). Enforcement is
+real: violation can result in account suspension. Lifting the restriction
+requires Vercel Pro at **$20/user/month**, which collides with the
+$0-during-development decision. This was not surfaced when the stack was
+confirmed, so it is recorded as a correction to that decision's assumptions.
+
+**The decision.** Build Phase 0 and Phase 1 on the free Hobby tier. During the
+build there are no payments, no ads, no affiliate links, and no public marketing
+traffic, so the commercial-use clause is not triggered by anything deployed. The
+$0-during-development constraint is preserved intact.
+
+**Hard gate — binding on all future sprints.** The project must move off Hobby to
+Vercel Pro (or an equivalent commercial-use-permitted host) **before any of the
+following ship to production:**
+1. Any billing or payment integration (also gated on decision #6, still open).
+2. Any advertisement or affiliate link rendered to a real visitor.
+3. Any public launch or marketing push.
+
+No sprint may ship any of the above on Hobby. On reaching the first of them,
+stop and escalate for the launch-economics conversation.
+
+**Acknowledged residual risk (user accepted):** Vercel's clause is worded around
+"financial gain of anyone involved in any part of the production of the project,"
+so a strict reading is arguable even pre-revenue. The user reviewed the wording
+and chose to proceed on Hobby for the build phase.
+
+### 2026-07-12 — Branching model: trunk-based, commit straight to `main`
+**Status:** Confirmed by user.
+**Source:** User instruction: "Ensure that we are pushing straight to main when
+we merge or commit any and all sprints. This is a working dev app meaning we are
+not going to screw anything up and any issues will be troubleshooted when
+pushed."
+
+**The decision.** All sprint work is committed and pushed directly to `main`. No
+feature branches, no pull requests, for any sprint. `BUILD_PLAN.md` §5
+(Definition of Done) is amended: it previously required "links to the PR(s)"; it
+now requires the commit SHA(s) on `main`.
+
+**Accepted trade-off (raised by the build agent, accepted by the user).** CI
+still runs on every push to `main`, but with no PR and no branch protection it is
+a **detector, not a gate** — a commit failing lint/typecheck/tests/build lands on
+`main` anyway and is fixed forward. Reasonable for a single-developer, zero-user
+dev app.
+
+**Must be revisited before launch.** Once `main` serves real users, a broken
+`main` stops being free. Re-evaluate branch protection + required CI checks at the
+same time as the Vercel Hobby → Pro move.
+
+### 2026-07-12 — Plan-content admin/CMS: version-controlled seed files now, custom admin panel later
+**Status:** Confirmed by user (chosen from 3 options: seed files now + admin panel
+later [recommended]; custom admin panel in Sprint 1; third-party headless CMS).
+**Resolves:** `BUILD_PLAN.md` §3 decision #7. **Sprint 1 is unblocked.**
+
+**The decision.** Plan content lives as version-controlled structured files
+(JSON/Markdown) in the repo, loaded into Postgres by an idempotent seed script.
+Sprint 1 ships the plan schema + that ingestion path — enough to load the ~20 real
+test plans §4 calls for. **No admin UI in Sprint 1.**
+
+**Rationale.** The ~20 development plans don't need an editing UI to exist, and
+designing edit screens for a schema that has never met real content is how you
+build the wrong screens. Costs $0, adds no vendor, keeps content diffable and
+reviewable in git, and doesn't depend on Clerk auth (which isn't built until
+Sprint 2).
+
+**Explicitly rejected:** a third-party headless CMS (Sanity/Contentful). It would
+add a new vendor with lock-in, split the source of truth across two systems, and
+generic CMSes model this fixed, opinionated plan schema (tools / materials /
+time / cost tier / difficulty) awkwardly.
+
+**Accepted trade-off:** until the admin panel is built, Keagan cannot add or edit
+plans without the build agent. Acceptable during development; **it stops being
+acceptable once a real content pipeline is needed.** A custom admin panel is
+therefore deferred, not cancelled — it should be scheduled once the schema has
+proven itself against real plans, and it is a prerequisite for the in-house
+content team described in `BUSINESS_PLAN.md` §6.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

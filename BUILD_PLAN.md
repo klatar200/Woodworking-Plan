@@ -196,7 +196,19 @@ A sprint is not complete until **all** of the following are true:
 - [ ] The sprint has been self-scored on the Section 6 scorecard at
       ≥95%, following the Section 7 loop.
 - [ ] `SPRINT_LOG.md` has a new entry: sprint number, date, summary,
-      final score, scorecard breakdown, and links to the PR(s).
+      final score, scorecard breakdown, and the commit SHA(s) on `main`.
+
+**Branching model (decided 2026-07-12, see `DECISIONS_LOG.md`): trunk-based —
+commit and push directly to `main`. No feature branches, no pull requests.** CI
+still runs on every push to `main`, but it is a *detector*, not a *gate* —
+nothing blocks a bad commit from landing, and it gets fixed forward. Accepted
+deliberately; revisit before launch, when `main` starts serving real users.
+
+**Deploy early in every sprint.** Sprint 0 shipped four defects that local
+typecheck, lint, and a green test suite all missed, and that only surfaced on a
+real deploy (missing `package.json` in the commit, an incomplete lockfile that
+broke `npm ci`, an ungenerated Prisma client, and a transitive CVE). Green tests
+are not proof it works. Get it deployed, then iterate.
 
 ---
 

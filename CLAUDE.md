@@ -127,10 +127,16 @@ with it.
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma
   ORM. Vitest. GitHub Actions CI.
-- **Sprint 0 (Environment & Architecture):** code-complete. Build, typecheck,
-  lint, and 25 tests pass. Scored 80/100 on Attempt 1 — the gap is verification,
-  not defects. Blocked on: vendor provisioning (`DEPLOYMENT.md` steps 1–5) and
-  the commit landing on `main`. Re-score as Attempt 2 once green.
+- **Sprint 0 (Environment & Architecture): COMPLETE — 99/100.** Deployed and live
+  on Vercel; `/api/health` returns `database.status: "ok"` against Neon; Clerk
+  configured. Build, typecheck, lint, 25 tests, and `npm audit` all clean.
 - **Next up:** Sprint 1 — Plan Data Model & Content Pipeline. **Blocked** on
   `BUILD_PLAN.md` §3 decision #7 (plan-content admin/CMS approach) — must be
   answered and logged before Sprint 1 starts.
+
+### Hard-won lesson from Sprint 0 — do not forget
+
+Four real defects shipped past a green local suite and only appeared on a live
+deploy: a commit missing `package.json` entirely, a lockfile that broke `npm ci`,
+an ungenerated Prisma client, and a transitive CVE. **Green tests are not proof it
+works. Deploy early in every sprint.**
