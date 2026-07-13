@@ -22,6 +22,15 @@ vi.mock('@/lib/plans', () => ({
   PLANS_PER_PAGE: 12,
 }));
 
+/**
+ * Sprint 10. The catalog fetches rating summaries for the plans on the page — one
+ * groupBy, not one query per card. Mocked to an empty Map: an unreviewed catalog is
+ * the default state, and the cards must render fine without a single review.
+ */
+const getRatingSummaries = vi.fn();
+
+vi.mock('@/lib/reviews', () => ({ getRatingSummaries }));
+
 vi.mock('next/link', () => ({
   default: ({ href, children }: { href: string; children: ReactNode }) => (
     <a href={href}>{children}</a>
@@ -57,6 +66,7 @@ const result = (over: Record<string, unknown> = {}) => ({
 
 beforeEach(() => {
   vi.resetModules();
+  getRatingSummaries.mockReset().mockResolvedValue(new Map());
   queryPlans.mockReset().mockResolvedValue(result());
   listCategories.mockReset().mockResolvedValue([
     { slug: 'cutting-boards', name: 'Cutting Boards' },

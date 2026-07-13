@@ -12,6 +12,27 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
+  /**
+   * SPRINT 10 — build photos on Vercel Blob.
+   *
+   * next/image refuses any remote host not listed here, and it is an ALLOWLIST, which
+   * is the right shape: without it, next/image would be an open image proxy that
+   * anyone could point at any URL on the internet and make us pay to fetch and cache.
+   *
+   * This must be kept in step with `img-src` in src/middleware.ts. They are two
+   * independent gates and BOTH must permit the host — miss either and photos are
+   * silently blocked while the upload appears to succeed.
+   */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
+    ],
+  },
+
   // Don't advertise the framework to attackers scanning for known Next.js CVEs.
   // Security through obscurity is not security — but there is no reason to hand
   // out a free hint either.

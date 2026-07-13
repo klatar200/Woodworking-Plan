@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { headers } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SiteHeader } from '@/components/site-header';
 import { ServiceWorkerRegistration } from '@/components/service-worker';
@@ -42,28 +41,41 @@ export const viewport: Viewport = {
   themeColor: '#1a1a1a',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  /**
-   * The CSP nonce, minted per request in src/middleware.ts.
-   *
-   * MUST be handed to ClerkProvider. Our CSP uses `'strict-dynamic'`, which
-   * DISABLES host-based allowlisting entirely — a URL in `script-src` means
-   * nothing once it is present. The only way a script runs is if it carries this
-   * request's nonce, or if it was loaded BY a script that did.
-   *
-   * Next.js stamps the nonce onto its OWN script tags automatically. Clerk's is
-   * not one of them: `@clerk/nextjs` renders its own <script> for clerk.browser.js,
-   * and without the nonce the browser refuses it — which is exactly what happened
-   * on the first CSP deploy ("Loading the script ... violates the following Content
-   * Security Policy directive"). Clerk then degrades in ways that are not
-   * immediately obvious, which is worse than failing loudly.
-   */
-  const nonce = (await headers()).get('x-nonce') ?? undefined;
-
   return (
-    <ClerkProvider nonce={nonce}>
+    /**
+     * `dynamic` IS THE CSP NONCE SWITCH. It is not optional here, and it is not
+     * what its name suggests.
+     *
+     * Our CSP (src/middleware.ts) uses `'strict-dynamic'`, which DISABLES
+     * host-based allowlisting entirely — a URL in `script-src` means nothing once
+     * it is present. A script runs only if it carries this request's nonce, or was
+     * loaded BY a script that did. Next stamps the nonce onto its OWN script tags;
+     * Clerk renders its own <script> for clerk.browser.js and needs the nonce too.
+     *
+     * Passing `nonce={...}` to ClerkProvider DOES NOT WORK, and fails silently.
+     * Read @clerk/nextjs' own source:
+     *
+     *     const { children, dynamic, ...rest } = props;   // our nonce → rest
+     *     async function generateNonce() {
+     *       if (!dynamic) return Promise.resolve('');      // ← empty string
+     *     }
+     *     <ClientClerkProvider {...propsWithEnvs} nonce={await generateNonce()} />
+     *                          ^ our nonce        ^ overwrites it, because the
+     *                                              explicit prop comes AFTER the
+     *                                              spread.
+     *
+     * With `dynamic` set, Clerk reads the `x-nonce` request header our middleware
+     * already sets, and stamps it on its script itself. Without it, Clerk's script
+     * is blocked by the browser and Clerk degrades quietly — which is how this
+     * shipped to production twice.
+     *
+     * Cost of `dynamic`: the tree opts out of static prerendering. Nil for us —
+     * every route is already `force-dynamic`.
+     */
+    <ClerkProvider dynamic>
       <html lang="en">
         <body>
           <SiteHeader />

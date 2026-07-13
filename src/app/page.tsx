@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
 import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
+import { getRatingSummaries } from '@/lib/reviews';
 import { PlanCard } from '@/components/plan-card';
 import { SearchBox } from '@/components/search-box';
 import { FilterPanel } from '@/components/filter-panel';
@@ -59,6 +60,14 @@ export default async function CatalogPage({
     sort,
     page,
   });
+
+  /**
+   * Sprint 10. ONE groupBy for the whole page, scoped to the plans actually on it —
+   * not one aggregate per card (N+1), and not "select every review row and average
+   * it in JS" (O(total reviews): a plan with 800 reviews would ship 800 rows to
+   * render one number).
+   */
+  const ratings = await getRatingSummaries(plans.map((plan) => plan.id));
 
   const isSearching = query !== '';
   const isFiltering = hasActiveFilters(filters);
@@ -129,7 +138,7 @@ export default async function CatalogPage({
           <h2 className="visually-hidden">Results</h2>
           <ul className="plan-grid">
             {plans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} />
+              <PlanCard key={plan.id} plan={plan} rating={ratings.get(plan.id)} />
             ))}
           </ul>
         </>

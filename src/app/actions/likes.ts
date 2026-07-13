@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { likePlan, unlikePlan } from '@/lib/likes';
-import { enforceRateLimit } from '@/lib/rate-limit';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 /**
  * Like/unlike server actions — Sprint 7.
@@ -20,6 +20,11 @@ import { enforceRateLimit } from '@/lib/rate-limit';
  * The middleware protects PAGES. It is not what stands between an attacker and a
  * server action, and treating it as such is how people ship an action anyone on
  * the internet can call.
+ *
+ * RATE LIMITING: `checkRateLimit()` runs FIRST, before any database work —
+ * avoiding that work is the point. A denied request is a SILENT NO-OP, never a
+ * throw. An uncaught throw out of a server action is an HTTP 500 and a crashed
+ * page; see src/lib/rate-limit.ts for the incident that taught us so.
  */
 
 function requiredString(formData: FormData, key: string): string {
@@ -31,8 +36,7 @@ function requiredString(formData: FormData, key: string): string {
 }
 
 export async function likePlanAction(formData: FormData): Promise<void> {
-  // FIRST — before any database work. Avoiding the database work is the point.
-  await enforceRateLimit('toggle');
+  if (!(await checkRateLimit('toggle'))) return;
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
@@ -47,7 +51,7 @@ export async function likePlanAction(formData: FormData): Promise<void> {
 }
 
 export async function unlikePlanAction(formData: FormData): Promise<void> {
-  await enforceRateLimit('toggle');
+  if (!(await checkRateLimit('toggle'))) return;
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');

@@ -11,7 +11,7 @@ import {
   addPlanToCollection,
   removePlanFromCollection,
 } from '@/lib/saves';
-import { enforceRateLimit } from '@/lib/rate-limit';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 /**
  * Server actions — the write boundary for saves and collections.
@@ -32,6 +32,12 @@ import { enforceRateLimit } from '@/lib/rate-limit';
  * The middleware also protects /saved, but middleware protects PAGES. It is not
  * the thing standing between an attacker and a server action, and treating it as
  * such is how people ship an action that anyone on the internet can call.
+ *
+ * RATE LIMITING. Every action calls `checkRateLimit()` FIRST, before any database
+ * work — avoiding that work is the entire point. A denied request is a SILENT
+ * NO-OP, never a throw: an uncaught throw out of a server action is an HTTP 500
+ * and a crashed page. See src/lib/rate-limit.ts for why that distinction cost us
+ * a production incident.
  */
 
 function requiredString(formData: FormData, key: string): string {
@@ -43,8 +49,7 @@ function requiredString(formData: FormData, key: string): string {
 }
 
 export async function savePlanAction(formData: FormData): Promise<void> {
-  // FIRST — before any database work. Avoiding the database work is the point.
-  await enforceRateLimit('toggle');
+  if (!(await checkRateLimit('toggle'))) return;
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
@@ -59,7 +64,7 @@ export async function savePlanAction(formData: FormData): Promise<void> {
 }
 
 export async function unsavePlanAction(formData: FormData): Promise<void> {
-  await enforceRateLimit('toggle');
+  if (!(await checkRateLimit('toggle'))) return;
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
@@ -75,14 +80,14 @@ export async function unsavePlanAction(formData: FormData): Promise<void> {
 export async function createCollectionAction(formData: FormData): Promise<void> {
   // 'create', not 'toggle' — this makes a ROW that persists, and a spammed row is
   // something a human eventually has to look at.
-  await enforceRateLimit('create');
+  if (!(await checkRateLimit('create'))) return;
 
   await createCollection(requiredString(formData, 'name'));
   revalidatePath('/saved');
 }
 
 export async function deleteCollectionAction(formData: FormData): Promise<void> {
-  await enforceRateLimit('create');
+  if (!(await checkRateLimit('create'))) return;
 
   await deleteCollection(requiredString(formData, 'collectionId'));
 
@@ -92,7 +97,7 @@ export async function deleteCollectionAction(formData: FormData): Promise<void> 
 }
 
 export async function renameCollectionAction(formData: FormData): Promise<void> {
-  await enforceRateLimit('create');
+  if (!(await checkRateLimit('create'))) return;
 
   await renameCollection(
     requiredString(formData, 'collectionId'),
@@ -102,7 +107,7 @@ export async function renameCollectionAction(formData: FormData): Promise<void> 
 }
 
 export async function addToCollectionAction(formData: FormData): Promise<void> {
-  await enforceRateLimit('toggle');
+  if (!(await checkRateLimit('toggle'))) return;
 
   await addPlanToCollection(
     requiredString(formData, 'planId'),
@@ -112,7 +117,7 @@ export async function addToCollectionAction(formData: FormData): Promise<void> {
 }
 
 export async function removeFromCollectionAction(formData: FormData): Promise<void> {
-  await enforceRateLimit('toggle');
+  if (!(await checkRateLimit('toggle'))) return;
 
   await removePlanFromCollection(
     requiredString(formData, 'planId'),

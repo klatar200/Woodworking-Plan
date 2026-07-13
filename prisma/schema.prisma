@@ -75,6 +75,7 @@ model User {
   savedPlans  SavedPlan[]
   collections Collection[]
   likes       Like[]
+  reviews     Review[]
 
   @@index([clerkId])
 }
@@ -114,6 +115,88 @@ model Like {
   @@unique([userId, planId])
   @@index([userId])
   @@index([planId])
+}
+
+/// A user's review of a plan — BUSINESS_PLAN.md §10, Sprint 10.
+///
+/// Same ownership rules as everything else in this file: `userId` comes ONLY from
+/// the verified Clerk session. No function in src/lib/reviews.ts accepts a userId.
+///
+/// NOTE WHAT IS *NOT* HERE — AGAIN: there is no `avgRating` or `reviewCount` column
+/// on Plan. Sprint 4 (`searchVector`) and Sprint 6 both broke production by adding a
+/// derived column and assuming the migration would fill it. It does not. A migration
+/// creates a column; it does not populate it.
+///
+/// So the average is computed on read with Prisma's `_avg` / `_count`. Nothing to
+/// backfill, nothing that can drift away from the reviews it claims to summarize. If
+/// the catalog ever grows to where a JOIN + AVG on the listing page actually hurts,
+/// denormalize THEN — with a transaction and a backfill, deliberately. Not now.
+///
+/// One review per user per plan, enforced by the DATABASE. A double-submitted form
+/// cannot produce two reviews, whatever the application layer believes.
+model Review {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  /// 1–5 stars. Range is enforced in the data layer AND by a CHECK constraint added
+  /// in the migration — an application-only check is one raw query away from being
+  /// bypassed, and a 7-star review would poison every average silently.
+  rating Int
+
+  /// Optional prose. A star with no words is still a valid signal.
+  body String?
+
+  photos BuildPhoto[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, planId])
+  @@index([userId])
+  @@index([planId])
+}
+
+/// An "I made this" photo attached to a review — BUSINESS_PLAN.md §10.
+///
+/// Stored on Vercel Blob (DECISIONS_LOG.md 2026-07-13; Cloudflare R2 was reversed
+/// because activating it requires a card on file). Only the URL lives here — the
+/// bytes never touch Postgres.
+///
+/// `blobPath` is kept SEPARATELY from `url` on purpose: deleting a blob requires the
+/// path, and parsing it back out of a public URL is the kind of thing that works
+/// until the provider changes its URL format. Storing both means a delete can never
+/// orphan a file (which would quietly consume the 1 GB free tier forever).
+///
+/// SECURITY: every byte here was re-encoded server-side and had its EXIF stripped
+/// before upload. See src/lib/storage.ts — a phone photo of a workbench carries the
+/// GPS coordinates of the user's home, and nobody who shares a build expects to
+/// share their address.
+model BuildPhoto {
+  id String @id @default(cuid())
+
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  /// Public URL served by the blob store.
+  url String
+  /// Provider-side path/key. Required to DELETE the object. See above.
+  blobPath String
+
+  /// Required, not optional — consistent with `Image.alt`. An accessible feature is
+  /// cheaper to build than to retrofit.
+  alt String
+
+  width  Int
+  height Int
+
+  createdAt DateTime @default(now())
+
+  @@index([reviewId])
 }
 
 /// A bookmarked plan — BUSINESS_PLAN.md §4.3.
@@ -298,6 +381,7 @@ model Plan {
   images    Image[]
   savedBy   SavedPlan[]
   likes     Like[]
+  reviews   Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

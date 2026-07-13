@@ -5,8 +5,13 @@ import { getPlanBySlug } from '@/lib/plans';
 import { isPlanSaved } from '@/lib/saves';
 import { isPlanLiked } from '@/lib/likes';
 import { getCurrentUser } from '@/lib/auth';
+import { isAdmin } from '@/lib/admin';
+import { listReviews, getRatingSummary, getMyReview } from '@/lib/reviews';
+import { isStorageConfigured } from '@/lib/storage';
 import { SaveButton } from '@/components/save-button';
 import { LikeButton } from '@/components/like-button';
+import { ReviewsSection } from '@/components/reviews-section';
+import { StarRating } from '@/components/star-rating';
 import {
   costTierSymbol,
   difficultyLabel,
@@ -57,10 +62,16 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
   // Sprint 6. The page stays PUBLIC — an anonymous visitor sees the whole plan and
   // a "Save this plan" link that takes them to sign-in and back. §12 gates the
   // save, not the content.
-  const [user, saved, liked] = await Promise.all([
+  const [user, saved, liked, reviews, ratingSummary, myReview, admin] = await Promise.all([
     getCurrentUser(),
     isPlanSaved(plan.id),
     isPlanLiked(plan.id),
+    listReviews(plan.id),
+    // COMPUTED on read (Prisma _avg/_count). There is no avgRating column, so there
+    // is nothing to backfill and nothing that can drift. See prisma/schema.prisma.
+    getRatingSummary(plan.id),
+    getMyReview(plan.id),
+    isAdmin(),
   ]);
 
   const essentialTools = plan.tools.filter((t) => t.essential);
@@ -81,6 +92,12 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
         <span className="plan-card-category">{plan.category.name}</span>
         <h1>{plan.title}</h1>
         <p className="subtitle">{plan.summary}</p>
+
+        <p className="plan-rating">
+          <a href="#reviews-heading">
+            <StarRating average={ratingSummary.average} count={ratingSummary.count} />
+          </a>
+        </p>
 
         <div className="plan-actions">
           <SaveButton
@@ -280,6 +297,17 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
           </ul>
         </section>
       )}
+
+      <ReviewsSection
+        planId={plan.id}
+        slug={plan.slug}
+        reviews={reviews}
+        summary={ratingSummary}
+        myReview={myReview}
+        isSignedIn={user !== null}
+        isAdmin={admin}
+        photosEnabled={isStorageConfigured()}
+      />
     </main>
   );
 }

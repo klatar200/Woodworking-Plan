@@ -109,6 +109,27 @@ with it.
   not.** It has served truncated files, null bytes, and stale content. For any
   claim about file contents or git state, **verify with Read**. If bash and Read
   disagree, trust Read, say so, and don't assert the bash result.
+- **🛑 NEVER WRITE TO THE MOUNT FROM BASH. It corrupts the real file.** Reads
+  being unreliable was already known; writes are *worse*, and this was learned by
+  destroying two source files in Keagan's working tree. A python `write_text()`
+  through `/sessions/.../mnt/Woodworking-Plan/` **truncated `src/app/actions/saves.ts`
+  mid-identifier** (`export async funct`) and cut `tests/rate-limit.test.ts` off
+  mid-string-literal. The write reported success. `grep` afterwards found the new
+  content and looked fine — because grep read the same corrupt mount.
+
+  The trap: the mount can serve a corrupt *read* of a file that is actually fine
+  on disk (three intact test files reported NUL bytes and bogus `TS1127 Invalid
+  character` errors). So a mount read can neither prove damage nor prove safety.
+
+  **All file writes go through Write/Edit. Bash is for running things — tests,
+  builds, installs — never for editing this repo.** If a task seems to need
+  scripted edits across many files, do them with Edit calls, or do them in a
+  throwaway `git clone` under `/tmp` (sandbox-local, not mounted, and safe).
+- **To run the test suite, clone to `/tmp` — don't run it against the mount.**
+  `node_modules/` in the repo holds Windows binaries; rollup/vitest fail there with
+  `Cannot find module '@rollup/rollup-linux-x64-gnu'`. `git clone` the repo into
+  `/tmp`, `npm ci`, `npx prisma generate`, then typecheck/test/lint. Reproduce the
+  working-tree changes there from content you hold — never by copying off the mount.
 - **Never run `git` from the bash sandbox against this repo.** It corrupted
   `.git/index` and left stale `.lock` files. Git is Keagan's to run.
 - **`next build` / `next dev` cannot run in the sandbox** — Next's SWC binary
@@ -160,6 +181,80 @@ with it.
   shipped a build that didn't compile; Attempt 2: 95). OWASP pass, nonce-based CSP,
   HSTS, WCAG skip link + heading order, and two real query wastes removed via React
   `cache()`. 205 tests green.
+- **Rate limiting (standalone, pre-Sprint 10): COMPLETE.** Upstash sliding-window
+  on all 9 server actions. 223 tests green. Took two production hotfixes — see the
+  two rules directly below.
+- **Sprint 10 (Reviews, ratings & build photos): CODE COMPLETE, awaiting deploy +
+  score.** `Review` (1–5 stars, one per user per plan) + `BuildPhoto` on **Vercel
+  Blob**. Rating **computed on read** (`_avg`/`_count`; `groupBy` for the catalog) —
+  no denormalized column, so no backfill. 260 tests green.
+
+### Image-upload rule (Sprint 10 — treat every uploaded byte as hostile)
+
+Uploads live behind `src/lib/storage.ts`. Nothing else imports `@vercel/blob`.
+
+1. **EXIF is stripped, because GPS lives in it.** A phone photo of a workbench
+   carries the coordinates of the user's home. Nobody who taps "share your build" is
+   consenting to publish their address, and they will never think to check.
+2. **The file type comes from MAGIC BYTES, never `Content-Type`.** The MIME type is a
+   claim made by the client.
+3. **Every image is fully RE-ENCODED.** This is what kills polyglots (a file that is
+   a valid JPEG *and* a valid payload). Validation says "this looks fine";
+   re-encoding *makes* it fine.
+4. Byte cap **before** decode, and a pixel cap from the header — a 10 KB PNG can
+   declare 50,000 × 50,000 pixels and exhaust memory on decode.
+
+**Two independent gates must allow the blob host or photos are silently blocked:**
+`img-src` in `src/middleware.ts` **and** `images.remotePatterns` in `next.config.ts`.
+Miss either and the upload still "succeeds" — the same failure shape as the Clerk CSP
+bug, which shipped twice.
+
+**`ADMIN_USER_IDS` is an allowlist of Clerk ids and FAILS CLOSED** — unset means
+nobody is an admin. Ids, not emails: an email is mutable, an id is not.
+
+### CSP rule: `<ClerkProvider dynamic>` IS the nonce switch (broke prod twice)
+
+Our CSP uses `'strict-dynamic'`, which **disables host-based allowlisting entirely**
+— a URL in `script-src` means nothing once it is present. A script runs only if it
+carries the request's nonce, or was loaded by a script that did. Next stamps the
+nonce onto its own tags; Clerk renders its own `<script>` and needs it too.
+
+**`<ClerkProvider nonce={...}>` DOES NOT WORK and fails silently.** From Clerk's
+own source:
+
+```js
+const { children, dynamic, ...rest } = props;   // our nonce lands in `rest`
+async function generateNonce() {
+  if (!dynamic) return Promise.resolve('');     // ← empty string
+}
+<ClientClerkProvider {...propsWithEnvs} nonce={await generateNonce()} />
+//                    ^ our nonce        ^ overwrites it — explicit prop wins
+```
+
+With `dynamic` set, Clerk reads the `x-nonce` request header the middleware already
+sets. Without it, Clerk's script is blocked and **Clerk degrades quietly rather than
+failing loudly** — sign-in still appears to work, which is how this shipped twice.
+**"It works" is not "the console is clean." Check the console.**
+
+### Rate-limit rule: a limiter DROPS a request; it must never THROW
+
+An uncaught throw out of a server action is an unhandled server exception — HTTP 500
+and a client-side "Application error" boundary. v1 threw a `RateLimitError`, so the
+limiter worked *and the page crashed*:
+
+```
+POST 500 /plans/cedar-raised-garden-bed
+Error [RateLimitError]: Too many requests. Please slow down...
+```
+
+`checkRateLimit()` now returns a boolean and every action no-ops on `false`.
+**And the tests asserted the throw, and passed** — they proved the code did what I
+wrote, not that what I wrote was right. Assert the behaviour the APP needs.
+
+**Open follow-up:** a denied user currently gets *no feedback* — the button just
+doesn't move. Surfacing "you're going too fast" needs `useActionState` (client
+component) or a redirect carrying an error param, across nine actions. Worth doing;
+was not worth doing inside a crash hotfix.
 
 ## PHASE 1 COMPLETE. Phase 2 unblocked — with one hard constraint.
 
@@ -190,10 +285,13 @@ tier gating, or save/collection limits. There is nothing to charge for yet.
 
 ### Open launch blockers
 
-- **No rate limiting on server actions.** Anyone can hammer `likePlanAction`. A real
-  fix needs a shared store (Upstash Redis — free tier, 500K commands/mo). It is a new
-  vendor, so it is Keagan's call. **An in-memory limiter is theatre on serverless** —
-  each instance has its own memory, so the limit is per-instance and no limit at all.
+- ~~No rate limiting on server actions.~~ **DONE** — Upstash sliding-window, 30/min
+  toggles, 10/min creates, keyed on session user (IP fallback), fails open.
+- **🔑 LEAKED CREDENTIALS — NOT YET CONFIRMED ROTATED.** The Neon role password and
+  the Clerk secret key were pasted into a chat transcript. Treat both as compromised.
+  Rotate in Neon (Roles → reset password) and Clerk, then update `.env.local` **and
+  both Vercel env vars together** — Neon branches share the role password, so
+  rotating invalidates dev and prod simultaneously.
 - **Clerk deletion webhook** — a user deleted in Clerk leaves their `User` row and
   cached email in our DB. A data-retention problem once there are real users.
 - **`offline.ts` and `sw.js` duplicate the caching rules.** Change one, change both.

@@ -69,6 +69,24 @@ const serverSchema = z.object({
   // They ARE required for the limiter to do anything, and their absence is logged.
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+
+  // Vercel Blob — build-photo storage (Sprint 10). A SECRET: it grants write and
+  // delete on the store. Never NEXT_PUBLIC_.
+  //
+  // Optional, and NOT in REQUIRED_IN_PRODUCTION. Without it, photo upload is
+  // disabled and the rest of reviews still works — a missing storage token should
+  // cost you the photo feature, not the site. Vercel injects this automatically once
+  // a Blob store is linked to the project.
+  BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
+
+  // Admin allowlist — comma-separated Clerk user ids (`user_xxx,user_yyy`).
+  //
+  // This is the ONLY thing that grants delete-any-review power (DECISIONS_LOG
+  // 2026-07-13: UGC publishes immediately, owner can delete). It is an ALLOWLIST and
+  // it fails CLOSED: unset means NOBODY is an admin, which is the safe direction to
+  // fail. Ids, not emails — an email is mutable and, if Clerk ever allowed an
+  // unverified one, forgeable. A Clerk user id is neither.
+  ADMIN_USER_IDS: z.string().optional(),
 });
 
 export type Env = z.infer<typeof serverSchema>;

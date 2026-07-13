@@ -154,12 +154,36 @@ feature the business plan doesn't actually specify.
   top 10 pass), accessibility pass, performance pass (mobile network
   conditions), end-to-end QA across the full MVP feature set.
 
-### Phase 2 (`BUSINESS_PLAN.md` §10, to be broken into sprints when this phase starts)
-- User reviews/ratings and build photos ("I made this")
-- Personalized recommendations based on saved/liked plans and owned tools
-- Shopping list generator (aggregate materials across saved plans, affiliate links)
-- Print-friendly / offline PDF export of plans
-- Expanded offline mode (pre-cache entire saved-plan library)
+### Phase 2 (`BUSINESS_PLAN.md` §10) — broken into sprints 2026-07-13
+
+**Binding constraint (see `DECISIONS_LOG.md`, `LAUNCH_ECONOMICS.md`): the project is
+on Vercel Hobby with NO monetization.** Hobby prohibits commercial use. So Sprint 12
+ships the shopping list **without affiliate links** — the aggregation is the useful
+part; the links cannot exist until the host changes. **The moment an ad, an affiliate
+link, or a payment appears, the project must be on a commercial-use-permitted host
+FIRST.**
+
+**Sprint 10 — Reviews, ratings & build photos ("I made this")**
+`Review` (1–5 stars + text, one per user per plan) and `BuildPhoto`, stored on Vercel
+Blob. Aggregate rating **computed on read**, never denormalized. Uploads validated by
+magic bytes, re-encoded server-side, **EXIF/GPS stripped**. UGC publishes immediately;
+owner can delete. Blob host added to CSP `img-src`.
+
+**Sprint 11 — Personalized recommendations**
+Driven by saved/liked plans and (if present) owned tools. Content-based, not
+collaborative — there is no user base to collaborate across yet, and a recommender
+with no signal is worse than a "Popular" list.
+
+**Sprint 12 — Shopping list generator (NO affiliate links — see constraint above)**
+Aggregate materials across saved plans into one consolidated, buyable list. Merge like
+items, sum quantities, keep money in integer cents.
+
+**Sprint 13 — Print-friendly / offline PDF export**
+A cut list is used at a table saw. Print CSS + a generated PDF of the plan.
+
+**Sprint 14 — Expanded offline mode**
+Pre-cache the entire saved-plan library, not just visited plans. Must not violate the
+Sprint 8 caching rule: **public content only; `/saved` and `/profile` are never cached.**
 
 ### Phase 3 (to be broken into sprints when this phase starts)
 - Creator marketplace (third-party plan publishing + monetization)

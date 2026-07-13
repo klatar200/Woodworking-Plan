@@ -54,7 +54,13 @@ export default clerkMiddleware(async (auth, request) => {
     `style-src 'self' 'unsafe-inline'`,
 
     // Clerk serves user avatars; `data:` covers inlined SVG/PNG.
-    `img-src 'self' data: blob: https://img.clerk.com https://images.clerk.dev`,
+    //
+    // SPRINT 10: `*.public.blob.vercel-storage.com` is where build photos live. Miss
+    // this and every uploaded photo is silently blocked by the browser while the
+    // upload itself "works" — the exact failure shape as the Clerk CSP bug, which
+    // shipped twice. It must ALSO be allowlisted in next.config.ts for next/image;
+    // either one alone is not enough.
+    `img-src 'self' data: blob: https://img.clerk.com https://images.clerk.dev https://*.public.blob.vercel-storage.com`,
 
     `font-src 'self' data:`,
 

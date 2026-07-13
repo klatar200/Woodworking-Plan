@@ -7,10 +7,30 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  * design decisions — each of which is the kind of thing a future refactor would
  * quietly get backwards:
  *
- *   1. It FAILS OPEN when the store is unreachable.
- *   2. It identifies by SESSION USER first, IP only as a fallback.
- *   3. It runs BEFORE any database work.
- *   4. It is a no-op when unconfigured (so tests and bare local dev still run).
+ *   1. It NEVER THROWS. A denied request returns false and the action no-ops.
+ *   2. It FAILS OPEN when the store is unreachable.
+ *   3. It identifies by SESSION USER first, IP only as a fallback.
+ *   4. It runs BEFORE any database work.
+ *   5. It is a no-op when unconfigured (so tests and bare local dev still run).
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * (1) IS HERE BECAUSE THE FIRST VERSION OF THIS FILE ASSERTED THE OPPOSITE.
+ *
+ * It asserted `rejects.toBeInstanceOf(RateLimitError)` — and it PASSED, and the
+ * throw it was proving took production down. An uncaught throw out of a server
+ * action is an unhandled server exception: HTTP 500, and the browser renders the
+ * global error boundary ("Application error: a server-side exception has
+ * occurred"). Vercel logged it plainly:
+ *
+ *     POST 500 /plans/cedar-raised-garden-bed
+ *     Error [RateLimitError]: Too many requests. Please slow down...
+ *
+ * The limiter worked exactly as tested, and the page crashed anyway.
+ *
+ * A green test proved the code did what I wrote. It could not tell me that what
+ * I wrote was the wrong thing to want. Tests must assert the behaviour the APP
+ * needs, not the behaviour the implementation happens to have.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
 const limit = vi.fn();
@@ -47,10 +67,10 @@ beforeEach(() => {
 
 describe('configuration', () => {
   it('is a no-op when Upstash is not configured — tests and bare local dev still run', async () => {
-    const { enforceRateLimit, isRateLimitEnabled } = await import('@/lib/rate-limit');
+    const { checkRateLimit, isRateLimitEnabled } = await import('@/lib/rate-limit');
 
     expect(isRateLimitEnabled()).toBe(false);
-    await expect(enforceRateLimit('toggle')).resolves.toBeUndefined();
+    await expect(checkRateLimit('toggle')).resolves.toBe(true);
     expect(limit).not.toHaveBeenCalled();
   });
 
@@ -64,8 +84,8 @@ describe('configuration', () => {
 describe('identity — session user first, IP only as fallback', () => {
   it('keys on the SESSION USER when there is one', async () => {
     configure();
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
-    await enforceRateLimit('toggle');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
+    await checkRateLimit('toggle');
 
     // NOT the IP. Keying on IP alone punishes everyone behind a shared NAT — an
     // office, a campus, a carrier's CGNAT — for one person's behaviour. And an
@@ -80,8 +100,8 @@ describe('identity — session user first, IP only as fallback', () => {
     getCurrentUser.mockResolvedValue(null);
     headersGet.mockReturnValue('203.0.113.7');
 
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
-    await enforceRateLimit('toggle');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
+    await checkRateLimit('toggle');
 
     expect(limit).toHaveBeenCalledWith('ip:203.0.113.7');
   });
@@ -94,8 +114,8 @@ describe('identity — session user first, IP only as fallback', () => {
     getCurrentUser.mockResolvedValue(null);
     headersGet.mockReturnValue('203.0.113.7, 10.0.0.1, 172.16.0.1');
 
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
-    await enforceRateLimit('toggle');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
+    await checkRateLimit('toggle');
 
     expect(limit).toHaveBeenCalledWith('ip:203.0.113.7');
   });
@@ -105,46 +125,40 @@ describe('identity — session user first, IP only as fallback', () => {
     getCurrentUser.mockResolvedValue(null);
     headersGet.mockReturnValue(null);
 
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
-    await enforceRateLimit('toggle');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
+    await checkRateLimit('toggle');
 
     expect(limit).toHaveBeenCalledWith('ip:unknown');
   });
 });
 
 describe('enforcement', () => {
-  it('throws when the limit is exceeded', async () => {
+  it('returns false when the limit is exceeded', async () => {
     configure();
     limit.mockResolvedValue({ success: false });
 
-    const { enforceRateLimit, RateLimitError } = await import('@/lib/rate-limit');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
 
-    await expect(enforceRateLimit('toggle')).rejects.toBeInstanceOf(RateLimitError);
+    await expect(checkRateLimit('toggle')).resolves.toBe(false);
   });
 
-  it('does not leak the exact limit in the error — that is a map for tuning an attack', async () => {
+  it('REGRESSION: it RESOLVES when denied — it does not reject', async () => {
+    // The production bug, in one assertion. `.resolves` fails the test outright if
+    // the promise rejects, so this is a real assertion and not a property access
+    // (`.resolves.not.toThrow` would be the latter — it passes on anything).
     configure();
     limit.mockResolvedValue({ success: false });
 
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
 
-    let message = '';
-    try {
-      await enforceRateLimit('toggle');
-    } catch (error) {
-      message = (error as Error).message;
-    }
-
-    // "You have made 31 requests in the last 60 seconds" tells an attacker exactly
-    // what to tune to. Say nothing useful.
-    expect(message).not.toMatch(/\d/);
-    expect(message).toMatch(/slow down/i);
+    await expect(checkRateLimit('toggle')).resolves.toBe(false);
+    await expect(checkRateLimit('create')).resolves.toBe(false);
   });
 
   it('allows a request under the limit', async () => {
     configure();
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
-    await expect(enforceRateLimit('toggle')).resolves.toBeUndefined();
+    const { checkRateLimit } = await import('@/lib/rate-limit');
+    await expect(checkRateLimit('toggle')).resolves.toBe(true);
   });
 });
 
@@ -154,14 +168,14 @@ describe('FAILS OPEN — the decision this module lives or dies on', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     limit.mockRejectedValue(new Error('ECONNREFUSED'));
 
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
 
     // This is an ABUSE control, not an AUTHORIZATION control. Authorization is
     // requireUser(), and it fails CLOSED. If the limiter failed closed too, an
     // Upstash outage would take the entire app down — trading a real availability
     // incident for a hypothetical abuse one. That is the wrong trade, and it is a
     // decision, not an oversight.
-    await expect(enforceRateLimit('toggle')).resolves.toBeUndefined();
+    await expect(checkRateLimit('toggle')).resolves.toBe(true);
   });
 
   it('logs the outage rather than swallowing it silently', async () => {
@@ -169,37 +183,112 @@ describe('FAILS OPEN — the decision this module lives or dies on', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     limit.mockRejectedValue(new Error('ECONNREFUSED'));
 
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
-    await enforceRateLimit('toggle');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
+    await checkRateLimit('toggle');
 
     // Failing open silently would mean nobody ever finds out the limiter is dead.
     expect(warn).toHaveBeenCalled();
   });
 
-  it('a RateLimitError is NOT swallowed by the fail-open catch', async () => {
-    // The catch is for STORE failures. If it also swallowed the limiter's own
-    // "you are over the limit" signal, the limiter would never block anything —
-    // a bug that would look exactly like working code.
+  it('a DENIAL is not confused with an OUTAGE — the two must not collapse', async () => {
+    // The catch is for STORE failures, which mean "allow". A denial means "deny".
+    // If the two ever collapse into one path, the limiter blocks nothing and looks
+    // exactly like working code.
     configure();
     limit.mockResolvedValue({ success: false });
 
-    const { enforceRateLimit, RateLimitError } = await import('@/lib/rate-limit');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
 
-    await expect(enforceRateLimit('create')).rejects.toBeInstanceOf(RateLimitError);
+    await expect(checkRateLimit('create')).resolves.toBe(false);
   });
 });
 
 describe('buckets', () => {
   it('separates cheap toggles from row-creating writes', async () => {
     configure();
-    const { enforceRateLimit } = await import('@/lib/rate-limit');
+    const { checkRateLimit } = await import('@/lib/rate-limit');
 
-    await enforceRateLimit('toggle');
-    await enforceRateLimit('create');
+    await checkRateLimit('toggle');
+    await checkRateLimit('create');
 
     // Both go through, but through different limiters — a like is idempotent and
     // cheap; a collection is a row that persists and that a human has to look at
     // if it turns out to be spam.
     expect(limit).toHaveBeenCalledTimes(2);
+  });
+});
+
+/**
+ * The actions themselves. This is the layer the production bug actually lived at:
+ * `checkRateLimit` can be perfect and the app still 500s if its CALLER throws.
+ */
+describe('THE SERVER ACTIONS: a denied request is a silent no-op, never a throw', () => {
+  it('likePlanAction does not write and does not throw when denied', async () => {
+    configure();
+    limit.mockResolvedValue({ success: false });
+
+    const likePlan = vi.fn();
+    vi.doMock('@/lib/likes', () => ({ likePlan, unlikePlan: vi.fn() }));
+    const revalidatePath = vi.fn();
+    vi.doMock('next/cache', () => ({ revalidatePath }));
+
+    const { likePlanAction } = await import('@/app/actions/likes');
+
+    const formData = new FormData();
+    formData.set('planId', 'plan_1');
+    formData.set('slug', 'cedar-raised-garden-bed');
+
+    // The whole point: it RESOLVES. A rejection here is an HTTP 500.
+    await expect(likePlanAction(formData)).resolves.toBeUndefined();
+
+    // And it never touched the database — avoiding that work is why the limiter
+    // runs first.
+    expect(likePlan).not.toHaveBeenCalled();
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
+
+  it('createCollectionAction does not write and does not throw when denied', async () => {
+    configure();
+    limit.mockResolvedValue({ success: false });
+
+    const createCollection = vi.fn();
+    vi.doMock('@/lib/saves', () => ({
+      savePlan: vi.fn(),
+      unsavePlan: vi.fn(),
+      createCollection,
+      deleteCollection: vi.fn(),
+      renameCollection: vi.fn(),
+      addPlanToCollection: vi.fn(),
+      removePlanFromCollection: vi.fn(),
+    }));
+    vi.doMock('next/cache', () => ({ revalidatePath: vi.fn() }));
+    vi.doMock('next/navigation', () => ({ redirect: vi.fn() }));
+
+    const { createCollectionAction } = await import('@/app/actions/saves');
+
+    const formData = new FormData();
+    formData.set('name', 'Garden');
+
+    await expect(createCollectionAction(formData)).resolves.toBeUndefined();
+    expect(createCollection).not.toHaveBeenCalled();
+  });
+
+  it('still writes when the limiter ALLOWS — the limiter must not break the happy path', async () => {
+    configure();
+    limit.mockResolvedValue({ success: true });
+
+    const likePlan = vi.fn();
+    vi.doMock('@/lib/likes', () => ({ likePlan, unlikePlan: vi.fn() }));
+    vi.doMock('next/cache', () => ({ revalidatePath: vi.fn() }));
+
+    const { likePlanAction } = await import('@/app/actions/likes');
+
+    const formData = new FormData();
+    formData.set('planId', 'plan_1');
+    formData.set('slug', 'cedar-raised-garden-bed');
+
+    await likePlanAction(formData);
+
+    expect(likePlan).toHaveBeenCalledWith('plan_1');
   });
 });

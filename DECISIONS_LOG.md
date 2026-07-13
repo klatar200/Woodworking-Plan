@@ -318,7 +318,23 @@ names "thin/low-quality catalog kills trust" as the **top risk to the product**,
 **This unblocks a new vendor decision: image storage.** Build photos are user-uploaded
 files, and there is nowhere to put them today. See the next entry.
 
-### 2026-07-13 — Image storage: Cloudflare R2 (free tier)
+### 2026-07-13 — Image storage: Cloudflare R2 — ⛔ SUPERSEDED, DO NOT IMPLEMENT
+**Status:** REVERSED same day. See the Vercel Blob entry below. Kept for the record
+because the reason it was wrong matters more than the decision itself.
+
+**Why it was reversed.** I recommended R2 without checking how it is *activated*.
+**Cloudflare requires a payment method on file before R2 can be enabled**, free tier
+or not, and users report a $5 charge on activation. The project's hard rule is *$0
+during development, never enter a card* — so the recommendation was unusable, and I
+only found that out because I checked the signup flow before writing the setup guide.
+**A free tier's price is not the same as its cost of entry. Verify activation, not
+just pricing.**
+
+---
+
+<details>
+<summary>Original (superseded) R2 entry</summary>
+
 **Status:** Confirmed by user (chosen from 3: Cloudflare R2 [recommended], Vercel
 Blob, UploadThing). Free tiers verified 2026-07-13.
 
@@ -333,6 +349,50 @@ problem). S3-compatible, so outgrowing it is a config change, not a rewrite.
 
 **$0**, so the $0-during-development constraint holds. **Not needed until Sprint 10
 actually implements uploads.**
+
+</details>
+
+### 2026-07-13 — Image storage: Vercel Blob (replaces R2)
+**Status:** Confirmed by user (chosen from 3: Vercel Blob [recommended], R2 anyway,
+ship reviews without photos).
+
+**The decision.** User-uploaded build photos go to **Vercel Blob**.
+
+**Rationale.** It is part of the Hobby account we already have: **no new vendor, no
+new account, and no card**. Free tier: **1 GB storage, 10 GB transfer/month**. At the
+~200 KB our upload pipeline re-encodes to, that is roughly **5,000 photos** — far
+past anything this project needs before launch economics get revisited anyway.
+
+**The trade, stated honestly.** R2 offered 10 GB and zero egress; Blob's 10 GB/month
+transfer cap is the real ceiling here, not the 1 GB of storage. And it deepens Vercel
+lock-in on a project already fully on Vercel. Both are acceptable because the
+alternative required entering a card, and **the $0/no-card rule is not mine to
+override.** Mitigation: all blob access goes through `src/lib/storage.ts`, so
+swapping providers is one module, not a rewrite.
+
+### 2026-07-13 — UGC moderation: publish immediately, owner can delete
+**Status:** Confirmed by user (chosen from 3: post immediately + admin delete
+[recommended], full approval queue, text-live/photos-queued).
+
+**The decision.** Reviews and build photos from signed-in users publish immediately.
+Keagan gets an admin delete on any review or photo. No pre-approval queue.
+
+**Rationale.** With no users yet and a $0 unmonetized app, an approval queue means the
+feature is dead until Keagan personally clears it. Rate limiting (10 creates/min)
+already blunts spam.
+
+**What I am doing regardless, because it is not a product decision — it is security:**
+- **EXIF is stripped from every upload.** A phone photo of a workbench carries **GPS
+  coordinates of the user's home**. Publishing that is a privacy incident, and no
+  user expects "share your build" to mean "share your address."
+- **Images are validated by MAGIC BYTES, not by `Content-Type`**, and then fully
+  **re-encoded** server-side. A client-supplied MIME type is an assertion, not a fact,
+  and re-encoding destroys polyglot payloads (a valid JPEG that is also a valid script).
+- **Size and dimension caps**, so one upload cannot eat the 1 GB tier.
+
+**Known gap, accepted:** there is no report button and no automated scanning. If this
+ever goes properly public, that is a real conversation about takedown process and
+terms — it does not belong in a $0 dev build with zero users.
 
 ### 2026-07-13 — Sequencing: rate limiting shipped standalone, BEFORE Sprint 10
 **Status:** Confirmed by user.

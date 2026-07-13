@@ -115,39 +115,49 @@ async function identify(): Promise<string> {
 }
 
 /**
- * Throws if the caller has exceeded the bucket's limit.
+ * Returns false when the caller has exceeded the bucket's limit.
  *
- * Call it FIRST in a server action, before any database work — the whole point is
- * to avoid the database work.
+ * Call it FIRST in a server action, before any database work — avoiding the
+ * database work is the entire point.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * WHY THIS RETURNS A BOOLEAN INSTEAD OF THROWING (production bug, fixed)
+ *
+ * The first version threw a `RateLimitError`. An uncaught throw out of a server
+ * action is an unhandled server exception: Next returns HTTP 500 and the client
+ * renders the global error boundary — "Application error: a server-side exception
+ * has occurred". So the LIMITER WORKED and the app CRASHED, which is a worse
+ * outcome than the abuse it was added to prevent. Vercel's log for it:
+ *
+ *     POST 500 /plans/cedar-raised-garden-bed
+ *     Error [RateLimitError]: Too many requests. Please slow down...
+ *
+ * A rate limiter's job is to DROP a request cheaply, not to take the page down.
+ * Denied requests are now a silent no-op: the write never happens, nothing is
+ * revalidated, and the UI simply doesn't change.
+ *
+ * The cost, accepted knowingly: a denied user gets no message. Surfacing one needs
+ * either a client component with `useActionState` or a redirect carrying an error
+ * param, across nine actions — worth doing, not worth doing inside a hotfix for a
+ * crash. Tracked in CLAUDE.md. A user tripping 30 toggles/minute is mashing or
+ * scripting; neither is owed an apology, but neither should see a stack trace.
+ * ═══════════════════════════════════════════════════════════════════════════
  */
-export async function enforceRateLimit(bucket: LimitBucket): Promise<void> {
+export async function checkRateLimit(bucket: LimitBucket): Promise<boolean> {
   if (!limiters) {
     // Not configured (tests, local dev without Upstash). Allow — see "fails open".
-    return;
+    return true;
   }
 
   const identifier = await identify();
 
   try {
     const { success } = await limiters[bucket].limit(identifier);
-
-    if (!success) {
-      // Deliberately vague, and deliberately not "you have made 31 requests in the
-      // last 60 seconds" — precise limits are a map for tuning an attack around.
-      throw new RateLimitError();
-    }
+    return success;
   } catch (error) {
-    if (error instanceof RateLimitError) throw error;
-
     // Upstash is unreachable. ALLOW the request — see the module comment. An abuse
     // control that takes the app down is a worse bug than the abuse it prevents.
     console.warn('[rate-limit] store unreachable, allowing request:', error);
-  }
-}
-
-export class RateLimitError extends Error {
-  constructor() {
-    super('Too many requests. Please slow down and try again in a moment.');
-    this.name = 'RateLimitError';
+    return true;
   }
 }

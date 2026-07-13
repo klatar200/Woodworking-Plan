@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import type { PlanListItem } from '@/lib/plans';
+import type { RatingSummary } from '@/lib/reviews';
+import { StarRating } from '@/components/star-rating';
 import {
   costTierSymbol,
   difficultyLabel,
@@ -18,7 +20,14 @@ import {
  * The whole card is one link. On a phone, a small "View plan →" target is a bad
  * joke; the tap target should be the thing you're looking at.
  */
-export function PlanCard({ plan }: { plan: PlanListItem }) {
+export function PlanCard({
+  plan,
+  rating,
+}: {
+  plan: PlanListItem;
+  /** Sprint 10. Undefined when the plan has no reviews — see below. */
+  rating?: RatingSummary;
+}) {
   const image = plan.images[0];
 
   return (
@@ -40,6 +49,17 @@ export function PlanCard({ plan }: { plan: PlanListItem }) {
           <span className="plan-card-category">{plan.category.name}</span>
           <h3 className="plan-card-title">{plan.title}</h3>
           <p className="plan-card-summary">{plan.summary}</p>
+
+          {/* Sprint 10. Only rendered once the plan HAS reviews — same reasoning as
+              the like badge below. A grid of "No reviews yet" on a young catalog is
+              noise on every single card. The DETAIL page always shows the state,
+              including "no reviews", because that is where someone decides to be the
+              first to leave one. */}
+          {rating && rating.count > 0 ? (
+            <p className="plan-card-rating">
+              <StarRating average={rating.average} count={rating.count} />
+            </p>
+          ) : null}
 
           <ul className="badges" aria-label="Plan details">
             <li className="badge" title={`Difficulty: ${difficultyLabel(plan.difficulty)}`}>
