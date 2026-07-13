@@ -149,6 +149,30 @@ with it.
 - **Next up:** Sprint 6 — Save Plans & Custom Categories. **Blocked** on a
   monetization decision (see below).
 
+### CI rule (learned the hard way — CI was RED for ten commits)
+
+**Check GitHub Actions after every push. Every time.** `BUILD_PLAN.md` calls CI a
+*detector*; a detector nobody reads is decoration. CI went red at Sprint 2 and
+stayed red through Sprint 6 — ten commits — and it was Keagan who noticed, not me.
+
+The check is cheap and needs no auth:
+
+```bash
+curl -s "https://api.github.com/repos/klatar200/Woodworking-Plan/actions/runs?per_page=5"
+```
+
+**Root cause, worth remembering:** `next build` statically prerenders
+`/_not-found`, which renders the root layout, which renders `ClerkProvider` —
+so the build needs `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`. Every other route is
+`force-dynamic` and never prerenders, which is why it only broke when Clerk
+became mandatory. CI now supplies a well-formed dummy key.
+
+**And the comment that hid it:** ci.yml asserted "the build must succeed without
+secrets — if it ever doesn't, that is a real bug." It stopped being true in
+Sprint 2, and the comment went on asserting it while the build failed every time.
+**A stale comment is worse than no comment: it actively argues against the
+evidence.**
+
 ### Process rule (violated twice — Sprints 3 and 5)
 
 **When a test file is renamed or superseded, `git rm` it in the REPO** in the same
