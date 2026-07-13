@@ -49,8 +49,33 @@ jobs:
       - name: Test
         run: npm test
 
-      # No secrets are provided to this step, on purpose: the build must succeed
-      # without DATABASE_URL or Clerk keys. If it ever doesn't, that is a real
-      # bug — it would mean the app hard-depends on a secret at build time.
       - name: Build
         run: npm run build
+        env:
+          # ── Why this step needs a Clerk key, and why it is not a secret ──
+          #
+          # Sprint 2 made ClerkProvider unconditional (auth is a real feature, and
+          # an app that silently runs without it is worse than one that refuses to
+          # start). ClerkProvider is rendered by the ROOT LAYOUT, and Next.js
+          # statically prerenders `/_not-found` — so the build renders the layout
+          # and Clerk demands a publishable key. Every other route in this app is
+          # `force-dynamic` and never prerenders, which is why this took until
+          # Sprint 2 to appear and then failed every build after it.
+          #
+          # This key is a well-formed DUMMY, not a real one:
+          #     pk_test_ + base64("example.clerk.accounts.dev$")
+          # Clerk decodes it to find its frontend API host. Nothing in a build
+          # makes a network call to Clerk, so a fake host is fine.
+          #
+          # Using a dummy rather than the real key keeps CI hermetic — no GitHub
+          # secret to manage, and nothing to leak. (A Clerk *publishable* key is
+          # public by design anyway; it ships to every browser. The SECRET key is
+          # the one that matters, and CI is still never given it — the placeholder
+          # below is never used, because no request is served during a build.)
+          #
+          # An earlier version of this file asserted "the build must succeed with
+          # no secrets at all". That stopped being true the moment Clerk became
+          # mandatory, and CI was red for ten commits because nobody read it. CI is
+          # a detector; a detector nobody looks at is decoration.
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZXhhbXBsZS5jbGVyay5hY2NvdW50cy5kZXYk
+          CLERK_SECRET_KEY: sk_test_ci_placeholder_never_used_at_build_time
