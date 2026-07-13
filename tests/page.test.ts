@@ -1,26 +1,22 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { ReactElement } from 'react';
 
 /**
- * Drives the Sprint 0 status page component itself (not just the API route),
- * so the page's reporting logic is covered even though `next build` / `next dev`
- * cannot be executed in every environment.
+ * Catalog page (Sprint 3). Replaces the Sprint 0 status-page test — that page no
+ * longer exists.
  *
- * Home() is an async server component: calling it returns a React element tree,
- * which we can walk and assert on directly — no DOM or renderer required.
+ * Drives the page component directly: it's an async server component, so calling
+ * it returns a React element tree we can walk. No DOM or renderer needed.
  */
 
-const queryRaw = vi.fn();
+const listPlans = vi.fn();
 
-vi.mock('@prisma/client', () => ({
-  PrismaClient: class {
-    $queryRaw = queryRaw;
-  },
+vi.mock('@/lib/plans', () => ({
+  listPlans,
+  PLANS_PER_PAGE: 12,
 }));
 
-const DB_URL = 'postgresql://u:hunter2@ep-x-pooler.aws.neon.tech/neondb?sslmode=require';
-
-/** Collects every string of rendered text in the element tree. */
+/** Collects rendered text, following both children and the props our cards use. */
 function textOf(node: unknown, out: string[] = []): string[] {
   if (node === null || node === undefined || typeof node === 'boolean') return out;
   if (typeof node === 'string' || typeof node === 'number') {
@@ -35,69 +31,116 @@ function textOf(node: unknown, out: string[] = []): string[] {
   const element = node as ReactElement<Record<string, unknown>>;
   const props = element.props ?? {};
 
-  // StatusRow passes its content via props rather than children.
-  for (const key of ['label', 'value'] as const) {
-    if (typeof props[key] === 'string') out.push(props[key] as string);
-  }
+  if (typeof props.href === 'string') out.push(`href:${props.href}`);
   if ('children' in props) textOf(props.children, out);
 
   return out;
 }
 
+const plan = (over: Record<string, unknown> = {}) => ({
+  id: 'p1',
+  slug: 'edge-grain-maple-cutting-board',
+  title: 'Edge-Grain Maple Cutting Board',
+  summary: 'The classic first glue-up.',
+  difficulty: 2,
+  costTier: 'TIER_2',
+  costMinCents: 5500,
+  costMaxCents: 8500,
+  timeMinMinutes: 240,
+  timeMaxMinutes: 360,
+  category: { slug: 'cutting-boards', name: 'Cutting Boards' },
+  images: [],
+  ...over,
+});
+
 beforeEach(() => {
-  queryRaw.mockReset();
   vi.resetModules();
+  listPlans.mockReset();
 });
 
-afterEach(() => {
-  vi.unstubAllEnvs();
-  vi.restoreAllMocks();
-});
+const render = async (searchParams: Record<string, string> = {}) => {
+  const { default: CatalogPage } = await import('@/app/page');
+  const tree = await CatalogPage({ searchParams: Promise.resolve(searchParams) });
+  return textOf(tree).join(' | ');
+};
 
-describe('Sprint 0 status page', () => {
-  it('reports both services as not configured before any vendor account exists', async () => {
-    const { default: Home } = await import('@/app/page');
-    const text = textOf(await Home()).join(' | ');
+describe('catalog page', () => {
+  it('renders a card per plan, linking to its detail page', async () => {
+    listPlans.mockResolvedValue({
+      plans: [plan(), plan({ id: 'p2', slug: 'pine-bookcase', title: 'Simple Pine Bookcase' })],
+      total: 2,
+      page: 1,
+      totalPages: 1,
+    });
 
-    expect(text).toContain('Neon Postgres');
-    expect(text).toContain('Clerk');
-    // Two "not configured" rows: Neon and Clerk.
-    expect(text.match(/not configured/g)?.length).toBe(2);
+    const text = await render();
+
+    expect(text).toContain('Edge-Grain Maple Cutting Board');
+    expect(text).toContain('Simple Pine Bookcase');
+    expect(text).toContain('href:/plans/edge-grain-maple-cutting-board');
+    expect(text).toContain('href:/plans/pine-bookcase');
   });
 
-  it('reports Neon as connected once DATABASE_URL works', async () => {
-    vi.stubEnv('DATABASE_URL', DB_URL);
-    queryRaw.mockResolvedValue([{ '?column?': 1 }]);
+  it('shows the structured metadata that IS the product differentiator', async () => {
+    listPlans.mockResolvedValue({ plans: [plan()], total: 1, page: 1, totalPages: 1 });
 
-    const { default: Home } = await import('@/app/page');
-    const text = textOf(await Home()).join(' | ');
+    const text = await render();
 
-    expect(text).toMatch(/connected \(\d+ms\)/);
+    expect(text).toContain('Easy'); // difficulty 2
+    expect(text).toContain('$$'); // TIER_2
+    expect(text).toContain('4–6 hrs'); // 240-360 min
+    expect(text).toContain('Cutting Boards');
   });
 
-  it('reports a connection failure without crashing the page', async () => {
-    vi.stubEnv('DATABASE_URL', DB_URL);
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-    queryRaw.mockRejectedValue(new Error('ECONNREFUSED'));
+  it('pluralises the count correctly', async () => {
+    listPlans.mockResolvedValue({ plans: [plan()], total: 1, page: 1, totalPages: 1 });
+    expect(await render()).toContain('1 plan ');
 
-    const { default: Home } = await import('@/app/page');
-    const text = textOf(await Home()).join(' | ');
-
-    expect(text).toContain('connection failed');
+    vi.resetModules();
+    listPlans.mockResolvedValue({ plans: [plan()], total: 24, page: 1, totalPages: 2 });
+    expect(await render()).toContain('24 plans');
   });
 
-  it('SECURITY: never renders the connection string or Clerk secret to the page', async () => {
-    vi.stubEnv('DATABASE_URL', DB_URL);
-    vi.stubEnv('CLERK_SECRET_KEY', 'sk_test_supersecret');
-    vi.stubEnv('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY', 'pk_test_public');
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-    queryRaw.mockRejectedValue(new Error(`Can't reach database server at ${DB_URL}`));
+  it('shows an empty state rather than a blank page', async () => {
+    listPlans.mockResolvedValue({ plans: [], total: 0, page: 1, totalPages: 1 });
+    expect(await render()).toContain('No plans yet');
+  });
 
-    const { default: Home } = await import('@/app/page');
-    const text = textOf(await Home()).join(' | ');
+  it('hides pagination when everything fits on one page', async () => {
+    listPlans.mockResolvedValue({ plans: [plan()], total: 1, page: 1, totalPages: 1 });
+    expect(await render()).not.toContain('Page 1 of');
+  });
 
-    expect(text).not.toContain('hunter2');
-    expect(text).not.toContain('supersecret');
-    expect(text).not.toContain('neon.tech');
+  it('shows pagination when there is more than one page', async () => {
+    listPlans.mockResolvedValue({ plans: [plan()], total: 24, page: 1, totalPages: 2 });
+    const text = await render();
+
+    expect(text).toContain('Page 1 of 2');
+    expect(text).toContain('href:/?page=2');
+    expect(text).not.toContain('Previous');
+  });
+
+  it('links back to a bare / from page 2, not /?page=1', async () => {
+    listPlans.mockResolvedValue({ plans: [plan()], total: 24, page: 2, totalPages: 2 });
+    const text = await render({ page: '2' });
+
+    expect(text).toContain('href:/');
+    expect(text).not.toContain('href:/?page=1');
+    expect(text).not.toContain('Next');
+  });
+
+  it('SECURITY: a garbage page param degrades to page 1 instead of reaching the DB', async () => {
+    listPlans.mockResolvedValue({ plans: [], total: 0, page: 1, totalPages: 1 });
+
+    for (const bad of ['abc', '-1', '0', "1; DROP TABLE Plan;--", '']) {
+      vi.resetModules();
+      listPlans.mockClear();
+      listPlans.mockResolvedValue({ plans: [], total: 0, page: 1, totalPages: 1 });
+
+      await render({ page: bad });
+
+      const arg = listPlans.mock.calls[0]![0];
+      expect(arg.page, `page="${bad}"`).toBe(1);
+    }
   });
 });

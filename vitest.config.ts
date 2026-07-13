@@ -9,7 +9,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['tests/**/*.test.ts'],
+    // .tsx too — the catalog page test does a real static render (JSX in the test).
+    include: ['tests/**/*.test.{ts,tsx}'],
   },
   resolve: {
     alias: {

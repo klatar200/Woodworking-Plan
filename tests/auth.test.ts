@@ -198,6 +198,14 @@ describe('public route allowlist', () => {
     expect(await check('/api/health')).toBe(true);
   });
 
+  it('allows plan content — BUSINESS_PLAN.md §12 gates SAVES, not content', async () => {
+    // Browse/detail stay free deliberately: the monetization strategy gates
+    // high-value actions (unlimited saves/categories), not the catalog itself.
+    // Only `published: true` plans are readable — enforced in src/lib/plans.ts.
+    expect(await check('/plans')).toBe(true);
+    expect(await check('/plans/edge-grain-maple-cutting-board')).toBe(true);
+  });
+
   it("allows Clerk's own sub-steps under the auth catch-alls", async () => {
     expect(await check('/sign-in/factor-two')).toBe(true);
     expect(await check('/sign-up/verify-email-address')).toBe(true);

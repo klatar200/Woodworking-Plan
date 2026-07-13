@@ -24,6 +24,19 @@ export const PUBLIC_ROUTES = [
   // BUSINESS_PLAN.md §12 explicitly gates saves/categories, NOT content.
   '/',
 
+  // Plan detail pages (Sprint 3).
+  //
+  // This is a deliberate security decision, not a convenience. BUSINESS_PLAN.md
+  // §12 is explicit: "Gate high-value actions (unlimited saves/categories) rather
+  // than content itself; keep search/browse free to build habit." Putting plan
+  // content behind a login would invert the monetization strategy and kill SEO.
+  //
+  // What is NOT exposed by this: only `published: true` plans are ever readable
+  // (enforced in src/lib/plans.ts, in the data layer, not in the pages). Saving,
+  // liking, and categorizing remain private — those are Sprints 6-7 and they are
+  // not on this list.
+  '/plans(.*)',
+
   // Auth flows themselves. Obviously must be reachable while signed out, and
   // the catch-alls cover Clerk's own sub-steps (verify, reset, factor-two).
   '/sign-in(.*)',

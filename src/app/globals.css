@@ -232,3 +232,333 @@ code {
 .muted {
   color: var(--muted);
 }
+
+/* ---------------------------------------------------------------------------
+ * Sprint 3 — catalog + plan detail.
+ *
+ * Still not a design system (Sprint 8). Mobile-first: single column by default,
+ * grid only when there's room. Tables scroll horizontally rather than squashing —
+ * a cut list with an illegible dimension column is worse than one you scroll.
+ * ------------------------------------------------------------------------- */
+
+.page-wide {
+  max-width: 52rem;
+}
+
+/* --- catalog grid --- */
+
+.plan-grid {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 40rem) {
+  .plan-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.plan-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.plan-card-link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.plan-card-link:hover {
+  background: color-mix(in srgb, var(--fg) 4%, transparent);
+}
+
+.plan-card-link:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: -2px;
+}
+
+.plan-card-image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.plan-card-body {
+  padding: 1rem;
+}
+
+.plan-card-category {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.375rem;
+}
+
+.plan-card-title {
+  margin: 0 0 0.375rem;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+
+.plan-card-summary {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* --- badges --- */
+
+.badges {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* --- pagination --- */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination-status {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.empty-state {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px dashed var(--border);
+  border-radius: 0.5rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --- plan detail --- */
+
+.breadcrumb {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+}
+
+.breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--fg);
+}
+
+.plan-header h1 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.glance-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: 1.5rem 0 0;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+@media (min-width: 34rem) {
+  .glance-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.glance-item {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+@media (min-width: 34rem) {
+  .glance-item {
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+  }
+
+  .glance-item:last-child {
+    border-right: none;
+  }
+}
+
+.glance-item:last-child {
+  border-bottom: none;
+}
+
+.glance-item dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.glance-item dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+.sub-heading {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 1.25rem 0 0.5rem;
+}
+
+.prose p {
+  margin: 0 0 0.875rem;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.tool-name {
+  font-weight: 500;
+}
+
+.tool-note,
+.material-note {
+  display: block;
+  font-size: 0.875rem;
+  margin-top: 0.125rem;
+}
+
+.detail-row {
+  display: block;
+}
+
+/* --- tables (materials, cut list) --- */
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.data-table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tfoot td {
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+}
+
+.numeric {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875rem;
+}
+
+.material-name {
+  font-weight: 500;
+}
+
+/* --- steps --- */
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+}
+
+.step {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.step:last-child {
+  border-bottom: none;
+}
+
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0 0 0.625rem;
+  font-size: 1.0625rem;
+}
+
+.step-number {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Markdown-ish emphasis authored in step bodies. */
+.prose strong {
+  font-weight: 600;
+}
