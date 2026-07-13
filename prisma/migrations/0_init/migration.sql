@@ -1,6 +1,3 @@
-﻿-- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
-
 -- CreateEnum
 CREATE TYPE "CostTier" AS ENUM ('TIER_1', 'TIER_2', 'TIER_3', 'TIER_4', 'TIER_5');
 
@@ -39,8 +36,8 @@ CREATE TABLE "Plan" (
     "categoryId" TEXT NOT NULL,
     "difficulty" INTEGER NOT NULL,
     "timeMinMinutes" INTEGER NOT NULL,
-    "timeLabel" TEXT NOT NULL,
     "timeMaxMinutes" INTEGER NOT NULL,
+    "timeLabel" TEXT NOT NULL,
     "costTier" "CostTier" NOT NULL,
     "costMinCents" INTEGER NOT NULL,
     "costMaxCents" INTEGER NOT NULL,
@@ -183,4 +180,3 @@ ALTER TABLE "Step" ADD CONSTRAINT "Step_planId_fkey" FOREIGN KEY ("planId") REFE
 
 -- AddForeignKey
 ALTER TABLE "Image" ADD CONSTRAINT "Image_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
