@@ -170,9 +170,17 @@ magic bytes, re-encoded server-side, **EXIF/GPS stripped**. UGC publishes immedi
 owner can delete. Blob host added to CSP `img-src`.
 
 **Sprint 11 — Personalized recommendations**
-Driven by saved/liked plans and (if present) owned tools. Content-based, not
-collaborative — there is no user base to collaborate across yet, and a recommender
-with no signal is worse than a "Popular" list.
+Driven by **saved/liked plans only**. Content-based, not collaborative — there is no
+user base to collaborate across, and "people who saved X also saved Y" returns nothing
+when there are no other people.
+
+**The owned-tools profile is NOT in this sprint** (`DECISIONS_LOG.md` 2026-07-13). It
+needs a `UserTool` table and a management screen — a feature, not a parameter — and it
+gets its own sprint. The Sprint 5 per-session tools filter is unaffected.
+
+Surfaces as a "Recommended for you" section on the catalog home, shown only to signed-in
+users who have saved or liked something. It renders *nothing* for a cold user rather
+than an empty shell.
 
 **Sprint 12 — Shopping list generator (NO affiliate links — see constraint above)**
 Aggregate materials across saved plans into one consolidated, buyable list. Merge like

@@ -3,7 +3,9 @@ import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
 import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
 import { getRatingSummaries } from '@/lib/reviews';
+import { getRecommendations } from '@/lib/recommendations';
 import { PlanCard } from '@/components/plan-card';
+import { Recommendations } from '@/components/recommendations';
 import { SearchBox } from '@/components/search-box';
 import { FilterPanel } from '@/components/filter-panel';
 import { SortSelect } from '@/components/sort-select';
@@ -67,16 +69,46 @@ export default async function CatalogPage({
    * it in JS" (O(total reviews): a plan with 800 reviews would ship 800 rows to
    * render one number).
    */
-  const ratings = await getRatingSummaries(plans.map((plan) => plan.id));
-
   const isSearching = query !== '';
   const isFiltering = hasActiveFilters(filters);
   const isNarrowed = isSearching || isFiltering;
+
+  /**
+   * Sprint 11 — recommendations.
+   *
+   * Only on the UNNARROWED first page. Someone who has typed a query or set a filter
+   * has told us exactly what they want RIGHT NOW; a "Recommended for you" row above
+   * their results is us talking over them. Same on page 4 of a paginated browse —
+   * they are deep in a task, not looking for suggestions.
+   *
+   * Returns [] for anonymous visitors and for users with no saves or likes, so this
+   * costs one cheap query and renders nothing in the common cold case.
+   */
+  const recommendations =
+    !isNarrowed && page === 1 ? await getRecommendations() : [];
+
+  /**
+   * Sprint 10. ONE groupBy for the whole page — not one aggregate per card (N+1), and
+   * not "select every review row and average it in JS" (O(total reviews): a plan with
+   * 800 reviews would ship 800 rows to render one number).
+   *
+   * Covers the recommended plans too, in the SAME query. Two groupBys would be two
+   * round-trips for one page.
+   */
+  const ratings = await getRatingSummaries([
+    ...plans.map((plan) => plan.id),
+    ...recommendations.map(({ plan }) => plan.id),
+  ]);
 
   return (
     // id="main" is the skip link's target (WCAG 2.4.1).
     <main id="main" className="page page-wide">
       <h1>Plans</h1>
+
+      {/* Renders NOTHING for an anonymous visitor or a user with no saves/likes —
+          not an empty shell, and deliberately not a fallback row of popular plans
+          under a personalized heading. See src/components/recommendations.tsx. */}
+      <Recommendations recommendations={recommendations} ratings={ratings} />
 
       <SearchBox query={query} />
 

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { submitReviewAction, deleteReviewAction } from '@/app/actions/reviews';
+import { submitReviewAction, deleteReviewAction, deletePhotoAction } from '@/app/actions/reviews';
 import { StarRating } from '@/components/star-rating';
 import { MAX_BODY_LENGTH, MAX_PHOTOS_PER_REVIEW } from '@/lib/reviews';
 import type { PlanReview, RatingSummary } from '@/lib/reviews';
@@ -156,21 +156,43 @@ export function ReviewsSection({
 
               {review.photos.length > 0 ? (
                 <ul className="build-photos">
-                  {review.photos.map((photo) => (
-                    <li key={photo.id}>
-                      {/* next/image needs the blob host allowlisted in next.config.ts,
-                          AND the host must be in the CSP img-src — miss either and the
-                          photo is silently blocked. */}
-                      <Image
-                        src={photo.url}
-                        alt={photo.alt}
-                        width={photo.width}
-                        height={photo.height}
-                        sizes="(max-width: 640px) 50vw, 240px"
-                        className="build-photo"
-                      />
-                    </li>
-                  ))}
+                  {review.photos.map((photo) => {
+                    const canRemove = isAdmin || myReview?.id === review.id;
+
+                    return (
+                      <li key={photo.id} className="build-photo-item">
+                        {/* next/image needs the blob host allowlisted in
+                            next.config.ts, AND the host must be in the CSP img-src —
+                            miss either and the photo is silently blocked. */}
+                        <Image
+                          src={photo.url}
+                          alt={photo.alt}
+                          width={photo.width}
+                          height={photo.height}
+                          sizes="(max-width: 640px) 50vw, 240px"
+                          className="build-photo"
+                        />
+
+                        {/* Removing ONE photo without deleting the whole review.
+                            Without this the only way to take a photo down is to
+                            delete everything you wrote — and a photo is the thing
+                            most likely to have been posted by mistake. */}
+                        {canRemove ? (
+                          <form action={deletePhotoAction} className="build-photo-remove">
+                            <input type="hidden" name="photoId" value={photo.id} />
+                            <input type="hidden" name="slug" value={slug} />
+                            <button
+                              type="submit"
+                              className="btn btn-ghost btn-danger"
+                              aria-label={`Remove photo: ${photo.alt}`}
+                            >
+                              Remove
+                            </button>
+                          </form>
+                        ) : null}
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : null}
 

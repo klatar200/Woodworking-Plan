@@ -31,6 +31,18 @@ const getRatingSummaries = vi.fn();
 
 vi.mock('@/lib/reviews', () => ({ getRatingSummaries }));
 
+/**
+ * Sprint 11. Mocked to [] — the COLD START, which is the default state of every new
+ * user and therefore the state the catalog must render correctly in. The section
+ * renders nothing at all in this case, so none of the assertions below should see it.
+ *
+ * Mocking is also load-bearing here: the real module reaches Clerk's session through
+ * `@/lib/auth`, which cannot be imported into this render harness.
+ */
+const getRecommendations = vi.fn();
+
+vi.mock('@/lib/recommendations', () => ({ getRecommendations }));
+
 vi.mock('next/link', () => ({
   default: ({ href, children }: { href: string; children: ReactNode }) => (
     <a href={href}>{children}</a>
@@ -67,6 +79,7 @@ const result = (over: Record<string, unknown> = {}) => ({
 beforeEach(() => {
   vi.resetModules();
   getRatingSummaries.mockReset().mockResolvedValue(new Map());
+  getRecommendations.mockReset().mockResolvedValue([]);
   queryPlans.mockReset().mockResolvedValue(result());
   listCategories.mockReset().mockResolvedValue([
     { slug: 'cutting-boards', name: 'Cutting Boards' },

@@ -22,7 +22,10 @@ export const PLANS_PER_PAGE = 12;
  * column. See prisma/schema.prisma: a derived column is a thing that can ship to
  * production empty and silently lie, which has already happened twice here.
  */
-const PLAN_CARD_SELECT = {
+// Exported for Sprint 11 (recommendations), which must return the SAME shape a
+// catalog card renders. Duplicating this select there would let the two drift, and a
+// recommendation card silently missing a field is the kind of bug nobody files.
+export const PLAN_CARD_SELECT = {
   id: true,
   slug: true,
   title: true,

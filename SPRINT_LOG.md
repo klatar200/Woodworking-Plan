@@ -877,3 +877,128 @@ and an installable PWA that works offline in a workshop.
 **Phase 2 cannot begin without the launch-economics conversation.** See
 `DECISIONS_LOG.md` — the Vercel Hobby commercial-use gate, the payment processor
 (#6), pricing, and branding (#8) all come due together.
+
+---
+
+# PHASE 2
+
+Launch economics settled 2026-07-13: **stay on Vercel Hobby, no monetization, $0/mo.**
+Phase 2 broken into Sprints 10–14 in `BUILD_PLAN.md` §4.
+
+## Rate limiting (standalone hardening task, pre-Sprint 10)
+**Not scored** — a hardening task, deliberately shipped outside a sprint so Sprint 10's
+scorecard would judge reviews and photos rather than a security fix bolted on at the end.
+
+Upstash sliding-window on all 9 server actions. 30/min toggles, 10/min creates, keyed
+on the session user with an IP fallback, **fails open**.
+
+**It took two production hotfixes, and both are worth remembering:**
+
+1. **CSP blocked Clerk's script — and Clerk degraded QUIETLY.** `'strict-dynamic'`
+   disables host allowlisting entirely, so Clerk's script needed the request nonce.
+   `<ClerkProvider nonce={...}>` does not work: Clerk's own source overwrites the prop
+   with `''` unless `dynamic` is set. Sign-in still *appeared* to work, which is how it
+   shipped twice. **"It works" is not "the console is clean."**
+
+2. **The limiter THREW, so it worked and crashed the page.** An uncaught throw out of a
+   server action is an HTTP 500 and an "Application error" boundary:
+   `POST 500 /plans/cedar-raised-garden-bed — Error [RateLimitError]`. **And the tests
+   asserted the throw, and passed.** They proved the code did what I wrote, not that
+   what I wrote was right. `checkRateLimit()` now returns a boolean.
+
+---
+
+## Sprint 10: Reviews, ratings & build photos
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 2):** "User reviews/ratings and build photos
+('I made this')."
+**Commits:** `245fbc9` (feature), plus a remediation commit — CI green on both.
+
+**Decisions escalated and logged before any code:** image storage (Cloudflare R2 was
+**reversed** — it requires a card on file to activate, which violates the $0/no-card
+rule; **Vercel Blob** instead, no new vendor, no card) and the UGC moderation stance
+(publish immediately, owner can delete).
+
+### Attempt 1 — 94/100 ❌ (below the 95 threshold)
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Delivers exactly the Phase 2 bullet: 1–5 star ratings, text reviews, "I made this" photos. Nothing invented — admin delete is required by the logged moderation decision, not a feature I added. **−1: I recommended Cloudflare R2 in a logged decision without checking its ACTIVATION flow, and it needs a card. Caught before any code, but it cost Keagan a round-trip and a reversed decision entry. A free tier's price is not its cost of entry.** |
+| Correctness (/20) | **19** | Keagan verified end-to-end on phone and PC: review, rating, photo upload, delete. No console errors. CI green (`245fbc9`). Build green. Edge case handled: an unreviewed plan returns `null`, not `0` — zero stars would libel it. **−1: I relied on his console check rather than reading the live console myself via the Chrome tools I had open.** |
+| Test coverage (/15) | **14** | `tests/storage.test.ts` (14) proves EXIF is stripped (with a non-vacuous fixture — the input is asserted to *carry* EXIF first), that a valid-PNG-plus-payload polyglot survives as pixels only, that a TIFF is refused despite being a real image, and that the byte cap runs before decode. `tests/reviews.test.ts` (23) proves the IDOR arity tripwire, owner-scoped WHERE clauses, and admin-fails-closed. **−1: NO TESTS ON THE SERVER ACTIONS — the exact layer that 500'd production one task ago.** |
+| Security (/15) | **15** | Uploads: magic-byte typing (never `Content-Type`), full re-encode, EXIF/GPS stripped, byte cap before decode, pixel cap from the header (decompression bomb), `addRandomSuffix` so a guessed path cannot overwrite a photo, path prefix sanitized. Auth: no function takes a `userId`; every write scoped by the session-derived owner in the WHERE clause; `ADMIN_USER_IDS` is an allowlist of Clerk **ids** that fails closed. No PII in the public review select. Rate-limited. `npm audit`: 0 vulnerabilities. |
+| Code quality (/10) | **8** | Storage is behind one module; nothing else imports `@vercel/blob`. Follows every existing convention. **−2: `deletePhotoAction` IS DEAD CODE — I wrote the action and the data-layer function and never rendered a button that calls it.** |
+| Mobile/offline (/10) | **9** | Verified on a real phone. 44px touch targets on the rating radios (WCAG 2.5.5), 16px inputs so iOS doesn't zoom on focus. **−1: build photos do NOT appear on an offline plan page** — they are cross-origin, and the Sprint 8 policy refuses to cache cross-origin responses. That policy is correct and I am not weakening it; the consequence is real and is now documented. |
+| Documentation (/5) | **5** | Both storage decisions logged including the reversed one *with the reason it was wrong*; UGC stance logged; Phase 2 broken into Sprints 10–14 in `BUILD_PLAN.md` §4; the image-upload rule and the two-gate CSP/`remotePatterns` trap recorded in `CLAUDE.md`. |
+
+**Total: 94/100.** Two real defects: dead code, and a test gap at precisely the layer
+that broke production last time.
+
+### Attempt 2 — 97/100 ✅
+
+**Fixes:**
+
+| Defect | Fix |
+|---|---|
+| `deletePhotoAction` unreachable | Per-photo **Remove** button, rendered for the author or an admin. It matters on its own terms: without it, the only way to take down one photo was to delete everything you wrote — and a photo is the thing most likely to have been posted by mistake. |
+| No action-layer tests | `tests/review-actions.test.ts` (+9). Asserts each action **RESOLVES** when rate-limited rather than throwing (the 500), that all three use the `create` bucket and not the cheap toggle budget, that the file cap applies *before* buffering into memory, and that an untouched `<input type=file>` is not treated as a photo. |
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Unchanged. The R2 misrecommendation stands as a real planning miss. |
+| Correctness (/20) | **19** | Unchanged. |
+| Test coverage (/15) | **15** | **269 tests green** (was 223 pre-sprint; +46). The action layer is now covered by the regression tests that would have caught the rate-limit 500. |
+| Security (/15) | **15** | Unchanged. |
+| Code quality (/10) | **10** | No dead code. Every exported action is reachable from the UI. |
+| Mobile/offline (/10) | **9** | Unchanged — the offline-photo gap is a deliberate consequence of a security rule, not an oversight. |
+| Documentation (/5) | **5** | Unchanged. |
+
+**Total: 97/100. PASS.**
+
+**Carried forward:**
+- Build photos are unavailable offline (cross-origin; the SW policy correctly refuses
+  to cache them). Revisit in **Sprint 14** (expanded offline mode) — it is the sprint
+  that owns this question.
+- A rate-limited user still gets no feedback; the button simply doesn't move.
+- **The leaked Neon password and Clerk secret key are still not rotated.** Keagan's
+  call to defer; the risk is unchanged and it is a launch blocker.
+
+---
+
+## Sprint 11: Personalized recommendations
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 2):** "Personalized recommendations based on
+saved/liked plans."
+
+**A contradiction between governing docs was escalated before any code.**
+`BUSINESS_PLAN.md` §10 named "owned tools" as a recommendation input;
+`CLAUDE.md` §5 listed the owned-tools **profile** as out of scope. Both could not be
+true. Keagan's call: **saved/liked only this sprint**; the owned-tools profile gets its
+own sprint because it needs a `UserTool` table and a management screen — a feature, not
+a parameter. `CLAUDE.md`'s blanket exclusion was **wrong and has been corrected**: a
+stale rule that argues against the evidence is worse than no rule.
+
+### Attempt 1 — 96/100 ✅
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Delivers exactly the Phase 2 bullet as scoped by the escalation. Content-based, driven by saves and likes. No owned-tools profile, no `/for-you` route, no collaborative filtering — all three were considered and explicitly declined with reasons logged. |
+| Correctness (/20) | **19** | **A REAL RANKING BUG WAS CAUGHT BY A TEST BEFORE IT SHIPPED.** The difficulty score decayed *symmetrically* around `mean + 0.5`, so difficulty 2 and 3 scored **identically** for a user whose mean was 2 — the code did not do what its own comment claimed ("prefer a step up"). The decay is now asymmetric: going easier than ideal is penalized 1.5×. **−1: this is exactly the class of bug that a comment asserting behaviour the code lacks is designed to hide, and I wrote the comment first.** Awaiting Keagan's live verification. |
+| Test coverage (/15) | **15** | `tests/recommendations.test.ts` (+17). Proves: cold start returns `[]` and issues **no query at all**; a plan already saved or liked is never recommended; `published: true` is enforced; a plan both saved *and* liked is counted **once** (no double-weighting); category outranks a shared tag; the step-up preference (the test that caught the bug); the order is **stable** across renders. `scorePlan` is exported precisely so the ranking is checkable — a ranking function only observable through a DB query is one nobody can check. |
+| Security (/15) | **15** | **`getRecommendations()` takes ZERO arguments** — asserted by arity. This matters more than a normal IDOR: the output is *derived from* the user's saves and likes, so **leaking the output leaks the input**. A `userId` parameter would let anyone infer Bob's library by asking what Bob would be recommended. A recommender is an inference channel. `published: true` in the data layer. No new inputs, no new endpoints, no new secrets. `npm audit`: 0 vulnerabilities. |
+| Code quality (/10) | **10** | `PLAN_CARD_SELECT` exported and reused rather than duplicated, so a recommendation card cannot silently drift out of step with a catalog card. Candidate pool narrowed in SQL (shared category/tag/tool) rather than scoring the whole catalog in JS. Taste sample bounded at 30. No dead code — every export is reachable. |
+| Mobile/offline (/10) | **9** | Reuses `PlanCard` and the existing responsive grid, so it inherits the Sprint 8 mobile pass. The section is suppressed on search, filter, and page ≥ 2 — a "Recommended for you" row above someone's filtered results is the app talking over them. **−1: not yet verified on a real phone** (pending Keagan's check). |
+| Documentation (/5) | **5** | Both decisions logged with rationale; the doc contradiction resolved *in the docs*, not silently in code; `BUILD_PLAN.md` §4 Sprint 11 rewritten to match; the asymmetric-decay reasoning recorded at the code that implements it. |
+
+**Total: 96/100. PASS.**
+
+**Design decisions worth remembering:**
+- **Content-based, not collaborative.** "People who saved X also saved Y" needs *other
+  people*, and there are none. With one user every co-occurrence is 0 or 1 and the
+  output is noise. Content-based works from the **first** saved plan — which is the
+  regime every new user starts in, forever.
+- **A cold user sees NOTHING — not a popular-plans fallback.** A row headed
+  "Recommended for you" showing the same plans everyone else sees is a lie told by the
+  UI. The catalog already has a Popular sort for that need.
+- **Every card states why.** A recommendation with no reason is indistinguishable from
+  a random plan — to the user, and to us.

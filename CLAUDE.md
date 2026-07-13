@@ -75,11 +75,20 @@ option and why. Wait. Record the answer in `DECISIONS_LOG.md` *before*
 continuing. Routine engineering choices (library for a solved problem, code
 structure, test framework, naming) → just decide.
 
-**One sprint at a time, in `BUILD_PLAN.md` §4 order.** No Phase 2–4 work. No
-features that aren't in `BUSINESS_PLAN.md` — the previously-discussed-but-not-
-approved ideas (comments, tool substitution notes, owned-tools profile, lumber
-price sync, plan versioning, offline shopping mode) are **out of scope** until
-Keagan adds them to the business plan himself. Flag scope creep in one line.
+**One sprint at a time, in `BUILD_PLAN.md` §4 order.** Phase 1 is done; Phase 2 is
+open (Sprints 10–14). No Phase 3–4 work. No features that aren't in
+`BUSINESS_PLAN.md` — the previously-discussed-but-not-approved ideas (comments, tool
+substitution notes, lumber price sync, plan versioning, offline shopping mode) are
+**out of scope** until Keagan adds them to the business plan himself. Flag scope
+creep in one line.
+
+**The owned-tools PROFILE is deferred, not forbidden** (`DECISIONS_LOG.md`
+2026-07-13). It *is* named in `BUSINESS_PLAN.md` §10, so the old blanket exclusion
+here was **wrong and contradicted the business plan** — a stale rule that argues
+against the evidence is worse than no rule. It is deferred to its own sprint because
+it needs a `UserTool` table and a "my workshop" screen, not because it is unapproved.
+The Sprint 5 tools-owned *filter* (per-session, URL-driven, persists nothing) is a
+different thing and is live.
 
 **$0 during development.** Every vendor must be a genuine perpetual free tier —
 not a trial, not time-limited. If a free tier has changed or expired, **stop and
@@ -184,10 +193,33 @@ with it.
 - **Rate limiting (standalone, pre-Sprint 10): COMPLETE.** Upstash sliding-window
   on all 9 server actions. 223 tests green. Took two production hotfixes — see the
   two rules directly below.
-- **Sprint 10 (Reviews, ratings & build photos): CODE COMPLETE, awaiting deploy +
-  score.** `Review` (1–5 stars, one per user per plan) + `BuildPhoto` on **Vercel
-  Blob**. Rating **computed on read** (`_avg`/`_count`; `groupBy` for the catalog) —
-  no denormalized column, so no backfill. 260 tests green.
+- **Sprint 10 (Reviews, ratings & build photos): COMPLETE — 97/100** (Attempt 1: 94 —
+  shipped dead code (`deletePhotoAction` had no button) and had no tests on the server
+  actions, the exact layer that 500'd production one task earlier). `Review` (1–5 stars,
+  one per user per plan) + `BuildPhoto` on **Vercel Blob**. Rating **computed on read**
+  (`_avg`/`_count`; `groupBy` for the catalog) — no denormalized column, no backfill.
+  269 tests green. Verified on phone + PC.
+- **Sprint 11 (Personalized recommendations): COMPLETE — 96/100.** Content-based, from
+  saves + likes. `getRecommendations()` takes **zero arguments** — the output is derived
+  from the user's library, so leaking the output would leak the input. Cold start returns
+  `[]` and renders nothing (**no popular-plans fallback under a personalized heading**).
+  286 tests green.
+- **NEXT: Sprint 12 — Shopping list generator** (`BUILD_PLAN.md` §4, Phase 2).
+  **NO AFFILIATE LINKS** — that would require leaving Vercel Hobby first.
+
+### Recommender rule (Sprint 11)
+
+**A recommender is an INFERENCE CHANNEL.** Its output is derived from the user's saves
+and likes, so anyone who can ask "what would Bob be recommended?" can infer Bob's
+library. That is why `getRecommendations()` takes no parameters at all — not merely to
+avoid an IDOR, but because the function's *return value* is private data.
+
+**Collaborative filtering needs other people.** With one user, every co-occurrence count
+is 0 or 1 and the output is noise. Content-based scoring works from the first saved
+plan. Revisit only when there is a real user base.
+
+**Never fall back to popular plans under a personalized heading.** It makes the feature
+look alive while personalizing nothing.
 
 ### Image-upload rule (Sprint 10 — treat every uploaded byte as hostile)
 

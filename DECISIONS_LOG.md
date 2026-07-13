@@ -402,6 +402,43 @@ Reason: it keeps the Sprint 10 scorecard honest (Sprint 10 gets judged on review
 photos, not on a security fix bolted on at the end), and it stops the security work
 being rushed to finish a bigger sprint.
 
+### 2026-07-13 — Sprint 11: owned-tools PROFILE deferred to its own sprint
+**Status:** Confirmed by user (chosen from 3: saved/liked only [recommended], include
+the owned-tools profile now, owned tools only).
+
+**The contradiction that forced this.** `BUSINESS_PLAN.md` §10 names recommendations
+as based on "saved/liked plans **and owned tools**". `CLAUDE.md` §5 lists the
+**owned-tools profile** among ideas that are out of scope until the business plan
+adopts them. Both could not be true, so it went to Keagan rather than being quietly
+resolved in whichever direction was convenient.
+
+**The distinction that actually matters:** Sprint 5 shipped a tools-owned *filter*
+that reads tool slugs from the query string and **persists nothing**. Feeding owned
+tools into recommendations needs a *saved profile* — a `UserTool` table, a "my
+workshop" management screen, and per-user state. That is a feature, not a parameter.
+
+**The decision.** Sprint 11 recommends from **saved and liked plans only** (category,
+difficulty, tags, shared tools). No new table, no settings UI. The owned-tools profile
+becomes its own sprint if and when Keagan wants it; the per-session filter is
+unaffected and still works.
+
+**Rationale.** Bolting a new persisted model plus a settings screen onto a
+recommendations sprint is how a sprint quietly doubles. And the payoff is near zero
+until a user has actually filled the profile in — which nobody has, because nobody has
+a profile.
+
+### 2026-07-13 — Sprint 11: recommendations surface on the catalog home
+**Status:** Confirmed by user (chosen from 3: section on catalog home [recommended],
+dedicated /for-you page, both).
+
+A "Recommended for you" section above the catalog grid, shown **only** to signed-in
+users who have saved or liked something. No new route, no new navigation.
+
+**Rationale.** It degrades to *nothing* for a cold user, rather than to an empty page.
+A `/for-you` route that a brand-new user clicks into and finds barren is a worse first
+impression of the feature than never showing it at all. Revisit if the section earns
+its keep.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes
