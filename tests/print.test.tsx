@@ -177,21 +177,22 @@ describe('two layouts, because they are two different jobs', () => {
   });
 });
 
-describe('materials on paper', () => {
-  it('shows an unpriced material as a dash, not as $0.00', async () => {
+describe('materials on paper: a cost BAND, never a dollar figure', () => {
+  it('prints NO dollar amounts at all', async () => {
     const html = await render('edge-grain-maple-cutting-board');
 
-    // $0.00 would be a claim that the glue is free.
-    expect(html).toContain('—');
-    expect(html).not.toContain('$0.00');
+    // DECISIONS_LOG.md 2026-07-13 — tiers only. A price on a printed sheet is the most
+    // durable wrong number we could produce: it goes on a wall and is read for months
+    // after lumber has moved.
+    expect(html).not.toMatch(/\$\d/); // no "$48", no "$1,300"
   });
 
-  it('marks the total as approximate', async () => {
+  it('prints the cost TIER instead', async () => {
     const html = await render('edge-grain-maple-cutting-board');
 
-    // Sprint 12's rule, on paper: the cost is a ballpark and says so. Its job is to
-    // stop someone expecting an end-grain board for $10 — not to be an invoice.
-    expect(html).toContain('≈');
+    // The plan is TIER_2. The band still does the decision-relevant job: this is a
+    // modest project, not a $10 one and not a $700 one.
+    expect(html).toContain('$$ of $$$$$');
   });
 });
 

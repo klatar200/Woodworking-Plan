@@ -2,12 +2,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
-import {
-  difficultyLabel,
-  formatCents,
-  formatCostRange,
-  formatDimensions,
-} from '@/lib/format';
+import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
 
 /**
  * Print view — Sprint 13. BUSINESS_PLAN.md §10 ("print-friendly / offline PDF export").
@@ -73,11 +68,6 @@ export default async function PlanPrintPage({
 
   const cutListOnly = view === 'cutlist';
 
-  const itemizedTotal = plan.materials.reduce(
-    (sum, material) => sum + (material.costCents ?? 0),
-    0,
-  );
-
   return (
     <main id="main" className="print-page">
       {/* On-screen controls. `no-print` strips them from the paper. */}
@@ -124,8 +114,9 @@ export default async function PlanPrintPage({
             <dd>{plan.timeLabel}</dd>
           </div>
           <div>
-            <dt>Materials</dt>
-            <dd>{formatCostRange(plan.costMinCents, plan.costMaxCents)}</dd>
+            <dt>Cost</dt>
+            {/* Tier only. No dollar figures anywhere — see src/lib/format.ts. */}
+            <dd>{costTierSymbol(plan.costTier)} of $$$$$</dd>
           </div>
         </dl>
       </header>
@@ -187,9 +178,7 @@ export default async function PlanPrintPage({
               <th scope="col" className="numeric">
                 Qty
               </th>
-              <th scope="col" className="numeric">
-                Est. cost
-              </th>
+              {/* No cost column. Tiers only — see src/lib/format.ts. */}
               <th scope="col" className="print-tick">
                 &#10003;
               </th>
@@ -210,29 +199,14 @@ export default async function PlanPrintPage({
                 <td className="numeric">
                   {material.quantity} {material.unit}
                 </td>
-                <td className="numeric">
-                  {material.costCents !== null ? formatCents(material.costCents) : '—'}
-                </td>
                 <td className="print-tick">&#9744;</td>
               </tr>
             ))}
           </tbody>
-          {itemizedTotal > 0 && (
-            <tfoot>
-              <tr>
-                <td colSpan={2}>
-                  <strong>Estimated total</strong>
-                </td>
-                <td className="numeric">
-                  <strong>&asymp; {formatCents(itemizedTotal)}</strong>
-                </td>
-                <td />
-              </tr>
-            </tfoot>
-          )}
         </table>
         <p className="print-note">
-          Estimates only — lumber varies by region, species, and season.
+          Overall cost: <strong>{costTierSymbol(plan.costTier)} of $$$$$</strong>. Lumber
+          varies by region, species, and season, so we give a band rather than a figure.
         </p>
       </section>
 

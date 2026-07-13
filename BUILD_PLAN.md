@@ -193,13 +193,35 @@ A cut list is used at a table saw. Print CSS + a generated PDF of the plan.
 Pre-cache the entire saved-plan library, not just visited plans. Must not violate the
 Sprint 8 caching rule: **public content only; `/saved` and `/profile` are never cached.**
 
-### Phase 3 (to be broken into sprints when this phase starts)
-- Creator marketplace (third-party plan publishing + monetization)
-- Cut-list optimizer / board-footage calculator
-- Project cost estimator using local lumber prices
-- Makerspace/team accounts
-- Skill-building learning paths
-- Native iOS/Android re-evaluation (only if data shows push/discovery is a real growth bottleneck)
+### Phase 3 — opened 2026-07-13, and deliberately CUT DOWN
+
+Phase 3 as originally written was six items. **Three were removed by Keagan before any
+code was written** and now live in `FUTURE_IDEAS.md` — they are not scheduled, not
+approved, and **must not be started**:
+
+| Removed | Why |
+|---|---|
+| Creator marketplace | A two-sided product with zero users on either side. Also needs monetization, which Hobby prohibits. |
+| Native iOS/Android | Nobody has joined the app. The original gate ("only if the data shows…") answers itself: there is no data, so there is no case. |
+| Local lumber pricing | No free perpetual source; a paid vendor breaks the $0 rule and scraping prints confidently-wrong prices next to things people buy. |
+
+**What remains:**
+
+**Sprint 15 — Cut-list optimizer / board-footage calculator**
+Turn a plan's cut list into a board-buying plan: how many boards of what size to buy, and
+how to lay the parts out with the least waste. Pure computation — no vendor, no money, no
+new data. **This is the real differentiator:** every plan site gives you a cut list;
+none of them tells you what to actually put in the truck.
+
+**Sprint 16 — Skill-building learning paths**
+Sequence plans into ordered paths ("your first five projects"). Content and ordering, no
+new vendor. Depends on nothing.
+
+**🛑 STILL BLOCKED BY THE LAUNCH GATE — do not build:**
+
+- **Makerspace / team accounts.** A paid tier. Requires leaving Vercel Hobby, plus the
+  payment processor (§3 decision #6) and pricing (#7). All three come due together, and
+  that is a conversation, not a sprint.
 
 ### Phase 4 (to be broken into sprints when this phase starts)
 - AI-assisted plan customization (resize/re-species with recalculated cost/materials)

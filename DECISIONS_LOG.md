@@ -597,6 +597,56 @@ So the real question was never "should we start storing private data on-device."
 own initiative. Nothing lands in the private cache as a side effect of browsing. The
 default remains fail-closed.
 
+### 2026-07-13 — Phase 3 CUT DOWN: marketplace, native app, lumber prices all parked
+**Status:** Confirmed by user, at the start of Phase 3, before any code.
+
+Phase 3 was six items. **Three are removed** and now live in `FUTURE_IDEAS.md`:
+
+1. **Creator marketplace.** Keagan: *"This may be a later build if the idea catches
+   popularity but not before anyone has even joined the app."* A marketplace is
+   **two-sided** — it needs creators *and* buyers, and has neither. Building the supply
+   side for an audience of zero is the most expensive possible way to learn nothing.
+   (It was also blocked outright: monetization requires leaving Vercel Hobby.)
+
+2. **Native iOS/Android app.** Same reasoning. The original gate — "only if data shows
+   push/discovery is a real growth bottleneck" — answers itself: **there is no data, so
+   there is no case.** The PWA is installable and works offline, which was the whole
+   argument in `BUSINESS_PLAN.md` §5.
+
+3. **Project cost estimator using local lumber prices.** Keagan: *"way too much to
+   maintain."* Correct, and the maintenance is the *smaller* half. The larger half: there
+   is no free perpetual licensed source. A paid vendor breaks the $0 rule; scraping
+   retailers is a legal and licensing problem *and* a fragile one — their HTML changes
+   weekly, and each silent break prints a **wrong price** next to something a person is
+   about to go and buy.
+
+**What survives:** the cut-list optimizer (Sprint 15) and skill-building learning paths
+(Sprint 16). **Makerspace/team accounts remain BLOCKED** by the launch gate.
+
+### 2026-07-13 — Cost display: TIERS ONLY. No dollar amounts anywhere in the public UI.
+**Status:** Confirmed by user (chosen from 3: tiers on browse + numbers on the shopping
+list, **tiers everywhere**, leave as-is).
+
+**The decision.** The public UI shows **$ / $$ / $$$ / $$$$ / $$$$$ only**. No plan cost
+range, no per-material price, no shopping-list total. Every dollar numeral goes.
+
+**What does NOT change:** `Material.costCents`, `Plan.costMinCents` and
+`Plan.costMaxCents` **stay in the schema and stay populated.** They are the *input* that
+derives the tier. This is a presentation change, not a data change — deleting the
+underlying numbers would make the tiers unmaintainable and would be a one-way door.
+
+**The consequence I flagged, and Keagan accepted:** the shopping list loses the `≈ $84`
+figure whose specific job (Sprint 12) was to stop someone expecting to build an end-grain
+butcher block for $10. **Mitigation:** the shopping list derives a **tier for the whole
+list** from its summed cents, so it keeps doing that job without printing a number we do
+not really stand behind.
+
+**Why this is a good call:** an itemized dollar total is a *claim of precision we cannot
+support*. Lumber varies by region, species, and season; the numbers are hand-authored
+ballparks. A tier communicates the same decision-relevant fact — "this is a cheap project"
+vs "this is not" — and cannot be wrong in the way a number can. It also removes any
+temptation to chase live pricing (see above).
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getShoppingList } from '@/lib/shopping-list';
 import { listCollections } from '@/lib/saves';
-import { formatCents } from '@/lib/format';
+import { costTierSymbol, costTierForCents } from '@/lib/format';
 
 /**
  * Shopping list — Sprint 12. BUSINESS_PLAN.md §10.
@@ -71,13 +71,23 @@ export default async function ShoppingListPage({
           <p className="subtitle">
             {list.lineCount} {list.lineCount === 1 ? 'item' : 'items'} across{' '}
             {list.planCount} {list.planCount === 1 ? 'plan' : 'plans'} &middot;{' '}
-            {/* A BALLPARK, and labelled as one. Its job is to stop someone expecting
-                to build an end-grain butcher block for $10 — not to be an invoice. */}
-            <strong>&asymp; {formatCents(list.totalCents)}</strong>
+            {/*
+              A TIER, not a figure (DECISIONS_LOG.md 2026-07-13 — no dollar amounts
+              anywhere in the public UI).
+
+              This still does the job the old "≈ $84" was there for: stop someone
+              expecting to build an end-grain butcher block for $10. It does it without
+              printing a number we would only be pretending to know — every underlying
+              figure is a hand-authored ballpark for a commodity that moves with region,
+              species and season.
+            */}
+            <strong>{costTierSymbol(costTierForCents(list.totalCents))}</strong>{' '}
+            <span className="muted">of $$$$$</span>
           </p>
 
           <p className="notice">
-            Prices are rough estimates — lumber varies by region, species, and season.
+            Cost is shown as a band, not a price — lumber varies too much by region,
+            species, and season for a figure to be honest.
             {list.unpricedCount > 0 ? (
               <>
                 {' '}
@@ -85,7 +95,7 @@ export default async function ShoppingListPage({
                   {list.unpricedCount}{' '}
                   {list.unpricedCount === 1 ? 'item has' : 'items have'} no estimate
                 </strong>
-                , so the real total will be higher.
+                , so the real cost may land above this band.
               </>
             ) : null}
           </p>
@@ -139,14 +149,10 @@ export default async function ShoppingListPage({
                         ) : null}
                       </label>
 
-                      <span className="shopping-line-cost">
-                        {formatCents(line.costCents)}
-                        {line.unpricedCount > 0 ? (
-                          <span className="muted" title="Some contributing items have no price">
-                            +
-                          </span>
-                        ) : null}
-                      </span>
+                      {/* NO PER-LINE PRICE. A price against a single line item is the
+                          least defensible number we could print: it implies we know what
+                          a board costs at your lumberyard this week. We do not. The
+                          band at the top of the list is the honest version. */}
                     </div>
 
                     {/* WHICH PLANS NEED THIS. The user asked for a consolidated list;

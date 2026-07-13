@@ -520,6 +520,31 @@ Backfill procedure is in `DEPLOYMENT.md`. Bare `npx prisma` does **not** read
 - **Money is integer cents. Dimensions render as tape-measure fractions.** A
   decimal cut list is unusable in a workshop.
 
+### 💲 Cost display rule (Phase 3, 2026-07-13) — TIERS ONLY, NO DOLLAR AMOUNTS
+
+**The public UI never shows a dollar figure.** Not on cards, not on plan pages, not in
+the materials table, not on the shopping list, not in print. Only `$` … `$$$$$`.
+
+**`formatCents` and `formatCostRange` are DELETED, not merely unused.** A formatter that
+exists will eventually get called. Removing them makes the rule STRUCTURAL — you cannot
+render a dollar amount because there is nothing to render it with. `tests/format.test.ts`
+asserts they do not exist. **Do not re-add them.**
+
+**`Material.costCents`, `Plan.costMinCents`, `Plan.costMaxCents` STAY in the schema and
+stay populated.** They are the INPUT that derives the tier. This is a *presentation*
+decision, not a data decision — deleting the numbers would be a one-way door.
+
+**`costTierForCents()`** derives a tier from summed cents, for the shopping list (which
+spans plans and has no tier of its own). Its thresholds are **derived from the 24 authored
+plans**, not invented — bucketing them by `costMaxCents` separates the hand-assigned tiers
+with no overlap. If the catalog shifts, **re-derive from the data; do not nudge by feel.**
+
+**Why:** a dollar figure is a claim of precision we cannot support. Lumber moves with
+region, species and season, and every number in the catalog is a hand-authored ballpark. A
+band says the decision-relevant thing — "cheap project" vs "not" — and cannot be wrong the
+way a number can. It also kills any temptation to chase live lumber pricing
+(`FUTURE_IDEAS.md`).
+
 ### Standing security rules (established Sprint 2 — do not violate)
 
 - **`src/lib/public-routes.ts` is an ALLOWLIST.** Everything not on it requires a

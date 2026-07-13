@@ -2,12 +2,7 @@ import Link from 'next/link';
 import type { PlanListItem } from '@/lib/plans';
 import type { RatingSummary } from '@/lib/reviews';
 import { StarRating } from '@/components/star-rating';
-import {
-  costTierSymbol,
-  difficultyLabel,
-  formatTimeRange,
-  formatCostRange,
-} from '@/lib/format';
+import { costTierSymbol, difficultyLabel, formatTimeRange } from '@/lib/format';
 
 /**
  * A catalog card.
@@ -65,10 +60,10 @@ export function PlanCard({
             <li className="badge" title={`Difficulty: ${difficultyLabel(plan.difficulty)}`}>
               {difficultyLabel(plan.difficulty)}
             </li>
-            <li
-              className="badge"
-              title={`Estimated materials: ${formatCostRange(plan.costMinCents, plan.costMaxCents)}`}
-            >
+            {/* TIER ONLY — no dollar figure, and not even in the tooltip. See
+                src/lib/format.ts: a number here is a claim of precision we cannot
+                support, and the tier says the decision-relevant thing anyway. */}
+            <li className="badge" title="Estimated material cost">
               {costTierSymbol(plan.costTier)}
             </li>
             <li className="badge">

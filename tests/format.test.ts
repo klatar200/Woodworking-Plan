@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import * as format from '@/lib/format';
 import {
   costTierSymbol,
-  formatCents,
-  formatCostRange,
+  costTierForCents,
   formatMinutes,
   formatTimeRange,
   difficultyLabel,
@@ -54,28 +54,55 @@ describe('formatInches — decimals to tape-measure fractions', () => {
   });
 });
 
-describe('formatCents — integer cents to dollars', () => {
-  it('drops meaningless decimals on whole dollars', () => {
-    expect(formatCents(4800)).toBe('$48');
-    expect(formatCents(130000)).toBe('$1,300');
-  });
-
-  it('keeps cents when there actually are any', () => {
-    expect(formatCents(4850)).toBe('$48.50');
-  });
-
-  it('handles zero', () => {
-    expect(formatCents(0)).toBe('$0');
+/**
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * NO DOLLAR FORMATTERS EXIST. DECISIONS_LOG.md 2026-07-13.
+ *
+ * The public UI shows COST TIERS ONLY. `formatCents` and `formatCostRange` were
+ * DELETED rather than merely left unused, because a formatter that exists will
+ * eventually get called. Removing them makes the rule STRUCTURAL: you cannot render a
+ * dollar amount, because there is nothing to render it with.
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+describe('the dollar formatters are GONE, and that is the enforcement', () => {
+  it('formatCents and formatCostRange do not exist', () => {
+    // If someone re-adds these, this test goes red and they have to come and read the
+    // reasoning above rather than quietly reintroducing a number we cannot stand behind.
+    expect('formatCents' in format).toBe(false);
+    expect('formatCostRange' in format).toBe(false);
   });
 });
 
-describe('formatCostRange', () => {
-  it('renders a range', () => {
-    expect(formatCostRange(5500, 8500)).toBe('$55 – $85');
+describe('costTierForCents — a cost BAND, not a price', () => {
+  /**
+   * The thresholds are DERIVED from the 24 authored plans, whose tiers were assigned by
+   * hand. These cases are taken straight from the real catalog, so if someone nudges the
+   * thresholds "by feel" the test tells them they have contradicted the content.
+   */
+  it('reproduces the hand-assigned tiers of real plans', () => {
+    // dovetailed-keepsake-box: authored TIER_1, costMax $45
+    expect(costTierForCents(4_500)).toBe('TIER_1');
+    // edge-grain-maple-cutting-board: authored TIER_2, costMax $85
+    expect(costTierForCents(8_500)).toBe('TIER_2');
+    // nightstand-with-drawer: authored TIER_3, costMax $300
+    expect(costTierForCents(30_000)).toBe('TIER_3');
+    // live-edge-coffee-table: authored TIER_4, costMax $720
+    expect(costTierForCents(72_000)).toBe('TIER_4');
+    // garden-storage-shed: authored TIER_5, costMax $2,200
+    expect(costTierForCents(220_000)).toBe('TIER_5');
   });
 
-  it('collapses to a single figure when min equals max', () => {
-    expect(formatCostRange(5000, 5000)).toBe('$50');
+  it('a shopping list spanning several plans lands in a high band, not a wrong number', () => {
+    // This is the job the deleted "≈ $84" total used to do: stop someone expecting to
+    // build an end-grain butcher block for $10. A band does it without pretending to
+    // know what a board costs at your lumberyard this week.
+    expect(costTierSymbol(costTierForCents(1_000))).toBe('$');
+    expect(costTierSymbol(costTierForCents(150_000))).toBe('$$$$$');
+  });
+
+  it('never returns undefined for an absurd input', () => {
+    expect(costTierForCents(0)).toBe('TIER_1');
+    expect(costTierForCents(999_999_999)).toBe('TIER_5');
   });
 });
 

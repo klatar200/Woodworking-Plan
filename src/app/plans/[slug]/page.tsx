@@ -12,13 +12,7 @@ import { SaveButton } from '@/components/save-button';
 import { LikeButton } from '@/components/like-button';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
-import {
-  costTierSymbol,
-  difficultyLabel,
-  formatCostRange,
-  formatCents,
-  formatDimensions,
-} from '@/lib/format';
+import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
 
 /**
  * Plan detail — Sprint 3's "plan detail page rendering all structured data from
@@ -77,10 +71,6 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
   const essentialTools = plan.tools.filter((t) => t.essential);
   const optionalTools = plan.tools.filter((t) => !t.essential);
 
-  const itemizedTotal = plan.materials.reduce(
-    (sum, m) => sum + (m.costCents ?? 0),
-    0,
-  );
 
   return (
     <main id="main" className="page page-wide">
@@ -143,12 +133,10 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
             <dd>{plan.timeLabel}</dd>
           </div>
           <div className="glance-item">
-            <dt>Cost tier</dt>
+            <dt>Cost</dt>
             <dd>
               <strong>{costTierSymbol(plan.costTier)}</strong>{' '}
-              <span className="muted">
-                {formatCostRange(plan.costMinCents, plan.costMaxCents)}
-              </span>
+              <span className="muted">of $$$$$</span>
             </dd>
           </div>
         </dl>
@@ -193,12 +181,17 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
       <section>
         <h2>Materials</h2>
         <div className="table-scroll">
+          {/* NO COST COLUMN. DECISIONS_LOG.md 2026-07-13 — tiers only, no dollar
+              figures anywhere in the public UI. A per-material price is the most
+              precise-looking and least defensible number on the page: it is a
+              hand-authored ballpark for a commodity that moves with region, species and
+              season. The tier in the glance strip says the thing that actually changes
+              a decision. */}
           <table className="data-table">
             <thead>
               <tr>
                 <th scope="col">Item</th>
                 <th scope="col">Qty</th>
-                <th scope="col">Est. cost</th>
               </tr>
             </thead>
             <tbody>
@@ -211,32 +204,15 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
                   <td className="numeric">
                     {m.quantity} {m.unit}
                   </td>
-                  <td className="numeric">
-                    {m.costCents !== null ? (
-                      formatCents(m.costCents)
-                    ) : (
-                      <span className="muted">varies</span>
-                    )}
-                  </td>
                 </tr>
               ))}
             </tbody>
-            {itemizedTotal > 0 && (
-              <tfoot>
-                <tr>
-                  <td colSpan={2}>
-                    <strong>Itemized total</strong>
-                  </td>
-                  <td className="numeric">
-                    <strong>{formatCents(itemizedTotal)}</strong>
-                  </td>
-                </tr>
-              </tfoot>
-            )}
           </table>
         </div>
         <p className="footnote">
-          Estimates only. Lumber prices vary by region, species, and season.
+          Overall cost: <strong>{costTierSymbol(plan.costTier)}</strong>. Lumber prices
+          vary by region, species, and season, so we give a band rather than a figure we
+          would only be pretending to know.
         </p>
       </section>
 

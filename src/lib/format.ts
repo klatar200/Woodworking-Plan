@@ -12,32 +12,72 @@ import type { CostTier } from '@prisma/client';
 
 const COST_TIER_ORDER: CostTier[] = ['TIER_1', 'TIER_2', 'TIER_3', 'TIER_4', 'TIER_5'];
 
+/**
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * THERE IS NO `formatCents`. THERE IS NO `formatCostRange`. THIS IS DELIBERATE.
+ *
+ * DECISIONS_LOG.md 2026-07-13: the public UI shows COST TIERS ONLY — $ through $$$$$
+ * — and no dollar figures anywhere. Not on cards, not on plan pages, not in the
+ * materials table, not on the shopping list, not in print.
+ *
+ * WHY THE FUNCTIONS ARE DELETED RATHER THAN MERELY UNUSED: a formatter that exists
+ * will eventually get called. Removing it makes the rule STRUCTURAL — you cannot
+ * render a dollar amount, because there is nothing to render it with. That is worth
+ * more than a comment asking people not to.
+ *
+ * WHY: an itemized dollar total is a CLAIM OF PRECISION WE CANNOT SUPPORT. Lumber
+ * varies by region, species and season, and every figure in the catalog is a
+ * hand-authored ballpark. A tier communicates the same decision-relevant fact — "this
+ * is a cheap project" vs "this is not" — and cannot be wrong in the way a number can.
+ *
+ * `Material.costCents`, `Plan.costMinCents` and `Plan.costMaxCents` REMAIN in the
+ * schema and remain populated. They are the INPUT that derives the tier. This is a
+ * presentation decision, not a data decision — deleting the underlying numbers would
+ * be a one-way door and would make the tiers unmaintainable.
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+
 /** `$` through `$$$$$` — BUSINESS_PLAN.md §4.8. */
 export function costTierSymbol(tier: CostTier): string {
   return '$'.repeat(COST_TIER_ORDER.indexOf(tier) + 1);
 }
 
 /**
- * Integer cents → a dollar string.
+ * Upper bound of each tier, in integer cents.
  *
- * Cents are integers precisely so no rounding happens before this point. Whole
- * dollars render without decimals ("$48", not "$48.00") — nobody buying lumber
- * cares about the cents, and the noise makes a cost range harder to scan.
+ * NOT INVENTED — derived from the 24 authored plans, whose `costTier` was assigned by
+ * hand. Bucketing them by `costMaxCents` separates the tiers with no overlap at all:
+ *
+ *   TIER_1  max cost $45–$50      TIER_4  max cost $620–$720
+ *   TIER_2  max cost $55–$150     TIER_5  max cost $2200
+ *   TIER_3  max cost $170–$300
+ *
+ * So these thresholds reproduce the human judgement already in the catalog rather than
+ * imposing a different one on top of it. If the catalog's price distribution shifts,
+ * re-derive them from the data — do not nudge them by feel.
  */
-export function formatCents(cents: number): string {
-  const dollars = cents / 100;
-  return Number.isInteger(dollars)
-    ? `$${dollars.toLocaleString('en-US')}`
-    : `$${dollars.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`;
-}
+const TIER_MAX_CENTS: [CostTier, number][] = [
+  ['TIER_1', 5_000], // ≤ $50
+  ['TIER_2', 15_000], // ≤ $150
+  ['TIER_3', 30_000], // ≤ $300
+  ['TIER_4', 72_000], // ≤ $720
+];
 
-/** An itemized estimated cost range, e.g. "$55 – $85". */
-export function formatCostRange(minCents: number, maxCents: number): string {
-  if (minCents === maxCents) return formatCents(minCents);
-  return `${formatCents(minCents)} – ${formatCents(maxCents)}`;
+/**
+ * Integer cents → the tier that best describes them.
+ *
+ * Used where there is no authored tier to fall back on — chiefly the shopping list,
+ * which spans several plans and therefore has no tier of its own.
+ *
+ * This is what preserves the job the shopping-list total used to do: stop someone
+ * expecting to build an end-grain butcher block for $10. It does that without printing
+ * a number we do not really stand behind.
+ */
+export function costTierForCents(cents: number): CostTier {
+  for (const [tier, maxCents] of TIER_MAX_CENTS) {
+    if (cents <= maxCents) return tier;
+  }
+  return 'TIER_5';
 }
 
 /**
