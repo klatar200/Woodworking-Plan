@@ -4,9 +4,11 @@ import {
   planSchema,
   categorySchema,
   toolSchema,
+  pathSchema,
   type PlanInput,
   type CategoryInput,
   type ToolInput,
+  type PathInput,
 } from './plan-schema';
 
 /**
@@ -26,6 +28,7 @@ export interface Catalog {
   categories: CategoryInput[];
   tools: ToolInput[];
   plans: PlanInput[];
+  paths: PathInput[];
 }
 
 function readJson(path: string): unknown {
@@ -69,6 +72,32 @@ export function loadCatalog(contentDir: string = CONTENT_DIR): Catalog {
     plans.push(result.data);
   }
 
+  // --- paths (Sprint 16): one file per path, like the plans ---
+  //
+  // The directory is OPTIONAL. A catalog with no paths is a valid catalog — the loader
+  // must not explode on a fresh checkout that predates this sprint, and it must not
+  // require an empty directory to exist for the sake of it.
+  const pathsDir = join(contentDir, 'paths');
+  const paths: PathInput[] = [];
+
+  let pathFiles: string[] = [];
+  try {
+    pathFiles = readdirSync(pathsDir)
+      .filter((f) => f.endsWith('.json'))
+      .sort();
+  } catch {
+    // No paths/ directory. Fine.
+  }
+
+  for (const file of pathFiles) {
+    const result = pathSchema.safeParse(readJson(join(pathsDir, file)));
+    if (!result.success) {
+      problems.push(`paths/${file}: ${result.error.issues.map(fmt).join('; ')}`);
+      continue;
+    }
+    paths.push(result.data);
+  }
+
   if (problems.length > 0) {
     throw new Error(`Invalid seed content:\n${problems.map((p) => `  - ${p}`).join('\n')}`);
   }
@@ -107,13 +136,63 @@ export function loadCatalog(contentDir: string = CONTENT_DIR): Catalog {
   assertUniqueSlugs(categories.map((c) => c.slug), 'category', refProblems);
   assertUniqueSlugs(tools.map((t) => t.slug), 'tool', refProblems);
 
+  /**
+   * PATHS (Sprint 16) — the checks that only exist BETWEEN files.
+   *
+   * A path is a list of plan slugs. Zod cannot know whether those plans exist; only this
+   * pass can. Postgres would catch it too — halfway through a seed run, with a far worse
+   * message, and after having already written half the catalog.
+   */
+  const planSlugs = new Set(plans.map((p) => p.slug));
+
+  for (const path of paths) {
+    const seenPlans = new Set<string>();
+
+    for (const step of path.steps) {
+      if (!planSlugs.has(step.plan)) {
+        refProblems.push(`path "${path.slug}" references unknown plan "${step.plan}"`);
+      }
+
+      // A plan twice in one path is a content error, not a feature. The DB enforces it
+      // too (@@unique([pathId, planId])), but failing here names the FILE.
+      if (seenPlans.has(step.plan)) {
+        refProblems.push(`path "${path.slug}" lists plan "${step.plan}" more than once`);
+      }
+      seenPlans.add(step.plan);
+    }
+
+    /**
+     * A path whose difficulty goes DOWN is not a learning path.
+     *
+     * This is a warning, not an error — a deliberate dip is defensible (the Crosscut Sled
+     * is difficulty 3 but you want it early because it makes everything after it easier).
+     * So it prints rather than throws. But it prints, because an accidental dip is a
+     * broken promise: the user was told this sequence builds skill.
+     */
+    const difficulties = path.steps
+      .map((step) => plans.find((p) => p.slug === step.plan)?.difficulty)
+      .filter((d): d is number => d !== undefined);
+
+    for (let i = 1; i < difficulties.length; i += 1) {
+      if (difficulties[i]! < difficulties[i - 1]!) {
+        console.warn(
+          `[content] path "${path.slug}" step ${i + 1} is EASIER than step ${i} ` +
+            `(difficulty ${difficulties[i]} after ${difficulties[i - 1]}). ` +
+            `Deliberate? The step's reason should say why.`,
+        );
+      }
+    }
+  }
+
+  assertUniqueSlugs(paths.map((p) => p.slug), 'path', refProblems);
+
   if (refProblems.length > 0) {
     throw new Error(
       `Seed content has broken references:\n${refProblems.map((p) => `  - ${p}`).join('\n')}`,
     );
   }
 
-  return { categories, tools, plans };
+  return { categories, tools, plans, paths };
 }
 
 function assertUniqueSlugs(slugs: string[], label: string, out: string[]): void {

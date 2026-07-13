@@ -117,6 +117,84 @@ model Like {
   @@index([planId])
 }
 
+/// A skill-building learning path — Sprint 16. BUSINESS_PLAN.md §10 (Phase 3).
+///
+/// An ORDERED sequence of plans that teaches something: "your first five projects",
+/// "screws to dovetails". Authored content, seeded from JSON like the plans themselves,
+/// so a path can be re-ordered by editing a file rather than by shipping code.
+///
+/// ═══════════════════════════════════════════════════════════════════════════════
+/// NOTE WHAT IS *NOT* HERE — AND THIS IS THE THIRD TIME THIS FILE HAS SAID IT:
+///
+/// There is NO `PathProgress` model, and no `completed` column anywhere.
+///
+/// A step is complete when the user has REVIEWED that plan — you reviewed it, you
+/// built it. Progress is COMPUTED ON READ from the `Review` table (Sprint 10), which
+/// already exists and is already the truth.
+///
+/// A progress table would be derived state, and derived state is exactly what broke
+/// production in Sprint 4 (`searchVector` shipped empty) and Sprint 6. There is nothing
+/// here to backfill, nothing to keep in sync, and nothing that can silently disagree
+/// with reality.
+///
+/// The accepted cost: someone who builds a plan without reviewing it reads as
+/// incomplete. That is a real gap, and it is a fair price for having no drift.
+/// ═══════════════════════════════════════════════════════════════════════════════
+model Path {
+  id String @id @default(cuid())
+
+  /// The seed pipeline's upsert key. Re-seeding updates rather than duplicating.
+  slug String @unique
+
+  title String
+  /// One-line hook: "From a coat rack to a bookcase, in five weekends."
+  summary String
+  /// Full prose intro. Markdown.
+  description String
+
+  /// Controls display order on /paths. Lower sorts first.
+  sortOrder Int @default(0)
+
+  /// Unpublished paths are invisible, exactly like unpublished plans. Same rule, same
+  /// enforcement point (the data layer, never the page).
+  published Boolean @default(true)
+
+  steps PathStep[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published])
+  @@index([sortOrder])
+}
+
+/// One plan's place in one path.
+///
+/// `reason` is REQUIRED, not optional. An ordered list of plans with no explanation of
+/// why each one comes where it does is not a learning path — it is a collection with a
+/// number next to each item. The reason IS the teaching.
+model PathStep {
+  id String @id @default(cuid())
+
+  pathId String
+  path   Path   @relation(fields: [pathId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  /// 1-based. Unique within the path — two steps cannot both be "step 3".
+  stepNumber Int
+
+  /// Why this plan, here. The whole value of the feature.
+  reason String
+
+  @@unique([pathId, stepNumber])
+  /// A plan appears at most once in any given path.
+  @@unique([pathId, planId])
+  @@index([pathId])
+  @@index([planId])
+}
+
 /// A user's review of a plan — BUSINESS_PLAN.md §10, Sprint 10.
 ///
 /// Same ownership rules as everything else in this file: `userId` comes ONLY from
@@ -382,6 +460,7 @@ model Plan {
   savedBy   SavedPlan[]
   likes     Like[]
   reviews   Review[]
+  pathSteps PathStep[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

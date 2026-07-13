@@ -37,6 +37,21 @@ export const PUBLIC_ROUTES = [
   // not on this list.
   '/plans(.*)',
 
+  // Learning paths (Sprint 16).
+  //
+  // Same reasoning as the plan pages, and the same limits. A path is CURATED CATALOG
+  // CONTENT — an ordered list of published plans plus an explanation of the order.
+  // BUSINESS_PLAN.md §12 gates participation, not content, and someone deciding whether
+  // this site is worth signing up for should be able to see that it knows what order to
+  // teach things in.
+  //
+  // What this does NOT expose: only `published: true` paths, containing only
+  // `published: true` plans — both enforced in src/lib/paths.ts, in the data layer.
+  // PROGRESS is not exposed at all: `getBuiltPlanIds()` derives its owner from the
+  // verified session and returns an empty set for an anonymous visitor, so the page
+  // renders the path with no personalization rather than someone else's.
+  '/paths(.*)',
+
   // Auth flows themselves. Obviously must be reachable while signed out, and
   // the catch-alls cover Clerk's own sub-steps (verify, reset, factor-two).
   '/sign-in(.*)',

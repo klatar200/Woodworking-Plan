@@ -647,6 +647,43 @@ ballparks. A tier communicates the same decision-relevant fact — "this is a ch
 vs "this is not" — and cannot be wrong in the way a number can. It also removes any
 temptation to chase live pricing (see above).
 
+### 2026-07-13 — Sprint 16: path progress is DERIVED FROM REVIEWS, not a new table
+**Status:** Confirmed by user (chosen from 3: derive from reviews [recommended], explicit
+"mark as built" table, no progress tracking).
+
+**The decision.** A learning-path step counts as complete when the user has **reviewed**
+that plan. You reviewed it ⇒ you built it.
+
+**Why.** This is the **derived-data rule** (`CLAUDE.md`) applied to a feature that was
+begging for a denormalized table. There is no `PathProgress` model, no new writes, no new
+multi-tenancy surface, nothing to backfill, and nothing that can drift out of step with
+reality. Sprints 4 and 6 both broke production by adding derived state and assuming a
+migration would populate it; Sprints 7, 10 and 11 shipped clean by refusing to.
+
+**The cost, stated honestly:** someone who builds a plan and does not review it shows as
+incomplete. That is a real gap. It is also a mild nudge toward reviewing, which the
+product wants anyway (`BUSINESS_PLAN.md` §4.7 — community signal). If it turns out to
+annoy real users, an explicit "mark as built" table is a clean follow-on sprint; deriving
+first costs nothing and can be replaced without a data migration.
+
+### 2026-07-13 — Sprint 16: five authored learning paths
+**Status:** Confirmed by user (chosen from 3: build these five, start with three, "I'll
+specify them").
+
+Authored as content (JSON → zod → idempotent seed), exactly like the 24 plans, so the
+paths can be edited without touching code:
+
+| Path | Progression |
+|---|---|
+| **Your first five** | Coat Rack → Cherry Board → Planter Box → Pine Bookcase → Knife Block |
+| **The cutting-board path** | Cherry serving board → Edge-grain → End-grain butcher block |
+| **Outfit your shop** | Crosscut Sled → Rolling Cart → Tool Cabinet → Workbench |
+| **Joinery: screws to dovetails** | Bookcase → Storage Bench → Nightstand (drawer) → Dovetailed Box |
+| **Furnish a room** | Bookcase → Floating Shelves → Nightstand → Platform Bed → Dining Table |
+
+Every step carries a **reason it comes where it does**. An ordered list with no rationale
+is not a learning path — it is a collection with a number next to each item.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

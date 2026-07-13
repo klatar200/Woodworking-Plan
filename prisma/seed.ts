@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { loadCatalog } from '../src/content/load';
+import type { PathInput } from '../src/content/plan-schema';
 
 /**
  * Seeds the plan catalog from content/ into Postgres.
@@ -40,11 +41,12 @@ function describeTarget(): string {
 }
 
 async function main() {
-  const { categories, tools, plans } = loadCatalog();
+  const { categories, tools, plans, paths } = loadCatalog();
 
   console.log(`Target database: ${describeTarget()}`);
   console.log(
-    `Seeding: ${categories.length} categories, ${tools.length} tools, ${plans.length} plans`,
+    `Seeding: ${categories.length} categories, ${tools.length} tools, ` +
+      `${plans.length} plans, ${paths.length} learning paths`,
   );
 
   for (const category of categories) {
@@ -179,8 +181,67 @@ async function main() {
 
   await refreshSearchVectors();
 
+  await seedPaths(paths);
+
   const total = await prisma.plan.count();
-  console.log(`Done. ${total} plans in the catalog.`);
+  const totalPaths = await prisma.path.count();
+  console.log(`Done. ${total} plans and ${totalPaths} learning paths in the catalog.`);
+}
+
+/**
+ * Seeds the learning paths (Sprint 16).
+ *
+ * Runs AFTER the plans, because a path's steps are foreign keys into them. Same shape as
+ * the plan seeder: upsert on slug, and rewrite the children wholesale inside a
+ * transaction rather than merging them.
+ *
+ * REWRITE, DON'T MERGE — and here it matters more than anywhere else. Merging steps would
+ * strand a step the author deleted from the JSON, leaving a path whose displayed order
+ * silently disagrees with the file that is supposed to define it. A path that is half old
+ * and half new is worse than no path.
+ */
+async function seedPaths(paths: PathInput[]): Promise<void> {
+  if (paths.length === 0) return;
+
+  const planIds = new Map(
+    (await prisma.plan.findMany({ select: { id: true, slug: true } })).map((p) => [
+      p.slug,
+      p.id,
+    ]),
+  );
+
+  for (const path of paths) {
+    const scalars = {
+      title: path.title,
+      summary: path.summary,
+      description: path.description,
+      sortOrder: path.sortOrder,
+      published: path.published,
+    };
+
+    await prisma.$transaction(async (tx) => {
+      const saved = await tx.path.upsert({
+        where: { slug: path.slug },
+        create: { slug: path.slug, ...scalars },
+        update: scalars,
+      });
+
+      await tx.pathStep.deleteMany({ where: { pathId: saved.id } });
+
+      await tx.pathStep.createMany({
+        data: path.steps.map((step, index) => ({
+          pathId: saved.id,
+          // load.ts already proved every slug resolves — a missing one throws there,
+          // with the file name, rather than blowing up mid-transaction here.
+          planId: planIds.get(step.plan)!,
+          stepNumber: index + 1, // 1-based; the file's ORDER is the step order
+          reason: step.reason,
+        })),
+      });
+    });
+
+    console.log(`  ✓ path: ${path.slug} (${path.steps.length} steps)`);
+  }
 }
 
 /**

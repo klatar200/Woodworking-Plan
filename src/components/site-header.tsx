@@ -32,6 +32,13 @@ export function SiteHeader() {
         </Link>
 
         <nav className="site-nav" aria-label="Main">
+          {/* Sprint 16. OUTSIDE the SignedIn/SignedOut split on purpose — paths are
+              public content, and they are the best argument for signing up that the
+              site has. Hiding them behind a login would be exactly backwards. */}
+          <Link href="/paths" className="btn btn-ghost">
+            Paths
+          </Link>
+
           <SignedOut>
             <Link href="/sign-in" className="btn btn-ghost">
               Log in

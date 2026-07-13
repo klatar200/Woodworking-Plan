@@ -520,6 +520,27 @@ Backfill procedure is in `DEPLOYMENT.md`. Bare `npx prisma` does **not** read
 - **Money is integer cents. Dimensions render as tape-measure fractions.** A
   decimal cut list is unusable in a workshop.
 
+### 🎓 Learning-paths rule (Sprint 16) — progress is DERIVED, never stored
+
+**There is no `PathProgress` table, and there must not be one.** A step is complete when
+the user has **reviewed** that plan. `Review` (Sprint 10) already exists and is already
+the truth, so there is nothing to backfill and nothing that can drift.
+
+**"Next" is the FIRST UNBUILT step, not `completed + 1`.** People build out of order —
+they see the dovetail box, build it first, and come back. `completed + 1` would point at a
+step they had already finished.
+
+**`reason` is REQUIRED by the schema**, not by convention. An ordered list of plans with no
+explanation of why each comes where it does is a collection with numbers on it. The reason
+IS the teaching.
+
+**The difficulty-dip warning in `load.ts` is a WARNING, not an error** — a deliberate dip
+is defensible (the Crosscut Sled is harder than the Rolling Cart, but you want the sled
+first because it makes every later cut square). An *accidental* dip must not pass silently.
+
+**Paths are CONTENT.** Editing `content/paths/*.json` changes DATA, which does not reach
+production on deploy. It needs a production seed. See `DEPLOYMENT.md`.
+
 ### 🪚 Cut-list optimizer rule (Sprint 15) — the buying list must be BUYABLE
 
 `src/lib/cut-optimizer.ts`. Pure module, no deps. Five things it must never get wrong:

@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { loadCatalog } from '@/content/load';
-import { planSchema, COST_TIER_BOUNDS, costTierSymbol } from '@/content/plan-schema';
+import {
+  planSchema,
+  pathSchema,
+  COST_TIER_BOUNDS,
+  costTierSymbol,
+} from '@/content/plan-schema';
 
 /**
  * These tests run against the REAL content in content/ — not fixtures.
@@ -191,5 +196,88 @@ describe('costTierSymbol', () => {
     expect(costTierSymbol('TIER_1')).toBe('$');
     expect(costTierSymbol('TIER_3')).toBe('$$$');
     expect(costTierSymbol('TIER_5')).toBe('$$$$$');
+  });
+});
+
+/**
+ * Learning paths — Sprint 16.
+ *
+ * The real risk in path content is REFERENTIAL: a path is a list of plan slugs, and zod
+ * cannot know whether those plans exist. Only the cross-file pass in load.ts can, and it
+ * has to catch it BEFORE the seeder starts writing — Postgres would catch it too, halfway
+ * through a run, with a far worse message and half the catalog already written.
+ */
+describe('learning paths (Sprint 16)', () => {
+  it('every path step points at a plan that actually exists', () => {
+    const planSlugs = new Set(catalog.plans.map((plan) => plan.slug));
+
+    for (const path of catalog.paths) {
+      for (const step of path.steps) {
+        expect(planSlugs.has(step.plan), `path "${path.slug}" → "${step.plan}"`).toBe(true);
+      }
+    }
+  });
+
+  it('EVERY step has a reason — the reason IS the feature', () => {
+    // An ordered list of plans with no explanation of why each one comes where it does is
+    // not a learning path. It is a collection with a number next to each item.
+    for (const path of catalog.paths) {
+      for (const step of path.steps) {
+        expect(step.reason.trim().length, `${path.slug} → ${step.plan}`).toBeGreaterThan(20);
+      }
+    }
+  });
+
+  it('no path lists the same plan twice', () => {
+    for (const path of catalog.paths) {
+      const slugs = path.steps.map((step) => step.plan);
+      expect(new Set(slugs).size, `path "${path.slug}"`).toBe(slugs.length);
+    }
+  });
+
+  it('a path has at least two steps — a "path" of one plan is a plan', () => {
+    for (const path of catalog.paths) {
+      expect(path.steps.length, `path "${path.slug}"`).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it('pathSchema rejects a step with no reason', () => {
+    const valid = {
+      slug: 'a-path',
+      title: 'A Path',
+      summary: 'Summary.',
+      description: 'Description.',
+      steps: [
+        { plan: 'plan-one', reason: 'Because it teaches the first thing.' },
+        { plan: 'plan-two', reason: 'Because it builds on the first.' },
+      ],
+    };
+
+    expect(pathSchema.safeParse(valid).success).toBe(true);
+
+    // A missing or empty reason must be a hard failure, not a shrug.
+    expect(
+      pathSchema.safeParse({
+        ...valid,
+        steps: [{ plan: 'plan-one', reason: '' }, valid.steps[1]],
+      }).success,
+    ).toBe(false);
+
+    expect(
+      pathSchema.safeParse({ ...valid, steps: [{ plan: 'plan-one' }, valid.steps[1]] })
+        .success,
+    ).toBe(false);
+  });
+
+  it('pathSchema rejects a one-step path', () => {
+    expect(
+      pathSchema.safeParse({
+        slug: 'a-path',
+        title: 'A Path',
+        summary: 'Summary.',
+        description: 'Description.',
+        steps: [{ plan: 'plan-one', reason: 'The only one.' }],
+      }).success,
+    ).toBe(false);
   });
 });

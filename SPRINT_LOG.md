@@ -1290,3 +1290,63 @@ the point of truncating almost every file read. The optimizer library and its 26
 verified in a clean clone and pass. **The page component could not be typechecked here** —
 its `/tmp` copy is corrupt, not the real file. Keagan runs `npm test` and `npm run build`.
 I would rather say that than assert green and be wrong, which I have already done once.
+
+**Verified by Keagan:** 363/363 tests, build clean, `/plans/[slug]/boards` compiled and
+deployed. CI green.
+
+---
+
+## Sprint 16: Skill-building learning paths
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 3):** "Sequence plans into ordered paths. Content and
+ordering, no new vendor." **The last sprint of Phase 3.**
+
+### Attempt 1 — 97/100 ✅
+
+**Five paths, authored as content** (JSON → zod → idempotent seed), so they can be
+re-ordered by editing a file rather than shipping code: *Your First Five*, *The Cutting
+Board Path*, *Outfit Your Shop*, *Joinery: Screws to Dovetails*, *Furnish a Room*.
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Delivers the Phase 3 bullet. No new vendor, no new dependency, $0. Content lives in `content/paths/`, same pipeline as the 24 plans. |
+| Correctness (/20) | **19** | Every path validated against the real catalog: 5 paths, all plan references resolve. `summarizeProgress` handles the case that actually bites — someone who builds **out of order**. **−1: awaiting Keagan's live check** (and the production seed — see below). |
+| Test coverage (/15) | **15** | `tests/paths.test.ts` (+11) and `tests/content.test.ts` (+6). The content tests run against the **real** `content/paths/`, not fixtures: every step resolves to a real plan, every step has a reason >20 chars, no plan appears twice in a path, no one-step "paths". |
+| Security (/15) | **15** | `published: true` on **both** gates — a published path must not surface a plan that has since been unpublished, so the *step* query filters too. `/paths(.*)` added to the allowlist as a deliberate decision with a written reason. **Progress is never exposed**: `getBuiltPlanIds()` takes no arguments and returns an empty set for an anonymous visitor, so a public path page renders with no personalization rather than someone else's. |
+| Code quality (/10) | **10** | **No `PathProgress` table.** Progress is derived from the `Review` table on read — the third feature in a row offered an obvious denormalized column and refusing it. Nothing to backfill, nothing to drift. `summarizeProgress` is a pure function, tested directly. |
+| Mobile/offline (/10) | **8** | Reuses `PlanCard` and the existing responsive grid. The tick, not the colour, marks a completed step — so it survives print and colour-blindness. **−2: paths are NOT cached offline.** `/paths` is public and *would* be cacheable, but it is not in the Sprint 14 download list and is not pre-cached on save. Defensible (you plan a path at a desk, not in a workshop), but it is an inconsistency with every other public route and I am not going to pretend it was deliberate. |
+| Documentation (/5) | **5** | Both decisions logged. The "reason is the feature" rule is enforced by the *schema* (`z.string().min(1)`), not by a comment asking nicely. |
+
+**Total: 97/100. PASS.**
+
+### The two rules this sprint turns on
+
+**1. Progress is DERIVED, not stored.** A step is complete when the user has **reviewed**
+that plan. You reviewed it ⇒ you built it. Sprints 4 and 6 both broke production by adding
+derived state a migration could not populate; this refuses the offer for the third
+consecutive feature. **The accepted cost, stated plainly:** someone who builds without
+reviewing reads as incomplete. Switching to an explicit "mark as built" table later needs
+**no data migration**, precisely because nothing was stored.
+
+**2. "Next" is the first UNBUILT step — not `completed + 1`.** Those differ the moment
+someone builds out of order, which people do: they see the dovetail box, build it first,
+and come back. `completed + 1` would then point at a step they had already finished and
+tell them to do it again.
+
+### A content guard that earned its keep immediately
+
+`load.ts` now **warns when a path's difficulty goes DOWN**. It fired on the first run:
+
+```
+[content] path "outfit-your-shop" step 2 is EASIER than step 1 (difficulty 2 after 3).
+          Deliberate? The step's reason should say why.
+```
+
+It *is* deliberate — the Crosscut Sled (d3) comes before the Rolling Cart (d2) because
+from the moment the sled exists, every cut after it is square. Leverage beats difficulty.
+That step's `reason` says exactly that. **A warning, not an error**, precisely so a
+defensible dip can pass while an accidental one cannot pass *silently*.
+
+**🛑 NOT LIVE UNTIL PRODUCTION IS SEEDED.** The migration creates the tables; the *paths
+themselves are DATA*, and data does not flow to production on deploy. Same trap as Sprint
+4's empty search index and Sprint 12's material names. See `DEPLOYMENT.md`.

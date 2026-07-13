@@ -164,6 +164,46 @@ export const toolSchema = z
 
 export type ToolInput = z.infer<typeof toolSchema>;
 
+/**
+ * A skill-building learning path — Sprint 16.
+ *
+ * `.strict()` like every other schema here: an unexpected key is a typo, and a typo in
+ * content that silently validates is content that silently does the wrong thing.
+ */
+export const pathSchema = z
+  .object({
+    slug,
+    title: z.string().min(1),
+    summary: z.string().min(1),
+    description: z.string().min(1),
+    sortOrder: z.number().int().default(0),
+    published: z.boolean().default(true),
+
+    steps: z
+      .array(
+        z
+          .object({
+            /** Plan slug. Checked against the real catalog in load.ts. */
+            plan: slug,
+            /**
+             * REQUIRED. Not optional, and `.min(1)` so an empty string cannot slip past.
+             *
+             * An ordered list of plans with no explanation of why each one comes where
+             * it does is not a learning path — it is a collection with a number next to
+             * each item. The reason IS the teaching, and the schema is where we make
+             * that non-negotiable rather than a habit someone might drop.
+             */
+            reason: z.string().min(1),
+          })
+          .strict(),
+      )
+      // A "path" of one plan is a plan. Two is the minimum that teaches a sequence.
+      .min(2),
+  })
+  .strict();
+
+export type PathInput = z.infer<typeof pathSchema>;
+
 /** Human-readable `$`–`$$$$$` for display. */
 export function costTierSymbol(tier: CostTierName): string {
   return '$'.repeat(COST_TIERS.indexOf(tier) + 1);
