@@ -487,6 +487,50 @@ is neither.
 **Units are never combined.** `board feet` and `each` do not add up. A merge key that
 ignored the unit would produce numbers that are not quantities of anything.
 
+### 2026-07-13 — Sprint 12 REVISION: fix the CONTENT, not the matcher
+**Status:** Directed by Keagan, after reviewing the first shipped version.
+
+**His call, and he is right:** the list was over-engineered because the **data** was
+over-specified. `Titebond II glue` and `Titebond II wood glue` should never have been
+two different things. A plan should say **"wood glue"** and let the builder pick a
+brand — *unless the plan genuinely requires a specific product*, e.g. Titebond III
+(waterproof) for a cutting board or anything that lives outdoors.
+
+**What changed — in the content, across 20 of the 24 plan files:**
+
+| Before | After |
+|---|---|
+| 7 Titebond spellings | `Wood glue` / `Waterproof wood glue` |
+| 9 sandpaper spellings | `Sandpaper, assorted grits` |
+| 8 clear-finish spellings | `Clear interior finish (hardwax oil or wipe-on poly)` |
+| `Paste wax (for the drawer runners)` | `Paste wax` |
+| **all 12 fastener names** | **UNCHANGED** |
+
+Result: **148 material rows → 103 merged lines** (was 129). The specificity did not
+vanish — it moved to each material's `note`, which still renders on the plan page.
+
+**The important part, and the reason the exact-merge rule SURVIVES intact:** once two
+plans both say "Wood glue", **exact merging combines them by itself.** The fix belonged
+in the data. The matcher never needed to get cleverer, and it still refuses to merge a
+1-1/4″ screw with a 1-5/8″ one. Generic is right for *brand*. It is wrong for any
+property that changes what you must buy.
+
+### 2026-07-13 — Sprint 12 REVISION: cost is a BALLPARK; show it, don't withhold it
+**Status:** Directed by Keagan. **This reverses a rule I argued for, and the reversal
+is correct.**
+
+I had made an unpriced material **contagious**: one line without a price and the whole
+list total became `null`, on the grounds that a partial sum shown as a total is a lie.
+
+That was right about the danger and **wrong about the remedy**. As Keagan put it, the
+figure exists "merely as a price point to ensure someone isn't expecting to build an
+end-grain cutting board for $10." Withholding the number entirely throws away the
+signal that does that job, to avoid a precision nobody ever asked for.
+
+**Now:** the total is always a number, rendered as **`≈ $X`**, alongside a count of any
+items that have no estimate ("2 items have no estimate, so the real total will be
+higher"). The honesty lives in the `≈` and the count — **not in refusing to answer.**
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

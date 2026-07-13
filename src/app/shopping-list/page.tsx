@@ -70,24 +70,25 @@ export default async function ShoppingListPage({
         <>
           <p className="subtitle">
             {list.lineCount} {list.lineCount === 1 ? 'item' : 'items'} across{' '}
-            {list.planCount} {list.planCount === 1 ? 'plan' : 'plans'}
-            {list.totalCents !== null ? (
+            {list.planCount} {list.planCount === 1 ? 'plan' : 'plans'} &middot;{' '}
+            {/* A BALLPARK, and labelled as one. Its job is to stop someone expecting
+                to build an end-grain butcher block for $10 — not to be an invoice. */}
+            <strong>&asymp; {formatCents(list.totalCents)}</strong>
+          </p>
+
+          <p className="notice">
+            Prices are rough estimates — lumber varies by region, species, and season.
+            {list.unpricedCount > 0 ? (
               <>
                 {' '}
-                &middot; <strong>{formatCents(list.totalCents)}</strong> estimated
+                <strong>
+                  {list.unpricedCount}{' '}
+                  {list.unpricedCount === 1 ? 'item has' : 'items have'} no estimate
+                </strong>
+                , so the real total will be higher.
               </>
             ) : null}
           </p>
-
-          {/* Say this OUT LOUD rather than quietly summing the priced items and
-              printing a total that is wrong in the cheaper direction. Some materials
-              genuinely have no price ("scrap you already have"). */}
-          {list.hasUnpricedLines ? (
-            <p className="notice">
-              Some materials have no estimated price, so there is no total. The prices
-              shown are estimates only — lumber varies by region, species, and season.
-            </p>
-          ) : null}
 
           {/* Scope switcher. A GET form, no JavaScript. */}
           {collections.length > 0 ? (
@@ -139,11 +140,12 @@ export default async function ShoppingListPage({
                       </label>
 
                       <span className="shopping-line-cost">
-                        {line.costCents !== null ? (
-                          formatCents(line.costCents)
-                        ) : (
-                          <span className="muted">&mdash;</span>
-                        )}
+                        {formatCents(line.costCents)}
+                        {line.unpricedCount > 0 ? (
+                          <span className="muted" title="Some contributing items have no price">
+                            +
+                          </span>
+                        ) : null}
                       </span>
                     </div>
 
@@ -159,9 +161,10 @@ export default async function ShoppingListPage({
           ))}
 
           <p className="footnote">
-            Estimates only. Quantities are summed across plans; identical materials are
-            combined, similar-but-different ones are deliberately kept separate so you
-            do not buy the wrong hardware.
+            Quantities are summed across plans. Consumables like glue, sandpaper and
+            finish are listed generically — buy the brand you like. Fasteners are listed
+            by exact size and are never combined, because a 1-1/4&Prime; screw is not a
+            1-5/8&Prime; screw.
           </p>
         </>
       )}

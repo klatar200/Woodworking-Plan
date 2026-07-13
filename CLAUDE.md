@@ -209,18 +209,31 @@ with it.
   **NO AFFILIATE LINKS** (Vercel Hobby prohibits commercial use). 303 tests green.
 - **NEXT: Sprint 13 — Print-friendly / offline PDF export** (`BUILD_PLAN.md` §4).
 
-### Shopping-list rule (Sprint 12): fuzzy material matching is a SAFETY bug
+### Shopping-list rules (Sprint 12) — BOTH halves matter
 
-Materials merge ONLY on exact normalized (name, unit, species). The catalog contains
-`Stainless steel screws, #8 x 1-1/4"` and `Exterior screws, coated, 1-5/8"` — merging
-them because both say "screws" sends someone to a store to buy **the wrong hardware**,
-with a confident quantity next to it. **A shopping list that is confidently wrong is
-worse than one that is merely long.** Under-merging is visible and harmless;
-over-merging is silent and is not.
+**1. The MATCHER stays exact. Fuzzy matching is a safety bug.**
+Materials merge ONLY on exact normalized (name, unit, species). `Stainless steel
+screws, #8 x 1-1/4"` and `Exterior screws, coated, 1-5/8"` must never merge because
+both say "screws" — that sends someone to buy **the wrong hardware** with a confident
+quantity next to it. **Units are never combined** (`board feet` + `each` is not a
+quantity of anything).
 
-**Units are never combined** (`board feet` + `each` is not a quantity of anything).
-**Cost null is contagious** — if any contributing line is unpriced, the merged line and
-the list total are `null`. Never print a dollar figure that is quietly missing items.
+**2. The CONTENT stays generic. Over-specified data is the other half of the bug.**
+A plan says **"Wood glue"**, not "Titebond II wood glue" — the builder picks the brand.
+Be specific ONLY where the spec changes what you must buy: **waterproof glue** for
+boards/outdoors, and **every fastener size**. The detail belongs in the material's
+`note`, which still renders on the plan page.
+
+**These two rules are the same rule.** Once both plans say "Wood glue", exact merging
+combines them by itself. **Fix near-duplicates in the DATA; never teach the matcher to
+guess.** (2026-07-13, Keagan's call — and the right one. 148 rows → 103 lines.)
+
+**3. Cost is a BALLPARK. Show it; don't withhold it.**
+The total is ALWAYS a number, rendered `≈ $X`, plus a count of unpriced items. An
+earlier version made null contagious and hid the total entirely — right about the
+danger, wrong about the remedy. Its job is to stop someone expecting an end-grain
+butcher block for $10; silence does not do that job. **The honesty is in the `≈` and
+the count, not in refusing to answer.**
 
 **Known gap (owned by Sprint 14):** `/shopping-list` is a private route, so the Sprint 8
 policy correctly refuses to cache it — meaning **the shopping list does NOT work

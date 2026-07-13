@@ -1051,3 +1051,53 @@ silently, and that is neither.
 
 **Carried forward:** the offline gap above; a rate-limited user still gets no feedback;
 **the leaked Neon password and Clerk secret key remain unrotated.**
+
+### Attempt 2 — 97/100 ✅ (re-scored after Keagan's product revision)
+
+Keagan reviewed the shipped list and made two calls. **He was right on both, and one of
+them reverses a rule I had argued for at length.** Re-scored because the revision
+changed what "correct" means for this sprint — leaving Attempt 1's scorecard standing
+would have made it a stale document.
+
+**Revision 1 — fix the CONTENT, not the matcher.** I had diagnosed
+`Titebond II glue` / `Titebond II wood glue` as "a content issue, not a code issue" and
+then *left it there*, having correctly identified the problem and not fixed it. Keagan's
+point: the data was over-specified. A plan should say **"wood glue"** and let the builder
+pick a brand, being specific only where the spec matters (waterproof glue for boards and
+outdoor work; every fastener size).
+
+Normalized across 20 of 24 plan files. **148 material rows → 103 merged lines** (was
+129): sandpaper ×12 → one line, wood glue ×10, clear finish ×9. **And the exact-merge
+rule survives completely intact** — once both plans say "Wood glue", exact merging
+combines them by itself. *The matcher never needed to get cleverer.* Fasteners are still
+never merged across sizes.
+
+**Revision 2 — cost is a BALLPARK; show it.** I had made an unpriced material contagious:
+one such line and the whole total became `null`, because "a partial sum shown as a total
+is a lie." **Right about the danger, wrong about the remedy.** The figure exists to stop
+someone expecting an end-grain board for $10; withholding it throws away the signal that
+does that job to avoid a precision nobody asked for. Now: always a number, rendered
+`≈ $X`, with a count of unpriced items. **The honesty is in the `≈` and the count, not
+in refusing to answer.**
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Unchanged, plus both revisions logged in `DECISIONS_LOG.md` with the reasoning — including the one that reverses my own position. |
+| Correctness (/20) | **19** | Re-verified against the real catalog after normalization: 148 rows → **103** lines, 12 cross-plan merges, waterproof glue still distinct from wood glue, screw sizes still distinct. **−1: awaiting Keagan's live check.** |
+| Test coverage (/15) | **15** | 305 green. +2 tests pinning the new behaviour: two plans needing "Wood glue" produce ONE line, and waterproof glue still does NOT merge with ordinary glue. The money tests now assert the ballpark, not the silence. |
+| Security (/15) | **15** | Untouched by the revision. |
+| Code quality (/10) | **10** | The revision made the code *simpler*, not more complex — the null-contagion branch is gone. **The fix landed in the data, where the problem was.** |
+| Mobile/offline (/10) | **8** | Unchanged — the offline gap stands, owned by Sprint 14. |
+| Documentation (/5) | **5** | `CLAUDE.md`'s shopping-list rule rewritten: it now has *two* halves (exact matcher **and** generic content) and no longer states the reversed cost rule as law. A stale rule that argues against the evidence is worse than no rule. `DEPLOYMENT.md` gains the content-is-production-data warning. |
+
+**Total: 97/100. PASS.**
+
+**The lesson I should have learned one step earlier:** I identified the `Titebond` problem
+myself, called it "a content issue, not a code issue," and then **shipped it anyway**,
+treating "correctly diagnosed" as equivalent to "handled." Naming a defect in a report is
+not the same as fixing it. Keagan had to tell me to go and do the thing I had already
+worked out needed doing.
+
+**🛑 NOT LIVE UNTIL PRODUCTION IS RE-SEEDED.** A content change is a *data* change, and
+data does not flow to production on deploy — the same trap that shipped an empty
+`searchVector` in Sprint 4 and hid for three sprints. See `DEPLOYMENT.md`.

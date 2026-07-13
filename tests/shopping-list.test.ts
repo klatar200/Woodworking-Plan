@@ -125,6 +125,51 @@ describe('SAFETY: what must NOT be merged', () => {
   });
 });
 
+describe('CONSUMABLES are generic, so they merge on their own', () => {
+  it('two plans that both need wood glue produce ONE line', async () => {
+    const { mergeMaterials } = await import('@/lib/shopping-list');
+
+    // This is the fix for `Titebond II glue` vs `Titebond II wood glue`, and note
+    // WHERE the fix lives: in the CONTENT, not in a fuzzy matcher. Once both plans say
+    // "Wood glue", exact merging combines them by itself. The code did not need to get
+    // cleverer — the data needed to stop being over-specified.
+    const lines = mergeMaterials([
+      material({ name: 'Wood glue', unit: 'oz', species: null, quantity: 4, costCents: 400 }),
+      material({
+        name: 'Wood glue',
+        unit: 'oz',
+        species: null,
+        quantity: 6,
+        costCents: 600,
+        plan: PLAN_B,
+      }),
+    ]);
+
+    expect(lines).toHaveLength(1);
+    expect(lines[0]!.quantity).toBe(10);
+  });
+
+  it('but waterproof glue stays SEPARATE from ordinary wood glue', async () => {
+    const { mergeMaterials } = await import('@/lib/shopping-list');
+
+    // Generic is right for brand. It is NOT right for a property that changes what you
+    // must buy: a cutting board or an outdoor chair needs a waterproof (Type I) glue,
+    // and handing someone interior PVA for a planter box is a ruined project.
+    const lines = mergeMaterials([
+      material({ name: 'Wood glue', unit: 'oz', species: null, quantity: 4 }),
+      material({
+        name: 'Waterproof wood glue',
+        unit: 'oz',
+        species: null,
+        quantity: 4,
+        plan: PLAN_B,
+      }),
+    ]);
+
+    expect(lines).toHaveLength(2);
+  });
+});
+
 describe('what SHOULD merge', () => {
   it('sums identical materials across plans, and records both plans', async () => {
     const { mergeMaterials } = await import('@/lib/shopping-list');
@@ -156,8 +201,8 @@ describe('what SHOULD merge', () => {
   });
 });
 
-describe('MONEY: never print a total that is quietly missing items', () => {
-  it('an unpriced line makes the MERGED line unpriced — null is contagious', async () => {
+describe('MONEY: a ballpark, marked as one — not silence', () => {
+  it('sums what it knows and COUNTS what it does not', async () => {
     const { mergeMaterials } = await import('@/lib/shopping-list');
 
     const lines = mergeMaterials([
@@ -165,14 +210,16 @@ describe('MONEY: never print a total that is quietly missing items', () => {
       material({ quantity: 3, costCents: null, plan: PLAN_B }),
     ]);
 
-    // The alternative is showing $12.00 as though it were the total: a number that is
-    // WRONG in the direction of "cheaper than reality", with a dollar sign in front of
-    // it, next to something a person is about to go and buy.
-    expect(lines[0]!.costCents).toBeNull();
-    expect(lines[0]!.quantity).toBe(8); // the QUANTITY is still known and still right
+    // An earlier version made null CONTAGIOUS: one unpriced contributor and the whole
+    // line went to null, on the grounds that a partial sum is "a lie". That threw away
+    // a useful number to avoid a precision nobody asked for, and left the user with
+    // nothing. The honesty belongs in the "≈" and the count — not in refusing to answer.
+    expect(lines[0]!.costCents).toBe(1200);
+    expect(lines[0]!.unpricedCount).toBe(1);
+    expect(lines[0]!.quantity).toBe(8);
   });
 
-  it('the LIST total is null when any line is unpriced', async () => {
+  it('the LIST total is always a number, with a count of what is missing', async () => {
     savedPlan.findMany.mockResolvedValue([
       {
         plan: {
@@ -190,11 +237,13 @@ describe('MONEY: never print a total that is quietly missing items', () => {
     const { getShoppingList } = await import('@/lib/shopping-list');
     const list = await getShoppingList();
 
-    expect(list.totalCents).toBeNull();
-    expect(list.hasUnpricedLines).toBe(true);
+    // The number's JOB is to stop someone expecting an end-grain butcher block for
+    // $10. A blank does not do that job; "≈ $5.00, 1 item has no estimate" does.
+    expect(list.totalCents).toBe(500);
+    expect(list.unpricedCount).toBe(1);
   });
 
-  it('the total is a real sum when everything IS priced', async () => {
+  it('the total is exact when everything IS priced', async () => {
     savedPlan.findMany.mockResolvedValue([
       {
         plan: {
@@ -203,7 +252,7 @@ describe('MONEY: never print a total that is quietly missing items', () => {
           published: true,
           materials: [
             { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
-            { name: 'Glue', unit: 'oz', species: null, quantity: 4, costCents: 250 },
+            { name: 'Wood glue', unit: 'oz', species: null, quantity: 4, costCents: 250 },
           ],
         },
       },
@@ -214,7 +263,7 @@ describe('MONEY: never print a total that is quietly missing items', () => {
 
     // Integer cents throughout. Money is never a float.
     expect(list.totalCents).toBe(750);
-    expect(list.hasUnpricedLines).toBe(false);
+    expect(list.unpricedCount).toBe(0);
   });
 });
 

@@ -300,6 +300,22 @@ zero results for every query while dev search worked perfectly.
 existing rows needs a production backfill step.* Creating the column is not the
 same as populating it.
 
+### ⚠️ A CONTENT change is a production data change (Sprint 12 revision)
+
+Editing anything in `content/plans/*.json` — a material name, a price, a step — changes
+**data, not schema.** It therefore reaches production by **exactly one route: a manual
+production seed.** Deploying does nothing to it. CI going green means nothing about it.
+
+This is the same trap that shipped an empty `searchVector` to production in Sprint 4
+and went unnoticed for three sprints. The failure looks identical: **dev is perfect,
+production is stale, and every check is green.**
+
+The Sprint 12 material-name normalization (`Titebond II wood glue` → `Wood glue`, etc.)
+is a content change. **It is not live until the seed below is run against production.**
+The seed is idempotent and upserts on `slug`, so re-running it is safe. It also rebuilds
+`searchVector`, which is derived from material names — so search would otherwise keep
+matching the old names too.
+
 ### Backfilling production (deliberate, and rare)
 
 ```powershell

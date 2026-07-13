@@ -52,13 +52,10 @@ export interface ShoppingListLine {
   species: string | null;
   /** Summed across every plan that needs it. */
   quantity: number;
-  /**
-   * Total cost in INTEGER CENTS, or null.
-   *
-   * NULL WHEN ANY CONTRIBUTING LINE IS UNPRICED — see `mergeMaterials`. A partial sum
-   * presented as a total is a lie, and this one would have a dollar sign in front of it.
-   */
-  costCents: number | null;
+  /** Cost in INTEGER CENTS — the sum of the contributors we DO have a price for. */
+  costCents: number;
+  /** How many contributing materials had no price. Drives the "≈" and the caveat. */
+  unpricedCount: number;
   /** Which saved plans need this. The user asked for a list; they still own the why. */
   plans: { slug: string; title: string }[];
 }
@@ -69,12 +66,20 @@ export interface ShoppingList {
   planCount: number;
   lineCount: number;
   /**
-   * Total across every line in integer cents — or null if ANY line is unpriced. Same
-   * reasoning as the per-line cost: do not fake a total.
+   * Total in INTEGER CENTS across everything we have a price for.
+   *
+   * ALWAYS A NUMBER — never null. This is a BALLPARK, and its job is to stop someone
+   * expecting to build an end-grain butcher block for $10. An earlier version returned
+   * `null` the moment any single line was unpriced, on the grounds that a partial sum
+   * is "a lie". That was over-engineering: it threw away the useful signal to avoid a
+   * precision nobody asked for, and left the user with nothing at all.
+   *
+   * The honest presentation is a number with an "≈" and a count of what's missing —
+   * not silence. `unpricedCount` below is what makes it honest.
    */
-  totalCents: number | null;
-  /** True when at least one line had no price. The UI must say so out loud. */
-  hasUnpricedLines: boolean;
+  totalCents: number;
+  /** How many materials across the list have no price. Zero means the total is complete. */
+  unpricedCount: number;
   /** Null for the whole library; the collection's name when scoped to one. */
   collectionName: string | null;
 }
@@ -140,7 +145,9 @@ export function mergeMaterials(materials: MaterialInput[]): ShoppingListLine[] {
         unit: material.unit,
         species: material.species,
         quantity: material.quantity,
-        costCents: material.costCents,
+        // A price we don't have contributes 0 to the sum and 1 to the caveat.
+        costCents: material.costCents ?? 0,
+        unpricedCount: material.costCents === null ? 1 : 0,
         plans: [material.plan],
       });
       continue;
@@ -149,26 +156,25 @@ export function mergeMaterials(materials: MaterialInput[]): ShoppingListLine[] {
     existing.quantity += material.quantity;
 
     /**
-     * COST: NULL IS CONTAGIOUS, and that is the point.
+     * COST IS A BALLPARK. Sum what we know; COUNT what we don't.
      *
-     * If any contributing line has no price, the merged line has no price. The
-     * alternative — summing the priced ones and showing the partial as though it were
-     * the total — produces a number that is wrong in the direction of "cheaper than
-     * reality", printed with a dollar sign, next to something a person is about to go
-     * and buy. Say "we don't know" instead.
+     * An earlier version made null CONTAGIOUS — one unpriced contributor and the whole
+     * line, and then the whole list total, became `null`. The reasoning was that a
+     * partial sum shown as a total is a lie. That reasoning was right about the danger
+     * and wrong about the remedy: it threw away a genuinely useful number to avoid a
+     * precision nobody ever asked for, and handed the user silence instead.
      *
-     * ON WHETHER THIS PATH IS REACHABLE TODAY: it is not. All 148 material rows in the
-     * current catalog are priced, and I checked rather than assuming — an earlier
-     * draft of this comment claimed the null case was "real, not hypothetical", which
-     * was simply false. `Material.costCents` is nullable by schema (Sprint 1, for
-     * materials that genuinely vary — "scrap you already have"), the content is
-     * hand-authored, and the first null will arrive without anyone touching this file.
-     * The path is correct and tested for that day. It is not currently exercised in
-     * production, and pretending otherwise is the stale-comment failure this project
-     * has already been bitten by.
+     * The point of this figure is to stop someone expecting to build an end-grain
+     * butcher block for $10. A "≈ $180, and 2 items have no estimate" does that job
+     * honestly. A blank does not.
+     *
+     * The honesty lives in `unpricedCount` and in the UI's "≈" — NOT in refusing to
+     * answer. `Material.costCents` is nullable by schema for materials that genuinely
+     * vary ("scrap you already have"); every one of the 148 rows in today's catalog is
+     * priced, so this path is future-proofing rather than a live case.
      */
-    if (existing.costCents === null || material.costCents === null) {
-      existing.costCents = null;
+    if (material.costCents === null) {
+      existing.unpricedCount += 1;
     } else {
       existing.costCents += material.costCents;
     }
@@ -189,7 +195,7 @@ function emptyList(collectionName: string | null): ShoppingList {
     planCount: 0,
     lineCount: 0,
     totalCents: 0,
-    hasUnpricedLines: false,
+    unpricedCount: 0,
     collectionName,
   };
 }
@@ -283,18 +289,14 @@ export async function getShoppingList(collectionId?: string): Promise<ShoppingLi
     }))
     .sort((a, b) => a.unit.localeCompare(b.unit));
 
-  const hasUnpricedLines = lines.some((line) => line.costCents === null);
-
   return {
     groups,
     planCount: plans.length,
     lineCount: lines.length,
-    // Same rule as a line: if anything is unpriced there IS no total. Never print a
-    // dollar figure that is quietly missing items.
-    totalCents: hasUnpricedLines
-      ? null
-      : lines.reduce((sum, line) => sum + (line.costCents ?? 0), 0),
-    hasUnpricedLines,
+    // Sum what we know. The UI marks it "≈" and says how many items are missing a
+    // price — that is what makes a ballpark honest, rather than refusing to give one.
+    totalCents: lines.reduce((sum, line) => sum + line.costCents, 0),
+    unpricedCount: lines.reduce((sum, line) => sum + line.unpricedCount, 0),
     collectionName,
   };
 }
