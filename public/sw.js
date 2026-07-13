@@ -29,7 +29,10 @@
  * ═════════════════════════════════════════════════════════════════════════════
  */
 
-const CACHE_NAME = 'woodworking-plan-v1';
+// v2: v1 may hold RSC payloads that should never have been cached. Bumping the
+// name is how a deploy evicts them — `activate` deletes every cache that isn't
+// this one.
+const CACHE_NAME = 'woodworking-plan-v2';
 const OFFLINE_URL = '/offline';
 
 /** Path prefixes that must NEVER be written to the cache. */
@@ -75,6 +78,17 @@ function isCacheable(request) {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return false;
+
+  // React Server Component payloads — Next's client-navigation flight streams.
+  // NOT pages: a serialized component stream tied to the router state and the build
+  // id. Caching one serves an old build's payload into a new client. Intercepting
+  // them at all made this worker return Response.error() on any hiccup, which is
+  // what produced "The FetchEvent ... resulted in a network error response" in
+  // production. They are the browser's business, not ours.
+  //
+  // Mirrored in src/lib/offline.ts, which is unit tested. CHANGE ONE, CHANGE BOTH.
+  if (url.searchParams.has('_rsc')) return false;
+  if (request.headers.get('RSC')) return false;
 
   const path = url.pathname;
   for (const prefix of NEVER_CACHE_PREFIXES) {

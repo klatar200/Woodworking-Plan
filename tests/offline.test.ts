@@ -178,6 +178,24 @@ describe('SECURITY: the response gate — a public PATH can still carry a privat
   });
 });
 
+describe('RSC payloads are never intercepted (production bug, fixed)', () => {
+  it('does not cache a React Server Component payload', () => {
+    // These are Next's client-navigation flight streams, not pages. Their content
+    // depends on router state and the build id, so a cached one serves an OLD
+    // build's payload into a NEW client.
+    expect(
+      isCacheable(req('/plans/cedar-raised-garden-bed?_rsc=cxciWW')),
+    ).toBe(false);
+    expect(isCacheable(req('/?_rsc=abc123'))).toBe(false);
+  });
+
+  it('still caches the SAME page when requested normally', () => {
+    // The exclusion must be on the RSC marker, not on the path — otherwise the
+    // offline capability this whole sprint exists for would be silently dead.
+    expect(isCacheable(req('/plans/cedar-raised-garden-bed'))).toBe(true);
+  });
+});
+
 describe('cache versioning', () => {
   it('has a versioned cache name so a deploy can invalidate stale plans', () => {
     // A plan is not immutable — a cut list can be corrected. Bumping this is how

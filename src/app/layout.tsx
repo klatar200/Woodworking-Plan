@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SiteHeader } from '@/components/site-header';
 import { ServiceWorkerRegistration } from '@/components/service-worker';
@@ -7,16 +8,15 @@ import './globals.css';
 /**
  * Root layout.
  *
- * NOTE ON COPY AND ICONS: BUILD_PLAN.md §3 decision #8 (branding/app name) is
- * still OPEN. "Woodworking Plan" is the working name from BUSINESS_PLAN.md §1,
- * and the PWA icons are deliberately plain placeholders — not a logo. **Both must
- * be replaced before launch.** Inventing a brand is not the build agent's call.
+ * NOTE ON COPY AND ICONS: BUILD_PLAN.md §3 decision #8 (branding/app name) is still
+ * OPEN. "Woodworking Plan" is the working name from BUSINESS_PLAN.md §1, and the PWA
+ * icons are deliberately plain placeholders — not a logo. **Both must be replaced
+ * before launch.** Inventing a brand is not the build agent's call.
  */
 export const metadata: Metadata = {
   title: 'Woodworking Plan',
   description:
     'A searchable repository of woodworking plans, with full cut lists, material lists, and cost estimates.',
-  // Sprint 8 — installable to the home screen (BUSINESS_PLAN.md §5).
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
@@ -42,11 +42,28 @@ export const viewport: Viewport = {
   themeColor: '#1a1a1a',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /**
+   * The CSP nonce, minted per request in src/middleware.ts.
+   *
+   * MUST be handed to ClerkProvider. Our CSP uses `'strict-dynamic'`, which
+   * DISABLES host-based allowlisting entirely — a URL in `script-src` means
+   * nothing once it is present. The only way a script runs is if it carries this
+   * request's nonce, or if it was loaded BY a script that did.
+   *
+   * Next.js stamps the nonce onto its OWN script tags automatically. Clerk's is
+   * not one of them: `@clerk/nextjs` renders its own <script> for clerk.browser.js,
+   * and without the nonce the browser refuses it — which is exactly what happened
+   * on the first CSP deploy ("Loading the script ... violates the following Content
+   * Security Policy directive"). Clerk then degrades in ways that are not
+   * immediately obvious, which is worse than failing loudly.
+   */
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
+
   return (
-    <ClerkProvider>
+    <ClerkProvider nonce={nonce}>
       <html lang="en">
         <body>
           <SiteHeader />

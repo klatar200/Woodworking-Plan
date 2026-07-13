@@ -66,7 +66,13 @@ export default clerkMiddleware(async (auth, request) => {
     `frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com`,
 
     // The service worker (Sprint 8).
-    `worker-src 'self'`,
+    // `blob:` is required: Clerk spawns its workers from blob URLs. Without it the
+    // browser blocks them and Clerk's session handling degrades silently.
+    //
+    // The risk is acceptable and bounded — a blob worker can only be created by
+    // script that was ALREADY allowed to run, and script-src is nonce-gated. So
+    // this widens what trusted code may do; it does not widen what code is trusted.
+    `worker-src 'self' blob:`,
     `manifest-src 'self'`,
 
     // No Flash/Java/embeds, ever.

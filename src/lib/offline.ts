@@ -36,8 +36,13 @@
  * security rule nobody can test.
  */
 
-/** Cache version. Bump to invalidate every cached response on the next deploy. */
-export const CACHE_NAME = 'woodworking-plan-v1';
+/**
+ * Cache version. Bump to invalidate every cached response on the next deploy —
+ * `activate` deletes every cache whose name isn't this one.
+ *
+ * v2: v1 may hold RSC payloads that should never have been cached.
+ */
+export const CACHE_NAME = 'woodworking-plan-v2';
 
 /** Path prefixes that must NEVER be written to the cache. */
 export const NEVER_CACHE_PREFIXES = [
@@ -75,7 +80,20 @@ export function isCacheable(request: {
   //    cross-origin response could be anything.
   if (url.origin !== request.origin) return false;
 
-  // 3. The explicit denylist: private, session-bearing, or API routes.
+  // 3. React Server Component payloads — Next's client-navigation flight streams.
+  //
+  //    These are NOT pages. They are a serialized component stream keyed by URL,
+  //    and their content depends on the router state and the build id. Caching one
+  //    means serving a payload from an old build into a new client, which fails in
+  //    ways that look nothing like a caching bug.
+  //
+  //    Worse, intercepting them at all made the service worker return
+  //    `Response.error()` on any hiccup — which is what produced
+  //    "The FetchEvent ... resulted in a network error response" in production.
+  //    They are the browser's business, not ours.
+  if (url.searchParams.has('_rsc')) return false;
+
+  // 4. The explicit denylist: private, session-bearing, or API routes.
   const path = url.pathname;
   for (const prefix of NEVER_CACHE_PREFIXES) {
     if (path === prefix || path.startsWith(`${prefix}/`)) return false;
