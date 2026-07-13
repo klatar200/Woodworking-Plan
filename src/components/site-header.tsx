@@ -31,6 +31,9 @@ export function SiteHeader() {
         </SignedOut>
 
         <SignedIn>
+          <Link href="/saved" className="btn btn-ghost">
+            Saved
+          </Link>
           <Link href="/profile" className="btn btn-ghost">
             Profile
           </Link>

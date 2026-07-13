@@ -143,7 +143,17 @@ with it.
 - **Sprint 4 (Keyword Search): COMPLETE — 95/100.** Postgres `tsvector` + GIN,
   weighted (title > tags > tools/materials > body). Search box is a plain GET form.
   121 tests green.
-- **Next up:** Sprint 5 — Filter/Facet Search. Not blocked.
+- **Sprint 5 (Filter/Facet Search): COMPLETE — 98/100.** Category, difficulty, cost,
+  time, and tools-owned filters, combinable with keyword search. One `queryPlans()`
+  serves browse + search + filters. 138 tests green.
+- **Next up:** Sprint 6 — Save Plans & Custom Categories. **Blocked** on a
+  monetization decision (see below).
+
+### Process rule (violated twice — Sprints 3 and 5)
+
+**When a test file is renamed or superseded, `git rm` it in the REPO** in the same
+command block as the sprint's commit. Deleting it in the sandbox does not delete it
+in Keagan's repo, and it lands on `main` as a failing test both times.
 
 ### Deployment rule (learned the hard way in Sprint 4 — DO NOT FORGET)
 

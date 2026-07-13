@@ -2,6 +2,9 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
+import { isPlanSaved } from '@/lib/saves';
+import { getCurrentUser } from '@/lib/auth';
+import { SaveButton } from '@/components/save-button';
 import {
   costTierSymbol,
   difficultyLabel,
@@ -49,6 +52,11 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
   // 404 cannot be used to probe for the existence of unreleased content.
   if (!plan) notFound();
 
+  // Sprint 6. The page stays PUBLIC — an anonymous visitor sees the whole plan and
+  // a "Save this plan" link that takes them to sign-in and back. §12 gates the
+  // save, not the content.
+  const [user, saved] = await Promise.all([getCurrentUser(), isPlanSaved(plan.id)]);
+
   const essentialTools = plan.tools.filter((t) => t.essential);
   const optionalTools = plan.tools.filter((t) => !t.essential);
 
@@ -67,6 +75,15 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
         <span className="plan-card-category">{plan.category.name}</span>
         <h1>{plan.title}</h1>
         <p className="subtitle">{plan.summary}</p>
+
+        <div className="plan-actions">
+          <SaveButton
+            planId={plan.id}
+            slug={plan.slug}
+            isSaved={saved}
+            isSignedIn={user !== null}
+          />
+        </div>
       </header>
 
       {/* The at-a-glance strip. This is the product's whole differentiator —

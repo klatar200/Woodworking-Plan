@@ -447,3 +447,71 @@ wall.
 - **Vercel `migrate deploy` is not running.** Being investigated immediately —
   every future sprint depends on it.
 - A Clerk deletion webhook is still outstanding (from Sprint 2).
+
+---
+
+## Sprint 5: Filter/Facet Search
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** category, difficulty, cost tier, time, and
+tools-owned filtering, combinable with keyword search.
+
+**Commits on `main`:** `e668ccf`, plus a follow-up removing a superseded test.
+
+**Status: COMPLETE — 98/100, Attempt 1. Pass.**
+
+### A scope call, made explicitly
+
+`BUILD_PLAN.md` §4 lists "tools-owned filtering" in Sprint 5, but the §4 scope
+note lists an **"owned-tools profile"** as out of scope. These are not the same
+thing, so the line was drawn deliberately:
+
+- **Built:** the *filter* — tick the tools you have, see what you can build. It is
+  stateless, lives entirely in the URL, and is exactly what `BUSINESS_PLAN.md` §4.6
+  specifies.
+- **Not built:** a *persisted tool inventory* on the user's account. That is Phase
+  4's "tool-inventory-aware search" and is not in the business plan yet.
+
+### What was delivered
+
+| Piece | Detail |
+|---|---|
+| `src/lib/filters.ts` | Parses and validates all five filters from the URL. Unknown values are **dropped, never fatal**. |
+| `queryPlans()` | One function: browse, keyword, filters, and every combination. Replaces `listPlans` + `searchPlans`. |
+| `FilterPanel` | Collapsible `<details>`, plain GET form, no JS, tools grouped by type. |
+
+### Two semantics that decide whether this feature is honest
+
+**1. "Tools you own" is a SUBSET test, not an intersection.** A plan qualifies only
+when it has **no essential tool outside** the ticked set (`tools: { none: { essential:
+true, tool: { slug: { notIn: owned } } } }`). The naive reading — "plans that use any
+tool I own" — would cheerfully return a plan requiring a lathe you don't have.
+Optional tools are ignored, which is what the `essential` flag has existed for since
+Sprint 1. **A filter that lies is worse than no filter**, and this is the one most
+likely to lie.
+
+**2. The time filter uses the plan's MAXIMUM estimate.** Ask for "an afternoon
+(≤4 hrs)" and a plan estimated "3–7 hrs" must *not* appear — it could eat the whole
+evening. Filtering on `timeMinMinutes` would return exactly that plan and quietly
+make the number untrustworthy. Honest under-promising is the only way a time
+estimate survives contact with a real workshop.
+
+### Attempt 1 — 2026-07-13
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | All five §4 filters delivered — category, difficulty, cost tier, time, tools-owned — and **combinable with keyword search**, which was the explicit requirement and the harder half. Verified live: ticking a beginner tool set makes the shed, the lathe pepper mill, and the workbench disappear; adding "walnut" on top stacks correctly. That combination *is* `BUSINESS_PLAN.md` §9's pitch — "what can I build this weekend with what I own for under $50?" — and it now literally works. Nothing out of scope: no saves/likes (6–7), no persisted tool profile (Phase 4), no facet counts (not specified). |
+| Correctness & functionality (/20) | **20** | Verified on the live deploy by the user, including the tools-subset behaviour and search+filter stacking. Locally: 138/138 tests, `tsc` 0, `eslint` 0, build passes. No migration needed — nothing computed, so no production backfill (the Sprint 4 trap does not apply here, and that was checked, not assumed). |
+| Automated test coverage (/15) | **15** | 37 new tests. `filters.test.ts` (16): every hostile/stale input is *dropped, not fatal* — unknown category, unknown tool, out-of-range difficulty, a `time` value the UI never offered, injection strings in all five params; plus a **round-trip property test** proving a link `buildQueryString` emits parses back to the filters it was built from (otherwise "Next page" silently changes the query). `query-plans.test.ts` (21): the subset semantics (`none` + `essential: true`), time-on-maximum, `published: true` under every filter combination, count-uses-the-same-where, and relevance order surviving the filter pass. |
+| Security (/15) | **15** | (a) **A real defect my own test caught:** `Number.parseInt("3'; DROP TABLE Plan;--")` returns **3** — it silently discards trailing garbage. Not exploitable (Prisma parameterizes, and the value becomes the number 3), but a hostile string quietly becoming a valid filter is precisely the leniency that becomes a vulnerability the day something downstream assumes the input was clean. Replaced with a strict digits-only parse. (b) Unknown category/tool slugs are dropped at parse time, never sent to Postgres. (c) `published: true` is in the `where` on every path and asserted with all five filters active. (d) The keyword query remains a bound parameter. |
+| Code quality & simplicity (/10) | **9** | Three functions (`listPlans`, `searchPlans`, `queryPlans`) collapsed into one, and three test files into two — browse, search, and filters are the same query with different arguments, and keeping them separate would have meant three grids and three paginations drifting apart. **−1: I shipped a superseded test file to `main` again** (`search.test.ts`, testing the deleted `searchPlans`). Deleted it in my sandbox, not in the repo. **Second time this exact mistake has happened** (Sprint 3 was the first), which makes it a process failure rather than an accident. |
+| Mobile/offline behavior (/10) | **9** | Verified on a phone. Filters collapse into `<details>` — five groups and 30 tool checkboxes above the results would bury the plans, and the plans are what people came for. `<details>` gives correct keyboard and screen-reader behaviour for free; a hand-rolled accordion would give less for more. All controls ≥44px; selects at 16px font because anything smaller makes iOS Safari zoom the viewport on focus. −1: no offline — Sprint 8. |
+| Documentation & handoff (/5) | **5** | The subset semantics, the time-on-maximum reasoning, and the `parseInt` leniency are each explained where someone will actually hit them. The unpaginated-id-list scale limit (fine at 300–500 plans, not at 50,000) is documented as a deliberate trade-off rather than left to be discovered. |
+| **Total (/100)** | **98** | |
+
+**Result: PASS (98 ≥ 95).**
+
+### Process fix (not optional)
+Shipping a superseded test file to `main` has now happened twice. The cause is that
+the build agent's sandbox and the real repo are separate, and deletions in one do
+not propagate. **From now on: any test file replaced or renamed must be deleted in
+the REPO via `git rm`, in the same command block as the sprint's commit.**

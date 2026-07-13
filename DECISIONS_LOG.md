@@ -214,6 +214,33 @@ app happens (Phase 3, deferred): Apple *requires* Sign in with Apple on any iOS 
 that offers other social logins, so the cost would become unavoidable then — but
 not before.
 
+### 2026-07-13 — Save/category limits: unlimited for now, gate later
+**Status:** Confirmed by user (chosen from 3 options: unlimited now [recommended];
+enforce the §7 limits now; a configurable limit defaulting to unlimited).
+
+**The conflict.** `BUSINESS_PLAN.md` §7 proposes a Free tier with "limited saves
+(e.g. 10 plans), 1 category folder", and §12 says to "gate high-value actions
+(unlimited saves/categories) rather than content itself". But `DECISIONS_LOG.md`
+lists the entire monetization model under **"Recommendations Awaiting Explicit
+Confirmation"** — it is not a confirmed decision. Implementing a hard 10-save cap
+would mean the build agent enacting an unconfirmed pricing decision, which
+`BUILD_PLAN.md` §2 forbids.
+
+**The decision.** Sprint 6 ships saves and custom categories with **no limits**.
+
+**Rationale.** There is no billing (decision #6 is deferred), no paid tier, and no
+upgrade path. A 10-save cap today would be a wall with no door — it would only
+frustrate users while committing to specific numbers before launch economics have
+been discussed.
+
+**The obligation this creates.** The build agent must design the schema and data
+layer so that a limit can later be enforced in **one place**, without reworking
+saves or categories. That constraint is on the build agent, not on this decision.
+
+**Revisit when:** launch economics are discussed (the same conversation as the
+Vercel Hobby → Pro move and decision #6, payment processor). Pricing and tier
+limits should be confirmed together, not piecemeal.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

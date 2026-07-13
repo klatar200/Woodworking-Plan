@@ -215,6 +215,10 @@ describe('public route allowlist', () => {
     expect(await check('/profile')).toBe(false);
   });
 
+  it('SECURITY: /saved is NOT public — it is user-owned data (Sprint 6)', async () => {
+    expect(await check('/saved')).toBe(false);
+  });
+
   it('SECURITY: unknown/future routes are private by default — the allowlist fails CLOSED', async () => {
     // This is the property that matters. A route nobody has thought of yet must
     // require auth, so that forgetting to update the matcher can never silently

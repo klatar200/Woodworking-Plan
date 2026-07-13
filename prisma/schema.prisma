@@ -72,7 +72,88 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  savedPlans  SavedPlan[]
+  collections Collection[]
+
   @@index([clerkId])
+}
+
+/// A bookmarked plan — BUSINESS_PLAN.md §4.3.
+///
+/// SPRINT 6. Every row is owned by exactly one user, and `userId` is ALWAYS
+/// derived from the verified Clerk session (see src/lib/auth.ts). It is never
+/// accepted from client input. If a function signature in this codebase takes a
+/// `userId`, that is an IDOR bug.
+///
+/// `@@unique([userId, planId])` makes saving idempotent at the database level:
+/// a double-tapped save button cannot produce two rows, no matter what the
+/// application layer does.
+model SavedPlan {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  collections CollectionPlan[]
+
+  @@unique([userId, planId])
+  @@index([userId])
+  @@index([planId])
+}
+
+/// A user-defined folder for organizing saved plans — BUSINESS_PLAN.md §4.4
+/// ("Kitchen", "For the Cabin", "Beginner Projects").
+///
+/// NAMED `Collection`, NOT `Category`, on purpose. `Category` already means the
+/// catalog taxonomy (cutting-boards, furniture...). Two things called Category
+/// with different owners and different security rules is how someone eventually
+/// writes a query against the wrong one.
+///
+/// NO LIMIT on how many a user may create. BUSINESS_PLAN.md §7 proposes gating
+/// Free users at 1 folder, but pricing is an unconfirmed recommendation — see
+/// DECISIONS_LOG.md (2026-07-13). The limit, when it comes, belongs in
+/// src/lib/saves.ts and nowhere else.
+model Collection {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plans CollectionPlan[]
+
+  /// Unique PER USER, not globally. Two different people may both have a
+  /// "Kitchen" folder — of course they may. Scoping the constraint by user is
+  /// what makes that obvious truth true.
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+/// Membership of a saved plan in a collection. Many-to-many: a plan can live in
+/// "Gifts" and "Cutting Boards" at once, which is how people actually organize.
+model CollectionPlan {
+  id String @id @default(cuid())
+
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  savedPlanId String
+  savedPlan   SavedPlan  @relation(fields: [savedPlanId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([collectionId, savedPlanId])
+  @@index([collectionId])
+  @@index([savedPlanId])
 }
 
 /// Cost tier from BUSINESS_PLAN.md §4.8 — $ (cheap) through $$$$$ (expensive).
@@ -177,6 +258,7 @@ model Plan {
   cutList   CutListItem[]
   steps     Step[]
   images    Image[]
+  savedBy   SavedPlan[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
