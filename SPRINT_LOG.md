@@ -125,8 +125,98 @@ provisioning and four real defect fixes.)
 invisible to local typecheck, lint, and a green 25-test suite. Green tests are not
 proof it works. **Deploy early in every sprint.**
 
-### Known follow-ups (not blocking)
+### Known follow-ups from Sprint 0 (not blocking)
 - Delete stale merged branches in GitHub (`claude/*`) — user action, no tool exposes it.
 - `BUILD_PLAN.md` §3 decision #5 still says Clerk's free tier is 10k MAU; it is 50k.
 - Prisma 6.19 → 7.8 available. Deliberately **not** taken — a major bump is not a
   Sprint 0 deliverable. Backlog.
+
+---
+
+## Sprint 1: Plan Data Model & Content Pipeline
+**Dates:** 2026-07-12
+**Scope (from BUILD_PLAN.md §4):** schema for a plan (title, category, difficulty
+1-5, tools required, materials required, time estimate, cost tier $-$$$$$,
+itemized cost range, instructions, images); seed-content ingestion path
+sufficient to load ~20 real test plans for development.
+
+**Commits on `main`:** `5162f17`, `bfdcb8b`, `b5bd067`, `e821192`, `9082499`.
+
+**Status: COMPLETE — 98/100, Attempt 1. Pass.**
+
+**Category 6 (Mobile/offline) redistributed into Category 2 (Correctness),** per
+`BUILD_PLAN.md` §6: Sprint 1 is a pure data/backend sprint with no UI surface.
+The Sprint 0 status page is unchanged; browse and detail views are Sprint 3.
+Category 2 is therefore scored out of 30.
+
+### Decisions
+- **Decision #7 (plan-content admin/CMS) resolved** before the sprint started:
+  version-controlled seed files + idempotent seed script now; custom admin panel
+  deferred (not cancelled); headless CMS rejected. Logged in `DECISIONS_LOG.md`.
+- **Content is originally authored by the build agent**, not transcribed from Ana
+  White or any existing creator. Licensing third-party plan content remains a
+  legal/money decision for the user (`BUSINESS_PLAN.md` §6) and was not touched.
+
+### What was delivered
+
+| Piece | Detail |
+|---|---|
+| Schema | `Plan`, `Category`, `Tool`, `PlanTool`, `Material`, `CutListItem`, `Step`, `Image` + `CostTier` enum. Migration `0_init` committed. |
+| Content pipeline | `content/plans/*.json` → zod validation (`src/content/plan-schema.ts`) → referential-integrity check (`src/content/load.ts`) → idempotent upsert (`prisma/seed.ts`). |
+| Seed catalog | 24 plans, 6 categories, 32 tools. |
+
+**Two design decisions worth defending:**
+- **Money is integer cents, never floats.** This data feeds a cost estimator that
+  semi-pro makers price real work against (`BUSINESS_PLAN.md` §3). Float drift in
+  currency is not acceptable there.
+- **Tools are a normalized table, not free text.** `BUSINESS_PLAN.md` §4.6
+  requires "only show plans I can build with tools I own." That is not reliably
+  answerable against free-text tool names. Sprint 5 depends on this being right
+  now, not retrofitted later.
+
+### Attempt 1 — 2026-07-12
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Maps to the §4 Sprint 1 bullet field by field: title, category, difficulty (1-5, constrained), tools required (with an `essential` flag), materials required (species/quantity/unit/cost), time estimate (min/max **minutes** for filtering, plus a human label because "2 weekends" is not expressible in minutes), cost tier ($–$$$$$ enum), itemized cost range (integer cents), instructions (ordered steps), images (with mandatory alt text). Ingestion path delivered and loads **24** plans — above the "~20" the sprint asked for. Nothing out of scope: no browse/detail views (Sprint 3), no search (4), no filters (5), no auth (2), no admin UI (deferred per decision #7). |
+| Correctness & functionality (/30) | **29** | Verified against **live Neon**, not just locally: `prisma migrate reset` dropped the schema and replayed `0_init` from empty — proving the committed migration actually rebuilds the database from scratch, which is the whole point of committing it. `npm run db:seed` loaded all 24 plans. **Run twice: still 24** — idempotency proven, not asserted. `npm run db:migrate` then reported "Already in sync". `next build` passes; `tsc --noEmit` 0 errors; `eslint .` 0 errors/0 warnings. −1: no *automated* test drives the seed against a real database — that verification is currently manual. |
+| Automated test coverage (/15) | **15** | `tests/content.test.ts` (23 cases) runs against the **real** `content/` files, not fixtures — so CI validates exactly what the seeder will push. It proves: every plan's cost tier agrees with its actual dollar range; no inverted cost/time ranges; every tool and category reference resolves; no duplicate slugs; every plan has ≥1 *essential* tool; and the catalog actually **spans** the axes Sprints 3–5 will filter on (all 5 difficulty levels, all 5 cost tiers, all 6 categories, 29 distinct tools, quick projects *and* multi-weekend builds). Plus 7 negative cases proving the schema rejects a lying cost tier, an inverted range, a bad difficulty, a typo'd key, a missing alt text, an all-optional tool list, and a bad slug. 48 tests total across the suite. |
+| Security (/15) | **14** | Checked: no secrets committed (`.env.local` gitignored and confirmed absent from `git status`); the seed script is **additive/updating only — it never drops a table and never deletes a plan absent from `content/`**, because deleting catalog content is an irreversible data action and stays a deliberate decision; all writes go through Prisma's parameterized client (no raw SQL, no injection surface); `migrate reset` was **flagged as irreversible and escalated to the user before running**, not executed unilaterally. −1, honestly: **dev and production still share one Neon database.** Flagged to the user proactively. Harmless today (no users, seed-only data); a real hazard the moment either exists. Fix is a Neon dev branch — free tier includes 10. Tracked below. |
+| Code quality & simplicity (/10) | **10** | The seed script and the test suite share one loader (`loadCatalog`) rather than each maintaining its own parsing — so the tests cannot drift from what the seeder actually does. Zod schemas are `.strict()` everywhere, so a typo'd key fails loudly instead of being silently dropped. Children of a plan are rewritten inside a transaction rather than merged, so a stale step or cut-list row cannot survive a content edit. Lint clean, no dead code. |
+| Documentation & handoff (/5) | **5** | `schema.prisma` documents *why* money is cents and *why* tools are normalized, and explicitly names what is deliberately absent and which sprint owns it. `plan-schema.ts` explains the cost-tier bounds and what breaks without them. Decision #7 logged in `DECISIONS_LOG.md`. Commit SHAs recorded above per the amended DoD. |
+| **Total (/100)** | **98** | |
+
+**Result: PASS (98 ≥ 95).**
+
+### The validator caught three real defects — in the build agent's own content
+
+`cedar-planter-box`, `shaker-step-stool`, and `rolling-shop-cart` each declared a
+cost tier that contradicted their own dollar range (e.g. claiming `$` while
+costing up to $55, past the $50 tier bound). Zod's cross-field refinement caught
+all three on the first test run.
+
+This is exactly the class of defect that would have silently poisoned the cost
+filter in Sprint 5 and made the catalog untrustworthy — the top risk named in
+`BUSINESS_PLAN.md` §12. It would never have been caught by reading the files.
+Fixed, and CI now blocks it permanently.
+
+### Environment defects found and fixed (again, only by running it for real)
+
+| Defect | Root cause | Fix |
+|---|---|---|
+| `Environment variable not found: DATABASE_URL` on every db command | Prisma's CLI reads `.env`; `.env.local` is the Next.js convention and is where the secrets actually live | `dotenv-cli` wired into every db script |
+| Same error persisted | `.env.local` did not exist at all — Sprint 0 was verified via the deployed Vercel URL, so the secrets only ever lived in Vercel's dashboard | User created it from `.env.example` |
+| `syntax error at or near ""` applying `0_init` | PowerShell's `Out-File -Encoding utf8` writes a **UTF-8 BOM**; Prisma's SQL parser chokes on it | Build agent regenerated and wrote the migration without a BOM |
+| `type "CostTier" already exists` | The BOM'd `0_init` read as empty, so `migrate dev` concluded the schema was missing and generated a **duplicate** migration | Deleted the duplicate; `migrate reset` rebuilt a clean history |
+
+**Lesson, consistent with Sprint 0:** none of these were visible to a green test
+suite. All four appeared only on contact with a real database.
+
+### Known follow-ups (not blocking)
+- **Dev and prod share one Neon database.** Recommend a Neon dev branch with its
+  own `DATABASE_URL` in `.env.local`. Free tier includes 10 branches. Do this
+  before Sprint 2 puts real user records in the database.
+- No plan currently has images — `images: []` throughout. The schema and the
+  validator support them (alt text mandatory); sourcing actual photography is a
+  content decision for the user, not a dev task.
+- Prisma 6.19 → 7.8 available. Still deliberately not taken.

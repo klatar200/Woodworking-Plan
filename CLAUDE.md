@@ -130,9 +130,25 @@ with it.
 - **Sprint 0 (Environment & Architecture): COMPLETE — 99/100.** Deployed and live
   on Vercel; `/api/health` returns `database.status: "ok"` against Neon; Clerk
   configured. Build, typecheck, lint, 25 tests, and `npm audit` all clean.
-- **Next up:** Sprint 1 — Plan Data Model & Content Pipeline. **Blocked** on
-  `BUILD_PLAN.md` §3 decision #7 (plan-content admin/CMS approach) — must be
-  answered and logged before Sprint 1 starts.
+- **Sprint 1 (Plan Data Model & Content Pipeline): COMPLETE — 98/100.** Schema +
+  migration `0_init` + idempotent seed pipeline. 24 real plans, 6 categories, 32
+  tools, live in Neon. 48 tests green.
+- **Next up:** Sprint 2 — Accounts & Auth (Clerk). Not blocked.
+
+### Open risk to fix before Sprint 2
+
+**Dev and production share one Neon database.** Fine while the only data is
+reproducible seed content; a real hazard the moment Sprint 2 puts user records in
+it — a local `db:seed` or a bad `migrate` would hit live users. Fix: a Neon dev
+branch with its own `DATABASE_URL` in `.env.local` (free tier includes 10).
+
+### Environment gotchas learned in Sprint 1
+
+- **Prisma's CLI reads `.env`, not `.env.local`.** All db scripts go through
+  `dotenv-cli`. Don't "simplify" that away.
+- **Never use PowerShell `Out-File -Encoding utf8` for a file a tool must parse**
+  — PS 5.1 writes a UTF-8 BOM, which broke Prisma's SQL parser and then cascaded
+  into a duplicate migration. Write such files with the Write tool instead.
 
 ### Hard-won lesson from Sprint 0 — do not forget
 
