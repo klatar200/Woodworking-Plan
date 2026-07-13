@@ -204,8 +204,28 @@ with it.
   from the user's library, so leaking the output would leak the input. Cold start returns
   `[]` and renders nothing (**no popular-plans fallback under a personalized heading**).
   286 tests green.
-- **NEXT: Sprint 12 — Shopping list generator** (`BUILD_PLAN.md` §4, Phase 2).
-  **NO AFFILIATE LINKS** — that would require leaving Vercel Hobby first.
+- **Sprint 12 (Shopping list generator): COMPLETE — 97/100.** Aggregates materials
+  across saved plans, per collection or whole library. Stateless, printable.
+  **NO AFFILIATE LINKS** (Vercel Hobby prohibits commercial use). 303 tests green.
+- **NEXT: Sprint 13 — Print-friendly / offline PDF export** (`BUILD_PLAN.md` §4).
+
+### Shopping-list rule (Sprint 12): fuzzy material matching is a SAFETY bug
+
+Materials merge ONLY on exact normalized (name, unit, species). The catalog contains
+`Stainless steel screws, #8 x 1-1/4"` and `Exterior screws, coated, 1-5/8"` — merging
+them because both say "screws" sends someone to a store to buy **the wrong hardware**,
+with a confident quantity next to it. **A shopping list that is confidently wrong is
+worse than one that is merely long.** Under-merging is visible and harmless;
+over-merging is silent and is not.
+
+**Units are never combined** (`board feet` + `each` is not a quantity of anything).
+**Cost null is contagious** — if any contributing line is unpriced, the merged line and
+the list total are `null`. Never print a dollar figure that is quietly missing items.
+
+**Known gap (owned by Sprint 14):** `/shopping-list` is a private route, so the Sprint 8
+policy correctly refuses to cache it — meaning **the shopping list does NOT work
+offline**, which is exactly the hardware-store scenario `BUSINESS_PLAN.md` §5 calls the
+most important capability. Print is the mitigation, not a fix.
 
 ### Recommender rule (Sprint 11)
 

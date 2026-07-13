@@ -113,6 +113,25 @@ export default async function SavedPage({
           <span className="muted">({savedPlans.length})</span>
         </h2>
 
+        {/* Sprint 12. Scoped to whatever the user is currently looking at — the list
+            for "For the Cabin" comes from the "For the Cabin" view. Hidden when there
+            is nothing saved, because a shopping list for zero plans is a blank page
+            with a heading. */}
+        {savedPlans.length > 0 && (
+          <p className="shopping-list-cta">
+            <Link
+              href={
+                activeCollection
+                  ? `/shopping-list?collection=${activeCollection.id}`
+                  : '/shopping-list'
+              }
+              className="btn"
+            >
+              Shopping list{activeCollection ? ` for “${activeCollection.name}”` : ''}
+            </Link>
+          </p>
+        )}
+
         {savedPlans.length === 0 ? (
           <p className="empty-state">
             {activeCollection ? (

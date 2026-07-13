@@ -439,6 +439,54 @@ A `/for-you` route that a brand-new user clicks into and finds barren is a worse
 impression of the feature than never showing it at all. Revisit if the section earns
 its keep.
 
+### 2026-07-13 — Sprint 12: shopping list is per-collection + whole library, and stateless
+**Status:** Confirmed by user (scope chosen from 3: per-collection + whole library
+[recommended], whole library only, ad-hoc plan picker. Check-off chosen from 2:
+stateless [recommended], persist checked items).
+
+**Scope.** A shopping list can be generated for **any collection** ("For the Cabin"),
+and for **everything saved**. Reuses the collections model from Sprint 6 — no new
+table.
+
+**Rationale.** People shop for a project *batch*, not for their entire wishlist. A
+single list over 30 saved plans is 200 lines nobody would carry into a store: the
+feature would look impressive and be useless.
+
+**Stateless — no persisted check-off this sprint.** The list is generated on demand and
+is printable. Persisting ticked items needs a new model, new writes, and a new
+multi-tenancy surface; it roughly doubles the sprint and is a clean follow-on if it
+proves wanted.
+
+### 2026-07-13 — Sprint 12: NO AFFILIATE LINKS (the Hobby constraint, restated)
+**Status:** Binding — follows from the 2026-07-13 launch-economics decision.
+
+`BUSINESS_PLAN.md` §10 describes the shopping list as including **affiliate links**.
+**It ships without them.** Vercel's Hobby tier prohibits commercial use, and affiliate
+links are commercial use; enforcement is account suspension.
+
+The aggregation is the useful half anyway. The links cannot exist until the project is
+on a commercial-use-permitted host, and that is the launch-economics conversation, not
+a thing to slip into a feature sprint.
+
+### 2026-07-13 — Sprint 12: materials merge on EXACT identity only, never fuzzily
+**Status:** Engineering decision (mine), recorded because the failure mode is a
+*safety* problem rather than a bug.
+
+Material names in the catalog are free text: `Cedar, 1x6, 8 ft`,
+`Stainless steel screws, #8 x 1-1/4" and 2"`, `Exterior screws, stainless or coated,
+1-5/8"`. Two lines merge **only** when their normalized name, unit, and species are all
+identical.
+
+**Why not fuzzy-match.** Merging `#8 x 1-1/4" stainless` with `1-5/8" coated exterior`
+because both contain "screws" produces a list that sends someone to a store to buy the
+**wrong hardware**, with a confident quantity next to it. A shopping list that is
+confidently wrong is worse than one that is merely long. Exact merging under-merges
+sometimes; that is visible and harmless. Fuzzy merging over-merges silently, and that
+is neither.
+
+**Units are never combined.** `board feet` and `each` do not add up. A merge key that
+ignored the unit would produce numbers that are not quantities of anything.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

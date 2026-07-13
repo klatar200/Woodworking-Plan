@@ -1002,3 +1002,52 @@ stale rule that argues against the evidence is worse than no rule.
   UI. The catalog already has a Popular sort for that need.
 - **Every card states why.** A recommendation with no reason is indistinguishable from
   a random plan — to the user, and to us.
+
+---
+
+## Sprint 12: Shopping list generator
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 2):** "Shopping list generator (aggregate
+materials across saved plans)." **Ships WITHOUT affiliate links** — Vercel Hobby
+prohibits commercial use (`DECISIONS_LOG.md`, binding).
+
+**Decisions escalated before code:** list scope (per-collection **and** whole library)
+and check-off state (**stateless** this sprint — persisting ticks needs a new model and
+roughly doubles the sprint).
+
+### Attempt 1 — 97/100 ✅
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Delivers the Phase 2 bullet as scoped. Affiliate links omitted **by binding constraint, not oversight** — restated in the module header so nobody "helpfully" adds them later. No persisted check-off, no ad-hoc picker: both considered, both declined, both logged. |
+| Correctness (/20) | **19** | Verified against the **real catalog**, not just fixtures: 148 material rows → 129 merged lines, with 12 genuine cross-plan merges (`Cedar, 1x6, 8 ft` ×2 → qty 8). **−1: awaiting Keagan's live verification.** |
+| Test coverage (/15) | **15** | `tests/shopping-list.test.ts` (+15). The weight is on what must **NOT** merge: two different screws that both say "screws"; the same name across different species (walnut vs maple — ~4× price difference); anything across units. Plus null-contagion on cost, multi-tenancy, and `published: true`. `mergeMaterials` is pure and exported so the rule can be tested directly instead of through a query. |
+| Security (/15) | **15** | `getShoppingList()` takes one param — `collectionId` — and **never an identity**; arity asserted as a tripwire. The collection is scoped by `userId` in **two independent places**. Someone else's collection id returns an **empty list, indistinguishable from an empty collection** — "exists but is not yours" is an existence oracle. `/shopping-list` is absent from the public-routes allowlist, so it **fails closed**. `published: true` enforced. |
+| Code quality (/10) | **10** | Merge logic is a pure function, separate from the query. Reuses `formatCents`, the collections model, and the existing GET-form pattern. No new table, no new writes, no new vendor. No dead code. |
+| Mobile/offline (/10) | **8** | 44px touch targets, 16px inputs, no-JS GET form, and **print CSS** — this is the one screen most likely to end up on paper. **−2: THE LIST DOES NOT WORK OFFLINE, and that is precisely the stated use case.** `BUSINESS_PLAN.md` §5 names "readable in a hardware store with no signal" as the capability that matters most; `/shopping-list` is a private route, and the Sprint 8 caching policy correctly refuses to cache private routes. Printing is the mitigation, not a fix. **Sprint 14 (expanded offline mode) owns this** — it is the sprint where the tension between "private data" and "works with no signal" has to actually be resolved. |
+| Documentation (/5) | **5** | Three decisions logged (scope, stateless, exact-merge-only). The exact-merge rationale lives at the code that implements it, because that is where the next person will be tempted to be clever. |
+
+**Total: 97/100. PASS.**
+
+**The rule this sprint turns on:**
+**Fuzzy material matching would be a SAFETY bug, not a feature.** The catalog contains
+`Stainless steel screws, #8 x 1-1/4" and 2"` and `Exterior screws, stainless or coated,
+1-5/8"`. Merging them because both say "screws" produces a list that sends someone to a
+store to buy **the wrong hardware**, with a confident quantity next to it. **A shopping
+list that is confidently wrong is worse than one that is merely long.** Exact merging
+under-merges sometimes; that is visible and harmless. Fuzzy merging over-merges
+silently, and that is neither.
+
+**Two things I checked rather than assumed, and one I got wrong:**
+- An earlier draft of a code comment claimed the unpriced-material path was "real, not
+  hypothetical." **It is not: all 148 catalog rows are priced.** The path is correct and
+  tested for the day hand-authored content produces its first null, but the comment
+  asserted a fact that was false — the exact stale-comment failure that kept CI red for
+  ten commits in Phase 1. Corrected.
+- **Content issue, not a code issue:** `Titebond II glue` and `Titebond II wood glue`
+  are two lines in the catalog and therefore two lines on the list. Exact merging is
+  behaving correctly; the *content* needs normalizing. Flagged, not silently
+  fuzzy-matched.
+
+**Carried forward:** the offline gap above; a rate-limited user still gets no feedback;
+**the leaked Neon password and Clerk secret key remain unrotated.**

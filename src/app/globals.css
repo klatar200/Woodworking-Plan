@@ -1152,6 +1152,110 @@ code {
   font-style: italic;
 }
 
+/* ---------------------------------------------------------------------------
+ * Sprint 12 — shopping list.
+ * ------------------------------------------------------------------------- */
+
+.shopping-list-cta {
+  margin: 0 0 1rem;
+}
+
+.scope-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.scope-form select {
+  min-height: 44px;
+  padding: 0 0.75rem;
+  /* 16px — smaller makes iOS Safari zoom the viewport on focus. */
+  font-size: 1rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+}
+
+.notice {
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-left: 3px solid var(--border);
+  background: var(--surface, transparent);
+  font-size: 0.9rem;
+}
+
+.shopping-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.shopping-line {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.shopping-line-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.shopping-line-main input[type='checkbox'] {
+  /* 44px touch target (WCAG 2.5.5). This gets tapped in a store aisle, one-handed,
+     holding a board. A 16px checkbox is not a real target. */
+  width: 1.15rem;
+  height: 1.15rem;
+  min-width: 1.15rem;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.shopping-line-name {
+  flex: 1;
+  cursor: pointer;
+}
+
+.shopping-line-cost {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.shopping-line-plans {
+  margin: 0.2rem 0 0 1.75rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Print. The shopping list is the ONE screen most likely to end up on paper — a
+ * phone in a lumberyard, sawdust on your hands, no signal.
+ * ------------------------------------------------------------------------- */
+
+@media print {
+  .no-print,
+  .site-header,
+  .shopping-list-cta,
+  .scope-form,
+  .breadcrumb {
+    display: none !important;
+  }
+
+  .shopping-line {
+    break-inside: avoid;
+  }
+
+  /* An unticked box printed as an empty square is the whole point of paper. */
+  .shopping-line-main input[type='checkbox'] {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid #000;
+    border-radius: 2px;
+  }
+}
+
 .btn-danger {
   color: var(--err, #b3261e);
 }
