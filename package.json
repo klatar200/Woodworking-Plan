@@ -11,6 +11,8 @@
     "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
+    "// vercel-build": "Vercel runs THIS script if it exists, in preference to the framework default. vercel.json's buildCommand was being ignored (Vercel's own build log said so), so `prisma migrate deploy` never ran and production silently drifted behind the committed migrations. That is how Sprint 4 shipped a search index column to production that did not exist. If migrate deploy fails, the build fails - which is correct: a deploy whose schema does not match its code should not go live.",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

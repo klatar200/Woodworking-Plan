@@ -367,3 +367,83 @@ the difference between a usable plan and a spreadsheet.
   Sourcing photography is a content decision for the user.
 - Category browse pages (`/categories/[slug]`) don't exist. Not in any sprint's
   scope. Sprint 5 (filters) covers the same need.
+
+---
+
+## Sprint 4: Keyword Search
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** full-text search across title, description,
+tags, tools, materials.
+
+**Commits on `main`:** `d1bdd7a`, plus follow-ups.
+
+**Status: COMPLETE — 95/100, Attempt 1. Pass (barely, and honestly).**
+
+### What was delivered
+
+| Piece | Detail |
+|---|---|
+| `searchVector` + GIN index | Weighted Postgres `tsvector` on `Plan`. Migration `20260713040000_add_search_vector`. |
+| Weighting | **A** title · **B** summary + tags · **C** tools + materials · **D** description + step bodies. |
+| Seed rebuild | One set-based `UPDATE` after all plans and children are written — the vector aggregates tools/materials from *other* tables, so it cannot be built before they exist. |
+| `searchPlans()` | Ranked, paginated, published-only. Empty query falls through to browse, so browse and search share one code path. |
+| Search box | Plain GET `<form>` — no JS, no client component. |
+
+**Why weights matter:** a search for "walnut" must rank a walnut cutting board
+above a plan that mentions walnut once in step 7. Unweighted full-text search
+returns the right rows in the wrong order, which reads as broken.
+
+**Why a plain GET form:** it works before JS loads and on one bar of signal in a
+hardware store — which `BUSINESS_PLAN.md` §5 says is the actual usage context. The
+query lands in the URL, so a search is shareable, bookmarkable, and survives the
+back button. Search-as-you-type can be layered on later; the reverse is not true.
+
+### Attempt 1 — 2026-07-13
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Covers every field §4 Sprint 4 names — title, description, tags, tools, materials — plus step bodies. Tools and materials live in *other tables*, which is the whole reason a denormalized indexed vector exists rather than five joins per search. Verified live: "router" (a tool) and "cedar" (a material) both return correct plans. Nothing out of scope: no facet/filter controls (Sprint 5), no saves/likes. |
+| Correctness & functionality (/20) | **18** | Locally: 121/121 tests, typecheck 0, lint 0, build passes. Migration applies, seed rebuilds the index for all 24 plans, live search verified for a title term, a tool term, and a material term. **−2: search was broken in production on first deploy** — see the defect below. It worked perfectly in dev and returned zero results for everything on the live site. That is a correctness failure, and dressing it up as anything else would be dishonest. |
+| Automated test coverage (/15) | **15** | `search.test.ts` (15 cases). The two that matter: **injection** — fires `walnut'; DROP TABLE "Plan"; --` at it and asserts the string lands in the *parameters* and appears nowhere in the SQL text (`$queryRaw` is a tagged template; Prisma binds values separately); and **published leakage** — asserts `published = true` is in the ranked query, in the COUNT query, *and* re-applied on hydration. Plus: `websearch_to_tsquery` is asserted over `to_tsquery`, results come back in relevance order (not Postgres's arbitrary order), the `bigint` count is converted to a number (leaking a BigInt would throw on serialization), and seven varieties of hostile input (`((((`, `"unclosed quote`, `<script>`) resolve rather than 500. |
+| Security (/15) | **15** | This is the codebase's only raw SQL, so it got the most paranoid review. (a) **No string concatenation** — `$queryRawUnsafe` is not used, here or anywhere. (b) **`websearch_to_tsquery`, not `to_tsquery`** — the latter throws a syntax error on a stray `&` or an unbalanced quote, turning a user's typo into a 500. Users type strange things into search boxes; that must not be an outage. (c) **`published = true` in the count as well as the query** — a count that ignored it would advertise pages of staged plans that render empty, leaking their existence. (d) **XSS** — the echoed-back query is escaped by React, asserted by a test so that a future "fix" reaching for `dangerouslySetInnerHTML` fails loudly. |
+| Code quality & simplicity (/10) | **10** | Browse and search share one page and one `PLAN_CARD_SELECT`, so they cannot drift into two grids and two paginations. Raw SQL is confined to exactly what only SQL can do (ranking); hydration goes back through Prisma's typed client, keeping the `published` filter's single source of truth. |
+| Mobile/offline behavior (/10) | **9** | Search input is a 44px touch target at 16px font — smaller and iOS Safari zooms the viewport on focus, which is jarring and hard to undo one-handed. Works with JS disabled. Real `<label>` (a placeholder is not a label). −1: no offline — Sprint 8. |
+| Documentation & handoff (/5) | **3** | The code is well documented — weights explained in `seed.ts`, the injection and `to_tsquery` reasoning in `plans.ts`. **−2: `DEPLOYMENT.md` did not tell anyone that a schema change adding a *derived data* column needs a production data step.** That omission is precisely what caused the production defect. Now fixed. |
+| **Total (/100)** | **95** | |
+
+**Result: PASS (95 ≥ 95).** Scraped it, and the margin is the point — this sprint
+shipped a real production defect.
+
+### THE DEFECT: search worked in dev and was silently dead in production
+
+**What happened.** Vercel's build applies migrations, so production got the
+`searchVector` **column**. But the column is *derived data* — it is populated by
+the seed pipeline, and the seed only ever ran against the **dev** branch. So
+production had 24 plans, an empty index, and a search box that returned zero
+results for every query. Local tests were green. Local search was perfect.
+
+**Why it happened.** The dev/prod database split (correctly introduced before
+Sprint 2) means **schema flows to production through migrations, but data does
+not.** A search vector is data wearing a schema's clothes. Nothing in the process
+caught the difference.
+
+**Compounding it:** production turned out not to have the column at all, because
+Vercel's `prisma migrate deploy` had not been running. Investigated below.
+
+**The lesson, and it generalizes:** *any migration that adds a column whose value
+must be computed from existing rows needs a corresponding production backfill
+step.* Adding the column is not the same as populating it. Sprint 5 (filters) is
+safe here — it computes nothing — but Sprint 7 (like counts) will hit this exact
+wall.
+
+### Also learned the hard way
+- Bare `npx prisma` / `npx tsx` do **not** read `.env.local`. Only the `db:*`
+  npm scripts do (they go through `dotenv-cli`). A command that "should" work will
+  silently target nothing.
+- Neon **branches share the role password.** Rotating it invalidates dev *and*
+  production. Both `.env.local` and Vercel must be updated together.
+
+### Known follow-ups
+- **Vercel `migrate deploy` is not running.** Being investigated immediately —
+  every future sprint depends on it.
+- A Clerk deletion webhook is still outstanding (from Sprint 2).

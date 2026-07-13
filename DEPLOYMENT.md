@@ -282,6 +282,48 @@ should still return `database.status: "ok"`.
 
 ---
 
+## ⚠️ Schema flows to production. DATA DOES NOT.
+
+Read this before any sprint that adds a **derived** column.
+
+Vercel runs `prisma migrate deploy` on every deploy (via the `vercel-build`
+script), so production's **schema** always catches up automatically.
+
+**Production data does not.** The seed only ever runs against the dev branch.
+
+That distinction shipped a real defect in Sprint 4: the `searchVector` column is
+*derived data* — a migration creates it empty, and the seed pipeline computes its
+value. Production got the column and never got the values, so live search returned
+zero results for every query while dev search worked perfectly.
+
+**The rule:** *any migration adding a column whose value must be computed from
+existing rows needs a production backfill step.* Creating the column is not the
+same as populating it.
+
+### Backfilling production (deliberate, and rare)
+
+```powershell
+cd C:\Users\latar\Desktop\Woodworking-Plan
+
+# Temporarily point .env.local at the PRODUCTION branch (comment dev, uncomment prod)
+npm exec -- dotenv -e .env.local -- prisma migrate deploy
+npm exec -- dotenv -e .env.local -- tsx prisma/seed.ts
+
+# Then IMMEDIATELY swap .env.local back to the dev branch.
+```
+
+The seed prints its target database host as its first line. **Read it.** If it does
+not say what you expect, stop.
+
+> Bare `npx prisma` / `npx tsx` do **not** read `.env.local` — only `.env`. That is
+> why these commands go through `dotenv-cli`. A command that "should" work will
+> otherwise silently target nothing.
+
+> Neon **branches share the role password.** Rotating it invalidates dev *and*
+> production — update `.env.local` and Vercel's env vars together.
+
+---
+
 ## Step 6 — Repo settings (2 minutes, in GitHub)
 
 Under **Settings → Branches** on the repo:

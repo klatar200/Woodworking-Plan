@@ -140,7 +140,28 @@ with it.
 - **Sprint 3 (Plan Repository & Browse/Detail): COMPLETE — 97/100.** Catalog at
   `/` (paginated cards), detail at `/plans/[slug]` rendering every Sprint 1 field.
   `published: true` enforced in the data layer. 99 tests green.
-- **Next up:** Sprint 4 — Keyword Search. Not blocked.
+- **Sprint 4 (Keyword Search): COMPLETE — 95/100.** Postgres `tsvector` + GIN,
+  weighted (title > tags > tools/materials > body). Search box is a plain GET form.
+  121 tests green.
+- **Next up:** Sprint 5 — Filter/Facet Search. Not blocked.
+
+### Deployment rule (learned the hard way in Sprint 4 — DO NOT FORGET)
+
+**Schema flows to production automatically. DATA DOES NOT.**
+
+Vercel runs `prisma migrate deploy` via the `vercel-build` script in
+`package.json`. (It ignores `vercel.json`'s `buildCommand` — that is why Sprint 4's
+search index silently never reached production.) The seed only ever runs against
+the **dev** branch.
+
+So: **any migration adding a column whose value must be COMPUTED from existing
+rows needs a production backfill.** Creating a column is not populating it. Sprint
+4's `searchVector` shipped empty to production and search returned zero results
+for everything, while dev worked perfectly. Sprint 7 (like counts) will hit this
+same wall.
+
+Backfill procedure is in `DEPLOYMENT.md`. Bare `npx prisma` does **not** read
+`.env.local` — use the `db:*` scripts or `dotenv-cli` explicitly.
 
 ### Standing data rules (established Sprint 3 — do not violate)
 
