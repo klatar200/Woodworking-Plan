@@ -3,18 +3,17 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import type { ReactElement, ReactNode } from 'react';
 
 /**
- * Catalog page (Sprint 3). Replaces the Sprint 0 status-page test — that page no
- * longer exists.
+ * Catalog page — browse (Sprint 3) + search (Sprint 4).
  *
- * Uses a REAL static render rather than a hand-rolled element-tree walker, so the
+ * Uses a REAL static render, not a hand-rolled element-tree walker, so the
  * PlanCard children actually render. A walker that only follows `props.children`
  * silently skips every child component — it would pass while rendering nothing,
  * which is the worst kind of green test.
  */
 
-const listPlans = vi.fn();
+const searchPlans = vi.fn();
 
-vi.mock('@/lib/plans', () => ({ listPlans, PLANS_PER_PAGE: 12 }));
+vi.mock('@/lib/plans', () => ({ searchPlans, PLANS_PER_PAGE: 12 }));
 
 vi.mock('next/link', () => ({
   default: ({ href, children }: { href: string; children: ReactNode }) => (
@@ -38,9 +37,19 @@ const plan = (over: Record<string, unknown> = {}) => ({
   ...over,
 });
 
+/** Default result shape: browse mode (empty query). */
+const result = (over: Record<string, unknown> = {}) => ({
+  plans: [plan()],
+  total: 1,
+  page: 1,
+  totalPages: 1,
+  query: '',
+  ...over,
+});
+
 beforeEach(() => {
   vi.resetModules();
-  listPlans.mockReset();
+  searchPlans.mockReset();
 });
 
 const render = async (searchParams: Record<string, string> = {}) => {
@@ -51,17 +60,17 @@ const render = async (searchParams: Record<string, string> = {}) => {
   return renderToStaticMarkup(tree);
 };
 
-describe('catalog page', () => {
+describe('catalog page — browse', () => {
   it('renders a card per plan, linking to its detail page', async () => {
-    listPlans.mockResolvedValue({
-      plans: [
-        plan(),
-        plan({ id: 'p2', slug: 'pine-bookcase', title: 'Simple Pine Bookcase' }),
-      ],
-      total: 2,
-      page: 1,
-      totalPages: 1,
-    });
+    searchPlans.mockResolvedValue(
+      result({
+        plans: [
+          plan(),
+          plan({ id: 'p2', slug: 'pine-bookcase', title: 'Simple Pine Bookcase' }),
+        ],
+        total: 2,
+      }),
+    );
 
     const html = await render();
 
@@ -72,7 +81,7 @@ describe('catalog page', () => {
   });
 
   it('shows the structured metadata that IS the product differentiator', async () => {
-    listPlans.mockResolvedValue({ plans: [plan()], total: 1, page: 1, totalPages: 1 });
+    searchPlans.mockResolvedValue(result());
 
     const html = await render();
 
@@ -82,52 +91,117 @@ describe('catalog page', () => {
     expect(html).toContain('Cutting Boards'); // category
   });
 
+  it('always offers the search box', async () => {
+    searchPlans.mockResolvedValue(result());
+    const html = await render();
+
+    expect(html).toContain('name="q"');
+    expect(html).toContain('role="search"');
+  });
+
   it('pluralises the plan count', async () => {
-    listPlans.mockResolvedValue({ plans: [plan()], total: 1, page: 1, totalPages: 1 });
+    searchPlans.mockResolvedValue(result({ total: 1 }));
     expect(await render()).toContain('1 plan');
 
     vi.resetModules();
-    listPlans.mockResolvedValue({ plans: [plan()], total: 24, page: 1, totalPages: 2 });
+    searchPlans.mockResolvedValue(result({ total: 24, totalPages: 2 }));
     expect(await render()).toContain('24 plans');
   });
 
   it('shows an empty state rather than a blank page', async () => {
-    listPlans.mockResolvedValue({ plans: [], total: 0, page: 1, totalPages: 1 });
+    searchPlans.mockResolvedValue(result({ plans: [], total: 0 }));
     expect(await render()).toContain('No plans yet');
   });
 
   it('hides pagination when everything fits on one page', async () => {
-    listPlans.mockResolvedValue({ plans: [plan()], total: 1, page: 1, totalPages: 1 });
+    searchPlans.mockResolvedValue(result());
     expect(await render()).not.toContain('Page 1 of');
   });
 
   it('shows pagination when there is more than one page', async () => {
-    listPlans.mockResolvedValue({ plans: [plan()], total: 24, page: 1, totalPages: 2 });
+    searchPlans.mockResolvedValue(result({ total: 24, totalPages: 2 }));
     const html = await render();
 
     expect(html).toContain('Page 1 of 2');
     expect(html).toContain('href="/?page=2"');
     expect(html).not.toContain('Previous');
   });
+});
 
-  it('links back to a bare / from page 2, not /?page=1', async () => {
-    listPlans.mockResolvedValue({ plans: [plan()], total: 24, page: 2, totalPages: 2 });
-    const html = await render({ page: '2' });
+describe('catalog page — search', () => {
+  it('passes the query through to searchPlans', async () => {
+    searchPlans.mockResolvedValue(result({ query: 'walnut', total: 3 }));
+    await render({ q: 'walnut' });
 
-    expect(html).toContain('href="/"');
-    expect(html).not.toContain('href="/?page=1"');
-    expect(html).not.toContain('Next');
+    expect(searchPlans.mock.calls[0]![0]).toEqual({ query: 'walnut', page: 1 });
   });
 
-  it('SECURITY: a garbage page param degrades to page 1 — no raw input reaches the DB', async () => {
+  it('reports the result count and echoes the query back', async () => {
+    searchPlans.mockResolvedValue(result({ query: 'walnut', total: 3 }));
+    const html = await render({ q: 'walnut' });
+
+    expect(html).toContain('3 results for');
+    expect(html).toContain('walnut');
+    expect(html).toContain('Clear');
+  });
+
+  it('says "result" not "results" when there is exactly one', async () => {
+    searchPlans.mockResolvedValue(result({ query: 'lathe', total: 1 }));
+    expect(await render({ q: 'lathe' })).toContain('1 result for');
+  });
+
+  it('gives a useful empty state for a search that matched nothing', async () => {
+    searchPlans.mockResolvedValue(result({ plans: [], total: 0, query: 'zzzz' }));
+    const html = await render({ q: 'zzzz' });
+
+    expect(html).toContain('Nothing matched');
+    // Suggests what to try instead of just saying "no results".
+    expect(html).toContain('walnut');
+  });
+
+  it('preserves the query across pagination links', async () => {
+    // Losing the search term on "Next" is the classic pagination bug.
+    searchPlans.mockResolvedValue(
+      result({ query: 'oak', total: 24, totalPages: 2, page: 1 }),
+    );
+    const html = await render({ q: 'oak' });
+
+    expect(html).toContain('q=oak&amp;page=2');
+  });
+
+  it('drops page=1 from the Previous link rather than emitting ?page=1', async () => {
+    searchPlans.mockResolvedValue(
+      result({ query: 'oak', total: 24, totalPages: 2, page: 2 }),
+    );
+    const html = await render({ q: 'oak', page: '2' });
+
+    expect(html).toContain('href="/?q=oak"');
+    expect(html).not.toContain('page=1');
+  });
+});
+
+describe('catalog page — untrusted input', () => {
+  it('SECURITY: a garbage page param degrades to page 1', async () => {
     for (const bad of ['abc', '-1', '0', '1; DROP TABLE Plan;--', '']) {
       vi.resetModules();
-      listPlans.mockClear();
-      listPlans.mockResolvedValue({ plans: [], total: 0, page: 1, totalPages: 1 });
+      searchPlans.mockClear();
+      searchPlans.mockResolvedValue(result({ plans: [], total: 0 }));
 
       await render({ page: bad });
 
-      expect(listPlans.mock.calls[0]![0].page, `page="${bad}"`).toBe(1);
+      expect(searchPlans.mock.calls[0]![0].page, `page="${bad}"`).toBe(1);
     }
+  });
+
+  it('SECURITY: a hostile query string is escaped when echoed back, not injected', async () => {
+    const xss = '<script>alert(1)</script>';
+    searchPlans.mockResolvedValue(result({ plans: [], total: 0, query: xss }));
+
+    const html = await render({ q: xss });
+
+    // React escapes by default. Assert it, because the day someone reaches for
+    // dangerouslySetInnerHTML to "fix" the quotes, this test should fail.
+    expect(html).not.toContain('<script>');
+    expect(html).toContain('&lt;script&gt;');
   });
 });

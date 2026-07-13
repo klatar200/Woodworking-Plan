@@ -1,23 +1,20 @@
 import Link from 'next/link';
-import { listPlans } from '@/lib/plans';
+import { searchPlans } from '@/lib/plans';
 import { PlanCard } from '@/components/plan-card';
+import { SearchBox } from '@/components/search-box';
 
 /**
- * The catalog — Sprint 3's "catalog listing" deliverable.
+ * The catalog — browse (Sprint 3) and keyword search (Sprint 4) on one page.
  *
- * This REPLACES the Sprint 0 status page, which was scaffolding and has served
- * its purpose. `/api/health` remains for uptime checks.
+ * One page, not two. A separate /search route would mean two layouts, two card
+ * grids, and two pagination implementations that drift apart. `searchPlans()`
+ * with an empty query IS browse, so the page has a single code path.
  *
- * Deliberately absent, and not by oversight:
- *   - a search box     → Sprint 4
- *   - filter controls  → Sprint 5
- *   - save/like buttons → Sprints 6-7
- * Stubbing them out now would mean designing them before their sprints, which is
- * how you get UI that has to be rebuilt.
+ * Deliberately absent: filter controls (Sprint 5), save/like buttons (6-7).
  */
 export const dynamic = 'force-dynamic';
 
-type SearchParams = Promise<{ page?: string }>;
+type SearchParams = Promise<{ q?: string; page?: string }>;
 
 export default async function CatalogPage({
   searchParams,
@@ -26,25 +23,65 @@ export default async function CatalogPage({
 }) {
   const params = await searchParams;
 
-  // Never trust the query string. A non-numeric, negative, or absurd `page` must
-  // degrade to page 1, not throw or hand a garbage `skip` to Postgres.
+  // Never trust the query string. Garbage degrades to page 1 rather than handing
+  // Postgres a negative OFFSET.
   const requested = Number.parseInt(params.page ?? '1', 10);
   const page = Number.isFinite(requested) && requested > 0 ? requested : 1;
 
-  const { plans, total, totalPages, page: currentPage } = await listPlans({ page });
+  const rawQuery = typeof params.q === 'string' ? params.q : '';
+
+  const { plans, total, totalPages, page: currentPage, query } = await searchPlans({
+    query: rawQuery,
+    page,
+  });
+
+  const isSearching = query !== '';
+
+  /** Preserves the active search across page links. */
+  const hrefFor = (targetPage: number) => {
+    const search = new URLSearchParams();
+    if (isSearching) search.set('q', query);
+    if (targetPage > 1) search.set('page', String(targetPage));
+    const qs = search.toString();
+    return qs ? `/?${qs}` : '/';
+  };
 
   return (
     <main className="page page-wide">
       <h1>Plans</h1>
+
+      <SearchBox query={query} />
+
       <p className="subtitle">
-        {total} {total === 1 ? 'plan' : 'plans'} — every one with a full cut list,
-        material list, and cost estimate.
+        {isSearching ? (
+          <>
+            {total} {total === 1 ? 'result' : 'results'} for{' '}
+            <strong>&ldquo;{query}&rdquo;</strong>
+            {' · '}
+            <Link href="/">Clear</Link>
+          </>
+        ) : (
+          <>
+            {total} {total === 1 ? 'plan' : 'plans'} &mdash; every one with a full
+            cut list, material list, and cost estimate.
+          </>
+        )}
       </p>
 
       {plans.length === 0 ? (
         <p className="empty-state">
-          No plans yet. If you are seeing this on a fresh database, run{' '}
-          <code>npm run db:seed</code>.
+          {isSearching ? (
+            <>
+              Nothing matched <strong>&ldquo;{query}&rdquo;</strong>. Try a
+              broader term — a tool (&ldquo;router&rdquo;), a wood
+              (&ldquo;walnut&rdquo;), or a project (&ldquo;shelf&rdquo;).
+            </>
+          ) : (
+            <>
+              No plans yet. If you are seeing this on a fresh database, run{' '}
+              <code>npm run db:seed</code>.
+            </>
+          )}
         </p>
       ) : (
         <ul className="plan-grid">
@@ -57,24 +94,20 @@ export default async function CatalogPage({
       {totalPages > 1 && (
         <nav className="pagination" aria-label="Pagination">
           {currentPage > 1 ? (
-            <Link
-              href={currentPage === 2 ? '/' : `/?page=${currentPage - 1}`}
-              className="btn btn-ghost"
-              rel="prev"
-            >
-              ← Previous
+            <Link href={hrefFor(currentPage - 1)} className="btn btn-ghost" rel="prev">
+              &larr; Previous
             </Link>
           ) : (
             <span />
           )}
 
-          <span className="pagination-status" aria-current="page">
+          <span className="pagination-status">
             Page {currentPage} of {totalPages}
           </span>
 
           {currentPage < totalPages ? (
-            <Link href={`/?page=${currentPage + 1}`} className="btn btn-ghost" rel="next">
-              Next →
+            <Link href={hrefFor(currentPage + 1)} className="btn btn-ghost" rel="next">
+              Next &rarr;
             </Link>
           ) : (
             <span />

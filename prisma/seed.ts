@@ -177,8 +177,59 @@ async function main() {
     console.log(`  ✓ ${plan.slug}`);
   }
 
+  await refreshSearchVectors();
+
   const total = await prisma.plan.count();
   console.log(`Done. ${total} plans in the catalog.`);
+}
+
+/**
+ * Rebuilds the full-text search index (Sprint 4).
+ *
+ * Runs AFTER all plans and their children are written — the vector aggregates
+ * tools and materials from other tables, so it cannot be built until those rows
+ * exist. One statement for the whole catalog rather than one per plan: it is a
+ * set-based operation and Postgres is far better at it than a loop is.
+ *
+ * WEIGHTS decide ranking, and they are the whole difference between search that
+ * feels right and search that feels random:
+ *   A — title      (a plan *named* "Walnut Cutting Board" beats one that mentions walnut)
+ *   B — summary + tags
+ *   C — tools + materials  (BUSINESS_PLAN.md §4.5 requires these be searchable)
+ *   D — description + step bodies (a passing mention should rank last, not first)
+ *
+ * The seed is the only write path for plan content, so refreshing here keeps the
+ * index in step with the catalog by construction. If plans ever become editable
+ * through an admin UI, that path must call this too — or better, this becomes a
+ * database trigger.
+ */
+async function refreshSearchVectors(): Promise<void> {
+  const updated = await prisma.$executeRaw`
+    UPDATE "Plan" p
+    SET "searchVector" =
+        setweight(to_tsvector('english', coalesce(p.title, '')), 'A')
+     || setweight(to_tsvector('english', coalesce(p.summary, '')), 'B')
+     || setweight(to_tsvector('english', coalesce(array_to_string(p.tags, ' '), '')), 'B')
+     || setweight(to_tsvector('english', coalesce((
+            SELECT string_agg(t.name, ' ')
+            FROM "PlanTool" pt
+            JOIN "Tool" t ON t.id = pt."toolId"
+            WHERE pt."planId" = p.id
+          ), '')), 'C')
+     || setweight(to_tsvector('english', coalesce((
+            SELECT string_agg(concat_ws(' ', m.name, m.species), ' ')
+            FROM "Material" m
+            WHERE m."planId" = p.id
+          ), '')), 'C')
+     || setweight(to_tsvector('english', coalesce(p.description, '')), 'D')
+     || setweight(to_tsvector('english', coalesce((
+            SELECT string_agg(concat_ws(' ', s.title, s.body), ' ')
+            FROM "Step" s
+            WHERE s."planId" = p.id
+          ), '')), 'D')
+  `;
+
+  console.log(`  ↳ search index rebuilt for ${updated} plans`);
 }
 
 main()

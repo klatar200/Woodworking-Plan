@@ -150,6 +150,24 @@ model Plan {
   /// Free-form keywords. Feeds keyword search (Sprint 4).
   tags String[]
 
+  /// SPRINT 4 — full-text search index.
+  ///
+  /// A Postgres `tsvector` covering this plan AND its related tools and
+  /// materials, because BUSINESS_PLAN.md §4.5 requires search across "titles,
+  /// descriptions, tags, tools, and materials" — and tools/materials live in
+  /// other tables. Denormalizing them into one indexed column is what makes a
+  /// single ranked query possible instead of five joins and a manual merge.
+  ///
+  /// Fields are WEIGHTED (A=title, B=summary+tags, C=tools+materials, D=body),
+  /// so a search for "walnut" ranks a walnut cutting board above a plan that
+  /// merely mentions walnut in step 7.
+  ///
+  /// Prisma has no tsvector type, so it is `Unsupported` — never selected, never
+  /// written through the Prisma client. It is populated by the seed pipeline
+  /// (the only write path for plan content) and queried with raw SQL in
+  /// src/lib/plans.ts. BUILD_PLAN.md §3 chose Postgres precisely for this.
+  searchVector Unsupported("tsvector")?
+
   /// Unpublished plans are invisible to the catalog. Lets content be staged.
   published   Boolean   @default(true)
   publishedAt DateTime?
@@ -167,6 +185,9 @@ model Plan {
   @@index([difficulty])
   @@index([costTier])
   @@index([published])
+  /// GIN is the right index for tsvector — it's what makes full-text search fast
+  /// enough to run on every keystroke-ish request instead of scanning the table.
+  @@index([searchVector], type: Gin)
 }
 
 /// Join table: which tools a plan needs, and whether each is truly required.
