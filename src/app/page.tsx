@@ -1,20 +1,25 @@
 import Link from 'next/link';
-import { searchPlans } from '@/lib/plans';
+import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
+import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
 import { PlanCard } from '@/components/plan-card';
 import { SearchBox } from '@/components/search-box';
+import { FilterPanel } from '@/components/filter-panel';
 
 /**
- * The catalog — browse (Sprint 3) and keyword search (Sprint 4) on one page.
+ * The catalog — browse (Sprint 3), keyword search (Sprint 4), and filters
+ * (Sprint 5), on ONE page.
  *
- * One page, not two. A separate /search route would mean two layouts, two card
- * grids, and two pagination implementations that drift apart. `searchPlans()`
- * with an empty query IS browse, so the page has a single code path.
+ * One page, not three. `queryPlans()` with no query and no filters IS browse, so
+ * there is a single code path. Separate /search and /filter routes would mean
+ * three card grids and three paginations drifting apart, and would make the
+ * combination — "walnut, under $150, tools I own" — awkward, when that
+ * combination is precisely the product promise in BUSINESS_PLAN.md §9.
  *
- * Deliberately absent: filter controls (Sprint 5), save/like buttons (6-7).
+ * Deliberately absent: save/like buttons (Sprints 6-7).
  */
 export const dynamic = 'force-dynamic';
 
-type SearchParams = Promise<{ q?: string; page?: string }>;
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default async function CatalogPage({
   searchParams,
@@ -23,28 +28,37 @@ export default async function CatalogPage({
 }) {
   const params = await searchParams;
 
-  // Never trust the query string. Garbage degrades to page 1 rather than handing
-  // Postgres a negative OFFSET.
-  const requested = Number.parseInt(params.page ?? '1', 10);
-  const page = Number.isFinite(requested) && requested > 0 ? requested : 1;
+  // Categories and tools are needed both to RENDER the filter UI and to VALIDATE
+  // the incoming filters — an unknown slug gets dropped rather than sent to
+  // Postgres to match nothing.
+  const [categories, tools] = await Promise.all([
+    listCategories(),
+    listFilterableTools(),
+  ]);
+
+  const filters = parseFilters(params, {
+    validCategorySlugs: categories.map((c) => c.slug),
+    validToolSlugs: tools.map((t) => t.slug),
+  });
+
+  // Never trust the query string. Garbage degrades to page 1.
+  const rawPage = Number.parseInt(
+    typeof params.page === 'string' ? params.page : '1',
+    10,
+  );
+  const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const rawQuery = typeof params.q === 'string' ? params.q : '';
 
-  const { plans, total, totalPages, page: currentPage, query } = await searchPlans({
+  const { plans, total, totalPages, page: currentPage, query } = await queryPlans({
     query: rawQuery,
+    filters,
     page,
   });
 
   const isSearching = query !== '';
-
-  /** Preserves the active search across page links. */
-  const hrefFor = (targetPage: number) => {
-    const search = new URLSearchParams();
-    if (isSearching) search.set('q', query);
-    if (targetPage > 1) search.set('page', String(targetPage));
-    const qs = search.toString();
-    return qs ? `/?${qs}` : '/';
-  };
+  const isFiltering = hasActiveFilters(filters);
+  const isNarrowed = isSearching || isFiltering;
 
   return (
     <main className="page page-wide">
@@ -52,13 +66,26 @@ export default async function CatalogPage({
 
       <SearchBox query={query} />
 
+      <FilterPanel
+        query={query}
+        filters={filters}
+        categories={categories}
+        tools={tools}
+      />
+
       <p className="subtitle">
-        {isSearching ? (
+        {isNarrowed ? (
           <>
-            {total} {total === 1 ? 'result' : 'results'} for{' '}
-            <strong>&ldquo;{query}&rdquo;</strong>
+            {total} {total === 1 ? 'plan' : 'plans'}
+            {isSearching && (
+              <>
+                {' '}
+                matching <strong>&ldquo;{query}&rdquo;</strong>
+              </>
+            )}
+            {isFiltering && (isSearching ? ' with your filters' : ' match your filters')}
             {' · '}
-            <Link href="/">Clear</Link>
+            <Link href="/">Clear all</Link>
           </>
         ) : (
           <>
@@ -70,11 +97,11 @@ export default async function CatalogPage({
 
       {plans.length === 0 ? (
         <p className="empty-state">
-          {isSearching ? (
+          {isNarrowed ? (
             <>
-              Nothing matched <strong>&ldquo;{query}&rdquo;</strong>. Try a
-              broader term — a tool (&ldquo;router&rdquo;), a wood
-              (&ldquo;walnut&rdquo;), or a project (&ldquo;shelf&rdquo;).
+              Nothing matched. Try loosening a filter &mdash; the{' '}
+              <strong>tools you own</strong> filter is the strictest one, since it
+              hides any plan needing a tool you didn&rsquo;t tick.
             </>
           ) : (
             <>
@@ -94,7 +121,11 @@ export default async function CatalogPage({
       {totalPages > 1 && (
         <nav className="pagination" aria-label="Pagination">
           {currentPage > 1 ? (
-            <Link href={hrefFor(currentPage - 1)} className="btn btn-ghost" rel="prev">
+            <Link
+              href={buildQueryString({ query, filters, page: currentPage - 1 })}
+              className="btn btn-ghost"
+              rel="prev"
+            >
               &larr; Previous
             </Link>
           ) : (
@@ -106,7 +137,11 @@ export default async function CatalogPage({
           </span>
 
           {currentPage < totalPages ? (
-            <Link href={hrefFor(currentPage + 1)} className="btn btn-ghost" rel="next">
+            <Link
+              href={buildQueryString({ query, filters, page: currentPage + 1 })}
+              className="btn btn-ghost"
+              rel="next"
+            >
               Next &rarr;
             </Link>
           ) : (

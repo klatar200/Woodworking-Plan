@@ -1,29 +1,19 @@
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
+import type { PlanFilters } from '@/lib/filters';
 
 /**
- * Plan catalog reads — Sprint 3 (browse + detail).
+ * Plan catalog reads.
  *
- * ONE RULE GOVERNS THIS FILE: **`published: true` is applied on every read.**
- *
- * The `published` flag exists so content can be staged in the database before it
- * is fit to show anyone. A single query that forgets the filter silently exposes
- * half-finished plans to the public — and because it *works*, nobody notices.
- * So the filter lives here, in the data layer, not in the pages. Pages cannot
- * forget what they never had to remember.
- *
- * Search (Sprint 4) and filters (Sprint 5) will extend these functions. They must
- * not bypass them.
+ * ONE RULE: `published: true` is applied on EVERY read. The filter lives here,
+ * in the data layer, not in the pages. Pages cannot forget what they never had
+ * to remember.
  */
 
-/** Page size. Deliberately small — BUSINESS_PLAN.md §5: phones, weak workshop wifi. */
+/** Page size. Small on purpose — BUSINESS_PLAN.md §5: phones, weak workshop wifi. */
 export const PLANS_PER_PAGE = 12;
 
-/**
- * The fields a catalog card renders — and nothing more.
- *
- * Shared by browse and search so the two cannot drift apart. A list view has no
- * business pulling every step and cut-list row for every plan.
- */
+/** The fields a catalog card renders, and nothing more. Shared by every list view. */
 const PLAN_CARD_SELECT = {
   id: true,
   slug: true,
@@ -43,61 +33,229 @@ const PLAN_CARD_SELECT = {
   },
 } as const;
 
+const EMPTY_FILTERS: PlanFilters = {
+  difficulty: [],
+  costTier: [],
+  ownedTools: [],
+};
+
 /**
- * A page of the catalog.
+ * Translates validated filters into a Prisma `where` clause.
  *
- * Paginated rather than returning everything: the seed catalog is 24 plans, but
- * BUSINESS_PLAN.md §6 targets 300–500 at launch, and shipping 500 plans to a
- * phone on hardware-store wifi is a real failure, not a hypothetical one. Doing
- * it now costs nothing; retrofitting it after Sprints 4–5 build on top would not.
- *
- * Selects only the fields a card renders. A list view has no business pulling
- * every step and cut-list row for every plan.
+ * `published: true` is baked in and non-negotiable — every path through this file
+ * goes through here.
  */
-export async function listPlans({ page = 1 }: { page?: number } = {}) {
+function buildWhere(filters: PlanFilters): Prisma.PlanWhereInput {
+  const where: Prisma.PlanWhereInput = { published: true };
+
+  if (filters.category) {
+    where.category = { slug: filters.category };
+  }
+
+  if (filters.difficulty.length > 0) {
+    where.difficulty = { in: filters.difficulty };
+  }
+
+  if (filters.costTier.length > 0) {
+    where.costTier = { in: filters.costTier };
+  }
+
+  if (filters.maxMinutes) {
+    // Filter on the plan's MAXIMUM estimate, not its minimum.
+    //
+    // If someone asks for "an afternoon (≤4 hrs)", a plan estimated at "3–7 hrs"
+    // must NOT match — it might well eat their whole evening. Filtering on
+    // timeMinMinutes would return exactly that plan and make the filter a liar.
+    // Honest under-promising is the only way this number stays trustworthy.
+    where.timeMaxMinutes = { lte: filters.maxMinutes };
+  }
+
+  if (filters.ownedTools.length > 0) {
+    // "Only show plans I can BUILD with the tools I own" (BUSINESS_PLAN.md §4.6).
+    //
+    // This is a SUBSET test, not an intersection: a plan qualifies when it has NO
+    // essential tool outside the owned set. Optional tools are ignored — that is
+    // what `essential: false` is for, and it is why the flag exists in the schema.
+    //
+    // The naive reading ("plans that use any tool I own") would happily return a
+    // plan needing a lathe you don't have. A filter that lies is worse than no
+    // filter.
+    where.tools = {
+      none: {
+        essential: true,
+        tool: { slug: { notIn: filters.ownedTools } },
+      },
+    };
+  }
+
+  return where;
+}
+
+export interface QueryPlansArgs {
+  query?: string;
+  filters?: PlanFilters;
+  page?: number;
+}
+
+/**
+ * The one catalog query — browse, keyword search, filters, and every combination.
+ *
+ * Sprint 3 gave us browse. Sprint 4 gave us ranked keyword search. Sprint 5 has
+ * to make filters work *with* search, so all three collapse into one function
+ * rather than three that drift apart.
+ *
+ * HOW SEARCH AND FILTERS COMBINE:
+ *   Ranking needs raw SQL (Prisma has no tsvector support). Filtering is far
+ *   safer and clearer in Prisma. So: the raw query returns the FULL set of
+ *   matching ids in rank order, Prisma applies the filters and gives us the
+ *   surviving ids, then we intersect — preserving rank order — and paginate.
+ *
+ *   The trade-off: the id list is fetched unpaginated. At the launch catalog size
+ *   (BUSINESS_PLAN.md §6: 300–500 plans) that is a few hundred short strings, so
+ *   it is fine. It would stop being fine in the tens of thousands, at which point
+ *   the filters belong in the SQL. Noted deliberately, not overlooked.
+ */
+export async function queryPlans({
+  query = '',
+  filters = EMPTY_FILTERS,
+  page = 1,
+}: QueryPlansArgs = {}) {
+  const trimmed = query.trim();
   const currentPage = Math.max(1, Math.floor(page));
   const skip = (currentPage - 1) * PLANS_PER_PAGE;
+  const where = buildWhere(filters);
 
-  const [plans, total] = await Promise.all([
-    prisma.plan.findMany({
-      where: { published: true },
-      select: PLAN_CARD_SELECT,
-      orderBy: [{ difficulty: 'asc' }, { title: 'asc' }],
-      skip,
-      take: PLANS_PER_PAGE,
-    }),
-    prisma.plan.count({ where: { published: true } }),
-  ]);
+  // --- No keyword: Prisma does everything, including pagination. ---
+  if (trimmed === '') {
+    const [plans, total] = await Promise.all([
+      prisma.plan.findMany({
+        where,
+        select: PLAN_CARD_SELECT,
+        orderBy: [{ difficulty: 'asc' }, { title: 'asc' }],
+        skip,
+        take: PLANS_PER_PAGE,
+      }),
+      prisma.plan.count({ where }),
+    ]);
+
+    return {
+      plans,
+      total,
+      page: currentPage,
+      totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
+      query: '',
+    };
+  }
+
+  // --- Keyword present: rank in SQL, filter in Prisma, intersect. ---
+  //
+  // SECURITY: `$queryRaw` is a tagged template. Prisma sends ${trimmed} as a bound
+  // parameter, never concatenated into the SQL string. `$queryRawUnsafe` is not
+  // used anywhere in this codebase.
+  //
+  // `websearch_to_tsquery`, not `to_tsquery`: the latter throws a syntax error on
+  // ordinary human input (a stray `&`, an unbalanced quote), turning a typo into
+  // a 500. Users type strange things into search boxes.
+  const ranked = await prisma.$queryRaw<Array<{ id: string }>>`
+    SELECT id
+    FROM "Plan"
+    WHERE published = true
+      AND "searchVector" @@ websearch_to_tsquery('english', ${trimmed})
+    ORDER BY ts_rank("searchVector", websearch_to_tsquery('english', ${trimmed})) DESC,
+             title ASC
+  `;
+
+  const rankedIds = ranked.map((r) => r.id);
+
+  if (rankedIds.length === 0) {
+    return {
+      plans: [] as PlanListItem[],
+      total: 0,
+      page: currentPage,
+      totalPages: 1,
+      query: trimmed,
+    };
+  }
+
+  // Apply the filters to the matched set. `published: true` is in `where` too —
+  // belt and braces, so this never depends on the raw query having remembered it.
+  const allowed = await prisma.plan.findMany({
+    where: { AND: [where, { id: { in: rankedIds } }] },
+    select: { id: true },
+  });
+
+  const allowedIds = new Set(allowed.map((p) => p.id));
+  const ordered = rankedIds.filter((id) => allowedIds.has(id));
+
+  const total = ordered.length;
+  const pageIds = ordered.slice(skip, skip + PLANS_PER_PAGE);
+
+  if (pageIds.length === 0) {
+    return {
+      plans: [] as PlanListItem[],
+      total,
+      page: currentPage,
+      totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
+      query: trimmed,
+    };
+  }
+
+  const plans = await prisma.plan.findMany({
+    where: { id: { in: pageIds }, published: true },
+    select: PLAN_CARD_SELECT,
+  });
+
+  // findMany returns rows in whatever order Postgres likes. Restore relevance
+  // order — an unranked list of search results is just a list.
+  const byId = new Map(plans.map((p) => [p.id, p]));
+  const pagePlans = pageIds
+    .map((id) => byId.get(id))
+    .filter((p): p is PlanListItem => p !== undefined);
 
   return {
-    plans,
+    plans: pagePlans,
     total,
     page: currentPage,
     totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
+    query: trimmed,
   };
 }
 
-export type PlanListItem = Awaited<ReturnType<typeof listPlans>>['plans'][number];
+export type PlanListItem = Prisma.PlanGetPayload<{
+  select: typeof PLAN_CARD_SELECT;
+}>;
+
+/** Categories for the filter UI, in display order. */
+export async function listCategories() {
+  return prisma.category.findMany({
+    select: { slug: true, name: true },
+    orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+  });
+}
 
 /**
- * A single plan with everything the detail page renders.
+ * Tools for the "tools I own" filter, grouped for the UI.
  *
- * Returns null for an unknown slug AND for an unpublished one — a caller must not
- * be able to distinguish "no such plan" from "not published yet", because that
- * distinction leaks the existence of unreleased content.
- *
- * Children are ordered here, in the query, rather than in the component. Steps
- * out of order are not a styling bug; they are wrong instructions.
+ * Only tools that some published plan actually requires — offering a filter for a
+ * tool that returns nothing no matter what is just noise.
  */
+export async function listFilterableTools() {
+  return prisma.tool.findMany({
+    where: { plans: { some: { plan: { published: true } } } },
+    select: { slug: true, name: true, category: true },
+    orderBy: [{ category: 'asc' }, { name: 'asc' }],
+  });
+}
+
 export async function getPlanBySlug(slug: string) {
   return prisma.plan.findFirst({
+    // Unknown slug and unpublished slug both return null — so a 404 cannot be
+    // used to probe for the existence of unreleased content.
     where: { slug, published: true },
     include: {
       category: true,
       tools: {
         include: { tool: true },
-        // Essential tools first — that's the question a maker is actually asking
-        // ("can I build this?"), so it should not require scanning a list.
         orderBy: [{ essential: 'desc' }, { tool: { name: 'asc' } }],
       },
       materials: { orderBy: { sortOrder: 'asc' } },
@@ -110,110 +268,6 @@ export async function getPlanBySlug(slug: string) {
 
 export type PlanDetail = NonNullable<Awaited<ReturnType<typeof getPlanBySlug>>>;
 
-/**
- * Full-text keyword search — Sprint 4.
- *
- * Searches title, summary, tags, tools, materials, description, and step bodies,
- * per BUSINESS_PLAN.md §4.5, and ranks results by weighted relevance (see the
- * weights in prisma/seed.ts).
- *
- * WHY RAW SQL: Prisma has no tsvector support. This is the one place in the
- * codebase that drops to SQL, and it is the reason BUILD_PLAN.md §3 chose
- * Postgres over MongoDB in the first place.
- *
- * SECURITY — two things carry the weight here:
- *
- *   1. The query is PARAMETERIZED. `$queryRaw` is a tagged template: Prisma sends
- *      `${query}` as a bound parameter, never as concatenated SQL. It is not
- *      string interpolation, despite looking like it. `$queryRawUnsafe` would be
- *      an injection hole; it is not used, here or anywhere.
- *
- *   2. `websearch_to_tsquery` is used, NOT `to_tsquery`. `to_tsquery` throws a
- *      syntax error on ordinary human input — an unbalanced quote, a stray `&`,
- *      the word "and" — which would turn a typo into a 500. `websearch_to_tsquery`
- *      parses Google-style input ("walnut -oak", quoted phrases) and never throws.
- *      Users type strange things into search boxes; that must not be an outage.
- *
- * And, as everywhere in this file: `published = true`. Search must not be a
- * back door into staged content that browse won't show.
- */
-export async function searchPlans({
-  query,
-  page = 1,
-}: {
-  query: string;
-  page?: number;
-}) {
-  const trimmed = query.trim();
-
-  // An empty search is not a search — it is the catalog. Falling through to
-  // listPlans keeps one code path for "show me everything".
-  if (trimmed === '') {
-    return { ...(await listPlans({ page })), query: '' };
-  }
-
-  const currentPage = Math.max(1, Math.floor(page));
-  const skip = (currentPage - 1) * PLANS_PER_PAGE;
-
-  // Two-step: rank ids in SQL, then hydrate through Prisma's typed client.
-  // Doing the hydration in raw SQL would mean hand-writing the joins for
-  // category and images and losing the `published` filter's single source of
-  // truth. This keeps the raw SQL to exactly what only SQL can do.
-  const ranked = await prisma.$queryRaw<Array<{ id: string; rank: number }>>`
-    SELECT id, ts_rank("searchVector", websearch_to_tsquery('english', ${trimmed})) AS rank
-    FROM "Plan"
-    WHERE published = true
-      AND "searchVector" @@ websearch_to_tsquery('english', ${trimmed})
-    ORDER BY rank DESC, title ASC
-    LIMIT ${PLANS_PER_PAGE}
-    OFFSET ${skip}
-  `;
-
-  const totalRows = await prisma.$queryRaw<Array<{ count: bigint }>>`
-    SELECT count(*) AS count
-    FROM "Plan"
-    WHERE published = true
-      AND "searchVector" @@ websearch_to_tsquery('english', ${trimmed})
-  `;
-
-  const total = Number(totalRows[0]?.count ?? 0);
-  const ids = ranked.map((r) => r.id);
-
-  if (ids.length === 0) {
-    return {
-      plans: [],
-      total,
-      page: currentPage,
-      totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
-      query: trimmed,
-    };
-  }
-
-  const plans = await prisma.plan.findMany({
-    // `published: true` again — belt and braces. The ids came from a published-only
-    // query, but this function must not depend on a caller's memory of that.
-    where: { id: { in: ids }, published: true },
-    select: PLAN_CARD_SELECT,
-  });
-
-  // findMany returns rows in whatever order Postgres likes. Restore relevance
-  // order — an unranked list of search results is just a list.
-  const byId = new Map(plans.map((p) => [p.id, p]));
-  const ordered = ids.map((id) => byId.get(id)).filter((p) => p !== undefined);
-
-  return {
-    plans: ordered,
-    total,
-    page: currentPage,
-    totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
-    query: trimmed,
-  };
-}
-
-/**
- * Slugs for static generation / sitemap use.
- * Published only, for the same reason as everything else in this file.
- */
 export async function listPublishedSlugs(): Promise<string[]> {
   const plans = await prisma.plan.findMany({
     where: { published: true },
