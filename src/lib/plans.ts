@@ -1,19 +1,26 @@
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import type { PlanFilters } from '@/lib/filters';
+import { DEFAULT_SORT, type SortOption } from '@/lib/sort';
 
 /**
  * Plan catalog reads.
  *
- * ONE RULE: `published: true` is applied on EVERY read. The filter lives here,
- * in the data layer, not in the pages. Pages cannot forget what they never had
- * to remember.
+ * ONE RULE: `published: true` is applied on EVERY read. The filter lives here, in
+ * the data layer, not in the pages. Pages cannot forget what they never had to
+ * remember. Sprints 4–7 EXTEND these functions; they must not bypass them.
  */
 
 /** Page size. Small on purpose — BUSINESS_PLAN.md §5: phones, weak workshop wifi. */
 export const PLANS_PER_PAGE = 12;
 
-/** The fields a catalog card renders, and nothing more. Shared by every list view. */
+/**
+ * The fields a catalog card renders, and nothing more. Shared by every list view.
+ *
+ * `_count.likes` — the like count is COUNTED, never read from a denormalized
+ * column. See prisma/schema.prisma: a derived column is a thing that can ship to
+ * production empty and silently lie, which has already happened twice here.
+ */
 const PLAN_CARD_SELECT = {
   id: true,
   slug: true,
@@ -31,93 +38,99 @@ const PLAN_CARD_SELECT = {
     select: { url: true, alt: true },
     take: 1,
   },
+  _count: { select: { likes: true } },
 } as const;
 
-const EMPTY_FILTERS: PlanFilters = {
-  difficulty: [],
-  costTier: [],
-  ownedTools: [],
-};
+export type PlanListItem = Prisma.PlanGetPayload<{ select: typeof PLAN_CARD_SELECT }>;
 
-/**
- * Translates validated filters into a Prisma `where` clause.
- *
- * `published: true` is baked in and non-negotiable — every path through this file
- * goes through here.
- */
+const EMPTY_FILTERS: PlanFilters = { difficulty: [], costTier: [], ownedTools: [] };
+
 function buildWhere(filters: PlanFilters): Prisma.PlanWhereInput {
   const where: Prisma.PlanWhereInput = { published: true };
 
-  if (filters.category) {
-    where.category = { slug: filters.category };
-  }
-
-  if (filters.difficulty.length > 0) {
-    where.difficulty = { in: filters.difficulty };
-  }
-
-  if (filters.costTier.length > 0) {
-    where.costTier = { in: filters.costTier };
-  }
+  if (filters.category) where.category = { slug: filters.category };
+  if (filters.difficulty.length > 0) where.difficulty = { in: filters.difficulty };
+  if (filters.costTier.length > 0) where.costTier = { in: filters.costTier };
 
   if (filters.maxMinutes) {
-    // Filter on the plan's MAXIMUM estimate, not its minimum.
-    //
-    // If someone asks for "an afternoon (≤4 hrs)", a plan estimated at "3–7 hrs"
-    // must NOT match — it might well eat their whole evening. Filtering on
-    // timeMinMinutes would return exactly that plan and make the filter a liar.
-    // Honest under-promising is the only way this number stays trustworthy.
+    // Filter on the MAXIMUM estimate, not the minimum. Asking for "an afternoon
+    // (<=4 hrs)" must NOT return a plan estimated at "3-7 hrs" — that might eat
+    // the whole evening. Filtering on timeMinMinutes would make the filter a liar.
     where.timeMaxMinutes = { lte: filters.maxMinutes };
   }
 
   if (filters.ownedTools.length > 0) {
     // "Only show plans I can BUILD with the tools I own" (BUSINESS_PLAN.md §4.6).
-    //
-    // This is a SUBSET test, not an intersection: a plan qualifies when it has NO
-    // essential tool outside the owned set. Optional tools are ignored — that is
-    // what `essential: false` is for, and it is why the flag exists in the schema.
-    //
-    // The naive reading ("plans that use any tool I own") would happily return a
-    // plan needing a lathe you don't have. A filter that lies is worse than no
-    // filter.
+    // A SUBSET test, not an intersection: the plan must have NO essential tool
+    // outside the owned set. Optional tools are ignored — that is what the
+    // `essential` flag is for. The naive reading ("plans using any tool I own")
+    // would return a plan needing a lathe you do not have. A filter that lies is
+    // worse than no filter.
     where.tools = {
-      none: {
-        essential: true,
-        tool: { slug: { notIn: filters.ownedTools } },
-      },
+      none: { essential: true, tool: { slug: { notIn: filters.ownedTools } } },
     };
   }
 
   return where;
 }
 
+/**
+ * Sprint 7 — the "Popular" sort and friends.
+ *
+ * Popular sorts by like count DESC, then falls back to difficulty and title so
+ * the order is deterministic. Without a tiebreak, a catalog where every plan has
+ * zero likes would shuffle on every request — which looks broken and, worse,
+ * makes pagination inconsistent between pages.
+ */
+function buildOrderBy(sort: SortOption): Prisma.PlanOrderByWithRelationInput[] {
+  switch (sort) {
+    case 'popular':
+      return [
+        { likes: { _count: 'desc' } },
+        { difficulty: 'asc' },
+        { title: 'asc' },
+      ];
+    case 'newest':
+      return [{ publishedAt: 'desc' }, { title: 'asc' }];
+    case 'cheapest':
+      return [{ costMinCents: 'asc' }, { title: 'asc' }];
+    case 'quickest':
+      return [{ timeMaxMinutes: 'asc' }, { title: 'asc' }];
+    case 'easiest':
+    default:
+      return [{ difficulty: 'asc' }, { title: 'asc' }];
+  }
+}
+
 export interface QueryPlansArgs {
   query?: string;
   filters?: PlanFilters;
+  sort?: SortOption;
   page?: number;
 }
 
 /**
- * The one catalog query — browse, keyword search, filters, and every combination.
+ * The ONE catalog query — browse, keyword search, filters, sort, and every
+ * combination.
  *
- * Sprint 3 gave us browse. Sprint 4 gave us ranked keyword search. Sprint 5 has
- * to make filters work *with* search, so all three collapse into one function
- * rather than three that drift apart.
+ * Ranking a keyword search needs raw SQL (Prisma has no tsvector). Filtering and
+ * sorting are safer and clearer in Prisma. So: raw SQL returns the FULL matched id
+ * list in relevance order, Prisma applies the filters, and we intersect.
  *
- * HOW SEARCH AND FILTERS COMBINE:
- *   Ranking needs raw SQL (Prisma has no tsvector support). Filtering is far
- *   safer and clearer in Prisma. So: the raw query returns the FULL set of
- *   matching ids in rank order, Prisma applies the filters and gives us the
- *   surviving ids, then we intersect — preserving rank order — and paginate.
+ * NOTE ON SORT + SEARCH: when a keyword is present, RELEVANCE wins and the sort
+ * dropdown is ignored. That is deliberate. If you search "walnut" and we hand you
+ * the most-liked plan that merely mentions walnut in step 7 ahead of the walnut
+ * cutting board, the search looks broken. Relevance is the sort, when you searched.
  *
- *   The trade-off: the id list is fetched unpaginated. At the launch catalog size
- *   (BUSINESS_PLAN.md §6: 300–500 plans) that is a few hundred short strings, so
- *   it is fine. It would stop being fine in the tens of thousands, at which point
- *   the filters belong in the SQL. Noted deliberately, not overlooked.
+ * Trade-off: the id list is unpaginated. At launch scale (BUSINESS_PLAN.md §6:
+ * 300–500 plans) that is a few hundred short strings — fine. It stops being fine
+ * in the tens of thousands, at which point the filters belong in the SQL. Noted
+ * deliberately, not overlooked.
  */
 export async function queryPlans({
   query = '',
   filters = EMPTY_FILTERS,
+  sort = DEFAULT_SORT,
   page = 1,
 }: QueryPlansArgs = {}) {
   const trimmed = query.trim();
@@ -125,13 +138,13 @@ export async function queryPlans({
   const skip = (currentPage - 1) * PLANS_PER_PAGE;
   const where = buildWhere(filters);
 
-  // --- No keyword: Prisma does everything, including pagination. ---
+  // --- No keyword: Prisma does everything, including sort and pagination. ---
   if (trimmed === '') {
     const [plans, total] = await Promise.all([
       prisma.plan.findMany({
         where,
         select: PLAN_CARD_SELECT,
-        orderBy: [{ difficulty: 'asc' }, { title: 'asc' }],
+        orderBy: buildOrderBy(sort),
         skip,
         take: PLANS_PER_PAGE,
       }),
@@ -147,15 +160,12 @@ export async function queryPlans({
     };
   }
 
-  // --- Keyword present: rank in SQL, filter in Prisma, intersect. ---
+  // --- Keyword: rank in SQL, filter in Prisma, intersect. ---
   //
-  // SECURITY: `$queryRaw` is a tagged template. Prisma sends ${trimmed} as a bound
-  // parameter, never concatenated into the SQL string. `$queryRawUnsafe` is not
-  // used anywhere in this codebase.
-  //
-  // `websearch_to_tsquery`, not `to_tsquery`: the latter throws a syntax error on
-  // ordinary human input (a stray `&`, an unbalanced quote), turning a typo into
-  // a 500. Users type strange things into search boxes.
+  // SECURITY: $queryRaw is a tagged template — ${trimmed} is a BOUND PARAMETER,
+  // never concatenated. $queryRawUnsafe is not used anywhere in this codebase.
+  // websearch_to_tsquery (not to_tsquery): the latter throws a syntax error on a
+  // stray '&' or unbalanced quote, turning a user's typo into a 500.
   const ranked = await prisma.$queryRaw<Array<{ id: string }>>`
     SELECT id
     FROM "Plan"
@@ -177,8 +187,8 @@ export async function queryPlans({
     };
   }
 
-  // Apply the filters to the matched set. `published: true` is in `where` too —
-  // belt and braces, so this never depends on the raw query having remembered it.
+  // `published: true` is in `where` too — belt and braces, so this never depends
+  // on the raw query having remembered it.
   const allowed = await prisma.plan.findMany({
     where: { AND: [where, { id: { in: rankedIds } }] },
     select: { id: true },
@@ -205,8 +215,7 @@ export async function queryPlans({
     select: PLAN_CARD_SELECT,
   });
 
-  // findMany returns rows in whatever order Postgres likes. Restore relevance
-  // order — an unranked list of search results is just a list.
+  // Restore relevance order — findMany returns rows in whatever order it likes.
   const byId = new Map(plans.map((p) => [p.id, p]));
   const pagePlans = pageIds
     .map((id) => byId.get(id))
@@ -221,11 +230,6 @@ export async function queryPlans({
   };
 }
 
-export type PlanListItem = Prisma.PlanGetPayload<{
-  select: typeof PLAN_CARD_SELECT;
-}>;
-
-/** Categories for the filter UI, in display order. */
 export async function listCategories() {
   return prisma.category.findMany({
     select: { slug: true, name: true },
@@ -233,12 +237,7 @@ export async function listCategories() {
   });
 }
 
-/**
- * Tools for the "tools I own" filter, grouped for the UI.
- *
- * Only tools that some published plan actually requires — offering a filter for a
- * tool that returns nothing no matter what is just noise.
- */
+/** Only tools some PUBLISHED plan requires — a filter that can never match is noise. */
 export async function listFilterableTools() {
   return prisma.tool.findMany({
     where: { plans: { some: { plan: { published: true } } } },
@@ -249,8 +248,8 @@ export async function listFilterableTools() {
 
 export async function getPlanBySlug(slug: string) {
   return prisma.plan.findFirst({
-    // Unknown slug and unpublished slug both return null — so a 404 cannot be
-    // used to probe for the existence of unreleased content.
+    // Unknown slug and unpublished slug both return null, so a 404 cannot be used
+    // to probe for the existence of unreleased content.
     where: { slug, published: true },
     include: {
       category: true,
@@ -262,6 +261,7 @@ export async function getPlanBySlug(slug: string) {
       cutList: { orderBy: { sortOrder: 'asc' } },
       steps: { orderBy: { stepNumber: 'asc' } },
       images: { orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }] },
+      _count: { select: { likes: true } },
     },
   });
 }

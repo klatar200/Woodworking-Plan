@@ -74,8 +74,46 @@ model User {
 
   savedPlans  SavedPlan[]
   collections Collection[]
+  likes       Like[]
 
   @@index([clerkId])
+}
+
+/// A like on a plan — BUSINESS_PLAN.md §4.7.
+///
+/// SPRINT 7. Same ownership rules as SavedPlan: `userId` comes ONLY from the
+/// verified session, never from client input.
+///
+/// NOTE WHAT IS *NOT* HERE: there is no `likeCount` column on Plan.
+///
+/// A denormalized count would be derived data, and derived data is exactly what
+/// broke production in Sprint 4 (`searchVector` shipped as an empty column) and
+/// again in Sprint 6. A migration creates a column; it does not populate it. So
+/// the count is computed on read via Prisma's `_count` on this relation — there
+/// is nothing to backfill, and nothing that can silently drift out of step with
+/// the actual likes.
+///
+/// The trade-off is a JOIN + COUNT on the Popular sort instead of an indexed
+/// integer. At the launch catalog size (BUSINESS_PLAN.md §6: 300–500 plans) that
+/// is irrelevant. If the catalog reaches a size where it isn't, THEN denormalize
+/// — with a transaction that updates the count on every like/unlike, and a
+/// backfill. Not before. A correct slow count beats a fast wrong one.
+model Like {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  /// One like per user per plan, enforced by the DATABASE. A double-tapped like
+  /// button cannot inflate the count, whatever the application layer does.
+  @@unique([userId, planId])
+  @@index([userId])
+  @@index([planId])
 }
 
 /// A bookmarked plan — BUSINESS_PLAN.md §4.3.
@@ -259,6 +297,7 @@ model Plan {
   steps     Step[]
   images    Image[]
   savedBy   SavedPlan[]
+  likes     Like[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

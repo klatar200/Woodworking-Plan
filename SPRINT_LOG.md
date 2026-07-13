@@ -515,3 +515,117 @@ Shipping a superseded test file to `main` has now happened twice. The cause is t
 the build agent's sandbox and the real repo are separate, and deletions in one do
 not propagate. **From now on: any test file replaced or renamed must be deleted in
 the REPO via `git rm`, in the same command block as the sprint's commit.**
+
+---
+
+## Sprint 6: Save Plans & Custom Categories
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4):** bookmarking; user-named category folders.
+
+**Commits on `main`:** `d96b10b`, `c9c0fc1`, `d7c6d20`, `f6afd6b`, `9bb466c`.
+
+**Status: COMPLETE — 94/100, Attempt 1. FAIL on the first pass (defect in
+production), remediated to PASS. See below — the honest number is the story.**
+
+### The multi-tenancy sprint
+
+This is the first sprint storing data owned by a *particular* user, which makes
+IDOR (OWASP A01) the single most likely way this app leaks. Two rules carry it,
+and both are asserted by tests rather than trusted:
+
+**1. No function in `src/lib/saves.ts` takes a `userId`.** Every one calls
+`requireUser()` and derives the owner from the verified Clerk session. There is no
+parameter to forge. A test asserts the **arity** of all seven write functions — if
+one ever grows a `userId` param, the tripwire fires.
+
+**2. Every write is scoped by `userId` in its WHERE clause, not just by row id.**
+`delete({ where: { id } })` would let anyone who guesses a cuid delete someone
+else's save. `deleteMany({ where: { id, userId } })` affects zero rows instead —
+silent, and correct.
+
+Three subtler calls, all deliberate:
+- **You cannot save an unpublished plan.** Otherwise a user bookmarks staged
+  content by guessing a plan id and sees its title forever — a content leak
+  straight past the `published` filter that guards browse and search.
+- **`addPlanToCollection` returns ONE indistinguishable error** for a bad plan id
+  and a bad collection id. Saying which was wrong would confirm the other exists.
+  A small oracle, but an oracle.
+- **Deleting a folder does not unsave its plans.** A folder delete that silently
+  unsaved twelve plans would be a destructive surprise, and nobody would trust
+  folders again.
+
+### Decision
+- **No save/collection limits** (`DECISIONS_LOG.md`, 2026-07-13). `BUSINESS_PLAN.md`
+  §7 proposes gating Free at ~10 saves / 1 folder, but pricing is an *unconfirmed
+  recommendation* and `BUILD_PLAN.md` §2 forbids the build agent enacting one.
+  There is no billing and no upgrade path, so a cap today is a wall with no door.
+  The two places a limit would ever go — `savePlan()` and `createCollection()` —
+  are marked, because every write already funnels through them.
+
+### Attempt 1 — 94/100 — FAIL (production defect)
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Both §4 bullets: bookmark any plan (§4.3) and group saved plans under user-defined names (§4.4). Model named `Collection`, not `Category`, because `Category` already means the catalog taxonomy — two things called Category with different owners and different security rules is how someone eventually queries the wrong one. Nothing out of scope: no likes (Sprint 7), no PWA (8). |
+| Correctness & functionality (/20) | **14** | 161/161 tests, typecheck 0, lint 0, build passes; migration applies; save/collection flow verified on the live site. **−6: the deploy broke every plan page in production** — `The table public.SavedPlan does not exist`. See the defect below. It was live and broken until diagnosed. |
+| Automated test coverage (/15) | **15** | `saves.test.ts` (22 cases), aimed squarely at "can user A touch user B's data?": arity assertions on all seven write functions; `deleteMany`-with-userId on every destructive path; a stranger's collection id returning nothing rather than their contents; both ids verified before a cross-entity write; the indistinguishable-error oracle test; the unpublished-plan refusal; idempotent save; unsave-not-saved as a no-op; folder delete not cascading to saves. |
+| Security (/15) | **15** | The two rules above, plus: server actions treated as **public HTTP endpoints** (they are — Next generates an id and anyone can POST to it; the fact that no button calls it means nothing), so authentication is enforced inside the data layer, not by the middleware that protects *pages*. `/saved` is private by default via the allowlist, asserted by a test. |
+| Code quality & simplicity (/10) | **10** | Every write funnels through two functions, which is what makes a future free-tier limit a one-place change rather than a refactor. No `userId` plumbing anywhere. |
+| Mobile/offline (/10) | **9** | No-JS `<form>` + server actions throughout — works on a bad connection, which is the actual usage context. 44px targets. −1: no offline (Sprint 8). |
+| Documentation & handoff (/5) | **5** | The security rule is stated at the top of `saves.ts` in the terms someone writing Sprint 7 will need. Decision logged. |
+| **Total** | **94** | |
+
+### THE DEFECT: production had no `SavedPlan` table — and the deploy said it was fine
+
+Every plan page 500'd in production. Runtime log:
+
+```
+Invalid `prisma.savedPlan.findUnique()` invocation:
+The table `public.SavedPlan` does not exist in the current database.
+code: 'P2021'
+```
+
+**Root cause — and it is worse than it looks.** Vercel's `DIRECT_URL` pointed at
+the **dev** Neon branch while `DATABASE_URL` pointed at **production**. Prisma uses
+`directUrl` for migrations and `url` for queries. So every deploy ran
+`prisma migrate deploy` **against dev**, correctly reported *"No pending migrations
+to apply"* (true — of dev!), and left production's schema frozen. The build was
+green. The deploy was green. Production was broken.
+
+Every signal said OK. It took reading the Vercel build log line by line to find:
+
+```
+Datasource "db": ... at "ep-long-lake-aj1k38yd..."   ← dev, on a PRODUCTION deploy
+```
+
+**Compounding it:** the first fix (a guard script wired into `vercel-build`) never
+ran, because **`vercel.json`'s `buildCommand` overrides `package.json`'s
+`vercel-build`**. The guard was dead code. `buildCommand` has been removed from
+`vercel.json` so there is now exactly one place the build command is defined.
+
+### Remediation — verified in the build log, not assumed
+
+`scripts/check-db-urls.mjs` now runs FIRST in `vercel-build` and **fails the build**
+if `DATABASE_URL` and `DIRECT_URL` do not resolve to the same host+database. Had it
+existed, the Sprint 6 deploy would have gone red instead of silently breaking
+production. Confirmed live:
+
+```
+> node scripts/check-db-urls.mjs && prisma generate && prisma migrate deploy && next build
+[check-db-urls] OK — both point at ep-sparkling-band-aj5za9wv...neon.tech/neondb
+Datasource "db": ... at "ep-sparkling-band-aj5za9wv..."
+```
+
+**Post-remediation: PASS.** Plan pages, saves, and collections all verified working
+on the live site.
+
+### The lesson, and it is not a small one
+
+In Sprint 4 the build agent declared the Vercel migration pipeline "fixed" on the
+strength of a green build. **It was never fixed.** Production had been migrated by
+hand, and that was mistaken for the pipeline working. A green build proved nothing,
+and the log that would have said so went unread for three sprints.
+
+**A deploy that reports success is not evidence that it did the thing.** Read the
+log. Assert the invariant in code. `check-db-urls.mjs` exists because a comment or
+a good intention would not have caught this.

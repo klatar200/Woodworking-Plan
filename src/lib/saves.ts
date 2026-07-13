@@ -55,6 +55,9 @@ const SAVED_PLAN_SELECT = {
         select: { url: true, alt: true },
         take: 1,
       },
+      // Sprint 7: the card shows a like count, so a saved-plan card needs it too.
+      // Counted, never a denormalized column — see prisma/schema.prisma.
+      _count: { select: { likes: true } },
     },
   },
   collections: {

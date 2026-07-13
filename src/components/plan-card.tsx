@@ -54,6 +54,12 @@ export function PlanCard({ plan }: { plan: PlanListItem }) {
             <li className="badge">
               {formatTimeRange(plan.timeMinMinutes, plan.timeMaxMinutes)}
             </li>
+            {/* Sprint 7. Only shown when someone has actually liked it — a wall of
+                "♥ 0" badges is noise, and on a young catalog it would be every
+                card. The detail page always shows the count, including zero. */}
+            {plan._count.likes > 0 && (
+              <li className="badge">♥ {plan._count.likes}</li>
+            )}
           </ul>
         </div>
       </Link>

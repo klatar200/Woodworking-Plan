@@ -41,6 +41,8 @@ const plan = (over: Record<string, unknown> = {}) => ({
   timeMaxMinutes: 360,
   category: { slug: 'cutting-boards', name: 'Cutting Boards' },
   images: [],
+  // Sprint 7: like count is COUNTED, never a column.
+  _count: { likes: 0 },
   ...over,
 });
 

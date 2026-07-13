@@ -146,8 +146,31 @@ with it.
 - **Sprint 5 (Filter/Facet Search): COMPLETE — 98/100.** Category, difficulty, cost,
   time, and tools-owned filters, combinable with keyword search. One `queryPlans()`
   serves browse + search + filters. 138 tests green.
-- **Next up:** Sprint 6 — Save Plans & Custom Categories. **Blocked** on a
-  monetization decision (see below).
+- **Sprint 6 (Save Plans & Custom Categories): COMPLETE — 94/100.** `SavedPlan`,
+  `Collection`, `CollectionPlan`. No function takes a `userId` — the owner always
+  comes from the session. No save/collection limits (pricing unconfirmed). 161
+  tests green.
+- **Next up:** Sprint 7 — Liking. Not blocked.
+
+### Deploy rule (Sprint 6 broke production; do not repeat it)
+
+**`DATABASE_URL` (pooled) and `DIRECT_URL` (direct) must point at the SAME
+database.** Prisma migrates via `directUrl` and queries via `url`. In Sprint 6
+Vercel's `DIRECT_URL` pointed at **dev** while `DATABASE_URL` pointed at
+**production**: every deploy migrated dev, reported "No pending migrations to
+apply" (true — of dev), and left production's schema frozen. Build green, deploy
+green, every plan page 500ing.
+
+`scripts/check-db-urls.mjs` now runs first in `vercel-build` and **fails the build**
+on a mismatch. Do not remove it.
+
+**`vercel.json`'s `buildCommand` OVERRIDES `package.json`'s `vercel-build`.** It has
+been removed from `vercel.json` — the build command lives in `package.json` only.
+Putting it back will silently disable the guard.
+
+**A green deploy is not evidence that it did the thing.** Read the build log. The
+Sprint 4 "fix" to the migration pipeline was never a fix; production had been
+migrated by hand and that was mistaken for the pipeline working, for three sprints.
 
 ### CI rule (learned the hard way — CI was RED for ten commits)
 

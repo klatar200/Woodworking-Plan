@@ -165,10 +165,13 @@ export function parseFilters(
 export function buildQueryString({
   query,
   filters,
+  sort,
   page,
 }: {
   query: string;
   filters: PlanFilters;
+  /** Sprint 7. Omitted when it's the default — no point in a noisy URL. */
+  sort?: string;
   page?: number;
 }): string {
   const params = new URLSearchParams();
@@ -179,6 +182,7 @@ export function buildQueryString({
   for (const c of filters.costTier) params.append('cost', c);
   if (filters.maxMinutes) params.set('time', String(filters.maxMinutes));
   for (const t of filters.ownedTools) params.append('tools', t);
+  if (sort) params.set('sort', sort);
   if (page && page > 1) params.set('page', String(page));
 
   const qs = params.toString();

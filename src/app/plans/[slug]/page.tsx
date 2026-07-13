@@ -3,8 +3,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
 import { isPlanSaved } from '@/lib/saves';
+import { isPlanLiked } from '@/lib/likes';
 import { getCurrentUser } from '@/lib/auth';
 import { SaveButton } from '@/components/save-button';
+import { LikeButton } from '@/components/like-button';
 import {
   costTierSymbol,
   difficultyLabel,
@@ -55,7 +57,11 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
   // Sprint 6. The page stays PUBLIC — an anonymous visitor sees the whole plan and
   // a "Save this plan" link that takes them to sign-in and back. §12 gates the
   // save, not the content.
-  const [user, saved] = await Promise.all([getCurrentUser(), isPlanSaved(plan.id)]);
+  const [user, saved, liked] = await Promise.all([
+    getCurrentUser(),
+    isPlanSaved(plan.id),
+    isPlanLiked(plan.id),
+  ]);
 
   const essentialTools = plan.tools.filter((t) => t.essential);
   const optionalTools = plan.tools.filter((t) => !t.essential);
@@ -81,6 +87,16 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
             planId={plan.id}
             slug={plan.slug}
             isSaved={saved}
+            isSignedIn={user !== null}
+          />
+          {/* The like count is COUNTED (_count), never read from a denormalized
+              column — see prisma/schema.prisma. Always shown, including zero:
+              hiding a zero hides exactly the plans that need someone to be first. */}
+          <LikeButton
+            planId={plan.id}
+            slug={plan.slug}
+            isLiked={liked}
+            likeCount={plan._count.likes}
             isSignedIn={user !== null}
           />
         </div>

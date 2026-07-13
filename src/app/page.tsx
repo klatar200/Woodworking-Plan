@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
 import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
+import { parseSort, DEFAULT_SORT } from '@/lib/sort';
 import { PlanCard } from '@/components/plan-card';
 import { SearchBox } from '@/components/search-box';
 import { FilterPanel } from '@/components/filter-panel';
+import { SortSelect } from '@/components/sort-select';
 
 /**
  * The catalog — browse (Sprint 3), keyword search (Sprint 4), and filters
@@ -49,10 +51,12 @@ export default async function CatalogPage({
   const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const rawQuery = typeof params.q === 'string' ? params.q : '';
+  const sort = parseSort(params.sort);
 
   const { plans, total, totalPages, page: currentPage, query } = await queryPlans({
     query: rawQuery,
     filters,
+    sort,
     page,
   });
 
@@ -72,6 +76,8 @@ export default async function CatalogPage({
         categories={categories}
         tools={tools}
       />
+
+      <SortSelect sort={sort} query={query} filters={filters} />
 
       <p className="subtitle">
         {isNarrowed ? (
@@ -122,7 +128,12 @@ export default async function CatalogPage({
         <nav className="pagination" aria-label="Pagination">
           {currentPage > 1 ? (
             <Link
-              href={buildQueryString({ query, filters, page: currentPage - 1 })}
+              href={buildQueryString({
+                query,
+                filters,
+                sort: sort === DEFAULT_SORT ? undefined : sort,
+                page: currentPage - 1,
+              })}
               className="btn btn-ghost"
               rel="prev"
             >
@@ -138,7 +149,12 @@ export default async function CatalogPage({
 
           {currentPage < totalPages ? (
             <Link
-              href={buildQueryString({ query, filters, page: currentPage + 1 })}
+              href={buildQueryString({
+                query,
+                filters,
+                sort: sort === DEFAULT_SORT ? undefined : sort,
+                page: currentPage + 1,
+              })}
               className="btn btn-ghost"
               rel="next"
             >
