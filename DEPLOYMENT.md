@@ -230,6 +230,58 @@ Vercel → Next.js API route → Neon Postgres, working end to end.
 
 ---
 
+## Step 5.5 — Separate the dev database from production (do this before Sprint 2)
+
+Until now, `.env.local` and Vercel both pointed at the **same** Neon database.
+That was harmless while the only data was reproducible seed content. It stops
+being harmless the moment Sprint 2 creates real user accounts: a routine
+`npm run db:seed` from your laptop would then be writing to live users.
+
+Neon's free tier includes **10 branches**. Cost: $0. Time: 5 minutes.
+
+### Create the dev branch
+
+1. Neon dashboard → your project → **Branches** → **New Branch**.
+2. Parent branch: `production` (or `main` — whatever your default is called).
+3. Name it **`dev`**.
+4. Create. Neon copies the schema *and* the current data instantly — copy-on-write,
+   so it costs no extra storage.
+5. Open the `dev` branch → **Connection Details** → copy the **pooled** string
+   (it has `-pooler` in the host, and a *different* endpoint id than production).
+
+### Point local development at it
+
+Edit `.env.local` and replace `DATABASE_URL` with the **dev** branch string.
+
+**Leave Vercel's environment variables alone.** Vercel keeps pointing at
+`production`. That is the whole point:
+
+| Environment | Database | Set in |
+|---|---|---|
+| Your laptop | Neon **`dev`** branch | `.env.local` (gitignored) |
+| Vercel (production) | Neon **`production`** branch | Vercel → Settings → Environment Variables |
+
+### Verify the separation
+
+```powershell
+npm run db:seed
+```
+
+The first line printed is the **target database host**. Confirm the endpoint id
+matches your `dev` branch, not production. If it doesn't, stop — `.env.local` is
+still pointing at live data.
+
+Then confirm production is untouched: hit `<your-vercel-url>/api/health`. It
+should still return `database.status: "ok"`.
+
+> **From here on:** `npm run db:migrate`, `db:seed`, `db:push`, and `migrate reset`
+> all hit `dev` only. Production's schema changes exclusively through
+> `prisma migrate deploy`, which Vercel runs on every deploy from the committed
+> migrations in `prisma/migrations/`. That is the only path to production, and it
+> is the one you want.
+
+---
+
 ## Step 6 — Repo settings (2 minutes, in GitHub)
 
 Under **Settings → Branches** on the repo:

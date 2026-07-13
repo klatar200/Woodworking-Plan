@@ -20,9 +20,29 @@ import { loadCatalog } from '../src/content/load';
 
 const prisma = new PrismaClient();
 
+/**
+ * Prints the database host this run is about to write to.
+ *
+ * Cheap, and it exists because dev and production were briefly pointed at the
+ * same Neon database. The separation (a Neon dev branch) is the real fix; this
+ * is the seatbelt. You should never have to wonder which database you just
+ * seeded — and the password is stripped, so this is safe to paste into a chat.
+ */
+function describeTarget(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) return 'UNKNOWN (DATABASE_URL not set)';
+  try {
+    const { host, pathname } = new URL(url);
+    return `${host}${pathname}`;
+  } catch {
+    return 'UNPARSEABLE DATABASE_URL';
+  }
+}
+
 async function main() {
   const { categories, tools, plans } = loadCatalog();
 
+  console.log(`Target database: ${describeTarget()}`);
   console.log(
     `Seeding: ${categories.length} categories, ${tools.length} tools, ${plans.length} plans`,
   );

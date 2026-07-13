@@ -169,6 +169,31 @@ therefore deferred, not cancelled — it should be scheduled once the schema has
 proven itself against real plans, and it is a prerequisite for the in-house
 content team described in `BUSINESS_PLAN.md` §6.
 
+### 2026-07-12 — Separate dev and production databases (Neon branch)
+**Status:** Confirmed by user. Raised proactively by the build agent as a
+production/security risk at the end of Sprint 1.
+
+**The risk.** Sprint 0 and Sprint 1 ran with `.env.local` and Vercel pointing at
+the **same** Neon database. Harmless while the only data was reproducible seed
+content — a bad `db:seed` just rewrote plans. It becomes a live-data hazard the
+moment Sprint 2 (Accounts & Auth) creates real user records: a routine local
+`npm run db:seed`, `migrate reset`, or a bad `migrate` would hit production users.
+
+**The decision.** Use a Neon **`dev` branch** with its own connection string in
+`.env.local`. Vercel continues to point at `production`. Neon's free tier includes
+10 branches, so this costs **$0** and does not touch the $0-during-development
+constraint.
+
+**The resulting contract (binding on all future sprints):**
+- Local db commands (`db:migrate`, `db:seed`, `db:push`, `migrate reset`) hit the
+  **dev** branch only.
+- Production's schema changes **exclusively** via `prisma migrate deploy`, run by
+  Vercel on deploy from the committed migrations in `prisma/migrations/`.
+- `npm run db:seed` prints its target database host on every run, so the
+  environment being written to is never a guess.
+
+Setup steps are in `DEPLOYMENT.md` §5.5.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes
