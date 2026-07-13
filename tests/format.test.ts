@@ -64,6 +64,25 @@ describe('formatInches — decimals to tape-measure fractions', () => {
  * dollar amount, because there is nothing to render it with.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
+describe('costTierSymbol FAILS LOUD rather than rendering nothing', () => {
+  it('throws on an unknown tier instead of returning an empty string', () => {
+    // REGRESSION. The old implementation returned '' for an unrecognized tier, so a
+    // page would render "<dd> of $$$$$</dd>" — a missing cost band, with no error.
+    // That actually happened (a fixture was missing `costTier`).
+    //
+    // The tier is now the ONLY cost signal in the whole UI, since dollar figures are
+    // gone. Silently rendering nothing is no longer cosmetic — it hides a data bug.
+    expect(() => costTierSymbol('NOT_A_TIER' as never)).toThrow(/unknown cost tier/i);
+    expect(() => costTierSymbol(undefined as never)).toThrow(/unknown cost tier/i);
+  });
+
+  it('every real tier still renders a non-empty band', () => {
+    for (const tier of ['TIER_1', 'TIER_2', 'TIER_3', 'TIER_4', 'TIER_5'] as const) {
+      expect(costTierSymbol(tier).length).toBeGreaterThan(0);
+    }
+  });
+});
+
 describe('the dollar formatters are GONE, and that is the enforcement', () => {
   it('formatCents and formatCostRange do not exist', () => {
     // If someone re-adds these, this test goes red and they have to come and read the

@@ -37,9 +37,35 @@ const COST_TIER_ORDER: CostTier[] = ['TIER_1', 'TIER_2', 'TIER_3', 'TIER_4', 'TI
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-/** `$` through `$$$$$` — BUSINESS_PLAN.md §4.8. */
+/**
+ * `$` through `$$$$$` — BUSINESS_PLAN.md §4.8.
+ *
+ * FAILS LOUD ON AN UNKNOWN TIER, and that is a deliberate change.
+ *
+ * The old version was `'$'.repeat(indexOf(tier) + 1)`. For an unrecognized tier
+ * `indexOf` returns -1, `repeat(0)` returns `''`, and the page renders **an empty
+ * string where the cost should be** — no error, no warning, just a missing price band
+ * that nobody notices in review.
+ *
+ * That is not hypothetical: it happened. A test fixture was missing its `costTier` and
+ * the print view rendered `<dd> of $$$$$</dd>`. The assertion caught it, but only
+ * because it checked for an exact string; a laxer test would have passed against a page
+ * that silently shows no cost at all.
+ *
+ * Now the cost tier is the ONLY cost signal in the entire UI (dollar figures are gone —
+ * see below), so silently rendering nothing is no longer a cosmetic bug. Throw instead:
+ * a missing tier is a data bug, and it should be impossible to ship one quietly.
+ */
 export function costTierSymbol(tier: CostTier): string {
-  return '$'.repeat(COST_TIER_ORDER.indexOf(tier) + 1);
+  const index = COST_TIER_ORDER.indexOf(tier);
+
+  if (index < 0) {
+    throw new Error(
+      `Unknown cost tier: ${String(tier)}. The tier is now the only cost signal in the UI — rendering nothing would hide the bug.`,
+    );
+  }
+
+  return '$'.repeat(index + 1);
 }
 
 /**

@@ -44,6 +44,9 @@ const plan = {
   description: 'Body text.',
   difficulty: 2,
   timeLabel: '4–6 hrs',
+  // The tier is what the print view renders. The cents columns stay because they are
+  // what DERIVES a tier elsewhere (the shopping list) — but nothing prints them.
+  costTier: 'TIER_2',
   costMinCents: 5500,
   costMaxCents: 8500,
   tags: ['maple'],
