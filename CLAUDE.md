@@ -210,8 +210,20 @@ with it.
 - **Sprint 13 (Print-friendly / offline PDF export): COMPLETE — 97/100.**
   `/plans/[slug]/print` + `?view=cutlist` one-pager. **A print PAGE, not a generated
   PDF** — see the rule below. Pre-cached when a plan is saved. 319 tests green.
-- **NEXT: Sprint 14 — Expanded offline mode** (`BUILD_PLAN.md` §4). The last Phase 2
-  sprint, and it owns the **shopping-list offline gap**.
+- **Sprint 14 (Expanded offline mode): COMPLETE — 98/100.** Opt-in "Make available
+  offline" downloads the whole saved library, its print views, and **the shopping list**
+  into a separate PRIVATE cache — **wiped on sign-out**. Closes the `BUSINESS_PLAN.md` §5
+  hardware-store gap. 336 tests green. See the corrected offline rule below.
+
+## ✅ PHASE 2 COMPLETE (Sprints 10–14). Run rate still $0/mo.
+
+Every item in `BUSINESS_PLAN.md` §10 is built except **affiliate links**, which are
+blocked by the Hobby commercial-use constraint — not by oversight.
+
+**There is no Sprint 15.** Phase 3 (`BUILD_PLAN.md` §4) is a different scale of project
+(creator marketplace, cut-list optimizer, team accounts) and **must not be started
+without Keagan explicitly opening it.** Before anything else ships, the launch blockers
+below come due.
 
 ### Print rule (Sprint 13): a server-generated PDF CANNOT work offline
 
@@ -382,12 +394,46 @@ tier gating, or save/collection limits. There is nothing to charge for yet.
   cached email in our DB. A data-retention problem once there are real users.
 - **`offline.ts` and `sw.js` duplicate the caching rules.** Change one, change both.
 
-### Offline caching rule (established Sprint 8 — do not violate)
+### Offline caching rule (Sprint 8, CORRECTED and rebuilt in Sprint 14)
 
-**A service worker cache is unencrypted and survives sign-out.** Cache PUBLIC
-content only. `/saved`, `/profile`, `/api/*`, and the auth flows are NEVER cached,
-and the policy fails closed. The rules live in `src/lib/offline.ts` (tested) and
-are mirrored in `public/sw.js` (shipped) — **change one, change both.**
+**A service worker cache is unencrypted and survives sign-out.**
+
+**⚠️ The old version of this rule was WRONG, and it was cited confidently for three
+sprints.** It said we "never write a user's private library to disk." But saving a plan
+pre-caches that plan's page — so the cached plan pages already *were* an approximation of
+the saved library. **A rule that overstates its own guarantee is worse than no rule**,
+because everything downstream trusts it.
+
+**What is true now (Sprint 14):**
+
+- **TWO CACHES.** `CACHE_NAME` (public) and `PRIVATE_CACHE_NAME` (the library, the
+  shopping list). Separate, so the sign-out wipe is one `caches.delete()` that cannot
+  miss an entry.
+- **The worker still NEVER caches a private route on its own initiative.** `isCacheable()`
+  fails closed and refuses `/saved`, `/profile`, `/api/*`, `/shopping-list`, and the auth
+  flows. **Browsing to `/shopping-list` while online caches nothing.**
+- **The private cache is written by exactly ONE path:** an explicit `DOWNLOAD_LIBRARY`
+  message from the "Make available offline" button. **Consent is what separates a
+  defensible cache from a silent one.** The worker re-checks every URL against
+  `DOWNLOADABLE_PREFIXES` — a compromised page cannot use it to stash `/profile`.
+- **The private cache is WIPED ON SIGN-OUT** (`PrivateCacheGuard`). This is the mitigation
+  the whole decision rests on. It watches **session state**, not a sign-out button — there
+  are several ways to sign out and a wipe wired to one of them silently keeps the data for
+  all the others.
+- **`isCacheableResponse` and `isDownloadableResponse` are SEPARATE FUNCTIONS, not one
+  function with a flag.** The only difference is that the consented one allows
+  `Set-Cookie`. A flag would be one careless `true` away from putting a session-bearing
+  response in the *public* cache, where it survives sign-out forever.
+
+**Known limitation, stated honestly:** the wipe fires when *this device* observes the
+sign-out. A session revoked from another device leaves this one's cache until it next
+loads the app. The download UI says plainly that the data lives on the device.
+
+The rules live in `src/lib/offline.ts` (tested) and are mirrored in `public/sw.js`
+(shipped) — **change one, change both.** This is now **actually enforced**: the tests read
+the shipped worker off disk and assert the cache names, the private prefixes, that the
+fetch handler never writes the private cache, and that `CLEAR_PRIVATE` still exists. It
+used to rely on someone remembering, and the failure mode was silent.
 
 ### Derived data rule (why Sprint 7 shipped clean)
 

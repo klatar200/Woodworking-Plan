@@ -560,6 +560,43 @@ list + materials** for taping to the wall next to the saw.
 Burying it on page 2 of 4 means flipping pages with sawdust on your hands. These are two
 different jobs and they want two different pieces of paper.
 
+### 2026-07-13 — Sprint 14: offline library is OPT-IN, and is WIPED ON SIGN-OUT
+**Status:** Confirmed by user (chosen from 3: opt-in "make available offline"
+[recommended], keep the strict rule, cache everything silently. Sign-out wipe chosen
+from 2: wipe [recommended], keep).
+
+**The correction that forced this decision.** The Sprint 8 rule claimed we "never write
+a user's private library to an unencrypted device cache." **That claim was overstated,
+and I should have caught it at the time.** Saving a plan *pre-caches that plan's page* —
+so the set of cached plan pages is, in practice, an approximation of the user's saved
+library, readable by anyone who picks up the phone and opens devtools. There is partial
+cover (pages you merely *visit* are cached too), but the line was not cleanly held, and
+a security rule that overstates its own guarantee is worse than an honest one, because
+everyone downstream relies on it.
+
+So the real question was never "should we start storing private data on-device." It was
+"we already partly do, silently — what do we actually want?"
+
+**The decision.**
+
+1. **An explicit, user-initiated "Make available offline" action.** Nothing private is
+   written to disk unless the user asks for it. Consent is the thing that separates a
+   defensible cache from a silent one.
+2. It downloads: every saved plan, **every saved plan's print view**, and **the shopping
+   list** — which finally closes the `BUSINESS_PLAN.md` §5 hardware-store gap that
+   Sprint 12 had to leave open.
+3. **Everything private is WIPED ON SIGN-OUT.** This is the mitigation the whole
+   decision rests on: a shared, sold, or lost phone must not hand over a library after
+   the user has logged out. It costs a re-download on next sign-in; that is a fair price.
+4. **Two separate caches.** Public plan content stays in the existing cache and behaves
+   exactly as before. Private content goes in a distinct cache that is only ever written
+   by the explicit download, and is deleted wholesale on sign-out. Separating them is
+   what makes "wipe the private data" a one-line operation that cannot miss anything.
+
+**What did NOT change:** the service worker still refuses to cache private routes on its
+own initiative. Nothing lands in the private cache as a side effect of browsing. The
+default remains fail-closed.
+
 ### 2026-07-12 — Default branch / repo housekeeping
 **Status:** Open — user asked to set `main` as the repository default
 branch and delete stale merged branches. No available tool exposes

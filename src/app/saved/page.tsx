@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { listSavedPlans, listCollections } from '@/lib/saves';
 import { PlanCard } from '@/components/plan-card';
+import { OfflineDownload } from '@/components/offline-download';
 import {
   createCollectionAction,
   deleteCollectionAction,
@@ -33,12 +34,22 @@ export default async function SavedPage({
 }) {
   const { collection: collectionId } = await searchParams;
 
-  const [collections, savedPlans] = await Promise.all([
+  const [collections, savedPlans, allSavedPlans] = await Promise.all([
     listCollections(),
     // A collection id from the URL is untrusted — listSavedPlans scopes the
     // collection filter by userId too, so a stranger's id returns nothing rather
     // than their contents.
     listSavedPlans({ collectionId }),
+    /**
+     * Sprint 14. The offline download covers the WHOLE library, not just whatever
+     * collection is being viewed — so it needs the unfiltered list.
+     *
+     * When no collection is selected these are the same query and Prisma will run it
+     * twice; at a personal library's scale that is free, and the alternative (deriving
+     * one from the other with a conditional) is the kind of cleverness that ends with
+     * the download quietly covering only the active collection.
+     */
+    listSavedPlans(),
   ]);
 
   const activeCollection = collections.find((c) => c.id === collectionId);
@@ -130,6 +141,18 @@ export default async function SavedPage({
               Shopping list{activeCollection ? ` for “${activeCollection.name}”` : ''}
             </Link>
           </p>
+        )}
+
+        {/* Sprint 14 — the consented offline download.
+            Deliberately scoped to the WHOLE library, not the active collection: someone
+            heading to a hardware store wants everything they might need, and asking them
+            to remember to download each collection separately is how they end up in an
+            aisle missing the one list they wanted. */}
+        {allSavedPlans.length > 0 && (
+          <OfflineDownload
+            slugs={allSavedPlans.map((saved) => saved.plan.slug)}
+            collectionIds={collections.map((collection) => collection.id)}
+          />
         )}
 
         {savedPlans.length === 0 ? (

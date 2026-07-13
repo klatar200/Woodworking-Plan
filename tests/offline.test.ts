@@ -1,9 +1,15 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import {
   isCacheable,
   isCacheableResponse,
+  isDownloadable,
+  isDownloadableResponse,
   NEVER_CACHE_PREFIXES,
+  DOWNLOADABLE_PREFIXES,
   CACHE_NAME,
+  PRIVATE_CACHE_NAME,
   OFFLINE_URL,
 } from '@/lib/offline';
 
@@ -227,6 +233,174 @@ describe('SPRINT 13: the PRINT view is cacheable — this is the whole argument'
     // a way to smuggle private data onto disk.
     expect(isCacheable(req('/saved/print'))).toBe(false);
     expect(isCacheable(req('/profile/print'))).toBe(false);
+  });
+});
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * SPRINT 14 — the consented private cache.
+ *
+ * The Sprint 8 rule said we never write a private library to disk. That was OVERSTATED
+ * (saving a plan pre-caches its page, so the cache already approximated the library).
+ * Sprint 14 replaces the pretence with a structure:
+ *
+ *   - isCacheable()   — what the worker may store ON ITS OWN. Still fails closed.
+ *   - isDownloadable() — what the USER may explicitly ask us to store. Consent.
+ *   - Two separate caches, so the sign-out wipe is TOTAL.
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+describe('SPRINT 14: the worker still NEVER caches private data on its own', () => {
+  it('refuses /shopping-list — it is derived from the saved library', () => {
+    // As private as the library itself: it is literally a list of what you saved.
+    expect(isCacheable(req('/shopping-list'))).toBe(false);
+    expect(isCacheable(req('/shopping-list?collection=abc'))).toBe(false);
+  });
+
+  it('browsing to a private page while ONLINE caches nothing', () => {
+    // Nothing lands in the private cache as a side effect of using the app. The ONLY
+    // path that writes there is the explicit download. This is the whole design.
+    for (const path of ['/saved', '/profile', '/shopping-list']) {
+      expect(isCacheable(req(path))).toBe(false);
+    }
+  });
+
+  it('the private prefixes still fail closed', () => {
+    expect(NEVER_CACHE_PREFIXES).toContain('/shopping-list');
+    expect(NEVER_CACHE_PREFIXES).toContain('/saved');
+    expect(NEVER_CACHE_PREFIXES).toContain('/profile');
+  });
+});
+
+describe('SPRINT 14: CONSENT — what the user may explicitly download', () => {
+  it('the user CAN download their shopping list — this closes the §5 gap', () => {
+    // BUSINESS_PLAN.md §5 calls "usable in a hardware store with no signal" the single
+    // most important capability. Sprint 12 had to ship without it. This is the fix.
+    expect(isDownloadable(req('/shopping-list'))).toBe(true);
+    expect(isDownloadable(req('/shopping-list?collection=abc'))).toBe(true);
+  });
+
+  it('the user CAN download their saved list and their plans', () => {
+    expect(isDownloadable(req('/saved'))).toBe(true);
+    expect(isDownloadable(req('/plans/cedar-raised-garden-bed'))).toBe(true);
+    expect(isDownloadable(req('/plans/cedar-raised-garden-bed/print'))).toBe(true);
+  });
+
+  it('SECURITY: consent is NOT a licence to store anything at all', () => {
+    // A compromised page could send a DOWNLOAD_LIBRARY message with any URLs it liked.
+    // The worker re-checks every one against this allowlist, so it cannot be used to
+    // stash the account page — or anything else — on disk.
+    expect(isDownloadable(req('/profile'))).toBe(false);
+    expect(isDownloadable(req('/api/health'))).toBe(false);
+    expect(isDownloadable(req('/sign-in'))).toBe(false);
+
+    expect(DOWNLOADABLE_PREFIXES).not.toContain('/profile');
+    expect(DOWNLOADABLE_PREFIXES).not.toContain('/api');
+  });
+
+  it('SECURITY: still refuses cross-origin and non-GET, consent or not', () => {
+    expect(
+      isDownloadable({
+        method: 'GET',
+        url: 'https://evil.example.com/x',
+        origin: ORIGIN,
+      }),
+    ).toBe(false);
+
+    // A user asking for their shopping list is not asking us to replay a mutation.
+    expect(isDownloadable(req('/shopping-list', 'POST'))).toBe(false);
+  });
+
+  it('still refuses RSC payloads on the consented path too', () => {
+    expect(isDownloadable(req('/shopping-list?_rsc=abc'))).toBe(false);
+  });
+});
+
+describe('SPRINT 14: the two response gates are SEPARATE functions, deliberately', () => {
+  it('the PUBLIC gate still refuses a Set-Cookie response', () => {
+    // A response that sets a cookie is about *this* user. It must never reach the
+    // public cache — where it would survive sign-out and never be wiped.
+    expect(
+      isCacheableResponse(res(200, { 'set-cookie': '__session=abc; HttpOnly' })),
+    ).toBe(false);
+  });
+
+  it('the CONSENTED gate ALLOWS Set-Cookie — a private page legitimately carries one', () => {
+    // This is the ONLY difference between the two gates, and it is exactly why they are
+    // separate functions rather than one function with a boolean flag: a flag would be
+    // one careless `true` away from letting a session-bearing response into the PUBLIC
+    // cache.
+    expect(
+      isDownloadableResponse(res(200, { 'set-cookie': '__session=abc; HttpOnly' })),
+    ).toBe(true);
+  });
+
+  it('but the consented gate still honours no-store and refuses errors', () => {
+    // If the server says do not store this, we do not — whatever the user asked for.
+    expect(isDownloadableResponse(res(200, { 'cache-control': 'no-store' }))).toBe(false);
+    expect(isDownloadableResponse(res(401))).toBe(false);
+    expect(isDownloadableResponse(res(302))).toBe(false);
+  });
+});
+
+describe('SPRINT 14: two caches, so the sign-out wipe cannot miss anything', () => {
+  it('public and private data live in DIFFERENT caches', () => {
+    // Deleting the whole private cache — rather than walking entries and deciding which
+    // are private — is what makes the sign-out wipe total. One cache with mixed content
+    // would mean the wipe is only as good as the filter that walks it.
+    expect(PRIVATE_CACHE_NAME).not.toBe(CACHE_NAME);
+  });
+
+  it('both cache names are versioned', () => {
+    expect(CACHE_NAME).toMatch(/-v\d+$/);
+    expect(PRIVATE_CACHE_NAME).toMatch(/-v\d+$/);
+  });
+});
+
+/**
+ * "CHANGE ONE, CHANGE BOTH" — now actually ENFORCED.
+ *
+ * The policy lives twice: in this module (testable) and in public/sw.js (shipped). Every
+ * comment in both files says to keep them in step, and until now NOTHING CHECKED. A rule
+ * that relies on someone remembering is a rule that gets forgotten — and the failure is
+ * silent, because the tests would keep passing against a module the browser never runs.
+ *
+ * These tests read the real shipped worker off disk and assert the parts that must match.
+ */
+describe('the shipped worker and this policy module do not drift apart', () => {
+  const sw = readFileSync(resolve(process.cwd(), 'public/sw.js'), 'utf8');
+
+  it('the cache names match the shipped worker', () => {
+    // A mismatch here means a deploy evicts the wrong cache — or evicts nothing, and
+    // stale content is served forever.
+    expect(sw).toContain(`'${CACHE_NAME}'`);
+    expect(sw).toContain(`'${PRIVATE_CACHE_NAME}'`);
+  });
+
+  it('every NEVER_CACHE prefix is in the shipped worker', () => {
+    // Add a private route here and forget the worker, and the worker happily caches it.
+    // That is a data leak whose test suite is green.
+    for (const prefix of NEVER_CACHE_PREFIXES) {
+      expect(sw).toContain(`'${prefix}'`);
+    }
+  });
+
+  it('the shipped worker never writes the private cache from its fetch handler', () => {
+    // The one structural invariant of Sprint 14: nothing lands in the private cache as
+    // a side effect of browsing. Only the explicit DOWNLOAD_LIBRARY message writes it.
+    const fetchHandler = sw.slice(
+      sw.indexOf("addEventListener('fetch'"),
+      sw.indexOf("addEventListener('message'"),
+    );
+
+    expect(fetchHandler).not.toContain('caches.open(PRIVATE_CACHE_NAME)');
+    expect(fetchHandler).not.toContain('privateCache.put');
+  });
+
+  it('the shipped worker handles the sign-out wipe', () => {
+    // If CLEAR_PRIVATE is ever removed or renamed, the mitigation the entire
+    // offline-library decision rests on is gone — silently.
+    expect(sw).toContain('CLEAR_PRIVATE');
+    expect(sw).toContain(`caches.delete(PRIVATE_CACHE_NAME)`);
   });
 });
 

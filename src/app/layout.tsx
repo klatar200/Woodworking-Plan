@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SiteHeader } from '@/components/site-header';
-import { ServiceWorkerRegistration } from '@/components/service-worker';
+import {
+  ServiceWorkerRegistration,
+  PrivateCacheGuard,
+} from '@/components/service-worker';
 import './globals.css';
 
 /**
@@ -84,6 +87,12 @@ export default function RootLayout({
               it can't — an offline enhancement must never become an online
               dependency. */}
           <ServiceWorkerRegistration />
+          {/* Sprint 14. Wipes the private offline cache on sign-out. Watches the
+              SESSION STATE rather than hanging off a sign-out button, because there is
+              more than one way to sign out (our button, Clerk's menu, an expired or
+              revoked session) and a wipe wired to one of them would silently keep the
+              data for all the others. */}
+          <PrivateCacheGuard />
         </body>
       </html>
     </ClerkProvider>

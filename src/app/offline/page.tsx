@@ -1,19 +1,24 @@
 import Link from 'next/link';
 
 /**
- * Offline fallback — Sprint 8.
+ * Offline fallback — Sprint 8, rewritten in Sprint 14.
  *
- * Shown by the service worker when a navigation fails and there is no cached copy
- * of that page.
+ * Shown by the service worker when a navigation fails and there is no stored copy of
+ * that page.
  *
- * Static on purpose: it is pre-cached at service-worker install, so it must not
- * depend on the network, the database, or a session. It is the one page in this
- * app that is NOT `force-dynamic`.
+ * Static on purpose: it is pre-cached at service-worker install, so it must not depend
+ * on the network, the database, or a session. It is the one page in this app that is
+ * NOT `force-dynamic`.
  *
- * It also has to be honest about a real limitation: `/saved` is deliberately never
- * cached (see src/lib/offline.ts — a service worker cache is unencrypted and
- * survives sign-out, so a user's private library does not go on disk). So the
- * page tells the truth: your saved *plans* are here, the saved *list* is not.
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * IT MUST TELL THE TRUTH, and what is true CHANGED in Sprint 14.
+ *
+ * The previous version said the saved list and shopping list were "not stored on the
+ * device on purpose". That is no longer accurate: a user who taps "Make available
+ * offline" now has both. Leaving the old copy up would be the same class of failure as
+ * a stale code comment — a confident claim that argues against the evidence — except
+ * this one is aimed at users rather than developers, which makes it worse.
+ * ═══════════════════════════════════════════════════════════════════════════════
  */
 export const metadata = {
   title: 'Offline',
@@ -33,19 +38,27 @@ export default function OfflinePage() {
       <h2>What still works</h2>
       <ul className="detail-list">
         <li className="detail-row">
-          <strong>Plans you&rsquo;ve already opened or saved.</strong> They&rsquo;re
-          stored on this device. Open one from your history, or navigate straight to
-          it &mdash; the full cut list, materials, and steps are all there.
+          <strong>Plans you&rsquo;ve opened or saved.</strong> Stored on this device
+          &mdash; the full cut list, materials, and every step.
+        </li>
+        <li className="detail-row">
+          <strong>Cut lists and print sheets for those plans.</strong> Open one and
+          print it, with no signal at all.
+        </li>
+        <li className="detail-row">
+          <strong>Your saved list and shopping list</strong> &mdash; but only if you
+          tapped <strong>Make available offline</strong> on the Saved page while you had
+          a connection. That is the one thing that puts them on this device, and it is
+          deliberately something you choose rather than something we do quietly.
         </li>
       </ul>
 
       <h2>What doesn&rsquo;t</h2>
       <ul className="detail-list">
         <li className="detail-row">
-          <strong>Browsing, searching, and your saved list.</strong> These need the
-          network. Your saved list isn&rsquo;t stored on the device on purpose
-          &mdash; a phone&rsquo;s offline cache isn&rsquo;t encrypted, and your
-          library is yours.
+          <strong>Browsing, searching, saving, and reviewing.</strong> These need the
+          network. Anything you save or write now won&rsquo;t stick &mdash; do it again
+          when you have a bar.
         </li>
       </ul>
 

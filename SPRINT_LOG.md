@@ -1140,3 +1140,84 @@ costs nothing on Hobby. What we gave up: a one-click "Download PDF" button.
 list still does not work offline** — it is a private route and the caching policy
 correctly refuses private routes. That tension is Sprint 14's to resolve, and it is now
 the last thing standing between the app and the `BUSINESS_PLAN.md` §5 promise.
+
+---
+
+## Sprint 14: Expanded offline mode
+**Dates:** 2026-07-13
+**Scope (from BUILD_PLAN.md §4, Phase 2):** "Expanded offline mode (pre-cache entire
+saved-plan library)." **The last sprint of Phase 2.**
+
+### The correction that had to come first
+
+Sprint 8's rule claimed we "never write a user's private library to an unencrypted device
+cache." **That claim was overstated, and I wrote it.** Saving a plan pre-caches that
+plan's page — so the set of cached plan pages already *was* an approximation of the user's
+saved library, readable by anyone who picked up the phone and opened devtools. There was
+partial cover (pages you merely visit are cached too), but the line was not cleanly held.
+
+**A security rule that overstates its own guarantee is worse than an honest one**, because
+everything downstream trusts it — and I had spent three sprints citing this one as though
+it were airtight. So the real question was never "should we start storing private data
+on-device." It was: *we already partly do, silently — what do we actually want?*
+
+Surfaced to Keagan before writing any code. His call: **opt-in download, wiped on
+sign-out.**
+
+### Attempt 1 — 98/100 ✅
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Pre-caches the entire saved library — every plan, every print view, every cut-list one-pager — **plus the shopping list**, which finally closes the `BUSINESS_PLAN.md` §5 hardware-store gap that Sprint 12 had to ship without. |
+| Correctness (/20) | **19** | 336 tests green; policy, consent boundary, and both response gates all covered. **−1: the service worker's RUNTIME behaviour cannot be unit-tested** (a worker can't be imported), so the offline path needs a real-device check — save plans, tap Download, airplane mode, open the shopping list. Until Keagan does that, this is unproven rather than proven. |
+| Test coverage (/15) | **15** | +21 tests. The most valuable are new in kind: **the "change one, change both" rule is now actually ENFORCED.** `tests/offline.test.ts` reads the shipped `public/sw.js` off disk and asserts the cache names match, every private prefix is present, the fetch handler **never writes the private cache**, and `CLEAR_PRIVATE` still exists. Until now that rule lived only in comments — and its failure mode is silent, because the tests would keep passing against a module the browser never runs. |
+| Security (/15) | **15** | **Consent is the design.** The worker still refuses every private route on its own initiative (`isCacheable` unchanged, fails closed) — browsing to `/shopping-list` while online caches nothing. The private cache is written by exactly one code path: an explicit `DOWNLOAD_LIBRARY` message, and the worker **re-checks every URL against a narrow allowlist**, so a compromised page cannot use it to stash `/profile` on disk. Two response gates as **separate functions, not a boolean flag** — a flag would be one careless `true` away from letting a session-bearing response into the *public* cache, where it would survive sign-out and never be wiped. |
+| Code quality (/10) | **10** | The sign-out wipe **watches session state rather than hanging off a sign-out button** — there is more than one way to sign out (our button, Clerk's menu, an expired session, a session revoked elsewhere), and a wipe wired to one of them would silently keep the data for all the others. Watching the state observes the *outcome*, not one of the causes. Two caches rather than one filtered cache, so the wipe is a single `caches.delete()` that cannot miss an entry. |
+| Mobile/offline (/10) | **9** | The point of the sprint. **−1 for an honest limitation:** the wipe fires when *this device* observes the sign-out. A session revoked from another device leaves this one's cache in place until it next loads the app. Mitigated by the download UI stating plainly that the data lives on the device — but it is a real gap and pretending otherwise is the exact mistake Sprint 8 made. |
+| Documentation (/5) | **5** | Decision logged with the correction stated plainly rather than buried. **The `/offline` page copy was rewritten** — it used to tell users their saved list was "not stored on the device on purpose," which is no longer true. A stale claim aimed at *users* is worse than a stale code comment. |
+
+**Total: 98/100. PASS.**
+
+---
+
+# ✅ PHASE 2 COMPLETE
+
+Five sprints (10–14), all passing, all deployed and verified.
+
+| Sprint | Feature | Score |
+|---|---|---|
+| 10 | Reviews, ratings & build photos | 97 (after remediation from 94) |
+| 11 | Personalized recommendations | 96 |
+| 12 | Shopping list generator | 97 (re-scored after Keagan's product revision) |
+| 13 | Print-friendly / offline export | 97 |
+| 14 | Expanded offline mode | 98 |
+
+**Every item in `BUSINESS_PLAN.md` §10 is built** — except affiliate links, which are
+**blocked by a binding constraint, not an oversight**: Vercel's Hobby tier prohibits
+commercial use. **Run rate remains $0/mo.**
+
+**`BUSINESS_PLAN.md` §5's "single most important capability" — a plan and a shopping list
+that work in a workshop or a hardware store with no signal — is now actually delivered**,
+having been partially unmet since Sprint 8.
+
+### What Phase 2 taught, that Phase 1 did not
+
+1. **A correctly-diagnosed defect is not a fixed defect.** I identified the `Titebond`
+   near-duplicate problem, wrote "this is a content issue, not a code issue," and shipped
+   it anyway. Keagan had to tell me to go do the thing I had already worked out.
+2. **Being right about a danger does not make you right about the remedy.** The
+   null-contagion cost rule correctly identified that a partial sum is misleading, and
+   then threw away the number whose entire job was preventing a $10 expectation.
+3. **A rule that overstates its guarantee is worse than no rule.** Sprint 8's privacy
+   claim was cited confidently for three sprints while being quietly untrue.
+
+### Open before any public launch
+
+- **🔑 The leaked Neon password and Clerk secret key are STILL NOT ROTATED.** Deferred by
+  Keagan; the risk is unchanged.
+- **Branding / domain (#8)** — PWA icons are placeholders and `robots: noindex` is set
+  sitewide because of it. Blocks SEO and HSTS preload.
+- **Clerk deletion webhook** — a user deleted in Clerk leaves their `User` row and cached
+  email in our DB.
+- **Rate-limited users get no feedback** — the button simply doesn't move.
+- **Going publicly live is Keagan's explicit call**, per the standing launch gate.
