@@ -106,6 +106,24 @@ from the business plan and will be broken into sprints when each phase
 starts, so that sprint planning reflects the business plan's *current*
 state rather than assumptions made today.
 
+### 📌 Status at a glance (updated 2026-07-14)
+
+| Phase | Status |
+|---|---|
+| Phase 0 (Sprint 0) | ✅ COMPLETE — 99/100 |
+| Phase 1 MVP (Sprints 1–9) | ✅ COMPLETE — all sprints ≥94, deployed |
+| Rate limiting (standalone, pre-Sprint 10) | ✅ COMPLETE — incl. user feedback (2026-07-14) |
+| Phase 2 (Sprints 10–14) | ✅ COMPLETE — every §10 item except affiliate links (blocked by Hobby, not oversight) |
+| Phase 3 (Sprints 15–16) | ✅ COMPLETE — cut-list optimizer + learning paths; 3 items cut to `FUTURE_IDEAS.md` |
+| UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
+| Phase 4 | ⛔ NOT OPENED — do not start without Keagan explicitly opening it |
+| **Launch blockers** | 🔴 OPEN — see §4.2 below; these come due before anything else ships |
+
+Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
+detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of this
+update: **442 green** (2026-07-14: Clerk deletion webhook, offline policy
+de-duplicated, paths offline, cut-list yield made width-aware).
+
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
 tools" profile, local lumber price sync, plan versioning, an offline
@@ -115,7 +133,7 @@ adopt and the business plan is updated accordingly. This is the
 guardrail in Section 1.1 applied directly: no sprint should build a
 feature the business plan doesn't actually specify.
 
-### Phase 0 — Setup (gated on Section 3 decisions)
+### Phase 0 — Setup ✅ COMPLETE (99/100)
 
 - **Sprint 0: Environment & Architecture** — Next.js (TypeScript) repo
   structure covering both frontend and API routes, Neon Postgres
@@ -126,7 +144,13 @@ feature the business plan doesn't actually specify.
   service provisioned in this sprint must be confirmed as a genuine free
   tier before use — see decision #9: **no costs during development.**
 
-### Phase 1 — MVP / Launch (`BUSINESS_PLAN.md` §4, delivered as a PWA per §5)
+### Phase 1 — MVP / Launch ✅ COMPLETE (`BUSINESS_PLAN.md` §4, delivered as a PWA per §5)
+
+All nine sprints done and deployed (scores 94–99, details in `SPRINT_LOG.md`).
+Plus one standalone item shipped between Phases 1 and 2: **Upstash
+sliding-window rate limiting on all server actions** — including, as of
+2026-07-14, user-visible feedback on denial (`?notice=slow-down` redirect +
+banner; see `CLAUDE.md` "Rate-limit rule").
 
 - **Sprint 1: Plan Data Model & Content Pipeline** — schema for a plan
   (title, category, difficulty 1-5, tools required, materials required,
@@ -154,7 +178,7 @@ feature the business plan doesn't actually specify.
   top 10 pass), accessibility pass, performance pass (mobile network
   conditions), end-to-end QA across the full MVP feature set.
 
-### Phase 2 (`BUSINESS_PLAN.md` §10) — broken into sprints 2026-07-13
+### Phase 2 ✅ COMPLETE (`BUSINESS_PLAN.md` §10) — broken into sprints 2026-07-13, all five shipped
 
 **Binding constraint (see `DECISIONS_LOG.md`, `LAUNCH_ECONOMICS.md`): the project is
 on Vercel Hobby with NO monetization.** Hobby prohibits commercial use. So Sprint 12
@@ -193,7 +217,7 @@ A cut list is used at a table saw. Print CSS + a generated PDF of the plan.
 Pre-cache the entire saved-plan library, not just visited plans. Must not violate the
 Sprint 8 caching rule: **public content only; `/saved` and `/profile` are never cached.**
 
-### Phase 3 — opened 2026-07-13, and deliberately CUT DOWN
+### Phase 3 ✅ COMPLETE — opened 2026-07-13, deliberately CUT DOWN, both remaining sprints shipped
 
 Phase 3 as originally written was six items. **Three were removed by Keagan before any
 code was written** and now live in `FUTURE_IDEAS.md` — they are not scheduled, not
@@ -223,12 +247,100 @@ new vendor. Depends on nothing.
   payment processor (§3 decision #6) and pricing (#7). All three come due together, and
   that is a conversation, not a sprint.
 
-### Phase 4 (to be broken into sprints when this phase starts)
+### Phase 4 ⛔ NOT OPENED (to be broken into sprints if/when Keagan opens it)
 - AI-assisted plan customization (resize/re-species with recalculated cost/materials)
 - Community forums / build logs
 - Video content integration
 - International expansion (metric units, regional pricing)
 - Tool-inventory-aware search
+
+### 4.1 UI redesign & prototype integration ✅ COMPLETE (2026-07-13 / 2026-07-14)
+
+Keagan supplied a Claude Design prototype (`Prototype Wireframe/Woodworking Plan
+Prototype.dc.html`) as the app's target look. Adopted as a **visual reskin, not a
+new architecture** — GET-form filters/search, server actions, Clerk, and Prisma
+are unchanged. Full decision record: `DECISIONS_LOG.md` 2026-07-13 and 2026-07-14.
+
+**Shipped:**
+
+- **Palette/reskin** — cream/ink/orange visual system replaces the neutral theme;
+  dark mode removed (the mockup has none, and inventing one would be an
+  uncommissioned design decision).
+- **Step-by-step plan walker** — progress bar, step rail/dots, Prev/Next, as a
+  progressive enhancement OVER the full server-rendered step list (print, offline,
+  and no-JS keep the complete document).
+- **PWA install prompt** — `beforeinstallprompt` capture + banner (closed a real
+  Sprint 8 gap).
+- **Clerk re-themed via its `appearance` API** — the mockup's custom auth screens
+  were NOT hand-rebuilt.
+- **Active-filter chips** (2026-07-14) — one removable chip per filter value, plain
+  GET links, search/sort ride along (`filter-chips.tsx`).
+- **Skeleton loading states** (2026-07-14) — `loading.tsx` for catalog + plan
+  detail, `prefers-reduced-motion` respected.
+
+**Explicitly NOT built (decided, not forgotten):**
+
+| Prototype/wireframe element | Why excluded |
+|---|---|
+| Dollar figures ("$85–$130", per-material prices in print) | Violates the cost-tier-only rule (2026-07-13): tiers only, `formatCents` deleted |
+| "Free tier: 10 saved plans / 1 folder" limits | No pricing decision exists; no tier gating until billing is a real conversation |
+| Custom email/password auth screens | Clerk stays; hand-rolled auth is a security regression |
+| Email-notifications toggle, sitemap page | Scope creep / design-tool navigation aid |
+| "Recommended"/"Trending" catalog sorts | New features not in `BUSINESS_PLAN.md`; declined 2026-07-14 |
+| Materials checklist; offline banner + saved-only catalog mode | Offered 2026-07-14, not selected — **not approved, do not build without asking** |
+
+The `Woodworking Wireframes.dc.html` file in the same folder is **historical
+design iteration, not spec** — where it contradicts the above, the decisions win.
+
+### 4.2 🔴 Still required — open items, in priority order
+
+**Launch blockers (come due before anything else ships):**
+
+1. **Vercel env target verification (found 2026-07-14).** Production Neon branch
+   (`ep-long-lake`) was 3 migrations behind with 0 users — the live site has
+   likely been running against the DEV branch the whole time. `long-lake` is now
+   fully migrated + seeded. **Keagan:** check which branch Vercel's
+   `DATABASE_URL`/`DIRECT_URL` point at, then we swap or formally redesignate.
+   Until resolved, treat both branches as live.
+2. **Rotate the leaked Neon + Clerk credentials** (pasted into a chat transcript;
+   treat as compromised). **Keagan:** rotate in both dashboards, update
+   `.env.local` and BOTH Vercel env vars together (Neon branches share the role
+   password).
+3. **Branding/domain (§3 decision #8).** Blocks PWA icons (placeholders), SEO
+   (`robots: noindex` is set sitewide because of it), and HSTS preload.
+4. **Going publicly live is Keagan's explicit call** — named as a gate trigger
+   out of caution; that caution stands.
+
+**Engineering debt (mine, not blocking, tracked):**
+
+- ~~**Clerk deletion webhook**~~ **DONE (2026-07-14).** `POST /api/webhooks/clerk`
+  verifies the Svix signature and, on `user.deleted`, deletes the user's build-photo
+  blobs then cascades the `User` row. Fails closed, idempotent, 15 tests. Needs one
+  ops step before it does anything: set `CLERK_WEBHOOK_SIGNING_SECRET` in Vercel and
+  register a "user.deleted" endpoint in Clerk (see `DEPLOYMENT.md`).
+- ~~**`offline.ts` / `sw.js` duplication**~~ **DONE (2026-07-14).** The caching policy
+  now lives once in `public/sw-policy.js`, loaded by the worker via `importScripts` and
+  tested directly (no mirror). `src/lib/offline.ts` deleted.
+- ~~**Paths not cached offline**~~ **DONE (2026-07-14).** The learning-paths hub and
+  each path are now in the consented offline download (`src/lib/offline-urls.ts`,
+  cross-checked against the real worker policy). Public content → public cache.
+- ~~**`yieldRatio` gap**~~ **DONE (2026-07-14).** Yield now divides by the board you
+  actually buy (`physicalBoards × ripsPerBoard × stockLength`), so wasted rip-lane
+  width counts, not just length offcut. Unchanged for non-ripped stock.
+
+With those four closed, the §4.2 launch blockers above are the only open items — all
+of them Keagan's (env target, credential rotation, branding, launch call).
+
+**Deferred by decision (not debt — needs a business-plan change first):**
+
+- Affiliate links on the shopping list, ads, billing, pricing tiers, save limits
+  → all blocked by the launch-economics decision (Vercel Hobby, $0, no
+  monetization). **The moment any of these appear, the project must be on a
+  commercial-use-permitted host FIRST.**
+- Owned-tools profile (`UserTool` table + "my workshop" screen) — deferred to its
+  own sprint, per `DECISIONS_LOG.md` 2026-07-13.
+- Makerspace/team accounts — blocked by the launch gate (paid tier).
+- Phase 4 features, and everything in `FUTURE_IDEAS.md`.
 
 ---
 

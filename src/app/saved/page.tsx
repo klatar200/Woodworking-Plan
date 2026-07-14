@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { listSavedPlans, listCollections } from '@/lib/saves';
+import { listPaths } from '@/lib/paths';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { PlanCard } from '@/components/plan-card';
 import { OfflineDownload } from '@/components/offline-download';
@@ -36,7 +37,7 @@ export default async function SavedPage({
 }) {
   const { collection: collectionId, notice } = await searchParams;
 
-  const [collections, savedPlans, allSavedPlans] = await Promise.all([
+  const [collections, savedPlans, allSavedPlans, paths] = await Promise.all([
     listCollections(),
     // A collection id from the URL is untrusted — listSavedPlans scopes the
     // collection filter by userId too, so a stranger's id returns nothing rather
@@ -52,6 +53,8 @@ export default async function SavedPage({
      * the download quietly covering only the active collection.
      */
     listSavedPlans(),
+    // Sprint 16 paths, for the offline download. Public content — no user scoping.
+    listPaths(),
   ]);
 
   const activeCollection = collections.find((c) => c.id === collectionId);
@@ -166,6 +169,7 @@ export default async function SavedPage({
           <OfflineDownload
             slugs={allSavedPlans.map((saved) => saved.plan.slug)}
             collectionIds={collections.map((collection) => collection.id)}
+            pathSlugs={paths.map((path) => path.slug)}
           />
         )}
 

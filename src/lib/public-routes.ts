@@ -61,6 +61,17 @@ export const PUBLIC_ROUTES = [
   // key, never a connection string. See src/app/api/health/route.ts.
   '/api/health',
 
+  // Clerk user-deletion webhook (data retention — Sprint 2 follow-up).
+  //
+  // SECURITY: this is "public" ONLY to the auth middleware. Clerk's servers call it
+  // with no user session, so auth.protect() would reject a legitimate delivery. It is
+  // NOT unauthenticated — every request is verified by its Svix signature against
+  // CLERK_WEBHOOK_SIGNING_SECRET before a single byte is trusted, and the route fails
+  // CLOSED when the signature is absent, wrong, or the secret unset. Exact path, not a
+  // catch-all, so nothing else under /api/webhooks is implicitly exposed.
+  // See src/app/api/webhooks/clerk/route.ts.
+  '/api/webhooks/clerk',
+
   // Sprint 8: the offline fallback page.
   //
   // The service worker pre-caches it at install — which happens before anyone

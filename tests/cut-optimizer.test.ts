@@ -316,6 +316,43 @@ describe('honesty about waste', () => {
   });
 });
 
+describe('yield counts wasted rip-lane WIDTH, not just length (gap closed 2026-07-14)', () => {
+  // Ripping four 2″ lanes from a 9.25″ board: floor((9.25 + 0.125) / (2 + 0.125)) = 4.
+  const RIP = { ...NO_WASTE, stockWidthIn: 9.25 };
+
+  it('an unused rip lane counts against the yield', () => {
+    // Three 90″ strips, 2″ wide. Each needs its own lane — two 90″ parts will not share a
+    // 96″ board. From a 9.25″ board you can rip FOUR 2″ lanes, so you buy one board and
+    // leave the fourth lane empty. That empty lane is width you paid for and did not use.
+    const groups = optimize(
+      [part({ id: 's', label: 'Strip', widthIn: 2, quantity: 3, lengthIn: 90 })],
+      RIP,
+    );
+    const g = groups[0]!;
+    expect(g.ripsPerBoard).toBe(4);
+    expect(g.lanes).toBe(3);
+    expect(g.physicalBoards).toBe(1);
+
+    // Three of four lanes is 0.75 even if every used lane were perfectly full; the length
+    // offcut drops it further. The OLD length-only formula divided by lanes USED and
+    // reported ~0.95 here — hiding the wasted fourth lane entirely.
+    expect(yieldRatio(g, 96)).toBeLessThan(0.75);
+  });
+
+  it('filling every rip lane reports a high yield', () => {
+    // Four 90″ strips fill all four lanes of the one board — no wasted width.
+    const groups = optimize(
+      [part({ id: 's', label: 'Strip', widthIn: 2, quantity: 4, lengthIn: 90 })],
+      RIP,
+    );
+    const g = groups[0]!;
+    expect(g.ripsPerBoard).toBe(4);
+    expect(g.lanes).toBe(4);
+    expect(g.physicalBoards).toBe(1);
+    expect(yieldRatio(g, 96)).toBeGreaterThan(0.9);
+  });
+});
+
 describe('RIPPING: nobody sells a 2-inch-wide hardwood board', () => {
   /**
    * THIS SUITE EXISTS BECAUSE THE FIRST VERSION OF THE OPTIMIZER WAS WRONG.

@@ -206,8 +206,10 @@ export default async function BoardPlanPage({
               &middot; {group.boardFeet.toFixed(1)} board feet (includes{' '}
               {Math.round(options.wasteFactor * 100)}% for knots and defects) &middot;{' '}
               {/* HONEST ABOUT WASTE. A low yield is the user's cue to buy a shorter
-                  board — hiding it would be hiding the tool's own limitation. */}
-              {yieldPct}% of the length used
+                  board — hiding it would be hiding the tool's own limitation. This is
+                  the whole board you pay for: length offcut AND, when ripping, any rip
+                  lane left empty both count against it. */}
+              {yieldPct}% of the boards you buy used
             </p>
 
             {group.impossible.length > 0 && (

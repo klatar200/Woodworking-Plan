@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { offlineDownloadUrls } from '@/lib/offline-urls';
 
 /**
  * "Make available offline" — Sprint 14. The consented download.
@@ -30,9 +31,11 @@ interface Props {
   slugs: string[];
   /** Collection ids, so each collection's shopping list is downloaded too. */
   collectionIds: string[];
+  /** Slugs of every published learning path (Sprint 16). Cached as public content. */
+  pathSlugs: string[];
 }
 
-export function OfflineDownload({ slugs, collectionIds }: Props) {
+export function OfflineDownload({ slugs, collectionIds, pathSlugs }: Props) {
   const [status, setStatus] = useState<Status>('idle');
 
   useEffect(() => {
@@ -57,28 +60,17 @@ export function OfflineDownload({ slugs, collectionIds }: Props) {
     /**
      * Everything the user needs in a workshop or a hardware store, and nothing else.
      *
-     * Note what is NOT here: `/profile`. An account page is not something anyone needs
-     * with no signal, and the service worker's allowlist would refuse it anyway — but
-     * the right place to not ask for it is here, at the point where we decide.
+     * The list is built by a pure function (src/lib/offline-urls.ts) so it can be tested
+     * against the real caching policy directly. Note what is NOT in it: `/profile`. An
+     * account page is not something anyone needs with no signal, and the service worker's
+     * allowlist would refuse it anyway — but the right place to not ask for it is at the
+     * point where we decide.
      */
-    const urls = [
-      ...slugs.map((slug) => `/plans/${slug}`),
-      // The print view is the sheet that actually goes to the shop (Sprint 13).
-      ...slugs.map((slug) => `/plans/${slug}/print`),
-      ...slugs.map((slug) => `/plans/${slug}/print?view=cutlist`),
-      // The board plan — what to buy. This is the one you want at the lumberyard,
-      // which is a warehouse with no signal (Sprint 15).
-      ...slugs.map((slug) => `/plans/${slug}/boards`),
-
-      // The whole-library shopping list, and one per collection. THIS is the thing
-      // that finally closes the BUSINESS_PLAN.md §5 hardware-store gap.
-      '/shopping-list',
-      ...collectionIds.map((id) => `/shopping-list?collection=${id}`),
-
-      // The saved list itself, so the app is navigable offline rather than being a
-      // set of pages you can only reach if you already know their URLs.
-      '/saved',
-    ];
+    const urls = offlineDownloadUrls({
+      planSlugs: slugs,
+      collectionIds,
+      pathSlugs,
+    });
 
     try {
       const registration = await navigator.serviceWorker.ready;
@@ -107,8 +99,8 @@ export function OfflineDownload({ slugs, collectionIds }: Props) {
       {/* Say plainly what is being agreed to. Consent to something nobody explained is
           not consent. */}
       <p className="muted small">
-        Stores your saved plans, their cut lists, and your shopping list{' '}
-        <strong>on this device</strong> so they work with no signal. This data is{' '}
+        Stores your saved plans, their cut lists, your shopping list, and the learning
+        paths <strong>on this device</strong> so they work with no signal. This data is{' '}
         <strong>removed when you sign out</strong>.
       </p>
 

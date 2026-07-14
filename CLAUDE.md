@@ -75,8 +75,10 @@ option and why. Wait. Record the answer in `DECISIONS_LOG.md` *before*
 continuing. Routine engineering choices (library for a solved problem, code
 structure, test framework, naming) → just decide.
 
-**One sprint at a time, in `BUILD_PLAN.md` §4 order.** Phase 1 is done; Phase 2 is
-open (Sprints 10–14). No Phase 3–4 work. No features that aren't in
+**One sprint at a time, in `BUILD_PLAN.md` §4 order.** Phases 0–3 are COMPLETE
+(see `BUILD_PLAN.md` §4 status table). Phase 4 is NOT open — do not start it
+without Keagan explicitly opening it. What remains before anything else ships is
+`BUILD_PLAN.md` §4.2 (launch blockers). No features that aren't in
 `BUSINESS_PLAN.md` — the previously-discussed-but-not-approved ideas (comments, tool
 substitution notes, lumber price sync, plan versioning, offline shopping mode) are
 **out of scope** until Keagan adds them to the business plan himself. Flag scope
@@ -222,13 +224,17 @@ with it.
   `Prototype Wireframe/` is HISTORICAL — its dollar figures, save limits, and
   custom auth screens are superseded; see `DECISIONS_LOG.md` 2026-07-14.
 
-## ✅ PHASE 2 COMPLETE (Sprints 10–14). Run rate still $0/mo.
+## ✅ PHASES 2 AND 3 COMPLETE (Sprints 10–16). Run rate still $0/mo.
 
 Every item in `BUSINESS_PLAN.md` §10 is built except **affiliate links**, which are
 blocked by the Hobby commercial-use constraint — not by oversight.
 
-**There is no Sprint 15.** Phase 3 (`BUILD_PLAN.md` §4) is a different scale of project
-(creator marketplace, cut-list optimizer, team accounts) and **must not be started
+**Phase 3 was OPENED, cut down, and finished (2026-07-13).** Keagan removed three of its
+six items (creator marketplace, native app, local lumber pricing → `FUTURE_IDEAS.md`,
+**do not build**) and the two that remained shipped: **Sprint 15 (cut-list optimizer,
+98/100)** and **Sprint 16 (learning paths, 97/100)**. Makerspace/team accounts stays
+blocked by the launch gate (it is a paid tier). See `BUILD_PLAN.md` §4 — the authoritative
+status table — and `SPRINT_LOG.md` for the scores. **Phase 4 is NOT open; do not start it
 without Keagan explicitly opening it.** Before anything else ships, the launch blockers
 below come due.
 
@@ -408,9 +414,18 @@ tier gating, or save/collection limits. There is nothing to charge for yet.
   Rotate in Neon (Roles → reset password) and Clerk, then update `.env.local` **and
   both Vercel env vars together** — Neon branches share the role password, so
   rotating invalidates dev and prod simultaneously.
-- **Clerk deletion webhook** — a user deleted in Clerk leaves their `User` row and
-  cached email in our DB. A data-retention problem once there are real users.
-- **`offline.ts` and `sw.js` duplicate the caching rules.** Change one, change both.
+- ~~**Clerk deletion webhook**~~ **DONE (2026-07-14).** `POST /api/webhooks/clerk`
+  (`src/app/api/webhooks/clerk/route.ts`) verifies the Svix signature via
+  `verifyWebhook` and, on `user.deleted`, calls `deleteUserByClerkId()`
+  (`src/lib/user-deletion.ts`) — which deletes the user's build-photo BLOBS first
+  (the DB cascade cannot reach object storage) then `deleteMany`s the `User` row,
+  cascading saves/collections/likes/reviews. Fails CLOSED (no secret → 500, bad sig →
+  400), idempotent for Svix retries. **NOT LIVE until `CLERK_WEBHOOK_SIGNING_SECRET`
+  is set in Vercel and a "user.deleted" endpoint is added in the Clerk dashboard** —
+  see `DEPLOYMENT.md`.
+- ~~**`offline.ts` and `sw.js` duplicate the caching rules.**~~ **DONE (2026-07-14).**
+  Policy de-duplicated into a single `public/sw-policy.js`, loaded by the worker via
+  `importScripts` and tested directly. See the offline caching rule below.
 
 ### Offline caching rule (Sprint 8, CORRECTED and rebuilt in Sprint 14)
 
@@ -447,11 +462,23 @@ because everything downstream trusts it.
 sign-out. A session revoked from another device leaves this one's cache until it next
 loads the app. The download UI says plainly that the data lives on the device.
 
-The rules live in `src/lib/offline.ts` (tested) and are mirrored in `public/sw.js`
-(shipped) — **change one, change both.** This is now **actually enforced**: the tests read
-the shipped worker off disk and assert the cache names, the private prefixes, that the
-fetch handler never writes the private cache, and that `CLEAR_PRIVATE` still exists. It
-used to rely on someone remembering, and the failure mode was silent.
+**The policy now lives ONCE (de-duplicated 2026-07-14).** It was formerly in two files —
+`src/lib/offline.ts` (tested) and a copy inside `public/sw.js` (shipped) — kept in step
+only by a test that string-matched a few constants, so the predicate *logic* could still
+drift silently. Now:
+
+- **`public/sw-policy.js`** is the single source: the constants and the four predicates
+  (`isCacheable`, `isDownloadable`, and the two response gates), as a plain classic script.
+- **`public/sw.js`** loads it with `importScripts('/sw-policy.js')` and reads everything
+  from `self.OfflinePolicy`. It contains ONLY event wiring (install/activate/fetch/message)
+  — no policy literals. `src/lib/offline.ts` is **deleted**.
+- **`tests/offline.test.ts`** loads `public/sw-policy.js` in a Node `vm` sandbox and tests
+  the exact functions the browser runs — not a mirror. So there is nothing to keep in
+  step: **there is one copy.** The test also asserts `sw.js` consumes the policy and does
+  not re-declare it (e.g. `'/profile'` must not appear in `sw.js`).
+- Both `/sw.js` **and** `/sw-policy.js` are `no-store` in `next.config.ts` — a stale cached
+  policy would defeat a deploy exactly like a stale worker would. Miss either and an old
+  policy keeps running silently.
 
 ### Derived data rule (why Sprint 7 shipped clean)
 
@@ -578,8 +605,12 @@ production on deploy. It needs a production seed. See `DEPLOYMENT.md`.
 **FFD, not something cleverer.** It is deterministic and eyeball-checkable, and the user
 must be able to look at the layout and see it is sane. That beats the last 3% of yield.
 
-**Known gap:** `yieldRatio` measures LENGTH usage only. Ripping 4 lanes when you need 3
-wastes the 4th lane's width, and that is not reported.
+**Yield is BOTH dimensions (fixed 2026-07-14).** `yieldRatio` divides consumed board
+length-inches by what you actually BUY — `physicalBoards × ripsPerBoard × stockLength` —
+so a rip lane left empty (width you paid for) counts against the yield, not just the
+length offcut. It used to divide by lanes USED, which hid wasted rip-lane width and
+reported ~0.95 where the truth was ~0.70. For non-ripped stock (ripsPerBoard = 1) the
+number is unchanged.
 
 ### 💲 Cost display rule (Phase 3, 2026-07-13) — TIERS ONLY, NO DOLLAR AMOUNTS
 

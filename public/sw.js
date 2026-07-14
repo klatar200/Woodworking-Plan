@@ -1,54 +1,53 @@
 /**
- * Service worker — Sprint 8, substantially revised in Sprint 14.
+ * Service worker — Sprint 8, revised in Sprint 14, de-duplicated 2026-07-14.
  *
  * Delivers the capability BUSINESS_PLAN.md §5 calls "the single most important one": a
- * plan you saved stays usable in the workshop, on a job site, or in a hardware store
+ * plan you saved stays usable in the workshop, on a job site, or in a hardware-store
  * aisle with no signal.
  *
  * ═════════════════════════════════════════════════════════════════════════════
- * SECURITY — read before adding a single line to this file.
+ * THE CACHING POLICY IS NOT IN THIS FILE. It lives ONCE, in /sw-policy.js, and is
+ * loaded verbatim by `importScripts` below. tests/offline.test.ts loads that SAME file
+ * and tests the exact functions this worker runs — so the policy cannot drift from what
+ * ships, because there is only one copy.
  *
- * A service worker cache is UNENCRYPTED, ORIGIN-SCOPED, and SURVIVES SIGN-OUT.
+ * This file is only the EVENT WIRING: install, activate, fetch, and message. It reads
+ * every policy decision from `self.OfflinePolicy`; it makes none of its own.
  *
- * Sprint 8 claimed we never write a user's private library to disk. That claim was
- * OVERSTATED: pre-caching a plan when it is saved means the cached plan pages already
- * approximated the saved library. Sprint 14 stops pretending and makes it defensible:
- *
- *   TWO CACHES.
- *     CACHE_NAME         — public plan content. Cached freely, as before.
- *     PRIVATE_CACHE_NAME — the saved library and the shopping list.
- *
- *   THE PRIVATE CACHE IS NEVER WRITTEN AS A SIDE EFFECT OF BROWSING. The fetch handler
- *   below never writes to it. It is written ONLY on an explicit DOWNLOAD_LIBRARY
- *   message, which fires only when the user taps "Make available offline".
- *
- *   THE PRIVATE CACHE IS WIPED ON SIGN-OUT (CLEAR_PRIVATE). That is the mitigation the
- *   whole design rests on. Two separate caches is what makes the wipe TOTAL.
- *
- * Mirrored in src/lib/offline.ts, which is UNIT TESTED. A service worker cannot be
- * imported into a test, so the policy lives in a testable module and is restated here.
- * **CHANGE ONE, CHANGE BOTH** — and the tests will tell you if you didn't.
+ * SECURITY, in one line: the fetch handler NEVER writes the private cache — only the
+ * explicit DOWNLOAD_LIBRARY message does — and CLEAR_PRIVATE wipes it on sign-out. See
+ * /sw-policy.js for the full reasoning.
  * ═════════════════════════════════════════════════════════════════════════════
  */
 
-// v3: Sprint 14 splits public from private. A stale v2 cache may hold entries written
-// under the older, laxer assumptions, so activate evicts it.
-const CACHE_NAME = 'woodworking-plan-v3';
-const PRIVATE_CACHE_NAME = 'woodworking-plan-private-v1';
-const OFFLINE_URL = '/offline';
+importScripts('/sw-policy.js');
 
-/** Never cached by the worker on its own initiative. */
-const NEVER_CACHE_PREFIXES = [
-  '/saved',
-  '/profile',
-  '/api',
-  '/sign-in',
-  '/sign-up',
-  '/shopping-list',
-];
+const {
+  CACHE_NAME,
+  PRIVATE_CACHE_NAME,
+  OFFLINE_URL,
+  PRECACHE_URLS,
+  SW_MESSAGES,
+  isCacheable,
+  isDownloadable,
+  isCacheableResponse,
+  isDownloadableResponse,
+} = self.OfflinePolicy;
 
-/** Narrow allowlist of what the user may EXPLICITLY ask us to store. */
-const DOWNLOADABLE_PREFIXES = ['/shopping-list', '/saved'];
+/**
+ * The policy predicates take a plain, environment-agnostic request-like object (so they
+ * can be unit tested without a real ServiceWorker). This adapts a real `Request` into
+ * that shape — the origin comes from the worker, and the RSC header (which a plain object
+ * cannot carry) is read here and passed through as a flag.
+ */
+function toPolicyRequest(request) {
+  return {
+    method: request.method,
+    url: request.url,
+    origin: self.location.origin,
+    rscHeader: Boolean(request.headers && request.headers.get('RSC')),
+  };
+}
 
 // ─────────────────────────────── install ───────────────────────────────
 
@@ -56,7 +55,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll([OFFLINE_URL]))
+      .then((cache) => cache.addAll(PRECACHE_URLS))
       // Take over immediately rather than waiting for every tab to close. A
       // half-updated worker serving a stale shell is worse than a brief flash.
       .then(() => self.skipWaiting()),
@@ -83,75 +82,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// ──────────────────────────────── policy ───────────────────────────────
-
-/** Fails CLOSED — anything not positively public, same-origin and GET is refused. */
-function isCacheable(request) {
-  if (request.method !== 'GET') return false;
-
-  const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return false;
-
-  // RSC payloads are Next's client-navigation flight streams, not pages. Caching one
-  // serves an old build's payload into a new client, and intercepting them at all once
-  // made this worker return Response.error() in production.
-  if (url.searchParams.has('_rsc')) return false;
-  if (request.headers.get('RSC')) return false;
-
-  const path = url.pathname;
-  for (const prefix of NEVER_CACHE_PREFIXES) {
-    if (path === prefix || path.startsWith(prefix + '/')) return false;
-  }
-
-  return true;
-}
-
-/** The CONSENTED path. Only ever reached from a DOWNLOAD_LIBRARY message. */
-function isDownloadable(request) {
-  if (request.method !== 'GET') return false;
-
-  const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return false;
-  if (url.searchParams.has('_rsc')) return false;
-
-  if (isCacheable(request)) return true;
-
-  const path = url.pathname;
-  return DOWNLOADABLE_PREFIXES.some(
-    (prefix) => path === prefix || path.startsWith(prefix + '/'),
-  );
-}
-
-/** Second gate for PUBLIC caching. A public path can still carry a personal response. */
-function isCacheableResponse(response) {
-  if (!response || response.status !== 200) return false;
-  if (response.headers.get('set-cookie')) return false;
-
-  const cacheControl = response.headers.get('cache-control') || '';
-  if (cacheControl.includes('no-store') || cacheControl.includes('private')) {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Second gate for CONSENTED downloads. Looser in exactly one respect: it does not
- * refuse Set-Cookie, because a private page legitimately carries a session cookie.
- *
- * A SEPARATE FUNCTION rather than a flag, deliberately: a flag would be one careless
- * `true` away from letting a session-bearing response into the PUBLIC cache, where it
- * would survive sign-out and never be wiped.
- */
-function isDownloadableResponse(response) {
-  if (!response || response.status !== 200) return false;
-
-  const cacheControl = response.headers.get('cache-control') || '';
-  if (cacheControl.includes('no-store')) return false;
-
-  return true;
-}
-
 // ──────────────────────────────── fetch ────────────────────────────────
 
 self.addEventListener('fetch', (event) => {
@@ -163,10 +93,10 @@ self.addEventListener('fetch', (event) => {
    * Browsing to /shopping-list while online does not cache it. Nothing lands in the
    * private cache as a side effect of using the app. That is the entire point.
    */
-  if (!isCacheable(request)) {
+  if (!isCacheable(toPolicyRequest(request))) {
     // Not ours to cache — but if we are OFFLINE and the user previously DOWNLOADED
     // this, serve it from the private cache. This is what makes the shopping list work
-    // in a hardware store aisle. Read-only: it reads the private cache, never writes.
+    // in a hardware-store aisle. Read-only: it reads the private cache, never writes.
     if (request.mode === 'navigate') {
       event.respondWith(
         fetch(request).catch(async () => {
@@ -220,15 +150,15 @@ self.addEventListener('message', (event) => {
   const data = event.data;
   if (!data || typeof data.type !== 'string') return;
 
-  // ── Sprint 8 / 13: pre-cache one PUBLIC plan (and its print view). ──────────
-  if (data.type === 'CACHE_PLAN' && typeof data.url === 'string') {
+  // ── Sprint 8 / 13 / 15: pre-cache one PUBLIC plan (and its print/board views). ──
+  if (data.type === SW_MESSAGES.CACHE_PLAN && typeof data.url === 'string') {
     const request = new Request(new URL(data.url, self.location.origin), {
       method: 'GET',
     });
 
     // Still run through isCacheable(). A message from the page is not a reason to trust
     // it: a compromised page could otherwise ask us to cache /profile.
-    if (!isCacheable(request)) return;
+    if (!isCacheable(toPolicyRequest(request))) return;
 
     event.waitUntil(
       fetch(request)
@@ -249,7 +179,7 @@ self.addEventListener('message', (event) => {
   //
   // Fired ONLY when the user taps "Make available offline". This is the one and only
   // path that writes to the private cache.
-  if (data.type === 'DOWNLOAD_LIBRARY' && Array.isArray(data.urls)) {
+  if (data.type === SW_MESSAGES.DOWNLOAD_LIBRARY && Array.isArray(data.urls)) {
     event.waitUntil(
       (async () => {
         const publicCache = await caches.open(CACHE_NAME);
@@ -262,10 +192,11 @@ self.addEventListener('message', (event) => {
             const request = new Request(new URL(rawUrl, self.location.origin), {
               method: 'GET',
             });
+            const policyRequest = toPolicyRequest(request);
 
             // Consent is not a licence to store anything at all. The allowlist still
             // applies — a compromised page cannot use this to stash /profile on disk.
-            if (!isDownloadable(request)) return;
+            if (!isDownloadable(policyRequest)) return;
 
             try {
               // The private pages need the session cookie, or they come back as a
@@ -276,7 +207,7 @@ self.addEventListener('message', (event) => {
               // PUBLIC content to the public cache; PRIVATE content to the private one.
               // Routing by isCacheable() — rather than guessing from the path — means
               // the two caches cannot drift apart from the policy.
-              const target = isCacheable(request) ? publicCache : privateCache;
+              const target = isCacheable(policyRequest) ? publicCache : privateCache;
               await target.put(request, response);
             } catch {
               // One failed URL must not abort the whole download. The user gets what
@@ -287,7 +218,7 @@ self.addEventListener('message', (event) => {
 
         const clients = await self.clients.matchAll();
         for (const client of clients) {
-          client.postMessage({ type: 'DOWNLOAD_COMPLETE' });
+          client.postMessage({ type: SW_MESSAGES.DOWNLOAD_COMPLETE });
         }
       })(),
     );
@@ -299,7 +230,7 @@ self.addEventListener('message', (event) => {
   // A shared, sold, or lost phone must not hand over a library after the user has
   // signed out. Deleting the WHOLE cache — rather than walking entries — is exactly why
   // the private data lives in its own cache: the wipe cannot miss anything.
-  if (data.type === 'CLEAR_PRIVATE') {
+  if (data.type === SW_MESSAGES.CLEAR_PRIVATE) {
     event.waitUntil(caches.delete(PRIVATE_CACHE_NAME));
   }
 });

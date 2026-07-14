@@ -77,6 +77,23 @@ describe('parseEnv', () => {
   it('rejects an unknown NODE_ENV rather than silently treating it as development', () => {
     expect(() => parseEnv(asEnv({ NODE_ENV: 'staging' }))).toThrow();
   });
+
+  it('accepts a valid Clerk webhook signing secret', () => {
+    const env = parseEnv(asEnv({ CLERK_WEBHOOK_SIGNING_SECRET: 'whsec_abc123' }));
+    expect(env.CLERK_WEBHOOK_SIGNING_SECRET).toBe('whsec_abc123');
+  });
+
+  it('rejects a webhook signing secret with the wrong prefix', () => {
+    expect(() =>
+      parseEnv(asEnv({ CLERK_WEBHOOK_SIGNING_SECRET: 'sk_oops' })),
+    ).toThrow(/whsec_/);
+  });
+
+  it('does NOT require the webhook secret in production — a missing one disables the webhook, not the site', () => {
+    // The webhook is data-retention, not authorization. Its absence must not take
+    // production down on boot, so it is deliberately outside REQUIRED_IN_PRODUCTION.
+    expect(() => parseEnv(asEnv({ NODE_ENV: 'production', ...BASE }))).not.toThrow();
+  });
 });
 
 describe('isClerkConfigured', () => {

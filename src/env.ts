@@ -87,6 +87,19 @@ const serverSchema = z.object({
   // fail. Ids, not emails — an email is mutable and, if Clerk ever allowed an
   // unverified one, forgeable. A Clerk user id is neither.
   ADMIN_USER_IDS: z.string().optional(),
+
+  // Clerk webhook signing secret (`whsec_...`) — proves a POST to
+  // /api/webhooks/clerk genuinely came from Clerk. See that route.
+  //
+  // OPTIONAL, and NOT in REQUIRED_IN_PRODUCTION. The webhook is a data-retention
+  // mechanism (delete our mirror row when a user is deleted in Clerk), not an
+  // authorization control — a missing secret should cost us the webhook, never take
+  // the whole site down on boot. The ROUTE fails closed: with no secret it rejects
+  // every request rather than trusting an unverified body.
+  CLERK_WEBHOOK_SIGNING_SECRET: z
+    .string()
+    .startsWith('whsec_', { message: 'CLERK_WEBHOOK_SIGNING_SECRET must start with whsec_' })
+    .optional(),
 });
 
 export type Env = z.infer<typeof serverSchema>;
@@ -147,5 +160,9 @@ export const isDatabaseConfigured = (): boolean => Boolean(env.DATABASE_URL);
 /** True when the app has enough config to mount Clerk. */
 export const isClerkConfigured = (): boolean =>
   Boolean(env.CLERK_SECRET_KEY && env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+/** True when the Clerk deletion webhook can verify signatures. */
+export const isClerkWebhookConfigured = (): boolean =>
+  Boolean(env.CLERK_WEBHOOK_SIGNING_SECRET);
 
 export { isProduction };

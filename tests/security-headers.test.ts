@@ -99,4 +99,19 @@ describe('service worker headers', () => {
     // most important header on the site.
     expect(cacheControl).toContain('no-store');
   });
+
+  it('the imported policy (/sw-policy.js) is also never cached', () => {
+    // sw.js loads its policy via importScripts('/sw-policy.js'), so a stale cached copy
+    // of the policy would keep running after a deploy shipped a new one — the same
+    // failure the /sw.js rule prevents. Both must be no-store.
+    return nextConfig.headers!().then((groups) => {
+      const policy = groups.find((g) => g.source === '/sw-policy.js');
+      expect(policy, '/sw-policy.js must have its own header rule').toBeDefined();
+
+      const cacheControl = policy!.headers.find(
+        (h) => h.key.toLowerCase() === 'cache-control',
+      )?.value;
+      expect(cacheControl).toContain('no-store');
+    });
+  });
 });

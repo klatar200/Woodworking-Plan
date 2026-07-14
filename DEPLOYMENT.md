@@ -122,6 +122,35 @@ Perpetual, not a trial. We will not come close to the limits.
 
 ---
 
+## Step 2.5 — Clerk user-deletion webhook (do this before launch)
+
+**What it is:** when someone deletes their account in Clerk, Clerk POSTs us a
+`user.deleted` event. Our endpoint (`/api/webhooks/clerk`) verifies it and deletes
+that person's row and all their data (saves, likes, reviews, build photos). Without
+it, deleted users leave their cached email behind in our database forever — a
+data-retention problem the moment there are real users.
+
+**This needs the deployed URL, so do it after Step 4 (or come back to it).** Until
+the signing secret is set, the endpoint rejects every request (fails closed) and the
+rest of the app is unaffected.
+
+1. In the Clerk dashboard → **Configure → Webhooks → Add Endpoint.**
+2. **Endpoint URL:** `https://<your-vercel-url>/api/webhooks/clerk`.
+3. **Subscribe to events:** tick **`user.deleted`** only. (Creation and updates are
+   handled by lazy sign-in sync — no webhook needed.)
+4. **Create**, then copy the endpoint's **Signing Secret** (starts with `whsec_`).
+5. Add it to Vercel → **Settings → Environment Variables**:
+   `CLERK_WEBHOOK_SIGNING_SECRET = whsec_...` (Production). **Redeploy.**
+6. Verify: in the webhook's **Testing** tab, send a `user.deleted` event — you should
+   see a `200`. A `500` means the secret isn't set on Vercel yet; a `400` means the
+   secret in Vercel doesn't match this endpoint's.
+
+> Local testing is optional: put the same `whsec_...` in `.env.local` and forward
+> events with the Clerk CLI, or just rely on the automated tests
+> (`tests/clerk-webhook.test.ts`, `tests/user-deletion.test.ts`).
+
+---
+
 ## Step 3 — Run it locally first
 
 Prove it works on your machine before involving Vercel — that way, if the deploy

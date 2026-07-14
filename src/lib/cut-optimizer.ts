@@ -363,10 +363,28 @@ export function hasImpossibleParts(groups: BoardGroup[]): boolean {
   return groups.some((group) => group.impossible.length > 0);
 }
 
-/** How efficiently the boards are used, 0–1. Honest about what is being thrown away. */
+/**
+ * How efficiently the PURCHASED board is used, 0–1. Honest about what is thrown away —
+ * in BOTH dimensions.
+ *
+ * The denominator is the board length-inches you actually BUY:
+ *   physicalBoards × ripsPerBoard × stockLength
+ * — i.e. every lane on every board you pay for, not just the lanes you filled.
+ *
+ * That distinction is the fix for the old length-only gap. When you rip four lanes from a
+ * board but only need three, the fourth lane is width you paid for and did not use. The
+ * old formula divided by the number of lanes USED, so that wasted width was invisible and
+ * a 3-of-4 rip reported ~95% when the truth was ~70%. Dividing by lanes BOUGHT makes both
+ * the length offcut and the unused rip lane count against the yield.
+ *
+ * `usedIn` includes kerf and end trim — board you had to consume, not offcut — so a yield
+ * of 1.0 means every inch of every lane you bought became a part or a necessary cut, with
+ * nothing left over and no empty lane. Waste is 1 − yield.
+ */
 export function yieldRatio(group: BoardGroup, stockLengthIn: number): number {
-  if (group.boards.length === 0) return 0;
+  const purchasedLaneInches = group.physicalBoards * group.ripsPerBoard * stockLengthIn;
+  if (purchasedLaneInches === 0) return 0;
 
-  const used = group.boards.reduce((sum, board) => sum + board.usedIn, 0);
-  return used / (group.boards.length * stockLengthIn);
+  const consumed = group.boards.reduce((sum, board) => sum + board.usedIn, 0);
+  return consumed / purchasedLaneInches;
 }

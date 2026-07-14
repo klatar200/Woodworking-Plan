@@ -95,6 +95,16 @@ const nextConfig: NextConfig = {
           { key: 'Service-Worker-Allowed', value: '/' },
         ],
       },
+      {
+        // sw.js loads its policy via `importScripts('/sw-policy.js')`, so this file is
+        // effectively part of the worker. It gets the SAME no-store rule: a cached copy
+        // would let a stale policy keep running after a deploy shipped a new one — the
+        // exact failure the /sw.js rule exists to prevent.
+        source: '/sw-policy.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+        ],
+      },
     ];
   },
 };
