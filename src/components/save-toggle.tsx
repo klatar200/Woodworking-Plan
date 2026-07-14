@@ -7,6 +7,13 @@ interface Props {
   planId: string;
   slug: string;
   isSaved: boolean;
+  /**
+   * Where a rate-limit denial bounces back to — the page this card sits on,
+   * filters and all. Without it the denied redirect falls back to the plan's
+   * detail page, which is not where the user was. Validated server-side
+   * (attacker-controlled FormData) — see src/lib/rate-limit-feedback.ts.
+   */
+  returnTo?: string;
 }
 
 /**
@@ -25,7 +32,7 @@ interface Props {
  * component existed. The sign-in-and-redirect path already lives on the detail
  * page's `SaveButton` and isn't duplicated here.
  */
-export function SaveToggle({ planId, slug, isSaved }: Props) {
+export function SaveToggle({ planId, slug, isSaved, returnTo }: Props) {
   const action = isSaved ? unsavePlanAction : savePlanAction;
 
   return (
@@ -38,6 +45,7 @@ export function SaveToggle({ planId, slug, isSaved }: Props) {
     >
       <input type="hidden" name="planId" value={planId} />
       <input type="hidden" name="slug" value={slug} />
+      {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       <button
         type="submit"
         className="plan-card-save"

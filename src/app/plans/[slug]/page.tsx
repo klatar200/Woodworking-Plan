@@ -13,6 +13,8 @@ import { LikeButton } from '@/components/like-button';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
 import { StepWalker } from '@/components/step-walker';
+import { RateLimitNotice } from '@/components/rate-limit-notice';
+import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
 
 /**
@@ -46,8 +48,15 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function PlanDetailPage({ params }: { params: Params }) {
+export default async function PlanDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: Promise<{ notice?: string }>;
+}) {
   const { slug } = await params;
+  const { notice } = await searchParams;
   const plan = await getPlanBySlug(slug);
 
   // getPlanBySlug returns null for unknown AND unpublished slugs alike, so this
@@ -78,6 +87,11 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
       <p className="breadcrumb">
         <Link href="/">← All plans</Link>
       </p>
+
+      <RateLimitNotice
+        show={hasRateLimitNotice(notice)}
+        dismissHref={`/plans/${plan.slug}`}
+      />
 
       <header className="plan-header">
         <span className="plan-card-category">{plan.category.name}</span>

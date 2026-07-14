@@ -7,7 +7,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  * design decisions — each of which is the kind of thing a future refactor would
  * quietly get backwards:
  *
- *   1. It NEVER THROWS. A denied request returns false and the action no-ops.
+ *   1. It NEVER THROWS. A denied request returns false; the action does no work
+ *      and redirects with a notice (a framework-handled 303, not an exception).
  *   2. It FAILS OPEN when the store is unreachable.
  *   3. It identifies by SESSION USER first, IP only as a fallback.
  *   4. It runs BEFORE any database work.
@@ -221,9 +222,16 @@ describe('buckets', () => {
 /**
  * The actions themselves. This is the layer the production bug actually lived at:
  * `checkRateLimit` can be perfect and the app still 500s if its CALLER throws.
+ *
+ * Since 2026-07-14 a denial is no longer SILENT: the action `redirect()`s back
+ * with `?notice=slow-down` (see src/lib/rate-limit-feedback.ts). These tests use
+ * the REAL next/navigation, so a denial rejects with the framework's
+ * NEXT_REDIRECT control-flow signal — which Next turns into a 303, NOT a 500.
+ * What must still never escape is a real error, and the database must still
+ * never be touched.
  */
-describe('THE SERVER ACTIONS: a denied request is a silent no-op, never a throw', () => {
-  it('likePlanAction does not write and does not throw when denied', async () => {
+describe('THE SERVER ACTIONS: a denied request does no work and redirects with a notice', () => {
+  it('likePlanAction does not write when denied — it redirects to the plan page', async () => {
     configure();
     limit.mockResolvedValue({ success: false });
 
@@ -238,8 +246,15 @@ describe('THE SERVER ACTIONS: a denied request is a silent no-op, never a throw'
     formData.set('planId', 'plan_1');
     formData.set('slug', 'cedar-raised-garden-bed');
 
-    // The whole point: it RESOLVES. A rejection here is an HTTP 500.
-    await expect(likePlanAction(formData)).resolves.toBeUndefined();
+    // The REAL redirect() throws NEXT_REDIRECT — a signal Next catches and turns
+    // into a 303 response. It is not the RateLimitError 500 of the original
+    // incident, and asserting its digest proves the user lands back on the plan
+    // page with the notice attached.
+    await expect(likePlanAction(formData)).rejects.toMatchObject({
+      digest: expect.stringContaining(
+        '/plans/cedar-raised-garden-bed?notice=slow-down',
+      ),
+    });
 
     // And it never touched the database — avoiding that work is why the limiter
     // runs first.
@@ -247,7 +262,7 @@ describe('THE SERVER ACTIONS: a denied request is a silent no-op, never a throw'
     expect(revalidatePath).not.toHaveBeenCalled();
   });
 
-  it('createCollectionAction does not write and does not throw when denied', async () => {
+  it('createCollectionAction does not write when denied — it redirects to /saved', async () => {
     configure();
     limit.mockResolvedValue({ success: false });
 
@@ -262,14 +277,19 @@ describe('THE SERVER ACTIONS: a denied request is a silent no-op, never a throw'
       removePlanFromCollection: vi.fn(),
     }));
     vi.doMock('next/cache', () => ({ revalidatePath: vi.fn() }));
-    vi.doMock('next/navigation', () => ({ redirect: vi.fn() }));
+    // NOTE: next/navigation is deliberately NOT mocked. A redirect mock that
+    // doesn't throw lets execution fall straight through the denial branch and
+    // into the database write — this exact test shipped with that bug in its
+    // first version.
 
     const { createCollectionAction } = await import('@/app/actions/saves');
 
     const formData = new FormData();
     formData.set('name', 'Garden');
 
-    await expect(createCollectionAction(formData)).resolves.toBeUndefined();
+    await expect(createCollectionAction(formData)).rejects.toMatchObject({
+      digest: expect.stringContaining('/saved?notice=slow-down'),
+    });
     expect(createCollection).not.toHaveBeenCalled();
   });
 

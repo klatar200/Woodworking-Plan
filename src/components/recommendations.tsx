@@ -42,6 +42,9 @@ export function Recommendations({ recommendations, ratings, savedIds }: Props) {
                 plan={plan}
                 rating={ratings.get(plan.id)}
                 saved={savedIds ? savedIds.has(plan.id) : undefined}
+                // Recommendations only render on the unnarrowed catalog front
+                // page, so a rate-limit denial bounces back to exactly that.
+                returnTo="/"
               />
             </ul>
             <p className="recommendation-reason">

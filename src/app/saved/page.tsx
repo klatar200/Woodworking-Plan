@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { listSavedPlans, listCollections } from '@/lib/saves';
+import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { PlanCard } from '@/components/plan-card';
 import { OfflineDownload } from '@/components/offline-download';
+import { RateLimitNotice } from '@/components/rate-limit-notice';
 import {
   createCollectionAction,
   deleteCollectionAction,
@@ -25,14 +27,14 @@ import {
  */
 export const dynamic = 'force-dynamic';
 
-type SearchParams = Promise<{ collection?: string }>;
+type SearchParams = Promise<{ collection?: string; notice?: string }>;
 
 export default async function SavedPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { collection: collectionId } = await searchParams;
+  const { collection: collectionId, notice } = await searchParams;
 
   const [collections, savedPlans, allSavedPlans] = await Promise.all([
     listCollections(),
@@ -54,9 +56,19 @@ export default async function SavedPage({
 
   const activeCollection = collections.find((c) => c.id === collectionId);
 
+  /** This page's own URL — denial bounce-back and the notice's Dismiss target. */
+  const currentUrl = activeCollection
+    ? `/saved?collection=${activeCollection.id}`
+    : '/saved';
+
   return (
     <main id="main" className="page page-wide">
       <h1>Saved plans</h1>
+
+      <RateLimitNotice
+        show={hasRateLimitNotice(notice)}
+        dismissHref={currentUrl}
+      />
 
       {/* ---------------- folders ---------------- */}
       <section aria-label="Your collections">
@@ -84,6 +96,7 @@ export default async function SavedPage({
         </nav>
 
         <form action={createCollectionAction} className="inline-form">
+          <input type="hidden" name="returnTo" value={currentUrl} />
           <label htmlFor="new-collection" className="visually-hidden">
             New collection name
           </label>
@@ -103,6 +116,7 @@ export default async function SavedPage({
 
         {activeCollection && (
           <form action={deleteCollectionAction} className="inline-form">
+            <input type="hidden" name="returnTo" value={currentUrl} />
             <input type="hidden" name="collectionId" value={activeCollection.id} />
             <button type="submit" className="btn btn-ghost">
               Delete “{activeCollection.name}”
@@ -176,7 +190,7 @@ export default async function SavedPage({
                       renders the bookmark overlay filled, and tapping it
                       unsaves (see save-toggle.tsx), matching the mockup's
                       quick-remove-from-the-grid affordance. */}
-                  <PlanCard plan={saved.plan} saved />
+                  <PlanCard plan={saved.plan} saved returnTo={currentUrl} />
                 </ul>
 
                 <div className="saved-item-actions">
@@ -187,6 +201,7 @@ export default async function SavedPage({
                         <li key={collection.id} className="badge">
                           {collection.name}
                           <form action={removeFromCollectionAction} className="chip-form">
+                            <input type="hidden" name="returnTo" value={currentUrl} />
                             <input type="hidden" name="planId" value={saved.plan.id} />
                             <input
                               type="hidden"
@@ -208,6 +223,7 @@ export default async function SavedPage({
 
                   {collections.length > 0 && (
                     <form action={addToCollectionAction} className="inline-form">
+                      <input type="hidden" name="returnTo" value={currentUrl} />
                       <input type="hidden" name="planId" value={saved.plan.id} />
                       <label
                         htmlFor={`add-${saved.id}`}

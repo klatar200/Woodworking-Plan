@@ -356,10 +356,15 @@ Error [RateLimitError]: Too many requests. Please slow down...
 **And the tests asserted the throw, and passed** — they proved the code did what I
 wrote, not that what I wrote was right. Assert the behaviour the APP needs.
 
-**Open follow-up:** a denied user currently gets *no feedback* — the button just
-doesn't move. Surfacing "you're going too fast" needs `useActionState` (client
-component) or a redirect carrying an error param, across nine actions. Worth doing;
-was not worth doing inside a crash hotfix.
+**Follow-up CLOSED (2026-07-14):** a denied action now `redirect()`s back to the
+page with `?notice=slow-down`, and `/`, `/plans/[slug]`, and `/saved` render a
+dismissible banner (`rate-limit-notice.tsx`). Redirect, not `useActionState`, so
+the no-JS form path gets the notice too. `redirect()` is a framework-handled 303 —
+NOT the uncaught throw that caused the original incident. The bounce-back target
+comes from an optional `returnTo` form field, which is ATTACKER INPUT: it goes
+through `safeReturnTo()` (src/lib/rate-limit-feedback.ts), which rejects absolute,
+protocol-relative (`//evil`), and backslash URLs — remove that check and every
+denial is an open redirect.
 
 ## PHASE 1 COMPLETE. Phase 2 unblocked — with one hard constraint.
 
@@ -392,6 +397,12 @@ tier gating, or save/collection limits. There is nothing to charge for yet.
 
 - ~~No rate limiting on server actions.~~ **DONE** — Upstash sliding-window, 30/min
   toggles, 10/min creates, keyed on session user (IP fallback), fails open.
+- **🔍 VERCEL ENV TARGET UNVERIFIED (found 2026-07-14).** Production Neon branch
+  (`ep-long-lake`) was 3 migrations behind and had 0 users — the live site has
+  likely been running against the DEV branch (`ep-sparkling-band`) the whole time.
+  `long-lake` is now fully migrated + seeded (paths included). Keagan must check
+  which branch Vercel's `DATABASE_URL`/`DIRECT_URL` point at. See
+  `DECISIONS_LOG.md` 2026-07-14. Until resolved, treat BOTH branches as live.
 - **🔑 LEAKED CREDENTIALS — NOT YET CONFIRMED ROTATED.** The Neon role password and
   the Clerk secret key were pasted into a chat transcript. Treat both as compromised.
   Rotate in Neon (Roles → reset password) and Clerk, then update `.env.local` **and

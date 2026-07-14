@@ -751,6 +751,36 @@ Keagan added a `Prototype Wireframe/` folder containing the already-adopted
    unrotated meanwhile. Credential rotation is still his action item; paths
    production seed and rate-limit user feedback remain open on the build side.
 
+### 2026-07-14 — Production DB backfilled; Vercel env-var target NEEDS KEAGAN'S CHECK
+**Status:** Backfill done. One open verification only Keagan can do.
+
+While running the Sprint 16 paths production seed (per `DEPLOYMENT.md`), the production
+Neon branch (`ep-long-lake`) turned out to be **three migrations behind** — no `Like`,
+`Review`/`BuildPhoto`, or `Path`/`PathStep` tables. Applied `prisma migrate deploy`
+(all three missing migrations are purely additive) and the full idempotent seed from a
+sandbox-local clone: production now has all 7 migrations, 24 plans, 5 published paths,
+and a rebuilt search index.
+
+**The open question:** Sprint 10+ features were "verified on the live deploy", which is
+impossible against a DB missing those tables — and `ep-long-lake` has 0 users while the
+dev branch (`ep-sparkling-band`) has 1. Strong signal that **Vercel's production env
+vars point at the DEV branch**. Keagan must check Vercel → Settings → Environment
+Variables. If they say `sparkling-band`: the live site runs on the dev branch, local
+`db:*` scripts touch live data, and we should either swap Vercel to `long-lake` (now
+current) or formally redesignate the branches in `DEPLOYMENT.md` and `.env.local`.
+Do not run destructive dev-branch commands until this is resolved.
+
+### 2026-07-14 — Rate-limit denial feedback (closes the standing follow-up)
+**Status:** Done. Routine engineering, logged because it touches a security surface.
+
+A denied server action now `redirect()`s back to the page with `?notice=slow-down`;
+`/`, `/plans/[slug]`, and `/saved` render a dismissible banner. Redirect (not
+`useActionState`) so the no-JS form path gets feedback too. The bounce-back target is
+an optional `returnTo` form field — **attacker input**, validated by `safeReturnTo()`
+(rejects absolute/protocol-relative/backslash URLs; open-redirect guard, tested).
+Denial still does zero database work and still never throws a real error —
+`redirect()` is a framework-handled 303.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

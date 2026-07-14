@@ -1,8 +1,10 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { likePlan, unlikePlan } from '@/lib/likes';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { denialTarget } from '@/lib/rate-limit-feedback';
 
 /**
  * Like/unlike server actions — Sprint 7.
@@ -22,9 +24,11 @@ import { checkRateLimit } from '@/lib/rate-limit';
  * the internet can call.
  *
  * RATE LIMITING: `checkRateLimit()` runs FIRST, before any database work —
- * avoiding that work is the point. A denied request is a SILENT NO-OP, never a
- * throw. An uncaught throw out of a server action is an HTTP 500 and a crashed
- * page; see src/lib/rate-limit.ts for the incident that taught us so.
+ * avoiding that work is the point. A denied request does NO WORK and never
+ * throws a real error (an uncaught throw out of a server action is an HTTP 500
+ * and a crashed page; see src/lib/rate-limit.ts for the incident). It
+ * `redirect()`s back with `?notice=slow-down` instead — a framework-handled
+ * 303, not an exception. See src/lib/rate-limit-feedback.ts.
  */
 
 function requiredString(formData: FormData, key: string): string {
@@ -36,7 +40,7 @@ function requiredString(formData: FormData, key: string): string {
 }
 
 export async function likePlanAction(formData: FormData): Promise<void> {
-  if (!(await checkRateLimit('toggle'))) return;
+  if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
@@ -51,7 +55,7 @@ export async function likePlanAction(formData: FormData): Promise<void> {
 }
 
 export async function unlikePlanAction(formData: FormData): Promise<void> {
-  if (!(await checkRateLimit('toggle'))) return;
+  if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');

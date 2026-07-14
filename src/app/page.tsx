@@ -7,8 +7,10 @@ import { getRecommendations } from '@/lib/recommendations';
 import { getCurrentUser } from '@/lib/auth';
 import { listSavedPlans } from '@/lib/saves';
 import { paginationWindow } from '@/lib/pagination';
+import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { PlanCard } from '@/components/plan-card';
 import { InstallPrompt } from '@/components/install-prompt';
+import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { Recommendations } from '@/components/recommendations';
 import { SearchBox } from '@/components/search-box';
 import { FilterPanel } from '@/components/filter-panel';
@@ -105,6 +107,19 @@ export default async function CatalogPage({
     !isNarrowed && page === 1 ? await getRecommendations() : [];
 
   /**
+   * The page's own URL, filters and all — where a rate-limited card action
+   * bounces back to (via the returnTo input on each SaveToggle), and where
+   * the notice banner's Dismiss goes. buildQueryString never includes the
+   * notice param, so Dismiss is simply "this URL again".
+   */
+  const currentUrl = buildQueryString({
+    query,
+    filters,
+    sort: sort === DEFAULT_SORT ? undefined : sort,
+    page: currentPage > 1 ? currentPage : undefined,
+  });
+
+  /**
    * Sprint 10. ONE groupBy for the whole page — not one aggregate per card (N+1), and
    * not "select every review row and average it in JS" (O(total reviews): a plan with
    * 800 reviews would ship 800 rows to render one number).
@@ -121,6 +136,11 @@ export default async function CatalogPage({
     // id="main" is the skip link's target (WCAG 2.4.1).
     <main id="main" className="page page-wide">
       <h1>Plans</h1>
+
+      <RateLimitNotice
+        show={hasRateLimitNotice(params.notice)}
+        dismissHref={currentUrl}
+      />
 
       <InstallPrompt />
 
@@ -208,6 +228,7 @@ export default async function CatalogPage({
                 plan={plan}
                 rating={ratings.get(plan.id)}
                 saved={savedIds ? savedIds.has(plan.id) : undefined}
+                returnTo={currentUrl}
               />
             ))}
           </ul>

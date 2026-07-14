@@ -1,8 +1,10 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { upsertReview, deleteReview, deleteBuildPhoto, MAX_PHOTOS_PER_REVIEW } from '@/lib/reviews';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { denialTarget } from '@/lib/rate-limit-feedback';
 
 /**
  * Review server actions — Sprint 10.
@@ -20,8 +22,10 @@ import { checkRateLimit } from '@/lib/rate-limit';
  *
  * RATE LIMITING: the 'create' bucket (10/min) — a review is a row that persists and
  * that a human has to look at if it turns out to be spam, and an upload also costs
- * CPU and storage quota. A denied request is a SILENT NO-OP, never a throw: an
- * uncaught throw out of a server action is an HTTP 500 and a crashed page.
+ * CPU and storage quota. A denied request does NO WORK and never throws a real
+ * error (an uncaught throw out of a server action is an HTTP 500 and a crashed
+ * page). It `redirect()`s back with `?notice=slow-down` — a framework-handled 303,
+ * not an exception. See src/lib/rate-limit-feedback.ts.
  */
 
 function requiredString(formData: FormData, key: string): string {
@@ -33,7 +37,7 @@ function requiredString(formData: FormData, key: string): string {
 }
 
 export async function submitReviewAction(formData: FormData): Promise<void> {
-  if (!(await checkRateLimit('create'))) return;
+  if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, '/'));
 
   const planId = requiredString(formData, 'planId');
   const slug = formData.get('slug');
@@ -78,7 +82,7 @@ export async function submitReviewAction(formData: FormData): Promise<void> {
 }
 
 export async function deleteReviewAction(formData: FormData): Promise<void> {
-  if (!(await checkRateLimit('create'))) return;
+  if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, '/'));
 
   const reviewId = requiredString(formData, 'reviewId');
   const slug = formData.get('slug');
@@ -92,7 +96,7 @@ export async function deleteReviewAction(formData: FormData): Promise<void> {
 }
 
 export async function deletePhotoAction(formData: FormData): Promise<void> {
-  if (!(await checkRateLimit('create'))) return;
+  if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, '/'));
 
   const photoId = requiredString(formData, 'photoId');
   const slug = formData.get('slug');

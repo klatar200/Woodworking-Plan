@@ -14,7 +14,9 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  * A data layer can be perfect and the app still falls over at the action wrapper. So
  * the wrapper gets its own tests, and they assert the two things that actually broke:
  *
- *   1. A rate-limited request RESOLVES and writes nothing. It does not throw.
+ *   1. A rate-limited request writes NOTHING and never throws a real error. (It now
+ *      `redirect()`s back with ?notice=slow-down — a framework-handled control-flow
+ *      signal, not an unhandled exception. See src/lib/rate-limit-feedback.ts.)
  *   2. FormData — which is attacker-controlled — is parsed defensively.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
@@ -24,6 +26,7 @@ const deleteReview = vi.fn();
 const deleteBuildPhoto = vi.fn();
 const checkRateLimit = vi.fn();
 const revalidatePath = vi.fn();
+const redirect = vi.fn();
 
 vi.mock('@/lib/reviews', () => ({
   upsertReview,
@@ -34,6 +37,20 @@ vi.mock('@/lib/reviews', () => ({
 
 vi.mock('@/lib/rate-limit', () => ({ checkRateLimit }));
 vi.mock('next/cache', () => ({ revalidatePath }));
+vi.mock('next/navigation', () => ({ redirect }));
+
+/**
+ * The REAL `redirect()` throws a NEXT_REDIRECT control-flow signal that the
+ * framework catches and turns into a 303 — it is not an unhandled exception.
+ * The mock mirrors that: it throws a sentinel, so execution genuinely stops at
+ * the denial branch (a non-throwing mock would let the action fall through and
+ * do the database work the limiter was supposed to prevent).
+ */
+class RedirectSignal extends Error {
+  constructor(public readonly url: string) {
+    super(`NEXT_REDIRECT:${url}`);
+  }
+}
 
 beforeEach(() => {
   vi.resetModules();
@@ -42,6 +59,9 @@ beforeEach(() => {
   deleteBuildPhoto.mockReset().mockResolvedValue(undefined);
   revalidatePath.mockReset();
   checkRateLimit.mockReset().mockResolvedValue(true);
+  redirect.mockReset().mockImplementation((url: string) => {
+    throw new RedirectSignal(url);
+  });
 });
 
 function reviewForm(over: Record<string, string> = {}): FormData {
@@ -53,21 +73,28 @@ function reviewForm(over: Record<string, string> = {}): FormData {
   return formData;
 }
 
-describe('REGRESSION: a rate-limited action RESOLVES — it never throws', () => {
-  it('submitReviewAction no-ops when denied', async () => {
+describe('REGRESSION: a denied action never throws a REAL error — it redirects with a notice', () => {
+  it('submitReviewAction does no work when denied, and redirects to the plan page', async () => {
     checkRateLimit.mockResolvedValue(false);
 
     const { submitReviewAction } = await import('@/app/actions/reviews');
 
-    // A throw here is an HTTP 500 and a crashed page. This is the whole test.
-    await expect(submitReviewAction(reviewForm())).resolves.toBeUndefined();
+    // The only thing allowed out of a denial is the framework's redirect
+    // signal. A real throw here is an HTTP 500 and a crashed page — the
+    // original incident.
+    await expect(submitReviewAction(reviewForm())).rejects.toBeInstanceOf(
+      RedirectSignal,
+    );
+    expect(redirect).toHaveBeenCalledWith(
+      '/plans/cedar-raised-garden-bed?notice=slow-down',
+    );
 
     // And it did no database work — avoiding that work is why the limiter runs first.
     expect(upsertReview).not.toHaveBeenCalled();
     expect(revalidatePath).not.toHaveBeenCalled();
   });
 
-  it('deleteReviewAction no-ops when denied', async () => {
+  it('deleteReviewAction does no work when denied', async () => {
     checkRateLimit.mockResolvedValue(false);
 
     const { deleteReviewAction } = await import('@/app/actions/reviews');
@@ -75,11 +102,15 @@ describe('REGRESSION: a rate-limited action RESOLVES — it never throws', () =>
     const formData = new FormData();
     formData.set('reviewId', 'review_1');
 
-    await expect(deleteReviewAction(formData)).resolves.toBeUndefined();
+    await expect(deleteReviewAction(formData)).rejects.toBeInstanceOf(
+      RedirectSignal,
+    );
+    // No slug in the form and no returnTo — falls back to the catalog.
+    expect(redirect).toHaveBeenCalledWith('/?notice=slow-down');
     expect(deleteReview).not.toHaveBeenCalled();
   });
 
-  it('deletePhotoAction no-ops when denied', async () => {
+  it('deletePhotoAction does no work when denied', async () => {
     checkRateLimit.mockResolvedValue(false);
 
     const { deletePhotoAction } = await import('@/app/actions/reviews');
@@ -87,7 +118,9 @@ describe('REGRESSION: a rate-limited action RESOLVES — it never throws', () =>
     const formData = new FormData();
     formData.set('photoId', 'photo_1');
 
-    await expect(deletePhotoAction(formData)).resolves.toBeUndefined();
+    await expect(deletePhotoAction(formData)).rejects.toBeInstanceOf(
+      RedirectSignal,
+    );
     expect(deleteBuildPhoto).not.toHaveBeenCalled();
   });
 

@@ -20,6 +20,7 @@ export function PlanCard({
   plan,
   rating,
   saved,
+  returnTo,
 }: {
   plan: PlanListItem;
   /** Sprint 10. Undefined when the plan has no reviews — see below. */
@@ -30,6 +31,8 @@ export function PlanCard({
    * from a saved-plan-id set the page fetches once, not per card.
    */
   saved?: boolean;
+  /** Passed through to SaveToggle — see save-toggle.tsx. */
+  returnTo?: string;
 }) {
   const image = plan.images[0];
 
@@ -89,7 +92,12 @@ export function PlanCard({
 
       {/* Sibling of the Link, not nested inside it — see save-toggle.tsx. */}
       {saved !== undefined && (
-        <SaveToggle planId={plan.id} slug={plan.slug} isSaved={saved} />
+        <SaveToggle
+          planId={plan.id}
+          slug={plan.slug}
+          isSaved={saved}
+          returnTo={returnTo}
+        />
       )}
     </li>
   );
