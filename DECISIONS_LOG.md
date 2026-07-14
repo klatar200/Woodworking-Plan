@@ -986,6 +986,23 @@ That folder is historical reference, not app code, and `next build` never lints 
 is now in eslint's ignore list. CI is a working detector again, which matters: a red
 detector nobody reads is how the `make_interval` 500 reached a deploy unnoticed.
 
+### 2026-07-14 — Sprint 23: About/FAQ copy drafted; name + contact are placeholders
+
+**Status:** Copy DRAFTED by the build agent for Keagan's approval. Three sub-decisions
+were escalated first (`AskUserQuestion`) because they're his and can't be invented:
+
+- **Product name:** use the "Woodworking Plan" working placeholder throughout, flagged in
+  the copy and comments — branding/domain (#8) is still open.
+- **Contact / brand data:** fill with clearly-marked placeholders (`hello@example.com`,
+  "a real address is coming") to swap when the brand lands.
+- **"Is it free?" framing:** "free right now, no ads, no affiliate links, no promise it
+  stays free forever" — the only framing consistent with the launch-economics decision
+  (pricing deferred, not decided).
+
+Everything in the copy is true of the current build; no invented features, no commitments
+the project hasn't made. Public-facing copy remains Keagan's to approve and edit
+(`BUILD_PLAN.md` §2) — this is a reviewable draft on `noindex` pages, not a publish.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

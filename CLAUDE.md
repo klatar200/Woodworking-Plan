@@ -266,6 +266,13 @@ with it.
   collection scoping. 495 tests green. **Renders nothing until the migration runs** and a
   user explicitly adds a plan — saved plans do NOT auto-populate it.
 
+- **Sprint 23 (About/FAQ copy): COMPLETE (DRAFT) — 96/100.** Real copy on `/about` and
+  `/faq`, grounded in the actual feature set; FAQ free-framing matches launch economics
+  ($0, no ads/affiliate, **no forever promise**). **Public copy is Keagan's to approve
+  (`BUILD_PLAN.md` §2)** — so the brand name is the "Woodworking Plan" placeholder and the
+  contact line is a marked `hello@example.com` placeholder, both to swap with branding/
+  domain (#8). Both pages stay `robots: noindex`. Content-only; 495 tests green.
+
 - **Prod hotfix + CI (2026-07-14).** Trending's `make_interval(days => $1)` raw SQL 500'd
   the home page in prod (see the view-tracking rule); fixed to a bound `Date` cutoff. CI's
   long-standing lint red was the `Prototype Wireframe/` design export — now eslint-ignored,

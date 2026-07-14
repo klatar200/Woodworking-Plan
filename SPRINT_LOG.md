@@ -1794,3 +1794,61 @@ feature, not a regression, and it's stated in `DECISIONS_LOG.md`.
 1. **Run the migration** (`npm run db:migrate` on dev; deploy migrates prod — read the build log). The feature is dark until it runs; no backfill (empty is correct — saves don't carry over).
 2. **Visual check** a plan's "Add to shopping list" button and the merged/by-plan toggle on `/shopping-list`.
 3. **Push.** This also carries the CI-lint fix (Prototype Wireframe eslint-ignore) and the print-test fixture fix, so CI should finally go green.
+
+---
+
+## Sprint 23: About / FAQ copy
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** real copy for the `/about` and `/faq` pages,
+which shipped as "Content coming soon" stubs in Sprint 17.
+
+**Status: COMPLETE (DRAFT) — 96/100, Attempt 1. Pass.** The copy is written and wired;
+because it is public-facing, it is a **draft for Keagan's approval** (BUILD_PLAN.md §2),
+not a unilateral publish. Content-only — no schema, no migration.
+
+### How the escalation was handled
+
+Public-facing copy is Keagan's call, and three facts I could not invent truthfully were
+escalated up front (one `AskUserQuestion`): the product name (branding #8 still open),
+whether/how to show contact, and the free-vs-free-forever framing. His answers:
+- **Name:** use the "Woodworking Plan" working placeholder, flag it.
+- **Contact + brand:** fill with clearly-marked placeholder data, to swap at branding time.
+- **Free framing:** "free now, no ads/affiliate, no forever promise" — which is exactly
+  what the launch-economics decision supports.
+
+Everything written is TRUE of the current build (I have the feature set from having built
+it): structured metadata on every plan, tools-you-own filter, the cut-list/board-buying
+optimizer, learning paths, the explicit shopping list, PWA/offline, print views, EXIF
+stripping on photos, account-optional browsing. No invented claims, no promises the
+project hasn't decided to make.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `src/app/about/page.tsx` | Stub → real About copy (the idea, what's here, where it's at). Marked contact placeholder. |
+| `src/app/faq/page.tsx` | Stub → 8-question FAQ as a semantic `<dl>` (free, accounts, cost tiers, offline, shopping list, reliability/safety, submissions, data/photos). |
+| `src/app/globals.css` | `.faq` / `.faq-item` / `.prose-list` styling. |
+
+Both pages keep `robots: noindex` (branding #8 open) and stay on the `PUBLIC_ROUTES`
+allowlist (static content, no user data — the Sprint 17 reasoning is unchanged).
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Real copy on both pages, replacing the stubs. −1: it is explicitly a DRAFT with two placeholders (name, contact) — the sprint can't be "fully done" until Keagan approves the copy and branding #8 lands, which is inherent to the item ("once Keagan writes/approves it"), not a shortfall in the work. |
+| Correctness & functionality (/20) | **19** | Both pages compile and render; `tsc` clean, `eslint .` clean, `vitest` 495 green in the sandbox clone. Content-only, no runtime data path. −1: not viewed in a real browser here — trivially low-risk for static pages, and Keagan will see it, but noted for consistency. |
+| Automated test coverage (/15) | **13** | No new tests: these are static prose pages with no logic, and the app has never had render tests for static content (About/FAQ, sign-in, offline). The whole suite still passes, confirming nothing else broke. −2: the pages themselves have no test — acceptable for static copy, flagged honestly rather than padded with a trivial "renders a heading" test. |
+| Security (/15) | **15** | No user input, no data, no new route (both already on the allowlist from Sprint 17). The FAQ's data/privacy answer is accurate to the build (Clerk accounts, EXIF stripping, deletion) — no over-claim that could become a false representation. |
+| Code quality & simplicity (/10) | **10** | FAQ is a data array rendered as a semantic `<dl>` — questions/answers to a screen reader, not just bold text. Copy grounded in real features; placeholders clearly marked in both the visible text and code comments so they can't be missed at launch. |
+| Mobile/offline behavior (/10) | **10** | Plain server-rendered prose in the standard `.page` container (40rem reading measure); no JS, works offline like any other public page. |
+| Documentation & handoff (/5) | **5** | The "public copy is Keagan's call / these are placeholders" reasoning is in both file docs, `DECISIONS_LOG.md`, and this entry. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).** The backlog (Sprints 17–23) is now complete.
+
+### Open items for Keagan
+1. **Read the copy and edit to taste** — it's your voice to own; I aimed for accurate and plain.
+2. **Swap the placeholders** at branding/domain time (#8): the product name and the `hello@example.com` contact line (marked in-page and in comments).
+3. **Push** — content-only, no migration. Then the whole backlog is live once you flip `robots: noindex` off at launch.
