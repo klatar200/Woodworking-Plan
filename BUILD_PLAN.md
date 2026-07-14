@@ -118,12 +118,14 @@ state rather than assumptions made today.
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
 | Phase 4 | ⛔ NOT OPENED — do not start without Keagan explicitly opening it |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; these come due before anything else ships |
-| Post-launch-blocker backlog (Sprints 17-23) | 🟡 IN PROGRESS — Sprints 17 ✅, 18 ✅ and 19 ✅ COMPLETE; see §4.1.1 |
+| Post-launch-blocker backlog (Sprints 17-23) | 🟡 IN PROGRESS — Sprints 17 ✅, 18 ✅, 19 ✅, 20 ✅ and 21 ✅ COMPLETE; see §4.1.1 |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
 detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of this
-update: **477 green** (2026-07-14: Sprint 19 — `PlanView` log, Trending/Most Viewed/
-Recommended sorts, default → Trending, three filter-shaped sorts removed).
+update: **490 green** (2026-07-14: Sprint 21 — per-step tools/materials: `StepTool`/
+`StepMaterial` join tables, load-time subset validation, per-step chips on the plan +
+print pages. Content pass for all 24 plans delivered as `scripts/apply-step-tags.mjs`.
+484 + 6 new).
 
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
@@ -305,8 +307,8 @@ both deferred by his explicit call.
 | 17 | Bug fixes: `**bold**` markdown rendering (real bug, all 24 plans affected), print double-numbering (CSS root cause, not content), cost-tier "of $$$$$" qualifier dropped, breadcrumb restyled to an on-theme pill, Home/About/FAQ stub nav | ✅ COMPLETE — 449 tests green, typecheck/lint clean |
 | 18 | Desktop catalog layout: 4-5 columns, filters right sidebar, flat-category nav left sidebar (mobile layout unchanged) | ✅ COMPLETE — 96/100. One DOM, one source order; the three columns are `grid-template-areas` at ≥64rem and every rule is inside a `min-width` query, so mobile is untouched by construction. Cards go 3 → 4 → 5 across at 64/80/96rem (5 across at 1024px would be a ~110px card). 459 tests green; visual sign-off pending on Keagan's browser |
 | 19 | Sort overhaul: new `PlanView` log table (no view-tracking exists today); Trending (7-day window) + Most Viewed (all-time) sorts; Recommended folded into the sort dropdown, retiring the standalone "Recommended for you" section; default sort → Trending; Cheapest/Easiest/Quickest removed | ✅ COMPLETE — 96/100. `PlanView` carries **no `userId`** (a view log with one is a browsing history — `DECISIONS_LOG.md` 2026-07-14). Views are logged from a **client effect**, never the server render, or `next/link`'s prefetch would count a hover as a view. Trending/Viewed/Recommended rank as an ordered id list intersected with the filters — one path, shared with keyword search. 477 tests green; **needs a migration before it does anything** (see §4.2) |
-| 20 | Plan-detail redesign (desktop): sidebar/tabs for Tools/Materials/Cut List, right-sidebar image slot (empty — no AI generation per the decision above), a button to open Instructions, last-step CTA for review + photo upload. Full server-rendered document stays underneath, same progressive-enhancement pattern as the existing step walker (print/offline/no-JS unaffected) | Not started |
-| 21 | Per-step tools/hardware: `Step` has no relation to `Tool`/`Material` today — needs join tables (kept as a subset of the plan's already-declared tools/materials) plus a content pass across all 24 plans | Not started |
+| 20 | Plan-detail redesign (desktop): sidebar/tabs for Tools/Materials/Cut List, right-sidebar image slot (empty — no AI generation per the decision above), a button to open Instructions, last-step CTA for review + photo upload. Full server-rendered document stays underneath, same progressive-enhancement pattern as the existing step walker (print/offline/no-JS unaffected) | ✅ COMPLETE — 96/100. `PlanTabs`, `InstructionsDisclosure`, `PlanImageSlot` + a StepWalker last-step CTA. All follow the StepWalker contract: the full document is server-rendered and the client components only HIDE parts after mount, so print/offline/no-JS get everything (print CSS forces every panel + the instructions region visible). Image slot shows the primary photo or an honest empty placeholder — **no AI render**. 484 tests green; visual sign-off pending on Keagan's browser |
+| 21 | Per-step tools/hardware: `Step` has no relation to `Tool`/`Material` today — needs join tables (kept as a subset of the plan's already-declared tools/materials) plus a content pass across all 24 plans | ✅ COMPLETE — 96/100. `StepTool`/`StepMaterial` join tables; per-step tools are a **subset** of the plan's, enforced at content-load (`load.ts`), not by the DB. Per-step chips render on the plan page and the print sheet. **Content pass for all 24 plans (263 tool-tags, 202 material-tags) delivered as `scripts/apply-step-tags.mjs`** — Keagan's chosen delivery (`DECISIONS_LOG.md` 2026-07-14): review the mapping, run it, review the diff. 490 tests green; **needs the migration + `node scripts/apply-step-tags.mjs` + re-seed** before it shows anything |
 | 22 | Shopping-list redesign: new `ShoppingListEntry` model decoupled from `SavedPlan` (an explicit per-plan "add to shopping list", not everything saved); two view modes (by-plan, unmerged vs. whole-list, merged) | Not started |
 | 23 | About/FAQ real copy, once Keagan writes/approves it (stub pages shipped in Sprint 17) | Not started |
 
@@ -323,20 +325,30 @@ under a "for you" heading — the trust concern the original rule was guarding a
 
 **Launch blockers (come due before anything else ships):**
 
-1. **Vercel env target verification (found 2026-07-14).** Production Neon branch
-   (`ep-long-lake`) was 3 migrations behind with 0 users — the live site has
-   likely been running against the DEV branch the whole time. `long-lake` is now
-   fully migrated + seeded. **Keagan:** check which branch Vercel's
-   `DATABASE_URL`/`DIRECT_URL` point at, then we swap or formally redesignate.
-   Until resolved, treat both branches as live.
-2. **Rotate the leaked Neon + Clerk credentials** (pasted into a chat transcript;
-   treat as compromised). **Keagan:** rotate in both dashboards, update
-   `.env.local` and BOTH Vercel env vars together (Neon branches share the role
-   password).
+1. ~~**Vercel env target verification (found 2026-07-14).**~~ **RESOLVED
+   2026-07-14 (Keagan).** There is ONE Neon branch, `sparkling-band`, now labelled
+   **production**, and Vercel Production's `DATABASE_URL`/`DIRECT_URL` both point at
+   it (pooled + direct on the same branch — the Sprint 6 pairing is correct). The
+   empty `long-lake` decoy branch has been deleted. A separate dev branch is
+   deliberately NOT maintained during development — see the standing note below.
+2. **Rotate the Neon + Clerk credentials — DEFERRED TO PRE-GO-LIVE, by Keagan's
+   explicit and repeated decision.** They were pasted into a chat transcript, so
+   they rotate *once, immediately before public launch*, alongside the branding/
+   domain work. **This is settled. Do NOT re-raise it as a now-blocker, do NOT
+   propose rotating it mid-development, and do NOT reopen it every session.** When
+   go-live is actually scheduled: rotate in both dashboards and update `.env.local`
+   + both Vercel vars together.
 3. **Branding/domain (§3 decision #8).** Blocks PWA icons (placeholders), SEO
    (`robots: noindex` is set sitewide because of it), and HSTS preload.
 4. **Going publicly live is Keagan's explicit call** — named as a gate trigger
    out of caution; that caution stands.
+
+> **STANDING DECISION — single database during development (2026-07-14, Keagan).**
+> Dev and prod share ONE Neon branch (`sparkling-band`, labelled production) on
+> purpose. With no public users and a catalog rebuildable from `content/*.json`
+> via `npm run db:seed`, there is nothing to protect a reset from. A separate dev
+> branch is a **pre-go-live** task (it becomes necessary the day a real person
+> saves a plan), not a now-task. Do not re-flag "prod == dev" as a defect.
 
 **Engineering debt (mine, not blocking, tracked):**
 

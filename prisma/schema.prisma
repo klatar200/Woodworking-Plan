@@ -432,6 +432,7 @@ model Tool {
   category String?
 
   plans PlanTool[]
+  steps StepTool[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -551,6 +552,8 @@ model Material {
 
   sortOrder Int @default(0)
 
+  steps StepMaterial[]
+
   @@index([planId])
 }
 
@@ -586,8 +589,54 @@ model Step {
   title      String
   body       String
 
+  /// Sprint 21 — which of the PLAN'S tools and materials this step actually uses.
+  tools     StepTool[]
+  materials StepMaterial[]
+
   @@unique([planId, stepNumber])
   @@index([planId])
+}
+
+/// Join table: which tools a given STEP uses — Sprint 21. BUSINESS_PLAN.md §10.
+///
+/// A SUBSET of the plan's tools, never a superset. The plan's `PlanTool` list is still
+/// the authoritative "what you need for the whole build"; this only says which of those
+/// come out at which step, so a builder can gather what step 3 needs without reading
+/// step 9. The subset rule is enforced at content-load time (src/content/load.ts), not
+/// by the database — Postgres can't cheaply express "must also be one of this plan's
+/// tools", and a foreign key to `Tool` alone would let a step reference a tool the plan
+/// never declared. Getting that wrong would tell someone to fetch a lathe the plan
+/// doesn't use.
+///
+/// NO `essential` flag here, on purpose: essentiality is a property of the tool for the
+/// WHOLE plan (it already lives on PlanTool and drives the owned-tools filter).
+/// Duplicating it per step invites the two copies to disagree.
+model StepTool {
+  id     String @id @default(cuid())
+  stepId String
+  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  toolId String
+  tool   Tool   @relation(fields: [toolId], references: [id])
+
+  @@unique([stepId, toolId])
+  @@index([toolId])
+}
+
+/// Join table: which materials a given STEP uses — Sprint 21.
+///
+/// References a `Material` ROW, which is per-plan (materials have no global slug — they
+/// are plan-local line items). The content file names them by their `name`, and the seed
+/// resolves name → the plan's own material row; a name that isn't one of the plan's
+/// materials fails to load, naming the file. Subset, same reasoning as StepTool.
+model StepMaterial {
+  id         String   @id @default(cuid())
+  stepId     String
+  step       Step     @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([stepId, materialId])
+  @@index([materialId])
 }
 
 /// A photo or diagram. Sprint 1 stores URLs only — no upload pipeline yet.

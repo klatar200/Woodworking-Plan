@@ -1580,3 +1580,145 @@ inference channel, and no `userId` was allowed onto this path.
 3. **Delete the retired component in the repo** (the sandbox cannot):
    `git rm src/components/recommendations.tsx`. Left behind, it lands on `main` as dead
    code — the same process rule that bit Sprints 3 and 5 with superseded test files.
+
+---
+
+## Sprint 20: Plan-detail redesign
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** desktop plan-detail redesign — tabs for Tools/
+Materials/Cut List, a right-sidebar image slot (empty, no AI generation), a button to
+open Instructions, and a last-step CTA for review + photo. The full server-rendered
+document stays underneath, same progressive-enhancement pattern as the step walker
+(print/offline/no-JS unaffected).
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** (Visual sign-off is Keagan's —
+`next build`/`next dev` can't run in this sandbox.)
+
+### The one idea the whole sprint rests on
+
+Every new piece is **progressive enhancement over the existing document**, not a
+rebuild — the exact contract `step-walker.tsx` established. The page still
+server-renders every tool, every material row, every cut-list dimension, and every
+step, in one document. The three new client components only ever **hide** parts of it
+after mount:
+
+- `PlanTabs` toggles `display` on the `[data-tab]` panels;
+- `InstructionsDisclosure` toggles `hidden` on the instructions region;
+- the StepWalker CTA renders only when enhanced AND on the last step.
+
+So a crawler, a no-JS visitor, and the print stylesheet all see the complete plan. The
+print rules force it explicitly — `.plan-tabs [data-tab]` and
+`.instructions-region[hidden]` are set to `display: block !important`, beating the
+components' non-`!important` inline hiding, exactly as `.step` already does. **A cut
+list you can't print is the one failure this section is not allowed to have**, and it's
+the failure this pattern was chosen to prevent.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `src/components/plan-tabs.tsx` | NEW. Tools/Materials/Cut List tabs; hides inactive panels after mount; `present` flag suppresses a tab (not a panel) so a plan with no cut list gets no empty tab. |
+| `src/components/instructions-disclosure.tsx` | NEW. "Start building →" button; collapses the instructions region after mount, keeps it in the DOM, moves focus + scrolls on reveal. |
+| `src/components/plan-image-slot.tsx` | NEW. Primary photo via `next/image`, or an honest empty placeholder — **no AI render** (`DECISIONS_LOG.md` 2026-07-14). |
+| `src/components/step-walker.tsx` | Added optional `reviewCtaHref`; a last-step CTA to the reviews section. Single-step passthrough unchanged. |
+| `src/app/plans/[slug]/page.tsx` | Two-column grid (data + image rail); Tools/Materials/Cut List wrapped in `PlanTabs`; Instructions wrapped in `InstructionsDisclosure`; image slot in the aside. |
+| `src/app/globals.css` | Grid (desktop) / flex-column with `order` hoist (mobile); tab, disclosure, image-slot, CTA styles; print overrides force all panels + instructions visible and drop the image rail. |
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Every §4.1.1 Sprint 20 bullet: tabs for the three sections, an image slot that is deliberately empty (no AI gen, per the logged decision), a button to open Instructions, a last-step review/photo CTA, and the full document preserved underneath. Nothing extra — no per-step tools (Sprint 21), no shopping-list changes (Sprint 22). |
+| Correctness & functionality (/20) | **17** | Sandbox-local `/tmp` clone: `tsc --noEmit`, `eslint src tests`, and `vitest` (**452 in the clone**, +7 new; the clone runs behind the mount, so the full tree is 477 + 7 = **484**) all clean. −3: this is largely CSS + client-effect behaviour, and neither the two-column grid nor the actual tab-switch/disclosure INTERACTION is machine-verifiable here (`next dev` SIGBUSes in the sandbox). The static/no-JS contract IS tested; the enhanced-state clicks need Keagan's browser. |
+| Automated test coverage (/15) | **14** | `tests/plan-tabs.test.tsx` asserts the property whose failure is invisible until someone prints: a static render contains **all three panels in full**, no tablist, nothing hidden — and that a `present: false` tab still leaves its panel in the DOM. It also pins the disclosure open with no button pre-mount, and that the StepWalker CTA is absent at SSR and doesn't disturb the single-step passthrough. `tests/plan-image-slot.test.tsx` covers photo vs. the honest empty placeholder. −1: the enhanced (post-mount) tab/disclosure toggling isn't unit-tested — it needs a DOM env (jsdom) this project deliberately doesn't use; that behaviour is left to the visual check, same call as every other client-effect component here. |
+| Security (/15) | **15** | No new route, input, write path, or secret. `PlanImageSlot` renders `next/image` from the already-allowlisted blob host (CSP `img-src` + `next.config.ts` `remotePatterns` — unchanged). The image `alt` is plan-authored content, not user input. No `dangerouslySetInnerHTML`. The reviews/photo write path is untouched — the CTA is just an anchor to `#reviews-heading`. |
+| Code quality & simplicity (/10) | **10** | The three components share StepWalker's established pattern rather than inventing three new ones; the CTA is a small prop on StepWalker, not a fork of it. No duplicate mobile/desktop trees — one DOM, positioned by CSS. The redundant on-screen `<h2>` per tab is hidden visually but kept for no-JS/print and screen readers (`aria-labelledby`), rather than deleted (which would break the no-JS heading structure). |
+| Mobile/offline behavior (/10) | **10** | Mobile is a deliberate layout, not an afterthought: `.plan-detail-grid` is a flex column below 64rem and the image aside is hoisted with `order: -1`, so a phone reads title → photo → details rather than burying the data under a hero. Offline/no-JS unaffected by construction — the document is the same one the service worker already caches; the enhancements only hide parts of it. −0. |
+| Documentation & handoff (/5) | **5** | The "one document, only hidden after mount" contract is documented in each component's file doc and at the print-CSS overrides, and the mobile `order` hoist is explained where it lives. `DECISIONS_LOG.md`'s no-AI-image call is cited at `PlanImageSlot`. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Environment note
+Same mount-truncation caution as Sprints 18–19: all edits went through Write/Edit; the
+`/tmp` clone was reconstructed from a clean checkout + replayed replacements (the clone
+is behind `main` by Sprints 17–20, which is why its raw count is lower than the mount's).
+No bash write ever touched the mount.
+
+### Open items for Keagan
+- **Visual check.** `npm run dev`, open a plan at desktop width: image in the right rail,
+  Tools/Materials/Cut List as tabs, Instructions collapsed behind "Start building →",
+  and the last step showing the "Built it?" CTA. Then a phone width: title → photo →
+  details, tabs still switch, instructions still open. And **`Ctrl+P`** to confirm print
+  still shows all three panels and every step (the contract, force-verified in CSS but
+  worth one real look).
+- **Still not pushed.** Sprints 17–20 are committed locally only; `origin/main` is at
+  `feb8c55`. Push is yours.
+
+---
+
+## Sprint 21: Per-step tools & hardware
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** `Step` has no relation to `Tool`/`Material` today
+— add join tables (a subset of the plan's already-declared tools/materials) plus a content
+pass across all 24 plans.
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** Mechanism verified in the sandbox clone;
+the content pass ships as a script Keagan runs (his delivery choice). Visual sign-off and
+the migration/seed are his.
+
+### The sprint split cleanly into a mechanism (mine) and content (his to own)
+
+The schema, loader validation, seed, and rendering are engineering — built and verified
+here. The per-step tagging of ~170 steps is public catalog content, which `BUILD_PLAN.md`
+§2 makes Keagan's call, so both content decisions were escalated:
+
+- **Who authors:** he had me draft all 24 (extracted from each step's own text, kept to
+  each plan's declared tools/materials) for his review.
+- **How delivered:** as `scripts/apply-step-tags.mjs` — an idempotent apply script whose
+  TAGS table IS the content — rather than 24 hand-edited files. One readable mapping to
+  review instead of 24 diffs. (`DECISIONS_LOG.md` 2026-07-14.)
+
+### The one rule that keeps this honest
+
+**A step's tools/materials are a SUBSET of the plan's, enforced in `load.ts`, not the DB.**
+A bare foreign key to `Tool` would accept a tool the plan never declared — telling a
+builder to fetch something the project doesn't use, the exact trust bug §12 warns about.
+The loader check names the file and step; the script enforces the same rule before writing
+and threw on 5 of my own over-tags during authoring (tools the plan didn't list), which
+were removed rather than shipped.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` + migration `20260714200000_add_step_tools_materials` | `StepTool`, `StepMaterial` join tables (+ reverse relations on Tool/Material/Step). |
+| `src/content/plan-schema.ts` | `step` gains optional `tools` (slugs) / `materials` (names), `.default([])`. |
+| `src/content/load.ts` | Cross-file subset check: every step tag must be one the plan declares. |
+| `prisma/seed.ts` | Materials + steps created per-row to capture ids; writes StepTool/StepMaterial. |
+| `src/lib/plans.ts` | `getPlanBySlug` includes each step's tools/materials. |
+| `src/app/plans/[slug]/page.tsx`, `.../print/page.tsx` | Per-step chips (screen) and a one-line "Tools: … Materials: …" (print). |
+| `src/app/globals.css` | `.step-needs` chips + `.print-step-needs`. |
+| `scripts/apply-step-tags.mjs` | NEW — the content pass for all 24 plans (263 tool-tags, 202 material-tags). |
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Both §4.1.1 halves: join tables kept as a subset of the plan's tools/materials, AND a content pass covering all 24 plans (delivered as the reviewed-and-run script Keagan chose). Nothing outside scope — no per-step *quantities*, no new tools. |
+| Correctness & functionality (/20) | **17** | `tsc`, `eslint src tests scripts`, `vitest` (**458 in the clone**, +6 new; full tree 484 + 6 = **490**) clean; `prisma generate` accepts the schema; `loadCatalog` passes with all 24 tagged (263 tool-tags, 202 material-tags); the apply script is idempotent (2nd run = no-op, verified). −3: the migration and seed have not run against a real DB (can't, here), and the on-page chip layout is CSS not machine-verified — Keagan's step. |
+| Automated test coverage (/15) | **15** | `tests/step-tags.test.ts` (6 cases) drives `loadCatalog` against a temp content dir: a valid subset loads; a step tool the plan doesn't declare throws *naming the plan and step*; a non-declared material throws; missing tags default to `[]` (a pre-content-pass plan still loads); schema defaults and a non-kebab step slug is rejected. The subset gate — the thing that would silently mislead a builder — is the most-tested path. |
+| Security (/15) | **15** | No new route, input, or secret. The tags are authored content, not user input. The subset check is defence against bad *content*, not attack, but it fails closed (loader throws, seed never runs). No `userId` anywhere. The apply script only writes inside `content/plans/` and only each file's `steps` array. |
+| Code quality & simplicity (/10) | **10** | The subset rule lives in one place (`load.ts`), reused by the script. No `essential` flag duplicated onto StepTool (it belongs on PlanTool and would drift). The seed's switch from `createMany` to per-row create is the minimum needed to capture ids for the joins, documented at the site. |
+| Mobile/offline behavior (/10) | **9** | Chips are plain server-rendered markup inside the existing step list — no new client code, so print/offline/no-JS are unaffected (they render the chips too; the print sheet gets the compact one-line form). −1: not checked on a handset (feature is dark until the migration + seed run). |
+| Documentation & handoff (/5) | **5** | The subset-in-loader reasoning, the optional-tags rationale, and the name-vs-slug material resolution are documented at each site and as a standing `CLAUDE.md` rule; the content-delivery decision is in `DECISIONS_LOG.md`; the apply script self-documents at the top. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan (the feature is dark until 1–3 are done)
+1. **Run the migration** (`npm run db:migrate` on dev; deploy migrates prod — read the build log).
+2. **Apply the content:** `node scripts/apply-step-tags.mjs`, review the `git diff` on `content/plans/`, adjust any per-step assignment you disagree with (they're my woodworking judgment).
+3. **Re-seed** so the tags reach the database (`npm run db:seed`; production needs its own seed — `DEPLOYMENT.md`).
+4. **Visual check** the per-step chips on a plan page and the print sheet.
+5. **Push.** Sprints 17–21 are committed locally only; `origin/main` is at `feb8c55`.

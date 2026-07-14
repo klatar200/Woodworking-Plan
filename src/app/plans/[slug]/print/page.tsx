@@ -243,6 +243,25 @@ export default async function PlanPrintPage({
                   <h3>
                     {step.stepNumber}. {step.title}
                   </h3>
+                  {/* Sprint 21 — what this step needs, on paper too. One line, so it
+                      doesn't crowd the printed sheet. Nothing for an untagged step. */}
+                  {(step.tools.length > 0 || step.materials.length > 0) && (
+                    <p className="print-step-needs">
+                      {step.tools.length > 0 && (
+                        <>
+                          <strong>Tools:</strong>{' '}
+                          {step.tools.map((st) => st.tool.name).join(', ')}
+                          {step.materials.length > 0 ? '. ' : ''}
+                        </>
+                      )}
+                      {step.materials.length > 0 && (
+                        <>
+                          <strong>Materials:</strong>{' '}
+                          {step.materials.map((sm) => sm.material.name).join(', ')}
+                        </>
+                      )}
+                    </p>
+                  )}
                   <Prose text={step.body} />
                 </li>
               ))}

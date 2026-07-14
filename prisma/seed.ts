@@ -129,18 +129,26 @@ async function main() {
         })),
       });
 
-      await tx.material.createMany({
-        data: plan.materials.map((m, i) => ({
-          planId: saved.id,
-          name: m.name,
-          unit: m.unit,
-          quantity: m.quantity,
-          species: m.species ?? null,
-          costCents: m.costCents ?? null,
-          note: m.note ?? null,
-          sortOrder: i,
-        })),
-      });
+      // Materials are created one-by-one (not createMany) so we capture each row's id
+      // by its name — Sprint 21's per-step material links resolve name → this id. The
+      // name is unique within a plan (loadCatalog would surface a collision), so the map
+      // is unambiguous.
+      const materialIdByName = new Map<string, string>();
+      for (const [i, m] of plan.materials.entries()) {
+        const row = await tx.material.create({
+          data: {
+            planId: saved.id,
+            name: m.name,
+            unit: m.unit,
+            quantity: m.quantity,
+            species: m.species ?? null,
+            costCents: m.costCents ?? null,
+            note: m.note ?? null,
+            sortOrder: i,
+          },
+        });
+        materialIdByName.set(m.name, row.id);
+      }
 
       await tx.cutListItem.createMany({
         data: plan.cutList.map((c, i) => ({
@@ -156,14 +164,37 @@ async function main() {
         })),
       });
 
-      await tx.step.createMany({
-        data: plan.steps.map((s, i) => ({
-          planId: saved.id,
-          stepNumber: i + 1,
-          title: s.title,
-          body: s.body,
-        })),
-      });
+      // Steps created one-by-one too, so each step's id is available to link its tools
+      // and materials (Sprint 21). load.ts has already proved every per-step tool slug
+      // and material name is one the plan declares, so the lookups below cannot miss.
+      for (const [i, s] of plan.steps.entries()) {
+        const step = await tx.step.create({
+          data: {
+            planId: saved.id,
+            stepNumber: i + 1,
+            title: s.title,
+            body: s.body,
+          },
+        });
+
+        if (s.tools.length > 0) {
+          await tx.stepTool.createMany({
+            data: s.tools.map((toolSlug) => ({
+              stepId: step.id,
+              toolId: toolIds.get(toolSlug)!,
+            })),
+          });
+        }
+
+        if (s.materials.length > 0) {
+          await tx.stepMaterial.createMany({
+            data: s.materials.map((name) => ({
+              stepId: step.id,
+              materialId: materialIdByName.get(name)!,
+            })),
+          });
+        }
+      }
 
       await tx.image.createMany({
         data: plan.images.map((img, i) => ({

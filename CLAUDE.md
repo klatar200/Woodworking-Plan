@@ -234,6 +234,28 @@ with it.
   tests green. **Does nothing until the migration runs** — see the view-tracking rule
   below.
 
+- **Sprint 20 (Plan-detail redesign): COMPLETE — 96/100.** Desktop two-column layout
+  (data left, image rail right), Tools/Materials/Cut List as **tabs** (`PlanTabs`),
+  Instructions behind a **"Start building" button** (`InstructionsDisclosure`), an
+  **image slot** (`PlanImageSlot` — primary photo or an honest empty placeholder, **no
+  AI render**, `DECISIONS_LOG.md` 2026-07-14), and a **last-step review/photo CTA** in
+  StepWalker. **All progressive enhancement over the SAME server-rendered document** —
+  the client components only hide parts after mount; print CSS force-shows every tab
+  panel and the instructions region, so print/offline/no-JS get the whole plan. One DOM,
+  mobile via `order` (title → photo → details). 484 tests green. Visual check is Keagan's.
+
+- **Sprint 21 (Per-step tools/hardware): COMPLETE — 96/100.** `StepTool` + `StepMaterial`
+  join tables. A step's tools/materials are a **SUBSET of the plan's own**, enforced at
+  content-load (`src/content/load.ts`), NOT by the DB — Postgres can't cheaply express
+  "must also be one of this plan's tools", and a plain FK would accept a tool the plan
+  never declared. Per-step tags are **optional** (schema `.default([])`), so every plan
+  still validates before it's tagged. Chips render on the plan page and the print sheet.
+  **The content pass (all 24 plans, 263 tool-tags, 202 material-tags) ships as
+  `scripts/apply-step-tags.mjs`** — Keagan's chosen delivery: the TAGS table IS the
+  content; he runs it, reviews the diff, re-seeds. Idempotent, rewrites only each plan's
+  `steps` array, throws on any non-subset tag. 490 tests green. **Renders nothing until
+  the migration runs + the script is applied + re-seed** — see the step-tags rule below.
+
 - **Prototype-delta pass (2026-07-14): COMPLETE.** Active-filter chips
   (`filter-chips.tsx` — GET links, one per active filter value, sort/query ride
   along) and skeleton loading states (`loading.tsx` for catalog + plan detail,
@@ -420,17 +442,19 @@ tier gating, or save/collection limits. There is nothing to charge for yet.
 
 - ~~No rate limiting on server actions.~~ **DONE** — Upstash sliding-window, 30/min
   toggles, 10/min creates, keyed on session user (IP fallback), fails open.
-- **🔍 VERCEL ENV TARGET UNVERIFIED (found 2026-07-14).** Production Neon branch
-  (`ep-long-lake`) was 3 migrations behind and had 0 users — the live site has
-  likely been running against the DEV branch (`ep-sparkling-band`) the whole time.
-  `long-lake` is now fully migrated + seeded (paths included). Keagan must check
-  which branch Vercel's `DATABASE_URL`/`DIRECT_URL` point at. See
-  `DECISIONS_LOG.md` 2026-07-14. Until resolved, treat BOTH branches as live.
-- **🔑 LEAKED CREDENTIALS — NOT YET CONFIRMED ROTATED.** The Neon role password and
-  the Clerk secret key were pasted into a chat transcript. Treat both as compromised.
-  Rotate in Neon (Roles → reset password) and Clerk, then update `.env.local` **and
-  both Vercel env vars together** — Neon branches share the role password, so
-  rotating invalidates dev and prod simultaneously.
+- ~~**Vercel env target unverified.**~~ **RESOLVED 2026-07-14 (Keagan).** ONE Neon
+  branch, `sparkling-band`, labelled **production**; Vercel Production's
+  `DATABASE_URL` (pooled) and `DIRECT_URL` (direct) both point at it. The empty
+  `long-lake` decoy is deleted. **Dev and prod share this one branch on purpose
+  during development** — a separate dev branch is a pre-go-live task, not a defect.
+  Do not re-flag "prod == dev". See `DECISIONS_LOG.md` 2026-07-14.
+- **🔑 Credential rotation — DEFERRED TO PRE-GO-LIVE. This is SETTLED; stop raising
+  it.** The Neon role password and Clerk secret were pasted into a chat transcript.
+  Keagan has decided — explicitly and repeatedly — that they rotate **once, right
+  before public launch**, NOT during development. Do not propose rotating them now,
+  do not list them as a current blocker, and do not reopen this each session. When
+  go-live is scheduled: rotate in Neon (Roles → reset password) and Clerk, then
+  update `.env.local` **and** both Vercel env vars together.
 - ~~**Clerk deletion webhook**~~ **DONE (2026-07-14).** `POST /api/webhooks/clerk`
   (`src/app/api/webhooks/clerk/route.ts`) verifies the Svix signature via
   `verifyWebhook` and, on `user.deleted`, calls `deleteUserByClerkId()`
@@ -497,6 +521,31 @@ drift silently. Now:
   policy would defeat a deploy exactly like a stale worker would. Miss either and an old
   policy keeps running silently.
 
+### 🔧 Per-step tools/materials rule (Sprint 21)
+
+**A step's tools/materials are a SUBSET of the plan's, and the SUBSET is enforced in
+`src/content/load.ts`, not in the database.** Postgres can't cheaply say "must also be
+one of this plan's tools", and a bare FK to `Tool` would happily accept a tool the plan
+never declared — which would tell a builder to fetch something the project doesn't use
+(`BUSINESS_PLAN.md` §12 trust bug). The loader check names the file and step; a DB error
+would name neither and fire mid-seed.
+
+**Per-step tags are OPTIONAL** (`step` schema `.default([])` for both). A plan that
+predates the content pass still validates and renders no chips. That is what let the
+mechanism ship before the content did.
+
+**Step materials are referenced by NAME, tools by SLUG.** Materials are plan-local rows
+with no global slug; the seed resolves name → the plan's own `Material` row. The name is
+unique within a plan, so the map is unambiguous — but this is why the seed creates
+materials and steps one-by-one (to capture ids) instead of `createMany`.
+
+**The content is `scripts/apply-step-tags.mjs`, not 24 hand-edited files** (Keagan's
+delivery choice, `DECISIONS_LOG.md` 2026-07-14). The TAGS table in that script IS the
+content. It is idempotent, rewrites only each plan's `steps` array, and throws on any
+non-subset tag. **Editing the tags = editing that script + re-running it + re-seeding.**
+Like all content, it does NOT reach production on deploy — production needs a seed
+(`DEPLOYMENT.md`).
+
 ### 👁 View-tracking rule (Sprint 19) — the count must MEAN something
 
 **`PlanView` has NO `userId`, and must not get one.** A view log with a user id is a
@@ -517,6 +566,18 @@ may not be inflated.** The print view logs nothing — printing a plan is not vi
 other action (an uncaught throw is a 500), but *unlike* like/save it must not
 `redirect()` either — it fires from a background effect, and bouncing a reader to another
 URL because a beacon was throttled would be absurd.
+
+**🛑 RAW SQL IS NOT COVERED BY THE TESTS — it 500'd prod once already (2026-07-14).**
+Trending first shipped with `NOW() - make_interval(days => ${windowDays})`. Postgres
+couldn't resolve `make_interval(days => $1)` against the bound parameter's inferred type,
+so **every request for the default (Trending) sort threw a 500 on the home page** — while
+`Most viewed` (same query, no window clause) worked, which is what isolated it. The unit
+tests MOCK `$queryRaw`, so the broken SQL executed for the first time on a live deploy.
+Fixed by binding a computed JS `Date` cutoff (`v."viewedAt" >= ${cutoff}`) — a plain
+timestamp comparison with no function-arg inference. **Lesson: a `$queryRaw` string is
+NOT proven by a green suite. Any new raw SQL must be run against a real Postgres (a dev
+branch) before it's trusted, and a smoke check of `/` after deploy is mandatory when a
+raw-SQL path is on the default render.**
 
 **Trending's cold start is real, and the TIEBREAK is the feature.** The table ships empty,
 so every count is 0 and the SQL tiebreak (`publishedAt DESC, title ASC`) *is* the order —

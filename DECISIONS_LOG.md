@@ -770,6 +770,40 @@ Variables. If they say `sparkling-band`: the live site runs on the dev branch, l
 current) or formally redesignate the branches in `DEPLOYMENT.md` and `.env.local`.
 Do not run destructive dev-branch commands until this is resolved.
 
+### 2026-07-14 — RESOLVED: one database, labelled production. Credentials rotate PRE-GO-LIVE only.
+
+**Status:** Confirmed by Keagan. This CLOSES the open question in the entry directly
+above, and it is a STANDING decision — not to be re-litigated each session.
+
+Keagan checked Vercel: both `DATABASE_URL` (pooled) and `DIRECT_URL` (direct) point at
+`sparkling-band`. So the "production" deploy was indeed running on what was labelled the
+dev branch. His resolution:
+
+- **`sparkling-band` is now labelled `production`.** It holds the real data; nothing was
+  cut over (a Neon branch rename keeps the endpoint host, so Vercel's vars are unchanged
+  and there was zero downtime).
+- **The empty `long-lake` decoy branch is DELETED.** It was the thing that made the
+  "prod is 3 migrations behind, 0 users" alarm look like a defect; a database that looks
+  like production but isn't is a trap.
+- **There is deliberately ONE branch during development.** Dev and prod share it. With no
+  public users and a catalog rebuildable from `content/*.json` via `npm run db:seed`,
+  there is nothing a `migrate reset` could destroy that isn't a one-command rebuild. A
+  separate dev branch becomes necessary the day a real person saves a plan — it is a
+  **pre-go-live task, not a now-task.** Do not re-flag "prod == dev" as a defect.
+
+**Credential rotation — DEFERRED TO PRE-GO-LIVE, and this is FINAL.** The Neon role
+password and Clerk secret were pasted into a chat transcript. Keagan has stated, more
+times than he should have had to, that he will rotate them **once, immediately before
+public launch** — alongside branding/domain — and NOT during the development cycle. The
+risk (a scanned free-tier Postgres role) is real but is his to accept, and he has, with
+full information. **Do not propose rotating now, do not list it as a current/now blocker,
+and do not reopen it in future sessions.** When go-live is scheduled: rotate in Neon and
+Clerk, then update `.env.local` + both Vercel vars together.
+
+The build agent over-escalated both of these repeatedly. Recording them here as settled
+so the escalation stops — a decision Keagan has to keep re-making is a decision the docs
+failed to capture.
+
 ### 2026-07-14 — Rate-limit denial feedback (closes the standing follow-up)
 **Status:** Done. Routine engineering, logged because it touches a security surface.
 
@@ -886,6 +920,36 @@ would count a *hover* as a view, and Trending would become "whatever sat near th
 the grid", a loop that entrenches its own output. Crawlers would count too. The cost:
 no-JS and offline readers are never counted. A ranking signal is allowed to be lossy; it
 is not allowed to be inflated.
+
+### 2026-07-14 — Sprint 21: per-step content delivered as a script, not 24 file edits
+
+**Status:** Confirmed by Keagan (chose "commit an apply-tags script" over direct file
+edits or deferring). Also records his earlier same-sprint call to author all 24.
+
+Sprint 21 needed per-step tool/material tags on ~170 steps across 24 plans. Two calls:
+
+**1. Who authors the tags — the build agent drafts all 24, Keagan reviews.** Per-step
+assignments render publicly, so they're content Keagan owns (`BUILD_PLAN.md` §2). He had
+the build agent draft them (extracted from each step's own text, kept strictly within
+each plan's declared tools/materials) for his editorial review, rather than authoring
+170 tag-sets himself or shipping only exemplars. **These are the build agent's
+woodworking judgment and warrant Keagan's review before they're trusted** — the subset
+constraint bounds any error to "a tool the plan lists but the step may not actually use,"
+which is fixable content, never a broken build.
+
+**2. How they land on disk — an idempotent apply script, not 24 hand-edited files.**
+`scripts/apply-step-tags.mjs` carries the full tag mapping and the injection logic; Keagan
+runs `node scripts/apply-step-tags.mjs`, reviews the `git diff`, and re-seeds. Chosen
+because it's more reviewable (one readable mapping vs. 24 diffs), it was validated against
+his exact content in a sandbox clone, and it sidesteps the sandbox's inability to bulk-edit
+the mounted repo safely. The script rewrites ONLY each plan's `steps` array, is idempotent
+(a second run is a no-op), and throws on any tag that isn't a subset of the plan's declared
+tools/materials — the same rule `src/content/load.ts` enforces.
+
+**Also decided (engineering, not escalated):** the subset rule lives in the loader, not
+the database (a bare FK would accept a tool the plan never declared); per-step tags are
+optional so untagged plans still validate; materials are referenced by name (they have no
+slug), tools by slug. See `CLAUDE.md` "Per-step tools/materials rule."
 
 ---
 

@@ -6,6 +6,14 @@ interface Props {
   stepTitles: string[];
   /** The server-rendered `<ol className="steps">` — untouched, full content. */
   children: React.ReactNode;
+  /**
+   * Sprint 20 — where the "you finished, share your build" CTA points. Almost always
+   * `#reviews-heading` on the same page. Optional: a plan page without a reviews
+   * section (there isn't one today, but the component shouldn't assume) simply gets no
+   * CTA. The CTA is an ENHANCEMENT on top of an enhancement — it only appears once JS
+   * has taken over the step list — so it never affects print, offline, or no-JS.
+   */
+  reviewCtaHref?: string;
 }
 
 /**
@@ -36,7 +44,7 @@ interface Props {
  * nodes it finds by that attribute, which is why the underlying content is
  * never at the mercy of this component's own render output.
  */
-export function StepWalker({ stepTitles, children }: Props) {
+export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
   const totalSteps = stepTitles.length;
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(1);
@@ -123,6 +131,16 @@ export function StepWalker({ stepTitles, children }: Props) {
         )}
 
         {children}
+
+        {/* Sprint 20 — the last-step CTA. When the builder reaches the final step,
+            invite the review + build photo. Only on the last step, only when enhanced,
+            and only if a target was given — so it never shows on paper or without JS,
+            where there is no "current step" to be last on. */}
+        {enhanced && reviewCtaHref && active === totalSteps && (
+          <a href={reviewCtaHref} className="step-finish-cta">
+            <strong>Built it?</strong> Share your build and leave a review →
+          </a>
+        )}
 
         {enhanced && (
           <div className="step-walker-nav">

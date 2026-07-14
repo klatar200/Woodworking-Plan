@@ -131,6 +131,37 @@ export function loadCatalog(contentDir: string = CONTENT_DIR): Catalog {
         refProblems.push(`plan "${plan.slug}" references unknown tool "${tool.slug}"`);
       }
     }
+
+    /**
+     * Sprint 21 — a step's tools/materials must be a SUBSET of the plan's own.
+     *
+     * This is the check the database deliberately does NOT do (see schema.prisma):
+     * a step tagged with a tool the plan never lists would tell a builder to fetch
+     * something the project doesn't use — the exact trust bug BUSINESS_PLAN.md §12
+     * warns about. Caught here, at load, naming the plan and step, rather than
+     * halfway through a seed with a foreign-key error that names neither.
+     */
+    const planToolSlugs = new Set(plan.tools.map((t) => t.slug));
+    const planMaterialNames = new Set(plan.materials.map((m) => m.name));
+
+    plan.steps.forEach((step, i) => {
+      for (const toolSlug of step.tools) {
+        if (!planToolSlugs.has(toolSlug)) {
+          refProblems.push(
+            `plan "${plan.slug}" step ${i + 1} uses tool "${toolSlug}", ` +
+              `which is not in the plan's tools`,
+          );
+        }
+      }
+      for (const materialName of step.materials) {
+        if (!planMaterialNames.has(materialName)) {
+          refProblems.push(
+            `plan "${plan.slug}" step ${i + 1} uses material "${materialName}", ` +
+              `which is not in the plan's materials`,
+          );
+        }
+      }
+    });
   }
 
   assertUniqueSlugs(categories.map((c) => c.slug), 'category', refProblems);

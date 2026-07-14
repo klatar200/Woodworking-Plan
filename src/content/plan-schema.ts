@@ -75,6 +75,22 @@ const step = z
   .object({
     title: z.string().min(1),
     body: z.string().min(1),
+    /**
+     * Sprint 21 — which of the PLAN'S tools/materials this step uses.
+     *
+     * Both OPTIONAL and default to empty: a step (and a whole plan) that predates the
+     * content pass still validates, and the feature simply renders nothing for it. That
+     * is what lets the 24-plan tagging happen incrementally instead of as a big-bang
+     * edit that breaks every plan the moment the schema lands.
+     *
+     * `tools` are TOOL SLUGS; `materials` are MATERIAL NAMES (materials have no slug —
+     * they are plan-local line items keyed by name). Both must be a SUBSET of what the
+     * plan itself declares — enforced in load.ts, which can name the offending file and
+     * step. Zod can't see the sibling `tools`/`materials` arrays from inside a step, so
+     * the subset check lives one level up.
+     */
+    tools: z.array(slug).default([]),
+    materials: z.array(z.string().min(1)).default([]),
   })
   .strict();
 

@@ -14,6 +14,9 @@ import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
 import { StepWalker } from '@/components/step-walker';
 import { ViewLogger } from '@/components/view-logger';
+import { PlanTabs } from '@/components/plan-tabs';
+import { PlanImageSlot } from '@/components/plan-image-slot';
+import { InstructionsDisclosure } from '@/components/instructions-disclosure';
 import { Prose } from '@/components/prose';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
@@ -85,7 +88,7 @@ export default async function PlanDetailPage({
 
 
   return (
-    <main id="main" className="page page-wide">
+    <main id="main" className="page page-wide plan-detail">
       {/* Sprint 19. Renders nothing; logs one view after hydration, which is the only
           moment we know a real browser really rendered this page — a server-side log
           would count next/link's catalog prefetches and every crawler. Not on the
@@ -148,6 +151,26 @@ export default async function PlanDetailPage({
         </div>
       </header>
 
+      {/*
+        Sprint 20 — the desktop redesign is a two-column grid: the plan's data on the
+        left, the image slot on the right. ONE DOM, positioned by CSS: below the desktop
+        breakpoint `.plan-detail-grid` is a flex column and the aside is hoisted with
+        `order` to sit right under the title, so mobile reads title → photo → details.
+        The header above stays full-width in both layouts.
+
+        Everything inside is the SAME server-rendered content as before — the tabs and
+        the instructions disclosure only HIDE parts of it after mount (see their files),
+        so print, offline, and no-JS still get the entire document.
+      */}
+      <div className="plan-detail-grid">
+        <aside className="plan-detail-aside" aria-label="Photo">
+          <PlanImageSlot
+            title={plan.title}
+            image={plan.images[0]}
+          />
+        </aside>
+
+        <div className="plan-detail-main">
       {/* The at-a-glance strip. This is the product's whole differentiator —
           "what can I build this weekend, with what I own, for under $50?" */}
       <section aria-label="At a glance">
@@ -180,7 +203,19 @@ export default async function PlanDetailPage({
         <Prose text={plan.description} />
       </section>
 
-      <section>
+      {/* Sprint 20 — Tools / Materials / Cut List as tabs on the enhanced client.
+          Each panel is a `<section data-tab>`; PlanTabs hides the inactive ones AFTER
+          mount, so no-JS, print, and offline still get all three stacked with their
+          own <h2>s. The `present` flags mean a plan with no cut list gets no empty
+          "Cut list" tab — a tab promising a blank panel. */}
+      <PlanTabs
+        tabs={[
+          { id: 'tools', label: 'Tools', present: true },
+          { id: 'materials', label: 'Materials', present: true },
+          { id: 'cutlist', label: 'Cut list', present: plan.cutList.length > 0 },
+        ]}
+      >
+      <section data-tab="tools" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools">
         <h2>Tools</h2>
         <h3 className="sub-heading">Essential</h3>
         <ul className="detail-list">
@@ -207,7 +242,7 @@ export default async function PlanDetailPage({
         )}
       </section>
 
-      <section>
+      <section data-tab="materials" id="panel-materials" role="tabpanel" aria-labelledby="tab-materials">
         <h2>Materials</h2>
         <div className="table-scroll">
           {/* NO COST COLUMN. DECISIONS_LOG.md 2026-07-13 — tiers only, no dollar
@@ -246,7 +281,7 @@ export default async function PlanDetailPage({
       </section>
 
       {plan.cutList.length > 0 && (
-        <section>
+        <section data-tab="cutlist" id="panel-cutlist" role="tabpanel" aria-labelledby="tab-cutlist">
           <h2>Cut list</h2>
           <div className="table-scroll">
             <table className="data-table">
@@ -278,12 +313,22 @@ export default async function PlanDetailPage({
           </div>
         </section>
       )}
+      </PlanTabs>
 
+      {/* Sprint 20 — Instructions open behind a button on the enhanced client, so the
+          overview isn't buried under forty build steps. InstructionsDisclosure keeps
+          the whole section in the DOM and only collapses it after mount; print, offline
+          and no-JS get it fully open. The StepWalker inside is unchanged bar its new
+          last-step CTA. */}
+      <InstructionsDisclosure>
       <section>
         <h2>Instructions</h2>
         {/* StepWalker only ever HIDES steps client-side after mount — every
             step below is still fully server-rendered. See step-walker.tsx. */}
-        <StepWalker stepTitles={plan.steps.map((step) => step.title)}>
+        <StepWalker
+          stepTitles={plan.steps.map((step) => step.title)}
+          reviewCtaHref="#reviews-heading"
+        >
           <ol className="steps">
             {plan.steps.map((step) => (
               <li key={step.id} className="step" data-step={step.stepNumber}>
@@ -291,12 +336,46 @@ export default async function PlanDetailPage({
                   <span className="step-number">{step.stepNumber}</span>
                   {step.title}
                 </h3>
+
+                {/* Sprint 21 — what this step calls for, so a builder can gather it
+                    without reading ahead. Renders nothing for an untagged step, which
+                    is every step until the content pass reaches its plan. */}
+                {(step.tools.length > 0 || step.materials.length > 0) && (
+                  <div className="step-needs">
+                    {step.tools.length > 0 && (
+                      <div className="step-needs-group">
+                        <span className="step-needs-label">Tools</span>
+                        <ul className="step-needs-list">
+                          {step.tools.map((st) => (
+                            <li key={st.id} className="step-need step-need-tool">
+                              {st.tool.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {step.materials.length > 0 && (
+                      <div className="step-needs-group">
+                        <span className="step-needs-label">Materials</span>
+                        <ul className="step-needs-list">
+                          {step.materials.map((sm) => (
+                            <li key={sm.id} className="step-need step-need-material">
+                              {sm.material.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <Prose text={step.body} />
               </li>
             ))}
           </ol>
         </StepWalker>
       </section>
+      </InstructionsDisclosure>
 
       {plan.tags.length > 0 && (
         <section>
@@ -321,6 +400,8 @@ export default async function PlanDetailPage({
         isAdmin={admin}
         photosEnabled={isStorageConfigured()}
       />
+        </div>
+      </div>
     </main>
   );
 }

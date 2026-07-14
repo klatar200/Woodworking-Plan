@@ -370,7 +370,18 @@ export const getPlanBySlug = cache(async (slug: string) => {
       },
       materials: { orderBy: { sortOrder: 'asc' } },
       cutList: { orderBy: { sortOrder: 'asc' } },
-      steps: { orderBy: { stepNumber: 'asc' } },
+      steps: {
+        orderBy: { stepNumber: 'asc' },
+        // Sprint 21 — the tools/materials each step uses. Ordered by name so the chips
+        // render in a stable order rather than insertion order.
+        include: {
+          tools: { include: { tool: true }, orderBy: { tool: { name: 'asc' } } },
+          materials: {
+            include: { material: true },
+            orderBy: { material: { sortOrder: 'asc' } },
+          },
+        },
+      },
       images: { orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }] },
       _count: { select: { likes: true } },
     },
