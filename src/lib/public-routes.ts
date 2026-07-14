@@ -72,6 +72,11 @@ export const PUBLIC_ROUTES = [
   // See src/app/api/webhooks/clerk/route.ts.
   '/api/webhooks/clerk',
 
+  // Standard marketing/trust nav (2026-07-14). Static content, no user data —
+  // safe to serve to anyone, same as the plan catalog.
+  '/about',
+  '/faq',
+
   // Sprint 8: the offline fallback page.
   //
   // The service worker pre-caches it at install — which happens before anyone

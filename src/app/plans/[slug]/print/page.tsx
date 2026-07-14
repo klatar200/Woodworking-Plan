@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
 import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
+import { Prose } from '@/components/prose';
 
 /**
  * Print view — Sprint 13. BUSINESS_PLAN.md §10 ("print-friendly / offline PDF export").
@@ -116,7 +117,7 @@ export default async function PlanPrintPage({
           <div>
             <dt>Cost</dt>
             {/* Tier only. No dollar figures anywhere — see src/lib/format.ts. */}
-            <dd>{costTierSymbol(plan.costTier)} of $$$$$</dd>
+            <dd>{costTierSymbol(plan.costTier)}</dd>
           </div>
         </dl>
       </header>
@@ -205,8 +206,8 @@ export default async function PlanPrintPage({
           </tbody>
         </table>
         <p className="print-note">
-          Overall cost: <strong>{costTierSymbol(plan.costTier)} of $$$$$</strong>. Lumber
-          varies by region, species, and season, so we give a band rather than a figure.
+          Overall cost: <strong>{costTierSymbol(plan.costTier)}</strong>. Lumber varies by
+          region, species, and season, so we give a band rather than a figure.
         </p>
       </section>
 
@@ -232,15 +233,17 @@ export default async function PlanPrintPage({
 
           <section className="print-section print-steps">
             <h2>Instructions</h2>
+            {/* `.print-steps ol` sets list-style: none (globals.css) — the number below
+                is the ONLY number rendered. It used to render twice: the browser's own
+                <ol> marker plus this explicit "N. " text, printing as "1. 1. Mill both
+                slabs..." on paper and when the text was copied out. */}
             <ol>
               {plan.steps.map((step) => (
                 <li key={step.id}>
                   <h3>
                     {step.stepNumber}. {step.title}
                   </h3>
-                  {step.body.split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+                  <Prose text={step.body} />
                 </li>
               ))}
             </ol>

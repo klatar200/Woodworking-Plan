@@ -217,6 +217,16 @@ with it.
   into a separate PRIVATE cache — **wiped on sign-out**. Closes the `BUSINESS_PLAN.md` §5
   hardware-store gap. 336 tests green. See the corrected offline rule below.
 
+- **Sprint 18 (Desktop catalog layout): COMPLETE — 96/100.** Three-column catalog at
+  ≥64rem (category rail / results / filter rail) via `grid-template-areas`, cards
+  3 → 4 → 5 across at 64/80/96rem. **ONE DOM in ONE source order** — mobile is
+  unchanged by construction: below 64rem there is no grid, the rail is `display: none`,
+  and every rule added this sprint lives inside a `min-width` query. `CategoryNav` is a
+  *duplicate* affordance (the filter panel's category `<select>` is still the only one
+  on a phone), and `FilterDisclosure` force-opens the filters on desktop in a
+  `useEffect` — with the `<summary>` never hidden, so no-JS still reaches the filters.
+  459 tests green. Visual check on a real browser is Keagan's.
+
 - **Prototype-delta pass (2026-07-14): COMPLETE.** Active-filter chips
   (`filter-chips.tsx` — GET links, one per active filter value, sort/query ride
   along) and skeleton loading states (`loading.tsx` for catalog + plan detail,

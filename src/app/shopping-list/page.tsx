@@ -81,8 +81,7 @@ export default async function ShoppingListPage({
               figure is a hand-authored ballpark for a commodity that moves with region,
               species and season.
             */}
-            <strong>{costTierSymbol(costTierForCents(list.totalCents))}</strong>{' '}
-            <span className="muted">of $$$$$</span>
+            <strong>{costTierSymbol(costTierForCents(list.totalCents))}</strong>
           </p>
 
           <p className="notice">

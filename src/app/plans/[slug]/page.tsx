@@ -13,6 +13,7 @@ import { LikeButton } from '@/components/like-button';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
 import { StepWalker } from '@/components/step-walker';
+import { Prose } from '@/components/prose';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
@@ -158,8 +159,10 @@ export default async function PlanDetailPage({
           <div className="glance-item">
             <dt>Cost</dt>
             <dd>
-              <strong>{costTierSymbol(plan.costTier)}</strong>{' '}
-              <span className="muted">of $$$$$</span>
+              {/* Tier only — no "of $$$$$" qualifier. The tier IS the answer, not a
+                  position on a scale; the qualifier only ever repeated the same
+                  five characters back at the reader. */}
+              <strong>{costTierSymbol(plan.costTier)}</strong>
             </dd>
           </div>
         </dl>
@@ -167,11 +170,7 @@ export default async function PlanDetailPage({
 
       <section>
         <h2>About this build</h2>
-        <div className="prose">
-          {plan.description.split('\n\n').map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
+        <Prose text={plan.description} />
       </section>
 
       <section>
@@ -285,11 +284,7 @@ export default async function PlanDetailPage({
                   <span className="step-number">{step.stepNumber}</span>
                   {step.title}
                 </h3>
-                <div className="prose">
-                  {step.body.split('\n\n').map((para, i) => (
-                    <p key={i}>{para}</p>
-                  ))}
-                </div>
+                <Prose text={step.body} />
               </li>
             ))}
           </ol>

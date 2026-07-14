@@ -1350,3 +1350,156 @@ defensible dip can pass while an accidental one cannot pass *silently*.
 **🛑 NOT LIVE UNTIL PRODUCTION IS SEEDED.** The migration creates the tables; the *paths
 themselves are DATA*, and data does not flow to production on deploy. Same trap as Sprint
 4's empty search index and Sprint 12's material names. See `DEPLOYMENT.md`.
+
+---
+
+## Sprint 17: Backlog bug fixes + quick wins
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** markdown-bold rendering fix, print
+double-numbering fix, cost-tier "of $$$$$" qualifier removal, breadcrumb restyle,
+Home/About/FAQ stub nav. First sprint of the post-launch-blocker backlog Keagan
+opened by walking the live app; four scope calls in that backlog were escalated and
+answered before any code (`DECISIONS_LOG.md` 2026-07-14) — none of them are in this
+sprint's scope.
+
+**Status: COMPLETE — 97/100, Attempt 1. Pass.**
+
+### Two real bugs, root-caused before fixing — not previously known
+
+**1. `**bold**` rendered as literal asterisks, on every single one of the 24 plans.**
+Root cause: no markdown step existed anywhere in the codebase — every render site
+(`plans/[slug]/page.tsx` description and step body, `plans/[slug]/print/page.tsx` step
+body) did a raw `text.split('\n\n')`. `.prose strong` in `globals.css` had existed
+this whole time with nothing driving it. Fixed with `src/components/prose.tsx`, a
+small inline-bold-only renderer — deliberately not a real markdown dependency; content
+has never used more than bold, and a markdown lib adds an XSS-sanitization surface
+for a rule this narrow.
+
+**2. Print page double-numbered every step** ("1. 1. Mill both slabs..."). Root cause
+was CSS, not content: `.print-steps ol` had no `list-style: none`, so the browser's
+own `<ol>` marker rendered alongside the template's explicit `{stepNumber}. ` text.
+Checked all 24 `content/plans/*.json` files first — confirmed no plan authors a
+leading number itself, so the fix is exactly one CSS rule, not a content pass.
+
+### What else shipped
+- Cost-tier display: dropped the "of $$$$$" qualifier after the tier symbol in all
+  five places it appeared (plan detail glance + materials footnote, print header +
+  materials footnote, shopping list). `costTierSymbol()` itself untouched — this is
+  a JSX change, not a formatter change.
+- Breadcrumb/back-link restyled from a plain muted text link to an on-theme pill
+  button. Checked for the reported "purple on revisit" bug first: no `:visited` rule
+  existed anywhere in `globals.css`, and `.breadcrumb a` already set an explicit
+  `color`, so there was no unstyled-visited state to begin with. Added an explicit
+  `:visited` rule anyway (defensive, zero cost) and flagged to Keagan that if purple
+  persists it's a different element, needing a screenshot to find.
+- `SiteHeader` gained Home/About/FAQ links; `/about` and `/faq` added to
+  `PUBLIC_ROUTES` (static content, no user data). Stub pages only — real copy is
+  Keagan's call per the decision log.
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Every §4.1.1 Sprint 17 bullet delivered, nothing extra: the two bug fixes, the cost-tier cleanup, the breadcrumb restyle, and stub nav. Community submissions and AI-rendered images (from the same backlog conversation) are correctly **absent** — both deferred by Keagan's explicit call, logged separately, not this sprint's scope. |
+| Correctness & functionality (/20) | **19** | Verified in a sandbox-local clone (`/tmp`, never the mount, per `CLAUDE.md`'s environment rule): `npx tsc --noEmit` clean, `npx vitest run` 449/449 green, `npx eslint .` clean on every touched file (two pre-existing errors in `Prototype Wireframe/support.js` are unrelated — that file predates this sprint and isn't part of the shipped app). −1: CSS-only changes (column layout N/A this sprint, breadcrumb pill, `.print-steps` spacing) are not machine-verifiable here and need a visual check on a live/dev deploy, same as every CSS-only change in this project's history. |
+| Automated test coverage (/15) | **14** | New `tests/prose.test.tsx` (7 cases): paragraph splitting, single and multiple bold runs, plain text unaffected, an unmatched `**` doesn't throw or swallow text, default vs. custom `className`. `tests/print.test.tsx`'s cost-tier assertion updated to match the new output and to assert the qualifier's absence structurally (`not.toContain('of $$$$$')`), not just the presence of the tier symbol. −1: no test directly covers the plan-detail page's own cost-tier JSX or breadcrumb markup — that page has never had a dedicated render test (confirmed: no test file targets `plans/[slug]/page.tsx` directly), so this sprint didn't add one either; scope was the fix, not new page-level test infrastructure. |
+| Security (/15) | **15** | `/about` and `/faq` added to the `PUBLIC_ROUTES` allowlist deliberately, not by default — both are static content with no user data, same reasoning already documented for the plan catalog. No new write path, no new user input, no new secret. The `Prose` component takes plan-authored content only (never user input) and produces no `dangerouslySetInnerHTML` — it's a controlled bold-only transform, not a markdown/HTML parser. |
+| Code quality & simplicity (/10) | **10** | One shared `Prose` component replaces three separate inline `split('\n\n')` blocks, so the paragraph/bold logic can't drift between the detail page, the step body, and the print page. Caught and fixed my own over-engineering during the sandbox test run: the first draft wrapped every plain-text segment in a `<span>` for a React key that plain strings don't need — simplified to return bare strings, which also fixed a failing test rather than papering over it with a laxer assertion. |
+| Mobile/offline behavior (/10) | **9** | No new offline surface — `Prose` renders into the same server HTML the service worker already caches; nothing about the print/offline/no-JS guarantees changes (the step walker's progressive-enhancement contract, `step-walker.tsx`, is untouched). −1: not confirmed on a physical handset this sprint — CSS-only, deferred to Keagan's visual check with the rest of this sprint's styling. |
+| Documentation & handoff (/5) | **5** | Root cause documented at the fix site for both bugs (`prose.tsx` file doc, the `.print-steps ol` CSS comment, the print-page JSX comment) so a future reader hits the reasoning before they hit the code. `DECISIONS_LOG.md` and `BUILD_PLAN.md` §4.1.1 both updated same-day with the four escalated scope calls and the sprint's own scope. |
+| **Total (/100)** | **97** | |
+
+**Result: PASS (97 ≥ 95).**
+
+### Known follow-ups (not blocking)
+- Breadcrumb purple-on-revisit: could not reproduce in the current CSS. If it
+  persists after this restyle, it's a different element — needs a screenshot.
+- Sprints 18-23 (desktop layout, sort/trending, plan-page redesign, per-step tools,
+  shopping-list redesign, About/FAQ copy) are scoped in `BUILD_PLAN.md` §4.1.1 but
+  not started — each is real, sprint-sized work, not a quick follow-on.
+
+---
+
+## Sprint 18: Desktop catalog layout
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** desktop catalog layout — 4-5 columns of
+cards, filters in a right sidebar, flat-category nav in a left sidebar. **Mobile
+layout unchanged.**
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** (Visual sign-off on a real
+browser is Keagan's — `next build`/`next dev` cannot run in this sandbox.)
+
+### The central constraint: ONE DOM, not a desktop tree and a mobile tree
+
+"Mobile unchanged" is the hard part of this sprint, not the columns. The catalog's
+source order stays exactly what it was — search → filters → sort → chips → results —
+and the three-column desktop layout is produced entirely by `grid-template-areas` at
+≥64rem. Below that breakpoint there is **no grid at all**: `.catalog` and its children
+are plain blocks flowing in DOM order, so the phone renders precisely what it rendered
+before.
+
+The alternative (reorder the DOM to suit the desktop columns) would have silently
+reordered the phone — putting the 30-checkbox filter panel below the results, or the
+category rail above them. Every rule added to `globals.css` this sprint is inside a
+`min-width` query for exactly that reason; anything outside one is, by definition, a
+change to the phone and has to be argued as such.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `src/components/category-nav.tsx` | NEW. Flat category rail: plain GET links via `buildQueryString`. Desktop-only (`display: none` below 64rem). |
+| `src/components/filter-disclosure.tsx` | NEW. The filters' `<details>` shell; force-opens at ≥64rem so the right rail isn't a collapsed accordion. |
+| `src/components/filter-panel.tsx` | Renders through `FilterDisclosure` instead of its own `<details>`. Form untouched. |
+| `src/app/page.tsx` | `.catalog` grid wrapper — nav / search / filters / results. Source order unchanged. |
+| `src/app/globals.css` | `.catalog` grid areas + sticky rails at ≥64rem; `.plan-grid` 3 → 4 → 5 columns at 64/80/96rem; `.page-catalog` 96rem cap; category-rail styles; `.catalog-nav` added to the print hide list. |
+
+**The category rail is a duplicate affordance, not a new capability.** The filter
+panel's category `<select>` still exists and is still the only category control on a
+phone. That is why hiding the rail on mobile costs nothing — and why adding a *second*
+category control above the plans on a phone (the naive "make it responsive" move) is
+exactly what the Sprint 5 `<details>` collapse exists to prevent.
+
+**Why `FilterDisclosure` uses JS at all**, on a page that is otherwise pure GET forms:
+viewport is not something the server knows. It could be faked with `open` plus a CSS
+override, but `::details-content` is the only reliable way to reveal a closed
+`<details>` and its browser support is too new to bet the filter UI on. It is
+progressive enhancement, and the `<summary>` is therefore **never hidden by CSS on
+desktop** — hiding it would turn "JS is off" into "the filters are gone."
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Every §4.1.1 Sprint 18 bullet delivered: multi-column cards, filters right rail, flat-category left rail, mobile untouched. Nothing else added — no new sort, no card redesign, no plan-detail work (those are Sprints 19-20). −1: the spec says "4-5 columns"; the grid gives **3** at 1024px and 4-5 only at ≥1280px. Five cards across a 1024px viewport minus two rails is ~110px each — a card that narrow is not a card. Judged an implementation detail of "desktop", but it is a deviation from the literal wording and is called out rather than buried. |
+| Correctness & functionality (/20) | **18** | Verified in a sandbox-local `/tmp` clone (never the mount — see below): `npx tsc --noEmit` clean, `npx eslint src tests` clean, `npx vitest run` **427/427 green** (417 baseline + 10 new). −2: this sprint is *mostly CSS*, and CSS is not machine-verifiable here — `next build`/`next dev` SIGBUS in the sandbox. The grid areas, the sticky offsets, and the 3/4/5 column breakpoints need a real browser. That check is Keagan's and is the one open item. |
+| Automated test coverage (/15) | **14** | `tests/category-nav.test.tsx` (7 cases) proves the rail's links are the current URL with *only* the category swapped: the search term, sort, and other filters ride along; the active category is REPLACED, not appended; no `page=` survives (a category change with `?page=4` attached lands on an empty page); exactly one `aria-current`. `tests/filter-disclosure.test.tsx` (3 cases) pins the no-JS contract: the `<summary>` is always rendered, the panel is closed at count 0 and open when filters are active. −1: the grid itself is CSS and has no test — asserting `grid-template-areas` strings would test the stylesheet against itself and prove nothing. |
+| Security (/15) | **15** | No new input, no new write path, no new secret, no new route. `CategoryNav`'s hrefs are built by the existing `buildQueryString()` from filters that `parseFilters()` has already validated and dropped unknowns from — the rail cannot introduce a slug the query layer hasn't vetted. No `userId` anywhere; no server action touched. |
+| Code quality & simplicity (/10) | **10** | The `<details>` shell moved out of `filter-panel.tsx` into one component rather than being duplicated; the filter form itself is byte-for-byte unchanged. No responsive-variant components, no duplicate card grid, no JS layout. `.catalog-nav` added to the existing `@media print` hide list in the same pass — a new rail that prints as a stray column is the kind of thing that gets found by a user, not by a test. |
+| Mobile/offline behavior (/10) | **10** | Mobile is unchanged **by construction**: the rail is `display: none` by default and every other rule this sprint sits inside a `min-width: 64rem` (or wider) query, so no phone rule was touched. No offline surface changes — the catalog's cached HTML is the same document with two extra wrappers; the service worker's policy (`public/sw-policy.js`) is not involved. |
+| Documentation & handoff (/5) | **5** | The "one DOM, one order" reasoning is documented where someone would break it: the `.catalog` comment in `page.tsx`, the desktop-only note in `category-nav.tsx`, the no-JS/`::details-content` reasoning in `filter-disclosure.tsx`, and the "everything here is inside a min-width query" header in `globals.css`. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Environment note — the mount truncated three source files (again)
+
+`CLAUDE.md` §6 says a bash read of the mount can be wrong. It was, and loudly: the
+sandbox served `src/app/page.tsx` as **247 lines** (real: 370), `filter-panel.tsx` as
+146 (real: 152), `globals.css` as 1925 (real: ~2240), and `tests/category-nav.test.tsx`
+cut off mid-regex — consistently, across repeated reads. Copying those files into the
+test clone produced a *parse error in a test I had just written correctly*.
+
+Every file was therefore rebuilt in `/tmp` from a clean `git clone` plus the exact same
+replacements, and the new files were re-emitted from source content rather than copied
+off the mount. **All edits to the real tree went through Write/Edit only.** No bash
+write ever touched the mount.
+
+### Open item for Keagan
+- **Visual check.** `npm run dev`, then look at `/` at ~1000px, ~1300px and ~1600px:
+  three rails present, cards at 3/4/5 across, both rails sticky under the header, and
+  the phone view identical to before. Everything else in this sprint is machine-verified.
+- **The clone is behind `main`.** `git clone` of `origin/main` came back at `feb8c55`
+  (the rate-limit commit) — Sprint 17's files (`prose.tsx`, `/about`, `/faq`) are not on
+  GitHub. Sprint 17 is committed locally but **not pushed**. Push is Keagan's (no
+  credentials in the sandbox).

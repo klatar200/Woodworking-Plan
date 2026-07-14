@@ -195,7 +195,11 @@ describe('materials on paper: a cost BAND, never a dollar figure', () => {
 
     // The plan is TIER_2. The band still does the decision-relevant job: this is a
     // modest project, not a $10 one and not a $700 one.
-    expect(html).toContain('$$ of $$$$$');
+    //
+    // Tier symbol only — no "of $$$$$" qualifier (dropped 2026-07-14): the tier IS
+    // the answer, the qualifier only ever echoed the same five characters back.
+    expect(html).toContain('$$');
+    expect(html).not.toContain('of $$$$$');
   });
 });
 

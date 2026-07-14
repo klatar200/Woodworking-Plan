@@ -781,6 +781,84 @@ an optional `returnTo` form field — **attacker input**, validated by `safeRetu
 Denial still does zero database work and still never throws a real error —
 `redirect()` is a framework-handled 303.
 
+### 2026-07-14 — Post-launch-blocker backlog: Keagan's UI/feature punch list, four scope calls
+
+**Status:** Confirmed by user (four sub-decisions, all recommended options chosen — one
+partially, see #4).
+
+Keagan walked the live app and filed 16 items. Before scheduling any of it, four needed
+his call rather than mine, per `BUILD_PLAN.md` §2 (legal, vendor/cost, schema-scope, and
+public-facing copy are all escalation categories):
+
+**1. Community-submitted plans with admin verification — DEFERRED.** Same reasoning
+already used to park the creator marketplace (`DECISIONS_LOG.md` 2026-07-13): zero users
+to submit or moderate for yet, plus real liability publishing user-submitted structural
+build instructions under the app's name (safety, copyright). Not scheduled. Revisit if
+the catalog gets real traffic and Keagan wants a minimal v1 (private admin-only pending
+queue, reusing the Sprint 10 photo pipeline).
+
+**2. AI-rendered 2D plan images (right sidebar) — SKIPPED for now.** No image-gen API has
+a genuine free perpetual tier at production quality — this would violate the
+$0-during-development constraint the same way Cloudflare R2's card-on-file requirement
+did (`DECISIONS_LOG.md` 2026-07-13). The sidebar slot ships empty/ready to receive real
+photography, which has been an open content decision since Sprint 1 (`images: []` on
+every one of the 24 plans).
+
+**3. Category sidebar depth — FLAT, matching the existing schema.** `Category` has no
+parent/subcategory relation today. Real subcategories would need a schema change (a
+self-relation) plus a content pass re-tagging all 24 plans — deferred until there's a
+reason more granular than "the sidebar has room for it."
+
+**4. About/FAQ nav copy — STUB PAGES ONLY, no copy yet.** Keagan chose to ship the nav
+links and routes now with placeholder content ("Content coming soon") rather than either
+of the other two options (me drafting brand-voice copy for approval, or him supplying
+text directly). Public-facing copy stays his call per `BUILD_PLAN.md` §2 whenever it's
+actually written.
+
+**What this unblocks — Sprint 17 (bug fixes + quick wins), done same day:**
+
+- **Real bug, not a decision:** `**bold**` markdown authored in every one of the 24
+  plans' step bodies (and 9 of their descriptions) rendered as literal asterisks on both
+  the plan detail page and the print page — no markdown step existed anywhere in the
+  codebase. Fixed with a small inline-bold-only renderer (`src/components/prose.tsx`),
+  deliberately not a full markdown dependency (no links/lists/headings; content has
+  never used more than bold, and a real markdown lib adds an XSS-sanitization surface
+  for a rule this narrow).
+- **Real bug, not a decision:** the print page's `<ol>` had no `list-style: none`, so
+  the browser's own list marker rendered ALONGSIDE the template's explicit
+  `{stepNumber}. ` text — "1. 1. Mill both slabs..." on paper and when copied out.
+  Root cause was CSS, not content (checked all 24 plan files — no plan authors a
+  leading number itself). Fixed in `globals.css`.
+- **Cosmetic, not a decision:** dropped the "of $$$$$" qualifier after every cost-tier
+  symbol (plan detail glance, materials footnote, print header/materials, shopping
+  list) — the tier IS the answer; the qualifier only ever echoed the same five
+  characters back. `costTierSymbol()` itself is unchanged; this only touched the JSX
+  that appended the qualifier.
+- Breadcrumb/back-link restyled from a plain muted text link into an on-theme pill
+  button (`.breadcrumb a` in `globals.css`), with an explicit `:visited` rule added
+  defensively — though the prior CSS was checked and had no unstyled/purple state to
+  begin with (no `:visited` rule existed anywhere, and `.breadcrumb a` already set an
+  explicit `color`). If purple still shows up somewhere, it's a different element and
+  needs a screenshot to find.
+- Home/About/FAQ added to `SiteHeader` and to the `PUBLIC_ROUTES` allowlist (static
+  content, no user data — same safety reasoning as the catalog itself).
+
+**Verification:** typecheck, lint, and the full test suite (449 tests, one new file
+`tests/prose.test.tsx`) run clean in a sandbox-local clone per the environment rule in
+`CLAUDE.md` (never against the mount). Visual-only changes (CSS layout/restyle) are not
+machine-verifiable here — flagged for Keagan to eyeball on a live/dev deploy same as
+every other CSS-only change in this project's history.
+
+**Still queued, decisions locked, not yet built** (see `BUILD_PLAN.md` §4 for the
+sprint breakdown): desktop catalog layout (4-5 columns, filters right, flat-category nav
+left), sort overhaul (new `PlanView` log table for Trending/Most Viewed, Recommended
+folded into the sort dropdown instead of its own section — reverses the 2026-07-14
+"sorts declined" decision above, at Keagan's explicit direction this time), plan-page
+sidebar/tab redesign + last-step review CTA, per-step tools/hardware (schema gap: `Step`
+has zero relation to `Tool`/`Material` today), and the shopping-list redesign (a new
+`ShoppingListEntry` model decoupled from `SavedPlan`, so saving a plan for later no
+longer forces it onto the shopping list).
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

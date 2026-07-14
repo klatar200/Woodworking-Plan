@@ -6,6 +6,7 @@ import {
   type PlanFilters,
 } from '@/lib/filters';
 import { costTierSymbol, difficultyLabel } from '@/lib/format';
+import { FilterDisclosure } from '@/components/filter-disclosure';
 
 interface Props {
   query: string;
@@ -26,7 +27,8 @@ interface Props {
  * checkboxes above the results would bury the plans on a phone, and the plans are
  * what people came for. <details> gives us that for free, with no JS and correct
  * keyboard/screen-reader behaviour — a hand-rolled accordion would give us less
- * for more.
+ * for more. Sprint 18 moved the panel into a desktop right rail, where nothing is
+ * buried and it opens by itself — see filter-disclosure.tsx.
  *
  * The keyword query rides along as a hidden input so filtering does not silently
  * discard an active search.
@@ -45,11 +47,7 @@ export function FilterPanel({ query, filters, categories, tools }: Props) {
   }
 
   return (
-    <details className="filters" open={count > 0}>
-      <summary className="filters-summary">
-        Filters{count > 0 ? ` (${count})` : ''}
-      </summary>
-
+    <FilterDisclosure count={count}>
       <form className="filters-form" action="/" method="get">
         {/* Keep the active search alive across a filter submit. */}
         {query && <input type="hidden" name="q" value={query} />}
@@ -150,6 +148,6 @@ export function FilterPanel({ query, filters, categories, tools }: Props) {
           </a>
         </div>
       </form>
-    </details>
+    </FilterDisclosure>
   );
 }

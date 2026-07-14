@@ -13,6 +13,7 @@ import { InstallPrompt } from '@/components/install-prompt';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { Recommendations } from '@/components/recommendations';
 import { SearchBox } from '@/components/search-box';
+import { CategoryNav } from '@/components/category-nav';
 import { FilterPanel } from '@/components/filter-panel';
 import { FilterChips } from '@/components/filter-chips';
 import { SortSelect } from '@/components/sort-select';
@@ -134,7 +135,7 @@ export default async function CatalogPage({
 
   return (
     // id="main" is the skip link's target (WCAG 2.4.1).
-    <main id="main" className="page page-wide">
+    <main id="main" className="page page-catalog">
       <h1>Plans</h1>
 
       <RateLimitNotice
@@ -153,153 +154,193 @@ export default async function CatalogPage({
         savedIds={savedIds}
       />
 
-      <SearchBox query={query} />
+      {/*
+        Sprint 18 — the desktop catalog is a three-column grid: category rail,
+        results, filter rail. It is ONE DOM in ONE order, placed by
+        `grid-template-areas` at ≥64rem (see .catalog in globals.css) — not a
+        desktop tree and a mobile tree.
 
-      <FilterPanel
-        query={query}
-        filters={filters}
-        categories={categories}
-        tools={tools}
-      />
+        Which is why the source order below is exactly the mobile order it has
+        always been (search → filters → sort → chips → results): on a phone the
+        grid is not applied, the rail is display:none, and the page flows in DOM
+        order, unchanged. Reordering the DOM to suit the desktop columns would
+        have silently reordered the phone.
+      */}
+      <div className="catalog">
+        {/* Desktop-only (hidden below 64rem): a second way to reach the category
+            filter the panel's <select> already offers, not a second capability. */}
+        <CategoryNav
+          query={query}
+          filters={filters}
+          sort={sort === DEFAULT_SORT ? undefined : sort}
+          categories={categories}
+        />
 
-      <SortSelect sort={sort} query={query} filters={filters} />
+        <div className="catalog-search">
+          <SearchBox query={query} />
+        </div>
 
-      {/* Removable chips for each active filter — renders nothing when browsing
-          unfiltered. Each chip is a GET link; see filter-chips.tsx. */}
-      <FilterChips
-        query={query}
-        filters={filters}
-        sort={sort === DEFAULT_SORT ? undefined : sort}
-        categories={categories}
-        tools={tools}
-      />
+        <aside className="catalog-filters" aria-label="Filters">
+          <FilterPanel
+            query={query}
+            filters={filters}
+            categories={categories}
+            tools={tools}
+          />
+        </aside>
 
-      <p className="subtitle">
-        {isNarrowed ? (
-          <>
-            {total} {total === 1 ? 'plan' : 'plans'}
-            {isSearching && (
+        <div className="catalog-results">
+          <SortSelect sort={sort} query={query} filters={filters} />
+
+          {/* Removable chips for each active filter — renders nothing when browsing
+              unfiltered. Each chip is a GET link; see filter-chips.tsx. */}
+          <FilterChips
+            query={query}
+            filters={filters}
+            sort={sort === DEFAULT_SORT ? undefined : sort}
+            categories={categories}
+            tools={tools}
+          />
+
+          <p className="subtitle">
+            {isNarrowed ? (
               <>
-                {' '}
-                matching <strong>&ldquo;{query}&rdquo;</strong>
+                {total} {total === 1 ? 'plan' : 'plans'}
+                {isSearching && (
+                  <>
+                    {' '}
+                    matching <strong>&ldquo;{query}&rdquo;</strong>
+                  </>
+                )}
+                {isFiltering &&
+                  (isSearching ? ' with your filters' : ' match your filters')}
+                {' · '}
+                <Link href="/">Clear all</Link>
+              </>
+            ) : (
+              <>
+                {total} {total === 1 ? 'plan' : 'plans'} &mdash; every one with a
+                full cut list, material list, and cost estimate.
               </>
             )}
-            {isFiltering && (isSearching ? ' with your filters' : ' match your filters')}
-            {' · '}
-            <Link href="/">Clear all</Link>
-          </>
-        ) : (
-          <>
-            {total} {total === 1 ? 'plan' : 'plans'} &mdash; every one with a full
-            cut list, material list, and cost estimate.
-          </>
-        )}
-      </p>
+          </p>
 
-      {plans.length === 0 ? (
-        <p className="empty-state">
-          {isNarrowed ? (
-            <>
-              Nothing matched. Try loosening a filter &mdash; the{' '}
-              <strong>tools you own</strong> filter is the strictest one, since it
-              hides any plan needing a tool you didn&rsquo;t tick.
-            </>
-          ) : (
-            <>
-              No plans yet. If you are seeing this on a fresh database, run{' '}
-              <code>npm run db:seed</code>.
-            </>
-          )}
-        </p>
-      ) : (
-        <>
-          {/*
-            Heading order (WCAG 1.3.1 / 2.4.6): the cards render <h3> titles, and
-            without this the page jumped h1 → h3. A screen-reader user navigating
-            by heading would hear a level skipped and assume they had missed a
-            section. Visually hidden — sighted users get the same information from
-            the layout.
-          */}
-          <h2 className="visually-hidden">Results</h2>
-          <ul className="plan-grid">
-            {plans.map((plan) => (
-              <PlanCard
-                key={plan.id}
-                plan={plan}
-                rating={ratings.get(plan.id)}
-                saved={savedIds ? savedIds.has(plan.id) : undefined}
-                returnTo={currentUrl}
-              />
-            ))}
-          </ul>
-        </>
-      )}
-
-      {totalPages > 1 && (
-        <nav className="pagination" aria-label="Pagination">
-          {currentPage > 1 ? (
-            <Link
-              href={buildQueryString({
-                query,
-                filters,
-                sort: sort === DEFAULT_SORT ? undefined : sort,
-                page: currentPage - 1,
-              })}
-              className="btn btn-ghost"
-              rel="prev"
-            >
-              &larr; Prev
-            </Link>
-          ) : (
-            <span className="btn btn-ghost pagination-disabled" aria-hidden="true">
-              &larr; Prev
-            </span>
-          )}
-
-          <span className="pagination-numbers">
-            {paginationWindow(currentPage, totalPages).map((token, i) =>
-              token === '…' ? (
-                <span key={`gap-${i}`} className="pagination-gap" aria-hidden="true">
-                  &hellip;
-                </span>
+          {plans.length === 0 ? (
+            <p className="empty-state">
+              {isNarrowed ? (
+                <>
+                  Nothing matched. Try loosening a filter &mdash; the{' '}
+                  <strong>tools you own</strong> filter is the strictest one, since
+                  it hides any plan needing a tool you didn&rsquo;t tick.
+                </>
               ) : (
+                <>
+                  No plans yet. If you are seeing this on a fresh database, run{' '}
+                  <code>npm run db:seed</code>.
+                </>
+              )}
+            </p>
+          ) : (
+            <>
+              {/*
+                Heading order (WCAG 1.3.1 / 2.4.6): the cards render <h3> titles, and
+                without this the page jumped h1 → h3. A screen-reader user navigating
+                by heading would hear a level skipped and assume they had missed a
+                section. Visually hidden — sighted users get the same information from
+                the layout.
+              */}
+              <h2 className="visually-hidden">Results</h2>
+              <ul className="plan-grid">
+                {plans.map((plan) => (
+                  <PlanCard
+                    key={plan.id}
+                    plan={plan}
+                    rating={ratings.get(plan.id)}
+                    saved={savedIds ? savedIds.has(plan.id) : undefined}
+                    returnTo={currentUrl}
+                  />
+                ))}
+              </ul>
+            </>
+          )}
+
+          {totalPages > 1 && (
+            <nav className="pagination" aria-label="Pagination">
+              {currentPage > 1 ? (
                 <Link
-                  key={token}
                   href={buildQueryString({
                     query,
                     filters,
                     sort: sort === DEFAULT_SORT ? undefined : sort,
-                    page: token,
+                    page: currentPage - 1,
                   })}
-                  className={`pagination-number ${token === currentPage ? 'pagination-number-active' : ''}`}
-                  aria-current={token === currentPage ? 'page' : undefined}
+                  className="btn btn-ghost"
+                  rel="prev"
                 >
-                  {token}
+                  &larr; Prev
                 </Link>
-              ),
-            )}
-          </span>
+              ) : (
+                <span
+                  className="btn btn-ghost pagination-disabled"
+                  aria-hidden="true"
+                >
+                  &larr; Prev
+                </span>
+              )}
 
-          {currentPage < totalPages ? (
-            <Link
-              href={buildQueryString({
-                query,
-                filters,
-                sort: sort === DEFAULT_SORT ? undefined : sort,
-                page: currentPage + 1,
-              })}
-              className="btn btn-ghost"
-              rel="next"
-            >
-              Next &rarr;
-            </Link>
-          ) : (
-            <span className="btn btn-ghost pagination-disabled" aria-hidden="true">
-              Next &rarr;
-            </span>
+              <span className="pagination-numbers">
+                {paginationWindow(currentPage, totalPages).map((token, i) =>
+                  token === '…' ? (
+                    <span
+                      key={`gap-${i}`}
+                      className="pagination-gap"
+                      aria-hidden="true"
+                    >
+                      &hellip;
+                    </span>
+                  ) : (
+                    <Link
+                      key={token}
+                      href={buildQueryString({
+                        query,
+                        filters,
+                        sort: sort === DEFAULT_SORT ? undefined : sort,
+                        page: token,
+                      })}
+                      className={`pagination-number ${token === currentPage ? 'pagination-number-active' : ''}`}
+                      aria-current={token === currentPage ? 'page' : undefined}
+                    >
+                      {token}
+                    </Link>
+                  ),
+                )}
+              </span>
+
+              {currentPage < totalPages ? (
+                <Link
+                  href={buildQueryString({
+                    query,
+                    filters,
+                    sort: sort === DEFAULT_SORT ? undefined : sort,
+                    page: currentPage + 1,
+                  })}
+                  className="btn btn-ghost"
+                  rel="next"
+                >
+                  Next &rarr;
+                </Link>
+              ) : (
+                <span
+                  className="btn btn-ghost pagination-disabled"
+                  aria-hidden="true"
+                >
+                  Next &rarr;
+                </span>
+              )}
+            </nav>
           )}
-        </nav>
-      )}
+        </div>
+      </div>
     </main>
   );
 }

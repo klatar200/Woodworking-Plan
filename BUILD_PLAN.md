@@ -118,11 +118,12 @@ state rather than assumptions made today.
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
 | Phase 4 | ⛔ NOT OPENED — do not start without Keagan explicitly opening it |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; these come due before anything else ships |
+| Post-launch-blocker backlog (Sprints 17-23) | 🟡 IN PROGRESS — Sprints 17 ✅ and 18 ✅ COMPLETE; see §4.1.1 |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
 detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of this
-update: **442 green** (2026-07-14: Clerk deletion webhook, offline policy
-de-duplicated, paths offline, cut-list yield made width-aware).
+update: **459 green** (2026-07-14: Sprint 18 — desktop catalog layout: three-column
+grid, category rail, filter rail, 3/4/5-column cards; mobile untouched).
 
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
@@ -291,6 +292,32 @@ are unchanged. Full decision record: `DECISIONS_LOG.md` 2026-07-13 and 2026-07-1
 
 The `Woodworking Wireframes.dc.html` file in the same folder is **historical
 design iteration, not spec** — where it contradicts the above, the decisions win.
+
+### 4.1.1 Post-launch-blocker backlog (opened 2026-07-14) — Sprints 17-23
+
+Keagan's UI/feature punch list from walking the live app. Four scope calls were
+escalated and answered first — see `DECISIONS_LOG.md` 2026-07-14 for the full
+reasoning. Community submissions and AI-rendered images are **not** in this list —
+both deferred by his explicit call.
+
+| Sprint | Scope | Status |
+|---|---|---|
+| 17 | Bug fixes: `**bold**` markdown rendering (real bug, all 24 plans affected), print double-numbering (CSS root cause, not content), cost-tier "of $$$$$" qualifier dropped, breadcrumb restyled to an on-theme pill, Home/About/FAQ stub nav | ✅ COMPLETE — 449 tests green, typecheck/lint clean |
+| 18 | Desktop catalog layout: 4-5 columns, filters right sidebar, flat-category nav left sidebar (mobile layout unchanged) | ✅ COMPLETE — 96/100. One DOM, one source order; the three columns are `grid-template-areas` at ≥64rem and every rule is inside a `min-width` query, so mobile is untouched by construction. Cards go 3 → 4 → 5 across at 64/80/96rem (5 across at 1024px would be a ~110px card). 459 tests green; visual sign-off pending on Keagan's browser |
+| 19 | Sort overhaul: new `PlanView` log table (no view-tracking exists today); Trending (7-day window) + Most Viewed (all-time) sorts; Recommended folded into the sort dropdown, retiring the standalone "Recommended for you" section; default sort → Trending; Cheapest/Easiest/Quickest removed | Not started |
+| 20 | Plan-detail redesign (desktop): sidebar/tabs for Tools/Materials/Cut List, right-sidebar image slot (empty — no AI generation per the decision above), a button to open Instructions, last-step CTA for review + photo upload. Full server-rendered document stays underneath, same progressive-enhancement pattern as the existing step walker (print/offline/no-JS unaffected) | Not started |
+| 21 | Per-step tools/hardware: `Step` has no relation to `Tool`/`Material` today — needs join tables (kept as a subset of the plan's already-declared tools/materials) plus a content pass across all 24 plans | Not started |
+| 22 | Shopping-list redesign: new `ShoppingListEntry` model decoupled from `SavedPlan` (an explicit per-plan "add to shopping list", not everything saved); two view modes (by-plan, unmerged vs. whole-list, merged) | Not started |
+| 23 | About/FAQ real copy, once Keagan writes/approves it (stub pages shipped in Sprint 17) | Not started |
+
+**Sort/Recommended reversal, stated explicitly:** this directly reverses the
+2026-07-14 decision below ("Sort options stay as-is... declined for now") and the
+Sprint 11 rule ("never fall back to popular plans under a personalized heading").
+Both reversals are at Keagan's explicit direction, not a re-litigation by the build
+agent — see `DECISIONS_LOG.md` for the record. The two rules aren't actually in
+tension once built: a sort's fallback-to-Trending for a cold user is a tiebreaker
+within a full catalog listing, not a fabricated personalized recommendation shown
+under a "for you" heading — the trust concern the original rule was guarding against.
 
 ### 4.2 🔴 Still required — open items, in priority order
 

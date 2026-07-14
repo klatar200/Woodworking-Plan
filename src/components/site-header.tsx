@@ -33,11 +33,25 @@ export function SiteHeader() {
         </Link>
 
         <nav className="site-nav" aria-label="Main">
+          {/* Standard trust nav (2026-07-14) — every stable app has this; the site
+              had no Home/About/FAQ at all before. Stub pages for now (About/FAQ
+              copy is Keagan's call — public-facing brand voice, not a routine
+              engineering decision). OUTSIDE SignedIn/SignedOut: same reasoning as
+              Paths below, this is public navigation, not account state. */}
+          <Link href="/" className="btn btn-ghost">
+            Home
+          </Link>
           {/* Sprint 16. OUTSIDE the SignedIn/SignedOut split on purpose — paths are
               public content, and they are the best argument for signing up that the
               site has. Hiding them behind a login would be exactly backwards. */}
           <Link href="/paths" className="btn btn-ghost">
             Paths
+          </Link>
+          <Link href="/about" className="btn btn-ghost">
+            About
+          </Link>
+          <Link href="/faq" className="btn btn-ghost">
+            FAQ
           </Link>
 
           <SignedOut>
