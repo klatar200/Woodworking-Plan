@@ -256,6 +256,22 @@ with it.
   `steps` array, throws on any non-subset tag. 490 tests green. **Renders nothing until
   the migration runs + the script is applied + re-seed** — see the step-tags rule below.
 
+- **Sprint 22 (Shopping-list redesign): COMPLETE — 96/100.** New `ShoppingListEntry`
+  (`userId`,`planId`) model — the shopping list is now built from **explicit per-plan
+  adds**, decoupled from saves (`DECISIONS_LOG.md` 2026-07-14). `getShoppingList()` takes
+  **no arguments** (owner from session) and returns BOTH views — **merged** (combined,
+  grouped by unit; the Sprint 12 exact-merge rule is UNCHANGED) and **by-plan** (each
+  project's materials, unmerged). "Add to shopping list" button on each plan (`toggle`
+  rate-limit, no-throw, redirect notice); merged/by-plan GET toggle replaced the old
+  collection scoping. 495 tests green. **Renders nothing until the migration runs** and a
+  user explicitly adds a plan — saved plans do NOT auto-populate it.
+
+- **Prod hotfix + CI (2026-07-14).** Trending's `make_interval(days => $1)` raw SQL 500'd
+  the home page in prod (see the view-tracking rule); fixed to a bound `Date` cutoff. CI's
+  long-standing lint red was the `Prototype Wireframe/` design export — now eslint-ignored,
+  so CI is a working detector again. A latent Sprint 21 print-test fixture (steps missing
+  `tools`/`materials`) was also corrected.
+
 - **Prototype-delta pass (2026-07-14): COMPLETE.** Active-filter chips
   (`filter-chips.tsx` — GET links, one per active filter value, sort/query ride
   along) and skeleton loading states (`loading.tsx` for catalog + plan detail,
@@ -293,6 +309,19 @@ wifi and find, in the shop, that the one page you want needs a network.
 cartridge and is unreadable), `break-inside: avoid` on cut-list rows (a row split across
 a page break is a cut list you cannot read), repeated table headers, and **tape-measure
 fractions** — 13/16″, never 0.8125″.
+
+### Shopping-list SOURCE rule (Sprint 22) — explicit adds, not saves
+
+**The shopping list is built from `ShoppingListEntry` (explicit per-plan "add to shopping
+list"), NOT from `SavedPlan`.** Saving is "maybe someday"; the shopping list is "buying
+for these now" — conflating them made the sheet a dumping ground of every idea ever
+bookmarked (`DECISIONS_LOG.md` 2026-07-14). Adding a plan is a separate, explicit action.
+`getShoppingList()` takes **no arguments** (owner from session; the old `collectionId`
+scope is gone) and returns BOTH the **merged** and **by-plan** views — presentation picks
+one via `?view=`, never an argument aimed at another user's data. Same IDOR rules as
+saves/likes: no function here takes a `userId`; every write is scoped by `userId` in its
+WHERE. **The merge rules below (Sprint 12) are UNCHANGED** — only the source of the plans
+changed.
 
 ### Shopping-list rules (Sprint 12) — BOTH halves matter
 

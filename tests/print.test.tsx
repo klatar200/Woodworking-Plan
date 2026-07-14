@@ -89,8 +89,12 @@ const plan = {
     },
   ],
   steps: [
-    { id: 's1', stepNumber: 1, title: 'Mill the stock', body: 'Flatten one face.' },
-    { id: 's2', stepNumber: 2, title: 'Rip the strips', body: 'Six at 2".' },
+    // Sprint 21: getPlanBySlug ALWAYS includes each step's tools/materials (Prisma
+    // include), so real steps carry these arrays even when empty. The fixture must
+    // mirror that — the print page reads `step.tools.length`, and a mock missing them
+    // is a mock that doesn't match production.
+    { id: 's1', stepNumber: 1, title: 'Mill the stock', body: 'Flatten one face.', tools: [], materials: [] },
+    { id: 's2', stepNumber: 2, title: 'Rip the strips', body: 'Six at 2".', tools: [], materials: [] },
   ],
   _count: { likes: 0 },
 };

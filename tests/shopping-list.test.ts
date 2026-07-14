@@ -15,12 +15,18 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-const savedPlan = { findMany: vi.fn() };
-const collection = { findFirst: vi.fn() };
+// Sprint 22: the list is built from ShoppingListEntry (explicit adds), not SavedPlan.
+const shoppingListEntry = {
+  findMany: vi.fn(),
+  findUnique: vi.fn(),
+  upsert: vi.fn(),
+  deleteMany: vi.fn(),
+};
 const requireUser = vi.fn();
+const getCurrentUser = vi.fn();
 
-vi.mock('@/lib/db', () => ({ prisma: { savedPlan, collection } }));
-vi.mock('@/lib/auth', () => ({ requireUser }));
+vi.mock('@/lib/db', () => ({ prisma: { shoppingListEntry } }));
+vi.mock('@/lib/auth', () => ({ requireUser, getCurrentUser }));
 
 const ALICE = { id: 'user_alice' };
 
@@ -39,10 +45,21 @@ const material = (over: Record<string, unknown> = {}) => ({
 
 beforeEach(() => {
   vi.resetModules();
-  savedPlan.findMany.mockReset().mockResolvedValue([]);
-  collection.findFirst.mockReset();
+  shoppingListEntry.findMany.mockReset().mockResolvedValue([]);
+  shoppingListEntry.findUnique.mockReset().mockResolvedValue(null);
+  shoppingListEntry.upsert.mockReset().mockResolvedValue({});
+  shoppingListEntry.deleteMany.mockReset().mockResolvedValue({ count: 0 });
   requireUser.mockReset().mockResolvedValue(ALICE);
+  getCurrentUser.mockReset().mockResolvedValue(ALICE);
 });
+
+/** Shape a ShoppingListEntry row the way getShoppingList selects it. */
+const entry = (plan: {
+  slug: string;
+  title: string;
+  published?: boolean;
+  materials: unknown[];
+}) => ({ plan: { published: true, ...plan } });
 
 describe('SAFETY: what must NOT be merged', () => {
   it('does NOT merge two different screws just because both say "screws"', async () => {
@@ -220,7 +237,7 @@ describe('MONEY: a ballpark, marked as one — not silence', () => {
   });
 
   it('the LIST total is always a number, with a count of what is missing', async () => {
-    savedPlan.findMany.mockResolvedValue([
+    shoppingListEntry.findMany.mockResolvedValue([
       {
         plan: {
           slug: 'p',
@@ -244,7 +261,7 @@ describe('MONEY: a ballpark, marked as one — not silence', () => {
   });
 
   it('the total is exact when everything IS priced', async () => {
-    savedPlan.findMany.mockResolvedValue([
+    shoppingListEntry.findMany.mockResolvedValue([
       {
         plan: {
           slug: 'p',
@@ -268,70 +285,120 @@ describe('MONEY: a ballpark, marked as one — not silence', () => {
 });
 
 describe('MULTI-TENANCY', () => {
-  it('IDOR TRIPWIRE: getShoppingList takes exactly ONE param, and it is not an identity', async () => {
+  it('IDOR TRIPWIRE: getShoppingList takes NO parameters — the owner is the session', async () => {
     const { getShoppingList } = await import('@/lib/shopping-list');
 
-    // Exactly one: `collectionId`. The OWNER is never a parameter — it comes from the
-    // verified session. If this ever becomes 2, someone added an identity argument,
-    // and that is an IDOR: a caller would simply pass somebody else's id.
-    //
-    // (Note for anyone tempted to "fix" this to 0: an optional TS parameter still
-    // counts toward Function.length. The number 1 is correct and load-bearing.)
-    expect(getShoppingList.length).toBe(1);
+    // Sprint 22 dropped the `collectionId` argument. The owner has never been a
+    // parameter and now nothing is. If this ever becomes > 0, someone added an argument;
+    // if that argument is an identity, it is an IDOR — a caller would pass someone
+    // else's id. Zero is correct and load-bearing.
+    expect(getShoppingList.length).toBe(0);
   });
 
-  it('scopes saved plans to the session user', async () => {
+  it('scopes the entry query to the session user', async () => {
     const { getShoppingList } = await import('@/lib/shopping-list');
     await getShoppingList();
 
-    expect(savedPlan.findMany).toHaveBeenCalledWith(
+    expect(shoppingListEntry.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({ userId: 'user_alice' }),
       }),
     );
   });
 
-  it("SECURITY: someone else's collection id yields an EMPTY list, not their materials", async () => {
-    // The collection lookup is scoped by userId, so Bob's id does not resolve.
-    collection.findFirst.mockResolvedValue(null);
+  it('add/remove/isOn never take a userId — the owner is the session', async () => {
+    const mod = await import('@/lib/shopping-list');
+    // One argument each: the planId. Never an identity.
+    expect(mod.addToShoppingList.length).toBe(1);
+    expect(mod.removeFromShoppingList.length).toBe(1);
+    expect(mod.isOnShoppingList.length).toBe(1);
+  });
 
-    const { getShoppingList } = await import('@/lib/shopping-list');
-    const list = await getShoppingList('bobs_collection');
+  it('add is idempotent and scoped by userId (upsert on the composite key)', async () => {
+    const { addToShoppingList } = await import('@/lib/shopping-list');
+    await addToShoppingList('plan_1');
 
-    expect(list.planCount).toBe(0);
-    expect(list.groups).toEqual([]);
-
-    // And it never went looking for the plans. Empty is indistinguishable from "that
-    // collection is empty" — "exists but is not yours" is an existence oracle.
-    expect(savedPlan.findMany).not.toHaveBeenCalled();
-    expect(collection.findFirst).toHaveBeenCalledWith(
+    expect(shoppingListEntry.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { id: 'bobs_collection', userId: 'user_alice' },
+        where: { userId_planId: { userId: 'user_alice', planId: 'plan_1' } },
+        create: { userId: 'user_alice', planId: 'plan_1' },
       }),
     );
   });
 
-  it('scopes the collection filter by userId on the saved-plan query too', async () => {
-    collection.findFirst.mockResolvedValue({ name: 'For the Cabin' });
+  it('remove is scoped by userId in the WHERE — a guessed row id affects zero rows', async () => {
+    const { removeFromShoppingList } = await import('@/lib/shopping-list');
+    await removeFromShoppingList('plan_1');
 
-    const { getShoppingList } = await import('@/lib/shopping-list');
-    await getShoppingList('col_1');
-
-    const where = savedPlan.findMany.mock.calls[0]![0].where;
-
-    // Belt AND braces. Two independent scopes, because one forgotten filter is how a
-    // multi-tenancy bug ships while still "working".
-    expect(where.userId).toBe('user_alice');
-    expect(where.collections.some.collection).toEqual({
-      id: 'col_1',
-      userId: 'user_alice',
+    // deleteMany({ where: { userId, planId } }) — NOT delete({ where: { id } }).
+    expect(shoppingListEntry.deleteMany).toHaveBeenCalledWith({
+      where: { userId: 'user_alice', planId: 'plan_1' },
     });
+  });
+
+  it('isOnShoppingList is false for an anonymous visitor and never queries', async () => {
+    getCurrentUser.mockResolvedValue(null);
+    const { isOnShoppingList } = await import('@/lib/shopping-list');
+
+    expect(await isOnShoppingList('plan_1')).toBe(false);
+    expect(shoppingListEntry.findUnique).not.toHaveBeenCalled();
+  });
+});
+
+describe('the two views (Sprint 22)', () => {
+  const twoPlans = [
+    entry({
+      slug: 'a',
+      title: 'Plan A',
+      materials: [
+        { name: 'Wood glue', unit: 'oz', species: null, quantity: 4, costCents: 400 },
+        { name: 'Cedar', unit: 'board feet', species: 'Cedar', quantity: 6, costCents: 3000 },
+      ],
+    }),
+    entry({
+      slug: 'b',
+      title: 'Plan B',
+      materials: [
+        { name: 'Wood glue', unit: 'oz', species: null, quantity: 6, costCents: 600 },
+      ],
+    }),
+  ];
+
+  it('MERGED view combines the shared item across plans', async () => {
+    shoppingListEntry.findMany.mockResolvedValue(twoPlans);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const list = await getShoppingList();
+
+    const glue = list.groups
+      .flatMap((g) => g.lines)
+      .find((l) => l.name === 'Wood glue');
+    expect(glue!.quantity).toBe(10); // 4 + 6
+    expect(glue!.plans.map((p) => p.slug).sort()).toEqual(['a', 'b']);
+  });
+
+  it('BY-PLAN view keeps each plan separate and UNMERGED', async () => {
+    shoppingListEntry.findMany.mockResolvedValue(twoPlans);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const list = await getShoppingList();
+
+    expect(list.byPlan.map((p) => p.slug)).toEqual(['a', 'b']);
+    // Plan A keeps its own two lines; the glue is NOT merged with Plan B's here.
+    expect(list.byPlan[0]!.lines.map((l) => l.name)).toEqual(['Wood glue', 'Cedar']);
+    const bGlue = list.byPlan[1]!.lines.find((l) => l.name === 'Wood glue');
+    expect(bGlue!.quantity).toBe(6); // NOT 10 — by-plan is unmerged
+  });
+
+  it('the whole-list total is the same regardless of view', async () => {
+    shoppingListEntry.findMany.mockResolvedValue(twoPlans);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const list = await getShoppingList();
+    expect(list.totalCents).toBe(4000); // 400 + 3000 + 600
   });
 });
 
 describe('published: true is enforced', () => {
   it('an unpublished plan contributes NO materials, even if it was saved', async () => {
-    savedPlan.findMany.mockResolvedValue([
+    shoppingListEntry.findMany.mockResolvedValue([
       {
         plan: {
           slug: 'staged',
@@ -367,7 +434,7 @@ describe('published: true is enforced', () => {
 
 describe('grouping and presentation', () => {
   it('groups by unit — you buy board feet and screws in different aisles', async () => {
-    savedPlan.findMany.mockResolvedValue([
+    shoppingListEntry.findMany.mockResolvedValue([
       {
         plan: {
           slug: 'p',

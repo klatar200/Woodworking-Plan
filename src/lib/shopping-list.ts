@@ -1,11 +1,16 @@
 import { prisma } from '@/lib/db';
-import { requireUser } from '@/lib/auth';
+import { requireUser, getCurrentUser } from '@/lib/auth';
 
 /**
  * Shopping list generator — Sprint 12. BUSINESS_PLAN.md §10.
  *
- * Aggregates the materials across a user's saved plans into one consolidated list they
- * can actually take to a lumberyard.
+ * Aggregates materials across the plans a user has EXPLICITLY added to their shopping
+ * list into one consolidated list they can take to a lumberyard.
+ *
+ * SPRINT 22: the source changed from "everything you saved" to an explicit
+ * `ShoppingListEntry` set (DECISIONS_LOG.md 2026-07-14). Saving is "maybe someday";
+ * the shopping list is "buying for these now" — different intents, so a different table.
+ * The merge machinery below is UNCHANGED; only where the plans come from changed.
  *
  * ═══════════════════════════════════════════════════════════════════════════════
  * NO AFFILIATE LINKS. NOT AN OVERSIGHT — A CONSTRAINT.
@@ -60,9 +65,26 @@ export interface ShoppingListLine {
   plans: { slug: string; title: string }[];
 }
 
+/** One plan on the shopping list, with its own (unmerged) material lines. */
+export interface ShoppingListPlan {
+  slug: string;
+  title: string;
+  /** THIS plan's materials, in author order — not merged with other plans. */
+  lines: ShoppingListLine[];
+}
+
 export interface ShoppingList {
-  /** Grouped by unit — you buy board feet at a lumberyard and screws by the box. */
+  /**
+   * MERGED view — combined across every plan, grouped by unit. This is the "one buyable
+   * list" that Sprint 12 built, and the merge rule (exact only) is unchanged.
+   */
   groups: { unit: string; lines: ShoppingListLine[] }[];
+  /**
+   * BY-PLAN view — each plan's materials on their own, UNMERGED (Sprint 22). Same
+   * underlying data, presented so you can see what each project contributes and shop for
+   * one build at a time. Two views of one list, chosen in the UI by `?view=`.
+   */
+  byPlan: ShoppingListPlan[];
   planCount: number;
   lineCount: number;
   /**
@@ -80,8 +102,6 @@ export interface ShoppingList {
   totalCents: number;
   /** How many materials across the list have no price. Zero means the total is complete. */
   unpricedCount: number;
-  /** Null for the whole library; the collection's name when scoped to one. */
-  collectionName: string | null;
 }
 
 export interface MaterialInput {
@@ -188,52 +208,68 @@ export function mergeMaterials(materials: MaterialInput[]): ShoppingListLine[] {
   return [...merged.values()];
 }
 
-/** An empty list. Returned for a collection that is empty OR is not the user's. */
-function emptyList(collectionName: string | null): ShoppingList {
+// ──────────────────────── membership (Sprint 22) ────────────────────────
+//
+// Same security rule as the rest of this file and all of saves.ts: NO function takes a
+// `userId`. The owner is the verified session, and every write is scoped by `userId` in
+// its WHERE clause — not by row id — so a guessed id affects zero rows.
+
+/** Adds a plan to the session user's shopping list. Idempotent (DB `@@unique`). */
+export async function addToShoppingList(planId: string): Promise<void> {
+  const user = await requireUser();
+  await prisma.shoppingListEntry.upsert({
+    where: { userId_planId: { userId: user.id, planId } },
+    create: { userId: user.id, planId },
+    update: {},
+  });
+}
+
+/** Removes a plan from the session user's shopping list. */
+export async function removeFromShoppingList(planId: string): Promise<void> {
+  const user = await requireUser();
+  // deleteMany scoped by userId — NOT delete({ where: { id } }), which would let anyone
+  // who guesses a row id delete anyone's entry. This silently affects zero rows for a
+  // plan that isn't the caller's, which is exactly right.
+  await prisma.shoppingListEntry.deleteMany({ where: { userId: user.id, planId } });
+}
+
+/** Whether a plan is on the current user's shopping list. False for anonymous visitors. */
+export async function isOnShoppingList(planId: string): Promise<boolean> {
+  const user = await getCurrentUser();
+  if (!user) return false;
+  const row = await prisma.shoppingListEntry.findUnique({
+    where: { userId_planId: { userId: user.id, planId } },
+    select: { id: true },
+  });
+  return row !== null;
+}
+
+/** An empty list. */
+function emptyList(): ShoppingList {
   return {
     groups: [],
+    byPlan: [],
     planCount: 0,
     lineCount: 0,
     totalCents: 0,
     unpricedCount: 0,
-    collectionName,
   };
 }
 
 /**
- * Generates a shopping list from the signed-in user's saved plans.
+ * Generates the signed-in user's shopping list from the plans they've explicitly added.
  *
- * @param collectionId - Optional. Narrows to one collection. The collection lookup is
- *   ALSO scoped by the session user, so someone else's id yields an empty list rather
- *   than their contents — the same pattern as `listSavedPlans()`.
- *
- * Takes no `userId`. It never will.
+ * TAKES NO ARGUMENTS — and never an identity. The owner is the verified session. Both
+ * views (merged and by-plan) are computed here from one query; the UI picks which to
+ * show. Presentation is a `?view=` concern, deliberately kept out of this signature so
+ * there is no argument an attacker could aim at someone else's data.
  */
-export async function getShoppingList(collectionId?: string): Promise<ShoppingList> {
+export async function getShoppingList(): Promise<ShoppingList> {
   const user = await requireUser();
 
-  let collectionName: string | null = null;
-
-  if (collectionId) {
-    const collection = await prisma.collection.findFirst({
-      where: { id: collectionId, userId: user.id },
-      select: { name: true },
-    });
-
-    // Not found, or not theirs. INDISTINGUISHABLE ON PURPOSE — an empty list either
-    // way. "That collection exists but is not yours" is an existence oracle.
-    if (!collection) return emptyList(null);
-
-    collectionName = collection.name;
-  }
-
-  const saved = await prisma.savedPlan.findMany({
-    where: {
-      userId: user.id,
-      ...(collectionId
-        ? { collections: { some: { collection: { id: collectionId, userId: user.id } } } }
-        : {}),
-    },
+  const entries = await prisma.shoppingListEntry.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: 'asc' },
     select: {
       plan: {
         select: {
@@ -255,10 +291,28 @@ export async function getShoppingList(collectionId?: string): Promise<ShoppingLi
     },
   });
 
-  // An unpublished plan contributes nothing — even to someone who saved it before it
-  // was unpublished. `published: true` on every read, per the standing rule.
-  const plans = saved.map((entry) => entry.plan).filter((plan) => plan.published);
+  // An unpublished plan contributes nothing — even to someone who added it before it was
+  // unpublished. `published: true` on every read, per the standing rule.
+  const plans = entries.map((entry) => entry.plan).filter((plan) => plan.published);
 
+  if (plans.length === 0) return emptyList();
+
+  // --- BY-PLAN view: each plan's own materials, unmerged, in author order. ---
+  const byPlan: ShoppingListPlan[] = plans.map((plan) => ({
+    slug: plan.slug,
+    title: plan.title,
+    lines: plan.materials.map((m) => ({
+      name: m.name.trim(),
+      unit: m.unit,
+      species: m.species,
+      quantity: m.quantity,
+      costCents: m.costCents ?? 0,
+      unpricedCount: m.costCents === null ? 1 : 0,
+      plans: [{ slug: plan.slug, title: plan.title }],
+    })),
+  }));
+
+  // --- MERGED view: combined across plans, grouped by unit (Sprint 12, unchanged). ---
   const materials: MaterialInput[] = plans.flatMap((plan) =>
     plan.materials.map((material) => ({
       name: material.name,
@@ -291,12 +345,12 @@ export async function getShoppingList(collectionId?: string): Promise<ShoppingLi
 
   return {
     groups,
+    byPlan,
     planCount: plans.length,
     lineCount: lines.length,
     // Sum what we know. The UI marks it "≈" and says how many items are missing a
     // price — that is what makes a ballpark honest, rather than refusing to give one.
     totalCents: lines.reduce((sum, line) => sum + line.costCents, 0),
     unpricedCount: lines.reduce((sum, line) => sum + line.unpricedCount, 0),
-    collectionName,
   };
 }

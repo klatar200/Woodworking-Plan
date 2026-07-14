@@ -9,7 +9,18 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 
 const config = [
   {
-    ignores: ['.next/**', 'node_modules/**', 'next-env.d.ts', 'coverage/**'],
+    // 'Prototype Wireframe/' is a design-tool EXPORT (Claude Design), not app code —
+    // `next build` never lints it, but `eslint .` (CI) did, and its two errors
+    // (deprecated ReactDOM.render, an assign-to-`module`) kept CI red for weeks, which
+    // is how a real production bug reached a deploy with nobody watching the detector.
+    // It is historical reference (DECISIONS_LOG.md 2026-07-14) and not ours to fix.
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'next-env.d.ts',
+      'coverage/**',
+      'Prototype Wireframe/**',
+    ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {

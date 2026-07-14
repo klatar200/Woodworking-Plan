@@ -76,6 +76,7 @@ model User {
   collections Collection[]
   likes       Like[]
   reviews     Review[]
+  shoppingList ShoppingListEntry[]
 
   @@index([clerkId])
 }
@@ -343,6 +344,38 @@ model SavedPlan {
   @@index([planId])
 }
 
+/// A plan the user has explicitly put ON their shopping list — Sprint 22.
+///
+/// ═══════════════════════════════════════════════════════════════════════════════
+/// WHY THIS IS SEPARATE FROM `SavedPlan`.
+///
+/// Sprint 12's shopping list was derived from EVERYTHING the user had saved. But saving
+/// is "I might build this someday" and a shopping list is "I am buying materials for
+/// these NOW" — two different intents, and conflating them made the list a dumping
+/// ground: every idea you ever bookmarked showed up on the sheet you take to the
+/// lumberyard. This model decouples them (`DECISIONS_LOG.md` 2026-07-14): a plan is on
+/// the shopping list only when the user explicitly adds it.
+///
+/// Same ownership rules as SavedPlan/Like: `userId` comes ONLY from the verified
+/// session, never from client input. `@@unique([userId, planId])` makes "add" idempotent
+/// at the database level — a double-tap cannot create two rows.
+/// ═══════════════════════════════════════════════════════════════════════════════
+model ShoppingListEntry {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, planId])
+  @@index([userId])
+  @@index([planId])
+}
+
 /// A user-defined folder for organizing saved plans — BUSINESS_PLAN.md §4.4
 /// ("Kitchen", "For the Cabin", "Beginner Projects").
 ///
@@ -501,6 +534,7 @@ model Plan {
   reviews   Review[]
   pathSteps PathStep[]
   views     PlanView[]
+  shoppingList ShoppingListEntry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -141,21 +141,15 @@ export default async function SavedPage({
           <span className="muted">({savedPlans.length})</span>
         </h2>
 
-        {/* Sprint 12. Scoped to whatever the user is currently looking at — the list
-            for "For the Cabin" comes from the "For the Cabin" view. Hidden when there
-            is nothing saved, because a shopping list for zero plans is a blank page
-            with a heading. */}
+        {/* Sprint 22. The shopping list is now its own explicit set, decoupled from
+            saves (DECISIONS_LOG.md 2026-07-14) — so this is a plain link to it, no
+            longer scoped by collection. Shown whenever the user has saves, as a
+            pointer to where the shopping list lives; plans get ONTO it from each plan
+            page's "Add to shopping list", not from being saved. */}
         {savedPlans.length > 0 && (
           <p className="shopping-list-cta">
-            <Link
-              href={
-                activeCollection
-                  ? `/shopping-list?collection=${activeCollection.id}`
-                  : '/shopping-list'
-              }
-              className="btn"
-            >
-              Shopping list{activeCollection ? ` for “${activeCollection.name}”` : ''}
+            <Link href="/shopping-list" className="btn">
+              Shopping list
             </Link>
           </p>
         )}

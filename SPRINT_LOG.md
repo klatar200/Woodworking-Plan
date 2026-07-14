@@ -1722,3 +1722,75 @@ were removed rather than shipped.
 3. **Re-seed** so the tags reach the database (`npm run db:seed`; production needs its own seed — `DEPLOYMENT.md`).
 4. **Visual check** the per-step chips on a plan page and the print sheet.
 5. **Push.** Sprints 17–21 are committed locally only; `origin/main` is at `feb8c55`.
+
+---
+
+## Prod incident (2026-07-14): Trending sort 500'd the home page
+**Root cause:** Sprint 19's Trending sort used `NOW() - make_interval(days => ${windowDays})`
+in raw SQL. Postgres couldn't resolve `make_interval(days => $1)` against the bound
+parameter's inferred type, so **every load of `/` (default sort = Trending) threw a 500**.
+`Most viewed` (same query, no window clause) worked — that isolated it. The unit tests mock
+`$queryRaw`, so the bad SQL executed for the first time on a live deploy.
+
+**Fix (`6f65169`):** bind a computed JS `Date` cutoff (`v."viewedAt" >= ${cutoff}`) — a
+plain timestamp comparison, no function-arg inference. A regression test in
+`tests/views.test.ts` now fails if `make_interval` ever returns. Standing rule added to
+`CLAUDE.md`: new `$queryRaw` must run against real Postgres before it's trusted, and `/`
+gets a smoke check after any deploy touching a default-path raw query.
+
+**Diagnosis method:** probed the live site by sort — `/?sort=viewed|popular|newest` all
+rendered, only Trending failed — then confirmed in a clean browser session that the fix
+deployed. The "still failing" after the fix was a stale cached error page in the open tab.
+
+---
+
+## Sprint 22: Shopping-list redesign
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** new `ShoppingListEntry` model decoupled from
+`SavedPlan` (explicit per-plan "add to shopping list", not everything saved); two view
+modes (by-plan unmerged vs. whole-list merged).
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** Mechanism verified in a sandbox clone
+(495 tests, tsc, `eslint .` all green); the migration and a real-browser visual check are
+Keagan's.
+
+### The decision that shaped it
+
+Saving is "maybe someday"; a shopping list is "buying materials for these NOW." Deriving
+the list from saves (Sprint 12) made the lumberyard sheet a dump of every bookmark. Sprint
+22 gives it its own `ShoppingListEntry` table and an explicit add. **Existing saves do NOT
+auto-populate it** — it starts empty and fills only on explicit add. That decoupling is the
+feature, not a regression, and it's stated in `DECISIONS_LOG.md`.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` + migration `20260714210000_add_shopping_list_entry` | `ShoppingListEntry(userId,planId)`, unique + indexes, cascade on user/plan delete. |
+| `src/lib/shopping-list.ts` | Source swapped SavedPlan → ShoppingListEntry; `add`/`remove`/`isOn` (session-scoped, no `userId`); `getShoppingList()` now takes **no args** and returns `groups` (merged) + `byPlan`. Merge logic UNCHANGED. |
+| `src/app/actions/shopping-list.ts` | NEW — add/remove actions, `toggle` rate-limit, no-throw, redirect-with-notice, `returnTo`→`safeReturnTo`. |
+| `src/components/shopping-list-button.tsx` | NEW — plain-form toggle; sign-in link for anonymous. |
+| `src/app/plans/[slug]/page.tsx` | `isOnShoppingList` in the fetch; button in the actions row. |
+| `src/app/shopping-list/page.tsx` | Merged/by-plan GET toggle replaces the collection switcher; empty state points to "Add to shopping list". |
+| `src/app/saved/page.tsx` | CTA is now a plain link to `/shopping-list` (no `?collection=`). |
+| `src/app/globals.css` | `.view-toggle`. |
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Both §4.1.1 halves: the decoupled `ShoppingListEntry` model with an explicit per-plan add, and the two view modes (merged vs by-plan). Nothing extra — no affiliate links (still Hobby-blocked), no per-line prices (tiers-only rule holds). |
+| Correctness & functionality (/20) | **18** | Sandbox clone: `tsc` clean, `eslint .` exit 0, `vitest` **495 passed**, `prisma generate` accepts the schema. −2: migration + the UI interaction (button toggle, view switch) are not machine-verified here (`next dev` SIGBUSes); Keagan's visual check + `db:migrate`. |
+| Automated test coverage (/15) | **14** | `tests/shopping-list.test.ts` updated: source-swap kept every merge-safety test (the whole point of Sprint 12) intact; new cases prove add is idempotent + userId-scoped, remove is `deleteMany({userId,planId})` not `delete({id})`, `isOn` is false+silent for anon, `getShoppingList.length===0` (IDOR tripwire — the collection arg is gone), and merged-vs-by-plan actually differ (shared glue is 10 merged, 6 per-plan). −1: no server-render test of the redesigned page itself (consistent with the rest of the app's page-level coverage). |
+| Security (/15) | **15** | Same IDOR posture as saves/likes: no `userId` params, writes scoped by `userId` in WHERE, `deleteMany` not `delete`. Actions rate-limited before DB work, no-throw, `safeReturnTo` on the bounce. `published: true` still filters the list (a staged plan someone added contributes nothing). |
+| Code quality & simplicity (/10) | **10** | The merge machinery was reused untouched — only the plan SOURCE changed; the button mirrors SaveButton/LikeButton; the view toggle reuses `.chip`. Removed the collection-scoping code path rather than leaving it dead. |
+| Mobile/offline behavior (/10) | **9** | Plain server-rendered forms and GET links, no client JS; the page stays printable (the whole point of a shopping list). −1: the Sprint 14 known gap stands — `/shopping-list` is private, so it isn't offline-cached; print remains the mitigation. |
+| Documentation & handoff (/5) | **5** | Decoupling decision in `DECISIONS_LOG.md`; source rule + unchanged-merge note in `CLAUDE.md`; reasoning at each new file. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan
+1. **Run the migration** (`npm run db:migrate` on dev; deploy migrates prod — read the build log). The feature is dark until it runs; no backfill (empty is correct — saves don't carry over).
+2. **Visual check** a plan's "Add to shopping list" button and the merged/by-plan toggle on `/shopping-list`.
+3. **Push.** This also carries the CI-lint fix (Prototype Wireframe eslint-ignore) and the print-test fixture fix, so CI should finally go green.

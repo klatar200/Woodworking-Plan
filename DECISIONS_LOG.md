@@ -951,6 +951,41 @@ the database (a bare FK would accept a tool the plan never declared); per-step t
 optional so untagged plans still validate; materials are referenced by name (they have no
 slug), tools by slug. See `CLAUDE.md` "Per-step tools/materials rule."
 
+### 2026-07-14 — Sprint 22: the shopping list is decoupled from saves
+
+**Status:** Implemented per the backlog item Keagan approved (`BUILD_PLAN.md` §4.1.1).
+
+The shopping list was derived from everything a user had SAVED. Sprint 22 gives it its own
+`ShoppingListEntry` model and an explicit "Add to shopping list" action per plan. Saving
+(§4.3, "maybe someday") and buying-materials-now are different intents, and deriving one
+from the other made the lumberyard sheet a dump of every bookmark. **Behavioural change,
+stated plainly:** existing saves do NOT auto-populate the new list — it starts empty for
+everyone and fills only on explicit add. That is the decoupling, not a regression.
+
+The old collection-scoping of the list (`/shopping-list?collection=…`) is REMOVED — it was
+a SavedPlan concept. Its place is taken by two views of the explicit list: **merged**
+(combined, one buyable list — the Sprint 12 behaviour, exact-merge rule unchanged) and
+**by-plan** (each project's materials, unmerged), toggled by `?view=`.
+
+### 2026-07-14 — Prod incident: Trending sort 500 (`make_interval`), and CI made green
+
+**Status:** Fixed and deployed (`6f65169`), recorded so the lesson sticks.
+
+Sprint 19's Trending sort shipped `NOW() - make_interval(days => ${windowDays})` in raw
+SQL. Postgres could not resolve `make_interval(days => $1)` against the bound parameter's
+inferred type, so **every load of the default home page 500'd** — while `Most viewed`
+(same query, no window clause) worked, which isolated it. The unit tests MOCK `$queryRaw`,
+so the bad SQL ran for the first time on a live deploy. Fixed by binding a computed JS
+`Date` cutoff. **Standing rule added (`CLAUDE.md`): a `$queryRaw` string is not proven by
+a green suite — run new raw SQL against real Postgres, and smoke-check `/` after any deploy
+that touches a default-path raw query.**
+
+Separately: CI had been red for weeks on its lint step, from two errors in the
+`Prototype Wireframe/` design export (deprecated `ReactDOM.render`, assign-to-`module`).
+That folder is historical reference, not app code, and `next build` never lints it — so it
+is now in eslint's ignore list. CI is a working detector again, which matters: a red
+detector nobody reads is how the `make_interval` 500 reached a deploy unnoticed.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

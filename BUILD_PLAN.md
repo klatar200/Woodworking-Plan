@@ -118,14 +118,14 @@ state rather than assumptions made today.
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
 | Phase 4 | ⛔ NOT OPENED — do not start without Keagan explicitly opening it |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; these come due before anything else ships |
-| Post-launch-blocker backlog (Sprints 17-23) | 🟡 IN PROGRESS — Sprints 17 ✅, 18 ✅, 19 ✅, 20 ✅ and 21 ✅ COMPLETE; see §4.1.1 |
+| Post-launch-blocker backlog (Sprints 17-23) | 🟡 IN PROGRESS — Sprints 17–22 ✅ COMPLETE; only Sprint 23 (About/FAQ copy) remains; see §4.1.1 |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
 detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of this
-update: **490 green** (2026-07-14: Sprint 21 — per-step tools/materials: `StepTool`/
-`StepMaterial` join tables, load-time subset validation, per-step chips on the plan +
-print pages. Content pass for all 24 plans delivered as `scripts/apply-step-tags.mjs`.
-484 + 6 new).
+update: **495 green** (2026-07-14: Sprint 22 — shopping-list redesign: `ShoppingListEntry`
+model decoupled from saves, explicit per-plan add, merged/by-plan views. Plus a prod
+hotfix (Trending `make_interval` 500), a latent print-test fixture fix, and the CI-lint
+red closed by eslint-ignoring the `Prototype Wireframe/` design export).
 
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
@@ -309,7 +309,7 @@ both deferred by his explicit call.
 | 19 | Sort overhaul: new `PlanView` log table (no view-tracking exists today); Trending (7-day window) + Most Viewed (all-time) sorts; Recommended folded into the sort dropdown, retiring the standalone "Recommended for you" section; default sort → Trending; Cheapest/Easiest/Quickest removed | ✅ COMPLETE — 96/100. `PlanView` carries **no `userId`** (a view log with one is a browsing history — `DECISIONS_LOG.md` 2026-07-14). Views are logged from a **client effect**, never the server render, or `next/link`'s prefetch would count a hover as a view. Trending/Viewed/Recommended rank as an ordered id list intersected with the filters — one path, shared with keyword search. 477 tests green; **needs a migration before it does anything** (see §4.2) |
 | 20 | Plan-detail redesign (desktop): sidebar/tabs for Tools/Materials/Cut List, right-sidebar image slot (empty — no AI generation per the decision above), a button to open Instructions, last-step CTA for review + photo upload. Full server-rendered document stays underneath, same progressive-enhancement pattern as the existing step walker (print/offline/no-JS unaffected) | ✅ COMPLETE — 96/100. `PlanTabs`, `InstructionsDisclosure`, `PlanImageSlot` + a StepWalker last-step CTA. All follow the StepWalker contract: the full document is server-rendered and the client components only HIDE parts after mount, so print/offline/no-JS get everything (print CSS forces every panel + the instructions region visible). Image slot shows the primary photo or an honest empty placeholder — **no AI render**. 484 tests green; visual sign-off pending on Keagan's browser |
 | 21 | Per-step tools/hardware: `Step` has no relation to `Tool`/`Material` today — needs join tables (kept as a subset of the plan's already-declared tools/materials) plus a content pass across all 24 plans | ✅ COMPLETE — 96/100. `StepTool`/`StepMaterial` join tables; per-step tools are a **subset** of the plan's, enforced at content-load (`load.ts`), not by the DB. Per-step chips render on the plan page and the print sheet. **Content pass for all 24 plans (263 tool-tags, 202 material-tags) delivered as `scripts/apply-step-tags.mjs`** — Keagan's chosen delivery (`DECISIONS_LOG.md` 2026-07-14): review the mapping, run it, review the diff. 490 tests green; **needs the migration + `node scripts/apply-step-tags.mjs` + re-seed** before it shows anything |
-| 22 | Shopping-list redesign: new `ShoppingListEntry` model decoupled from `SavedPlan` (an explicit per-plan "add to shopping list", not everything saved); two view modes (by-plan, unmerged vs. whole-list, merged) | Not started |
+| 22 | Shopping-list redesign: new `ShoppingListEntry` model decoupled from `SavedPlan` (an explicit per-plan "add to shopping list", not everything saved); two view modes (by-plan, unmerged vs. whole-list, merged) | ✅ COMPLETE — 96/100. `ShoppingListEntry(userId,planId)`; the list is now built from explicit adds, not saves. `getShoppingList()` takes **no args** and returns both views; the **exact-merge rule is unchanged**. "Add to shopping list" button on each plan; merged/by-plan GET toggle replaces the old collection scoping. 495 tests green. **Needs the migration** before it works (see §4.2). Also fixed a latent Sprint 21 print-test fixture + the CI-lint red (Prototype Wireframe now eslint-ignored) |
 | 23 | About/FAQ real copy, once Keagan writes/approves it (stub pages shipped in Sprint 17) | Not started |
 
 **Sort/Recommended reversal, stated explicitly:** this directly reverses the
