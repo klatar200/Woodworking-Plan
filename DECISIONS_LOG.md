@@ -691,6 +691,42 @@ GitHub's default-branch setting or branch deletion; this requires the
 user to act directly in GitHub's Settings → Branches UI. Not a build
 blocker, but tracked here since it's an outstanding action item.
 
+### 2026-07-13 — UI redesign: adopt Claude Design mockup's visual system
+**Status:** Confirmed by user (three sub-decisions, all recommended options chosen).
+
+Keagan supplied a Claude Design prototype (`Woodworking Plan Prototype.dc.html`) and
+directed: "This is how I want this app's UI to be." This is a **visual reskin**, not a
+new sprint — the prototype is a client-side demo (React state + localStorage); the real
+app's server-rendered architecture (GET-form filters/search, server actions, Clerk,
+Prisma) is unchanged. Three branding/scope calls were escalated per `BUILD_PLAN.md` §2:
+
+1. **Palette replaces the neutral theme; dark mode is dropped.** Cream background,
+   ink text, orange accents replace the current gray/white tokens in `globals.css`.
+   The existing `prefers-color-scheme: dark` variant is removed rather than redesigned
+   in the new palette — the mockup has no dark variant, and inventing one would be the
+   build agent making an uncommissioned design decision.
+2. **Clerk stays for all auth/account UI, reskinned via its `appearance` API.**
+   The mockup's custom sign-in/sign-up/account-settings screens (name/email fields,
+   password change, delete account) are **not** rebuilt by hand. Clerk's hosted
+   components continue to handle those flows (maintained, already secure); only
+   colors/typography/spacing are re-themed to match. The mockup's **email
+   notifications toggle** is not a Clerk feature and is not in `BUSINESS_PLAN.md` —
+   excluded as scope creep, per `CLAUDE.md` §"One sprint at a time." Would need adding
+   to the business plan first.
+3. **No sitemap page.** The mockup's "Sitemap" screen (links to every screen + an
+   offline-mode simulation toggle) is the design tool's own navigation aid for
+   reviewing prototype turns, not a product page end users need. Not built.
+
+**What does get built as new, real functionality (not previously in the UI):** a
+PWA install-to-home-screen prompt (`beforeinstallprompt` capture + banner) — this
+closes an actual Sprint 8 gap already implied by `BUSINESS_PLAN.md` §5, not new scope.
+
+**Technical approach for the plan-detail page (engineering decision, not escalated):**
+the mockup's step-by-step wizard (progress bar, step rail/dots, Prev/Next) is added as
+a client-side progressive enhancement layered **on top of** the existing full
+server-rendered step list — the full list must keep rendering for print, offline
+caching, and no-JS per the Sprint 13/14 rules; nothing about those guarantees changes.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

@@ -1,30 +1,36 @@
 /*
- * Sprint 0 baseline styles only.
+ * Design tokens — Woodworking Plan visual system.
  *
- * This is NOT a design system and NOT the product's visual language — the
- * mobile-first UI pass is a Sprint 8 deliverable (BUILD_PLAN.md §4). What is
- * here: a sane reset, a mobile-first layout, and respect for the user's
- * light/dark preference, so the Sprint 0 status page is legible on a phone.
+ * Adopted 2026-07-13 from the Claude Design prototype
+ * (`Woodworking Plan Prototype.dc.html`), per Keagan's explicit direction —
+ * see DECISIONS_LOG.md "UI redesign: adopt Claude Design mockup's visual
+ * system". Warm/cream palette, replacing the Sprint 0 neutral gray theme.
+ *
+ * Dark mode is DELETED, not just unused — the mockup has no dark variant,
+ * and keeping a stale prefers-color-scheme block around is how a theme
+ * quietly drifts out of sync with itself. Re-add deliberately if ever wanted.
+ *
+ * --ok / --pending / --err are FUNCTIONAL status colors (focus rings, success/
+ * pending indicators), not part of the brand palette, and are deliberately
+ * left alone — they were chosen for contrast against --bg, not for look.
  */
 
 :root {
-  --bg: #ffffff;
+  --bg: #faf9f6;
+  --surface: #ffffff;
   --fg: #1a1a1a;
   --muted: #6b6b6b;
+  --muted-2: #8a8175;
   --border: #e4e4e4;
+  --border-strong: #d8d3c6;
+  --accent: #e9a86c;
+  --accent-strong: #c96a2e;
+  --accent-tint: #fdf1e0;
+  --accent-tint-border: #e9c98a;
+  --danger: #b5551c;
   --ok: #17803d;
   --pending: #b45309;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #171717;
-    --fg: #ededed;
-    --muted: #a1a1a1;
-    --border: #2e2e2e;
-    --ok: #4ade80;
-    --pending: #fbbf24;
-  }
+  --err: #b3261e;
 }
 
 *,
@@ -163,13 +169,14 @@ code {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--bg);
+  background: var(--surface);
   /* Respect the notch when installed to the home screen (viewport-fit=cover). */
   padding-top: calc(0.75rem + env(safe-area-inset-top));
 }
 
 .brand {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.125rem;
   color: var(--fg);
   text-decoration: none;
 }
@@ -201,7 +208,7 @@ code {
 
 .btn-primary {
   background: var(--fg);
-  color: var(--bg);
+  color: var(--surface);
 }
 
 .btn:focus-visible,
@@ -217,6 +224,7 @@ code {
 }
 
 .detail-list {
+  background: var(--surface);
   margin: 0;
   padding: 0;
   border: 1px solid var(--border);
@@ -280,9 +288,39 @@ code {
 }
 
 .plan-card {
+  position: relative;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   overflow: hidden;
+}
+
+/* The bookmark overlay is a SIBLING of .plan-card-link (see save-toggle.tsx),
+   positioned against this card, not against the link. */
+.plan-card-save-form {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  margin: 0;
+}
+
+.plan-card-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.plan-card-save:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: 2px;
 }
 
 .plan-card-link {
@@ -360,14 +398,52 @@ code {
 .pagination {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
   margin-top: 2rem;
 }
 
-.pagination-status {
-  color: var(--muted);
+.pagination-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.pagination-gap {
+  color: var(--muted-2);
+  padding: 0 0.125rem;
+}
+
+.pagination-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.375rem;
+  min-height: 2.375rem;
+  padding: 0 0.375rem;
+  border: 1px solid var(--fg);
+  border-radius: 0.5rem;
+  font-weight: 700;
   font-size: 0.875rem;
+  color: var(--fg);
+  background: var(--surface);
+  text-decoration: none;
+}
+
+.pagination-number-active {
+  background: var(--fg);
+  color: var(--surface);
+}
+
+.pagination-number:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: 2px;
 }
 
 .empty-state {
@@ -402,6 +478,7 @@ code {
 }
 
 .glance-grid {
+  background: var(--surface);
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
@@ -484,6 +561,7 @@ code {
 /* --- tables (materials, cut list) --- */
 
 .table-scroll {
+  background: var(--surface);
   overflow-x: auto;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
@@ -570,7 +648,7 @@ code {
   height: 1.75rem;
   border-radius: 50%;
   background: var(--fg);
-  color: var(--bg);
+  color: var(--surface);
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -578,6 +656,171 @@ code {
 /* Markdown-ish emphasis authored in step bodies. */
 .prose strong {
   font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------------
+ * Step-by-step walker (UI redesign, 2026-07-13) — see step-walker.tsx.
+ *
+ * Layered on TOP of .steps/.step above, which are unchanged and still hold
+ * every step's full content. This section only styles the enhancement: the
+ * progress bar, the step rail (desktop) / dots (phone, tablet), and Prev/Next.
+ * ------------------------------------------------------------------------- */
+
+.step-walker {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.step-walker-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Desktop-only left rail — hidden below 64rem, where there's no room for a
+   third column alongside the materials rail already on the page. */
+.step-rail {
+  display: none;
+  flex: 0 0 14rem;
+  flex-direction: column;
+  gap: 0.1875rem;
+  border-right: 1px solid var(--border);
+  padding-right: 1rem;
+}
+
+@media (min-width: 64rem) {
+  .step-rail {
+    display: flex;
+  }
+}
+
+.step-rail-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-2);
+  margin-bottom: 0.5rem;
+}
+
+.step-rail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5625rem;
+  width: 100%;
+  padding: 0.4375rem 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.step-rail-item-active {
+  background: var(--accent-tint);
+  font-weight: 700;
+}
+
+.step-rail-item:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: 2px;
+}
+
+.step-rail-number {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--fg);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--surface);
+}
+
+.step-rail-item-active .step-rail-number {
+  background: var(--fg);
+  color: var(--surface);
+}
+
+.step-walker-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.step-walker-progress-track {
+  flex: 1;
+  max-width: 26rem;
+  height: 0.75rem;
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step-walker-progress-fill {
+  height: 100%;
+  background: var(--accent-strong);
+}
+
+.step-walker-position {
+  font-weight: 700;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* Compact dots — phone/tablet only. The rail replaces this at desktop width. */
+.step-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 64rem) {
+  .step-dots {
+    display: none;
+  }
+}
+
+.step-dot {
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border: 1px solid var(--fg);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.step-dot-active {
+  background: var(--fg);
+  color: var(--surface);
+}
+
+.step-dot:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: 2px;
+}
+
+.step-walker-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.step-walker-nav .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ---------------------------------------------------------------------------
@@ -614,6 +857,7 @@ code {
  * ------------------------------------------------------------------------- */
 
 .filters {
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   margin-bottom: 0.75rem;
@@ -695,8 +939,8 @@ code {
 
 .checkbox:has(input:checked) {
   border-color: var(--fg);
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  font-weight: 500;
+  background: var(--accent);
+  font-weight: 700;
 }
 
 .checkbox:has(input:focus-visible) {
@@ -824,6 +1068,18 @@ code {
   .step {
     /* Don't split a step across two sheets. */
     break-inside: avoid;
+    /* Overrides step-walker.tsx's inline `display: none` on inactive steps —
+       an `!important` in an author stylesheet beats a non-`!important`
+       inline style, regardless of which step was "active" on screen. Print
+       must show every step; see step-walker.tsx's file doc. */
+    display: block !important;
+  }
+
+  .step-rail,
+  .step-dots,
+  .step-walker-bar,
+  .step-walker-nav {
+    display: none !important;
   }
 
   .table-scroll {
@@ -853,8 +1109,8 @@ code {
 
 .chip-active {
   border-color: var(--fg);
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  font-weight: 500;
+  background: var(--accent);
+  font-weight: 700;
 }
 
 .chip:focus-visible {
@@ -882,6 +1138,7 @@ code {
 }
 
 .saved-item {
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   overflow: hidden;
@@ -946,7 +1203,7 @@ code {
   min-height: 2.75rem;
   padding: 0 1rem;
   background: var(--fg);
-  color: var(--bg);
+  color: var(--surface);
   border-radius: 0 0 0.375rem 0.375rem;
   text-decoration: none;
   font-weight: 500;
@@ -982,7 +1239,7 @@ code {
 }
 
 .star-rating .stars {
-  color: #d98c1f;
+  color: var(--accent-strong);
   letter-spacing: 0.05em;
 }
 
@@ -1012,6 +1269,7 @@ code {
 }
 
 .review-form {
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -1068,6 +1326,7 @@ code {
 }
 
 .review {
+  background: var(--surface);
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
@@ -1161,6 +1420,52 @@ code {
 }
 
 /* ---------------------------------------------------------------------------
+ * PWA install prompt (UI redesign, 2026-07-13) — see install-prompt.tsx.
+ * ------------------------------------------------------------------------- */
+
+.install-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-tint-border);
+  border-radius: 0.5rem;
+}
+
+.install-prompt-icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.375rem;
+  height: 2.375rem;
+  background: var(--surface);
+  border: 1px solid var(--accent-tint-border);
+  border-radius: 0.5625rem;
+  font-size: 1rem;
+}
+
+.install-prompt-body {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.install-prompt-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.install-prompt-subtitle {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #7a5316;
+}
+
+/* ---------------------------------------------------------------------------
  * Sprint 16 — learning paths.
  * ------------------------------------------------------------------------- */
 
@@ -1173,6 +1478,7 @@ code {
 }
 
 .path-card {
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
 }
@@ -1258,6 +1564,7 @@ code {
  * ------------------------------------------------------------------------- */
 
 .board-total {
+  background: var(--surface);
   font-size: 1.25rem;
   margin: 1.25rem 0;
   padding: 0.85rem 1rem;
@@ -1352,6 +1659,7 @@ code {
 
 /* Sprint 14 — the consented offline download. */
 .offline-download {
+  background: var(--surface);
   margin: 0 0 1.5rem;
   padding: 0.85rem 1rem;
   border: 1px solid var(--border);
@@ -1418,6 +1726,7 @@ code {
   min-width: 1.15rem;
   margin: 0;
   flex-shrink: 0;
+  accent-color: var(--fg);
 }
 
 .shopping-line-name {

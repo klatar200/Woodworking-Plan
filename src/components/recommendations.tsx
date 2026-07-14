@@ -5,6 +5,8 @@ import type { RatingSummary } from '@/lib/reviews';
 interface Props {
   recommendations: Recommendation[];
   ratings: Map<string, RatingSummary>;
+  /** `null` for an anonymous visitor. See page.tsx and save-toggle.tsx. */
+  savedIds: Set<string> | null;
 }
 
 /**
@@ -24,7 +26,7 @@ interface Props {
  * random plan, and the user has no way to tell whether the feature works or is
  * broken — so neither do we.
  */
-export function Recommendations({ recommendations, ratings }: Props) {
+export function Recommendations({ recommendations, ratings, savedIds }: Props) {
   if (recommendations.length === 0) return null;
 
   return (
@@ -36,7 +38,11 @@ export function Recommendations({ recommendations, ratings }: Props) {
         {recommendations.map(({ plan, reason }) => (
           <li key={plan.id} className="recommendation">
             <ul className="plan-grid-inner">
-              <PlanCard plan={plan} rating={ratings.get(plan.id)} />
+              <PlanCard
+                plan={plan}
+                rating={ratings.get(plan.id)}
+                saved={savedIds ? savedIds.has(plan.id) : undefined}
+              />
             </ul>
             <p className="recommendation-reason">
               <span className="visually-hidden">Recommended because it is </span>

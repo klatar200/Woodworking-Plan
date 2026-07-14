@@ -1,4 +1,5 @@
 import { SignIn } from '@clerk/nextjs';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 
 /**
  * Sign-in. Clerk's prebuilt component handles email/password and Google OAuth
@@ -16,7 +17,7 @@ import { SignIn } from '@clerk/nextjs';
 export default function SignInPage() {
   return (
     <main id="main" className="auth-page">
-      <SignIn />
+      <SignIn appearance={clerkAppearance} />
     </main>
   );
 }

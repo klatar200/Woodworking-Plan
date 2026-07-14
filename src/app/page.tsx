@@ -4,7 +4,11 @@ import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters'
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
 import { getRatingSummaries } from '@/lib/reviews';
 import { getRecommendations } from '@/lib/recommendations';
+import { getCurrentUser } from '@/lib/auth';
+import { listSavedPlans } from '@/lib/saves';
+import { paginationWindow } from '@/lib/pagination';
 import { PlanCard } from '@/components/plan-card';
+import { InstallPrompt } from '@/components/install-prompt';
 import { Recommendations } from '@/components/recommendations';
 import { SearchBox } from '@/components/search-box';
 import { FilterPanel } from '@/components/filter-panel';
@@ -36,10 +40,22 @@ export default async function CatalogPage({
   // Categories and tools are needed both to RENDER the filter UI and to VALIDATE
   // the incoming filters — an unknown slug gets dropped rather than sent to
   // Postgres to match nothing.
-  const [categories, tools] = await Promise.all([
+  const [categories, tools, user] = await Promise.all([
     listCategories(),
     listFilterableTools(),
+    getCurrentUser(),
   ]);
+
+  /**
+   * The catalog's per-card bookmark overlay (see save-toggle.tsx) needs to know
+   * which plans are ALREADY saved. Fetched once for the whole page, not once per
+   * card — and `null` (not an empty Set) for an anonymous visitor, so PlanCard
+   * can tell "signed out" apart from "signed in, nothing saved" and render no
+   * overlay at all in the former case.
+   */
+  const savedIds = user
+    ? new Set((await listSavedPlans()).map((saved) => saved.plan.id))
+    : null;
 
   const filters = parseFilters(params, {
     validCategorySlugs: categories.map((c) => c.slug),
@@ -105,10 +121,16 @@ export default async function CatalogPage({
     <main id="main" className="page page-wide">
       <h1>Plans</h1>
 
+      <InstallPrompt />
+
       {/* Renders NOTHING for an anonymous visitor or a user with no saves/likes —
           not an empty shell, and deliberately not a fallback row of popular plans
           under a personalized heading. See src/components/recommendations.tsx. */}
-      <Recommendations recommendations={recommendations} ratings={ratings} />
+      <Recommendations
+        recommendations={recommendations}
+        ratings={ratings}
+        savedIds={savedIds}
+      />
 
       <SearchBox query={query} />
 
@@ -170,7 +192,12 @@ export default async function CatalogPage({
           <h2 className="visually-hidden">Results</h2>
           <ul className="plan-grid">
             {plans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} rating={ratings.get(plan.id)} />
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                rating={ratings.get(plan.id)}
+                saved={savedIds ? savedIds.has(plan.id) : undefined}
+              />
             ))}
           </ul>
         </>
@@ -189,14 +216,36 @@ export default async function CatalogPage({
               className="btn btn-ghost"
               rel="prev"
             >
-              &larr; Previous
+              &larr; Prev
             </Link>
           ) : (
-            <span />
+            <span className="btn btn-ghost pagination-disabled" aria-hidden="true">
+              &larr; Prev
+            </span>
           )}
 
-          <span className="pagination-status">
-            Page {currentPage} of {totalPages}
+          <span className="pagination-numbers">
+            {paginationWindow(currentPage, totalPages).map((token, i) =>
+              token === '…' ? (
+                <span key={`gap-${i}`} className="pagination-gap" aria-hidden="true">
+                  &hellip;
+                </span>
+              ) : (
+                <Link
+                  key={token}
+                  href={buildQueryString({
+                    query,
+                    filters,
+                    sort: sort === DEFAULT_SORT ? undefined : sort,
+                    page: token,
+                  })}
+                  className={`pagination-number ${token === currentPage ? 'pagination-number-active' : ''}`}
+                  aria-current={token === currentPage ? 'page' : undefined}
+                >
+                  {token}
+                </Link>
+              ),
+            )}
           </span>
 
           {currentPage < totalPages ? (
@@ -213,7 +262,9 @@ export default async function CatalogPage({
               Next &rarr;
             </Link>
           ) : (
-            <span />
+            <span className="btn btn-ghost pagination-disabled" aria-hidden="true">
+              Next &rarr;
+            </span>
           )}
         </nav>
       )}

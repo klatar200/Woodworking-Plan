@@ -12,6 +12,7 @@ import { SaveButton } from '@/components/save-button';
 import { LikeButton } from '@/components/like-button';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
+import { StepWalker } from '@/components/step-walker';
 import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
 
 /**
@@ -260,21 +261,25 @@ export default async function PlanDetailPage({ params }: { params: Params }) {
 
       <section>
         <h2>Instructions</h2>
-        <ol className="steps">
-          {plan.steps.map((step) => (
-            <li key={step.id} className="step">
-              <h3 className="step-title">
-                <span className="step-number">{step.stepNumber}</span>
-                {step.title}
-              </h3>
-              <div className="prose">
-                {step.body.split('\n\n').map((para, i) => (
-                  <p key={i}>{para}</p>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ol>
+        {/* StepWalker only ever HIDES steps client-side after mount — every
+            step below is still fully server-rendered. See step-walker.tsx. */}
+        <StepWalker stepTitles={plan.steps.map((step) => step.title)}>
+          <ol className="steps">
+            {plan.steps.map((step) => (
+              <li key={step.id} className="step" data-step={step.stepNumber}>
+                <h3 className="step-title">
+                  <span className="step-number">{step.stepNumber}</span>
+                  {step.title}
+                </h3>
+                <div className="prose">
+                  {step.body.split('\n\n').map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </StepWalker>
       </section>
 
       {plan.tags.length > 0 && (

@@ -172,7 +172,11 @@ export default async function SavedPage({
             {savedPlans.map((saved) => (
               <li key={saved.id} className="saved-item">
                 <ul className="plan-grid-inner">
-                  <PlanCard plan={saved.plan} />
+                  {/* Everything on this page is already saved — passing `saved`
+                      renders the bookmark overlay filled, and tapping it
+                      unsaves (see save-toggle.tsx), matching the mockup's
+                      quick-remove-from-the-grid affordance. */}
+                  <PlanCard plan={saved.plan} saved />
                 </ul>
 
                 <div className="saved-item-actions">

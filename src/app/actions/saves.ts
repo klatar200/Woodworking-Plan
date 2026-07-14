@@ -56,11 +56,13 @@ export async function savePlanAction(formData: FormData): Promise<void> {
 
   await savePlan(planId);
 
-  // Refresh the plan page (its save button flips) and the saved list.
+  // Refresh the plan page (its save button flips), the saved list, and the
+  // catalog (its per-card bookmark overlay — see save-toggle.tsx).
   if (typeof slug === 'string' && slug !== '') {
     revalidatePath(`/plans/${slug}`);
   }
   revalidatePath('/saved');
+  revalidatePath('/');
 }
 
 export async function unsavePlanAction(formData: FormData): Promise<void> {
@@ -75,6 +77,7 @@ export async function unsavePlanAction(formData: FormData): Promise<void> {
     revalidatePath(`/plans/${slug}`);
   }
   revalidatePath('/saved');
+  revalidatePath('/');
 }
 
 export async function createCollectionAction(formData: FormData): Promise<void> {

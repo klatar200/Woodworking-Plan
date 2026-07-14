@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { PlanListItem } from '@/lib/plans';
 import type { RatingSummary } from '@/lib/reviews';
 import { StarRating } from '@/components/star-rating';
+import { SaveToggle } from '@/components/save-toggle';
 import { costTierSymbol, difficultyLabel, formatTimeRange } from '@/lib/format';
 
 /**
@@ -18,10 +19,17 @@ import { costTierSymbol, difficultyLabel, formatTimeRange } from '@/lib/format';
 export function PlanCard({
   plan,
   rating,
+  saved,
 }: {
   plan: PlanListItem;
   /** Sprint 10. Undefined when the plan has no reviews — see below. */
   rating?: RatingSummary;
+  /**
+   * Undefined for an anonymous visitor — renders no bookmark overlay at all,
+   * same as before this prop existed. `true`/`false` for a signed-in viewer,
+   * from a saved-plan-id set the page fetches once, not per card.
+   */
+  saved?: boolean;
 }) {
   const image = plan.images[0];
 
@@ -78,6 +86,11 @@ export function PlanCard({
           </ul>
         </div>
       </Link>
+
+      {/* Sibling of the Link, not nested inside it — see save-toggle.tsx. */}
+      {saved !== undefined && (
+        <SaveToggle planId={plan.id} slug={plan.slug} isSaved={saved} />
+      )}
     </li>
   );
 }

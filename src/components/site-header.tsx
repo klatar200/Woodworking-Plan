@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 
 /**
  * Site header with auth state.
@@ -50,13 +51,35 @@ export function SiteHeader() {
 
           <SignedIn>
             <Link href="/saved" className="btn btn-ghost">
-              Saved
+              🔖 Saved
             </Link>
-            <Link href="/profile" className="btn btn-ghost">
-              Profile
-            </Link>
-            {/* Clerk's menu: account settings, sign out. */}
-            <UserButton />
+            {/* Clerk's menu: profile, account settings, sign out. Re-themed
+                (not rebuilt — see DECISIONS_LOG.md "UI redesign") to match the
+                mockup's avatar chip: accent-orange circle, ink initial. */}
+            <UserButton
+              appearance={{
+                ...clerkAppearance,
+                elements: {
+                  avatarBox: {
+                    width: '36px',
+                    height: '36px',
+                    backgroundColor: '#e9a86c',
+                  },
+                },
+              }}
+            >
+              {/* Our own /profile route (memberSince etc.) isn't part of Clerk's
+                  hosted account UI, so it needs its own menu entry — otherwise
+                  moving "Profile" out of the header nav and into this dropdown
+                  would strand the page with no link to it. */}
+              <UserButton.MenuItems>
+                <UserButton.Link
+                  label="Profile"
+                  href="/profile"
+                  labelIcon={<span aria-hidden="true">👤</span>}
+                />
+              </UserButton.MenuItems>
+            </UserButton>
           </SignedIn>
         </nav>
       </header>

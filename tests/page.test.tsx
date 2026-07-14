@@ -43,6 +43,23 @@ const getRecommendations = vi.fn();
 
 vi.mock('@/lib/recommendations', () => ({ getRecommendations }));
 
+/**
+ * Sprint 4 (this test) needed no auth. The catalog's per-card bookmark overlay
+ * (save-toggle.tsx) changed that: the page now always calls `getCurrentUser()`
+ * and, for a signed-in visitor, `listSavedPlans()` — both mocked here for the
+ * same reason `@/lib/recommendations` is above: the real `@/lib/auth` module
+ * reaches Clerk's session and cannot be imported into this render harness.
+ *
+ * Defaulted to the ANONYMOUS-VISITOR case, which is the state every one of
+ * these tests is actually exercising — none of them pass a signed-in user, so
+ * `PlanCard`'s `saved` prop stays `undefined` and no bookmark overlay renders.
+ */
+const getCurrentUser = vi.fn();
+const listSavedPlans = vi.fn();
+
+vi.mock('@/lib/auth', () => ({ getCurrentUser }));
+vi.mock('@/lib/saves', () => ({ listSavedPlans }));
+
 vi.mock('next/link', () => ({
   default: ({ href, children }: { href: string; children: ReactNode }) => (
     <a href={href}>{children}</a>
@@ -80,6 +97,8 @@ beforeEach(() => {
   vi.resetModules();
   getRatingSummaries.mockReset().mockResolvedValue(new Map());
   getRecommendations.mockReset().mockResolvedValue([]);
+  getCurrentUser.mockReset().mockResolvedValue(null);
+  listSavedPlans.mockReset().mockResolvedValue([]);
   queryPlans.mockReset().mockResolvedValue(result());
   listCategories.mockReset().mockResolvedValue([
     { slug: 'cutting-boards', name: 'Cutting Boards' },

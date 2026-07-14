@@ -6,9 +6,12 @@ import { useAuth } from '@clerk/nextjs';
 /**
  * Registers the service worker — Sprint 8.
  *
- * The ONLY client component in the app, and it renders nothing. Everything else
- * is server-rendered and works with JavaScript off; this is the one thing that
- * genuinely cannot be (a service worker must be registered from the client).
+ * Renders nothing. Registering a service worker is one of the few things that
+ * genuinely cannot happen server-side, which is why this component exists at
+ * all rather than being folded into a server component. (A handful of other
+ * client components have joined it since — a bookmark toggle, the install
+ * prompt, the step walker — each for its own JS-only reason; this one was
+ * simply first.)
  *
  * Registration is deliberately non-blocking and failure-tolerant: if it throws —
  * private browsing, an unsupported browser, a blocked origin — the app carries on

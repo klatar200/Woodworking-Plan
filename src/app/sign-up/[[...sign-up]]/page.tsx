@@ -1,4 +1,5 @@
 import { SignUp } from '@clerk/nextjs';
+import { clerkAppearance } from '@/lib/clerk-appearance';
 
 /**
  * Sign-up. See sign-in/page.tsx — same reasoning.
@@ -6,7 +7,7 @@ import { SignUp } from '@clerk/nextjs';
 export default function SignUpPage() {
   return (
     <main id="main" className="auth-page">
-      <SignUp />
+      <SignUp appearance={clerkAppearance} />
     </main>
   );
 }
