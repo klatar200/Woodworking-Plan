@@ -13,6 +13,7 @@ import { LikeButton } from '@/components/like-button';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
 import { StepWalker } from '@/components/step-walker';
+import { ViewLogger } from '@/components/view-logger';
 import { Prose } from '@/components/prose';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
@@ -85,6 +86,12 @@ export default async function PlanDetailPage({
 
   return (
     <main id="main" className="page page-wide">
+      {/* Sprint 19. Renders nothing; logs one view after hydration, which is the only
+          moment we know a real browser really rendered this page — a server-side log
+          would count next/link's catalog prefetches and every crawler. Not on the
+          PRINT view: printing a plan is not viewing it. See src/lib/views.ts. */}
+      <ViewLogger slug={plan.slug} />
+
       <p className="breadcrumb">
         <Link href="/">← All plans</Link>
       </p>

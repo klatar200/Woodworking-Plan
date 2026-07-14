@@ -227,6 +227,13 @@ with it.
   `useEffect` — with the `<summary>` never hidden, so no-JS still reaches the filters.
   459 tests green. Visual check on a real browser is Keagan's.
 
+- **Sprint 19 (Sort overhaul + view tracking): COMPLETE — 96/100.** `PlanView` log table,
+  **Trending** (7-day) and **Most viewed** (all-time) sorts, **Recommended** folded into
+  the sort dropdown (the standalone section is deleted), default sort → Trending,
+  Cheapest/Easiest/Quickest removed (they were filters wearing a sort's clothes). 477
+  tests green. **Does nothing until the migration runs** — see the view-tracking rule
+  below.
+
 - **Prototype-delta pass (2026-07-14): COMPLETE.** Active-filter chips
   (`filter-chips.tsx` — GET links, one per active filter value, sort/query ride
   along) and skeleton loading states (`loading.tsx` for catalog + plan detail,
@@ -489,6 +496,44 @@ drift silently. Now:
 - Both `/sw.js` **and** `/sw-policy.js` are `no-store` in `next.config.ts` — a stale cached
   policy would defeat a deploy exactly like a stale worker would. Miss either and an old
   policy keeps running silently.
+
+### 👁 View-tracking rule (Sprint 19) — the count must MEAN something
+
+**`PlanView` has NO `userId`, and must not get one.** A view log with a user id is a
+BROWSING HISTORY: the most sensitive table this app could hold, needing a deletion path,
+a retention policy, and a disclosure. Trending and Most Viewed need **counts**, and a
+count does not need to know who. Adding the column later is a migration; **un-collecting
+a year of browsing history is not a thing you can do.** (`DECISIONS_LOG.md` 2026-07-14.)
+
+**The view is logged from a CLIENT EFFECT, never from the page's server render.**
+`next/link` prefetches the RSC payload of every catalog card in the viewport — which
+*renders the plan page on the server*. Log it there (or in `after()`) and **hovering the
+catalog logs a view for every card**, so Trending becomes "whatever sat near the top of
+the grid": a loop that entrenches its own output. Crawlers would count too. The accepted
+cost: no-JS and offline readers are never counted. **A ranking signal may be lossy; it
+may not be inflated.** The print view logs nothing — printing a plan is not viewing it.
+
+**The action DROPS a denied request and does not redirect.** Same no-throw rule as every
+other action (an uncaught throw is a 500), but *unlike* like/save it must not
+`redirect()` either — it fires from a background effect, and bouncing a reader to another
+URL because a beacon was throttled would be absurd.
+
+**Trending's cold start is real, and the TIEBREAK is the feature.** The table ships empty,
+so every count is 0 and the SQL tiebreak (`publishedAt DESC, title ASC`) *is* the order —
+i.e. the default catalog is "newest first" until traffic exists. That is why the tiebreak
+was chosen to be something defensible on its own. **The ranking is a LEFT JOIN**: an inner
+join would drop every unviewed plan — on day one, the entire catalog.
+
+**Trending/Viewed/Recommended rank as an ORDERED ID LIST**, intersected with the filters
+by `paginateOrderedIds()` — the same path keyword search uses. Do not give a new sort its
+own query: `published: true` going missing on one path still "works", it just serves
+staged content.
+
+**Recommended-as-a-sort does NOT violate the Sprint 11 rule.** That rule forbade a
+*heading* promising personalization over a generic list. A cold/anonymous user selecting
+this sort gets the Trending order of the **whole catalog** — nothing hidden, nothing
+claimed. `getRecommendations()` still takes **zero arguments**, and nothing on this path
+accepts a `userId`.
 
 ### Derived data rule (why Sprint 7 shipped clean)
 

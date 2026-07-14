@@ -31,15 +31,35 @@ vi.mock('@prisma/client', () => ({
   PrismaClient: class {
     like = like;
     plan = plan;
-    savedPlan = { findUnique: vi.fn() };
+    planView = { create: vi.fn() };
+    savedPlan = { findUnique: vi.fn(), findMany: vi.fn() };
     user = { upsert: vi.fn() };
     $queryRaw = queryRaw;
+  },
+  // Sprint 19: src/lib/views.ts composes its ranking SQL with Prisma.sql /
+  // Prisma.empty. The real namespace can't be imported here (this mock replaces the
+  // whole module), so these stand in — the tests below assert which PATH a sort
+  // takes, not the SQL text.
+  Prisma: {
+    sql: (strings: TemplateStringsArray, ...values: unknown[]) => ({
+      strings,
+      values,
+    }),
+    empty: null,
   },
 }));
 
 const requireUser = vi.fn();
 const getCurrentUser = vi.fn();
 vi.mock('@/lib/auth', () => ({ requireUser, getCurrentUser }));
+
+/**
+ * Sprint 19: `queryPlans` now resolves the 'recommended' SORT through the recommender,
+ * so importing it pulls in `@/lib/recommendations`. Mocked to the cold-start case —
+ * this file is about likes and the Popular sort, not about taste profiles.
+ */
+const getRecommendations = vi.fn(async () => []);
+vi.mock('@/lib/recommendations', () => ({ getRecommendations }));
 
 beforeEach(() => {
   vi.resetModules();
@@ -53,6 +73,8 @@ beforeEach(() => {
   plan.count.mockResolvedValue(0);
   like.findUnique.mockResolvedValue(null);
   like.count.mockResolvedValue(0);
+  // Sprint 19: the view-ranked sorts (and keyword search) rank in raw SQL.
+  queryRaw.mockReset().mockResolvedValue([]);
 });
 
 describe('SECURITY: no function accepts a userId', () => {
@@ -194,7 +216,7 @@ describe('Popular sort (BUSINESS_PLAN.md §4.7)', () => {
 
   it('the list view COUNTS likes rather than selecting a column', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans();
+    await queryPlans({ sort: 'popular' });
 
     expect(plan.findMany.mock.calls[0]![0].select._count).toEqual({
       select: { likes: true },
@@ -204,23 +226,35 @@ describe('Popular sort (BUSINESS_PLAN.md §4.7)', () => {
   it('does NOT default to Popular — a zero-like catalog would entrench an accident', async () => {
     // Every plan has zero likes on a young catalog, so Popular degenerates into an
     // arbitrary tiebreak — and whatever it surfaces first accumulates the likes,
-    // entrenching that accident as the ranking. Easiest-first is defensible: a
-    // beginner sees things they can actually build.
+    // entrenching that accident as the ranking.
+    //
+    // Sprint 19 changed the default from 'easiest' to 'trending' (Keagan's call). The
+    // assertion that MATTERS is the one that survived: the default is not Popular.
     const { DEFAULT_SORT } = await import('@/lib/sort');
     expect(DEFAULT_SORT).not.toBe('popular');
-    expect(DEFAULT_SORT).toBe('easiest');
+    expect(DEFAULT_SORT).toBe('trending');
   });
 
   it('every sort option produces a deterministic order', async () => {
-    const { SORT_OPTIONS } = await import('@/lib/sort');
+    const { SORT_OPTIONS, isIdOrderedSort } = await import('@/lib/sort');
     const { queryPlans } = await import('@/lib/plans');
 
     for (const option of SORT_OPTIONS) {
       plan.findMany.mockClear();
       await queryPlans({ sort: option.value });
 
+      if (isIdOrderedSort(option.value)) {
+        // Sprint 19: trending/viewed/recommended are ranked as an ORDERED ID LIST in
+        // SQL (or in JS, for recommended), then intersected with the filters — they
+        // never build a Prisma orderBy. Their determinism lives in the SQL tiebreak
+        // (src/lib/views.ts) and is asserted in tests/views.test.ts.
+        const orderBys = plan.findMany.mock.calls.map((c) => c[0].orderBy);
+        expect(orderBys, option.value).toEqual(orderBys.map(() => undefined));
+        continue;
+      }
+
       const orderBy = plan.findMany.mock.calls[0]![0].orderBy;
-      // A title tiebreak on every sort, so pagination is stable.
+      // A title tiebreak on every Prisma sort, so pagination is stable.
       expect(orderBy, option.value).toContainEqual({ title: 'asc' });
     }
   });

@@ -859,6 +859,34 @@ has zero relation to `Tool`/`Material` today), and the shopping-list redesign (a
 `ShoppingListEntry` model decoupled from `SavedPlan`, so saving a plan for later no
 longer forces it onto the shopping list).
 
+### 2026-07-14 — Sprint 19: the view log stores NO user id (build agent's call, flagged)
+
+**Status:** Decided by the build agent as an engineering/security default, and recorded
+here because it is a **data-collection** decision, which is a category Keagan owns. It is
+reversible in the permissive direction only — say so if you want it changed.
+
+Sprint 19 needed view tracking (Trending, Most Viewed). The obvious schema is
+`PlanView(planId, userId, viewedAt)`. **`userId` was left out.**
+
+- A per-user view log is a **browsing history** — the most sensitive table this app could
+  hold. It would need a deletion path in the Clerk webhook, a retention policy, and a
+  privacy disclosure, and it is the one table whose leak would embarrass a user.
+- The two sorts it exists for need **counts**. A count does not need to know who.
+- The asymmetry decides it: adding the column later is a migration. **Un-collecting a
+  year of browsing history is not a thing you can do.** Collect the minimum that answers
+  the question; widen deliberately if a feature ever justifies it.
+
+**What this costs:** a future "Recently viewed" or view-based recommender would need the
+column added and would start with no history. That is the price, and it is cheap.
+
+**Also decided (engineering, not escalated, but worth knowing):** the view is logged from
+a **client effect after hydration**, not from the page's server render. `next/link`
+prefetches the RSC payload of every catalog card in the viewport — a server-side log
+would count a *hover* as a view, and Trending would become "whatever sat near the top of
+the grid", a loop that entrenches its own output. Crawlers would count too. The cost:
+no-JS and offline readers are never counted. A ranking signal is allowed to be lossy; it
+is not allowed to be inflated.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

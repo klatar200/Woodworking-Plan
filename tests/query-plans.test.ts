@@ -22,7 +22,29 @@ vi.mock('@prisma/client', () => ({
     $queryRaw = queryRaw;
     $executeRaw = vi.fn();
   },
+  // Sprint 19: src/lib/views.ts composes its ranking SQL with Prisma.sql/Prisma.empty.
+  Prisma: {
+    sql: (strings: TemplateStringsArray, ...values: unknown[]) => ({
+      strings,
+      values,
+    }),
+    empty: null,
+  },
 }));
+
+/**
+ * SPRINT 19 — WHY EVERY CALL BELOW PINS `sort: 'newest'`.
+ *
+ * The default sort is now 'trending', which ranks by an ID LIST from raw SQL rather
+ * than a Prisma `orderBy` — a different code path with a different `findMany` shape.
+ * This file is about the WHERE clause (filters, `published: true`, pagination), not
+ * about ranking, so it pins the sort to the Prisma path and asserts the thing it is
+ * actually here to assert.
+ *
+ * The id-ordered path gets the same scrutiny in tests/views.test.ts — including that
+ * the filters and `published: true` still apply there. Two paths, two sets of tests;
+ * neither is untested.
+ */
 
 const filters = (over: Partial<PlanFilters> = {}): PlanFilters => ({
   difficulty: [],
@@ -43,7 +65,7 @@ const whereOf = (callIndex = 0) => findMany.mock.calls[callIndex]![0].where;
 describe('owned-tools filter — the subset check', () => {
   it('SEMANTICS: matches plans with NO essential tool outside the owned set', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters({ ownedTools: ['table-saw', 'router'] }) });
+    await queryPlans({ sort: 'newest', filters: filters({ ownedTools: ['table-saw', 'router'] }) });
 
     // "none" is the whole point. `some` would mean "plans that use ANY tool I
     // own" — which returns plans needing a lathe you don't have.
@@ -57,7 +79,7 @@ describe('owned-tools filter — the subset check', () => {
 
   it('SEMANTICS: OPTIONAL tools are ignored — that is what the essential flag is for', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters({ ownedTools: ['table-saw'] }) });
+    await queryPlans({ sort: 'newest', filters: filters({ ownedTools: ['table-saw'] }) });
 
     // A plan that merely *suggests* a router must not be excluded for someone who
     // doesn't own one. `essential: true` inside the `none` is what guarantees it.
@@ -66,7 +88,7 @@ describe('owned-tools filter — the subset check', () => {
 
   it('applies no tool constraint at all when nothing is ticked', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters() });
+    await queryPlans({ sort: 'newest', filters: filters() });
 
     expect(whereOf().tools).toBeUndefined();
   });
@@ -75,7 +97,7 @@ describe('owned-tools filter — the subset check', () => {
 describe('time filter — honest under-promising', () => {
   it('filters on the MAXIMUM estimate, not the minimum', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters({ maxMinutes: 240 }) });
+    await queryPlans({ sort: 'newest', filters: filters({ maxMinutes: 240 }) });
 
     // Asking for "an afternoon (<=4 hrs)" must NOT return a plan estimated at
     // "3-7 hrs". Filtering on timeMinMinutes would return exactly that plan and
@@ -88,14 +110,14 @@ describe('time filter — honest under-promising', () => {
 describe('filters', () => {
   it('SECURITY: published:true is always in the where clause', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters() });
+    await queryPlans({ sort: 'newest', filters: filters() });
 
     expect(whereOf().published).toBe(true);
   });
 
   it('SECURITY: published:true survives even with every filter applied', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({
+    await queryPlans({ sort: 'newest',
       filters: filters({
         category: 'furniture',
         difficulty: [1, 2],
@@ -110,14 +132,14 @@ describe('filters', () => {
 
   it('filters by category slug', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters({ category: 'outdoor' }) });
+    await queryPlans({ sort: 'newest', filters: filters({ category: 'outdoor' }) });
 
     expect(whereOf().category).toEqual({ slug: 'outdoor' });
   });
 
   it('difficulty and cost are OR within a group (IN), AND across groups', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({
+    await queryPlans({ sort: 'newest',
       filters: filters({ difficulty: [1, 2], costTier: ['TIER_1', 'TIER_2'] }),
     });
 
@@ -131,7 +153,7 @@ describe('filters', () => {
     // If the count ignored a filter, pagination would advertise pages that then
     // render empty.
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ filters: filters({ category: 'furniture' }) });
+    await queryPlans({ sort: 'newest', filters: filters({ category: 'furniture' }) });
 
     expect(count.mock.calls[0]![0].where).toEqual(findMany.mock.calls[0]![0].where);
   });
@@ -152,7 +174,7 @@ describe('search + filters combined — the product promise', () => {
         { id: 'p3', title: 'Three' },
       ]);
 
-    const result = await queryPlans({
+    const result = await queryPlans({ sort: 'newest',
       query: 'walnut',
       filters: filters({ ownedTools: ['table-saw'] }),
     });
@@ -167,7 +189,7 @@ describe('search + filters combined — the product promise', () => {
     findMany.mockResolvedValueOnce([{ id: 'p1' }]).mockResolvedValueOnce([{ id: 'p1' }]);
 
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ query: 'walnut', filters: filters() });
+    await queryPlans({ sort: 'newest', query: 'walnut', filters: filters() });
 
     const where = findMany.mock.calls[0]![0].where;
     expect(where.AND[0].published).toBe(true);
@@ -178,7 +200,7 @@ describe('search + filters combined — the product promise', () => {
     const { queryPlans } = await import('@/lib/plans');
 
     const evil = "walnut'; DROP TABLE \"Plan\"; --";
-    await queryPlans({ query: evil });
+    await queryPlans({ sort: 'newest', query: evil });
 
     const call = queryRaw.mock.calls[0]!;
     const sql = (call[0] as string[]).join('?');
@@ -193,7 +215,7 @@ describe('search + filters combined — the product promise', () => {
     findMany.mockResolvedValueOnce([]); // filters excluded it
 
     const { queryPlans } = await import('@/lib/plans');
-    const result = await queryPlans({
+    const result = await queryPlans({ sort: 'newest',
       query: 'walnut',
       filters: filters({ ownedTools: ['drill-driver'] }),
     });
@@ -206,7 +228,7 @@ describe('search + filters combined — the product promise', () => {
     queryRaw.mockResolvedValue([]);
 
     const { queryPlans } = await import('@/lib/plans');
-    const result = await queryPlans({ query: 'zzzznothing' });
+    const result = await queryPlans({ sort: 'newest', query: 'zzzznothing' });
 
     expect(result.total).toBe(0);
     expect(findMany).not.toHaveBeenCalled();
@@ -220,7 +242,7 @@ describe('keyword search — inherited Sprint 4 guarantees', () => {
     // and never throws. Users type strange things into search boxes.
     queryRaw.mockResolvedValue([]);
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ query: 'walnut' });
+    await queryPlans({ sort: 'newest', query: 'walnut' });
 
     const sql = (queryRaw.mock.calls[0]![0] as string[]).join('?');
     expect(sql).toContain('websearch_to_tsquery');
@@ -230,7 +252,7 @@ describe('keyword search — inherited Sprint 4 guarantees', () => {
   it('SECURITY: the raw query filters on published = true', async () => {
     queryRaw.mockResolvedValue([]);
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ query: 'walnut' });
+    await queryPlans({ sort: 'newest', query: 'walnut' });
 
     const sql = (queryRaw.mock.calls[0]![0] as string[]).join('?');
     expect(sql).toMatch(/published\s*=\s*true/);
@@ -249,14 +271,14 @@ describe('keyword search — inherited Sprint 4 guarantees', () => {
       queryRaw.mockReset().mockResolvedValue([]);
       const { queryPlans } = await import('@/lib/plans');
 
-      await expect(queryPlans({ query: nasty })).resolves.toBeDefined();
+      await expect(queryPlans({ sort: 'newest', query: nasty })).resolves.toBeDefined();
     }
   });
 
   it('an empty or whitespace query is not a search — it is browse', async () => {
     const { queryPlans } = await import('@/lib/plans');
 
-    const result = await queryPlans({ query: '   ' });
+    const result = await queryPlans({ sort: 'newest', query: '   ' });
 
     // No raw SQL at all: it used the ordinary catalog query.
     expect(queryRaw).not.toHaveBeenCalled();
@@ -267,7 +289,7 @@ describe('keyword search — inherited Sprint 4 guarantees', () => {
     queryRaw.mockResolvedValue([]);
     const { queryPlans } = await import('@/lib/plans');
 
-    const result = await queryPlans({ query: '  walnut  ' });
+    const result = await queryPlans({ sort: 'newest', query: '  walnut  ' });
 
     expect(queryRaw.mock.calls[0]!.slice(1)).toContain('walnut');
     expect(result.query).toBe('walnut');
@@ -277,7 +299,7 @@ describe('keyword search — inherited Sprint 4 guarantees', () => {
 describe('pagination', () => {
   it('clamps a negative page rather than sending a negative skip to Postgres', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans({ page: -5 });
+    await queryPlans({ sort: 'newest', page: -5 });
 
     expect(findMany.mock.calls[0]![0].skip).toBe(0);
   });
@@ -290,7 +312,7 @@ describe('pagination', () => {
       .mockResolvedValueOnce([{ id: 'p12' }]);
 
     const { queryPlans } = await import('@/lib/plans');
-    const result = await queryPlans({ query: 'wood', page: 2 });
+    const result = await queryPlans({ sort: 'newest', query: 'wood', page: 2 });
 
     // 20 matches, 12 per page -> page 2 holds 8, and totalPages is 2.
     expect(result.total).toBe(20);

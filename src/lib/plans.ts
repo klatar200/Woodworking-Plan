@@ -2,7 +2,13 @@ import { cache } from 'react';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import type { PlanFilters } from '@/lib/filters';
-import { DEFAULT_SORT, type SortOption } from '@/lib/sort';
+import { DEFAULT_SORT, isIdOrderedSort, type SortOption } from '@/lib/sort';
+import { trendingPlanIds, mostViewedPlanIds } from '@/lib/views';
+// Sprint 19: the 'recommended' SORT. `@/lib/recommendations` imports PLAN_CARD_SELECT
+// back from this module — a cycle, but a safe one: both sides only touch the other's
+// exports inside function bodies, never at module init. Do not "fix" it by duplicating
+// the select; a recommendation card that silently drops a field is the bug that avoids.
+import { getRecommendations } from '@/lib/recommendations';
 
 /**
  * Plan catalog reads.
@@ -79,7 +85,9 @@ function buildWhere(filters: PlanFilters): Prisma.PlanWhereInput {
 }
 
 /**
- * Sprint 7 — the "Popular" sort and friends.
+ * Sprint 7 — the "Popular" sort. Sprint 19 removed 'easiest'/'cheapest'/'quickest'
+ * (they duplicated filters) and moved the view- and recommendation-driven sorts to
+ * the id-ordered path below, so only two sorts are expressible as a Prisma orderBy.
  *
  * Popular sorts by like count DESC, then falls back to difficulty and title so
  * the order is deterministic. Without a tiebreak, a catalog where every plan has
@@ -95,15 +103,47 @@ function buildOrderBy(sort: SortOption): Prisma.PlanOrderByWithRelationInput[] {
         { title: 'asc' },
       ];
     case 'newest':
-      return [{ publishedAt: 'desc' }, { title: 'asc' }];
-    case 'cheapest':
-      return [{ costMinCents: 'asc' }, { title: 'asc' }];
-    case 'quickest':
-      return [{ timeMaxMinutes: 'asc' }, { title: 'asc' }];
-    case 'easiest':
     default:
-      return [{ difficulty: 'asc' }, { title: 'asc' }];
+      return [{ publishedAt: 'desc' }, { title: 'asc' }];
   }
+}
+
+/**
+ * The ordered id list for a sort that Postgres' ORDER BY cannot express directly.
+ *
+ * TRENDING / MOST VIEWED — counts over a window, from src/lib/views.ts.
+ *
+ * RECOMMENDED — the personalized plans first (in score order), then THE REST OF THE
+ * CATALOG by trending. Two things about this are deliberate:
+ *
+ *   1. `getRecommendations()` TAKES NO ARGUMENTS, and this function does not take a
+ *      user either. The recommender is an inference channel: its output is derived
+ *      from the caller's saves and likes, so a `userId` parameter anywhere on this
+ *      path would let someone ask "what would Bob be recommended?" and read back
+ *      Bob's library. The Sprint 11 rule survives this sprint intact.
+ *
+ *   2. The TAIL is the whole catalog, not nothing. An anonymous visitor and a
+ *      cold-start user both get zero recommendations, so this degrades to exactly
+ *      the Trending list. That is NOT the thing Sprint 11 forbade: what it forbade
+ *      was a *heading* promising personalization over a generic list. This is a sort
+ *      over the full catalog — nothing is hidden and nothing is claimed. (The
+ *      standalone "Recommended for you" section is retired this sprint, which is
+ *      what makes that distinction true rather than convenient.)
+ */
+async function orderedIdsForSort(sort: SortOption): Promise<string[]> {
+  if (sort === 'viewed') return mostViewedPlanIds();
+  if (sort === 'trending') return trendingPlanIds();
+
+  // 'recommended'
+  const [recommendations, trending] = await Promise.all([
+    getRecommendations(),
+    trendingPlanIds(),
+  ]);
+
+  const recommendedIds = recommendations.map((r) => r.plan.id);
+  const seen = new Set(recommendedIds);
+
+  return [...recommendedIds, ...trending.filter((id) => !seen.has(id))];
 }
 
 export interface QueryPlansArgs {
@@ -141,6 +181,23 @@ export async function queryPlans({
   const currentPage = Math.max(1, Math.floor(page));
   const skip = (currentPage - 1) * PLANS_PER_PAGE;
   const where = buildWhere(filters);
+
+  /**
+   * --- Sprint 19: a sort whose order is an ID LIST, not an ORDER BY. ---
+   *
+   * Trending, Most Viewed and Recommended all rank plans by something Postgres'
+   * ORDER BY can't reach from a `prisma.plan.findMany` (a windowed count over
+   * another table; a per-user score computed in JS). They reuse the keyword
+   * search's machinery exactly: an ordered id list, intersected with the filter
+   * `where`, paginated in memory. One path, so the filters cannot work on one
+   * sort and quietly not on another.
+   *
+   * Skipped entirely during a keyword search — relevance wins, see below.
+   */
+  if (trimmed === '' && isIdOrderedSort(sort)) {
+    const orderedIds = await orderedIdsForSort(sort);
+    return paginateOrderedIds({ orderedIds, where, skip, currentPage, query: '' });
+  }
 
   // --- No keyword: Prisma does everything, including sort and pagination. ---
   if (trimmed === '') {
@@ -181,25 +238,61 @@ export async function queryPlans({
 
   const rankedIds = ranked.map((r) => r.id);
 
-  if (rankedIds.length === 0) {
+  return paginateOrderedIds({
+    orderedIds: rankedIds,
+    where,
+    skip,
+    currentPage,
+    query: trimmed,
+  });
+}
+
+/**
+ * Takes an ORDERED id list (relevance, trending, most-viewed, recommended), applies
+ * the filter `where`, and returns one page of cards in that order.
+ *
+ * Extracted in Sprint 19, when a second family of sorts needed exactly what the
+ * keyword search was already doing. Two copies of this would be two places for
+ * `published: true` to go missing — and a missing `published` filter still "works",
+ * it just quietly serves staged content.
+ *
+ * Trade-off, unchanged from Sprint 4 and still deliberate: the id list is
+ * UNPAGINATED. At launch scale (BUSINESS_PLAN.md §6: 300–500 plans) that is a few
+ * hundred short strings. It stops being fine in the tens of thousands, at which
+ * point the filters belong in the SQL.
+ */
+async function paginateOrderedIds({
+  orderedIds,
+  where,
+  skip,
+  currentPage,
+  query,
+}: {
+  orderedIds: string[];
+  where: Prisma.PlanWhereInput;
+  skip: number;
+  currentPage: number;
+  query: string;
+}) {
+  if (orderedIds.length === 0) {
     return {
       plans: [] as PlanListItem[],
       total: 0,
       page: currentPage,
       totalPages: 1,
-      query: trimmed,
+      query,
     };
   }
 
   // `published: true` is in `where` too — belt and braces, so this never depends
-  // on the raw query having remembered it.
+  // on the ranking query having remembered it.
   const allowed = await prisma.plan.findMany({
-    where: { AND: [where, { id: { in: rankedIds } }] },
+    where: { AND: [where, { id: { in: orderedIds } }] },
     select: { id: true },
   });
 
   const allowedIds = new Set(allowed.map((p) => p.id));
-  const ordered = rankedIds.filter((id) => allowedIds.has(id));
+  const ordered = orderedIds.filter((id) => allowedIds.has(id));
 
   const total = ordered.length;
   const pageIds = ordered.slice(skip, skip + PLANS_PER_PAGE);
@@ -210,7 +303,7 @@ export async function queryPlans({
       total,
       page: currentPage,
       totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
-      query: trimmed,
+      query,
     };
   }
 
@@ -219,7 +312,7 @@ export async function queryPlans({
     select: PLAN_CARD_SELECT,
   });
 
-  // Restore relevance order — findMany returns rows in whatever order it likes.
+  // Restore the ranked order — findMany returns rows in whatever order it likes.
   const byId = new Map(plans.map((p) => [p.id, p]));
   const pagePlans = pageIds
     .map((id) => byId.get(id))
@@ -230,7 +323,7 @@ export async function queryPlans({
     total,
     page: currentPage,
     totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
-    query: trimmed,
+    query,
   };
 }
 

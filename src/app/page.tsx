@@ -3,7 +3,6 @@ import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
 import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
 import { getRatingSummaries } from '@/lib/reviews';
-import { getRecommendations } from '@/lib/recommendations';
 import { getCurrentUser } from '@/lib/auth';
 import { listSavedPlans } from '@/lib/saves';
 import { paginationWindow } from '@/lib/pagination';
@@ -11,7 +10,6 @@ import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { PlanCard } from '@/components/plan-card';
 import { InstallPrompt } from '@/components/install-prompt';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
-import { Recommendations } from '@/components/recommendations';
 import { SearchBox } from '@/components/search-box';
 import { CategoryNav } from '@/components/category-nav';
 import { FilterPanel } from '@/components/filter-panel';
@@ -94,20 +92,6 @@ export default async function CatalogPage({
   const isNarrowed = isSearching || isFiltering;
 
   /**
-   * Sprint 11 — recommendations.
-   *
-   * Only on the UNNARROWED first page. Someone who has typed a query or set a filter
-   * has told us exactly what they want RIGHT NOW; a "Recommended for you" row above
-   * their results is us talking over them. Same on page 4 of a paginated browse —
-   * they are deep in a task, not looking for suggestions.
-   *
-   * Returns [] for anonymous visitors and for users with no saves or likes, so this
-   * costs one cheap query and renders nothing in the common cold case.
-   */
-  const recommendations =
-    !isNarrowed && page === 1 ? await getRecommendations() : [];
-
-  /**
    * The page's own URL, filters and all — where a rate-limited card action
    * bounces back to (via the returnTo input on each SaveToggle), and where
    * the notice banner's Dismiss goes. buildQueryString never includes the
@@ -125,13 +109,12 @@ export default async function CatalogPage({
    * not "select every review row and average it in JS" (O(total reviews): a plan with
    * 800 reviews would ship 800 rows to render one number).
    *
-   * Covers the recommended plans too, in the SAME query. Two groupBys would be two
-   * round-trips for one page.
+   * Sprint 19: just the plans on the page now. The recommended plans used to ride
+   * along in this same query for the standalone "Recommended for you" row; that row is
+   * retired — recommendations are a SORT of the catalog, so its plans ARE the page's
+   * plans.
    */
-  const ratings = await getRatingSummaries([
-    ...plans.map((plan) => plan.id),
-    ...recommendations.map(({ plan }) => plan.id),
-  ]);
+  const ratings = await getRatingSummaries(plans.map((plan) => plan.id));
 
   return (
     // id="main" is the skip link's target (WCAG 2.4.1).
@@ -145,14 +128,12 @@ export default async function CatalogPage({
 
       <InstallPrompt />
 
-      {/* Renders NOTHING for an anonymous visitor or a user with no saves/likes —
-          not an empty shell, and deliberately not a fallback row of popular plans
-          under a personalized heading. See src/components/recommendations.tsx. */}
-      <Recommendations
-        recommendations={recommendations}
-        ratings={ratings}
-        savedIds={savedIds}
-      />
+      {/*
+        Sprint 19: the standalone "Recommended for you" section is GONE — deleted, not
+        hidden. Recommendations are now a sort option (`?sort=recommended`), which is
+        where people look for ordering, and one control beats two. `recommendations.tsx`
+        is deleted with it: a component nobody renders is a component that rots.
+      */}
 
       {/*
         Sprint 18 — the desktop catalog is a three-column grid: category rail,

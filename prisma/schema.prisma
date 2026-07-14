@@ -117,6 +117,44 @@ model Like {
   @@index([planId])
 }
 
+/// A single view of a plan — Sprint 19. Feeds the Trending (7-day) and Most Viewed
+/// (all-time) sorts, which are the only reason this table exists.
+///
+/// ═══════════════════════════════════════════════════════════════════════════════
+/// NOTE WHAT IS *NOT* HERE: there is NO `userId`, and there must not be one.
+///
+/// A per-user view log is a BROWSING HISTORY. It is the most sensitive table this
+/// app could hold, it would need a deletion path (Clerk webhook), a retention story,
+/// and a privacy disclosure — and the sorts it would feed need none of it. Trending
+/// and Most Viewed are COUNTS. A count does not need to know who.
+///
+/// Storing the id "in case we want Recently Viewed later" is the trap: adding a
+/// column later is a migration, but un-collecting a year of browsing history is not
+/// a thing you can do. Collect the minimum that answers the question.
+///
+/// It also means there is nothing here for `deleteUserByClerkId()` to clean up, and
+/// nothing an attacker who reads this table learns about any individual.
+/// ═══════════════════════════════════════════════════════════════════════════════
+///
+/// NOTE WHAT IS ALSO NOT HERE: no `viewCount` column on Plan. Same rule as Sprint 7's
+/// like count — derived columns ship empty and drift (Sprints 4 and 6 both broke
+/// production that way). The counts are computed on read from these rows.
+model PlanView {
+  id String @id @default(cuid())
+
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  viewedAt DateTime @default(now())
+
+  /// The Trending sort counts rows for a plan inside a time window; the composite
+  /// index is what makes that an index scan instead of a table scan once this table
+  /// is the largest one in the database (which it will be — it grows with traffic,
+  /// not with content).
+  @@index([planId, viewedAt])
+  @@index([viewedAt])
+}
+
 /// A skill-building learning path — Sprint 16. BUSINESS_PLAN.md §10 (Phase 3).
 ///
 /// An ORDERED sequence of plans that teaches something: "your first five projects",
@@ -461,6 +499,7 @@ model Plan {
   likes     Like[]
   reviews   Review[]
   pathSteps PathStep[]
+  views     PlanView[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

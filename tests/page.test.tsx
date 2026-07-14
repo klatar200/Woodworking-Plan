@@ -32,23 +32,19 @@ const getRatingSummaries = vi.fn();
 vi.mock('@/lib/reviews', () => ({ getRatingSummaries }));
 
 /**
- * Sprint 11. Mocked to [] — the COLD START, which is the default state of every new
- * user and therefore the state the catalog must render correctly in. The section
- * renders nothing at all in this case, so none of the assertions below should see it.
- *
- * Mocking is also load-bearing here: the real module reaches Clerk's session through
- * `@/lib/auth`, which cannot be imported into this render harness.
+ * Sprint 19: the `@/lib/recommendations` mock that used to live here is GONE, because
+ * the catalog no longer calls it. Recommendations are a SORT now, resolved inside
+ * `queryPlans()` — which is already mocked wholesale — and the standalone
+ * "Recommended for you" section is deleted. A mock for a module the page doesn't
+ * import is dead weight that reads like a dependency.
  */
-const getRecommendations = vi.fn();
-
-vi.mock('@/lib/recommendations', () => ({ getRecommendations }));
 
 /**
  * Sprint 4 (this test) needed no auth. The catalog's per-card bookmark overlay
  * (save-toggle.tsx) changed that: the page now always calls `getCurrentUser()`
- * and, for a signed-in visitor, `listSavedPlans()` — both mocked here for the
- * same reason `@/lib/recommendations` is above: the real `@/lib/auth` module
- * reaches Clerk's session and cannot be imported into this render harness.
+ * and, for a signed-in visitor, `listSavedPlans()` — both mocked here because the
+ * real `@/lib/auth` module reaches Clerk's session and cannot be imported into this
+ * render harness.
  *
  * Defaulted to the ANONYMOUS-VISITOR case, which is the state every one of
  * these tests is actually exercising — none of them pass a signed-in user, so
@@ -96,7 +92,6 @@ const result = (over: Record<string, unknown> = {}) => ({
 beforeEach(() => {
   vi.resetModules();
   getRatingSummaries.mockReset().mockResolvedValue(new Map());
-  getRecommendations.mockReset().mockResolvedValue([]);
   getCurrentUser.mockReset().mockResolvedValue(null);
   listSavedPlans.mockReset().mockResolvedValue([]);
   queryPlans.mockReset().mockResolvedValue(result());

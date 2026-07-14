@@ -24,7 +24,19 @@ vi.mock('@prisma/client', () => ({
     $queryRaw = vi.fn().mockResolvedValue([]);
     $executeRaw = vi.fn();
   },
+  // Sprint 19: src/lib/views.ts composes its ranking SQL with Prisma.sql/Prisma.empty.
+  Prisma: {
+    sql: (strings: TemplateStringsArray, ...values: unknown[]) => ({
+      strings,
+      values,
+    }),
+    empty: null,
+  },
 }));
+
+// Sprint 19: the card-projection tests pin `sort: 'newest'` — the new default
+// ('trending') ranks through raw SQL and an id list, which is a different path and is
+// tested in tests/views.test.ts. These tests are about the SELECT, not the ORDER BY.
 
 beforeEach(() => {
   vi.resetModules();
@@ -77,7 +89,7 @@ describe('getPlanBySlug', () => {
 describe('queryPlans — the card projection', () => {
   it('does not pull steps, cut lists or materials into a LIST view', async () => {
     const { queryPlans } = await import('@/lib/plans');
-    await queryPlans();
+    await queryPlans({ sort: 'newest' });
 
     const select = findMany.mock.calls[0]![0].select;
     expect(select.steps).toBeUndefined();
@@ -94,13 +106,13 @@ describe('queryPlans — the card projection', () => {
   it('reports at least one page even for an empty catalog', async () => {
     count.mockResolvedValue(0);
     const { queryPlans } = await import('@/lib/plans');
-    expect((await queryPlans()).totalPages).toBe(1);
+    expect((await queryPlans({ sort: 'newest' })).totalPages).toBe(1);
   });
 
   it('reports total pages so the UI knows when to stop', async () => {
     count.mockResolvedValue(25);
     const { queryPlans, PLANS_PER_PAGE } = await import('@/lib/plans');
-    const result = await queryPlans();
+    const result = await queryPlans({ sort: 'newest' });
 
     expect(result.total).toBe(25);
     expect(result.totalPages).toBe(Math.ceil(25 / PLANS_PER_PAGE));

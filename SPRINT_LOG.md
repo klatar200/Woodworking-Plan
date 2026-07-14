@@ -1503,3 +1503,80 @@ write ever touched the mount.
   (the rate-limit commit) — Sprint 17's files (`prose.tsx`, `/about`, `/faq`) are not on
   GitHub. Sprint 17 is committed locally but **not pushed**. Push is Keagan's (no
   credentials in the sandbox).
+
+---
+
+## Sprint 19: Sort overhaul + view tracking
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.1.1):** new `PlanView` log table; Trending (7-day) and
+Most Viewed (all-time) sorts; Recommended folded into the sort dropdown, retiring the
+standalone "Recommended for you" section; default sort → Trending; Cheapest/Easiest/
+Quickest removed.
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** (One thing this sprint CANNOT do for
+itself: the migration. Nothing here works until it runs — see the open items.)
+
+### The three decisions that actually mattered
+
+**1. `PlanView` has no `userId` — and that is a data-collection decision, so it is in
+`DECISIONS_LOG.md`.** The obvious schema is `(planId, userId, viewedAt)`. A per-user view
+log is a **browsing history**: it needs a deletion path in the Clerk webhook, a retention
+policy, and a disclosure — and the two sorts it exists for need *counts*. A count does not
+need to know who. The asymmetry settles it: adding the column later is a migration;
+un-collecting a year of browsing history is not a thing you can do.
+
+**2. The view is logged from a CLIENT EFFECT, not the server render.** `next/link`
+prefetches the RSC payload of every catalog card in the viewport — which renders the plan
+page **on the server**. Logging there (or in `after()`) would count a *hover* as a view,
+and Trending would degenerate into "whatever sat near the top of the grid": a feedback
+loop that entrenches its own output. Crawlers would count too. The cost, taken knowingly:
+no-JS and offline readers are never counted. **A ranking signal may be lossy; it may not
+be inflated.**
+
+**3. Recommended-as-a-sort does not break the Sprint 11 rule — because the section is
+gone.** That rule forbade a *heading* promising personalization over a generic list. This
+sort ranks the personalized plans first and orders **the rest of the full catalog** by
+trending; a cold or anonymous user simply gets Trending. Nothing is hidden and nothing is
+claimed. `getRecommendations()` still takes **zero arguments** — the recommender is an
+inference channel, and no `userId` was allowed onto this path.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` + `migrations/20260714180000_add_plan_views` | NEW `PlanView` (planId, viewedAt). Indexes `(planId, viewedAt)` and `(viewedAt)`. Cascade on plan delete. No user link, so nothing for the deletion webhook to clean up. |
+| `src/lib/views.ts` | NEW. `recordPlanView(slug)` (published-only, silent no-op otherwise) and one ranking query serving both sorts — `LEFT JOIN`, window bound via `make_interval(days => $1)`. |
+| `src/app/actions/views.ts` | NEW. Rate-limited (`toggle`), drops on denial: **no throw, and no redirect** (this is a background beacon, not a user gesture). |
+| `src/components/view-logger.tsx` | NEW. Client, renders null, fires once per mount (a `useRef` guard — StrictMode would otherwise double every dev view). Swallows errors: offline, the action's fetch just fails. |
+| `src/lib/sort.ts` | Rebuilt: trending / recommended / viewed / popular / newest. `DEFAULT_SORT = 'trending'`. `isIdOrderedSort()` routes the three new sorts. |
+| `src/lib/plans.ts` | `paginateOrderedIds()` extracted from the keyword path and now shared by it and the three ranked sorts — one place where `published: true` and the filters are applied. |
+| `src/app/page.tsx`, `src/components/recommendations.tsx` | Standalone "Recommended for you" section removed; the component is **deleted**, not orphaned. |
+| `src/app/plans/[slug]/page.tsx` | `<ViewLogger />` mounted. Not on the print view. |
+
+### Attempt 1 — 2026-07-14
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Every §4.1.1 Sprint 19 bullet: `PlanView` table, Trending (7-day), Most Viewed (all-time), Recommended in the dropdown, standalone section retired, default → Trending, Cheapest/Easiest/Quickest gone. Nothing extra — no view COUNTS are displayed anywhere in the UI (not asked for; a number on a card invites treating an approximate signal as a metric). |
+| Correctness & functionality (/20) | **17** | `npx tsc --noEmit`, `npx eslint src tests` and `npx vitest run` (**445/445** in the sandbox clone, which is 17 tests behind the real tree) all clean; `prisma generate` accepts the schema. −3: **the migration has not run against any database**, and cannot from here — so nothing in this sprint has executed against real Postgres. The `make_interval` SQL, the LEFT JOIN, and the index are reviewed, not observed. That is a real gap and it is Keagan's next command, not a formality. |
+| Automated test coverage (/15) | **15** | `tests/views.test.ts` (17 cases) covers the things that would still "work" while being wrong: the written row has **only** `planId` (privacy); an unpublished slug and an unknown one no-op *identically* (no probing for staged content); the ranking **LEFT JOIN**s (an inner join would hide the whole catalog on day one); the tiebreak exists (on a cold table the tiebreak IS the order); the window is a **bound parameter**; the filters and `published: true` still apply on the id-ordered path; a denied action neither throws nor redirects; and `getRecommendations()` is called with **no arguments**. `tests/view-logger.test.tsx` pins the load-bearing one: a **server render logs nothing** — that is what makes a prefetch not a view. |
+| Security (/15) | **15** | The action is the most abusable write path in the app (no session needed — a view is a view), and is treated that way: rate limit FIRST, before any DB work; slug validated against a published plan; the row holds no identity, so a flood can move a list order and touch nothing else. Stated honestly in the code: a determined actor rotating IPs can inflate a view count — the same exposure every view counter has, blast radius = sort order, and the real mitigation (bot detection) isn't a free-tier thing. Worth knowing before anyone reports a view count as a metric. No `userId` accepted anywhere; the recommender's zero-argument contract is asserted, not assumed. |
+| Code quality & simplicity (/10) | **10** | `paginateOrderedIds()` is an EXTRACTION, not a new abstraction — the keyword search already did exactly this, and a second copy would be a second place for `published: true` to go missing. `recommendations.tsx` is deleted rather than left unrendered. Three sorts were REMOVED: Cheapest/Easiest/Quickest were filters wearing a sort's clothes, and the filter panel answers those questions better (a filter removes what you can't use; a sort merely buries it on page 3). |
+| Mobile/offline behavior (/10) | **9** | No layout change: the sort control is the same `<select>` in the same place, and Sprint 18's rails are untouched. Offline is unaffected by design — the logger's action call fails and is swallowed, so a plan read from the service-worker cache in a workshop behaves exactly as before (it just isn't counted, which is stated in `views.ts` rather than discovered later). −1: not exercised on a real handset, because the feature can't run until the migration does. |
+| Documentation & handoff (/5) | **5** | The privacy call is in `DECISIONS_LOG.md` (flagged as Keagan's category, with the cost of reversing it stated), the prefetch trap and the cold-start tiebreak are in `CLAUDE.md` as a standing rule, and the reasoning sits at the code it protects (`views.ts`, `view-logger.tsx`, `sort.ts`). |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan (this sprint does nothing until #1 runs)
+
+1. **Run the migration.** Dev: `npm run db:migrate`. Production migrates itself on
+   deploy (`prisma migrate deploy` in `vercel-build`) — but **read the build log**, per
+   the standing rule, and note the unresolved env-target question (`BUILD_PLAN.md` §4.2
+   item 1): whichever branch `DIRECT_URL` points at is the one that gets the table.
+2. **No backfill.** An empty `PlanView` is the correct day-one state. Trending will read
+   as "newest first" until real traffic exists — that is the tiebreak doing its job, not
+   a bug.
+3. **Delete the retired component in the repo** (the sandbox cannot):
+   `git rm src/components/recommendations.tsx`. Left behind, it lands on `main` as dead
+   code — the same process rule that bit Sprints 3 and 5 with superseded test files.
