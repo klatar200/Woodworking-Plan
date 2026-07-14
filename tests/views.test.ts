@@ -166,13 +166,15 @@ describe('view-ranked sorts', () => {
     expect(sql).toContain('title ASC');
   });
 
-  it('SECURITY: the trending window is a BOUND PARAMETER, not string-concatenated', async () => {
+  it('SECURITY + REGRESSION: the trending window binds a computed Date, never make_interval', async () => {
     const { trendingPlanIds, TRENDING_WINDOW_DAYS } = await import('@/lib/views');
     await trendingPlanIds();
 
-    // `make_interval(days => $1)`, not `INTERVAL '7 days'` built by hand. The value is
-    // ours today, but a windowed interval is exactly the kind of thing that ends up
-    // driven by a query param six months later.
+    // The window is a bound parameter, not string-concatenated. It is a plain timestamp
+    // comparison (`v."viewedAt" >= $cutoff`) — NOT `make_interval(days => $1)`, which
+    // 500'd every Trending request in production because Postgres couldn't resolve the
+    // function against the bound parameter's type. This test is the guard against that
+    // shape ever coming back.
     const windowFragment = lastRawValues().find(
       (value) =>
         typeof value === 'object' &&
@@ -181,8 +183,14 @@ describe('view-ranked sorts', () => {
     ) as { sql: string; values: unknown[] } | undefined;
 
     expect(windowFragment).toBeDefined();
-    expect(windowFragment!.sql).toContain('make_interval');
-    expect(windowFragment!.values).toEqual([TRENDING_WINDOW_DAYS]);
+    expect(windowFragment!.sql).toContain('"viewedAt"');
+    expect(windowFragment!.sql).not.toContain('make_interval');
+
+    // The bound value is a JS Date roughly TRENDING_WINDOW_DAYS in the past.
+    const cutoff = windowFragment!.values[0];
+    expect(cutoff).toBeInstanceOf(Date);
+    const ageDays = (Date.now() - (cutoff as Date).getTime()) / 86_400_000;
+    expect(ageDays).toBeCloseTo(TRENDING_WINDOW_DAYS, 1);
     expect(TRENDING_WINDOW_DAYS).toBe(7);
   });
 
@@ -191,8 +199,9 @@ describe('view-ranked sorts', () => {
     await mostViewedPlanIds();
 
     const values = lastRawValues();
-    // The only interpolation is `Prisma.empty`. Nothing carries a day count.
+    // The only interpolation is `Prisma.empty`. No day count, no cutoff Date, no interval.
     expect(JSON.stringify(values)).not.toContain('make_interval');
+    expect(values.some((v) => v instanceof Date)).toBe(false);
   });
 });
 

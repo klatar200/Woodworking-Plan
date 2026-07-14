@@ -81,15 +81,25 @@ export async function recordPlanView(slug: string): Promise<void> {
  * shuffle between pages, and defensible, because "trending" on a site with no
  * traffic yet honestly means "most recent".
  *
- * SECURITY: `$queryRaw` is a tagged template — the interval is a BOUND PARAMETER
- * via `make_interval`, never string-concatenated into SQL. `$queryRawUnsafe` is
- * not used anywhere in this codebase.
+ * SECURITY: `$queryRaw` is a tagged template — the cutoff is a BOUND PARAMETER,
+ * never string-concatenated into SQL. `$queryRawUnsafe` is not used anywhere.
+ *
+ * ⚠️ PRODUCTION BUG, fixed 2026-07-14. This clause first shipped as
+ * `NOW() - make_interval(days => ${windowDays})`. Postgres could not resolve the
+ * function against the bound parameter's inferred type (`make_interval(days => $1)`
+ * with $1 typed as bigint/numeric → "function make_interval(days => …) does not
+ * exist"), and every request for the Trending sort — the DEFAULT sort — threw a
+ * 500 on the home page. `Most viewed` (same query, no window clause) worked, which
+ * is exactly what isolated it. The unit tests MOCK `$queryRaw`, so the bad SQL was
+ * never executed until a real deploy: "green tests are not proof it works"
+ * (CLAUDE.md). Fixed by computing the cutoff as a JS `Date` and binding THAT — a
+ * plain timestamp comparison Postgres handles without any function-arg inference.
  */
 export async function viewRankedPlanIds(windowDays?: number): Promise<string[]> {
   const windowClause =
     windowDays === undefined
       ? Prisma.empty
-      : Prisma.sql`AND v."viewedAt" >= NOW() - make_interval(days => ${windowDays})`;
+      : Prisma.sql`AND v."viewedAt" >= ${new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000)}`;
 
   const rows = await prisma.$queryRaw<Array<{ id: string }>>`
     SELECT p.id
