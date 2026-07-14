@@ -727,6 +727,30 @@ a client-side progressive enhancement layered **on top of** the existing full
 server-rendered step list — the full list must keep rendering for print, offline
 caching, and no-JS per the Sprint 13/14 rules; nothing about those guarantees changes.
 
+### 2026-07-14 — Prototype Wireframe folder reviewed; wireframes file is historical only
+**Status:** Confirmed by user (four calls).
+
+Keagan added a `Prototype Wireframe/` folder containing the already-adopted
+`Woodworking Plan Prototype.dc.html` (see 2026-07-13 entry — implemented) plus
+`Woodworking Wireframes.dc.html`, the earlier design iterations. Four decisions:
+
+1. **The 2026-07-13 decisions stand; the wireframes file is historical context, not
+   spec.** Its conflicting elements are explicitly NOT to be built: dollar figures
+   ($85–$130 chips, per-material prices in the print preview) violate the cost-tier
+   rule; "Free tier: 10 saved plans / 1 folder" limits violate the no-limits
+   decision; custom email/password auth screens violate the Clerk-stays decision;
+   the email-notifications toggle and sitemap page were already excluded.
+2. **Remaining prototype deltas approved for now: active-filter chips and skeleton
+   loading states.** Materials checklist and the offline banner / saved-only catalog
+   mode were offered and NOT selected — not approved, do not build without asking.
+3. **Sort options stay as-is** (five options, easiest-first default). The prototype's
+   "Recommended"/"Trending" sorts are new features that would need adding to
+   `BUSINESS_PLAN.md` first. Declined for now.
+4. **Priority: UI deltas before launch blockers** — Keagan's call, made with the
+   explicit caveat on record that the leaked Neon/Clerk credentials remain
+   unrotated meanwhile. Credential rotation is still his action item; paths
+   production seed and rate-limit user feedback remain open on the build side.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

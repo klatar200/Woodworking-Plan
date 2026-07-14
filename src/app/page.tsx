@@ -12,6 +12,7 @@ import { InstallPrompt } from '@/components/install-prompt';
 import { Recommendations } from '@/components/recommendations';
 import { SearchBox } from '@/components/search-box';
 import { FilterPanel } from '@/components/filter-panel';
+import { FilterChips } from '@/components/filter-chips';
 import { SortSelect } from '@/components/sort-select';
 
 /**
@@ -142,6 +143,16 @@ export default async function CatalogPage({
       />
 
       <SortSelect sort={sort} query={query} filters={filters} />
+
+      {/* Removable chips for each active filter — renders nothing when browsing
+          unfiltered. Each chip is a GET link; see filter-chips.tsx. */}
+      <FilterChips
+        query={query}
+        filters={filters}
+        sort={sort === DEFAULT_SORT ? undefined : sort}
+        categories={categories}
+        tools={tools}
+      />
 
       <p className="subtitle">
         {isNarrowed ? (

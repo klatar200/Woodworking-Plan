@@ -215,6 +215,13 @@ with it.
   into a separate PRIVATE cache — **wiped on sign-out**. Closes the `BUSINESS_PLAN.md` §5
   hardware-store gap. 336 tests green. See the corrected offline rule below.
 
+- **Prototype-delta pass (2026-07-14): COMPLETE.** Active-filter chips
+  (`filter-chips.tsx` — GET links, one per active filter value, sort/query ride
+  along) and skeleton loading states (`loading.tsx` for catalog + plan detail,
+  `prefers-reduced-motion` respected). 398 tests green. The wireframes file in
+  `Prototype Wireframe/` is HISTORICAL — its dollar figures, save limits, and
+  custom auth screens are superseded; see `DECISIONS_LOG.md` 2026-07-14.
+
 ## ✅ PHASE 2 COMPLETE (Sprints 10–14). Run rate still $0/mo.
 
 Every item in `BUSINESS_PLAN.md` §10 is built except **affiliate links**, which are

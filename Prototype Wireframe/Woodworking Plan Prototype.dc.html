@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<style>
+  body{margin:0}
+  @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+  .ww-skel{background:linear-gradient(90deg,#eae6dc 25%,#f3f0e8 37%,#eae6dc 63%);background-size:400px 100%;animation:shimmer 1.4s ease-in-out infinite}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#faf9f6;color:#1a1a1a;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;display:flex;flex-direction:column">
+
+  <!-- ============ CATALOG HEADER ============ -->
+  <sc-if value="{{ isCatalog }}" hint-placeholder-val="{{ true }}">
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #e4e4e4;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="font-weight:700;font-size:18px;white-space:nowrap">Woodworking Plan</div>
+      <div style="flex:1;min-width:180px;display:flex;gap:8px;max-width:480px">
+        <input type="search" value="{{ query }}" onChange="{{ onQueryChange }}" placeholder="Search plans, tools, materials…" style="flex:1;min-width:0;min-height:44px;padding:0 14px;font-size:16px;border:1px solid #d8d3c6;border-radius:8px;background:#faf9f6;color:#1a1a1a"/>
+      </div>
+      <div style="flex:1"></div>
+      <div onClick="{{ goSaved }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 14px;border:1px solid #d8d3c6;border-radius:8px;font-weight:600;font-size:14px;white-space:nowrap">🔖 Saved</div>
+      <div style="position:relative">
+        <div onClick="{{ toggleProfileMenu }}" style="cursor:pointer;width:36px;height:36px;border-radius:50%;background:#e9a86c;color:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px">{{ profileInitial }}</div>
+        <sc-if value="{{ profileMenuOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:44px;right:0;background:#fff;color:#1a1a1a;border:1px solid #e4e4e4;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.15);min-width:190px;overflow:hidden;z-index:20">
+            <sc-for list="{{ profileMenuItems }}" as="item" hint-placeholder-count="3">
+              <div onClick="{{ item.onClick }}" style="cursor:pointer;padding:11px 16px;font-size:14px;font-weight:{{ item.weight }};border-bottom:1px solid #f0eee7">{{ item.label }}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ DETAIL HEADER ============ -->
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #e4e4e4;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div onClick="{{ goCatalog }}" style="cursor:pointer;font-weight:600;font-size:15px;color:#6b6b6b;white-space:nowrap">← All plans</div>
+      <div style="font-weight:700;font-size:18px">{{ currentMeta.title }}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:13px;border:1px solid #d8d3c6;border-radius:999px;padding:3px 10px;color:#6b6b6b">{{ currentMeta.difficultyLabel }}</span>
+        <span style="font-size:13px;border:1px solid #d8d3c6;border-radius:999px;padding:3px 10px;color:#6b6b6b">{{ currentMeta.costSymbol }}</span>
+        <span style="font-size:13px;border:1px solid #d8d3c6;border-radius:999px;padding:3px 10px;color:#6b6b6b">{{ currentMeta.timeLabel }}</span>
+        <span style="font-size:13px;border:1px solid #d8d3c6;border-radius:999px;padding:3px 10px;color:#6b6b6b">{{ reviewStars }} {{ reviewSummary }}</span>
+      </div>
+      <div style="flex:1"></div>
+      <div onClick="{{ toggleSavedCurrent }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;padding:0 14px;border:1px solid #1a1a1a;border-radius:8px;font-weight:600;font-size:14px;background:{{ currentMeta.isSavedBg }};color:{{ currentMeta.isSavedFg }}">🔖 {{ currentMeta.saveLabel }}</div>
+      <div onClick="{{ toggleLikedCurrent }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;padding:0 14px;border:1px solid #d8d3c6;border-radius:8px;font-weight:600;font-size:14px">{{ currentMeta.likeIcon }} {{ currentMeta.likeCount }}</div>
+      <div onClick="{{ printPlan }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 14px;border:1px solid #d8d3c6;border-radius:8px;font-weight:600;font-size:14px">🖨 Print</div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SAVED HEADER ============ -->
+  <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}">
+    <div style="position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #e4e4e4;padding:14px 20px;display:flex;align-items:center;gap:14px">
+      <div onClick="{{ goCatalog }}" style="cursor:pointer;font-weight:600;font-size:15px;color:#6b6b6b">← All plans</div>
+      <div style="font-weight:700;font-size:18px">Saved Plans</div>
+    </div>
+  </sc-if>
+
+  <!-- ============ CATALOG BODY ============ -->
+  <sc-if value="{{ isCatalog }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#1a1a1a;color:#fff;padding:9px 20px;text-align:center;font-weight:700;font-size:14px">📴 Offline — showing your saved plans only</div>
+    </sc-if>
+    <sc-if value="{{ installPromptVisible }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fdf1e0;border-bottom:1px solid #e9c98a;flex-wrap:wrap">
+        <div style="width:38px;height:38px;border-radius:9px;flex:none;background:#fff;border:1px solid #e9c98a;display:flex;align-items:center;justify-content:center;font-size:16px">🪚</div>
+        <div style="flex:1;min-width:180px">
+          <div style="font-weight:700;font-size:15px">Install Woodworking Plan</div>
+          <div style="font-size:13px;color:#7a5316">Faster access, works offline in the shop</div>
+        </div>
+        <div onClick="{{ dismissInstall }}" style="cursor:pointer;padding:9px 14px;border:1px solid #d8d3c6;border-radius:8px;font-weight:600;font-size:14px;background:#fff">Not now</div>
+        <div onClick="{{ installApp }}" style="cursor:pointer;padding:9px 14px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:14px;background:#1a1a1a;color:#fff">Install</div>
+      </div>
+    </sc-if>
+    <div style="padding:18px 20px 60px;flex:1">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <sc-if value="{{ isMobileOrTablet }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ toggleFiltersOpen }}" style="cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 14px;border:1px solid #1a1a1a;border-radius:8px;font-weight:600;font-size:14px">☰ Filters{{ filterCountLabel }}</div>
+        </sc-if>
+        <div style="flex:1"></div>
+        <label style="font-size:13px;color:#6b6b6b">Sort</label>
+        <select value="{{ sort }}" onChange="{{ onSortChange }}" style="min-height:44px;padding:0 10px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px;background:#fff">
+          <option value="recommended">Recommended</option>
+          <option value="trending">Trending</option>
+          <option value="mostliked">Most Liked</option>
+          <option value="alphabetical">Alphabetical A-Z</option>
+        </select>
+        <div style="font-size:13px;color:#6b6b6b;white-space:nowrap">{{ resultCountLabel }}</div>
+      </div>
+
+      <sc-if value="{{ activeChips.length }}" hint-placeholder-val="{{ 0 }}">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+          <sc-for list="{{ activeChips }}" as="chip" hint-placeholder-count="2">
+            <span onClick="{{ chip.onRemove }}" style="cursor:pointer;font-size:13px;font-weight:600;background:#e9a86c;border-radius:999px;padding:4px 10px 4px 12px;white-space:nowrap">{{ chip.label }} ✕</span>
+          </sc-for>
+          <span onClick="{{ clearFilters }}" style="cursor:pointer;font-size:13px;color:#6b6b6b;align-self:center;text-decoration:underline">Clear all</span>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;flex-direction:{{ mainFlexDir }};gap:20px;align-items:{{ mainAlignItems }}">
+        <sc-if value="{{ showFilterPanel }}" hint-placeholder-val="{{ false }}">
+          <div style="width:{{ filterPanelWidth }};flex:none;border:1px solid #e4e4e4;border-radius:10px;padding:16px;background:#fff">
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Category</div>
+            <select value="{{ category }}" onChange="{{ onCategoryChange }}" style="width:100%;min-height:44px;padding:0 10px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px;margin-bottom:16px;background:#faf9f6">
+              <option value="">Any category</option>
+              <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="6">
+                <option value="{{ cat.slug }}">{{ cat.name }}</option>
+              </sc-for>
+            </select>
+
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Difficulty</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+              <sc-for list="{{ difficultyOptions }}" as="opt" hint-placeholder-count="5">
+                <span onClick="{{ opt.onToggle }}" style="cursor:pointer;font-size:13px;padding:6px 10px;border:1px solid #1a1a1a;border-radius:999px;background:{{ opt.bg }};font-weight:{{ opt.weight }}">{{ opt.label }}</span>
+              </sc-for>
+            </div>
+
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">Tools you own</div>
+            <p style="font-size:12px;color:#8a8175;margin:0 0 8px">Only show plans buildable with what's checked.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+              <sc-for list="{{ toolOptions }}" as="opt" hint-placeholder-count="6">
+                <span onClick="{{ opt.onToggle }}" style="cursor:pointer;font-size:13px;padding:6px 10px;border:1px solid #1a1a1a;border-radius:999px;background:{{ opt.bg }};font-weight:{{ opt.weight }}">{{ opt.label }}</span>
+              </sc-for>
+            </div>
+
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Cost tier</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+              <sc-for list="{{ costOptions }}" as="opt" hint-placeholder-count="5">
+                <span onClick="{{ opt.onToggle }}" style="cursor:pointer;font-size:13px;padding:6px 10px;border:1px solid #1a1a1a;border-radius:999px;background:{{ opt.bg }};font-weight:{{ opt.weight }}">{{ opt.label }}</span>
+              </sc-for>
+            </div>
+
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Time available</div>
+            <select value="{{ maxMinutes }}" onChange="{{ onTimeChange }}" style="width:100%;min-height:44px;padding:0 10px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px;margin-bottom:16px;background:#faf9f6">
+              <option value="">Any amount of time</option>
+              <option value="120">Under 2 hrs</option>
+              <option value="360">A few hours</option>
+              <option value="600">A weekend</option>
+              <option value="99999">Multiple weekends OK</option>
+            </select>
+
+            <sc-if value="{{ isMobileOrTablet }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ toggleFiltersOpen }}" style="cursor:pointer;text-align:center;padding:12px;font-weight:700;font-size:14px;background:#1a1a1a;color:#fff;border-radius:8px">Show results</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <div style="flex:1;min-width:0;width:100%">
+          <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat({{ catalogCols }},1fr);gap:16px">
+              <sc-for list="{{ skeletonSlots }}" as="s" hint-placeholder-count="6">
+                <div style="border:1px solid #e4e4e4;border-radius:10px;overflow:hidden;background:#fff">
+                  <div class="ww-skel" style="width:100%;aspect-ratio:3/2"></div>
+                  <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+                    <div class="ww-skel" style="width:50%;height:10px;border-radius:3px"></div>
+                    <div class="ww-skel" style="width:80%;height:16px;border-radius:3px"></div>
+                    <div class="ww-skel" style="width:60%;height:14px;border-radius:3px"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notLoadingAndEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px dashed #d8d3c6;border-radius:10px;padding:48px 24px;text-align:center;color:#6b6b6b">
+              <div style="font-size:32px;margin-bottom:10px">{{ emptyStateIcon }}</div>
+              <div style="font-weight:700;font-size:17px;color:#1a1a1a;margin-bottom:6px">{{ emptyStateTitle }}</div>
+              <div style="font-size:15px;margin-bottom:16px">{{ emptyStateBody }}</div>
+              <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+              </sc-if>
+              <sc-if value="{{ notOffline }}" hint-placeholder-val="{{ false }}">
+                <div onClick="{{ clearFilters }}" style="display:inline-block;cursor:pointer;padding:10px 18px;border:1px solid #1a1a1a;border-radius:8px;font-weight:600">Clear all filters</div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notLoadingAndHasResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat({{ catalogCols }},1fr);gap:16px">
+              <sc-for list="{{ filteredPlans }}" as="plan" hint-placeholder-count="6">
+                <div onClick="{{ plan.onOpen }}" style="cursor:pointer;border:1px solid #e4e4e4;border-radius:10px;overflow:hidden;background:#fff">
+                  <div style="position:relative;width:100%;aspect-ratio:3/2;background:repeating-linear-gradient(45deg,#eee9dd,#eee9dd 8px,#f7f4ea 8px,#f7f4ea 16px);display:flex;align-items:center;justify-content:center">
+                    <span style="font:12px ui-monospace,Menlo,monospace;color:#a39c8a">photo: {{ plan.title }}</span>
+                    <div onClick="{{ plan.onToggleSave }}" style="position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #e4e4e4;display:flex;align-items:center;justify-content:center;font-size:15px">{{ plan.saveIcon }}</div>
+                  </div>
+                  <div style="padding:14px">
+                    <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.04em;color:#8a8175;margin-bottom:4px">{{ plan.categoryName }}</div>
+                    <div style="font-weight:700;font-size:17px;margin-bottom:8px">{{ plan.title }}</div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      <span style="font-size:13px;border:1px solid #e4e4e4;border-radius:999px;padding:3px 9px;color:#6b6b6b">{{ plan.difficultyLabel }}</span>
+                      <span style="font-size:13px;border:1px solid #e4e4e4;border-radius:999px;padding:3px 9px;color:#6b6b6b">{{ plan.costSymbol }}</span>
+                      <span style="font-size:13px;border:1px solid #e4e4e4;border-radius:999px;padding:3px 9px;color:#6b6b6b">{{ plan.timeLabel }}</span>
+                      <span style="font-size:13px;border:1px solid #e4e4e4;border-radius:999px;padding:3px 9px;color:#6b6b6b">♥ {{ plan.likes }}</span>
+                      <sc-if value="{{ plan.isOfflineAvailable }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size:13px;border:1px solid #17803d;color:#17803d;border-radius:999px;padding:3px 9px">✓ Offline</span>
+                      </sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ showPagination }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:24px">
+              <div onClick="{{ prevPage }}" style="cursor:pointer;padding:9px 14px;border:1px solid #1a1a1a;border-radius:8px;font-weight:600;font-size:14px;opacity:{{ prevPageOpacity }}">← Prev</div>
+              <sc-for list="{{ pageNumbers }}" as="pn" hint-placeholder-count="1">
+                <div onClick="{{ pn.onClick }}" style="cursor:pointer;min-width:38px;text-align:center;padding:9px 10px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:14px;background:{{ pn.bg }};color:{{ pn.fg }}">{{ pn.n }}</div>
+              </sc-for>
+              <div onClick="{{ nextPage }}" style="cursor:pointer;padding:9px 14px;border:1px solid #1a1a1a;border-radius:8px;font-weight:600;font-size:14px;opacity:{{ nextPageOpacity }}">Next →</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ DETAIL BODY ============ -->
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1">
+      <sc-if value="{{ showDemoBanner }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fdf1e0;border-bottom:1px solid #e9c98a;padding:10px 20px;font-size:14px;color:#7a5316">Showing the fully-built demo guide (Adirondack Chair) for "{{ clickedTitle }}" — step data isn't authored for every catalog plan in this prototype yet.</div>
+      </sc-if>
+
+      <div style="padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #e4e4e4;background:#fff">
+        <div style="flex:1;max-width:420px;height:12px;border:1px solid #1a1a1a;border-radius:999px;overflow:hidden">
+          <div style="width:{{ progressPercent }}%;height:100%;background:#c96a2e"></div>
+        </div>
+        <div style="font-weight:700;font-size:14px;white-space:nowrap">Step {{ stepPosition }} of {{ stepCount }}</div>
+      </div>
+
+      <sc-if value="{{ isMobileOrTablet }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:12px 20px;border-bottom:1px solid #e4e4e4;background:#fff">
+          <sc-for list="{{ stepDots }}" as="dot" hint-placeholder-count="7">
+            <div onClick="{{ dot.onClick }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;border:1px solid #1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;background:{{ dot.bg }};color:{{ dot.fg }}">{{ dot.number }}</div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div style="display:flex;gap:0;align-items:flex-start">
+        <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+          <div style="width:230px;flex:none;border-right:1px solid #e4e4e4;padding:16px 10px;background:#fff;min-height:400px">
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;padding:0 6px;margin-bottom:8px">All steps</div>
+            <sc-for list="{{ stepList }}" as="s" hint-placeholder-count="7">
+              <div onClick="{{ s.onClick }}" style="cursor:pointer;display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;background:{{ s.rowBg }};margin-bottom:3px">
+                <span style="width:24px;height:24px;flex:none;border-radius:50%;border:1px solid #1a1a1a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:{{ s.dotBg }};color:{{ s.dotFg }}">{{ s.number }}</span>
+                <span style="font-size:14px;font-weight:{{ s.weight }}">{{ s.title }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="flex:1;min-width:0;padding:24px 26px;background:#fff">
+          <div style="display:flex;gap:28px;align-items:flex-start">
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+                <span style="width:36px;height:36px;flex:none;border-radius:50%;background:#1a1a1a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px">{{ currentStep.number }}</span>
+                <div style="font-weight:700;font-size:24px">{{ currentStep.title }}</div>
+              </div>
+              <sc-for list="{{ currentStep.paragraphs }}" as="para" hint-placeholder-count="2">
+                <p style="font-size:17px;line-height:1.6;margin:0 0 14px">{{ para }}</p>
+              </sc-for>
+              <div style="display:flex;gap:12px;margin-top:16px">
+                <div onClick="{{ prevStep }}" style="cursor:pointer;padding:11px 20px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:15px;opacity:{{ prevOpacity }}">← Prev</div>
+                <div onClick="{{ nextStep }}" style="cursor:pointer;padding:11px 20px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:15px;background:{{ nextBg }};color:{{ nextFg }}">{{ nextLabel }}</div>
+              </div>
+            </div>
+
+            <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+              <div style="width:260px;flex:none">
+                <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;margin-bottom:8px">Reference model — step {{ currentStep.number }}</div>
+                <div style="width:100%;aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#eee9dd,#eee9dd 8px,#f7f4ea 8px,#f7f4ea 16px);border:1px solid #e4e4e4;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:14px">
+                  <span style="font:12px/1.5 ui-monospace,Menlo,monospace;color:#7a7263;text-align:center">{{ currentStep.model }}</span>
+                </div>
+                <p style="font-size:12px;color:#8a8175;margin:8px 0 0">Diagram placeholder — drop in a real part/joint illustration for this step.</p>
+              </div>
+            </sc-if>
+          </div>
+
+          <div onClick="{{ toggleDetailsOpen }}" style="cursor:pointer;margin-top:28px;padding-top:16px;border-top:1px solid #e4e4e4;font-weight:700;font-size:14px;color:#6b6b6b">{{ detailsToggleLabel }}</div>
+          <sc-if value="{{ detailsOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:14px">
+              <sc-for list="{{ fullDescription }}" as="para" hint-placeholder-count="2">
+                <p style="font-size:15px;line-height:1.6;color:#3a362e;margin:0 0 12px">{{ para }}</p>
+              </sc-for>
+              <div style="font-size:13px;font-weight:700;color:#8a8175;text-transform:uppercase;margin:16px 0 8px">Cut list</div>
+              <div style="border:1px solid #e4e4e4;border-radius:8px;overflow:hidden">
+                <sc-for list="{{ cutList }}" as="c" hint-placeholder-count="3">
+                  <div style="display:flex;gap:12px;padding:10px 14px;border-bottom:1px solid #e4e4e4;font-size:14px">
+                    <span style="flex:1;font-weight:600">{{ c.part }}</span>
+                    <span style="color:#6b6b6b">×{{ c.quantity }}</span>
+                    <span style="font-family:ui-monospace,Menlo,monospace;color:#6b6b6b">{{ c.dims }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:16px">
+                <sc-for list="{{ tags }}" as="tag" hint-placeholder-count="5">
+                  <span style="font-size:13px;border:1px solid #e4e4e4;border-radius:999px;padding:3px 10px;color:#6b6b6b">{{ tag }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e4e4e4">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px">
+              <div style="font-weight:700;font-size:17px">Reviews</div>
+              <span style="font-size:15px">{{ reviewStars }} <span style="color:#6b6b6b">{{ reviewSummary }}</span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px">
+              <sc-for list="{{ reviews }}" as="rev" hint-placeholder-count="2">
+                <div style="border:1px solid #e4e4e4;border-radius:8px;padding:12px 14px">
+                  <div style="font-weight:700;font-size:14px;margin-bottom:4px">{{ rev.starsDisplay }} {{ rev.author }}</div>
+                  <div style="font-size:14px;line-height:1.5">{{ rev.text }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:8px">
+              <input type="text" value="{{ newReviewText }}" onChange="{{ onNewReviewChange }}" placeholder="I made this — add a quick review…" style="flex:1;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+              <div onClick="{{ addReview }}" style="cursor:pointer;padding:0 18px;display:flex;align-items:center;background:#1a1a1a;color:#fff;border-radius:8px;font-weight:700;font-size:14px;white-space:nowrap">Post</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:280px;flex:none;padding:18px 16px;border-left:1px solid #e4e4e4;background:#fff">
+          <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;margin-bottom:8px">Materials &amp; hardware</div>
+          <sc-for list="{{ materials }}" as="m" hint-placeholder-count="5">
+            <div onClick="{{ m.onToggle }}" style="cursor:pointer;display:flex;align-items:flex-start;gap:8px;margin-bottom:8px">
+              <span style="width:18px;height:18px;flex:none;border:2px solid #1a1a1a;border-radius:4px;margin-top:2px;background:{{ m.checkBg }}"></span>
+              <span style="font-size:14px;line-height:1.4">{{ m.label }}</span>
+            </div>
+          </sc-for>
+
+          <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;margin:16px 0 8px">Tools — essential</div>
+          <sc-for list="{{ essentialTools }}" as="t" hint-placeholder-count="4">
+            <div style="font-size:14px;margin-bottom:6px">{{ t.name }}</div>
+          </sc-for>
+          <sc-if value="{{ optionalTools.length }}" hint-placeholder-val="{{ 0 }}">
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;margin:16px 0 8px">Tools — optional</div>
+            <sc-for list="{{ optionalTools }}" as="t" hint-placeholder-count="2">
+              <div style="font-size:14px;margin-bottom:6px">{{ t.name }}</div>
+            </sc-for>
+          </sc-if>
+
+          <sc-if value="{{ isMobileOrTablet }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12px;font-weight:700;color:#8a8175;text-transform:uppercase;margin:16px 0 8px">Reference model — step {{ currentStep.number }}</div>
+            <div style="width:100%;aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#eee9dd,#eee9dd 8px,#f7f4ea 8px,#f7f4ea 16px);border:1px solid #e4e4e4;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:14px">
+              <span style="font:12px/1.5 ui-monospace,Menlo,monospace;color:#7a7263;text-align:center">{{ currentStep.model }}</span>
+            </div>
+            <p style="font-size:12px;color:#8a8175;margin:8px 0 0">Diagram placeholder — drop in a real part/joint illustration for this step.</p>
+          </sc-if>
+        </div>
+      </div>
+
+      <sc-if value="{{ isMobileOrTablet }}" hint-placeholder-val="{{ false }}">
+        <div style="position:sticky;bottom:0;display:flex;gap:10px;padding:12px 20px;border-top:1px solid #e4e4e4;background:#fff">
+          <div onClick="{{ prevStep }}" style="flex:1;text-align:center;cursor:pointer;padding:13px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:15px;opacity:{{ prevOpacity }}">← Prev</div>
+          <div onClick="{{ nextStep }}" style="flex:1;text-align:center;cursor:pointer;padding:13px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:15px;background:{{ nextBg }};color:{{ nextFg }}">{{ nextLabel }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============ SAVED BODY ============ -->
+  <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:18px 20px;flex:1">
+      <sc-if value="{{ savedEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px dashed #d8d3c6;border-radius:10px;padding:48px 24px;text-align:center;color:#6b6b6b">
+          <div style="font-size:32px;margin-bottom:10px">🔖</div>
+          <div style="font-weight:700;font-size:17px;color:#1a1a1a;margin-bottom:6px">No saved plans yet</div>
+          <div style="font-size:15px;margin-bottom:16px">Bookmark a plan from the catalog to see it here.</div>
+          <div onClick="{{ goCatalog }}" style="display:inline-block;cursor:pointer;padding:10px 18px;border:1px solid #1a1a1a;border-radius:8px;font-weight:600;background:#1a1a1a;color:#fff">Browse plans</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ savedNotEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:640px">
+          <sc-for list="{{ savedPlansList }}" as="plan" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;border:1px solid #e4e4e4;border-radius:10px;padding:10px;background:#fff">
+              <div onClick="{{ plan.onOpen }}" style="cursor:pointer;width:80px;height:60px;flex:none;background:repeating-linear-gradient(45deg,#eee9dd,#eee9dd 8px,#f7f4ea 8px,#f7f4ea 16px);border-radius:6px"></div>
+              <div onClick="{{ plan.onOpen }}" style="cursor:pointer;flex:1">
+                <div style="font-weight:700;font-size:16px">{{ plan.title }}</div>
+                <span style="font-size:13px;border:1px solid #e4e4e4;border-radius:999px;padding:3px 9px;color:#6b6b6b">{{ plan.categoryName }}</span>
+              </div>
+              <div onClick="{{ plan.onRemove }}" style="cursor:pointer;color:#8a8175;font-size:20px;padding:6px">✕</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============ LOGIN ============ -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;justify-content:center;padding:40px 20px">
+      <div style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px;align-items:center">
+        <div style="font-weight:700;font-size:22px">Woodworking Plan</div>
+        <div style="font-size:15px;color:#6b6b6b;text-align:center">Browsing is free. Sign in to save plans, like builds, and sync offline.</div>
+        <input type="email" placeholder="Email" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        <input type="password" placeholder="Password" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        <div onClick="{{ doLogin }}" style="cursor:pointer;width:100%;text-align:center;padding:12px;font-weight:700;font-size:15px;background:#1a1a1a;color:#fff;border-radius:8px">Log in</div>
+        <div style="width:100%;text-align:center;padding:12px;font-weight:700;font-size:15px;border:1px solid #d8d3c6;border-radius:8px;cursor:pointer">Continue with Google</div>
+        <div style="font-size:14px;color:#6b6b6b">No account? <span onClick="{{ goSignup }}" style="cursor:pointer;text-decoration:underline">Sign up</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SIGN UP ============ -->
+  <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;justify-content:center;padding:40px 20px">
+      <div style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px;align-items:center">
+        <div style="font-weight:700;font-size:22px">Woodworking Plan</div>
+        <div style="font-size:15px;color:#6b6b6b;text-align:center">Create a free account to save plans and like builds.</div>
+        <input type="text" placeholder="Name" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        <input type="email" placeholder="Email" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        <input type="password" placeholder="Password" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        <div onClick="{{ doSignup }}" style="cursor:pointer;width:100%;text-align:center;padding:12px;font-weight:700;font-size:15px;background:#1a1a1a;color:#fff;border-radius:8px">Create account</div>
+        <div style="font-size:13px;color:#8a8175;text-align:center">Free tier: 10 saved plans, 1 category folder</div>
+        <div style="font-size:14px;color:#6b6b6b">Already have an account? <span onClick="{{ goLogin }}" style="cursor:pointer;text-decoration:underline">Log in</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ PROFILE ============ -->
+  <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:24px 20px;display:flex;justify-content:center">
+      <div style="width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-weight:700;font-size:20px;margin-bottom:6px">Profile</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:60px;height:60px;border-radius:50%;background:#e9a86c;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px">{{ profileInitial }}</div>
+          <div>
+            <div style="font-weight:700;font-size:17px">{{ accountName }}</div>
+            <div style="font-size:14px;color:#6b6b6b">{{ accountEmail }}</div>
+          </div>
+        </div>
+        <div style="border:1px solid #e4e4e4;border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;font-size:15px"><span>Saved plans</span><span style="font-weight:700">{{ savedCount }} / 10</span></div>
+        <div style="border:1px solid #e4e4e4;border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;font-size:15px"><span>Category folders</span><span style="font-weight:700">1 / 1</span></div>
+        <div onClick="{{ goAccountSettings }}" style="cursor:pointer;text-align:center;padding:12px;border:1px solid #1a1a1a;border-radius:8px;font-weight:700;font-size:15px">Account settings</div>
+        <div onClick="{{ doSignOut }}" style="cursor:pointer;text-align:center;padding:12px;border:1px solid #d8d3c6;border-radius:8px;font-weight:700;font-size:15px;color:#b5551c">Sign out</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ ACCOUNT SETTINGS ============ -->
+  <sc-if value="{{ isAccountSettings }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:24px 20px;display:flex;justify-content:center">
+      <div style="width:100%;max-width:420px;display:flex;flex-direction:column;gap:16px">
+        <div onClick="{{ goProfile }}" style="cursor:pointer;font-size:14px;color:#6b6b6b;font-weight:600">← Back to profile</div>
+        <div style="font-weight:700;font-size:20px">Account settings</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#8a8175;text-transform:uppercase;margin-bottom:6px">Name</div>
+          <input type="text" value="{{ accountName }}" onChange="{{ onNameChange }}" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#8a8175;text-transform:uppercase;margin-bottom:6px">Email</div>
+          <input type="email" value="{{ accountEmail }}" onChange="{{ onEmailChange }}" style="width:100%;min-height:44px;padding:0 12px;font-size:15px;border:1px solid #d8d3c6;border-radius:8px"/>
+        </div>
+        <div style="text-align:center;padding:12px;border:1px solid #d8d3c6;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer">Change password</div>
+        <div onClick="{{ toggleNotifications }}" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;border:1px solid #e4e4e4;border-radius:8px;padding:12px 14px">
+          <span style="font-size:15px">Email notifications</span>
+          <span style="width:42px;height:24px;border-radius:999px;background:{{ notifBg }};position:relative;flex:none">
+            <span style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:{{ notifKnobLeft }}"></span>
+          </span>
+        </div>
+        <div onClick="{{ saveAccountSettings }}" style="cursor:pointer;text-align:center;padding:12px;background:#1a1a1a;color:#fff;border-radius:8px;font-weight:700;font-size:15px">Save changes</div>
+        <sc-if value="{{ savedToast }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;font-size:14px;color:#17803d;font-weight:600">✓ Saved</div>
+        </sc-if>
+        <div style="text-align:center;font-size:14px;color:#b5551c;text-decoration:underline;cursor:pointer;margin-top:8px">Delete account</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SITEMAP ============ -->
+  <sc-if value="{{ isSitemap }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:24px 20px">
+      <div style="font-weight:700;font-size:20px;margin-bottom:20px">Sitemap</div>
+      <div style="display:flex;flex-wrap:wrap;gap:32px">
+        <sc-for list="{{ sitemapGroups }}" as="group" hint-placeholder-count="3">
+          <div style="min-width:200px">
+            <div style="font-size:13px;font-weight:700;color:#8a8175;text-transform:uppercase;margin-bottom:10px">{{ group.name }}</div>
+            <sc-for list="{{ group.links }}" as="link" hint-placeholder-count="3">
+              <div onClick="{{ link.onClick }}" style="cursor:pointer;font-size:15px;padding:6px 0;color:#1a1a1a;text-decoration:underline">{{ link.label }}</div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <div onClick="{{ toggleOfflineSim }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:10px 14px;border:1px solid #e4e4e4;border-radius:8px">
+        <span style="width:42px;height:24px;border-radius:999px;background:{{ offlineSimBg }};position:relative;flex:none">
+          <span style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:{{ offlineSimKnobLeft }}"></span>
+        </span>
+        <span style="font-size:14px;font-weight:600">Simulate offline mode (demo)</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SHOPPING LIST ============ -->
+  <sc-if value="{{ isShoppingList }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:24px 20px;display:flex;justify-content:center">
+      <div style="width:100%;max-width:520px">
+        <div style="font-weight:700;font-size:20px;margin-bottom:4px">Shopping List</div>
+        <div style="font-size:14px;color:#8a8175;margin-bottom:18px">Merged materials from your {{ savedCount }} saved plan(s)</div>
+        <sc-if value="{{ savedEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px dashed #d8d3c6;border-radius:10px;padding:36px 24px;text-align:center;color:#6b6b6b">Save a plan first to build a shopping list.</div>
+        </sc-if>
+        <sc-if value="{{ shoppingListMaterials.length }}" hint-placeholder-val="{{ 0 }}">
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+            <sc-for list="{{ shoppingListMaterials }}" as="m" hint-placeholder-count="4">
+              <div onClick="{{ m.onToggle }}" style="cursor:pointer;display:flex;align-items:flex-start;gap:8px">
+                <span style="width:18px;height:18px;flex:none;border:2px solid #1a1a1a;border-radius:4px;margin-top:2px;background:{{ m.checkBg }}"></span>
+                <span style="font-size:15px;line-height:1.4">{{ m.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ shoppingListOtherNote }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:13px;color:#8a8175">{{ shoppingListOtherNote }}</p>
+        </sc-if>
+        <p style="font-size:13px;color:#8a8175;border-top:1px solid #e4e4e4;padding-top:12px;margin-top:12px">Quantities only — no pricing or buy links until the project is on a commercial-use host.</p>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CATEGORIES = [
+  {slug:'cutting-boards', name:'Cutting Boards'},
+  {slug:'furniture', name:'Furniture'},
+  {slug:'storage', name:'Storage & Shelving'},
+  {slug:'outdoor', name:'Outdoor'},
+  {slug:'shop-projects', name:'Shop Projects'},
+  {slug:'gifts-and-small-projects', name:'Gifts & Small Projects'},
+];
+const CAT_NAME = {};
+CATEGORIES.forEach(c => CAT_NAME[c.slug] = c.name);
+
+const DIFFICULTY_LABELS = {1:'Beginner',2:'Easy',3:'Intermediate',4:'Advanced',5:'Expert'};
+
+const TOOL_NAMES = {
+  'table-saw':'Table Saw','circular-saw':'Circular Saw','drill-driver':'Drill/Driver',
+  'random-orbit-sander':'Random Orbit Sander','router':'Router','planer':'Thickness Planer',
+  'jointer':'Jointer','pocket-hole-jig':'Pocket Hole Jig','impact-driver':'Impact Driver',
+  'clamps-bar':'Bar/Pipe Clamps','chisels':'Chisels','hand-saw':'Hand Saw',
+  'marking-gauge':'Marking Gauge','drill-press':'Drill Press','lathe':'Lathe',
+  'jigsaw':'Jigsaw','band-saw':'Band Saw','clamps-spring':'Spring Clamps',
+  'combination-square':'Combination Square','tape-measure':'Tape Measure',
+};
+
+const PLANS = [
+  {slug:'adirondack-chair', title:'Adirondack Chair', category:'outdoor', difficulty:3, costTier:2, timeLabel:'7–10 hrs', timeMin:420, likes:24, tools:['jigsaw','circular-saw','drill-driver','random-orbit-sander']},
+  {slug:'cedar-planter-box', title:'Cedar Planter Box', category:'outdoor', difficulty:1, costTier:1, timeLabel:'3–4 hrs', timeMin:180, likes:9, tools:['circular-saw','drill-driver']},
+  {slug:'cedar-raised-garden-bed', title:'Cedar Raised Garden Bed', category:'outdoor', difficulty:1, costTier:1, timeLabel:'2–3 hrs', timeMin:150, likes:15, tools:['circular-saw','drill-driver']},
+  {slug:'cherry-serving-board-with-juice-groove', title:'Cherry Serving Board with Juice Groove', category:'cutting-boards', difficulty:2, costTier:2, timeLabel:'4–5 hrs', timeMin:270, likes:31, tools:['table-saw','router','random-orbit-sander']},
+  {slug:'classic-picnic-table', title:'Classic Picnic Table', category:'outdoor', difficulty:3, costTier:3, timeLabel:'1–2 weekends', timeMin:600, likes:12, tools:['circular-saw','drill-driver','clamps-bar']},
+  {slug:'crosscut-sled', title:'Crosscut Sled', category:'shop-projects', difficulty:2, costTier:1, timeLabel:'2–3 hrs', timeMin:150, likes:8, tools:['table-saw','drill-driver']},
+  {slug:'dovetailed-keepsake-box', title:'Dovetailed Keepsake Box', category:'gifts-and-small-projects', difficulty:5, costTier:2, timeLabel:'8–12 hrs', timeMin:600, likes:19, tools:['hand-saw','chisels','marking-gauge']},
+  {slug:'edge-grain-maple-cutting-board', title:'Edge-Grain Maple Cutting Board', category:'cutting-boards', difficulty:2, costTier:2, timeLabel:'4–6 hrs', timeMin:300, likes:27, tools:['table-saw','planer','random-orbit-sander']},
+  {slug:'end-grain-walnut-maple-butcher-block', title:'End-Grain Walnut Maple Butcher Block', category:'cutting-boards', difficulty:3, costTier:3, timeLabel:'6–8 hrs', timeMin:420, likes:25, tools:['table-saw','planer','jointer']},
+  {slug:'entryway-storage-bench', title:'Entryway Storage Bench', category:'storage', difficulty:2, costTier:2, timeLabel:'4–6 hrs', timeMin:300, likes:14, tools:['circular-saw','drill-driver','pocket-hole-jig']},
+  {slug:'farmhouse-dining-table', title:'Farmhouse Dining Table', category:'furniture', difficulty:4, costTier:4, timeLabel:'2–3 weekends', timeMin:960, likes:22, tools:['table-saw','pocket-hole-jig','random-orbit-sander']},
+  {slug:'floating-walnut-shelves', title:'Floating Walnut Shelves', category:'storage', difficulty:2, costTier:2, timeLabel:'3–4 hrs', timeMin:210, likes:14, tools:['circular-saw','drill-driver','router']},
+  {slug:'garden-storage-shed', title:'Garden Storage Shed', category:'outdoor', difficulty:5, costTier:5, timeLabel:'3–4 weekends', timeMin:1800, likes:10, tools:['circular-saw','drill-driver','impact-driver']},
+  {slug:'live-edge-coffee-table', title:'Live-Edge Coffee Table', category:'furniture', difficulty:3, costTier:4, timeLabel:'6–8 hrs', timeMin:420, likes:26, tools:['planer','random-orbit-sander','router']},
+  {slug:'magnetic-knife-block', title:'Magnetic Knife Block', category:'gifts-and-small-projects', difficulty:2, costTier:1, timeLabel:'2–3 hrs', timeMin:150, likes:18, tools:['table-saw','drill-press']},
+  {slug:'nightstand-with-drawer', title:'Nightstand with Drawer', category:'furniture', difficulty:4, costTier:3, timeLabel:'8–10 hrs', timeMin:540, likes:16, tools:['table-saw','pocket-hole-jig','drill-driver']},
+  {slug:'oak-coat-rack', title:'Oak Coat Rack', category:'storage', difficulty:1, costTier:1, timeLabel:'1–2 hrs', timeMin:90, likes:11, tools:['drill-driver']},
+  {slug:'pine-bookcase', title:'Pine Bookcase', category:'storage', difficulty:2, costTier:2, timeLabel:'5–6 hrs', timeMin:330, likes:13, tools:['table-saw','drill-driver']},
+  {slug:'platform-bed-frame-queen', title:'Platform Bed Frame (Queen)', category:'furniture', difficulty:3, costTier:3, timeLabel:'1 weekend', timeMin:480, likes:20, tools:['circular-saw','pocket-hole-jig','drill-driver']},
+  {slug:'rolling-shop-cart', title:'Rolling Shop Cart', category:'shop-projects', difficulty:2, costTier:2, timeLabel:'3–5 hrs', timeMin:240, likes:7, tools:['table-saw','drill-driver','impact-driver']},
+  {slug:'shaker-step-stool', title:'Shaker Step Stool', category:'gifts-and-small-projects', difficulty:2, costTier:1, timeLabel:'2–3 hrs', timeMin:150, likes:9, tools:['table-saw','chisels']},
+  {slug:'turned-pepper-mill', title:'Turned Pepper Mill', category:'gifts-and-small-projects', difficulty:4, costTier:2, timeLabel:'2–3 hrs', timeMin:150, likes:6, tools:['lathe']},
+  {slug:'wall-mounted-tool-cabinet', title:'Wall-Mounted Tool Cabinet', category:'shop-projects', difficulty:3, costTier:3, timeLabel:'6–8 hrs', timeMin:420, likes:8, tools:['table-saw','router','drill-driver']},
+  {slug:'workbench-with-vise', title:'Workbench with Vise', category:'shop-projects', difficulty:4, costTier:4, timeLabel:'2 weekends', timeMin:960, likes:21, tools:['table-saw','drill-press','clamps-bar']},
+];
+
+const ADIRONDACK = {
+  description: "Everyone thinks the Adirondack chair is about the curved back. It isn't. It's about two angles: the seat slopes back about 15°, and the back leans about 20° off that. Get those wrong and you've built a chair that's either impossible to get out of or actively hostile to sit in.\n\nSo: make a hardboard template for the curved seat support, and make it once. Every chair after the first one is a two-hour build.\n\nCedar for weather resistance. Stainless screws, because plain steel will bleed rust streaks down a cedar chair in one wet season.",
+  tools: [
+    {slug:'jigsaw', essential:true}, {slug:'band-saw', essential:false},
+    {slug:'circular-saw', essential:true}, {slug:'drill-driver', essential:true},
+    {slug:'random-orbit-sander', essential:true}, {slug:'router', essential:false},
+    {slug:'clamps-spring', essential:true}, {slug:'combination-square', essential:true},
+    {slug:'tape-measure', essential:true},
+  ],
+  materials: [
+    {name:'Cedar, 1x6, 8 ft', unit:'each', quantity:5},
+    {name:'Cedar, 2x4, 8 ft', unit:'each', quantity:2},
+    {name:'Cedar, 1x4, 6 ft', unit:'each', quantity:1},
+    {name:'Stainless steel screws, #8 x 1-1/4" and 2"', unit:'each', quantity:60},
+    {name:'Exterior wood glue (Titebond III)', unit:'oz', quantity:4},
+    {name:'Hardboard for template', unit:'each', quantity:1},
+  ],
+  cutList: [
+    {part:'Rear legs / seat supports', quantity:2, dims:'1½"×3½"×36"'},
+    {part:'Front legs', quantity:2, dims:'1½"×3½"×21"'},
+    {part:'Seat slats', quantity:6, dims:'¾"×3½"×22"'},
+    {part:'Back slats', quantity:7, dims:'¾"×3½"×32"'},
+    {part:'Arms', quantity:2, dims:'¾"×5½"×28"'},
+  ],
+  steps: [
+    {title:'Make the template first', body:"Draw the curved rear leg/seat support full size on hardboard. The seat section slopes back ~15°; the back support rises at ~20° off the seat.\n\nCut it, sand the curve fair, and sit on a mockup before you cut cedar. Everything else in this build is downstream of this template.", model:'Hardboard template — seat curve at 15°, back curve at 20° off the seat'},
+    {title:'Cut the two rear legs', body:"Trace the template onto your 2x4 stock, twice. Cut with a jigsaw, staying just outside the line, then sand to the line.\n\nThe two must be identical. If they're not, the chair rocks.", model:'Rear leg profile traced from the template, both legs overlaid to check they match'},
+    {title:'Build the seat frame', body:"Attach the front legs to the rear leg assemblies. Add a front cross-brace.\n\nCheck it sits flat on the floor with no wobble before you go further.", model:'Front + rear leg assembly with cross-brace, seat frame square and level'},
+    {title:'Attach seat slats', body:"Screw the six seat slats across the curved seat section, front to back, with ~1/2\" gaps.\n\nThe gaps aren't a style choice — water has to get out, or the chair rots from the seat down.", model:'Seat slat layout on the curved seat section, ~1/2" gaps front to back'},
+    {title:'Fan the back slats', body:"Cut the back slats to a fan: tallest in the middle, stepping down toward the outside, with the tops rounded over.\n\nScrew them to the two back braces — one low, one high — with even gaps.", model:'Back slat fan — tallest at center, stepped down toward the outside, tops rounded'},
+    {title:'Arms last', body:"Screw the arm supports to the front legs, then land the arms on top of them and into the back. Round over the front corners of the arms generously.\n\nMake sure the arms are level with each other and with the ground.", model:'Arm + arm support placement, front corner rounded over'},
+    {title:'Sand everything, then sit in it', body:"Sand every edge and corner you can reach — this is a chair people sit in wearing shorts.\n\nLeave the cedar raw and let it silver, or finish it and accept re-finishing every couple of years.", model:'Finished chair, all edges and corners eased'},
+  ],
+  tags: ['adirondack','chair','cedar','outdoor','patio','curves','jigsaw','template'],
+};
+
+class Component extends DCLogic {
+  state = {
+    screen: 'catalog',
+    query: '',
+    filtersOpen: false,
+    category: '', difficulty: [], cost: [], maxMinutes: '', ownedTools: [],
+    sort: 'recommended', page: 1,
+    saved: [], liked: [], likeCounts: {},
+    selectedSlug: null, clickedSlug: null, stepIndex: 0,
+    materialsChecked: {}, detailsOpen: false,
+    width: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    loading: true,
+    isSignedIn: false, profileMenuOpen: false,
+    accountName: 'Sam Rivera', accountEmail: 'sam@email.com', notifOn: true, savedToast: false,
+    shoppingListChecked: {},
+    reviews: [
+      { author: 'Jordan T.', stars: 5, text: 'Took a weekend but the template step made it easy. Arms are the best part.' },
+      { author: 'Priya K.', stars: 4, text: 'Solid plan — cut the seat slats a touch shorter than spec and it fit better.' },
+    ],
+    newReviewText: '',
+    simulatedOffline: false, browserOffline: typeof navigator !== 'undefined' ? !navigator.onLine : false,
+    installPromptVisible: false, installDismissed: false,
+  };
+
+  componentDidMount() {
+    this._onResize = () => this.setState({ width: window.innerWidth });
+    this._onOnline = () => this.setState({ browserOffline: false });
+    this._onOffline = () => this.setState({ browserOffline: true });
+    window.addEventListener('resize', this._onResize);
+    window.addEventListener('online', this._onOnline);
+    window.addEventListener('offline', this._onOffline);
+    try {
+      const saved = JSON.parse(localStorage.getItem('ww_saved') || '[]');
+      const liked = JSON.parse(localStorage.getItem('ww_liked') || '[]');
+      const mc = JSON.parse(localStorage.getItem('ww_materials_adirondack-chair') || '{}');
+      const installDismissed = JSON.parse(localStorage.getItem('ww_install_dismissed') || 'false');
+      const likeCounts = {};
+      PLANS.forEach(p => likeCounts[p.slug] = p.likes + (liked.includes(p.slug) ? 1 : 0));
+      this.setState({ saved, liked, likeCounts, materialsChecked: mc, installDismissed });
+      if (!installDismissed) setTimeout(() => this.setState(s2 => s2.installDismissed ? {} : { installPromptVisible: true }), 3000);
+    } catch (e) {}
+    setTimeout(() => this.setState({ loading: false }), 500);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('online', this._onOnline);
+    window.removeEventListener('offline', this._onOffline);
+  }
+
+  persist(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+
+  goScreen = (screen) => this.setState({ screen, profileMenuOpen: false });
+  goCatalog = () => this.setState({ screen: 'catalog' });
+  goSaved = () => this.setState({ screen: 'saved' });
+  toggleProfileMenu = () => this.setState(s => ({ profileMenuOpen: !s.profileMenuOpen }));
+  doLogin = () => this.setState({ isSignedIn: true, screen: 'catalog' });
+  doSignup = () => this.setState({ isSignedIn: true, screen: 'catalog' });
+  doSignOut = () => this.setState({ isSignedIn: false, screen: 'catalog', profileMenuOpen: false });
+  onNameChange = (e) => this.setState({ accountName: e.target.value });
+  onEmailChange = (e) => this.setState({ accountEmail: e.target.value });
+  toggleNotifications = () => this.setState(s => ({ notifOn: !s.notifOn }));
+  saveAccountSettings = () => { this.setState({ savedToast: true }); setTimeout(() => this.setState({ savedToast: false }), 1800); };
+  toggleShoppingItem = (name) => this.setState(s => ({ shoppingListChecked: { ...s.shoppingListChecked, [name]: !s.shoppingListChecked[name] } }));
+  onNewReviewChange = (e) => this.setState({ newReviewText: e.target.value });
+  addReview = () => this.setState(s => s.newReviewText.trim() ? { reviews: [...s.reviews, { author: 'You', stars: 5, text: s.newReviewText.trim() }], newReviewText: '' } : {});
+  toggleOfflineSim = () => this.setState(s => ({ simulatedOffline: !s.simulatedOffline }));
+  dismissInstall = () => { this.setState({ installPromptVisible: false, installDismissed: true }); try { localStorage.setItem('ww_install_dismissed', 'true'); } catch (e) {} };
+  installApp = () => this.dismissInstall();
+  openPlan = (slug) => {
+    this.setState({ screen: 'detail', selectedSlug: 'adirondack-chair', clickedSlug: slug, stepIndex: 0, detailsOpen: false, loading: true });
+    setTimeout(() => this.setState({ loading: false }), 400);
+  };
+
+  onQueryChange = (e) => this.setState({ query: e.target.value, page: 1 });
+  onSortChange = (e) => this.setState({ sort: e.target.value, page: 1 });
+  onCategoryChange = (e) => this.setState({ category: e.target.value, page: 1 });
+  onTimeChange = (e) => this.setState({ maxMinutes: e.target.value, page: 1 });
+  toggleFiltersOpen = () => this.setState(s => ({ filtersOpen: !s.filtersOpen }));
+  toggleDetailsOpen = () => this.setState(s => ({ detailsOpen: !s.detailsOpen }));
+
+  toggleArrayVal = (key, val) => this.setState(s => {
+    const arr = s[key].includes(val) ? s[key].filter(v => v !== val) : [...s[key], val];
+    return { [key]: arr, page: 1 };
+  });
+
+  clearFilters = () => this.setState({ category: '', difficulty: [], cost: [], maxMinutes: '', ownedTools: [], query: '', page: 1 });
+  goToPage = (n) => this.setState({ page: n });
+  prevPage = () => this.setState(s => ({ page: Math.max(1, s.page - 1) }));
+  nextPage = () => this.setState(s => ({ page: s.page + 1 }));
+
+  toggleSaved = (slug) => this.setState(s => {
+    const saved = s.saved.includes(slug) ? s.saved.filter(x => x !== slug) : [...s.saved, slug];
+    this.persist('ww_saved', saved);
+    return { saved };
+  });
+  toggleLiked = (slug) => this.setState(s => {
+    const isLiked = s.liked.includes(slug);
+    const liked = isLiked ? s.liked.filter(x => x !== slug) : [...s.liked, slug];
+    const likeCounts = { ...s.likeCounts, [slug]: (s.likeCounts[slug] ?? 0) + (isLiked ? -1 : 1) };
+    this.persist('ww_liked', liked);
+    return { liked, likeCounts };
+  });
+  toggleMaterial = (name) => this.setState(s => {
+    const materialsChecked = { ...s.materialsChecked, [name]: !s.materialsChecked[name] };
+    this.persist('ww_materials_adirondack-chair', materialsChecked);
+    return { materialsChecked };
+  });
+
+  setStep = (i) => this.setState({ stepIndex: i });
+  prevStep = () => this.setState(s => ({ stepIndex: Math.max(0, s.stepIndex - 1) }));
+  nextStep = () => this.setState(s => ({ stepIndex: Math.min(ADIRONDACK.steps.length - 1, s.stepIndex + 1) }));
+  printPlan = () => window.print();
+
+  renderVals() {
+    const s = this.state;
+    const isDesktop = s.width >= 1024;
+    const isTablet = s.width >= 640 && s.width < 1024;
+    const isMobile = s.width < 640;
+
+    const isOffline = s.browserOffline || s.simulatedOffline;
+
+    // ---- catalog filtering ----
+    let plans = PLANS.filter(p => {
+      if (isOffline && !s.saved.includes(p.slug)) return false;
+      if (s.query && !p.title.toLowerCase().includes(s.query.toLowerCase())) return false;
+      if (s.category && p.category !== s.category) return false;
+      if (s.difficulty.length && !s.difficulty.includes(p.difficulty)) return false;
+      if (s.cost.length && !s.cost.includes(p.costTier)) return false;
+      if (s.maxMinutes && p.timeMin > Number(s.maxMinutes)) return false;
+      if (s.ownedTools.length && !p.tools.every(t => s.ownedTools.includes(t))) return false;
+      return true;
+    });
+    const affinityPlans = PLANS.filter(p => s.saved.includes(p.slug) || s.liked.includes(p.slug));
+    const recScore = (p) => {
+      if (!affinityPlans.length) return s.likeCounts[p.slug] ?? p.likes;
+      return affinityPlans.reduce((sum, ap) => {
+        if (ap.slug === p.slug) return sum;
+        let sc = ap.category === p.category ? 2 : 0;
+        sc += p.tools.filter(t => ap.tools.includes(t)).length;
+        return sum + sc;
+      }, 0);
+    };
+    if (s.sort === 'alphabetical') {
+      plans = [...plans].sort((a, b) => a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1);
+    } else {
+      const sortValue = (p) => {
+        if (s.sort === 'mostliked') return s.likeCounts[p.slug] ?? p.likes;
+        if (s.sort === 'trending') return affinityPlans.length ? recScore(p) : (s.likeCounts[p.slug] ?? p.likes);
+        return recScore(p);
+      };
+      plans = [...plans].sort((a, b) => sortValue(b) - sortValue(a));
+    }
+
+    const pageSize = 25;
+    const totalCount = plans.length;
+    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+    const currentPage = Math.min(s.page, totalPages);
+    const pagedPlans = plans.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const filteredPlans = pagedPlans.map(p => ({
+      slug: p.slug, title: p.title, categoryName: CAT_NAME[p.category],
+      difficultyLabel: DIFFICULTY_LABELS[p.difficulty], costSymbol: '$'.repeat(p.costTier),
+      timeLabel: p.timeLabel, likes: s.likeCounts[p.slug] ?? p.likes,
+      saveIcon: s.saved.includes(p.slug) ? '🔖' : '🏷️',
+      isOfflineAvailable: isOffline && s.saved.includes(p.slug),
+      onOpen: () => this.openPlan(p.slug),
+      onToggleSave: (e) => { e.stopPropagation(); this.toggleSaved(p.slug); },
+    }));
+
+    const activeChips = [];
+    if (s.category) activeChips.push({ label: CAT_NAME[s.category], onRemove: () => this.setState({ category: '' }) });
+    s.difficulty.forEach(d => activeChips.push({ label: DIFFICULTY_LABELS[d], onRemove: () => this.toggleArrayVal('difficulty', d) }));
+    s.cost.forEach(c => activeChips.push({ label: '$'.repeat(c), onRemove: () => this.toggleArrayVal('cost', c) }));
+    if (s.maxMinutes) activeChips.push({ label: 'Time limit', onRemove: () => this.setState({ maxMinutes: '' }) });
+    s.ownedTools.forEach(t => activeChips.push({ label: TOOL_NAMES[t] ?? t, onRemove: () => this.toggleArrayVal('ownedTools', t) }));
+
+    const difficultyOptions = [1, 2, 3, 4, 5].map(d => ({
+      label: DIFFICULTY_LABELS[d], bg: s.difficulty.includes(d) ? '#e9a86c' : 'transparent',
+      weight: s.difficulty.includes(d) ? 700 : 400, onToggle: () => this.toggleArrayVal('difficulty', d),
+    }));
+    const costOptions = [1, 2, 3, 4, 5].map(c => ({
+      label: '$'.repeat(c), bg: s.cost.includes(c) ? '#e9a86c' : 'transparent',
+      weight: s.cost.includes(c) ? 700 : 400, onToggle: () => this.toggleArrayVal('cost', c),
+    }));
+    const toolSlugs = ['table-saw', 'circular-saw', 'drill-driver', 'random-orbit-sander', 'router', 'pocket-hole-jig', 'drill-press', 'clamps-bar'];
+    const toolOptions = toolSlugs.map(t => ({
+      label: TOOL_NAMES[t], bg: s.ownedTools.includes(t) ? '#e9a86c' : 'transparent',
+      weight: s.ownedTools.includes(t) ? 700 : 400, onToggle: () => this.toggleArrayVal('ownedTools', t),
+    }));
+
+    const filterCount = (s.category ? 1 : 0) + s.difficulty.length + s.cost.length + (s.maxMinutes ? 1 : 0) + s.ownedTools.length;
+
+    // ---- detail ----
+    const clickedMeta = PLANS.find(p => p.slug === s.clickedSlug) || PLANS[0];
+    const currentMeta = {
+      title: clickedMeta.title, difficultyLabel: DIFFICULTY_LABELS[clickedMeta.difficulty],
+      costSymbol: '$'.repeat(clickedMeta.costTier), timeLabel: clickedMeta.timeLabel,
+      isSavedBg: s.saved.includes(clickedMeta.slug) ? '#1a1a1a' : '#fff',
+      isSavedFg: s.saved.includes(clickedMeta.slug) ? '#fff' : '#1a1a1a',
+      saveLabel: s.saved.includes(clickedMeta.slug) ? 'Saved' : 'Save',
+      likeIcon: s.liked.includes(clickedMeta.slug) ? '♥' : '♡',
+      likeCount: s.likeCounts[clickedMeta.slug] ?? clickedMeta.likes,
+    };
+
+    const stepIdx = s.stepIndex;
+    const step = ADIRONDACK.steps[stepIdx];
+    const currentStep = { number: stepIdx + 1, title: step.title, paragraphs: step.body.split('\n\n'), model: step.model };
+    const stepDots = ADIRONDACK.steps.map((st, i) => ({
+      number: i + 1, onClick: () => this.setStep(i),
+      bg: i === stepIdx ? '#1a1a1a' : '#fff', fg: i === stepIdx ? '#fff' : '#1a1a1a',
+    }));
+    const stepList = ADIRONDACK.steps.map((st, i) => ({
+      number: i + 1, title: st.title, onClick: () => this.setStep(i),
+      rowBg: i === stepIdx ? '#fdf1e0' : 'transparent',
+      dotBg: i === stepIdx ? '#1a1a1a' : '#fff', dotFg: i === stepIdx ? '#fff' : '#1a1a1a',
+      weight: i === stepIdx ? 700 : 400,
+    }));
+
+    const materials = ADIRONDACK.materials.map(m => ({
+      label: `${m.name} — ×${m.quantity} ${m.unit}`,
+      checkBg: s.materialsChecked[m.name] ? '#1a1a1a' : 'transparent',
+      onToggle: () => this.toggleMaterial(m.name),
+    }));
+    const essentialTools = ADIRONDACK.tools.filter(t => t.essential).map(t => ({ name: TOOL_NAMES[t.slug] ?? t.slug }));
+    const optionalTools = ADIRONDACK.tools.filter(t => !t.essential).map(t => ({ name: TOOL_NAMES[t.slug] ?? t.slug }));
+
+    const isMobileOrTablet = !isDesktop;
+    const showFilterPanel = isDesktop || s.filtersOpen;
+
+    const profileInitial = s.accountName.trim().charAt(0).toUpperCase() || '?';
+    const profileMenuItems = s.isSignedIn ? [
+      { label: 'Profile', onClick: () => this.goScreen('profile') },
+      { label: 'Account settings', onClick: () => this.goScreen('account-settings') },
+      { label: 'Sitemap', onClick: () => this.goScreen('sitemap') },
+      { label: 'Sign out', onClick: this.doSignOut, weight: 700 },
+    ] : [
+      { label: 'Log in', onClick: () => this.goScreen('login'), weight: 700 },
+      { label: 'Sign up', onClick: () => this.goScreen('signup') },
+      { label: 'Sitemap', onClick: () => this.goScreen('sitemap') },
+    ];
+
+    const sitemapGroups = [
+      { name: 'Browse & discover', links: [
+        { label: 'Catalog / browse', onClick: () => this.goScreen('catalog') },
+        { label: 'Saved plans', onClick: () => this.goScreen('saved') },
+        { label: 'Shopping list', onClick: () => this.goScreen('shopping-list') },
+        { label: 'Plan detail (Adirondack Chair example)', onClick: () => this.openPlan('adirondack-chair') },
+      ]},
+      { name: 'Account', links: [
+        { label: 'Log in', onClick: () => this.goScreen('login') },
+        { label: 'Sign up', onClick: () => this.goScreen('signup') },
+        { label: 'Profile', onClick: () => this.goScreen('profile') },
+        { label: 'Account settings', onClick: () => this.goScreen('account-settings') },
+      ]},
+      { name: 'Other', links: [
+        { label: 'Sitemap (this page)', onClick: () => this.goScreen('sitemap') },
+      ]},
+    ];
+
+    const shoppingListMaterials = s.saved.includes('adirondack-chair') ? ADIRONDACK.materials.map(m => ({
+      label: `${m.name} — ×${m.quantity} ${m.unit}`,
+      checkBg: s.shoppingListChecked[m.name] ? '#1a1a1a' : 'transparent',
+      onToggle: () => this.toggleShoppingItem(m.name),
+    })) : [];
+    const otherSavedCount = s.saved.filter(sl => sl !== 'adirondack-chair').length;
+
+    const avgStars = s.reviews.length ? s.reviews.reduce((a, r) => a + r.stars, 0) / s.reviews.length : 0;
+    const reviews = s.reviews.map(r => ({ ...r, starsDisplay: '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars) }));
+
+    return {
+      isCatalog: s.screen === 'catalog', isDetail: s.screen === 'detail', isSaved: s.screen === 'saved',
+      isLogin: s.screen === 'login', isSignup: s.screen === 'signup', isProfile: s.screen === 'profile',
+      isAccountSettings: s.screen === 'account-settings', isSitemap: s.screen === 'sitemap',
+      isShoppingList: s.screen === 'shopping-list',
+      goCatalog: this.goCatalog, goSaved: this.goSaved,
+      profileMenuOpen: s.profileMenuOpen, toggleProfileMenu: this.toggleProfileMenu,
+      profileInitial, profileMenuItems,
+      goLogin: () => this.goScreen('login'), goSignup: () => this.goScreen('signup'),
+      goProfile: () => this.goScreen('profile'), goAccountSettings: () => this.goScreen('account-settings'),
+      doLogin: this.doLogin, doSignup: this.doSignup, doSignOut: this.doSignOut,
+      accountName: s.accountName, accountEmail: s.accountEmail,
+      onNameChange: this.onNameChange, onEmailChange: this.onEmailChange,
+      notifBg: s.notifOn ? '#1a1a1a' : '#d8d3c6', notifKnobLeft: s.notifOn ? '21px' : '3px',
+      toggleNotifications: this.toggleNotifications, savedToast: s.savedToast, saveAccountSettings: this.saveAccountSettings,
+      sitemapGroups,
+      toggleOfflineSim: this.toggleOfflineSim,
+      offlineSimBg: s.simulatedOffline ? '#1a1a1a' : '#d8d3c6', offlineSimKnobLeft: s.simulatedOffline ? '21px' : '3px',
+      shoppingListMaterials,
+      shoppingListOtherNote: otherSavedCount > 0 ? `${otherSavedCount} other saved plan(s) — materials not available in this demo yet.` : '',
+      reviews, reviewStars: '★'.repeat(Math.round(avgStars)) + '☆'.repeat(5 - Math.round(avgStars)),
+      reviewSummary: `${avgStars.toFixed(1)} (${s.reviews.length} review${s.reviews.length === 1 ? '' : 's'})`,
+      newReviewText: s.newReviewText, onNewReviewChange: this.onNewReviewChange, addReview: this.addReview,
+      query: s.query, onQueryChange: this.onQueryChange,
+      savedCount: s.saved.length,
+      isMobileOrTablet, isDesktop, isMobile, isTablet,
+      catalogCols: isDesktop ? 3 : (isTablet ? 2 : 1),
+      mainFlexDir: isDesktop ? 'row' : 'column',
+      mainAlignItems: isDesktop ? 'flex-start' : 'stretch',
+      filterPanelWidth: isDesktop ? '260px' : '100%',
+      showFilterPanel,
+      toggleFiltersOpen: this.toggleFiltersOpen,
+      filterCountLabel: filterCount > 0 ? ` (${filterCount})` : '',
+      sort: s.sort, onSortChange: this.onSortChange,
+      resultCountLabel: `${totalCount} plan${totalCount === 1 ? '' : 's'}`,
+      showPagination: totalPages > 1, currentPage, totalPages,
+      pageLabel: `Page ${currentPage} of ${totalPages}`,
+      prevPage: this.prevPage, nextPage: this.nextPage,
+      prevPageOpacity: currentPage === 1 ? 0.4 : 1, nextPageOpacity: currentPage === totalPages ? 0.4 : 1,
+      pageNumbers: Array.from({ length: totalPages }, (_, i) => ({
+        n: i + 1, onClick: () => this.goToPage(i + 1),
+        bg: currentPage === i + 1 ? '#1a1a1a' : '#fff', fg: currentPage === i + 1 ? '#fff' : '#1a1a1a',
+      })),
+      activeChips, clearFilters: this.clearFilters,
+      categories: CATEGORIES, category: s.category, onCategoryChange: this.onCategoryChange,
+      difficultyOptions, costOptions, toolOptions,
+      maxMinutes: s.maxMinutes, onTimeChange: this.onTimeChange,
+      loading: s.loading, skeletonSlots: [0, 1, 2, 3, 4, 5],
+      notLoadingAndEmpty: !s.loading && filteredPlans.length === 0,
+      notLoadingAndHasResults: !s.loading && filteredPlans.length > 0,
+      filteredPlans,
+      isOffline, notOffline: !isOffline,
+      emptyStateIcon: isOffline ? '📴' : '🔍',
+      emptyStateTitle: isOffline ? 'No saved plans available offline' : 'No plans match',
+      emptyStateBody: isOffline ? 'Save a plan while online to view it here later.' : 'Try loosening a filter or your search term.',
+      installPromptVisible: s.installPromptVisible, dismissInstall: this.dismissInstall, installApp: this.installApp,
+
+      currentMeta, toggleSavedCurrent: () => this.toggleSaved(clickedMeta.slug),
+      toggleLikedCurrent: () => this.toggleLiked(clickedMeta.slug), printPlan: this.printPlan,
+      showDemoBanner: s.clickedSlug && s.clickedSlug !== 'adirondack-chair',
+      clickedTitle: clickedMeta.title,
+      progressPercent: Math.round(((stepIdx + 1) / ADIRONDACK.steps.length) * 100),
+      stepPosition: stepIdx + 1, stepCount: ADIRONDACK.steps.length,
+      stepDots, stepList, currentStep,
+      prevStep: this.prevStep, nextStep: this.nextStep,
+      prevOpacity: stepIdx === 0 ? 0.4 : 1,
+      nextLabel: stepIdx === ADIRONDACK.steps.length - 1 ? 'Finish ✓' : 'Next →',
+      nextBg: '#1a1a1a', nextFg: '#fff',
+      toggleDetailsOpen: this.toggleDetailsOpen, detailsOpen: s.detailsOpen,
+      detailsToggleLabel: (s.detailsOpen ? '▾' : '▸') + ' Full plan info (description, cut list, tags)',
+      fullDescription: ADIRONDACK.description.split('\n\n'),
+      cutList: ADIRONDACK.cutList, tags: ADIRONDACK.tags,
+      materials, essentialTools, optionalTools,
+
+      savedEmpty: s.saved.length === 0, savedNotEmpty: s.saved.length > 0,
+      savedPlansList: s.saved.map(slug => {
+        const p = PLANS.find(x => x.slug === slug);
+        return p ? {
+          slug: p.slug, title: p.title, categoryName: CAT_NAME[p.category],
+          onOpen: () => this.openPlan(p.slug), onRemove: () => this.toggleSaved(p.slug),
+        } : null;
+      }).filter(Boolean),
+    };
+  }
+}
+</script>
+</body>
+</html>
