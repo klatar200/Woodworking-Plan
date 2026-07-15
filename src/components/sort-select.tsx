@@ -1,4 +1,5 @@
 import { SORT_OPTIONS, type SortOption } from '@/lib/sort';
+import { btnGhost } from '@/lib/ui'; // Sprint 29: shared button class
 import type { PlanFilters } from '@/lib/filters';
 
 interface Props {
@@ -53,7 +54,7 @@ export function SortSelect({ sort, query, filters }: Props) {
           </option>
         ))}
       </select>
-      <button type="submit" className="btn btn-ghost">
+      <button type="submit" className={btnGhost}>
         Apply
       </button>
     </form>

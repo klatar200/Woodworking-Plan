@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPathBySlug, getBuiltPlanIds, summarizeProgress } from '@/lib/paths';
@@ -46,7 +47,7 @@ export default async function PathDetailPage({ params }: { params: Params }) {
   const progress = summarizeProgress(path.steps, builtPlanIds);
 
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <p className="breadcrumb">
         <Link href="/paths">← All paths</Link>
       </p>

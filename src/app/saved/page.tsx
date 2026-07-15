@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page, btn, btnGhost, searchInput } from '@/lib/ui'; // Sprint 29: shell + button + input
 import { listSavedPlans, listCollections } from '@/lib/saves';
 import { listPaths } from '@/lib/paths';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
@@ -65,7 +66,7 @@ export default async function SavedPage({
     : '/saved';
 
   return (
-    <main id="main" className="page page-wide">
+    <main id="main" className={`${page} page-wide`}>
       <h1>Saved plans</h1>
 
       <RateLimitNotice
@@ -107,12 +108,12 @@ export default async function SavedPage({
             id="new-collection"
             name="name"
             type="text"
-            className="search-input"
+            className={searchInput}
             placeholder="New collection — e.g. “Gifts”, “For the cabin”"
             maxLength={60}
             required
           />
-          <button type="submit" className="btn btn-ghost">
+          <button type="submit" className={btnGhost}>
             Create
           </button>
         </form>
@@ -121,7 +122,7 @@ export default async function SavedPage({
           <form action={deleteCollectionAction} className="inline-form">
             <input type="hidden" name="returnTo" value={currentUrl} />
             <input type="hidden" name="collectionId" value={activeCollection.id} />
-            <button type="submit" className="btn btn-ghost">
+            <button type="submit" className={btnGhost}>
               Delete “{activeCollection.name}”
             </button>
             {/* Deleting a folder does NOT unsave its plans — only the grouping
@@ -148,7 +149,7 @@ export default async function SavedPage({
             page's "Add to shopping list", not from being saved. */}
         {savedPlans.length > 0 && (
           <p className="shopping-list-cta">
-            <Link href="/shopping-list" className="btn">
+            <Link href="/shopping-list" className={btn}>
               Shopping list
             </Link>
           </p>
@@ -237,7 +238,7 @@ export default async function SavedPage({
                           </option>
                         ))}
                       </select>
-                      <button type="submit" className="btn btn-ghost">
+                      <button type="submit" className={btnGhost}>
                         Add
                       </button>
                     </form>

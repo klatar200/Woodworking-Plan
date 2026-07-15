@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { btnPrimary } from '@/lib/ui'; // Sprint 29: shared button class
 
 interface Props {
   /** The server-rendered Instructions section (heading + StepWalker + steps). */
@@ -59,7 +60,7 @@ export function InstructionsDisclosure({ children }: Props) {
       {collapsed && (
         <button
           type="button"
-          className="btn btn-primary instructions-open"
+          className={`${btnPrimary} instructions-open mt-[1.5rem]`}
           aria-expanded={false}
           aria-controls="instructions-region"
           onClick={reveal}
@@ -72,7 +73,7 @@ export function InstructionsDisclosure({ children }: Props) {
         id="instructions-region"
         ref={regionRef}
         tabIndex={-1}
-        className="instructions-region"
+        className="instructions-region focus:outline-none"
         hidden={collapsed}
       >
         {children}

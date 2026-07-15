@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { page, btnGhost, categoryLabel } from '@/lib/ui'; // Sprint 29: shell + button + category
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
@@ -116,7 +117,7 @@ export default async function PlanDetailPage({
 
 
   return (
-    <main id="main" className="page page-wide plan-detail">
+    <main id="main" className={`${page} page-wide plan-detail`}>
       {/* Sprint 19. Renders nothing; logs one view after hydration, which is the only
           moment we know a real browser really rendered this page — a server-side log
           would count next/link's catalog prefetches and every crawler. Not on the
@@ -133,7 +134,7 @@ export default async function PlanDetailPage({
       />
 
       <header className="plan-header">
-        <span className="plan-card-category">{plan.category.name}</span>
+        <span className={categoryLabel}>{plan.category.name}</span>
         <h1>{plan.title}</h1>
         <p className="subtitle">{plan.summary}</p>
 
@@ -187,14 +188,14 @@ export default async function PlanDetailPage({
               plan content — which is exactly why we chose a print PAGE over a
               server-generated PDF. A PDF endpoint needs a network round-trip and would
               be useless in the workshop it was built for. */}
-          <Link href={`/plans/${plan.slug}/print`} className="btn btn-ghost">
+          <Link href={`/plans/${plan.slug}/print`} className={btnGhost}>
             Print / PDF
           </Link>
 
           {/* Sprint 15. Only offered when there IS a cut list to optimize — a "board
               plan" button on a plan with no parts is a promise of a blank page. */}
           {plan.cutList.length > 0 && (
-            <Link href={`/plans/${plan.slug}/boards`} className="btn btn-ghost">
+            <Link href={`/plans/${plan.slug}/boards`} className={btnGhost}>
               Board plan
             </Link>
           )}
@@ -212,15 +213,22 @@ export default async function PlanDetailPage({
         the instructions disclosure only HIDE parts of it after mount (see their files),
         so print, offline, and no-JS still get the entire document.
       */}
-      <div className="plan-detail-grid">
-        <aside className="plan-detail-aside" aria-label="Photo">
+      {/* Sprint 30a: two-column layout moved to Tailwind. `plan-detail-grid` and
+          `plan-detail-aside` CLASSES retained — the print stylesheet targets them
+          (grid→block, aside→hidden) by class. Mobile: flex column, aside hoisted
+          under the title via order; desktop (lg): grid, aside is the sticky right rail. */}
+      <div className="plan-detail-grid flex flex-col gap-[1.5rem] lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-[2.5rem] lg:items-start">
+        <aside
+          className="plan-detail-aside order-[-1] lg:order-0 lg:sticky lg:top-[4.5rem]"
+          aria-label="Photo"
+        >
           <PlanImageSlot
             title={plan.title}
             image={plan.images[0]}
           />
         </aside>
 
-        <div className="plan-detail-main">
+        <div className="min-w-0">
       {/* The at-a-glance strip. This is the product's whole differentiator —
           "what can I build this weekend, with what I own, for under $50?" */}
       <section aria-label="At a glance">

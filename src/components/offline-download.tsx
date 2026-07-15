@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { offlineDownloadUrls } from '@/lib/offline-urls';
+import { btn } from '@/lib/ui'; // Sprint 29: shared button class (+ mb from old `.offline-download .btn`)
 
 /**
  * "Make available offline" — Sprint 14. The consented download.
@@ -85,7 +86,7 @@ export function OfflineDownload({ slugs, collectionIds, pathSlugs }: Props) {
     <div className="offline-download">
       <button
         type="button"
-        className="btn"
+        className={`${btn} mb-[0.5rem]`}
         onClick={download}
         disabled={status === 'downloading'}
       >

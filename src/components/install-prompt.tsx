@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
 
 /**
  * Chrome/Edge-specific event, not yet in TypeScript's DOM lib types.
@@ -97,10 +98,10 @@ export function InstallPrompt() {
           Faster access, works offline in the shop
         </p>
       </div>
-      <button type="button" className="btn btn-ghost" onClick={dismissForever}>
+      <button type="button" className={btnGhost} onClick={dismissForever}>
         Not now
       </button>
-      <button type="button" className="btn btn-primary" onClick={install}>
+      <button type="button" className={btnPrimary} onClick={install}>
         Install
       </button>
     </div>

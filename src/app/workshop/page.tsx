@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page, btnPrimary, btnGhost } from '@/lib/ui'; // Sprint 29: page-shell + button classes
 import type { Metadata } from 'next';
 import { requireUser } from '@/lib/auth';
 import { listFilterableTools } from '@/lib/plans';
@@ -56,7 +57,7 @@ export default async function WorkshopPage({
   }
 
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <p className="breadcrumb no-print">
         <Link href="/">← All plans</Link>
       </p>
@@ -110,10 +111,10 @@ export default async function WorkshopPage({
         </fieldset>
 
         <div className="filters-actions">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className={btnPrimary}>
             Save my workshop
           </button>
-          <Link href="/" className="btn btn-ghost">
+          <Link href="/" className={btnGhost}>
             Back to plans
           </Link>
         </div>

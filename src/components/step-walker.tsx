@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
 
 interface Props {
   stepTitles: string[];
@@ -146,7 +147,7 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
           <div className="step-walker-nav">
             <button
               type="button"
-              className="btn btn-ghost"
+              className={btnGhost}
               disabled={active === 1}
               onClick={() => goTo(active - 1)}
             >
@@ -154,7 +155,7 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
             </button>
             <button
               type="button"
-              className="btn btn-primary"
+              className={btnPrimary}
               disabled={active === totalSteps}
               onClick={() => goTo(active + 1)}
             >

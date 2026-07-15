@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { likePlanAction, unlikePlanAction } from '@/app/actions/likes';
+import { btnGhost, btnLiked } from '@/lib/ui'; // Sprint 29: shared button classes
 
 interface Props {
   planId: string;
@@ -29,7 +30,7 @@ export function LikeButton({ planId, slug, isLiked, likeCount, isSignedIn }: Pro
     return (
       <Link
         href={`/sign-in?redirect_url=${encodeURIComponent(`/plans/${slug}`)}`}
-        className="btn btn-ghost"
+        className={btnGhost}
       >
         ♡ {label}
       </Link>
@@ -44,7 +45,7 @@ export function LikeButton({ planId, slug, isLiked, likeCount, isSignedIn }: Pro
       <input type="hidden" name="slug" value={slug} />
       <button
         type="submit"
-        className={`btn btn-ghost ${isLiked ? 'btn-liked' : ''}`}
+        className={isLiked ? btnLiked : btnGhost}
         aria-pressed={isLiked}
         aria-label={isLiked ? `Unlike this plan (${label})` : `Like this plan (${label})`}
       >

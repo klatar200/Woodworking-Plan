@@ -1,4 +1,7 @@
 import Link from 'next/link';
+// `page` is aliased to `pageShell` — this module already has a local `const page`
+// (the pagination page number) that would otherwise shadow the import.
+import { page as pageShell, btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29
 import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
 import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
@@ -127,7 +130,7 @@ export default async function CatalogPage({
 
   return (
     // id="main" is the skip link's target (WCAG 2.4.1).
-    <main id="main" className="page page-catalog">
+    <main id="main" className={`${pageShell} lg:max-w-[96rem]`}>
       <h1>Plans</h1>
 
       <RateLimitNotice
@@ -156,7 +159,10 @@ export default async function CatalogPage({
         order, unchanged. Reordering the DOM to suit the desktop columns would
         have silently reordered the phone.
       */}
-      <div className="catalog">
+      {/* Sprint 30a: the desktop three-column grid moved to Tailwind. Below 64rem
+          there is no grid (plain block, DOM order = mobile order); at lg the
+          grid-template-areas place the rail/results/filter columns. */}
+      <div className="lg:grid lg:grid-cols-[12rem_minmax(0,1fr)_17rem] lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters'] lg:gap-x-[2rem] lg:gap-y-0 lg:items-start">
         {/* Desktop-only (hidden below 64rem): a second way to reach the category
             filter the panel's <select> already offers, not a second capability. */}
         <CategoryNav
@@ -166,11 +172,14 @@ export default async function CatalogPage({
           categories={categories}
         />
 
-        <div className="catalog-search">
+        <div className="lg:[grid-area:search]">
           <SearchBox query={query} />
         </div>
 
-        <aside className="catalog-filters" aria-label="Filters">
+        <aside
+          className="lg:[grid-area:filters] lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+          aria-label="Filters"
+        >
           <FilterPanel
             query={query}
             filters={filters}
@@ -180,7 +189,7 @@ export default async function CatalogPage({
           />
         </aside>
 
-        <div className="catalog-results">
+        <div className="lg:[grid-area:results] lg:min-w-0">
           <SortSelect sort={sort} query={query} filters={filters} />
 
           {/* Removable chips for each active filter — renders nothing when browsing
@@ -206,7 +215,7 @@ export default async function CatalogPage({
                   filters: { ...filters, ownedTools },
                   sort: sort === DEFAULT_SORT ? undefined : sort,
                 })}
-                className="btn btn-primary"
+                className={btnPrimary}
               >
                 🧰 Show plans I can build
               </Link>
@@ -285,14 +294,14 @@ export default async function CatalogPage({
                     sort: sort === DEFAULT_SORT ? undefined : sort,
                     page: currentPage - 1,
                   })}
-                  className="btn btn-ghost"
+                  className={btnGhost}
                   rel="prev"
                 >
                   &larr; Prev
                 </Link>
               ) : (
                 <span
-                  className="btn btn-ghost pagination-disabled"
+                  className={`${btnGhost} pagination-disabled`}
                   aria-hidden="true"
                 >
                   &larr; Prev
@@ -335,14 +344,14 @@ export default async function CatalogPage({
                     sort: sort === DEFAULT_SORT ? undefined : sort,
                     page: currentPage + 1,
                   })}
-                  className="btn btn-ghost"
+                  className={btnGhost}
                   rel="next"
                 >
                   Next &rarr;
                 </Link>
               ) : (
                 <span
-                  className="btn btn-ghost pagination-disabled"
+                  className={`${btnGhost} pagination-disabled`}
                   aria-hidden="true"
                 >
                   Next &rarr;

@@ -5,6 +5,11 @@ import {
   ServiceWorkerRegistration,
   PrivateCacheGuard,
 } from '@/components/service-worker';
+// Sprint 28: Tailwind is imported FIRST, then globals.css. Tailwind's output is
+// wrapped in @layer (theme/utilities); globals.css is unlayered and therefore wins
+// any conflict regardless of order — so the existing hand-written system keeps full
+// control this sprint. No component uses a utility class yet; this is foundation only.
+import './tailwind.css';
 import './globals.css';
 
 /**

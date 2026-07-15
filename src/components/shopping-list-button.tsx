@@ -3,6 +3,7 @@ import {
   addToShoppingListAction,
   removeFromShoppingListAction,
 } from '@/app/actions/shopping-list';
+import { btnGhost } from '@/lib/ui'; // Sprint 29: shared button class
 
 interface Props {
   planId: string;
@@ -30,7 +31,7 @@ export function ShoppingListButton({ planId, slug, isOnList, isSignedIn }: Props
     return (
       <Link
         href={`/sign-in?redirect_url=${encodeURIComponent(`/plans/${slug}`)}`}
-        className="btn btn-ghost"
+        className={btnGhost}
       >
         Add to shopping list
       </Link>
@@ -44,7 +45,7 @@ export function ShoppingListButton({ planId, slug, isOnList, isSignedIn }: Props
       <input type="hidden" name="planId" value={planId} />
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="returnTo" value={`/plans/${slug}`} />
-      <button type="submit" className="btn btn-ghost" aria-pressed={isOnList}>
+      <button type="submit" className={btnGhost} aria-pressed={isOnList}>
         {isOnList ? '✓ On shopping list' : 'Add to shopping list'}
       </button>
     </form>

@@ -1,6 +1,17 @@
 import Link from 'next/link';
 import { buildQueryString, type PlanFilters } from '@/lib/filters';
 
+// Sprint 30a (UI migration, wave 2): the desktop rail moves to Tailwind. `catalog-nav`
+// class is RETAINED (the print stylesheet hides it by class); the rail's display/grid/
+// sticky behaviour is on it as `lg:` utilities. `catalog-nav-heading` stays a CSS class
+// for now — it overrides the global `h2` rule, which converts in the later typography pass.
+// Link states avoid a base border-COLOR (source-order gotcha, see src/lib/ui.ts): border
+// width in the base, color per state.
+const navBase =
+  'block px-[0.75rem] py-[0.5rem] rounded-[0.375rem] text-fg no-underline text-[0.9375rem] border focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1';
+const navLink = `${navBase} border-transparent hover:bg-surface hover:border-border`;
+const navLinkActive = `${navBase} bg-accent-tint border-accent-tint-border font-semibold hover:bg-surface hover:border-border`;
+
 interface Props {
   query: string;
   filters: PlanFilters;
@@ -37,13 +48,16 @@ export function CategoryNav({ query, filters, sort, categories }: Props) {
   const active = filters.category;
 
   return (
-    <nav className="catalog-nav" aria-label="Categories">
+    <nav
+      className="catalog-nav hidden lg:block lg:[grid-area:nav] lg:sticky lg:top-[4.5rem]"
+      aria-label="Categories"
+    >
       <h2 className="catalog-nav-heading">Categories</h2>
-      <ul className="catalog-nav-list">
+      <ul className="list-none m-0 p-0 flex flex-col gap-[0.125rem]">
         <li>
           <Link
             href={href(undefined)}
-            className={`catalog-nav-link${active ? '' : ' catalog-nav-link-active'}`}
+            className={active ? navLink : navLinkActive}
             aria-current={active ? undefined : 'page'}
           >
             All plans
@@ -55,7 +69,7 @@ export function CategoryNav({ query, filters, sort, categories }: Props) {
             <li key={category.slug}>
               <Link
                 href={href(category.slug)}
-                className={`catalog-nav-link${isActive ? ' catalog-nav-link-active' : ''}`}
+                className={isActive ? navLinkActive : navLink}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {category.name}

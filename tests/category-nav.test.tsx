@@ -86,7 +86,10 @@ describe('CategoryNav', () => {
 
   it('marks the active category, and "All plans" when none is set', () => {
     const active = render({ ...noFilters, category: 'outdoor' });
-    expect(active).toContain('class="catalog-nav-link catalog-nav-link-active"');
+    // Sprint 30a: the active link's distinguishing style is now a Tailwind utility
+    // (`bg-accent-tint`, present only on the active variant) rather than the old
+    // `.catalog-nav-link-active` class. aria-current is still the semantic marker.
+    expect(active).toContain('bg-accent-tint');
     expect(active).toContain('aria-current="page"');
     // Exactly one link is current — not the category AND "All plans".
     expect(active.match(/aria-current="page"/g)).toHaveLength(1);
@@ -97,7 +100,7 @@ describe('CategoryNav', () => {
     // serialization detail.)
     expect(none.match(/aria-current="page"/g)).toHaveLength(1);
     expect(none).toMatch(
-      /<a[^>]*class="catalog-nav-link catalog-nav-link-active"[^>]*href="\/"[^>]*>All plans</,
+      /<a[^>]*bg-accent-tint[^>]*href="\/"[^>]*>All plans</,
     );
   });
 

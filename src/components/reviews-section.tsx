@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { submitReviewAction, deleteReviewAction, deletePhotoAction } from '@/app/actions/reviews';
 import { StarRating } from '@/components/star-rating';
+import { btnPrimary, btnDanger } from '@/lib/ui'; // Sprint 29: shared button classes
 import { MAX_BODY_LENGTH, MAX_PHOTOS_PER_REVIEW } from '@/lib/reviews';
 import type { PlanReview, RatingSummary } from '@/lib/reviews';
 
@@ -119,7 +120,7 @@ export function ReviewsSection({
             </>
           ) : null}
 
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className={btnPrimary}>
             {myReview ? 'Update review' : 'Post review'}
           </button>
         </form>
@@ -183,7 +184,7 @@ export function ReviewsSection({
                             <input type="hidden" name="slug" value={slug} />
                             <button
                               type="submit"
-                              className="btn btn-ghost btn-danger"
+                              className={btnDanger}
                               aria-label={`Remove photo: ${photo.alt}`}
                             >
                               Remove
@@ -202,7 +203,7 @@ export function ReviewsSection({
                 <form action={deleteReviewAction}>
                   <input type="hidden" name="reviewId" value={review.id} />
                   <input type="hidden" name="slug" value={slug} />
-                  <button type="submit" className="btn btn-ghost btn-danger">
+                  <button type="submit" className={btnDanger}>
                     Delete
                   </button>
                 </form>

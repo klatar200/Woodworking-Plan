@@ -39,6 +39,14 @@ off and do them yourself. Re-check rather than assume.
 
 ## 3. Response style
 
+**🛑 HARD RULE (standing, do not drift from it): keep every response SHORT.** Tell
+Keagan only what he needs — the outcome, the decisions that matter, and what's next.
+Cut everything else: no reasoning play-by-play, no restating scope, no self-narration,
+no long postambles after sharing files. If a sentence can be removed without losing
+necessary information, remove it. This applies to EVERY response, including sprint
+completions — the SPRINT_LOG holds the detail; the chat reply stays lean. Keagan has
+re-flagged verbosity; treat a long reply as a mistake.
+
 **Short. No briefings.** Every response ends with roughly:
 
 - **Done:** one or two lines.
@@ -76,15 +84,18 @@ continuing. Routine engineering choices (library for a solved problem, code
 structure, test framework, naming) → just decide.
 
 **One sprint at a time, in `BUILD_PLAN.md` §4 order.** Phases 0–3 are COMPLETE
-(see `BUILD_PLAN.md` §4 status table). **Sprints 24–27 are the scheduled completion
-plan** (`BUILD_PLAN.md` §4.3, opened 2026-07-15): Hardening Pass 2 → My Workshop →
-tool-aware catalog → build logs, in that order. Phase 4 is otherwise CLOSED — build
-logs and tool-aware search are its only opened items; forums, AI customization,
-video, and metric units stay shut (reasons in the §4 Phase-4 header). No features
-that aren't in `BUSINESS_PLAN.md` — the previously-discussed-but-not-approved ideas
-(comments, tool substitution notes, lumber price sync, plan versioning, offline
-shopping mode, community plan submissions) are **out of scope** until Keagan adds
-them to the business plan himself. Flag scope creep in one line.
+(see `BUILD_PLAN.md` §4 status table). **Sprints 24–27 (the completion plan) are
+COMPLETE and PUSHED** — Keagan confirmed 2026-07-16: CI green, live site verified.
+Phase 4 stays PARTIALLY OPENED (build logs + tool-aware search only, per Sprints
+25–27); forums, AI customization, video, and metric units stay shut (reasons in the
+§4 Phase-4 header). **Sprints 28–32 are now the scheduled work** (`BUILD_PLAN.md`
+§4.4, opened 2026-07-16, Keagan's direction): Tailwind CSS migration + a light/dark
+theme system, in that order. This is a UI/tooling refactor, not a Phase 4 feature —
+it doesn't reopen or expand Phase 4. No features that aren't in `BUSINESS_PLAN.md` —
+the previously-discussed-but-not-approved ideas (comments, tool substitution notes,
+lumber price sync, plan versioning, offline shopping mode, community plan
+submissions) are **out of scope** until Keagan adds them to the business plan
+himself. Flag scope creep in one line.
 
 **The owned-tools PROFILE is deferred, not forbidden** (`DECISIONS_LOG.md`
 2026-07-13). It *is* named in `BUSINESS_PLAN.md` §10, so the old blanket exclusion
@@ -300,7 +311,80 @@ with it.
   missing from the offline `NEVER_CACHE_PREFIXES` denylist, so a signed-in page could be written
   to the unencrypted, sign-out-surviving SW cache — both added + tested. **Gotcha confirmed:**
   `tsc` failed locally only because the generated Prisma client was stale (pre-`UserTool`);
-  `prisma generate` fixes it. 🔴 **Push 23, 24, 25, 26 AND 27** — the whole tail is unpushed.
+  `prisma generate` fixes it. **Pushed (confirmed 2026-07-16, Keagan): CI green, live
+  site verified.** The former "unpushed tail" note is resolved.
+
+- **Sprints 28–32 (UI framework migration — Tailwind CSS + light/dark theme): IN
+  PROGRESS.** OPENED 2026-07-16 (Keagan's direction). See `BUILD_PLAN.md` §4.4 for the
+  five-sprint breakdown and `DECISIONS_LOG.md` 2026-07-16 for the decision record
+  (this reinstates dark mode, reversing the 2026-07-13 "dark mode dropped" call —
+  explicitly at Keagan's direction this time, not the build agent relitigating it).
+
+  - **Sprint 28 (Tailwind env setup): COMPLETE — 97/100.** Foundation only, **zero visual
+    change**. `postcss.config.mjs` (`@tailwindcss/postcss`) + `src/app/tailwind.css`:
+    imports the `theme` + `utilities` layers but **NOT preflight** — Tailwind's base reset
+    would move pixels on every page and fight the un-migrated CSS through Sprints 29–30, so
+    `globals.css` stays the base reset for the whole migration. `@theme inline` maps all 15
+    color tokens to the live `:root` `var()`s (**single source of truth — no copied hex**;
+    Sprint 31 dark mode works by flipping the vars), plus `--breakpoint-xs: 34rem` (defaults
+    cover 40/64/80/96 → sm/lg/xl/2xl). `tailwind.css` imported **before** the unlayered
+    `globals.css` in `layout.tsx`, so the hand-written system wins every conflict this
+    sprint. `globals.css` UNTOUCHED. Verified by compiling the entry file with the real
+    Tailwind **v4.3.2** toolchain (tokens → exact `var()`s, breakpoints exact, no preflight
+    emitted). Guard test `tests/tailwind-setup.test.ts` locks the preflight-excluded +
+    var-mapped invariants. **Adds two devDeps (`tailwindcss`, `@tailwindcss/postcss`
+    `^4.3.2`) → needs `npm install` + verify + push on Keagan's machine** (the full Next
+    build, where Tailwind runs, can't run in the sandbox). Sprints 30–32 not started.
+
+  - **Sprint 29 (Component migration, wave 1): COMPLETE — 96/100.** Converted the shared
+    shell + highest-traffic surfaces to Tailwind utilities: `SiteHeader`/brand/nav, the
+    `.page` container + skip link, the whole `.btn` system (base + ghost/primary/danger/
+    liked + the step-walker disabled state), the search form controls, and the catalog +
+    plan-detail **card chrome**. Reused classes are shared constants in **`src/lib/ui.ts`**
+    (`btn`/`btnGhost`/`btnPrimary`/`btnDanger`/`btnLiked`, `page`, `searchInput`,
+    `categoryLabel` — `.btn*` alone was ~80 usages across 17 files); one-offs are inline.
+    **Parity method:** every class string compiled with the real Tailwind v4.3.2 toolchain
+    and the emitted declarations diffed against the deleted CSS (arbitrary values like
+    `px-[0.875rem]`, `rounded-[50%]`, `ease-[ease-in-out]` where the default scale wouldn't
+    match). **THE cascade rule for this migration:** delete each migrated BASE rule, but KEEP
+    every not-yet-converted modifier/compound/print/context class (`.page-wide`,
+    `.page-catalog`, `.plan-detail`, the print `.page`/`.site-header`/`.search-box` rules,
+    `.saved-item .plan-card`, `.step-walker-nav`, `.plan-rating`, `.pagination-disabled`) —
+    they're **unlayered**, so they still beat the layered utilities and mid-migration parity
+    holds by construction. That's also why the `page`/`site-header`/`search-box`/`plan-card`
+    CLASSES are retained on their elements. **Two Tailwind gotchas (remember these for waves
+    2–3):** (1) same-property utilities apply in Tailwind's fixed source order, NOT className
+    order — a base `border-transparent` beats a variant's `border-border`, so `border` + its
+    color live on each variant and each button carries exactly one border-color + one
+    text-color (guarded by `tests/ui-classes.test.ts`); (2) a local `const page` in
+    `app/page.tsx` shadowed the imported `page` shell class → import aliased to `pageShell`.
+    **One accepted deviation:** the card-link hover tint compiles to a `@media (hover:hover)`
+    rule (Tailwind's `hover:` idiom) — desktop identical, touch no longer sticky-hovers.
+    **Needs `npm run build` + a real-browser pixel-parity pass (34/40/64/80/96rem, mobile +
+    desktop) + push on Keagan's machine.** ⚠️ The sandbox mount served a **stale/truncated
+    `globals.css`** this session, so its CSS parse is Keagan's build; the edits are verified
+    via Read + a per-edit brace-balance audit.
+
+  - **Sprint 30a (Component migration, wave 2 — catalog + plan-detail layout): COMPLETE —
+    96/100.** Sprint 30 (retire ~all remaining `globals.css`) is **split into three
+    browser-checkable sub-waves 30a/b/c** (Keagan's direction 2026-07-14) so pixel-parity is
+    verified incrementally, not as one 200-rule blind diff. **30a = the two hardest-to-eyeball
+    layout systems:** the Sprint 18 three-column catalog grid (`grid-template-areas` as
+    `lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters']` + `grid-area`
+    placements) and the Sprint 20 plan-detail layout (two-column `lg:` grid, image slot, the
+    Tools/Materials/Cut-list tabs, the instructions disclosure). **Deferred within 30a, each for
+    a cascade reason:** `.plan-grid` (SHARED grid across catalog/saved/paths → convert with
+    them), `.catalog-nav-heading` (overrides the unlayered global `h2` — a layered utility can't
+    win, so it waits for the typography pass), `.page-wide.plan-detail` (compound override of the
+    retained `.page-wide` modifier). **Gotcha for 30b/c:** `font: inherit` is emitted AFTER
+    `font-medium` in Tailwind's source order, so a button that needs both must use `font-medium!`
+    (important) or the shorthand resets the weight. Retained-class pattern continues (print/
+    sibling selectors keep `catalog-nav`, `plan-detail-grid`/`-aside`, `plan-tabs`/`plan-tablist`,
+    `instructions-open`/`-region`). `category-nav.test.tsx` updated (asserts the active-only
+    `bg-accent-tint` utility instead of the removed `.catalog-nav-link-active` class). **Needs
+    `npm run build` + real-browser pixel-parity + push.** ⚠️ Mount appended NUL bytes to
+    `globals.css` this session (known corruption); real file intact per Read + balance audit,
+    authoritative parse is the build. **30b/30c remain.**
 
 - **Sprint 24 (Hardening Pass 2): COMPLETE — 95/100.** Code audit + fixes of the surfaces
   rebuilt in 17–23. **Real a11y fix:** `PlanTabs` had `role="tablist"` with no keyboard

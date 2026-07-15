@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import Link from 'next/link';
 
 /**
@@ -121,7 +122,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
 
 export default function FaqPage() {
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <h1>Frequently asked questions</h1>
 
       <dl className="faq">

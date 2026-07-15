@@ -27,8 +27,9 @@ interface Props {
  * the picture (BUSINESS_PLAN.md §9).
  */
 export function PlanImageSlot({ title, image }: Props) {
+  // Sprint 30a: image slot moved from globals.css to Tailwind utilities.
   return (
-    <div className="plan-image-slot">
+    <div className="border border-border rounded-[0.5rem] overflow-hidden bg-surface">
       {image ? (
         <Image
           src={image.url}
@@ -36,13 +37,17 @@ export function PlanImageSlot({ title, image }: Props) {
           width={800}
           height={600}
           sizes="(max-width: 64rem) 100vw, 22rem"
-          className="plan-image"
+          className="block w-full h-auto"
           priority
         />
       ) : (
-        <div className="plan-image-empty" role="img" aria-label={`No photo yet for ${title}`}>
+        <div
+          className="flex flex-col items-center justify-center gap-[0.5rem] aspect-[4/3] text-muted bg-accent-tint text-[2.5rem]"
+          role="img"
+          aria-label={`No photo yet for ${title}`}
+        >
           <span aria-hidden="true">🪚</span>
-          <span className="plan-image-empty-text">Photo coming soon</span>
+          <span className="text-[0.875rem]">Photo coming soon</span>
         </div>
       )}
     </div>

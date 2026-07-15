@@ -1855,6 +1855,274 @@ allowlist (static content, no user data — the Sprint 17 reasoning is unchanged
 
 ---
 
+> Note: this Tailwind-migration block (Sprints 28–29) is appended after Sprint 23 for
+> low-risk editing; chronologically it follows Sprint 27 below. Order is cosmetic — move
+> in your editor if you like. (My earlier "24–27 are missing" note was wrong: it came from
+> a stale sandbox mount; those entries are present below. Corrected here.)
+
+## Sprint 28: Tailwind CSS environment setup (UI migration, sprint 1 of 5)
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.4):** foundation only — install Tailwind v4 + its PostCSS
+plugin, port the existing design tokens into an `@theme` block so utilities resolve to the
+exact live values, add the one custom breakpoint the default scale lacks (34rem), leave
+`globals.css` fully intact. **Acceptance bar: zero visual diff** (nothing is converted yet).
+
+**Status: COMPLETE — 97/100, Attempt 1. Pass.** No schema, no migration, no visual change.
+
+### Decisions (routine engineering, not escalated — per `BUILD_PLAN.md` §1.1/§2)
+- **Tailwind v4, CSS-first `@theme`** (no `tailwind.config.js`) — already the plan of
+  record (`DECISIONS_LOG.md` 2026-07-16); pinned `^4.3.2` (current) for `tailwindcss` +
+  `@tailwindcss/postcss`.
+- **Preflight (Tailwind's base reset) is deliberately EXCLUDED.** The bare
+  `@import "tailwindcss";` pulls theme + preflight + utilities; preflight would zero
+  heading margins / list styles / `font-family` across every page on day one — a visible
+  change that violates the zero-diff bar and would fight the not-yet-migrated CSS through
+  Sprints 29–30. So `tailwind.css` imports only the `theme` and `utilities` layers;
+  `globals.css` stays the base reset for the whole migration. This is the load-bearing
+  call of the sprint and is guarded by a test.
+- **`@theme inline` mapping to `var(--token)`, not copied hex.** Keeps the `:root` block in
+  `globals.css` the single source of truth (satisfies the Sprint 30 note in §4.4 up front)
+  and means Sprint 31's dark theme works by flipping the vars, nothing to keep in sync.
+- **Import order:** `tailwind.css` before `globals.css` in `layout.tsx`. Tailwind output is
+  `@layer`-wrapped; `globals.css` is unlayered and therefore wins every conflict regardless
+  of order — so the hand-written system keeps full control this sprint.
+
+### What shipped
+| File | Change |
+|---|---|
+| `postcss.config.mjs` | **New.** Registers `@tailwindcss/postcss` (Next picks it up for webpack + Turbopack). |
+| `src/app/tailwind.css` | **New.** Tailwind entry: `@layer` order decl, theme + utilities imports (no preflight), `@theme inline` mapping 15 color tokens → `var(--…)`, `--breakpoint-xs: 34rem`. |
+| `src/app/layout.tsx` | Import `./tailwind.css` before `./globals.css` (2 lines + comment). |
+| `package.json` | Add `tailwindcss` + `@tailwindcss/postcss` `^4.3.2` to devDependencies. |
+| `tests/tailwind-setup.test.ts` | **New.** Regression guard on the two invariants that would silently break zero-diff: preflight must not be imported; every `--color-*` must be a `var()` ref (no forked hex). Also asserts the theme/utilities imports and the 34rem breakpoint. |
+| `globals.css` | **Untouched** (by design). |
+
+### Verification
+- **Real toolchain compile (in-sandbox):** compiled `tailwind.css` with Tailwind
+  **v4.3.2** against sample markup. Output confirmed: `bg-bg`→`var(--bg)`, `text-fg`→
+  `var(--fg)`, `border-border-strong`→`var(--border-strong)`, `text-accent-strong`,
+  `text-danger/ok/pending/err` etc. all emit the correct inline `var()`; breakpoints
+  `xs`=34rem, `sm`=40rem, `lg`=64rem, `xl`=80rem, `2xl`=96rem — exactly the project's
+  existing media queries; and **no preflight reset in the output** (only `--spacing`, a
+  variable, is added). This is the core deliverable, proven against the real compiler.
+- **Guard test:** first `vitest run` collected + executed it and caught a real bug (the
+  regex matched the `@import "tailwindcss";` example *inside a comment*); fixed by
+  stripping CSS comments first. Post-fix logic verified 7/7 via node. (esbuild's transform
+  service then began crashing in the sandbox — environmental; the full in-repo `vitest`/
+  `tsc`/`eslint` are the device-bound gate, below.)
+- **Existing suite unaffected by construction:** no test imports `layout.tsx`,
+  `globals.css`, or `tailwind.css`, and vitest doesn't run the PostCSS/Tailwind pipeline —
+  so the 524-test suite's inputs are unchanged.
+
+**Device-bound (Keagan/CI — same handoff as every prior sprint):** the full `next build`
+(where Tailwind actually runs in the Next pipeline) can't run in the sandbox (SWC SIGBUS),
+and the in-repo `vitest`/`tsc`/`eslint` need a clean `npm install` first (new deps).
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Maps 1:1 to §4.4 Sprint 28: install Tailwind v4 + PostCSS plugin ✔, port tokens to `@theme` resolving to identical values ✔ (proven: utilities emit the live `var()`s), custom 34rem breakpoint ✔ (defaults cover 40/64/80/96), `globals.css` untouched ✔, zero visual change ✔. Nothing outside scope — no component converted. |
+| Correctness & functionality (/20) | **19** | Tailwind v4.3.2 compiles the entry file; every token + breakpoint verified in the emitted CSS; preflight confirmed absent. −1: the full Next+Tailwind build is device-bound (SIGBUS in sandbox), so end-to-end "renders in the app" is Keagan/CI, not proven here. |
+| Automated test coverage (/15) | **14** | `tests/tailwind-setup.test.ts` locks the two invariants a future edit could silently break (preflight injection; hex forking the palette) — not tautological: the first run caught a real defect. −1: the test runs on the file's text, not the compiled output (compiling inside vitest isn't the repo's pattern); the compile check is external. |
+| Security (/15) | **15** | No new attack surface. Tailwind emits a static build-time stylesheet served via `<link>` exactly as Next already serves CSS — no inline styles, no runtime JS, so CSP `style-src`/`script-src` are unaffected. No secrets, no user input, no route/auth change. |
+| Code quality & simplicity (/10) | **10** | Additive and minimal; `globals.css` untouched; `@theme inline` avoids a duplicate hex palette (single source of truth from the start); heavily commented on the one non-obvious call (preflight exclusion). No dead code. |
+| Mobile/offline behavior (/10) | **10** | Zero rendered change at every breakpoint including mobile — the 34rem `xs` stop matches the existing phone-width rules; no PWA/offline/service-worker surface touched. (Category retained rather than redistributed: zero-diff is a claim about *all* viewports.) |
+| Documentation & handoff (/5) | **5** | This entry + inline file docs + the §4.4/§7 updates; the decision record already exists (`DECISIONS_LOG.md` 2026-07-16); handoff steps below. |
+| **Total (/100)** | **97** | |
+
+**Result: PASS (97 ≥ 95).**
+
+### Open items for Keagan (in order)
+1. **`npm install`** — picks up `tailwindcss` + `@tailwindcss/postcss` and updates
+   `package-lock.json`. (I edit `package.json` but can't safely regenerate the 294 KB
+   lockfile: bash must never write to the repo mount — it has corrupted source files —
+   and the file's too large to round-trip through the editor. Installing deps is your
+   step, same as every prior sprint.) Commit **both** `package.json` and
+   `package-lock.json` so CI's `npm ci` sees a synced lockfile.
+2. **Verify:** `npm run typecheck`, `npm run lint`, `npm test` (expect 524 + the 4 new
+   `tailwind-setup` cases), then `npm run build` — the build is where Tailwind actually
+   runs; confirm it compiles and the site looks **byte-for-byte identical** to before.
+3. **Push** — no migration, no seed; nothing to run against the DB.
+
+---
+
+## Sprint 29: Component migration, wave 1 (UI migration, sprint 2 of 5)
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.4):** convert the shared shell + highest-traffic surfaces
+from hand-written `globals.css` to Tailwind utilities, deleting each rule as its component
+converts — no dead CSS mid-migration. Named surfaces: `SiteHeader`/nav, the page shell
+(`.page`, skip link), buttons (`.btn`/`.btn-primary`/`.btn-ghost`), form controls, and the
+catalog + plan-detail **cards**. **Acceptance bar: pixel-parity** at all five breakpoints.
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** No schema, no migration. ~24 files touched.
+
+### Approach (and why it's parity-safe without an in-sandbox visual check)
+- **Byte-parity, not eyeballing.** Every converted class string was compiled with the real
+  **Tailwind v4.3.2** toolchain and the emitted declarations diffed against the deleted
+  CSS. Arbitrary values (`px-[0.875rem]`, `rounded-[0.375rem]`, `ease-[ease-in-out]`,
+  `rounded-[50%]`) are used wherever the default scale wouldn't produce the exact value.
+- **Shared constants for the reused classes** (`src/lib/ui.ts`): `btn`/`btnGhost`/
+  `btnPrimary`/`btnDanger`/`btnLiked` (used ~80× across 17 files), `page`, `searchInput`,
+  `categoryLabel`. One source of truth beats 98 copy-pasted strings drifting. Header, card
+  chrome, skip link and the search wrapper are inline (used once).
+- **The load-bearing cascade fact:** each migrated BASE rule is deleted, but every
+  not-yet-converted modifier/compound/print/context class is KEPT (`.page-wide`,
+  `.page-catalog`, `.plan-detail`, `.pagination-disabled`, the print `.page`/`.site-header`/
+  `.search-box` rules, `.saved-item .plan-card`, `.step-walker-nav`, `.plan-rating`). Those
+  live *unlayered* in `globals.css`, so they still win over the layered utilities exactly as
+  before — mid-migration parity holds by construction. The retained classes (`page`,
+  `site-header`, `search-box`, `plan-card`) stay on their elements for precisely this reason.
+- **Two Tailwind gotchas caught and handled.** (1) A base `border-transparent` would beat a
+  variant's `border-border` (same property, source-ordered), silently erasing ghost/liked
+  borders — so `border` + its color live on each variant, never the base; each button carries
+  exactly one border-color and one text-color (guarded by `tests/ui-classes.test.ts`). (2) A
+  local `const page` (pagination number) in `app/page.tsx` shadowed the imported `page` shell
+  class — fixed by aliasing the import to `pageShell`.
+
+### What shipped (file → change)
+| File | Change |
+|---|---|
+| `src/lib/ui.ts` | **New.** Shared class strings: button variants, `page`, `searchInput`, `categoryLabel`. |
+| `src/components/site-header.tsx` | Skip link, header, brand, nav → inline utilities; nav buttons → constants. |
+| `src/components/search-box.tsx` | `.search-box`→inline (+ retained class); `.search-input`→`searchInput`; button→`btnPrimary`. |
+| `src/components/plan-card.tsx` + `save-toggle.tsx` | Card chrome → utilities; category→`categoryLabel`; `.plan-card` class retained. |
+| `site-header, step-walker, like-button, install-prompt, reviews-section, offline-download, shopping-list-button, instructions-disclosure, save-button, sort-select, filter-panel` | All `.btn*` usages → `@/lib/ui` constants (offline-download folds the old `.offline-download .btn` margin into `mb-[0.5rem]`). |
+| 14 page/loading files (`about, faq, offline, paths, paths/[slug], profile, shopping-list, workshop, builds, saved, page, plans/[slug], loading, plans/[slug]/loading`) | `.page` container → `page` constant (`pageShell` alias in `page.tsx`); reused `.plan-card-category`/`.search-input` → constants. |
+| `src/app/globals.css` | Deleted the migrated base rules (header/brand/nav, whole `.btn` system, skip link, search input/box, card chrome, `.btn-liked`/`.btn-danger`, `.step-walker-nav .btn:disabled`, `.offline-download .btn`); split `.plan-card-rating` off the shared rule; each deletion left a one-line breadcrumb pointing to its new home. Print + all context/desktop rules untouched. |
+| `tests/ui-classes.test.ts` | **New.** Guards the button-variant invariant (one border-color, one text-color; no legacy `btn-*`) + the retained `page` class. |
+
+### Verification
+- **Declaration diff (in-sandbox, real toolchain):** compiled `tailwind.css` against the whole
+  converted `src` tree; every converted utility's declaration is present and byte-exact
+  (`min-height:2.75rem`, `border-radius:0.375rem`/`50%`, `aspect-ratio:3/2`, `color-mix(...)`,
+  `transition-timing-function:ease-in-out`, the two `env()` calc paddings, `outline-offset:-2px`,
+  etc.). If any utility were mistyped it wouldn't appear — none were missing.
+- **Button invariants:** validated 7/7 variants × checks against the real `ui.ts` (one
+  border-color + ≤1 text-color each) — the guard test's logic, run in node.
+- **No orphans:** no `className` in the tree still references a deleted class; no test asserts
+  on any changed class name.
+- **One accepted deviation (documented):** the card-link hover tint compiles to a
+  `@media (hover:hover)`-gated rule (Tailwind's `hover:` idiom). Desktop is identical; on
+  touch it simply no longer applies a sticky-hover tint — an improvement, not a regression.
+
+**Device-bound (Keagan — same handoff as every prior sprint):** `npm run build` (Tailwind
+runs in the Next pipeline; SIGBUS in the sandbox), full `tsc`/`eslint`/`vitest`, and the
+**real-browser pixel-parity pass** at 34/40/64/80/96rem in both mobile and desktop. **The
+sandbox mount also served a stale/truncated `globals.css` this session** (it still reports
+the pre-edit byte count), so the final CSS *parse* is Keagan's build — the edits themselves
+are verified via Read + a per-edit brace-balance audit (all deletions balanced).
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Every §4.4 wave-1 surface converted (header/nav, `.page` shell + skip link, the `.btn` system, search form controls, catalog + plan-detail card chrome) and each migrated rule deleted from `globals.css`. Buttons in wave-2 components (filter-panel) were converted too — required, not creep, since the `.btn*` rules are deleted. Retaining `page`/`site-header`/`search-box`/`plan-card` classes is a correctness necessity (print/context rules), documented. |
+| Correctness & functionality (/20) | **18** | Byte-parity proven at the declaration level against the real compiler; the border/text-color ordering gotcha and the `page` shadowing bug were both caught and fixed. −2: the full Next build + real-browser parity are device-bound (not runnable in-sandbox), and the hover tint is now hover-capability-gated (desktop identical). |
+| Automated test coverage (/15) | **13** | `tests/ui-classes.test.ts` guards the exact bug class this sprint risked (a second color utility silently winning) — non-tautological, validated in node. −2: it checks the class *strings*, not rendered output (the repo runs vitest in `node`, no jsdom), and the full suite couldn't run here (stale mount + flaky esbuild). |
+| Security (/15) | **15** | Presentation-only: className values changed, no structure/props/routes/auth/data touched. Utilities are static build-time CSS (served via `<link>` like Next's existing CSS) — no inline styles, no runtime JS, CSP unaffected. |
+| Code quality & simplicity (/10) | **10** | Reused classes centralised (no 98-way drift); arbitrary values chosen for exactness and documented; every deleted rule left a breadcrumb to its new home; kept-class decisions each carry a why. No dead CSS. |
+| Mobile/offline behavior (/10) | **10** | The mobile-first shell (`.page`, 44px touch targets) is reproduced byte-exact; the 34/40rem phone rules are untouched (kept). Print/offline/no-JS unaffected — print rules and every context class retained. Real-device confirmation is Keagan's, same as prior sprints. |
+| Documentation & handoff (/5) | **5** | This entry + inline file comments + `CLAUDE.md` §7 + `BUILD_PLAN.md` §4.4; handoff below. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan (in order)
+1. **`npm install`** if not already done for Sprint 28 (the Tailwind deps) — no new deps this
+   sprint. Then commit.
+2. **Verify:** `npm run typecheck`, `npm run lint`, `npm test` (expect the prior suite + the 4
+   `tailwind-setup` cases + the new `ui-classes` cases), then `npm run build`.
+3. **Pixel-parity pass in a real browser** — catalog, a plan page, saved, workshop/builds,
+   header, buttons, search — at phone/tablet/desktop widths. This is the acceptance bar and is
+   device-bound. Flag anything that shifted; report back and I'll fix.
+4. **Push** — no migration, no seed.
+
+---
+
+## Sprint 30a: Component migration, wave 2 — catalog + plan-detail layout (UI migration, sprint 3 of 5)
+**Dates:** 2026-07-14
+**Scope:** Sprint 30 (`BUILD_PLAN.md` §4.4) is large — it retires ~all remaining `globals.css`.
+At Keagan's direction (2026-07-14) it is delivered in **three browser-checkable sub-waves
+(30a/b/c)** so pixel-parity — which only a real browser confirms — is verified incrementally
+instead of as one 200-rule blind diff. **30a = the two hardest-to-eyeball layout systems:** the
+Sprint 18 three-column catalog grid and the Sprint 20 plan-detail layout (two-column grid, image
+slot, Tools/Materials/Cut-list tabs, the "Start building" instructions disclosure).
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** No schema, no migration. 6 components/pages.
+
+### What converted, and the deferrals (each with a reason)
+Converted to Tailwind: the catalog grid container + `grid-template-areas` and the
+`nav`/`search`/`filters`/`results` grid-area placements (`page.tsx`, `category-nav.tsx`), the
+category rail internals, the plan-detail two-column grid (`plans/[slug]/page.tsx`), the image
+slot (`plan-image-slot.tsx`), the tab chrome (`plan-tabs.tsx`), and the instructions
+disclosure (`instructions-disclosure.tsx`).
+
+**Deliberately deferred (not skipped):**
+- **`.plan-grid`** — a SHARED responsive grid (catalog + saved + paths + loading). Converting it
+  means touching those other files; it's cleaner to do it with them in 30b/c. The catalog's
+  results grid keeps working via the retained rule.
+- **`.catalog-nav-heading`** — it overrides the global `h2` rule; converting a heading while the
+  unlayered global `h2` still exists would let `h2` win over the layered utility. Belongs in the
+  typography pass (30c), with the global `h1`/`h2` rules.
+- **`.page-wide.plan-detail { max-width: 70rem }`** — a compound override of `.page-wide` (a
+  retained shell modifier). A layered utility can't beat the unlayered compound rule, so it stays
+  until `.page-wide` itself converts.
+
+**Retained CLASSES (rules deleted, class kept on the element):** `catalog-nav` (print hides it),
+`plan-detail-grid` / `plan-detail-aside` (print grid→block / aside→hidden), `plan-tabs` /
+`plan-tablist` (print + the sibling-`h2`-hide selector), `instructions-open` /
+`instructions-region` (print). Same unlayered-wins mechanism as wave 1.
+
+### Two parity gotchas handled
+- **`grid-template-areas` as a Tailwind arbitrary value** compiles correctly:
+  `lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters']` → the exact two-row
+  template (underscores → spaces, quotes preserved). Verified against the real compiler.
+- **`font: inherit` on the tab button vs `font-weight: 500`.** Tailwind emits `[font:inherit]`
+  AFTER `font-medium` in its fixed source order, so the shorthand would reset the weight. Fixed
+  with `font-medium!` (important), which wins regardless of order — verified.
+
+### Verification
+- **Declaration diff (real toolchain, whole converted tree):** every 30a utility's declaration is
+  present and exact — `grid-template-areas: 'nav search filters' 'nav results filters'`,
+  `grid-template-columns: 12rem minmax(0,1fr) 17rem` and `minmax(0,1fr) 22rem`, the four
+  `grid-area`s, `max-height: calc(100vh - 6rem)`, `aspect-ratio: 4/3`, `font: inherit`,
+  `border-bottom-color: var(--surface)`, `order: -1`/`0`, `max-width: 96rem`, `top: 4.5rem`.
+- **Tests:** `category-nav.test.tsx` asserted the old `.catalog-nav-link-active` class as its
+  "active" proxy — updated to assert the stable active-only utility (`bg-accent-tint`) + the
+  unchanged `aria-current`. `plan-tabs.test.tsx` / `plan-image-slot.test.tsx` assert on
+  content/SSR-negative cases, not the changed classes — unaffected (confirmed by reading them).
+- **No orphans:** no `className` references a dropped class; the dead `plan-detail-main` hook was
+  removed. `globals.css` braces (322/322) and comments (99/99) balance; real EOF clean via Read.
+
+**Device-bound (Keagan):** `npm run build` and the **real-browser pixel-parity pass** — this
+sub-wave is specifically the responsive grids, so check 34/40/64/80/96rem on the catalog and a
+plan page in both orientations. ⚠️ The sandbox mount appended NUL bytes to its copy of
+`globals.css` this session (a known mount corruption — `CLAUDE.md` §6); the real file is intact
+per Read + a balance audit, but the authoritative CSS parse is your build.
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Delivers §4.4 wave-2 items #1–2 (catalog three-column grid; plan-detail tabs/instructions/image slot + the two-column grid), scoped as 30a per the approved split. −1: three entangled bits (`.plan-grid`, `.catalog-nav-heading`, `.page-wide.plan-detail`) are deferred to later sub-waves — each for a documented cascade reason, not an omission. |
+| Correctness & functionality (/20) | **19** | Every utility byte-verified against the real Tailwind compiler, including the hard cases (grid-template-areas, minmax columns, calc, `font:inherit`+important weight, the tab border interplay); the font source-order gotcha was caught and fixed. −1: the full Next build and real-browser parity are device-bound (the whole reason for the sub-wave split). |
+| Automated test coverage (/15) | **13** | Updated the one test whose class-name proxy changed (`category-nav`) to a stable marker; verified the other two 30a-touching tests are unaffected by reading their assertions. −2: pure-CSS layout has no new logic to unit-test, and the full suite couldn't run here (esbuild flake + mount corruption). |
+| Security (/15) | **15** | Presentation-only — className values on existing elements; no structure, props, routes, auth, or data touched. Static build-time CSS; CSP unaffected. |
+| Code quality & simplicity (/10) | **10** | Every deferral and retained-class decision carries a one-line cascade rationale; breadcrumbs left at each deletion; the dead `plan-detail-main` hook removed. No dead CSS. |
+| Mobile/offline behavior (/10) | **10** | Mobile parity holds by construction: below `lg` there is no grid (plain block, DOM order = mobile order), the rail is `hidden`, and plan-detail is a flex column with the photo `order`-hoisted under the title — all byte-exact. Print rules retained via kept classes. Device sign-off pending, same as prior sprints. |
+| Documentation & handoff (/5) | **5** | This entry (incl. the 30a/b/c split record), `CLAUDE.md` §7, `BUILD_PLAN.md` §4.4, inline breadcrumbs, and the handoff below. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan
+1. **Verify + real-browser pixel-parity** of the catalog grid and a plan page at all five
+   breakpoints (this sub-wave is the responsive layout — the part that most needs eyes). Flag
+   anything that shifted; I'll fix before 30b.
+2. **Push** — no migration. Then I continue with **30b** (filters + chips + saves/collections +
+   shopping/workshop/builds) and **30c** (reviews + board-plan + paths + prose + skeletons + the
+   global typography/reset, retiring `globals.css` to `:root` + print + reset).
+
+---
+
 ## Sprint 24: Hardening Pass 2
 **Dates:** 2026-07-15
 **Scope (from `BUILD_PLAN.md` §4.3):** re-audit and FIX the surfaces rebuilt in Sprints

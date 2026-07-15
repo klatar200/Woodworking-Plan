@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import type { Metadata } from 'next';
 import { getShoppingList } from '@/lib/shopping-list';
 import { costTierSymbol, costTierForCents } from '@/lib/format';
@@ -86,7 +87,7 @@ export default async function ShoppingListPage({
   const list = await getShoppingList();
 
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <p className="breadcrumb no-print">
         <Link href="/saved">← Saved plans</Link>
       </p>

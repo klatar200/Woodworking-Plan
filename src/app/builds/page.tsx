@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page, btnGhost, categoryLabel } from '@/lib/ui'; // Sprint 29: page-shell + button + category
 import Image from 'next/image';
 import { listMyBuilds } from '@/lib/builds';
 import { StarRating } from '@/components/star-rating';
@@ -23,7 +24,7 @@ export default async function BuildsPage() {
   const builds = await listMyBuilds();
 
   return (
-    <main id="main" className="page page-wide">
+    <main id="main" className={`${page} page-wide`}>
       <h1>Your builds</h1>
       <p className="subtitle">
         Every plan you&rsquo;ve reviewed, newest first. Reviewing a plan adds it here.
@@ -46,7 +47,7 @@ export default async function BuildsPage() {
               <li key={build.id} className="build-log-item">
                 <div className="build-log-head">
                   <div>
-                    <span className="plan-card-category">{build.plan.category.name}</span>
+                    <span className={categoryLabel}>{build.plan.category.name}</span>
                     <h2 className="build-log-title">
                       <Link href={`/plans/${build.plan.slug}`}>{build.plan.title}</Link>
                     </h2>
@@ -98,7 +99,7 @@ export default async function BuildsPage() {
                 <p className="build-log-actions">
                   <Link
                     href={`/plans/${build.plan.slug}#reviews-heading`}
-                    className="btn btn-ghost"
+                    className={btnGhost}
                   >
                     View / edit on the plan
                   </Link>

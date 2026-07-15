@@ -1,0 +1,70 @@
+/*
+ * Tailwind CSS entry — Sprint 28 (Tailwind environment setup, foundation only).
+ *
+ * WHAT THIS SPRINT DOES: installs Tailwind v4 alongside the existing hand-written
+ * system in `globals.css` WITHOUT changing a single rendered pixel. No component is
+ * converted here — that is Sprints 29–30. See BUILD_PLAN.md §4.4 and
+ * DECISIONS_LOG.md 2026-07-16.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * WHY PREFLIGHT IS EXCLUDED (deliberate, not an omission).
+ *
+ * The full `@import "tailwindcss";` pulls in three layers: theme, PREFLIGHT (a
+ * base reset), and utilities. Preflight would zero out heading margins, list
+ * styles, `font-family`, etc. on day one — a visible change across every page,
+ * which violates this sprint's zero-visual-diff acceptance bar. `globals.css`
+ * already ships its own reset (box-sizing, `html/body` margins) and every existing
+ * rule is written against browser defaults, so introducing Preflight now would also
+ * fight the not-yet-migrated CSS all through Sprints 29–30. So we import only the
+ * `theme` and `utilities` layers and let `globals.css` remain the base reset for
+ * the whole migration.
+ *
+ * The `@layer` declaration below fixes cascade order: theme < base < components <
+ * utilities, matching Tailwind's own default ordering, so utilities added in later
+ * sprints win over `globals.css` rules as components convert.
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/*
+ * Color tokens — mapped to Tailwind's `--color-*` namespace so utilities like
+ * `bg-bg`, `text-fg`, `border-border`, `text-accent-strong` resolve to the SAME
+ * values already live.
+ *
+ * `@theme inline` (not plain `@theme`) makes each utility emit `var(--bg)` inline
+ * rather than minting a duplicate `--color-bg`. That keeps the `:root` block in
+ * `globals.css` the SINGLE SOURCE OF TRUTH — Tailwind reads from it; it does not
+ * copy the hex values. Sprint 31's dark theme will flip these `:root` vars and
+ * every Tailwind utility follows automatically, with nothing to keep in sync.
+ */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-tint: var(--accent-tint);
+  --color-accent-tint-border: var(--accent-tint-border);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-pending: var(--pending);
+  --color-err: var(--err);
+}
+
+/*
+ * Custom breakpoint for the project's existing non-default 34rem media queries
+ * (globals.css lines 514/525). Tailwind's default scale has no 34rem stop — `sm`
+ * is 40rem — so a shared `xs` variant is added. The other four existing
+ * breakpoints already line up with Tailwind's defaults, so no others are needed:
+ *   40rem → sm   64rem → lg   80rem → xl   96rem → 2xl
+ */
+@theme {
+  --breakpoint-xs: 34rem;
+}

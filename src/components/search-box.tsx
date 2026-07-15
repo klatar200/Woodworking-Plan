@@ -14,9 +14,16 @@
  * If search-as-you-type proves necessary later, it can be layered on top of a
  * thing that already works. The reverse is not true.
  */
+import { btnPrimary, searchInput } from '@/lib/ui';
+// Sprint 29 (UI migration, wave 1). `search-box` class RETAINED — the print
+// stylesheet hides it by class (out of scope this sprint); utilities added alongside.
+// `search-input` is fully converted to utilities; the submit button uses the shared
+// primary-button constant. `visually-hidden` (a11y) stays in globals.css for now.
+const searchBox = 'search-box flex gap-[0.5rem] mt-[1rem] mb-[0.75rem] mx-0';
+
 export function SearchBox({ query }: { query: string }) {
   return (
-    <form className="search-box" action="/" method="get" role="search">
+    <form className={searchBox} action="/" method="get" role="search">
       <label htmlFor="q" className="visually-hidden">
         Search plans
       </label>
@@ -24,12 +31,12 @@ export function SearchBox({ query }: { query: string }) {
         id="q"
         name="q"
         type="search"
-        className="search-input"
+        className={searchInput}
         placeholder="Search plans, tools, materials…"
         defaultValue={query}
         autoComplete="off"
       />
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className={btnPrimary}>
         Search
       </button>
     </form>

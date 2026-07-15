@@ -10,9 +10,11 @@
  * `aria-hidden` on the shimmer, plus one polite live-region sentence for
  * screen readers: rows of empty animated divs are meaningless to announce.
  */
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
+
 export default function CatalogLoading() {
   return (
-    <main id="main" className="page page-wide">
+    <main id="main" className={`${page} page-wide`}>
       <h1>Plans</h1>
       <p className="visually-hidden" role="status">
         Loading plans…

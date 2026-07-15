@@ -5,9 +5,11 @@
  * Same rules as the catalog skeleton (src/app/loading.tsx): static markup,
  * shimmer hidden from assistive tech, one polite live-region sentence.
  */
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
+
 export default function PlanLoading() {
   return (
-    <main id="main" className="page page-wide">
+    <main id="main" className={`${page} page-wide`}>
       <p className="visually-hidden" role="status">
         Loading plan…
       </p>

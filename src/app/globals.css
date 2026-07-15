@@ -58,12 +58,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Mobile-first: sized for a phone, widened only on larger screens. */
-.page {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 2rem 1.25rem calc(2rem + env(safe-area-inset-bottom));
-}
+/* `.page` base moved to Tailwind utilities in Sprint 29 (see `page` in
+ * src/lib/ui.ts). The `.page` class is still emitted on each container so the
+ * print rule (`.page { max-width: none; padding: 0 }` below) and the desktop
+ * width modifiers (`.page-wide`, `.page-catalog`) keep targeting it. */
 
 h1 {
   font-size: 1.5rem;
@@ -156,66 +154,12 @@ code {
  * — it is BUSINESS_PLAN.md §5, and it is why this is a PWA at all.
  * ------------------------------------------------------------------------- */
 
-.site-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.75rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-
-  /* Sticky: on a long plan page, "back to the catalog" and the account menu
-     should never require scrolling to the top of a 9-step build. */
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--surface);
-  /* Respect the notch when installed to the home screen (viewport-fit=cover). */
-  padding-top: calc(0.75rem + env(safe-area-inset-top));
-}
-
-.brand {
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--fg);
-  text-decoration: none;
-}
-
-.site-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  /* 44px minimum touch target. Phones, gloves, sawdust. */
-  min-height: 2.75rem;
-  padding: 0 0.875rem;
-  border-radius: 0.375rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-
-.btn-ghost {
-  color: var(--fg);
-  border-color: var(--border);
-}
-
-.btn-primary {
-  background: var(--fg);
-  color: var(--surface);
-}
-
-.btn:focus-visible,
-.brand:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
+/* Sprint 29: `.site-header`, `.brand`, `.site-nav` and the whole `.btn` system
+ * (base + ghost/primary/danger/liked + focus ring + step-walker disabled state)
+ * moved to Tailwind utilities. Header/brand/nav are inline in site-header.tsx;
+ * the buttons are the shared constants in src/lib/ui.ts. The `.site-header`
+ * CLASS is retained on the element because the print and desktop rules below
+ * still target it. */
 
 .auth-page {
   display: flex;
@@ -287,89 +231,12 @@ code {
   }
 }
 
-.plan-card {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-/* The bookmark overlay is a SIBLING of .plan-card-link (see save-toggle.tsx),
-   positioned against this card, not against the link. */
-.plan-card-save-form {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 1;
-  margin: 0;
-}
-
-.plan-card-save {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--surface);
-  font-size: 0.9375rem;
-  cursor: pointer;
-}
-
-.plan-card-save:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
-
-.plan-card-link {
-  display: block;
-  height: 100%;
-  color: inherit;
-  text-decoration: none;
-}
-
-.plan-card-link:hover {
-  background: color-mix(in srgb, var(--fg) 4%, transparent);
-}
-
-.plan-card-link:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: -2px;
-}
-
-.plan-card-image {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  display: block;
-}
-
-.plan-card-body {
-  padding: 1rem;
-}
-
-.plan-card-category {
-  display: inline-block;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin-bottom: 0.375rem;
-}
-
-.plan-card-title {
-  margin: 0 0 0.375rem;
-  font-size: 1.0625rem;
-  line-height: 1.3;
-}
-
-.plan-card-summary {
-  margin: 0 0 0.75rem;
-  color: var(--muted);
-  font-size: 0.9375rem;
-}
+/* Sprint 29: the catalog-card chrome (`.plan-card` base + link, image, body,
+ * title, summary, category, the bookmark overlay, and its focus rings) moved to
+ * Tailwind utilities — inline in plan-card.tsx / save-toggle.tsx, with the
+ * reused category eyebrow as `categoryLabel` in src/lib/ui.ts. The `.plan-card`
+ * CLASS is retained on the <li> because the saved-page (`.saved-item .plan-card`)
+ * and paths-page (`.path-step-done .plan-card`) context rules still target it. */
 
 /* --- badges --- */
 
@@ -920,39 +787,18 @@ code {
   margin-top: 1.5rem;
 }
 
-.step-walker-nav .btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+/* Sprint 29: the old `.step-walker-nav .btn:disabled` rule folded into the shared
+ * button base (`disabled:opacity-40 disabled:cursor-not-allowed` in src/lib/ui.ts) —
+ * step-walker's Prev/Next are the only buttons ever disabled. */
 
 /* ---------------------------------------------------------------------------
  * Sprint 4 — search.
  * ------------------------------------------------------------------------- */
 
-.search-box {
-  display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0 0.75rem;
-}
-
-.search-input {
-  flex: 1 1 auto;
-  min-width: 0;
-  /* 44px touch target, and 16px font — anything smaller makes iOS Safari zoom
-     the viewport on focus, which is jarring and hard to undo one-handed. */
-  min-height: 2.75rem;
-  padding: 0 0.875rem;
-  font-size: 1rem;
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-}
-
-.search-input:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 1px;
-}
+/* Sprint 29: `.search-input` moved to the `searchInput` constant (src/lib/ui.ts;
+ * reused by the catalog search and the saved-page new-collection field). The
+ * `.search-box` flex wrapper moved to inline utilities in search-box.tsx; the
+ * `search-box` CLASS is retained there because the print rule hides it by class. */
 
 /* ---------------------------------------------------------------------------
  * Sprint 5 — filters.
@@ -1087,10 +933,7 @@ code {
  * Sprint 7 — likes and sort.
  * ------------------------------------------------------------------------- */
 
-.btn-liked {
-  border-color: var(--fg);
-  font-weight: 500;
-}
+/* Sprint 29: `.btn-liked` moved to the `btnLiked` constant (src/lib/ui.ts). */
 
 .sort-form {
   display: flex;
@@ -1438,26 +1281,8 @@ code {
 /* Skip link (WCAG 2.4.1). Off-screen until focused, then it lands as a real,
    visible, high-contrast target — a skip link nobody can see when they tab to it
    is worse than none, because it silently swallows the first Tab press. */
-.skip-link {
-  position: absolute;
-  left: 0.5rem;
-  top: -3rem;
-  z-index: 100;
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.75rem;
-  padding: 0 1rem;
-  background: var(--fg);
-  color: var(--surface);
-  border-radius: 0 0 0.375rem 0.375rem;
-  text-decoration: none;
-  font-weight: 500;
-  transition: top 0.15s ease-in-out;
-}
-
-.skip-link:focus {
-  top: 0;
-}
+/* Sprint 29: `.skip-link` (and its `:focus` reveal) moved to inline Tailwind
+ * utilities in site-header.tsx. */
 
 /* Screen-reader-only. The search input has a visible placeholder but still needs
    a real label — a placeholder is not a label. */
@@ -1488,7 +1313,8 @@ code {
   letter-spacing: 0.05em;
 }
 
-.plan-card-rating,
+/* Sprint 29: `.plan-card-rating` moved to inline utilities on the catalog card.
+ * `.plan-rating` (the plan-detail rating, wave 2) keeps this rule. */
 .plan-rating {
   margin: 0.35rem 0 0;
   font-size: 0.9rem;
@@ -1971,9 +1797,8 @@ code {
   border-radius: 0.5rem;
 }
 
-.offline-download .btn {
-  margin-bottom: 0.5rem;
-}
+/* Sprint 29: the old `.offline-download .btn { margin-bottom: 0.5rem }` is now
+ * `mb-[0.5rem]` on that button's className in offline-download.tsx. */
 
 .offline-download p {
   margin: 0;
@@ -2317,9 +2142,7 @@ code {
   }
 }
 
-.btn-danger {
-  color: var(--err, #b3261e);
-}
+/* Sprint 29: `.btn-danger` moved to the `btnDanger` constant (src/lib/ui.ts). */
 
 .small {
   font-size: 0.85rem;
@@ -2337,62 +2160,12 @@ code {
  * outside one, it is changing the phone, and it needs to be justified as such.
  * ------------------------------------------------------------------------- */
 
-/* The category rail is desktop-only. It duplicates the filter panel's category
-   <select>, which is why hiding it costs nothing: on a phone the panel is the
-   one control, and stacking a second one above the plans is precisely what the
-   Sprint 5 <details> collapse exists to prevent. */
-.catalog-nav {
-  display: none;
-}
-
+/* Sprint 30a: the desktop three-column catalog layout (.page-catalog max-width,
+ * .catalog grid + grid-template-areas, and the .catalog-nav / -search / -filters /
+ * -results grid-area placements) moved to Tailwind `lg:` utilities — inline in
+ * page.tsx and category-nav.tsx. `.plan-grid` is a SHARED responsive grid (catalog +
+ * saved + paths); it stays here, deferred to a later wave. */
 @media (min-width: 64rem) {
-  /* Wider than .page-wide's 52rem — three columns of anything do not fit in a
-     reading measure. Capped so the cards do not stretch to a 4K width. */
-  .page-catalog {
-    max-width: 96rem;
-  }
-
-  .catalog {
-    display: grid;
-    grid-template-columns: 12rem minmax(0, 1fr) 17rem;
-    /* The filter rail spans both rows so it starts at the search box's line,
-       not below it — otherwise the right column begins a row late and the
-       layout reads as broken. */
-    grid-template-areas:
-      'nav search filters'
-      'nav results filters';
-    gap: 0 2rem;
-    align-items: start;
-  }
-
-  .catalog-nav {
-    display: block;
-    grid-area: nav;
-    position: sticky;
-    /* Clears the sticky .site-header (z-index 10, ~3.5rem tall) — a rail that
-       slides under the header and disappears is worse than no rail. */
-    top: 4.5rem;
-  }
-
-  .catalog-search {
-    grid-area: search;
-  }
-
-  .catalog-filters {
-    grid-area: filters;
-    position: sticky;
-    top: 4.5rem;
-    /* The tool list is long. Let the rail scroll itself rather than growing the
-       page and dragging "Apply filters" out of reach. */
-    max-height: calc(100vh - 6rem);
-    overflow-y: auto;
-  }
-
-  .catalog-results {
-    grid-area: results;
-    min-width: 0;
-  }
-
   /* 3 columns of cards at this width; 4 and 5 come below. The card is the same
      card — no desktop variant, nothing hidden at one size and shown at another. */
   .plan-grid {
@@ -2422,40 +2195,9 @@ code {
   font-size: 0.75rem;
 }
 
-.catalog-nav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.catalog-nav-link {
-  display: block;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  color: var(--fg);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  border: 1px solid transparent;
-}
-
-.catalog-nav-link:hover {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
-.catalog-nav-link-active {
-  background: var(--accent-tint);
-  border-color: var(--accent-tint-border);
-  font-weight: 600;
-}
-
-.catalog-nav-link:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 1px;
-}
+/* Sprint 30a: `.catalog-nav-list` and the `.catalog-nav-link` states moved to
+ * Tailwind (inline consts in category-nav.tsx). `.catalog-nav-heading` above stays —
+ * it overrides the global `h2` rule, which converts in the later typography pass. */
 
 /* ---------------------------------------------------------------------------
  * Sprint 20 — plan-detail redesign.
@@ -2467,118 +2209,27 @@ code {
  * markup the tabs/disclosure only hide after mount.
  * ------------------------------------------------------------------------- */
 
-.plan-detail-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Mobile: photo right under the title, before the glance strip — not shoved to the
-   bottom of a long build. */
-.plan-detail-aside {
-  order: -1;
-}
-
-.plan-detail-main {
-  min-width: 0;
-}
-
+/* Sprint 30a: `.plan-detail-grid` / `-aside` / `-main` moved to Tailwind (inline in
+ * plans/[slug]/page.tsx — flex column + `order` on mobile, `lg:` grid on desktop). The
+ * `.plan-detail-grid`/`-aside` CLASSES are retained on the elements for the print rules.
+ * `.page-wide.plan-detail` stays — it's a compound override of `.page-wide` (a retained
+ * shell modifier), deferred with it (a layered utility can't beat the unlayered rule). */
 @media (min-width: 64rem) {
   .page-wide.plan-detail {
     max-width: 70rem;
-  }
-
-  .plan-detail-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 22rem;
-    gap: 2.5rem;
-    align-items: start;
-  }
-
-  /* Reset the mobile hoist — on desktop the aside IS the right column, DOM order
-     doesn't matter to the grid. */
-  .plan-detail-aside {
-    order: 0;
-    position: sticky;
-    top: 4.5rem; /* clears the sticky site header */
   }
 }
 
 /* --- image slot --- */
 
-.plan-image-slot {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  background: var(--surface);
-}
-
-.plan-image {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* The honest empty state — a slot ready for real photography, not an AI render
-   (DECISIONS_LOG.md 2026-07-14). Holds the rail's shape so the desktop layout
-   doesn't collapse when a plan has no photo (all 24 currently don't). */
-.plan-image-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  aspect-ratio: 4 / 3;
-  color: var(--muted);
-  background: var(--accent-tint);
-  font-size: 2.5rem;
-}
-
-.plan-image-empty-text {
-  font-size: 0.875rem;
-}
+/* Sprint 30a: the image slot (frame, image, honest empty placeholder) moved to
+ * Tailwind — inline in plan-image-slot.tsx. */
 
 /* --- tabs (Tools / Materials / Cut list) --- */
 
-.plan-tablist {
-  display: flex;
-  gap: 0.25rem;
-  border-bottom: 1px solid var(--border);
-  margin: 1.5rem 0 0;
-}
-
-.plan-tab {
-  appearance: none;
-  background: none;
-  border: 1px solid transparent;
-  border-bottom: none;
-  border-radius: 0.375rem 0.375rem 0 0;
-  padding: 0.625rem 1rem;
-  /* 44px touch target. */
-  min-height: 2.75rem;
-  font: inherit;
-  font-weight: 500;
-  color: var(--muted);
-  cursor: pointer;
-  /* Sit on top of the tablist's border when active. */
-  margin-bottom: -1px;
-}
-
-.plan-tab:hover {
-  color: var(--fg);
-}
-
-.plan-tab-active {
-  color: var(--fg);
-  background: var(--surface);
-  border-color: var(--border);
-  border-bottom: 1px solid var(--surface);
-}
-
-.plan-tab:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: -2px;
-}
+/* Sprint 30a: `.plan-tablist` and the `.plan-tab` / `-active` / hover / focus states
+ * moved to Tailwind (inline consts in plan-tabs.tsx). The `plan-tablist` CLASS is
+ * retained (print + the sibling selector below target it). */
 
 /* When enhanced, a panel's own <h2> is redundant with its tab label — the tablist
    names the section. Hide it visually but leave it for no-JS/print (where the tabs
@@ -2597,15 +2248,10 @@ code {
 
 /* --- instructions disclosure --- */
 
-.instructions-open {
-  margin-top: 1.5rem;
-}
-
-.instructions-region:focus {
-  /* It's a focus target (tabIndex -1) for when the section is revealed; don't paint
-     a focus ring on a whole section that received focus programmatically. */
-  outline: none;
-}
+/* Sprint 30a: `.instructions-open` (margin) → `mt-[1.5rem]` and
+ * `.instructions-region:focus { outline:none }` → `focus:outline-none`, both inline in
+ * instructions-disclosure.tsx. The `instructions-open` / `instructions-region` CLASSES
+ * are retained (the print stylesheet hides/shows them by class). */
 
 /* --- last-step review CTA --- */
 

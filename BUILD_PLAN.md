@@ -106,7 +106,7 @@ from the business plan and will be broken into sprints when each phase
 starts, so that sprint planning reflects the business plan's *current*
 state rather than assumptions made today.
 
-### 📌 Status at a glance (updated 2026-07-14)
+### 📌 Status at a glance (updated 2026-07-16)
 
 | Phase | Status |
 |---|---|
@@ -117,16 +117,17 @@ state rather than assumptions made today.
 | Phase 3 (Sprints 15–16) | ✅ COMPLETE — cut-list optimizer + learning paths; 3 items cut to `FUTURE_IDEAS.md` |
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
 | Phase 4 | 🟡 PARTIALLY OPENED 2026-07-15 — **build logs only** (Sprint 27). Everything else in Phase 4 stays closed |
-| Completion plan (Sprints 24–27) | ✅ COMPLETE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). See §4.3 |
+| Completion plan (Sprints 24–27) | ✅ COMPLETE, PUSHED & LIVE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). **Confirmed pushed 2026-07-16 (Keagan): CI green, live site verified.** See §4.3 |
+| UI framework migration (Sprints 28–32) | 🟡 IN PROGRESS — Tailwind CSS + light/dark theme. **28 (env) 97/100; 29 (wave 1) 96/100; 30a (wave 2, catalog+plan-detail layout) 96/100.** Sprint 30 is split into 3 browser-checkable sub-waves (30a done; 30b/30c next). All need `npm install` (S28 deps) + verify + real-browser pixel-parity + push. Sprints 31–32 not started. See §4.4 |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (branding, copy approval, rotation at go-live, launch call) |
 | Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; brand name + contact are marked placeholders pending decision #8.) |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
-detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of this
-update: **495 green** (2026-07-14: Sprint 23 — About/FAQ real copy (draft for Keagan's
-approval; brand/contact are marked placeholders). Content-only, no schema change.
-Sprint 22 before it: shopping-list redesign; plus the Trending `make_interval` prod hotfix
-and the CI-lint fix.)
+detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of the last verified
+run: **524 green** (Sprint 27 gate, Keagan's machine, 2026-07-15). Sprints 24–27
+(hardening pass, workshop, tool-aware catalog, build logs) are now confirmed pushed
+and live (2026-07-16) — the completion plan is fully closed. See §4.4 for what's
+next.
 
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
@@ -467,9 +468,14 @@ lacks the 25/26 code these edits build on, and the 45s install cap corrupted `no
 Verification tooling, not a defect. Authoritative gate = Keagan's machine + CI. See
 `SPRINT_LOG.md` Sprint 27 and §4.2 item below.
 
-> 🔴 **Unpushed tail (found 2026-07-15).** `origin/main` HEAD is `a2bd5ac` (Sprint 22).
-> **Sprints 23, 24, 25, 26, and 27 all live only in the working tree and need pushing.**
-> `git push` is Keagan's (§2). Until pushed, CI and any clean clone reflect Sprint 22.
+**Update (2026-07-15/16):** the gate ran on Keagan's machine — 524/524 vitest green,
+`eslint` clean, `tsc` clean after `prisma generate` — and re-scored to **96/100**,
+clearing the 95 gate on real evidence (see `SPRINT_LOG.md` Sprint 27 for the
+breakdown). **Confirmed pushed 2026-07-16:** CI green, live site verified.
+
+> ✅ **Unpushed tail RESOLVED (2026-07-16, Keagan).** Sprints 23–27 are pushed to
+> `origin/main`. CI is green and the live site reflects all five sprints — confirmed
+> directly by Keagan, not re-derived. The completion plan (§4.3) is fully closed.
 
 **Keagan's parallel quick list ($0, minutes each, independent of the sprints):**
 
@@ -478,6 +484,108 @@ Verification tooling, not a defect. Authoritative gate = Keagan's machine + CI. 
 2. Visual sign-off on Sprints 18/20 desktop layouts in a real browser.
 3. Review/approve the Sprint 23 About/FAQ copy (the brand name and contact line
    stay placeholders until #8 — the copy itself can be approved now).
+
+### 4.4 UI framework migration — Sprints 28–32 (opened 2026-07-16, Keagan's direction)
+
+Everything below is **$0, no new vendors, engineering-tooling only** — Tailwind is an
+MIT-licensed npm dependency, not a hosted vendor, so this doesn't touch decision #9.
+Full record: `DECISIONS_LOG.md` 2026-07-16. This migration is a **refactor of how CSS
+is delivered, not a redesign** — the current look (cream/ink/orange, `Prototype
+Wireframe` visual system) is the target output of Sprints 28–30, byte-for-byte as
+rendered. **Pixel-parity against the live site, at all five existing breakpoints
+(34/40/64/80/96rem), on mobile/tablet/desktop, is the acceptance bar for every sprint
+in this section** — no visual change is authorized as a side effect of moving CSS
+engines. The print stylesheet (`CLAUDE.md` "Print rule": kerf, ripping,
+`break-inside: avoid`, tape-measure fractions, black-on-white) is explicitly **OUT of
+scope for the whole migration** and stays plain CSS — Tailwind's `print:` variant is
+not a good fit for those non-negotiables and re-deriving them risks losing one.
+
+**Sprint 28 — Tailwind CSS environment setup (foundation only, zero visual change).**
+✅ **COMPLETE — 97/100 (2026-07-14).** `postcss.config.mjs` + `src/app/tailwind.css`
+(theme + utilities layers, **preflight deliberately excluded** so `globals.css` stays the
+base reset and zero pixels move), `@theme inline` mapping all 15 color tokens to the live
+`:root` `var()`s (single source of truth, not copied hex), `--breakpoint-xs: 34rem` added
+(defaults already cover 40/64/80/96 → sm/lg/xl/2xl), imported ahead of the unlayered
+`globals.css` so the hand-written system still wins every conflict. Verified by compiling
+the entry file with the real Tailwind **v4.3.2** toolchain: utilities resolve to the exact
+live values, breakpoints exact, no preflight reset emitted. `globals.css` untouched.
+Guard test `tests/tailwind-setup.test.ts` locks the preflight-excluded + var-mapped
+invariants. **Needs `npm install` (new devDeps) + verify + push on Keagan's machine** — the
+full Next build (where Tailwind runs) can't run in the sandbox. See `SPRINT_LOG.md` Sprint
+28. Original scope for reference:
+Install `tailwindcss` + its PostCSS plugin (Tailwind v4 — CSS-first `@theme` config,
+no `tailwind.config.js` needed, fits the Next 15 / React 19 stack already in place;
+routine engineering choice, not escalated). Port the existing design tokens
+(`--bg`, `--surface`, `--fg`, `--muted`, `--accent`, etc. from `globals.css`) into an
+`@theme` block so Tailwind utilities (`bg-bg`, `text-fg`, `border-border`, …) resolve
+to the *exact same* hex values already live. Add a custom breakpoint for the existing
+non-default `34rem` rule (Tailwind's default scale has no equivalent — `sm` is
+`40rem`); the four default breakpoints (`sm`/`lg`/`xl`/`2xl`) already line up with the
+project's existing `40/64/80/96rem` media queries. **`globals.css` stays fully intact
+and unchanged this sprint** — Tailwind is installed alongside it, not replacing
+anything yet. DoD: build, dev, lint, typecheck, and the full test suite all still
+green; **zero visual diff**, because nothing has changed yet.
+
+**Sprint 29 — Component migration, wave 1 (shared shell + highest-traffic surfaces).**
+✅ **COMPLETE — 96/100 (2026-07-14).** Converted `SiteHeader`/nav, the page shell (`.page`
+container + skip link), the whole `.btn` system (base + ghost/primary/danger/liked + the
+step-walker disabled state), the search form controls, and the catalog + plan-detail card
+chrome to Tailwind utilities — reused classes centralised in `src/lib/ui.ts` (`btn*`, `page`,
+`searchInput`, `categoryLabel`), one-offs inline. Each migrated rule deleted from
+`globals.css`; every not-yet-converted modifier/print/context class (`.page-wide`,
+`.page-catalog`, `.plan-detail`, print `.page`/`.site-header`/`.search-box`, `.saved-item
+.plan-card`, `.step-walker-nav`, `.plan-rating`) KEPT — unlayered, so it still wins over the
+layered utilities and parity holds mid-migration. Byte-parity verified at the declaration
+level against the real Tailwind v4.3.2 compiler; two gotchas fixed (per-variant border/text
+color to beat source-ordering; the `page` import aliased around a local `const page`). Guard
+test `tests/ui-classes.test.ts` added. **Needs `npm run build` + a real-browser pixel-parity
+pass + push on Keagan's machine.** See `SPRINT_LOG.md` Sprint 29. Original scope for reference:
+Convert `SiteHeader`/nav, the page layout shell (`.page` container, skip link), buttons
+(`.btn`, `.btn-primary`, `.btn-ghost`), form controls, and the card components used on
+the catalog and plan-detail pages to Tailwind utility classes. Delete each rule from
+`globals.css` as its component converts — no dead CSS left behind mid-migration.
+
+**Sprint 30 — Component migration, wave 2 (remaining page-specific styles).**
+🟡 **IN PROGRESS — delivered in three browser-checkable sub-waves (30a/b/c), Keagan's
+direction 2026-07-14**, so the ~200-rule retirement is pixel-checked incrementally rather than
+as one blind diff. **30a COMPLETE — 96/100 (2026-07-14):** the Sprint 18 three-column catalog
+grid (`grid-template-areas` via `lg:` arbitrary utilities) and the Sprint 20 plan-detail layout
+(two-column grid, image slot, Tools/Materials/Cut-list tabs, instructions disclosure). Deferred
+within 30a for documented cascade reasons: `.plan-grid` (shared grid → do with saved/paths),
+`.catalog-nav-heading` (overrides global `h2` → typography pass), `.page-wide.plan-detail`
+(compound override of a retained modifier). **30b** = filters + chips + saves/collections +
+shopping/workshop/builds; **30c** = reviews + board-plan + paths + prose + skeletons + the global
+typography/reset, ending with `globals.css` down to `:root` + print + reset. See `SPRINT_LOG.md`
+Sprint 30a. Original scope for reference:
+Convert the three-column catalog grid, plan-detail tabs/instructions/image slot,
+filter panel + active-filter chips, shopping list, workshop/builds screens, and
+about/faq prose. By the end of this sprint `globals.css` is retired down to: the
+`:root` token definitions (kept as the single source of truth — Tailwind's `@theme`
+reads from them, not a duplicate copy), the print stylesheet, and any truly-global
+reset with no Tailwind utility equivalent. Same pixel-parity acceptance bar as
+Sprint 29.
+
+**Sprint 31 — Light/dark theme system + toggle.** Tailwind's class-based dark variant
+(`@custom-variant dark` in v4) over the token set from Sprint 28. **Light theme is the
+current palette, unchanged.** Dark is a new palette derived from the same cream/ink/
+orange accent system (dark surface, light text, same orange accent), contrast-checked
+to WCAG AA (`design:accessibility-review` applies, same bar as the Sprint 24 a11y
+pass). **Toggle lives in the Clerk `UserButton` dropdown**, per Keagan's explicit
+placement instruction — verify `@clerk/nextjs` (^6.12.0, currently installed) supports
+a custom `UserButton.Action` item; if not, the fallback is a plain menu item styled to
+match. **Persistence must be SSR-safe** — reading `localStorage` alone flashes the
+wrong theme on first paint of a server-rendered page; use a cookie read in the root
+layout or a small blocking inline script that sets the theme class before hydration.
+**Default is light** (the current, familiar theme) — no surprise dark-on-first-visit.
+Print stays forced to light/black-on-white regardless of the user's theme choice (the
+existing print non-negotiable, unaffected by this sprint).
+
+**Sprint 32 — Responsive & theme hardening pass.** Full mobile/tablet/desktop
+re-verification at all five breakpoints, in both themes; WCAG AA contrast audit of the
+dark palette; visual regression spot-check against the pre-migration site; confirm
+offline/print/no-JS still render the complete document (print theme-agnostic by
+design). Device-bound checks (real-phone Lighthouse, real-browser toggle test) are
+handed to Keagan, same pattern as the Sprint 24 hardening pass.
 
 ---
 

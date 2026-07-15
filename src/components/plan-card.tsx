@@ -4,6 +4,15 @@ import type { RatingSummary } from '@/lib/reviews';
 import { StarRating } from '@/components/star-rating';
 import { SaveToggle } from '@/components/save-toggle';
 import { costTierSymbol, difficultyLabel, formatTimeRange } from '@/lib/format';
+import { categoryLabel } from '@/lib/ui';
+
+// Sprint 29 (UI migration, wave 1): card chrome moved from `globals.css` to Tailwind
+// utilities (strings verified byte-identical — see SPRINT_LOG.md Sprint 29). The
+// `plan-card` class is RETAINED (utilities added alongside) because the saved-page and
+// paths-page context rules still target it by class; the inner elements are fully
+// converted. The category eyebrow uses the shared `categoryLabel` (reused on 3 pages).
+const cardLink =
+  'block h-full text-inherit no-underline hover:bg-[color-mix(in_srgb,var(--fg)_4%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]';
 
 /**
  * A catalog card.
@@ -37,8 +46,8 @@ export function PlanCard({
   const image = plan.images[0];
 
   return (
-    <li className="plan-card">
-      <Link href={`/plans/${plan.slug}`} className="plan-card-link">
+    <li className="plan-card relative bg-surface border border-border rounded-[0.5rem] overflow-hidden">
+      <Link href={`/plans/${plan.slug}`} className={cardLink}>
         {/*
           Plain <img>, not next/image. next/image requires allowlisting each
           remote host in next.config, and no plan has an image yet (Sprint 1 left
@@ -48,13 +57,21 @@ export function PlanCard({
         */}
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="plan-card-image" src={image.url} alt={image.alt} />
+          <img
+            className="w-full aspect-[3/2] object-cover block"
+            src={image.url}
+            alt={image.alt}
+          />
         ) : null}
 
-        <div className="plan-card-body">
-          <span className="plan-card-category">{plan.category.name}</span>
-          <h3 className="plan-card-title">{plan.title}</h3>
-          <p className="plan-card-summary">{plan.summary}</p>
+        <div className="p-[1rem]">
+          <span className={categoryLabel}>{plan.category.name}</span>
+          <h3 className="mx-0 mt-0 mb-[0.375rem] text-[1.0625rem] leading-[1.3]">
+            {plan.title}
+          </h3>
+          <p className="mx-0 mt-0 mb-[0.75rem] text-muted text-[0.9375rem]">
+            {plan.summary}
+          </p>
 
           {/* Sprint 10. Only rendered once the plan HAS reviews — same reasoning as
               the like badge below. A grid of "No reviews yet" on a young catalog is
@@ -62,7 +79,7 @@ export function PlanCard({
               including "no reviews", because that is where someone decides to be the
               first to leave one. */}
           {rating && rating.count > 0 ? (
-            <p className="plan-card-rating">
+            <p className="mt-[0.35rem] mx-0 mb-0 text-[0.9rem]">
               <StarRating average={rating.average} count={rating.count} />
             </p>
           ) : null}

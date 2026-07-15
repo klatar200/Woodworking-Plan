@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import { requireUser } from '@/lib/auth';
 
 /**
@@ -30,7 +31,7 @@ export default async function ProfilePage() {
   });
 
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <h1>Your profile</h1>
       <p className="subtitle">Account details. Managed through your Clerk account.</p>
 

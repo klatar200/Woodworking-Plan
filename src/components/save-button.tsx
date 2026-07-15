@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { savePlanAction, unsavePlanAction } from '@/app/actions/saves';
 import { cachePlanForOffline } from '@/components/service-worker';
+import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
 
 interface Props {
   planId: string;
@@ -35,7 +36,7 @@ export function SaveButton({ planId, slug, isSaved, isSignedIn }: Props) {
     return (
       <Link
         href={`/sign-in?redirect_url=${encodeURIComponent(`/plans/${slug}`)}`}
-        className="btn btn-primary"
+        className={btnPrimary}
       >
         Save this plan
       </Link>
@@ -57,7 +58,7 @@ export function SaveButton({ planId, slug, isSaved, isSignedIn }: Props) {
       <input type="hidden" name="slug" value={slug} />
       <button
         type="submit"
-        className={isSaved ? 'btn btn-ghost' : 'btn btn-primary'}
+        className={isSaved ? btnGhost : btnPrimary}
         aria-pressed={isSaved}
       >
         {isSaved ? '✓ Saved' : 'Save this plan'}

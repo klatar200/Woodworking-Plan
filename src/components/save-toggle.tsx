@@ -38,7 +38,7 @@ export function SaveToggle({ planId, slug, isSaved, returnTo }: Props) {
   return (
     <form
       action={action}
-      className="plan-card-save-form"
+      className="absolute top-[0.5rem] right-[0.5rem] z-[1] m-0"
       onSubmit={() => {
         if (!isSaved) cachePlanForOffline(slug);
       }}
@@ -48,7 +48,7 @@ export function SaveToggle({ planId, slug, isSaved, returnTo }: Props) {
       {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       <button
         type="submit"
-        className="plan-card-save"
+        className="flex items-center justify-center w-[2.5rem] h-[2.5rem] border border-border rounded-[50%] bg-surface text-[0.9375rem] cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
         aria-pressed={isSaved}
         aria-label={isSaved ? 'Remove from saved plans' : 'Save this plan'}
       >

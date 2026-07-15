@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { btn } from '@/lib/ui'; // Sprint 29: shared bare-button class
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
@@ -152,7 +153,7 @@ export default async function BoardPlanPage({
           ))}
         </select>
 
-        <button type="submit" className="btn">
+        <button type="submit" className={btn}>
           Recalculate
         </button>
       </form>

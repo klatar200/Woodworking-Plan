@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 
 /**
  * Offline fallback — Sprint 8, rewritten in Sprint 14.
@@ -27,7 +28,7 @@ export const metadata = {
 
 export default function OfflinePage() {
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <h1>You&rsquo;re offline</h1>
 
       <p className="subtitle">

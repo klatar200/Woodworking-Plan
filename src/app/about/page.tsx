@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import Link from 'next/link';
 
 /**
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <h1>About Woodworking Plan</h1>
 
       <p className="subtitle">

@@ -7,6 +7,7 @@ import {
 } from '@/lib/filters';
 import { costTierSymbol, difficultyLabel } from '@/lib/format';
 import { FilterDisclosure } from '@/components/filter-disclosure';
+import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
 
 interface Props {
   query: string;
@@ -166,12 +167,12 @@ export function FilterPanel({
         </fieldset>
 
         <div className="filters-actions">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className={btnPrimary}>
             Apply filters
           </button>
           {/* A link, not a reset button: reset would restore the last SUBMITTED
               state, not clear the filters. Different thing, and confusing. */}
-          <a href={query ? `/?q=${encodeURIComponent(query)}` : '/'} className="btn btn-ghost">
+          <a href={query ? `/?q=${encodeURIComponent(query)}` : '/'} className={btnGhost}>
             Clear filters
           </a>
         </div>

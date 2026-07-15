@@ -3,6 +3,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { nextTabIndex } from '@/lib/tab-nav';
 
+// Sprint 30a (UI migration, wave 2): tab chrome → Tailwind. The `plan-tabs` and
+// `plan-tablist` CLASSES are RETAINED — the print stylesheet and the sibling selector
+// `.plan-tabs .plan-tablist ~ [data-tab] > h2` (which visually-hides a panel's redundant
+// heading when enhanced) both target them by class. `font-medium!` is important so it
+// beats the `[font:inherit]` reset regardless of Tailwind's fixed source order; border
+// color lives per state, not in a shared base (the source-order gotcha from ui.ts).
+const tabShared =
+  'appearance-none rounded-t-[0.375rem] px-[1rem] py-[0.625rem] min-h-[2.75rem] [font:inherit] font-medium! cursor-pointer mb-[-1px] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]';
+const tabClass = `${tabShared} bg-transparent border border-b-0 border-transparent text-muted hover:text-fg`;
+const tabActiveClass = `${tabShared} border text-fg bg-surface border-border border-b border-b-surface`;
+const tablistClass =
+  'plan-tablist flex gap-[0.25rem] border-b border-border mt-[1.5rem] mx-0 mb-0';
+
 interface Tab {
   /** Stable key, also the panel's `data-tab` value. */
   id: string;
@@ -91,7 +104,7 @@ export function PlanTabs({ tabs, children }: Props) {
   return (
     <div ref={ref} className="plan-tabs">
       {enhanced && (
-        <div className="plan-tablist" role="tablist" aria-label="Plan details">
+        <div className={tablistClass} role="tablist" aria-label="Plan details">
           {shown.map((tab, index) => {
             const isActive = active === tab.id;
             return (
@@ -103,7 +116,7 @@ export function PlanTabs({ tabs, children }: Props) {
                 aria-selected={isActive}
                 aria-controls={`panel-${tab.id}`}
                 tabIndex={isActive ? 0 : -1}
-                className={`plan-tab${isActive ? ' plan-tab-active' : ''}`}
+                className={isActive ? tabActiveClass : tabClass}
                 onClick={() => setActive(tab.id)}
                 onKeyDown={(event) => onKeyDown(event, index)}
               >

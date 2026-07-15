@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import type { Metadata } from 'next';
 import { listPaths } from '@/lib/paths';
 
@@ -22,7 +23,7 @@ export default async function PathsPage() {
   const paths = await listPaths();
 
   return (
-    <main id="main" className="page">
+    <main id="main" className={page}>
       <h1>Learning paths</h1>
       <p className="subtitle">
         Ordered sequences, not collections. Each project is chosen to teach the thing the

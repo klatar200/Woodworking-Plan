@@ -1030,6 +1030,46 @@ commercial licensing, and credential rotation (all deferred to pre-go-live).
 
 Recorded in `BUILD_PLAN.md` §4.3 (sprint scopes) and the §4 status table.
 
+### 2026-07-16 — Sprints 24–27 confirmed complete & pushed; UI migration to Tailwind CSS + dark mode approved
+
+**Status:** Confirmed by Keagan directly.
+
+Keagan confirmed Sprints 24–27 are done end-to-end — CI green, live site verified —
+closing the "unpushed tail" flagged in `SPRINT_LOG.md`/`BUILD_PLAN.md` §4.3. He then
+directed the next body of work: migrate the hand-written CSS system to Tailwind CSS,
+and build a light/dark theme with the toggle in the profile dropdown (Clerk's
+`UserButton` menu). Two reversals, both his call this time, not the build agent
+relitigating either:
+
+1. **CSS delivery mechanism changes from hand-written custom-property CSS
+   (`src/app/globals.css`, ~2,500 lines) to Tailwind utility classes.** This is
+   implementation, not product scope, so it isn't a `BUSINESS_PLAN.md` matter — a
+   routine engineering/tooling choice Keagan is directing rather than one requiring
+   escalation. Tailwind is MIT-licensed and installed as a plain npm dependency: $0,
+   no vendor account, no lock-in, consistent with decision #9. **No visual change is
+   authorized as a side effect of the migration itself** — pixel-parity against the
+   current live site (light theme, all five breakpoints: 34/40/64/80/96rem) is the
+   acceptance bar for every migration sprint. The print stylesheet (kerf, ripping,
+   `break-inside: avoid`, tape-measure fractions, black-on-white — see `CLAUDE.md`
+   "Print rule") is explicitly OUT of scope for the whole migration; it stays plain
+   CSS.
+2. **Dark mode is reinstated**, reversing the 2026-07-13 decision that dropped it
+   (recorded above: "the mockup has no dark variant, and inventing one would be the
+   build agent making an uncommissioned design decision"). Keagan is now commissioning
+   it directly, so that reasoning no longer applies. Light theme = the current
+   cream/ink/orange palette, unchanged in appearance. Dark is a new palette to be
+   designed from the same accent system and contrast-checked to WCAG AA — not
+   invented freely, since `design:accessibility-review` and the project's existing
+   a11y bar (Sprint 24) both apply. **Toggle location: the Clerk `UserButton`
+   dropdown**, per Keagan's explicit instruction — out of the way, easy to find.
+   Default state on first visit: **light** (the current, familiar theme) — no
+   surprise dark-on-first-load.
+
+Engineering decisions made alongside this (routine, not escalated): Tailwind v4
+(CSS-first `@theme` config, no `tailwind.config.js` needed — fits the Next 15 /
+React 19 stack already in place); the five-sprint breakdown (Sprints 28–32) recorded
+in `BUILD_PLAN.md` §4.4.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation
