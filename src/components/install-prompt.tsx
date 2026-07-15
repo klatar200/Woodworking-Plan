@@ -88,13 +88,20 @@ export function InstallPrompt() {
   if (!visible || !deferred) return null;
 
   return (
-    <div className="install-prompt" role="region" aria-label="Install this app">
-      <span className="install-prompt-icon" aria-hidden="true">
+    <div
+      className="flex items-center gap-[0.75rem] flex-wrap my-[1rem] mx-0 px-[1rem] py-[0.75rem] bg-accent-tint border border-accent-tint-border rounded-[0.5rem]"
+      role="region"
+      aria-label="Install this app"
+    >
+      <span
+        className="flex-none flex items-center justify-center w-[2.375rem] h-[2.375rem] bg-surface border border-accent-tint-border rounded-[0.5625rem] text-[1rem]"
+        aria-hidden="true"
+      >
         🪚
       </span>
-      <div className="install-prompt-body">
-        <p className="install-prompt-title">Install Woodworking Plan</p>
-        <p className="install-prompt-subtitle">
+      <div className="flex-1 min-w-[12rem]">
+        <p className="m-0 font-bold text-[0.9375rem]">Install Woodworking Plan</p>
+        <p className="m-0 text-[0.8125rem] text-[#7a5316]">
           Faster access, works offline in the shop
         </p>
       </div>

@@ -6,6 +6,7 @@ import {
   type PlanFilters,
 } from '@/lib/filters';
 import { costTierSymbol, difficultyLabel } from '@/lib/format';
+import { chipActive } from '@/lib/ui'; // Sprint 30b (imported as chipActive — `chip` is a local var below)
 
 interface Props {
   query: string;
@@ -87,12 +88,15 @@ export function FilterChips({ query, filters, sort, categories, tools }: Props) 
   }
 
   return (
-    <ul className="filter-chips" aria-label="Active filters">
+    <ul
+      className="list-none flex flex-wrap items-center gap-[0.375rem] mt-0 mx-0 mb-[0.75rem] p-0"
+      aria-label="Active filters"
+    >
       {chips.map((chip) => (
         <li key={chip.key}>
           <Link
             href={chip.href}
-            className="chip chip-active"
+            className={chipActive}
             aria-label={`Remove filter: ${chip.label}`}
           >
             {chip.label} <span aria-hidden="true">✕</span>
@@ -112,7 +116,7 @@ export function FilterChips({ query, filters, sort, categories, tools }: Props) 
             },
             sort,
           })}
-          className="filter-chips-clear"
+          className="text-[0.875rem] text-muted underline hover:text-fg"
         >
           Clear all filters
         </Link>

@@ -25,8 +25,9 @@ export function StarRating({
   const empty = 5 - full - (half ? 1 : 0);
 
   return (
-    <span className="star-rating">
-      <span aria-hidden="true" className="stars">
+    <span className="inline-flex items-center gap-[0.4rem]">
+      {/* `stars` class retained — `.plan-rating a:hover .stars` targets it. */}
+      <span aria-hidden="true" className="stars text-accent-strong tracking-[0.05em]">
         {'★'.repeat(full)}
         {half ? '⯨' : ''}
         {'☆'.repeat(empty)}

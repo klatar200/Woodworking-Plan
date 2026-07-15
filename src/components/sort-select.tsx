@@ -1,5 +1,6 @@
 import { SORT_OPTIONS, type SortOption } from '@/lib/sort';
-import { btnGhost } from '@/lib/ui'; // Sprint 29: shared button class
+import { btnGhost, selectControl } from '@/lib/ui'; // Sprint 29/30b
+// `sort-form` class RETAINED (print hides it); the rest is inline utilities.
 import type { PlanFilters } from '@/lib/filters';
 
 interface Props {
@@ -26,7 +27,7 @@ export function SortSelect({ sort, query, filters }: Props) {
   if (query !== '') return null;
 
   return (
-    <form className="sort-form" action="/" method="get">
+    <form className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action="/" method="get">
       {/* Carry the active filters through, or changing the sort would clear them. */}
       {filters.category && (
         <input type="hidden" name="category" value={filters.category} />
@@ -44,10 +45,15 @@ export function SortSelect({ sort, query, filters }: Props) {
         <input key={t} type="hidden" name="tools" value={t} />
       ))}
 
-      <label htmlFor="sort" className="sort-label">
+      <label htmlFor="sort" className="text-[0.75rem] uppercase tracking-[0.06em] text-muted">
         Sort
       </label>
-      <select id="sort" name="sort" defaultValue={sort}>
+      <select
+        id="sort"
+        name="sort"
+        defaultValue={sort}
+        className={`${selectControl} focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1`}
+      >
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

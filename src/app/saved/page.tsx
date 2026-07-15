@@ -1,5 +1,13 @@
 import Link from 'next/link';
-import { page, btn, btnGhost, searchInput } from '@/lib/ui'; // Sprint 29: shell + button + input
+import {
+  page,
+  btn,
+  btnGhost,
+  searchInput,
+  selectControl,
+  chip,
+  chipActive,
+} from '@/lib/ui'; // Sprint 29/30b: shared classes
 import { listSavedPlans, listCollections } from '@/lib/saves';
 import { listPaths } from '@/lib/paths';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
@@ -78,10 +86,10 @@ export default async function SavedPage({
       <section aria-label="Your collections">
         <h2>Collections</h2>
 
-        <nav className="collection-tabs">
+        <nav className="flex flex-wrap gap-[0.375rem] mb-[1rem]">
           <Link
             href="/saved"
-            className={`chip ${!collectionId ? 'chip-active' : ''}`}
+            className={!collectionId ? chipActive : chip}
             aria-current={!collectionId ? 'page' : undefined}
           >
             All saved
@@ -91,7 +99,7 @@ export default async function SavedPage({
             <Link
               key={c.id}
               href={`/saved?collection=${c.id}`}
-              className={`chip ${collectionId === c.id ? 'chip-active' : ''}`}
+              className={collectionId === c.id ? chipActive : chip}
               aria-current={collectionId === c.id ? 'page' : undefined}
             >
               {c.name} <span className="muted">({c._count.plans})</span>
@@ -99,7 +107,7 @@ export default async function SavedPage({
           ))}
         </nav>
 
-        <form action={createCollectionAction} className="inline-form">
+        <form action={createCollectionAction} className="flex flex-wrap items-center gap-[0.5rem] mb-[0.75rem]">
           <input type="hidden" name="returnTo" value={currentUrl} />
           <label htmlFor="new-collection" className="visually-hidden">
             New collection name
@@ -119,7 +127,7 @@ export default async function SavedPage({
         </form>
 
         {activeCollection && (
-          <form action={deleteCollectionAction} className="inline-form">
+          <form action={deleteCollectionAction} className="flex flex-wrap items-center gap-[0.5rem] mb-[0.75rem]">
             <input type="hidden" name="returnTo" value={currentUrl} />
             <input type="hidden" name="collectionId" value={activeCollection.id} />
             <button type="submit" className={btnGhost}>
@@ -128,7 +136,7 @@ export default async function SavedPage({
             {/* Deleting a folder does NOT unsave its plans — only the grouping
                 goes. A folder delete that silently unsaved twelve plans would be
                 a destructive surprise, and nobody would trust folders again. */}
-            <span className="filter-hint">
+            <span className="mt-[-0.25rem] mx-0 mb-[0.625rem] text-[0.875rem] text-muted">
               The plans stay saved &mdash; only the collection is removed.
             </span>
           </form>
@@ -148,7 +156,7 @@ export default async function SavedPage({
             pointer to where the shopping list lives; plans get ONTO it from each plan
             page's "Add to shopping list", not from being saved. */}
         {savedPlans.length > 0 && (
-          <p className="shopping-list-cta">
+          <p className="mt-0 mx-0 mb-[1rem]">
             <Link href="/shopping-list" className={btn}>
               Shopping list
             </Link>
@@ -183,7 +191,10 @@ export default async function SavedPage({
         ) : (
           <ul className="plan-grid">
             {savedPlans.map((saved) => (
-              <li key={saved.id} className="saved-item">
+              <li
+                key={saved.id}
+                className="saved-item bg-surface border border-border rounded-[0.5rem] overflow-hidden"
+              >
                 <ul className="plan-grid-inner">
                   {/* Everything on this page is already saved — passing `saved`
                       renders the bookmark overlay filled, and tapping it
@@ -192,14 +203,14 @@ export default async function SavedPage({
                   <PlanCard plan={saved.plan} saved returnTo={currentUrl} />
                 </ul>
 
-                <div className="saved-item-actions">
+                <div className="px-[1rem] pt-[0.75rem] pb-[0.25rem] border-t border-border grid gap-[0.5rem]">
                   {/* Which folders is it already in? */}
                   {saved.collections.length > 0 && (
                     <ul className="badges">
                       {saved.collections.map(({ collection }) => (
                         <li key={collection.id} className="badge">
                           {collection.name}
-                          <form action={removeFromCollectionAction} className="chip-form">
+                          <form action={removeFromCollectionAction} className="inline">
                             <input type="hidden" name="returnTo" value={currentUrl} />
                             <input type="hidden" name="planId" value={saved.plan.id} />
                             <input
@@ -209,7 +220,7 @@ export default async function SavedPage({
                             />
                             <button
                               type="submit"
-                              className="chip-remove"
+                              className="border-none bg-none text-muted cursor-pointer text-[1rem] leading-none py-0 pr-0 pl-[0.375rem] hover:text-fg focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
                               aria-label={`Remove from ${collection.name}`}
                             >
                               ×
@@ -221,7 +232,7 @@ export default async function SavedPage({
                   )}
 
                   {collections.length > 0 && (
-                    <form action={addToCollectionAction} className="inline-form">
+                    <form action={addToCollectionAction} className="flex flex-wrap items-center gap-[0.5rem] mb-[0.75rem]">
                       <input type="hidden" name="returnTo" value={currentUrl} />
                       <input type="hidden" name="planId" value={saved.plan.id} />
                       <label
@@ -230,7 +241,12 @@ export default async function SavedPage({
                       >
                         Add to collection
                       </label>
-                      <select id={`add-${saved.id}`} name="collectionId" required>
+                      <select
+                        id={`add-${saved.id}`}
+                        name="collectionId"
+                        required
+                        className={selectControl}
+                      >
                         <option value="">Add to collection…</option>
                         {collections.map((c) => (
                           <option key={c.id} value={c.id}>

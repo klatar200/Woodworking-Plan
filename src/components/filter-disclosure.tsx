@@ -51,8 +51,12 @@ export function FilterDisclosure({ count, children }: Props) {
   }, []);
 
   return (
-    <details ref={ref} className="filters" open={count > 0}>
-      <summary className="filters-summary">
+    <details
+      ref={ref}
+      className="bg-surface border border-border rounded-[0.5rem] mb-[0.75rem]"
+      open={count > 0}
+    >
+      <summary className="px-[1rem] py-[0.75rem] cursor-pointer font-medium min-h-[2.75rem] flex items-center focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]">
         Filters{count > 0 ? ` (${count})` : ''}
       </summary>
       {children}

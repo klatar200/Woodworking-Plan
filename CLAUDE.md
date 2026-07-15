@@ -386,6 +386,45 @@ with it.
     `globals.css` this session (known corruption); real file intact per Read + balance audit,
     authoritative parse is the build. **30b/30c remain.**
 
+  - **Sprint 30b (wave 2 — filters/chips/saves/shopping/workshop/builds): COMPLETE — 96/100.**
+    Converted the filter panel (`:has()` checkbox pills, selects, legend, form), active-filter
+    chips, sort control, collection tabs + saved-item frames, shopping list, workshop form, and
+    build log to Tailwind. Shared constants added to **`src/lib/ui.ts`**: `selectControl`,
+    `checkbox`, `checkboxInput`, `chip`/`chipActive`. **`:has()` note:** Tailwind's `has-[...]`
+    compiles to `:has(*:is(...))` (equivalent) and its specificity means checked/focus colors win
+    over the base without class-order juggling. **Deferred to 30c** (documented): heading-classes
+    (`.build-log-title`, `.sub-heading` — override the global `h2`, blocked until the typography
+    pass), the shared `.plan-grid`/`.plan-grid-inner`, and boards' `.scope-form`/`.notice`. **Bug
+    caught in verification:** `.notice` is shared with the boards page (`notice notice-warning`) —
+    deleting its base rule would have broken boards; the orphan grep caught it and the rule was
+    restored. `filter-disclosure.test.tsx` updated (class-agnostic summary assertion). Retained
+    classes: `sort-form` (print), `saved-item` (the `.saved-item .plan-card` compound). **Needs
+    build + real-browser parity + push. 30c remains** (reviews, board-plan, paths, prose,
+    skeletons, global typography/reset → `globals.css` down to `:root` + print + reset).
+
+  - **Sprint 30c (wave 2 — the remainder): IN PROGRESS (PARTIAL).** 30c is the whole rest of
+    `globals.css` (~130 rules) and is markedly larger/more entangled than 30a/30b. Converted so
+    far: the reviews section (`reviews-section.tsx`), star rating (`star-rating.tsx`), the
+    step-walker chrome (`step-walker.tsx` — rail/dots/progress/nav, with per-variant active
+    colors and `[font-family:inherit]` to dodge the `font:inherit` size-reset), and the PWA
+    install prompt (`install-prompt.tsx`); dead `.recommendations*` (component removed Sprint 19)
+    deleted. **Gotcha found:** `review-body`/`build-photo*` are shared by the builds page —
+    converted there too. **Remaining (a further pass):** the plan-detail CONTENT — `.data-table
+    th/td/thead/tbody/tfoot`, `.detail-row dt/dd`, `.glance-item dt/dd`, `.prose p/strong`,
+    `.steps`/`.step`/`.step-title`/`.step-number` — these are **descendant/element selectors on
+    dynamic (mapped) rows with no clean per-element inline-utility equivalent**; the honest options
+    are to class every cell or keep them as a small component-CSS residual. Plus paths, board-plan,
+    skeletons (+`@keyframes`), pagination/empty-state, status-list, auth-page, prose/faq, and the
+    global base typography (`h1`/`h2`/`.muted`/`.small`) which §4.4 permits to stay as "truly-global
+    reset". **Descendant/`dl`/table/prose rules stay as a documented component-CSS residual per
+    Keagan (2026-07-14)** — no clean per-element utility for dynamic rows. ⚠️ **PRINT-REGRESSION
+    LESSON (found + fixed this pass):** the print stylesheet hides `.step-rail/.step-dots/
+    .step-walker-bar/.step-walker-nav/.step-finish-cta` (this turn) and `.plan-actions` +
+    `.shopping-line/.shopping-line-main` (30b) BY CLASS — converting those to utilities and dropping
+    the class made them print. Fixed by retaining the class alongside the utilities. **Any class in
+    an `@media print` block MUST be kept on its element.** Working tree is print-safe + clean (no
+    orphans). 30c remainder (paths, board-plan, skeletons, plan-detail leaves, misc) still to do.
+
 - **Sprint 24 (Hardening Pass 2): COMPLETE — 95/100.** Code audit + fixes of the surfaces
   rebuilt in 17–23. **Real a11y fix:** `PlanTabs` had `role="tablist"` with no keyboard
   support — now the full WAI-ARIA tab pattern (roving `tabindex`, ←/→ wrap, Home/End,

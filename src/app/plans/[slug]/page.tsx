@@ -150,15 +150,18 @@ export default async function PlanDetailPage({
             column (see src/lib/builds.ts). Shown only once someone has built it: "0 built
             this" is noise, and the star rating already states the empty case. */}
         {ratingSummary.count > 0 ? (
-          <p className="plan-builds">
-            <a href="#reviews-heading">
+          <p className="mt-[0.25rem] mx-0 mb-0">
+            <a
+              href="#reviews-heading"
+              className="text-muted no-underline text-[0.95rem] hover:text-fg"
+            >
               🔨 {ratingSummary.count}{' '}
               {ratingSummary.count === 1 ? 'person has' : 'people have'} built this
             </a>
           </p>
         ) : null}
 
-        <div className="plan-actions">
+        <div className="plan-actions flex flex-wrap gap-[0.5rem] mt-[1rem]">
           <SaveButton
             planId={plan.id}
             slug={plan.slug}

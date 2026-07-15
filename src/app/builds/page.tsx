@@ -42,10 +42,13 @@ export default async function BuildsPage() {
             {builds.length} {builds.length === 1 ? 'build' : 'builds'} logged.
           </p>
 
-          <ul className="build-log">
+          <ul className="list-none p-0 mt-[1.5rem] mx-0 mb-0 flex flex-col gap-[1rem]">
             {builds.map((build) => (
-              <li key={build.id} className="build-log-item">
-                <div className="build-log-head">
+              <li
+                key={build.id}
+                className="bg-surface px-[1.25rem] py-[1rem] border border-border rounded-[0.5rem]"
+              >
+                <div className="flex flex-wrap justify-between items-baseline gap-[0.5rem]">
                   <div>
                     <span className={categoryLabel}>{build.plan.category.name}</span>
                     <h2 className="build-log-title">
@@ -54,7 +57,7 @@ export default async function BuildsPage() {
                   </div>
                   <time
                     dateTime={build.createdAt.toISOString()}
-                    className="muted build-log-date"
+                    className="muted text-[0.9rem] whitespace-nowrap"
                   >
                     Built{' '}
                     {build.createdAt.toLocaleDateString('en-US', {
@@ -67,16 +70,18 @@ export default async function BuildsPage() {
 
                 {/* Your own star rating for this build. `count={1}` — it's a single
                     person's rating, not an aggregate; StarRating renders the value. */}
-                <p className="build-log-rating">
+                <p className="mt-[0.5rem] mx-0 mb-0">
                   <StarRating average={build.rating} count={1} />
                 </p>
 
-                {build.body ? <p className="review-body">{build.body}</p> : null}
+                {build.body ? (
+                  <p className="my-[0.5rem] mx-0 [overflow-wrap:anywhere]">{build.body}</p>
+                ) : null}
 
                 {build.photos.length > 0 ? (
-                  <ul className="build-photos">
+                  <ul className="list-none p-0 mt-[0.75rem] mx-0 mb-0 flex flex-wrap gap-[0.5rem]">
                     {build.photos.map((photo) => (
-                      <li key={photo.id} className="build-photo-item">
+                      <li key={photo.id} className="flex flex-col gap-[0.25rem]">
                         {/* next/image needs the blob host allowlisted in next.config.ts
                             AND in the CSP img-src — the same two gates the reviews
                             section already relies on. */}
@@ -86,7 +91,7 @@ export default async function BuildsPage() {
                           width={photo.width}
                           height={photo.height}
                           sizes="(max-width: 640px) 50vw, 240px"
-                          className="build-photo"
+                          className="w-auto h-auto max-w-[240px] rounded-[0.375rem] object-cover"
                         />
                       </li>
                     ))}
@@ -96,7 +101,7 @@ export default async function BuildsPage() {
                 {/* Edits and photo removal live on the plan page's review form — the one
                     place that owns writing a review — so a build log never grows a second,
                     divergent editing surface. This view is read-only by design. */}
-                <p className="build-log-actions">
+                <p className="mt-[0.75rem] mx-0 mb-0">
                   <Link
                     href={`/plans/${build.plan.slug}#reviews-heading`}
                     className={btnGhost}

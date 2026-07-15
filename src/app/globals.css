@@ -635,157 +635,10 @@ code {
  * progress bar, the step rail (desktop) / dots (phone, tablet), and Prev/Next.
  * ------------------------------------------------------------------------- */
 
-.step-walker {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-}
-
-.step-walker-main {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Desktop-only left rail — hidden below 64rem, where there's no room for a
-   third column alongside the materials rail already on the page. */
-.step-rail {
-  display: none;
-  flex: 0 0 14rem;
-  flex-direction: column;
-  gap: 0.1875rem;
-  border-right: 1px solid var(--border);
-  padding-right: 1rem;
-}
-
-@media (min-width: 64rem) {
-  .step-rail {
-    display: flex;
-  }
-}
-
-.step-rail-heading {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted-2);
-  margin-bottom: 0.5rem;
-}
-
-.step-rail-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5625rem;
-  width: 100%;
-  padding: 0.4375rem 0.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  background: none;
-  font: inherit;
-  font-size: 0.875rem;
-  color: var(--fg);
-  text-align: left;
-  cursor: pointer;
-}
-
-.step-rail-item-active {
-  background: var(--accent-tint);
-  font-weight: 700;
-}
-
-.step-rail-item:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
-
-.step-rail-number {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 1px solid var(--fg);
-  border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: var(--surface);
-}
-
-.step-rail-item-active .step-rail-number {
-  background: var(--fg);
-  color: var(--surface);
-}
-
-.step-walker-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.step-walker-progress-track {
-  flex: 1;
-  max-width: 26rem;
-  height: 0.75rem;
-  border: 1px solid var(--fg);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.step-walker-progress-fill {
-  height: 100%;
-  background: var(--accent-strong);
-}
-
-.step-walker-position {
-  font-weight: 700;
-  font-size: 0.875rem;
-  white-space: nowrap;
-}
-
-/* Compact dots — phone/tablet only. The rail replaces this at desktop width. */
-.step-dots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-@media (min-width: 64rem) {
-  .step-dots {
-    display: none;
-  }
-}
-
-.step-dot {
-  width: 2rem;
-  height: 2rem;
-  flex: none;
-  border: 1px solid var(--fg);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--fg);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.step-dot-active {
-  background: var(--fg);
-  color: var(--surface);
-}
-
-.step-dot:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
-
-.step-walker-nav {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
+/* Sprint 30c: the entire step-walker chrome (wrapper, main, rail + items + numbers +
+ * the active compound, progress bar/track/fill, position, dots, nav) moved to Tailwind —
+ * inline consts in step-walker.tsx. Active-state colors are per-variant; the rail
+ * button uses `[font-family:inherit]` to avoid the `font:inherit` size reset. */
 
 /* Sprint 29: the old `.step-walker-nav .btn:disabled` rule folded into the shared
  * button base (`disabled:opacity-40 disabled:cursor-not-allowed` in src/lib/ui.ts) —
@@ -804,130 +657,16 @@ code {
  * Sprint 5 — filters.
  * ------------------------------------------------------------------------- */
 
-.filters {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.filters-summary {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  font-weight: 500;
-  /* 44px touch target. */
-  min-height: 2.75rem;
-  display: flex;
-  align-items: center;
-}
-
-.filters-summary:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: -2px;
-}
-
-.filters-form {
-  padding: 0 1rem 1rem;
-  display: grid;
-  gap: 1.25rem;
-}
-
-.filter-group {
-  border: none;
-  padding: 0;
-  margin: 0;
-  min-width: 0;
-}
-
-.filter-group legend {
-  padding: 0;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-}
-
-.filter-group select {
-  width: 100%;
-  min-height: 2.75rem;
-  padding: 0 0.75rem;
-  /* 16px — anything smaller and iOS Safari zooms the viewport on focus. */
-  font-size: 1rem;
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-}
-
-.filter-hint {
-  margin: -0.25rem 0 0.625rem;
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
-.checkbox-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-}
-
-.checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4375rem;
-  /* Generous hit area: this gets tapped with a thumb, possibly a gloved one. */
-  min-height: 2.5rem;
-  padding: 0 0.75rem 0 0.625rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.checkbox:has(input:checked) {
-  border-color: var(--fg);
-  background: var(--accent);
-  font-weight: 700;
-}
-
-.checkbox:has(input:focus-visible) {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
-
-.checkbox input {
-  margin: 0;
-  accent-color: var(--fg);
-}
-
-.tool-group {
-  margin-bottom: 0.75rem;
-}
-
-.tool-group-name {
-  display: block;
-  font-size: 0.8125rem;
-  color: var(--muted);
-  margin-bottom: 0.375rem;
-}
-
-.filters-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
+/* Sprint 30b: the filter panel (details/summary chrome, form layout, fieldset reset,
+ * legend eyebrow, checkbox pills incl. `:has()`, selects, hints, tool groups, actions)
+ * moved to Tailwind — inline in filter-disclosure.tsx / filter-panel.tsx / workshop, with
+ * shared `checkbox`/`checkboxInput`/`selectControl` in src/lib/ui.ts. */
 
 /* ---------------------------------------------------------------------------
  * Sprint 6 — saves and collections.
  * ------------------------------------------------------------------------- */
 
-.plan-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
+/* Sprint 30b: `.plan-actions` moved to inline utilities (plan detail page). */
 
 /* ---------------------------------------------------------------------------
  * Sprint 7 — likes and sort.
@@ -935,35 +674,9 @@ code {
 
 /* Sprint 29: `.btn-liked` moved to the `btnLiked` constant (src/lib/ui.ts). */
 
-.sort-form {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.sort-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-}
-
-.sort-form select {
-  min-height: 2.75rem;
-  padding: 0 0.75rem;
-  /* 16px — smaller makes iOS Safari zoom the viewport on focus. */
-  font-size: 1rem;
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-}
-
-.sort-form select:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 1px;
-}
+/* Sprint 30b: `.sort-form` (base), `.sort-label`, and its select moved to Tailwind
+ * (inline in sort-select.tsx). The `sort-form` CLASS is retained — the print stylesheet
+ * hides it by class. */
 
 /* ---------------------------------------------------------------------------
  * Sprint 8 — offline + print.
@@ -1052,62 +765,10 @@ code {
   }
 }
 
-.collection-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  margin-bottom: 1rem;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  min-height: 2.5rem;
-  padding: 0 0.875rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.875rem;
-  color: var(--fg);
-  text-decoration: none;
-}
-
-.chip-active {
-  border-color: var(--fg);
-  background: var(--accent);
-  font-weight: 700;
-}
-
-.chip:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
-
-.inline-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.inline-form select {
-  min-height: 2.75rem;
-  padding: 0 0.75rem;
-  /* 16px — smaller makes iOS Safari zoom the viewport on focus. */
-  font-size: 1rem;
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-}
-
-.saved-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
+/* Sprint 30b: `.collection-tabs`, the `.chip` / `.chip-active` pills, `.inline-form`
+ * (+ its select), and the `.saved-item` frame moved to Tailwind — `chip`/`chipActive`/
+ * `selectControl` shared in src/lib/ui.ts, the rest inline. The `saved-item` CLASS is
+ * RETAINED for the `.saved-item .plan-card` compound below. */
 
 .plan-grid-inner {
   list-style: none;
@@ -1121,35 +782,8 @@ code {
   border-radius: 0;
 }
 
-.saved-item-actions {
-  padding: 0.75rem 1rem 0.25rem;
-  border-top: 1px solid var(--border);
-  display: grid;
-  gap: 0.5rem;
-}
-
-.chip-form {
-  display: inline;
-}
-
-.chip-remove {
-  border: none;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 0 0 0 0.375rem;
-}
-
-.chip-remove:hover {
-  color: var(--fg);
-}
-
-.chip-remove:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
+/* Sprint 30b: `.saved-item-actions`, `.chip-form`, `.chip-remove` moved to inline
+ * utilities (saved page). */
 
 /* Rate-limit notice (rate-limit-notice.tsx) — the banner a denied user sees. */
 .rate-limit-notice {
@@ -1161,26 +795,8 @@ code {
   margin: 0 0 1rem;
 }
 
-/* Active-filter chips on the catalog (filter-chips.tsx). Reuses .chip. */
-.filter-chips {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.375rem;
-  margin: 0 0 0.75rem;
-  padding: 0;
-}
-
-.filter-chips-clear {
-  font-size: 0.875rem;
-  color: var(--muted);
-  text-decoration: underline;
-}
-
-.filter-chips-clear:hover {
-  color: var(--fg);
-}
+/* Sprint 30b: `.filter-chips` and `.filter-chips-clear` moved to inline utilities
+ * (filter-chips.tsx); the chips themselves use the shared `chipActive`. */
 
 /* ---------------------------------------------------------------------------
  * Skeleton loading states (loading.tsx) — the mockup's shimmer.
@@ -1302,16 +918,9 @@ code {
  * Sprint 10 — reviews, ratings, build photos.
  * ------------------------------------------------------------------------- */
 
-.star-rating {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.star-rating .stars {
-  color: var(--accent-strong);
-  letter-spacing: 0.05em;
-}
+/* Sprint 30c: `.star-rating` and `.star-rating .stars` moved to Tailwind (inline in
+ * star-rating.tsx). The `stars` CLASS is retained on the inner span — `.plan-rating
+ * a:hover .stars` still targets it. */
 
 /* Sprint 29: `.plan-card-rating` moved to inline utilities on the catalog card.
  * `.plan-rating` (the plan-detail rating, wave 2) keeps this rule. */
@@ -1329,121 +938,12 @@ code {
   text-decoration: underline;
 }
 
-.reviews {
-  margin-top: 3rem;
-  border-top: 1px solid var(--border);
-  padding-top: 1.5rem;
-}
-
-.review-summary {
-  font-size: 1.1rem;
-}
-
-.review-form {
-  background: var(--surface);
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin: 1rem 0 2rem;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-}
-
-.review-form textarea,
-.review-form input[type='text'] {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  /* 16px — anything smaller makes iOS Safari zoom the viewport on focus. */
-  font-size: 1rem;
-  font-family: inherit;
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-}
-
-.rating-input {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  border: 0;
-  padding: 0;
-  margin: 0;
-}
-
-.rating-input legend {
-  padding: 0;
-  margin-bottom: 0.4rem;
-  font-weight: 600;
-}
-
-.rating-option {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  /* 44px minimum touch target (WCAG 2.5.5) — this is used with sawdust on your
-     hands, and a 20px radio button is not hittable in a workshop. */
-  min-height: 44px;
-}
-
-.review-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.review {
-  background: var(--surface);
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-}
-
-.review-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.review-author {
-  font-weight: 600;
-}
-
-.review-body {
-  margin: 0.5rem 0;
-  /* User-authored text. React escapes it, so there is no XSS here — but a single
-     3,000-character word would still blow out the layout. */
-  overflow-wrap: anywhere;
-}
-
-.build-photos {
-  list-style: none;
-  padding: 0;
-  margin: 0.75rem 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.build-photo-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.build-photo {
-  width: auto;
-  height: auto;
-  max-width: 240px;
-  border-radius: 0.375rem;
-  object-fit: cover;
-}
+/* Sprint 30c: the reviews section (`.reviews`, `.review-summary`, `.review-form` + its
+ * textarea/text inputs, `.rating-input` + legend, `.rating-option`, `.review-list`,
+ * `.review`, `.review-head`, `.review-author`, `.review-body`, `.build-photos`,
+ * `.build-photo-item`, `.build-photo`) moved to Tailwind — inline in reviews-section.tsx.
+ * `.build-photo-remove button` STAYS (below) — it overrides the shared danger button's
+ * padding/font, and the `build-photo-remove` class is retained on the form for it. */
 
 .build-photo-remove button {
   padding: 0.25rem 0.5rem;
@@ -1454,147 +954,22 @@ code {
  * Sprint 27 — build logs ("My builds") + the plan-page "N built this" signal.
  * ------------------------------------------------------------------------- */
 
-.plan-builds {
-  margin: 0.25rem 0 0;
-}
-
-.plan-builds a {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.plan-builds a:hover {
-  color: var(--fg);
-}
-
-.build-log {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.build-log-item {
-  background: var(--surface);
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-}
-
-.build-log-head {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
+/* Sprint 30b: `.plan-builds` (+ its link), `.build-log`, `-item`, `-head`, `-date`,
+ * `-rating`, `-actions` moved to inline utilities (plan detail + builds page).
+ * `.build-log-title` stays — it's an <h2> overriding the global `h2` rule, which
+ * converts in the typography pass (30c). */
 .build-log-title {
   margin: 0.15rem 0 0;
   font-size: 1.25rem;
-}
-
-.build-log-date {
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-.build-log-rating {
-  margin: 0.5rem 0 0;
-}
-
-.build-log-actions {
-  margin: 0.75rem 0 0;
 }
 
 /* ---------------------------------------------------------------------------
  * Sprint 11 — recommendations.
  * ------------------------------------------------------------------------- */
 
-.recommendations {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.recommendations h2 {
-  margin-bottom: 0.25rem;
-}
-
-.recommendations .plan-grid {
-  margin-top: 1rem;
-}
-
-.recommendation {
-  display: flex;
-  flex-direction: column;
-}
-
-/* The reason is the whole point of showing it. A recommendation with no explanation
-   is indistinguishable from a random plan — to the user, and to us. */
-.recommendation-reason {
-  margin: 0.35rem 0 0;
-  font-size: 0.85rem;
-  color: var(--muted, #6b6b6b);
-  font-style: italic;
-}
-
-/* ---------------------------------------------------------------------------
- * Sprint 12 — shopping list.
- * ------------------------------------------------------------------------- */
-
-.shopping-list-cta {
-  margin: 0 0 1rem;
-}
-
-/* ---------------------------------------------------------------------------
- * PWA install prompt (UI redesign, 2026-07-13) — see install-prompt.tsx.
- * ------------------------------------------------------------------------- */
-
-.install-prompt {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin: 1rem 0;
-  padding: 0.75rem 1rem;
-  background: var(--accent-tint);
-  border: 1px solid var(--accent-tint-border);
-  border-radius: 0.5rem;
-}
-
-.install-prompt-icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.375rem;
-  height: 2.375rem;
-  background: var(--surface);
-  border: 1px solid var(--accent-tint-border);
-  border-radius: 0.5625rem;
-  font-size: 1rem;
-}
-
-.install-prompt-body {
-  flex: 1;
-  min-width: 12rem;
-}
-
-.install-prompt-title {
-  margin: 0;
-  font-weight: 700;
-  font-size: 0.9375rem;
-}
-
-.install-prompt-subtitle {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: #7a5316;
-}
+/* Sprint 30c: `.recommendations*` DELETED — dead since Sprint 19 (the component was
+ * removed). `.shopping-list-cta` → inline utilities (saved page). The PWA
+ * `.install-prompt*` chrome → inline utilities in install-prompt.tsx. */
 
 /* ---------------------------------------------------------------------------
  * Sprint 16 — learning paths.
@@ -1804,13 +1179,8 @@ code {
   margin: 0;
 }
 
-/* Sprint 22 — the merged / by-plan view toggle. Reuses the `.chip` pill styling. */
-.view-toggle {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0 1.5rem;
-}
+/* Sprint 30b: `.view-toggle` moved to inline utilities (shopping-list page); the
+ * toggle pills use the shared `chip`/`chipActive`. */
 
 /* Sprint 23 — About / FAQ content pages. */
 .prose-list {
@@ -1867,6 +1237,10 @@ code {
   border-radius: 0.375rem;
 }
 
+/* Sprint 30b: `.shopping-list`, `.shopping-line` / `-main` (+ its checkbox) / `-name` /
+ * `-plans` moved to inline utilities (shopping-list + workshop pages). `.notice` stays —
+ * it's still used (with `.notice-warning`) on the boards page, which converts in 30c.
+ * `.shopping-line-cost` is not currently rendered (no per-line price); left for cleanup. */
 .notice {
   padding: 0.75rem 1rem;
   margin: 1rem 0;
@@ -1874,48 +1248,10 @@ code {
   background: var(--surface, transparent);
   font-size: 0.9rem;
 }
-
-.shopping-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.5rem;
-}
-
-.shopping-line {
-  padding: 0.6rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.shopping-line-main {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-}
-
-.shopping-line-main input[type='checkbox'] {
-  /* 44px touch target (WCAG 2.5.5). This gets tapped in a store aisle, one-handed,
-     holding a board. A 16px checkbox is not a real target. */
-  width: 1.15rem;
-  height: 1.15rem;
-  min-width: 1.15rem;
-  margin: 0;
-  flex-shrink: 0;
-  accent-color: var(--fg);
-}
-
-.shopping-line-name {
-  flex: 1;
-  cursor: pointer;
-}
-
 .shopping-line-cost {
   margin-left: auto;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-}
-
-.shopping-line-plans {
-  margin: 0.2rem 0 0 1.75rem;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2253,24 +1589,6 @@ code {
  * instructions-disclosure.tsx. The `instructions-open` / `instructions-region` CLASSES
  * are retained (the print stylesheet hides/shows them by class). */
 
-/* --- last-step review CTA --- */
-
-.step-finish-cta {
-  display: block;
-  margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--accent-tint-border);
-  border-radius: 0.5rem;
-  background: var(--accent-tint);
-  color: var(--fg);
-  text-decoration: none;
-}
-
-.step-finish-cta:hover {
-  border-color: var(--accent-strong);
-}
-
-.step-finish-cta:focus-visible {
-  outline: 2px solid var(--ok);
-  outline-offset: 2px;
-}
+/* Sprint 30c: the `.step-finish-cta` SCREEN styling moved to Tailwind (the `finishCta`
+ * const in step-walker.tsx); the `step-finish-cta` class is retained on the element only
+ * so the print stylesheet can hide it. */

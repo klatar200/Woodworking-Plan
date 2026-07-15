@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
+import { page, chip, chipActive } from '@/lib/ui'; // Sprint 29/30b
 import type { Metadata } from 'next';
 import { getShoppingList } from '@/lib/shopping-list';
 import { costTierSymbol, costTierForCents } from '@/lib/format';
@@ -32,7 +32,7 @@ type SearchParams = Promise<{ view?: string }>;
 
 function CostNotice({ unpricedCount }: { unpricedCount: number }) {
   return (
-    <p className="notice">
+    <p className="px-[1rem] py-[0.75rem] my-[1rem] mx-0 border-l-[3px] border-border bg-surface text-[0.9rem]">
       Cost is shown as a band, not a price — lumber varies too much by region, species,
       and season for a figure to be honest.
       {unpricedCount > 0 ? (
@@ -57,12 +57,17 @@ function Line({
 }) {
   const id = `have-${keyPrefix}-${line.name}`;
   return (
-    <li className="shopping-line">
-      <div className="shopping-line-main">
+    <li className="shopping-line py-[0.6rem] px-0 border-b border-border">
+      <div className="shopping-line-main flex items-baseline gap-[0.6rem]">
         {/* A real checkbox to tick items off on paper. It does NOT persist — the whole
             point is a printable list, and paper is the interaction model in a store. */}
-        <input type="checkbox" id={id} aria-label={`Mark ${line.name} as bought`} />
-        <label htmlFor={id} className="shopping-line-name">
+        <input
+          type="checkbox"
+          id={id}
+          aria-label={`Mark ${line.name} as bought`}
+          className="w-[1.15rem] h-[1.15rem] min-w-[1.15rem] m-0 shrink-0 accent-[var(--fg)]"
+        />
+        <label htmlFor={id} className="flex-1 cursor-pointer">
           <strong>
             {line.quantity} {line.unit}
           </strong>{' '}
@@ -115,17 +120,20 @@ export default async function ShoppingListPage({
           <CostNotice unpricedCount={list.unpricedCount} />
 
           {/* View switcher. GET links, no JS. */}
-          <nav className="view-toggle no-print" aria-label="List view">
+          <nav
+            className="flex flex-wrap gap-[0.5rem] mt-[1rem] mx-0 mb-[1.5rem] no-print"
+            aria-label="List view"
+          >
             <Link
               href="/shopping-list"
-              className={`chip ${view === 'merged' ? 'chip-active' : ''}`}
+              className={view === 'merged' ? chipActive : chip}
               aria-current={view === 'merged' ? 'page' : undefined}
             >
               Combined list
             </Link>
             <Link
               href="/shopping-list?view=by-plan"
-              className={`chip ${view === 'by-plan' ? 'chip-active' : ''}`}
+              className={view === 'by-plan' ? chipActive : chip}
               aria-current={view === 'by-plan' ? 'page' : undefined}
             >
               By plan
@@ -141,21 +149,22 @@ export default async function ShoppingListPage({
                 <h2 id={`unit-${group.unit}`} className="sub-heading">
                   {group.unit}
                 </h2>
-                <ul className="shopping-list">
+                <ul className="list-none p-0 mt-0 mx-0 mb-[1.5rem]">
                   {group.lines.map((line) => (
                     <li
                       key={`${line.name}-${line.species ?? ''}`}
-                      className="shopping-line"
+                      className="shopping-line py-[0.6rem] px-0 border-b border-border"
                     >
-                      <div className="shopping-line-main">
+                      <div className="shopping-line-main flex items-baseline gap-[0.6rem]">
                         <input
                           type="checkbox"
                           id={`have-${line.name}`}
                           aria-label={`Mark ${line.name} as bought`}
+                          className="w-[1.15rem] h-[1.15rem] min-w-[1.15rem] m-0 shrink-0 accent-[var(--fg)]"
                         />
                         <label
                           htmlFor={`have-${line.name}`}
-                          className="shopping-line-name"
+                          className="flex-1 cursor-pointer"
                         >
                           <strong>
                             {line.quantity} {line.unit}
@@ -168,7 +177,7 @@ export default async function ShoppingListPage({
                       </div>
                       {/* WHICH PLANS NEED THIS — the user asked to consolidate, not to
                           lose track of why each line is on the list. */}
-                      <p className="shopping-line-plans muted small">
+                      <p className="mt-[0.2rem] mr-0 mb-0 ml-[1.75rem] muted small">
                         {line.plans.map((plan) => plan.title).join(', ')}
                       </p>
                     </li>
@@ -183,7 +192,7 @@ export default async function ShoppingListPage({
                   <h2 id={`plan-${plan.slug}`} className="sub-heading">
                     <Link href={`/plans/${plan.slug}`}>{plan.title}</Link>
                   </h2>
-                  <ul className="shopping-list">
+                  <ul className="list-none p-0 mt-0 mx-0 mb-[1.5rem]">
                     {plan.lines.map((line) => (
                       <Line key={line.name} line={line} keyPrefix={plan.slug} />
                     ))}

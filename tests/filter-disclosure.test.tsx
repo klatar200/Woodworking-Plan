@@ -20,7 +20,9 @@ describe('FilterDisclosure — server render (no JS yet)', () => {
       </FilterDisclosure>,
     );
 
-    expect(html).toContain('<summary class="filters-summary">Filters</summary>');
+    // Sprint 30b: summary styling is now Tailwind utilities; assert it's rendered
+    // with its label, not on the specific class.
+    expect(html).toMatch(/<summary[^>]*>Filters<\/summary>/);
     // Closed, not hidden: the panel is collapsed but its toggle is right there.
     expect(html).not.toContain('open=""');
   });

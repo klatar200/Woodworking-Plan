@@ -211,7 +211,9 @@ describe('catalog page — filters', () => {
 
   it('opens the filter panel automatically when filters are active', async () => {
     const html = await render({ category: 'furniture' });
-    expect(html).toContain('<details class="filters" open');
+    // Sprint 30b: the disclosure's styling is now Tailwind utilities; what matters is
+    // that it renders OPEN when filters are active, not the specific class.
+    expect(html).toMatch(/<details[^>]*\bopen\b/);
   });
 
   it('preserves search AND filters across pagination links', async () => {

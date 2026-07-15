@@ -118,7 +118,7 @@ state rather than assumptions made today.
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
 | Phase 4 | 🟡 PARTIALLY OPENED 2026-07-15 — **build logs only** (Sprint 27). Everything else in Phase 4 stays closed |
 | Completion plan (Sprints 24–27) | ✅ COMPLETE, PUSHED & LIVE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). **Confirmed pushed 2026-07-16 (Keagan): CI green, live site verified.** See §4.3 |
-| UI framework migration (Sprints 28–32) | 🟡 IN PROGRESS — Tailwind CSS + light/dark theme. **28 (env) 97/100; 29 (wave 1) 96/100; 30a (wave 2, catalog+plan-detail layout) 96/100.** Sprint 30 is split into 3 browser-checkable sub-waves (30a done; 30b/30c next). All need `npm install` (S28 deps) + verify + real-browser pixel-parity + push. Sprints 31–32 not started. See §4.4 |
+| UI framework migration (Sprints 28–32) | 🟡 IN PROGRESS — Tailwind CSS + light/dark theme. **28 (env) 97; 29 (wave 1) 96; 30a 96; 30b 96; 30c PARTIAL** (reviews, star-rating, step-walker, install-prompt converted; dead `.recommendations` removed). 30c remainder = plan-detail content tables/`dl` (descendant selectors on dynamic rows — no clean per-element utility), paths, board-plan, skeletons, misc pages. All need verify + real-browser pixel-parity + push. 31–32 not started. See §4.4 |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (branding, copy approval, rotation at go-live, launch call) |
 | Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; brand name + contact are marked placeholders pending decision #8.) |
 
@@ -553,10 +553,12 @@ grid (`grid-template-areas` via `lg:` arbitrary utilities) and the Sprint 20 pla
 (two-column grid, image slot, Tools/Materials/Cut-list tabs, instructions disclosure). Deferred
 within 30a for documented cascade reasons: `.plan-grid` (shared grid → do with saved/paths),
 `.catalog-nav-heading` (overrides global `h2` → typography pass), `.page-wide.plan-detail`
-(compound override of a retained modifier). **30b** = filters + chips + saves/collections +
-shopping/workshop/builds; **30c** = reviews + board-plan + paths + prose + skeletons + the global
-typography/reset, ending with `globals.css` down to `:root` + print + reset. See `SPRINT_LOG.md`
-Sprint 30a. Original scope for reference:
+(compound override of a retained modifier). **30b COMPLETE — 96/100:** the filter panel (incl.
+`:has()` checkbox pills), chips, sort, saves/collections, shopping list, workshop, build log —
+shared `selectControl`/`checkbox`/`chip` in `src/lib/ui.ts`; deferred to 30c (headings that
+override global `h2`, the shared `.plan-grid`, boards' `scope-form`/`notice`). **30c** = reviews +
+board-plan + paths + prose + skeletons + the global typography/reset, ending with `globals.css`
+down to `:root` + print + reset. See `SPRINT_LOG.md` Sprint 30a/30b. Original scope for reference:
 Convert the three-column catalog grid, plan-detail tabs/instructions/image slot,
 filter panel + active-filter chips, shopping list, workshop/builds screens, and
 about/faq prose. By the end of this sprint `globals.css` is retired down to: the

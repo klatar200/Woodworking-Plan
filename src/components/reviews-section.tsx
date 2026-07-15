@@ -42,26 +42,33 @@ export function ReviewsSection({
   photosEnabled,
 }: Props) {
   return (
-    <section aria-labelledby="reviews-heading" className="reviews">
+    <section
+      aria-labelledby="reviews-heading"
+      className="mt-[3rem] border-t border-border pt-[1.5rem]"
+    >
       <h2 id="reviews-heading">Reviews &amp; builds</h2>
 
-      <p className="review-summary">
+      <p className="text-[1.1rem]">
         <StarRating average={summary.average} count={summary.count} />
       </p>
 
       {isSignedIn ? (
-        <form action={submitReviewAction} className="review-form" encType="multipart/form-data">
+        <form
+          action={submitReviewAction}
+          className="bg-surface flex flex-col gap-[0.6rem] mt-[1rem] mx-0 mb-[2rem] p-[1rem] border border-border rounded-[0.5rem]"
+          encType="multipart/form-data"
+        >
           <input type="hidden" name="planId" value={planId} />
           <input type="hidden" name="slug" value={slug} />
 
           <h3>{myReview ? 'Edit your review' : 'Write a review'}</h3>
 
-          <fieldset className="rating-input">
-            <legend>Your rating</legend>
+          <fieldset className="flex flex-wrap gap-[0.75rem] border-0 p-0 m-0">
+            <legend className="p-0 mb-[0.4rem] font-semibold">Your rating</legend>
             {/* Radio buttons, not a JS star widget. A rating that needs JavaScript to
                 be entered is a rating some people cannot leave. */}
             {[1, 2, 3, 4, 5].map((value) => (
-              <label key={value} className="rating-option">
+              <label key={value} className="inline-flex items-center gap-[0.3rem] min-h-[44px]">
                 <input
                   type="radio"
                   name="rating"
@@ -86,6 +93,7 @@ export function ReviewsSection({
             maxLength={MAX_BODY_LENGTH}
             defaultValue={myReview?.body ?? ''}
             placeholder="How did the build go? Anything you'd do differently?"
+            className="w-full px-[0.75rem] py-[0.5rem] text-[1rem] [font-family:inherit] text-fg bg-bg border border-border rounded-[0.375rem]"
           />
 
           {photosEnabled ? (
@@ -111,6 +119,7 @@ export function ReviewsSection({
                 name="photoAlt"
                 maxLength={300}
                 placeholder="A walnut cutting board with a live edge"
+                className="w-full px-[0.75rem] py-[0.5rem] text-[1rem] [font-family:inherit] text-fg bg-bg border border-border rounded-[0.375rem]"
               />
 
               <p className="muted small">
@@ -136,11 +145,11 @@ export function ReviewsSection({
       {reviews.length === 0 ? (
         <p className="muted">No reviews yet. Be the first to build this.</p>
       ) : (
-        <ul className="review-list">
+        <ul className="list-none p-0 m-0 flex flex-col gap-[1.25rem]">
           {reviews.map((review) => (
-            <li key={review.id} className="review">
-              <div className="review-head">
-                <span className="review-author">
+            <li key={review.id} className="bg-surface p-[1rem] border border-border rounded-[0.5rem]">
+              <div className="flex flex-wrap items-center gap-[0.75rem] mb-[0.5rem]">
+                <span className="font-semibold">
                   {review.user.displayName ?? 'A maker'}
                 </span>
                 <StarRating average={review.rating} count={1} />
@@ -153,15 +162,17 @@ export function ReviewsSection({
                 </time>
               </div>
 
-              {review.body ? <p className="review-body">{review.body}</p> : null}
+              {review.body ? (
+                <p className="my-[0.5rem] mx-0 [overflow-wrap:anywhere]">{review.body}</p>
+              ) : null}
 
               {review.photos.length > 0 ? (
-                <ul className="build-photos">
+                <ul className="list-none p-0 mt-[0.75rem] mx-0 mb-0 flex flex-wrap gap-[0.5rem]">
                   {review.photos.map((photo) => {
                     const canRemove = isAdmin || myReview?.id === review.id;
 
                     return (
-                      <li key={photo.id} className="build-photo-item">
+                      <li key={photo.id} className="flex flex-col gap-[0.25rem]">
                         {/* next/image needs the blob host allowlisted in
                             next.config.ts, AND the host must be in the CSP img-src —
                             miss either and the photo is silently blocked. */}
@@ -171,7 +182,7 @@ export function ReviewsSection({
                           width={photo.width}
                           height={photo.height}
                           sizes="(max-width: 640px) 50vw, 240px"
-                          className="build-photo"
+                          className="w-auto h-auto max-w-[240px] rounded-[0.375rem] object-cover"
                         />
 
                         {/* Removing ONE photo without deleting the whole review.

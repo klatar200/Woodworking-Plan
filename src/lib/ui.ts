@@ -74,6 +74,35 @@ export const searchInput =
   'flex-auto min-w-0 min-h-[2.75rem] px-[0.875rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1';
 
 /**
+ * A `<select>` control (44px tall, 16px font so iOS doesn't zoom on focus). Formerly
+ * `.filter-group select` / `.sort-form select` / `.inline-form select` / `.scope-form
+ * select` — one shared rule. Add `w-full` where the original did (the filter panel).
+ */
+export const selectControl =
+  'min-h-[2.75rem] px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
+
+/**
+ * A filter checkbox pill (Sprint 5) — formerly `.checkbox`. The checked/focus styling
+ * uses `:has()` on the nested input, which out-specifies the base so class order is safe.
+ * Reused by the filter panel and the workshop screen.
+ */
+export const checkbox =
+  'inline-flex items-center gap-[0.4375rem] min-h-[2.5rem] py-0 pr-[0.75rem] pl-[0.625rem] border border-border rounded-[999px] text-[0.875rem] cursor-pointer has-[input:checked]:border-fg has-[input:checked]:bg-accent has-[input:checked]:font-bold has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-ok has-[input:focus-visible]:outline-offset-2';
+
+/** The `<input>` inside a `.checkbox` pill — formerly `.checkbox input`. */
+export const checkboxInput = 'm-0 accent-[var(--fg)]';
+
+/**
+ * A pill chip. Formerly `.chip` (+ `.chip-active`), reused by the collection tabs and the
+ * active-filter chips. `chip` is the resting state; `chipActive` the selected one — they're
+ * rendered as alternatives, so there's no same-element color conflict.
+ */
+const chipBase =
+  'inline-flex items-center gap-[0.25rem] min-h-[2.5rem] px-[0.875rem] border rounded-[999px] text-[0.875rem] text-fg no-underline focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+export const chip = `${chipBase} border-border`;
+export const chipActive = `${chipBase} border-fg bg-accent font-bold`;
+
+/**
  * The small uppercase category eyebrow. Formerly `.plan-card-category`, reused
  * verbatim on the catalog card, the plan-detail header, and the builds list —
  * hence a shared constant rather than three inline copies.

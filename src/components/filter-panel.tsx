@@ -7,7 +7,20 @@ import {
 } from '@/lib/filters';
 import { costTierSymbol, difficultyLabel } from '@/lib/format';
 import { FilterDisclosure } from '@/components/filter-disclosure';
-import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
+import {
+  btnGhost,
+  btnPrimary,
+  checkbox,
+  checkboxInput,
+  selectControl,
+} from '@/lib/ui'; // Sprint 29/30b: shared classes
+
+// Sprint 30b: filter-panel styling → Tailwind. `filters-form` layout, the fieldset
+// reset, legend eyebrow, the checkbox pills (shared `checkbox`), selects (shared
+// `selectControl`), hints and tool groups all inline below. The `.filters` / summary
+// chrome lives in filter-disclosure.tsx.
+const legendClass =
+  'p-0 text-[0.75rem] uppercase tracking-[0.06em] text-muted mb-[0.5rem]';
 
 interface Props {
   query: string;
@@ -70,13 +83,17 @@ export function FilterPanel({
 
   return (
     <FilterDisclosure count={count}>
-      <form className="filters-form" action="/" method="get">
+      <form className="pt-0 px-[1rem] pb-[1rem] grid gap-[1.25rem]" action="/" method="get">
         {/* Keep the active search alive across a filter submit. */}
         {query && <input type="hidden" name="q" value={query} />}
 
-        <fieldset className="filter-group">
-          <legend>Category</legend>
-          <select name="category" defaultValue={filters.category ?? ''}>
+        <fieldset className="border-none p-0 m-0 min-w-0">
+          <legend className={legendClass}>Category</legend>
+          <select
+            name="category"
+            defaultValue={filters.category ?? ''}
+            className={`w-full ${selectControl}`}
+          >
             <option value="">Any category</option>
             {categories.map((c) => (
               <option key={c.slug} value={c.slug}>
@@ -86,16 +103,17 @@ export function FilterPanel({
           </select>
         </fieldset>
 
-        <fieldset className="filter-group">
-          <legend>Difficulty</legend>
-          <div className="checkbox-row">
+        <fieldset className="border-none p-0 m-0 min-w-0">
+          <legend className={legendClass}>Difficulty</legend>
+          <div className="flex flex-wrap gap-[0.375rem]">
             {DIFFICULTIES.map((d) => (
-              <label key={d} className="checkbox">
+              <label key={d} className={checkbox}>
                 <input
                   type="checkbox"
                   name="difficulty"
                   value={d}
                   defaultChecked={filters.difficulty.includes(d)}
+                  className={checkboxInput}
                 />
                 <span>{difficultyLabel(d)}</span>
               </label>
@@ -103,16 +121,17 @@ export function FilterPanel({
           </div>
         </fieldset>
 
-        <fieldset className="filter-group">
-          <legend>Cost</legend>
-          <div className="checkbox-row">
+        <fieldset className="border-none p-0 m-0 min-w-0">
+          <legend className={legendClass}>Cost</legend>
+          <div className="flex flex-wrap gap-[0.375rem]">
             {COST_TIERS.map((tier) => (
-              <label key={tier} className="checkbox">
+              <label key={tier} className={checkbox}>
                 <input
                   type="checkbox"
                   name="cost"
                   value={tier}
                   defaultChecked={filters.costTier.includes(tier)}
+                  className={checkboxInput}
                 />
                 <span>{costTierSymbol(tier)}</span>
               </label>
@@ -120,9 +139,13 @@ export function FilterPanel({
           </div>
         </fieldset>
 
-        <fieldset className="filter-group">
-          <legend>Time available</legend>
-          <select name="time" defaultValue={filters.maxMinutes ?? ''}>
+        <fieldset className="border-none p-0 m-0 min-w-0">
+          <legend className={legendClass}>Time available</legend>
+          <select
+            name="time"
+            defaultValue={filters.maxMinutes ?? ''}
+            className={`w-full ${selectControl}`}
+          >
             <option value="">Any amount of time</option>
             {TIME_BUCKETS.map((b) => (
               <option key={b.value} value={b.value}>
@@ -132,9 +155,9 @@ export function FilterPanel({
           </select>
         </fieldset>
 
-        <fieldset className="filter-group">
-          <legend>Tools you own</legend>
-          <p className="filter-hint">
+        <fieldset className="border-none p-0 m-0 min-w-0">
+          <legend className={legendClass}>Tools you own</legend>
+          <p className="mt-[-0.25rem] mx-0 mb-[0.625rem] text-[0.875rem] text-muted">
             Tick what you have. You&rsquo;ll only see plans you can actually build
             &mdash; optional tools are ignored.
             {showingPrefill ? (
@@ -147,16 +170,17 @@ export function FilterPanel({
           </p>
 
           {[...grouped.entries()].map(([group, groupTools]) => (
-            <div key={group} className="tool-group">
-              <span className="tool-group-name">{group}</span>
-              <div className="checkbox-row">
+            <div key={group} className="mb-[0.75rem]">
+              <span className="block text-[0.8125rem] text-muted mb-[0.375rem]">{group}</span>
+              <div className="flex flex-wrap gap-[0.375rem]">
                 {groupTools.map((tool) => (
-                  <label key={tool.slug} className="checkbox">
+                  <label key={tool.slug} className={checkbox}>
                     <input
                       type="checkbox"
                       name="tools"
                       value={tool.slug}
                       defaultChecked={checkedTools.has(tool.slug)}
+                      className={checkboxInput}
                     />
                     <span>{tool.name}</span>
                   </label>
@@ -166,7 +190,7 @@ export function FilterPanel({
           ))}
         </fieldset>
 
-        <div className="filters-actions">
+        <div className="flex gap-[0.5rem] flex-wrap">
           <button type="submit" className={btnPrimary}>
             Apply filters
           </button>

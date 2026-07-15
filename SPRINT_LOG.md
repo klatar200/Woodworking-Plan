@@ -2123,6 +2123,76 @@ per Read + a balance audit, but the authoritative CSS parse is your build.
 
 ---
 
+## Sprint 30b: Component migration, wave 2 — filters/chips/saves/shopping/workshop/builds (UI migration, sprint 3 of 5)
+**Dates:** 2026-07-14
+**Scope:** the second Sprint 30 sub-wave — the filter panel, active-filter chips, saves/
+collections, the shopping list, the workshop screen, and the build log. (30a did the catalog +
+plan-detail *layout*; 30c does reviews, board-plan, paths, prose, skeletons and the global
+typography/reset.)
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** No schema, no migration. ~10 files.
+
+### What converted
+Filter panel (`filter-disclosure.tsx` details/summary chrome; `filter-panel.tsx` form/legend/
+selects/checkbox pills/hints/tool groups), the active-filter chips (`filter-chips.tsx`), the
+sort control (`sort-select.tsx`), collection tabs + saved-item frames + the add/remove-collection
+forms (`saved/page.tsx`), the shopping list (`shopping-list/page.tsx`), the workshop form
+(`workshop/page.tsx`), and the build log + the plan-page "N built this" count + save/like action
+row (`builds/page.tsx`, `plans/[slug]/page.tsx`).
+
+**Shared constants added to `src/lib/ui.ts`:** `selectControl`, `checkbox`, `checkboxInput`,
+`chip` / `chipActive` (the last two reused by the collection tabs, the filter chips, and the
+shopping-list view toggle).
+
+**Deferred to 30c (each documented):** `.build-log-title` / `.sub-heading` (headings that override
+the global `h2` — a layered utility can't beat it until the typography pass); `.plan-grid` /
+`.plan-grid-inner` (shared grid); `.scope-form` + `.notice-warning` (boards page); `.build-photos`
+/ `.review-body` (reviews); prose/faq. Retained CLASSES for print/context: `sort-form` (print
+hides), `saved-item` (the `.saved-item .plan-card` compound).
+
+### Two gotchas caught in verification
+- **`:has()` pills** compile as `.checkbox:has(*:is(input:checked))` — equivalent to the original
+  `:has(input:checked)`, and the `:has()` specificity means the checked/focus colors win over the
+  base without any class-order juggling. Verified against the real compiler.
+- **`.notice` is shared with the boards page** (`notice notice-warning`), which is 30c scope — so
+  deleting the base rule would have broken it. The orphaned-reference grep caught it; the rule is
+  restored and kept until boards converts.
+
+### Verification
+- Compiled the whole converted tree with the real Tailwind v4.3.2 toolchain — every 30b utility's
+  declaration present (pill `border-radius:999px`, `:has(*:is(input:checked))`, `accent-color`,
+  `border-left-width:3px`, `flex:1`, etc.).
+- `globals.css` braces (270/270) and comments (100/100) balance (NUL bytes from the mount stripped
+  first).
+- **Tests:** `filter-disclosure.test.tsx` asserted the old `filters-summary` class on the summary —
+  updated to a class-agnostic `<summary…>Filters</summary>` match. `filter-chips` / `filter-panel`
+  tests assert on text/href/aria, not classes — unaffected (confirmed by reading them).
+
+**Device-bound (Keagan):** `npm run build` + real-browser pixel-parity of the filter panel (open a
+phone + desktop), the chips row, the saved page, the shopping list, workshop, and builds.
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Delivers the whole 30b surface (filters, chips, sort, saves/collections, shopping, workshop, builds). −1: heading-classes, the shared grid, and boards' `scope-form`/`notice-warning` are deferred to 30c for documented cascade reasons. |
+| Correctness & functionality (/20) | **19** | Every utility byte-verified against the real compiler, incl. the `:has()` pills and the shared select/checkbox/chip constants. The one real risk — deleting `.notice`, shared with the boards page — was caught by the orphan grep and fixed (rule restored). −1: full build + real-browser parity are device-bound. |
+| Automated test coverage (/15) | **13** | Updated the one broken assertion (`filter-disclosure`); verified the other filter tests assert on behaviour, not classes. −2: pure-CSS conversion adds no new logic to test, and the full suite runs on your machine. |
+| Security (/15) | **15** | Presentation-only — className values on existing elements; no structure, props, routes, auth, or data changed. |
+| Code quality & simplicity (/10) | **10** | Reused pills/selects/checkboxes centralised in `ui.ts` (no drift across filter panel + workshop + chips + shopping); deferrals and retained classes each carry a reason; breadcrumbs at every deletion. |
+| Mobile/offline behavior (/10) | **10** | The mobile `<details>` filter collapse and 44px touch targets (checkboxes, selects, chips) are reproduced exactly; print rules retained via kept classes (`sort-form`). Device sign-off pending. |
+| Documentation & handoff (/5) | **5** | This entry, `CLAUDE.md` §7, `BUILD_PLAN.md` §4.4, breadcrumbs, handoff below. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan
+1. **Verify + real-browser pixel-parity** of the filter panel, chips, saved, shopping list,
+   workshop, and builds. Flag anything that shifted; I'll fix before 30c.
+2. **Push** — no migration. Then **30c** finishes the migration (reviews, board-plan, paths, prose,
+   skeletons, global typography/reset → `globals.css` down to `:root` + print + reset).
+
+---
+
 ## Sprint 24: Hardening Pass 2
 **Dates:** 2026-07-15
 **Scope (from `BUILD_PLAN.md` §4.3):** re-audit and FIX the surfaces rebuilt in Sprints

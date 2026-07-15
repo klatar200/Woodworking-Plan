@@ -1,5 +1,15 @@
 import Link from 'next/link';
-import { page, btnPrimary, btnGhost } from '@/lib/ui'; // Sprint 29: page-shell + button classes
+import {
+  page,
+  btnPrimary,
+  btnGhost,
+  checkbox,
+  checkboxInput,
+} from '@/lib/ui'; // Sprint 29/30b: shared classes
+
+// Sprint 30b: workshop reuses the filter-panel form styling (now Tailwind).
+const legendClass =
+  'p-0 text-[0.75rem] uppercase tracking-[0.06em] text-muted mb-[0.5rem]';
 import type { Metadata } from 'next';
 import { requireUser } from '@/lib/auth';
 import { listFilterableTools } from '@/lib/plans';
@@ -74,33 +84,37 @@ export default async function WorkshopPage({
       />
 
       {params.saved === '1' ? (
-        <p className="notice" role="status">
+        <p
+          className="px-[1rem] py-[0.75rem] my-[1rem] mx-0 border-l-[3px] border-border bg-surface text-[0.9rem]"
+          role="status"
+        >
           Workshop saved. Your tools are ready on the{' '}
           <Link href="/">catalog filter</Link>.
         </p>
       ) : null}
 
-      <form action={saveWorkshopAction} className="filters-form">
+      <form action={saveWorkshopAction} className="pt-0 px-[1rem] pb-[1rem] grid gap-[1.25rem]">
         <input type="hidden" name="returnTo" value="/workshop" />
 
-        <fieldset className="filter-group">
-          <legend>Tools you own</legend>
-          <p className="filter-hint">
+        <fieldset className="border-none p-0 m-0 min-w-0">
+          <legend className={legendClass}>Tools you own</legend>
+          <p className="mt-[-0.25rem] mx-0 mb-[0.625rem] text-[0.875rem] text-muted">
             Tick everything you have. Saving replaces your current list, so un-ticking a
             tool removes it.
           </p>
 
           {[...grouped.entries()].map(([group, groupTools]) => (
-            <div key={group} className="tool-group">
-              <span className="tool-group-name">{group}</span>
-              <div className="checkbox-row">
+            <div key={group} className="mb-[0.75rem]">
+              <span className="block text-[0.8125rem] text-muted mb-[0.375rem]">{group}</span>
+              <div className="flex flex-wrap gap-[0.375rem]">
                 {groupTools.map((tool) => (
-                  <label key={tool.slug} className="checkbox">
+                  <label key={tool.slug} className={checkbox}>
                     <input
                       type="checkbox"
                       name="tools"
                       value={tool.slug}
                       defaultChecked={ownedSet.has(tool.slug)}
+                      className={checkboxInput}
                     />
                     <span>{tool.name}</span>
                   </label>

@@ -3,6 +3,28 @@
 import { useEffect, useRef, useState } from 'react';
 import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
 
+// Sprint 30c: the step-walker chrome (rail, dots, progress bar, nav, finish CTA) →
+// Tailwind. Active-state colors live per variant (source-order gotcha); the rail
+// button uses `[font-family:inherit]` + `text-[…]` rather than the `font:inherit`
+// shorthand so the size isn't reset after it.
+const railItemBase =
+  'flex items-center gap-[0.5625rem] w-full px-[0.5rem] py-[0.4375rem] border-none rounded-[0.375rem] bg-transparent [font-family:inherit] text-[0.875rem] text-fg text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+const railItem = railItemBase;
+const railItemActive = `${railItemBase} bg-accent-tint font-bold`;
+const railNumBase =
+  'flex-[0_0_auto] inline-flex items-center justify-center w-[1.5rem] h-[1.5rem] border border-fg rounded-[50%] text-[0.75rem] font-bold';
+const railNum = `${railNumBase} bg-surface`;
+const railNumActive = `${railNumBase} bg-fg text-surface`;
+const dotBase =
+  'w-[2rem] h-[2rem] flex-none border border-fg rounded-[50%] text-[0.8125rem] font-bold cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+const dot = `${dotBase} bg-surface text-fg`;
+const dotActive = `${dotBase} bg-fg text-surface`;
+// The chrome classes (step-rail/step-dots/step-walker-bar/-nav/step-finish-cta) are
+// RETAINED alongside the utilities — the print stylesheet hides them by class so paper
+// shows the full step list, not the interactive walker.
+const finishCta =
+  'step-finish-cta block mt-[1.5rem] px-[1.25rem] py-[1rem] border border-accent-tint-border rounded-[0.5rem] bg-accent-tint text-fg no-underline hover:border-accent-strong focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+
 interface Props {
   stepTitles: string[];
   /** The server-rendered `<ol className="steps">` — untouched, full content. */
@@ -74,51 +96,61 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
   const enhanced = mounted;
 
   return (
-    <div ref={containerRef} className="step-walker">
+    <div ref={containerRef} className="flex items-start gap-[1.5rem]">
       {enhanced && (
-        <nav className="step-rail" aria-label="All steps">
-          <span className="step-rail-heading">All steps</span>
+        <nav
+          className="step-rail hidden lg:flex flex-[0_0_14rem] flex-col gap-[0.1875rem] border-r border-border pr-[1rem]"
+          aria-label="All steps"
+        >
+          <span className="text-[0.75rem] font-bold uppercase tracking-[0.04em] text-muted-2 mb-[0.5rem]">
+            All steps
+          </span>
           {stepTitles.map((title, i) => {
             const n = i + 1;
+            const isActive = active === n;
             return (
               <button
                 key={n}
                 type="button"
-                className={`step-rail-item${active === n ? ' step-rail-item-active' : ''}`}
-                aria-current={active === n ? 'step' : undefined}
+                className={isActive ? railItemActive : railItem}
+                aria-current={isActive ? 'step' : undefined}
                 onClick={() => goTo(n)}
               >
-                <span className="step-rail-number">{n}</span>
-                <span className="step-rail-title">{title}</span>
+                <span className={isActive ? railNumActive : railNum}>{n}</span>
+                <span>{title}</span>
               </button>
             );
           })}
         </nav>
       )}
 
-      <div className="step-walker-main">
+      <div className="flex-1 min-w-0">
         {enhanced && (
           <>
-            <div className="step-walker-bar">
-              <div className="step-walker-progress-track">
+            <div className="step-walker-bar flex items-center gap-[0.75rem] mb-[1rem]">
+              <div className="flex-1 max-w-[26rem] h-[0.75rem] border border-fg rounded-[999px] overflow-hidden">
                 <div
-                  className="step-walker-progress-fill"
+                  className="h-full bg-accent-strong"
                   style={{ width: `${(active / totalSteps) * 100}%` }}
                 />
               </div>
-              <span className="step-walker-position">
+              <span className="font-bold text-[0.875rem] whitespace-nowrap">
                 Step {active} of {totalSteps}
               </span>
             </div>
 
-            <div className="step-dots" role="group" aria-label="Jump to step">
+            <div
+              className="step-dots flex flex-wrap gap-[0.5rem] mb-[1.25rem] lg:hidden"
+              role="group"
+              aria-label="Jump to step"
+            >
               {stepTitles.map((title, i) => {
                 const n = i + 1;
                 return (
                   <button
                     key={n}
                     type="button"
-                    className={`step-dot${active === n ? ' step-dot-active' : ''}`}
+                    className={active === n ? dotActive : dot}
                     aria-label={`Step ${n}: ${title}`}
                     aria-current={active === n ? 'step' : undefined}
                     onClick={() => goTo(n)}
@@ -138,13 +170,13 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
             and only if a target was given — so it never shows on paper or without JS,
             where there is no "current step" to be last on. */}
         {enhanced && reviewCtaHref && active === totalSteps && (
-          <a href={reviewCtaHref} className="step-finish-cta">
+          <a href={reviewCtaHref} className={finishCta}>
             <strong>Built it?</strong> Share your build and leave a review →
           </a>
         )}
 
         {enhanced && (
-          <div className="step-walker-nav">
+          <div className="step-walker-nav flex gap-[0.75rem] mt-[1.5rem]">
             <button
               type="button"
               className={btnGhost}
