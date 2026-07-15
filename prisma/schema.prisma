@@ -77,6 +77,7 @@ model User {
   likes       Like[]
   reviews     Review[]
   shoppingList ShoppingListEntry[]
+  tools       UserTool[]
 
   @@index([clerkId])
 }
@@ -344,6 +345,33 @@ model SavedPlan {
   @@index([planId])
 }
 
+/// A tool the user owns — Sprint 25, "My Workshop" (BUSINESS_PLAN.md §10).
+///
+/// The owned-tools PROFILE, distinct from the Sprint 5 per-session tools filter (which
+/// persists nothing and lives only in the URL). This is the durable inventory a
+/// signed-in user declares once, so the catalog can PRE-FILL the "tools you own" filter
+/// for them. It does not, and must not, silently filter results — the URL stays the
+/// source of truth so a shared link renders the same catalog for everyone
+/// (`DECISIONS_LOG.md` 2026-07-15).
+///
+/// Same ownership rules as SavedPlan/Like: `userId` comes ONLY from the verified session.
+/// `@@unique([userId, toolId])` makes the set idempotent at the database level.
+model UserTool {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  toolId String
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, toolId])
+  @@index([userId])
+  @@index([toolId])
+}
+
 /// A plan the user has explicitly put ON their shopping list — Sprint 22.
 ///
 /// ═══════════════════════════════════════════════════════════════════════════════
@@ -466,6 +494,7 @@ model Tool {
 
   plans PlanTool[]
   steps StepTool[]
+  owners UserTool[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { nextTabIndex } from '@/lib/tab-nav';
 
 interface Tab {
   /** Stable key, also the panel's `data-tab` value. */
@@ -30,16 +31,25 @@ interface Props {
  *
  *   - NO-JS / crawler: nothing here runs, so all three sections render stacked, exactly
  *     as they did before this component existed.
- *   - PRINT (Sprint 13): `@media print` forces `.plan-tab-panel { display: block }`, so
- *     paper shows all three regardless of which tab was active on screen. A cut list you
- *     can't print is the one failure this section cannot have.
+ *   - PRINT (Sprint 13): `@media print` forces `.plan-tabs [data-tab]` visible, so paper
+ *     shows all three regardless of which tab was active. A cut list you can't print is
+ *     the one failure this section cannot have.
  *   - OFFLINE (Sprint 8/14): the cached page already contains every panel; switching
  *     tabs is never a network request.
  *
- * It toggles `element.style.display` on nodes found by `data-tab`, never re-rendering
- * that markup — so the content is never at the mercy of this component's own output.
- * (Note: this is why hiding is done by inline style and not by conditionally rendering
- * the panels — dropping them from the tree after mount would defeat print and no-JS.)
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * KEYBOARD (Sprint 24 hardening). A `role="tablist"` is a PROMISE to assistive tech that
+ * arrow keys move between tabs and only the active tab is in the tab order — the WAI-ARIA
+ * tab pattern. Sprint 20 shipped the roles without that behaviour, which is a keyboard
+ * trap of a subtler kind: a screen reader announces "tab, 1 of 3" and then the arrows do
+ * nothing. This implements it properly:
+ *   - ROVING TABINDEX: the active tab is `tabIndex 0`, the rest `-1`, so Tab reaches the
+ *     tablist once and lands on the current tab.
+ *   - ← / → move (and wrap), Home / End jump to first / last; activation is automatic
+ *     (focus a tab and it shows its panel — cheap here, it's just show/hide).
+ *   - The visible panel gets `tabIndex 0` so a keyboard user can reach its (mostly
+ *     non-interactive) content after the tab, per the pattern.
+ * ═══════════════════════════════════════════════════════════════════════════════════
  */
 export function PlanTabs({ tabs, children }: Props) {
   const shown = tabs.filter((t) => t.present);
@@ -55,7 +65,12 @@ export function PlanTabs({ tabs, children }: Props) {
     if (!mounted) return;
     const panels = ref.current?.querySelectorAll<HTMLElement>('[data-tab]');
     panels?.forEach((el) => {
-      el.style.display = el.dataset.tab === active ? '' : 'none';
+      const isActive = el.dataset.tab === active;
+      el.style.display = isActive ? '' : 'none';
+      // The active panel is focusable so keyboard users can read its content; hidden
+      // panels (display:none) leave the a11y tree entirely, so no tabindex is needed.
+      if (isActive) el.setAttribute('tabindex', '0');
+      else el.removeAttribute('tabindex');
     });
   }, [active, mounted]);
 
@@ -63,24 +78,39 @@ export function PlanTabs({ tabs, children }: Props) {
   // above a single panel is chrome with no purpose.
   const enhanced = mounted && shown.length > 1;
 
+  function onKeyDown(event: React.KeyboardEvent, index: number) {
+    const next = nextTabIndex(event.key, index, shown.length);
+    if (next === null) return;
+    event.preventDefault();
+    const nextTab = shown[next]!;
+    setActive(nextTab.id);
+    // Move focus to the newly active tab — the roving-tabindex requirement.
+    ref.current?.querySelector<HTMLButtonElement>(`#tab-${nextTab.id}`)?.focus();
+  }
+
   return (
     <div ref={ref} className="plan-tabs">
       {enhanced && (
         <div className="plan-tablist" role="tablist" aria-label="Plan details">
-          {shown.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              id={`tab-${tab.id}`}
-              aria-selected={active === tab.id}
-              aria-controls={`panel-${tab.id}`}
-              className={`plan-tab${active === tab.id ? ' plan-tab-active' : ''}`}
-              onClick={() => setActive(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {shown.map((tab, index) => {
+            const isActive = active === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                id={`tab-${tab.id}`}
+                aria-selected={isActive}
+                aria-controls={`panel-${tab.id}`}
+                tabIndex={isActive ? 0 : -1}
+                className={`plan-tab${isActive ? ' plan-tab-active' : ''}`}
+                onClick={() => setActive(tab.id)}
+                onKeyDown={(event) => onKeyDown(event, index)}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
       )}
 

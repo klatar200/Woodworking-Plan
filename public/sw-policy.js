@@ -55,6 +55,8 @@
   const NEVER_CACHE_PREFIXES = [
     '/saved', // a user's private library
     '/profile', // account details
+    '/builds', // a user's build log — a per-person timeline (Sprint 27)
+    '/workshop', // a user's owned-tools profile (Sprint 25)
     '/api', // health today; anything tomorrow
     '/sign-in', // Clerk's flow, and its tokens
     '/sign-up',

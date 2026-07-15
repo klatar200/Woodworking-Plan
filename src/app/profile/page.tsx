@@ -1,12 +1,13 @@
+import Link from 'next/link';
 import { requireUser } from '@/lib/auth';
 
 /**
  * User profile — the Sprint 2 deliverable "user profile".
  *
- * Kept deliberately thin. It renders the user's own account record and nothing
- * else. Saved plans, category folders, and likes belong here eventually, but
- * they are Sprints 6 and 7 — building placeholder UI for them now would be scope
- * drift and would age badly.
+ * Kept thin. It renders the user's own account record plus a small "activity"
+ * section that LINKS to the user-owned surfaces (builds, saves, workshop) — links,
+ * not embedded data, so this page stays a cheap account view and each surface keeps
+ * owning its own reads and access checks (Sprint 27 added the builds link).
  *
  * DEFENCE IN DEPTH: the middleware already blocks anonymous access to /profile.
  * `requireUser()` is a second, independent check at the point of data access. If
@@ -49,9 +50,15 @@ export default async function ProfilePage() {
         </div>
       </dl>
 
+      <h2>Your activity</h2>
+      <p>
+        <Link href="/builds">Your builds</Link> &mdash; every plan you&rsquo;ve reviewed.{' '}
+        <Link href="/saved">Saved plans</Link> and{' '}
+        <Link href="/workshop">your workshop</Link>.
+      </p>
+
       <p className="footnote">
-        Saved plans, category folders, and likes arrive in later sprints. Use the
-        account menu in the header to change your name, email, or password.
+        Use the account menu in the header to change your name, email, or password.
       </p>
     </main>
   );

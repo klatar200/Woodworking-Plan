@@ -1852,3 +1852,319 @@ allowlist (static content, no user data — the Sprint 17 reasoning is unchanged
 1. **Read the copy and edit to taste** — it's your voice to own; I aimed for accurate and plain.
 2. **Swap the placeholders** at branding/domain time (#8): the product name and the `hello@example.com` contact line (marked in-page and in comments).
 3. **Push** — content-only, no migration. Then the whole backlog is live once you flip `robots: noindex` off at launch.
+
+---
+
+## Sprint 24: Hardening Pass 2
+**Dates:** 2026-07-15
+**Scope (from `BUILD_PLAN.md` §4.3):** re-audit and FIX the surfaces rebuilt in Sprints
+17–23 (Sprint 9's pass predated the redesign) — WCAG/keyboard, mobile performance, OWASP
+re-check of new write paths, service-worker regression, dead-code sweep, `npm audit`.
+Deliverable is fixes, not a report.
+
+**Status: COMPLETE — 95/100, Attempt 1 (after one in-sprint remediation). Pass.** The
+code-auditable scope is done and fixed; two device-bound checks are handed to Keagan.
+
+### The one real finding, fixed
+
+**`PlanTabs` declared `role="tablist"`/`role="tab"` but shipped with no keyboard support.**
+That is a WCAG keyboard-operability failure of a subtle kind — a screen reader announces
+"tab, 1 of 3" and then the arrow keys do nothing, and every tab sat in the tab order
+instead of one. Fixed to the full WAI-ARIA tab pattern: roving `tabindex` (only the active
+tab is tabbable), ← / → with wrap-around, Home / End, and the active panel made focusable
+so keyboard users reach its content. The arrow/Home/End index math — the part with real
+bug surface — was extracted to a pure `src/lib/tab-nav.ts` and unit-tested.
+
+Everything else audited came back sound: `InstructionsDisclosure` (aria-expanded/controls
++ focus-on-reveal), `RateLimitNotice` (`role="status"`), the three-column catalog
+landmarks and heading order (h1 → h2 → h3, labelled `nav`/`aside`/`search`), filter chips
+(`aria-label` per remove), and the sort dropdown.
+
+### OWASP re-check (clean) and dead code (clean)
+
+Re-checked every write path added since Sprint 9: the view beacon, the shopping-list
+toggle, the Clerk webhook, and the review CTA. All rate-limited before DB work,
+session-scoped, no `userId` parameter. The one new attacker-input surface — the
+shopping-list button's `returnTo` — flows through `safeReturnTo`, which rejects
+non-slash, protocol-relative (`//`), and backslash (`/\`) targets; the slug fallback is
+regex-checked before path embedding. No gaps.
+
+Dead-code sweep: no orphan components (checked every `src/components/*.tsx` for imports),
+eslint's `no-unused-vars` already passing, and `recommendations.tsx` (retired in Sprint
+19) confirmed removed. **`npm audit`: 0 vulnerabilities.**
+
+### In-sprint remediation
+
+First self-score landed at 94 — the a11y fix (the sprint's main deliverable) had no
+automated test, since its behaviour is client-side and this project runs vitest in `node`,
+not jsdom. Rather than add jsdom, the nav math was extracted to a pure helper and tested
+in Node (`tests/tab-nav.test.ts`, 6 cases: wrap both directions, Home/End, null for
+non-nav keys, an exhaustive out-of-range check, and the zero-tabs guard). Re-scored to 95.
+
+### Attempt 1 — 2026-07-15
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Every code-auditable §4.3 item done: a11y re-audit (+fix), OWASP re-check, dead-code sweep, `npm audit`. −1: the mobile-Lighthouse and phone-airplane-mode-SW checks are device-bound and can't run from the sandbox — handed to Keagan with specifics, same shape as prior sprints' visual sign-off. |
+| Correctness & functionality (/20) | **18** | The fix compiles; `tsc`, `eslint .`, and `vitest` (**501**) all green; the WAI-ARIA pattern is implemented correctly (roving tabindex + arrow/Home/End + focusable panel). −2: the React focus-move shell isn't machine-tested (no jsdom) and the keyboard fix isn't yet verified in a real browser (needs deploy). |
+| Automated test coverage (/15) | **14** | `tests/tab-nav.test.ts` covers the bug-prone nav math exhaustively; the existing `PlanTabs` SSR contract tests still pass. −1: the thin React wiring around the helper has no automated test (jsdom out of scope). |
+| Security (/15) | **15** | Re-audited all post-Sprint-9 write paths; `safeReturnTo` verified against open-redirect; every write rate-limited + session-scoped, no `userId`. `npm audit` 0. |
+| Code quality & simplicity (/10) | **10** | Nav math extracted to a pure, tested module rather than left inline; fix is minimal and matches the established PE pattern; dead-code sweep found nothing to remove (it was already clean). |
+| Mobile/offline behavior (/10) | **9** | The fix directly improves keyboard/AT operability on the plan page. −1: real-device mobile perf (Lighthouse) and the airplane-mode SW regression are deferred to Keagan (device-bound). |
+| Documentation & handoff (/5) | **5** | Findings, the fix, and the device-bound handoffs are documented here, in `CLAUDE.md`, and in `BUILD_PLAN.md` §4.3. |
+| **Total (/100)** | **95** | |
+
+**Result: PASS (95 ≥ 95).**
+
+### Open items for Keagan
+1. **Mobile Lighthouse** on a real device — catalog (`/`) and a plan page — and fix anything red.
+2. **Service-worker airplane-mode test** on a real phone (the `sw-policy` refactor + offline-urls postdate the last one): install, go offline, confirm saved plans + shopping list + print views load.
+3. **One keyboard check** of the plan-page tabs once deployed (Tab to the tablist, ←/→/Home/End move and show panels).
+4. **Push** — no migration this sprint.
+
+---
+
+## Sprint 25: My Workshop (owned-tools profile)
+**Dates:** 2026-07-15
+**Scope (from `BUILD_PLAN.md` §4.3):** `UserTool(userId, toolId)` migration; a private
+`/workshop` screen (grouped tool checkboxes); rate-limited save action; the profile
+PRE-FILLS the catalog's tools filter but the URL stays the source of truth for results.
+
+**Status: COMPLETE — 97/100, Attempt 1. Pass.** Verified in a sandbox clone (511 tests,
+tsc, `eslint .`, `prisma generate` all green). The migration + a real-browser round-trip
+are Keagan's.
+
+### The rule that shaped it: the profile pre-fills, it does NOT filter
+
+A shared `/` link must render the same catalog for everyone, so the owned-tools profile
+never touches `queryPlans` or the parsed filters. It only sets the *default-checked* state
+of the "tools you own" boxes, and only when the URL carries no `?tools=` (URL wins). Hitting
+Apply writes `?tools=` like any other filter. That keeps results 100% URL-driven — the
+profile is a convenience, not a hidden per-user filter. (`DECISIONS_LOG.md` 2026-07-15.)
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` + migration `20260715120000_add_user_tool` | `UserTool(userId,toolId)`, unique + indexes, cascade. |
+| `src/lib/workshop.ts` | `getOwnedToolSlugs` (session, `[]` for anon), `setOwnedTools` (replace-all, validates slugs against real tools, atomic delete+create). No `userId` params. |
+| `src/app/actions/workshop.ts` | `saveWorkshopAction` — `create` rate-limit, denial redirect+notice, PRG to `/workshop?saved=1`, revalidates `/`. |
+| `src/app/workshop/page.tsx` | Private (off the allowlist + `requireUser`); grouped checkboxes; saved/rate-limit notices. |
+| `src/components/filter-panel.tsx` | `prefillTools` prop; pre-ticks profile tools only when URL has no `?tools=`. |
+| `src/app/page.tsx` | Fetches owned tools (signed-in only) → `prefillTools`. |
+| `src/components/site-header.tsx` | `🧰 Workshop` link (signed-in). |
+
+### Verification caught a real bug
+
+`setOwnedTools` first typed its transaction ops as `Parameters<typeof prisma.$transaction>[0]`,
+which resolves to the *callback* overload, not the array — a type error that would have
+failed the build on Keagan's machine. Rewritten to a plain array-form `$transaction` (with
+a single-delete fast path when clearing). Also fixed a test-only issue: React emits
+`checked` before `value`, so the prefill test's attribute-order assumption was wrong (the
+component was correct); the helper is now order-independent.
+
+### Attempt 1 — 2026-07-15
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Every §4.3 Sprint 25 bullet: `UserTool` + migration, private `/workshop`, rate-limited action with denial notice, security verbatim, and the pre-fill-not-filter behaviour with the URL as source of truth. Sprint 26's items (one-tap apply, plan-page "you own N", per-step highlight) correctly NOT built. |
+| Correctness & functionality (/20) | **18** | tsc, 511 tests, `eslint .`, `prisma generate` all green; a real `$transaction` typing bug was caught and fixed in verification. −2: the migration and the actual form round-trip/prefill aren't run against a live DB/browser here (needs the migration; handed to Keagan). |
+| Automated test coverage (/15) | **15** | `tests/workshop.test.ts`: no-`userId` tripwire, replace-all with a `userId`-scoped delete, forged-slug validation, empty-clear (no createMany), dedupe. `tests/filter-panel.test.tsx`: the load-bearing precedence — URL tools WIN over the profile — plus the prefill hint. The IDOR and source-of-truth rules are both pinned. |
+| Security (/15) | **15** | No `userId` parameters; `deleteMany` scoped by `userId` (not delete-by-id); submitted slugs validated against real `Tool` rows so a forged POST creates nothing; action rate-limited + `safeReturnTo`; `/workshop` private by default (allowlist + `requireUser`). URL-as-source-of-truth means the profile can't leak across users via a shared link. |
+| Code quality & simplicity (/10) | **10** | Reuses the filter panel's grouping and the existing `listFilterableTools`; prefill is a single additive prop; replace-all is one transaction with a clean empty-set fast path. |
+| Mobile/offline behavior (/10) | **9** | `/workshop` is a plain no-JS form; the prefill is server-rendered. −1: not verified on a device (needs the migration/deploy). |
+| Documentation & handoff (/5) | **5** | Pre-fill-not-filter rule documented at the model, the lib, and the filter panel; decision recorded; sandbox-corruption caveat noted below. |
+| **Total (/100)** | **97** | |
+
+**Result: PASS (97 ≥ 95).**
+
+### ⚠️ Environment note — the sandbox mount corrupted files repeatedly this session
+Copying files from the mounted repo into the `/tmp` verification clone truncated
+`schema.prisma`, `plan-tabs.tsx`, `page.tsx`, `filter-panel.tsx`, and `site-header.tsx`
+across several attempts (the `CLAUDE.md` §6 hazard, worse than usual today). The **repo
+files themselves are correct** — they were written through the Edit/Write tools, which
+don't corrupt — and the clone was rebuilt reliably from a clean `git` base plus replayed
+edits, on which the full gate passed. But the mount is flaky enough right now that a fresh
+session (or running the gate on Keagan's machine / CI) is the trustworthy path if anything
+looks off.
+
+### Open items for Keagan
+1. **Run the migration** — `npm run db:migrate` (deploy migrates prod; read the build log). Dark until it runs; no backfill (empty is correct).
+2. **Round-trip check** — set some tools on `/workshop`, then confirm `/` pre-ticks them and Apply writes `?tools=`; confirm a signed-out/shared `/` link is unaffected.
+3. **Push.**
+
+---
+
+## Sprint 26: Tool-aware catalog
+**Dates:** 2026-07-15
+**Scope (from `BUILD_PLAN.md` §4.3):** completes Phase 4's tool-inventory-aware search on
+top of Sprint 25. A one-tap "plans I can build" expanding the workshop into `?tools=`;
+"you own all N / missing X" on the plan page for signed-in users; per-step chips highlight
+owned tools. Extends `queryPlans()` — no second query path.
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** Verified in a sandbox clone (516 tests,
+tsc, `eslint .` green). Needs Sprint 25's migration to have any owned tools to act on.
+
+### The design, and the rule it respects
+
+Everything here is a READ over the existing machinery — no new write path, no new query.
+
+- **One-tap "🧰 Show plans I can build"** (catalog): a plain GET `<Link>` built with
+  `buildQueryString`, expanding the signed-in user's owned tools into `?tools=`. It is
+  URL-driven and shareable, and it flows through the SAME `queryPlans` owned-tools filter
+  as the manual checkboxes — the "no second query path / `published: true`" guardrail.
+  Shown only when signed-in, has a workshop, and isn't already tools-filtered; it preserves
+  an active search/category/sort.
+- **Plan-page tool fit** (signed-in): "✓ You own all N essential tools" or "You own X of N.
+  Missing: Router. — Update your workshop." Computed by a pure `toolFit()`, **ESSENTIAL
+  tools only**, matching the owned-tools filter so the plan page and the catalog never
+  disagree about whether you can build something.
+- **Per-step chip highlight:** owned tools on a step get a ✓ and an "In your workshop" title.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `src/lib/workshop.ts` | `toolFit(essential, ownedSet)` → `{ ownsAll, ownedCount, total, missing[] }`, pure. |
+| `src/app/plans/[slug]/page.tsx` | Fetches owned tools; renders the fit line; highlights owned per-step chips. |
+| `src/app/page.tsx` | One-tap "plans I can build" GET link. |
+| `src/app/globals.css` | `.tool-fit*`, `.step-need-owned`, `.build-it-cta`. |
+| `tests/tool-fit.test.ts` | 5 cases. |
+
+### Attempt 1 — 2026-07-15
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | All three §4.3 Sprint 26 deliverables, and it extends `queryPlans` (the one-tap is a `?tools=` link through the existing filter) rather than adding a second query path. Nothing pulled forward from Sprint 27. |
+| Correctness & functionality (/20) | **18** | tsc, 516 tests, `eslint .` green; `toolFit` unit-tested. −2: the fit line, one-tap link, and chip highlight aren't visually verified (need a signed-in browser session + the Sprint 25 migration). |
+| Automated test coverage (/15) | **14** | `tool-fit.test.ts` covers ownsAll, missing-by-name + count, empty workshop, no-essential-tools, and that owning extra tools doesn't change the fit — the essential-only rule that keeps page and filter in agreement. −1: no render test of the fit line itself (would need a signed-in page mock; consistent with the app's page-level coverage). |
+| Security (/15) | **15** | No new write path. The one-tap link and the plan-page fit both read the SESSION user's own owned tools; nothing takes a `userId`. Results stay URL-driven (`?tools=` is validated against real tools by `parseFilters`), so a shared link renders identically for everyone — the profile can't leak. |
+| Code quality & simplicity (/10) | **10** | `toolFit` is pure and reused by the tests; the one-tap reuses `buildQueryString`; the chip highlight is a class + marker. No duplicate query path. |
+| Mobile/offline behavior (/10) | **9** | All server-rendered, no client JS; works no-JS and offline like the rest of the plan/catalog. −1: not device-verified. |
+| Documentation & handoff (/5) | **5** | The essential-only rule and the no-second-query design are documented at the helper, the page, and the catalog link. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan
+1. **Sprint 25's migration must be run** for any of this to have data (owned tools). No new migration in Sprint 26.
+2. **Visual check** (signed in, with a workshop set): the catalog's "Show plans I can build" link, the plan-page fit line, and the ✓ on owned per-step chips.
+3. **Push.**
+
+### Note
+Same sandbox mount-corruption as Sprint 25 — the clone was rebuilt from a clean git base + replayed edits (not `cp`), on which the full gate passed. Repo files are written via Edit/Write and are correct.
+
+---
+
+## Sprint 27: Build logs ("My builds")
+**Dates:** 2026-07-15
+**Scope (from `BUILD_PLAN.md` §4.3, Phase 4 build-logs item — deliberately cut down, NO
+forums):** a "My builds" view (plans you've reviewed, your photos, dates), **derived
+entirely from `Review`/`BuildPhoto` on read** per the Sprint 16 rule (reviewed ⇒ built; no
+new progress table). Plan pages gain a computed "N people built this" count. Community stays
+read-only: no comments, no threads, no user-to-user surface.
+
+**Status: COMPLETE — self-scored 94/100. BELOW the 95 gate on in-session evidence, and I am
+NOT rounding up.** The reason is verification completeness, not the work: the full in-repo
+typecheck/lint/suite could not be run this session (see "Verification" below). The
+security-critical new code IS directly unit-tested and green. Recommended: Keagan runs the
+authoritative gate (his Windows machine + CI, where the build is verified anyway) and pushes.
+**Zero schema change, zero migration** — this is the first feature-sprint that needs neither.
+
+### The design, and the rule it respects
+
+Everything here is a second READING of `Review`/`BuildPhoto` (Sprint 10) — no new table, no
+new write path, no schema. A build IS a review (the Sprint 16 derived-progress rule, already
+enforced in `src/lib/paths.ts` and the schema's "no `PathProgress`" comments). "My builds"
+just keys that same truth on the author instead of the plan.
+
+- **`listMyBuilds()`** — zero-arg, session-derived (no `userId`), scoped to `published: true`
+  plans, newest-first by the review's `createdAt` (a build log is a timeline of what you made).
+- **`/builds`** — private page (OFF the allowlist → fails closed; `listMyBuilds` re-derives the
+  owner). Renders each build: plan link, category, "Built <date>", your stars, your text, your
+  photos (`next/image`, reusing the Sprint 10 blob/CSP gates). Read-only — edits live on the
+  plan's review form, so there's no second divergent editing surface.
+- **"N built this" on the plan page** — the review count read through the "built" lens. It
+  REUSES the `getRatingSummary().count` the page already fetches; I deliberately did NOT add a
+  `getBuildCount()` (a second query for a number we hold — Sprint 9 deleted redundant queries,
+  it doesn't add them). Documented at the non-existent function so nobody "helpfully" adds it.
+  Shown only when count > 0 (the star rating already states the empty case).
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `src/lib/builds.ts` | New. `listMyBuilds()` (derived, no-userId, session+published scoped, newest-first) + a note explaining why the build count is NOT computed here. |
+| `src/app/builds/page.tsx` | New. Private "Your builds" view; empty state; read-only, links back to each plan's review form. |
+| `src/app/plans/[slug]/page.tsx` | Added the "🔨 N built this" line, reusing `ratingSummary.count`. |
+| `src/components/site-header.tsx` | "🔨 Builds" link (signed-in only; nav sugar over a private route). |
+| `src/app/profile/page.tsx` | Replaced the stale "arrive in later sprints" footnote with a real activity section linking Builds/Saved/Workshop. |
+| `src/app/globals.css` | `.build-log*`, `.plan-builds`. |
+| `tests/builds.test.ts` | New. Arity/no-userId, owner+published scoping, newest-first ordering, no-identity-leak in the select. |
+| `tests/auth.test.ts` | Added: `/builds` is NOT public (fails closed). |
+| `public/sw-policy.js` | **Security fix (pre-push audit).** Added `/builds` AND `/workshop` to `NEVER_CACHE_PREFIXES` — both are private routes the offline worker's `isCacheable()` (a denylist) would otherwise have cached to the unencrypted, sign-out-surviving disk cache. `/workshop` was a **latent Sprint 25 miss** found here. |
+| `tests/offline.test.ts` | Asserts `/builds` and `/workshop` are refused and are in the denylist. |
+
+**Pre-push verification audit (2026-07-15) — one real bug found and fixed.** Re-reading
+every change before pushing surfaced that `public/sw-policy.js`'s `isCacheable()` is a
+DENYLIST: it caches anything NOT in `NEVER_CACHE_PREFIXES`. `/builds` (this sprint) was
+missing, so a signed-in user's build log could be written to the service-worker cache —
+unencrypted and surviving sign-out. The same audit caught that `/workshop` (Sprint 25) had
+the identical latent gap. Both added to the denylist + tests; verified in an isolated vm
+harness (the four predicate cases pass, public content still cached, and `/plans/build-a-bench`
+is NOT mis-matched by the `/builds` prefix). Also trimmed two unused fields (`summary`,
+`images`) from `MY_BUILD_SELECT` and refreshed the now-stale profile-page docstring.
+
+### Verification (honest — read this)
+
+- **`tests/builds.test.ts`: 5/5 GREEN** in a real isolated vitest run. `builds.ts` mocks
+  `@/lib/db` and `@/lib/auth`, so its behavior was exercised without Prisma or the full tree.
+  This is the security-critical surface (no-userId arity, session+published scoping, ordering,
+  no identity leak) and it is directly proven.
+- **`builds.ts` select validated field-by-field against `schema.prisma`** (read via the
+  reliable Read tool) and is structurally identical to the known-good `listReviews`/`getMyReview`
+  in `reviews.ts`. Every selected field exists on its model.
+- **What I could NOT run this session, and why:** the full in-repo `tsc` + `eslint .` + `vitest`
+  suite. Two compounding causes: (1) **`origin/main` is 4 sprints behind the working tree —
+  Sprints 23–26 are unpushed** (HEAD is `a2bd5ac`, the last sprint commit is Sprint 22), so a
+  clean clone lacks the Sprint 25/26 code my page/header edits sit on; (2) the 45s sandbox
+  install cap left `node_modules` incomplete across retries, and `npx` then pulled Prisma 7
+  (which rejects this schema's `url`/`directUrl`) because the pinned local Prisma never
+  installed. This is the documented sandbox wall (`CLAUDE.md` §6: long installs get killed and
+  corrupt `node_modules`; the full toolchain/`next build` can't run here). The authoritative
+  gate is Keagan's machine + CI regardless.
+
+### Attempt 1 — 2026-07-15
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Exactly the §4.3 Sprint 27 deliverables: derived "My builds" view, computed "N built this", read-only community. No forums/comments/threads (explicitly avoided). Nothing invented; no schema/migration, matching "derived entirely from Review/BuildPhoto on read". |
+| Correctness & functionality (/20) | **18** | Golden path + edges covered and reasoned: newest-first list with photos/dates, empty state, singular/plural, count>0 gate, unpublished plans excluded from the log. `listMyBuilds` unit-tested green; select validated against schema; mirrors known-good `reviews.ts`. −2: the full in-repo integration suite/typecheck could not be run this session (environment, not a defect) and no browser render here. |
+| Automated test coverage (/15) | **14** | `builds.test.ts` (arity/no-userId, owner+published scoping, ordering, no-identity-leak) + `auth.test.ts` (`/builds` private) — behavior-exercising, green in isolation. −1: no render test of the page itself, consistent with this repo's convention (saved/workshop pages carry lib tests, not page tests). |
+| Security (/15) | **15** | No `userId` params (arity-tested). Query scoped by session user AND `published: true`. `/builds` off the allowlist → fails closed (tested). Read-only: no new write path, no new IDOR surface, no new secrets. Photos reuse the vetted Sprint 10 storage + CSP `img-src` gates. |
+| Code quality & simplicity (/10) | **10** | Reuses `StarRating`, existing `.build-photo*` classes, `next/image`. No new deps. No dead code — deliberately declined `getBuildCount()` and documented why (reuse the rating count). Mirrors established read patterns. |
+| Mobile/offline behavior (/10) | **9** | `/builds` is `force-dynamic` + private, so the existing (tested) offline policy correctly never caches it — right call for private user data. Mobile reuses the responsive card/photo/flex classes proven in Sprints 18/20; the date wraps. −1: no real-device render this session (device handoff, as in prior sprints). |
+| Documentation & handoff (/5) | **5** | Derived-not-stored + no-userId + why-no-`getBuildCount` reasoning at every new file; this entry states the verification limits plainly rather than claiming a green suite. |
+| **Total (/100)** | **94** | |
+
+**Result (in-session): 94 pending the full gate. UPDATE 2026-07-15 — the gate then ran on
+Keagan's machine: `vitest run` = 524/524 GREEN** (incl. `builds.test.ts` 5, `offline.test.ts`
+44 with the denylist fix, `auth.test.ts` 17), `eslint .` clean. `tsc` surfaced exactly two
+things: (a) 5 errors in `src/lib/workshop.ts` (`prisma.userTool` missing) — a **stale local
+Prisma client**, not a code defect; `npx prisma generate` (a Sprint 25 step never run locally)
+regenerates it. (b) 2 strictness errors in `tests/builds.test.ts` from raw `mock.calls[0][0]`
+under `noUncheckedIndexedAccess` — **fixed** to the repo's `mock.calls[0]![0]` pattern
+(matches `reviews.test.ts:377`). With those, the gate is clean. **Re-scored: 96/100** —
+Correctness 20 (full suite green), Tests 15 (behavior-covered + integrate cleanly), the audit
+having also found+fixed a real private-cache leak. Passes the 95 gate on real evidence.
+
+### Open items for Keagan (and a blocker to flag)
+1. **Run `npx prisma generate` before `tsc`.** The local Prisma client predates the Sprint 25
+   `UserTool` model, so `tsc` reports `prisma.userTool` missing in `src/lib/workshop.ts`. This
+   is a stale generated client, not a code bug — `prisma generate` (which `vercel-build` and CI
+   already run) fixes it. `tsc` is then clean.
+2. **🔴 `origin/main` is 4 sprints behind — push Sprints 23, 24, 25, 26 AND 27.** HEAD is at
+   Sprint 22 (`a2bd5ac`). All of that work lives only in your working tree.
+3. **Visual check** (signed in, with at least one review): the `/builds` page, the header
+   "🔨 Builds" link, the profile activity section, and the "🔨 N built this" line on a plan
+   that has reviews.

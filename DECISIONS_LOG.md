@@ -1003,6 +1003,33 @@ Everything in the copy is true of the current build; no invented features, no co
 the project hasn't made. Public-facing copy remains Keagan's to approve and edit
 (`BUILD_PLAN.md` §2) — this is a reviewable draft on `noindex` pages, not a publish.
 
+### 2026-07-15 — Completion plan: Sprints 24–27 scheduled; Phase 4 partially opened
+**Status:** Confirmed by Keagan (four scope calls, all recommended options chosen).
+
+Context: Sprints 0–23 complete, 495 tests green, all §4.2 engineering debt closed,
+Sprint 19/21/22 migrations + step-tag content verified live in the database. Keagan
+directed a plan for the remaining $0 work, explicitly excluding branding (#8),
+commercial licensing, and credential rotation (all deferred to pre-go-live).
+
+1. **Sprint 24 = Hardening Pass 2, before new features.** Sprint 9's audit predates
+   the Sprint 17–23 redesign; the rebuilt UI ships unaudited until this runs.
+2. **Sprints 25–26 = My Workshop + tool-aware catalog.** The owned-tools profile
+   (`BUSINESS_PLAN.md` §10, deferred 2026-07-13) is scheduled, and its natural
+   completion — Phase 4's tool-inventory-aware search — is opened with it.
+   Guardrail carried into the sprint: the profile pre-fills the filter FORM; it
+   never silently filters a bare URL (a shared link renders the same for everyone).
+3. **Phase 4 partially opened: build logs ONLY.** Cut down to a derived "My builds"
+   view + a computed "N people built this" count (Sprint 16 rule: reviewed ⇒ built,
+   no progress table). **Forums stay closed** (moderation liability, no user base).
+   Also staying closed: AI customization (inference costs money — $0 rule), video
+   (no content to embed), metric units (US dimensional lumber doesn't convert
+   honestly; regional pricing is dead under the cost-tier rule — revisit on real
+   international demand).
+4. **Community plan submissions stay deferred.** Zero public users means nobody to
+   submit; who-owns-a-submitted-plan is a licensing decision not to be rushed.
+
+Recorded in `BUILD_PLAN.md` §4.3 (sprint scopes) and the §4 status table.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

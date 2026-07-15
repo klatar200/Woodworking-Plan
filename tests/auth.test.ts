@@ -219,6 +219,12 @@ describe('public route allowlist', () => {
     expect(await check('/saved')).toBe(false);
   });
 
+  it('SECURITY: /builds is NOT public — it is a per-person build log (Sprint 27)', async () => {
+    // A build log is a per-user timeline, unlike the per-plan review list which is
+    // public content. It must fail closed like every other user-owned surface.
+    expect(await check('/builds')).toBe(false);
+  });
+
   it('SECURITY: unknown/future routes are private by default — the allowlist fails CLOSED', async () => {
     // This is the property that matters. A route nobody has thought of yet must
     // require auth, so that forgetting to update the matcher can never silently

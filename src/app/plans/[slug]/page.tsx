@@ -5,6 +5,7 @@ import { getPlanBySlug } from '@/lib/plans';
 import { isPlanSaved } from '@/lib/saves';
 import { isPlanLiked } from '@/lib/likes';
 import { isOnShoppingList } from '@/lib/shopping-list';
+import { getOwnedToolSlugs, toolFit } from '@/lib/workshop';
 import { getCurrentUser } from '@/lib/auth';
 import { isAdmin } from '@/lib/admin';
 import { listReviews, getRatingSummary, getMyReview } from '@/lib/reviews';
@@ -73,22 +74,45 @@ export default async function PlanDetailPage({
   // Sprint 6. The page stays PUBLIC — an anonymous visitor sees the whole plan and
   // a "Save this plan" link that takes them to sign-in and back. §12 gates the
   // save, not the content.
-  const [user, saved, liked, onShoppingList, reviews, ratingSummary, myReview, admin] =
-    await Promise.all([
-      getCurrentUser(),
-      isPlanSaved(plan.id),
-      isPlanLiked(plan.id),
-      isOnShoppingList(plan.id),
-      listReviews(plan.id),
-      // COMPUTED on read (Prisma _avg/_count). There is no avgRating column, so there
-      // is nothing to backfill and nothing that can drift. See prisma/schema.prisma.
-      getRatingSummary(plan.id),
-      getMyReview(plan.id),
-      isAdmin(),
-    ]);
+  const [
+    user,
+    saved,
+    liked,
+    onShoppingList,
+    ownedToolSlugs,
+    reviews,
+    ratingSummary,
+    myReview,
+    admin,
+  ] = await Promise.all([
+    getCurrentUser(),
+    isPlanSaved(plan.id),
+    isPlanLiked(plan.id),
+    isOnShoppingList(plan.id),
+    // Sprint 26 — the signed-in user's workshop, to show tool fit. [] for anonymous.
+    getOwnedToolSlugs(),
+    listReviews(plan.id),
+    // COMPUTED on read (Prisma _avg/_count). There is no avgRating column, so there
+    // is nothing to backfill and nothing that can drift. See prisma/schema.prisma.
+    getRatingSummary(plan.id),
+    getMyReview(plan.id),
+    isAdmin(),
+  ]);
 
   const essentialTools = plan.tools.filter((t) => t.essential);
   const optionalTools = plan.tools.filter((t) => !t.essential);
+
+  // Sprint 26 — tool fit. Only computed when a signed-in user actually has a workshop;
+  // otherwise there's nothing honest to say ("you're missing everything" is noise). The
+  // owned set also drives the per-step chip highlight below.
+  const ownedSet = new Set(ownedToolSlugs);
+  const fit =
+    user && ownedToolSlugs.length > 0
+      ? toolFit(
+          essentialTools.map((pt) => ({ slug: pt.tool.slug, name: pt.tool.name })),
+          ownedSet,
+        )
+      : null;
 
 
   return (
@@ -118,6 +142,20 @@ export default async function PlanDetailPage({
             <StarRating average={ratingSummary.average} count={ratingSummary.count} />
           </a>
         </p>
+
+        {/* Sprint 27 — a read-only community signal: how many people have built this.
+            A build IS a review (reviewed ⇒ built, the Sprint 16 rule), so this is the
+            review count read through the "built" lens — no extra query, no denormalized
+            column (see src/lib/builds.ts). Shown only once someone has built it: "0 built
+            this" is noise, and the star rating already states the empty case. */}
+        {ratingSummary.count > 0 ? (
+          <p className="plan-builds">
+            <a href="#reviews-heading">
+              🔨 {ratingSummary.count}{' '}
+              {ratingSummary.count === 1 ? 'person has' : 'people have'} built this
+            </a>
+          </p>
+        ) : null}
 
         <div className="plan-actions">
           <SaveButton
@@ -229,6 +267,31 @@ export default async function PlanDetailPage({
       >
       <section data-tab="tools" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools">
         <h2>Tools</h2>
+
+        {/* Sprint 26 — how this plan fits YOUR workshop. Only for a signed-in user who
+            has set up their tools; based on ESSENTIAL tools, matching the catalog's
+            owned-tools filter so both tell the same story. */}
+        {fit ? (
+          <p
+            className={`tool-fit ${fit.ownsAll ? 'tool-fit-owned' : 'tool-fit-missing'}`}
+            role="status"
+          >
+            {fit.ownsAll ? (
+              <>
+                <strong>✓ You own all {fit.total} essential tools</strong> for this build.
+              </>
+            ) : (
+              <>
+                <strong>
+                  You own {fit.ownedCount} of {fit.total} essential tools.
+                </strong>{' '}
+                Missing: {fit.missing.join(', ')}.{' '}
+                <Link href="/workshop">Update your workshop</Link>
+              </>
+            )}
+          </p>
+        ) : null}
+
         <h3 className="sub-heading">Essential</h3>
         <ul className="detail-list">
           {essentialTools.map((pt) => (
@@ -358,11 +421,21 @@ export default async function PlanDetailPage({
                       <div className="step-needs-group">
                         <span className="step-needs-label">Tools</span>
                         <ul className="step-needs-list">
-                          {step.tools.map((st) => (
-                            <li key={st.id} className="step-need step-need-tool">
-                              {st.tool.name}
-                            </li>
-                          ))}
+                          {step.tools.map((st) => {
+                            // Sprint 26 — mark the ones you own, so a glance at a step
+                            // tells you what you still need to fetch.
+                            const owns = ownedSet.has(st.tool.slug);
+                            return (
+                              <li
+                                key={st.id}
+                                className={`step-need step-need-tool${owns ? ' step-need-owned' : ''}`}
+                                title={owns ? 'In your workshop' : undefined}
+                              >
+                                {st.tool.name}
+                                {owns ? <span aria-hidden="true"> ✓</span> : null}
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     )}

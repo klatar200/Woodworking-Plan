@@ -85,6 +85,14 @@ describe('SECURITY: private routes are NEVER cached', () => {
     expect(isCacheable(req('/profile'))).toBe(false);
   });
 
+  it('does not cache /builds — a per-person build log (Sprint 27)', () => {
+    expect(isCacheable(req('/builds'))).toBe(false);
+  });
+
+  it('does not cache /workshop — a user’s owned-tools profile (Sprint 25)', () => {
+    expect(isCacheable(req('/workshop'))).toBe(false);
+  });
+
   it('does not cache API routes', () => {
     expect(isCacheable(req('/api/health'))).toBe(false);
     expect(isCacheable(req('/api/anything/invented/later'))).toBe(false);
@@ -99,6 +107,8 @@ describe('SECURITY: private routes are NEVER cached', () => {
   it('the denylist covers every private surface the app has', () => {
     expect(NEVER_CACHE_PREFIXES).toContain('/saved');
     expect(NEVER_CACHE_PREFIXES).toContain('/profile');
+    expect(NEVER_CACHE_PREFIXES).toContain('/builds');
+    expect(NEVER_CACHE_PREFIXES).toContain('/workshop');
     expect(NEVER_CACHE_PREFIXES).toContain('/api');
     expect(NEVER_CACHE_PREFIXES).toContain('/sign-in');
     expect(NEVER_CACHE_PREFIXES).toContain('/sign-up');

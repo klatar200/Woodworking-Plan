@@ -116,8 +116,9 @@ state rather than assumptions made today.
 | Phase 2 (Sprints 10–14) | ✅ COMPLETE — every §10 item except affiliate links (blocked by Hobby, not oversight) |
 | Phase 3 (Sprints 15–16) | ✅ COMPLETE — cut-list optimizer + learning paths; 3 items cut to `FUTURE_IDEAS.md` |
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
-| Phase 4 | ⛔ NOT OPENED — do not start without Keagan explicitly opening it |
-| **Launch blockers** | 🔴 OPEN — see §4.2 below; these come due before anything else ships |
+| Phase 4 | 🟡 PARTIALLY OPENED 2026-07-15 — **build logs only** (Sprint 27). Everything else in Phase 4 stays closed |
+| Completion plan (Sprints 24–27) | ✅ COMPLETE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). See §4.3 |
+| **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (branding, copy approval, rotation at go-live, launch call) |
 | Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; brand name + contact are marked placeholders pending decision #8.) |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
@@ -250,12 +251,19 @@ new vendor. Depends on nothing.
   payment processor (§3 decision #6) and pricing (#7). All three come due together, and
   that is a conversation, not a sprint.
 
-### Phase 4 ⛔ NOT OPENED (to be broken into sprints if/when Keagan opens it)
+### Phase 4 🟡 PARTIALLY OPENED (2026-07-15, Keagan) — build logs only
 - AI-assisted plan customization (resize/re-species with recalculated cost/materials)
-- Community forums / build logs
-- Video content integration
-- International expansion (metric units, regional pricing)
-- Tool-inventory-aware search
+  — ⛔ CLOSED for now: inference costs money, violates the $0 rule
+- Community forums / **build logs** — 🟡 build logs OPENED as Sprint 27 (§4.3),
+  deliberately cut down; **forums stay CLOSED** (moderation liability, no user base)
+- Video content integration — ⛔ CLOSED for now: there is no video content to embed;
+  a content decision, not a dev task
+- International expansion (metric units, regional pricing) — ⛔ DEFERRED by decision:
+  US dimensional lumber (a "2x4") does not convert honestly to metric stock, so a
+  toggle risks misleading cut lists; regional pricing is dead under the cost-tier
+  rule anyway. Revisit on real international demand
+- Tool-inventory-aware search — 🟡 OPENED as Sprints 25–26 (§4.3); it is the natural
+  completion of the owned-tools profile `BUSINESS_PLAN.md` §10 already names
 
 ### 4.1 UI redesign & prototype integration ✅ COMPLETE (2026-07-13 / 2026-07-14)
 
@@ -295,7 +303,13 @@ are unchanged. Full decision record: `DECISIONS_LOG.md` 2026-07-13 and 2026-07-1
 The `Woodworking Wireframes.dc.html` file in the same folder is **historical
 design iteration, not spec** — where it contradicts the above, the decisions win.
 
-### 4.1.1 Post-launch-blocker backlog (opened 2026-07-14) — Sprints 17-23
+### 4.1.1 Post-launch-blocker backlog (opened 2026-07-14) — Sprints 17-23 ✅ COMPLETE
+
+**All seven sprints (17–23) are done — the backlog is closed.** Every sprint self-scored
+96–99 with evidence in `SPRINT_LOG.md`; test suite at **495 green**. Several land in the
+DB only after Keagan runs their migrations/seed and pushes (19, 21, 22 — see §4.2 and the
+per-row notes); Sprint 23's copy is a DRAFT for his approval. No further backlog sprints
+are open; Phase 4 remains ⛔ NOT OPENED.
 
 Keagan's UI/feature punch list from walking the live app. Four scope calls were
 escalated and answered first — see `DECISIONS_LOG.md` 2026-07-14 for the full
@@ -376,10 +390,94 @@ of them Keagan's (env target, credential rotation, branding, launch call).
   → all blocked by the launch-economics decision (Vercel Hobby, $0, no
   monetization). **The moment any of these appear, the project must be on a
   commercial-use-permitted host FIRST.**
-- Owned-tools profile (`UserTool` table + "my workshop" screen) — deferred to its
-  own sprint, per `DECISIONS_LOG.md` 2026-07-13.
+- ~~Owned-tools profile~~ — **SCHEDULED as Sprint 25** (§4.3, 2026-07-15).
+- Community plan submissions (user-uploaded plans + admin review queue) — **kept
+  deferred 2026-07-15 (Keagan)**: with zero public users there is nobody to submit,
+  and who-owns-a-submitted-plan is a licensing decision that shouldn't be rushed.
 - Makerspace/team accounts — blocked by the launch gate (paid tier).
-- Phase 4 features, and everything in `FUTURE_IDEAS.md`.
+- Remaining Phase 4 features (see the Phase 4 header), and `FUTURE_IDEAS.md`.
+
+### 4.3 Completion plan — Sprints 24–27 (opened 2026-07-15, Keagan's scope calls)
+
+Everything below is **$0, no new vendors, no branding dependency** — buildable now.
+The four scope decisions (hardening first; workshop + tool-aware catalog; build logs
+only from Phase 4; submissions stay deferred) are Keagan's, recorded in
+`DECISIONS_LOG.md` 2026-07-15. Standard rules apply: one sprint at a time, §5 DoD,
+§6 scorecard ≥95, §7 loop.
+
+**Sprint 24 — Hardening Pass 2.** ✅ COMPLETE — 95/100 (2026-07-15). Sprint 9's pass
+predated the redesign; Sprints 17–23 rebuilt most of what users touch. Code audit +
+fixes done:
+- **a11y (fixed):** `PlanTabs` declared `role="tablist"` but had no keyboard support —
+  now the full WAI-ARIA pattern (roving `tabindex`, ← / → wrap, Home / End, active panel
+  focusable). The nav math is extracted to `src/lib/tab-nav.ts` and unit-tested.
+  Re-audited `InstructionsDisclosure` (aria + focus-on-reveal — sound), `RateLimitNotice`
+  (`role="status"` — sound), the three-column catalog landmarks/heading order, filter
+  chips, and the sort dropdown — no other gaps.
+- **OWASP (clean):** re-checked every write path since Sprint 9 — view beacon,
+  shopping-list toggle, Clerk webhook, review CTA. `safeReturnTo` verified against
+  open-redirect (`//`, `/\`, non-slash); all writes rate-limited, session-scoped, no
+  `userId`.
+- **dead code / audit (clean):** no orphan components, eslint no-unused clean,
+  `recommendations.tsx` already removed, **`npm audit` 0 vulnerabilities**.
+- 501 tests green; typecheck + `eslint .` clean.
+
+**Deferred to Keagan — device-bound, can't run from the sandbox:** the mobile Lighthouse
+pass (real device, catalog + plan detail) and the service-worker airplane-mode regression
+on a real phone. Same handoff shape as prior sprints' visual sign-off. The `PlanTabs`
+keyboard fix also wants one real-browser keyboard check once deployed.
+
+**Sprint 25 — My Workshop (owned-tools profile).** ✅ COMPLETE — 97/100 (2026-07-15).
+`UserTool(userId, toolId)` model + migration; private `/workshop` screen (grouped tool
+checkboxes, same grouping/list as the filter panel); `saveWorkshopAction` rate-limited
+(`create` bucket) with the standard denial notice; `🧰 Workshop` link in the signed-in
+header. Standing security verbatim: no `userId` params (owner from session),
+`deleteMany` scoped by `userId`, submitted slugs validated against real tools, `/workshop`
+off the allowlist (private) + `requireUser`. **URL stays the source of truth** — the
+profile PRE-FILLS the filter panel's "tools you own" boxes only when the URL carries no
+`?tools=`; results are always URL-driven, so a shared link renders the same catalog for
+everyone. 511 tests green. **Needs the migration to run before it works** (§4.2). NOT built
+(that's Sprint 26): the one-tap "plans I can build", plan-page "you own N tools", per-step
+owned-tool highlight.
+
+**Sprint 26 — Tool-aware catalog (completes Phase 4's tool-inventory-aware
+search).** ✅ COMPLETE — 96/100 (2026-07-15). One-tap "🧰 Show plans I can build" on the
+catalog (signed-in + has workshop + not already tools-filtered) — a plain GET `<Link>`
+built via `buildQueryString`, expanding the profile into `?tools=`, so it's URL-driven,
+shareable, and flows through the SAME `queryPlans` filter path (no second query). Plan
+page shows tool fit for signed-in users: "✓ You own all N essential tools" or "You own X
+of N. Missing: Router." with a link to `/workshop`; per-step tool chips highlight the ones
+you own (✓). Fit logic is a pure `toolFit()` in `src/lib/workshop.ts`, unit-tested;
+ESSENTIAL-only, matching the owned-tools filter so the page and filter agree. 516 tests
+green. **Needs Sprint 25's migration** to have any owned tools to work with.
+
+**Sprint 27 — Build logs (Phase 4, deliberately cut down — NO forums).** ✅ CODE COMPLETE
+— self-scored 94/100, BELOW the 95 gate on in-session evidence (2026-07-15). A private
+`/builds` "My builds" view (plans you've reviewed, your photos, dates) + a "🔨 N built
+this" count on plan pages, **derived entirely from `Review`/`BuildPhoto` on read** (Sprint
+16 rule: reviewed ⇒ built; no new progress table, nothing to backfill). **ZERO schema
+change, ZERO migration** — the first feature-sprint needing neither. `listMyBuilds()` is
+zero-arg, session-derived, `published`-scoped, newest-first; the count reuses
+`getRatingSummary().count` (no `getBuildCount()` — a query for a number the page already
+holds). Community stays read-only: no comments, no threads, no user-to-user surface.
+**Why sub-gate:** `builds.ts` is unit-tested (5/5 green, isolated) and its select validated
+against the schema, but the full in-repo `tsc`/`eslint`/`vitest` could NOT run this session
+— `origin/main` is 4 sprints behind (23–26 unpushed, HEAD at Sprint 22), so a clean clone
+lacks the 25/26 code these edits build on, and the 45s install cap corrupted `node_modules`.
+Verification tooling, not a defect. Authoritative gate = Keagan's machine + CI. See
+`SPRINT_LOG.md` Sprint 27 and §4.2 item below.
+
+> 🔴 **Unpushed tail (found 2026-07-15).** `origin/main` HEAD is `a2bd5ac` (Sprint 22).
+> **Sprints 23, 24, 25, 26, and 27 all live only in the working tree and need pushing.**
+> `git push` is Keagan's (§2). Until pushed, CI and any clean clone reflect Sprint 22.
+
+**Keagan's parallel quick list ($0, minutes each, independent of the sprints):**
+
+1. Set `CLERK_WEBHOOK_SIGNING_SECRET` in Vercel + register the `user.deleted`
+   endpoint in Clerk (activates the deletion webhook — see `DEPLOYMENT.md`).
+2. Visual sign-off on Sprints 18/20 desktop layouts in a real browser.
+3. Review/approve the Sprint 23 About/FAQ copy (the brand name and contact line
+   stay placeholders until #8 — the copy itself can be approved now).
 
 ---
 

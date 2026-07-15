@@ -67,6 +67,18 @@ export function SiteHeader() {
             <Link href="/saved" className="btn btn-ghost">
               🔖 Saved
             </Link>
+            {/* Sprint 27 — the build log. Signed-in only, private route (off the
+                allowlist + requireUser); hiding it while signed out is nav sugar, not
+                access control. */}
+            <Link href="/builds" className="btn btn-ghost">
+              🔨 Builds
+            </Link>
+            {/* Sprint 25 — the owned-tools profile. Signed-in only (it's a private,
+                per-account screen); hiding it from signed-out users is nav sugar, not
+                access control — /workshop is off the allowlist and requires a session. */}
+            <Link href="/workshop" className="btn btn-ghost">
+              🧰 Workshop
+            </Link>
             {/* Clerk's menu: profile, account settings, sign out. Re-themed
                 (not rebuilt — see DECISIONS_LOG.md "UI redesign") to match the
                 mockup's avatar chip: accent-orange circle, ink initial. */}

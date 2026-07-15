@@ -76,13 +76,15 @@ continuing. Routine engineering choices (library for a solved problem, code
 structure, test framework, naming) → just decide.
 
 **One sprint at a time, in `BUILD_PLAN.md` §4 order.** Phases 0–3 are COMPLETE
-(see `BUILD_PLAN.md` §4 status table). Phase 4 is NOT open — do not start it
-without Keagan explicitly opening it. What remains before anything else ships is
-`BUILD_PLAN.md` §4.2 (launch blockers). No features that aren't in
-`BUSINESS_PLAN.md` — the previously-discussed-but-not-approved ideas (comments, tool
-substitution notes, lumber price sync, plan versioning, offline shopping mode) are
-**out of scope** until Keagan adds them to the business plan himself. Flag scope
-creep in one line.
+(see `BUILD_PLAN.md` §4 status table). **Sprints 24–27 are the scheduled completion
+plan** (`BUILD_PLAN.md` §4.3, opened 2026-07-15): Hardening Pass 2 → My Workshop →
+tool-aware catalog → build logs, in that order. Phase 4 is otherwise CLOSED — build
+logs and tool-aware search are its only opened items; forums, AI customization,
+video, and metric units stay shut (reasons in the §4 Phase-4 header). No features
+that aren't in `BUSINESS_PLAN.md` — the previously-discussed-but-not-approved ideas
+(comments, tool substitution notes, lumber price sync, plan versioning, offline
+shopping mode, community plan submissions) are **out of scope** until Keagan adds
+them to the business plan himself. Flag scope creep in one line.
 
 **The owned-tools PROFILE is deferred, not forbidden** (`DECISIONS_LOG.md`
 2026-07-13). It *is* named in `BUSINESS_PLAN.md` §10, so the old blanket exclusion
@@ -265,6 +267,50 @@ with it.
   rate-limit, no-throw, redirect notice); merged/by-plan GET toggle replaced the old
   collection scoping. 495 tests green. **Renders nothing until the migration runs** and a
   user explicitly adds a plan — saved plans do NOT auto-populate it.
+
+- **Sprint 26 (Tool-aware catalog): COMPLETE — 96/100.** One-tap "🧰 Show plans I can
+  build" (catalog, signed-in + has workshop + not already tools-filtered) — a GET `<Link>`
+  via `buildQueryString` expanding the profile into `?tools=`, reusing the SAME
+  `queryPlans` path (no second query, per the `published:true` lesson). Plan page shows
+  tool fit ("✓ You own all N essential tools" / "Missing: Router" → link to `/workshop`)
+  and highlights owned per-step tool chips (✓). `toolFit()` is a pure helper in
+  `src/lib/workshop.ts`, unit-tested; **ESSENTIAL-only, matching the owned-tools filter so
+  the page and the filter never disagree**. Results stay URL-driven — a shared `?tools=`
+  link renders identically for everyone. 516 tests green. Needs Sprint 25's migration.
+
+- **Sprint 25 (My Workshop — owned-tools profile): COMPLETE — 97/100.** `UserTool` model +
+  migration; private `/workshop` screen (off the allowlist + `requireUser`), `saveWorkshop`
+  action (`create` rate-limit, denial notice), `🧰 Workshop` in the signed-in header. Same
+  IDOR posture as saves: no `userId` params, `deleteMany` scoped by `userId`, forged slugs
+  validated away. **The profile only PRE-FILLS the filter panel's tool boxes when the URL
+  has no `?tools=`; results stay URL-driven so a shared link renders identically for
+  everyone** (`DECISIONS_LOG.md` 2026-07-15). 511 tests green. **Dark until the migration
+  runs.** Sprint 26 (tool-aware catalog) builds on this — not built here.
+
+- **Sprint 27 (Build logs — "My builds"): COMPLETE — 96/100. Gate PASSED on Keagan's machine
+  (524/524 vitest green, `eslint` clean, `tsc` clean after `prisma generate`).** The final
+  completion-plan sprint. A private `/builds` view + a "🔨 N built this" count on plan pages,
+  **DERIVED entirely from `Review`/`BuildPhoto` on read** (reviewed ⇒ built, the Sprint 16 rule)
+  — **ZERO schema change, ZERO migration**, the first feature-sprint that needs neither.
+  `listMyBuilds()` is zero-arg, session-derived, scoped to `published: true`, newest-first. The
+  build count REUSES `getRatingSummary().count` — I deliberately did **not** add a
+  `getBuildCount()` (a second query for a number the page already holds; documented at the absent
+  function). Community stays read-only: no comments, no threads, no forums. **Pre-push audit found
+  + fixed a real private-cache leak:** `/builds` (and latent-since-Sprint-25 `/workshop`) were
+  missing from the offline `NEVER_CACHE_PREFIXES` denylist, so a signed-in page could be written
+  to the unencrypted, sign-out-surviving SW cache — both added + tested. **Gotcha confirmed:**
+  `tsc` failed locally only because the generated Prisma client was stale (pre-`UserTool`);
+  `prisma generate` fixes it. 🔴 **Push 23, 24, 25, 26 AND 27** — the whole tail is unpushed.
+
+- **Sprint 24 (Hardening Pass 2): COMPLETE — 95/100.** Code audit + fixes of the surfaces
+  rebuilt in 17–23. **Real a11y fix:** `PlanTabs` had `role="tablist"` with no keyboard
+  support — now the full WAI-ARIA tab pattern (roving `tabindex`, ←/→ wrap, Home/End,
+  focusable active panel); nav math extracted to `src/lib/tab-nav.ts` and unit-tested.
+  OWASP re-check of every write path since Sprint 9 — clean (`safeReturnTo` defends
+  open-redirect; all writes rate-limited + session-scoped). Dead-code sweep + `npm audit`
+  — clean (0 vulns). 501 tests green. **Deferred to Keagan (device-bound):** mobile
+  Lighthouse on a real device, and the airplane-mode service-worker regression on a real
+  phone; plus one real-browser keyboard check of the tab fix once deployed.
 
 - **Sprint 23 (About/FAQ copy): COMPLETE (DRAFT) — 96/100.** Real copy on `/about` and
   `/faq`, grounded in the actual feature set; FAQ free-framing matches launch economics
@@ -520,8 +566,13 @@ because everything downstream trusts it.
   shopping list). Separate, so the sign-out wipe is one `caches.delete()` that cannot
   miss an entry.
 - **The worker still NEVER caches a private route on its own initiative.** `isCacheable()`
-  fails closed and refuses `/saved`, `/profile`, `/api/*`, `/shopping-list`, and the auth
-  flows. **Browsing to `/shopping-list` while online caches nothing.**
+  refuses `/saved`, `/profile`, `/builds`, `/workshop`, `/api/*`, `/shopping-list`, and the
+  auth flows. **Browsing to `/shopping-list` while online caches nothing.** ⚠️ `isCacheable`
+  is a DENYLIST (`NEVER_CACHE_PREFIXES` in `public/sw-policy.js`) with a second response gate
+  behind it — so **every new private route MUST be added to that list** (and to the
+  `tests/offline.test.ts` "covers every private surface" assertion). `/builds` (Sprint 27)
+  and `/workshop` (Sprint 25, added late in the Sprint 27 pre-push audit) are on it now.
+  Miss this and a signed-in page is cached to an unencrypted, sign-out-surviving disk cache.
 - **The private cache is written by exactly ONE path:** an explicit `DOWNLOAD_LIBRARY`
   message from the "Make available offline" button. **Consent is what separates a
   defensible cache from a silent one.** The worker re-checks every URL against

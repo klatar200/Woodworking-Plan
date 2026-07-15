@@ -13,6 +13,15 @@ interface Props {
   filters: PlanFilters;
   categories: Array<{ slug: string; name: string }>;
   tools: Array<{ slug: string; name: string; category: string | null }>;
+  /**
+   * Sprint 25 — the signed-in user's owned-tools profile (empty for anonymous).
+   *
+   * Used ONLY to pre-tick the "tools you own" checkboxes when the URL carries no tools
+   * filter, so a returning user can hit Apply once. It does NOT drive results — the URL
+   * does — so a shared link renders the same catalog for everyone. When the URL already
+   * has `?tools=`, that wins and the prefill is ignored.
+   */
+  prefillTools?: string[];
 }
 
 /**
@@ -33,8 +42,20 @@ interface Props {
  * The keyword query rides along as a hidden input so filtering does not silently
  * discard an active search.
  */
-export function FilterPanel({ query, filters, categories, tools }: Props) {
+export function FilterPanel({
+  query,
+  filters,
+  categories,
+  tools,
+  prefillTools = [],
+}: Props) {
   const count = activeFilterCount(filters);
+
+  // The URL wins. Only when it carries NO tools filter do we fall back to the profile
+  // to pre-tick the boxes — never to change what's shown, only what's pre-checked.
+  const toolsFromUrl = filters.ownedTools.length > 0;
+  const checkedTools = new Set(toolsFromUrl ? filters.ownedTools : prefillTools);
+  const showingPrefill = !toolsFromUrl && prefillTools.length > 0;
 
   // Group tools by their category ("Power Saw", "Hand Tool"...) — a flat list of
   // 30 checkboxes is a wall, and nobody reads a wall.
@@ -115,6 +136,13 @@ export function FilterPanel({ query, filters, categories, tools }: Props) {
           <p className="filter-hint">
             Tick what you have. You&rsquo;ll only see plans you can actually build
             &mdash; optional tools are ignored.
+            {showingPrefill ? (
+              <>
+                {' '}
+                <strong>Pre-filled from your workshop</strong> &mdash; press Apply to use
+                them.
+              </>
+            ) : null}
           </p>
 
           {[...grouped.entries()].map(([group, groupTools]) => (
@@ -127,7 +155,7 @@ export function FilterPanel({ query, filters, categories, tools }: Props) {
                       type="checkbox"
                       name="tools"
                       value={tool.slug}
-                      defaultChecked={filters.ownedTools.includes(tool.slug)}
+                      defaultChecked={checkedTools.has(tool.slug)}
                     />
                     <span>{tool.name}</span>
                   </label>

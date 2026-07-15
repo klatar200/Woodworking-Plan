@@ -3,6 +3,7 @@ import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
 import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
 import { getRatingSummaries } from '@/lib/reviews';
+import { getOwnedToolSlugs } from '@/lib/workshop';
 import { getCurrentUser } from '@/lib/auth';
 import { listSavedPlans } from '@/lib/saves';
 import { paginationWindow } from '@/lib/pagination';
@@ -58,6 +59,14 @@ export default async function CatalogPage({
   const savedIds = user
     ? new Set((await listSavedPlans()).map((saved) => saved.plan.id))
     : null;
+
+  /**
+   * Sprint 25 — the signed-in user's owned-tools profile, used ONLY to pre-tick the
+   * filter panel's "tools you own" boxes. Returns [] for an anonymous visitor. It does
+   * NOT touch `filters` or `queryPlans` — results stay URL-driven so a shared link
+   * renders the same catalog for everyone.
+   */
+  const ownedTools = user ? await getOwnedToolSlugs() : [];
 
   const filters = parseFilters(params, {
     validCategorySlugs: categories.map((c) => c.slug),
@@ -167,6 +176,7 @@ export default async function CatalogPage({
             filters={filters}
             categories={categories}
             tools={tools}
+            prefillTools={ownedTools}
           />
         </aside>
 
@@ -182,6 +192,26 @@ export default async function CatalogPage({
             categories={categories}
             tools={tools}
           />
+
+          {/* Sprint 26 — one-tap "plans I can build". Shown to a signed-in user who has a
+              workshop but isn't already filtering by tools. It's a plain GET link that
+              expands the profile into ?tools= params — URL-driven and shareable, and it
+              flows through the SAME queryPlans path as any tools filter (no second query).
+              Preserves an active search/category/sort. */}
+          {ownedTools.length > 0 && filters.ownedTools.length === 0 ? (
+            <p className="build-it-cta">
+              <Link
+                href={buildQueryString({
+                  query,
+                  filters: { ...filters, ownedTools },
+                  sort: sort === DEFAULT_SORT ? undefined : sort,
+                })}
+                className="btn btn-primary"
+              >
+                🧰 Show plans I can build
+              </Link>
+            </p>
+          ) : null}
 
           <p className="subtitle">
             {isNarrowed ? (
