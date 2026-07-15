@@ -101,7 +101,9 @@ export function InstallPrompt() {
       </span>
       <div className="flex-1 min-w-[12rem]">
         <p className="m-0 font-bold text-[0.9375rem]">Install Woodworking Plan</p>
-        <p className="m-0 text-[0.8125rem] text-[#7a5316]">
+        {/* Sprint 32: light keeps the warm brown exactly; dark gets a lighter warm brown so
+            it stays readable on the dark accent-tint. */}
+        <p className="m-0 text-[0.8125rem] text-[#7a5316] dark:text-[#c9a06a]">
           Faster access, works offline in the shop
         </p>
       </div>

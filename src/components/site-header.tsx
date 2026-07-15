@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-import { clerkAppearance } from '@/lib/clerk-appearance';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { UserMenu } from '@/components/user-menu';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 
 // Sprint 29 (UI migration, wave 1): the header, brand, nav, skip link and buttons
@@ -94,33 +94,10 @@ export function SiteHeader() {
             <Link href="/workshop" className={btnGhost}>
               🧰 Workshop
             </Link>
-            {/* Clerk's menu: profile, account settings, sign out. Re-themed
-                (not rebuilt — see DECISIONS_LOG.md "UI redesign") to match the
-                mockup's avatar chip: accent-orange circle, ink initial. */}
-            <UserButton
-              appearance={{
-                ...clerkAppearance,
-                elements: {
-                  avatarBox: {
-                    width: '36px',
-                    height: '36px',
-                    backgroundColor: '#e9a86c',
-                  },
-                },
-              }}
-            >
-              {/* Our own /profile route (memberSince etc.) isn't part of Clerk's
-                  hosted account UI, so it needs its own menu entry — otherwise
-                  moving "Profile" out of the header nav and into this dropdown
-                  would strand the page with no link to it. */}
-              <UserButton.MenuItems>
-                <UserButton.Link
-                  label="Profile"
-                  href="/profile"
-                  labelIcon={<span aria-hidden="true">👤</span>}
-                />
-              </UserButton.MenuItems>
-            </UserButton>
+            {/* Clerk's account menu + the theme toggle + our /profile link, as a client
+                island (Sprint 31). Onclick can't cross the server boundary, so the menu
+                lives in user-menu.tsx; this header stays a server component. */}
+            <UserMenu />
           </SignedIn>
         </nav>
       </header>

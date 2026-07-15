@@ -30,6 +30,15 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 /*
+ * Sprint 31 — class-based dark mode. `dark:` variants match under a `.dark` ancestor
+ * (the root layout puts `.dark` on <html> from the theme cookie). We barely need `dark:`
+ * utilities, though: the whole colour system is `var(--token)`, and the `.dark {}` block
+ * in globals.css just flips those tokens — so every utility AND the component-CSS residual
+ * re-theme automatically. `:where()` keeps the variant's specificity at zero.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
  * Color tokens — mapped to Tailwind's `--color-*` namespace so utilities like
  * `bg-bg`, `text-fg`, `border-border`, `text-accent-strong` resolve to the SAME
  * values already live.
@@ -52,6 +61,11 @@
   --color-accent-strong: var(--accent-strong);
   --color-accent-tint: var(--accent-tint);
   --color-accent-tint-border: var(--accent-tint-border);
+  /* Sprint 31: text/icon color that sits ON an --accent (orange) background. Dark ink in
+   * BOTH themes (orange stays light in dark mode), so on-accent text never flips to
+   * unreadable light-on-orange. */
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
   --color-danger: var(--danger);
   --color-ok: var(--ok);
   --color-pending: var(--pending);

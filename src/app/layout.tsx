@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { cookies } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SiteHeader } from '@/components/site-header';
 import {
@@ -49,9 +50,16 @@ export const viewport: Viewport = {
   themeColor: '#1a1a1a',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Sprint 31 — theme is read SERVER-SIDE from a cookie and stamped onto <html> before the
+  // page paints, so there is NO flash of the wrong theme (the trap with a localStorage read
+  // that only runs after hydration). Default is light: no cookie ⇒ no `dark` class. The
+  // toggle (theme-toggle.tsx) writes the cookie and flips the class live, no reload.
+  const theme = (await cookies()).get('theme')?.value;
+  const isDark = theme === 'dark';
+
   return (
     /**
      * `dynamic` IS THE CSP NONCE SWITCH. It is not optional here, and it is not
@@ -84,7 +92,7 @@ export default function RootLayout({
      * every route is already `force-dynamic`.
      */
     <ClerkProvider dynamic>
-      <html lang="en">
+      <html lang="en" className={isDark ? 'dark' : undefined} suppressHydrationWarning>
         <body>
           <SiteHeader />
           {children}

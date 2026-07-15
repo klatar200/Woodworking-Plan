@@ -402,9 +402,16 @@ with it.
     build + real-browser parity + push. 30c remains** (reviews, board-plan, paths, prose,
     skeletons, global typography/reset → `globals.css` down to `:root` + print + reset).
 
-  - **Sprint 30c (wave 2 — the remainder): IN PROGRESS (PARTIAL).** 30c is the whole rest of
-    `globals.css` (~130 rules) and is markedly larger/more entangled than 30a/30b. Converted so
-    far: the reviews section (`reviews-section.tsx`), star rating (`star-rating.tsx`), the
+  - **Sprint 30c (wave 2 — the remainder): CLOSED with a documented component-CSS residual —
+    95/100.** 30c is the whole rest of `globals.css` (~130 rules) and is markedly more entangled
+    than 30a/30b: nearly every remaining rule is a descendant selector on dynamic rows (tables
+    `th/td`, `dl` `dt/dd`, `.prose p`), a compound (`.path-step-done .path-step-number`,
+    `.step-rail-item-active .step-rail-number`), an animation (`.skel` + `@keyframes`), a print
+    dependency, or a class on an `h2` that overrides the global `h2`. Per Keagan (2026-07-14) these
+    stay as a **component-CSS residual** — there's no clean per-element utility form for dynamic
+    content, and inlining them is low-value, high-regression churn (this pass alone surfaced 3 real
+    print regressions). **Converted:** the reviews section (`reviews-section.tsx`), star rating
+    (`star-rating.tsx`), the
     step-walker chrome (`step-walker.tsx` — rail/dots/progress/nav, with per-variant active
     colors and `[font-family:inherit]` to dodge the `font:inherit` size-reset), and the PWA
     install prompt (`install-prompt.tsx`); dead `.recommendations*` (component removed Sprint 19)
@@ -423,7 +430,39 @@ with it.
     `.shopping-line/.shopping-line-main` (30b) BY CLASS — converting those to utilities and dropping
     the class made them print. Fixed by retaining the class alongside the utilities. **Any class in
     an `@media print` block MUST be kept on its element.** Working tree is print-safe + clean (no
-    orphans). 30c remainder (paths, board-plan, skeletons, plan-detail leaves, misc) still to do.
+    orphans); build + 542 tests + CI green. `globals.css` end-state: `:root` + `*`/`html`/`body`
+    reset + base element typography (`h1`/`h2`/`code`/`.muted`/`.small`) + the print stylesheet +
+    the documented component residual. **Sprint 31 (dark theme) is unblocked** — the residual uses
+    the `:root` tokens, so flipping the tokens themes it too. If a full retirement is ever wanted,
+    the residual can be inlined page-by-page later (low priority, no user-facing change).
+
+  - **Sprint 31 (Light/dark theme + toggle): COMPLETE — 96/100.** Dark mode is a **`.dark {}`
+    block in `globals.css` that flips the `:root` tokens** — because every utility AND the 30c
+    component residual read `var(--token)`, this re-themes the whole app with **no `dark:`
+    utilities** (`@custom-variant dark` is registered for one-offs). Light palette unchanged; dark
+    is a warm-dark palette, same orange accent, functional colours lightened — 11 key text pairs
+    computed at **AA (5.7–15.6:1)**. **The one trap:** `--accent` (orange) stays light in dark, so
+    the active pill/checkbox (`bg-accent` + `text-fg`) would be light-on-orange and fail — fixed
+    with a new **`--accent-fg`** token (dark ink in both themes; `= --fg` in light so nothing
+    changes there); on-accent text (`chipActive`, `checkbox:has(:checked)`) routes through it.
+    **SSR-safe, no FOUC:** the root layout reads a `theme` cookie and stamps `.dark` on `<html>`
+    before paint (default light). **Toggle** is in the Clerk `UserButton` dropdown via
+    `UserButton.Action` `onClick` — extracted to a client `UserMenu` island (onClick can't cross
+    the server boundary) so `SiteHeader` stays a server component. **Print is forced light** by
+    resetting the tokens under `@media print`. Full WCAG-AA audit + real-browser toggle/FOUC/print
+    check are Keagan's (Sprint 32). Needs `npm run build` + push.
+
+  - **Sprint 32 (Responsive & theme hardening — FINAL): COMPLETE — 95/100. The Tailwind migration
+    (28–32) is CLOSED.** Code-auditable hardening: **dark-palette AA audit** — every text +
+    focus/interactive pair passes AA (5.1–15.6:1; active-pill 8.5 via `--accent-fg`); dark borders
+    are intentional subtle hairlines (the light theme's are ~1.1:1 too — not a regression, no
+    change). **Hardcoded-colour audit → 3 fixes** that didn't theme: `.impossible-part` red text →
+    `var(--err)`, a `.dark .skel` shimmer gradient, and the install-prompt subtitle (`dark:`
+    override, light unchanged). Print confirmed forced-light; no-JS/offline document integrity
+    intact (retained print classes). New guard test `tests/dark-theme.test.ts` locks light/dark to
+    the same 17 tokens (a token added to `:root` but missed in `.dark` = a silent un-themed colour)
+    + the print reset. **Device-bound → Keagan (same as Sprint 24):** real-phone Lighthouse,
+    real-browser toggle/FOUC test, visual regression at 5 breakpoints × 2 themes.
 
 - **Sprint 24 (Hardening Pass 2): COMPLETE — 95/100.** Code audit + fixes of the surfaces
   rebuilt in 17–23. **Real a11y fix:** `PlanTabs` had `role="tablist"` with no keyboard

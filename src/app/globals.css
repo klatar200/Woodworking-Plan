@@ -27,10 +27,68 @@
   --accent-strong: #c96a2e;
   --accent-tint: #fdf1e0;
   --accent-tint-border: #e9c98a;
+  /* Sprint 31: text/icon color ON an --accent (orange) background — dark ink in BOTH
+   * themes, because the accent stays a light orange in dark mode. `--accent-soft` is the
+   * soft cream some rules used as `var(--accent-soft, #fdf1e0)`; now a real token. */
+  --accent-fg: #1a1a1a;
+  --accent-soft: #fdf1e0;
   --danger: #b5551c;
   --ok: #17803d;
   --pending: #b45309;
   --err: #b3261e;
+}
+
+/*
+ * Sprint 31 — DARK THEME (DECISIONS_LOG.md 2026-07-16, Keagan's direction). This is the
+ * WHOLE theme: every utility and the component-CSS residual read the tokens below, so
+ * flipping them here re-themes the entire app with no `dark:` utilities. Derived from the
+ * same cream/ink/orange system — warm-dark surfaces, warm off-white text, the SAME orange
+ * accent — and aimed at WCAG AA. Functional colours (danger/ok/pending/err) are lightened
+ * so they read on a dark surface. `--accent-fg` stays dark ink (orange is light in both
+ * themes). **AA contrast + a real-browser pass are Keagan's to verify (design:accessibility-
+ * review, Sprint 32) — these values are a first draft to tune, not a final call.**
+ */
+.dark {
+  --bg: #17140f;
+  --surface: #221e17;
+  --fg: #f0ece4;
+  --muted: #b3ab9f;
+  --muted-2: #8f8578;
+  --border: #38332b;
+  --border-strong: #4b453a;
+  --accent: #e9a86c;
+  --accent-strong: #f2b884;
+  --accent-tint: #2b2318;
+  --accent-tint-border: #5c4a2c;
+  --accent-fg: #1a1a1a;
+  --accent-soft: #2b2318;
+  --danger: #e58a5c;
+  --ok: #5cc27a;
+  --pending: #d99b3f;
+  --err: #e8756c;
+}
+
+/*
+ * Sprint 31 — PRINT IS ALWAYS LIGHT/high-contrast, whatever theme is on screen. Printing
+ * the dark palette wastes toner and is unreadable (a standing print non-negotiable). This
+ * forces white paper + black ink by resetting the tokens in print, so both `:root` and
+ * `.dark` render light on paper. The rest of the print stylesheet is unchanged.
+ */
+@media print {
+  :root,
+  .dark {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --fg: #000000;
+    --muted: #333333;
+    --muted-2: #333333;
+    --border: #999999;
+    --border-strong: #666666;
+    --accent-tint: #ffffff;
+    --accent-tint-border: #999999;
+    --accent-soft: #ffffff;
+    --accent-fg: #000000;
+  }
 }
 
 *,
@@ -818,6 +876,13 @@ code {
   border-radius: 3px;
 }
 
+/* Sprint 32: dark shimmer — the light gradient above would be light-gray ghost blocks on a
+   dark page. Dark grays that read as "loading" against the dark surface. */
+.dark .skel {
+  background: linear-gradient(90deg, #2a251d 25%, #373127 37%, #2a251d 63%);
+  background-size: 400px 100%;
+}
+
 /* Motion sensitivity (WCAG 2.3.3): a static block says "loading" just as well. */
 @media (prefers-reduced-motion: reduce) {
   .skel {
@@ -1083,7 +1148,9 @@ code {
 }
 
 .impossible-part {
-  color: #b3261e;
+  /* Sprint 32: was hardcoded #b3261e (unreadable dark-red-on-dark in dark mode) — now the
+   * --err token, which lightens to a readable red in dark. Light is unchanged (--err = #b3261e). */
+  color: var(--err);
 }
 
 .board-group {

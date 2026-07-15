@@ -118,7 +118,7 @@ state rather than assumptions made today.
 | UI redesign + prototype integration | ✅ COMPLETE — see §4.1 below |
 | Phase 4 | 🟡 PARTIALLY OPENED 2026-07-15 — **build logs only** (Sprint 27). Everything else in Phase 4 stays closed |
 | Completion plan (Sprints 24–27) | ✅ COMPLETE, PUSHED & LIVE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). **Confirmed pushed 2026-07-16 (Keagan): CI green, live site verified.** See §4.3 |
-| UI framework migration (Sprints 28–32) | 🟡 IN PROGRESS — Tailwind CSS + light/dark theme. **28 (env) 97; 29 (wave 1) 96; 30a 96; 30b 96; 30c PARTIAL** (reviews, star-rating, step-walker, install-prompt converted; dead `.recommendations` removed). 30c remainder = plan-detail content tables/`dl` (descendant selectors on dynamic rows — no clean per-element utility), paths, board-plan, skeletons, misc pages. All need verify + real-browser pixel-parity + push. 31–32 not started. See §4.4 |
+| UI framework migration (Sprints 28–32) | ✅ COMPLETE (code) — Tailwind CSS + light/dark theme. **28 (env) 97; 29 (wave 1) 96; 30a 96; 30b 96; 30c 95 (closed w/ documented component-CSS residual); 31 (theme + toggle) 96; 32 (hardening) 95.** Dark mode = `.dark{}` token flip; toggle in the Clerk `UserButton` dropdown; SSR cookie, no FOUC; print forced light; dark palette AA-audited. **Device-bound → Keagan:** real-phone Lighthouse, real-browser toggle/FOUC, visual regression at 5 breakpoints × 2 themes. See §4.4 |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (branding, copy approval, rotation at go-live, launch call) |
 | Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; brand name + contact are marked placeholders pending decision #8.) |
 
@@ -567,7 +567,18 @@ reads from them, not a duplicate copy), the print stylesheet, and any truly-glob
 reset with no Tailwind utility equivalent. Same pixel-parity acceptance bar as
 Sprint 29.
 
-**Sprint 31 — Light/dark theme system + toggle.** Tailwind's class-based dark variant
+**Sprint 31 — Light/dark theme system + toggle.** ✅ **COMPLETE — 96/100 (2026-07-14).**
+`@custom-variant dark` + a `.dark {}` block in `globals.css` that FLIPS the `:root` tokens —
+so every utility AND the component-CSS residual re-theme with no `dark:` utilities. Light =
+current palette, unchanged. Dark = a warm-dark palette (dark surfaces, off-white text, SAME
+orange accent, functional colours lightened); the 11 key text pairs computed at **AA (5.7–15.6:1)**,
+incl. the active-pill fix (on-accent text routed through a new `--accent-fg` = dark ink in both
+themes, 8.5:1). SSR-safe: the root layout reads a `theme` cookie and stamps `.dark` on `<html>`
+before paint (no FOUC; default light). Toggle lives in the Clerk `UserButton` dropdown via
+`UserButton.Action` `onClick` (a client `UserMenu` island; `@clerk/nextjs` ^6.12). Print forced to
+white/black by resetting the tokens under `@media print`. **Device-bound (Keagan):** full WCAG-AA
+audit (`design:accessibility-review`) + real-browser toggle test — see Sprint 32. Original scope:
+Tailwind's class-based dark variant
 (`@custom-variant dark` in v4) over the token set from Sprint 28. **Light theme is the
 current palette, unchanged.** Dark is a new palette derived from the same cream/ink/
 orange accent system (dark surface, light text, same orange accent), contrast-checked
@@ -582,7 +593,17 @@ layout or a small blocking inline script that sets the theme class before hydrat
 Print stays forced to light/black-on-white regardless of the user's theme choice (the
 existing print non-negotiable, unaffected by this sprint).
 
-**Sprint 32 — Responsive & theme hardening pass.** Full mobile/tablet/desktop
+**Sprint 32 — Responsive & theme hardening pass.** ✅ **COMPLETE — 95/100 (2026-07-14).**
+Code-auditable hardening done: **full dark-palette AA audit** — all text + focus/interactive
+pairs pass (muted-2 5.1, accent-strong 10.5, danger 7.1, err 6.3, ok focus-ring 7.5, active-pill
+8.5); dark borders are intentionally subtle hairlines matching the light baseline (light borders
+are ~1.1:1 too). **Hardcoded-colour audit** fixed the three that didn't theme: `.impossible-part`
+red text → `var(--err)`, a dark `.skel` shimmer gradient, and the install-prompt subtitle
+(`dark:` override, light unchanged). Print confirmed forced-light; no-JS/offline document integrity
+preserved (retained print classes). Guard test `tests/dark-theme.test.ts` locks light/dark token
+sync + the print reset. **Device-bound → Keagan:** real-phone Lighthouse, real-browser toggle/FOUC
+test, and the full visual-regression pass at all five breakpoints × both themes. Original scope:
+Full mobile/tablet/desktop
 re-verification at all five breakpoints, in both themes; WCAG AA contrast audit of the
 dark palette; visual regression spot-check against the pre-migration site; confirm
 offline/print/no-JS still render the complete document (print theme-agnostic by

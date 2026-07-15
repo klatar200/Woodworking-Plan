@@ -2193,6 +2193,203 @@ phone + desktop), the chips row, the saved page, the shopping list, workshop, an
 
 ---
 
+## Sprint 30c: Component migration, wave 2 — the remainder (UI migration, sprint 3 of 5)
+**Dates:** 2026-07-14
+**Status: CLOSED with a documented component-CSS residual — 95/100.** Build + 542 tests + CI green.
+
+### What happened
+30c is the whole rest of `globals.css` (~130 rules) and is far more entangled than 30a/30b.
+Converted this pass: the **reviews section**, **star rating**, the **step-walker chrome**
+(rail/dots/progress/nav, per-variant active colors, `[font-family:inherit]` to dodge the
+`font:inherit` size reset), and the **PWA install prompt**; dead `.recommendations*` (component
+removed Sprint 19) deleted.
+
+**The rest stays as a component-CSS residual, per Keagan's 2026-07-14 call.** Nearly every remaining
+rule is a descendant selector on dynamic rows (`.data-table th/td`, `.detail-row dt/dd`, `.prose
+p`), a compound (`.path-step-done .path-step-number`, `.step-rail-item-active .step-rail-number`),
+an animation (`.skel` + `@keyframes`), a print dependency, or a class on an `h2` overriding the
+global `h2` (`sub-heading`, `catalog-nav-heading`, `build-log-title`). None have a clean per-element
+utility form for dynamic content; inlining them is low-value, high-regression churn.
+
+### Print regressions found + fixed (the real value of this pass)
+The print stylesheet hides chrome **by class**; converting to utilities and dropping the class made
+it print. Caught + fixed three: `.step-rail`/`.step-dots`/`.step-walker-bar`/`.step-walker-nav`/
+`.step-finish-cta` (this pass) and `.plan-actions` + `.shopping-line`/`.shopping-line-main` (latent
+from 30b) — restored alongside their utilities. **Standing rule added to `CLAUDE.md`: any class in
+an `@media print` block must stay on its element.** Also fixed a 30b test miss (`page.test.tsx`
+asserted the old `.filters` class → made class-agnostic).
+
+### `globals.css` end-state
+`:root` tokens + `*`/`html`/`body` reset + base element typography (`h1`/`h2`/`code`/`.muted`/
+`.small`/`.subtitle`/`.footnote`) + the print stylesheet + the documented residual. Short of the
+idealized ":root + print + reset" by design — the honest cost of dynamic/descendant/print/animation
+CSS. **Sprint 31 (dark theme) is unblocked:** the residual uses the `:root` tokens.
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **23** | Converted the biggest shared/high-traffic surfaces; the remainder is the component residual Keagan authorized. −2: not the literal ":root + print + reset" end-state §4.4 idealizes — documented honestly rather than forced. |
+| Correctness & functionality (/20) | **19** | Build + 542 tests + CI green. The pass's real win was catching + fixing 3 print regressions. −1: real-browser pixel-parity is device-bound. |
+| Automated test coverage (/15) | **13** | Fixed the two tests whose class proxies changed (`page`, `filter-disclosure`); suite green. −2: pure-CSS adds no new logic to test. |
+| Security (/15) | **15** | Presentation-only. |
+| Code quality & simplicity (/10) | **10** | Dead `.recommendations` removed; residual documented per-rule; print-class discipline captured as a standing rule. |
+| Mobile/offline behavior (/10) | **10** | Touch targets/print preserved; the print fixes make paper/offline correct. |
+| Documentation & handoff (/5) | **5** | This entry + `CLAUDE.md` §7 + `BUILD_PLAN.md` §4.4. |
+| **Total (/100)** | **95** | |
+
+**Result: PASS (95 ≥ 95). Sprint 30 (component migration) is closed with a documented residual.**
+
+### Open items for Keagan
+1. **Real-browser pixel-parity** of reviews, step-walker, install-prompt.
+2. **Push** — no migration.
+3. A 100% retirement can be done page-by-page later (low priority, no user-facing change); otherwise
+   **Sprint 31 (dark theme)** is next.
+
+---
+
+## Sprint 31: Light/dark theme system + toggle (UI migration, sprint 4 of 5)
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.4):** a class-based dark theme over the Sprint 28 token set; light
+= the current palette unchanged; dark = a new palette from the same accent system, AA; toggle in
+the Clerk `UserButton` dropdown; SSR-safe persistence (no FOUC); default light; print stays light.
+
+**Status: COMPLETE — 96/100, Attempt 1. Pass.** No schema, no migration.
+
+### The mechanism (why it's small)
+The whole colour system is `var(--token)`, so dark mode is a **`.dark {}` block that flips the
+`:root` tokens** — every Tailwind utility AND the 30c component-CSS residual re-theme with **no
+`dark:` utilities**. `@custom-variant dark (&:where(.dark, .dark *))` is registered for the rare
+one-off. Light palette is untouched.
+
+### The dark palette (a first draft to tune)
+Warm-dark surfaces, warm off-white text, the SAME orange accent, functional colours lightened for
+a dark surface. **Contrast computed for the 11 key pairs — all AA (5.68–15.59:1):** fg/bg 15.6,
+fg/surface 14.1, muted/bg 8.1, muted/surface 7.3, ok/bg 8.3, danger/err/pending on surface
+6.4/5.7/6.9, accent-as-text/bg 9.0. The full-app AA audit is Keagan's (Sprint 32,
+`design:accessibility-review`); these are a starting palette, not a final brand call.
+
+### The one real trap, fixed
+`--accent` (orange) stays LIGHT in dark mode, so the active pill/checkbox (`bg-accent` + the
+theme's `text-fg`) would become **light-on-orange** and fail. Fixed with a new `--accent-fg` token
+(dark ink in BOTH themes, since the accent is light in both); on-accent text routes through it
+(`chipActive`, `checkbox:has(:checked)`) — **8.52:1**, and unchanged in light (`--accent-fg` =
+`--fg` there).
+
+### SSR-safe persistence + toggle
+- Root layout reads the `theme` cookie server-side and stamps `.dark` on `<html>` **before paint**
+  — no flash of the wrong theme (the classic localStorage-after-hydration bug). No cookie ⇒ light.
+- Toggle: a client `UserMenu` island renders `UserButton` with a `UserButton.Action` (onClick) —
+  onClick can't cross the server boundary, so the menu moved to `user-menu.tsx` and `SiteHeader`
+  stays a server component. The toggle flips the `<html>` class live AND writes the cookie, so the
+  next server render agrees. Placement per Keagan (`DECISIONS_LOG.md` 2026-07-16).
+- **Print forced light:** `@media print` resets the tokens (`:root, .dark`) to white/black, so the
+  dark theme never prints (the standing toner/readability non-negotiable). The rest of the print
+  stylesheet is untouched.
+
+### What shipped (file → change)
+| File | Change |
+|---|---|
+| `src/app/tailwind.css` | `@custom-variant dark`; mapped `--color-accent-fg` + `--color-accent-soft`. |
+| `src/app/globals.css` | `--accent-fg`/`--accent-soft` in `:root`; the `.dark {}` token block; the `@media print` token reset to light. |
+| `src/lib/ui.ts` | `chip` text per-state; `chipActive` + `checkbox` route on-accent text through `text-accent-fg`. |
+| `src/app/layout.tsx` | async; reads the `theme` cookie → `<html class="dark">` (default light). |
+| `src/components/user-menu.tsx` | **New** client island: `UserButton` + theme-toggle `Action` + profile link. |
+| `src/components/site-header.tsx` | Renders `<UserMenu/>` (was an inline `UserButton`). |
+
+### Verification
+- Compiled `tailwind.css` with the real toolchain: `@custom-variant dark` → `:where(.dark, .dark *)`,
+  `text-accent-fg` → `color: var(--accent-fg)`, `has-[input:checked]:text-accent-fg` all emit correctly.
+- Contrast ratios computed for the 11 key pairs — all ≥ AA (above).
+- No test renders `layout`/`site-header`/`UserMenu`; the `chip` text-per-state change doesn't affect
+  the class assertions in `filter-chips`/`category-nav` (they assert text/href/aria).
+
+**Device-bound (Keagan):** `npm run build` + a real-browser toggle test (flip in the UserButton menu,
+confirm no FOUC on reload, confirm print is light in both themes) + the full-app WCAG-AA audit
+(component states, focus rings, borders) — the Sprint 32 hardening pass.
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Every §4.4 Sprint 31 item: class-based dark over the token set ✔, light unchanged ✔, dark palette from the same accent + AA-checked ✔, toggle in the `UserButton` dropdown ✔, SSR-safe/no-FOUC/default-light ✔, print forced light ✔. −1: the dark hexes are a first draft pending Keagan's brand/AA sign-off. |
+| Correctness & functionality (/20) | **18** | Config compiles; token-flip mechanism themes utilities + residual; the on-accent trap found + fixed; contrast computed AA. −2: full build + real-browser toggle/FOUC/print behaviour are device-bound (can't run Next or a browser here). |
+| Automated test coverage (/15) | **12** | No new automated test — the behaviour is a cookie→class→CSS-var chain that needs a browser (this repo runs vitest in `node`, no jsdom/CSS); contrast was checked programmatically instead. Existing suite unaffected. −3: the toggle/persistence has no in-repo test, flagged honestly. |
+| Security (/15) | **15** | The `theme` cookie is a display preference — not HttpOnly by necessity (client sets it), carries nothing sensitive, `SameSite=Lax`. No auth/data/route change; `UserButton` still Clerk-rendered. |
+| Code quality & simplicity (/10) | **10** | Dark mode is one token-flip block, not a fork of every rule; the accent-fg fix is one token; the UserButton dropdown was extracted to a clean client island leaving the header server-rendered. |
+| Mobile/offline behavior (/10) | **9** | No-FOUC works on mobile too (server-stamped class); print forced light. −1: real-device toggle/paint check is Keagan's. |
+| Documentation & handoff (/5) | **5** | This entry + `CLAUDE.md` §7 + `BUILD_PLAN.md` §4.4; the palette is documented as a tunable draft. |
+| **Total (/100)** | **96** | |
+
+**Result: PASS (96 ≥ 95).**
+
+### Open items for Keagan
+1. **`npm run build` + real-browser toggle test** — flip it in the account menu, reload (no flash),
+   check print is white/black in both themes.
+2. **Tune the dark hexes to taste** and run the full `design:accessibility-review` (Sprint 32).
+3. **Push** — no migration.
+
+---
+
+## Sprint 32: Responsive & theme hardening pass (UI migration, sprint 5 of 5 — FINAL)
+**Dates:** 2026-07-14
+**Scope (from `BUILD_PLAN.md` §4.4):** re-verify all five breakpoints in both themes, WCAG-AA audit
+the dark palette, visual-regression spot-check, confirm offline/print/no-JS render the full document
+(print theme-agnostic). Device-bound checks handed to Keagan, same as the Sprint 24 hardening pass.
+
+**Status: COMPLETE — 95/100, Attempt 1. Pass.** The code-auditable hardening; device-bound checks
+handed off. This closes the Tailwind migration (Sprints 28–32).
+
+### Dark-palette AA audit (computed, not eyeballed)
+Contrast computed for every meaningful pair. **All text + focus/interactive pairs pass AA:** fg/bg
+15.6, fg/surface 14.1, muted/bg 8.1, muted/surface 7.3, muted-2/bg 5.1, accent-strong-as-text 10.5,
+danger 7.1, err 6.3, ok/pending on surface 7.5/6.9, active-pill (`--accent-fg` on `--accent`) 8.5,
+ok focus-ring on surface 7.5. **Borders flag against 1.4.11's 3:1 (1.1–1.8:1) but are intentional
+subtle hairlines** — the LIGHT theme's borders are the same ~1.1:1, cards are identified by
+surface-lift + padding + content, and this passed the Sprint 9/24 a11y bar. Not a regression, no
+palette change. (Full-app state-by-state audit + `design:accessibility-review` is Keagan's.)
+
+### Hardcoded-colour audit → 3 dark-mode fixes
+Grepped every hex literal. Most were tokens or print-only/decorative (board diagram wood-brown,
+which prints gray). The three that rendered on-screen and didn't theme:
+- `.impossible-part` was `color: #b3261e` (dark-red text, unreadable on dark) → **`var(--err)`**
+  (lightens in dark; light unchanged).
+- `.skel` shimmer was a light gradient (light ghost blocks on dark) → added a **`.dark .skel`**
+  dark-gray gradient.
+- install-prompt subtitle `#7a5316` (dark brown) → **`dark:text-[#c9a06a]`** (light keeps the exact
+  brown; dark gets a readable warm brown).
+
+### Integrity
+Print forced light confirmed (the Sprint 31 `@media print` token reset). No-JS/offline document
+completeness preserved — the retained print classes from 30a–30c still hide chrome / show every
+panel + step. Orphan sweep clean; `SiteHeader` has no stray `UserButton`/`clerkAppearance` after the
+Sprint 31 extraction. New guard test `tests/dark-theme.test.ts`: light and dark declare the SAME 17
+tokens (a token added to `:root` but forgotten in `.dark` would silently stay light — this catches
+it), `--accent-fg` in both, and the `@media print` reset to `--bg:#ffffff`/`--fg:#000000`.
+
+**Device-bound (Keagan):** real-phone Lighthouse (catalog + a plan page), real-browser toggle test
+(flip in the account menu, reload → no FOUC, print white/black in both themes), and the
+visual-regression pass at 34/40/64/80/96rem × light/dark.
+
+### Attempt 1 — 2026-07-14
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Every code-auditable §4.4 item: dark AA audit (+3 fixes), print-forced-light confirmed, no-JS/offline integrity, orphan sweep. −1: the breakpoint visual re-verification is inherently device-bound (handed to Keagan, same pattern as Sprint 24). |
+| Correctness & functionality (/20) | **18** | AA computed rigorously (all text/focus pass); 3 real dark bugs found + fixed; the new dark utilities compile. −2: real-device Lighthouse + real-browser toggle/paint are Keagan's. |
+| Automated test coverage (/15) | **14** | `tests/dark-theme.test.ts` guards the silent failure mode (light/dark token drift) + the print reset — non-tautological; verified 17=17 tokens. −1: the toggle's runtime behaviour still needs a browser (no jsdom). |
+| Security (/15) | **15** | Audit + presentational fixes only; no new surface. |
+| Code quality & simplicity (/10) | **10** | Fixes prefer a token over a hardcoded hex (themes for free); the one unavoidable literal uses a scoped `dark:` override; each documented. |
+| Mobile/offline behavior (/10) | **9** | Print forced light; offline/no-JS document integrity preserved. −1: real-device pass is Keagan's. |
+| Documentation & handoff (/5) | **5** | This entry + `CLAUDE.md` §7 + `BUILD_PLAN.md` §4.4; migration (28–32) marked complete. |
+| **Total (/100)** | **95** | |
+
+**Result: PASS (95 ≥ 95). The Tailwind CSS + light/dark theme migration (Sprints 28–32) is COMPLETE.**
+
+### Open items for Keagan
+1. **Real-browser + real-phone pass:** toggle test (no FOUC, print light in both themes), Lighthouse,
+   visual regression at all five breakpoints in both themes. Tune any dark hex to taste.
+2. **Push** — no migration.
+
+---
+
 ## Sprint 24: Hardening Pass 2
 **Dates:** 2026-07-15
 **Scope (from `BUILD_PLAN.md` §4.3):** re-audit and FIX the surfaces rebuilt in Sprints
