@@ -137,7 +137,9 @@ export function SiteHeader() {
               {/* Install the PWA — renders only while the browser offers it.
                   Signed-out mobile users get their affordance here; signed-in
                   users have it in the profile dropdown too. */}
-              <InstallMenuItem className={`${drawerLink} flex-col items-start gap-0 py-[0.5rem]`} />
+              {/* gap-0! (important): drawerLink's gap-[0.5rem] is emitted later in
+                  Tailwind's fixed source order and would otherwise win. */}
+              <InstallMenuItem className={`${drawerLink} flex-col items-start gap-0! py-[0.5rem]`} />
             </nav>
           </MobileNav>
         </div>

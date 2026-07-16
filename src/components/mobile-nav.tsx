@@ -13,11 +13,19 @@ import { usePathname } from 'next/navigation';
  * in through `children` from the server-component header, so this island adds
  * no data or markup of its own.
  *
- * The one thing that needs JS: with client-side routing the header persists
- * across navigations, so a tapped link would leave the drawer hanging open
- * over the new page. `usePathname` closes it whenever the route changes. The
- * `open` state is otherwise uncontrolled-in-spirit — `onToggle` mirrors native
- * toggles back into state, so the two never fight.
+ * Closing needs JS: with client-side routing the header persists across
+ * navigations, so a tapped link would leave the drawer hanging open over the
+ * new page. Two triggers close it:
+ *   1. `usePathname` — closes on any route change (covers programmatic nav).
+ *   2. a click anywhere in the panel — it holds only links + the install item, so
+ *      a tap that navigates also closes the drawer. This is what covers a
+ *      QUERY-ONLY change: tapping "Home" from a filtered catalog (`/?tools=…`)
+ *      changes only the search params, which `usePathname` does NOT observe.
+ *      (Reading `useSearchParams` here instead would force a Suspense boundary on
+ *      the statically-prerendered /_not-found, since this island lives in the
+ *      always-rendered header.)
+ * The `open` state is otherwise uncontrolled-in-spirit — `onToggle` mirrors
+ * native toggles back into state, so the two never fight.
  */
 export function MobileNav({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -43,8 +51,12 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
 
       {/* The drawer: a full-width panel pinned under the (sticky) header. The
           header is the containing block, so top-full lands exactly on its
-          bottom edge whatever height the header wrapped to. */}
-      <div className="absolute top-full left-0 right-0 z-20 flex flex-col gap-[0.125rem] p-[0.75rem] bg-surface border-b border-border shadow-[0_8px_24px_rgba(0,0,0,0.12)] max-h-[calc(100vh-4rem)] overflow-y-auto">
+          bottom edge whatever height the header wrapped to. onClick closes the
+          drawer on any tap inside it — including a query-only navigation. */}
+      <div
+        className="absolute top-full left-0 right-0 z-20 flex flex-col gap-[0.125rem] p-[0.75rem] bg-surface border-b border-border shadow-[0_8px_24px_rgba(0,0,0,0.12)] max-h-[calc(100vh-4rem)] overflow-y-auto"
+        onClick={() => setOpen(false)}
+      >
         {children}
       </div>
     </details>

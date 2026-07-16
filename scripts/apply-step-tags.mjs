@@ -11,6 +11,13 @@
 // if a tag isn't one the plan declares — the same subset rule src/content/load.ts
 // enforces, checked here before anything is written.
 //
+// ⚠️ SCOPE (2026-07-16): TAGS below covers ONLY the original 24 slugs. The 61 later
+// plans carry their per-step tags INLINE in their JSON, which is the single source of
+// truth for them. This script now SKIPS any file whose slug is not in TAGS — without
+// that guard a re-run rebuilt each step from TAGS alone and silently STRIPPED every
+// inline tag from all 61 new plans. Do NOT edit the 61 new plans' tags here; edit their
+// JSON directly. This table is retained only for the 24 originals.
+//
 // Run:  node scripts/apply-step-tags.mjs
 
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
@@ -274,7 +281,12 @@ for (const file of readdirSync(PLANS_DIR).filter((f) => f.endsWith('.json')).sor
   const text = readFileSync(path, 'utf8');
   const data = JSON.parse(text);
   const slug = data.slug;
-  const map = TAGS[slug] ?? {};
+
+  // Guard: only the original 24 slugs are sourced from TAGS. Every other plan owns its
+  // tags inline in JSON — rebuilding it from an empty map would wipe them. Skip it.
+  if (!(slug in TAGS)) continue;
+
+  const map = TAGS[slug];
 
   const toolSlugs = new Set(data.tools.map((t) => t.slug));
   const matNames = new Set(data.materials.map((m) => m.name));

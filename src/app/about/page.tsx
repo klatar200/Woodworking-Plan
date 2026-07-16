@@ -14,7 +14,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'What Woodworking Plan is: a searchable catalog of woodworking plans with a full cut list, material list, tools, and a cost estimate on every one.',
+    'What Woodworking Plan is: a searchable catalog of woodworking plans, each with a material list, tools, and a cost estimate — most with a full cut list too.',
   robots: { index: false, follow: false }, // Branding decision #8 still open.
 };
 
@@ -38,8 +38,9 @@ export default function AboutPage() {
         <p>
           Woodworking Plan takes a narrower bet: every plan in the catalog carries the{' '}
           <em>same</em> structured information &mdash; difficulty, realistic shop time, a
-          cost band, the tools you need (and which are optional), a full material list, and
-          a complete cut list in tape-measure fractions. Because it&rsquo;s all structured,
+          cost band, the tools you need (and which are optional), and a full material list,
+          most with a complete cut list in tape-measure fractions. Because it&rsquo;s all
+          structured,
           you can search and filter it the way you&rsquo;d actually decide what to make:
           &ldquo;what can I build this weekend, with the tools I own, without a big lumber
           run?&rdquo;

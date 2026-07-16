@@ -38,20 +38,28 @@
 const btnBase =
   'inline-flex items-center min-h-[2.75rem] px-[0.875rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium whitespace-nowrap no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed';
 
-/** Bare `.btn` — transparent border, inherited text. Used where a caller sets its own look. */
-export const btn = `${btnBase} border border-transparent`;
+// 2026-07-16: every non-primary variant carries an explicit `bg-transparent`. globals.css
+// excludes Tailwind preflight and has no `button` reset, so a bare `<button>` kept the UA
+// default `ButtonFace` fill — invisible in dark mode (measured ≈1.0:1: near-white fill under
+// near-white text). `bg-transparent` can't live on `btnBase` because it and `btnPrimary`'s
+// `bg-fg` are the same property and Tailwind emits them in fixed source order, not className
+// order (the documented gotcha) — so each variant declares exactly one background, mirroring
+// the border-color/text-color pattern above.
+
+/** Bare `.btn` — transparent fill + border, inherited text. Used where a caller sets its own look. */
+export const btn = `${btnBase} border border-transparent bg-transparent`;
 
 /** Formerly `.btn.btn-ghost` — outlined, ink text. The default nav/secondary button. */
-export const btnGhost = `${btnBase} border border-border text-fg`;
+export const btnGhost = `${btnBase} border border-border bg-transparent text-fg`;
 
 /** Formerly `.btn.btn-primary` — solid ink fill, surface text, transparent border. One CTA per view. */
 export const btnPrimary = `${btnBase} border border-transparent bg-fg text-surface`;
 
 /** Formerly `.btn.btn-ghost.btn-danger` — ghost's ink border with error-red text. */
-export const btnDanger = `${btnBase} border border-border text-err`;
+export const btnDanger = `${btnBase} border border-border bg-transparent text-err`;
 
 /** Formerly `.btn.btn-ghost.btn-liked` — the "liked" state: ink border + ink text. */
-export const btnLiked = `${btnBase} border border-fg text-fg`;
+export const btnLiked = `${btnBase} border border-fg bg-transparent text-fg`;
 
 /**
  * The mobile-first page container. Formerly the base `.page` rule.

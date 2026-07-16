@@ -21,6 +21,10 @@ import {
  */
 const BORDER_COLORS = ['border-border', 'border-fg', 'border-transparent'];
 const TEXT_COLORS = ['text-fg', 'text-surface', 'text-err'];
+// 2026-07-16: globals.css has no `button` reset, so a `<button>` with no background
+// utility keeps the UA `ButtonFace` fill — invisible in dark mode. Every variant must
+// declare EXACTLY ONE background (same fixed-source-order reasoning as border/text color).
+const BACKGROUNDS = ['bg-transparent', 'bg-fg'];
 
 function count(cls: string, tokens: string[]): number {
   const set = new Set(cls.split(/\s+/));
@@ -31,8 +35,9 @@ describe('shared button classes (@/lib/ui)', () => {
   const variants = { btn, btnGhost, btnPrimary, btnDanger, btnLiked };
 
   for (const [name, cls] of Object.entries(variants)) {
-    it(`${name}: exactly one border-color, at most one text-color`, () => {
+    it(`${name}: exactly one border-color, one background, at most one text-color`, () => {
       expect(count(cls, BORDER_COLORS)).toBe(1);
+      expect(count(cls, BACKGROUNDS)).toBe(1);
       expect(count(cls, TEXT_COLORS)).toBeLessThanOrEqual(1);
     });
 

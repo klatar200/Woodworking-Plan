@@ -245,8 +245,9 @@ export default async function CatalogPage({
               </>
             ) : (
               <>
-                {total} {total === 1 ? 'plan' : 'plans'} &mdash; every one with a
-                full cut list, material list, and cost estimate.
+                {total} {total === 1 ? 'plan' : 'plans'} &mdash; each with a
+                material list, tools, and a cost estimate; most with a full cut
+                list too.
               </>
             )}
           </p>

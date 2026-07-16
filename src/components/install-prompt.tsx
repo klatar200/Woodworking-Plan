@@ -19,10 +19,15 @@ import {
  * file keeps its name — it is still "the install prompt" — but now exports:
  *
  *   - `InstallCapture` — renders nothing; mounted ONCE in the root layout so
- *     the `beforeinstallprompt` listener is attached on EVERY page, before the
- *     browser fires it. The old banner only listened on the catalog, so deep
- *     links never got an install affordance (a known, documented gap — closed
- *     by moving the capture here).
+ *     the `beforeinstallprompt` listener is attached on EVERY page. The old
+ *     banner only listened on the catalog, so deep links never got an install
+ *     affordance (a known gap — closed by moving the capture here).
+ *     KNOWN LIMITATION: the listener attaches in `useEffect`, i.e. after
+ *     hydration. If Chrome fires `beforeinstallprompt` before this component
+ *     hydrates, that event is missed and no affordance appears until the next
+ *     load. Capturing it fully would need a tiny inline script stamped into the
+ *     document before hydration; not done yet (the offer simply reappears on a
+ *     subsequent navigation).
  *   - `InstallMenuItem` — a drawer/menu entry that renders ONLY while the
  *     browser says installing is possible (see src/lib/install-store.ts).
  *

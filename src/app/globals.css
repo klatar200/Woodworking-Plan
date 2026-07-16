@@ -6,9 +6,10 @@
  * see DECISIONS_LOG.md "UI redesign: adopt Claude Design mockup's visual
  * system". Warm/cream palette, replacing the Sprint 0 neutral gray theme.
  *
- * Dark mode is DELETED, not just unused — the mockup has no dark variant,
- * and keeping a stale prefers-color-scheme block around is how a theme
- * quietly drifts out of sync with itself. Re-add deliberately if ever wanted.
+ * Dark mode was RE-ADDED in Sprint 31 (2026-07-16, Keagan's direction) as an
+ * explicit `.dark {}` token flip below — NOT `prefers-color-scheme`, so it follows
+ * the theme cookie/toggle rather than the OS. (This reverses the earlier "dark mode
+ * deleted" call; see DECISIONS_LOG.md 2026-07-16.)
  *
  * --ok / --pending / --err are FUNCTIONAL status colors (focus rings, success/
  * pending indicators), not part of the brand palette, and are deliberately
@@ -16,6 +17,10 @@
  */
 
 :root {
+  /* Tell the UA to render native form internals (checkbox box, select menu, scrollbars)
+   * in the light scheme. `.dark` flips this to `dark` so those controls follow the theme —
+   * without it a native checkbox/select renders light-on-light in dark mode. */
+  color-scheme: light;
   --bg: #faf9f6;
   --surface: #ffffff;
   --fg: #1a1a1a;
@@ -49,6 +54,7 @@
  * review, Sprint 32) — these values are a first draft to tune, not a final call.**
  */
 .dark {
+  color-scheme: dark;
   --bg: #17140f;
   --surface: #221e17;
   --fg: #f0ece4;
@@ -77,6 +83,7 @@
 @media print {
   :root,
   .dark {
+    color-scheme: light;
     --bg: #ffffff;
     --surface: #ffffff;
     --fg: #000000;
@@ -88,6 +95,14 @@
     --accent-tint-border: #999999;
     --accent-soft: #ffffff;
     --accent-fg: #000000;
+    /* Functional colours must also reset for print: the dark theme lightens --err to
+     * #e8756c, which prints as a washed-out pink — and .impossible-part on the boards
+     * sheet is the ONE warning the buying list must never soften. Force the high-contrast
+     * light values on paper. */
+    --danger: #b5551c;
+    --ok: #17803d;
+    --pending: #b45309;
+    --err: #b3261e;
   }
 }
 
@@ -1338,7 +1353,6 @@ code {
 @media print {
   .no-print,
   .site-header,
-  .shopping-list-cta,
   .scope-form,
   .breadcrumb {
     display: none !important;

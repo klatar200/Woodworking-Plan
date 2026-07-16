@@ -172,6 +172,14 @@ with it.
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma
   ORM. Vitest. GitHub Actions CI.
+- **Catalog size (2026-07-16): 85 plans** in `content/plans/` (the original 24 +
+  61 added this branch). Older records below and in the other docs that say "24
+  plans" are HISTORICAL — accurate for their sprint, not the current count. The 61
+  new plans are `published: true` but **live in git only until a production seed
+  runs** (schema deploys, data does not — see the deploy rules), and that seed is
+  gated on Keagan's provenance/branding sign-off for the scraped content (see
+  `AUDIT_2026-07-16.md` #5). 12 of the 61 ship an empty `cutList` (UI degrades
+  safely; catalog/about copy softened to "most with a full cut list").
 - **Sprint 0 (Environment & Architecture): COMPLETE — 99/100.** Deployed and live
   on Vercel; `/api/health` returns `database.status: "ok"` against Neon; Clerk
   configured. Build, typecheck, lint, 25 tests, and `npm audit` all clean.
@@ -852,12 +860,16 @@ with no global slug; the seed resolves name → the plan's own `Material` row. T
 unique within a plan, so the map is unambiguous — but this is why the seed creates
 materials and steps one-by-one (to capture ids) instead of `createMany`.
 
-**The content is `scripts/apply-step-tags.mjs`, not 24 hand-edited files** (Keagan's
-delivery choice, `DECISIONS_LOG.md` 2026-07-14). The TAGS table in that script IS the
-content. It is idempotent, rewrites only each plan's `steps` array, and throws on any
-non-subset tag. **Editing the tags = editing that script + re-running it + re-seeding.**
-Like all content, it does NOT reach production on deploy — production needs a seed
-(`DEPLOYMENT.md`).
+**For the original 24 plans, the tag content is `scripts/apply-step-tags.mjs`** (Keagan's
+delivery choice, `DECISIONS_LOG.md` 2026-07-14). Its TAGS table was the content for those
+24; it is idempotent, rewrites only each plan's `steps` array, and throws on any non-subset
+tag. **⚠️ CORRECTED 2026-07-16:** the 61 plans added later carry their per-step tags
+**inline in their JSON**, which is the single source of truth for them. `apply-step-tags.mjs`
+now **skips any slug not in TAGS** — without that guard a re-run rebuilt each step from the
+(empty) TAGS entry and silently STRIPPED every inline tag from all 61 new plans. So:
+**editing an ORIGINAL-24 plan's tags = edit that script + re-run + re-seed; editing any
+other plan's tags = edit its JSON directly + re-seed.** Like all content, tags do NOT reach
+production on deploy — production needs a seed (`DEPLOYMENT.md`).
 
 ### 👁 View-tracking rule (Sprint 19) — the count must MEAN something
 
