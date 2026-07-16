@@ -1,50 +1,62 @@
 import Link from 'next/link';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import { UserMenu } from '@/components/user-menu';
-import { btnGhost, btnPrimary } from '@/lib/ui';
+import { MobileNav } from '@/components/mobile-nav';
+import { InstallMenuItem } from '@/components/install-prompt';
+import { btnPrimary } from '@/lib/ui';
 
-// Sprint 29 (UI migration, wave 1): the header, brand, nav, skip link and buttons
-// moved from hand-written `globals.css` rules to Tailwind utilities. The class
-// strings below compile to the same CSS the deleted rules produced (verified in
-// SPRINT_LOG.md Sprint 29). Buttons come from the shared `@/lib/ui` constants.
+// Sprint 29 (UI migration, wave 1): the header moved to Tailwind utilities.
+// REDESIGNED 2026-07-16 (Keagan): cleaner desktop nav — quiet text links with ONE
+// primary CTA instead of a row of eight identical outlined buttons — and, below
+// `lg`, a hamburger that opens a drawer (mobile-nav.tsx) instead of a scrolling
+// button row.
 const skipLink =
   'absolute left-[0.5rem] top-[-3rem] z-[100] inline-flex items-center min-h-[2.75rem] px-[1rem] py-0 bg-fg text-surface rounded-b-[0.375rem] no-underline font-medium transition-[top] duration-150 ease-[ease-in-out] focus:top-0';
-// `site-header` class RETAINED — the print stylesheet and the desktop layout rule
-// (both out of scope this sprint) still target it by class. Utilities added alongside.
-// 2026-07-16 mobile fix: on a phone the eight nav buttons overflowed the header —
-// buttons spilled past the header background onto the page. `flex-wrap` lets the
-// nav drop to its own full-width row (the header background grows with it), and
-// the nav row itself scrolls HORIZONTALLY instead of wrapping into a 3-deep grid
-// of buttons: one thumb-swipeable row is how every mobile app ships this. On
-// desktop nothing changes — everything still fits on one line.
+// `site-header` class RETAINED — the print stylesheet still targets it. `relative`
+// is load-bearing: the mobile drawer positions itself against the header
+// (absolute + top-full in mobile-nav.tsx).
 const siteHeader =
-  'site-header flex flex-wrap items-center justify-between gap-x-[1rem] gap-y-[0.5rem] px-[1.25rem] py-[0.75rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]';
+  'site-header relative flex items-center justify-between gap-[1rem] px-[1.25rem] py-[0.625rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.625rem+env(safe-area-inset-top))]';
 const brand =
   'font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
-const siteNav =
-  'flex items-center gap-[0.5rem] max-w-full overflow-x-auto [scrollbar-width:none] [-webkit-overflow-scrolling:touch]';
+
+// Desktop nav link: quiet by default, ink on hover. 44px tall for touch.
+const navLink =
+  'inline-flex items-center gap-[0.375rem] min-h-[2.75rem] px-[0.625rem] rounded-[0.375rem] text-[0.9375rem] font-medium text-muted no-underline whitespace-nowrap hover:text-fg hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+
+// Drawer link: a full-width row with a generous tap target.
+const drawerLink =
+  'flex items-center gap-[0.5rem] w-full min-h-[2.75rem] px-[0.75rem] rounded-[0.375rem] text-[1rem] font-medium text-fg no-underline text-left bg-transparent border-none cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]';
+
+/** One source for the nav links — the desktop row and the drawer render the
+ *  same lists with different styling, so they cannot drift. */
+const PUBLIC_NAV = [
+  // Standard trust nav (2026-07-14). Public navigation, not account state —
+  // paths especially are the best argument for signing up the site has.
+  { href: '/', label: 'Home' },
+  { href: '/paths', label: 'Paths' },
+  { href: '/about', label: 'About' },
+  { href: '/faq', label: 'FAQ' },
+] as const;
+
+const SIGNED_IN_NAV = [
+  { href: '/saved', label: 'Saved', icon: '🔖' },
+  { href: '/builds', label: 'Builds', icon: '🔨' }, // Sprint 27
+  { href: '/workshop', label: 'Workshop', icon: '🧰' }, // Sprint 25
+] as const;
 
 /**
  * Site header with auth state.
  *
- * `SignedIn` / `SignedOut` render on the server based on the verified session —
- * they are not a client-side "is there a token in localStorage" check. An
- * anonymous visitor never receives the signed-in markup at all.
- *
- * To be explicit, because it's the kind of thing that gets misunderstood: hiding
- * a link is NOT access control. The protection is `auth.protect()` in the
- * middleware, plus `requireUser()` on the page itself. This header is purely
- * navigational sugar on top of boundaries enforced elsewhere.
+ * `SignedIn` / `SignedOut` render on the server based on the verified session.
+ * Hiding a link is NOT access control — the protection is `auth.protect()` in
+ * the middleware plus `requireUser()` on each private page. This header is
+ * navigational sugar over boundaries enforced elsewhere.
  */
 export function SiteHeader() {
   return (
     <>
-      {/*
-        Skip link — Sprint 9 accessibility pass. WCAG 2.1 AA, 2.4.1 (Bypass
-        Blocks). A keyboard or screen-reader user must not have to tab through
-        the header, the search box, and thirty tool checkboxes on every page just
-        to reach the plan they came for. Visually hidden until focused.
-      */}
+      {/* Skip link — WCAG 2.4.1. Visually hidden until focused. */}
       <a href="#main" className={skipLink}>
         Skip to content
       </a>
@@ -54,59 +66,81 @@ export function SiteHeader() {
           Woodworking Plan
         </Link>
 
-        <nav className={siteNav} aria-label="Main">
-          {/* Standard trust nav (2026-07-14) — every stable app has this; the site
-              had no Home/About/FAQ at all before. Stub pages for now (About/FAQ
-              copy is Keagan's call — public-facing brand voice, not a routine
-              engineering decision). OUTSIDE SignedIn/SignedOut: same reasoning as
-              Paths below, this is public navigation, not account state. */}
-          <Link href="/" className={btnGhost}>
-            Home
-          </Link>
-          {/* Sprint 16. OUTSIDE the SignedIn/SignedOut split on purpose — paths are
-              public content, and they are the best argument for signing up that the
-              site has. Hiding them behind a login would be exactly backwards. */}
-          <Link href="/paths" className={btnGhost}>
-            Paths
-          </Link>
-          <Link href="/about" className={btnGhost}>
-            About
-          </Link>
-          <Link href="/faq" className={btnGhost}>
-            FAQ
-          </Link>
+        {/* ---- Desktop nav (≥ lg): quiet text links, one primary CTA ---- */}
+        <nav className="hidden lg:flex items-center gap-[0.25rem]" aria-label="Main">
+          {PUBLIC_NAV.map((item) => (
+            <Link key={item.href} href={item.href} className={navLink}>
+              {item.label}
+            </Link>
+          ))}
+
+          <SignedIn>
+            {/* A hairline divider separates "the site" from "your stuff". */}
+            <span className="w-px h-[1.5rem] bg-border mx-[0.5rem]" aria-hidden="true" />
+            {SIGNED_IN_NAV.map((item) => (
+              <Link key={item.href} href={item.href} className={navLink}>
+                <span aria-hidden="true">{item.icon}</span>
+                {item.label}
+              </Link>
+            ))}
+          </SignedIn>
 
           <SignedOut>
-            <Link href="/sign-in" className={btnGhost}>
+            <Link href="/sign-in" className={navLink}>
               Log in
             </Link>
-            <Link href="/sign-up" className={btnPrimary}>
+            <Link href="/sign-up" className={`${btnPrimary} ml-[0.5rem]`}>
               Sign up
             </Link>
           </SignedOut>
+        </nav>
 
+        {/* ---- Right cluster on mobile: avatar (signed in) + hamburger ---- */}
+        <div className="flex items-center gap-[0.5rem]">
           <SignedIn>
-            <Link href="/saved" className={btnGhost}>
-              🔖 Saved
-            </Link>
-            {/* Sprint 27 — the build log. Signed-in only, private route (off the
-                allowlist + requireUser); hiding it while signed out is nav sugar, not
-                access control. */}
-            <Link href="/builds" className={btnGhost}>
-              🔨 Builds
-            </Link>
-            {/* Sprint 25 — the owned-tools profile. Signed-in only (it's a private,
-                per-account screen); hiding it from signed-out users is nav sugar, not
-                access control — /workshop is off the allowlist and requires a session. */}
-            <Link href="/workshop" className={btnGhost}>
-              🧰 Workshop
-            </Link>
-            {/* Clerk's account menu + the theme toggle + our /profile link, as a client
-                island (Sprint 31). Onclick can't cross the server boundary, so the menu
-                lives in user-menu.tsx; this header stays a server component. */}
+            {/* Clerk's account menu + theme toggle + install action, as a client
+                island (Sprint 31 / 2026-07-16). Outside the drawer so the avatar
+                is always one tap away at any width. */}
             <UserMenu />
           </SignedIn>
-        </nav>
+
+          {/* The drawer (below lg). Server-rendered links passed through the
+              client island — see mobile-nav.tsx. */}
+          <MobileNav>
+            <nav className="flex flex-col gap-[0.125rem]" aria-label="Main menu">
+              {PUBLIC_NAV.map((item) => (
+                <Link key={item.href} href={item.href} className={drawerLink}>
+                  {item.label}
+                </Link>
+              ))}
+
+              <SignedIn>
+                <span className="block h-px bg-border my-[0.5rem]" aria-hidden="true" />
+                {SIGNED_IN_NAV.map((item) => (
+                  <Link key={item.href} href={item.href} className={drawerLink}>
+                    <span aria-hidden="true">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                ))}
+              </SignedIn>
+
+              <SignedOut>
+                <span className="block h-px bg-border my-[0.5rem]" aria-hidden="true" />
+                <Link href="/sign-in" className={drawerLink}>
+                  Log in
+                </Link>
+                <Link href="/sign-up" className={`${btnPrimary} mt-[0.25rem] justify-center`}>
+                  Sign up
+                </Link>
+              </SignedOut>
+
+              {/* Install the PWA — renders only while the browser offers it.
+                  Signed-out mobile users get their affordance here; signed-in
+                  users have it in the profile dropdown too. */}
+              <InstallMenuItem className={`${drawerLink} flex-col items-start gap-0 py-[0.5rem]`} />
+            </nav>
+          </MobileNav>
+        </div>
       </header>
     </>
   );

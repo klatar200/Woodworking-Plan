@@ -503,6 +503,31 @@ with it.
   double-counting would corrupt Trending). Verified in-browser at desktop + ~835px;
   real-phone pass is Keagan's.
 
+- **Header/nav overhaul + install relocation + perf quick wins (2026-07-16, Keagan's
+  direction, same session): COMPLETE.** (1) **Navbar redesign**: desktop nav is quiet
+  text links (muted → ink on hover) with ONE primary CTA (Sign up) and a hairline
+  divider before the signed-in links — replacing the row of eight identical outlined
+  buttons. Below `lg`, a **hamburger opens a drawer** (`mobile-nav.tsx` — a native
+  `<details>`, same no-JS pattern as FilterDisclosure; the links are server-rendered
+  children passed through the client island; `usePathname` closes it on navigation
+  since the header persists across client-side routing). The header carries `relative`
+  ON PURPOSE — the drawer panel positions against it (`absolute top-full`). (2) **The
+  catalog install BANNER is deleted.** Install lives in the profile dropdown
+  (`user-menu.tsx`, next to the theme toggle) and the mobile drawer (signed-out users'
+  affordance). `beforeinstallprompt` is captured app-wide from the root layout
+  (`InstallCapture` → module store in `src/lib/install-store.ts`, read via
+  `useSyncExternalStore`) — the old catalog-only listener missed every deep link.
+  Items render ONLY while the browser actually offers installability; no nag state
+  needed (a menu item interrupts nothing). `tests/install-prompt.test.tsx` updated.
+  (3) **Perf**: catalog's `queryPlans` + `listSavedPlans` + `getOwnedToolSlugs` now
+  run in ONE `Promise.all` (were three serial awaits — two wasted DB round-trips per
+  signed-in render; `getCurrentUser` is `cache()`d so no duplicate Clerk calls), and
+  the root layout emits a **preconnect to Clerk's frontend API** (origin DERIVED from
+  the publishable key's base64 host segment, fail-soft — clerk.browser.js is the
+  biggest third-party fetch on every page). Bigger levers (function-region co-location
+  with Neon, caching public content, Lighthouse on prod) recorded in the chat summary —
+  they need vendor dashboards or launch-scale decisions, not code.
+
 - **Sprint 24 (Hardening Pass 2): COMPLETE — 95/100.** Code audit + fixes of the surfaces
   rebuilt in 17–23. **Real a11y fix:** `PlanTabs` had `role="tablist"` with no keyboard
   support — now the full WAI-ARIA tab pattern (roving `tabindex`, ←/→ wrap, Home/End,

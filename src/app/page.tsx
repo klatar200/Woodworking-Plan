@@ -12,7 +12,6 @@ import { listSavedPlans } from '@/lib/saves';
 import { paginationWindow } from '@/lib/pagination';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
 import { PlanCard } from '@/components/plan-card';
-import { InstallPrompt } from '@/components/install-prompt';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { SearchBox } from '@/components/search-box';
 import { CategoryNav } from '@/components/category-nav';
@@ -52,25 +51,6 @@ export default async function CatalogPage({
     getCurrentUser(),
   ]);
 
-  /**
-   * The catalog's per-card bookmark overlay (see save-toggle.tsx) needs to know
-   * which plans are ALREADY saved. Fetched once for the whole page, not once per
-   * card — and `null` (not an empty Set) for an anonymous visitor, so PlanCard
-   * can tell "signed out" apart from "signed in, nothing saved" and render no
-   * overlay at all in the former case.
-   */
-  const savedIds = user
-    ? new Set((await listSavedPlans()).map((saved) => saved.plan.id))
-    : null;
-
-  /**
-   * Sprint 25 — the signed-in user's owned-tools profile, used ONLY to pre-tick the
-   * filter panel's "tools you own" boxes. Returns [] for an anonymous visitor. It does
-   * NOT touch `filters` or `queryPlans` — results stay URL-driven so a shared link
-   * renders the same catalog for everyone.
-   */
-  const ownedTools = user ? await getOwnedToolSlugs() : [];
-
   const filters = parseFilters(params, {
     validCategorySlugs: categories.map((c) => c.slug),
     validToolSlugs: tools.map((t) => t.slug),
@@ -86,12 +66,33 @@ export default async function CatalogPage({
   const rawQuery = typeof params.q === 'string' ? params.q : '';
   const sort = parseSort(params.sort);
 
-  const { plans, total, totalPages, page: currentPage, query } = await queryPlans({
-    query: rawQuery,
-    filters,
-    sort,
-    page,
-  });
+  /**
+   * Perf (2026-07-16): these three are INDEPENDENT once the filters are parsed,
+   * so they run concurrently — they used to run as three serial awaits, which
+   * added two full DB round-trips of latency to every signed-in catalog render.
+   *
+   * - `savedList`: the per-card bookmark overlay (save-toggle.tsx) needs to know
+   *   which plans are already saved. Fetched once for the whole page, and `null`
+   *   (not an empty Set) for an anonymous visitor, so PlanCard can tell "signed
+   *   out" apart from "signed in, nothing saved". Gated on `user` because
+   *   listSavedPlans requires a session.
+   * - `ownedTools` (Sprint 25): ONLY pre-ticks the filter panel's boxes. It does
+   *   NOT touch `filters` or `queryPlans` — results stay URL-driven so a shared
+   *   link renders the same catalog for everyone.
+   */
+  const [
+    { plans, total, totalPages, page: currentPage, query },
+    savedList,
+    ownedTools,
+  ] = await Promise.all([
+    queryPlans({ query: rawQuery, filters, sort, page }),
+    user ? listSavedPlans() : null,
+    user ? getOwnedToolSlugs() : ([] as string[]),
+  ]);
+
+  const savedIds = savedList
+    ? new Set(savedList.map((saved) => saved.plan.id))
+    : null;
 
   /**
    * Sprint 10. ONE groupBy for the whole page, scoped to the plans actually on it —
@@ -141,7 +142,9 @@ export default async function CatalogPage({
         dismissHref={currentUrl}
       />
 
-      <InstallPrompt />
+      {/* The install BANNER is gone (2026-07-16, Keagan) — install now lives in
+          the profile dropdown and the mobile drawer, captured app-wide from the
+          root layout. See src/lib/install-store.ts. */}
 
       {/*
         Sprint 19: the standalone "Recommended for you" section is GONE — deleted, not

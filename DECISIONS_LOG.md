@@ -1099,6 +1099,24 @@ Engineering found-alongside (routine): the strict CSP blocks `eval()`, which
 interactivity was untestable there. `'unsafe-eval'` is appended to `script-src`
 only when `NODE_ENV !== 'production'`; the production header is byte-identical.
 
+### 2026-07-16 — Nav redesign, install moves to the profile dropdown, perf pass
+
+**Status:** Directed by Keagan.
+
+1. **The catalog install banner is removed**; the install affordance lives in the
+   profile dropdown (next to the theme toggle) and in the new mobile drawer (which
+   covers signed-out users). Capture moved app-wide (root layout), which also fixes
+   the documented deep-link gap the banner always had.
+2. **Navbar redesign**: quiet text links + one primary CTA on desktop; below `lg` a
+   hamburger opens a drawer. Drawer is a native `<details>` (no-JS safe), closing
+   automatically on navigation.
+3. **Performance**: Keagan asked how to make the app faster and for easy fixes now.
+   Shipped: catalog DB calls parallelized (3 serial stages → 1), preconnect to
+   Clerk's frontend API. Recommended next (not code, or not now): co-locate the
+   Vercel function region with Neon's region (dashboard setting, biggest TTFB
+   lever); Lighthouse against production, not dev; revisit caching/PPR of public
+   catalog content at launch scale; `next/image` when real photos land.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

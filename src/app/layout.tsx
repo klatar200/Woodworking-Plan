@@ -2,10 +2,35 @@ import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SiteHeader } from '@/components/site-header';
+import { InstallCapture } from '@/components/install-prompt';
 import {
   ServiceWorkerRegistration,
   PrivateCacheGuard,
 } from '@/components/service-worker';
+
+/**
+ * Perf (2026-07-16): preconnect to Clerk's frontend API. clerk.browser.js is
+ * the single biggest third-party fetch on every page, from an origin the
+ * browser hasn't touched yet — a preconnect overlaps its DNS+TLS handshake
+ * with our HTML parse. The origin is DERIVED from the publishable key (its
+ * third segment is the base64 frontend-API host, trailing '$'), so this stays
+ * correct when the key changes between dev/prod instances. Fails soft: no
+ * key, malformed key → no hint, nothing breaks.
+ */
+function clerkFrontendOrigin(): string | null {
+  const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  if (!key) return null;
+  try {
+    const encoded = key.split('_')[2];
+    if (!encoded) return null;
+    const host = Buffer.from(encoded, 'base64').toString('utf8').replace(/\$$/, '');
+    // A hostname, not a URL with a path — anything else means the key format
+    // changed and this hint should silently stand down.
+    return /^[a-z0-9.-]+$/i.test(host) ? `https://${host}` : null;
+  } catch {
+    return null;
+  }
+}
 // Sprint 28: Tailwind is imported FIRST, then globals.css. Tailwind's output is
 // wrapped in @layer (theme/utilities); globals.css is unlayered and therefore wins
 // any conflict regardless of order — so the existing hand-written system keeps full
@@ -59,6 +84,7 @@ export default async function RootLayout({
   // toggle (theme-toggle.tsx) writes the cookie and flips the class live, no reload.
   const theme = (await cookies()).get('theme')?.value;
   const isDark = theme === 'dark';
+  const clerkOrigin = clerkFrontendOrigin();
 
   return (
     /**
@@ -94,8 +120,15 @@ export default async function RootLayout({
     <ClerkProvider dynamic>
       <html lang="en" className={isDark ? 'dark' : undefined} suppressHydrationWarning>
         <body>
+          {/* React 19 hoists resource links to <head>. See clerkFrontendOrigin. */}
+          {clerkOrigin ? <link rel="preconnect" href={clerkOrigin} /> : null}
           <SiteHeader />
           {children}
+          {/* Renders nothing. Captures `beforeinstallprompt` app-wide so the
+              install actions in the profile dropdown and the mobile drawer work
+              from ANY landing page — the old catalog-only listener missed every
+              deep link. */}
+          <InstallCapture />
           {/* Renders nothing. Registers the service worker, and fails silently if
               it can't — an offline enhancement must never become an online
               dependency. */}

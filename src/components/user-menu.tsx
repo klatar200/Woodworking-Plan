@@ -1,8 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { UserButton } from '@clerk/nextjs';
 import { clerkAppearance } from '@/lib/clerk-appearance';
+import {
+  subscribeInstallable,
+  isInstallable,
+  isInstallableServer,
+  promptInstall,
+} from '@/lib/install-store';
 
 /**
  * The signed-in account menu — Sprint 31.
@@ -19,6 +25,15 @@ import { clerkAppearance } from '@/lib/clerk-appearance';
  */
 export function UserMenu() {
   const [isDark, setIsDark] = useState(false);
+
+  // 2026-07-16 (Keagan): the install affordance lives HERE now, not in a catalog
+  // banner. Only offered while the browser says installing is possible — see
+  // src/lib/install-store.ts (captured once, in the root layout, on every page).
+  const installable = useSyncExternalStore(
+    subscribeInstallable,
+    isInstallable,
+    isInstallableServer,
+  );
 
   // Sync the label to whatever the server already applied (read after mount to avoid a
   // hydration mismatch — the server rendered from the cookie, this reads the live class).
@@ -62,6 +77,14 @@ export function UserMenu() {
           href="/profile"
           labelIcon={<span aria-hidden="true">👤</span>}
         />
+        {/* Install the PWA — only while the browser is actually offering it. */}
+        {installable ? (
+          <UserButton.Action
+            label="Install app"
+            labelIcon={<span aria-hidden="true">📲</span>}
+            onClick={() => void promptInstall()}
+          />
+        ) : null}
       </UserButton.MenuItems>
     </UserButton>
   );

@@ -1,71 +1,45 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
+import { useEffect, useSyncExternalStore } from 'react';
+import {
+  type BeforeInstallPromptEvent,
+  setDeferredPrompt,
+  subscribeInstallable,
+  isInstallable,
+  isInstallableServer,
+  promptInstall,
+} from '@/lib/install-store';
 
 /**
- * Chrome/Edge-specific event, not yet in TypeScript's DOM lib types.
- * https://developer.mozilla.org/en-US/docs/Web/API/BeforeInstallPromptEvent
- */
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
-
-const DISMISSED_KEY = 'ww_install_dismissed';
-const SHOW_DELAY_MS = 3000;
-
-/**
- * "Install Woodworking Plan" banner — closes a real Sprint 8 gap. The app has
- * been installable (manifest + service worker) since Sprint 8, but nothing
- * ever surfaced an install AFFORDANCE; the browser's own mini-infobar is easy
- * to miss and easy to dismiss by accident. BUSINESS_PLAN.md §5 calls "faster
- * access, works offline in the shop" the whole point of being a PWA, so it is
- * worth asking for directly rather than leaving it to chance.
+ * PWA install affordance — REWORKED 2026-07-16 (Keagan's direction).
  *
- * Mounted on the catalog page only (matches the mockup — see
- * src/app/page.tsx). Known, stated limitation: the `beforeinstallprompt`
- * listener has to be attached BEFORE the browser decides to fire the event,
- * so a visitor who lands on a deep link (e.g. a shared plan URL) before ever
- * hitting `/` may not get this banner on that visit. Not worth solving by
- * mounting a listener on every page for one edge case.
+ * The Sprint-era `<InstallPrompt>` BANNER on the catalog is gone. Install now
+ * lives where chrome belongs: the profile dropdown (user-menu.tsx) for a
+ * signed-in user, and the mobile drawer (site-header.tsx) for everyone. This
+ * file keeps its name — it is still "the install prompt" — but now exports:
  *
- * `event.preventDefault()` suppresses the browser's own mini-infobar so this
- * banner is the only install prompt shown, matching the mockup.
+ *   - `InstallCapture` — renders nothing; mounted ONCE in the root layout so
+ *     the `beforeinstallprompt` listener is attached on EVERY page, before the
+ *     browser fires it. The old banner only listened on the catalog, so deep
+ *     links never got an install affordance (a known, documented gap — closed
+ *     by moving the capture here).
+ *   - `InstallMenuItem` — a drawer/menu entry that renders ONLY while the
+ *     browser says installing is possible (see src/lib/install-store.ts).
+ *
+ * `event.preventDefault()` still suppresses the browser's own mini-infobar,
+ * so our affordance is the only install prompt shown.
  */
-export function InstallPrompt() {
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [visible, setVisible] = useState(false);
 
-  const dismissForever = () => {
-    setVisible(false);
-    try {
-      localStorage.setItem(DISMISSED_KEY, 'true');
-    } catch {
-      // Private browsing or storage disabled. Non-fatal — worst case the
-      // banner can reappear on a later visit.
-    }
-  };
-
+export function InstallCapture() {
   useEffect(() => {
-    let alreadyDismissed = false;
-    try {
-      alreadyDismissed = localStorage.getItem(DISMISSED_KEY) === 'true';
-    } catch {
-      // Treat as "not dismissed" if storage isn't available.
-    }
-    if (alreadyDismissed) return;
-
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
-      setDeferred(event as BeforeInstallPromptEvent);
-      // Same delay as the mockup — let the page settle before asking.
-      setTimeout(() => setVisible(true), SHOW_DELAY_MS);
+      setDeferredPrompt(event as BeforeInstallPromptEvent);
     };
 
-    // Already installed via some other path (browser UI, another visit) —
-    // stop asking.
-    const onInstalled = () => dismissForever();
+    // Installed via any path (our prompt, browser UI, another tab): the offer
+    // is no longer meaningful, so withdraw it everywhere at once.
+    const onInstalled = () => setDeferredPrompt(null);
 
     window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
     window.addEventListener('appinstalled', onInstalled);
@@ -75,50 +49,32 @@ export function InstallPrompt() {
     };
   }, []);
 
-  const install = async () => {
-    if (!deferred) return;
-    await deferred.prompt();
-    await deferred.userChoice;
-    // Whether accepted or dismissed, don't ask again this browser — asking on
-    // every visit after someone already answered is exactly the kind of nag
-    // that gets a PWA's install prompt permanently ignored.
-    dismissForever();
-  };
+  return null;
+}
 
-  if (!visible || !deferred) return null;
+/**
+ * The mobile drawer's "Install app" row. Renders nothing when the browser
+ * hasn't offered installability — an install button that cannot install is a
+ * dead control, and this one simply doesn't exist instead.
+ *
+ * `className` comes from the caller so the row styles like its sibling drawer
+ * links (the drawer owns its own look; this component owns the behaviour).
+ */
+export function InstallMenuItem({ className }: { className?: string }) {
+  const installable = useSyncExternalStore(
+    subscribeInstallable,
+    isInstallable,
+    isInstallableServer,
+  );
+
+  if (!installable) return null;
 
   return (
-    <div
-      className="flex items-center gap-[0.75rem] flex-wrap my-[1rem] mx-0 px-[1rem] py-[0.75rem] bg-accent-tint border border-accent-tint-border rounded-[0.5rem]"
-      role="region"
-      aria-label="Install this app"
-    >
-      <span
-        className="flex-none flex items-center justify-center w-[2.375rem] h-[2.375rem] bg-surface border border-accent-tint-border rounded-[0.5625rem] text-[1rem]"
-        aria-hidden="true"
-      >
-        🪚
+    <button type="button" className={className} onClick={() => void promptInstall()}>
+      📲 Install app
+      <span className="block text-[0.8125rem] text-muted font-normal">
+        Faster access, works offline in the shop
       </span>
-      <div className="flex-1 min-w-[12rem]">
-        <p className="m-0 font-bold text-[0.9375rem]">Install Woodworking Plan</p>
-        {/* Sprint 32: light keeps the warm brown exactly; dark gets a lighter warm brown so
-            it stays readable on the dark accent-tint. */}
-        <p className="m-0 text-[0.8125rem] text-[#7a5316] dark:text-[#c9a06a]">
-          Faster access, works offline in the shop
-        </p>
-      </div>
-      {/* 2026-07-16 mobile fix: the two buttons are one flex GROUP, so when the
-          banner wraps on a phone they drop together onto their own row instead
-          of "Not now" hanging beside the text and "Install" stranded below it.
-          `ml-auto` keeps them right-aligned on the wide single-row layout. */}
-      <div className="flex gap-[0.5rem] flex-none ml-auto">
-        <button type="button" className={btnGhost} onClick={dismissForever}>
-          Not now
-        </button>
-        <button type="button" className={btnPrimary} onClick={install}>
-          Install
-        </button>
-      </div>
-    </div>
+    </button>
   );
 }
