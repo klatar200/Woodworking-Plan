@@ -11,11 +11,18 @@ const skipLink =
   'absolute left-[0.5rem] top-[-3rem] z-[100] inline-flex items-center min-h-[2.75rem] px-[1rem] py-0 bg-fg text-surface rounded-b-[0.375rem] no-underline font-medium transition-[top] duration-150 ease-[ease-in-out] focus:top-0';
 // `site-header` class RETAINED — the print stylesheet and the desktop layout rule
 // (both out of scope this sprint) still target it by class. Utilities added alongside.
+// 2026-07-16 mobile fix: on a phone the eight nav buttons overflowed the header —
+// buttons spilled past the header background onto the page. `flex-wrap` lets the
+// nav drop to its own full-width row (the header background grows with it), and
+// the nav row itself scrolls HORIZONTALLY instead of wrapping into a 3-deep grid
+// of buttons: one thumb-swipeable row is how every mobile app ships this. On
+// desktop nothing changes — everything still fits on one line.
 const siteHeader =
-  'site-header flex items-center justify-between gap-[1rem] px-[1.25rem] py-[0.75rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]';
+  'site-header flex flex-wrap items-center justify-between gap-x-[1rem] gap-y-[0.5rem] px-[1.25rem] py-[0.75rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]';
 const brand =
-  'font-bold text-[1.125rem] text-fg no-underline focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
-const siteNav = 'flex items-center gap-[0.5rem]';
+  'font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+const siteNav =
+  'flex items-center gap-[0.5rem] max-w-full overflow-x-auto [scrollbar-width:none] [-webkit-overflow-scrolling:touch]';
 
 /**
  * Site header with auth state.

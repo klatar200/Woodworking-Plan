@@ -32,8 +32,11 @@
  * outline. Giving every variant its own single border-color + text-color avoids
  * that entirely.
  */
+// 2026-07-16: `whitespace-nowrap` added — a button label that wraps mid-phrase
+// ("Log\nin", "Add to shopping\nlist") on a narrow phone reads broken; buttons
+// shrink by dropping to the next flex row, never by folding their own label.
 const btnBase =
-  'inline-flex items-center min-h-[2.75rem] px-[0.875rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed';
+  'inline-flex items-center min-h-[2.75rem] px-[0.875rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium whitespace-nowrap no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed';
 
 /** Bare `.btn` — transparent border, inherited text. Used where a caller sets its own look. */
 export const btn = `${btnBase} border border-transparent`;
@@ -61,8 +64,12 @@ export const btnLiked = `${btnBase} border border-fg text-fg`;
  * before. Compose width modifiers as plain strings, e.g.
  * `` `${page} page-wide` `` or `` `${page} page-catalog` ``.
  */
+// 2026-07-16: `lg:px-[2.5rem]` added — 1.25rem edge padding is right for a phone
+// but reads as content glued to the window edge once the wider desktop shells
+// (full-width catalog, 84rem plan detail) actually reach the viewport edges.
+// The print rule (`.page { padding: 0 }`) is unlayered and still wins on paper.
 export const page =
-  'page max-w-[40rem] mx-auto pt-[2rem] px-[1.25rem] pb-[calc(2rem+env(safe-area-inset-bottom))]';
+  'page max-w-[40rem] mx-auto pt-[2rem] px-[1.25rem] lg:px-[2.5rem] pb-[calc(2rem+env(safe-area-inset-bottom))]';
 
 /**
  * Text input, 44px tall / 16px font (small enough and iOS zooms the viewport on

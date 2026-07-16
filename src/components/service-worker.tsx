@@ -77,10 +77,17 @@ export function cachePlanForOffline(slug: string): void {
        * warehouse with no signal. Caching the plan but not the board plan would leave
        * the hole exactly where it hurts.
        */
+      /**
+       * Plus the BUILD page (2026-07-16): "Start building" now navigates to
+       * /plans/[slug]/build, and mid-build in a garage with no signal is the
+       * BUSINESS_PLAN.md §5 scenario. Caching the plan but not the page its
+       * primary CTA points at would break offline exactly at the moment of use.
+       */
       for (const url of [
         `/plans/${slug}`,
         `/plans/${slug}/print`,
         `/plans/${slug}/boards`,
+        `/plans/${slug}/build`,
       ]) {
         registration.active?.postMessage({ type: 'CACHE_PLAN', url });
       }

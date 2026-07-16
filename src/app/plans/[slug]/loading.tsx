@@ -9,7 +9,9 @@ import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `pa
 
 export default function PlanLoading() {
   return (
-    <main id="main" className={`${page} page-wide`}>
+    // `plan-detail` matches the loaded page's shell (84rem at lg, 2026-07-16)
+    // so the layout doesn't jump when the data lands.
+    <main id="main" className={`${page} page-wide plan-detail`}>
       <p className="visually-hidden" role="status">
         Loading plan…
       </p>

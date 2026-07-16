@@ -48,7 +48,15 @@ export default clerkMiddleware(async (auth, request) => {
 
     // Scripts: only ours, only with this request's nonce. Everything Clerk loads
     // is trusted transitively via strict-dynamic rather than by URL allowlist.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https:`,
+    //
+    // DEV ONLY (2026-07-16): `next dev`'s react-refresh runtime calls eval(), so
+    // under the strict CSP every client component silently fails to hydrate in
+    // dev — no filter auto-open, no tabs, no step walker — which had us testing
+    // interactivity against a page whose JS was dead. `'unsafe-eval'` is added
+    // ONLY when NODE_ENV !== 'production'; the production header is unchanged.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https:${
+      process.env.NODE_ENV !== 'production' ? " 'unsafe-eval'" : ''
+    }`,
 
     // See the note above — inline styles are permitted, inline scripts are not.
     `style-src 'self' 'unsafe-inline'`,

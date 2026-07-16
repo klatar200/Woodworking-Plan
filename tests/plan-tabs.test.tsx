@@ -75,9 +75,13 @@ describe('PlanTabs — server render (no JS yet)', () => {
 });
 
 describe('InstructionsDisclosure — server render (no JS yet)', () => {
-  it('renders instructions OPEN and shows no button before mount', () => {
+  // 2026-07-16: "Start building" is now a LINK to the dedicated build page, so
+  // unlike the Sprint 20 button it IS rendered server-side — a link works
+  // without JS. The fallback contract is unchanged: the full instructions are
+  // open in the static document (print/no-JS/crawlers), hidden only after mount.
+  it('renders the full instructions OPEN and a working link before mount', () => {
     const html = renderToStaticMarkup(
-      <InstructionsDisclosure>
+      <InstructionsDisclosure href="/plans/some-plan/build">
         <section>Every build step, in full</section>
       </InstructionsDisclosure>,
     );
@@ -85,8 +89,9 @@ describe('InstructionsDisclosure — server render (no JS yet)', () => {
     expect(html).toContain('Every build step, in full');
     // The region is not hidden without JS.
     expect(html).not.toContain('hidden');
-    // The "Start building" button does nothing without JS, so it isn't rendered.
-    expect(html).not.toContain('instructions-open');
+    // The link is server-rendered (it needs no JS) and points at the build page.
+    expect(html).toContain('href="/plans/some-plan/build"');
+    expect(html).toContain('Start building');
   });
 });
 

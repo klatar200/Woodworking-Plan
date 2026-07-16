@@ -14,7 +14,10 @@ import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `pa
 
 export default function CatalogLoading() {
   return (
-    <main id="main" className={`${page} page-wide`}>
+    // Same shell width as the loaded catalog (page.tsx: full-width at lg,
+    // 2026-07-16) — a skeleton narrower than the page it stands in for makes
+    // the whole layout visibly jump when the data lands.
+    <main id="main" className={`${page} lg:max-w-none`}>
       <h1>Plans</h1>
       <p className="visually-hidden" role="status">
         Loading plans…

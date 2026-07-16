@@ -464,6 +464,45 @@ with it.
     + the print reset. **Device-bound → Keagan (same as Sprint 24):** real-phone Lighthouse,
     real-browser toggle/FOUC test, visual regression at 5 breakpoints × 2 themes.
 
+- **Desktop-layout fix pass (2026-07-16, Keagan's direction): COMPLETE.** Three real
+  defects: (1) **Sprint 30a REGRESSION — the plan-detail grid was mirrored.** The aside
+  (DOM-first for the mobile hoist) had `lg:order-0`, so grid auto-placement put the IMAGE
+  in the wide 1fr column and every table/step/paragraph in the 22rem rail. Fixed with
+  `lg:order-1` (data left, image right, per Sprint 20); aside 22 → 24rem. (2) `.plan-grid`
+  columns were VIEWPORT-keyed (2/3/4/5 steps) but the grid lives in containers of very
+  different widths — the 52rem saved page got five ~9rem cards at 96rem viewport. Now
+  `repeat(auto-fill, minmax(16rem, 1fr))` ≥40rem: container-driven, min card width
+  guaranteed, mobile unchanged. (3) Widths/spacing: catalog `lg:max-w-none` (full-width),
+  `.page-wide` 52 → 64rem, `.page-wide.plan-detail` 70 → 84rem, `page` shell gains
+  `lg:px-[2.5rem]`, catalog rails 13/18rem + 2.5rem gaps, both loading skeletons matched
+  to their pages' shells (a narrower skeleton makes the layout jump when data lands).
+  **Plus a dev-only CSP fix:** the strict CSP blocks `eval()`, and `next dev`'s
+  react-refresh runtime needs it — so in dev NOTHING hydrated (no filter auto-open, no
+  tabs, no walker) and interactivity was being "tested" against dead JS. `'unsafe-eval'`
+  is appended to `script-src` ONLY when `NODE_ENV !== 'production'`; the production
+  header is byte-identical. All verified in a real browser against `npm run dev` at
+  2134px. New utilities compiled against the real Tailwind v4 toolchain.
+
+- **Mobile fix pass + dedicated build page (2026-07-16, Keagan's direction, same session):
+  COMPLETE.** (1) **Mobile header**: the eight nav buttons overflowed past the header
+  background on a phone — header is now `flex-wrap` (background grows with it) and the nav
+  is ONE horizontally-scrollable row (`overflow-x-auto`, scrollbar hidden), brand
+  `whitespace-nowrap`. (2) `btnBase` gains `whitespace-nowrap` — a label folding mid-phrase
+  ("Log in" across two lines) reads broken; buttons drop to the next flex row instead.
+  (3) **Install banner**: the two buttons are one flex group (`ml-auto`), so on wrap they
+  move together. (4) **"Start building" is now a LINK to `/plans/[slug]/build`**
+  (`DECISIONS_LOG.md` 2026-07-16) — a dedicated page hosting the StepWalker full-page (rail
+  on desktop, dots on phone). The step markup is shared via `src/components/plan-steps.tsx`
+  (renders on the plan page AND the build page — one copy, no drift). Contracts preserved:
+  the plan page still carries every step in its document, hidden only after mount
+  (`instructions-disclosure.tsx` now renders a server-side Link — works no-JS, unlike the
+  old dead button; print force-shows the region and hides `.instructions-open` by class);
+  the build page is public via `/plans(.*)`, added to BOTH offline paths (save pre-cache in
+  `service-worker.tsx` + the library download in `offline-urls.ts`, cross-check test
+  updated); NO ViewLogger on it (Sprint 19: the plan page already logged the view —
+  double-counting would corrupt Trending). Verified in-browser at desktop + ~835px;
+  real-phone pass is Keagan's.
+
 - **Sprint 24 (Hardening Pass 2): COMPLETE — 95/100.** Code audit + fixes of the surfaces
   rebuilt in 17–23. **Real a11y fix:** `PlanTabs` had `role="tablist"` with no keyboard
   support — now the full WAI-ARIA tab pattern (roving `tabindex`, ←/→ wrap, Home/End,

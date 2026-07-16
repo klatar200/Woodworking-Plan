@@ -44,6 +44,8 @@ describe('offlineDownloadUrls', () => {
       expect(urls).toContain(`/plans/${slug}/print`);
       expect(urls).toContain(`/plans/${slug}/print?view=cutlist`);
       expect(urls).toContain(`/plans/${slug}/boards`);
+      // The build page — where "Start building" points (2026-07-16).
+      expect(urls).toContain(`/plans/${slug}/build`);
     }
   });
 

@@ -1070,6 +1070,35 @@ Engineering decisions made alongside this (routine, not escalated): Tailwind v4
 React 19 stack already in place); the five-sprint breakdown (Sprints 28–32) recorded
 in `BUILD_PLAN.md` §4.4.
 
+### 2026-07-16 — Desktop/mobile layout fix pass; "Start building" gets a dedicated page
+
+**Status:** Directed by Keagan (with screenshots of the defects).
+
+1. **Desktop layout fixes** (his report: content over-centered with dead margins,
+   cards unreadably thin, weak section padding): catalog goes full-width at
+   desktop, `.page-wide` 52 → 64rem, plan detail 70 → 84rem, and the card grid
+   becomes container-driven (`auto-fill, minmax(16rem, 1fr)`) so a card can never
+   render narrower than 16rem. Fixing this surfaced and fixed a **Sprint 30a
+   regression** that had mirrored the plan-detail columns (image wide, data in the
+   rail).
+2. **Mobile fix pass** (his report: header nav overflowing the header, install
+   banner wrapping badly): header wraps with a horizontally-scrollable nav row;
+   the install banner's buttons move as one group; button labels never wrap.
+3. **"Start building" navigates to a dedicated page — `/plans/[slug]/build`** —
+   instead of expanding the step walker inline (partially reversing the Sprint 20
+   inline-disclosure design, at Keagan's explicit direction: the step-by-step is
+   the product's main content and "deserves an entire page"). What did NOT change:
+   the plan page still carries the full step list in its document (no-JS, print,
+   offline contracts intact — the link works without JS, which the old button did
+   not); the build page is public (`/plans(.*)` allowlist), pre-cached on save and
+   included in the library download; it logs NO view (the plan page already did —
+   Sprint 19 "the count must mean something").
+
+Engineering found-alongside (routine): the strict CSP blocks `eval()`, which
+`next dev`'s react-refresh needs — so client JS never hydrated in dev and
+interactivity was untestable there. `'unsafe-eval'` is appended to `script-src`
+only when `NODE_ENV !== 'production'`; the production header is byte-identical.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

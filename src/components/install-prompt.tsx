@@ -107,12 +107,18 @@ export function InstallPrompt() {
           Faster access, works offline in the shop
         </p>
       </div>
-      <button type="button" className={btnGhost} onClick={dismissForever}>
-        Not now
-      </button>
-      <button type="button" className={btnPrimary} onClick={install}>
-        Install
-      </button>
+      {/* 2026-07-16 mobile fix: the two buttons are one flex GROUP, so when the
+          banner wraps on a phone they drop together onto their own row instead
+          of "Not now" hanging beside the text and "Install" stranded below it.
+          `ml-auto` keeps them right-aligned on the wide single-row layout. */}
+      <div className="flex gap-[0.5rem] flex-none ml-auto">
+        <button type="button" className={btnGhost} onClick={dismissForever}>
+          Not now
+        </button>
+        <button type="button" className={btnPrimary} onClick={install}>
+          Install
+        </button>
+      </div>
     </div>
   );
 }

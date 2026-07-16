@@ -16,7 +16,7 @@ import { LikeButton } from '@/components/like-button';
 import { ShoppingListButton } from '@/components/shopping-list-button';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
-import { StepWalker } from '@/components/step-walker';
+import { PlanSteps } from '@/components/plan-steps';
 import { ViewLogger } from '@/components/view-logger';
 import { PlanTabs } from '@/components/plan-tabs';
 import { PlanImageSlot } from '@/components/plan-image-slot';
@@ -220,9 +220,16 @@ export default async function PlanDetailPage({
           `plan-detail-aside` CLASSES retained — the print stylesheet targets them
           (grid→block, aside→hidden) by class. Mobile: flex column, aside hoisted
           under the title via order; desktop (lg): grid, aside is the sticky right rail. */}
-      <div className="plan-detail-grid flex flex-col gap-[1.5rem] lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-[2.5rem] lg:items-start">
+      {/* ⚠️ REGRESSION FIXED 2026-07-16: the 30a conversion gave the aside
+          `lg:order-0`, and since the aside is FIRST in the DOM (for the mobile
+          hoist) grid auto-placement put the IMAGE in the wide 1fr column and
+          crammed every table, step, and paragraph into the 22rem rail — the
+          exact inverse of the Sprint 20 layout. `lg:order-1` restores
+          data-left / image-right: order-modified placement puts the main div
+          (order 0) in column 1 and the aside in the 24rem column 2. */}
+      <div className="plan-detail-grid mt-[1.5rem] flex flex-col gap-[1.5rem] lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-[2.5rem] lg:items-start">
         <aside
-          className="plan-detail-aside order-[-1] lg:order-0 lg:sticky lg:top-[4.5rem]"
+          className="plan-detail-aside order-[-1] lg:order-1 lg:sticky lg:top-[4.5rem]"
           aria-label="Photo"
         >
           <PlanImageSlot
@@ -401,75 +408,16 @@ export default async function PlanDetailPage({
       )}
       </PlanTabs>
 
-      {/* Sprint 20 — Instructions open behind a button on the enhanced client, so the
-          overview isn't buried under forty build steps. InstructionsDisclosure keeps
-          the whole section in the DOM and only collapses it after mount; print, offline
-          and no-JS get it fully open. The StepWalker inside is unchanged bar its new
-          last-step CTA. */}
-      <InstructionsDisclosure>
+      {/* 2026-07-16 (Keagan): "Start building" now LINKS to the dedicated build page
+          (/plans/[slug]/build) where the StepWalker gets the whole viewport — the
+          instructions are the product's main content and an inline corner undersold
+          them. The full step list below stays in THIS document as the no-JS/print/
+          offline fallback (hidden after mount); the walker itself moved to the build
+          page. Shared markup lives in plan-steps.tsx so the two pages cannot drift. */}
+      <InstructionsDisclosure href={`/plans/${plan.slug}/build`}>
       <section>
         <h2>Instructions</h2>
-        {/* StepWalker only ever HIDES steps client-side after mount — every
-            step below is still fully server-rendered. See step-walker.tsx. */}
-        <StepWalker
-          stepTitles={plan.steps.map((step) => step.title)}
-          reviewCtaHref="#reviews-heading"
-        >
-          <ol className="steps">
-            {plan.steps.map((step) => (
-              <li key={step.id} className="step" data-step={step.stepNumber}>
-                <h3 className="step-title">
-                  <span className="step-number">{step.stepNumber}</span>
-                  {step.title}
-                </h3>
-
-                {/* Sprint 21 — what this step calls for, so a builder can gather it
-                    without reading ahead. Renders nothing for an untagged step, which
-                    is every step until the content pass reaches its plan. */}
-                {(step.tools.length > 0 || step.materials.length > 0) && (
-                  <div className="step-needs">
-                    {step.tools.length > 0 && (
-                      <div className="step-needs-group">
-                        <span className="step-needs-label">Tools</span>
-                        <ul className="step-needs-list">
-                          {step.tools.map((st) => {
-                            // Sprint 26 — mark the ones you own, so a glance at a step
-                            // tells you what you still need to fetch.
-                            const owns = ownedSet.has(st.tool.slug);
-                            return (
-                              <li
-                                key={st.id}
-                                className={`step-need step-need-tool${owns ? ' step-need-owned' : ''}`}
-                                title={owns ? 'In your workshop' : undefined}
-                              >
-                                {st.tool.name}
-                                {owns ? <span aria-hidden="true"> ✓</span> : null}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    )}
-                    {step.materials.length > 0 && (
-                      <div className="step-needs-group">
-                        <span className="step-needs-label">Materials</span>
-                        <ul className="step-needs-list">
-                          {step.materials.map((sm) => (
-                            <li key={sm.id} className="step-need step-need-material">
-                              {sm.material.name}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <Prose text={step.body} />
-              </li>
-            ))}
-          </ol>
-        </StepWalker>
+        <PlanSteps steps={plan.steps} ownedToolSlugs={ownedToolSlugs} />
       </section>
       </InstructionsDisclosure>
 

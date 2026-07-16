@@ -1,81 +1,57 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { btnPrimary } from '@/lib/ui'; // Sprint 29: shared button class
 
 interface Props {
-  /** The server-rendered Instructions section (heading + StepWalker + steps). */
+  /** The dedicated build page — /plans/[slug]/build. */
+  href: string;
+  /** The server-rendered Instructions section (heading + full step list). */
   children: React.ReactNode;
 }
 
 /**
- * "A button to open Instructions" — Sprint 20.
+ * "Start building →" — REWORKED 2026-07-16 (Keagan's direction).
  *
- * On the redesigned desktop page the overview (image, glance, Tools/Materials/Cut List
- * tabs) comes first, and the step-by-step opens on demand — so someone comparing plans
- * isn't scrolling past forty build steps to get back to the catalog. This is that
- * button.
+ * Sprint 20 made this a disclosure that expanded the step walker inline; the
+ * instructions now get a dedicated page (/plans/[slug]/build), so this is a
+ * LINK, not a toggle. The step-by-step is the product's main content and a
+ * corner of the plan page undersold it.
  *
- * PROGRESSIVE ENHANCEMENT, same contract as StepWalker and PlanTabs. `children` — the
- * complete Instructions section — is ALWAYS in the DOM. This component only collapses it
- * after mount and reveals it on click:
+ * The progressive-enhancement contract of the plan page is UNCHANGED —
+ * `children` (the complete Instructions section) is still always in the DOM:
  *
- *   - NO-JS / crawler: the effect never runs, `collapsed` stays false, and the full
- *     instructions render open, exactly as before. The button is not shown (it does
- *     nothing without JS, and a dead button is worse than no button).
- *   - PRINT (Sprint 13): `@media print` forces the region visible with `!important`, so
- *     a plan printed while collapsed still prints every step. Toggling `hidden` alone
- *     would NOT survive print — `[hidden]` is overridable, but relying on that is
- *     fragile, so the print rule targets the region class directly.
- *   - OFFLINE: nothing fetched on open; the steps are already in the cached document.
- *
- * The content is collapsed by keeping it mounted and setting `hidden` — not by dropping
- * it from the tree — so the guarantee above holds and a crawler indexing the page sees
- * the whole plan.
+ *   - NO-JS / crawler: the effect never runs, the full instructions render
+ *     open below the link, and the link ALSO works — a link needs no JS,
+ *     which is strictly better than Sprint 20's dead-without-JS button.
+ *   - ENHANCED: the region collapses after mount and the link is the one
+ *     path to the steps — full-page, as intended.
+ *   - PRINT (Sprint 13): `@media print` forces `.instructions-region`
+ *     visible and hides `.instructions-open` by class, so a printed plan
+ *     page still carries every step and no stray CTA.
+ *   - OFFLINE: the build page is pre-cached when a plan is saved (see
+ *     service-worker.tsx), so the link works with no signal too.
  */
-export function InstructionsDisclosure({ children }: Props) {
+export function InstructionsDisclosure({ href, children }: Props) {
   const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const regionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const reveal = () => {
-    setOpen(true);
-    // Move focus into the newly revealed region for keyboard/screen-reader users —
-    // otherwise the button vanishes and focus is left on nothing.
-    requestAnimationFrame(() => {
-      regionRef.current?.focus();
-      regionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  };
-
-  // Before mount (and forever, with no JS) the instructions are simply open.
-  const collapsed = mounted && !open;
-
   return (
     <div className="instructions-disclosure">
-      {collapsed && (
-        <button
-          type="button"
-          className={`${btnPrimary} instructions-open mt-[1.5rem]`}
-          aria-expanded={false}
-          aria-controls="instructions-region"
-          onClick={reveal}
-        >
-          Start building →
-        </button>
-      )}
+      {/* `instructions-open` class retained — the print stylesheet hides it. */}
+      <p className="instructions-open mt-[1.5rem] mb-0">
+        <Link href={href} className={btnPrimary}>
+          Start building &rarr;
+        </Link>
+      </p>
 
-      <div
-        id="instructions-region"
-        ref={regionRef}
-        tabIndex={-1}
-        className="instructions-region focus:outline-none"
-        hidden={collapsed}
-      >
+      {/* The no-JS / print fallback: the full step list, hidden only once JS
+          has mounted (when the link becomes the way in). */}
+      <div id="instructions-region" className="instructions-region" hidden={mounted}>
         {children}
       </div>
     </div>

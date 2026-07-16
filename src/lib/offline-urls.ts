@@ -36,6 +36,9 @@ export function offlineDownloadUrls({
     ...planSlugs.map((slug) => `/plans/${slug}/print?view=cutlist`),
     // The board plan — what to buy. The one you want at the lumberyard (Sprint 15).
     ...planSlugs.map((slug) => `/plans/${slug}/boards`),
+    // The build page (2026-07-16) — where "Start building" now points. Mid-build
+    // with no signal is the §5 scenario; the primary CTA must not 404 offline.
+    ...planSlugs.map((slug) => `/plans/${slug}/build`),
 
     // The whole-library shopping list, and one per collection. This is what closes the
     // BUSINESS_PLAN.md §5 hardware-store gap.

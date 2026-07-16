@@ -130,7 +130,10 @@ export default async function CatalogPage({
 
   return (
     // id="main" is the skip link's target (WCAG 2.4.1).
-    <main id="main" className={`${pageShell} lg:max-w-[96rem]`}>
+    // 2026-07-16 (Keagan): the catalog goes full-width on desktop — a browse
+    // grid with its own auto-fill card columns reads better using the whole
+    // window than centered in a 96rem cap with dead margins either side.
+    <main id="main" className={`${pageShell} lg:max-w-none`}>
       <h1>Plans</h1>
 
       <RateLimitNotice
@@ -162,7 +165,7 @@ export default async function CatalogPage({
       {/* Sprint 30a: the desktop three-column grid moved to Tailwind. Below 64rem
           there is no grid (plain block, DOM order = mobile order); at lg the
           grid-template-areas place the rail/results/filter columns. */}
-      <div className="lg:grid lg:grid-cols-[12rem_minmax(0,1fr)_17rem] lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters'] lg:gap-x-[2rem] lg:gap-y-0 lg:items-start">
+      <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_18rem] lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters'] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
         {/* Desktop-only (hidden below 64rem): a second way to reach the category
             filter the panel's <select> already offers, not a second capability. */}
         <CategoryNav

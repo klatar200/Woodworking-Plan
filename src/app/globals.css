@@ -269,7 +269,10 @@ code {
  * ------------------------------------------------------------------------- */
 
 .page-wide {
-  max-width: 52rem;
+  /* 2026-07-16 (Keagan): 52rem left a canyon of empty margin on desktop and
+     squeezed the saved-page card grid. 64rem is still a comfortable reading
+     width for the list pages that use this shell. */
+  max-width: 64rem;
 }
 
 /* --- catalog grid --- */
@@ -285,7 +288,13 @@ code {
 
 @media (min-width: 40rem) {
   .plan-grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* CONTAINER-driven columns (2026-07-16, Keagan's readability call). The old
+       viewport-keyed 2/3/4/5-column steps sized cards off the WINDOW, but this
+       grid lives inside containers of very different widths — the catalog's
+       results column, the 64rem saved page — so at a 96rem viewport the saved
+       page got five ~9rem cards. A minimum card width is the actual guarantee
+       the design needs: as many columns as fit at ≥16rem per card. */
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   }
 }
 
@@ -1569,23 +1578,13 @@ code {
  * page.tsx and category-nav.tsx. `.plan-grid` is a SHARED responsive grid (catalog +
  * saved + paths); it stays here, deferred to a later wave. */
 @media (min-width: 64rem) {
-  /* 3 columns of cards at this width; 4 and 5 come below. The card is the same
-     card — no desktop variant, nothing hidden at one size and shown at another. */
+  /* Column COUNT now comes from the auto-fill rule above (container width ÷
+     16rem min card), not from viewport steps — the card is still the same card,
+     no desktop variant. Desktop keeps the tighter top margin and gets a little
+     more air between cards. */
   .plan-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin-top: 1rem;
-  }
-}
-
-@media (min-width: 80rem) {
-  .plan-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 96rem) {
-  .plan-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.25rem;
   }
 }
 
@@ -1619,7 +1618,10 @@ code {
  * shell modifier), deferred with it (a layered utility can't beat the unlayered rule). */
 @media (min-width: 64rem) {
   .page-wide.plan-detail {
-    max-width: 70rem;
+    /* 2026-07-16: 70 → 84rem. With the aside on the right (24rem) this gives the
+       plan data a ~53rem main column — tables and steps stop feeling cramped
+       without prose lines running unreadably long. */
+    max-width: 84rem;
   }
 }
 
