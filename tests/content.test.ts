@@ -281,3 +281,31 @@ describe('learning paths (Sprint 16)', () => {
     ).toBe(false);
   });
 });
+
+describe('unresolvedImages — dead-source-image annotation (content-ops 2026-07-17)', () => {
+  // A validated catalog plan is itself a valid planSchema input; reuse one as a base.
+  const base = catalog.plans[0];
+
+  it('planSchema accepts an optional unresolvedImages array (empty images + preserved URL)', () => {
+    const withField = {
+      ...base,
+      images: [],
+      unresolvedImages: [
+        {
+          url: 'https://www.ana-white.com/sites/default/files/example.jpg',
+          alt: 'example',
+          isPrimary: true,
+        },
+      ],
+    };
+    expect(planSchema.safeParse(withField).success).toBe(true);
+  });
+
+  it('unresolvedImages is optional — a plan without it still validates', () => {
+    expect(planSchema.safeParse(base).success).toBe(true);
+  });
+
+  it('strict mode still rejects an unknown key (a typo must fail loudly)', () => {
+    expect(planSchema.safeParse({ ...base, notARealKey: true }).success).toBe(false);
+  });
+});

@@ -84,3 +84,5 @@ the list lives in one place:
 - **Owned-tools profile** — *deferred, not rejected.* It IS in `BUSINESS_PLAN.md` §10,
   and it needs a `UserTool` table plus a "my workshop" screen. See `DECISIONS_LOG.md`
   2026-07-13. This one is genuinely queued, not parked.
+- **Convert to metric** - Maybe have a conversion option inside of the profile settings. 
+  When toggled, it will change all of the quantities and measurements into metric measurements. 

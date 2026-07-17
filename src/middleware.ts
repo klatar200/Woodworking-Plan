@@ -42,6 +42,14 @@ export default clerkMiddleware(async (auth, request) => {
 
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
+  // Plan photos re-hosted on Cloudflare R2 (DECISIONS_LOG 2026-07-17). Host is
+  // env-driven so dev (pub-xxxx.r2.dev) and a launch custom domain are one env
+  // change apart. MUST match `remotePatterns` in next.config.ts — two independent
+  // gates, miss either and images 404 while everything "looks" fine.
+  const r2ImgSrc = process.env.R2_PUBLIC_HOST
+    ? ` https://${process.env.R2_PUBLIC_HOST}`
+    : '';
+
   const csp = [
     // Nothing loads from anywhere unless a directive below says otherwise.
     `default-src 'self'`,
@@ -68,7 +76,7 @@ export default clerkMiddleware(async (auth, request) => {
     // upload itself "works" — the exact failure shape as the Clerk CSP bug, which
     // shipped twice. It must ALSO be allowlisted in next.config.ts for next/image;
     // either one alone is not enough.
-    `img-src 'self' data: blob: https://img.clerk.com https://images.clerk.dev https://*.public.blob.vercel-storage.com`,
+    `img-src 'self' data: blob: https://img.clerk.com https://images.clerk.dev https://*.public.blob.vercel-storage.com${r2ImgSrc}`,
 
     `font-src 'self' data:`,
 

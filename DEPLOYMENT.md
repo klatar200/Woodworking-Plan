@@ -369,6 +369,75 @@ not say what you expect, stop.
 
 ---
 
+## Cloudflare R2 — re-host plan images (DECISIONS_LOG 2026-07-17)
+
+Plan photos were hotlinked to `www.ana-white.com`. This moves them onto our own
+R2 bucket and rewrites `content/plans/*.json`. Do it once; the script is
+idempotent and safe to re-run.
+
+**1. Create the bucket + credentials (Cloudflare dashboard — yours, needs your login):**
+
+- R2 → **Create bucket** (e.g. `woodworking-plan-images`).
+- Bucket → **Settings → Public access** → enable the **r2.dev** public URL. Copy the
+  host it gives you — `pub-<hash>.r2.dev` (no `https://`, no trailing slash). That is
+  `R2_PUBLIC_HOST`. *(Swap this for a custom domain at launch — branding/domain #8.)*
+- R2 → **Manage API tokens → Create token**, **Object Read & Write**, scoped to that
+  bucket. Copy the Access Key ID + Secret. Your account ID is in the R2 sidebar URL.
+
+**2. Add to `.env.local` (dev) — and later to Vercel env for production builds:**
+
+```
+R2_ACCOUNT_ID=xxxxxxxxxxxxxxxx
+R2_ACCESS_KEY_ID=xxxxxxxxxxxxxxxx
+R2_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxx
+R2_BUCKET=woodworking-plan-images
+R2_PUBLIC_HOST=pub-xxxxxxxx.r2.dev
+```
+
+> `R2_PUBLIC_HOST` must ALSO be set in **Vercel → Settings → Environment Variables**
+> before the next production build — it feeds `next.config.ts` `remotePatterns` and
+> the CSP `img-src` at build time. Miss it and every plan image is silently blocked,
+> the exact failure shape as the Clerk CSP bug. Both gates are already wired to read it.
+
+**3. Run it (PowerShell, in repo root):**
+
+```powershell
+cd C:\Users\latar\Desktop\Woodworking-Plan
+npm install                              # picks up @aws-sdk/client-s3 (new dep)
+npm run images:migrate -- --dry-run      # preview: counts images, uploads/writes nothing
+npm run images:migrate                   # download → sanitise → upload → rewrite JSON
+git diff --stat content/plans            # review: only image URLs should have changed
+```
+
+The script re-encodes and **strips EXIF** on every image (a re-hosted phone photo
+still carries GPS), keys objects by a hash of the source URL (so duplicates collapse
+and a re-run skips work already done), and exits non-zero listing any failures rather
+than silently dropping an image.
+
+**4. Handle images whose source URL is dead (404).** Some source URLs no longer
+resolve (~150 at last run), so `images:migrate` leaves them untouched and lists
+them. Run this straight after the migration to null those out cleanly — it
+HEAD-verifies each URL really is 404, then moves it (source URL preserved) into
+`unresolvedImages` and empties `images` so the plan shows the placeholder instead
+of a broken image:
+
+```powershell
+npm run images:null-unresolved -- --dry-run   # lists exactly which plans it will touch
+npm run images:null-unresolved                # apply (format-preserving, minimal diff)
+git diff --stat content/plans
+```
+
+The source URL is kept under `unresolvedImages` so you can look up the correct
+image later from your own media library, fix the URL back into `images`, and
+re-run `images:migrate`. Safe to run in any order — it only touches URLs it
+confirms are 404, never a URL that still resolves.
+
+**5. The rewritten JSON is CONTENT — it does not reach production on deploy.** After
+you're happy with the diff and have pushed, re-seed production the same way as any
+content change (see *"A CONTENT change is a production data change"* above).
+
+---
+
 ## Step 6 — Repo settings (2 minutes, in GitHub)
 
 Under **Settings → Branches** on the repo:

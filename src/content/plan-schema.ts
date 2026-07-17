@@ -131,6 +131,17 @@ export const planSchema = z
     steps: z.array(step).min(1),
     images: z.array(image),
 
+    /**
+     * Content-ops 2026-07-17: images whose ORIGINAL source URL 404'd during the
+     * R2 migration. Moved here rather than deleted so the source URL is PRESERVED
+     * for later recovery (Keagan owns the source site and can look up the correct
+     * image), while `images` is emptied so the plan renders the honest placeholder
+     * instead of a broken image. OPTIONAL, and IGNORED by the seed — it never
+     * reaches the database; this is purely a source-file annotation. Populated by
+     * scripts/null-unresolved-images.mjs.
+     */
+    unresolvedImages: z.array(image).optional(),
+
     published: z.boolean().default(true),
   })
   .strict()

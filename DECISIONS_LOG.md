@@ -1117,6 +1117,32 @@ only when `NODE_ENV !== 'production'`; the production header is byte-identical.
    lever); Lighthouse against production, not dev; revisit caching/PPR of public
    catalog content at launch scale; `next/image` when real photos land.
 
+### 2026-07-17 — Image storage vendor: Cloudflare R2 (stop hotlinking ana-white.com)
+**Status:** Confirmed by user (chose R2 over Vercel Blob / repo-static).
+**Source:** All 1,030 plan photos across the catalog were hotlinked to
+`www.ana-white.com`. Keagan **confirmed he holds the rights to re-host these
+images** (the provenance sign-off `AUDIT_2026-07-16.md` #5 gated the seed on).
+R2 chosen for **zero egress fees** (a public image catalog is bandwidth-heavy;
+Vercel Blob Hobby caps transfer at ~10 GB/mo and is non-commercial) and 10 GB
+free storage — a genuine perpetual free tier, consistent with the $0-during-dev
+rule. Estimated ~100–300 MB total, well inside free limits.
+**Mechanics:** `scripts/migrate-images-to-r2.mjs` downloads each source image,
+re-encodes + strips EXIF (the Sprint 10 upload rule — even re-hosted bytes get
+sanitised; a phone photo's GPS must not ship), uploads to R2 keyed by content-URL
+hash (dedupes + idempotent), and rewrites each plan JSON's `images[].url`. The
+public host is env-driven (`R2_PUBLIC_HOST`) and wired into BOTH image gates
+(`next.config.ts` remotePatterns + `middleware.ts` CSP `img-src`), so dev
+(`pub-xxxx.r2.dev`) → launch custom domain is one env change, not a re-migration.
+**Dead source URLs (~154):** some source images 404 at their hotlinked URL. Keagan's
+call — **null those `images` arrays so the plan renders the honest placeholder, but
+PRESERVE the original URL** under a new optional `unresolvedImages` field (added to
+`plan-schema.ts`, ignored by the seed) so the correct image can be recovered later
+from his own media library. Applied by `scripts/null-unresolved-images.mjs`, which
+HEAD-verifies each URL is genuinely dead before touching it.
+**Deferred to launch:** swapping the throwaway `pub-*.r2.dev` public URL for a
+custom domain (blocked on branding/domain #8); credential rotation follows the
+existing pre-go-live rule.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

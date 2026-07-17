@@ -30,6 +30,20 @@ const nextConfig: NextConfig = {
         hostname: '*.public.blob.vercel-storage.com',
         pathname: '/**',
       },
+      // Plan photos re-hosted on Cloudflare R2 (DECISIONS_LOG 2026-07-17). The host
+      // is env-driven (`R2_PUBLIC_HOST`, e.g. `pub-xxxx.r2.dev` in dev, a custom
+      // domain at launch) so repointing is one env change, not a re-migration.
+      // MUST be set at BUILD time on Vercel or every plan image is silently blocked.
+      // Kept in step with `img-src` in src/middleware.ts — BOTH gates or nothing.
+      ...(process.env.R2_PUBLIC_HOST
+        ? [
+            {
+              protocol: 'https' as const,
+              hostname: process.env.R2_PUBLIC_HOST,
+              pathname: '/**',
+            },
+          ]
+        : []),
     ],
   },
 
