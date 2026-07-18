@@ -46,9 +46,12 @@ export default clerkMiddleware(async (auth, request) => {
   // env-driven so dev (pub-xxxx.r2.dev) and a launch custom domain are one env
   // change apart. MUST match `remotePatterns` in next.config.ts — two independent
   // gates, miss either and images 404 while everything "looks" fine.
-  const r2ImgSrc = process.env.R2_PUBLIC_HOST
-    ? ` https://${process.env.R2_PUBLIC_HOST}`
-    : '';
+  // Normalised: a value pasted WITH the scheme would emit `https://https://…`
+  // into the CSP, which matches nothing and blocks every image silently.
+  const r2Host = process.env.R2_PUBLIC_HOST?.trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/+$/, '');
+  const r2ImgSrc = r2Host ? ` https://${r2Host}` : '';
 
   const csp = [
     // Nothing loads from anywhere unless a directive below says otherwise.

@@ -52,8 +52,38 @@ const {
   R2_ACCESS_KEY_ID,
   R2_SECRET_ACCESS_KEY,
   R2_BUCKET,
-  R2_PUBLIC_HOST,
 } = process.env;
+
+/**
+ * Normalise R2_PUBLIC_HOST to a BARE hostname.
+ *
+ * Learned the hard way (2026-07-17): a value pasted WITH the scheme produced
+ * `https://https://…` in 876 plan files, and the value pasted was the S3 API
+ * endpoint, which only answers SIGNED requests — it can never serve a browser
+ * <img>. Both mistakes are silent: the upload succeeds and the JSON looks
+ * plausible. So both are rejected here, loudly, before anything is written.
+ */
+function normalisePublicHost(raw) {
+  if (!raw) return raw;
+  const host = raw
+    .trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/+$/, '');
+  if (/\.r2\.cloudflarestorage\.com$/i.test(host)) {
+    console.error(
+      `✗ R2_PUBLIC_HOST is the S3 API endpoint (${host}).\n` +
+        '  That endpoint only serves authenticated, signed requests — images will\n' +
+        '  never load in a browser from it.\n' +
+        '  Use the bucket PUBLIC host instead: R2 → your bucket → Settings →\n' +
+        '  Public access → r2.dev subdomain (looks like pub-xxxxxxxx.r2.dev),\n' +
+        '  with no https:// prefix.'
+    );
+    process.exit(1);
+  }
+  return host;
+}
+
+const R2_PUBLIC_HOST = normalisePublicHost(process.env.R2_PUBLIC_HOST);
 
 const missing = Object.entries({
   R2_ACCOUNT_ID,

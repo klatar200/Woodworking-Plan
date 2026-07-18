@@ -29,7 +29,11 @@
     "// images:migrate": "One-off + re-runnable: re-hosts plan photos onto R2 and rewrites content/plans/*.json (DECISIONS_LOG 2026-07-17). Loads R2_* creds from .env.local via dotenv-cli. Idempotent; supports --dry-run and --force.",
     "images:migrate": "dotenv -e .env.local -- node scripts/migrate-images-to-r2.mjs",
     "// images:null-unresolved": "Run AFTER images:migrate. HEAD-verifies any remaining source-host image URLs and, for confirmed 404s, moves them to unresolvedImages (source URL preserved) and empties images so the plan shows the placeholder. Format-preserving, idempotent; supports --dry-run.",
-    "images:null-unresolved": "node scripts/null-unresolved-images.mjs"
+    "images:null-unresolved": "node scripts/null-unresolved-images.mjs",
+    "// plans:publish": "Flips published:false -> true across content/plans. Publishing is a CONTENT decision — the JSON is the source of truth, so never flip this in the DB (the next seed would overwrite it). Format-preserving, idempotent; supports --dry-run, --unpublish, --skip-empty-cutlist, --skip-empty-images.",
+    "plans:publish": "node scripts/set-published.mjs",
+    "// images:fix-host": "Repairs image URLs written with a wrong/doubled host (2026-07-17 incident). Pure text fix — preserves the object key, re-points it at R2_PUBLIC_HOST. Idempotent; supports --dry-run.",
+    "images:fix-host": "dotenv -e .env.local -- node scripts/fix-image-host.mjs"
   },
   "comment:overrides": "postcss <8.5.10 has a moderate XSS advisory (CVE-2026-41305). Next.js still pins a vulnerable range, so npm reports 'no fix available'. Forcing the patched postcss resolves it. Remove this override once Next.js ships a version that depends on postcss >=8.5.10.",
   "overrides": {

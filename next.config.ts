@@ -35,11 +35,15 @@ const nextConfig: NextConfig = {
       // domain at launch) so repointing is one env change, not a re-migration.
       // MUST be set at BUILD time on Vercel or every plan image is silently blocked.
       // Kept in step with `img-src` in src/middleware.ts — BOTH gates or nothing.
+      // Normalised: a value pasted WITH the scheme ("https://pub-x.r2.dev") would
+      // otherwise be an invalid hostname here and silently match nothing.
       ...(process.env.R2_PUBLIC_HOST
         ? [
             {
               protocol: 'https' as const,
-              hostname: process.env.R2_PUBLIC_HOST,
+              hostname: process.env.R2_PUBLIC_HOST.trim()
+                .replace(/^https?:\/\//i, '')
+                .replace(/\/+$/, ''),
               pathname: '/**',
             },
           ]
