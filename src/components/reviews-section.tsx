@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { submitReviewAction, deleteReviewAction, deletePhotoAction } from '@/app/actions/reviews';
@@ -56,31 +57,74 @@ export function ReviewsSection({
         <form
           action={submitReviewAction}
           className="bg-surface flex flex-col gap-[0.6rem] mt-[1rem] mx-0 mb-[2rem] p-[1rem] border border-border rounded-[0.5rem]"
-          encType="multipart/form-data"
         >
+          {/*
+            NO `encType` ON THIS FORM, AND DO NOT ADD ONE BACK (fixed 2026-07-19).
+
+            The file input below makes `encType="multipart/form-data"` look mandatory —
+            it is what a plain HTML form would need. It is not needed here, and React
+            warns about it on every render: when `action` is a SERVER ACTION rather than
+            a URL, React owns the encoding and always submits multipart, overriding
+            whatever the attribute says. Specifying it achieved nothing except logging
+            "Cannot specify a encType or method for a form that specifies a function as
+            the action" on every plan page viewed by a signed-in user.
+
+            Uploads are unaffected — they always went over React's own multipart
+            encoding, never this attribute. The same rule covers `method`: don't set it.
+          */}
           <input type="hidden" name="planId" value={planId} />
           <input type="hidden" name="slug" value={slug} />
 
           <h3>{myReview ? 'Edit your review' : 'Write a review'}</h3>
 
-          <fieldset className="flex flex-wrap gap-[0.75rem] border-0 p-0 m-0">
+          <fieldset className="border-0 p-0 m-0">
             <legend className="p-0 mb-[0.4rem] font-semibold">Your rating</legend>
-            {/* Radio buttons, not a JS star widget. A rating that needs JavaScript to
-                be entered is a rating some people cannot leave. */}
-            {[1, 2, 3, 4, 5].map((value) => (
-              <label key={value} className="inline-flex items-center gap-[0.3rem] min-h-[44px]">
-                <input
-                  type="radio"
-                  name="rating"
-                  value={value}
-                  defaultChecked={myReview?.rating === value}
-                  required
-                />
-                <span>
-                  {value} {value === 1 ? 'star' : 'stars'}
-                </span>
-              </label>
-            ))}
+            {/*
+              QOL-B item 6 — a clickable star widget that is STILL the radio group.
+              THE RADIOS ARE NOT REPLACED, and they are not hidden with `display: none`:
+              they are `visually-hidden` (clipped, still focusable, still submitted), and
+              each star is that radio's own <label>. So this works with JavaScript off,
+              with a keyboard (arrow keys move between radios exactly as before), and
+              with a screen reader (each label carries "3 stars" in text) — the original
+              comment stands: a rating that needs JavaScript to be entered is a rating
+              some people cannot leave. There is no client component here at all.
+
+              THE ORDER IS REVERSED ON PURPOSE. Filling "this star and every star to its
+              left" needs a preceding-sibling selector, which CSS does not have — so the
+              radios run 5→1 in the DOM and `flex-row-reverse` paints them 1→5 on screen.
+              Tailwind's `peer-checked:` compiles to `:where(.peer):checked ~ &`, so
+              checking ★3 fills the labels that FOLLOW it in the DOM — 3, 2 and 1 — which
+              is the leftmost three on screen. Exactly the wanted behaviour, no JS.
+
+              KNOWN LIMIT, accepted: hover fills only the star under the cursor, not the
+              run up to it. That would need `:has()` per-star and a chain of selectors
+              for a cue that does not exist on touch, which is where most reviews are
+              written. Click/keyboard feedback is exact, which is the part that matters.
+            */}
+            <div className="flex flex-row-reverse justify-end">
+              {[5, 4, 3, 2, 1].map((value) => (
+                <Fragment key={value}>
+                  <input
+                    type="radio"
+                    id={`rating-${value}`}
+                    name="rating"
+                    value={value}
+                    defaultChecked={myReview?.rating === value}
+                    required
+                    className="peer visually-hidden"
+                  />
+                  <label
+                    htmlFor={`rating-${value}`}
+                    className="inline-flex items-center min-h-[44px] px-[0.15rem] text-[1.75rem] leading-none cursor-pointer text-muted-2 hover:text-accent-strong peer-checked:text-accent-strong peer-focus-visible:outline-2 peer-focus-visible:outline-ok peer-focus-visible:outline-offset-2"
+                  >
+                    <span className="visually-hidden">
+                      {value} {value === 1 ? 'star' : 'stars'}
+                    </span>
+                    <span aria-hidden="true">★</span>
+                  </label>
+                </Fragment>
+              ))}
+            </div>
           </fieldset>
 
           <label htmlFor="review-body">

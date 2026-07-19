@@ -49,7 +49,8 @@ export default async function PathDetailPage({ params }: { params: Params }) {
   return (
     <main id="main" className={page}>
       <p className="breadcrumb">
-        <Link href="/paths">← All paths</Link>
+        {/* QOL-E: the section is called "Learning" now; the URL stays /paths. */}
+        <Link href="/paths">← All learning paths</Link>
       </p>
 
       <header>

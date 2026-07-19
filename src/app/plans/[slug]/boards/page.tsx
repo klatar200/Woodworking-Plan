@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
 import { formatInches } from '@/lib/format';
+import { BoardBar } from '@/components/board-bar';
 import {
   optimize,
   totalBoards,
@@ -238,29 +239,13 @@ export default async function BoardPlanPage({
                     </span>
                   </h3>
 
-                  {/* A to-scale bar. Someone standing at a saw should be able to SEE the
-                      layout, not reconstruct it from a table of numbers. */}
-                  <div
-                    className="board-bar"
-                    role="img"
-                    aria-label={`Board ${index + 1}: ${board.parts
-                      .map((p) => `${p.label} at ${formatInches(p.lengthIn)}`)
-                      .join(', ')}, with ${formatInches(board.offcutIn)} left over`}
-                  >
-                    {board.parts.map((p, i) => (
-                      <span
-                        key={`${p.id}-${i}`}
-                        className="board-piece"
-                        style={{ flexGrow: p.lengthIn }}
-                        title={`${p.label} — ${formatInches(p.lengthIn)}`}
-                      >
-                        <span className="board-piece-label">{formatInches(p.lengthIn)}</span>
-                      </span>
-                    ))}
-                    {board.offcutIn > 0 && (
-                      <span className="board-offcut" style={{ flexGrow: board.offcutIn }} />
-                    )}
-                  </div>
+                  {/* QOL-B: the bar moved to board-bar.tsx, shared verbatim with the
+                      plan page's inline cut-list visual so the two cannot drift. */}
+                  <BoardBar
+                    board={board}
+                    number={index + 1}
+                    ripped={group.ripsPerBoard > 1}
+                  />
 
                   <ol className="board-cuts">
                     {board.parts.map((p, i) => (

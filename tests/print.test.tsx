@@ -127,6 +127,23 @@ describe('SECURITY: the print route is not a back door', () => {
   });
 });
 
+/**
+ * QOL-A. Difficulty prints as a WORD, never as "(2/5)".
+ *
+ * Same argument as the dollar-figure rule two describes below: the numeral claims a
+ * precision the value does not have (difficulty is an authored judgement, not a
+ * measurement), and it disagreed with plan-card.tsx, which has only ever shown the
+ * label. `difficulty: 2` in the fixture, so a bare "2/5" appearing again fails here.
+ */
+describe('difficulty is a word, not a score', () => {
+  it('prints the label with no (N/5) numeral', async () => {
+    const html = await render('edge-grain-maple-cutting-board');
+
+    expect(html).toContain('Easy');
+    expect(html).not.toContain('2/5');
+  });
+});
+
 describe('the CUT LIST is the reason this page exists', () => {
   it('prints TAPE-MEASURE FRACTIONS, never decimals', async () => {
     const html = await render('edge-grain-maple-cutting-board');

@@ -209,11 +209,18 @@ describe('catalog page — filters', () => {
     expect(filters.ownedTools).toEqual([]);
   });
 
-  it('opens the filter panel automatically when filters are active', async () => {
+  it('surfaces the active-filter count on the trigger without opening the panel', async () => {
     const html = await render({ category: 'furniture' });
-    // Sprint 30b: the disclosure's styling is now Tailwind utilities; what matters is
-    // that it renders OPEN when filters are active, not the specific class.
-    expect(html).toMatch(/<details[^>]*\bopen\b/);
+
+    // QOL-A: the panel is now an off-canvas DRAWER below 64rem, so it no longer
+    // auto-opens on an active filter — that would park a full-height overlay on top of
+    // the results the user just filtered for, on every Apply. What still has to be
+    // true is that the page TELLS you filters are on: the count rides in the trigger,
+    // and FilterChips lists each one above the results (asserted separately below).
+    // See filter-disclosure.tsx for the full reasoning.
+    expect(html).not.toMatch(/<details[^>]*\bopen\b/);
+    expect(html).toContain('Filters (1)');
+    expect(html).toContain('aria-label="Active filters"');
   });
 
   it('preserves search AND filters across pagination links', async () => {
@@ -226,6 +233,41 @@ describe('catalog page — filters', () => {
     expect(html).toContain('q=oak');
     expect(html).toContain('category=furniture');
     expect(html).toContain('page=2');
+  });
+});
+
+/**
+ * QOL-F (2026-07-19, variant A) — the visual/motion pass, on the surface it targets.
+ *
+ * The point of asserting this in a RENDER test rather than eyeballing it: variant A was
+ * chosen specifically so the catalog grid needs no client island. If a future change
+ * reaches for pointer tracking, the cards stop being server components on the app's
+ * highest-traffic page — and that is a decision, not a refactor.
+ */
+describe('catalog visual pass (QOL-F)', () => {
+  it('opens with the hero, keeping the h1 and the class the print rule targets', async () => {
+    const html = await render();
+
+    expect(html).toContain('hero-wash');
+    // Decoration, not content: the heading is still a real h1 for a screen reader.
+    expect(html).toMatch(/<h1[^>]*>Plans<\/h1>/);
+    expect(html).toContain('shadow-e2');
+  });
+
+  it('gives cards a resting elevation and a hover lift, with a reduced-motion escape', async () => {
+    queryPlans.mockResolvedValue(
+      result({ plans: [plan()], total: 1 }),
+    );
+
+    const html = await render();
+
+    expect(html).toContain('shadow-e1');
+    expect(html).toContain('hover:-translate-y-[4px]');
+    expect(html).toContain('hover:shadow-e3');
+    expect(html).toContain('motion-reduce:hover:translate-y-0');
+    // `translate`, not `transform` — Tailwind v4 emits it as its own property, so a
+    // `transition-[transform]` here would animate nothing.
+    expect(html).toContain('transition-[translate,box-shadow]');
   });
 });
 

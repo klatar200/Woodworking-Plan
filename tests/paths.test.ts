@@ -168,4 +168,85 @@ describe('SECURITY: published: true, in the data layer, on every read', () => {
     // A learning path whose order depends on row insertion is not a learning path.
     expect(select.steps.orderBy).toEqual({ stepNumber: 'asc' });
   });
+
+  /**
+   * QOL-E. The filtered index must go through the SAME function as the unfiltered one —
+   * a second query for "the filtered case" is exactly how `published: true` goes missing
+   * on one code path while the page still appears to work (the standing Sprint 3 rule).
+   */
+  it('a FILTERED listPaths still enforces published: true', async () => {
+    const { listPaths } = await import('@/lib/paths');
+    await listPaths({ level: 3, category: 'furniture' });
+
+    const where = path.findMany.mock.calls[0]![0].where;
+
+    expect(where.published).toBe(true);
+    expect(where.experienceLevel).toBe(3);
+    expect(where.category).toEqual({ slug: 'furniture' });
+  });
+
+  it('omits a filter entirely rather than matching on undefined', async () => {
+    const { listPaths } = await import('@/lib/paths');
+    await listPaths({ level: 2 });
+
+    const where = path.findMany.mock.calls[0]![0].where;
+
+    // `{ category: undefined }` is not the same query as no category key at all, and
+    // relying on Prisma to treat them alike is relying on an implementation detail.
+    expect(where).not.toHaveProperty('category');
+    expect(where.experienceLevel).toBe(2);
+  });
+});
+
+/**
+ * QOL-E — the /paths filters. Untrusted query-string input, validated the same way the
+ * catalog's are (src/lib/filters.ts): garbage degrades to "no filter" rather than being
+ * handed to Postgres, or worse, arriving as `NaN`.
+ */
+describe('parsePathFilters: never trust the query string', () => {
+  const categories = ['furniture', 'cutting-boards'];
+
+  it('accepts a real level and a real category', async () => {
+    const { parsePathFilters } = await import('@/lib/paths');
+
+    expect(parsePathFilters({ level: '3', category: 'furniture' }, categories)).toEqual({
+      level: 3,
+      category: 'furniture',
+    });
+  });
+
+  it('drops an out-of-range, non-numeric or fractional level', async () => {
+    const { parsePathFilters } = await import('@/lib/paths');
+
+    for (const level of ['0', '6', '99', 'abc', '', '-1']) {
+      expect(parsePathFilters({ level }, categories).level, `level=${level}`).toBeUndefined();
+    }
+  });
+
+  it('drops a category that is not a real category — a stale bookmark shows results', async () => {
+    const { parsePathFilters } = await import('@/lib/paths');
+
+    expect(parsePathFilters({ category: 'was-deleted' }, categories).category).toBeUndefined();
+    // An array (`?category=a&category=b`) is not a single value; it is not a filter.
+    expect(
+      parsePathFilters({ category: ['furniture', 'x'] }, categories).category,
+    ).toBeUndefined();
+  });
+
+  it('round-trips through buildPathQueryString', async () => {
+    const { parsePathFilters, buildPathQueryString } = await import('@/lib/paths');
+
+    expect(buildPathQueryString({})).toBe('/paths');
+    expect(buildPathQueryString({ level: 4 })).toBe('/paths?level=4');
+    expect(buildPathQueryString({ level: 4, category: 'furniture' })).toBe(
+      '/paths?level=4&category=furniture',
+    );
+
+    // The URL is the state: what the page builds, it can parse back.
+    const filters = { level: 4, category: 'furniture' };
+    const url = new URL(buildPathQueryString(filters), 'https://example.test');
+    expect(
+      parsePathFilters(Object.fromEntries(url.searchParams), categories),
+    ).toEqual(filters);
+  });
 });

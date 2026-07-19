@@ -135,7 +135,28 @@ export default async function CatalogPage({
     // grid with its own auto-fill card columns reads better using the whole
     // window than centered in a 96rem cap with dead margins either side.
     <main id="main" className={`${pageShell} lg:max-w-none`}>
-      <h1>Plans</h1>
+      {/*
+        QOL-F (2026-07-19) — the hero.
+
+        The catalog used to open with `<h1>Plans</h1>` and go straight to the grid. This
+        gives it a stage: a soft radial wash in `--accent-tint` over the surface, and the
+        one sentence that says what the catalog is FOR.
+
+        NO ILLUSTRATION AND NO PHOTOGRAPHY — nothing here needs art the project does not
+        have, which is the same reason `PlanImageSlot` renders an honest placeholder
+        rather than an AI render (DECISIONS_LOG.md 2026-07-14).
+
+        It is DECORATION, not content: the `<h1>` still reads "Plans" for a screen reader
+        and the search box below is untouched. The wash is a pseudo-element gradient, so
+        it costs no DOM and no request.
+      */}
+      <div className="hero-wash relative overflow-hidden mb-[1.5rem] rounded-[0.75rem] border border-border bg-surface px-[1.5rem] py-[2rem] shadow-e2 lg:px-[2.5rem] lg:py-[3rem]">
+        <h1 className="relative">Plans</h1>
+        <p className="subtitle relative max-w-[46ch]">
+          Every plan carries a full cut list, a material list and a cost band &mdash; so
+          you can compare them before you drive to the lumberyard.
+        </p>
+      </div>
 
       <RateLimitNotice
         show={hasRateLimitNotice(params.notice)}

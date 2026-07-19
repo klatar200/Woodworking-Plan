@@ -48,6 +48,37 @@ describe('shared button classes (@/lib/ui)', () => {
     });
   }
 
+  /**
+   * QOL-F (2026-07-19, variant A) — press feedback on every button.
+   *
+   * `:active`, not `:hover`: Tailwind compiles `hover:` inside `@media (hover: hover)`,
+   * so a hover-based press effect does nothing on a phone, which is where most of these
+   * taps happen. And the transition must name `translate` — Tailwind v4 emits it as its
+   * own property, so `transition-[transform]` would animate nothing at all.
+   */
+  for (const [name, cls] of Object.entries(variants)) {
+    it(`${name}: settles on press, and stops moving under reduced motion`, () => {
+      expect(cls).toContain('active:translate-y-px');
+      expect(cls).toContain('transition-[translate,box-shadow]');
+      expect(cls).not.toContain('transition-[transform');
+      expect(cls).toContain('motion-reduce:transition-none');
+      expect(cls).toContain('motion-reduce:active:translate-y-0');
+    });
+  }
+
+  /** Elevation is a signal, so exactly one variant may carry it. */
+  it('ONLY btnPrimary is elevated — if everything is raised, nothing is', () => {
+    expect(btnPrimary).toContain('shadow-e2');
+    expect(btnPrimary).toContain('hover:shadow-e3');
+    // The press collapses the shadow as well as settling the button; that pairing is
+    // what makes it read as weight rather than as a colour change.
+    expect(btnPrimary).toContain('active:shadow-e1');
+
+    for (const [name, cls] of Object.entries({ btn, btnGhost, btnDanger, btnLiked })) {
+      expect(cls, name).not.toMatch(/\bshadow-e\d/);
+    }
+  });
+
   it('btnGhost is outlined ink; btnPrimary is ink-filled; btnDanger is red text', () => {
     expect(btnGhost).toContain('border-border');
     expect(btnGhost).toContain('text-fg');

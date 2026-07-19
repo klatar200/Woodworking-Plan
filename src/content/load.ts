@@ -179,6 +179,20 @@ export function loadCatalog(contentDir: string = CONTENT_DIR): Catalog {
   for (const path of paths) {
     const seenPlans = new Set<string>();
 
+    /**
+     * QOL-E — a path's category, when it declares one, must be a real category.
+     *
+     * Same check plans get, and for the same reason: an unknown slug would seed a null
+     * FK and silently turn an "about Furniture" path into an uncategorised one, which
+     * looks exactly like the deliberate "spans several categories" case. `null` IS the
+     * legitimate value for that; a typo must not be able to impersonate it.
+     */
+    if (path.category !== null && !categorySlugs.has(path.category)) {
+      refProblems.push(
+        `path "${path.slug}" references unknown category "${path.category}"`,
+      );
+    }
+
     for (const step of path.steps) {
       if (!planSlugs.has(step.plan)) {
         refProblems.push(`path "${path.slug}" references unknown plan "${step.plan}"`);

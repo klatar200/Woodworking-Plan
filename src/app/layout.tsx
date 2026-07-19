@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
 import { InstallCapture } from '@/components/install-prompt';
 import {
   ServiceWorkerRegistration,
@@ -124,6 +125,9 @@ export default async function RootLayout({
           {clerkOrigin ? <link rel="preconnect" href={clerkOrigin} /> : null}
           <SiteHeader />
           {children}
+          {/* QOL-D item 2. Links only — no data fetching, so it adds nothing to the
+              cost of a page render and cannot fail. Hidden in print by class. */}
+          <SiteFooter />
           {/* Renders nothing. Captures `beforeinstallprompt` app-wide so the
               install actions in the profile dropdown and the mobile drawer work
               from ANY landing page — the old catalog-only listener missed every

@@ -9,8 +9,15 @@ import { nextTabIndex } from '@/lib/tab-nav';
 // heading when enhanced) both target them by class. `font-medium!` is important so it
 // beats the `[font:inherit]` reset regardless of Tailwind's fixed source order; border
 // color lives per state, not in a shared base (the source-order gotcha from ui.ts).
+// QOL-F (2026-07-19): the tab switch gets a colour transition so the change reads as a
+// movement rather than a jump-cut. The mockup proposed a SLIDING UNDERLINE; that is not
+// what shipped, and deliberately — these are FOLDER tabs (a bordered tab that joins its
+// panel by hiding the shared edge), not underlined ones. Bolting an underline onto them
+// would be a redesign of the tab treatment rather than the motion pass Keagan approved,
+// and it would need JS measurement inside a component with a documented WAI-ARIA keyboard
+// contract. Same intent — make the change legible — at none of the risk.
 const tabShared =
-  'appearance-none rounded-t-[0.375rem] px-[1rem] py-[0.625rem] min-h-[2.75rem] [font:inherit] font-medium! cursor-pointer mb-[-1px] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]';
+  'appearance-none rounded-t-[0.375rem] px-[1rem] py-[0.625rem] min-h-[2.75rem] [font:inherit] font-medium! cursor-pointer mb-[-1px] transition-[color,background-color,border-color] duration-200 ease-[cubic-bezier(0.2,0.7,0.3,1)] motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]';
 const tabClass = `${tabShared} bg-transparent border border-b-0 border-transparent text-muted hover:text-fg`;
 const tabActiveClass = `${tabShared} border text-fg bg-surface border-border border-b border-b-surface`;
 const tablistClass =

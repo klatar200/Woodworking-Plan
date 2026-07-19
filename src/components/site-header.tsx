@@ -1,8 +1,11 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import { UserMenu } from '@/components/user-menu';
 import { MobileNav } from '@/components/mobile-nav';
+import { BrowseMenu } from '@/components/browse-menu';
 import { InstallMenuItem } from '@/components/install-prompt';
+import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { btnPrimary } from '@/lib/ui';
 
 // Sprint 29 (UI migration, wave 1): the header moved to Tailwind utilities.
@@ -33,17 +36,69 @@ const drawerLink =
 const PUBLIC_NAV = [
   // Standard trust nav (2026-07-14). Public navigation, not account state —
   // paths especially are the best argument for signing up the site has.
+  // The Browse menu is rendered between Home and Paths; see below.
   { href: '/', label: 'Home' },
-  { href: '/paths', label: 'Paths' },
+  // QOL-E: "Paths" → "Learning" is a DISPLAY-NAME change only. The URL stays /paths —
+  // renaming the route would rewrite every saved library's offline download list
+  // (src/lib/offline-urls.ts), invalidate the service-worker entries already holding
+  // those URLs, and break existing links, all for a label.
+  { href: '/paths', label: 'Learning' },
   { href: '/about', label: 'About' },
   { href: '/faq', label: 'FAQ' },
 ] as const;
 
+// QOL-D: `🧰 Workshop` was REMOVED from this row (Keagan, DECISIONS_LOG.md
+// 2026-07-19). The tool picker is settings — you set it once — so it does not earn a
+// permanent nav slot; it lives at /profile#workshop and is prompted from the plan page
+// where someone actually discovers they need it. /workshop still redirects there, so
+// nothing anyone bookmarked broke.
 const SIGNED_IN_NAV = [
   { href: '/saved', label: 'Saved', icon: '🔖' },
   { href: '/builds', label: 'Builds', icon: '🔨' }, // Sprint 27
-  { href: '/workshop', label: 'Workshop', icon: '🧰' }, // Sprint 25
 ] as const;
+
+/**
+ * QOL-D — the category menu (`DECISIONS_LOG.md` 2026-07-19).
+ *
+ * Categories used to exist ONLY on the catalog page (the Sprint 18 desktop rail and the
+ * filter panel's `<select>`), so a reader on a plan, a path or the FAQ had no way to
+ * browse by category at all. These are plain GET links into the catalog — the same
+ * `?category=` the rail and the filter already produce — so results stay URL-driven and
+ * a shared link renders identically for everyone. No new query path, no new capability.
+ *
+ * The links are built here, in the SERVER component, and passed into the client
+ * disclosure islands as children. `NAV_CATEGORIES` is a build-time constant read from
+ * the seed's own `content/categories.json` — deliberately NOT a database call, because
+ * this renders in the root layout on every page including the prerendered `/_not-found`
+ * (see src/lib/nav-categories.ts for the full reasoning).
+ */
+function categoryLinks(linkClass: string) {
+  return (
+    <>
+      <Link href="/" className={linkClass}>
+        All plans
+      </Link>
+      {NAV_CATEGORIES.map((category) => (
+        <Link
+          key={category.slug}
+          href={`/?category=${category.slug}`}
+          className={linkClass}
+        >
+          {category.name}
+        </Link>
+      ))}
+    </>
+  );
+}
+
+// The Browse trigger reuses `navLink`'s look so it sits in the row as a peer of the
+// other items, with the marker suppressed (the ▾ in browse-menu.tsx is the affordance).
+const browseSummary = `list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none ${navLink}`;
+const browsePanel =
+  'absolute top-full left-0 z-20 mt-[0.25rem] min-w-[14rem] flex flex-col gap-[0.125rem] p-[0.5rem] bg-surface border border-border rounded-[0.5rem] shadow-[0_8px_24px_rgba(0,0,0,0.14)]';
+// Inside the mobile drawer the panel is not floating — it is an indented block, so the
+// drawer keeps growing downward instead of overlaying itself.
+const browsePanelMobile = 'flex flex-col gap-[0.125rem] pl-[0.75rem]';
 
 /**
  * Site header with auth state.
@@ -69,9 +124,22 @@ export function SiteHeader() {
         {/* ---- Desktop nav (≥ lg): quiet text links, one primary CTA ---- */}
         <nav className="hidden lg:flex items-center gap-[0.25rem]" aria-label="Main">
           {PUBLIC_NAV.map((item) => (
-            <Link key={item.href} href={item.href} className={navLink}>
-              {item.label}
-            </Link>
+            <Fragment key={item.href}>
+              <Link href={item.href} className={navLink}>
+                {item.label}
+              </Link>
+              {/* Browse sits directly after Home — it is the catalog, expanded. */}
+              {item.href === '/' ? (
+                <BrowseMenu
+                  label="Browse"
+                  className="relative"
+                  summaryClassName={browseSummary}
+                  panelClassName={browsePanel}
+                >
+                  {categoryLinks(drawerLink)}
+                </BrowseMenu>
+              ) : null}
+            </Fragment>
           ))}
 
           <SignedIn>
@@ -109,9 +177,24 @@ export function SiteHeader() {
           <MobileNav>
             <nav className="flex flex-col gap-[0.125rem]" aria-label="Main menu">
               {PUBLIC_NAV.map((item) => (
-                <Link key={item.href} href={item.href} className={drawerLink}>
-                  {item.label}
-                </Link>
+                <Fragment key={item.href}>
+                  <Link href={item.href} className={drawerLink}>
+                    {item.label}
+                  </Link>
+                  {/* Same six links as the desktop menu, as an inline collapsible
+                      section rather than a floating panel — a drawer that overlays
+                      itself is unusable. MobileNav is taught not to close when the
+                      click was on a <summary>, or opening this would shut the drawer. */}
+                  {item.href === '/' ? (
+                    <BrowseMenu
+                      label="Browse by category"
+                      summaryClassName={`list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none ${drawerLink}`}
+                      panelClassName={browsePanelMobile}
+                    >
+                      {categoryLinks(drawerLink)}
+                    </BrowseMenu>
+                  ) : null}
+                </Fragment>
               ))}
 
               <SignedIn>

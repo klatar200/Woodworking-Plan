@@ -15,6 +15,27 @@ const cardLink =
   'block h-full text-inherit no-underline hover:bg-[color-mix(in_srgb,var(--fg)_4%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]';
 
 /**
+ * QOL-F (2026-07-19) — card depth, variant A.
+ *
+ * A resting elevation, a 4px lift and a shadow step on hover. **Pure CSS**: Keagan chose
+ * A over B precisely so the catalog grid does not need a client island — every card here
+ * stays a server component, on the app's highest-traffic page. See DECISIONS_LOG.md.
+ *
+ * There are no `dark:` utilities here: `shadow-e*` reads a token, and the dark theme's
+ * elevation set (which leads with a 1px top-edge highlight, because a shadow barely
+ * registers on a dark surface) is a token flip in globals.css.
+ *
+ * `hover:` compiles inside `@media (hover: hover)`, so a phone never gets a stuck lifted
+ * card after a tap — the same accepted behaviour as the Sprint 29 hover tint.
+ *
+ * The transition names `translate` and `box-shadow`, NOT `transform`: Tailwind v4 emits
+ * translate as its own property, so transitioning `transform` would animate nothing.
+ * Verified against the real toolchain.
+ */
+const cardChrome =
+  'plan-card relative bg-surface border border-border rounded-[0.5rem] overflow-hidden shadow-e1 transition-[translate,box-shadow] duration-200 ease-[cubic-bezier(0.2,0.7,0.3,1)] hover:-translate-y-[4px] hover:border-border-strong hover:shadow-e3 motion-reduce:transition-none motion-reduce:hover:translate-y-0';
+
+/**
  * A catalog card.
  *
  * Shows the four things a woodworker uses to decide what to build next
@@ -46,7 +67,7 @@ export function PlanCard({
   const image = plan.images[0];
 
   return (
-    <li className="plan-card relative bg-surface border border-border rounded-[0.5rem] overflow-hidden">
+    <li className={cardChrome}>
       <Link href={`/plans/${plan.slug}`} className={cardLink}>
         {/*
           Plain <img>, not next/image. next/image requires allowlisting each

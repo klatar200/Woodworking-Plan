@@ -11,8 +11,27 @@ import Link from 'next/link';
  * "Woodworking Plan" placeholder; contact is a marked placeholder. Stays noindex until
  * branding/domain (decision #8) lands.
  *
- * Rendered as a semantic <dl> so it reads as questions/answers to screen readers, not
- * just visual headings.
+ * QOL-C (2026-07-19) — rendered as an ACCORDION: one native <details>/<summary> per
+ * question. No copy changed; `robots: noindex` stays until branding decision #8.
+ *
+ * WHY <details> AND NOT THE OLD <dl>. Every disclosure in this codebase is a native
+ * <details> for the same reason — FilterDisclosure, MobileNav, InstructionsDisclosure,
+ * OverflowMenu — it opens and closes with NO JAVASCRIPT, and gets correct keyboard and
+ * screen-reader behaviour for free. The Q→A association survives the change and
+ * arguably improves: <summary> is announced as a disclosure whose expanded content IS
+ * the answer, which is a stronger programmatic link than a <dt> sitting next to a <dd>.
+ * (Nesting <details> inside a <dl> is not an option: a <dl> may only contain dt/dd, and
+ * the answer would have to live inside the <dt> to be inside the disclosure.) The
+ * questions were never headings, so no heading level is lost.
+ *
+ * THE ANIMATION IS A PROGRESSIVE ENHANCEMENT, deliberately. The height transition uses
+ * `::details-content` + `interpolate-size: allow-keywords`, which is new enough that
+ * this repo already refused to bet the FILTER UI on it (see filter-disclosure.tsx).
+ * That judgement was right there and does not apply here: if a browser lacks it, the
+ * panel simply snaps open — the content is never unreachable, only unanimated. The
+ * chevron rotation is a plain transform transition and works everywhere, so most
+ * people see motion either way. Both are switched off under
+ * `prefers-reduced-motion: reduce` (WCAG 2.3.3), matching the skeleton-loading rule.
  */
 export const metadata: Metadata = {
   title: 'FAQ',
@@ -125,14 +144,39 @@ export default function FaqPage() {
     <main id="main" className={page}>
       <h1>Frequently asked questions</h1>
 
-      <dl className="faq">
+      {/* `interpolate-size: allow-keywords` is what makes a transition TO `height: auto`
+          possible at all; it sits on the container so one declaration covers every item. */}
+      <div className="my-[1.5rem] [interpolate-size:allow-keywords]">
         {FAQS.map((item) => (
-          <div key={item.q} className="faq-item">
-            <dt>{item.q}</dt>
-            <dd>{item.a}</dd>
-          </div>
+          <details
+            key={item.q}
+            className="group border-b border-border last:border-b-0 [&::details-content]:h-0 [&::details-content]:overflow-hidden [&::details-content]:transition-[height,content-visibility] [&::details-content]:duration-200 [&::details-content]:ease-out [&::details-content]:[transition-behavior:allow-discrete] open:[&::details-content]:h-auto motion-reduce:[&::details-content]:transition-none"
+          >
+            {/* list-none kills the default triangle; the chevron below is the affordance
+                and it can be animated, which the UA marker cannot. */}
+            <summary className="list-none [&::-webkit-details-marker]:hidden flex items-start gap-[0.75rem] py-[1.25rem] cursor-pointer font-semibold text-[1.0625rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2">
+              <svg
+                className="shrink-0 mt-[0.3rem] text-muted transition-transform duration-200 ease-out group-open:rotate-90 motion-reduce:transition-none"
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 2l4 4-4 4" />
+              </svg>
+              <span>{item.q}</span>
+            </summary>
+
+            {/* Indented to the question's text, not the chevron. */}
+            <div className="pb-[1.25rem] pl-[1.75rem] leading-[1.6]">{item.a}</div>
+          </details>
         ))}
-      </dl>
+      </div>
 
       <p className="subtitle">
         {/* PLACEHOLDER — real contact + product name land with branding/domain (#8). */}

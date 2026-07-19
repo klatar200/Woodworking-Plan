@@ -41,6 +41,28 @@
   --ok: #17803d;
   --pending: #b45309;
   --err: #b3261e;
+
+  /* ── QOL-F — the elevation scale (2026-07-19, variant A; DECISIONS_LOG.md) ──
+   * The app was FLAT before this: 1px borders on cream, no depth anywhere. These are
+   * the only new visual values in the whole pass — every colour stayed a token above.
+   *
+   * WARM-TINTED, NOT GREY. `rgba(60,42,24,…)` is a brown-black. A neutral grey shadow
+   * on a cream page reads as dirt on the paper rather than as light falling on it.
+   *
+   * LAYERED — each level is a tight CONTACT shadow plus a wide AMBIENT one. A single
+   * blur looks like a drop-shadow filter; two looks like an object above a surface.
+   * That is the entire trick, and it is why these are one token per level rather than
+   * a blur radius someone tunes per component.
+   *
+   * ONE TOKEN PER LEVEL, carrying the COMPLETE `box-shadow` value — including the dark
+   * theme's inset edge highlight (see `.dark`). Tailwind's `shadow-*` utilities all
+   * write the same `--tw-shadow` variable, so two of them on one element do not
+   * compose: the second silently replaces the first. Splitting the highlight into its
+   * own token would have produced exactly that bug, with the elevation vanishing in
+   * dark mode and nothing to show for it in a diff. */
+  --elev-1: 0 1px 2px rgba(60, 42, 24, 0.05), 0 1px 3px rgba(60, 42, 24, 0.05);
+  --elev-2: 0 2px 4px rgba(60, 42, 24, 0.05), 0 6px 16px rgba(60, 42, 24, 0.08);
+  --elev-3: 0 4px 8px rgba(60, 42, 24, 0.06), 0 16px 32px rgba(60, 42, 24, 0.12);
 }
 
 /*
@@ -72,6 +94,25 @@
   --ok: #5cc27a;
   --pending: #d99b3f;
   --err: #e8756c;
+
+  /* ── QOL-F — dark elevation. A SEPARATE SET, not the light one reused. ────────
+   * A shadow is the absence of light, so on a near-black surface it barely registers —
+   * copying the light scale here would ship three tokens that do nothing and leave dark
+   * mode visibly flatter than light. Two changes: the shadows go opaque black and
+   * deeper (they read as separation from the page, not as softness), and each level
+   * LEADS WITH a 1px inset highlight on the top edge — light catching the leading edge,
+   * which is what actually communicates "raised" in a dark UI.
+   *
+   * The inset is baked into the same token rather than being a second utility, because
+   * two `shadow-*` classes on one element overwrite each other (see `:root` above).
+   *
+   * This is exactly the kind of token the dark-theme guard test exists for: added to
+   * `:root` and forgotten here, elevation would silently stay light-mode-shaped. */
+  --elev-1: inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elev-2: inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 2px 6px rgba(0, 0, 0, 0.45),
+    0 8px 20px rgba(0, 0, 0, 0.35);
+  --elev-3: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 4px 10px rgba(0, 0, 0, 0.5),
+    0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 /*
@@ -104,12 +145,46 @@
     --pending: #b45309;
     --err: #b3261e;
   }
+
+  /* QOL-F — NOTHING IS ELEVATED ON PAPER. A shadow is ink: a printer renders a soft
+   * grey blur around every card and button, which wastes toner and makes a cut sheet
+   * look photocopied. Killed at the source (the tokens) AND with a blanket override,
+   * because `box-shadow` also arrives from Tailwind utilities that never read a token. */
+  :root,
+  .dark {
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+  }
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* QOL-F — the catalog hero's wash. A CSS-only radial gradient, kept here rather than as
+ * a Tailwind arbitrary value because it is a two-layer gradient with a pseudo-element,
+ * which reads as line noise inlined. `.hero-wash` is a CLASS ON THE ELEMENT and is named
+ * in the print block below — the standing rule (any class an @media print block targets
+ * stays on its element). Purely decorative: `pointer-events: none`, no content. */
+.hero-wash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 100% at 12% 0%,
+    var(--accent-tint) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
 html,
@@ -310,6 +385,50 @@ code {
        page got five ~9rem cards. A minimum card width is the actual guarantee
        the design needs: as many columns as fit at ≥16rem per card. */
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  }
+}
+
+/* ── QOL-F (2026-07-19) — the card settle-in ────────────────────────────────────
+ * What this replaces: the skeleton→content JUMP. `loading.tsx` shows grey blocks, then
+ * the real grid appears in one frame. A short rise-and-fade makes that a handover
+ * instead of a cut, and it is the only load-time motion in the pass.
+ *
+ * STAGGERED, BUT BOUNDED. Cards 1-8 step 40ms apart; everything after starts at 0. A
+ * per-index delay with no cap would make card 24 wait a second to appear — a "polish"
+ * effect that is indistinguishable from a slow page, which is the exact trap this kind
+ * of animation falls into.
+ *
+ * `both` fill means a card is invisible BEFORE its delay elapses, so the two escapes
+ * below are load-bearing, not tidiness: with `animation: none` the fill no longer
+ * applies and opacity returns to 1. Miss either and cards are blank on paper or for a
+ * reader who asked for no motion. */
+@keyframes card-settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plan-grid > li {
+  animation: card-settle-in 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.plan-grid > li:nth-child(2) { animation-delay: 0.04s; }
+.plan-grid > li:nth-child(3) { animation-delay: 0.08s; }
+.plan-grid > li:nth-child(4) { animation-delay: 0.12s; }
+.plan-grid > li:nth-child(5) { animation-delay: 0.16s; }
+.plan-grid > li:nth-child(6) { animation-delay: 0.2s; }
+.plan-grid > li:nth-child(7) { animation-delay: 0.24s; }
+.plan-grid > li:nth-child(8) { animation-delay: 0.28s; }
+
+/* WCAG 2.3.3 — the house rule since the skeletons. */
+@media (prefers-reduced-motion: reduce) {
+  .plan-grid > li {
+    animation: none;
   }
 }
 
@@ -791,6 +910,8 @@ code {
    page with a sticky header and a nav bar on it is a wasted sheet. */
 @media print {
   .site-header,
+  /* QOL-D: same reasoning as the header — site chrome does not belong on paper. */
+  .site-footer,
   .plan-actions,
   .breadcrumb,
   .search-box,
@@ -804,6 +925,27 @@ code {
   .page {
     max-width: none;
     padding: 0;
+  }
+
+  /* QOL-F — the hero KEEPS its heading on paper but loses its decoration. Hiding the
+     whole block would take the `<h1>` with it; a printed page with no title is worse
+     than one with no gradient. So the tint, the frame and the padding go, and the
+     words stay. */
+  .hero-wash {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .hero-wash::before {
+    display: none;
+  }
+
+  /* QOL-F — see the settle-in above: `animation-fill-mode: both` holds a card at
+     `opacity: 0` until its delay elapses, so if the animation does not run on paper the
+     grid prints BLANK. Killing the animation restores opacity to 1. */
+  .plan-grid > li {
+    animation: none;
   }
 
   .step {
@@ -1085,11 +1227,16 @@ code {
   text-decoration: none;
 }
 
-.path-card-link:hover h2 {
+/* QOL-E: the card title dropped from h2 to h3 — the index now groups by experience
+ * level, and the GROUP heading is the h2, so a card title at the same level would have
+ * made a screen-reader user hear five sibling h2s where there is a hierarchy. Both
+ * selectors follow it down. (The global `h2` rule does not apply to an h3, so the card
+ * title no longer needs to fight it.) */
+.path-card-link:hover h3 {
   text-decoration: underline;
 }
 
-.path-card h2 {
+.path-card h3 {
   margin: 0 0 0.35rem;
   font-size: 1.15rem;
 }
@@ -1284,30 +1431,12 @@ code {
   line-height: 1.55;
 }
 
-.faq {
-  margin: 1.5rem 0;
-}
-
-.faq-item {
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.faq-item:last-child {
-  border-bottom: none;
-}
-
-.faq-item dt {
-  font-weight: 600;
-  font-size: 1.0625rem;
-  margin-bottom: 0.5rem;
-}
-
-.faq-item dd {
-  margin: 0;
-  color: var(--fg);
-  line-height: 1.6;
-}
+/* QOL-C (2026-07-19): `.faq`, `.faq-item` and their `dt`/`dd` descendant rules are
+ * DELETED, not merely unused. The FAQ is now a stack of native <details> accordions
+ * (src/app/faq/page.tsx) with its styling inline, so there are no <dt>/<dd> left for
+ * those descendant selectors to match. Verified no other file references them, and no
+ * `@media print` block names them — so unlike the retained-class cases elsewhere in
+ * this migration, there is nothing here to keep. */
 
 .scope-form {
   display: flex;
@@ -1353,6 +1482,9 @@ code {
 @media print {
   .no-print,
   .site-header,
+  /* QOL-D: the footer is site chrome, exactly like the header — a page of category
+     links on a printed cut sheet is a wasted sheet. */
+  .site-footer,
   .scope-form,
   .breadcrumb {
     display: none !important;

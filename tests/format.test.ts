@@ -8,6 +8,8 @@ import {
   difficultyLabel,
   formatInches,
   formatDimensions,
+  isBoardFeetUnit,
+  boardFeetExample,
 } from '@/lib/format';
 
 /**
@@ -18,6 +20,53 @@ import {
  * range has been actively misled, which is exactly the trust failure
  * BUSINESS_PLAN.md §12 warns about.
  */
+
+/**
+ * QOL-B item 5 — board feet.
+ *
+ * A board foot is a VOLUME (144 cubic inches), which is why "8 board feet" tells a
+ * beginner nothing about what to carry out of the yard. The example has to be in units
+ * a tape measure has: feet and fractional inches, never decimals.
+ */
+describe('board feet — making a volume something you can picture', () => {
+  it('recognizes both spellings the catalog actually uses', () => {
+    expect(isBoardFeetUnit('board feet')).toBe(true);
+    expect(isBoardFeetUnit('board ft')).toBe(true);
+    // Tolerant of casing and stray whitespace in authored content.
+    expect(isBoardFeetUnit(' Board Feet ')).toBe(true);
+  });
+
+  it('does NOT claim units that merely contain the word "board"', () => {
+    // 2 plans quantify a material as plain "board" — a count of boards, not a volume.
+    // Treating that as board feet would print a nonsense example beside a real number.
+    expect(isBoardFeetUnit('board')).toBe(false);
+    expect(isBoardFeetUnit('sheet')).toBe(false);
+    expect(isBoardFeetUnit('each')).toBe(false);
+  });
+
+  it('converts to a length of 3/4" x 6" stock — 1 bd ft = 144 cu in', () => {
+    // 1 bd ft × 144 = 144 cu in ÷ (0.75 × 6) = 32 inches ≈ 3 ft.
+    expect(boardFeetExample(1)).toBe('about 3 ft of 3/4" × 6" board');
+  });
+
+  it('is arithmetically right, in feet, for a realistic quantity', () => {
+    // 8 bd ft × 144 = 1152 cu in ÷ 4.5 sq in = 256 in = 21.3 ft.
+    expect(boardFeetExample(8)).toBe('about 21 ft of 3/4" × 6" board');
+    // 3 bd ft → 96 in → 8 ft, i.e. one standard board. A number a person can act on.
+    expect(boardFeetExample(3)).toBe('about 8 ft of 3/4" × 6" board');
+  });
+
+  it('renders sub-foot amounts as tape-measure inches, not a rounded 0 ft', () => {
+    // 0.25 bd ft → 8 inches.
+    expect(boardFeetExample(0.25)).toBe('about 8" of 3/4" × 6" board');
+  });
+
+  it('returns nothing for a nonsensical quantity rather than "about NaN ft"', () => {
+    expect(boardFeetExample(0)).toBe('');
+    expect(boardFeetExample(-4)).toBe('');
+    expect(boardFeetExample(Number.NaN)).toBe('');
+  });
+});
 
 describe('formatInches — decimals to tape-measure fractions', () => {
   it('renders whole inches without a fraction', () => {

@@ -206,6 +206,28 @@ export const pathSchema = z
     sortOrder: z.number().int().default(0),
     published: z.boolean().default(true),
 
+    /**
+     * QOL-E — the level of woodworker this path is FOR, on the SAME 1–5 scale as
+     * `Plan.difficulty` (DECISIONS_LOG.md 2026-07-19). One vocabulary for the site.
+     *
+     * REQUIRED, with no default. It is a judgement about the reader, not a fact
+     * derivable from the steps — "Joinery: From Screws to Dovetails" opens with a
+     * difficulty-2 bookcase and is emphatically not a beginner's path — so it has to be
+     * authored, and a default would let a path ship silently claiming to be for
+     * beginners. Same argument as `reason` below: make it non-negotiable in the schema
+     * rather than a habit someone might drop.
+     */
+    experienceLevel: z.number().int().min(1).max(5),
+
+    /**
+     * QOL-E — the category slug this path is about, or `null` for one that deliberately
+     * spans several. Checked against the real categories in load.ts, like a plan's.
+     *
+     * NULLABLE BUT NOT OPTIONAL: the key must be present, so "this path spans
+     * categories" is something an author states rather than something they forgot.
+     */
+    category: slug.nullable(),
+
     steps: z
       .array(
         z

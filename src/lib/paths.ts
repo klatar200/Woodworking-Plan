@@ -34,15 +34,69 @@ const PATH_LIST_SELECT = {
   title: true,
   summary: true,
   sortOrder: true,
+  // QOL-E — the taxonomy. Both nullable: an untagged path is one the seed has not run
+  // for yet (see prisma/schema.prisma), and a null category means "spans several".
+  experienceLevel: true,
+  category: { select: { slug: true, name: true } },
   _count: { select: { steps: true } },
 } as const;
 
 export type PathListItem = Awaited<ReturnType<typeof listPaths>>[number];
 
-/** Every published path, in authored order. */
-export async function listPaths() {
+/**
+ * QOL-E — the /paths filters, validated the same way the catalog's are.
+ *
+ * NEVER TRUST THE QUERY STRING: an unknown category slug or a hand-edited
+ * `?level=99` degrades to "no filter" rather than being handed to Postgres to match
+ * nothing (or worse, to `NaN`). Exactly the posture `parseFilters` takes for the
+ * catalog — see src/lib/filters.ts, which this deliberately mirrors rather than
+ * extends: the two surfaces filter different models on different fields, and one
+ * shared "filters" type covering both would be a type that is half-wrong everywhere.
+ */
+export interface PathFilters {
+  level?: number;
+  category?: string;
+}
+
+export function parsePathFilters(
+  params: Record<string, string | string[] | undefined>,
+  validCategorySlugs: string[],
+): PathFilters {
+  const rawLevel = typeof params.level === 'string' ? Number.parseInt(params.level, 10) : NaN;
+  const level = Number.isInteger(rawLevel) && rawLevel >= 1 && rawLevel <= 5 ? rawLevel : undefined;
+
+  const rawCategory = typeof params.category === 'string' ? params.category : undefined;
+  const category =
+    rawCategory && validCategorySlugs.includes(rawCategory) ? rawCategory : undefined;
+
+  return { level, category };
+}
+
+/** The /paths URL for a given filter state — omitted keys mean "no filter". */
+export function buildPathQueryString(filters: PathFilters): string {
+  const params = new URLSearchParams();
+  if (filters.level !== undefined) params.set('level', String(filters.level));
+  if (filters.category !== undefined) params.set('category', filters.category);
+  const query = params.toString();
+  return query === '' ? '/paths' : `/paths?${query}`;
+}
+
+/**
+ * Every published path, in authored order, optionally narrowed by the QOL-E taxonomy.
+ *
+ * ONE function serves the unfiltered index and every filtered view — the same rule the
+ * catalog follows with `queryPlans()`. A second query for "the filtered case" is how
+ * `published: true` goes missing on one path while everything still appears to work.
+ */
+export async function listPaths(filters: PathFilters = {}) {
   return prisma.path.findMany({
-    where: { published: true },
+    where: {
+      published: true,
+      ...(filters.level !== undefined ? { experienceLevel: filters.level } : {}),
+      ...(filters.category !== undefined
+        ? { category: { slug: filters.category } }
+        : {}),
+    },
     select: PATH_LIST_SELECT,
     orderBy: [{ sortOrder: 'asc' }, { title: 'asc' }],
   });

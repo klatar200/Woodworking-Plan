@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { page, btnGhost, categoryLabel } from '@/lib/ui'; // Sprint 29: shell + button + category
+import { page, btnGhost, btnPrimary, menuItem, categoryLabel } from '@/lib/ui'; // Sprint 29 + QOL-B
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
@@ -11,9 +11,11 @@ import { getCurrentUser } from '@/lib/auth';
 import { isAdmin } from '@/lib/admin';
 import { listReviews, getRatingSummary, getMyReview } from '@/lib/reviews';
 import { isStorageConfigured } from '@/lib/storage';
-import { SaveButton } from '@/components/save-button';
+import { SaveToggle } from '@/components/save-toggle';
 import { LikeButton } from '@/components/like-button';
 import { ShoppingListButton } from '@/components/shopping-list-button';
+import { OverflowMenu } from '@/components/overflow-menu';
+import { InlineBoardPlan } from '@/components/inline-board-plan';
 import { ReviewsSection } from '@/components/reviews-section';
 import { StarRating } from '@/components/star-rating';
 import { PlanSteps } from '@/components/plan-steps';
@@ -24,7 +26,13 @@ import { InstructionsDisclosure } from '@/components/instructions-disclosure';
 import { Prose } from '@/components/prose';
 import { RateLimitNotice } from '@/components/rate-limit-notice';
 import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
-import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
+import {
+  costTierSymbol,
+  difficultyLabel,
+  formatDimensions,
+  isBoardFeetUnit,
+  boardFeetExample,
+} from '@/lib/format';
 
 /**
  * Plan detail — Sprint 3's "plan detail page rendering all structured data from
@@ -134,9 +142,27 @@ export default async function PlanDetailPage({
       />
 
       <header className="plan-header">
-        <span className={categoryLabel}>{plan.category.name}</span>
-        <h1>{plan.title}</h1>
-        <p className="subtitle">{plan.summary}</p>
+        {/* QOL-B: the bookmark sits top-right of the title block. A flex row rather than
+            absolute positioning — an absolutely-placed icon over an h1 collides with a
+            long title on a narrow phone, and the title is not something to shrink. */}
+        <div className="flex items-start gap-[1rem]">
+          <div className="min-w-0 flex-auto">
+            <span className={categoryLabel}>{plan.category.name}</span>
+            <h1>{plan.title}</h1>
+            <p className="subtitle">{plan.summary}</p>
+          </div>
+
+          {/* The SAME bookmark toggle the catalog cards use (save-toggle.tsx), replacing
+              the old text SaveButton — one component, one write path, one offline
+              pre-cache call. Anonymous viewers get a sign-in link wearing the same icon. */}
+          <SaveToggle
+            planId={plan.id}
+            slug={plan.slug}
+            isSaved={saved}
+            isSignedIn={user !== null}
+            className="shrink-0 m-0 mt-[0.25rem]"
+          />
+        </div>
 
         <p className="plan-rating">
           <a href="#reviews-heading">
@@ -161,13 +187,17 @@ export default async function PlanDetailPage({
           </p>
         ) : null}
 
-        <div className="plan-actions flex flex-wrap gap-[0.5rem] mt-[1rem]">
-          <SaveButton
-            planId={plan.id}
-            slug={plan.slug}
-            isSaved={saved}
-            isSignedIn={user !== null}
-          />
+        {/* QOL-B: ONE primary CTA, and it is the one thing this page is for. "Start
+            building" was previously only reachable below the tabs (inside
+            InstructionsDisclosure), i.e. after the reader had scrolled past everything.
+            This placement is ADDITIVE — the lower link and the full server-rendered
+            instructions section are untouched, because they are the no-JS, print and
+            offline path (the Sprint 20 contract). Two links to one page is not a bug. */}
+        <div className="plan-actions flex flex-wrap items-center gap-[0.5rem] mt-[1rem]">
+          <Link href={`/plans/${plan.slug}/build`} className={btnPrimary}>
+            🔨 Start building
+          </Link>
+
           {/* The like count is COUNTED (_count), never read from a denormalized
               column — see prisma/schema.prisma. Always shown, including zero:
               hiding a zero hides exactly the plans that need someone to be first. */}
@@ -179,22 +209,6 @@ export default async function PlanDetailPage({
             isSignedIn={user !== null}
           />
 
-          {/* Sprint 22 — explicit "add to shopping list", separate from saving. */}
-          <ShoppingListButton
-            planId={plan.id}
-            slug={plan.slug}
-            isOnList={onShoppingList}
-            isSignedIn={user !== null}
-          />
-
-          {/* Sprint 13. A public route, so the service worker caches it like any other
-              plan content — which is exactly why we chose a print PAGE over a
-              server-generated PDF. A PDF endpoint needs a network round-trip and would
-              be useless in the workshop it was built for. */}
-          <Link href={`/plans/${plan.slug}/print`} className={btnGhost}>
-            Print / PDF
-          </Link>
-
           {/* Sprint 15. Only offered when there IS a cut list to optimize — a "board
               plan" button on a plan with no parts is a promise of a blank page. */}
           {plan.cutList.length > 0 && (
@@ -202,6 +216,28 @@ export default async function PlanDetailPage({
               Board plan
             </Link>
           )}
+
+          {/* QOL-B — the two secondary actions move into an overflow menu so the row
+              reads as "build this" plus a couple of counters, not six equal buttons.
+              A native <details>, so it needs no JavaScript (overflow-menu.tsx). */}
+          <OverflowMenu label="More actions for this plan">
+            {/* Sprint 22 — explicit "add to shopping list", separate from saving. */}
+            <ShoppingListButton
+              planId={plan.id}
+              slug={plan.slug}
+              isOnList={onShoppingList}
+              isSignedIn={user !== null}
+              className={menuItem}
+            />
+
+            {/* Sprint 13. A public route, so the service worker caches it like any other
+                plan content — which is exactly why we chose a print PAGE over a
+                server-generated PDF. A PDF endpoint needs a network round-trip and would
+                be useless in the workshop it was built for. */}
+            <Link href={`/plans/${plan.slug}/print`} className={menuItem}>
+              Print / PDF
+            </Link>
+          </OverflowMenu>
         </div>
       </header>
 
@@ -245,10 +281,10 @@ export default async function PlanDetailPage({
         <dl className="glance-grid">
           <div className="glance-item">
             <dt>Difficulty</dt>
-            <dd>
-              {difficultyLabel(plan.difficulty)}{' '}
-              <span className="muted">({plan.difficulty}/5)</span>
-            </dd>
+            {/* QOL-A: the word alone. "(3/5)" implied a precision the number does not
+                have — difficulty is an authored judgement, not a measurement — and it
+                disagreed with plan-card.tsx, which has always shown the label only. */}
+            <dd>{difficultyLabel(plan.difficulty)}</dd>
           </div>
           <div className="glance-item">
             <dt>Time</dt>
@@ -304,7 +340,9 @@ export default async function PlanDetailPage({
                   You own {fit.ownedCount} of {fit.total} essential tools.
                 </strong>{' '}
                 Missing: {fit.missing.join(', ')}.{' '}
-                <Link href="/workshop">Update your workshop</Link>
+                {/* QOL-D: the picker lives in the profile page's Workshop section now.
+                    Linked directly rather than via the /workshop redirect — one hop. */}
+                <Link href="/profile#workshop">Update your workshop</Link>
               </>
             )}
           </p>
@@ -357,6 +395,15 @@ export default async function PlanDetailPage({
                   <td>
                     <span className="material-name">{m.name}</span>
                     {m.note && <span className="muted material-note">{m.note}</span>}
+                    {/* QOL-B item 5 — "8 board feet" is a VOLUME, and the yard sells
+                        boards. Without a worked example a beginner has no way to tell an
+                        armful from a truckload. Shown next to the real quantity, never
+                        instead of it; tape-measure units only. See boardFeetExample. */}
+                    {isBoardFeetUnit(m.unit) && boardFeetExample(m.quantity) ? (
+                      <span className="muted material-note">
+                        &asymp; {boardFeetExample(m.quantity)}
+                      </span>
+                    ) : null}
                   </td>
                   <td className="numeric">
                     {m.quantity} {m.unit}
@@ -366,6 +413,16 @@ export default async function PlanDetailPage({
             </tbody>
           </table>
         </div>
+        {/* Only when it is actually relevant — a definition nobody needs is noise. */}
+        {plan.materials.some((m) => isBoardFeetUnit(m.unit)) ? (
+          <p className="footnote">
+            A <strong>board foot</strong> is a volume, not a length: 144 cubic inches, or
+            a piece 1&Prime; thick by 12&Prime; wide by 12&Prime; long. The
+            &ldquo;&asymp;&rdquo; note beside each row shows roughly how much
+            3/4&Prime; &times; 6&Prime; board that works out to.
+          </p>
+        ) : null}
+
         <p className="footnote">
           Overall cost: <strong>{costTierSymbol(plan.costTier)}</strong>. Lumber prices
           vary by region, species, and season, so we give a band rather than a figure we
@@ -404,6 +461,13 @@ export default async function PlanDetailPage({
               </tbody>
             </table>
           </div>
+
+          {/* QOL-B item 4 — the same to-scale layout the /boards page draws, embedded
+              where people actually read the cut list. It calls the SAME optimizer
+              (optimize/totalBoards) and renders the SAME bar component, at the default
+              stock size; /boards remains the place to change stock length, width and
+              kerf. See inline-board-plan.tsx. */}
+          <InlineBoardPlan slug={plan.slug} cutList={plan.cutList} />
         </section>
       )}
       </PlanTabs>

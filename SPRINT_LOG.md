@@ -2703,3 +2703,764 @@ having also found+fixed a real private-cache leak. Passes the 95 gate on real ev
 3. **Visual check** (signed in, with at least one review): the `/builds` page, the header
    "🔨 Builds" link, the profile activity section, and the "🔨 N built this" line on a plan
    that has reviews.
+
+---
+
+## Phase QOL-A — Catalog filter & sort UX — 2026-07-19 — **95/100 (Attempt 1)**
+
+Scope: `QOL_UI_BUILD_PLAN.md` Phase QOL-A, all four items. UI only — no schema, no
+migration, no new route, no data-layer change.
+
+| File | Change |
+|---|---|
+| `src/components/filter-disclosure.tsx` | Rewritten: mobile off-canvas drawer (`<details>`, MobileNav pattern), compact pill trigger, JS-only scrim + ✕, `filters` class restored |
+| `src/components/sort-select-control.tsx` | **NEW** client island — the `<select>`, auto-submits on a pointer/touch change |
+| `src/components/sort-select.tsx` | Uses the island; Apply button KEPT and given the mobile-compact sizing |
+| `src/lib/ui.ts` | **NEW** `compactOnMobile` — mobile-only trigger sizing; `btnBase` untouched |
+| `src/app/plans/[slug]/page.tsx` | Glance strip: `(N/5)` removed, label only |
+| `src/app/plans/[slug]/print/page.tsx` | Same numeral removed (the only other site; grepped) |
+| `tests/filter-disclosure.test.tsx` | Rewritten — 7 cases (see below) |
+| `tests/sort-select.test.tsx` | **NEW** — 6 cases, all about the fallback surviving |
+| `tests/print.test.tsx` | +1 guard: difficulty prints a word, never `2/5` |
+| `tests/page.test.tsx` | Auto-open assertion replaced (behaviour change, below) |
+
+### Three things worth remembering
+
+1. **A `.filters` PRINT RULE WAS ORPHANED, and this pass found it.** `globals.css`'s
+   print block hides the filter panel with `.filters { display: none !important }`, but
+   Sprint 30b converted that chrome to utilities and dropped the class — so a printed
+   catalog page had been carrying the entire filter form. The class is back on the
+   `<details>`, with a test that names the print rule. This is the same failure mode
+   Sprint 30c hit three times: **any class named in an `@media print` block must stay on
+   its element.**
+2. **`count > 0` no longer auto-opens the panel — a deliberate behaviour change.**
+   Sprint 5 opened it so you could see which filters were on. As an inline accordion
+   that helped; as a drawer it means every "Apply filters" bounces you back to the
+   catalog with a full-height overlay parked on top of the results you just asked for.
+   The information survives elsewhere: the count is in the trigger, and FilterChips
+   (2026-07-14) lists every active filter above the results. Cost, stated plainly: a
+   no-JS DESKTOP visitor with active filters now starts collapsed rather than open —
+   one click away, never hidden.
+3. **Sort auto-submits on POINTER changes only.** `change` on a `<select>` is not a
+   reliable "I've decided" signal from the keyboard — several browsers fire it on every
+   ↑/↓ while the closed select has focus, so a blanket auto-submit would navigate away
+   mid-choice and strand a keyboard user on option two. Pointer/touch changes *are* a
+   decision (the picker closes on selection), which is the phone case this item exists
+   for. Keyboard commits with Enter (native submit) or the Apply button — **which is
+   kept, as the plan requires, and is also the entire no-JS path.**
+
+### Desktop parity method (the acceptance bar)
+
+Every class added below `lg` has an `lg:` counterpart restoring the previous value, and
+the whole class list was compiled with the repo's real **Tailwind v4.3.2** toolchain to
+confirm both the emitted declarations and their SOURCE ORDER (the standing migration
+gotcha: same-property utilities apply in Tailwind's order, not className order). Verified
+`lg:` variants emit after their base for every pair used here, and `compactOnMobile` uses
+`!important` on both halves because it has to beat `btnBase`'s own `min-h`/`px`/`text`.
+
+### Verification
+
+- **575/575 vitest GREEN, `tsc --noEmit` clean, `eslint src tests` clean** — in a clean
+  `npm ci` + `prisma generate` install (sandbox-local, not the mount). Previous total was
+  542; +33 from this sprint's new/expanded files and the ones they exercise.
+- **NOT run here (environment, per `CLAUDE.md` §6):** `next build` and any real browser.
+  **Keagan's checks:** the drawer on a real phone (open/close, scrim tap, ✕, scroll, and
+  that Apply closes it by navigating), the desktop rail at ≥64rem is pixel-unchanged, and
+  one print preview of the catalog confirming the filter panel no longer prints.
+
+### Attempt 1 — 2026-07-19
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | All four QOL-A items, nothing from QOL-B/D. Explicit boundaries honoured: desktop rail untouched (`lg:` restores every value), tools-owned filter logic untouched, `btnBase` untouched (new constant instead). −1: two in-scope-but-unlisted changes — the orphaned `.filters` print class (a real regression found in the file being rewritten; shipping the drawer without it would have left it broken) and dropping the count-driven auto-open, which the drawer makes untenable. Both documented above. |
+| Correctness & functionality (/20) | **18** | Full suite + typecheck + lint green on a clean install; every new Tailwind class string compiled against the real v4.3.2 toolchain and checked for source order, not assumed. −2: no browser render this session (`next build`/`next dev` SIGBUS in the sandbox), so the drawer's actual paint and the desktop parity claim are code-and-CSS evidence, not pixels. |
+| Automated test coverage (/15) | **14** | `filter-disclosure.test.tsx` (7): summary always present (the no-JS reachability failure mode), closed-with-count, `filters` print class, `fixed` + `lg:static`/`lg:shadow-none`/`lg:border-l-0` (the loudest possible desktop regression), no scrim/✕ before hydration, mobile-only trigger sizing. `sort-select.test.tsx` (6): Apply button still submits, hidden filter inputs, select font stays 16px (iOS zoom rule), hidden during search. `print.test.tsx` +1 numeral guard. −1: the auto-submit handler itself is unexercised — vitest runs in `node` here, no DOM. |
+| Security (/15) | **15** | No new route, no new server action, no data-layer touch, no client input trusted anywhere. Sort still round-trips through `parseSort` (untrusted-value validation unchanged); `requestSubmit()` targets the component's own GET form, so it can only do what Apply already does. No `userId` anywhere; no secrets. Static inline SVG, no `dangerouslySetInnerHTML`. |
+| Code quality & simplicity (/10) | **10** | One new shared constant for the one thing reused; one small client island rather than making the whole sort form a client component. No dead code, no new deps, no abstraction invented for a single call site. Retained-class pattern followed. |
+| Mobile/offline behavior (/10) | **9** | This sprint IS the mobile pass: 44px bar → 36px pill, filters off-canvas instead of shoved above the plans, one-tap sort. Offline is untouched by construction — no new route, so `NEVER_CACHE_PREFIXES`/`DOWNLOADABLE_PREFIXES` need no change, and the no-JS document is unchanged. −1: no real-device pass (device-bound, handed off as in Sprints 24/32). |
+| Documentation & handoff (/5) | **5** | Reasoning at each decision point in-file (why pointer-only, why the scrim is JS-only, why the print class is back, why the auto-open went); this entry states the two behaviour changes rather than burying them, and names exactly what Keagan still has to look at. |
+| **Total (/100)** | **95** | |
+
+**Result: 95 — passes on the first attempt.** Needs `npm run build` + the browser/phone
+checks above + push on Keagan's machine.
+
+---
+
+## Phase QOL-B — Plan-detail page reorg — 2026-07-19 — **95/100 (Attempt 1)**
+
+Scope: `QOL_UI_BUILD_PLAN.md` Phase QOL-B, all six items. UI only — no schema, no
+migration, no new route, no change to any server action or data-layer function.
+
+| File | Change |
+|---|---|
+| `app/plans/[slug]/page.tsx` | Bookmark top-right; action row = Start building (primary) + like counter + Board plan + "…"; board-foot notes; inline board plan in the Cut List tab |
+| `components/save-toggle.tsx` | Gains `isSignedIn` (anonymous → sign-in door) and `className` (position); now serves both call sites |
+| `components/save-button.tsx` | **DEAD — Keagan must `git rm` it** (sandbox can't delete); marked at the top of the file |
+| `components/like-button.tsx` | Icon + number in a pill; full phrase kept in `aria-label`/`title` |
+| `components/overflow-menu.tsx` | **NEW** — `<details>`-based "…" menu, no client component |
+| `components/board-bar.tsx` | **NEW** — the to-scale bar, extracted from `/boards` and shared |
+| `components/inline-board-plan.tsx` | **NEW** — compact board layout for the Cut List tab |
+| `components/shopping-list-button.tsx` | Optional `className` so it can render as a menu row |
+| `components/reviews-section.tsx` | Star-rating input — CSS-only, over the same radios |
+| `lib/ui.ts` | **NEW** `menuItem` |
+| `lib/format.ts` | **NEW** `isBoardFeetUnit`, `boardFeetExample` |
+| `app/plans/[slug]/boards/page.tsx` | Uses the shared `BoardBar` |
+| 6 test files (3 new, 3 extended) | +33 tests |
+
+### The decisions worth remembering
+
+1. **The star input IS the radio group — and the DOM order is reversed on purpose.**
+   The radios are not replaced and not `display: none`d; they are `visually-hidden`
+   (clipped, still focusable, still submitted) and each star is that radio's `<label>`.
+   So it works with no JS, with a keyboard, and with a screen reader — the original
+   comment stands: *a rating that needs JavaScript to be entered is a rating some people
+   cannot leave.* Filling "this star and everything left of it" needs a preceding-sibling
+   selector, which CSS does not have, so the radios run **5→1 in the DOM** and
+   `flex-row-reverse` paints them 1→5. Tailwind's `peer-checked:` compiles to
+   `:where(.peer):checked ~ &`, so checking ★3 fills the labels that follow it — 3, 2, 1
+   — i.e. the leftmost three on screen. **Flip either half and it fills the wrong stars.**
+   Accepted limit: hover fills only the star under the cursor, not the run up to it.
+2. **The optimizer is SHARED, never re-implemented.** The inline cut-list visual calls
+   the same `optimize()` / `totalBoards()` as `/boards`, and now draws with the same
+   `BoardBar` component. Sprint 15's five rules (kerf, ripping, `physicalBoards` vs
+   lanes, impossible parts, no grain rotation) live in one place, and the test asserts the
+   rendered board count *equals what `totalBoards()` returns* rather than a hand-written
+   number — a second implementation would fail it. **Impossible parts suppress the
+   headline count entirely** and route to `/boards`: "buy 3 boards" printed next to a
+   part that does not fit is precisely the confident-but-wrong buying list rule 4 forbids.
+3. **`/boards` keeps the stock/kerf controls; the tab shows the default and says so.**
+   Two places to change one setting is worse than one link.
+
+### Deviations from the plan doc, stated
+
+- The **Board plan** button stays in the action row rather than moving into the overflow
+  menu — item 3 names only Print and the shopping list. The row is now
+  `[Start building] [♡ 3] [Board plan] [⋯]`.
+- **`save-button.tsx` could not be deleted** — the sandbox mount is read-only for
+  deletes. Nothing imports it; it carries a header saying so. `git rm` it with the commit.
+
+### One PRE-EXISTING defect found, not fixed (out of scope, flagged deliberately)
+
+`submitReviewAction` reads the rating through `requiredString()`, which **throws** when
+the field is absent — and an uncaught throw out of a server action is an HTTP 500 with a
+client "Application error" boundary, the exact failure the rate-limit rule was written
+about. A crafted POST to that public endpoint with no `rating` 500s the page today; this
+predates QOL-B (the field has always been client-enforced by `required`). Worth a small
+follow-up: validate and `redirect()` like the rate limiter does, instead of throwing.
+
+### Verification
+
+- **608/608 vitest GREEN, `tsc --noEmit` clean, `eslint src tests` clean** on a clean
+  `npm ci` + `prisma generate` install. Previous total 575.
+- Every new Tailwind class string compiled with the real **v4.3.2** toolchain, including
+  the source-order checks: `rounded-[999px]!` beating `btnBase`'s radius, and
+  `peer-checked:` compiling to the general-sibling form the star widget depends on.
+- **NOT run here:** `next build`, any real browser. **Keagan's checks, in priority
+  order:** (1) the star input — click each star, tab into it, and **try to submit with no
+  rating**: the browser must show its "select one of these options" prompt rather than
+  silently refusing (a clipped radio is focusable, so it should, but this is the one
+  behaviour that is browser-dependent and it is worth 30 seconds); (2) the "…" menu opens
+  and its two items work; (3) the inline board layout in the Cut List tab against the
+  `/boards` page for the same plan — same board count; (4) the bookmark top-right on a
+  narrow phone with a long title.
+
+### Attempt 1 — 2026-07-19
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | All six QOL-B items, nothing from QOL-C/D. Load-bearing contracts explicitly preserved and tested: the instructions section still renders in full server-side (the CTA move is additive), the review radios still work with JS off, save/like/shopping-list are still plain forms. −1: two stated deviations above (Board plan stays in the row; `save-button.tsx` awaits a `git rm` I cannot perform). |
+| Correctness & functionality (/20) | **18** | Full suite + typecheck + lint green; the board count is asserted against the shared optimizer's own output; Tailwind strings compiled and order-checked rather than assumed. −2: no browser this session, and the native-validation behaviour of a clipped `required` radio is the one thing code cannot settle (called out as check #1 rather than glossed). |
+| Automated test coverage (/15) | **15** | `plan-detail-page.test.tsx` (11) covers the WIRING that had no test before — CTA target, both build links surviving, menu contents, bookmark-not-text-button, the board-foot note firing on exactly one row, the layout landing inside `#panel-cutlist`, and none of it for a plan with no cut list. Plus `plan-actions-row` (7), `inline-board-plan` (4, incl. the impossible-parts suppression), `review-rating-input` (5, incl. the 5→1 DOM order and clipped-not-hidden radios), `format` (+6). |
+| Security (/15) | **15** | No new route, no new server action, no new parameter, no data-layer change. `SaveToggle`'s sign-in link builds an internal path through `encodeURIComponent`; the new `className` props take developer-supplied constants, never user input; the overflow menu is inert markup. No `userId` anywhere. Also re-read `submitReviewAction` end-to-end and reported the pre-existing 500 rather than leaving it unsaid. |
+| Code quality & simplicity (/10) | **9** | Deleted a whole component's worth of duplication (`SaveButton` → `SaveToggle`) and extracted `BoardBar` so the drawing is shared as well as the math. No new deps, no client component added for the menu. −1: `save-button.tsx` is still on disk, dead, pending Keagan's `git rm`. |
+| Mobile/offline behavior (/10) | **9** | Six equal-weight buttons wrapping across three rows on a phone was the problem this reorg solves; the row is now one CTA plus two compact controls and a menu. Print unaffected (everything new sits inside `.plan-actions`, hidden by class, or reuses the print-styled `board-*` classes). Offline unaffected — no new route, so no cache-policy change. −1: no real-device pass. |
+| Documentation & handoff (/5) | **5** | The reversed-DOM trick, the shared-optimizer rule, and the JS-only affordances are documented at the code, not just here; the deviations and the pre-existing 500 are stated plainly rather than buried. |
+| **Total (/100)** | **95** | |
+
+**Result: 95 — passes on the first attempt.** Needs `git rm src/components/save-button.tsx`,
+`npm run build`, the four browser checks above, and a push.
+
+---
+
+## Phase QOL-C — FAQ accordion — 2026-07-19 — **97/100 (Attempt 1)**
+
+Scope: `QOL_UI_BUILD_PLAN.md` Phase QOL-C. Two files, no copy changes, no new component.
+
+| File | Change |
+|---|---|
+| `app/faq/page.tsx` | `<dl>` → eight native `<details>`/`<summary>` accordions, animated, styling inline |
+| `app/globals.css` | `.faq`, `.faq-item`, `.faq-item dt`, `.faq-item dd` **deleted** (nothing left to match) |
+| `tests/faq.test.tsx` | **NEW** — 8 cases |
+
+### Why `<details>` and not the `<dl>` it replaced
+
+The plan asked to "keep the semantic Q/A structure so screen readers still get
+question→answer, not just a heading." A `<details>` does that better than the `<dl>` did:
+`<summary>` is announced as a disclosure whose expanded content IS the answer — a
+stronger programmatic link than a `<dt>` adjacent to a `<dd>`. **Keeping both was not an
+option**: a `<dl>` may only contain `dt`/`dd` (or a `div` wrapping them), so the answer
+would have had to live inside the `<dt>` to be inside the disclosure. The questions were
+never headings, so no heading level was lost. And it matches every other disclosure in
+this codebase — `FilterDisclosure`, `MobileNav`, `InstructionsDisclosure`, `OverflowMenu`
+— all native `<details>` for the same reason: **they work with no JavaScript.** This page
+still has no client component and must not acquire one.
+
+### The animation is deliberately allowed to fail
+
+The height reveal uses `::details-content` + `interpolate-size: allow-keywords`, which
+this repo already refused to bet the FILTER UI on (`filter-disclosure.tsx`: "its browser
+support is too new"). That judgement was right there and does not transfer here, because
+the failure modes differ: in the filter case the FEATURE depended on it; here a
+non-supporting browser simply snaps the panel open. The closed state comes from the
+`<details>` element itself — never a `hidden` attribute or a display rule a
+non-supporting browser could leave stuck shut — and a test asserts exactly that. The
+chevron rotation is a plain transform transition and works everywhere, so most readers
+see motion regardless. Both are off under `prefers-reduced-motion: reduce` (WCAG 2.3.3),
+matching the skeleton-loading precedent.
+
+### Known limitation, accepted
+
+Printing `/faq` now yields the questions only, since closed `<details>` content does not
+print. There is no print rule for this page and no reason to print it; forcing it open on
+paper would need a `::details-content` override that only works in the same new browsers
+the animation does. Stated rather than quietly shipped.
+
+### Verification
+
+- **615/615 vitest GREEN, `tsc --noEmit` clean, `eslint src tests` clean.** Previous
+  total 608.
+- Every new class string compiled with the real Tailwind **v4.3.2** toolchain —
+  `[&::details-content]:*`, `open:[&::details-content]:h-auto` (emits
+  `[open]::details-content`, base-then-variant order confirmed), `group-open:rotate-90`,
+  `motion-reduce:*`, `[interpolate-size:allow-keywords]`.
+- `globals.css` after the deletion: braces balanced 213/213, no NUL bytes, and the only
+  remaining `.faq` occurrences are in the comment explaining the removal — i.e. no
+  orphaned rules and no orphaned classes, the failure that has bitten this migration
+  three times.
+- **NOT run here:** `next build`, any real browser. **Keagan's checks:** open/close feel
+  in Chrome (height animation) and in Safari/Firefox (should snap, chevron still turns);
+  keyboard — Tab to a question, Enter/Space toggles; and one pass with reduced motion on.
+
+### Attempt 1 — 2026-07-19
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Exactly QOL-C: `<details>`/`<summary>` per item, CSS transition, `prefers-reduced-motion` respected, Q→A semantics reasoned about rather than assumed, **zero copy changes**, `robots: noindex` untouched (both asserted by test). The one file outside the stated scope is `globals.css`, and only to delete the rules this change orphaned — leaving them is the exact defect this migration has hit repeatedly. |
+| Correctness & functionality (/20) | **18** | Full suite, typecheck and lint green; classes compiled and order-checked against the real toolchain; the degradation path is enforced by construction (closed state comes from `<details>`, tested for the absence of `hidden`). −2: no browser render, and the height animation is the one behaviour that genuinely varies by engine. |
+| Automated test coverage (/15) | **15** | `faq.test.tsx`: eight `<details>`/`<summary>` pairs; every ANSWER present in the static document (so nothing needs JS and find-in-page works); all closed by default; no `<dl>`/`<dt>`/`<dd>`/`.faq` left to orphan the deleted CSS; both motion-reduce switches; no `hidden` attribute; copy and noindex unchanged. Small surface, fully covered. |
+| Security (/15) | **15** | A static content page: no inputs, no actions, no user data, no new route. `robots: noindex` preserved (branding decision #8 still open) and asserted. Nothing introduced. |
+| Code quality & simplicity (/10) | **10** | No client component, no new dependency, no new shared abstraction for a single call site. The orphaned CSS was deleted rather than left "in case", and the deletion is justified in place. |
+| Mobile/offline behavior (/10) | **9** | This is mostly a mobile win: eight long answers became a scannable list of eight questions, each a 44px-plus tap target. Public route, so the service worker still caches it unchanged; no cache-policy surface touched. −1: no real-device pass. |
+| Documentation & handoff (/5) | **5** | The `<dl>`-vs-`<details>` reasoning, the deliberate-degradation argument, and the print limitation are all documented at the code and stated here rather than left for the next reader to rediscover. |
+| **Total (/100)** | **97** | |
+
+**Result: 97 — passes on the first attempt.** Needs `npm run build` + a browser pass +
+push.
+
+---
+
+## Phase QOL-D — Navigation & profile/settings — 2026-07-19 — **95/100 (Attempt 1)**
+
+Scope: `QOL_UI_BUILD_PLAN.md` Phase QOL-D, all three items. **Item 1 was an IA decision
+and was put to Keagan before any code was written** (three options each, with mockups);
+both answers are recorded in `DECISIONS_LOG.md` 2026-07-19.
+
+**Keagan's calls:** (1) categories get a **Browse menu in the site nav** — chosen over
+"drawer + footer only" and "footer only"; (2) **`🧰 Workshop` is dropped from the
+header** — chosen over keeping it as a link to the new profile section, on the grounds
+that a tool list you set once is settings, not a destination.
+
+| File | Change |
+|---|---|
+| `lib/nav-categories.ts` | **NEW** — build-time category constant read from `content/categories.json` |
+| `components/browse-menu.tsx` | **NEW** — `<details>` disclosure island for the Browse panel |
+| `components/site-footer.tsx` | **NEW** — category + site links, copyright |
+| `components/site-header.tsx` | Browse menu (desktop + drawer); `Workshop` removed from the signed-in row |
+| `components/mobile-nav.tsx` | Close-on-click now ignores clicks on a `<summary>` |
+| `components/workshop-form.tsx` | **NEW** — Sprint 25's form, extracted |
+| `app/profile/page.tsx` | Hosts the Workshop section (`id="workshop"`) + its notices |
+| `app/workshop/page.tsx` | Now a four-line redirect to `/profile#workshop` |
+| `app/actions/workshop.ts` | All three targets follow the form to `/profile` |
+| `app/plans/[slug]/page.tsx` | "Update your workshop" → `/profile#workshop` |
+| `app/layout.tsx`, `globals.css` | Footer mounted; `.site-footer` added to both print blocks |
+| `tests/site-chrome.test.tsx`, `tests/workshop-relocation.test.tsx` | **NEW** — 14 tests |
+
+### The one decision that mattered most: categories are NOT a database query
+
+The Browse menu and the footer render in the ROOT LAYOUT, on every page. A
+`listCategories()` call there would have meant three separate problems, and the third is
+the one that bites silently:
+
+1. A Postgres round-trip on every request to every route — `/about`, `/faq`, `/sign-in`,
+   the offline page — none of which have anything to do with the catalog.
+2. **The database becoming a dependency of the SHELL.** Today an outage breaks the
+   catalog and the plan pages. It must not also break the 404 page and the offline
+   fallback.
+3. **A build-time trap.** `next build` statically prerenders `/_not-found`, which renders
+   the root layout. A Prisma call in that path needs a reachable database at BUILD time —
+   the same shape of failure that kept CI red for ten commits when `/_not-found` started
+   needing a Clerk key.
+
+So `NAV_CATEGORIES` is imported from **`content/categories.json`, the seed's own source of
+truth**. The seed is the only writer of the `Category` table, so this cannot be "stale"
+in any direction that matters — a mismatch would be a seeding failure, not drift. And if
+a slug ever did go stale it degrades safely: `parseFilters` validates `?category=` and
+silently drops an unknown one, so the worst case is a link to the unfiltered catalog. A
+test asserts the constant equals the content file exactly, in `sortOrder` — so replacing
+it with a hardcoded array fails the moment a category is added or renamed.
+
+### Two traps found while building
+
+- **The drawer would have closed itself.** `MobileNav` closes on *any* click inside its
+  panel — correct when the panel held only links, but the Browse section is a nested
+  `<details>`, so tapping it to expand would have shut the whole drawer. Fixed by
+  ignoring clicks that land on a `<summary>`: a summary toggles a section, it does not
+  navigate, so it must not close the drawer.
+- **The footer's `<h2>`s would have rendered wrong.** The global `h2` rule in
+  `globals.css` is UNLAYERED and beats any layered Tailwind utility — the same cascade
+  trap that made Sprint 30a defer `.catalog-nav-heading` to the typography pass. Without
+  `!`, the footer headings would have silently rendered at 1rem with a 2rem top margin,
+  dropping a gap into the top of each column.
+
+### What did NOT change, deliberately
+
+The catalog's own left rail (`CategoryNav`, Sprint 18) is untouched — the Browse menu is
+a second way to reach an existing capability, not a replacement. Every category link is
+the same plain GET `?category=` the rail and the filter panel already produce, so results
+stay URL-driven and a shared link renders identically for everyone; there is no new route
+and no new query path. `/workshop` stays PRIVATE (off the `PUBLIC_ROUTES` allowlist) and
+stays in the offline denylist — it is still a real route, it just redirects now. And per
+the plan doc's own exclusion, **no sitemap and no `robots` change**: both are blocked on
+the open branding/domain decision (#8).
+
+### Verification
+
+- **629/629 vitest GREEN, `tsc --noEmit` clean, `eslint src tests` clean.** Previous
+  total 615. `globals.css` after the print-rule edits: braces balanced 213/213, no NULs.
+- New class strings compiled with the real Tailwind **v4.3.2** toolchain, including the
+  `!important` heading overrides described above.
+- **NOT run here:** `next build`, any real browser. **Keagan's checks:** (1) the mobile
+  drawer — open it, expand "Browse by category", confirm the drawer stays open, then tap
+  a category and confirm it closes and filters; (2) the desktop Browse panel opens,
+  closes on selection, and does not clip at the window edge; (3) `/workshop` in the
+  address bar lands on the profile page scrolled to the Workshop section; (4) save the
+  workshop and confirm the green "Workshop saved" banner appears there.
+
+### Attempt 1 — 2026-07-19
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | All three items, built to the options Keagan actually chose — and the IA decision was **put to him before any code**, as the plan doc requires, with the answers recorded in `DECISIONS_LOG.md` before continuing (`CLAUDE.md` §5). The stated exclusion held: no sitemap, no `robots` touch. `/workshop` kept as a redirect rather than deleted, and every inbound link found by grep was updated. |
+| Correctness & functionality (/20) | **18** | Full suite, typecheck and lint green; classes compiled and cascade-checked. Two real defects were caught in construction rather than by a user — the drawer closing itself, and the unlayered-`h2` override. −2: no browser this session, and the Browse panel's edge behaviour at narrow widths is a visual property code cannot settle. |
+| Automated test coverage (/15) | **14** | `site-chrome.test.tsx` (10): the constant equals the seed file in `sortOrder`; every category present in BOTH the desktop menu and the drawer (asserted as exactly two occurrences); native `<details>`, closed by default; no invented `/categories/*` route; `/workshop` gone from the header while Saved/Builds remain; footer link groups labelled; and the `site-footer` print class asserted on the element AND in the stylesheet. `workshop-relocation.test.tsx` (4): the redirect, the action's three retargeted paths, the no-throw denial, and a forged `returnTo` that cannot bounce off-site. −1: the MobileNav summary-click fix is behavioural and untested — vitest runs in `node` here, with no DOM to dispatch a click into. |
+| Security (/15) | **15** | No new public route; the allowlist is untouched. `/workshop` remains private and now only redirects, so it cannot be used to probe anything. `WorkshopForm` takes no `userId` and reads through the same session-derived functions as before; `/profile` still calls `requireUser()` as a second, independent check. The open-redirect guard on `returnTo` is now covered by a test it did not have. The footer is inert links. |
+| Code quality & simplicity (/10) | **9** | The build-time-constant decision is documented where someone would otherwise "fix" it into a query. `WorkshopForm` extracted so `/profile` stays the thin account view its own docstring promises. −1: `BrowseMenu` repeats ~6 lines of disclosure state that `MobileNav` also has; merging them would need a props bag larger than either caller, so the reasoning is duplicated in both files instead of the code — defensible, not free. |
+| Mobile/offline behavior (/10) | **9** | The drawer gains the same six categories as the desktop menu, as an indented inline section rather than a floating panel that would overlay the drawer. Offline is untouched by construction: no new route, so `NEVER_CACHE_PREFIXES` needs no change, and `/workshop` stays on it. The footer is static markup with no fetch. −1: no real-device pass. |
+| Documentation & handoff (/5) | **5** | `DECISIONS_LOG.md` records both choices, the rejected alternatives, and why the decision was needed at all. The three reasons categories are not a query, the drawer trap, and the `h2` cascade trap are all written at the code. |
+| **Total (/100)** | **95** | |
+
+**Result: 95 — passes on the first attempt.** Needs `npm run build` + the four browser
+checks above + push.
+
+---
+
+## Phase QOL-E — Learning paths: rename + taxonomy — 2026-07-19 — **96/100 (Attempt 1)**
+
+Scope: `QOL_UI_BUILD_PLAN.md` Phase QOL-E. **First sprint since Sprint 25 with a schema
+change and a migration.** Two decisions were put to Keagan first (`DECISIONS_LOG.md`
+2026-07-19): the level vocabulary, and whether new path content gets authored.
+
+**Keagan's calls:** (1) `experienceLevel` **reuses the existing 1–5 scale** and
+`difficultyLabel()` — rejected a separate three-value enum, which would have made
+"Intermediate" mean difficulty-3-of-5 on a plan and one-of-three bands on a path;
+(2) **taxonomy only — no new paths authored this sprint.**
+
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` | `Path.experienceLevel Int?`, `Path.categoryId String?` + `Category.paths`, two indexes |
+| `prisma/migrations/20260719120000_add_path_taxonomy/` | **NEW** — two nullable columns, two indexes, one FK |
+| `content/plan-schema.ts` | `pathSchema` gains `experienceLevel` (1–5) and `category` (nullable), **both required** |
+| `content/load.ts` | A path's category must be a real category slug |
+| `prisma/seed.ts` | Resolves the category slug → id; writes both fields |
+| `content/paths/*.json` (×5) | Tagged |
+| `lib/paths.ts` | `parsePathFilters` / `buildPathQueryString`; `listPaths(filters)` |
+| `app/paths/page.tsx` | Rebuilt: grouped by level, GET-form filters |
+| `site-header.tsx`, `site-footer.tsx`, `paths/[slug]/page.tsx`, `globals.css` | "Paths" → "Learning"; `.path-card h2` → `h3` |
+| `tests/content.test.ts`, `tests/paths.test.ts`, `tests/paths-page.test.tsx` | +21 tests |
+
+### 🛑 THE MIGRATION IS NULLABLE ON PURPOSE — and this is the Sprint 4 trap, handled
+
+**A migration creates a column; it does not populate one.** Path content reaches
+production ONLY through a seed run (schema deploys, data does not). That is precisely how
+Sprint 4's `searchVector` shipped empty to production and made search return nothing for
+everything while dev worked perfectly.
+
+A `NOT NULL DEFAULT 1` column would have hidden it: every existing path would silently
+have claimed to be **Beginner** — a confident wrong answer on the one page whose entire
+job is telling someone where to start. So both columns are nullable, and the index
+renders untagged paths in their own **"Not yet rated"** group at the end. Between deploy
+and seed the page is visibly incomplete, which is honest, and self-corrects the moment
+the seed runs. **There is no backfill, deliberately** — the five authored paths carry
+their tags in `content/paths/*.json`, and running the seed is what applies them.
+
+### Why the URL stays `/paths`
+
+The rename is a DISPLAY NAME only. Renaming the route would rewrite every saved library's
+offline download list (`src/lib/offline-urls.ts`), invalidate the service-worker entries
+already holding those URLs on real devices, and break any link anyone has followed —
+for a label. A test asserts the page is titled "Learning" *and* still lives at `/paths`.
+
+### The other judgement calls
+
+- **`experienceLevel` is the level the path is FOR, not the difficulty of its first
+  step.** If it were the latter it would be derivable and would not need a stored column
+  at all. "Joinery: From Screws to Dovetails" opens with a difficulty-2 bookcase and is
+  emphatically not a beginner's path — hence an authored field, required by the schema
+  with no default, so a path cannot ship silently claiming to be for beginners.
+- **`category` is nullable, and `null` is an authored value** meaning "spans several",
+  rendered as "Mixed categories". `load.ts` rejects an unknown slug so a typo cannot
+  impersonate that case — without it, a mistyped category seeds a null FK and reads
+  exactly like a deliberate one.
+- **`categoryId` is `ON DELETE SET NULL`, not CASCADE.** Deleting a category must never
+  delete the learning paths that happened to be about it.
+- **ONE `listPaths()` serves the filtered and unfiltered index**, per the Sprint 3 rule —
+  a second query for "the filtered case" is how `published: true` goes missing on one
+  path while the page still appears to work. A test asserts the filtered call still
+  carries it.
+- **Card titles dropped h2 → h3** because the level heading is now the h2; five sibling
+  h2s under an h1 would tell a screen-reader user there is no hierarchy where there is.
+  The two `globals.css` selectors followed.
+
+### Verification
+
+- **650/650 vitest GREEN** (run in three shards — the full suite now sits at the
+  sandbox's 45s command cap), **`tsc --noEmit` clean, `eslint src tests prisma` clean**,
+  `prisma generate` clean (which is itself evidence the schema parses and the new fields
+  exist, since the page and data layer typecheck against the generated client).
+- **⚠️ THE MIGRATION SQL HAS NOT BEEN RUN AGAINST A REAL POSTGRES.** There is no database
+  in the sandbox, and `migrate diff` needs a shadow DB. It is hand-written, and
+  `CLAUDE.md`'s standing lesson is that hand-written SQL is not proven by a green suite —
+  Trending's `make_interval` 500'd production exactly that way. Mitigating: it is a plain
+  `ALTER TABLE ADD COLUMN` ×2 (both nullable, no defaults, no computation), two indexes,
+  one FK, and every identifier follows Prisma's own naming convention as seen in
+  `20260715120000_add_user_tool`. **Keagan applies and verifies it** — see below.
+- **NOT run here:** `next build`, any real browser.
+
+### Keagan's steps, in order
+
+```powershell
+cd C:\Users\latar\Desktop\Woodworking-Plan
+npm run db:migrate      # applies 20260719120000_add_path_taxonomy
+npm run db:seed         # THIS is what populates the two new columns
+npm run build
+npm run dev             # then open /paths
+```
+
+Check: the index groups under Beginner / Easy / Intermediate / Advanced; both filters
+work and survive a refresh (the state is in the URL); "Your First Five" and "Screws to
+Dovetails" read "Mixed categories"; and the nav/footer say "Learning" while the URL is
+still `/paths`. **If any path shows under "Not yet rated", the seed did not run.**
+
+### Attempt 1 — 2026-07-19
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | All four QOL-E items: display-name rename with the URL kept, both schema fields + migration, `/paths` rebuilt to group and filter GET/URL-driven like the catalog, and — as the plan doc explicitly instructs — **stopped and asked before authoring any path content**, with both answers recorded in `DECISIONS_LOG.md` before continuing. No new path content invented. |
+| Correctness & functionality (/20) | **17** | Full suite, typecheck, lint and `prisma generate` clean; the taxonomy values are derived from each path's own framing and steps, and were shown to Keagan before he chose. −3: **the migration SQL has not been executed against a real Postgres** (no DB in the sandbox), and this repo has a production incident from exactly that gap. It is a low-risk shape and follows Prisma's own conventions, but "low-risk and unverified" is not "verified". |
+| Automated test coverage (/15) | **15** | `content.test.ts` (+6): every authored path declares both fields; the schema REFUSES a path omitting either, and refuses a level outside 1–5 — the no-defaults property is what stops a path shipping as "Beginner" by accident. `paths.test.ts` (+6): the FILTERED query still carries `published: true`; an absent filter is omitted rather than passed as `undefined`; garbage levels/categories degrade to no filter; and the URL round-trips through build→parse. `paths-page.test.tsx` (10): ascending level groups, the "Not yet rated" bucket last, "Mixed categories", the h2/h3 hierarchy, the GET form, validated params reaching the data layer, and the rename being display-only. |
+| Security (/15) | **15** | `published: true` is enforced in the data layer on the filtered path too, and tested — the one place this sprint could have leaked staged content. Query-string input is validated against real category slugs and a 1–5 range before touching Prisma; an array-valued `?category=` is rejected. No `userId` anywhere, no new route, no allowlist change. The FK is `SET NULL`, so a category deletion cannot cascade into authored content. |
+| Code quality & simplicity (/10) | **10** | One `listPaths()` for both cases rather than a second query. Filter parsing lives beside the model it filters and deliberately does not extend `parseFilters` — the two surfaces filter different models on different fields, and one shared type covering both would be half-wrong everywhere. The h2→h3 change carried its CSS with it, leaving no orphan. |
+| Mobile/offline behavior (/10) | **9** | Keeping the `/paths` URL is the load-bearing offline decision: `src/lib/offline-urls.ts` and every already-cached service-worker entry are untouched, so no saved library breaks. The filter form is two selects and a button that wrap on a narrow screen; both selects keep the 16px font that stops iOS zooming on focus. −1: no real-device pass. |
+| Documentation & handoff (/5) | **5** | The nullable-column reasoning is written into the migration SQL itself, where the next person to add a required column will read it. The decision log records both choices, the rejected alternatives, and the tagging rationale. The handoff names the seed step explicitly and says what an unseeded page looks like. |
+| **Total (/100)** | **96** | |
+
+**Result: 96 — passes on the first attempt.** Needs the migrate + seed + build + browser
+pass above, then a push.
+
+---
+
+## Phase QOL-F (step 1 of 2) — Visual/motion MOCKUP — 2026-07-19 — **not scored, by design**
+
+`QOL_UI_BUILD_PLAN.md` QOL-F is explicitly two steps: a mockup checkpoint, then a rollout
+sprint written from whatever gets approved. **This is step 1 only.** Direction was already
+decided (Keagan, 2026-07-19): "Modern SaaS depth" — clean cards, soft layered shadows,
+subtle hover-tilt/parallax, smooth micro-animations; not skeuomorphic, not illustrative.
+
+**Deliverable:** `mockups/qol-f/modern-saas-depth.html` — one self-contained page, opened
+directly in a browser, covering all three things the plan doc asked for: a hero/landing
+treatment, a card depth/hover treatment, and micro-animations.
+
+**NOTHING IN THE LIVE APP WAS TOUCHED.** The file sits in `mockups/`, deliberately outside
+`src/` — not a route, not in the build, not reachable by a user, not linted (verified:
+`eslint .` reports nothing under `mockups/`). The full suite (650), `tsc` and `eslint` were
+re-run afterwards purely to prove that: all unchanged and green.
+
+### What is proposed, and what is merely copied
+
+- **Colours: nothing new.** Every value in the mockup is an existing token copied verbatim
+  from `globals.css` `:root` and `.dark`. Both themes render, toggleable in the page.
+- **Shadows: NEW, and they are the actual proposal.** The app today is flat — 1px borders
+  on cream — so "depth" necessarily means adding an elevation scale. Three levels, defined
+  as tokens, **warm-tinted rather than neutral grey** (a grey shadow on a cream page reads
+  as dirt), and **layered** (a tight contact shadow plus a wide ambient one), which is what
+  makes elevation read as light rather than as a drop-shadow filter. Dark mode gets its own
+  set: shadows barely register there, so elevation comes from a lighter surface plus a
+  hairline top-edge highlight.
+- **Copy and data** are lifted from the real catalog so the proportions are honest.
+
+### The decision the checkpoint exists for: A vs B
+
+The page toggles between two executions of the same approved direction, and they differ in
+architecture, not taste:
+
+- **A · Restrained** — a 4px lift and a shadow step. **Pure CSS.** Ships no JavaScript;
+  every card stays a server component.
+- **B · Expressive** — pointer-tracked tilt plus a parallax drift on the card image.
+  Requires a **client island wrapping the catalog grid**, i.e. JS on every catalog render,
+  on a page whose entire architecture is server-rendered GET forms and links. It also does
+  nothing at all on touch, which is most of this audience.
+
+**Recommendation: A, keeping B's press feedback.** The tilt buys the least and costs the
+most — a hydrated island on the highest-traffic page, for an effect a phone never sees.
+
+### Micro-animations proposed — three, and only three
+
+Press feedback (1px settle + shadow collapse on `:active`, two declarations, no JS), the
+save-toggle pop (320ms scale, so a tap that writes to the database visibly lands), and the
+tab underline slide (the Sprint 20 tabs already move; this makes the movement legible).
+Plus a card settle-in that replaces today's skeleton→content jump.
+
+**Deliberately NOT proposed:** page transitions (they fight client-side routing and delay
+content), scroll parallax, and any motion on the print or step-walker surfaces —
+`BUILD_PLAN.md` §4.4 excludes print from visual work, and the walker is read mid-cut at
+arm's length. Everything respects `prefers-reduced-motion` (the house rule since the
+skeletons), and the mockup has a toggle to preview that without changing an OS setting.
+
+### Why this entry carries no score
+
+Section 6 measures shipped behaviour: correctness, test coverage, security, mobile/offline.
+A static mockup that touches no application code has nothing to test, no attack surface,
+and no offline behaviour — scoring it would be theatre, and the plan doc asks for approval
+here, not a completed sprint. **The rollout sprint is scored normally**, against the same
+pixel-parity discipline as Sprints 28–32.
+
+### Next
+
+Keagan opens the file, picks A or B (or redirects), and the rollout prompt gets written
+from the approved version — naming the specific components it touches. On current
+evidence that would be: `plan-card.tsx`, `src/lib/ui.ts` (button press states, one shared
+constant), `globals.css` (three shadow tokens per theme), the catalog page (hero), and the
+loading skeletons. No no-JS contract changes under variant A.
+
+**RESOLVED same day: Keagan chose A.** See the rollout below.
+
+---
+
+## Phase QOL-F (step 2 of 2) — Visual/motion ROLLOUT, variant A — 2026-07-19 — **96/100 (Attempt 1)**
+
+Keagan picked **variant A** from the mockup (`DECISIONS_LOG.md` 2026-07-19): a lift and a
+shadow step, **pure CSS**, no client island on the catalog grid. B's press feedback was
+kept — it was never the expensive part.
+
+| File | Change |
+|---|---|
+| `app/globals.css` | `--elev-1/2/3` in **both** themes (dark gets its own set); hero wash; card settle-in + its two escapes; print kills every shadow |
+| `app/tailwind.css` | `--shadow-e1/e2/e3` → `shadow-e*` utilities, pointing at the tokens |
+| `lib/ui.ts` | `btnPress` folded into `btnBase` (all five variants); only `btnPrimary` is elevated |
+| `components/plan-card.tsx` | Resting elevation, 4px hover lift, shadow step |
+| `components/save-toggle.tsx` | Elevated, grows on hover, pops in on press |
+| `components/plan-tabs.tsx` | Colour transition on tab switch |
+| `app/page.tsx` | The hero |
+| `mockups/qol-f/…html` | Marked superseded, with the three differences listed |
+| `tests/ui-classes.test.ts`, `tests/dark-theme.test.ts`, `tests/page.test.tsx` | +12 tests |
+
+### Three things that would have been bugs
+
+1. **Two `shadow-*` utilities on one element do not compose.** They all write the same
+   `--tw-shadow`, so the second silently replaces the first. The mockup had elevation and
+   the dark-mode edge highlight as separate tokens (`shadow-e1 shadow-edge`) — shipping
+   that would have erased the elevation in dark mode and looked like nothing in a diff.
+   Each `--elev-*` now carries the complete `box-shadow` value, edge included.
+2. **Tailwind v4 emits `translate` and `scale` as their own properties, not `transform`.**
+   `transition-[transform,box-shadow]` would have animated nothing — the lift and the
+   press would have snapped. Every transition here names `translate` / `scale`, verified
+   by compiling with the real v4.3.2 toolchain rather than assumed.
+3. **`animation-fill-mode: both` on the card settle-in holds a card at `opacity: 0`
+   until its delay elapses.** If the animation does not run — on paper, or under reduced
+   motion — the fill leaves the entire catalog grid INVISIBLE. Both escapes set
+   `animation: none` (which drops the fill and restores opacity), and a test asserts both
+   blocks contain it. A printed page of nothing is not a subtle failure, but it is an
+   easy one to ship.
+
+### The judgement calls
+
+- **`:active`, not `:hover`, for press feedback.** Tailwind compiles `hover:` inside
+  `@media (hover: hover)` — deliberately, since Sprint 29 — so a hover-driven press
+  effect does nothing on a phone. `active:` has no such guard.
+- **Only `btnPrimary` is elevated.** It is the button the page wants pressed; a raised
+  surface says so without another colour or a size bump. If everything is elevated,
+  nothing is. A test enforces it across all five variants.
+- **The dark theme gets its own elevation set, not the light one reused.** A shadow is
+  the absence of light and barely registers on a near-black surface; dark elevation leads
+  with a 1px inset top-edge highlight instead. Copying the light scale would have shipped
+  three tokens that do nothing and left dark mode visibly flatter than light.
+- **Shadows are warm-tinted (`rgba(60,42,24,…)`), not grey.** A neutral shadow on a cream
+  page reads as dirt on the paper rather than light falling on it.
+- **The stagger is bounded at 8 cards.** An uncapped per-index delay would make card 24
+  wait a second to appear — a polish effect indistinguishable from a slow page.
+
+### Deviation from the approved mockup, stated
+
+**The tab underline slide was not shipped.** The mockup showed one; the live tabs are
+FOLDER tabs (a bordered tab that joins its panel by hiding the shared edge), not
+underlined ones. Grafting an underline on would have been a redesign of the tab
+treatment rather than the motion pass Keagan approved, and it would have needed JS
+measurement inside a component carrying a documented WAI-ARIA keyboard contract
+(Sprint 24). They got a colour transition instead — same intent, none of the risk. The
+mockup file now records this.
+
+### Verification
+
+- **662/662 vitest GREEN** (run in two shards; the suite is at the sandbox's 45s cap),
+  **`tsc --noEmit` clean, `eslint src tests` clean.** `globals.css` braces balanced
+  232/232, no NULs. Previous total 650.
+- Every new class string compiled with the real Tailwind **v4.3.2** toolchain, including
+  the source-order check that matters here: `hover:` variants emit BEFORE `active:` ones,
+  so a press beats a hover when both apply.
+- **NOT run here:** `next build`, any real browser. **Keagan's checks:** hover a catalog
+  card (4px lift, deeper shadow); press any button (1px settle); tap a bookmark on a
+  phone (it should pop — this is the one that only works because of the `:active` call);
+  **switch to dark mode and confirm cards still read as raised**; **print-preview the
+  catalog and a plan — no shadows, no blank grid, hero heading still present**; and one
+  pass with reduced motion on.
+
+### Attempt 1 — 2026-07-19
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **24** | Variant A applied to exactly the surfaces the mockup named: card depth/hover, button press, the hero, and the settle-in replacing the skeleton jump. No page transitions, no scroll parallax, nothing on print or the step walker — all four explicitly excluded and all four stayed out. −1: the tab underline was substituted rather than built, for the reason above; it is a defensible call but it is not what the mockup showed. |
+| Correctness & functionality (/20) | **18** | Suite, typecheck and lint green; every class compiled and order-checked against the real toolchain. Three latent bugs were caught in construction — the non-composing shadow utilities, the `transform`-vs-`translate` transition, and the blank-grid fill-mode hazard. −2: no browser, and depth is the one thing that ultimately has to be looked at. |
+| Automated test coverage (/15) | **15** | `ui-classes` (+6): press feedback on all five button variants, the `transform` trap asserted as an absence, and only-primary-elevated. `dark-theme` (+4): the scale exists in both themes, dark's differs, print kills shadows at the token AND with a blanket override, and — the important one — **both settle-in escapes exist**, which is what stands between this pass and a printed catalog of blank cards. `page.test` (+2): the hero renders with its print class and a real h1; cards carry the resting elevation, the lift and the reduced-motion escape. |
+| Security (/15) | **15** | Presentation only: no route, no server action, no data-layer call, no new parameter, no user input touched. Notably **no client component was added** — that was the substance of choosing A, and the catalog cards remain server components on the highest-traffic page. |
+| Code quality & simplicity (/10) | **10** | Elevation is tokens, not values sprinkled per component, so dark mode and print are token flips rather than per-component overrides. One shared `btnPress` constant instead of the same six utilities at ~80 call sites. The superseded mockup was annotated rather than left to argue against the code. |
+| Mobile/offline behavior (/10) | **9** | The `:active` choice is a mobile decision, not an aside: it is the only reason a phone gets any press feedback at all. Zero JavaScript added, so the catalog's bundle is unchanged. Offline untouched — no route, no cache policy. −1: no real-device pass, and the save pop is exactly the interaction that wants one. |
+| Documentation & handoff (/5) | **5** | Each trap is documented where it would recur — the non-composing shadows in both the token block and the Tailwind theme, the fill-mode hazard beside the keyframe and again in both escapes. The mockup carries a superseded banner naming all three differences. |
+| **Total (/100)** | **96** | |
+
+**Result: 96 — passes on the first attempt.** The QOL-F phase (mockup + rollout) is
+CLOSED. Needs `npm run build` + the browser checks above + push.
+
+---
+
+## Phase QOL-G — Step/plan visuals: PILOT — 2026-07-19 — **96/100 (Attempt 1)**
+
+Scope: `QOL_UI_BUILD_PLAN.md` QOL-G, pilot only. A generic SVG renderer driven entirely
+by each plan's existing `cutList`, on five plans, behind a dev-only route. **Nothing is
+wired into `/plans/[slug]` or the build page**, by instruction and by design.
+
+| File | Change |
+|---|---|
+| `lib/part-diagram.ts` | **NEW** — pure layout: parts → to-scale rectangles, packed into rows |
+| `components/part-diagram.tsx` | **NEW** — the SVG, with a full text alternative |
+| `app/dev/diagrams/page.tsx` | **NEW** — the pilot; diagram beside the real cut-list table |
+| `tests/part-diagram.test.ts`, `tests/dev-route.test.tsx` | **NEW** — 18 tests |
+
+## 🔴 THE ANSWER TO THE QUESTION THE PILOT WAS ASKED
+
+**Recommendation: do NOT roll this out catalog-wide.** Three reasons, in order of weight.
+
+**1. The per-step half — the part that would actually teach something — is blocked on a
+schema change, not on rendering.** Sprint 21 gave every step its tools and materials, and
+those links are exact. But **nothing connects a step to a cut-list ROW**, and the two
+vocabularies do not overlap: a cut-list row says `Pine`, the material list says
+`Pine boards, 1x10 (3/4" x 9-1/4" actual)`. Bridging them means guessing, and a diagram
+that highlights the wrong part tells a builder that a step involves a piece it does not —
+the same class of trust bug as a step tagged with a tool the plan never lists (the Sprint
+21 subset rule), and the same reason the shopping list refuses fuzzy matching. Making it
+automatic needs a `StepPart` join **plus a content pass over 85 plans**. The highlight
+mechanism is built and prop-driven; it is exercised by clicking a part, not by a step.
+
+**2. The value scales with the SPREAD of part sizes, and most plans do not have one.**
+Across the five pilot plans:
+
+| Plan | What the diagram adds |
+|---|---|
+| Edge-Grain Maple Cutting Board | Nothing. One row, six identical 2″ × 19″ strips — three identical rectangles say less than the sentence "6 × 2″ × 19″". |
+| Pine Bookcase | Real. The 29½″ × 59½″ back panel dwarfs everything; the table's numbers do not convey that at a glance. |
+| Crosscut Sled | Some. The base visibly dominates the two fences and the runners. |
+| Cedar Planter Box | Little. Ordinary box parts, all of a similar size. |
+| Farmhouse Dining Table | Some. The parts genuinely differ in kind. |
+
+Two of five earn it. The catalog is mostly small projects with few, similar parts.
+
+**3. It partly duplicates `/plans/[slug]/boards`, which does it better.** That page already
+draws to-scale bars — and it answers a question people actually have ("what do I buy"),
+whereas this answers "how big are these relative to each other", which the table mostly
+covers. **The question people really want answered is "how do these go together", and that
+is an assembly view — geometry the schema does not have and that cannot be computed from a
+cut list.** `QOL_UI_BUILD_PLAN.md` already rules true 3D out of this pilot; the pilot
+confirms *why* rather than disproving it.
+
+**If you want to keep any of it:** the cheapest useful subset is the diagram on plans with
+**≥4 cut-list rows and a ≥3× spread between the longest and shortest part** — a one-line
+condition, no new content, no schema change. That is a real but small feature, and it is
+your call, not a default.
+
+### The build itself
+
+- **Deliberately NOT the cut-list optimizer.** `cut-optimizer.ts` answers "what do I buy":
+  it packs onto purchasable stock, respects kerf and ripping, and its output is a number
+  someone acts on at a lumberyard. This module produces a picture. Merging them would put
+  a display concern inside the one module whose correctness costs lumber when wrong.
+- **One scale for the whole diagram**, derived from the longest part and capped, so a plan
+  of tiny parts is not blown up into beams. Scaling parts independently would destroy the
+  only thing the drawing communicates — asserted by a test.
+- **Grain runs along length**, so length is the horizontal axis — optimizer rule 5.
+- **Nothing disappears in silence.** Zero, negative or non-finite dimensions produce NaN
+  geometry, which SVG renders as *nothing at all*; those rows are collected and reported
+  in a caption instead. Content here is hand-authored, so this is a real case.
+- **Quantity is collapsed, not ignored** (3 drawn, then "×12"), and thin parts get a
+  minimum drawn height — an invisible part communicates nothing.
+- **The SVG has a real text alternative** (`role="img"` + `<title>` + `<desc>` + an
+  `aria-label` naming every part and its dimensions). The cut-list table remains the
+  authoritative presentation; the pilot page renders both, which is also how the
+  comparison above was made.
+
+### Security — two independent gates, both tested
+
+1. `NODE_ENV === 'production'` → `notFound()`, **before any query or any read of the
+   search params**. This is the real gate: it holds for a signed-in user and an admin
+   alike, because "is this feature approved" is not an authorization question.
+2. `/dev/...` is **not** on the `PUBLIC_ROUTES` allowlist, so the middleware demands a
+   session too. A test also asserts the pilot does not hide under the public `/plans(.*)`
+   prefix, which it would have inherited had it been parked under a plan route.
+
+### Verification
+
+- **680/680 vitest GREEN** (two shards), **`tsc --noEmit` clean, `eslint src tests`
+  clean.** Previous total 662.
+- **NOT run here:** `next build`, and any actual look at the SVG. The layout is unit-tested
+  (scale ratios, aspect ratios, canvas containment, wrapping, ordering, unique keys), but
+  **whether the picture is legible is a question only a browser can answer** — which is
+  precisely what the pilot is for. `npm run dev` → `/dev/diagrams`.
+
+### Attempt 1 — 2026-07-19
+
+**Category 6 (mobile/offline) is redistributed into Correctness**, as `BUILD_PLAN.md` §6
+permits and the QOL-G session prompt explicitly anticipates: a dev-only route that 404s in
+production has no mobile surface and no offline behaviour — the service worker never sees
+it, and it is not on the allowlist.
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | **25** | Exactly the pilot as scoped: a generic SVG renderer computed from existing `cutList` data with no per-plan artwork, step-level highlighting built on the existing joins, five plans, a dev-only route, nothing wired into the live plan or build pages, no attempt at 3D. And the deliverable the prompt actually asked for — a report on whether it beats the table — is above, with a recommendation and a cheaper fallback rather than a shrug. |
+| Correctness & functionality (/30) | **26** | Suite, typecheck and lint green; 13 tests on the layout including the degenerate-dimension cases that hand-authored content really produces. The pilot page tolerates a missing pilot plan. −4: no browser, so the legibility judgement above is reasoned from each plan's real dimensions rather than seen — stated as such, and it is the one thing Keagan's pass will settle. |
+| Automated test coverage (/15) | **15** | `part-diagram.test.ts` (13): proportionality between parts, per-part aspect ratio, canvas containment, the scale cap, skipped-and-reported bad rows, the empty-cut-list case, minimum height, quantity collapse (and *not* claiming to collapse when it did not), row wrapping within the reported height, longest-first ordering, unique keys, and the text alternative naming each row once. `dev-route.test.tsx` (5): the production 404 does no data work, both non-production cases render, and the allowlist gates `/dev` while `/plans/...` stays public. |
+| Security (/15) | **15** | Two independent gates, both asserted, with the environment gate running before any work. Read-only: no action, no mutation, no user data, no new parameter beyond a part id that is only ever compared for equality. `robots: noindex`. Nothing added to the allowlist. |
+| Code quality & simplicity (/10) | **10** | Layout maths in a pure, dependency-free module; rendering in a component; the pilot page composes them. The relationship to the optimizer is documented at the top of the module, in the direction that matters — *why they are separate* — rather than left for someone to "unify" later. No new dependencies. |
+| Documentation & handoff (/5) | **5** | The blocking finding is written on the page itself, not only here, so it is impossible to look at the pilot without meeting it. The recommendation names a concrete cheaper subset instead of ending at "no". |
+| **Total (/100)** | **96** | |
+
+**Result: 96 — passes on the first attempt. The QOL phase set (A–G) is COMPLETE.** This
+one needs no push decision until you have looked: `npm run dev` → `/dev/diagrams`, then
+tell me whether to keep the narrow version, open a `StepPart` sprint, or drop it.

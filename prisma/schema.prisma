@@ -199,6 +199,26 @@ model Path {
   /// enforcement point (the data layer, never the page).
   published Boolean @default(true)
 
+  /// QOL-E — the level of woodworker this path is FOR, on the SAME 1-5 scale as
+  /// `Plan.difficulty`, rendered by the same `difficultyLabel()` (Beginner … Expert).
+  /// One level vocabulary for the whole site: a filter reading "Intermediate" means the
+  /// same thing on a plan and on a path (DECISIONS_LOG.md 2026-07-19).
+  ///
+  /// NULLABLE ON PURPOSE, and the content schema requires it anyway. A migration creates
+  /// a column; it does not populate one (Sprints 4 and 6 both broke production that
+  /// way), and path content only reaches production via a seed. So until that seed runs
+  /// these are null, and the UI renders "not yet rated" rather than confidently showing
+  /// every path as Beginner — visibly incomplete beats confidently wrong.
+  experienceLevel Int?
+
+  /// QOL-E — the category this path is about, or NULL for one that deliberately spans
+  /// several ("Your First Five" walks through four different categories on purpose).
+  /// An explicit field rather than a value derived from the steps: a majority-vote
+  /// category would label a technique path by whichever project type happened to appear
+  /// most, which is not what the path is about.
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
   steps PathStep[]
 
   createdAt DateTime @default(now())
@@ -206,6 +226,9 @@ model Path {
 
   @@index([published])
   @@index([sortOrder])
+  /// QOL-E: both new fields are filterable on /paths.
+  @@index([experienceLevel])
+  @@index([categoryId])
 }
 
 /// One plan's place in one path.
@@ -476,6 +499,9 @@ model Category {
   sortOrder   Int     @default(0)
 
   plans Plan[]
+  /// QOL-E — learning paths ABOUT this category. Optional on the path side (a path may
+  /// span categories), so this list is simply empty for a category no path focuses on.
+  paths Path[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

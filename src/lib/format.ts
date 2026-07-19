@@ -186,6 +186,62 @@ export function formatInches(value: number): string {
     : `${numerator}/${denominator}"`;
 }
 
+/**
+ * ── BOARD FEET (QOL-B item 5) ────────────────────────────────────────────────
+ *
+ * "8 board feet" is the single most opaque quantity on a materials list. It is a
+ * VOLUME (1 bd ft = 144 cubic inches = a piece 1″ × 12″ × 12″), not a length, so a
+ * beginner reading "8" has no idea whether that is an armful or a truckload — and a
+ * lumberyard sells it by the board, not by the board foot. Getting this wrong means
+ * driving home with a third of the wood.
+ *
+ * The catalog spells the unit two ways ("board feet", "board ft"), so match on a
+ * normalized set rather than an equality check. NOTE for whoever tidies the content:
+ * the shopping list's merge is EXACT on (name, unit, species) by design, so those two
+ * spellings do NOT merge — that is a data inconsistency to fix in the plans, never by
+ * teaching the matcher to guess (see CLAUDE.md's shopping-list rules).
+ */
+const BOARD_FEET_UNITS = new Set([
+  'board feet',
+  'board ft',
+  'board foot',
+  'bd ft',
+  'bf',
+]);
+
+/** Is this material quantified in board feet? Case/whitespace tolerant. */
+export function isBoardFeetUnit(unit: string): boolean {
+  return BOARD_FEET_UNITS.has(unit.trim().toLowerCase());
+}
+
+/**
+ * Board feet → something you can picture on a rack, e.g. "about 21 ft of 3/4" × 6"
+ * board".
+ *
+ * The example board is 3/4″ × 6″ because that is the commonest hardwood dimension a
+ * hobbyist actually buys, and because a worked example beats a definition: the
+ * arithmetic (`bd ft × 144 ÷ (T × W)` inches of length) is right there in the numbers.
+ * It is explicitly AN EXAMPLE, not a substitute for the quantity — the caller renders
+ * it as a note beside the real figure, never in place of it.
+ *
+ * Feet, not decimal inches, for anything over a foot: `formatInches` exists because a
+ * decimal is unusable at a tape measure, and "252 1/2 inches" is no better. Returns an
+ * empty string for a nonsensical quantity so a bad row renders nothing rather than
+ * "about NaN ft".
+ */
+export function boardFeetExample(boardFeet: number): string {
+  if (!Number.isFinite(boardFeet) || boardFeet <= 0) return '';
+
+  const thicknessIn = 0.75;
+  const widthIn = 6;
+  const stock = `${formatInches(thicknessIn)} × ${formatInches(widthIn)} board`;
+  const lengthIn = (boardFeet * 144) / (thicknessIn * widthIn);
+
+  if (lengthIn < 12) return `about ${formatInches(lengthIn)} of ${stock}`;
+
+  return `about ${Math.round(lengthIn / 12)} ft of ${stock}`;
+}
+
 /** A cut-list line's dimensions, e.g. `13/16" × 2" × 19"`. */
 export function formatDimensions(
   thicknessIn: number,

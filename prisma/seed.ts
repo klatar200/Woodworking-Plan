@@ -241,6 +241,20 @@ async function seedPaths(paths: PathInput[]): Promise<void> {
     ]),
   );
 
+  /**
+   * QOL-E — category slugs → ids, for the optional `Path.category` relation.
+   *
+   * Resolved up front, once, rather than per path: the categories were written at the
+   * top of this seed and load.ts has already proved every non-null slug is real, so a
+   * miss here is impossible rather than merely unlikely.
+   */
+  const categoryIds = new Map(
+    (await prisma.category.findMany({ select: { id: true, slug: true } })).map((c) => [
+      c.slug,
+      c.id,
+    ]),
+  );
+
   for (const path of paths) {
     const scalars = {
       title: path.title,
@@ -248,6 +262,10 @@ async function seedPaths(paths: PathInput[]): Promise<void> {
       description: path.description,
       sortOrder: path.sortOrder,
       published: path.published,
+      // QOL-E. `null` is a real, authored value here ("this path spans categories"),
+      // not a missing one — see plan-schema.ts.
+      experienceLevel: path.experienceLevel,
+      categoryId: path.category === null ? null : (categoryIds.get(path.category) ?? null),
     };
 
     await prisma.$transaction(async (tx) => {

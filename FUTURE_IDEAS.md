@@ -86,3 +86,36 @@ the list lives in one place:
   2026-07-13. This one is genuinely queued, not parked.
 - **Convert to metric** - Maybe have a conversion option inside of the profile settings. 
   When toggled, it will change all of the quantities and measurements into metric measurements. 
+
+---
+
+## Parked 2026-07-19 (Keagan's call, from the QOL/UI planning pass)
+
+Surfaced while drafting `QOL_UI_BUILD_PLAN.md`. None of these are UI polish — each is a
+genuinely new product surface with its own scope, and none are in `BUSINESS_PLAN.md`.
+Keagan confirmed appending all eight rather than building any of them now.
+
+- **CNC plans.** A distinct plan *type* — different tool assumptions, and likely a
+  different file format (toolpaths, not a cut list). Needs a taxonomy decision (new
+  `Plan` variant vs. a wholly separate model) before it's a build task.
+- **Woodworking jig plans.** Probably the smallest lift on this list if ever approved —
+  likely just another `Category`, not new structure. Still not scheduled.
+- **Edge-grain / end-grain cutting board designer.** An interactive tool (pick
+  dimensions/species → generates a cut list), not content. Closer in scope to a second
+  cut-list optimizer (Sprint 15) than a UI tweak.
+- **Site map.** Blocked by the still-open branding/domain decision (`BUILD_PLAN.md`
+  §4.2 #3) — `robots: noindex` is sitewide on purpose until that lands. A sitemap
+  nothing can index yet has no job to do.
+- **SEO optimization.** Same blocker as the site map.
+- **Custom community-driven plans.** Already parked once, explicitly
+  (`BUILD_PLAN.md` §4.2, 2026-07-15): "who-owns-a-submitted-plan is a licensing
+  decision that shouldn't be rushed." Restating it here so it's tracked in one place too.
+- **Lumber board-foot calculator (standalone tool).** Distinct from the QOL-B
+  per-material board-foot tooltip (a small clarifying label on an existing page) — a
+  standalone calculator is its own feature surface with its own UI.
+- **Repository of known woodworking tools** (by skill level: beginner/intermediate/
+  expert). A content library project in the same shape as the plan catalog itself, not
+  a UI fix — real scope is "a second content type," not a sprint.
+
+**What would have to change to revisit any of these:** Keagan adding it to
+`BUSINESS_PLAN.md` himself, same rule as every other item in this file.

@@ -13,6 +13,16 @@ interface Props {
 }
 
 /**
+ * 🗑️ SUPERSEDED BY `save-toggle.tsx` (QOL-B, 2026-07-19) — DELETE THIS FILE.
+ *
+ * The plan-detail page now uses the bookmark-icon `SaveToggle` that the catalog
+ * cards already use, so nothing imports this module any more. It is still on disk
+ * only because the sandbox cannot delete files in the working tree (read-only
+ * mount); Keagan removes it with `git rm src/components/save-button.tsx` alongside
+ * this sprint's commit. Two components performing the same write, each with its own
+ * offline pre-cache call to keep in step, is exactly the drift the repo's
+ * "no dead code" rule exists to prevent.
+ *
  * Save / unsave toggle.
  *
  * SPRINT 8: became a client component for exactly ONE reason — when you save a

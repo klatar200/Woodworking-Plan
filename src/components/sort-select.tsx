@@ -1,7 +1,8 @@
-import { SORT_OPTIONS, type SortOption } from '@/lib/sort';
-import { btnGhost, selectControl } from '@/lib/ui'; // Sprint 29/30b
+import { type SortOption } from '@/lib/sort';
+import { btnGhost, compactOnMobile, selectControl } from '@/lib/ui'; // Sprint 29/30b, QOL-A
 // `sort-form` class RETAINED (print hides it); the rest is inline utilities.
 import type { PlanFilters } from '@/lib/filters';
+import { SortSelectControl } from '@/components/sort-select-control';
 
 interface Props {
   sort: SortOption;
@@ -48,19 +49,17 @@ export function SortSelect({ sort, query, filters }: Props) {
       <label htmlFor="sort" className="text-[0.75rem] uppercase tracking-[0.06em] text-muted">
         Sort
       </label>
-      <select
-        id="sort"
-        name="sort"
-        defaultValue={sort}
+      {/* QOL-A: auto-submits on a pointer/touch change. The select's own font stays at
+          16px — anything smaller makes iOS zoom the viewport on focus — so only the
+          Apply button below takes the mobile-compact treatment. */}
+      <SortSelectControl
+        sort={sort}
         className={`${selectControl} focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1`}
-      >
-        {SORT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <button type="submit" className={btnGhost}>
+      />
+      {/* KEPT DELIBERATELY. This is the no-JS submit path and the keyboard's commit
+          action; the auto-submit above is an enhancement layered over it, not a
+          replacement (see sort-select-control.tsx). */}
+      <button type="submit" className={`${btnGhost} ${compactOnMobile}`}>
         Apply
       </button>
     </form>

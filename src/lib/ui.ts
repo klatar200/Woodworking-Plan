@@ -35,8 +35,32 @@
 // 2026-07-16: `whitespace-nowrap` added — a button label that wraps mid-phrase
 // ("Log\nin", "Add to shopping\nlist") on a narrow phone reads broken; buttons
 // shrink by dropping to the next flex row, never by folding their own label.
+/**
+ * QOL-F (2026-07-19, variant A) — PRESS FEEDBACK, and it lives on every button on
+ * purpose.
+ *
+ * This is the one motion change applied globally rather than per-surface, because it is
+ * the cheapest "this is a real control" signal there is: the button settles 1px on
+ * `:active` and its shadow collapses, so a press looks like it lands. Two properties,
+ * no JavaScript, no layout shift (`translate` does not reflow), and it is the piece of
+ * variant B that survived the A/B call because it never cost anything.
+ *
+ * `:active` — deliberately NOT `:hover`. Tailwind compiles `hover:` inside
+ * `@media (hover: hover)`, so a hover-based effect does nothing on a phone; `active:`
+ * has no such guard and fires on touch, which is where most of these taps happen.
+ *
+ * TRANSITION `translate`, NOT `transform`. Tailwind v4 emits `translate:` / `scale:` as
+ * their own properties, so `transition-[transform,…]` would animate nothing — verified
+ * by compiling with the real toolchain, not assumed.
+ *
+ * `motion-reduce:` returns it to a plain state change (WCAG 2.3.3), matching the house
+ * rule already used by the skeletons and the FAQ accordion.
+ */
+const btnPress =
+  'transition-[translate,box-shadow] duration-150 ease-[cubic-bezier(0.2,0.7,0.3,1)] active:translate-y-px motion-reduce:transition-none motion-reduce:active:translate-y-0';
+
 const btnBase =
-  'inline-flex items-center min-h-[2.75rem] px-[0.875rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium whitespace-nowrap no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed';
+  `inline-flex items-center min-h-[2.75rem] px-[0.875rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium whitespace-nowrap no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed ${btnPress}`;
 
 // 2026-07-16: every non-primary variant carries an explicit `bg-transparent`. globals.css
 // excludes Tailwind preflight and has no `button` reset, so a bare `<button>` kept the UA
@@ -52,14 +76,52 @@ export const btn = `${btnBase} border border-transparent bg-transparent`;
 /** Formerly `.btn.btn-ghost` — outlined, ink text. The default nav/secondary button. */
 export const btnGhost = `${btnBase} border border-border bg-transparent text-fg`;
 
-/** Formerly `.btn.btn-primary` — solid ink fill, surface text, transparent border. One CTA per view. */
-export const btnPrimary = `${btnBase} border border-transparent bg-fg text-surface`;
+/**
+ * Formerly `.btn.btn-primary` — solid ink fill, surface text, transparent border. One CTA
+ * per view.
+ *
+ * QOL-F: the primary CTA is the ONE button that also carries elevation — it is the thing
+ * the page wants you to press, and a raised surface says that without another colour or a
+ * size increase. Ghost/danger/liked stay flat: if everything is elevated, nothing is.
+ */
+export const btnPrimary = `${btnBase} border border-transparent bg-fg text-surface shadow-e2 hover:shadow-e3 active:shadow-e1`;
 
 /** Formerly `.btn.btn-ghost.btn-danger` — ghost's ink border with error-red text. */
 export const btnDanger = `${btnBase} border border-border bg-transparent text-err`;
 
 /** Formerly `.btn.btn-ghost.btn-liked` — the "liked" state: ink border + ink text. */
 export const btnLiked = `${btnBase} border border-fg bg-transparent text-fg`;
+
+/**
+ * QOL-B — a row inside the plan page's "…" overflow menu (`overflow-menu.tsx`).
+ *
+ * Deliberately NOT `btnGhost`: five outlined buttons stacked in a 15rem panel read as a
+ * pile of controls, not a menu. Same 44px target and same focus ring as every other
+ * control; borderless, full-width, left-aligned, with a hover tint. Written out rather
+ * than composed from `btnBase` because it differs in four of `btnBase`'s own properties
+ * (width, alignment, padding, border) and overriding four same-property utilities would
+ * need four `!important`s — the source-order gotcha again.
+ */
+export const menuItem =
+  'inline-flex items-center w-full min-h-[2.75rem] px-[0.75rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium whitespace-nowrap no-underline cursor-pointer text-fg bg-transparent border border-transparent hover:bg-accent-tint focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+
+/**
+ * QOL-A — a MOBILE-ONLY compact override for catalog trigger buttons (today: the sort
+ * form's Apply). Below `lg` it trims the 44px/14px `btnBase` sizing to 36px/13px; at
+ * `lg` every value is restored, so desktop is byte-identical to `btnBase`.
+ *
+ * `btnBase` itself is deliberately NOT touched — it has ~80 call sites, and 44px is the
+ * right target for every action a gloved hand actually performs. These two are
+ * navigational chrome above the results, not actions on a plan.
+ *
+ * Every declaration is `!important` because Tailwind emits same-property utilities in a
+ * fixed SOURCE order, not className order (the standing migration gotcha): plain
+ * `min-h-[2.25rem]` would lose to `btnBase`'s `min-h-[2.75rem]` half the time. The `lg:`
+ * pair is also important and, being a variant, is emitted after the base — verified by
+ * compiling this exact class list with the repo's Tailwind v4.3.2 toolchain.
+ */
+export const compactOnMobile =
+  'min-h-[2.25rem]! px-[0.625rem]! text-[0.8125rem]! lg:min-h-[2.75rem]! lg:px-[0.875rem]! lg:text-[0.9375rem]!';
 
 /**
  * The mobile-first page container. Formerly the base `.page` rule.

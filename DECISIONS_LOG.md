@@ -1143,6 +1143,88 @@ HEAD-verifies each URL is genuinely dead before touching it.
 custom domain (blocked on branding/domain #8); credential rotation follows the
 existing pre-go-live rule.
 
+### 2026-07-19 — Site navigation IA (QOL-D): category "Browse" menu; Workshop becomes a profile setting
+
+**Status:** Confirmed by Keagan (presented three options each, chose as below).
+**Why it needed a decision:** `QOL_UI_BUILD_PLAN.md` Phase QOL-D flags item 1 as an
+information-architecture call rather than a routine engineering one. Today the six
+categories exist only on the catalog page (the Sprint 18 desktop rail and the filter
+panel's `<select>`), so a reader on a plan, a path, or the FAQ has no way to browse by
+category at all — and the catalog is heading from 85 plans toward a much larger number.
+
+1. **Categories get a "Browse" menu in the site nav** (chosen over "mobile drawer +
+   footer only" and "footer only"). A `Browse` item in the desktop nav opens a panel
+   listing all six categories; the mobile drawer gets a matching collapsible section.
+   Both link into the catalog with `?category=`, so results stay URL-driven and
+   shareable — no new query path, no new capability, just a second way to reach the one
+   that already exists. **The catalog's own left rail is unchanged.** Rejected
+   alternatives were cheaper but leave a desktop reader on a plan page with no
+   category affordance above the fold, which is the problem being solved.
+2. **`🧰 Workshop` is REMOVED from the signed-in header** (chosen over keeping it as a
+   link to the new profile section). Keagan's call: the tool picker is settings — you
+   set it once — so it does not earn a permanent slot in the nav. It stays reachable
+   from `/profile`, and from the plan page's existing "Update your workshop" prompt,
+   which is where someone actually notices they need it. `/workshop` is kept as a
+   redirect rather than deleted, so existing bookmarks and links do not break.
+
+**Not in scope, and still blocked:** sitemap and SEO metadata, both gated on the open
+branding/domain decision (#8) — `robots: noindex` stays sitewide.
+
+### 2026-07-19 — Learning-path taxonomy (QOL-E): one level vocabulary; no new path content
+
+**Status:** Confirmed by Keagan (two options each).
+**Why it needed a decision:** `QOL_UI_BUILD_PLAN.md` QOL-E asks for an `experienceLevel`
+on `LearningPath` but describes two incompatible vocabularies in the same paragraph
+("beginner/intermediate/advanced" *and* "reuse whatever enum shape `Plan.difficulty`
+already models"). It also explicitly instructs the build agent to stop and ask whether
+new path CONTENT is authored this sprint rather than inventing any.
+
+1. **`experienceLevel` reuses the existing 1–5 scale**, rendered through the same
+   `difficultyLabel()` every plan card and catalog filter uses (Beginner / Easy /
+   Intermediate / Advanced / Expert). Rejected: a separate three-value `PathLevel` enum —
+   it would have made "Intermediate" mean difficulty-3-of-5 on a plan and one-of-three
+   bands on a path, i.e. two scales sharing a word, with any cross-filter needing a
+   translation table.
+2. **Taxonomy only — no new paths are authored this sprint.** The five existing paths get
+   tagged; the `/paths` index is rebuilt to group and filter on the new fields. Writing
+   additional paths to fill the empty cells is a separate content pass, and is Keagan's
+   to schedule. (Paths are CONTENT: they do not reach production on deploy, they need a
+   seed run.)
+
+### 2026-07-19 — QOL-F visual direction: variant **A (restrained, CSS-only)**
+
+**Status:** Confirmed by Keagan after reviewing `mockups/qol-f/modern-saas-depth.html`.
+**The choice was architectural, not aesthetic.** Both variants execute the already-agreed
+"Modern SaaS depth" direction; they differ in what they cost:
+
+- **A — chosen.** A 4px lift plus a shadow step on hover. **Pure CSS.** No JavaScript, and
+  every catalog card stays a server component.
+- **B — rejected.** Pointer-tracked tilt and image parallax. Would have required a **client
+  island wrapping the catalog grid** — JS shipped on every render of the highest-traffic
+  page, whose entire architecture is server-rendered GET forms and links — for an effect
+  that does nothing at all on touch, which is most of this audience.
+
+B's **press feedback is kept** (it was never the expensive part: a 1px settle and a shadow
+collapse on `:active`, two declarations, no JS).
+
+**Also settled by the mockup review:** an elevation scale is added as tokens (three levels,
+warm-tinted rather than neutral grey, layered contact+ambient; the dark theme gets its own
+set because shadows barely register on a dark surface). Colours are unchanged — every value
+in the rollout is an existing token. Motion is limited to four things: press settle, save
+pop, tab underline, and a card settle-in replacing the skeleton jump. **Excluded
+deliberately:** page transitions, scroll parallax, and any motion on the print or
+step-walker surfaces.
+
+### 2026-07-19 — Learning-path taxonomy (QOL-E) — tagging detail
+
+**Tagging of the five existing paths** (derived from each path's own framing and its
+steps' difficulties, presented to Keagan before he chose): Your First Five → Beginner /
+Mixed; The Cutting Board Path → Easy / Cutting Boards; Outfit Your Shop → Intermediate /
+Shop Projects; Furnish a Room → Intermediate / Furniture; Joinery: Screws to Dovetails →
+Advanced / Mixed. `experienceLevel` is **the level the path is FOR**, an authored
+judgement — not the difficulty of its first step, which would be derivable and therefore
+would not need a stored column at all.
+
 ---
 
 ## Recommendations Awaiting Explicit Confirmation

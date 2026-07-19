@@ -10,6 +10,14 @@ interface Props {
   slug: string;
   isOnList: boolean;
   isSignedIn: boolean;
+  /**
+   * QOL-B — the call site's look. Defaults to the standalone ghost button it has
+   * always been; the plan page passes `menuItem` because this now lives inside the
+   * "…" overflow menu, where an outlined button would read as a control in a pile of
+   * controls rather than a row in a menu. Presentation only — the form, the action,
+   * and the `returnTo` are identical either way.
+   */
+  className?: string;
 }
 
 /**
@@ -26,12 +34,18 @@ interface Props {
  * `returnTo` is submitted so a rate-limited denial bounces back HERE (to the plan) with
  * the slow-down notice, rather than to the site root — see denialTarget / safeReturnTo.
  */
-export function ShoppingListButton({ planId, slug, isOnList, isSignedIn }: Props) {
+export function ShoppingListButton({
+  planId,
+  slug,
+  isOnList,
+  isSignedIn,
+  className = btnGhost,
+}: Props) {
   if (!isSignedIn) {
     return (
       <Link
         href={`/sign-in?redirect_url=${encodeURIComponent(`/plans/${slug}`)}`}
-        className={btnGhost}
+        className={className}
       >
         Add to shopping list
       </Link>
@@ -45,7 +59,7 @@ export function ShoppingListButton({ planId, slug, isOnList, isSignedIn }: Props
       <input type="hidden" name="planId" value={planId} />
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="returnTo" value={`/plans/${slug}`} />
-      <button type="submit" className={btnGhost} aria-pressed={isOnList}>
+      <button type="submit" className={className} aria-pressed={isOnList}>
         {isOnList ? '✓ On shopping list' : 'Add to shopping list'}
       </button>
     </form>

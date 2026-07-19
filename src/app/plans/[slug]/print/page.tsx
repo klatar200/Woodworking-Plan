@@ -106,9 +106,8 @@ export default async function PlanPrintPage({
         <dl className="print-glance">
           <div>
             <dt>Difficulty</dt>
-            <dd>
-              {difficultyLabel(plan.difficulty)} ({plan.difficulty}/5)
-            </dd>
+            {/* QOL-A: label only, matching the plan page and the catalog card. */}
+            <dd>{difficultyLabel(plan.difficulty)}</dd>
           </div>
           <div>
             <dt>Time</dt>

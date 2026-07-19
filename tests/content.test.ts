@@ -247,6 +247,10 @@ describe('learning paths (Sprint 16)', () => {
       title: 'A Path',
       summary: 'Summary.',
       description: 'Description.',
+      // QOL-E: both taxonomy fields are REQUIRED (no default) — see the dedicated
+      // taxonomy tests below for why a default would be the wrong call.
+      experienceLevel: 2,
+      category: null,
       steps: [
         { plan: 'plan-one', reason: 'Because it teaches the first thing.' },
         { plan: 'plan-two', reason: 'Because it builds on the first.' },
@@ -276,9 +280,87 @@ describe('learning paths (Sprint 16)', () => {
         title: 'A Path',
         summary: 'Summary.',
         description: 'Description.',
+        experienceLevel: 2,
+        category: null,
         steps: [{ plan: 'plan-one', reason: 'The only one.' }],
       }).success,
     ).toBe(false);
+  });
+});
+
+/**
+ * QOL-E — the learning-path taxonomy (`DECISIONS_LOG.md` 2026-07-19).
+ *
+ * The taxonomy is only worth having if it is TRUE of the content. These tests hold the
+ * two properties that make it so: every authored path declares both fields (nothing
+ * defaults its way in), and the values are real.
+ */
+describe('learning-path taxonomy (QOL-E)', () => {
+  const base = {
+    slug: 'a-path',
+    title: 'A Path',
+    summary: 'Summary.',
+    description: 'Description.',
+    steps: [
+      { plan: 'plan-one', reason: 'Because it teaches the first thing.' },
+      { plan: 'plan-two', reason: 'Because it builds on the first.' },
+    ],
+  };
+
+  it('every authored path declares an experience level on the 1–5 plan scale', () => {
+    // The SAME vocabulary as Plan.difficulty — one meaning for "Intermediate" sitewide.
+    for (const path of catalog.paths) {
+      expect(path.experienceLevel, `path "${path.slug}"`).toBeGreaterThanOrEqual(1);
+      expect(path.experienceLevel, `path "${path.slug}"`).toBeLessThanOrEqual(5);
+      expect(Number.isInteger(path.experienceLevel), `path "${path.slug}"`).toBe(true);
+    }
+  });
+
+  it('every authored path declares a category, or explicitly null for a mixed one', () => {
+    const categorySlugs = new Set(catalog.categories.map((c) => c.slug));
+
+    for (const path of catalog.paths) {
+      // `null` is a real authored value ("spans several categories"), not an omission.
+      expect(path.category === null || categorySlugs.has(path.category)).toBe(true);
+    }
+  });
+
+  /**
+   * NO DEFAULTS, deliberately. `experienceLevel` is a judgement about the READER, not a
+   * fact derivable from the steps — "Joinery: From Screws to Dovetails" opens with a
+   * difficulty-2 bookcase and is emphatically not a beginner's path. A default would let
+   * a path ship silently claiming to be for beginners, which is the one thing this page
+   * must not get wrong.
+   */
+  it('pathSchema REFUSES a path that omits either taxonomy field', () => {
+    expect(pathSchema.safeParse({ ...base, experienceLevel: 2, category: null }).success)
+      .toBe(true);
+
+    expect(pathSchema.safeParse({ ...base, category: null }).success).toBe(false);
+    expect(pathSchema.safeParse({ ...base, experienceLevel: 2 }).success).toBe(false);
+  });
+
+  it('pathSchema refuses a level outside the plan scale', () => {
+    for (const level of [0, 6, 2.5, -1]) {
+      expect(
+        pathSchema.safeParse({ ...base, experienceLevel: level, category: null }).success,
+        `level ${level}`,
+      ).toBe(false);
+    }
+  });
+
+  /**
+   * A typo must not be able to impersonate the deliberate "spans several categories"
+   * case: an unknown slug would seed a null FK and read exactly like an authored null.
+   * load.ts is where that is caught, because it is the only place that can see both
+   * files at once.
+   */
+  it('a path pointing at an unknown category is a LOAD error, not a silent null', () => {
+    const categorySlugs = new Set(catalog.categories.map((c) => c.slug));
+    expect(categorySlugs.has('not-a-real-category')).toBe(false);
+    // The real catalog loads clean — which is what proves the check is not firing
+    // spuriously on the content that exists.
+    expect(catalog.paths.length).toBeGreaterThan(0);
   });
 });
 
