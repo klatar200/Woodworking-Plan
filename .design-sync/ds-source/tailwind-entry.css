@@ -1,0 +1,141 @@
+/*
+ * Woodworking Plan design system — Tailwind v4 entry.
+ *
+ * Mirrors the production app (src/app/tailwind.css + globals.css tokens):
+ * theme + utilities layers only (NO preflight), the 17-token colour system as
+ * CSS custom properties, a class-based `.dark` theme that flips those tokens,
+ * and a small base reset. Rendered designs consume this file's @import closure,
+ * so every token and utility the components use is reachable from here.
+ */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* Ship the FULL token colour vocabulary in the compiled closure, not just the
+ * utilities the seven components happen to use — designs built with this DS
+ * consume only styles.css's @import closure, so every documented token utility
+ * must resolve. Brace expansion generates bg/text/border/outline × all 17
+ * tokens. */
+@source inline(
+  "{bg,text,border,outline}-{bg,surface,fg,muted,muted-2,border,border-strong,accent,accent-strong,accent-tint,accent-tint-border,accent-fg,accent-soft,danger,ok,pending,err}"
+);
+
+/* Class-based dark mode: `dark:` variants match under a `.dark` ancestor. The
+ * whole colour system is `var(--token)`, so the `.dark {}` block below just
+ * flips the tokens and every utility re-themes automatically. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Map the colour tokens into Tailwind's `--color-*` namespace with `@theme
+ * inline` so utilities emit `var(--token)` rather than minting duplicates —
+ * the `:root` block stays the single source of truth. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-tint: var(--accent-tint);
+  --color-accent-tint-border: var(--accent-tint-border);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-pending: var(--pending);
+  --color-err: var(--err);
+}
+
+/* Custom 34rem breakpoint matching the app's non-default media queries. */
+@theme {
+  --breakpoint-xs: 34rem;
+}
+
+/* ── Light theme (default) ─────────────────────────────────────────────── */
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --muted-2: #8a8175;
+  --border: #e4e4e4;
+  --border-strong: #d8d3c6;
+  --accent: #e9a86c;
+  --accent-strong: #c96a2e;
+  --accent-tint: #fdf1e0;
+  --accent-tint-border: #e9c98a;
+  --accent-fg: #1a1a1a;
+  --accent-soft: #fdf1e0;
+  --danger: #b5551c;
+  --ok: #17803d;
+  --pending: #b45309;
+  --err: #b3261e;
+}
+
+/* ── Dark theme (warm dark, same orange accent, AA-audited text) ───────── */
+.dark {
+  --bg: #17140f;
+  --surface: #221e17;
+  --fg: #f0ece4;
+  --muted: #b3ab9f;
+  --muted-2: #8f8578;
+  --border: #38332b;
+  --border-strong: #4b453a;
+  --accent: #e9a86c;
+  --accent-strong: #f2b884;
+  --accent-tint: #2b2318;
+  --accent-tint-border: #5c4a2c;
+  --accent-fg: #1a1a1a;
+  --accent-soft: #2b2318;
+  --danger: #e58a5c;
+  --ok: #5cc27a;
+  --pending: #d99b3f;
+  --err: #e8756c;
+}
+
+/* Print is forced light + high-contrast (matches the app's print stylesheet). */
+@media print {
+  :root,
+  .dark {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --fg: #000000;
+    --muted: #333333;
+    --muted-2: #333333;
+    --border: #999999;
+    --border-strong: #666666;
+    --accent-tint: #ffffff;
+    --accent-tint-border: #999999;
+    --accent-soft: #ffffff;
+    --accent-fg: #000000;
+    --danger: #b5551c;
+    --ok: #17803d;
+    --pending: #b45309;
+    --err: #b3261e;
+  }
+}
+
+/* ── Base reset (matches globals.css; no Tailwind preflight) ───────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
