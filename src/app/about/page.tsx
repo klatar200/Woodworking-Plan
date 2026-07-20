@@ -20,7 +20,11 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
+      {/* QOL-K: the shell is page-wide (64rem) for consistency with the other pages, but
+          long-form prose at that width runs ~120 chars/line. Constrain the reading column
+          to a comfortable measure (~42rem, ~75 chars), centered within the wider shell. */}
+      <div className="max-w-[42rem] mx-auto">
       <h1>About Woodworking Plan</h1>
 
       <p className="subtitle">
@@ -99,6 +103,7 @@ export default function AboutPage() {
       <p className="subtitle">
         <Link href="/">Browse the plans &rarr;</Link>
       </p>
+      </div>
     </main>
   );
 }

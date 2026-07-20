@@ -46,7 +46,7 @@ export default async function ProfilePage({
   });
 
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
       <h1>Your profile</h1>
       <p className="subtitle">Account details. Managed through your Clerk account.</p>
 

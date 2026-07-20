@@ -47,7 +47,7 @@ export default async function PathDetailPage({ params }: { params: Params }) {
   const progress = summarizeProgress(path.steps, builtPlanIds);
 
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
       <p className="breadcrumb">
         {/* QOL-E: the section is called "Learning" now; the URL stays /paths. */}
         <Link href="/paths">← All learning paths</Link>

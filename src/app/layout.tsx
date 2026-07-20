@@ -120,11 +120,17 @@ export default async function RootLayout({
      */
     <ClerkProvider dynamic>
       <html lang="en" className={isDark ? 'dark' : undefined} suppressHydrationWarning>
-        <body>
+        {/* QOL-K: the body is a full-height flex column so the footer sits at the bottom of
+            the viewport on short pages (e.g. /builds with no builds) instead of leaving a
+            band of raw background beneath it. `{children}` grows to fill via `flex-1`;
+            header and footer stay direct siblings so neither is stretched. The globals.css
+            body reset sets no display/min-height, so these utilities apply cleanly (no
+            unlayered-wins conflict). */}
+        <body className="flex min-h-screen flex-col">
           {/* React 19 hoists resource links to <head>. See clerkFrontendOrigin. */}
           {clerkOrigin ? <link rel="preconnect" href={clerkOrigin} /> : null}
           <SiteHeader />
-          {children}
+          <div className="flex-1">{children}</div>
           {/* QOL-D item 2. Links only — no data fetching, so it adds nothing to the
               cost of a page render and cannot fail. Hidden in print by class. */}
           <SiteFooter />

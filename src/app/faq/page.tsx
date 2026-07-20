@@ -141,7 +141,10 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
 
 export default function FaqPage() {
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
+      {/* QOL-K: page-wide shell for consistency, but the Q&A reads as long-form text, so
+          the column is constrained to a comfortable measure (~42rem) centered within it. */}
+      <div className="max-w-[42rem] mx-auto">
       <h1>Frequently asked questions</h1>
 
       {/* `interpolate-size: allow-keywords` is what makes a transition TO `height: auto`
@@ -185,6 +188,7 @@ export default function FaqPage() {
         <span className="muted">(placeholder &mdash; a real address is coming)</span>, or{' '}
         <Link href="/">browse the plans</Link>.
       </p>
+      </div>
     </main>
   );
 }

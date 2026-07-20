@@ -73,7 +73,7 @@ export default async function PathsPage({
   });
 
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
       <h1>Learning</h1>
       <p className="subtitle">
         Ordered sequences, not collections. Each project is chosen to teach the thing the
