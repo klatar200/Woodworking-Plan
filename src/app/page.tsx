@@ -220,8 +220,18 @@ export default async function CatalogPage({
           categories={categories}
         />
 
-        <div className="lg:[grid-area:search]">
-          <SearchBox query={query} />
+        {/* QOL-J (2026-07-20, Keagan): the page-size control sits to the RIGHT of the
+            search bar on this row, not on the line below with the sort. */}
+        <div className="lg:[grid-area:search] flex flex-wrap items-center gap-x-[1rem] gap-y-0">
+          <div className="flex-1 min-w-[16rem]">
+            <SearchBox query={query} />
+          </div>
+          <PageSizeSelect
+            perPage={perPage}
+            query={query}
+            filters={filters}
+            sort={sortParam}
+          />
         </div>
 
         <aside
@@ -240,17 +250,9 @@ export default async function CatalogPage({
         </aside>
 
         <div className="lg:[grid-area:results] lg:min-w-0">
-          {/* Sort + page-size controls sit on one row. SortSelect returns null during a
-              keyword search (relevance is the sort); PageSizeSelect always shows. */}
-          <div className="flex flex-wrap items-center gap-x-[1.5rem] gap-y-0">
-            <SortSelect sort={sort} query={query} filters={filters} perPage={perPageParam} />
-            <PageSizeSelect
-              perPage={perPage}
-              query={query}
-              filters={filters}
-              sort={sortParam}
-            />
-          </div>
+          {/* Sort control. Page-size moved up beside the search bar (QOL-J, above).
+              SortSelect returns null during a keyword search (relevance is the sort). */}
+          <SortSelect sort={sort} query={query} filters={filters} perPage={perPageParam} />
 
           {/* Removable chips for each active filter — renders nothing when browsing
               unfiltered. Each chip is a GET link; see filter-chips.tsx. */}

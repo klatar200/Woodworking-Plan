@@ -120,6 +120,20 @@ describe('the desktop header search (QOL-J)', () => {
     expect(header).toContain('id="header-q"');
     expect(header).not.toContain('id="q"');
   });
+
+  it('submits with a "Search" TEXT button, not an icon (Keagan 2026-07-20)', () => {
+    expect(header).toMatch(/<button type="submit"[^>]*>Search<\/button>/);
+    expect(header).not.toContain('🔍');
+  });
+});
+
+describe('the signed-out auth links (QOL-J: right of the search)', () => {
+  it('keeps Log in / Sign up in the header, desktop-only', () => {
+    // Moved out of the left nav to the right of the search bar; still present, still
+    // gated to desktop (the mobile drawer carries its own copy).
+    expect(header).toContain('href="/sign-in"');
+    expect(header).toContain('href="/sign-up"');
+  });
 });
 
 describe('the signed-in nav after QOL-D', () => {

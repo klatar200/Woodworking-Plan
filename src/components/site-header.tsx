@@ -157,15 +157,8 @@ export function SiteHeader() {
               </Link>
             ))}
           </SignedIn>
-
-          <SignedOut>
-            <Link href="/sign-in" className={navLink}>
-              Log in
-            </Link>
-            <Link href="/sign-up" className={`${btnPrimary} ml-[0.5rem]`}>
-              Sign up
-            </Link>
-          </SignedOut>
+          {/* QOL-J (2026-07-20, Keagan): Log in / Sign up moved OUT of this left nav group
+              to the right of the search bar — see the right group below. */}
         </nav>
         </div>
 
@@ -180,6 +173,20 @@ export function SiteHeader() {
                 is always one tap away at any width. */}
             <UserMenu />
           </SignedIn>
+
+          {/* QOL-J (2026-07-20, Keagan): the signed-out auth links live here, to the RIGHT
+              of the search bar. Desktop-only (`hidden lg:flex`) — on mobile they're in the
+              drawer, unchanged. Sign up stays the one filled primary CTA. */}
+          <SignedOut>
+            <div className="hidden lg:flex items-center gap-[0.5rem]">
+              <Link href="/sign-in" className={navLink}>
+                Log in
+              </Link>
+              <Link href="/sign-up" className={btnPrimary}>
+                Sign up
+              </Link>
+            </div>
+          </SignedOut>
 
           {/* The drawer (below lg). Server-rendered links passed through the
               client island — see mobile-nav.tsx. */}

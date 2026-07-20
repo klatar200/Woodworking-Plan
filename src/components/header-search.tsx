@@ -36,12 +36,14 @@ export function HeaderSearch() {
         autoComplete="off"
         className="min-h-[2.25rem] w-[13rem] px-[0.75rem] py-0 text-[0.9375rem] text-fg bg-bg border border-border rounded-[0.375rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1"
       />
+      {/* A TEXT button, not an icon (Keagan 2026-07-20): this control is desktop-only, and
+          a labelled "Search" reads clearer than a glyph at desktop density. Outlined, not
+          filled — "Sign up" stays the header's single primary CTA. */}
       <button
         type="submit"
-        aria-label="Search"
-        className="inline-flex items-center justify-center min-h-[2.25rem] min-w-[2.25rem] px-[0.5rem] rounded-[0.375rem] border border-border bg-transparent text-fg cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+        className="inline-flex items-center min-h-[2.25rem] px-[0.875rem] rounded-[0.375rem] border border-border bg-transparent text-fg text-[0.9375rem] font-medium whitespace-nowrap cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
       >
-        <span aria-hidden="true">🔍</span>
+        Search
       </button>
     </form>
   );
