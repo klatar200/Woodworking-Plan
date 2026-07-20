@@ -1227,6 +1227,68 @@ would not need a stored column at all.
 
 ---
 
+### 2026-07-20 — UI/QOL punch list (QOL-H..M): three IA/UX calls, plus a stale-doc flag
+
+Keagan supplied a new round of UI feedback from walking the live app (planning
+artifact: `QOL_UI_BUILD_PLAN.md` Phases QOL-H through QOL-M). Three items needed his
+call before any code gets written; recorded here per `BUILD_PLAN.md` §2.
+
+1. **New landing page — replaces `/`.** Today's catalog (browse + search + filter)
+   moves to `/browse`; `/` becomes the new marketing/landing page. **Chosen over**
+   leaving `/` as the catalog and adding the landing page at a new route (e.g.
+   `/welcome`), which would have been zero-risk to existing links/offline
+   caching/SEO but leaves the homepage as a plans grid rather than a sales pitch.
+   Accepted trade-off: this touches everything that currently hardcodes `/` as "the
+   catalog" — `PUBLIC_ROUTES`, `manifest.webmanifest` (`start_url`/`scope`), the
+   service-worker offline URL list, and ~11 components/pages with a literal
+   `href="/"` — all inventoried and must be updated together, not discovered one at
+   a time. See QOL-M for the full list.
+2. **Sort control's "Apply" button — visually hidden, not deleted.** Keagan's ask
+   was to remove it now that sort auto-submits on change. The button is also the
+   only submit path for keyboard-only and no-JS users (documented in
+   `sort-select-control.tsx`'s own comment) — deleting it is a real accessibility
+   regression, not a cosmetic no-op. **Chosen:** keep it in the DOM, functional,
+   visually hidden for pointer/touch users. Same no-JS/keyboard doctrine as every
+   other control in this codebase (FilterDisclosure, InstructionsDisclosure, the
+   review star-rating radios).
+3. **Full-width content pages — widen, not edge-to-edge.** Learning/About/FAQ/Saved/
+   Builds/Profile currently cap at `.page` (40rem, some at `.page-wide` 64rem).
+   **Chosen:** bring all of them to the existing `.page-wide` (64rem) treatment
+   already used by Saved/Builds — not the catalog's full `lg:max-w-none` bleed.
+   Rationale: About/FAQ are long-form prose; edge-to-edge body text at desktop
+   width produces an unreadably long line length. Reuses an existing width token
+   rather than inventing a new one.
+
+**Flagged, not a decision — needs Keagan's awareness, not his sign-off:**
+`CLAUDE.md` §7 "Current state" says the catalog is **85 plans**. The live site at
+`localhost:3000`, right now, shows **948 published plans** (1,115 total files in
+`content/plans/`, 948 `published: true` — confirmed against the running app, not
+just the content files). `QOL_UI_BUILD_PLAN.md` Phase QOL-D already noticed this
+drifting ("85 plans growing toward ~950") but `CLAUDE.md`'s own count was never
+corrected. This plan is written against the real number (948) throughout — CLAUDE.md's
+"Current state" section should get its catalog-size line corrected as routine
+hygiene, but that correction is not part of this punch list and wasn't made
+here.
+
+**Also answered directly (data question, not a decision):** of the 948 published
+plans, **85 have zero images** (`images: []` in their content JSON). Full slug list
+available on request; not reproduced here to keep this log short.
+
+### 2026-07-20 — PWA `start_url`: stays on the landing page, not `/browse`
+
+Resolves the one open question QOL-M's write-up flagged as unanswered. **Decision:
+`start_url` in `public/manifest.webmanifest` stays `/` (the new landing page) after
+the landing-page migration — it does NOT jump straight to `/browse`.** `scope` stays
+`/` either way (it has to cover both routes regardless of which one `start_url`
+points at).
+
+**Binding requirement that follows from this:** the landing page must ship with a
+working, prominent primary CTA into `/browse`. An installed PWA opening to a
+marketing page with no obvious way into the actual catalog would be a dead end for
+the exact people most likely to have installed it — returning users. `QOL_UI_BUILD_PLAN.md`
+Phase QOL-M (Step 0 outline, Step 1's manifest bullet, and both the Step 1 and Step
+2 session prompts) updated to state this as decided rather than an open question.
+
 ## Recommendations Awaiting Explicit Confirmation
 
 These are **not** decisions yet — they are the build agent's

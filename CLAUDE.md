@@ -172,14 +172,24 @@ with it.
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma
   ORM. Vitest. GitHub Actions CI.
-- **Catalog size (2026-07-16): 85 plans** in `content/plans/` (the original 24 +
-  61 added this branch). Older records below and in the other docs that say "24
-  plans" are HISTORICAL — accurate for their sprint, not the current count. The 61
-  new plans are `published: true` but **live in git only until a production seed
-  runs** (schema deploys, data does not — see the deploy rules), and that seed is
-  gated on Keagan's provenance/branding sign-off for the scraped content (see
-  `AUDIT_2026-07-16.md` #5). 12 of the 61 ship an empty `cutList` (UI degrades
-  safely; catalog/about copy softened to "most with a full cut list").
+- **Catalog size (verified 2026-07-20, against the LIVE site, not just the
+  content files): 948 published plans.** `content/plans/` holds **1,115 total
+  plan JSON files, 948 marked `published: true`** — and `localhost:3000`
+  confirms 948 plans actually rendering in the catalog right now, so this
+  content is already seeded and live, not sitting unseeded in git. **85 of
+  those 948 published plans ship with an empty `images` array** (no photo) —
+  full slug list available on request, not reproduced here. The
+  "85 plans (24 + 61)" figure and its "gated on a production seed" caveat
+  immediately below this line, from 2026-07-16, are SUPERSEDED — the catalog
+  grew roughly 10x past that count with no corresponding update to this
+  section, which is exactly the kind of drift this section exists to prevent.
+  **Not verified in this pass:** whether the scraped content beyond the
+  original ~85 went through the provenance/branding review
+  `AUDIT_2026-07-16.md` #5 called for before its seed ran — worth Keagan
+  confirming, since the content is evidently already live regardless of
+  whether that review happened. Older records elsewhere in this file and in
+  other docs citing "24 plans" or "85 plans" are HISTORICAL — accurate for
+  their sprint, not the current count.
 - **Sprint 0 (Environment & Architecture): COMPLETE — 99/100.** Deployed and live
   on Vercel; `/api/health` returns `database.status: "ok"` against Neon; Clerk
   configured. Build, typecheck, lint, 25 tests, and `npm audit` all clean.

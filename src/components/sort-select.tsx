@@ -1,8 +1,9 @@
 import { type SortOption } from '@/lib/sort';
-import { btnGhost, compactOnMobile, selectControl } from '@/lib/ui'; // Sprint 29/30b, QOL-A
+import { selectControl } from '@/lib/ui'; // Sprint 29/30b, QOL-A
 // `sort-form` class RETAINED (print hides it); the rest is inline utilities.
 import type { PlanFilters } from '@/lib/filters';
 import { SortSelectControl } from '@/components/sort-select-control';
+import { SoftGetForm } from '@/components/soft-get-form';
 
 interface Props {
   sort: SortOption;
@@ -28,7 +29,7 @@ export function SortSelect({ sort, query, filters }: Props) {
   if (query !== '') return null;
 
   return (
-    <form className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action="/" method="get">
+    <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action="/">
       {/* Carry the active filters through, or changing the sort would clear them. */}
       {filters.category && (
         <input type="hidden" name="category" value={filters.category} />
@@ -49,19 +50,23 @@ export function SortSelect({ sort, query, filters }: Props) {
       <label htmlFor="sort" className="text-[0.75rem] uppercase tracking-[0.06em] text-muted">
         Sort
       </label>
-      {/* QOL-A: auto-submits on a pointer/touch change. The select's own font stays at
-          16px — anything smaller makes iOS zoom the viewport on focus — so only the
-          Apply button below takes the mobile-compact treatment. */}
+      {/* QOL-A: auto-submits on a pointer/touch change. QOL-H turned that submit into a
+          soft client navigation via SoftGetForm. The select's own font stays at 16px —
+          anything smaller makes iOS zoom the viewport on focus. */}
       <SortSelectControl
         sort={sort}
         className={`${selectControl} focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1`}
       />
-      {/* KEPT DELIBERATELY. This is the no-JS submit path and the keyboard's commit
-          action; the auto-submit above is an enhancement layered over it, not a
-          replacement (see sort-select-control.tsx). */}
-      <button type="submit" className={`${btnGhost} ${compactOnMobile}`}>
+      {/* KEPT, only VISUALLY HIDDEN (QOL-H, 2026-07-20 decision). This is the no-JS
+          submit path and the keyboard's commit action, so it must stay in the document
+          and in the tab order — `visually-hidden` clips it without removing it, unlike
+          `display:none`, which would also drop it from the no-JS submit path. With JS on
+          a click here fires the form's submit event, which SoftGetForm intercepts into a
+          soft navigation — the SAME path the `<select>` change takes. With JS off it
+          submits the plain GET form natively. */}
+      <button type="submit" className="visually-hidden">
         Apply
       </button>
-    </form>
+    </SoftGetForm>
   );
 }

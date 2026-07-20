@@ -1,18 +1,28 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { SortSelect } from '@/components/sort-select';
 import { SORT_OPTIONS, DEFAULT_SORT } from '@/lib/sort';
 import type { PlanFilters } from '@/lib/filters';
 
 /**
- * QOL-A item 3 — sort auto-applies on change.
+ * QOL-A item 3 — sort auto-applies on change. QOL-H — that submit is now a soft
+ * client navigation, and the Apply button is visually hidden rather than removed.
  *
- * The auto-submit itself is a pointer event handler and cannot be exercised by a
- * static render. What CAN be proven here, and is the thing that actually matters, is
- * that the enhancement did not eat its own fallback: the form, the hidden filter
- * inputs, and the Apply button must all still be in the server-rendered document, or
- * a no-JS visitor loses the ability to sort at all.
+ * The soft-nav interception and the auto-submit are both event handlers that a static
+ * render cannot exercise. What CAN be proven here, and is the thing that actually
+ * matters, is that the enhancement did not eat its own fallback: the form, the hidden
+ * filter inputs, and the (now visually-hidden) Apply button must all still be in the
+ * server-rendered document, or a no-JS visitor loses the ability to sort at all.
+ *
+ * SortSelect now renders through the SoftGetForm client wrapper, which calls
+ * `useRouter()` at render — with no App Router context under a bare renderToStaticMarkup,
+ * the real hook throws, so it's stubbed. The stub is never invoked (effects don't run in
+ * a static render); it only has to exist.
  */
+vi.mock('next/navigation', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('next/navigation')>()),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
+}));
 
 const noFilters: PlanFilters = {
   category: undefined,
@@ -34,6 +44,17 @@ describe('SortSelect — server render (no JS yet)', () => {
     expect(html).toContain('<form');
     expect(html).toContain('method="get"');
     expect(html).toMatch(/<button type="submit"[^>]*>Apply<\/button>/);
+  });
+
+  /**
+   * QOL-H (2026-07-20 decision): the button is HIDDEN, not deleted. `visually-hidden`
+   * clips it while leaving it in the document and the tab order, so keyboard and no-JS
+   * users can still submit; `display:none` would have removed it from the no-JS path.
+   */
+  it('visually hides the Apply button rather than deleting it', () => {
+    const html = render();
+
+    expect(html).toMatch(/<button type="submit" class="visually-hidden">Apply<\/button>/);
   });
 
   it('still renders a plain <select name="sort"> with every option', () => {
@@ -60,14 +81,6 @@ describe('SortSelect — server render (no JS yet)', () => {
     expect(html).toContain('name="cost" value="TIER_2"');
     expect(html).toContain('name="time" value="240"');
     expect(html).toContain('name="tools" value="table-saw"');
-  });
-
-  /** The Apply button shrinks below lg only; `lg:` restores btnBase's own sizing. */
-  it('shrinks the Apply trigger on mobile only', () => {
-    const html = render();
-
-    expect(html).toContain('min-h-[2.25rem]!');
-    expect(html).toContain('lg:min-h-[2.75rem]!');
   });
 
   /**

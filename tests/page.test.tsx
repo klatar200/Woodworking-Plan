@@ -62,6 +62,17 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+/**
+ * QOL-H: the sort form is now the SoftGetForm client wrapper, which calls `useRouter()`
+ * at render. Under a bare renderToStaticMarkup there's no App Router context, so the real
+ * hook throws — stub it. Everything else in `next/navigation` (redirect/notFound/etc.)
+ * stays real. The stub is never called; effects don't run in a static render.
+ */
+vi.mock('next/navigation', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('next/navigation')>()),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
+}));
+
 const plan = (over: Record<string, unknown> = {}) => ({
   id: 'p1',
   slug: 'edge-grain-maple-cutting-board',

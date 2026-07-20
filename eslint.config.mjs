@@ -24,6 +24,14 @@ const config = [
       // Found failing `eslint .` in the 2026-07-19 audit (2 no-empty-object-type
       // errors): the exact "CI red and nobody watching" failure shape again.
       '.design-sync/**',
+      // The design-sync toolchain, again — RENAMED/added since the 2026-07-19 audit, so
+      // the '.design-sync/**' entry above no longer catches it. `.ds-sync/` is the sync
+      // scripts; `ds-bundle/_vendor/` is a vendored React bundle (its minified output is
+      // the source of the 21k-line 'e is never used' errors). Neither is app code, neither
+      // is imported by `src/`, and `next build` never lints them — same "CI red, nobody
+      // watching" shape as the two ignores above. Not ours to fix.
+      '.ds-sync/**',
+      'ds-bundle/**',
     ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
