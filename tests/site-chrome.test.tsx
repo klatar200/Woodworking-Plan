@@ -103,6 +103,25 @@ describe('the Browse menu (QOL-D item 1)', () => {
   });
 });
 
+describe('the desktop header search (QOL-J)', () => {
+  it('offers a role=search GET form that sends q to the catalog', () => {
+    expect(header).toContain('role="search"');
+    expect(header).toContain('name="q"');
+    // Targets the shared catalog path, so a search works from any page.
+    expect(header).toMatch(/<form[^>]*action="\/"[^>]*method="get"/);
+  });
+
+  it('is desktop-only — below lg, search is the catalog box + drawer, not the header', () => {
+    expect(header).toMatch(/<form[^>]*class="[^"]*hidden lg:flex/);
+  });
+
+  it('uses a header-scoped input id so it never collides with the catalog SearchBox', () => {
+    // Both render on the catalog page; duplicate ids would break the label association.
+    expect(header).toContain('id="header-q"');
+    expect(header).not.toContain('id="q"');
+  });
+});
+
 describe('the signed-in nav after QOL-D', () => {
   it('drops Workshop from the header (it is settings now, per the decision log)', () => {
     expect(header).not.toContain('href="/workshop"');

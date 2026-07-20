@@ -4,6 +4,7 @@ import { SignedIn, SignedOut } from '@clerk/nextjs';
 import { UserMenu } from '@/components/user-menu';
 import { MobileNav } from '@/components/mobile-nav';
 import { BrowseMenu } from '@/components/browse-menu';
+import { HeaderSearch } from '@/components/header-search';
 import { InstallMenuItem } from '@/components/install-prompt';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { btnPrimary } from '@/lib/ui';
@@ -117,6 +118,10 @@ export function SiteHeader() {
       </a>
 
       <header className={siteHeader}>
+        {/* ---- Left group: brand + desktop nav ----
+            QOL-J: the brand and the nav are ONE flex group so the nav sits right beside
+            the logo, instead of `justify-between` pushing it to the middle of the bar. */}
+        <div className="flex items-center gap-[1.5rem] min-w-0">
         <Link href="/" className={brand}>
           Woodworking Plan
         </Link>
@@ -162,9 +167,13 @@ export function SiteHeader() {
             </Link>
           </SignedOut>
         </nav>
+        </div>
 
-        {/* ---- Right cluster on mobile: avatar (signed in) + hamburger ---- */}
+        {/* ---- Right group: desktop search + account avatar + mobile hamburger ---- */}
         <div className="flex items-center gap-[0.5rem]">
+          {/* QOL-J: a search reachable from every page, not just the catalog. Desktop-only
+              (hidden below lg); mobile searches via the catalog page's own box. */}
+          <HeaderSearch />
           <SignedIn>
             {/* Clerk's account menu + theme toggle + install action, as a client
                 island (Sprint 31 / 2026-07-16). Outside the drawer so the avatar
