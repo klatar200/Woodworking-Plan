@@ -151,6 +151,8 @@ export interface QueryPlansArgs {
   filters?: PlanFilters;
   sort?: SortOption;
   page?: number;
+  /** QOL-I: cards per page. Defaults to PLANS_PER_PAGE; the caller clamps the value. */
+  perPage?: number;
 }
 
 /**
@@ -176,10 +178,14 @@ export async function queryPlans({
   filters = EMPTY_FILTERS,
   sort = DEFAULT_SORT,
   page = 1,
+  perPage = PLANS_PER_PAGE,
 }: QueryPlansArgs = {}) {
   const trimmed = query.trim();
   const currentPage = Math.max(1, Math.floor(page));
-  const skip = (currentPage - 1) * PLANS_PER_PAGE;
+  // Belt-and-braces: the page already clamps perPage to the allowlist, but the data
+  // layer must never trust its caller into a zero/negative/fractional take.
+  const size = Math.max(1, Math.floor(perPage));
+  const skip = (currentPage - 1) * size;
   const where = buildWhere(filters);
 
   /**
@@ -196,7 +202,7 @@ export async function queryPlans({
    */
   if (trimmed === '' && isIdOrderedSort(sort)) {
     const orderedIds = await orderedIdsForSort(sort);
-    return paginateOrderedIds({ orderedIds, where, skip, currentPage, query: '' });
+    return paginateOrderedIds({ orderedIds, where, skip, size, currentPage, query: '' });
   }
 
   // --- No keyword: Prisma does everything, including sort and pagination. ---
@@ -207,7 +213,7 @@ export async function queryPlans({
         select: PLAN_CARD_SELECT,
         orderBy: buildOrderBy(sort),
         skip,
-        take: PLANS_PER_PAGE,
+        take: size,
       }),
       prisma.plan.count({ where }),
     ]);
@@ -216,7 +222,7 @@ export async function queryPlans({
       plans,
       total,
       page: currentPage,
-      totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
+      totalPages: Math.max(1, Math.ceil(total / size)),
       query: '',
     };
   }
@@ -242,6 +248,7 @@ export async function queryPlans({
     orderedIds: rankedIds,
     where,
     skip,
+    size,
     currentPage,
     query: trimmed,
   });
@@ -265,12 +272,14 @@ async function paginateOrderedIds({
   orderedIds,
   where,
   skip,
+  size,
   currentPage,
   query,
 }: {
   orderedIds: string[];
   where: Prisma.PlanWhereInput;
   skip: number;
+  size: number;
   currentPage: number;
   query: string;
 }) {
@@ -295,14 +304,14 @@ async function paginateOrderedIds({
   const ordered = orderedIds.filter((id) => allowedIds.has(id));
 
   const total = ordered.length;
-  const pageIds = ordered.slice(skip, skip + PLANS_PER_PAGE);
+  const pageIds = ordered.slice(skip, skip + size);
 
   if (pageIds.length === 0) {
     return {
       plans: [] as PlanListItem[],
       total,
       page: currentPage,
-      totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
+      totalPages: Math.max(1, Math.ceil(total / size)),
       query,
     };
   }
@@ -322,7 +331,7 @@ async function paginateOrderedIds({
     plans: pagePlans,
     total,
     page: currentPage,
-    totalPages: Math.max(1, Math.ceil(total / PLANS_PER_PAGE)),
+    totalPages: Math.max(1, Math.ceil(total / size)),
     query,
   };
 }

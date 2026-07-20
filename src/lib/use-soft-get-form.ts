@@ -56,16 +56,58 @@ export function useSoftGetForm(formRef: RefObject<HTMLFormElement | null>): void
 }
 
 /**
+ * Auto-submits a form when a control matching `selector` fires a `change`, debounced —
+ * QOL-I item 2, for the filter panel's checkboxes.
+ *
+ * Delegated at the FORM level (one listener, not one island per checkbox) and filtered by
+ * `selector` so it fires ONLY for the controls that want it: the filter `<select>`s do
+ * their own pointer-vs-keyboard gating in {@link AutoSubmitSelect} and must be excluded
+ * here, or a keyboard arrow through the Category select would navigate mid-choice — the
+ * exact bug that gating exists to prevent. Pass e.g. `input[type=checkbox]`.
+ *
+ * DEBOUNCED because each submit is a live query against the whole catalog: ticking three
+ * boxes quickly should be one navigation, not three. `requestSubmit()` (not `submit()`)
+ * routes through {@link useSoftGetForm}'s interception, so the auto-apply is a soft client
+ * navigation like every other submit of this form. No-op when `selector` is omitted, so
+ * the same SoftGetForm serves the sort form (no auto-apply) unchanged.
+ */
+export function useAutoSubmitOnChange(
+  formRef: RefObject<HTMLFormElement | null>,
+  selector?: string,
+  debounceMs = 200,
+): void {
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form || !selector) return;
+    const sel = selector;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    function onChange(event: Event) {
+      const target = event.target;
+      if (!(target instanceof Element) || !target.matches(sel)) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => form?.requestSubmit(), debounceMs);
+    }
+
+    form.addEventListener('change', onChange);
+    return () => {
+      clearTimeout(timer);
+      form.removeEventListener('change', onChange);
+    };
+  }, [formRef, selector, debounceMs]);
+}
+
+/**
  * Builds the exact URL a native GET submission would navigate to, as a root-relative
  * path Next's router can push.
  *
  * Pulled out as a pure function so the URL-building — the one piece of real logic here —
  * is unit-testable without a DOM/router (this repo runs vitest in `node`, not jsdom, and
- * Node's `FormData` constructor can't read a form element). It mirrors native behaviour
- * faithfully: every named control, in document order, with repeats preserved (so
- * `?difficulty=2&difficulty=3` survives), and the form's own `action` as the destination.
- * `File` values are skipped — a GET form has none, and a filename in a query string would
- * be meaningless anyway.
+ * Node's `FormData` constructor can't read a form element). It mirrors native behaviour:
+ * every named control, in document order, with repeats preserved (so
+ * `?difficulty=2&difficulty=3` survives), and the form's own `action` as the destination —
+ * with two deliberate omissions that only make the URL cleaner without changing meaning:
+ * empty-string values (an unselected `<select>`) and `File` values (a GET form has none).
  */
 export function softGetTarget(
   actionAttr: string | null,
@@ -74,7 +116,10 @@ export function softGetTarget(
 ): string {
   const params = new URLSearchParams();
   for (const [name, value] of formData) {
-    if (typeof value === 'string') params.append(name, value);
+    // Skip empty values: an unselected `<select>` (Any category / Any time) submits an
+    // empty string, and `?category=&time=` is just noise — `parseFilters` drops it anyway.
+    // Omitting it keeps an auto-applied URL as clean as the `buildQueryString` links.
+    if (typeof value === 'string' && value !== '') params.append(name, value);
   }
 
   // Resolve the action against the current location so an empty or "/" action still

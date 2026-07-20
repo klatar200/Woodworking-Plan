@@ -167,12 +167,19 @@ export function buildQueryString({
   filters,
   sort,
   page,
+  perPage,
 }: {
   query: string;
   filters: PlanFilters;
   /** Sprint 7. Omitted when it's the default — no point in a noisy URL. */
   sort?: string;
   page?: number;
+  /**
+   * QOL-I. The chosen page size, carried across every catalog navigation so it isn't
+   * lost on a filter change, a chip removal, or a page turn — same "don't drop state"
+   * rule as `sort`. Callers pass it only when non-default (the default keeps URLs clean).
+   */
+  perPage?: number;
 }): string {
   const params = new URLSearchParams();
 
@@ -184,6 +191,7 @@ export function buildQueryString({
   for (const t of filters.ownedTools) params.append('tools', t);
   if (sort) params.set('sort', sort);
   if (page && page > 1) params.set('page', String(page));
+  if (perPage) params.set('perPage', String(perPage));
 
   const qs = params.toString();
   return qs ? `/?${qs}` : '/';

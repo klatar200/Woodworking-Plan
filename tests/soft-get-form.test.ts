@@ -38,6 +38,20 @@ describe('softGetTarget', () => {
     ).toBe('/?sort=trending&category=outdoor');
   });
 
+  it('drops empty-string values (an unselected select is not a filter)', () => {
+    const target = softGetTarget(
+      '/',
+      form([
+        ['category', ''],
+        ['difficulty', '1'],
+        ['time', ''],
+        ['perPage', '48'],
+      ]),
+      BASE,
+    );
+    expect(target).toBe('/?difficulty=1&perPage=48');
+  });
+
   it('preserves repeated fields (multi-value filters survive)', () => {
     expect(
       softGetTarget(

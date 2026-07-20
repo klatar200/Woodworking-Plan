@@ -1,14 +1,17 @@
-import { type SortOption } from '@/lib/sort';
+import { SORT_OPTIONS, type SortOption } from '@/lib/sort';
 import { selectControl } from '@/lib/ui'; // Sprint 29/30b, QOL-A
 // `sort-form` class RETAINED (print hides it); the rest is inline utilities.
 import type { PlanFilters } from '@/lib/filters';
-import { SortSelectControl } from '@/components/sort-select-control';
+import { AutoSubmitSelect } from '@/components/auto-submit-select';
 import { SoftGetForm } from '@/components/soft-get-form';
+import { CatalogStateInputs } from '@/components/catalog-state-inputs';
 
 interface Props {
   sort: SortOption;
   query: string;
   filters: PlanFilters;
+  /** QOL-I: carried through so changing the sort keeps the chosen page size. */
+  perPage?: number;
 }
 
 /**
@@ -25,38 +28,34 @@ interface Props {
  * queryPlans). Offering a dropdown that would be ignored is worse than not
  * offering it — it implies a control the app does not honour.
  */
-export function SortSelect({ sort, query, filters }: Props) {
+export function SortSelect({ sort, query, filters, perPage }: Props) {
   if (query !== '') return null;
 
   return (
     <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action="/">
-      {/* Carry the active filters through, or changing the sort would clear them. */}
-      {filters.category && (
-        <input type="hidden" name="category" value={filters.category} />
-      )}
-      {filters.difficulty.map((d) => (
-        <input key={d} type="hidden" name="difficulty" value={d} />
-      ))}
-      {filters.costTier.map((c) => (
-        <input key={c} type="hidden" name="cost" value={c} />
-      ))}
-      {filters.maxMinutes && (
-        <input type="hidden" name="time" value={filters.maxMinutes} />
-      )}
-      {filters.ownedTools.map((t) => (
-        <input key={t} type="hidden" name="tools" value={t} />
-      ))}
+      {/* Carry the active filters + page size through, or changing the sort would clear
+          them. (No `sort` here — that's this form's own control.) */}
+      <CatalogStateInputs filters={filters} perPage={perPage} />
 
       <label htmlFor="sort" className="text-[0.75rem] uppercase tracking-[0.06em] text-muted">
         Sort
       </label>
       {/* QOL-A: auto-submits on a pointer/touch change. QOL-H turned that submit into a
-          soft client navigation via SoftGetForm. The select's own font stays at 16px —
+          soft client navigation via SoftGetForm. QOL-I: the pointer/keyboard-gated select
+          is now the shared AutoSubmitSelect. The select's own font stays at 16px —
           anything smaller makes iOS zoom the viewport on focus. */}
-      <SortSelectControl
-        sort={sort}
+      <AutoSubmitSelect
+        id="sort"
+        name="sort"
+        defaultValue={sort}
         className={`${selectControl} focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1`}
-      />
+      >
+        {SORT_OPTIONS.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </AutoSubmitSelect>
       {/* KEPT, only VISUALLY HIDDEN (QOL-H, 2026-07-20 decision). This is the no-JS
           submit path and the keyboard's commit action, so it must stay in the document
           and in the tab order — `visually-hidden` clips it without removing it, unlike

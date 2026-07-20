@@ -180,7 +180,9 @@ describe('catalog page — search', () => {
 
     expect(html).toContain('3 plans');
     expect(html).toContain('walnut');
-    expect(html).toContain('Clear all');
+    // QOL-I: renamed from "Clear all" — it clears search AND filters (FilterChips owns
+    // the filters-only "Clear all filters").
+    expect(html).toContain('Clear search and filters');
   });
 
   it('gives a useful empty state, pointing at the strictest filter', async () => {
@@ -279,6 +281,29 @@ describe('catalog visual pass (QOL-F)', () => {
     // `translate`, not `transform` — Tailwind v4 emits it as its own property, so a
     // `transition-[transform]` here would animate nothing.
     expect(html).toContain('transition-[translate,box-shadow]');
+  });
+});
+
+describe('catalog page — page size (QOL-I)', () => {
+  it('clamps a valid perPage to the allowlist and passes it to queryPlans', async () => {
+    await render({ perPage: '48' });
+    expect(queryPlans.mock.calls[0]![0].perPage).toBe(48);
+  });
+
+  it('SECURITY: an out-of-list / garbage perPage degrades to the default', async () => {
+    for (const bad of ['9999', '13', 'abc', '0', '-1', '48; DROP TABLE Plan;--']) {
+      vi.resetModules();
+      queryPlans.mockClear();
+      queryPlans.mockResolvedValue(result());
+      await render({ perPage: bad });
+      expect(queryPlans.mock.calls[0]![0].perPage, `perPage="${bad}"`).toBe(12);
+    }
+  });
+
+  it('carries a non-default perPage across pagination links', async () => {
+    queryPlans.mockResolvedValue(result({ total: 200, totalPages: 5, page: 1 }));
+    const html = await render({ perPage: '48' });
+    expect(html).toContain('perPage=48');
   });
 });
 

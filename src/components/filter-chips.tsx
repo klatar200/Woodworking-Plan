@@ -13,6 +13,8 @@ interface Props {
   filters: PlanFilters;
   /** Omitted when it's the default — same convention as pagination links. */
   sort?: string;
+  /** QOL-I: carried so removing a filter doesn't reset the chosen page size. */
+  perPage?: number;
   categories: Array<{ slug: string; name: string }>;
   tools: Array<{ slug: string; name: string }>;
 }
@@ -34,7 +36,7 @@ interface Props {
  * (which clears everything, search included) is a different control doing a
  * different job.
  */
-export function FilterChips({ query, filters, sort, categories, tools }: Props) {
+export function FilterChips({ query, filters, sort, perPage, categories, tools }: Props) {
   if (!hasActiveFilters(filters)) return null;
 
   const categoryName = new Map(categories.map((c) => [c.slug, c.name]));
@@ -42,7 +44,7 @@ export function FilterChips({ query, filters, sort, categories, tools }: Props) 
 
   // Each chip's href = the current state with exactly one value taken out.
   const without = (patch: Partial<PlanFilters>): string =>
-    buildQueryString({ query, filters: { ...filters, ...patch }, sort });
+    buildQueryString({ query, filters: { ...filters, ...patch }, sort, perPage });
 
   const chips: Array<{ key: string; label: string; href: string }> = [];
 
@@ -115,6 +117,7 @@ export function FilterChips({ query, filters, sort, categories, tools }: Props) 
               ownedTools: [],
             },
             sort,
+            perPage,
           })}
           className="text-[0.875rem] text-muted underline hover:text-fg"
         >

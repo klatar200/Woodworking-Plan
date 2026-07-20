@@ -3,8 +3,9 @@ import Link from 'next/link';
 // (the pagination page number) that would otherwise shadow the import.
 import { page as pageShell, btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29
 import { queryPlans, listCategories, listFilterableTools } from '@/lib/plans';
-import { parseFilters, buildQueryString, hasActiveFilters } from '@/lib/filters';
+import { parseFilters, buildQueryString, hasActiveFilters, type PlanFilters } from '@/lib/filters';
 import { parseSort, DEFAULT_SORT } from '@/lib/sort';
+import { parsePageSize, DEFAULT_PAGE_SIZE } from '@/lib/page-size';
 import { getRatingSummaries } from '@/lib/reviews';
 import { getOwnedToolSlugs } from '@/lib/workshop';
 import { getCurrentUser } from '@/lib/auth';
@@ -18,6 +19,7 @@ import { CategoryNav } from '@/components/category-nav';
 import { FilterPanel } from '@/components/filter-panel';
 import { FilterChips } from '@/components/filter-chips';
 import { SortSelect } from '@/components/sort-select';
+import { PageSizeSelect } from '@/components/page-size-select';
 
 /**
  * The catalog — browse (Sprint 3), keyword search (Sprint 4), and filters
@@ -32,6 +34,15 @@ import { SortSelect } from '@/components/sort-select';
  * Deliberately absent: save/like buttons (Sprints 6-7).
  */
 export const dynamic = 'force-dynamic';
+
+/** No filters active — used to build the "Clear search and filters" link. */
+const EMPTY_FILTERS: PlanFilters = {
+  category: undefined,
+  difficulty: [],
+  costTier: [],
+  maxMinutes: undefined,
+  ownedTools: [],
+};
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -66,6 +77,14 @@ export default async function CatalogPage({
   const rawQuery = typeof params.q === 'string' ? params.q : '';
   const sort = parseSort(params.sort);
 
+  // QOL-I: cards per page. parsePageSize hard-clamps to the allowlist — a garbage or
+  // out-of-list value degrades to the default, never trusts the query string.
+  const perPage = parsePageSize(params.perPage);
+  // What rides in every catalog URL: the value only when it isn't the default, so a
+  // default page keeps a clean URL (same convention as sort and page).
+  const perPageParam = perPage === DEFAULT_PAGE_SIZE ? undefined : perPage;
+  const sortParam = sort === DEFAULT_SORT ? undefined : sort;
+
   /**
    * Perf (2026-07-16): these three are INDEPENDENT once the filters are parsed,
    * so they run concurrently — they used to run as three serial awaits, which
@@ -85,7 +104,7 @@ export default async function CatalogPage({
     savedList,
     ownedTools,
   ] = await Promise.all([
-    queryPlans({ query: rawQuery, filters, sort, page }),
+    queryPlans({ query: rawQuery, filters, sort, page, perPage }),
     user ? listSavedPlans() : null,
     user ? getOwnedToolSlugs() : ([] as string[]),
   ]);
@@ -113,8 +132,9 @@ export default async function CatalogPage({
   const currentUrl = buildQueryString({
     query,
     filters,
-    sort: sort === DEFAULT_SORT ? undefined : sort,
+    sort: sortParam,
     page: currentPage > 1 ? currentPage : undefined,
+    perPage: perPageParam,
   });
 
   /**
@@ -195,7 +215,8 @@ export default async function CatalogPage({
         <CategoryNav
           query={query}
           filters={filters}
-          sort={sort === DEFAULT_SORT ? undefined : sort}
+          sort={sortParam}
+          perPage={perPageParam}
           categories={categories}
         />
 
@@ -210,6 +231,8 @@ export default async function CatalogPage({
           <FilterPanel
             query={query}
             filters={filters}
+            sort={sortParam}
+            perPage={perPageParam}
             categories={categories}
             tools={tools}
             prefillTools={ownedTools}
@@ -217,14 +240,25 @@ export default async function CatalogPage({
         </aside>
 
         <div className="lg:[grid-area:results] lg:min-w-0">
-          <SortSelect sort={sort} query={query} filters={filters} />
+          {/* Sort + page-size controls sit on one row. SortSelect returns null during a
+              keyword search (relevance is the sort); PageSizeSelect always shows. */}
+          <div className="flex flex-wrap items-center gap-x-[1.5rem] gap-y-0">
+            <SortSelect sort={sort} query={query} filters={filters} perPage={perPageParam} />
+            <PageSizeSelect
+              perPage={perPage}
+              query={query}
+              filters={filters}
+              sort={sortParam}
+            />
+          </div>
 
           {/* Removable chips for each active filter — renders nothing when browsing
               unfiltered. Each chip is a GET link; see filter-chips.tsx. */}
           <FilterChips
             query={query}
             filters={filters}
-            sort={sort === DEFAULT_SORT ? undefined : sort}
+            sort={sortParam}
+            perPage={perPageParam}
             categories={categories}
             tools={tools}
           />
@@ -240,7 +274,8 @@ export default async function CatalogPage({
                 href={buildQueryString({
                   query,
                   filters: { ...filters, ownedTools },
-                  sort: sort === DEFAULT_SORT ? undefined : sort,
+                  sort: sortParam,
+                  perPage: perPageParam,
                 })}
                 className={btnPrimary}
               >
@@ -262,7 +297,20 @@ export default async function CatalogPage({
                 {isFiltering &&
                   (isSearching ? ' with your filters' : ' match your filters')}
                 {' · '}
-                <Link href="/">Clear all</Link>
+                {/* QOL-I: renamed from "Clear all" — it clears the search AND the filters,
+                    which the old label made ambiguous next to FilterChips' filters-only
+                    "Clear all filters". Keeps the view prefs (sort, page size), since those
+                    aren't what "search and filters" refers to. */}
+                <Link
+                  href={buildQueryString({
+                    query: '',
+                    filters: EMPTY_FILTERS,
+                    sort: sortParam,
+                    perPage: perPageParam,
+                  })}
+                >
+                  Clear search and filters
+                </Link>
               </>
             ) : (
               <>
@@ -319,8 +367,9 @@ export default async function CatalogPage({
                   href={buildQueryString({
                     query,
                     filters,
-                    sort: sort === DEFAULT_SORT ? undefined : sort,
+                    sort: sortParam,
                     page: currentPage - 1,
+                    perPage: perPageParam,
                   })}
                   className={btnGhost}
                   rel="prev"
@@ -352,8 +401,9 @@ export default async function CatalogPage({
                       href={buildQueryString({
                         query,
                         filters,
-                        sort: sort === DEFAULT_SORT ? undefined : sort,
+                        sort: sortParam,
                         page: token,
+                        perPage: perPageParam,
                       })}
                       className={`pagination-number ${token === currentPage ? 'pagination-number-active' : ''}`}
                       aria-current={token === currentPage ? 'page' : undefined}
@@ -369,8 +419,9 @@ export default async function CatalogPage({
                   href={buildQueryString({
                     query,
                     filters,
-                    sort: sort === DEFAULT_SORT ? undefined : sort,
+                    sort: sortParam,
                     page: currentPage + 1,
+                    perPage: perPageParam,
                   })}
                   className={btnGhost}
                   rel="next"

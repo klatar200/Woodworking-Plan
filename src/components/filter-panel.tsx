@@ -7,9 +7,9 @@ import {
 } from '@/lib/filters';
 import { costTierSymbol, difficultyLabel } from '@/lib/format';
 import { FilterDisclosure } from '@/components/filter-disclosure';
+import { SoftGetForm } from '@/components/soft-get-form';
+import { AutoSubmitSelect } from '@/components/auto-submit-select';
 import {
-  btnGhost,
-  btnPrimary,
   checkbox,
   checkboxInput,
   selectControl,
@@ -25,6 +25,13 @@ const legendClass =
 interface Props {
   query: string;
   filters: PlanFilters;
+  /**
+   * QOL-I: carried as a hidden input so auto-applying a filter (which now happens on
+   * every checkbox/select change, not a deliberate Apply click) does NOT silently reset
+   * the sort or the page size. Omitted when default — same convention as the chips.
+   */
+  sort?: string;
+  perPage?: number;
   categories: Array<{ slug: string; name: string }>;
   tools: Array<{ slug: string; name: string; category: string | null }>;
   /**
@@ -59,6 +66,8 @@ interface Props {
 export function FilterPanel({
   query,
   filters,
+  sort,
+  perPage,
   categories,
   tools,
   prefillTools = [],
@@ -83,13 +92,24 @@ export function FilterPanel({
 
   return (
     <FilterDisclosure count={count}>
-      <form className="pt-0 px-[1rem] pb-[1rem] grid gap-[1.25rem]" action="/" method="get">
+      {/* QOL-I: a soft-navigating GET form. Checkboxes auto-apply on change (debounced);
+          the two <select>s auto-apply on a pointer/touch change via AutoSubmitSelect. With
+          JS off it is still a plain GET form and the visually-hidden Apply button submits
+          it. */}
+      <SoftGetForm
+        className="pt-0 px-[1rem] pb-[1rem] grid gap-[1.25rem]"
+        action="/"
+        autoSubmitOnChange="input[type=checkbox]"
+      >
         {/* Keep the active search alive across a filter submit. */}
         {query && <input type="hidden" name="q" value={query} />}
+        {/* Preserve sort + page size across an auto-applied filter change. */}
+        {sort && <input type="hidden" name="sort" value={sort} />}
+        {perPage && <input type="hidden" name="perPage" value={perPage} />}
 
         <fieldset className="border-none p-0 m-0 min-w-0">
           <legend className={legendClass}>Category</legend>
-          <select
+          <AutoSubmitSelect
             name="category"
             defaultValue={filters.category ?? ''}
             className={`w-full ${selectControl}`}
@@ -100,7 +120,7 @@ export function FilterPanel({
                 {c.name}
               </option>
             ))}
-          </select>
+          </AutoSubmitSelect>
         </fieldset>
 
         <fieldset className="border-none p-0 m-0 min-w-0">
@@ -141,7 +161,7 @@ export function FilterPanel({
 
         <fieldset className="border-none p-0 m-0 min-w-0">
           <legend className={legendClass}>Time available</legend>
-          <select
+          <AutoSubmitSelect
             name="time"
             defaultValue={filters.maxMinutes ?? ''}
             className={`w-full ${selectControl}`}
@@ -152,7 +172,7 @@ export function FilterPanel({
                 {b.label}
               </option>
             ))}
-          </select>
+          </AutoSubmitSelect>
         </fieldset>
 
         <fieldset className="border-none p-0 m-0 min-w-0">
@@ -163,8 +183,8 @@ export function FilterPanel({
             {showingPrefill ? (
               <>
                 {' '}
-                <strong>Pre-filled from your workshop</strong> &mdash; press Apply to use
-                them.
+                <strong>Pre-filled from your workshop</strong> &mdash; adjust any filter to
+                apply them, or use &ldquo;Show plans I can build&rdquo; above the results.
               </>
             ) : null}
           </p>
@@ -190,17 +210,17 @@ export function FilterPanel({
           ))}
         </fieldset>
 
-        <div className="flex gap-[0.5rem] flex-wrap">
-          <button type="submit" className={btnPrimary}>
-            Apply filters
-          </button>
-          {/* A link, not a reset button: reset would restore the last SUBMITTED
-              state, not clear the filters. Different thing, and confusing. */}
-          <a href={query ? `/?q=${encodeURIComponent(query)}` : '/'} className={btnGhost}>
-            Clear filters
-          </a>
-        </div>
-      </form>
+        {/* QOL-I: every field now auto-applies, so an explicit Apply is visually
+            redundant — but it stays in the document (visually hidden, not removed) as the
+            no-JS submit path and the keyboard's commit action, exactly like the sort
+            form's. The old "Clear filters" link is GONE from here: it duplicated
+            FilterChips' "Clear all filters" (which renders only when a filter is actually
+            active), so there were two identical controls on one page. FilterChips owns it
+            now. */}
+        <button type="submit" className="visually-hidden">
+          Apply filters
+        </button>
+      </SoftGetForm>
     </FilterDisclosure>
   );
 }

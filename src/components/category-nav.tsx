@@ -17,6 +17,8 @@ interface Props {
   filters: PlanFilters;
   /** Omitted when it's the default — same convention as the chips and pagination. */
   sort?: string;
+  /** QOL-I: carried so switching category doesn't reset the chosen page size. */
+  perPage?: number;
   categories: Array<{ slug: string; name: string }>;
 }
 
@@ -41,9 +43,9 @@ interface Props {
  * above the plans on a phone is exactly what the Sprint 5 <details> collapse
  * exists to prevent.
  */
-export function CategoryNav({ query, filters, sort, categories }: Props) {
+export function CategoryNav({ query, filters, sort, perPage, categories }: Props) {
   const href = (category: string | undefined) =>
-    buildQueryString({ query, filters: { ...filters, category }, sort });
+    buildQueryString({ query, filters: { ...filters, category }, sort, perPage });
 
   const active = filters.category;
 
