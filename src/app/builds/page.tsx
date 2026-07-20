@@ -32,7 +32,7 @@ export default async function BuildsPage() {
 
       {builds.length === 0 ? (
         <p className="empty-state">
-          You haven&rsquo;t logged a build yet. <Link href="/">Browse the plans</Link>,
+          You haven&rsquo;t logged a build yet. <Link href="/browse">Browse the plans</Link>,
           make something, then leave a review with your photos &mdash; it&rsquo;ll show up
           here.
         </p>

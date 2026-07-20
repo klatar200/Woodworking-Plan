@@ -9,6 +9,7 @@ import { costTierSymbol, difficultyLabel } from '@/lib/format';
 import { FilterDisclosure } from '@/components/filter-disclosure';
 import { SoftGetForm } from '@/components/soft-get-form';
 import { AutoSubmitSelect } from '@/components/auto-submit-select';
+import { CATALOG_PATH } from '@/lib/routes';
 import {
   checkbox,
   checkboxInput,
@@ -98,7 +99,7 @@ export function FilterPanel({
           it. */}
       <SoftGetForm
         className="pt-0 px-[1rem] pb-[1rem] grid gap-[1.25rem]"
-        action="/"
+        action={CATALOG_PATH}
         autoSubmitOnChange="input[type=checkbox]"
       >
         {/* Keep the active search alive across a filter submit. */}

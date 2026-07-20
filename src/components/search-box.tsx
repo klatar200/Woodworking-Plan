@@ -15,6 +15,7 @@
  * thing that already works. The reverse is not true.
  */
 import { btnPrimary, searchInput } from '@/lib/ui';
+import { CATALOG_PATH } from '@/lib/routes';
 // Sprint 29 (UI migration, wave 1). `search-box` class RETAINED — the print
 // stylesheet hides it by class (out of scope this sprint); utilities added alongside.
 // `search-input` is fully converted to utilities; the submit button uses the shared
@@ -23,7 +24,7 @@ const searchBox = 'search-box flex gap-[0.5rem] mt-[1rem] mb-[0.75rem] mx-0';
 
 export function SearchBox({ query }: { query: string }) {
   return (
-    <form className={searchBox} action="/" method="get" role="search">
+    <form className={searchBox} action={CATALOG_PATH} method="get" role="search">
       <label htmlFor="q" className="visually-hidden">
         Search plans
       </label>

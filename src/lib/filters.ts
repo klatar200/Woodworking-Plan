@@ -1,4 +1,5 @@
 import type { CostTier } from '@prisma/client';
+import { CATALOG_PATH } from '@/lib/routes';
 
 /**
  * Filter parsing — Sprint 5.
@@ -194,5 +195,7 @@ export function buildQueryString({
   if (perPage) params.set('perPage', String(perPage));
 
   const qs = params.toString();
-  return qs ? `/?${qs}` : '/';
+  // QOL-M: the catalog lives at CATALOG_PATH (/browse) now; pagination, chips, the
+  // category nav, and every "clear" link build on this base.
+  return qs ? `${CATALOG_PATH}?${qs}` : CATALOG_PATH;
 }

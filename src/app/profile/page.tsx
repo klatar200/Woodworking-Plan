@@ -92,7 +92,7 @@ export default async function ProfilePage({
           role="status"
         >
           Workshop saved. Your tools are ready on the{' '}
-          <Link href="/">catalog filter</Link>.
+          <Link href="/browse">catalog filter</Link>.
         </p>
       ) : null}
 

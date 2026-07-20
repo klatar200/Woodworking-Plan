@@ -78,11 +78,11 @@ describe('FilterChips', () => {
     // Removing Beginner keeps difficulty=3, the category, and the search.
     expect(html).toContain(
       // React escapes & as &amp; in attributes.
-      'href="/?q=bench&amp;category=outdoor&amp;difficulty=3"',
+      'href="/browse?q=bench&amp;category=outdoor&amp;difficulty=3"',
     );
     // Removing the category keeps both difficulties and the search.
     expect(html).toContain(
-      'href="/?q=bench&amp;difficulty=1&amp;difficulty=3"',
+      'href="/browse?q=bench&amp;difficulty=1&amp;difficulty=3"',
     );
   });
 
@@ -93,12 +93,12 @@ describe('FilterChips', () => {
 
   it('"Clear all filters" clears filters but KEEPS the search term', () => {
     const html = render({ ...noFilters, category: 'outdoor' }, 'bench');
-    expect(html).toContain('href="/?q=bench"');
+    expect(html).toContain('href="/browse?q=bench"');
   });
 
   it('removing the last filter links to the bare catalog', () => {
     const html = render({ ...noFilters, category: 'outdoor' });
-    expect(html).toContain('href="/"');
+    expect(html).toContain('href="/browse"');
   });
 
   it('each chip is labelled as a removal control for screen readers', () => {

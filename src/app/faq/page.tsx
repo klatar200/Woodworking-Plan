@@ -186,7 +186,7 @@ export default function FaqPage() {
         Didn&rsquo;t find your answer? Email{' '}
         <strong>hello@example.com</strong>{' '}
         <span className="muted">(placeholder &mdash; a real address is coming)</span>, or{' '}
-        <Link href="/">browse the plans</Link>.
+        <Link href="/browse">browse the plans</Link>.
       </p>
       </div>
     </main>

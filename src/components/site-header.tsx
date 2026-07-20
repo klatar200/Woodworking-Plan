@@ -7,6 +7,7 @@ import { BrowseMenu } from '@/components/browse-menu';
 import { HeaderSearch } from '@/components/header-search';
 import { InstallMenuItem } from '@/components/install-prompt';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
+import { CATALOG_PATH } from '@/lib/routes';
 import { btnPrimary } from '@/lib/ui';
 
 // Sprint 29 (UI migration, wave 1): the header moved to Tailwind utilities.
@@ -76,13 +77,13 @@ const SIGNED_IN_NAV = [
 function categoryLinks(linkClass: string) {
   return (
     <>
-      <Link href="/" className={linkClass}>
+      <Link href={CATALOG_PATH} className={linkClass}>
         All plans
       </Link>
       {NAV_CATEGORIES.map((category) => (
         <Link
           key={category.slug}
-          href={`/?category=${category.slug}`}
+          href={`${CATALOG_PATH}?category=${category.slug}`}
           className={linkClass}
         >
           {category.name}

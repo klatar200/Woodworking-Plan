@@ -133,7 +133,7 @@ describe('buildQueryString', () => {
   const base: PlanFilters = { difficulty: [], costTier: [], ownedTools: [] };
 
   it('returns a bare / when nothing is set', () => {
-    expect(buildQueryString({ query: '', filters: base })).toBe('/');
+    expect(buildQueryString({ query: '', filters: base })).toBe('/browse');
   });
 
   it('preserves the search term AND the filters across pagination', () => {
@@ -152,7 +152,7 @@ describe('buildQueryString', () => {
   });
 
   it('omits page=1 rather than emitting a redundant ?page=1', () => {
-    expect(buildQueryString({ query: 'oak', filters: base, page: 1 })).toBe('/?q=oak');
+    expect(buildQueryString({ query: 'oak', filters: base, page: 1 })).toBe('/browse?q=oak');
   });
 
   it('round-trips through parseFilters unchanged', () => {

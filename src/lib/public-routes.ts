@@ -20,9 +20,15 @@ import { createRouteMatcher } from '@clerk/nextjs/server';
  * entry needs a reason it can be safely served to an anonymous stranger.
  */
 export const PUBLIC_ROUTES = [
-  // The catalog landing page. Browse/search stay free to build the habit —
-  // BUSINESS_PLAN.md §12 explicitly gates saves/categories, NOT content.
+  // The marketing landing page (QOL-M, 2026-07-20 — the catalog moved to /browse).
+  // Public: static content, no user data.
   '/',
+
+  // The catalog itself (QOL-M): browse, keyword search, and filters. Same reasoning as
+  // `/plans` below — content is free to build the habit; only saves/likes/categories are
+  // gated (BUSINESS_PLAN.md §12). The catch-all covers its query-string variants
+  // (?category=, ?q=, ?page=, ?sort=, …), which are all still just the public catalog.
+  '/browse(.*)',
 
   // Plan detail pages (Sprint 3).
   //

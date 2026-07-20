@@ -141,7 +141,7 @@ export default async function PlanDetailPage({
       <ViewLogger slug={plan.slug} />
 
       <p className="breadcrumb">
-        <Link href="/">← All plans</Link>
+        <Link href="/browse">← All plans</Link>
       </p>
 
       <RateLimitNotice

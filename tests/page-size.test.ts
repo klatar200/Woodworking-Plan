@@ -41,12 +41,12 @@ describe('parsePageSize', () => {
 describe('buildQueryString — perPage', () => {
   it('includes perPage when provided', () => {
     expect(buildQueryString({ query: '', filters: noFilters, perPage: 48 })).toBe(
-      '/?perPage=48',
+      '/browse?perPage=48',
     );
   });
 
   it('omits perPage when not provided (default keeps the URL clean)', () => {
-    expect(buildQueryString({ query: '', filters: noFilters })).toBe('/');
+    expect(buildQueryString({ query: '', filters: noFilters })).toBe('/browse');
   });
 
   it('carries perPage alongside filters, sort, and page', () => {
@@ -62,5 +62,6 @@ describe('buildQueryString — perPage', () => {
     expect(qs).toContain('sort=newest');
     expect(qs).toContain('page=2');
     expect(qs).toContain('perPage=24');
+    expect(qs.startsWith('/browse?')).toBe(true);
   });
 });

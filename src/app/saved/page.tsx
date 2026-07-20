@@ -183,7 +183,7 @@ export default async function SavedPage({
             ) : (
               <>
                 You haven&rsquo;t saved anything yet.{' '}
-                <Link href="/">Browse the plans</Link> and hit{' '}
+                <Link href="/browse">Browse the plans</Link> and hit{' '}
                 <strong>Save this plan</strong> on anything you like.
               </>
             )}

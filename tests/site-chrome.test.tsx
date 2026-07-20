@@ -71,7 +71,7 @@ const escaped = (text: string) => text.replace(/&/g, '&amp;');
 describe('the Browse menu (QOL-D item 1)', () => {
   it('offers every category, plus an "All plans" escape hatch', () => {
     for (const category of NAV_CATEGORIES) {
-      expect(header).toContain(`/?category=${category.slug}`);
+      expect(header).toContain(`/browse?category=${category.slug}`);
       expect(header).toContain(escaped(category.name));
     }
     expect(header).toContain('All plans');
@@ -82,7 +82,7 @@ describe('the Browse menu (QOL-D item 1)', () => {
     // link appears in the desktop menu and in the mobile drawer's collapsible section.
     const first = NAV_CATEGORIES[0]!;
     const occurrences =
-      header.split(`/?category=${first.slug}`).length - 1;
+      header.split(`/browse?category=${first.slug}`).length - 1;
 
     expect(occurrences).toBe(2);
   });
@@ -108,7 +108,7 @@ describe('the desktop header search (QOL-J)', () => {
     expect(header).toContain('role="search"');
     expect(header).toContain('name="q"');
     // Targets the shared catalog path, so a search works from any page.
-    expect(header).toMatch(/<form[^>]*action="\/"[^>]*method="get"/);
+    expect(header).toMatch(/<form[^>]*action="\/browse"[^>]*method="get"/);
   });
 
   it('is desktop-only — below lg, search is the catalog box + drawer, not the header', () => {
@@ -150,7 +150,7 @@ describe('the signed-in nav after QOL-D', () => {
 describe('the site footer (QOL-D item 2)', () => {
   it('lists every category and the site links', () => {
     for (const category of NAV_CATEGORIES) {
-      expect(footer).toContain(`/?category=${category.slug}`);
+      expect(footer).toContain(`/browse?category=${category.slug}`);
     }
     for (const href of ['/paths', '/about', '/faq']) {
       expect(footer).toContain(`href="${href}"`);

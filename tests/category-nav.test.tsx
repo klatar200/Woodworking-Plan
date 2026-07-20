@@ -50,8 +50,8 @@ describe('CategoryNav', () => {
 
   it('links to the bare catalog when nothing else is set', () => {
     const html = render();
-    expect(html).toContain('href="/?category=outdoor"');
-    expect(html).toContain('href="/"'); // "All plans"
+    expect(html).toContain('href="/browse?category=outdoor"');
+    expect(html).toContain('href="/browse"'); // "All plans"
   });
 
   it('carries the search term, the sort, and the other filters', () => {
@@ -63,17 +63,17 @@ describe('CategoryNav', () => {
 
     // Selecting a category must not discard what the user already narrowed to.
     expect(html).toContain(
-      'href="/?q=bench&amp;category=outdoor&amp;difficulty=2&amp;tools=table-saw&amp;sort=popular"',
+      'href="/browse?q=bench&amp;category=outdoor&amp;difficulty=2&amp;tools=table-saw&amp;sort=popular"',
     );
     // ...and neither must "All plans", which clears ONLY the category.
     expect(html).toContain(
-      'href="/?q=bench&amp;difficulty=2&amp;tools=table-saw&amp;sort=popular"',
+      'href="/browse?q=bench&amp;difficulty=2&amp;tools=table-saw&amp;sort=popular"',
     );
   });
 
   it('REPLACES the active category rather than adding a second one', () => {
     const html = render({ ...noFilters, category: 'outdoor' });
-    expect(html).toContain('href="/?category=storage"');
+    expect(html).toContain('href="/browse?category=storage"');
     expect(html).not.toContain('category=outdoor&amp;category=storage');
   });
 
@@ -100,7 +100,7 @@ describe('CategoryNav', () => {
     // serialization detail.)
     expect(none.match(/aria-current="page"/g)).toHaveLength(1);
     expect(none).toMatch(
-      /<a[^>]*bg-accent-tint[^>]*href="\/"[^>]*>All plans</,
+      /<a[^>]*bg-accent-tint[^>]*href="\/browse"[^>]*>All plans</,
     );
   });
 

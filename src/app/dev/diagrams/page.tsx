@@ -71,7 +71,7 @@ export default async function DevDiagramsPage({
   return (
     <main id="main" className={`${page} page-wide`}>
       <p className="breadcrumb">
-        <Link href="/">← Back to the catalog</Link>
+        <Link href="/browse">← Back to the catalog</Link>
       </p>
 
       <h1>Part diagrams — QOL-G pilot</h1>

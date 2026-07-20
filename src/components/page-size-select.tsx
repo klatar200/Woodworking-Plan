@@ -4,6 +4,7 @@ import { PAGE_SIZES, type PageSize } from '@/lib/page-size';
 import { AutoSubmitSelect } from '@/components/auto-submit-select';
 import { SoftGetForm } from '@/components/soft-get-form';
 import { CatalogStateInputs } from '@/components/catalog-state-inputs';
+import { CATALOG_PATH } from '@/lib/routes';
 
 interface Props {
   perPage: PageSize;
@@ -28,7 +29,7 @@ interface Props {
  */
 export function PageSizeSelect({ perPage, query, filters, sort }: Props) {
   return (
-    <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action="/">
+    <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action={CATALOG_PATH}>
       {/* Everything except the page size itself, so changing it keeps the rest. */}
       <CatalogStateInputs query={query} filters={filters} sort={sort} />
 

@@ -104,7 +104,7 @@ export default async function ShoppingListPage({
           Your shopping list is empty. Open a plan and choose{' '}
           <strong>Add to shopping list</strong> — saving a plan no longer adds it here, so
           this stays the list of what you&rsquo;re actually building.{' '}
-          <Link href="/">Browse plans</Link>.
+          <Link href="/browse">Browse plans</Link>.
         </p>
       ) : (
         <>

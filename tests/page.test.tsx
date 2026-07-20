@@ -117,7 +117,7 @@ beforeEach(() => {
 });
 
 const render = async (searchParams: Record<string, string | string[]> = {}) => {
-  const { default: CatalogPage } = await import('@/app/page');
+  const { default: CatalogPage } = await import('@/app/browse/page');
   const tree = (await CatalogPage({
     searchParams: Promise.resolve(searchParams),
   })) as ReactElement;

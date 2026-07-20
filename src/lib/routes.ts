@@ -5,10 +5,9 @@
  * category menu, the filter/sort/search forms). Rather than hardcode its path at each
  * site, name it ONCE here so a later move is a one-line change, not a codebase-wide grep.
  *
- * Today the catalog IS the site root. QOL-M will move it to `/browse` and turn `/` into a
- * marketing landing page — at which point this constant is the single line that changes,
- * and everything routing through it follows. (QOL-M still has its own inventory of
- * literal `href="/"` sites to reconcile; this constant is what keeps the *forms* and the
- * header search from being three more of them.)
+ * QOL-M (Step 1, 2026-07-20): the catalog now lives at `/browse`; `/` is the marketing
+ * landing page. This constant is the single source everything catalog-bound routes through
+ * — the forms, the header search, the category links, and `buildQueryString`'s base — so
+ * the move was (mostly) this one line plus the one-off content links.
  */
-export const CATALOG_PATH = '/';
+export const CATALOG_PATH = '/browse';

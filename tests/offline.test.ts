@@ -132,8 +132,12 @@ describe('public plan content IS cached — the whole point of the sprint', () =
     expect(isCacheable(req('/plans/edge-grain-maple-cutting-board'))).toBe(true);
   });
 
-  it('caches the catalog and the offline page', () => {
+  it('caches the landing, the catalog, and the offline page', () => {
+    // QOL-M: the catalog moved to /browse; / is the (public) landing. Both are public
+    // content with no user data, so both cache by the denylist default.
     expect(isCacheable(req('/'))).toBe(true);
+    expect(isCacheable(req('/browse'))).toBe(true);
+    expect(isCacheable(req('/browse?category=outdoor&page=2'))).toBe(true);
     expect(isCacheable(req(OFFLINE_URL))).toBe(true);
   });
 

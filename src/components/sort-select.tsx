@@ -5,6 +5,7 @@ import type { PlanFilters } from '@/lib/filters';
 import { AutoSubmitSelect } from '@/components/auto-submit-select';
 import { SoftGetForm } from '@/components/soft-get-form';
 import { CatalogStateInputs } from '@/components/catalog-state-inputs';
+import { CATALOG_PATH } from '@/lib/routes';
 
 interface Props {
   sort: SortOption;
@@ -32,7 +33,7 @@ export function SortSelect({ sort, query, filters, perPage }: Props) {
   if (query !== '') return null;
 
   return (
-    <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action="/">
+    <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action={CATALOG_PATH}>
       {/* Carry the active filters + page size through, or changing the sort would clear
           them. (No `sort` here — that's this form's own control.) */}
       <CatalogStateInputs filters={filters} perPage={perPage} />

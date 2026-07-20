@@ -101,7 +101,7 @@ export default function AboutPage() {
       </section>
 
       <p className="subtitle">
-        <Link href="/">Browse the plans &rarr;</Link>
+        <Link href="/browse">Browse the plans &rarr;</Link>
       </p>
       </div>
     </main>

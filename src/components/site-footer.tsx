@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
+import { CATALOG_PATH } from '@/lib/routes';
 
 /**
  * Site footer — QOL-D item 2.
@@ -32,7 +33,7 @@ const footerLink =
   'inline-flex items-center min-h-[2.25rem] text-[0.9375rem] text-muted no-underline hover:text-fg focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
 const SITE_LINKS = [
-  { href: '/', label: 'All plans' },
+  { href: CATALOG_PATH, label: 'All plans' },
   // QOL-E: display name only — the URL stays /paths. See site-header.tsx.
   { href: '/paths', label: 'Learning' },
   { href: '/about', label: 'About' },
@@ -48,7 +49,7 @@ export function SiteFooter() {
           <ul className="list-none m-0 p-0 flex flex-col">
             {NAV_CATEGORIES.map((category) => (
               <li key={category.slug}>
-                <Link href={`/?category=${category.slug}`} className={footerLink}>
+                <Link href={`${CATALOG_PATH}?category=${category.slug}`} className={footerLink}>
                   {category.name}
                 </Link>
               </li>

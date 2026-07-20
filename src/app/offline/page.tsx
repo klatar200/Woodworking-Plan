@@ -64,7 +64,7 @@ export default function OfflinePage() {
       </ul>
 
       <p className="footnote">
-        <Link href="/">Try again</Link> once you have a bar of signal.
+        <Link href="/browse">Try again</Link> once you have a bar of signal.
       </p>
     </main>
   );
