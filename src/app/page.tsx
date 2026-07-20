@@ -9,13 +9,8 @@ import {
 } from '@/lib/cut-optimizer';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { CATALOG_PATH } from '@/lib/routes';
-import {
-  costTierSymbol,
-  difficultyLabel,
-  formatInches,
-  formatTimeRange,
-} from '@/lib/format';
 import { PlanCard } from '@/components/plan-card';
+import { LandingPlanPanel } from '@/components/landing-plan-panel';
 import { btnPrimary, btnGhost } from '@/lib/ui';
 
 /**
@@ -41,8 +36,6 @@ const wrap = 'mx-auto w-full max-w-[76rem] px-[1.5rem] sm:px-[2rem]';
 const eyebrow =
   'inline-flex items-center gap-[0.45rem] text-[0.72rem] uppercase tracking-[0.09em] text-accent-strong font-semibold before:content-[""] before:w-[1.4rem] before:h-[2px] before:bg-accent before:rounded-[2px]';
 const sectionH2 = 'font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold mt-[0.5rem] mb-[0.4rem]';
-const chip =
-  'inline-flex items-center text-[0.75rem] border border-border rounded-[999px] px-[0.6rem] py-[0.18rem] text-muted whitespace-nowrap';
 const isq =
   'inline-flex items-center justify-center w-[2.9rem] h-[2.9rem] rounded-[0.7rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0';
 const catPill =
@@ -58,12 +51,23 @@ const PLAN_MARQUEE_COPIES = 4; // wide: featured plan cards
 
 export default async function LandingPage() {
   const { plans: featured } = await queryPlans({ sort: 'trending', perPage: 8 });
-  const showcase = featured[0] ? await getPlanBySlug(featured[0].slug) : null;
 
-  // The hero panel's honest "buy N boards" line — the SAME optimizer the catalog uses.
-  let boardCount: number | null = null;
-  if (showcase && showcase.cutList.length > 0) {
-    const parts: Part[] = showcase.cutList.map((item) => ({
+  // Two REAL "plan panels" drive the hero and the "what a plan looks like" section — a real
+  // cut list beside a real board-buying plan. Pull full data for the first few Trending plans
+  // and keep the ones whose optimizer result is CLEAN (no part longer than a stock board) and
+  // detailed enough to read as a project, so the drawn bars and the "buy N boards" count are
+  // both honest. getPlanBySlug is request-cached, so the featured cards don't re-query.
+  const candidates = await Promise.all(
+    featured.slice(0, 6).map((f) => getPlanBySlug(f.slug)),
+  );
+  const showcases: Array<{
+    plan: NonNullable<Awaited<ReturnType<typeof getPlanBySlug>>>;
+    groups: ReturnType<typeof optimize>;
+    boards: number;
+  }> = [];
+  for (const plan of candidates) {
+    if (!plan || plan.cutList.length < 3) continue;
+    const parts: Part[] = plan.cutList.map((item) => ({
       id: item.id,
       label: item.part,
       quantity: item.quantity,
@@ -73,13 +77,19 @@ export default async function LandingPage() {
       material: item.material,
     }));
     const groups = optimize(parts, DEFAULT_OPTIONS);
-    boardCount = hasImpossibleParts(groups) ? null : totalBoards(groups);
+    if (hasImpossibleParts(groups)) continue;
+    showcases.push({ plan, groups, boards: totalBoards(groups) });
+    if (showcases.length === 2) break;
   }
+  const heroShow = showcases[0] ?? null;
+  // The "what a plan looks like" panel uses the SECOND clean plan (a different project from
+  // the hero); if only one qualified, it reuses the hero's rather than showing nothing.
+  const detailShow = showcases[1] ?? heroShow;
 
   return (
     <main id="main">
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden border-b border-border bg-[radial-gradient(60%_90%_at_92%_0%,var(--accent-tint)_0%,transparent_60%)]">
+      <section className="landing-hatch relative overflow-hidden border-b border-border">
         <div className={`${wrap} grid items-center gap-[2.5rem] py-[3.5rem] lg:grid-cols-[1.02fr_0.98fr] lg:py-[4.5rem]`}>
           <div>
             <span className={eyebrow}>The woodworking plan catalog</span>
@@ -104,56 +114,20 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          {/* Real showcase plan: its actual cut list + a real board count. */}
-          {showcase ? (
+          {/* Real showcase plan: its actual cut list + a real board-buying plan, drawn. */}
+          {heroShow ? (
             <div className="relative">
               <div
                 aria-hidden="true"
                 className="absolute inset-[-8%_-6%_-12%_6%] rounded-[50%] bg-[radial-gradient(60%_60%_at_60%_40%,var(--accent)_0%,transparent_70%)] opacity-[0.35] blur-[28px]"
               />
-              <div className="relative bg-surface border border-border border-b-border-strong rounded-[0.85rem] overflow-hidden shadow-e3">
-                <div className="p-[1rem_1.15rem] border-b border-border">
-                  <span className="text-[0.7rem] uppercase tracking-[0.07em] text-muted">
-                    {showcase.category.name}
-                  </span>
-                  <h2 className="font-display text-[1.2rem] font-semibold mt-[0.25rem] mb-[0.55rem] normal-case tracking-normal text-fg">
-                    {showcase.title}
-                  </h2>
-                  <div className="flex flex-wrap gap-[0.35rem]">
-                    <span className={chip}>{difficultyLabel(showcase.difficulty)}</span>
-                    <span className={chip}>{costTierSymbol(showcase.costTier)}</span>
-                    <span className={chip}>
-                      {formatTimeRange(showcase.timeMinMinutes, showcase.timeMaxMinutes)}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-[0.95rem_1.15rem]">
-                  <div className="text-[0.7rem] uppercase tracking-[0.07em] text-muted font-semibold mb-[0.5rem]">
-                    Cut list
-                  </div>
-                  <table className="w-full border-collapse text-[0.82rem]">
-                    <tbody>
-                      {showcase.cutList.slice(0, 5).map((item) => (
-                        <tr key={item.id}>
-                          <td className="py-[0.22rem] border-b border-border">
-                            {item.part} ×{item.quantity}
-                          </td>
-                          <td className="py-[0.22rem] border-b border-border text-right text-muted tabular-nums">
-                            {formatInches(item.thicknessIn)} × {formatInches(item.widthIn)} ×{' '}
-                            {formatInches(item.lengthIn)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {boardCount !== null ? (
-                    <p className="mt-[0.6rem] mb-0 text-[0.85rem] text-fg">
-                      Board-buying plan: buy <strong>{boardCount}</strong>{' '}
-                      {boardCount === 1 ? 'board' : 'boards'} at{' '}
-                      {DEFAULT_OPTIONS.stockLengthIn / 12} ft &mdash; kerf included.
-                    </p>
-                  ) : null}
-                </div>
+              <div className="relative">
+                <LandingPlanPanel
+                  plan={heroShow.plan}
+                  groups={heroShow.groups}
+                  boards={heroShow.boards}
+                  rotate
+                />
               </div>
             </div>
           ) : null}
@@ -187,6 +161,40 @@ export default async function LandingPage() {
         </ul>
       </div>
 
+      {/* ── WHAT A PLAN LOOKS LIKE (real panel + explainer) ──────────────── */}
+      {detailShow ? (
+        <section className={`${wrap} py-[4rem]`}>
+          <span className={eyebrow}>What a plan looks like</span>
+          <h2 className={sectionH2}>Not a photo and a paragraph. The whole thing.</h2>
+          <p className="text-muted text-[1.02rem] max-w-[52ch] mb-[2rem]">
+            Every plan is fully specified &mdash; so you can see exactly what to cut, what to
+            buy, and whether you can build it with the tools you own.
+          </p>
+          <div className="grid gap-[2.5rem] items-center lg:grid-cols-[1.05fr_0.95fr]">
+            <LandingPlanPanel
+              plan={detailShow.plan}
+              groups={detailShow.groups}
+              boards={detailShow.boards}
+            />
+            <ul className="list-none m-0 p-0">
+              {NOTES.map((n) => (
+                <li key={n.title} className="flex gap-[0.85rem] items-start my-[1.15rem]">
+                  <span className="inline-flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-[0.6rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0">
+                    {n.icon}
+                  </span>
+                  <div>
+                    <h3 className="font-display text-[1rem] font-semibold m-0 mb-[0.15rem]">
+                      {n.title}
+                    </h3>
+                    <p className="m-0 text-muted text-[0.95rem]">{n.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+
       {/* ── DIFFERENTIATORS ──────────────────────────────────────────────── */}
       <section className="border-b border-border bg-surface">
         <div className={`${wrap} py-[3.5rem]`}>
@@ -216,11 +224,11 @@ export default async function LandingPage() {
       <section className={`${wrap} py-[3.5rem]`}>
         <span className={eyebrow}>How it works</span>
         <h2 className={sectionH2}>Find it, buy for it, build it</h2>
-        <ol className="list-none m-0 p-0 mt-[1.5rem] grid gap-[1.25rem] lg:grid-cols-3">
+        <ol className="landing-timeline list-none m-0 p-0 mt-[1.5rem] grid gap-[1.25rem] lg:grid-cols-3">
           {STEPS.map((s, i) => (
             <li
               key={s.title}
-              className="bg-surface border border-border border-b-border-strong rounded-[0.8rem] p-[1.4rem] shadow-e1"
+              className="landing-panel relative z-[1] rounded-[0.8rem] p-[1.4rem] transition-transform duration-200 hover:-translate-y-[6px] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <div className="flex items-center gap-[0.75rem] mb-[0.65rem]">
                 <span className="inline-flex items-center justify-center w-[1.7rem] h-[1.7rem] rounded-[50%] bg-fg text-surface font-display font-semibold text-[0.9rem]">
@@ -241,7 +249,7 @@ export default async function LandingPage() {
 
       {/* ── FEATURED (real plans) + CATEGORIES, as revolving carousels ───── */}
       {featured.length > 0 ? (
-        <section className="border-y border-border bg-surface">
+        <section className="landing-band-inset border-y border-border bg-surface">
           <div className={`${wrap} pt-[3.5rem] pb-[2rem]`}>
             <span className={eyebrow}>Featured plans</span>
             <h2 className={sectionH2}>Start with something buildable</h2>
@@ -505,6 +513,51 @@ const STEPS = [
       <svg viewBox="0 0 24 24" {...stroke} className="w-[1.25rem] h-[1.25rem]">
         <path d="M14 3l7 7-4 4-7-7z" />
         <path d="M10 7 3 14v4h4l7-7" />
+      </svg>
+    ),
+  },
+];
+
+// The explainer list beside the "what a plan looks like" panel.
+const NOTES = [
+  {
+    title: 'Structured, every time',
+    body: 'Difficulty, real shop time, tools (and which are optional), a full material list — so two plans compare directly.',
+    icon: (
+      <svg viewBox="0 0 24 24" {...stroke} className="w-[1.25rem] h-[1.25rem]">
+        <rect x="3" y="4" width="18" height="4" rx="1" />
+        <rect x="3" y="10" width="18" height="4" rx="1" />
+        <rect x="3" y="16" width="18" height="4" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    title: 'A buying plan, not just a cut list',
+    body: 'How many boards of what size to actually put in the truck — kerf and ripping accounted for.',
+    icon: (
+      <svg viewBox="0 0 24 24" {...stroke} className="w-[1.25rem] h-[1.25rem]">
+        <path d="M3 7h18M3 12h18M3 17h10" />
+        <path d="M17 15l3 2-3 2" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Fractions, not decimals',
+    body: '3/4", 13/16" — the numbers your tape measure actually shows.',
+    icon: (
+      <svg viewBox="0 0 24 24" {...stroke} className="w-[1.25rem] h-[1.25rem]">
+        <path d="M3 6h18v12H3z" />
+        <path d="M7 6v3M11 6v5M15 6v3M19 6v5" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Own the tools?',
+    body: "Tick yours once and the catalog hides anything you can't build.",
+    icon: (
+      <svg viewBox="0 0 24 24" {...stroke} className="w-[1.25rem] h-[1.25rem]">
+        <path d="M4 7h16v13H4z" />
+        <path d="M9 7V5a3 3 0 0 1 6 0v2" />
       </svg>
     ),
   },

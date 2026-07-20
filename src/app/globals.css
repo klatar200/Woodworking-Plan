@@ -63,6 +63,12 @@
   --elev-1: 0 1px 2px rgba(60, 42, 24, 0.05), 0 1px 3px rgba(60, 42, 24, 0.05);
   --elev-2: 0 2px 4px rgba(60, 42, 24, 0.05), 0 6px 16px rgba(60, 42, 24, 0.08);
   --elev-3: 0 4px 8px rgba(60, 42, 24, 0.06), 0 16px 32px rgba(60, 42, 24, 0.12);
+  /* QOL-M landing depth (2026-07-20): a raised card surface — top light-catch fading to a
+     slightly warmer base — plus a bevel (inset top highlight + underside shadow). Paired
+     with --elev-* on the landing's plan panels. Defined in BOTH themes (dark-theme.test
+     guards the pair), and reset to none/flat under print with the rest of the shadows. */
+  --card-bg: linear-gradient(180deg, #ffffff, #fbf9f5);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(60, 42, 24, 0.05);
 }
 
 /*
@@ -113,6 +119,10 @@
     0 8px 20px rgba(0, 0, 0, 0.35);
   --elev-3: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 4px 10px rgba(0, 0, 0, 0.5),
     0 18px 40px rgba(0, 0, 0, 0.45);
+  /* Dark equivalents of the landing depth tokens (see :root). card-bg leads with a lighter
+     top edge — on a dark surface elevation reads as a light-catch, not a shadow. */
+  --card-bg: linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, #ffffff), var(--surface));
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
 }
 
 /*
@@ -299,6 +309,54 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   .landing-marquee-track {
     animation: none;
+  }
+}
+
+/* ── QOL-M landing depth (2026-07-20) — matches mockups/qol-m/landing.html ──────────────
+   The raised "plan panel" (hero + "what a plan looks like"): card-gradient surface, a
+   darker underside border, and elevation + bevel. This is what makes the landing read as
+   crafted rather than flat. */
+.landing-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-bottom-color: var(--border-strong);
+  box-shadow: var(--elev-3), var(--bevel);
+}
+/* Hero backdrop: a warm radial glow + a faint diagonal hatch (worked-wood texture). */
+.landing-hatch {
+  background:
+    radial-gradient(60% 90% at 92% 0%, var(--accent-tint) 0%, transparent 60%),
+    repeating-linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--accent-strong) 5%, transparent) 0 2px,
+      transparent 2px 22px
+    );
+}
+/* Recessed band: inset top+bottom shadow so the featured/FAQ sections sit "below" the page. */
+.landing-band-inset {
+  box-shadow:
+    inset 0 11px 22px -16px rgba(60, 42, 24, 0.16),
+    inset 0 -11px 22px -16px rgba(60, 42, 24, 0.12);
+}
+/* How-it-works timeline: a dashed accent connector behind the three step cards (desktop). */
+.landing-timeline {
+  position: relative;
+}
+.landing-timeline::before {
+  content: '';
+  position: absolute;
+  top: 2.35rem;
+  left: 16%;
+  right: 16%;
+  height: 3px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, var(--accent) 0 10px, transparent 10px 18px);
+  opacity: 0.5;
+  z-index: 0;
+}
+@media (max-width: 64rem) {
+  .landing-timeline::before {
+    display: none;
   }
 }
 
