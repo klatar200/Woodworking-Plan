@@ -40,7 +40,7 @@ vi.mock('@clerk/nextjs', () => ({
   SignedIn: ({ children }: { children: ReactNode }) => <>{children}</>,
   SignedOut: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
-vi.mock('@/components/user-menu', () => ({ UserMenu: () => null }));
+vi.mock('@/components/account-menu', () => ({ AccountMenu: () => null }));
 vi.mock('@/components/install-prompt', () => ({ InstallMenuItem: () => null }));
 
 const { SiteHeader } = await import('@/components/site-header');

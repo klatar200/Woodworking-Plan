@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
-import { UserMenu } from '@/components/user-menu';
+import { AccountMenu } from '@/components/account-menu';
 import { MobileNav } from '@/components/mobile-nav';
 import { BrowseMenu } from '@/components/browse-menu';
 import { HeaderSearch } from '@/components/header-search';
@@ -168,10 +168,10 @@ export function SiteHeader() {
               (hidden below lg); mobile searches via the catalog page's own box. */}
           <HeaderSearch />
           <SignedIn>
-            {/* Clerk's account menu + theme toggle + install action, as a client
-                island (Sprint 31 / 2026-07-16). Outside the drawer so the avatar
-                is always one tap away at any width. */}
-            <UserMenu />
+            {/* QOL-L: our own account modal, opened from the avatar. Replaces the Clerk
+                UserButton dropdown; theme toggle + install live inside the modal now.
+                Outside the drawer so the avatar is always one tap away at any width. */}
+            <AccountMenu />
           </SignedIn>
 
           {/* QOL-J (2026-07-20, Keagan): the signed-out auth links live here, to the RIGHT

@@ -1289,6 +1289,41 @@ the exact people most likely to have installed it — returning users. `QOL_UI_B
 Phase QOL-M (Step 0 outline, Step 1's manifest bullet, and both the Step 1 and Step
 2 session prompts) updated to state this as decided rather than an open question.
 
+### 2026-07-20 — QOL-L account modal: build our OWN modal, keep Clerk for credentials
+
+**Status:** Confirmed by user (chose "recreate the modal our way" over folding into
+Clerk's pre-built `<UserProfile>`; then chose "defer credentials to Clerk" over
+recreating credential management).
+
+**Context / why the original QOL-L plan changed.** QOL-L as written assumed folding
+`/profile` into Clerk's `UserButton.UserProfilePage` custom pages. The API was verified
+to exist (Clerk Next.js docs, live-checked 2026-07-20), BUT it renders CLIENT-only inside
+Clerk's modal, while our profile is server-rendered: `WorkshopForm` is an `async` server
+component and `saveWorkshopAction` `redirect()`s — neither survives a "reuse unchanged"
+move into a client modal, and the redirect lands wrong (full-page nav out of the modal).
+Surfaced to Keagan rather than forcing the old pattern to fit (the plan's own item-5
+instruction).
+
+**Decision.** Build a **custom `AccountModal`** (our own accessible `<dialog>`), opened
+from the header avatar, containing: account summary (name/email/avatar from Clerk's
+`useUser()`, member-since from Clerk `createdAt`), activity links (Builds/Saved), the
+Workshop tool picker (rebuilt to work in-modal: client fetch of `/api/workshop`, save via
+a result-returning `saveWorkshopModalAction`, in-modal success — NOT a redirect), the
+theme toggle + install action (moved from the old `UserButton` dropdown), and a **"Manage
+account & security"** button that opens Clerk's own UI via `useClerk().openUserProfile()`,
+plus Sign out via `useClerk().signOut()`.
+
+**Hard boundary (security):** we do NOT reimplement credential/security flows (password,
+email change/verify, MFA, active sessions, account deletion). Those stay with Clerk —
+recreating them would be a new auth-sensitive surface and throw away the reason Clerk is
+used. Our modal owns presentation + our data only.
+
+**`/profile` STAYS** as the server-rendered page (no route → redirect this time): the
+modal is client-only, so `/profile` is the no-JS fallback, and the header avatar is an
+`<a href="/profile">` progressively enhanced to open the modal — no-JS users still reach
+their account + workshop. This reverses the original QOL-L "/profile becomes a redirect"
+bullet, deliberately, for the no-JS path.
+
 ## Recommendations Awaiting Explicit Confirmation
 
 These are **not** decisions yet — they are the build agent's

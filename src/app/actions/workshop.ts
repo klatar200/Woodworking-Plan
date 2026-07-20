@@ -44,3 +44,49 @@ export async function saveWorkshopAction(formData: FormData): Promise<void> {
   revalidatePath('/');
   redirect('/profile?saved=1#workshop');
 }
+
+/** The result of a modal workshop save — a value, not a redirect (QOL-L). */
+export type WorkshopSaveResult =
+  | { ok: true }
+  | { ok: false; error: 'rate-limited' | 'unauthorized' | 'error' };
+
+/**
+ * Save the owned-tools profile from the AccountModal — QOL-L.
+ *
+ * Same security and rate-limit posture as `saveWorkshopAction` (owner from session,
+ * `create` bucket, slugs validated in `setOwnedTools`), but RETURNS A RESULT instead of
+ * redirecting — a `redirect()` inside the modal would navigate the whole page out of it.
+ * The client shows an in-modal "Saved" / error from this value (`useActionState`).
+ *
+ * Takes the slug array directly (the client collects the checked boxes), not a FormData —
+ * a server action may take any serialisable argument, and there's no no-JS form behind
+ * this one (that path is `/profile`'s `saveWorkshopAction`, kept intact above).
+ *
+ * NEVER THROWS: an uncaught throw out of a server action is an HTTP 500. An expired
+ * session (`UnauthorizedError`, matched by NAME to keep this off the Clerk/Prisma import
+ * chain) → a typed `unauthorized`; anything else → `error`. Both render a message in the
+ * modal rather than crashing it.
+ */
+export async function saveWorkshopModalAction(
+  slugs: string[],
+): Promise<WorkshopSaveResult> {
+  if (!(await checkRateLimit('create'))) return { ok: false, error: 'rate-limited' };
+
+  const clean = slugs.filter(
+    (value): value is string => typeof value === 'string' && value !== '',
+  );
+
+  try {
+    await setOwnedTools(clean);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'UnauthorizedError') {
+      return { ok: false, error: 'unauthorized' };
+    }
+    return { ok: false, error: 'error' };
+  }
+
+  // The catalog's tool-filter prefill and the /profile fallback both reflect the new set.
+  revalidatePath('/');
+  revalidatePath('/profile');
+  return { ok: true };
+}
