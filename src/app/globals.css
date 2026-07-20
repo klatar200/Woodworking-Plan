@@ -224,6 +224,76 @@ h2 {
   color: var(--muted);
 }
 
+/* ── QOL-M landing page (Step 2) ──────────────────────────────────────────────
+ * The marketing landing at `/`. Fraunces on its headings via `.font-display`
+ * (the landing sets its own heading sizes with Tailwind, so this only swaps the
+ * face — it does NOT touch the small uppercase global h2 label). The revolving
+ * carousels are a pure-CSS marquee: two IDENTICAL halves, spacing via item
+ * margin-right (not flex gap), exact -50% translate → the restart is invisible,
+ * no JS. Reduced-motion pauses them; the landing is not part of the print sheet. */
+.font-display {
+  font-family: var(--font-display), Georgia, 'Times New Roman', serif;
+  letter-spacing: -0.01em;
+}
+
+.landing-marquee {
+  overflow: hidden;
+  position: relative;
+}
+/* Fade edges to the section background. All landing marquees sit on --surface; a class
+   (not an inline `--edge` style) keeps this out of the way of @types/react, which in this
+   project doesn't type custom properties on the `style` prop. */
+.landing-marquee-on-surface {
+  --edge: var(--surface);
+}
+.landing-marquee::before,
+.landing-marquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4rem;
+  z-index: 2;
+  pointer-events: none;
+}
+.landing-marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--edge, var(--bg)), transparent);
+}
+.landing-marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--edge, var(--bg)), transparent);
+}
+.landing-marquee-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  animation: landing-scroll var(--speed, 40s) linear infinite;
+}
+.landing-marquee-track > * {
+  /* --gap is read from the track (set per-marquee) so this UNLAYERED rule doesn't get
+     fought by a layered Tailwind `mr-*` utility (which it would win, silently). */
+  margin-right: var(--gap, 1rem);
+  flex: 0 0 auto;
+}
+.landing-marquee:hover .landing-marquee-track {
+  animation-play-state: paused;
+}
+/* PlanCard is a grid <li>; pin its width inside the carousel. */
+.landing-marquee-track .plan-card {
+  width: 18rem;
+}
+@keyframes landing-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-marquee-track {
+    animation: none;
+  }
+}
+
 .subtitle {
   margin: 0;
   color: var(--muted);

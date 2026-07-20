@@ -1,6 +1,22 @@
 import type { Metadata, Viewport } from 'next';
+import { Fraunces } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
+
+/**
+ * QOL-M Step 2 (2026-07-20, Keagan-approved brand element): Fraunces — a warm display
+ * serif for headings, fitting the craft/woodworking tone. Self-hosted by next/font (no
+ * external CDN request, so no CSP `font-src` hole — the mockup's Google-Fonts <link> is
+ * NOT used in production). Exposed as `--font-display`; applied via the `.font-display`
+ * helper in globals.css (the landing today; extend to site-wide h1s if wanted).
+ */
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  style: ['normal'],
+  variable: '--font-display',
+  display: 'swap',
+});
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { InstallCapture } from '@/components/install-prompt';
@@ -119,7 +135,11 @@ export default async function RootLayout({
      * every route is already `force-dynamic`.
      */
     <ClerkProvider dynamic>
-      <html lang="en" className={isDark ? 'dark' : undefined} suppressHydrationWarning>
+      <html
+        lang="en"
+        className={`${fraunces.variable}${isDark ? ' dark' : ''}`}
+        suppressHydrationWarning
+      >
         {/* QOL-K: the body is a full-height flex column so the footer sits at the bottom of
             the viewport on short pages (e.g. /builds with no builds) instead of leaving a
             band of raw background beneath it. `{children}` grows to fill via `flex-1`;
