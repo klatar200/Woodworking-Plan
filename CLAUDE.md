@@ -536,6 +536,43 @@ with it.
   with Neon, caching public content, Lighthouse on prod) recorded in the chat summary —
   they need vendor dashboards or launch-scale decisions, not code.
 
+- **Full-app audit + fix pass (2026-07-19, Keagan's direction): COMPLETE.** Audit found
+  7 defects; 5 fixed this pass, 2 deferred as decisions. **(1) Review photo uploads were
+  capped at 1 MB silently** — Next's default `serverActions.bodySizeLimit` rejects the
+  body BEFORE the action runs, so `MAX_UPLOAD_BYTES` (8 MB) was unreachable dead code and
+  most phone photos failed with a framework error. Now: `bodySizeLimit: '4mb'`
+  (next.config.ts — Vercel's platform caps ~4.5 MB, so higher just moves the failure),
+  `MAX_UPLOAD_BYTES` 8 → 4 MB to match, and a **client downscale island**
+  (`photo-input.tsx` + pure math in `src/lib/client-image.ts`) re-encodes big photos to
+  the stored 1600px edge before submit — fails soft per file, no-JS degrades to the plain
+  input, server pipeline untouched. Residual: a multi-photo submission totalling >4 MB
+  still dies at the platform edge; the downscale makes that rare, not impossible.
+  **(2) The no-throw rule stopped one layer above the data layer** — `savePlan`/'Plan not
+  found', `upsertReview`'s throws, and `requireUser()` for an EXPIRED session all escaped
+  actions as HTTP 500s (the plan page is public, so middleware never saw the POST). Now
+  every lib call goes through **`guardAction()`** (`src/lib/action-guard.ts`):
+  `unstable_rethrow` passes framework signals, a named `UnauthorizedError` (auth.ts,
+  matched by NAME to keep the guard off the Clerk/Prisma import chain) → sign-in with a
+  return URL, everything else → logged silent bounce via the SAME `bounceTarget()`; a
+  refused photo carries `?notice=upload-failed` (`UploadFailedNotice`, plan page) — the
+  one data-layer failure a real person can reach. The view beacon swallows-and-logs (no
+  redirect — it's a background effect). **(3) The offline download was half-broken since
+  Sprint 22:** it cached `/shopping-list?collection=` (a param the page STOPPED READING —
+  N dead copies) and missed `?view=by-plan` and the `/saved?collection=` tabs — the SW
+  matches EXACT URLs, so every offline-tappable view needs its own entry
+  (offline-urls.ts). **(4)** `/dev` added to `NEVER_CACHE_PREFIXES` (the "every private
+  route" rule). **(5)** `R2_PUBLIC_HOST` added to the env schema + a build-time WARNING
+  in check-db-urls.mjs (unset at Vercel build time = every plan image silently blocked —
+  the two-gates failure shape); also `.design-sync/**` eslint-ignored (a tracked design
+  export was failing `eslint .` — the Prototype-Wireframe/CI-red shape again). Zero new
+  dependencies. **Deferred to Keagan:** theme toggle for signed-out visitors (placement
+  is a design call — today dark mode is signed-in only), and `PlanView` retention
+  (pruning breaks the all-time Most Viewed sort — needs a rollup design, not a quick
+  fix); `git rm src/components/save-button.tsx` still pending from QOL-B. Gate run in a
+  /tmp clone (HEAD + the uncommitted working tree reproduced): **724 tests green
+  (63 files), `tsc` clean, `eslint` clean.** Needs `npm run build` + a browser pass
+  (post a review with a large phone photo; toggle the shopping-list views offline) + push.
+
 - **Phase QOL-G (part-diagram PILOT): COMPLETE — 96/100. ⏸ AWAITING KEAGAN'S VERDICT**
   (2026-07-19). A generic SVG renderer computed from each plan's existing `cutList`
   (`src/lib/part-diagram.ts` = pure layout, `part-diagram.tsx` = the SVG), piloted on 5
@@ -901,6 +938,29 @@ Error [RateLimitError]: Too many requests. Please slow down...
 `checkRateLimit()` now returns a boolean and every action no-ops on `false`.
 **And the tests asserted the throw, and passed** — they proved the code did what I
 wrote, not that what I wrote was right. Assert the behaviour the APP needs.
+
+**THE SAME BUG WAS SITTING ONE LINE BELOW THE LIMITER, IN FOUR FILES — fixed
+2026-07-19.** `likes.ts`, `saves.ts`, `shopping-list.ts` and `reviews.ts` each declared a
+private `requiredString()` that **threw** on a missing field. So the limiter no-throw fix
+landed, and directly beneath it a POST omitting `planId` (or `rating`, `collectionId`,
+`reviewId`, `photoId`) still produced an HTTP 500 on a public endpoint. The rule was
+applied to the caller that caused the incident and to nothing else.
+
+Now: one shared `src/lib/form-fields.ts` (`formString`, `formInt`) returning **`null`,
+never throwing**, and every action bails with `redirect(bounceTarget(...))`. Two
+notes that matter:
+
+- **`formInt` requires BOUNDS.** `Number.parseInt` reads `"5abc"` as `5` and `"1e9"` as
+  `1`, and nothing downstream re-validated the rating — while catalog ratings are
+  **computed on read** from those rows, so one junk value silently poisons every average.
+- **Only the missing-RATING bail carries a notice** (`?notice=rating-required`,
+  `RatingRequiredNotice`). A real person can reach it (the star input is
+  `visually-hidden` radios; a browser that failed to enforce `required` submits empty).
+  Missing structural ids bounce **silently** — only a hand-built request can omit them,
+  and it learns nothing from our field names.
+- **Two existing tests had to be rewritten because they asserted the throw and passed** —
+  the exact trap this section already warned about, made again in the file whose own
+  header describes it. Assert the behaviour the APP needs.
 
 **Follow-up CLOSED (2026-07-14):** a denied action now `redirect()`s back to the
 page with `?notice=slow-down`, and `/`, `/plans/[slug]`, and `/saved` render a

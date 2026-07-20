@@ -27,6 +27,7 @@ const deleteBuildPhoto = vi.fn();
 const checkRateLimit = vi.fn();
 const revalidatePath = vi.fn();
 const redirect = vi.fn();
+const unstableRethrow = vi.fn();
 
 vi.mock('@/lib/reviews', () => ({
   upsertReview,
@@ -37,7 +38,7 @@ vi.mock('@/lib/reviews', () => ({
 
 vi.mock('@/lib/rate-limit', () => ({ checkRateLimit }));
 vi.mock('next/cache', () => ({ revalidatePath }));
-vi.mock('next/navigation', () => ({ redirect }));
+vi.mock('next/navigation', () => ({ redirect, unstable_rethrow: unstableRethrow }));
 
 /**
  * The REAL `redirect()` throws a NEXT_REDIRECT control-flow signal that the
@@ -61,6 +62,11 @@ beforeEach(() => {
   checkRateLimit.mockReset().mockResolvedValue(true);
   redirect.mockReset().mockImplementation((url: string) => {
     throw new RedirectSignal(url);
+  });
+  // Mirrors the real `unstable_rethrow` (used by the action guard): framework
+  // control-flow signals pass through; real errors do not.
+  unstableRethrow.mockReset().mockImplementation((error: unknown) => {
+    if (error instanceof RedirectSignal) throw error;
   });
 });
 
@@ -148,27 +154,45 @@ describe('REGRESSION: a denied action never throws a REAL error — it redirects
 });
 
 describe('FormData is attacker-controlled and is parsed as such', () => {
-  it('rejects a missing planId rather than writing a row without one', async () => {
+  /**
+   * ⚠️ BOTH TESTS BELOW WERE REWRITTEN 2026-07-19, and how they used to read is the
+   * point.
+   *
+   * They asserted a THROW — `rejects.toThrow(/planId/)` — and they passed, because the
+   * action really did throw. But an uncaught throw out of a server action is an HTTP 500
+   * and a client "Application error" boundary. So these tests proved the code did what
+   * was written, not that what was written was right: the identical mistake this file's
+   * own header describes about the rate-limit incident, made again two `describe`s
+   * further down. Assert the behaviour the APP needs.
+   */
+  it('DROPS a request with no planId — redirects, never throws a real error', async () => {
     const { submitReviewAction } = await import('@/app/actions/reviews');
 
     const formData = new FormData();
     formData.set('rating', '5');
 
-    await expect(submitReviewAction(formData)).rejects.toThrow(/planId/);
+    // The only throw is the framework's redirect signal.
+    await expect(submitReviewAction(formData)).rejects.toThrow(/NEXT_REDIRECT/);
     expect(upsertReview).not.toHaveBeenCalled();
+
+    // Silently — a hand-built POST is the only way to omit planId, and it learns nothing
+    // from a message about our field names.
+    expect(redirect.mock.calls[0]![0]).not.toContain('notice=');
   });
 
-  it('a non-numeric rating does not silently become NaN in the database', async () => {
+  it('refuses a non-numeric rating at the ACTION, instead of passing NaN down', async () => {
     const { submitReviewAction } = await import('@/app/actions/reviews');
 
-    await submitReviewAction(reviewForm({ rating: 'not-a-number' }));
+    await expect(
+      submitReviewAction(reviewForm({ rating: 'not-a-number' })),
+    ).rejects.toThrow(/NEXT_REDIRECT/);
 
-    // parseInt('not-a-number') is NaN. It reaches upsertReview, whose range check
-    // rejects it (NaN fails `Number.isFinite`) — asserted in reviews.test.ts. What
-    // matters HERE is that the action does not quietly coerce it to 0 or 5 first.
-    expect(upsertReview).toHaveBeenCalledWith(
-      expect.objectContaining({ rating: NaN }),
-    );
+    // It used to hand `NaN` to upsertReview and rely on the data layer's range check to
+    // catch it. That worked, but it made the action's own contract "accepts anything",
+    // and `Number.parseInt` would have read "5abc" as a perfectly valid 5. Ratings are
+    // averaged on read straight from these rows, so a junk value poisons every rating on
+    // the catalog with nothing to notice it.
+    expect(upsertReview).not.toHaveBeenCalled();
   });
 
   it('caps the number of files BEFORE buffering any of them into memory', async () => {

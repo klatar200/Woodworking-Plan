@@ -80,3 +80,22 @@ if (pooled.host !== direct.host || pooled.database !== direct.database) {
 console.log(
   `[check-db-urls] OK — both point at ${pooled.host}${pooled.database}`,
 );
+
+/**
+ * AUDIT 2026-07-19 — R2_PUBLIC_HOST is a BUILD-TIME dependency for plan images.
+ *
+ * next.config.ts reads it into `images.remotePatterns` when the build runs; unset, the
+ * pattern is simply absent and every R2-hosted plan photo is silently blocked by
+ * next/image while everything else stays green — the same "two independent gates"
+ * failure shape as the Clerk CSP bug. A WARNING, not a failure: a build without plan
+ * images is degraded, not wrong (the image slot renders its honest placeholder), and
+ * failing the deploy over it would take the whole site down instead.
+ */
+if (!process.env.R2_PUBLIC_HOST) {
+  console.warn(
+    '[check-db-urls] ⚠ R2_PUBLIC_HOST is not set. Plan photos hosted on R2 will be ' +
+      'SILENTLY BLOCKED by next/image in this build (the CSP img-src and ' +
+      'remotePatterns gates will both omit the host). Set it in Vercel → Settings → ' +
+      'Environment Variables if plan images should render.',
+  );
+}

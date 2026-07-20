@@ -38,5 +38,13 @@ import { checkRateLimit } from '@/lib/rate-limit';
 export async function recordPlanViewAction(slug: string): Promise<void> {
   if (!(await checkRateLimit('toggle'))) return;
 
-  await recordPlanView(slug);
+  try {
+    await recordPlanView(slug);
+  } catch (error) {
+    // AUDIT FIX 2026-07-19: a transient DB failure here used to escape as an HTTP
+    // 500 out of a BACKGROUND BEACON. Same rule as the denial above — no throw, and
+    // no redirect either (yanking a reader to another URL over a lost view would be
+    // absurd). Logged, because a swallowed outage must still be visible in the logs.
+    console.warn('[views] view not recorded:', error);
+  }
 }

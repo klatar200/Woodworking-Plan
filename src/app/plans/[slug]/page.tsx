@@ -24,8 +24,16 @@ import { PlanTabs } from '@/components/plan-tabs';
 import { PlanImageSlot } from '@/components/plan-image-slot';
 import { InstructionsDisclosure } from '@/components/instructions-disclosure';
 import { Prose } from '@/components/prose';
-import { RateLimitNotice } from '@/components/rate-limit-notice';
-import { hasRateLimitNotice } from '@/lib/rate-limit-feedback';
+import {
+  RateLimitNotice,
+  RatingRequiredNotice,
+  UploadFailedNotice,
+} from '@/components/rate-limit-notice';
+import {
+  hasRateLimitNotice,
+  hasRatingNotice,
+  hasUploadNotice,
+} from '@/lib/rate-limit-feedback';
 import {
   costTierSymbol,
   difficultyLabel,
@@ -138,6 +146,20 @@ export default async function PlanDetailPage({
 
       <RateLimitNotice
         show={hasRateLimitNotice(notice)}
+        dismissHref={`/plans/${plan.slug}`}
+      />
+
+      {/* 2026-07-19 — a review submitted with no rating used to 500 this page. It now
+          bounces back here with a notice instead. See src/app/actions/reviews.ts. */}
+      <RatingRequiredNotice
+        show={hasRatingNotice(notice)}
+        dismissHref={`/plans/${plan.slug}`}
+      />
+
+      {/* AUDIT FIX 2026-07-19 — a photo the pipeline refused used to escape the action
+          as an uncaught UploadError (HTTP 500, review lost). See action-guard.ts. */}
+      <UploadFailedNotice
+        show={hasUploadNotice(notice)}
         dismissHref={`/plans/${plan.slug}`}
       />
 

@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { addToShoppingList, removeFromShoppingList } from '@/lib/shopping-list';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { denialTarget } from '@/lib/rate-limit-feedback';
+import { denialTarget, bounceTarget } from '@/lib/rate-limit-feedback';
+import { formString } from '@/lib/form-fields';
+import { guardAction } from '@/lib/action-guard';
 
 /**
  * Add / remove a plan on the shopping list — Sprint 22.
@@ -22,21 +24,22 @@ import { denialTarget } from '@/lib/rate-limit-feedback';
  * `returnTo` field through `safeReturnTo`, so the bounce cannot become an open redirect.
  */
 
-function requiredString(formData: FormData, key: string): string {
-  const value = formData.get(key);
-  if (typeof value !== 'string' || value === '') {
-    throw new Error(`Missing ${key}`);
-  }
-  return value;
-}
-
+/**
+ * MALFORMED INPUT IS DROPPED, NOT THROWN (2026-07-19) — see src/lib/form-fields.ts.
+ * The old local `requiredString` threw, and an uncaught throw out of a server action is
+ * an HTTP 500.
+ */
 export async function addToShoppingListAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
-  const planId = requiredString(formData, 'planId');
+  const planId = formString(formData, 'planId');
+  if (planId === null) redirect(bounceTarget(formData, '/'));
+
   const slug = formData.get('slug');
 
-  await addToShoppingList(planId);
+  // AUDIT FIX 2026-07-19: `requireUser()` inside the lib throws for an expired
+  // session, which escaped as an HTTP 500 on a public page. See action-guard.ts.
+  await guardAction(addToShoppingList(planId), formData, '/');
 
   if (typeof slug === 'string' && slug !== '') revalidatePath(`/plans/${slug}`);
   revalidatePath('/shopping-list');
@@ -45,10 +48,12 @@ export async function addToShoppingListAction(formData: FormData): Promise<void>
 export async function removeFromShoppingListAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
-  const planId = requiredString(formData, 'planId');
+  const planId = formString(formData, 'planId');
+  if (planId === null) redirect(bounceTarget(formData, '/'));
+
   const slug = formData.get('slug');
 
-  await removeFromShoppingList(planId);
+  await guardAction(removeFromShoppingList(planId), formData, '/');
 
   if (typeof slug === 'string' && slug !== '') revalidatePath(`/plans/${slug}`);
   revalidatePath('/shopping-list');

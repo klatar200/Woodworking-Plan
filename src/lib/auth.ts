@@ -76,6 +76,23 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
 });
 
 /**
+ * The error `requireUser()` throws for an anonymous caller — AUDIT FIX 2026-07-19.
+ *
+ * A NAMED class, because the action boundary needs to tell "no session" apart from
+ * every other failure: an expired session clicking Save should land on the sign-in
+ * page, not on a generic bounce (and before this fix, on an HTTP 500 — the plan page
+ * is public, so the middleware never intercepted the POST and the bare throw escaped
+ * the action). src/lib/action-guard.ts matches on `error.name` rather than importing
+ * this class, so the guard stays free of this module's Clerk/Prisma import chain.
+ */
+export class UnauthorizedError extends Error {
+  constructor() {
+    super('Unauthorized: no authenticated user');
+    this.name = 'UnauthorizedError';
+  }
+}
+
+/**
  * Same as getCurrentUser, but throws when there is no session.
  *
  * Use this in any server component or route handler that must not run for an
@@ -87,7 +104,7 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
 export async function requireUser(): Promise<User> {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error('Unauthorized: no authenticated user');
+    throw new UnauthorizedError();
   }
   return user;
 }

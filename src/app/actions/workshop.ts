@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { setOwnedTools } from '@/lib/workshop';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { denialTarget } from '@/lib/rate-limit-feedback';
+import { guardAction } from '@/lib/action-guard';
 
 /**
  * Save the owned-tools profile — Sprint 25.
@@ -35,7 +36,9 @@ export async function saveWorkshopAction(formData: FormData): Promise<void> {
     .getAll('tools')
     .filter((value): value is string => typeof value === 'string' && value !== '');
 
-  await setOwnedTools(slugs);
+  // AUDIT FIX 2026-07-19: an expired session used to escape as an HTTP 500 —
+  // now it lands on sign-in with a return URL. See src/lib/action-guard.ts.
+  await guardAction(setOwnedTools(slugs), formData, '/profile');
 
   revalidatePath('/profile');
   revalidatePath('/');

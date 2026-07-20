@@ -20,6 +20,10 @@ const config = [
       'next-env.d.ts',
       'coverage/**',
       'Prototype Wireframe/**',
+      // Same story as 'Prototype Wireframe/' — a design-tool export, not app code.
+      // Found failing `eslint .` in the 2026-07-19 audit (2 no-empty-object-type
+      // errors): the exact "CI red and nobody watching" failure shape again.
+      '.design-sync/**',
     ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),

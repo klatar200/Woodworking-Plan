@@ -40,8 +40,17 @@ import { env } from '@/env';
  * 1 GB tier gets tight, swapping providers is this file and nothing else.
  */
 
-/** Hard cap on the uploaded file, checked BEFORE we decode anything. */
-export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB
+/**
+ * Hard cap on the uploaded file, checked BEFORE we decode anything.
+ *
+ * 4 MB, aligned with `serverActions.bodySizeLimit` in next.config.ts (AUDIT FIX
+ * 2026-07-19). The old 8 MB was unreachable: Next capped the whole action body at its
+ * 1 MB default (and Vercel caps it at ~4.5 MB regardless), so no 8 MB file could ever
+ * arrive here. A limit the platform makes unreachable is a limit that lies. Real
+ * photos are downscaled client-side first (src/components/photo-input.tsx); this is
+ * the hostile-input backstop, not the path a person is expected to hit.
+ */
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // 4 MB
 
 /**
  * Cap on total pixels, checked from the header BEFORE full decode.

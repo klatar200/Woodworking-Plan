@@ -61,6 +61,11 @@
     '/sign-in', // Clerk's flow, and its tokens
     '/sign-up',
     '/shopping-list', // derived from the saved library — as private as the library
+    // Dev-only scaffolding (QOL-G pilot and whatever comes next). Production 404s it
+    // and the response gate refuses non-200s, so nothing caches today — but this list
+    // is the rule "every private route goes on the denylist", and a route whose
+    // protection is an env check in page code is one refactor away from needing it.
+    '/dev',
   ];
 
   // Routes the user may EXPLICITLY choose to download. An allowlist, deliberately

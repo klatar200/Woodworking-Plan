@@ -23,6 +23,31 @@ export const RATE_LIMIT_NOTICE_PARAM = 'notice';
 export const RATE_LIMIT_NOTICE_VALUE = 'slow-down';
 
 /**
+ * A second notice code (2026-07-19), for a review submitted without a rating.
+ *
+ * WHY ONLY THIS ONE. Most malformed submissions can only come from a hand-built POST —
+ * a missing `planId` or `collectionId` is not something our own forms can produce — so
+ * those bail SILENTLY: the request is dropped, the user is redirected, and an attacker
+ * learns nothing from a message. A missing RATING is different: it is reachable by a
+ * real person, because the star widget is a set of `visually-hidden` radios whose
+ * `required` attribute a browser could conceivably fail to enforce (flagged in QOL-B).
+ * Someone in that position pressed "Post review" and watched nothing happen; they are
+ * owed a sentence explaining why.
+ */
+export const RATING_NOTICE_VALUE = 'rating-required';
+
+/**
+ * A third notice code (AUDIT FIX 2026-07-19), for a review whose photo failed the
+ * upload pipeline.
+ *
+ * Same test as the rating notice: is it reachable by a REAL person? Yes — a corrupt
+ * file, an exotic format the pipeline refuses, an over-size upload that slipped past
+ * the client downscale. That used to be an uncaught `UploadError` out of the action —
+ * an HTTP 500 with the review text lost. Now it bounces back with this notice.
+ */
+export const UPLOAD_NOTICE_VALUE = 'upload-failed';
+
+/**
  * Validates an untrusted `returnTo` from FormData.
  *
  * A redirect target read from a form is ATTACKER INPUT — anyone can POST any
@@ -68,10 +93,39 @@ export function hasRateLimitNotice(raw: string | string[] | undefined): boolean 
  * path, because it, too, comes from the form — else to the given default.
  */
 export function denialTarget(formData: FormData, fallback: string): string {
+  return rateLimitNoticeUrl(bounceTarget(formData, fallback));
+}
+
+/**
+ * Where a request bounces back to, WITHOUT any notice — the same safe-target logic
+ * `denialTarget` uses, minus the message.
+ *
+ * Extracted 2026-07-19 for the malformed-input bail. It matters that this reuses the
+ * identical target resolution rather than re-deriving it: `returnTo` is attacker input
+ * on this path too, and a second, subtly different implementation is how one of two
+ * bail routes ends up an open redirect while the other stays safe.
+ */
+export function bounceTarget(formData: FormData, fallback: string): string {
   const slug = formData.get('slug');
   const slugFallback =
     typeof slug === 'string' && /^[a-z0-9-]+$/.test(slug)
       ? `/plans/${slug}`
       : fallback;
-  return rateLimitNoticeUrl(safeReturnTo(formData.get('returnTo'), slugFallback));
+  return safeReturnTo(formData.get('returnTo'), slugFallback);
+}
+
+/** Appends an arbitrary notice code, preserving any existing query string. */
+export function noticeUrl(path: string, value: string): string {
+  const separator = path.includes('?') ? '&' : '?';
+  return `${path}${separator}${RATE_LIMIT_NOTICE_PARAM}=${value}`;
+}
+
+/** True when a page's searchParams carry the "you didn't pick a rating" notice. */
+export function hasRatingNotice(raw: string | string[] | undefined): boolean {
+  return raw === RATING_NOTICE_VALUE;
+}
+
+/** True when a page's searchParams carry the "photo couldn't be processed" notice. */
+export function hasUploadNotice(raw: string | string[] | undefined): boolean {
+  return raw === UPLOAD_NOTICE_VALUE;
 }

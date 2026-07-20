@@ -49,12 +49,18 @@ describe('offlineDownloadUrls', () => {
     }
   });
 
-  it('includes the shopping list, one per collection, and the saved list', () => {
+  it('includes BOTH shopping-list views, the saved list, and each collection tab', () => {
+    // AUDIT FIX 2026-07-19: the SW cache matches exact URLs, so every offline-tappable
+    // view needs its own entry. `?collection=` on the shopping list was a DEAD param
+    // (the page stopped reading it in Sprint 22) and `?view=by-plan` was missing —
+    // the by-plan toggle hit the offline fallback.
     const urls = offlineDownloadUrls(INPUT);
     expect(urls).toContain('/shopping-list');
-    expect(urls).toContain('/shopping-list?collection=col_abc');
-    expect(urls).toContain('/shopping-list?collection=col_def');
+    expect(urls).toContain('/shopping-list?view=by-plan');
+    expect(urls).not.toContain('/shopping-list?collection=col_abc');
     expect(urls).toContain('/saved');
+    expect(urls).toContain('/saved?collection=col_abc');
+    expect(urls).toContain('/saved?collection=col_def');
   });
 
   it('includes the learning-paths hub and each path — the Sprint 16 gap, now closed', () => {
@@ -87,7 +93,7 @@ describe('offlineDownloadUrls', () => {
   it('the private entries route to the PRIVATE cache — /saved and /shopping-list', () => {
     // These are the user's own data: downloadable by consent, but NOT cacheable on the
     // worker's own initiative, so they go to the private cache that the sign-out wipe clears.
-    for (const url of ['/saved', '/shopping-list', '/shopping-list?collection=col_abc']) {
+    for (const url of ['/saved', '/saved?collection=col_abc', '/shopping-list', '/shopping-list?view=by-plan']) {
       const request = { method: 'GET', url: `${ORIGIN}${url}`, origin: ORIGIN };
       expect(isDownloadable(request)).toBe(true);
       expect(isCacheable(request)).toBe(false);
@@ -98,7 +104,7 @@ describe('offlineDownloadUrls', () => {
     // Not strictly empty — the hub and the whole-library shopping list are always useful —
     // but it must not crash or emit malformed URLs with undefined slugs.
     const urls = offlineDownloadUrls({ planSlugs: [], collectionIds: [], pathSlugs: [] });
-    expect(urls).toEqual(['/shopping-list', '/saved', '/paths']);
+    expect(urls).toEqual(['/shopping-list', '/shopping-list?view=by-plan', '/saved', '/paths']);
     expect(urls.some((u) => u.includes('undefined'))).toBe(false);
   });
 });

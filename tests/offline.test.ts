@@ -112,6 +112,8 @@ describe('SECURITY: private routes are NEVER cached', () => {
     expect(NEVER_CACHE_PREFIXES).toContain('/api');
     expect(NEVER_CACHE_PREFIXES).toContain('/sign-in');
     expect(NEVER_CACHE_PREFIXES).toContain('/sign-up');
+    // Dev scaffolding (QOL-G pilot) — added in the 2026-07-19 audit.
+    expect(NEVER_CACHE_PREFIXES).toContain('/dev');
   });
 
   it('SECURITY: a path that merely LOOKS public is still matched by prefix', () => {

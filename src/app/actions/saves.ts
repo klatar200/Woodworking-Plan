@@ -12,7 +12,9 @@ import {
   removePlanFromCollection,
 } from '@/lib/saves';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { denialTarget } from '@/lib/rate-limit-feedback';
+import { denialTarget, bounceTarget } from '@/lib/rate-limit-feedback';
+import { formString } from '@/lib/form-fields';
+import { guardAction } from '@/lib/action-guard';
 
 /**
  * Server actions — the write boundary for saves and collections.
@@ -44,21 +46,31 @@ import { denialTarget } from '@/lib/rate-limit-feedback';
  * src/lib/rate-limit-feedback.ts.
  */
 
-function requiredString(formData: FormData, key: string): string {
-  const value = formData.get(key);
-  if (typeof value !== 'string' || value === '') {
-    throw new Error(`Missing ${key}`);
-  }
-  return value;
-}
-
+/**
+ * MALFORMED INPUT IS DROPPED, NOT THROWN (2026-07-19) — see src/lib/form-fields.ts.
+ *
+ * The local `requiredString` this file used to declare THREW on a missing field, so a
+ * POST omitting `planId` or `collectionId` produced an HTTP 500 and a client error
+ * boundary. Same rule as the rate limiter directly above each of these: drop the
+ * request, `redirect()` (a framework-handled 303), never throw.
+ *
+ * AND THE DATA LAYER'S THROWS ARE CAUGHT TOO (AUDIT FIX 2026-07-19). `savePlan()`
+ * throws 'Plan not found' on a forged id; `createCollection()` throws on a >60-char
+ * name; `requireUser()` throws for any anonymous or EXPIRED session — and this file's
+ * public pages meant every one of those escaped as an HTTP 500. Every lib call now
+ * goes through `guardAction()` (src/lib/action-guard.ts): expired session → sign-in
+ * with a return URL; everything else → logged and bounced, silently (only a
+ * hand-built POST reaches those throws).
+ */
 export async function savePlanAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
-  const planId = requiredString(formData, 'planId');
+  const planId = formString(formData, 'planId');
+  if (planId === null) redirect(bounceTarget(formData, '/'));
+
   const slug = formData.get('slug');
 
-  await savePlan(planId);
+  await guardAction(savePlan(planId), formData, '/');
 
   // Refresh the plan page (its save button flips), the saved list, and the
   // catalog (its per-card bookmark overlay — see save-toggle.tsx).
@@ -72,10 +84,12 @@ export async function savePlanAction(formData: FormData): Promise<void> {
 export async function unsavePlanAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
-  const planId = requiredString(formData, 'planId');
+  const planId = formString(formData, 'planId');
+  if (planId === null) redirect(bounceTarget(formData, '/'));
+
   const slug = formData.get('slug');
 
-  await unsavePlan(planId);
+  await guardAction(unsavePlan(planId), formData, '/');
 
   if (typeof slug === 'string' && slug !== '') {
     revalidatePath(`/plans/${slug}`);
@@ -89,14 +103,23 @@ export async function createCollectionAction(formData: FormData): Promise<void> 
   // something a human eventually has to look at.
   if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, '/saved'));
 
-  await createCollection(requiredString(formData, 'name'));
+  const name = formString(formData, 'name');
+  // An empty collection name is a real user mistake (submitting the "new collection"
+  // field blank), not only a crafted POST — and the answer is the same either way:
+  // do nothing and put them back on the page, rather than crash it.
+  if (name === null) redirect(bounceTarget(formData, '/saved'));
+
+  await guardAction(createCollection(name), formData, '/saved');
   revalidatePath('/saved');
 }
 
 export async function deleteCollectionAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, '/saved'));
 
-  await deleteCollection(requiredString(formData, 'collectionId'));
+  const collectionId = formString(formData, 'collectionId');
+  if (collectionId === null) redirect(bounceTarget(formData, '/saved'));
+
+  await guardAction(deleteCollection(collectionId), formData, '/saved');
 
   // The user may have been viewing the folder they just deleted.
   revalidatePath('/saved');
@@ -106,29 +129,32 @@ export async function deleteCollectionAction(formData: FormData): Promise<void> 
 export async function renameCollectionAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, '/saved'));
 
-  await renameCollection(
-    requiredString(formData, 'collectionId'),
-    requiredString(formData, 'name'),
-  );
+  const collectionId = formString(formData, 'collectionId');
+  const name = formString(formData, 'name');
+  if (collectionId === null || name === null) redirect(bounceTarget(formData, '/saved'));
+
+  await guardAction(renameCollection(collectionId, name), formData, '/saved');
   revalidatePath('/saved');
 }
 
 export async function addToCollectionAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/saved'));
 
-  await addPlanToCollection(
-    requiredString(formData, 'planId'),
-    requiredString(formData, 'collectionId'),
-  );
+  const planId = formString(formData, 'planId');
+  const collectionId = formString(formData, 'collectionId');
+  if (planId === null || collectionId === null) redirect(bounceTarget(formData, '/saved'));
+
+  await guardAction(addPlanToCollection(planId, collectionId), formData, '/saved');
   revalidatePath('/saved');
 }
 
 export async function removeFromCollectionAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/saved'));
 
-  await removePlanFromCollection(
-    requiredString(formData, 'planId'),
-    requiredString(formData, 'collectionId'),
-  );
+  const planId = formString(formData, 'planId');
+  const collectionId = formString(formData, 'collectionId');
+  if (planId === null || collectionId === null) redirect(bounceTarget(formData, '/saved'));
+
+  await guardAction(removePlanFromCollection(planId, collectionId), formData, '/saved');
   revalidatePath('/saved');
 }

@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { likePlan, unlikePlan } from '@/lib/likes';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { denialTarget } from '@/lib/rate-limit-feedback';
+import { denialTarget, bounceTarget } from '@/lib/rate-limit-feedback';
+import { formString } from '@/lib/form-fields';
+import { guardAction } from '@/lib/action-guard';
 
 /**
  * Like/unlike server actions — Sprint 7.
@@ -31,21 +33,29 @@ import { denialTarget } from '@/lib/rate-limit-feedback';
  * 303, not an exception. See src/lib/rate-limit-feedback.ts.
  */
 
-function requiredString(formData: FormData, key: string): string {
-  const value = formData.get(key);
-  if (typeof value !== 'string' || value === '') {
-    throw new Error(`Missing ${key}`);
-  }
-  return value;
-}
-
+/**
+ * MALFORMED INPUT IS DROPPED, NOT THROWN (2026-07-19).
+ *
+ * The local `requiredString` these actions used to share THREW on a missing field, and
+ * an uncaught throw out of a server action is an HTTP 500 with a client error boundary —
+ * the same failure the rate limiter caused before it was fixed to no-throw. A server
+ * action is a public endpoint: a POST with no `planId` is untrusted input, not an
+ * exception. See src/lib/form-fields.ts.
+ */
 export async function likePlanAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
-  const planId = requiredString(formData, 'planId');
+  const planId = formString(formData, 'planId');
+  // Our own forms always send this; absence means a hand-built request, so bounce
+  // silently rather than explaining our field names to whoever sent it.
+  if (planId === null) redirect(bounceTarget(formData, '/'));
+
   const slug = formData.get('slug');
 
-  await likePlan(planId);
+  // AUDIT FIX 2026-07-19: `likePlan()` throws on a forged planId and `requireUser()`
+  // throws for an expired session — both escaped this action as HTTP 500s (the plan
+  // page is public, so the middleware never saw the POST). See src/lib/action-guard.ts.
+  await guardAction(likePlan(planId), formData, '/');
 
   if (typeof slug === 'string' && slug !== '') {
     revalidatePath(`/plans/${slug}`);
@@ -57,10 +67,12 @@ export async function likePlanAction(formData: FormData): Promise<void> {
 export async function unlikePlanAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('toggle'))) redirect(denialTarget(formData, '/'));
 
-  const planId = requiredString(formData, 'planId');
+  const planId = formString(formData, 'planId');
+  if (planId === null) redirect(bounceTarget(formData, '/'));
+
   const slug = formData.get('slug');
 
-  await unlikePlan(planId);
+  await guardAction(unlikePlan(planId), formData, '/');
 
   if (typeof slug === 'string' && slug !== '') {
     revalidatePath(`/plans/${slug}`);

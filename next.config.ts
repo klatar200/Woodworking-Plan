@@ -13,6 +13,28 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   /**
+   * AUDIT FIX 2026-07-19 — review photo uploads were capped at 1 MB, silently.
+   *
+   * Next's default `bodySizeLimit` for server actions is 1 MB, applied to the WHOLE
+   * multipart request BEFORE the action runs — the failure never reaches our code, so
+   * it cannot be caught or turned into a friendly notice. With the default in place,
+   * `MAX_UPLOAD_BYTES` in src/lib/storage.ts was unreachable dead code and any review
+   * photo over ~1 MB (i.e. most phone photos) failed with a framework error.
+   *
+   * 4 MB, not more, because Vercel's platform caps a serverless request body at
+   * ~4.5 MB regardless of this setting — configuring above that would just move the
+   * failure to an opaque platform 413. Our own per-file cap (also 4 MB) is what a user
+   * actually hits, with a message. The real fix for big photos is client-side: the
+   * review form downscales images to the stored size before upload
+   * (src/components/photo-input.tsx), so a typical submission is well under 1 MB.
+   */
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '4mb',
+    },
+  },
+
+  /**
    * SPRINT 10 — build photos on Vercel Blob.
    *
    * next/image refuses any remote host not listed here, and it is an ALLOWLIST, which

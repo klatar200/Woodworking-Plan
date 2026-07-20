@@ -13,11 +13,12 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  */
 
 const redirect = vi.fn();
+const unstableRethrow = vi.fn();
 const revalidatePath = vi.fn();
 const checkRateLimit = vi.fn();
 const setOwnedTools = vi.fn();
 
-vi.mock('next/navigation', () => ({ redirect }));
+vi.mock('next/navigation', () => ({ redirect, unstable_rethrow: unstableRethrow }));
 vi.mock('next/cache', () => ({ revalidatePath }));
 vi.mock('@/lib/rate-limit', () => ({ checkRateLimit }));
 vi.mock('@/lib/workshop', () => ({ setOwnedTools }));
@@ -36,6 +37,11 @@ beforeEach(() => {
   checkRateLimit.mockReset().mockResolvedValue(true);
   redirect.mockReset().mockImplementation((url: string) => {
     throw new RedirectSignal(url);
+  });
+  // Mirrors the real `unstable_rethrow` (used by the action guard): framework
+  // control-flow signals pass through; real errors do not.
+  unstableRethrow.mockReset().mockImplementation((error: unknown) => {
+    if (error instanceof RedirectSignal) throw error;
   });
 });
 

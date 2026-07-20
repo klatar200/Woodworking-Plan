@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { submitReviewAction, deleteReviewAction, deletePhotoAction } from '@/app/actions/reviews';
 import { StarRating } from '@/components/star-rating';
+import { PhotoInput } from '@/components/photo-input';
 import { btnPrimary, btnDanger } from '@/lib/ui'; // Sprint 29: shared button classes
 import { MAX_BODY_LENGTH, MAX_PHOTOS_PER_REVIEW } from '@/lib/reviews';
 import type { PlanReview, RatingSummary } from '@/lib/reviews';
@@ -145,16 +146,18 @@ export function ReviewsSection({
               <label htmlFor="review-photos">
                 Show your build <span className="muted">(up to {MAX_PHOTOS_PER_REVIEW})</span>
               </label>
-              <input
+              <PhotoInput
                 id="review-photos"
-                type="file"
                 name="photos"
                 accept="image/jpeg,image/png,image/webp,image/avif"
                 multiple
               />
               {/* `accept` is a CONVENIENCE for the file picker, not a control. The
                   server decides the file type from magic bytes and re-encodes every
-                  byte — see src/lib/storage.ts. */}
+                  byte — see src/lib/storage.ts. PhotoInput is a client island that
+                  downscales big photos before submit (the action body is capped at
+                  4 MB; a raw phone photo routinely isn't) — it degrades to a plain
+                  file input with no JS, and the server pipeline is unchanged. */}
 
               <label htmlFor="review-alt">Describe your photos for screen readers</label>
               <input

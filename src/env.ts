@@ -79,6 +79,16 @@ const serverSchema = z.object({
   // a Blob store is linked to the project.
   BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
 
+  // Cloudflare R2 public host for plan photos (DECISIONS_LOG 2026-07-17) — e.g.
+  // `pub-xxxx.r2.dev`, or a custom domain at launch. NOT a secret (it appears in
+  // every image URL). Read at BUILD time by next.config.ts (`images.remotePatterns`)
+  // and per-request by src/middleware.ts (`img-src` in the CSP) — both read
+  // process.env directly and normalise a pasted scheme/trailing slash themselves, so
+  // this entry is documentation + validation, not the consumer. Optional: without it
+  // plan photos render the honest placeholder. If it is MISSING ON VERCEL AT BUILD
+  // TIME every plan image is silently blocked — scripts/check-db-urls.mjs warns.
+  R2_PUBLIC_HOST: z.string().min(1).optional(),
+
   // Admin allowlist — comma-separated Clerk user ids (`user_xxx,user_yyy`).
   //
   // This is the ONLY thing that grants delete-any-review power (DECISIONS_LOG
