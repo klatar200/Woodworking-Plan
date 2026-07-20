@@ -1324,6 +1324,23 @@ modal is client-only, so `/profile` is the no-JS fallback, and the header avatar
 their account + workshop. This reverses the original QOL-L "/profile becomes a redirect"
 bullet, deliberately, for the no-JS path.
 
+### 2026-07-20 — QOL-M landing page: Fraunces heading font; copy stays placeholder
+
+Two calls made while building the QOL-M Step 2 landing page.
+
+1. **Heading font: Fraunces**, approved by Keagan ("continue to step 2 with your
+   recommended font"). A warm display serif for headings only (`--font-display`, applied via
+   the `.font-display` helper), body copy unchanged. **Self-hosted by `next/font/google`**, so
+   there is NO external font request and NO CSP `font-src` hole — the mockup's Google-Fonts
+   `<link>` is not used in production. This is a visual/typographic choice, not the brand
+   identity: **branding decision #8 (app name, logo, icons) is still open**, and the landing
+   still uses the "Woodworking Plan" placeholder name. Swapping the font later is a one-line
+   change in `layout.tsx`.
+2. **Landing copy is a DRAFT / placeholder**, same standing rule as Sprint 23's About/FAQ
+   ("public copy is Keagan's to approve", `BUILD_PLAN.md` §2). Every factual claim on the page
+   is true of the app today (real Trending featured plans, a real plan's real cut list, "$0 /
+   no ads / offline"); nothing is fabricated. No user counts, testimonials, or comparisons.
+
 ## Recommendations Awaiting Explicit Confirmation
 
 These are **not** decisions yet — they are the build agent's

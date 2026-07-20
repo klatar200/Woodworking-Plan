@@ -583,6 +583,39 @@ with it.
   (63 files), `tsc` clean, `eslint` clean.** Needs `npm run build` + a browser pass
   (post a review with a large phone photo; toggle the shopping-list views offline) + push.
 
+- **🛑 THE CATALOG NOW LIVES AT `/browse`, NOT `/` (QOL-M, 2026-07-20).** `/` is the
+  marketing LANDING page. `src/lib/routes.ts` `CATALOG_PATH` is the single seam — read it,
+  do not hardcode `/browse`. Historical §7 entries below that say "catalog at `/`" (Sprint 3,
+  18–20, etc.) are ACCURATE FOR THEIR SPRINT but superseded on this point. **Anything that
+  means "revalidate/point-at the catalog" must use `CATALOG_PATH`/`/browse`, not `/`** — the
+  hardening pass below fixed eight `revalidatePath('/')` calls that missed this.
+
+- **Phases QOL-H → QOL-M + hardening + carousel fix: COMPLETE, PUSHED, CI green
+  (2026-07-20).** The whole `QOL_UI_BUILD_PLAN.md` (A→M) is now closed; details per phase
+  are in that file's headers and `SPRINT_LOG.md` (2026-07-20 consolidated entry).
+  - **QOL-H/I:** a shared soft-GET-form hook — sort + filters auto-apply via
+    `router.push(url,{scroll:false})` with Apply/duplicate-Clear hidden when JS is on (no-JS
+    paths intact); configurable page size threaded through `queryPlans`/`buildQueryString`.
+  - **QOL-J:** compact desktop header search (any page) + nav regrouped beside the logo;
+    `CATALOG_PATH` constant introduced here.
+  - **QOL-K:** About/FAQ/Profile/Learning widened to page-wide; body is a `min-h-screen`
+    flex column so the footer pins to the viewport bottom on short pages.
+  - **QOL-L:** `/profile` folded into **our own** native-`<dialog>` account modal
+    (`account-modal.tsx` + `account-menu.tsx`), NOT Clerk's `UserProfilePage` (client-only,
+    can't host our server-action form — decision 2026-07-20). Private `GET /api/workshop`
+    feeds it; `saveWorkshopModalAction` returns a result (no redirect out of the modal);
+    `/profile` stays as the no-JS fallback. Same no-`userId` security posture.
+  - **QOL-M:** landing at `/` (Fraunces headings via `next/font`; real Trending featured
+    carousel; hero showcases a real plan's cut list + real board count; one primary CTA →
+    `/browse`), catalog at `/browse`. Placeholder brand name (branding #8 still open).
+  - **Hardening pass:** fixed the `revalidatePath('/')`→`/browse` regression (see the rule
+    above); landing marquee loop-duplicates are `inert` + `aria-hidden` (new `PlanCard
+    decorative` prop) so they're not a second tab stop / SR echo; decorative SVGs hidden.
+  - **Carousel seam fix:** narrow marquees (trust, category) repeat enough copies
+    (`MARQUEE_COPIES`) that a full screen sits behind the loop point — 2 copies left a
+    visible gap that "jerked" on reset; featured uses `PLAN_MARQUEE_COPIES`; `--speed` scales
+    with copy count. Category scrolls opposite (`reverse`) to featured.
+
 - **Phase QOL-G (part-diagram PILOT): COMPLETE — 96/100. ⏸ AWAITING KEAGAN'S VERDICT**
   (2026-07-19). A generic SVG renderer computed from each plan's existing `cutList`
   (`src/lib/part-diagram.ts` = pure layout, `part-diagram.tsx` = the SVG), piloted on 5

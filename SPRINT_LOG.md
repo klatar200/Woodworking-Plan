@@ -3451,6 +3451,55 @@ permits and the QOL-G session prompt explicitly anticipates: a dev-only route th
 production has no mobile surface and no offline behaviour — the service worker never sees
 it, and it is not on the allowlist.
 
+## Phases QOL-H → QOL-M + hardening + carousel fix — 2026-07-20 — **shipped, CI green**
+
+**Consolidated record.** QOL-H through QOL-M all shipped on 2026-07-20 (pushed, CI green,
+live site verified). Per-phase detail lives in `QOL_UI_BUILD_PLAN.md`'s headers; this is the
+outcome log. Each phase passed its own `BUILD_PLAN.md` §6 self-score gate at build time; the
+hardening pass and carousel fix (this entry's own work) carry the full scorecard below.
+
+| Phase | Outcome | Key files |
+|---|---|---|
+| QOL-H | Shared soft-GET-form hook; sort auto-applies, Apply hidden with JS on (no-JS intact) | `soft-get-form` hook, `sort-select*.tsx` |
+| QOL-I | Filters auto-apply; configurable page size threaded through the query/URL builders; duplicate Clear removed | `filter-panel.tsx`, `page-size-select.tsx`, `plans.ts`, `filters.ts` |
+| QOL-J | Compact desktop header search (any page); nav regrouped beside logo; `CATALOG_PATH` constant born | `site-header.tsx`, `lib/routes.ts` |
+| QOL-K | About/FAQ/Profile/Learning page-wide; footer pinned to viewport bottom on short pages | those pages, `layout.tsx` |
+| QOL-L | `/profile` folds into OUR native-`<dialog>` account modal (not Clerk's client-only `UserProfilePage`); private `GET /api/workshop`; result-returning `saveWorkshopModalAction`; `/profile` = no-JS fallback | `account-modal.tsx`, `account-menu.tsx`, `api/workshop/route.ts`, `actions/workshop.ts` |
+| QOL-M | Landing page at `/` (Fraunces, real Trending featured, real showcase cut list, CTA → `/browse`); catalog moved to `/browse` | `app/page.tsx`, `app/browse/*`, `lib/routes.ts`, `layout.tsx`, `public-routes.ts` |
+
+### Hardening pass + carousel fix (this session's own work)
+
+| File | Change |
+|---|---|
+| `actions/saves.ts`, `likes.ts`, `reviews.ts` | `revalidatePath('/')` kept (landing cards) **+** `revalidatePath(CATALOG_PATH)` added (catalog cards) — QOL-M regression: `/` is no longer the catalog |
+| `actions/workshop.ts` | `revalidatePath('/')` → `CATALOG_PATH` (tool-filter prefill lives on the catalog) |
+| `components/plan-card.tsx` | New `decorative` prop → `inert` + `aria-hidden` on the `<li>` |
+| `app/page.tsx` | Marquee loop-duplicates `inert`/`aria-hidden`; decorative SVGs hidden; **carousel seam fix** — narrow marquees repeat `MARQUEE_COPIES`, featured `PLAN_MARQUEE_COPIES`, `--speed` scaled, category `reverse` (opposite featured) |
+| `app/loading.tsx` | Stale "interim redirect" comment → landing reality |
+| tests | `workshop-modal`/`workshop-relocation` → `/browse`; `review-actions` +`/browse`; new `plan-card.test.tsx` (decorative a11y) |
+
+### Scorecard — hardening pass + carousel fix (Attempt 1, 2026-07-20)
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Audited the A→M surfaces as asked; found + fixed a real revalidate regression, marquee a11y, and the carousel seam/direction the user flagged. |
+| Correctness & functionality (/20) | 19 | Retarget verified against `CATALOG_PATH`; carousel seam fix is a width guarantee (one loop-worth of content always exceeds the viewport). Live motion verification pending (dev server was down). |
+| Automated test coverage (/15) | 15 | 760 tests green; new `plan-card.test.tsx` locks the `decorative` a11y contract; revalidate-target assertions updated. |
+| Security (/15) | 15 | `/api/workshop` double-gated + no `userId`; allowlist still fails closed; no new attack surface. |
+| Code quality & simplicity (/10) | 9 | Copy-count constants + comments; `decorative` is a small reusable prop. |
+| Mobile/offline behavior (/10) | 9 | `inert` duplicates don't affect print/offline; marquees pause under `prefers-reduced-motion` (unchanged). |
+| Documentation & handoff (/5) | 5 | This entry + `CLAUDE.md` §7 + the `QOL_UI_BUILD_PLAN.md` headers updated. |
+| **Total (/100)** | **97** | |
+
+**Result:** Pass (≥95).
+
+### Verification
+- **760/760 vitest green**, `tsc --noEmit` clean, `eslint .` clean, `npm run build` clean
+  (all run on Keagan's machine — the sandbox can't run the Next build).
+- Landing verified in a real browser (Fraunces, real featured/showcase, CTAs → `/browse`).
+  **Carousel motion (seam gone, opposite directions) is best confirmed live on `npm run dev`**
+  — a static screenshot can't show it.
+
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | **25** | Exactly the pilot as scoped: a generic SVG renderer computed from existing `cutList` data with no per-plan artwork, step-level highlighting built on the existing joins, five plans, a dev-only route, nothing wired into the live plan or build pages, no attempt at 3D. And the deliverable the prompt actually asked for — a report on whether it beats the table — is above, with a recommendation and a cheaper fallback rather than a shrug. |

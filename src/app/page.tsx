@@ -48,6 +48,14 @@ const isq =
 const catPill =
   'inline-flex items-center border border-border rounded-[999px] px-[1.15rem] py-[0.6rem] text-[0.95rem] font-medium text-fg no-underline bg-surface shadow-e1 whitespace-nowrap';
 
+// How many times each marquee repeats its content. A CSS marquee (translateX(-50%) on a
+// track holding N identical copies) only looks seamless when the content still on screen at
+// the loop point fills the viewport — i.e. one copy must be wide enough. Narrow items (text
+// pills, trust chips) need more copies than wide ones (plan cards). The `[--speed]` on each
+// track is scaled with its copy count so the visual scroll speed stays the same.
+const MARQUEE_COPIES = 6; // narrow: trust chips + category pills
+const PLAN_MARQUEE_COPIES = 4; // wide: featured plan cards
+
 export default async function LandingPage() {
   const { plans: featured } = await queryPlans({ sort: 'trending', perPage: 8 });
   const showcase = featured[0] ? await getPlanBySlug(featured[0].slug) : null;
@@ -154,13 +162,17 @@ export default async function LandingPage() {
 
       {/* ── TRUST MARQUEE ────────────────────────────────────────────────── */}
       <div className="landing-marquee landing-marquee-on-surface border-y border-border bg-surface">
-        <ul className="landing-marquee-track list-none m-0 py-[0.95rem] px-0 [--speed:32s] [--gap:2.75rem]">
-          {[0, 1].map((set) =>
+        <ul className="landing-marquee-track list-none m-0 py-[0.95rem] px-0 [--speed:96s] [--gap:2.75rem]">
+          {/* MARQUEE_COPIES copies (not 2): a CSS loop only reads as seamless when the
+              content BEHIND the loop point still fills the screen. With few, narrow items
+              one copy is narrower than a wide viewport, so 2 copies leave a gap at the seam
+              that "jerks" on reset. Duration is scaled with the copy count to hold speed. */}
+          {Array.from({ length: MARQUEE_COPIES }, (_, set) =>
             TRUST_ITEMS.map((item, i) => (
               <li
                 key={`${set}-${i}`}
-                inert={set === 1}
-                aria-hidden={set === 1 ? true : undefined}
+                inert={set !== 0}
+                aria-hidden={set !== 0 ? true : undefined}
                 className="inline-flex items-center gap-[0.55rem] text-[0.95rem] text-muted-2 whitespace-nowrap"
               >
                 {item.icon ? (
@@ -240,15 +252,16 @@ export default async function LandingPage() {
           </div>
 
           <div className="landing-marquee landing-marquee-on-surface pb-[2rem]">
-            <ul className="landing-marquee-track list-none m-0 p-0 px-[1.5rem] [--speed:60s]">
-              {[0, 1].map((set) =>
+            <ul className="landing-marquee-track list-none m-0 p-0 px-[1.5rem] [--speed:120s]">
+              {Array.from({ length: PLAN_MARQUEE_COPIES }, (_, set) =>
                 featured.map((plan) => (
-                  // set 1 is the visual loop duplicate — inert + aria-hidden so it isn't a
-                  // second tab stop and screen readers don't read the carousel twice.
+                  // Only copy 0 is the real, interactive card; the rest are visual loop
+                  // duplicates — inert + aria-hidden so they aren't extra tab stops and a
+                  // screen reader doesn't read the carousel N times.
                   <PlanCard
                     key={`f${set}-${plan.id}`}
                     plan={plan}
-                    decorative={set === 1}
+                    decorative={set !== 0}
                   />
                 )),
               )}
@@ -261,10 +274,12 @@ export default async function LandingPage() {
             </div>
           </div>
           <div className="landing-marquee landing-marquee-on-surface pb-[3.5rem]">
-            <ul className="landing-marquee-track list-none m-0 p-0 px-[1.5rem] [--speed:34s] [animation-direction:reverse]">
-              {[0, 1].flatMap((set) => {
-                // set 1 is the visual loop duplicate — kept out of the tab order + a11y tree.
-                const dup = set === 1;
+            {/* Scrolls the OPPOSITE way to the featured carousel above (reverse) — a
+                deliberate counter-motion so the two rows don't read as one moving block. */}
+            <ul className="landing-marquee-track landing-marquee-reverse list-none m-0 p-0 px-[1.5rem] [--speed:102s]">
+              {Array.from({ length: MARQUEE_COPIES }, (_, set) => {
+                // Only copy 0 is interactive; the rest are visual loop duplicates.
+                const dup = set !== 0;
                 return [
                   <li key={`${set}-all`} inert={dup} aria-hidden={dup ? true : undefined}>
                     <Link href={CATALOG_PATH} className={catPill}>

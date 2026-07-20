@@ -489,7 +489,12 @@ followed.
 
 ---
 
-## Phase QOL-H — Soft-navigation infrastructure + sort control — 🔲 **PLANNED, NOT STARTED**
+## Phase QOL-H — Soft-navigation infrastructure + sort control — ✅ **COMPLETE 2026-07-20 (pushed, CI green)**
+
+**Outcome:** shared soft-GET-form client hook (`use-soft-get-form`) + `SoftGetForm`
+wrapper; the sort control auto-submits via `router.push(url, { scroll: false })` with the
+Apply button hidden when JS is on (kept as the no-JS commit path). The form itself stays
+server-rendered. See `SPRINT_LOG.md` (2026-07-20 consolidated entry) and git history.
 
 **Scope:** `src/components/sort-select.tsx`, `src/components/sort-select-control.tsx`,
 one new small shared client hook.
@@ -548,7 +553,12 @@ extra click; it did not remove the reload. That's Keagan's item 1.
 
 ---
 
-## Phase QOL-I — Live filter apply, configurable page size, de-duplicated "clear" controls — 🔲 **PLANNED, NOT STARTED**
+## Phase QOL-I — Live filter apply, configurable page size, de-duplicated "clear" controls — ✅ **COMPLETE 2026-07-20 (pushed, CI green)**
+
+**Outcome:** the filter panel auto-applies on change (reusing QOL-H's soft-nav hook), the
+Apply button and the duplicate Clear control are hidden when JS is on, and a configurable
+page size (`PageSizeSelect`) is threaded through `queryPlans` + `buildQueryString` (`perPage`
+now flows through page/chips/nav/sort). Keyboard/no-JS paths preserved.
 
 **Scope:** `src/components/filter-panel.tsx`, `filter-chips.tsx`,
 `src/app/page.tsx` (the catalog — file path may have moved to `src/app/browse/page.tsx`
@@ -642,7 +652,12 @@ Depends on QOL-H's hook existing.
 
 ---
 
-## Phase QOL-J — Header nav position + sitewide search — 🔲 **PLANNED, NOT STARTED**
+## Phase QOL-J — Header nav position + sitewide search — ✅ **COMPLETE 2026-07-20 (pushed, CI green)**
+
+**Outcome:** a compact desktop header search (`role=search` GET form, `Search` text button)
+that works from any page, nav regrouped beside the logo with auth links to the right, and a
+shared `CATALOG_PATH` constant (`src/lib/routes.ts`) introduced as the single seam for where
+search/browse point — the same constant QOL-M later flipped to `/browse`.
 
 **Scope:** `src/components/site-header.tsx`; a shared "where does search/
 browse go" constant (new, small); `search-box.tsx` may be reused or adapted.
@@ -694,7 +709,12 @@ browse go" constant (new, small); `search-box.tsx` may be reused or adapted.
 
 ---
 
-## Phase QOL-K — Page-width consistency + footer pinned to the bottom — 🔲 **PLANNED, NOT STARTED**
+## Phase QOL-K — Page-width consistency + footer pinned to the bottom — ✅ **COMPLETE 2026-07-20 (pushed, CI green)**
+
+**Outcome:** About/FAQ/Profile/Learning widened to the shared page-wide container for
+consistent measure, and the body made a full-height flex column (`min-h-screen flex-col`, in
+`layout.tsx`) so the footer sits at the bottom of the viewport on short pages instead of
+leaving a band of raw background beneath it.
 
 **Scope:** `src/app/about/page.tsx`, `faq/page.tsx`, `profile/page.tsx`,
 `paths/page.tsx`, `paths/[slug]/page.tsx`, `src/app/layout.tsx`.
@@ -751,7 +771,16 @@ browse go" constant (new, small); `search-box.tsx` may be reused or adapted.
 
 ---
 
-## Phase QOL-L — Profile folds into Clerk's "Manage account" modal — 🔲 **PLANNED, NOT STARTED**
+## Phase QOL-L — Profile folds into a custom account modal — ✅ **COMPLETE 2026-07-20 (pushed, CI green)**
+
+**Outcome (with a deviation from the original plan — logged in `DECISIONS_LOG.md` 2026-07-20):**
+Clerk's `<UserButton.UserProfilePage>` is client-only and couldn't host our server-action
+`WorkshopForm`, so instead of folding into Clerk's modal we built **our own** account modal —
+a native `<dialog>` (`account-modal.tsx`, opened from `account-menu.tsx`) with account summary
+(Clerk `useUser()`), the workshop tool picker (fetches the new **private** `GET /api/workshop`,
+saves via `saveWorkshopModalAction` which returns a result rather than redirecting), theme +
+install actions, and "Manage account & security" / "Sign out" deferred to Clerk. `/profile`
+stays intact as the no-JS fallback. Same session-derived-owner security (no `userId` params).
 
 **Scope:** `src/components/user-menu.tsx`, `src/app/profile/page.tsx`
 (becomes a redirect), `src/components/workshop-form.tsx` (reused, not
@@ -817,7 +846,40 @@ rewritten).
 
 ---
 
-## Phase QOL-M — New landing page; catalog moves to `/browse` — 🔲 **PLANNED, NOT STARTED, run last**
+## Phase QOL-M — New landing page; catalog moves to `/browse` — ✅ **COMPLETE 2026-07-20 (pushed, CI green)**
+
+**Outcome (all three steps + a hardening pass + a carousel fix, 2026-07-20):**
+
+- **Step 1 — route migration.** The catalog moved to `src/app/browse/page.tsx`
+  (+ `browse/loading.tsx`); `CATALOG_PATH` flipped to `/browse` and
+  `buildQueryString` rebased on it, so pagination/chips/nav/clear followed for free.
+  `public-routes.ts` gained `/browse(.*)`; the four catalog forms and every
+  catalog-intent `href="/"` were repointed (brand/logo + "Home" stayed `/`). The PWA
+  `start_url` stayed `/` (2026-07-20 decision). `/` became an interim redirect.
+- **Step 2 — landing page.** Built the approved design at `src/app/page.tsx`: hero
+  with a **real** showcase plan (its actual cut list + a real board count from the same
+  `optimize()` the catalog uses), a Fraunces display heading font (self-hosted via
+  `next/font`, no CSP hole), differentiators, how-it-works, a **featured carousel of real
+  Trending plans**, a category carousel, who-it's-for, FAQ, and a dark closing CTA. One
+  prominent primary CTA into `/browse`. Placeholder brand name only (branding #8 open);
+  no fabricated data. `root-redirect.test.ts` repurposed into a landing render test.
+- **Hardening pass (same day).** Audit of the QOL-A→M surfaces caught a real regression:
+  eight `revalidatePath('/')` calls meant "the catalog" but `/` is now the landing —
+  retargeted through `CATALOG_PATH` (`saves`/`likes`/`reviews` keep `/` for the landing's
+  featured cards **and** add `/browse`; `workshop` retargets to `/browse`). Also: landing
+  marquee loop-duplicates marked `inert` + `aria-hidden` (new `PlanCard decorative` prop)
+  so they aren't a second tab stop / screen-reader echo; decorative SVGs `aria-hidden`.
+- **Carousel seam fix (same day).** The trust + category marquees only rendered 2 copies,
+  and one copy is narrower than a wide viewport, so the loop showed a gap and "jerked" on
+  reset. Now each narrow marquee repeats enough (`MARQUEE_COPIES`) that a full screen of
+  content always sits behind the loop point; the featured (wide) marquee uses fewer
+  (`PLAN_MARQUEE_COPIES`); `--speed` scaled with the copy count to hold the visual speed.
+  The category carousel scrolls the OPPOSITE direction to the featured one (`reverse`).
+
+The original phase plan (steps, session prompts, inventory) is retained below as the
+historical record of how it was executed.
+
+---
 
 **Scope: effectively sitewide.** This is the highest-blast-radius phase in
 this document — it changes what `/` means everywhere that currently assumes

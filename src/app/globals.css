@@ -270,6 +270,14 @@ h2 {
   width: max-content;
   animation: landing-scroll var(--speed, 40s) linear infinite;
 }
+/* Reverse direction (category row scrolls opposite the featured row). This MUST live here,
+   not as a Tailwind `[animation-direction:reverse]` utility: the unlayered `animation`
+   shorthand above resets animation-direction to `normal` and, being unlayered, beats the
+   layered utility — so the utility silently did nothing. Two classes = specificity 0,2,0,
+   which wins over the single-class rule above regardless of source order. */
+.landing-marquee-track.landing-marquee-reverse {
+  animation-direction: reverse;
+}
 .landing-marquee-track > * {
   /* --gap is read from the track (set per-marquee) so this UNLAYERED rule doesn't get
      fought by a layered Tailwind `mr-*` utility (which it would win, silently). */
