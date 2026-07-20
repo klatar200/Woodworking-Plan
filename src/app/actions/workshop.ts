@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { CATALOG_PATH } from '@/lib/routes';
 import { setOwnedTools } from '@/lib/workshop';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { denialTarget } from '@/lib/rate-limit-feedback';
@@ -41,7 +42,8 @@ export async function saveWorkshopAction(formData: FormData): Promise<void> {
   await guardAction(setOwnedTools(slugs), formData, '/profile');
 
   revalidatePath('/profile');
-  revalidatePath('/');
+  // QOL-M: the tools-owned filter prefill lives on the catalog, now at /browse (not `/`).
+  revalidatePath(CATALOG_PATH);
   redirect('/profile?saved=1#workshop');
 }
 
@@ -85,8 +87,9 @@ export async function saveWorkshopModalAction(
     return { ok: false, error: 'error' };
   }
 
-  // The catalog's tool-filter prefill and the /profile fallback both reflect the new set.
-  revalidatePath('/');
+  // The catalog's tool-filter prefill (now at /browse, QOL-M) and the /profile fallback
+  // both reflect the new set.
+  revalidatePath(CATALOG_PATH);
   revalidatePath('/profile');
   return { ok: true };
 }

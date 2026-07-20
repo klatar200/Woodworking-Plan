@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { CATALOG_PATH } from '@/lib/routes';
 import {
   savePlan,
   unsavePlan,
@@ -78,7 +79,10 @@ export async function savePlanAction(formData: FormData): Promise<void> {
     revalidatePath(`/plans/${slug}`);
   }
   revalidatePath('/saved');
+  // QOL-M: the catalog (its per-card bookmark overlay) moved to /browse; `/` is now the
+  // landing, whose featured carousel also shows these cards, so refresh both.
   revalidatePath('/');
+  revalidatePath(CATALOG_PATH);
 }
 
 export async function unsavePlanAction(formData: FormData): Promise<void> {
@@ -95,7 +99,10 @@ export async function unsavePlanAction(formData: FormData): Promise<void> {
     revalidatePath(`/plans/${slug}`);
   }
   revalidatePath('/saved');
+  // QOL-M: the catalog (its per-card bookmark overlay) moved to /browse; `/` is now the
+  // landing, whose featured carousel also shows these cards, so refresh both.
   revalidatePath('/');
+  revalidatePath(CATALOG_PATH);
 }
 
 export async function createCollectionAction(formData: FormData): Promise<void> {

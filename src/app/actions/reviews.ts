@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { CATALOG_PATH } from '@/lib/routes';
 import { upsertReview, deleteReview, deleteBuildPhoto, MAX_PHOTOS_PER_REVIEW } from '@/lib/reviews';
 import { checkRateLimit } from '@/lib/rate-limit';
 import {
@@ -126,6 +127,7 @@ export async function submitReviewAction(formData: FormData): Promise<void> {
   }
   // The catalog shows ratings on cards — now stale.
   revalidatePath('/');
+  revalidatePath(CATALOG_PATH);
 }
 
 export async function deleteReviewAction(formData: FormData): Promise<void> {
@@ -142,6 +144,7 @@ export async function deleteReviewAction(formData: FormData): Promise<void> {
     revalidatePath(`/plans/${slug}`);
   }
   revalidatePath('/');
+  revalidatePath(CATALOG_PATH);
 }
 
 export async function deletePhotoAction(formData: FormData): Promise<void> {

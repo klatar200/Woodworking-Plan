@@ -232,5 +232,7 @@ describe('FormData is attacker-controlled and is parsed as such', () => {
     // The catalog shows star ratings on cards; both are stale after a review lands.
     expect(revalidatePath).toHaveBeenCalledWith('/plans/cedar-raised-garden-bed');
     expect(revalidatePath).toHaveBeenCalledWith('/');
+    // QOL-M: the catalog card grid also lives at /browse now.
+    expect(revalidatePath).toHaveBeenCalledWith('/browse');
   });
 });

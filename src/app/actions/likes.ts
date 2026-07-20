@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { CATALOG_PATH } from '@/lib/routes';
 import { likePlan, unlikePlan } from '@/lib/likes';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { denialTarget, bounceTarget } from '@/lib/rate-limit-feedback';
@@ -62,6 +63,7 @@ export async function likePlanAction(formData: FormData): Promise<void> {
   }
   // The catalog shows like counts and offers a Popular sort — both are now stale.
   revalidatePath('/');
+  revalidatePath(CATALOG_PATH);
 }
 
 export async function unlikePlanAction(formData: FormData): Promise<void> {
@@ -78,4 +80,5 @@ export async function unlikePlanAction(formData: FormData): Promise<void> {
     revalidatePath(`/plans/${slug}`);
   }
   revalidatePath('/');
+  revalidatePath(CATALOG_PATH);
 }

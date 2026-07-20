@@ -51,6 +51,7 @@ export function PlanCard({
   rating,
   saved,
   returnTo,
+  decorative,
 }: {
   plan: PlanListItem;
   /** Sprint 10. Undefined when the plan has no reviews — see below. */
@@ -63,11 +64,22 @@ export function PlanCard({
   saved?: boolean;
   /** Passed through to SaveToggle — see save-toggle.tsx. */
   returnTo?: string;
+  /**
+   * A purely visual DUPLICATE (e.g. the second half of the landing's marquee loop). Marks
+   * the card `inert` + `aria-hidden` so its link/save button are not a second tab stop and
+   * screen readers don't read the carousel twice. Default (undefined) = the real, fully
+   * interactive card.
+   */
+  decorative?: boolean;
 }) {
   const image = plan.images[0];
 
   return (
-    <li className={cardChrome}>
+    <li
+      className={cardChrome}
+      inert={decorative}
+      aria-hidden={decorative ? true : undefined}
+    >
       <Link href={`/plans/${plan.slug}`} className={cardLink}>
         {/*
           Plain <img>, not next/image. next/image requires allowlisting each

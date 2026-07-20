@@ -37,7 +37,8 @@ describe('saveWorkshopModalAction', () => {
     // Empty strings dropped before the write.
     expect(setOwnedTools).toHaveBeenCalledWith(['table-saw', 'router']);
     expect(res).toEqual({ ok: true });
-    expect(revalidatePath).toHaveBeenCalledWith('/');
+    // QOL-M: the catalog (tools-owned filter prefill) is at /browse now, not `/`.
+    expect(revalidatePath).toHaveBeenCalledWith('/browse');
     expect(revalidatePath).toHaveBeenCalledWith('/profile');
   });
 

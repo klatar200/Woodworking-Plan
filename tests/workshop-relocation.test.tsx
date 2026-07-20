@@ -68,8 +68,8 @@ describe('saveWorkshopAction follows the form to /profile', () => {
 
     // Replace-all: the whole checked set is written, exactly as before the move.
     expect(setOwnedTools).toHaveBeenCalledWith(['table-saw', 'router']);
-    // The catalog's tool-filter prefill is now stale.
-    expect(revalidatePath).toHaveBeenCalledWith('/');
+    // The catalog's tool-filter prefill is now stale — catalog is /browse (QOL-M), not `/`.
+    expect(revalidatePath).toHaveBeenCalledWith('/browse');
     expect(revalidatePath).toHaveBeenCalledWith('/profile');
     // …and NOT the route that is now only a redirect.
     expect(revalidatePath).not.toHaveBeenCalledWith('/workshop');

@@ -159,6 +159,8 @@ export default async function LandingPage() {
             TRUST_ITEMS.map((item, i) => (
               <li
                 key={`${set}-${i}`}
+                inert={set === 1}
+                aria-hidden={set === 1 ? true : undefined}
                 className="inline-flex items-center gap-[0.55rem] text-[0.95rem] text-muted-2 whitespace-nowrap"
               >
                 {item.icon ? (
@@ -241,7 +243,13 @@ export default async function LandingPage() {
             <ul className="landing-marquee-track list-none m-0 p-0 px-[1.5rem] [--speed:60s]">
               {[0, 1].map((set) =>
                 featured.map((plan) => (
-                  <PlanCard key={`f${set}-${plan.id}`} plan={plan} />
+                  // set 1 is the visual loop duplicate — inert + aria-hidden so it isn't a
+                  // second tab stop and screen readers don't read the carousel twice.
+                  <PlanCard
+                    key={`f${set}-${plan.id}`}
+                    plan={plan}
+                    decorative={set === 1}
+                  />
                 )),
               )}
             </ul>
@@ -254,20 +262,28 @@ export default async function LandingPage() {
           </div>
           <div className="landing-marquee landing-marquee-on-surface pb-[3.5rem]">
             <ul className="landing-marquee-track list-none m-0 p-0 px-[1.5rem] [--speed:34s] [animation-direction:reverse]">
-              {[0, 1].flatMap((set) => [
-                <li key={`${set}-all`}>
-                  <Link href={CATALOG_PATH} className={catPill}>
-                    All plans →
-                  </Link>
-                </li>,
-                ...NAV_CATEGORIES.map((c) => (
-                  <li key={`${set}-${c.slug}`}>
-                    <Link href={`${CATALOG_PATH}?category=${c.slug}`} className={catPill}>
-                      {c.name}
+              {[0, 1].flatMap((set) => {
+                // set 1 is the visual loop duplicate — kept out of the tab order + a11y tree.
+                const dup = set === 1;
+                return [
+                  <li key={`${set}-all`} inert={dup} aria-hidden={dup ? true : undefined}>
+                    <Link href={CATALOG_PATH} className={catPill}>
+                      All plans →
                     </Link>
-                  </li>
-                )),
-              ])}
+                  </li>,
+                  ...NAV_CATEGORIES.map((c) => (
+                    <li
+                      key={`${set}-${c.slug}`}
+                      inert={dup}
+                      aria-hidden={dup ? true : undefined}
+                    >
+                      <Link href={`${CATALOG_PATH}?category=${c.slug}`} className={catPill}>
+                        {c.name}
+                      </Link>
+                    </li>
+                  )),
+                ];
+              })}
             </ul>
           </div>
         </section>
@@ -368,6 +384,8 @@ const stroke = {
   strokeWidth: 1.8,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
+  // Decorative icons paired with a visible text label — hidden from assistive tech.
+  'aria-hidden': true,
 };
 
 const TRUST_ITEMS = [
