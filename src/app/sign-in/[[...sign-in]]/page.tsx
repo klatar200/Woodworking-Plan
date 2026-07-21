@@ -1,5 +1,4 @@
 import { SignIn } from '@clerk/nextjs';
-import { clerkAppearance } from '@/lib/clerk-appearance';
 
 /**
  * Sign-in. Clerk's prebuilt component handles email/password and Google OAuth
@@ -13,11 +12,15 @@ import { clerkAppearance } from '@/lib/clerk-appearance';
  *
  * The catch-all `[[...sign-in]]` segment is required — Clerk routes its own
  * sub-steps (verification, factor-two, reset) under this path.
+ *
+ * NO `appearance` PROP (Sprint 37.2). It is set once on `<ClerkProvider>` in the root
+ * layout, which picks light or dark from the theme; passing it here again would pin this
+ * page to one theme — the white-flashbang-inside-dark-mode bug the sprint fixed.
  */
 export default function SignInPage() {
   return (
     <main id="main" className="auth-page">
-      <SignIn appearance={clerkAppearance} />
+      <SignIn />
     </main>
   );
 }

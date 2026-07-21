@@ -72,6 +72,11 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
           // button is not an input, so it still closes the drawer AND navigates (which is what
           // makes a query-only search from /browse close it, since usePathname won't change).
           if (target.closest('input, select, textarea, label')) return;
+          // Sprint 37 (audit D1): the drawer now hosts the theme toggle, which is a
+          // PREFERENCE, not a navigation — closing on it would hide the very surface
+          // showing the result, and make toggling back a two-tap trip. Staying open lets
+          // the drawer itself re-theme, which is the fastest confirmation there is.
+          if (target.closest('[data-theme-toggle]')) return;
           setOpen(false);
         }}
       >

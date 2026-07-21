@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useUser, useClerk } from '@clerk/nextjs';
-import { Hammer, Bookmark, Sun, Moon, Download, Settings, X, Check } from 'lucide-react';
+import { Hammer, Bookmark, Download, Settings, X, Check } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { btnPrimary, btnGhost, checkbox, checkboxInput } from '@/lib/ui';
 import {
   subscribeInstallable,
@@ -66,16 +67,10 @@ export function AccountModal({
     else if (!open && dlg.open) dlg.close();
   }, [open]);
 
-  // --- theme (moved from UserMenu) ---
-  const [isDark, setIsDark] = useState(false);
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'));
-  }, []);
-  const toggleTheme = () => {
-    const nowDark = document.documentElement.classList.toggle('dark');
-    document.cookie = `theme=${nowDark ? 'dark' : 'light'}; path=/; max-age=31536000; SameSite=Lax`;
-    setIsDark(nowDark);
-  };
+  // --- theme: see <ThemeToggle> in Preferences below. Sprint 37.1 extracted this modal's
+  // inline toggle into a shared component so the mobile drawer and the footer can render
+  // the SAME control — dark mode was signed-in-only until then (audit D1). It is a shared
+  // store, not local state, so all three instances agree at once.
 
   // --- install (moved from UserMenu) ---
   const installable = useSyncExternalStore(
@@ -277,18 +272,7 @@ export function AccountModal({
         {/* --- Preferences --- */}
         <h3 className={sectionLabel}>Preferences</h3>
         <div className="flex flex-wrap gap-[0.5rem]">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={`${btnGhost} gap-[0.5rem]`}
-          >
-            {isDark ? (
-              <Sun size={16} aria-hidden="true" />
-            ) : (
-              <Moon size={16} aria-hidden="true" />
-            )}
-            {isDark ? 'Light mode' : 'Dark mode'}
-          </button>
+          <ThemeToggle className={`${btnGhost} gap-[0.5rem]`} />
           {installable ? (
             <button
               type="button"

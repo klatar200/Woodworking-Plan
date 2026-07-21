@@ -1,7 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import { Fraunces } from 'next/font/google';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
+import { clerkAppearance, clerkAppearanceDark } from '@/lib/clerk-appearance';
+import {
+  THEME_COOKIE,
+  THEME_CHROME_COLOR,
+  THEME_INIT_SCRIPT,
+} from '@/lib/theme';
 
 /**
  * QOL-M Step 2 (2026-07-20, Keagan-approved brand element): Fraunces — a warm display
@@ -84,24 +90,51 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Mobile-first per BUSINESS_PLAN.md §5.
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-  themeColor: '#1a1a1a',
-};
+/**
+ * Mobile-first per BUSINESS_PLAN.md §5.
+ *
+ * Sprint 37.3 (audit D1): this became a FUNCTION so `themeColor` can follow the theme.
+ * It used to be a fixed `#1a1a1a` — a dark OS toolbar sitting above a cream page in the
+ * default theme, and a mismatch in dark mode too. The app's theme is class-based, not
+ * media-based, so a `media`-keyed themeColor array would be wrong; the honest source is
+ * the same cookie the `.dark` class is stamped from, read per request.
+ *
+ * ACCEPTED LIMIT (logged in DECISIONS_LOG.md 2026-07-21): on an OS-dark visitor's FIRST
+ * visit there is no cookie, so the init script darkens the page while this meta stays
+ * light for that one render. Chasing it would mean either mutating the meta from script
+ * after paint or dropping the server stamp and reintroducing the FOUC. It self-corrects
+ * the first time the toggle is used.
+ */
+export async function generateViewport(): Promise<Viewport> {
+  const theme = (await cookies()).get(THEME_COOKIE)?.value;
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+    themeColor: THEME_CHROME_COLOR[theme === 'dark' ? 'dark' : 'light'],
+  };
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // Sprint 31 — theme is read SERVER-SIDE from a cookie and stamped onto <html> before the
-  // page paints, so there is NO flash of the wrong theme (the trap with a localStorage read
-  // that only runs after hydration). Default is light: no cookie ⇒ no `dark` class. The
-  // toggle (theme-toggle.tsx) writes the cookie and flips the class live, no reload.
-  const theme = (await cookies()).get('theme')?.value;
+  // Sprint 31 — an EXPLICIT theme choice is read SERVER-SIDE from a cookie and stamped onto
+  // <html> before the page paints, so there is NO flash of the wrong theme (the trap with a
+  // localStorage read that only runs after hydration). The toggle (theme-toggle.tsx) writes
+  // the cookie and flips the class live, no reload.
+  //
+  // Sprint 37 — NO COOKIE NO LONGER MEANS LIGHT. It means "no explicit choice", and the
+  // inline script below decides from the OS `prefers-color-scheme` (Keagan's reversal of the
+  // 2026-07-16 call, DECISIONS_LOG.md 2026-07-21). So `isDark` here is specifically "the
+  // visitor asked for dark", which is exactly what themeColor and Clerk's appearance want —
+  // it is NOT a reliable answer to "is the page currently dark".
+  const theme = (await cookies()).get(THEME_COOKIE)?.value;
   const isDark = theme === 'dark';
   const clerkOrigin = clerkFrontendOrigin();
+  // Sprint 37: the CSP nonce for the theme init script. Our script-src is
+  // `'strict-dynamic'` + nonce, so an un-nonced inline script is silently blocked — the
+  // same failure mode that took Clerk down twice. Middleware sets this on every request.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
 
   return (
     /**
@@ -134,7 +167,11 @@ export default async function RootLayout({
      * Cost of `dynamic`: the tree opts out of static prerendering. Nil for us —
      * every route is already `force-dynamic`.
      */
-    <ClerkProvider dynamic>
+    /* Sprint 37.2: appearance is set ONCE, here. Every Clerk surface (the sign-in and
+       sign-up pages, and `clerk.openUserProfile()` from the account modal) inherits it,
+       which is why the per-page `appearance` props were removed — a second source is how
+       a Clerk page ends up white inside a dark app. */
+    <ClerkProvider dynamic appearance={isDark ? clerkAppearanceDark : clerkAppearance}>
       <html
         lang="en"
         className={`${fraunces.variable}${isDark ? ' dark' : ''}`}
@@ -147,6 +184,25 @@ export default async function RootLayout({
             body reset sets no display/min-height, so these utilities apply cleanly (no
             unlayered-wins conflict). */}
         <body className="flex min-h-screen flex-col">
+          {/* Sprint 37 — OS-preference default (Keagan, DECISIONS_LOG.md 2026-07-21).
+              FIRST CHILD OF <body> ON PURPOSE: it is parser-blocking, so it runs before
+              any body content renders (no flash), and unlike an inline <script> floating
+              in the layout above <body> it needs no React 19 hoisting behaviour to land
+              somewhere useful. The App Router owns <head>, so this is the supported spot.
+              It only acts when NO cookie exists — an explicit choice always wins. See
+              src/lib/theme.ts for the full reasoning and the `\s` escaping trap. */}
+          {/* ⚠️ `suppressHydrationWarning` IS REQUIRED HERE, and it is not papering over a
+              bug. React deliberately does NOT serialize `nonce` into the client vdom (it
+              would ship the nonce to the client bundle), so hydration compares the
+              server's real `nonce="…"` against a client `nonce=""` and logs a mismatch on
+              every page load. The one on <html> does not cover it — it only applies one
+              level deep. Verified in a real browser: without this, the console carries a
+              hydration error site-wide. "It works" is not "the console is clean." */}
+          <script
+            nonce={nonce}
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+          />
           {/* React 19 hoists resource links to <head>. See clerkFrontendOrigin. */}
           {clerkOrigin ? <link rel="preconnect" href={clerkOrigin} /> : null}
           <SiteHeader />

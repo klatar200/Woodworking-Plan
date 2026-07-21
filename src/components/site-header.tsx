@@ -7,6 +7,7 @@ import { BrowseMenu } from '@/components/browse-menu';
 import { HeaderSearch } from '@/components/header-search';
 import { NavLink } from '@/components/nav-current';
 import { InstallMenuItem } from '@/components/install-prompt';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { CATALOG_PATH } from '@/lib/routes';
 import { btnPrimary } from '@/lib/ui';
@@ -264,6 +265,15 @@ export function SiteHeader() {
                   Sign up
                 </Link>
               </SignedOut>
+
+              {/* Sprint 37.1 (audit D1): dark mode for EVERYONE. Deliberately outside
+                  <SignedIn>/<SignedOut> — before this sprint the only toggle in the app
+                  was inside the account modal, so a signed-out visitor could not turn
+                  dark mode on at all. Renders only after mount (JS-only enhancement), and
+                  does NOT close the drawer (mobile-nav.tsx exempts [data-theme-toggle]),
+                  so the drawer re-themes under your thumb as instant confirmation. */}
+              <span className="block h-px bg-border my-[0.5rem]" aria-hidden="true" />
+              <ThemeToggle className={drawerLink} />
 
               {/* Install the PWA — renders only while the browser offers it.
                   Signed-out mobile users get their affordance here; signed-in

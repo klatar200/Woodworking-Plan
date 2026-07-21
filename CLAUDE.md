@@ -169,9 +169,13 @@ with it.
 
 ## 7. Current state (keep this updated)
 
-- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–36 are code-complete and
-  browser-verified at localhost:3000 (2026-07-21, Keagan's direction); the /tmp gate, `npm run
-  build`, and push are Keagan's.** `UX_REMEDIATION_PLAN.md`, derived from
+- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–37 are code-complete and
+  browser-verified at localhost:3000 (2026-07-21, Keagan's direction); push is Keagan's.**
+  ⚠️ **Environment note, 2026-07-21:** this session ran NATIVELY on Keagan's Windows machine,
+  where `npm run build`, `npx vitest run`, `tsc` and `eslint` all work directly against the repo
+  — the `/tmp`-clone rule and the "next build SIGBUS" note in §6 describe the LINUX SANDBOX and
+  do not apply when running here. Sprint 37's gate was run natively: build green, 858 tests, tsc
+  and eslint clean. `UX_REMEDIATION_PLAN.md`, derived from
   `UX_AUDIT_2026-07-21.md`. A UI/UX quality pass that closes audit findings — **NOT a Phase-4
   feature**, no new business capability; every finding maps to one sprint (that plan's §2 coverage
   matrix). No dev-server restart was needed for any of 33–36 (CSS/TSX hot-reload); the PWA
@@ -229,9 +233,64 @@ with it.
     on-device that browse carries BOTH 33's `text-accent-text` and 36's `role="status"`. Lesson:
     for a file already modified this session, cross-check the staged copy against `git diff` before
     editing — a stale stage will silently revert.
+  - **Sprint 37 (dark mode for everyone — audit D1): COMPLETE.** Verified in a real browser at
+    localhost:3000 (2026-07-21); `npm run build`, 858 tests, `tsc` and `eslint` all green on this
+    machine. **⚖️ Keagan reversed the 2026-07-16 "cookie, not OS" call:** with **no cookie**, the
+    app now follows `prefers-color-scheme`; the cookie stays the explicit override
+    (`DECISIONS_LOG.md` 2026-07-21). The engine is unchanged — cookie → `.dark` on `<html>`,
+    server-stamped, token flip.
+    - **The app's first and only inline script** (`THEME_INIT_SCRIPT`, `src/lib/theme.ts`), first
+      child of `<body>`, carrying the CSP nonce from `x-nonce` (`'strict-dynamic'` would silently
+      block it otherwise). The server cannot see `prefers-color-scheme`, so a `useEffect` would
+      flip AFTER paint — the exact flash the cookie stamp exists to prevent. It reads one cookie's
+      PRESENCE, sets one class, writes nothing, and is try/catch'd so a browser without
+      `matchMedia` degrades to light instead of dying before the page renders.
+    - **🛑 TWO TRAPS, both caught, both would have shipped silently.** (1) **`\s` inside a JS
+      string is an unrecognised escape** that collapses to a bare `s` — shipping
+      `/(?:^|;s*)theme=/`, which only matches when `theme` is the FIRST cookie. With Clerk's
+      cookies in front, every explicit choice would be ignored and the OS would win. The source
+      writes `\\s`; `tests/theme.test.tsx` EXECUTES the script in a `node:vm` sandbox (the
+      `sw-policy.js` technique) across 8 cases including "theme cookie not first". (2) **React
+      deliberately does not serialize `nonce` to the client**, so hydration compared the server's
+      real nonce against `nonce=""` and logged a mismatch site-wide. `suppressHydrationWarning`
+      on `<html>` does NOT cover it — it only applies one level deep. Found by reading the browser
+      console, not by any test: **"it works" is not "the console is clean."**
+    - **Shared `ThemeToggle`** (`theme-toggle.tsx`) in THREE places — mobile drawer + footer (both
+      **outside `<SignedIn>`**, which is the whole fix) and the account modal. Backed by a module
+      store (`theme-store.ts`, same shape as `install-store.ts`) read via `useSyncExternalStore`:
+      with per-instance `useState`, toggling from the drawer left the footer button still reading
+      "Dark mode" on an already-dark page. Verified live: both labels flip from one click. Renders
+      **nothing until mounted** — a cookie toggle could be a no-JS POST form, but a server action
+      + rate-limit key for a display preference is out of proportion, and a dead button is worse
+      than none. `data-theme-toggle` is load-bearing: `MobileNav` exempts it from close-on-click,
+      so the drawer re-themes under your thumb instead of slamming shut.
+    - **Clerk dark appearance** (`clerkAppearanceDark`) — the audit's "single most jarring dark-mode
+      moment". Set ONCE on `<ClerkProvider>`; the per-page `appearance` props on sign-in/sign-up
+      were **removed** (a second source is how a page ends up white inside a dark app).
+      `colorPrimary` is the light INK, not the orange accent — Clerk paints white button text on
+      `colorPrimary`, and orange would fail contrast. Verified live in dark: card `#221e17`, inputs
+      `#17140f`, **zero white surfaces** in the Clerk tree. **The old "update this by hand when the
+      palette changes" comment had already failed** — `colorTextSecondary` was still `#8a8175`, the
+      pre-Sprint-33 `--muted-2` that failed AA. `tests/clerk-appearance.test.ts` now parses
+      `:root`/`.dark` out of `globals.css` and asserts every variable equals its token, plus AA on
+      Clerk's own text pairs. A comment is not a mechanism.
+    - **Browser chrome follows the theme:** `viewport` became `generateViewport()` reading the
+      cookie per request (`#faf9f6` / `#17140f` = each theme's `--bg`); it was a fixed `#1a1a1a`,
+      i.e. a dark toolbar over the light default. Manifest `background_color`/`theme_color` →
+      `#faf9f6` (static file, so the splash is light either way). **Accepted limit, logged:** on an
+      OS-dark FIRST visit there is no cookie, so the meta is light for that one render while the
+      script darkens the page. Self-corrects on first toggle.
+    - **37.5 dark sweep found a real defect beyond the hex grep:** the account avatar was
+      `bg-[#e9a86c]` (a literal that had stopped tracking `--accent`) **and its fallback glyph
+      inherited `text-fg` — 8.5:1 in light, 1.7:1 in dark, an invisible icon.** `--accent` is light
+      in BOTH themes, which is exactly what `--accent-fg` exists for → `bg-accent text-accent-fg`.
+      Landing's deliberate `#ffe6c4`/`#7a4a12` panel and the always-dark final CTA stay, per audit.
+    - **Deferred to Keagan (device-bound, per E3):** real-phone check that the OS-dark cold start
+      has no flash, the Android toolbar colour actually following, and a print preview (print
+      forces light via the token reset — unchanged by this sprint).
   - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite, and the
-    §7 entries for 37–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` entry are
-    recorded now (2026-07-21).
+    §7 entries for 38–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` +
+    OS-preference entries are recorded now (2026-07-21).
 
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma

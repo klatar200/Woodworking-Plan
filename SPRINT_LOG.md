@@ -3607,3 +3607,40 @@ browser-verified at localhost:3000; unpushed at time of writing.
 
 **33–36 status:** code-complete, browser-verified, unpushed. Keagan runs the /tmp gate +
 `npm run build` + push, then CI. Sprint 37 (dark mode for everyone) carries the OS-preference ⚖️.
+
+---
+
+## Sprint 37: Dark mode for everyone (audit D1)
+**Dates:** 2026-07-21
+**Scope:** Dark mode becomes reachable by anyone (signed in or not), Clerk stops flashbanging,
+browser chrome follows the theme, and — per Keagan's ⚖️ — the OS preference is the no-cookie default.
+
+**⚖️ Decision (recorded in `DECISIONS_LOG.md` before any code):** with no `theme` cookie, honor
+`prefers-color-scheme`. **This reverses the 2026-07-16 "cookie, not OS" call**, at Keagan's
+direction. The cookie remains the explicit override.
+
+**Environment note:** this session ran natively on Windows, so the gate was run directly against
+the repo (no `/tmp` clone needed, `next build` works here) — see the §7 note in `CLAUDE.md`.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | 37.1–37.5 all shipped, closing **D1** in full. 37.1 shared `ThemeToggle` in drawer + footer + modal; 37.2 `clerkAppearanceDark` wired once on `<ClerkProvider>`, per-page props removed, parity test added; 37.3 `generateViewport()` themeColor + manifest; 37.4 signed-out reachability; 37.5 dark sweep. Plus the ⚖️ OS-default. Non-goals honored: cookie/class engine untouched, no `dark:` sprawl, no elevation work (41). |
+| Correctness (/20) | 20 | **Verified in a real browser, not asserted.** OS-dark + no cookie → `.dark` stamped (osPrefersDark `true`, cookie `null`, isDark `true`). Explicit LIGHT on an OS-dark machine survives reload → `bodyBg rgb(250,249,246)`. cookie=dark → `bodyBg rgb(23,20,15)`, meta `#17140f`. Clerk dark: card `#221e17`, input `#17140f`, **0 white surfaces** in the Clerk tree. One click flips BOTH toggle labels (store sync). Drawer stays open on toggle. **Found + fixed a real hydration mismatch** (nonce not serialized to client) by reading the console — `suppressHydrationWarning` on the script; confirmed absent for the current render's nonce afterwards. |
+| Tests (/15) | 15 | +42 tests, 858 total green (75 files). `tests/theme.test.tsx` (19) **executes** the init script in a `node:vm` sandbox over 8 cases — incl. the `\s`-escaping regression (theme cookie not first) and the OS-dark-but-chose-light case — plus no-JS render, 44px at both call sites, the `data-theme-toggle` ↔ MobileNav both-halves pairing, and one-appearance-source. `tests/clerk-appearance.test.ts` (23) parses `globals.css` and asserts every Clerk variable equals its token, in both themes, + AA on Clerk's text pairs. |
+| Security (/15) | 15 | The inline script is the only new attack surface and is minimal: nonce'd from `x-nonce` (asserted by test), reads one cookie's PRESENCE, never a value, writes nothing, no network/storage (asserted). No new route, no server action, no schema, no `userId` anywhere. `NEVER_CACHE_PREFIXES` untouched. Theme cookie is non-authenticating, `SameSite=Lax`. |
+| Code quality (/10) | 10 | Toggle logic extracted from `account-modal.tsx` to one component + one store, reusing the established `install-store.ts` pattern rather than inventing a second one. Pure/server-safe half (`theme.ts`) separated from the client half so `layout.tsx` can import it. Footer got its own 44px class instead of stacking a second `min-h-*` (the source-order trap). Every literal hex in the codebase now sits in one of two token-mirroring files, both test-guarded. |
+| Mobile-offline (/10) | 9 | Verified at 375×812: drawer toggle is 44px, flips the theme, and does **not** close the drawer. Footer toggle 44px. No SW/offline change; print still forced light by the existing token reset. **Deferred to Keagan (E3):** real-phone OS-dark cold start (no flash) and the Android toolbar actually following the meta — neither is observable in this pane. |
+| Documentation (/5) | 5 | `DECISIONS_LOG.md` entry written **before** building, incl. the reversal and the accepted `theme-color` limit; `CLAUDE.md` §7 entry with both traps; the two traps also documented at the code. |
+| **Total** | **99** | Passes attempt 1. **E4:** all new/changed interactive targets ≥44px — **yes**, measured 44/44 live (drawer + footer), no exceptions. All new text ≥4.5:1 in BOTH themes — **yes**; the toggle uses existing AA tokens, and the sprint *raised* a worst pair: the avatar fallback glyph went from **1.7:1 in dark** (`--fg` on `--accent`) to `--accent-fg` on `--accent` at **8.5:1**. Clerk's own worst pair is now AA-asserted by test. |
+
+**E1 traceability:** 37.1→D1 "signed-out users cannot enable dark mode at all"; 37.2→D1 "Clerk
+surfaces are hard-coded light"; 37.3→D1 "browser chrome doesn't follow"; 37.4→D1 acceptance;
+37.5→D1 hardcoded-colour sweep. D1's floating-surface bullet is **Sprint 41 (V1)**, not claimed here.
+
+**Gate (native Windows):** `npm run build` ✓ · `npx vitest run` 858 passed / 1 todo ✓ ·
+`npx tsc --noEmit` ✓ · `npx eslint .` ✓.
+
+**Keagan's remaining steps:** push + CI check; on a real phone, set the OS to dark, clear the
+`theme` cookie, hard-reload and confirm no flash and that a later explicit *light* choice sticks;
+confirm the Android toolbar colour follows.

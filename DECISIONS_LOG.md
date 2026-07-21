@@ -1382,6 +1382,35 @@ offline fallback exactly as `/` did; the change improves the ONLINE launch. Take
 the PWA is reinstalled. This does not reopen the 2026-07-16 "dark mode follows cookie, not OS"
 call — that OS-preference question is Sprint 37's separate ⚖️.
 
+### 2026-07-21 — Dark mode follows the OS when no cookie exists (Sprint 37, audit D1)
+**Status:** Confirmed by Keagan (chose "OS default, cookie overrides" over "keep light-default,
+cookie-only"). **This REVERSES the 2026-07-16 "dark mode follows the cookie, not
+`prefers-color-scheme`" call** — deliberately, at Keagan's direction, not the build agent
+relitigating it. That call is superseded on this point only; the cookie mechanism itself is
+unchanged and still the explicit override.
+
+**Decision.** With **no `theme` cookie**, a visitor whose OS asks for dark gets dark. Any use of
+the toggle writes the cookie, and the cookie wins from then on — including choosing *light* on an
+OS-dark machine, which is the case a naive `prefers-color-scheme` implementation gets wrong.
+
+**Why the reversal is right.** The 2026-07-16 rule was made when the toggle was the only entry
+point and dark mode was signed-in-only; the audit's finding (D1) is that a phone in a dim workshop
+— this app's stated context — renders a bright cream page with no visible way out. Honoring the OS
+costs nothing to anyone who has ever expressed a preference.
+
+**Implementation constraint (the reason this was a decision and not a detail).** The server cannot
+see `prefers-color-scheme`, so a FOUC-free implementation needs a **nonce'd inline `<script>` in
+`<head>`** that adds `.dark` before first paint when (no cookie) && `matchMedia` says dark. The
+nonce comes from the `x-nonce` request header our middleware already sets — the same mechanism
+`<ClerkProvider dynamic>` relies on. This is the app's first inline script; it is 3 lines, reads
+no user data, and writes nothing.
+
+**Accepted limitation, recorded so nobody "fixes" it later:** `<meta name="theme-color">` is
+server-rendered from the cookie, so on an OS-dark *first* visit the browser chrome is light for
+that one render while the page is dark. The alternatives are worse (script-mutating a meta tag
+after paint, or dropping the server-side stamp and reintroducing the FOUC the cookie exists to
+prevent). It self-corrects the moment the visitor touches the toggle.
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,
