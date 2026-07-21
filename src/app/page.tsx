@@ -9,6 +9,7 @@ import {
   type Part,
 } from '@/lib/cut-optimizer';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
+import { planCountCopy } from '@/lib/landing-copy';
 import { CATALOG_PATH } from '@/lib/routes';
 import { PlanCard } from '@/components/plan-card';
 import { LandingPlanPanel } from '@/components/landing-plan-panel';
@@ -33,14 +34,29 @@ import { btnPrimary, btnGhost } from '@/lib/ui';
  */
 export const dynamic = 'force-dynamic';
 
+/**
+ * ── Sprint 40.5 (audit D2): the landing uses the SITE type + radius scale ──────────────
+ *
+ * This page was built from a mockup and arrived carrying its own dialect — 0.72/0.9/0.93/
+ * 0.95/1.02/1.1/1.15rem text and 0.6/0.7/0.8/1.1rem radii, none of which appear anywhere
+ * else in the app. Every value below is now a step on the shared scale (the substitution
+ * table is in SPRINT_LOG.md). `tests/landing-scale.test.ts` enforces it, because the
+ * failure mode is not one wrong page — it is the next person tuning the hero by eye and
+ * re-introducing a parallel scale one value at a time.
+ *
+ *   type    0.75 · 0.875 · 0.9375 · 1 · 1.0625 · 1.125 · 1.25 · 1.5rem, plus clamp()
+ *           for the display headings that must scale with the viewport
+ *   radius  0.375 · 0.5 · 0.75 · 1rem, plus 2px (hairlines), 50% and 999px (pills)
+ */
 const wrap = 'mx-auto w-full max-w-[76rem] px-[1.5rem] sm:px-[2rem]';
 const eyebrow =
-  'inline-flex items-center gap-[0.45rem] text-[0.72rem] uppercase tracking-[0.09em] text-accent-text font-semibold before:content-[""] before:w-[1.4rem] before:h-[2px] before:bg-accent before:rounded-[2px]';
+  'inline-flex items-center gap-[0.45rem] text-[0.75rem] uppercase tracking-[0.09em] text-accent-text font-semibold before:content-[""] before:w-[1.4rem] before:h-[2px] before:bg-accent before:rounded-[2px]';
 const sectionH2 = 'font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold mt-[0.5rem] mb-[0.4rem]';
 const isq =
-  'inline-flex items-center justify-center w-[2.9rem] h-[2.9rem] rounded-[0.7rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0';
+  'inline-flex items-center justify-center w-[2.9rem] h-[2.9rem] rounded-[0.5rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0';
 const catPill =
-  'inline-flex items-center border border-border rounded-[999px] px-[1.15rem] py-[0.6rem] text-[0.95rem] font-medium text-fg no-underline bg-surface shadow-e1 whitespace-nowrap';
+  'inline-flex items-center border border-border rounded-[999px] px-[1.15rem] py-[0.6rem] text-[0.9375rem] font-medium text-fg no-underline bg-surface shadow-e1 whitespace-nowrap';
+const sectionLead = 'text-muted text-[1rem] max-w-[52ch]';
 
 // How many times each marquee repeats its content. A CSS marquee (translateX(-50%) on a
 // track holding N identical copies) only looks seamless when the content still on screen at
@@ -51,7 +67,19 @@ const MARQUEE_COPIES = 6; // narrow: trust chips + category pills
 const PLAN_MARQUEE_COPIES = 4; // wide: featured plan cards
 
 export default async function LandingPage() {
-  const { plans: featured } = await queryPlans({ sort: 'trending', perPage: 8 });
+  // Sprint 40.2: `total` was already in this result and thrown away — the real catalog
+  // size costs no extra query. See src/lib/landing-copy.ts for the floor rule.
+  //
+  // 🛑 THIS CALL MUST STAY UNFILTERED. `total` is what the page prints as the catalog
+  // size, and it is the SAME number /browse shows in its results heading because both
+  // read it off `queryPlans()`. `sort` and `perPage` are safe — they change order and
+  // page size, not how many rows match — but adding `filters` or `query` here (say, to
+  // make the featured carousel show only one category) would silently turn the headline
+  // into a subset count that still renders and still looks live. Guarded by
+  // tests/landing-copy.test.ts; if the carousel ever needs narrowing, give it its own
+  // query and keep this one whole.
+  const { plans: featured, total } = await queryPlans({ sort: 'trending', perPage: 8 });
+  const count = planCountCopy(total);
 
   // Two REAL "plan panels" drive the hero and the "what a plan looks like" section — a real
   // cut list beside a real board-buying plan. Pull full data for the first few Trending plans
@@ -97,7 +125,7 @@ export default async function LandingPage() {
             <h1 className="font-display text-[clamp(2.4rem,5vw,3.5rem)] leading-[1.04] font-semibold mt-[1rem] mb-[1.1rem]">
               Plans you can <em className="not-italic text-accent-text">actually</em> compare.
             </h1>
-            <p className="text-[1.15rem] text-muted max-w-[42ch] mb-[1.75rem]">
+            <p className="text-[1.125rem] text-muted max-w-[42ch] mb-[1.75rem]">
               Every plan carries the same structured detail &mdash; a full cut list, a
               material list, the tools you need, and a cost band. Decide before you drive
               to the lumberyard.
@@ -110,7 +138,7 @@ export default async function LandingPage() {
                 Create a free account
               </Link>
             </div>
-            <p className="mt-[1.5rem] text-[0.9rem] text-muted-2">
+            <p className="mt-[1.5rem] text-[0.9375rem] text-muted-2">
               Free &mdash; no ads, no affiliate links · Installs to your phone, works offline
             </p>
           </div>
@@ -143,12 +171,12 @@ export default async function LandingPage() {
               one copy is narrower than a wide viewport, so 2 copies leave a gap at the seam
               that "jerks" on reset. Duration is scaled with the copy count to hold speed. */}
           {Array.from({ length: MARQUEE_COPIES }, (_, set) =>
-            TRUST_ITEMS.map((item, i) => (
+            trustItems(count.chip).map((item, i) => (
               <li
                 key={`${set}-${i}`}
                 inert={set !== 0}
                 aria-hidden={set !== 0 ? true : undefined}
-                className="inline-flex items-center gap-[0.55rem] text-[0.95rem] text-muted-2 whitespace-nowrap"
+                className="inline-flex items-center gap-[0.55rem] text-[0.9375rem] text-muted-2 whitespace-nowrap"
               >
                 {item.icon ? (
                   <Check size={16} className="text-ok shrink-0" aria-hidden="true" />
@@ -165,7 +193,7 @@ export default async function LandingPage() {
         <section className={`${wrap} py-[4rem]`}>
           <span className={eyebrow}>What a plan looks like</span>
           <h2 className={sectionH2}>Not a photo and a paragraph. The whole thing.</h2>
-          <p className="text-muted text-[1.02rem] max-w-[52ch] mb-[2rem]">
+          <p className={`${sectionLead} mb-[2rem]`}>
             Every plan is fully specified &mdash; so you can see exactly what to cut, what to
             buy, and whether you can build it with the tools you own.
           </p>
@@ -178,14 +206,14 @@ export default async function LandingPage() {
             <ul className="list-none m-0 p-0">
               {NOTES.map((n) => (
                 <li key={n.title} className="flex gap-[0.85rem] items-start my-[1.15rem]">
-                  <span className="inline-flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-[0.6rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0">
+                  <span className="inline-flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-[0.5rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0">
                     {n.icon}
                   </span>
                   <div>
                     <h3 className="font-display text-[1rem] font-semibold m-0 mb-[0.15rem]">
                       {n.title}
                     </h3>
-                    <p className="m-0 text-muted text-[0.95rem]">{n.body}</p>
+                    <p className="m-0 text-muted text-[0.9375rem]">{n.body}</p>
                   </div>
                 </li>
               ))}
@@ -199,20 +227,20 @@ export default async function LandingPage() {
         <div className={`${wrap} py-[3.5rem]`}>
           <span className={eyebrow}>Why this catalog</span>
           <h2 className={sectionH2}>What sets it apart</h2>
-          <p className="text-muted text-[1.02rem] max-w-[52ch] mb-[2rem]">
+          <p className={`${sectionLead} mb-[2rem]`}>
             Every claim here is something the app does today.
           </p>
           <ul className="list-none m-0 p-0 grid gap-[1.1rem] sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
               <li
                 key={f.title}
-                className="bg-surface border border-border rounded-[0.8rem] p-[1.4rem] shadow-e1 transition-[translate,box-shadow] duration-200 hover:-translate-y-[4px] hover:shadow-e3 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="bg-surface border border-border rounded-[0.75rem] p-[1.4rem] shadow-e1 transition-[translate,box-shadow] duration-200 hover:-translate-y-[4px] hover:shadow-e3 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 <span className={isq}>{f.icon}</span>
-                <h3 className="font-display text-[1.1rem] font-semibold mt-[0.85rem] mb-[0.4rem]">
+                <h3 className="font-display text-[1.125rem] font-semibold mt-[0.85rem] mb-[0.4rem]">
                   {f.title}
                 </h3>
-                <p className="m-0 text-muted text-[0.93rem]">{f.body}</p>
+                <p className="m-0 text-muted text-[0.9375rem]">{f.body}</p>
               </li>
             ))}
           </ul>
@@ -227,20 +255,22 @@ export default async function LandingPage() {
           {STEPS.map((s, i) => (
             <li
               key={s.title}
-              className="landing-panel relative z-[1] rounded-[0.8rem] p-[1.4rem] transition-transform duration-200 hover:-translate-y-[6px] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              // Sprint 40.4 (audit V2): 6px → 4px, the lift every other card in the app
+              // uses. Two hover distances is a difference nobody chose.
+              className="landing-panel relative z-[1] rounded-[0.75rem] p-[1.4rem] transition-transform duration-200 hover:-translate-y-[4px] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <div className="flex items-center gap-[0.75rem] mb-[0.65rem]">
-                <span className="inline-flex items-center justify-center w-[1.7rem] h-[1.7rem] rounded-[50%] bg-fg text-surface font-display font-semibold text-[0.9rem]">
+                <span className="inline-flex items-center justify-center w-[1.7rem] h-[1.7rem] rounded-[50%] bg-fg text-surface font-display font-semibold text-[0.9375rem]">
                   {i + 1}
                 </span>
                 <span className={isq} style={{ width: '2.4rem', height: '2.4rem' }}>
                   {s.icon}
                 </span>
               </div>
-              <h3 className="font-display text-[1.1rem] font-semibold mt-[0.4rem] mb-[0.3rem]">
+              <h3 className="font-display text-[1.125rem] font-semibold mt-[0.4rem] mb-[0.3rem]">
                 {s.title}
               </h3>
-              <p className="m-0 text-muted text-[0.93rem]">{s.body}</p>
+              <p className="m-0 text-muted text-[0.9375rem]">{s.body}</p>
             </li>
           ))}
         </ol>
@@ -252,19 +282,25 @@ export default async function LandingPage() {
           <div className={`${wrap} pt-[3.5rem] pb-[2rem]`}>
             <span className={eyebrow}>Featured plans</span>
             <h2 className={sectionH2}>Start with something buildable</h2>
-            <p className="text-muted text-[1.02rem] max-w-[52ch] mb-0">
+            <p className={`${sectionLead} mb-0`}>
               Straight from the catalog&rsquo;s Trending order &mdash; real plans, each
               fully specified.
             </p>
           </div>
 
-          <div className="landing-marquee landing-marquee-on-surface pb-[2rem]">
+          {/* ⚖️ Sprint 40.1 (audit A3): `landing-marquee-swipe` turns this band into a
+              native scroll-snap row below `lg` — see globals.css. A marquee of LINKS is
+              the worst motion on the page for a touch user: unpausable (no hover) and the
+              card moves out from under the thumb reaching for it. Desktop is unchanged. */}
+          <div className="landing-marquee landing-marquee-swipe landing-marquee-on-surface pb-[2rem]">
             <ul className="landing-marquee-track list-none m-0 p-0 px-[1.5rem] [--speed:120s]">
               {Array.from({ length: PLAN_MARQUEE_COPIES }, (_, set) =>
                 featured.map((plan) => (
                   // Only copy 0 is the real, interactive card; the rest are visual loop
                   // duplicates — inert + aria-hidden so they aren't extra tab stops and a
-                  // screen reader doesn't read the carousel N times.
+                  // screen reader doesn't read the carousel N times. Sprint 40.1: that
+                  // `inert` is also what the mobile swipe-row CSS selects on to drop the
+                  // duplicates, so the two can never disagree about which copies are real.
                   <PlanCard
                     key={`f${set}-${plan.id}`}
                     plan={plan}
@@ -276,7 +312,7 @@ export default async function LandingPage() {
           </div>
 
           <div className={`${wrap} pb-[1rem]`}>
-            <div className="text-[0.7rem] uppercase tracking-[0.07em] text-muted font-semibold mb-[0.7rem]">
+            <div className="text-[0.75rem] uppercase tracking-[0.07em] text-muted font-semibold mb-[0.7rem]">
               Or browse by category
             </div>
           </div>
@@ -313,7 +349,7 @@ export default async function LandingPage() {
 
       {/* ── WHO IT'S FOR ─────────────────────────────────────────────────── */}
       <section className={`${wrap} py-[3.5rem]`}>
-        <div className="grid lg:grid-cols-[0.85fr_1.15fr] rounded-[1.1rem] border border-accent-tint-border overflow-hidden shadow-e3">
+        <div className="grid lg:grid-cols-[0.85fr_1.15fr] rounded-[1rem] border border-accent-tint-border overflow-hidden shadow-e3">
           <div className="relative min-h-[14rem] bg-[radial-gradient(130%_130%_at_25%_15%,#ffe6c4,var(--accent)_120%)] flex items-center justify-center">
             <svg
               viewBox="0 0 24 24"
@@ -332,10 +368,10 @@ export default async function LandingPage() {
           </div>
           <div className="bg-surface p-[2.25rem]">
             <span className={eyebrow}>Who it&rsquo;s for</span>
-            <h2 className="font-display text-[1.6rem] font-semibold mt-[0.5rem] mb-[0.7rem]">
+            <h2 className="font-display text-[1.5rem] font-semibold mt-[0.5rem] mb-[0.7rem]">
               For the &ldquo;what can I build this weekend?&rdquo; woodworker.
             </h2>
-            <p className="text-muted text-[1.02rem] mb-[1.1rem]">
+            <p className="text-muted text-[1rem] mb-[1.1rem]">
               You&rsquo;ve got a Saturday, a pile of 2×4s, and a tape measure. You
               don&rsquo;t want a PDF with the cut list buried on page 7 &mdash; you want to
               know what to build and what to buy. That&rsquo;s the whole idea.
@@ -362,30 +398,55 @@ export default async function LandingPage() {
         <div className={`${wrap} py-[3.5rem] max-w-[44rem]`}>
           <span className={eyebrow}>Before you ask</span>
           <h2 className={`${sectionH2} mb-[1.1rem]`}>Quick answers</h2>
-          {FAQS.map((f, i) => (
-            <details
-              key={f.q}
-              open={i === 0}
-              className="border-b border-border py-[0.2rem]"
-            >
-              <summary className="cursor-pointer font-semibold py-[0.75rem] text-[1.02rem] list-none [&::-webkit-details-marker]:hidden">
-                {f.q}
-              </summary>
-              <p className="m-0 mb-[0.85rem] text-muted">{f.a}</p>
-            </details>
-          ))}
+          {/* Sprint 40.3 (audit V2): one accordion dialect across the site. This was a
+              bare bold <summary> with no affordance while /faq had a rotating chevron —
+              two disclosure designs on the same site, three clicks apart. Lifted verbatim
+              from /faq, including its degradation argument: `::details-content` +
+              `interpolate-size` is new enough to be absent, and where it is absent the
+              panel simply snaps open — <details> itself supplies the closed state, so
+              nothing is hidden with no way to reveal it. The chevron's transform
+              transition works everywhere. Both are off under motion-reduce. */}
+          <div className="[interpolate-size:allow-keywords]">
+            {FAQS.map((f, i) => (
+              <details
+                key={f.q}
+                open={i === 0}
+                className="group border-b border-border [&::details-content]:h-0 [&::details-content]:overflow-hidden [&::details-content]:transition-[height,content-visibility] [&::details-content]:duration-200 [&::details-content]:ease-out [&::details-content]:[transition-behavior:allow-discrete] open:[&::details-content]:h-auto motion-reduce:[&::details-content]:transition-none"
+              >
+                <summary className="list-none [&::-webkit-details-marker]:hidden flex items-start gap-[0.75rem] py-[1.25rem] cursor-pointer font-semibold text-[1.0625rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2">
+                  <svg
+                    className="shrink-0 mt-[0.3rem] text-muted transition-transform duration-200 ease-out group-open:rotate-90 motion-reduce:transition-none"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 2l4 4-4 4" />
+                  </svg>
+                  <span>{f.q}</span>
+                </summary>
+
+                {/* Indented to the question's text, not the chevron — as on /faq. */}
+                <p className="m-0 pb-[1.25rem] pl-[1.75rem] leading-[1.6] text-muted">{f.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────── */}
       <section className={`${wrap} py-[3.5rem]`}>
-        <div className="relative overflow-hidden text-center rounded-[1.1rem] px-[1.5rem] py-[3.5rem] bg-[linear-gradient(160deg,#2a2320,#17140f)] text-[#f0ece4] shadow-e3 before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(50%_120%_at_50%_-20%,rgba(233,168,108,0.35),transparent_60%)]">
+        <div className="relative overflow-hidden text-center rounded-[1rem] px-[1.5rem] py-[3.5rem] bg-[linear-gradient(160deg,#2a2320,#17140f)] text-[#f0ece4] shadow-e3 before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(50%_120%_at_50%_-20%,rgba(233,168,108,0.35),transparent_60%)]">
           <h2 className="relative font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold m-0 mb-[0.5rem]">
             Find your next project.
           </h2>
           <p className="relative text-[#c9c2b6] m-0 mb-[1.6rem]">
-            Hundreds of plans, each fully specified. Free to browse &mdash; no account
-            required.
+            {count.sentence} Free to browse &mdash; no account required.
           </p>
           <Link
             href={CATALOG_PATH}
@@ -410,8 +471,10 @@ const stroke = {
   'aria-hidden': true,
 };
 
-const TRUST_ITEMS = [
-  { text: 'Hundreds of plans', strong: true, icon: false },
+// Sprint 40.2: the lead chip carries the live catalog size (see src/lib/landing-copy.ts).
+// A function, not a const, so the number cannot be re-hardcoded here by accident.
+const trustItems = (countChip: string) => [
+  { text: countChip, strong: true, icon: false },
   { text: 'Free — no ads, no affiliate links', icon: true },
   { text: 'Installs to your phone, works offline', icon: true },
   { text: 'Cut lists in tape-measure fractions', icon: true },

@@ -311,7 +311,11 @@ h2 {
   margin-right: var(--gap, 1rem);
   flex: 0 0 auto;
 }
-.landing-marquee:hover .landing-marquee-track {
+/* Sprint 40.1 (audit A3): :focus-within joins :hover. The category row is made of LINKS —
+   tabbing into a moving band drags the focused control out from under the user, and a
+   pointer-only pause left keyboard users with no way to stop it. */
+.landing-marquee:hover .landing-marquee-track,
+.landing-marquee:focus-within .landing-marquee-track {
   animation-play-state: paused;
 }
 /* PlanCard is a grid <li>; pin its width inside the carousel. */
@@ -326,6 +330,46 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   .landing-marquee-track {
     animation: none;
+  }
+}
+
+/* ── Sprint 40.1 (audit A3) — below lg the FEATURED band is a swipe row, not a marquee ──
+   ⚖️ Keagan, 2026-07-21. An auto-scrolling row of LINKS on a touch screen is the worst
+   case of the three: it cannot be hovered to pause, and the tap target you are aiming at
+   moves while you reach for it. Below `lg` the animation is simply off and the native
+   horizontal scroll takes over — your thumb IS the marquee, so nothing is lost and the
+   unpausable-motion and moving-target problems both disappear. `prefers-reduced-motion`
+   above still covers desktop, and the trust/category TEXT bands keep animating everywhere
+   (they hold no plan cards and now pause on focus).
+
+   ONE DOM, as always: the loop duplicates are still server-rendered in source order, and
+   they are hidden by CSS rather than by a second markup path. `[inert]` is the selector
+   BECAUSE it is exactly the set of duplicates — PlanCard stamps `inert` + `aria-hidden`
+   on every copy but the first (`decorative`), so this cannot drift from the copy count or
+   need a prop threaded through a shared component. Below lg the row therefore holds one
+   real, interactive set of cards. */
+@media (max-width: 63.9375rem) {
+  .landing-marquee-swipe {
+    /* Only the x longhand — the `overflow: hidden` shorthand above still clips y. */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* A horizontal swipe here must not trigger the browser's back gesture. */
+    overscroll-behavior-x: contain;
+  }
+  /* The edge fades exist to hide a marquee's loop seam. Over a scrolled row they just
+     wash out the first and last card, which are now real content you can reach. */
+  .landing-marquee-swipe::before,
+  .landing-marquee-swipe::after {
+    display: none;
+  }
+  .landing-marquee-swipe .landing-marquee-track {
+    animation: none;
+  }
+  .landing-marquee-swipe .landing-marquee-track > * {
+    scroll-snap-align: start;
+  }
+  .landing-marquee-swipe .landing-marquee-track > [inert] {
+    display: none;
   }
 }
 

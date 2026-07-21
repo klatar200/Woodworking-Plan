@@ -3752,3 +3752,152 @@ keyboard closes it and focus lands back on the Filters pill, and Tab cannot reac
 behind the scrim. VoiceOver/TalkBack if available, else defer per E3. Also worth a glance:
 signed in with a workshop, `/browse` should show **unticked** tool boxes plus the tip pointing at
 "Show plans I can build" — and the DRAFT tip wording is yours to approve.
+
+---
+
+## Sprint 40 — Landing integrity: motion you can stop, numbers that are true, one design system
+
+**Dates:** 2026-07-21 · **Audit findings closed:** A3, C1, V2, D2-landing · **Score: 98/100 (attempt 1)**
+
+**⚖️ Decisions taken to Keagan before any code** (both recorded in `DECISIONS_LOG.md`
+2026-07-21): marquee treatment on touch → **(a) static swipe row below `lg`**; plan-count copy →
+**(a) live count**. Nothing else escalated.
+
+### What shipped
+
+| File | Change |
+|---|---|
+| `src/lib/landing-copy.ts` | **new** — `planCountCopy(total)` + `COUNT_FLOOR`; pure, no imports |
+| `src/app/page.tsx` | swipe-row class on the featured band; live count in the trust chip + CTA; `/faq` accordion treatment; 6px→4px lift; full type/radius normalization |
+| `src/app/globals.css` | `:focus-within` pause; the `@media (max-width: 63.9375rem)` swipe-row block |
+| `tests/landing-copy.test.ts` | **new**, 7 tests — the floor branch nobody will ever see in a browser |
+| `tests/landing-scale.test.ts` | **new**, 8 tests — the scale guard + the CSS-selected wiring |
+
+### 40.1 — Marquee a11y (A3)
+
+**Unconditional, all three bands:** `:focus-within` joins `:hover` in pausing the track. The
+category band is made of **links** — tabbing into a moving row drags the focused control out from
+under the user, and a pointer-only pause is no pause at all for a keyboard.
+
+**Below `lg`, the featured band only:** the animation is off and native horizontal scrolling takes
+over, with `scroll-snap-type: x mandatory` and `overscroll-behavior-x: contain` (so a swipe cannot
+trigger the browser's back gesture). The edge fades — which exist to hide a marquee's loop seam —
+are switched off, because over a scrolled row they only wash out the first and last card, which
+are now real content you can reach.
+
+**The duplicates are selected by `[inert]`.** That is the attribute `PlanCard`'s `decorative` prop
+already stamps on every copy but the first, so the CSS cannot drift from `PLAN_MARQUEE_COPIES` and
+no `className` prop had to be threaded through a component the catalog also uses. One DOM, one
+source order — the duplicates are still server-rendered and hidden by CSS, not by a second markup
+path. Measured at 375px: **32 children, 8 visible, all 8 interactive, 8 tab stops.** At 1280px: all
+three bands still animate, the category band's `animation-direction: reverse` intact, 32 visible.
+
+### 40.2 — The real catalog size (C1)
+
+`queryPlans` already returned `total` and the render was **discarding it**, so the honest number
+costs no extra query (asserted: exactly one `await queryPlans(` on the page).
+
+**The floor deviates from the plan, deliberately.** The plan said to fall back to the current
+wording below 100 plans; instead the size claim is **dropped** ("Every plan fully specified"). With
+40 plans seeded, "Hundreds of plans" is false — and a half-seeded database is precisely where
+nobody is looking. `!Number.isFinite` covers a failed query so the hero can never read "NaN plans".
+Thousands are separated with a **fixed `en-US` locale**: a machine-dependent default would be the
+only thing on the page that varies by server.
+
+Verified live: chip `948 plans`, CTA `948 plans, each fully specified. Free to browse — no account
+required.`, and zero occurrences of "Hundreds of plans" anywhere in the document. **Cross-checked
+against `/browse`'s own results heading in the same browser session: both read `948`**, because
+both take `total` off the same `queryPlans()`.
+
+**🛑 Follow-up guard added the same day (Keagan raised it): the landing's `queryPlans` call must
+stay UNFILTERED.** It is shared with the featured carousel, so anyone improving *that* ("only show
+Outdoor plans", "skip the ones with no photo") would add a `filters` or `query` argument and
+silently turn the headline into a subset count — a number that still renders, still looks live, and
+is quietly wrong, with nothing in the type system objecting. A test now extracts the call's argument
+object and asserts its keys are **exactly** `['perPage', 'sort']` — a whitelist, not a blacklist, so
+a narrowing option nobody has thought of yet fails too. `sort`/`perPage` are safe by construction:
+order and page size cannot change how many rows match. The rule is also stated at the call site.
+
+### 40.3 — One accordion dialect (V2)
+
+The landing's FAQ was a bare bold `<summary>` with no affordance while `/faq`, three clicks away,
+had a rotating chevron and an animated panel. Lifted verbatim, **including its degradation
+argument**: `::details-content` + `interpolate-size` is new enough to be absent, and where it is
+absent the panel simply snaps open — `<details>` itself supplies the closed state, so nothing is
+ever hidden with no way to reveal it. Both animations are off under `motion-reduce`. A test asserts
+the five markers exist in **both** files, so the two cannot drift apart again. Measured: chevron
+`rotate: 90deg` open / `none` closed, marker suppressed, summary 66px tall (clears the 44px rule).
+
+### 40.4 / 40.5 — Scale (V2, D2)
+
+Timeline cards `-translate-y-[6px]` → `[4px]`, matching every other card in the app.
+
+The page arrived from a mockup speaking its own dialect. **Every substitution:**
+
+| Kind | Old | New | Where |
+|---|---|---|---|
+| type | `0.72rem` | `0.75rem` | eyebrow |
+| type | `0.7rem` | `0.75rem` | "or browse by category" |
+| type | `0.9rem` | `0.9375rem` | hero sub-note, step numeral |
+| type | `0.93rem` | `0.9375rem` | feature + step body |
+| type | `0.95rem` | `0.9375rem` | trust chips, category pills, notes body |
+| type | `1.02rem` | `1rem` | three section leads (→ shared `sectionLead`), who-it's-for body |
+| type | `1.02rem` | `1.0625rem` | FAQ summary (matches `/faq` exactly — the parity goal) |
+| type | `1.1rem` | `1.125rem` | feature + step `h3` |
+| type | `1.15rem` | `1.125rem` | hero lead |
+| type | `1.6rem` | `1.5rem` | who-it's-for `h2` |
+| radius | `0.6rem` | `0.5rem` | notes icon square |
+| radius | `0.7rem` | `0.5rem` | `isq` icon square |
+| radius | `0.8rem` | `0.75rem` | feature cards, timeline panels |
+| radius | `1.1rem` | `1rem` | who-it's-for panel, final CTA |
+
+**No `--radius-xl` token was minted**, against the plan's suggestion: this codebase has no radius
+tokens at all (every radius in `globals.css` is a literal), and a lone variable for one step would
+be a second system, not fewer. `1rem` is simply a documented step. It also avoids adding a `:root`
+entry that `tests/dark-theme.test.ts` would then require in `.dark`, for a value that has nothing
+to do with theming.
+
+`clamp()` display sizes and the shape radii (`999px`, `50%`, `2px`) are exempt and named as such.
+Spacing one-offs stayed — the scale rule is for type and radius, where drift compounds.
+
+### 40.6 — The guard
+
+`tests/landing-scale.test.ts` is a **source** test on purpose. Rendering proves the page works; it
+cannot prove the page's values belong to a system. The failure being guarded never breaks anything
+— it just quietly re-forks the type scale, one eyeballed value at a time, which is why it needs a
+machine rather than a code review. The regex is itself load-bearing (a typo matching nothing would
+pass silently and green-light any value), so a fourth test asserts it still finds the page's real
+utilities. It also had to skip `text-[#c9c2b6]` — the same utility prefix carries colours.
+
+**Caught by the test, not by reading:** the first version counted every occurrence of
+`landing-marquee-swipe` in the source and failed at 2 — the second was in the comment explaining
+it. Now scoped to `className="…"`.
+
+### Scorecard (BUILD_PLAN.md §6)
+
+| Category | Max | Score | Evidence |
+|---|---|---|---|
+| Requirements | 25 | 25 | 40.1–40.6 all delivered; both ⚖️ escalated before code and logged; non-goals respected (no redesign, no new sections, no Fraunces change) |
+| Correctness | 20 | 20 | measured in-browser at 375 / 833 / 1280, light **and** dark: swipe row 8-of-32 visible and all interactive, desktop three bands still animating with `reverse` intact, focus-pause running→paused→running, no horizontal page scroll (375 === 375), console clean |
+| Tests | 15 | 15 | +15 (928 total); the floor branch, the CSS-selected wiring, the cross-file accordion parity, and the regex itself |
+| Security | 15 | 15 | no new input, no new route, no new query, no client JS; `total` is a count, not user data |
+| Code quality | 10 | 9 | `sectionLead` extracted after the third copy of the same string; `trustItems` became a function so the number can't be re-hardcoded — but `page.tsx` is now 600+ lines and its static content arrays are due to move out (not this sprint's scope) |
+| Mobile/offline | 10 | 10 | this sprint IS the mobile fix; the landing is neither offline-cached nor printed, so neither contract is touched |
+| Documentation | 5 | 4 | two decisions logged, full substitution table above; `DESIGN_BRIEF.md` still owes the scale — batched to Sprint 42 |
+| **Total** | **100** | **98** | ≥95 on attempt 1 |
+
+### Gate (native, on Keagan's machine)
+
+`npm run build` ✓ · **928 tests, 1 todo (80 files)** ✓ · `tsc` ✓ · `eslint` ✓ · browser pass at
+375/833/1280 in both themes ✓ · console clean ✓.
+
+⚠️ `npm run build` invalidated the running `next dev` again (shared `.next`) — dev served 500s
+until restarted. Third time; run the build **after** the browser work.
+
+### Keagan's remaining steps
+
+`git push`, then check CI. Browser/phone pass: **swipe the featured row on a real phone** (it
+should scroll and snap, with no auto-motion), Tab through the category pills on a keyboard and
+confirm the band stops while focus is inside it, and check the count on the landing matches
+`/browse`'s. The count wording and the sub-floor fallback are **DRAFT public copy** — yours to
+approve.

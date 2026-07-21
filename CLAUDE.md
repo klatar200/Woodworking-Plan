@@ -169,9 +169,9 @@ with it.
 
 ## 7. Current state (keep this updated)
 
-- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–38 are PUSHED, CI green (Keagan,
-  2026-07-21; 33–37 also verified on mobile). Sprint 39 is code-complete and browser-verified
-  at localhost:3000; push is Keagan's.**
+- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–39 are PUSHED, CI green (Keagan,
+  2026-07-21; 33–37 also verified on mobile). Sprint 40 is code-complete and browser-verified
+  at localhost:3000 (375/833/1280, both themes); push is Keagan's.**
   ⚠️ **Environment note, 2026-07-21:** this session ran NATIVELY on Keagan's Windows machine,
   where `npm run build`, `npx vitest run`, `tsc` and `eslint` all work directly against the repo
   — the `/tmp`-clone rule and the "next build SIGBUS" note in §6 describe the LINUX SANDBOX and
@@ -376,9 +376,64 @@ with it.
       a plain function. **Vitest passed while `tsc` failed** (`noUncheckedIndexedAccess`): the
       Sprint 38 lesson again — a green suite is not the gate.
     - `account-menu.tsx` trigger gained `aria-expanded` (A6).
-  - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite, and the
-    §7 entries for 40–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` +
-    OS-preference entries are recorded now (2026-07-21).
+  - **Sprint 40 (landing integrity — audit A3/C1/V2/D2-landing): COMPLETE — 98/100.**
+    Browser-verified at localhost:3000 (375 / 833 / 1280, light AND dark); `npm run build`,
+    **928 tests**, `tsc` and `eslint` green on this machine. **Two ⚖️, both escalated before any
+    code and both answered (a)** (`DECISIONS_LOG.md` 2026-07-21).
+    - **⚖️ Below `lg` the FEATURED marquee is a swipe row, not an animation.** An auto-scrolling
+      band of LINKS is the worst motion on a touch screen: unpausable (no hover) and the tap
+      target moves out from under the thumb reaching for it. Now `animation: none` +
+      `scroll-snap-type: x mandatory` + `overscroll-behavior-x: contain` (a horizontal swipe must
+      not fire the browser's back gesture), edge fades off (they hide a LOOP SEAM; over a scrolled
+      row they just wash out the first and last real card). Desktop untouched — all three bands
+      animate, `reverse` intact. The trust/category TEXT bands keep animating everywhere.
+      **Unconditionally, all three now pause on `:focus-within`** as well as `:hover` — the
+      category band is links, and a pointer-only pause is no pause for a keyboard.
+    - **🛑 THE DUPLICATES ARE HIDDEN BY SELECTING ON `[inert]`** — the attribute `PlanCard`'s
+      `decorative` prop already stamps on every copy but the first. So the CSS **cannot** drift
+      from `PLAN_MARQUEE_COPIES` and no `className` prop had to be threaded through a component
+      the catalog also renders. One DOM, one source order: the duplicates are still
+      server-rendered, just CSS-hidden. Measured at 375px: 32 children, **8 visible, all 8
+      interactive, 8 tab stops**.
+    - **⚖️ The landing states the REAL catalog size** — "948 plans", from the `total` that
+      `queryPlans` already returned and the render was **discarding** (asserted: still exactly one
+      `await queryPlans(` on the page). `planCountCopy()` is a pure module
+      (`src/lib/landing-copy.ts`) because the branch that matters is the one nobody sees in a
+      browser. **Deviation from the plan, deliberate:** below the 100-plan floor the size claim is
+      **DROPPED** ("Every plan fully specified"), not softened back to "Hundreds of plans" — with
+      40 plans seeded that sentence is false, and a half-seeded DB is exactly where nobody is
+      looking. Same doctrine as the cost rule. `!Number.isFinite` stops "NaN plans"; the `en-US`
+      locale is FIXED so the copy can't vary by server. Cross-checked live: the landing and
+      `/browse`'s results heading both read **948**.
+    - **🛑 THE LANDING'S `queryPlans` CALL MUST STAY UNFILTERED** (guard added 2026-07-21 after
+      Keagan flagged the risk). It is SHARED with the featured carousel, so anyone improving the
+      carousel ("only Outdoor plans", "skip ones with no photo") would add `filters`/`query` and
+      silently turn the headline into a subset count — still rendering, still looking live, with
+      nothing in the type system objecting. `tests/landing-copy.test.ts` asserts the call's
+      argument keys are **exactly `['perPage','sort']`** — a whitelist, so an unforeseen narrowing
+      option fails too. `sort`/`perPage` are safe by construction (order and page size can't change
+      how many rows match). If the carousel ever needs narrowing, give it its OWN query.
+    - **One accordion dialect (V2):** the landing FAQ adopts `/faq`'s chevron + rotate +
+      `::details-content` height animation verbatim, *including* its degradation argument (where
+      the feature is absent the panel snaps open; `<details>` itself supplies the closed state, so
+      nothing is hidden with no way to reveal it). A test asserts the five markers exist in
+      **both** files, so they cannot drift apart again.
+    - **Scale (D2):** the page arrived from a mockup with its own dialect — seven font sizes and
+      four radii used nowhere else. All collapsed onto the shared ramp (full old→new table in
+      `SPRINT_LOG.md`); timeline hover-lift 6px → 4px. **No `--radius-xl` token was minted**
+      against the plan's suggestion: this codebase has NO radius tokens (every radius in
+      `globals.css` is a literal), so one variable for one step would be a second system, not
+      fewer — and it would force a meaningless `.dark` entry via `dark-theme.test`.
+    - **`tests/landing-scale.test.ts` is a SOURCE test on purpose.** Rendering proves the page
+      works; it cannot prove its values belong to a system. The guarded failure never breaks
+      anything — it silently re-forks the type scale one eyeballed value at a time. The regex is
+      load-bearing (a typo matching nothing would pass and green-light everything), so a test
+      asserts it still finds real utilities; it also skips `text-[#…]`, since the same prefix
+      carries colours.
+  - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite (it now
+    also owes the type/radius scale Sprint 40 normalized onto), and the §7 entry for 41 as it
+    lands. This §7 block and the `DECISIONS_LOG` `start_url` + OS-preference entries are recorded
+    now (2026-07-21).
 
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma

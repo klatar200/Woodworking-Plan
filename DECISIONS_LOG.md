@@ -1439,6 +1439,51 @@ the obvious alternative and someone will propose it again.
 it cannot pre-tick them again by accident. Same shape as deleting `formatCents` rather than
 leaving it unused — a structural fix, not a convention.
 
+### 2026-07-21 — Landing marquees: below `lg` the featured band is a swipe row
+
+**Decision (Keagan): option (a).** Below the `lg` breakpoint the featured-plans carousel
+stops animating and becomes a native horizontally-scrollable scroll-snap row. Desktop is
+unchanged. The trust and category **text** bands keep animating at every width, and all
+three now pause on `:focus-within` as well as `:hover`.
+
+**Context (Sprint 40.1, audit A3).** Three auto-scrolling bands ran continuously with no
+way to stop them except a mouse hover — which a touch device does not have. The featured
+band is the harmful one: it is made of **links**, so the tap target physically moves out
+from under the thumb reaching for it, and a keyboard user tabbing in had focus dragged
+across the screen.
+
+**Rejected (b): keep everything animated and add a pause/play button per band.** Strictly
+additive and it preserves the current look, but it leaves a motion-heavy page that the
+user must actively switch off, adds a client island to a fully-static page, and still
+leaves the moving-tap-target problem in place until they find the button.
+
+**Implementation note.** The loop duplicates are hidden below `lg` by selecting on
+`[inert]` — the attribute `PlanCard`'s `decorative` prop already stamps on every copy but
+the first. The CSS therefore cannot disagree with the copy count and no prop had to be
+threaded through a shared component. One DOM, one source order, as everywhere else.
+
+### 2026-07-21 — The landing states the real catalog size
+
+**Decision (Keagan): option (a), live count.** The landing's trust chip and closing CTA
+render the actual number of published plans ("948 plans"), read from the `total` the
+featured-plans query already returned — no extra query.
+
+**Context (Sprint 40.2, audit C1).** The page said "Hundreds of plans" while the catalog
+held 948, understating the most checkable claim on the site by roughly 3x, on a product
+whose entire pitch is that its numbers are honest.
+
+**Rejected (b): keep "Hundreds of plans".** Never wrong, but vague where a competitor
+states a number — and it had already drifted once without anyone noticing, which is the
+argument against hardcoded facts generally.
+
+**Deviation from the sprint plan, deliberate.** The plan's fallback below the 100-plan
+floor was "keep the current wording". It does not: below the floor the size claim is
+**dropped entirely** ("Every plan fully specified"). With 40 plans seeded, "Hundreds of
+plans" is simply false, and an un-seeded or half-seeded database is exactly the situation
+nobody is looking at. Same doctrine as the cost-display rule — say the true thing or say
+nothing, never a confident approximation. Wording is DRAFT pending Keagan's approval
+(`BUILD_PLAN.md` §2).
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,
