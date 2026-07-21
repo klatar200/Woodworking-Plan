@@ -3,7 +3,9 @@
 **Brand name:** Notch  
 **Long form / SEO:** Notch Plans  
 **Domain:** notchplans.com  
-**Mark:** Interlocking half-lap **N** (forest + oak)  
+**Mark:** Interlocking slab-serif **N** — forest left + oak right with a clean
+diagonal notch gap (Keagan-approved art, 2026-07-21). Not the earlier half-lap
+board mark.  
 **Chosen:** 2026-07-21 (Keagan)
 
 ## Assets
