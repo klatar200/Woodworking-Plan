@@ -3500,6 +3500,23 @@ hardening pass and carousel fix (this entry's own work) carry the full scorecard
   **Carousel motion (seam gone, opposite directions) is best confirmed live on `npm run dev`**
   — a static screenshot can't show it.
 
+### Follow-up — mockup-fidelity rebuild (2026-07-20, same day, pushed + live-verified)
+
+Keagan flagged the shipped landing as "boring" vs. the approved mockup
+(`mockups/qol-m/landing.html`): Step 2 had simplified it, dropping the mockup's most
+distinctive visuals. Rebuilt to match, still on **real data only**.
+
+| File | Change |
+|---|---|
+| `src/components/landing-plan-panel.tsx` | **NEW** — the depth "plan panel": header + chips + **tool chips**, then a 2-col grid of the cut list and the **real board-buying plan** (reuses `BoardBar` + `optimize()`, passed in so no math is duplicated). Used in the hero (rotated) and the "what a plan looks like" section (flat). |
+| `src/app/page.tsx` | Data now picks the first **two CLEAN** Trending plans (no impossible part, ≥3 rows) so every drawn bar + "buy N boards" count is honest; hero uses the panel; **added the "What a plan looks like" section** (panel + 4-item explainer list) that Step 2 had omitted; timeline gets the dashed connector + raised cards; hero gets the hatch texture; featured/FAQ bands get inset depth. Removed the now-unused inline card + `chip`/format imports. |
+| `src/app/globals.css` | New depth tokens `--card-bg` + `--bevel` in **both** themes (dark-theme guard covers the pair); `.landing-panel`, `.landing-hatch`, `.landing-band-inset`, `.landing-timeline::before` connector. |
+
+**Verified on the LIVE deploy** (`woodworking-plan.vercel.app`), zoom-independent DOM check:
+5 depth panels, 6 real board bars / 9 proportional segments, hero card-bg gradient present,
+timeline connector + hatch present, all 7 sections, 8 working `/browse` CTAs. CI green.
+No fabricated data — panels only use plans whose optimizer result is clean.
+
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | **25** | Exactly the pilot as scoped: a generic SVG renderer computed from existing `cutList` data with no per-plan artwork, step-level highlighting built on the existing joins, five plans, a dev-only route, nothing wired into the live plan or build pages, no attempt at 3D. And the deliverable the prompt actually asked for — a report on whether it beats the table — is above, with a recommendation and a cheaper fallback rather than a shrug. |

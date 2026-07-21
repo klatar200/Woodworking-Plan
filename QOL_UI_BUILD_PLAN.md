@@ -875,6 +875,15 @@ rewritten).
   content always sits behind the loop point; the featured (wide) marquee uses fewer
   (`PLAN_MARQUEE_COPIES`); `--speed` scaled with the copy count to hold the visual speed.
   The category carousel scrolls the OPPOSITE direction to the featured one (`reverse`).
+- **Mockup-fidelity rebuild (same day).** Keagan flagged the first Step-2 landing as "boring"
+  vs. the approved mockup — it had simplified away the depth panels, the **board-buying-plan
+  bars**, and the "what a plan looks like" section. Rebuilt to match, still real-data-only: new
+  `src/components/landing-plan-panel.tsx` (cut list + real `BoardBar`/`optimize()` board plan +
+  tool chips) in the hero (rotated) and a restored "what a plan looks like" section (panel +
+  explainer list); depth tokens `--card-bg` + `--bevel` (both themes); `.landing-panel`/
+  `.landing-hatch`/`.landing-band-inset`/`.landing-timeline` connector. Hero/detail panels only
+  use plans with a CLEAN optimizer result, so every bar + "buy N boards" count is honest.
+  Verified on the live deploy. See `SPRINT_LOG.md` (2026-07-20) for the full file table.
 
 The original phase plan (steps, session prompts, inventory) is retained below as the
 historical record of how it was executed.

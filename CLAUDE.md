@@ -614,7 +614,20 @@ with it.
   - **Carousel seam fix:** narrow marquees (trust, category) repeat enough copies
     (`MARQUEE_COPIES`) that a full screen sits behind the loop point — 2 copies left a
     visible gap that "jerked" on reset; featured uses `PLAN_MARQUEE_COPIES`; `--speed` scales
-    with copy count. Category scrolls opposite (`reverse`) to featured.
+    with copy count. Category scrolls opposite (`reverse`) to featured. **The reverse only
+    works as an unlayered `.landing-marquee-reverse` rule** — the unlayered
+    `.landing-marquee-track { animation: … }` shorthand resets `animation-direction` and beats
+    a layered Tailwind `[animation-direction:reverse]` utility (the standing "unlayered wins" trap).
+  - **Mockup-fidelity rebuild (2026-07-20):** Keagan flagged the first Step-2 landing as
+    "boring" vs. the approved mockup — it had dropped the depth panels, the **board-buying-plan
+    bars**, and the "what a plan looks like" section. Rebuilt to match, still real-data-only:
+    new **`src/components/landing-plan-panel.tsx`** (cut list + real `BoardBar`/`optimize()`
+    board plan + tool chips) used in the hero (rotated) and a restored "what a plan looks like"
+    section (panel + explainer list); depth tokens **`--card-bg` + `--bevel`** added to BOTH
+    themes (dark-theme guard); `.landing-panel`/`.landing-hatch`/`.landing-band-inset`/
+    `.landing-timeline` connector. The hero/detail panels only use plans whose optimizer result
+    is CLEAN (no impossible part), so every bar + "buy N boards" count is honest. Verified on the
+    live deploy (5 panels, 6 board bars, all sections). See `SPRINT_LOG.md` for the file table.
 
 - **Phase QOL-G (part-diagram PILOT): COMPLETE — 96/100. ⏸ AWAITING KEAGAN'S VERDICT**
   (2026-07-19). A generic SVG renderer computed from each plan's existing `cutList`
