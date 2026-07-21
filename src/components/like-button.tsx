@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Heart } from 'lucide-react';
 import { likePlanAction, unlikePlanAction } from '@/app/actions/likes';
 import { btnGhost, btnLiked } from '@/lib/ui'; // Sprint 29: shared button classes
 
@@ -45,7 +46,7 @@ export function LikeButton({ planId, slug, isLiked, likeCount, isSignedIn }: Pro
         aria-label={`Sign in to like this plan (${label})`}
         title={`Sign in to like this plan (${label})`}
       >
-        <span aria-hidden="true">♡</span> {likeCount}
+        <Heart size={16} aria-hidden="true" /> {likeCount}
       </Link>
     );
   }
@@ -63,7 +64,8 @@ export function LikeButton({ planId, slug, isLiked, likeCount, isSignedIn }: Pro
         aria-label={isLiked ? `Unlike this plan (${label})` : `Like this plan (${label})`}
         title={isLiked ? `Unlike this plan (${label})` : `Like this plan (${label})`}
       >
-        <span aria-hidden="true">{isLiked ? '♥' : '♡'}</span> {likeCount}
+        <Heart size={16} aria-hidden="true" fill={isLiked ? 'currentColor' : 'none'} />{' '}
+        {likeCount}
       </button>
     </form>
   );

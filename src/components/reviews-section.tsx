@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Star } from 'lucide-react';
 import { submitReviewAction, deleteReviewAction, deletePhotoAction } from '@/app/actions/reviews';
 import { StarRating } from '@/components/star-rating';
 import { PhotoInput } from '@/components/photo-input';
@@ -121,7 +122,7 @@ export function ReviewsSection({
                     <span className="visually-hidden">
                       {value} {value === 1 ? 'star' : 'stars'}
                     </span>
-                    <span aria-hidden="true">★</span>
+                    <Star size={26} fill="currentColor" stroke="currentColor" aria-hidden="true" />
                   </label>
                 </Fragment>
               ))}

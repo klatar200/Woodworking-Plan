@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Check } from 'lucide-react';
 import { getPathBySlug, getBuiltPlanIds, summarizeProgress } from '@/lib/paths';
 import { getRatingSummaries } from '@/lib/reviews';
 import { PlanCard } from '@/components/plan-card';
@@ -93,7 +94,7 @@ export default async function PathDetailPage({ params }: { params: Params }) {
             >
               <div className="path-step-head">
                 <span className="path-step-number" aria-hidden="true">
-                  {built ? '✓' : step.stepNumber}
+                  {built ? <Check size={16} /> : step.stepNumber}
                 </span>
                 <span className="visually-hidden">
                   Step {step.stepNumber}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { Check } from 'lucide-react';
 import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
 
 // Sprint 30c: the step-walker chrome (rail, dots, progress bar, nav, finish CTA) →
@@ -191,7 +192,13 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
               disabled={active === totalSteps}
               onClick={() => goTo(active + 1)}
             >
-              {active === totalSteps ? 'Finish ✓' : 'Next →'}
+              {active === totalSteps ? (
+                <span className="inline-flex items-center gap-[0.35rem]">
+                  Finish <Check size={15} aria-hidden="true" />
+                </span>
+              ) : (
+                'Next →'
+              )}
             </button>
           </div>
         )}

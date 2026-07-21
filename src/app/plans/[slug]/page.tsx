@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { page, btnGhost, btnPrimary, menuItem, categoryLabel } from '@/lib/ui'; // Sprint 29 + QOL-B
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Hammer } from 'lucide-react';
 import { getPlanBySlug } from '@/lib/plans';
 import { isPlanSaved } from '@/lib/saves';
 import { isPlanLiked } from '@/lib/likes';
@@ -201,9 +202,9 @@ export default async function PlanDetailPage({
           <p className="mt-[0.25rem] mx-0 mb-0">
             <a
               href="#reviews-heading"
-              className="text-muted no-underline text-[0.95rem] hover:text-fg"
+              className="inline-flex items-center gap-[0.35rem] text-muted no-underline text-[0.95rem] hover:text-fg"
             >
-              🔨 {ratingSummary.count}{' '}
+              <Hammer size={14} aria-hidden="true" /> {ratingSummary.count}{' '}
               {ratingSummary.count === 1 ? 'person has' : 'people have'} built this
             </a>
           </p>
@@ -216,8 +217,11 @@ export default async function PlanDetailPage({
             instructions section are untouched, because they are the no-JS, print and
             offline path (the Sprint 20 contract). Two links to one page is not a bug. */}
         <div className="plan-actions flex flex-wrap items-center gap-[0.5rem] mt-[1rem]">
-          <Link href={`/plans/${plan.slug}/build`} className={btnPrimary}>
-            🔨 Start building
+          <Link
+            href={`/plans/${plan.slug}/build`}
+            className={`${btnPrimary} gap-[0.5rem]`}
+          >
+            <Hammer size={16} aria-hidden="true" /> Start building
           </Link>
 
           {/* The like count is COUNTED (_count), never read from a denormalized

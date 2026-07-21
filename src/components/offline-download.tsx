@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Check } from 'lucide-react';
 import { offlineDownloadUrls } from '@/lib/offline-urls';
 import { btn } from '@/lib/ui'; // Sprint 29: shared button class (+ mb from old `.offline-download .btn`)
 
@@ -90,11 +91,15 @@ export function OfflineDownload({ slugs, collectionIds, pathSlugs }: Props) {
         onClick={download}
         disabled={status === 'downloading'}
       >
-        {status === 'downloading'
-          ? 'Downloading…'
-          : status === 'done'
-            ? 'Downloaded ✓'
-            : 'Make available offline'}
+        {status === 'downloading' ? (
+          'Downloading…'
+        ) : status === 'done' ? (
+          <span className="inline-flex items-center gap-[0.35rem]">
+            <Check size={15} aria-hidden="true" /> Downloaded
+          </span>
+        ) : (
+          'Make available offline'
+        )}
       </button>
 
       {/* Say plainly what is being agreed to. Consent to something nobody explained is

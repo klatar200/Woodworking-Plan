@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useSyncExternalStore } from 'react';
+import { Download } from 'lucide-react';
 import {
   type BeforeInstallPromptEvent,
   setDeferredPrompt,
@@ -76,7 +77,10 @@ export function InstallMenuItem({ className }: { className?: string }) {
 
   return (
     <button type="button" className={className} onClick={() => void promptInstall()}>
-      📲 Install app
+      <span className="inline-flex items-center gap-[0.5rem]">
+        <Download size={16} aria-hidden="true" />
+        Install app
+      </span>
       <span className="block text-[0.8125rem] text-muted font-normal">
         Faster access, works offline in the shop
       </span>

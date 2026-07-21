@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { Prose } from '@/components/prose';
 
 /**
@@ -77,7 +78,13 @@ export function PlanSteps({
                           title={owns ? 'In your workshop' : undefined}
                         >
                           {st.tool.name}
-                          {owns ? <span aria-hidden="true"> ✓</span> : null}
+                          {owns ? (
+                            <Check
+                              size={12}
+                              aria-hidden="true"
+                              className="inline ml-[0.15rem] align-[-1px]"
+                            />
+                          ) : null}
                         </li>
                       );
                     })}

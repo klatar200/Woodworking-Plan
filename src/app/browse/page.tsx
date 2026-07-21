@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Wrench } from 'lucide-react';
 // `page` is aliased to `pageShell` — this module already has a local `const page`
 // (the pagination page number) that would otherwise shadow the import.
 import { page as pageShell, btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29
@@ -302,9 +303,9 @@ export default async function CatalogPage({
                   sort: sortParam,
                   perPage: perPageParam,
                 })}
-                className={btnPrimary}
+                className={`${btnPrimary} gap-[0.5rem]`}
               >
-                🧰 Show plans I can build
+                <Wrench size={16} aria-hidden="true" /> Show plans I can build
               </Link>
             </p>
           ) : null}

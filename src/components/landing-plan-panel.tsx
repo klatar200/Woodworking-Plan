@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { BoardBar } from '@/components/board-bar';
 import {
   costTierSymbol,
@@ -86,7 +87,7 @@ export function LandingPlanPanel({
           <div className="flex flex-wrap gap-[0.35rem] mt-[0.5rem]">
             {essential.map((t) => (
               <span key={t.tool.name} className={chipEssential}>
-                ✓ {t.tool.name}
+                <Check size={12} aria-hidden="true" /> {t.tool.name}
               </span>
             ))}
             {optional.map((t) => (

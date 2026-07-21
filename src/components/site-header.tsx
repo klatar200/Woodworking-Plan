@@ -54,9 +54,11 @@ const PUBLIC_NAV = [
 // permanent nav slot; it lives at /profile#workshop and is prompted from the plan page
 // where someone actually discovers they need it. /workshop still redirects there, so
 // nothing anyone bookmarked broke.
+// Text-only, no leading icon (2026-07-20, Keagan): icons on text nav items are visual
+// noise — the label is the affordance. (Formerly 🔖 Saved / 🔨 Builds.)
 const SIGNED_IN_NAV = [
-  { href: '/saved', label: 'Saved', icon: '🔖' },
-  { href: '/builds', label: 'Builds', icon: '🔨' }, // Sprint 27
+  { href: '/saved', label: 'Saved' },
+  { href: '/builds', label: 'Builds' }, // Sprint 27
 ] as const;
 
 /**
@@ -153,7 +155,6 @@ export function SiteHeader() {
             <span className="w-px h-[1.5rem] bg-border mx-[0.5rem]" aria-hidden="true" />
             {SIGNED_IN_NAV.map((item) => (
               <Link key={item.href} href={item.href} className={navLink}>
-                <span aria-hidden="true">{item.icon}</span>
                 {item.label}
               </Link>
             ))}
@@ -218,7 +219,6 @@ export function SiteHeader() {
                 <span className="block h-px bg-border my-[0.5rem]" aria-hidden="true" />
                 {SIGNED_IN_NAV.map((item) => (
                   <Link key={item.href} href={item.href} className={drawerLink}>
-                    <span aria-hidden="true">{item.icon}</span>
                     {item.label}
                   </Link>
                 ))}

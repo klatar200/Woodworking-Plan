@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { X } from 'lucide-react';
 import {
   TIME_BUCKETS,
   buildQueryString,
@@ -101,7 +102,7 @@ export function FilterChips({ query, filters, sort, perPage, categories, tools }
             className={chipActive}
             aria-label={`Remove filter: ${chip.label}`}
           >
-            {chip.label} <span aria-hidden="true">✕</span>
+            {chip.label} <X size={13} aria-hidden="true" />
           </Link>
         </li>
       ))}

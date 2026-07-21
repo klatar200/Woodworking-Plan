@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { Menu } from 'lucide-react';
 
 /**
  * The mobile drawer — 2026-07-16 (Keagan: "a mobile navbar that opens a drawer").
@@ -47,12 +48,12 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >
-      {/* list-none kills the default marker; the ☰ is the affordance. */}
+      {/* list-none kills the default marker; the menu icon is the affordance. */}
       <summary
-        className="list-none [&::-webkit-details-marker]:hidden inline-flex items-center justify-center min-h-[2.75rem] min-w-[2.75rem] px-[0.625rem] border border-border rounded-[0.375rem] cursor-pointer text-[1.125rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+        className="list-none [&::-webkit-details-marker]:hidden inline-flex items-center justify-center min-h-[2.75rem] min-w-[2.75rem] px-[0.625rem] border border-border rounded-[0.375rem] cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
         aria-label="Menu"
       >
-        ☰
+        <Menu size={22} aria-hidden="true" />
       </summary>
 
       {/* The drawer: a full-width panel pinned under the (sticky) header. The

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check } from 'lucide-react';
 import { queryPlans, getPlanBySlug } from '@/lib/plans';
 import {
   optimize,
@@ -150,9 +151,7 @@ export default async function LandingPage() {
                 className="inline-flex items-center gap-[0.55rem] text-[0.95rem] text-muted-2 whitespace-nowrap"
               >
                 {item.icon ? (
-                  <span className="text-ok" aria-hidden="true">
-                    ✓
-                  </span>
+                  <Check size={16} className="text-ok shrink-0" aria-hidden="true" />
                 ) : null}
                 {item.strong ? <strong className="text-fg">{item.text}</strong> : item.text}
               </li>
@@ -345,10 +344,10 @@ export default async function LandingPage() {
               {AUDIENCE.map((a) => (
                 <li key={a} className="flex items-center gap-[0.75rem] my-[0.7rem] text-[1rem]">
                   <span
-                    className="inline-flex items-center justify-center w-[2.2rem] h-[2.2rem] rounded-[0.5rem] bg-accent-tint shrink-0"
+                    className="inline-flex items-center justify-center w-[2.2rem] h-[2.2rem] rounded-[0.5rem] bg-accent-tint text-accent-strong shrink-0"
                     aria-hidden="true"
                   >
-                    ✓
+                    <Check size={16} />
                   </span>
                   <span>{a}</span>
                 </li>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useUser, useClerk } from '@clerk/nextjs';
+import { Hammer, Bookmark, Sun, Moon, Download, Settings, X, Check } from 'lucide-react';
 import { btnPrimary, btnGhost, checkbox, checkboxInput } from '@/lib/ui';
 import {
   subscribeInstallable,
@@ -164,7 +165,7 @@ export function AccountModal({
             aria-label="Close"
             className="inline-flex items-center justify-center min-h-[2.25rem] min-w-[2.25rem] rounded-[0.375rem] border border-border bg-transparent text-fg cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
           >
-            ✕
+            <X size={18} aria-hidden="true" />
           </button>
         </div>
 
@@ -196,16 +197,16 @@ export function AccountModal({
         {/* --- Activity --- */}
         <h3 className={sectionLabel}>Your activity</h3>
         <div className="flex flex-wrap gap-[0.5rem]">
-          <Link href="/builds" className={btnGhost} onClick={onClose}>
-            🔨 Your builds
+          <Link href="/builds" className={`${btnGhost} gap-[0.5rem]`} onClick={onClose}>
+            <Hammer size={16} aria-hidden="true" /> Your builds
           </Link>
-          <Link href="/saved" className={btnGhost} onClick={onClose}>
-            🔖 Saved plans
+          <Link href="/saved" className={`${btnGhost} gap-[0.5rem]`} onClick={onClose}>
+            <Bookmark size={16} aria-hidden="true" /> Saved plans
           </Link>
         </div>
 
         {/* --- Workshop --- */}
-        <h3 className={sectionLabel}>🧰 Your workshop</h3>
+        <h3 className={sectionLabel}>Your workshop</h3>
         <p className="mt-0 mb-[0.625rem] text-[0.875rem] text-muted">
           Tick the tools you own. We&rsquo;ll pre-fill the &ldquo;tools you own&rdquo;
           filter on the catalog. Saving replaces your list.
@@ -254,8 +255,11 @@ export function AccountModal({
                 {saving ? 'Saving…' : 'Save my workshop'}
               </button>
               {saveResult?.ok ? (
-                <span className="text-[0.875rem] text-ok" role="status">
-                  Saved ✓
+                <span
+                  className="inline-flex items-center gap-[0.25rem] text-[0.875rem] text-ok"
+                  role="status"
+                >
+                  <Check size={14} aria-hidden="true" /> Saved
                 </span>
               ) : saveResult && !saveResult.ok ? (
                 <span className="text-[0.875rem] text-err" role="alert">
@@ -273,16 +277,25 @@ export function AccountModal({
         {/* --- Preferences --- */}
         <h3 className={sectionLabel}>Preferences</h3>
         <div className="flex flex-wrap gap-[0.5rem]">
-          <button type="button" onClick={toggleTheme} className={btnGhost}>
-            {isDark ? '☀️ Light mode' : '🌙 Dark mode'}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className={`${btnGhost} gap-[0.5rem]`}
+          >
+            {isDark ? (
+              <Sun size={16} aria-hidden="true" />
+            ) : (
+              <Moon size={16} aria-hidden="true" />
+            )}
+            {isDark ? 'Light mode' : 'Dark mode'}
           </button>
           {installable ? (
             <button
               type="button"
               onClick={() => void promptInstall()}
-              className={btnGhost}
+              className={`${btnGhost} gap-[0.5rem]`}
             >
-              📲 Install app
+              <Download size={16} aria-hidden="true" /> Install app
             </button>
           ) : null}
         </div>
@@ -296,9 +309,9 @@ export function AccountModal({
               onClose();
               clerk.openUserProfile();
             }}
-            className={btnGhost}
+            className={`${btnGhost} gap-[0.5rem]`}
           >
-            ⚙️ Manage account &amp; security
+            <Settings size={16} aria-hidden="true" /> Manage account &amp; security
           </button>
           <button
             type="button"

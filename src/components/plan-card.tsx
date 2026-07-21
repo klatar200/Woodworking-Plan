@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Heart } from 'lucide-react';
 import type { PlanListItem } from '@/lib/plans';
 import type { RatingSummary } from '@/lib/reviews';
 import { StarRating } from '@/components/star-rating';
@@ -134,7 +135,10 @@ export function PlanCard({
                 "♥ 0" badges is noise, and on a young catalog it would be every
                 card. The detail page always shows the count, including zero. */}
             {plan._count.likes > 0 && (
-              <li className="badge">♥ {plan._count.likes}</li>
+              <li className="badge inline-flex items-center gap-[0.2rem]">
+                <Heart size={12} fill="currentColor" aria-hidden="true" />
+                {plan._count.likes}
+              </li>
             )}
           </ul>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
+import { User } from 'lucide-react';
 import { AccountModal } from '@/components/account-modal';
 
 /**
@@ -40,7 +41,7 @@ export function AccountMenu() {
             className="w-full h-full object-cover"
           />
         ) : (
-          <span aria-hidden="true">👤</span>
+          <User size={20} aria-hidden="true" />
         )}
       </a>
 

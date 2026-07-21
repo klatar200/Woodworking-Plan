@@ -75,7 +75,7 @@ export default async function ProfilePage({
       {/* QOL-D item 3 — the Workshop, formerly /workshop. `id` is the redirect target
           (/workshop → /profile#workshop) and the anchor the plan page links to, so it
           must not be renamed without updating both. */}
-      <h2 id="workshop">🧰 Your workshop</h2>
+      <h2 id="workshop">Your workshop</h2>
       <p className="subtitle">
         Tell us which tools you own. We&rsquo;ll pre-tick the &ldquo;tools you own&rdquo;
         filter on the catalog so you can see what you can build in one click.

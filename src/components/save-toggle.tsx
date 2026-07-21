@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Bookmark } from 'lucide-react';
 import { savePlanAction, unsavePlanAction } from '@/app/actions/saves';
 import { cachePlanForOffline } from '@/components/service-worker';
 
@@ -48,7 +49,17 @@ interface Props {
  * has to name it or nothing moves.
  */
 const iconButton =
-  'flex items-center justify-center w-[2.5rem] h-[2.5rem] border border-border rounded-[50%] bg-surface text-[0.9375rem] no-underline cursor-pointer shadow-e2 transition-[scale,box-shadow] duration-150 ease-[cubic-bezier(0.2,0.7,0.3,1)] hover:scale-105 hover:shadow-e3 active:scale-90 motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+  'flex items-center justify-center w-[2.5rem] h-[2.5rem] border border-border rounded-[50%] bg-surface no-underline cursor-pointer shadow-e2 transition-[scale,box-shadow] duration-150 ease-[cubic-bezier(0.2,0.7,0.3,1)] hover:scale-105 hover:shadow-e3 active:scale-90 motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+
+/**
+ * The save glyph — a BOOKMARK (lucide-react), outline when not saved and solid-filled when
+ * saved. Deliberately NOT a heart: the heart is already the Like control, and one metaphor
+ * per action. Colour comes from the button's text colour; the saved button adds
+ * `text-accent-strong` so the filled bookmark reads as "in your library".
+ */
+function BookmarkIcon({ filled }: { filled: boolean }) {
+  return <Bookmark size={18} aria-hidden="true" fill={filled ? 'currentColor' : 'none'} />;
+}
 
 /**
  * Icon-only bookmark toggle overlaid on a catalog card — the mockup's "tap a
@@ -84,11 +95,11 @@ export function SaveToggle({
     return (
       <Link
         href={`/sign-in?redirect_url=${encodeURIComponent(`/plans/${slug}`)}`}
-        className={`${className} ${iconButton}`}
+        className={`${className} ${iconButton} text-fg`}
         aria-label="Sign in to save this plan"
         title="Save this plan"
       >
-        🏷️
+        <BookmarkIcon filled={false} />
       </Link>
     );
   }
@@ -110,12 +121,12 @@ export function SaveToggle({
       {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       <button
         type="submit"
-        className={iconButton}
+        className={`${iconButton} ${isSaved ? 'text-accent-strong' : 'text-fg'}`}
         aria-pressed={isSaved}
         aria-label={isSaved ? 'Remove from saved plans' : 'Save this plan'}
         title={isSaved ? 'Remove from saved plans' : 'Save this plan'}
       >
-        {isSaved ? '🔖' : '🏷️'}
+        <BookmarkIcon filled={isSaved} />
       </button>
     </form>
   );

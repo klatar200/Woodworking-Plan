@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check } from 'lucide-react';
 import {
   addToShoppingListAction,
   removeFromShoppingListAction,
@@ -59,8 +60,18 @@ export function ShoppingListButton({
       <input type="hidden" name="planId" value={planId} />
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="returnTo" value={`/plans/${slug}`} />
-      <button type="submit" className={className} aria-pressed={isOnList}>
-        {isOnList ? '✓ On shopping list' : 'Add to shopping list'}
+      <button
+        type="submit"
+        className={`${className} gap-[0.35rem]`}
+        aria-pressed={isOnList}
+      >
+        {isOnList ? (
+          <>
+            <Check size={15} aria-hidden="true" /> On shopping list
+          </>
+        ) : (
+          'Add to shopping list'
+        )}
       </button>
     </form>
   );

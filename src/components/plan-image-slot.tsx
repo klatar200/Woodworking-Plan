@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { ImageOff } from 'lucide-react';
 
 interface PlanImage {
   url: string;
@@ -42,11 +43,11 @@ export function PlanImageSlot({ title, image }: Props) {
         />
       ) : (
         <div
-          className="flex flex-col items-center justify-center gap-[0.5rem] aspect-[4/3] text-muted bg-accent-tint text-[2.5rem]"
+          className="flex flex-col items-center justify-center gap-[0.5rem] aspect-[4/3] text-muted bg-accent-tint"
           role="img"
           aria-label={`No photo yet for ${title}`}
         >
-          <span aria-hidden="true">🪚</span>
+          <ImageOff size={40} aria-hidden="true" />
           <span className="text-[0.875rem]">Photo coming soon</span>
         </div>
       )}
