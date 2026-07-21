@@ -20,7 +20,10 @@ import { CATALOG_PATH } from '@/lib/routes';
 // stylesheet hides it by class (out of scope this sprint); utilities added alongside.
 // `search-input` is fully converted to utilities; the submit button uses the shared
 // primary-button constant. `visually-hidden` (a11y) stays in globals.css for now.
-const searchBox = 'search-box flex gap-[0.5rem] mt-[1rem] mb-[0.75rem] mx-0';
+// Vertical margins moved to the parent row (browse/page.tsx) so the search box and the
+// page-size control align on one baseline — the box's own `mt`/`mb` used to offset it from
+// the marginless page-size form, so `items-center` couldn't line them up (QOL fix 2026-07-20).
+const searchBox = 'search-box flex gap-[0.5rem] mx-0';
 
 export function SearchBox({ query }: { query: string }) {
   return (

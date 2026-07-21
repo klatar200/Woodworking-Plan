@@ -29,7 +29,7 @@ interface Props {
  */
 export function PageSizeSelect({ perPage, query, filters, sort }: Props) {
   return (
-    <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action={CATALOG_PATH}>
+    <SoftGetForm className="sort-form flex items-center gap-[0.5rem]" action={CATALOG_PATH}>
       {/* Everything except the page size itself, so changing it keeps the rest. */}
       <CatalogStateInputs query={query} filters={filters} sort={sort} />
 

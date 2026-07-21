@@ -240,8 +240,11 @@ export default async function CatalogPage({
         />
 
         {/* QOL-J (2026-07-20, Keagan): the page-size control sits to the RIGHT of the
-            search bar on this row, not on the line below with the sort. */}
-        <div className="lg:[grid-area:search] flex flex-wrap items-center gap-x-[1rem] gap-y-0">
+            search bar on this row, not on the line below with the sort. The row owns the
+            vertical spacing (the child forms are now marginless) so the search box and the
+            page-size control align on one baseline; gap-y keeps them apart when they wrap on
+            a phone. */}
+        <div className="lg:[grid-area:search] flex flex-wrap items-center gap-x-[1rem] gap-y-[0.75rem] mt-[1rem] mb-[0.75rem]">
           <div className="flex-1 min-w-[16rem]">
             <SearchBox query={query} />
           </div>
@@ -330,6 +333,7 @@ export default async function CatalogPage({
                     sort: sortParam,
                     perPage: perPageParam,
                   })}
+                  className="text-accent-strong underline underline-offset-2 hover:text-fg"
                 >
                   Clear search and filters
                 </Link>
