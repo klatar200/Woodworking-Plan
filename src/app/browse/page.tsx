@@ -219,13 +219,16 @@ export default async function CatalogPage({
       {/* Sprint 30a: the desktop three-column grid moved to Tailwind. Below 64rem
           there is no grid (plain block, DOM order = mobile order); at lg the
           grid-template-areas place the rail/results/filter columns. */}
-      {/* QOL-M catalog fix (2026-07-20): pin row 1 (search) to `min-content` and let row 2
-          (results) take the rest. WITHOUT this, the tall filters rail — which spans BOTH
-          rows — made the grid inflate row 1 to ~256px so the two auto rows would sum to the
-          rail's height, opening a big empty gap between the search bar and the results. With
-          `min-content auto`, a spanning item's excess height flows into the flexible row 2,
-          not the pinned row 1, so the search bar hugs its content. */}
-      <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_18rem] lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters'] lg:[grid-template-rows:min-content_auto] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
+      {/* QOL-M catalog fix v2 (2026-07-20): the tall side rails must NOT span the search row.
+          The first attempt (`grid-template-rows: min-content auto`) did not work — a
+          min-content grid row still GROWS to absorb a tall item that spans it, and both the
+          categories rail and the filters rail spanned rows 1+2, so the very tall filters rail
+          inflated row 1 (search) by ~450px, leaving a big empty gap under the search bar.
+          Now row 1 holds ONLY the search box (`. search .`; the side columns are null cells),
+          and `nav | results | filters` all live in row 2, each top-aligned. Nothing spans the
+          search row, so it can't be inflated. Mobile is unchanged: below lg there is no grid,
+          and the DOM order (nav → search → filters → results) flows top-to-bottom as before. */}
+      <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_18rem] lg:[grid-template-areas:'._search_.'_'nav_results_filters'] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
         {/* Desktop-only (hidden below 64rem): a second way to reach the category
             filter the panel's <select> already offers, not a second capability. */}
         <CategoryNav
