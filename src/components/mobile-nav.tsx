@@ -61,7 +61,9 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
           bottom edge whatever height the header wrapped to. onClick closes the
           drawer on any tap inside it — including a query-only navigation. */}
       <div
-        className="absolute top-full left-0 right-0 z-20 flex flex-col gap-[0.125rem] p-[0.75rem] bg-surface border-b border-border shadow-[0_8px_24px_rgba(0,0,0,0.12)] max-h-[calc(100vh-4rem)] overflow-y-auto"
+        // Sprint 41.1 (audit V1): `shadow-e3` — a full-width sheet over the page is the
+        // top of the floating layer, one step above the popovers (`e2`).
+        className="absolute top-full left-0 right-0 z-20 flex flex-col gap-[0.125rem] p-[0.75rem] bg-surface border-b border-border shadow-e3 max-h-[calc(100vh-4rem)] overflow-y-auto"
         onClick={(event) => {
           // A summary toggles a nested section (Browse by category); everything else
           // in here navigates. See the note in the file doc.

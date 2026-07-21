@@ -170,8 +170,9 @@ with it.
 ## 7. Current state (keep this updated)
 
 - **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–39 are PUSHED, CI green (Keagan,
-  2026-07-21; 33–37 also verified on mobile). Sprint 40 is code-complete and browser-verified
-  at localhost:3000 (375/833/1280, both themes); push is Keagan's.**
+  2026-07-21; 33–37 also verified on mobile). Sprints 40 AND 41 are code-complete and
+  browser-verified at localhost:3000 (375/833/1280, both themes); push is Keagan's. Only
+  Sprint 42 (documentation truth pass) remains.**
   ⚠️ **Environment note, 2026-07-21:** this session ran NATIVELY on Keagan's Windows machine,
   where `npm run build`, `npx vitest run`, `tsc` and `eslint` all work directly against the repo
   — the `/tmp`-clone rule and the "next build SIGBUS" note in §6 describe the LINUX SANDBOX and
@@ -430,10 +431,56 @@ with it.
       load-bearing (a typo matching nothing would pass and green-light everything), so a test
       asserts it still finds real utilities; it also skips `text-[#…]`, since the same prefix
       carries colours.
+  - **Sprint 41 (consistency sweep — audit V1/V4/C3/H4): COMPLETE — 98/100.** Browser-verified at
+    localhost:3000 (375/833/1280, light AND dark); `npm run build`, **941 tests (0 todo)**, `tsc`
+    and `eslint` green. **Two ⚖️, both escalated before any code, both answered (a)**
+    (`DECISIONS_LOG.md` 2026-07-21).
+    - **41.1 — the five floating surfaces now use `shadow-e2`/`e3`, not literals.** QOL-F built
+      `--elev-1/2/3` in both themes and every popover/drawer/modal added afterwards wrote its own
+      `shadow-[0_8px_24px_rgba(0,0,0,0.14)]`. **Neither consequence is visible in a light-mode
+      screenshot**, which is how it survived four sprints: (1) flat-black low-alpha literals are
+      invisible on dark's near-black surfaces AND carry none of the **inset top-edge light-catch**
+      the dark tokens use — five surfaces read as flat panels in dark; (2) the print block sets
+      `--elev-*: none` and a literal ignores it. Measured in dark: drawer + filter drawer now
+      resolve to the inset-highlight triple; browse panel + "…" menu to `e2`; at 1280 the filter
+      drawer is `static` with a fully transparent shadow, so **`lg:shadow-none` still wins**
+      (variant emitted after base). **One accepted look change:** the filter drawer's literal cast
+      LEFT (`-8px 0`), the token casts down — taken because the drawer already has a scrim and a
+      `border-l`; if it reads flat on a phone, mint `--elev-drawer` in BOTH themes, do **not** put
+      the literal back. The guard is a **scan for any `shadow-[` in those components**, so the
+      *sixth* popover fails too; `drop-shadow-[…]` (an SVG filter) and the modal `::backdrop`
+      (a dimmed page, must not follow the theme) are named exceptions.
+    - **41.2 — `compactOnMobile` deleted** (zero call sites since Sprint 39): a shared constant
+      holding six `!important` utilities and the last sub-44px value in `ui.ts`, one `import` away
+      from shrinking a control below the app's own floor while every other touch-target guard
+      passed. Sprint 34's `it.todo` is now a real assertion. **`save-button.tsx` was already gone
+      — the QOL-B `git rm` is CLOSED.**
+    - **41.3 — cost anchor (⚖️, DRAFT copy):** `COST_TIER_ANCHOR` in `format.ts`, one constant,
+      three surfaces. **The no-dollar-figures rule is intact and the test is what holds it:** the
+      `$` characters are `costTierSymbol` output (tier glyphs, not currency) and
+      `tests/cost-anchor.test.ts` asserts the string contains **no digits at all**, so neither a
+      price nor an "under 50" can creep in as the copy is revised. **Visible text in the filter
+      panel, `title` elsewhere** — a `title` is unreachable by touch and keyboard, and the filter
+      panel is where the choice is made.
+    - **41.4 — one workshop picker (⚖️ (a)):** the modal LINKS to `/profile#workshop`. It had held
+      a full second implementation (fetch `/api/workshop` + `saveWorkshopModalAction`) — two write
+      paths to the same rows, while the plan page already deep-linked to the profile form, so JS
+      users routinely landed on the documented no-JS "fallback". **Deleted with it: a server action
+      and an authenticated API route.** Both were correctly built; the point recorded in the
+      decisions log is that **the safest endpoint is the one that isn't there**. `/api/workshop` was
+      never on `PUBLIC_ROUTES` (verified) and is absent from the build's route list;
+      `saveWorkshopAction` (the real form's) is untouched and a test asserts it. The test asserts
+      the **absence** of the plumbing — a "the link renders" test would pass with all of it still
+      sitting beside it — matching the removed identifiers **as code** (`^(?!\s*\*)`), since the
+      file's doc comment names two of them while explaining what went.
+    - **Deferred to Keagan:** the account modal is signed-in only, so its `shadow-e3` and the new
+      link are source-verified, not eyeballed; plus the real-phone read on the drawer's new
+      down-cast shadow, and approval of the DRAFT cost wording.
   - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite (it now
-    also owes the type/radius scale Sprint 40 normalized onto), and the §7 entry for 41 as it
-    lands. This §7 block and the `DECISIONS_LOG` `start_url` + OS-preference entries are recorded
-    now (2026-07-21).
+    also owes the type/radius scale Sprint 40 normalized onto **and Sprint 41's rule that the
+    floating layer uses `shadow-e2`/`e3`, never a literal**). This §7 block and the `DECISIONS_LOG`
+    entries are recorded now (2026-07-21). Historical entries below still describe the modal's
+    workshop picker and `/api/workshop` — both are **GONE** as of Sprint 41.4.
 
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma

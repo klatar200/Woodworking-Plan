@@ -3901,3 +3901,141 @@ should scroll and snap, with no auto-motion), Tab through the category pills on 
 confirm the band stops while focus is inside it, and check the count on the landing matches
 `/browse`'s. The count wording and the sub-floor fallback are **DRAFT public copy** — yours to
 approve.
+
+---
+
+## Sprint 41 — Consistency sweep: elevation tokens, dead code, cost anchor, one workshop picker
+
+*(UX remediation, audit V1 / V4 / C3 / H4 — 2026-07-21)*
+
+**Both ⚖️ decisions escalated before any code, both answered (a)** (`DECISIONS_LOG.md` 2026-07-21):
+the account modal links to `/profile#workshop` rather than holding a second picker, and the cost
+tiers get the draft anchor line.
+
+### Files
+
+| File | Change |
+|---|---|
+| `src/components/site-header.tsx` | `browsePanel` shadow literal → `shadow-e2` |
+| `src/components/overflow-menu.tsx` | panel shadow literal → `shadow-e2` |
+| `src/components/mobile-nav.tsx` | drawer sheet → `shadow-e3` |
+| `src/components/account-modal.tsx` | modal → `shadow-e3`; **workshop picker replaced by a link** (−~90 lines: `Tool`, 5 state hooks, the fetch effect, `toggleTool`, `saveWorkshop`, the grouping map) |
+| `src/components/filter-disclosure.tsx` | drawer → `shadow-e3` (`lg:shadow-none` retained) |
+| `src/lib/ui.ts` | **`compactOnMobile` DELETED** (zero call sites) |
+| `src/lib/format.ts` | **NEW** `COST_TIER_ANCHOR` |
+| `src/components/filter-panel.tsx` | Cost fieldset gains the anchor as **visible text** |
+| `src/components/plan-card.tsx` | cost badge `title` gains the anchor |
+| `src/app/plans/[slug]/page.tsx` | glance-strip Cost `<dd title>` gains the anchor |
+| `src/app/actions/workshop.ts` | **`saveWorkshopModalAction` + `WorkshopSaveResult` retired** (`saveWorkshopAction` untouched) |
+| `src/app/api/workshop/route.ts` | **DELETED** |
+| `tests/elevation.test.ts` | **NEW** — the floating layer + the workshop-link absence guards |
+| `tests/cost-anchor.test.ts` | **NEW** — the no-amount rule + one-constant-three-surfaces |
+| `tests/touch-targets.test.ts` | Sprint 34's `it.todo` became a real assertion |
+| `tests/workshop-route.test.ts`, `tests/workshop-modal-action.test.ts` | **DELETED** with their subjects |
+
+### 41.1 — The floating layer joins the elevation scale (V1)
+
+QOL-F built `--elev-1/2/3` in both themes; every popover, drawer and modal added afterwards kept
+writing its own literal. Five of them. Two consequences, **neither of which is visible in a
+light-mode screenshot**, which is why this survived four sprints of eyeballing:
+
+1. Those literals are flat black at low alpha. On dark's near-black surfaces they are invisible,
+   and they carry none of the **inset top-edge light-catch** the dark tokens use — so five floating
+   surfaces read as flat panels in dark mode.
+2. The print block sets `--elev-*: none`. A literal ignores that and prints ink.
+
+Measured in the browser (dark, 375px): the mobile drawer and filter drawer both resolve to
+`rgba(255,255,255,0.05) 0 1px 0 inset, rgba(0,0,0,0.5) 0 4px 10px, rgba(0,0,0,0.45) 0 18px 40px` —
+the edge highlight they never had. Browse panel and the "…" menu resolve to the `e2` triple. At
+1280px the filter drawer is `position: static` with `box-shadow` fully transparent, so
+`lg:shadow-none` still wins (a variant is emitted after its base — the standing source-order rule).
+
+**One accepted look change, stated:** the filter drawer's literal cast **left** (`-8px 0`), matching
+the edge it slides in from; `--elev-3` casts down. Taken anyway — the drawer already has a scrim and
+a `border-l` doing the edge, and one surface with a bespoke shadow is precisely the drift this
+sprint closes. If it reads flat on a real phone the fix is `--elev-drawer` in **both** themes (which
+`dark-theme.test.ts` would then enforce), **not** the literal back.
+
+The guard is a scan, not five assertions: any `shadow-[` in these components fails. The point is not
+to fix five files, it is to stop the sixth. `drop-shadow-[…]` (an SVG filter, the landing's saw) and
+the modal's `::backdrop` scrim are named exceptions — a scrim is a dimmed page, not a raised
+surface, and must **not** follow the theme.
+
+### 41.2 — Dead code (V4)
+
+`compactOnMobile` was a shared constant holding six `!important` utilities, the last sub-44px value
+in `ui.ts` (`min-h-[2.25rem]!`), with **zero call sites** since Sprint 39 rebuilt the sort control. A
+dead export is one `import` away from being live, and this one would have shrunk a control below the
+app's own floor while every other guard in `touch-targets.test.ts` passed. Sprint 34's `it.todo` is
+now a real assertion, plus a second one that no shared constant carries a sub-44px height *as a
+class string* (so the deletion comment can name the old value without defeating the test).
+
+`save-button.tsx` was already gone — the long-standing QOL-B `git rm` is **closed**, nothing for
+Keagan to do there.
+
+### 41.3 — Cost anchor (C3 — ⚖️, DRAFT copy)
+
+`$$$` is a comparison with nothing to compare to: a first-time visitor can tell it is more than
+`$$`, but not whether the top of the scale is a bag of screws or a hardwood order — which is the
+only thing they wanted to know.
+
+**The hard rule holds, and the test is what holds it.** No dollar AMOUNT appears: the `$`
+characters in the anchor are `costTierSymbol` output, i.e. the tier glyphs themselves.
+`tests/cost-anchor.test.ts` asserts the string contains **no digits at all** (so neither `$50` nor
+"under 50" can creep in as it gets reworded) and that it equals `costTierSymbol('TIER_1')` and
+`('TIER_5')` at its two ends.
+
+**One constant, three call sites**, because the place you *filter* by cost and the place you
+*decide* on a plan must not describe the same five symbols differently — and DRAFT copy will be
+reworded at least once. In the filter panel it is **visible text, not a tooltip**: `title` is
+unreachable by touch and by keyboard, and the filter panel is where the choice is actually made.
+The card badge and glance strip get it as `title` — the extra, not the affordance.
+
+### 41.4 — One workshop picker (H4 — ⚖️ (a))
+
+The picker existed **twice**: this modal's client-side copy (fetch `/api/workshop`, save through
+`saveWorkshopModalAction`, inline "Saved") and the real form at `/profile#workshop` (server form,
+redirect + banner). Two write paths to the same rows, two pieces of copy to keep in lockstep, and
+the plan page's "Update your workshop" prompt already pointed at the profile one — so JS users were
+landing on the "fallback" routinely.
+
+Deleted with it: a server action and an **authenticated API route**. Recorded deliberately as a
+security note — both were correctly built (owner from session, `create` bucket, slugs validated,
+no-throw), and that is the point: *the safest endpoint is the one that isn't there.* `/api/workshop`
+was **not** on `PUBLIC_ROUTES` (verified), so the allowlist is unchanged; it is absent from the
+build's route list. `saveWorkshopAction` — the real form's — is untouched, and a test asserts that.
+
+The test asserts the **absence** of the plumbing, not just the presence of the link: a "the link
+renders" test would pass with all of it still sitting next to it. It matches the removed
+identifiers **as code** (`^(?!\s*\*)`), because the file's doc comment names two of them while
+explaining what went.
+
+### Scorecard (BUILD_PLAN.md §6)
+
+| Category | Max | Score | Evidence |
+|---|---|---|---|
+| Requirements | 25 | 25 | 41.1–41.5 all delivered; both ⚖️ escalated before code and logged; non-goals respected (no new elevation level, no modal redesign, `WorkshopForm` untouched) |
+| Correctness | 20 | 19 | five surfaces measured in-browser, light **and** dark, at 375 / 833 / 1280; `lg:shadow-none` verified `static` + transparent at 1280; anchor verified visible in the panel and present in both `title`s; console clean. −1: the **account modal itself is signed-in only**, so its `shadow-e3` and the new link are source-verified, not eyeballed — Keagan's pass |
+| Tests | 15 | 15 | +13 net (941 total, **0 todo**); the scan-for-any-literal guard, the no-digits rule, and the absence assertions — all three catch the *next* mistake, not this one |
+| Security | 15 | 15 | one authenticated route and one server action **removed**; no new input, no new query; `PUBLIC_ROUTES` unchanged and verified not to have listed `/api/workshop` |
+| Code quality | 10 | 10 | ~90 lines of duplicated fetch/save plumbing and a dead `!important` constant deleted; three cost surfaces reduced to one constant |
+| Mobile/offline | 10 | 10 | no route added or removed from any offline list (the deleted route was `/api/*`, already denied by `NEVER_CACHE_PREFIXES`); print **improves** — tokens honour `--elev-*: none`, the literals did not |
+| Documentation | 5 | 4 | both decisions logged, accepted look change stated; `DESIGN_BRIEF.md` still owes the elevation rule — batched to Sprint 42 |
+| **Total** | **100** | **98** | ≥95 on attempt 1 |
+
+### Gate (native, on Keagan's machine)
+
+`npm run build` ✓ · **941 tests, 0 todo (80 files)** ✓ · `tsc` ✓ · `eslint` ✓ · browser pass at
+375 / 833 / 1280 in both themes ✓ · console clean ✓.
+
+⚠️ `npm run build` invalidated the running `next dev` again (shared `.next`). **Fourth time** —
+run the build after the browser work, or plan on restarting dev.
+
+### Keagan's remaining steps
+
+`git push` (it includes two **deletions** — `src/app/api/workshop/route.ts` and the two test files;
+`git add -A` picks them up), then check CI. Browser pass, **signed in**: open the account modal in
+dark and confirm the panel reads raised and that "Manage your workshop" closes it and lands on
+`/profile#workshop`; then plan page → "Update your workshop" → save → the catalog CTA reflects it.
+Also open the filter drawer on a real phone and say whether the down-cast shadow reads worse than
+the old left-cast one. **The cost-anchor wording is DRAFT public copy — yours to approve.**

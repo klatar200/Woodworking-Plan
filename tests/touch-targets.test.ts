@@ -86,8 +86,22 @@ describe('Sprint 34 per-component fixes stay at 44px', () => {
 });
 
 /**
- * Sprint 41 (audit V4) deletes the dead `compactOnMobile` constant (its mobile min-h-[2.25rem]!
- * is the last sub-44 shared value; it has zero call sites). When 41 lands, turn this into a real
- * assertion that the constant no longer exists in ui.ts. Marked todo now so it isn't forgotten.
+ * Sprint 41.2 (audit V4) — the todo Sprint 34 left here is now a real assertion.
+ *
+ * `compactOnMobile` was a shared constant holding the last sub-44px value in `ui.ts`
+ * (`min-h-[2.25rem]!`), with zero call sites since Sprint 39 rebuilt the sort control.
+ * A dead export is one `import` away from being live again, and this one would have
+ * shrunk a control below the app's own floor while every other guard above passed.
  */
-it.todo('compactOnMobile is deleted from ui.ts (Sprint 41 / audit V4)');
+describe('the last sub-44px shared value is gone (41.2)', () => {
+  it('ui.ts no longer exports compactOnMobile', () => {
+    expect(ui).not.toContain('export const compactOnMobile');
+    expect(() => constSource(ui, 'compactOnMobile')).toThrow();
+  });
+
+  it('no shared constant carries a sub-44px height any more', () => {
+    // The deletion comment names the old value, so match the utility as it would be
+    // WRITTEN (in a class string), not merely mentioned in prose.
+    expect(ui).not.toMatch(/['"`][^'"`]*min-h-\[2\.25rem\]/);
+  });
+});

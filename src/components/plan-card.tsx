@@ -4,7 +4,12 @@ import type { PlanListItem } from '@/lib/plans';
 import type { RatingSummary } from '@/lib/reviews';
 import { StarRating } from '@/components/star-rating';
 import { SaveToggle } from '@/components/save-toggle';
-import { costTierSymbol, difficultyLabel, formatTimeRange } from '@/lib/format';
+import {
+  COST_TIER_ANCHOR,
+  costTierSymbol,
+  difficultyLabel,
+  formatTimeRange,
+} from '@/lib/format';
 import { categoryLabel } from '@/lib/ui';
 
 // Sprint 29 (UI migration, wave 1): card chrome moved from `globals.css` to Tailwind
@@ -124,8 +129,10 @@ export function PlanCard({
             </li>
             {/* TIER ONLY — no dollar figure, and not even in the tooltip. See
                 src/lib/format.ts: a number here is a claim of precision we cannot
-                support, and the tier says the decision-relevant thing anyway. */}
-            <li className="badge" title="Estimated material cost">
+                support, and the tier says the decision-relevant thing anyway.
+                Sprint 41.3 adds the ANCHOR (comparative language, still no amount) —
+                the `$` runs mean nothing to a first-time visitor without one. */}
+            <li className="badge" title={`Estimated material cost. ${COST_TIER_ANCHOR}`}>
               {costTierSymbol(plan.costTier)}
             </li>
             <li className="badge">

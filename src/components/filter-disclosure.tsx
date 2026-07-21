@@ -166,8 +166,17 @@ export function FilterDisclosure({ count, children }: Props) {
         Desktop: `lg:static` puts it straight back into normal flow inside the rail
         card, with every mobile-only surface (width, border, shadow, padding) reset —
         so what desktop renders is a plain block wrapper around the same form.
+
+        Sprint 41.1 (audit V1): `shadow-e3`. This is the one substitution that changes
+        the look — the literal cast LEFT (`-8px 0`), matching the direction the sheet
+        slid in from, and the token casts down like every other elevation. Taken
+        anyway: the drawer already has a scrim and a `border-l` doing the edge, and one
+        surface with its own bespoke shadow is exactly the drift this sprint closes. If
+        it reads flat on a real phone, mint `--elev-drawer` in BOTH themes rather than
+        putting the literal back. `lg:shadow-none` still wins — a variant is emitted
+        after its base, which is how these two same-property utilities coexist.
       */}
-      <div className="fixed inset-y-0 right-0 z-40 w-[min(20rem,88vw)] overflow-y-auto overscroll-contain bg-surface border-l border-border shadow-[-8px_0_24px_rgba(0,0,0,0.18)] pt-[0.5rem] pb-[calc(1rem+env(safe-area-inset-bottom))] lg:static lg:w-auto lg:overflow-y-visible lg:bg-transparent lg:border-l-0 lg:shadow-none lg:pt-0 lg:pb-0">
+      <div className="fixed inset-y-0 right-0 z-40 w-[min(20rem,88vw)] overflow-y-auto overscroll-contain bg-surface border-l border-border shadow-e3 pt-[0.5rem] pb-[calc(1rem+env(safe-area-inset-bottom))] lg:static lg:w-auto lg:overflow-y-visible lg:bg-transparent lg:border-l-0 lg:shadow-none lg:pt-0 lg:pb-0">
         {enhanced ? (
           <div className="flex justify-end px-[1rem] lg:hidden">
             <button

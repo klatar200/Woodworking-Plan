@@ -47,49 +47,18 @@ export async function saveWorkshopAction(formData: FormData): Promise<void> {
   redirect('/profile?saved=1#workshop');
 }
 
-/** The result of a modal workshop save — a value, not a redirect (QOL-L). */
-export type WorkshopSaveResult =
-  | { ok: true }
-  | { ok: false; error: 'rate-limited' | 'unauthorized' | 'error' };
-
-/**
- * Save the owned-tools profile from the AccountModal — QOL-L.
+/*
+ * RETIRED Sprint 41.4 (audit H4, ⚖️ Keagan 2026-07-21): `saveWorkshopModalAction` and its
+ * `WorkshopSaveResult` type, together with `GET /api/workshop`.
  *
- * Same security and rate-limit posture as `saveWorkshopAction` (owner from session,
- * `create` bucket, slugs validated in `setOwnedTools`), but RETURNS A RESULT instead of
- * redirecting — a `redirect()` inside the modal would navigate the whole page out of it.
- * The client shows an in-modal "Saved" / error from this value (`useActionState`).
+ * They existed only so the account modal could hold a SECOND copy of the workshop picker.
+ * The modal now links to `/profile#workshop`, which is the picker — so this was a second
+ * write path to the same rows, kept in step by nothing but attention, plus an
+ * authenticated endpoint whose sole reason to exist was the duplicate UI.
  *
- * Takes the slug array directly (the client collects the checked boxes), not a FormData —
- * a server action may take any serialisable argument, and there's no no-JS form behind
- * this one (that path is `/profile`'s `saveWorkshopAction`, kept intact above).
- *
- * NEVER THROWS: an uncaught throw out of a server action is an HTTP 500. An expired
- * session (`UnauthorizedError`, matched by NAME to keep this off the Clerk/Prisma import
- * chain) → a typed `unauthorized`; anything else → `error`. Both render a message in the
- * modal rather than crashing it.
+ * SECURITY NOTE, deliberately recorded: deleting an authenticated server action and an
+ * authenticated route removes attack surface. Both were correctly built (owner from
+ * session, `create` bucket, slugs validated, no-throw) — the point is that the safest
+ * endpoint is the one that isn't there. Do not reintroduce either to put a tool picker
+ * back in the modal; `saveWorkshopAction` above serves the one real form.
  */
-export async function saveWorkshopModalAction(
-  slugs: string[],
-): Promise<WorkshopSaveResult> {
-  if (!(await checkRateLimit('create'))) return { ok: false, error: 'rate-limited' };
-
-  const clean = slugs.filter(
-    (value): value is string => typeof value === 'string' && value !== '',
-  );
-
-  try {
-    await setOwnedTools(clean);
-  } catch (error) {
-    if (error instanceof Error && error.name === 'UnauthorizedError') {
-      return { ok: false, error: 'unauthorized' };
-    }
-    return { ok: false, error: 'error' };
-  }
-
-  // The catalog's tool-filter prefill (now at /browse, QOL-M) and the /profile fallback
-  // both reflect the new set.
-  revalidatePath(CATALOG_PATH);
-  revalidatePath('/profile');
-  return { ok: true };
-}

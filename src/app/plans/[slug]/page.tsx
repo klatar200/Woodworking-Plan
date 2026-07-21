@@ -36,6 +36,7 @@ import {
   hasUploadNotice,
 } from '@/lib/rate-limit-feedback';
 import {
+  COST_TIER_ANCHOR,
   costTierSymbol,
   difficultyLabel,
   formatDimensions,
@@ -327,10 +328,12 @@ export default async function PlanDetailPage({
           </div>
           <div className="glance-item">
             <dt>Cost</dt>
-            <dd>
+            <dd title={COST_TIER_ANCHOR}>
               {/* Tier only — no "of $$$$$" qualifier. The tier IS the answer, not a
                   position on a scale; the qualifier only ever repeated the same
-                  five characters back at the reader. */}
+                  five characters back at the reader. Sprint 41.3 adds the anchor as a
+                  tooltip; the visible, always-reachable copy of it lives in the filter
+                  panel's Cost fieldset, where the decision is actually made. */}
               <strong>{costTierSymbol(plan.costTier)}</strong>
             </dd>
           </div>

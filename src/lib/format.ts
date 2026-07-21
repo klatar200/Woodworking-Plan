@@ -72,6 +72,25 @@ export function slugify(value: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * What the tiers MEAN — Sprint 41.3 (audit C3), ⚖️ Keagan 2026-07-21 (DRAFT copy).
+ *
+ * The tiers are the only cost signal in the app, and until now nothing told a first-time
+ * visitor what they were relative to. `$$$` is meaningless without an anchor: the reader
+ * can see it is more than `$$`, but not whether the scale tops out at a bag of screws or
+ * a hardwood order. Naming both ends is enough to place the middle.
+ *
+ * THE `$` CHARACTERS HERE ARE THE TIER GLYPHS THEMSELVES, NOT A DOLLAR FIGURE. The
+ * standing rule (this file's header, CLAUDE.md) forbids rendering an AMOUNT — a number
+ * we cannot support. Comparative language carries no such claim and cannot go stale when
+ * lumber prices move, which is the entire reason the tiers exist.
+ *
+ * ONE constant, three call sites (filter hint, card badge title, glance-strip title) so
+ * the wording cannot drift between the place you filter and the place you decide.
+ */
+export const COST_TIER_ANCHOR =
+  '$ = scrap-wood cheap · $$$$$ = a serious lumber budget';
+
 export function costTierSymbol(tier: CostTier): string {
   const index = COST_TIER_ORDER.indexOf(tier);
 

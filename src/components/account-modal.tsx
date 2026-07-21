@@ -1,27 +1,17 @@
 'use client';
 
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useUser, useClerk } from '@clerk/nextjs';
-import { Hammer, Bookmark, Download, Settings, X, Check } from 'lucide-react';
+import { Hammer, Bookmark, Download, Settings, Wrench, X } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { btnPrimary, btnGhost, checkbox, checkboxInput } from '@/lib/ui';
+import { btnGhost } from '@/lib/ui';
 import {
   subscribeInstallable,
   isInstallable,
   isInstallableServer,
   promptInstall,
 } from '@/lib/install-store';
-import {
-  saveWorkshopModalAction,
-  type WorkshopSaveResult,
-} from '@/app/actions/workshop';
-
-interface Tool {
-  slug: string;
-  name: string;
-  category: string | null;
-}
 
 const sectionLabel =
   'text-[0.75rem] uppercase tracking-[0.06em] text-muted mt-[1.25rem] mb-[0.5rem]';
@@ -34,10 +24,16 @@ const sectionLabel =
  * control. Opened from the header avatar (`account-menu.tsx`).
  *
  * WHAT WE OWN: presentation + our data. Account summary comes from Clerk's `useUser()`
- * (name/email/avatar/member-since); the Workshop tool picker is rebuilt to work in-modal
- * (fetch `/api/workshop`, save via the result-returning `saveWorkshopModalAction`, show an
- * in-modal result — never a full-page redirect); the theme toggle and install action moved
- * here from the old `UserButton` dropdown.
+ * (name/email/avatar/member-since); the theme toggle and install action moved here from
+ * the old `UserButton` dropdown.
+ *
+ * ⚖️ Sprint 41.4 (audit H4, Keagan 2026-07-21): THE WORKSHOP PICKER IS NOT HERE ANY MORE.
+ * It existed twice — this modal's client-side copy (fetch `/api/workshop`, save through
+ * `saveWorkshopModalAction`) and the real form at `/profile#workshop` — with two save
+ * paths free to drift, and the plan page's "Update your workshop" prompt already pointed
+ * at the profile one. The modal now LINKS there. What that deleted: ~90 lines of
+ * fetch/state/save plumbing, a server action, and an authenticated API route, i.e. a
+ * whole endpoint's worth of attack surface for a screen that already existed.
  *
  * WHAT STAYS WITH CLERK: every credential/security operation. "Manage account & security"
  * opens Clerk's own UI (`clerk.openUserProfile()`) and sign-out is `clerk.signOut()`. We do
@@ -79,49 +75,6 @@ export function AccountModal({
     isInstallableServer,
   );
 
-  // --- workshop (fetched the first time the modal opens) ---
-  const [tools, setTools] = useState<Tool[] | null>(null);
-  const [owned, setOwned] = useState<Set<string>>(new Set());
-  const [loadError, setLoadError] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [saveResult, setSaveResult] = useState<WorkshopSaveResult | null>(null);
-
-  useEffect(() => {
-    if (!open || tools !== null) return; // fetch once, on first open
-    let cancelled = false;
-    fetch('/api/workshop')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('load'))))
-      .then((data: { tools: Tool[]; owned: string[] }) => {
-        if (cancelled) return;
-        setTools(data.tools);
-        setOwned(new Set(data.owned));
-      })
-      .catch(() => {
-        if (!cancelled) setLoadError(true);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [open, tools]);
-
-  const toggleTool = (slug: string) => {
-    setOwned((prev) => {
-      const next = new Set(prev);
-      if (next.has(slug)) next.delete(slug);
-      else next.add(slug);
-      return next;
-    });
-    setSaveResult(null); // a change invalidates the last "Saved"
-  };
-
-  const saveWorkshop = async () => {
-    setSaving(true);
-    setSaveResult(null);
-    const result = await saveWorkshopModalAction([...owned]);
-    setSaveResult(result);
-    setSaving(false);
-  };
-
   const memberSince = user?.createdAt
     ? user.createdAt.toLocaleDateString('en-US', {
         year: 'numeric',
@@ -129,15 +82,6 @@ export function AccountModal({
         day: 'numeric',
       })
     : null;
-
-  // Group tools by category, same as the workshop form / filter panel.
-  const grouped = new Map<string, Tool[]>();
-  for (const tool of tools ?? []) {
-    const key = tool.category ?? 'Other';
-    const list = grouped.get(key) ?? [];
-    list.push(tool);
-    grouped.set(key, list);
-  }
 
   return (
     <dialog
@@ -149,7 +93,9 @@ export function AccountModal({
         if (event.target === dialogRef.current) onClose();
       }}
       aria-label="Account"
-      className="w-[min(32rem,calc(100vw-2rem))] max-h-[calc(100vh-4rem)] overflow-y-auto p-0 border border-border rounded-[0.75rem] bg-surface text-fg shadow-[0_16px_48px_rgba(0,0,0,0.28)] [&::backdrop]:bg-[rgba(0,0,0,0.45)]"
+      // Sprint 41.1 (audit V1): `shadow-e3`. The `::backdrop` stays a literal — a scrim
+      // is not elevation, it is a dimmed page, and it must read the same in both themes.
+      className="w-[min(32rem,calc(100vw-2rem))] max-h-[calc(100vh-4rem)] overflow-y-auto p-0 border border-border rounded-[0.75rem] bg-surface text-fg shadow-e3 [&::backdrop]:bg-[rgba(0,0,0,0.45)]"
     >
       <div className="p-[1.25rem]">
         <div className="flex items-center justify-between gap-[1rem]">
@@ -200,74 +146,21 @@ export function AccountModal({
           </Link>
         </div>
 
-        {/* --- Workshop --- */}
+        {/* --- Workshop: a POINTER to the one picker, not a second one (41.4) --- */}
         <h3 className={sectionLabel}>Your workshop</h3>
         <p className="mt-0 mb-[0.625rem] text-[0.875rem] text-muted">
-          Tick the tools you own. We&rsquo;ll pre-fill the &ldquo;tools you own&rdquo;
-          filter on the catalog. Saving replaces your list.
+          The tools you own pre-fill the &ldquo;tools you own&rdquo; filter, so the
+          catalog can show you what you can build today.
         </p>
-
-        {loadError ? (
-          <p className="text-[0.875rem] text-err" role="alert">
-            Couldn&rsquo;t load your tools. Manage them on your{' '}
-            <Link href="/profile#workshop" onClick={onClose}>
-              profile page
-            </Link>{' '}
-            instead.
-          </p>
-        ) : tools === null ? (
-          <p className="text-[0.875rem] text-muted">Loading your tools…</p>
-        ) : (
-          <>
-            {[...grouped.entries()].map(([group, groupTools]) => (
-              <div key={group} className="mb-[0.75rem]">
-                <span className="block text-[0.8125rem] text-muted mb-[0.375rem]">
-                  {group}
-                </span>
-                <div className="flex flex-wrap gap-[0.375rem]">
-                  {groupTools.map((tool) => (
-                    <label key={tool.slug} className={checkbox}>
-                      <input
-                        type="checkbox"
-                        checked={owned.has(tool.slug)}
-                        onChange={() => toggleTool(tool.slug)}
-                        className={checkboxInput}
-                      />
-                      <span>{tool.name}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            <div className="flex items-center gap-[0.75rem] flex-wrap mt-[0.25rem]">
-              <button
-                type="button"
-                onClick={saveWorkshop}
-                disabled={saving}
-                className={btnPrimary}
-              >
-                {saving ? 'Saving…' : 'Save my workshop'}
-              </button>
-              {saveResult?.ok ? (
-                <span
-                  className="inline-flex items-center gap-[0.25rem] text-[0.875rem] text-ok"
-                  role="status"
-                >
-                  <Check size={14} aria-hidden="true" /> Saved
-                </span>
-              ) : saveResult && !saveResult.ok ? (
-                <span className="text-[0.875rem] text-err" role="alert">
-                  {saveResult.error === 'rate-limited'
-                    ? 'Too many changes — try again in a moment.'
-                    : saveResult.error === 'unauthorized'
-                      ? 'Your session expired — sign in again.'
-                      : 'Couldn’t save. Please try again.'}
-                </span>
-              ) : null}
-            </div>
-          </>
-        )}
+        <div className="flex flex-wrap gap-[0.5rem]">
+          <Link
+            href="/profile#workshop"
+            className={`${btnGhost} gap-[0.5rem]`}
+            onClick={onClose}
+          >
+            <Wrench size={16} aria-hidden="true" /> Manage your workshop
+          </Link>
+        </div>
 
         {/* --- Preferences --- */}
         <h3 className={sectionLabel}>Preferences</h3>

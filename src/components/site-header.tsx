@@ -100,8 +100,12 @@ function categoryLinks(linkClass: string) {
 // The Browse trigger reuses `navLink`'s look so it sits in the row as a peer of the
 // other items, with the marker suppressed (the ▾ in browse-menu.tsx is the affordance).
 const browseSummary = `list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none ${navLink}`;
+// Sprint 41.1 (audit V1): `shadow-e2`, not a literal. A popover is the floating layer,
+// and the app already has an elevation scale — the literal it replaced was flat black,
+// so in dark mode this panel had a shadow nobody could see and none of the light-catch
+// edge the dark tokens carry. Tokens also go to `none` in the print block for free.
 const browsePanel =
-  'absolute top-full left-0 z-20 mt-[0.25rem] min-w-[14rem] flex flex-col gap-[0.125rem] p-[0.5rem] bg-surface border border-border rounded-[0.5rem] shadow-[0_8px_24px_rgba(0,0,0,0.14)]';
+  'absolute top-full left-0 z-20 mt-[0.25rem] min-w-[14rem] flex flex-col gap-[0.125rem] p-[0.5rem] bg-surface border border-border rounded-[0.5rem] shadow-e2';
 // Inside the mobile drawer the panel is not floating — it is an indented block, so the
 // drawer keeps growing downward instead of overlaying itself.
 const browsePanelMobile = 'flex flex-col gap-[0.125rem] pl-[0.75rem]';

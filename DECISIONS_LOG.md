@@ -1484,6 +1484,52 @@ nobody is looking at. Same doctrine as the cost-display rule — say the true th
 nothing, never a confident approximation. Wording is DRAFT pending Keagan's approval
 (`BUILD_PLAN.md` §2).
 
+### 2026-07-21 — One workshop picker: the account modal links to `/profile#workshop`
+
+**Decision (Keagan): option (a).** The account modal's Workshop section becomes a heading,
+a one-line description, and a link to `/profile#workshop`. Its client-side tool picker —
+the `/api/workshop` fetch, the owned-tools state, and `saveWorkshopModalAction` — is
+deleted, along with the API route itself.
+
+**Context (Sprint 41.4, audit H4).** The picker was fully implemented **twice**: in the
+modal (client fetch/save, inline "Saved") and at `/profile#workshop` (server form, redirect
++ banner). Two write paths to the same rows, two pieces of copy to keep in lockstep — and
+the plan page's "Update your workshop" prompt already deep-linked to the profile one, so
+JS users were routinely landing on the surface documented as the *no-JS fallback*.
+
+**Security note, deliberately recorded.** This removes an authenticated server action and
+an authenticated API route. Both were correctly built (owner from the verified session,
+`create` rate-limit bucket, slugs validated, never throws) — the point is not that they
+were unsafe, it is that **the safest endpoint is the one that isn't there**. `/api/workshop`
+was never on `PUBLIC_ROUTES`, so the allowlist is unchanged. Do not reintroduce either to
+put a picker back in the modal.
+
+**Rejected (b): the modal is canonical, the plan page opens it.** Needs a cross-component
+modal-open mechanism (a store or a URL param) for the same end state, and `/profile` would
+still have to work for no-JS visitors — i.e. the duplication survives, with extra
+machinery. **Rejected (c): keep both** — that is the finding.
+
+### 2026-07-21 — Cost tiers get an anchor (public copy, DRAFT)
+
+**Decision (Keagan): ship the draft wording.** `$ = scrap-wood cheap · $$$$$ = a serious
+lumber budget`, as visible muted text in the filter's Cost fieldset and as a `title` on the
+plan-card cost badge and the glance-strip Cost cell.
+
+**Context (Sprint 41.3, audit C3).** The tiers are the only cost signal in the app and
+nothing said what they were relative to. `$$$` is a comparison with nothing to compare to.
+
+**This does not weaken the no-dollar-figures rule** (`CLAUDE.md`, `src/lib/format.ts`
+header). The `$` characters are the tier GLYPHS, not currency: no amount is stated, and
+`tests/cost-anchor.test.ts` asserts the string contains **no digits at all**, so neither a
+price nor an "under 50" can creep in as the wording is revised. Comparative language cannot
+go stale when lumber prices move — which is the reason the tiers exist in the first place.
+
+**Placement is not cosmetic.** The filter panel gets it as *visible text*; the other two get
+it as a tooltip. A `title` is unreachable by touch and by keyboard, so an anchor that lived
+only in tooltips would be invisible to most of the people who need it — and the filter panel
+is where someone is actually choosing between tiers. Wording is DRAFT pending Keagan's
+approval (`BUILD_PLAN.md` §2).
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,

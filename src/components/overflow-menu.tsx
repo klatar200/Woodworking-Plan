@@ -38,7 +38,7 @@ export function OverflowMenu({ label, children }: Props) {
 
       {/* Right-aligned so the panel never runs off the edge of a phone: the trigger is
           the last item in the actions row, so the panel grows leftward from it. */}
-      <div className="absolute top-full right-0 z-20 mt-[0.25rem] min-w-[15rem] flex flex-col gap-[0.375rem] p-[0.5rem] bg-surface border border-border rounded-[0.5rem] shadow-[0_8px_24px_rgba(0,0,0,0.14)]">
+      <div className="absolute top-full right-0 z-20 mt-[0.25rem] min-w-[15rem] flex flex-col gap-[0.375rem] p-[0.5rem] bg-surface border border-border rounded-[0.5rem] shadow-e2">
         {children}
       </div>
     </details>

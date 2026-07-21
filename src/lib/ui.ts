@@ -105,23 +105,14 @@ export const btnLiked = `${btnBase} border border-fg bg-transparent text-fg`;
 export const menuItem =
   'inline-flex items-center w-full min-h-[2.75rem] px-[0.75rem] py-0 rounded-[0.375rem] text-[0.9375rem] font-medium whitespace-nowrap no-underline cursor-pointer text-fg bg-transparent border border-transparent hover:bg-accent-tint focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
-/**
- * QOL-A — a MOBILE-ONLY compact override for catalog trigger buttons (today: the sort
- * form's Apply). Below `lg` it trims the 44px/14px `btnBase` sizing to 36px/13px; at
- * `lg` every value is restored, so desktop is byte-identical to `btnBase`.
- *
- * `btnBase` itself is deliberately NOT touched — it has ~80 call sites, and 44px is the
- * right target for every action a gloved hand actually performs. These two are
- * navigational chrome above the results, not actions on a plan.
- *
- * Every declaration is `!important` because Tailwind emits same-property utilities in a
- * fixed SOURCE order, not className order (the standing migration gotcha): plain
- * `min-h-[2.25rem]` would lose to `btnBase`'s `min-h-[2.75rem]` half the time. The `lg:`
- * pair is also important and, being a variant, is emitted after the base — verified by
- * compiling this exact class list with the repo's Tailwind v4.3.2 toolchain.
+/*
+ * DELETED Sprint 41.2 (audit V4): `compactOnMobile`, a QOL-A mobile-only override that
+ * shrank a trigger button to 36px. Sprint 39 rebuilt the sort control and left it with
+ * zero call sites — so what remained was a shared constant whose only content was six
+ * `!important` utilities carrying the last sub-44px value in the file, sitting one
+ * import away from any button. Dead code that contradicts a live rule is worse than
+ * dead code. `tests/touch-targets.test.ts` now asserts it stays gone.
  */
-export const compactOnMobile =
-  'min-h-[2.25rem]! px-[0.625rem]! text-[0.8125rem]! lg:min-h-[2.75rem]! lg:px-[0.875rem]! lg:text-[0.9375rem]!';
 
 /**
  * The mobile-first page container. Formerly the base `.page` rule.

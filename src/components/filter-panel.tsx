@@ -5,7 +5,7 @@ import {
   activeFilterCount,
   type PlanFilters,
 } from '@/lib/filters';
-import { costTierSymbol, difficultyLabel } from '@/lib/format';
+import { COST_TIER_ANCHOR, costTierSymbol, difficultyLabel } from '@/lib/format';
 import { FilterDisclosure } from '@/components/filter-disclosure';
 import { SoftGetForm } from '@/components/soft-get-form';
 import { AutoSubmitSelect } from '@/components/auto-submit-select';
@@ -155,6 +155,13 @@ export function FilterPanel({
 
         <fieldset className="border-none p-0 m-0 min-w-0">
           <legend className={legendClass}>Cost</legend>
+          {/* Sprint 41.3 (audit C3): the anchor is VISIBLE TEXT here, not only a
+              tooltip — this is where someone is deciding which boxes to tick, and a
+              `title` is unreachable on a touch screen and to a keyboard. The badge
+              tooltips elsewhere are the extra, not the affordance. */}
+          <p className="mt-0 mb-[0.5rem] text-[0.8125rem] text-muted">
+            {COST_TIER_ANCHOR}
+          </p>
           <div className="flex flex-wrap gap-[0.375rem]">
             {COST_TIERS.map((tier) => (
               <label key={tier} className={checkbox}>
