@@ -1530,6 +1530,39 @@ only in tooltips would be invisible to most of the people who need it — and th
 is where someone is actually choosing between tiers. Wording is DRAFT pending Keagan's
 approval (`BUILD_PLAN.md` §2).
 
+### 2026-07-21 — The CAD part-diagram pilot stays, gated (Sprint 42.5)
+
+**Decision (Keagan): KEEP it gated.** Sprint 42 offered the option of deleting the QOL-G
+pilot — `/dev/diagrams`, `src/lib/part-diagram.ts`, `src/components/part-diagram.tsx` and
+`tests/part-diagram.test.ts` — since its own pilot verdict was "do not roll out
+catalog-wide" without a `StepPart` join table and a content pass over 948 plans.
+
+**Why keeping is the cheaper call.** It costs nothing at runtime: two independent gates
+hold it (`NODE_ENV === 'production'` → `notFound()` *before any query*, and `/dev` is off
+the `PUBLIC_ROUTES` allowlist and on `NEVER_CACHE_PREFIXES`), and the layout module is
+pure and tested. It is the only prior art if a `StepPart` sprint ever opens, and deleting
+it would trade a real option for a tidier `src/` tree.
+
+**The condition attached:** it is a pilot, not a feature. It must not be wired into a live
+page without the `StepPart` join it was piloted to prove the need for — a diagram that
+highlights the wrong part is the Sprint 21 trust bug.
+
+### 2026-07-21 — App-page type hierarchy: DECLINED (Sprint 42.6, audit D3)
+
+**Decision (Keagan): decline and close.** The optional pass would have raised `h1` to
+1.875–2rem and given app pages real section headings at 1.125–1.25rem.
+
+**Why declined rather than deferred-with-a-plan.** Sprint 42 is a documentation truth
+pass; a visual change to every heading in the app is not a close-out rider, and it is the
+kind of change that should be judged against a mockup rather than shipped inside a
+documentation sprint. Sprints 40–41 already normalised the landing's type ramp, which was
+the acute half of D2/D3.
+
+**Recorded so it reads as a decision, not an oversight** — `DESIGN_BRIEF.md` §6 names it
+as declined and flags the cascade consequence for whoever picks it up: the global `h2` in
+`globals.css` is UNLAYERED, so changing it also *shrinks* the `!`-override workarounds in
+the catalog rail heading and the footer rather than adding more of them.
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,

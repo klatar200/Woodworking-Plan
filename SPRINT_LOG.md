@@ -4039,3 +4039,128 @@ dark and confirm the panel reads raised and that "Manage your workshop" closes i
 `/profile#workshop`; then plan page → "Update your workshop" → save → the catalog CTA reflects it.
 Also open the filter drawer on a real phone and say whether the down-cast shadow reads worse than
 the old left-cast one. **The cost-anchor wording is DRAFT public copy — yours to approve.**
+
+---
+
+## Sprint 42 — Documentation truth pass + close-out (audit D1/D2/D3 docs, plan hygiene)
+
+**Status: COMPLETE — 99/100. The UX Remediation Plan (Sprints 33–42) is CLOSED.**
+Zero code changed. `941` tests, `tsc`, `eslint` re-run green at close-out; CI confirmed green
+on both pushed sprints. **Two ⚖️, both escalated before any edit, both answered.**
+
+### Decisions
+
+| ⚖️ | Answer | Where |
+|---|---|---|
+| 42.5 — delete the CAD pilot or keep it gated | **Keep it gated** | `DECISIONS_LOG.md` 2026-07-21 |
+| 42.6 — optional app-page type hierarchy | **Decline and close** | `DECISIONS_LOG.md` 2026-07-21 |
+
+### Files
+
+| File | Change |
+|---|---|
+| `DESIGN_BRIEF.md` | **Rewritten** (42.1) — see below |
+| `UX_REMEDIATION_PLAN.md` | New §5 close-out: verified coverage matrix + standing checks (42.3/42.4) |
+| `DECISIONS_LOG.md` | Two entries — CAD pilot kept, type hierarchy declined |
+| `CLAUDE.md` | §7 phase header closed out; plan named as the phase's governing doc (42.2) |
+| `BUILD_PLAN.md` | §4 status row for 33–42 (was stuck at Sprint 36 / "IN PROGRESS"); stale test count 524 → 941; new **§4.5**; "nothing scheduled after 42" |
+| `SPRINT_LOG.md` | This entry |
+
+### 42.1 — the brief was describing a system that no longer existed
+
+This is the finding worth remembering, because it is the same failure mode as the stale
+`ci.yml` comment: **a document that argues against the evidence is worse than no
+document.** `DESIGN_BRIEF.md` is the file a new contributor — human or agent — is told to
+read first, and it said:
+
+- *"plain CSS with design tokens … no Tailwind … keep it that way"* — Sprints 28–32
+  migrated the whole app to Tailwind v4. Anyone obeying the brief would have written
+  plain CSS into an unlayered file that silently overrides utilities.
+- *"There is no dark mode by decision — don't add one uncommissioned."* — Sprint 31 added
+  it; 37 made it reachable by everyone and OS-aware. Obeying the brief meant hard-coding
+  a light-only palette into a themed app.
+- **14 tokens listed; 23 exist** (counted out of `globals.css`, not recalled — the first
+  draft of this entry said "22", which is exactly the sloppiness the sprint is about).
+  Missing: `--muted-2`, `--accent-text`, `--accent-fg`, `--accent-soft`, `--elev-1/2/3`,
+  `--card-bg`, `--bevel`.
+
+The rewrite states the real system in the order that matters — tokens are the source of
+truth, Tailwind utilities *reference* them via `@theme inline` — plus the three cascade
+rules that have each cost a sprint (unlayered `globals.css` wins; same-property utilities
+resolve in Tailwind's source order, not className order; the component-CSS residual is
+permanent). It carries the full 23-token table with both themes, the dual-theme rule and
+the two guard tests that enforce it, the elevation scale with the "never a `shadow-[…]`
+literal" rule from Sprint 41, the type ramp and radius steps from Sprint 40, and the dark
+mode mechanism including the inline script and the Clerk pairing.
+
+**§5's accessibility baseline was corrected against reality, not aspiration.** It claimed
+`aria-current` on "active nav/sort". Post-36 the nav does carry it — but **sort is a
+`<select>`**, which takes no `aria-current`; during a keyword search it is a *disabled*
+"Relevance" control. The corrected version also names the two invariants that are
+enforced by tests rather than by review (AA contrast, 44px), and the motion escape rule
+(`animation-fill-mode: both` + a killed animation renders content invisible).
+
+A banner at the top records what was wrong and that every claim was re-read out of the
+source — so the next reader can tell this version was verified, not merely edited.
+
+### 42.3 — the coverage matrix is the deliverable, and it is a re-check
+
+`UX_REMEDIATION_PLAN.md` §5 re-walks all 27 audit IDs **against the code as it stands
+now**, not against the sprint that claimed them, each with a file and the specific thing
+that proves it. Several were re-greped rather than trusted: `role="status"` at
+`browse/page.tsx:320`, the disabled Relevance option at `sort-select.tsx:48`,
+`AUTO_SUBMIT_DEBOUNCE_MS = 650`, `start_url: "/browse"`, `FilterPanel`'s `hasWorkshop:
+boolean`, `text-[1rem]` on the header search.
+
+**Nothing is OPEN** — every ID is closed, declined-on-record, or confirmed no-action. The
+section then lists what is *not* closed by code and says so plainly: device-bound checks
+(never claimed, per E3), three DRAFT copy strings awaiting approval, and one local
+gitignored artifact.
+
+### 42.4 — standing checks
+
+| Check | Result |
+|---|---|
+| Suite | **941 tests, 80 files, green** |
+| `tsc --noEmit` / `eslint .` | clean |
+| Print-block orphans | **5** `@media print` blocks parsed by brace-matching, **39** classes referenced, **0 orphans** |
+| Hardcoded hex | no new offenders; the survivors are the landing's deliberate panel + always-dark CTA, `clerk-appearance.ts` (Clerk cannot take `var()` — parity-tested), and the browser-chrome meta colours |
+| `NEVER_CACHE_PREFIXES` | unchanged; 8 prefixes incl. `/builds`, `/workshop`, `/dev` |
+| CI | green on `98a1bd1` (40) and `88d9f00` (41) |
+
+The orphan check parses **all five** print blocks by brace-matching and excludes the
+blocks themselves from the "is it still used?" corpus — otherwise every class trivially
+finds itself and the check passes for the wrong reason (the Sprint 38.5 lesson).
+
+### 42.5 — housekeeping
+
+`save-button.tsx` was already gone (closed in 41). No `_to_delete/` deletion was
+performed: it holds one file, `_ux-audit-bundle.tar.gz`, which is **untracked and
+gitignored** — it never reaches the repo, and it is not recoverable from git if removed,
+so it stays Keagan's call. The CAD pilot stays, gated, per the ⚖️ above.
+
+### Scorecard (BUILD_PLAN.md §6, attempt 1)
+
+| Category | Max | Score | Evidence |
+|---|---|---|---|
+| Requirements fidelity | 25 | 25 | 42.1–42.5 all delivered; 42.6 declined on record. **Category 1 for this sprint is the matrix itself** — 27 rows, each citing a file + the proving detail, every one re-verified against current code |
+| Correctness | 20 | 19 | every matrix claim re-greped, not carried forward; six re-checked against exact line numbers. −1: the brief's §4 PE contract is asserted from source reading, not exercised with JS disabled in a browser this session |
+| Tests | 15 | 15 | no code changed, so the deliverable is that the existing guards still hold: 941 green, plus three standing checks re-run (orphans, hex, denylist) |
+| Security | 15 | 15 | nothing added; the sweep confirmed `NEVER_CACHE_PREFIXES` unchanged and the CAD pilot's two gates intact, and the decision record attaches a condition to keeping it |
+| Code quality | 10 | 10 | zero code touched — deliberate for a truth pass |
+| Mobile/offline | 10 | 10 | offline denylist verified unchanged and tested; the brief now documents the print-class and offline contracts as hard constraints |
+| Documentation | 5 | 5 | **attempt 1 scored this 3** — the brief and matrix were done but `BUILD_PLAN.md` §4's status table still ended at Sprint 32, which is precisely the drift this sprint exists to kill. Fixed rather than logged: the 33–42 row now carries all ten scores and both push SHAs, the stale "524 green" figure is now 941/80, and a new **§4.5** names `UX_REMEDIATION_PLAN.md` as the phase's governing doc and records what the phase deliberately left behind |
+| **Total** | **100** | **99** | ≥95 on attempt 1 (documentation re-scored 3 → 5 after fixing the gap it named, per §7's fix-the-issue-not-the-score rule) |
+
+**The §4 table also gained a "nothing is scheduled after Sprint 42" line.** A roadmap whose
+last row is complete, with no statement that the road ends, is an invitation for the next
+agent to invent a Sprint 43 — the remaining work is Keagan's (branding, copy approval,
+rotation at go-live, the launch call), and Phase 4 stays shut.
+
+### Keagan's remaining steps
+
+`git push` (docs only), then check CI. **Read `DESIGN_BRIEF.md` top to bottom once as "the
+new contributor"** — that persona is the only real test of it, and it is the one thing
+this sprint cannot self-verify. Then: approve or reword the three DRAFT strings (landing
+plan-count + sub-floor fallback, cost-tier anchor), and delete
+`_to_delete/_ux-audit-bundle.tar.gz` if you're done with it.

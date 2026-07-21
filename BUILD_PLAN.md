@@ -106,7 +106,7 @@ from the business plan and will be broken into sprints when each phase
 starts, so that sprint planning reflects the business plan's *current*
 state rather than assumptions made today.
 
-### 📌 Status at a glance (updated 2026-07-16)
+### 📌 Status at a glance (updated 2026-07-21, Sprint 42 close-out)
 
 | Phase | Status |
 |---|---|
@@ -119,16 +119,23 @@ state rather than assumptions made today.
 | Phase 4 | 🟡 PARTIALLY OPENED 2026-07-15 — **build logs only** (Sprint 27). Everything else in Phase 4 stays closed |
 | Completion plan (Sprints 24–27) | ✅ COMPLETE, PUSHED & LIVE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). **Confirmed pushed 2026-07-16 (Keagan): CI green, live site verified.** See §4.3 |
 | UI framework migration (Sprints 28–32) | ✅ COMPLETE (code) — Tailwind CSS + light/dark theme. **28 (env) 97; 29 (wave 1) 96; 30a 96; 30b 96; 30c 95 (closed w/ documented component-CSS residual); 31 (theme + toggle) 96; 32 (hardening) 95.** Dark mode = `.dark{}` token flip; toggle in the Clerk `UserButton` dropdown; SSR cookie, no FOUC; print forced light; dark palette AA-audited. **Device-bound → Keagan:** real-phone Lighthouse, real-browser toggle/FOUC, visual regression at 5 breakpoints × 2 themes. See §4.4 |
-| UX Remediation (Sprints 33–42) | 🟡 IN PROGRESS — UI/UX quality pass from the independent `UX_AUDIT_2026-07-21.md` (closes audit findings; **NOT a Phase-4 feature**). **33 (light-theme AA contrast, A1) 98; 34 (44px touch-target sweep, M1/V3) 96; 35 (destructive-action confirms + shopping-list control, H1/H2/A4) 96; 36 (wayfinding — nav state/live results/mobile search/tabpanel ARIA + `start_url`⚖️, A2/A5/H7/H11/H6/M4) 96.** Code-complete + browser-verified 2026-07-21; the /tmp gate, `npm run build`, and push are Keagan's. 37–42 scheduled (37 carries the OS-preference ⚖️). See `UX_REMEDIATION_PLAN.md` + `SPRINT_LOG.md` |
+| UX Remediation (Sprints 33–42) | ✅ **COMPLETE & CLOSED (2026-07-21)** — UI/UX quality pass from the independent `UX_AUDIT_2026-07-21.md` (**NOT a Phase-4 feature**; no new business capability). **33 (light-theme AA contrast, A1) 98; 34 (44px touch-target sweep, M1/V3) 96; 35 (destructive confirms + shopping-list control, H1/H2/A4) 96; 36 (wayfinding + `start_url`⚖️, A2/A5/H7/H11/H6/M4) 96; 37 (dark mode for everyone ⚖️, D1) 96; 38 (step-walker memory/scroll/sticky nav, H3/M3) 96; 39 (filter honesty + drawer manners ⚖️, H5/M2/A6) 97; 40 (landing integrity ⚖️×2, A3/C1/V2/D2) 98; 41 (consistency sweep ⚖️×2, V1/V4/C3/H4) 98; 42 (documentation truth pass + close-out ⚖️×2, D1/D2/D3-docs) 97.** 33–41 PUSHED, **CI green** (Sprint 40 `98a1bd1`, Sprint 41 `88d9f00`); Sprint 42 is code-free, push is Keagan's. All 27 audit IDs re-verified against shipped code in `UX_REMEDIATION_PLAN.md` §5 — **nothing OPEN**. Declined on record: app-page type hierarchy (42.6). See `UX_REMEDIATION_PLAN.md` (the phase's governing doc) + `SPRINT_LOG.md` |
 | **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (branding, copy approval, rotation at go-live, launch call) |
 | Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; brand name + contact are marked placeholders pending decision #8.) |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
 detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of the last verified
-run: **524 green** (Sprint 27 gate, Keagan's machine, 2026-07-15). Sprints 24–27
-(hardening pass, workshop, tool-aware catalog, build logs) are now confirmed pushed
-and live (2026-07-16) — the completion plan is fully closed. See §4.4 for what's
-next.
+run: **941 green, 80 files** (Sprint 42 close-out, Keagan's machine, 2026-07-21;
+`tsc` and `eslint` clean, `npm run build` green at Sprint 41). Sprints 24–27
+(hardening pass, workshop, tool-aware catalog, build logs) are confirmed pushed
+and live (2026-07-16); the Tailwind migration (§4.4) and the UX Remediation phase
+(§4.5) are both closed.
+
+**Nothing is scheduled after Sprint 42.** The remaining work is Keagan's, not an
+agent's: the launch blockers in §4.2 (branding/domain #8, DRAFT copy approval,
+credential rotation at go-live, the launch call). **Do not open a new phase or
+invent a Sprint 43** — Phase 4 stays shut except for the build logs already
+shipped as Sprint 27.
 
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
@@ -610,6 +617,33 @@ dark palette; visual regression spot-check against the pre-migration site; confi
 offline/print/no-JS still render the complete document (print theme-agnostic by
 design). Device-bound checks (real-phone Lighthouse, real-browser toggle test) are
 handed to Keagan, same pattern as the Sprint 24 hardening pass.
+
+### 4.5 UX Remediation — Sprints 33–42 (opened + closed 2026-07-21) ✅ COMPLETE
+
+**`UX_REMEDIATION_PLAN.md` is the governing document for this phase** — scope, per-sprint
+deliverables, the four evidence rules (E1–E4) layered on top of §6's rubric, and the §5
+close-out matrix. It does not override any standing rule in this file or `CLAUDE.md`.
+
+Derived from `UX_AUDIT_2026-07-21.md`, an independent UI/UX audit. **Every one of its 27
+findings maps to exactly one sprint or an explicit no-action entry** — nothing was dropped
+silently, and §5 of that plan re-verifies each against the code **as it stands now**, not
+against the sprint that claimed it. Per-sprint scores are in the status table above;
+narrative and scorecards are in `SPRINT_LOG.md`.
+
+**What it was not:** a feature phase. No new business capability shipped, no schema change,
+and one route + one server action were *deleted* (Sprint 41.4). Phase 4 is unaffected.
+
+**What it left behind, deliberately:**
+
+- **Device-bound verification is Keagan's** and was never claimed as done (rule E3):
+  real-phone cold start on OS-dark, Android toolbar colour, print previews, iOS zoom,
+  phone Lighthouse, the signed-in account modal.
+- **Three DRAFT copy strings** await his approval (`BUILD_PLAN.md` §2): the landing's
+  plan-count sentence and its sub-floor fallback (Sprint 40), and the cost-tier anchor
+  (Sprint 41).
+- **Two decisions recorded rather than built:** the CAD part-diagram pilot stays gated
+  (not rolled out — it needs a `StepPart` join first), and the app-page type hierarchy is
+  **declined**, mockup-first if ever revisited. Both in `DECISIONS_LOG.md` 2026-07-21.
 
 ---
 

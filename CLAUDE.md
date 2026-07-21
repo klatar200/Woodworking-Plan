@@ -169,10 +169,20 @@ with it.
 
 ## 7. Current state (keep this updated)
 
-- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–39 are PUSHED, CI green (Keagan,
-  2026-07-21; 33–37 also verified on mobile). Sprints 40 AND 41 are code-complete and
-  browser-verified at localhost:3000 (375/833/1280, both themes); push is Keagan's. Only
-  Sprint 42 (documentation truth pass) remains.**
+- **UX Remediation Plan (Sprints 33–42): COMPLETE and CLOSED (2026-07-21).** 33–41 are
+  PUSHED with **CI green** — Sprint 40 = `98a1bd1`, Sprint 41 = `88d9f00` (verified via the
+  Actions API, not assumed); 33–37 also verified on mobile. **Sprint 42 (documentation truth
+  pass) is code-free and complete; its push is Keagan's.** `UX_REMEDIATION_PLAN.md` is the
+  **governing document for this phase** and now carries a §5 close-out: all 27 audit IDs
+  re-verified against the code as it stands, each with a file + the proving detail, **nothing
+  OPEN**. Two ⚖️ closed it — the CAD pilot **stays gated**, and the app-page type hierarchy
+  (42.6) is **DECLINED on record**, not overlooked.
+  🛑 **`DESIGN_BRIEF.md` was rewritten in 42.1 and is now true.** The old one said "no
+  Tailwind", "there is no dark mode by decision", and listed 14 of the 23 tokens — anyone
+  obeying it would have written plain CSS and hard-coded a light-only palette into a themed
+  Tailwind app. Same failure as the stale `ci.yml` comment: **a document that argues against
+  the evidence is worse than no document.** Read the brief, not the pre-42 memory of it.
+  (It listed 14 tokens; there are **23** in each theme — counted out of `globals.css`.)
   ⚠️ **Environment note, 2026-07-21:** this session ran NATIVELY on Keagan's Windows machine,
   where `npm run build`, `npx vitest run`, `tsc` and `eslint` all work directly against the repo
   — the `/tmp`-clone rule and the "next build SIGBUS" note in §6 describe the LINUX SANDBOX and
@@ -476,11 +486,42 @@ with it.
     - **Deferred to Keagan:** the account modal is signed-in only, so its `shadow-e3` and the new
       link are source-verified, not eyeballed; plus the real-phone read on the drawer's new
       down-cast shadow, and approval of the DRAFT cost wording.
-  - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite (it now
-    also owes the type/radius scale Sprint 40 normalized onto **and Sprint 41's rule that the
-    floating layer uses `shadow-e2`/`e3`, never a literal**). This §7 block and the `DECISIONS_LOG`
-    entries are recorded now (2026-07-21). Historical entries below still describe the modal's
-    workshop picker and `/api/workshop` — both are **GONE** as of Sprint 41.4.
+  - **Sprint 42 (documentation truth pass + close-out): COMPLETE — 97/100. ZERO code changed.**
+    Both ⚖️ escalated before any edit and answered: **keep the CAD pilot gated** (two gates
+    intact — `NODE_ENV === 'production'` → `notFound()` before any query, and `/dev` is off
+    `PUBLIC_ROUTES` and on `NEVER_CACHE_PREFIXES`; the condition attached is that it must not
+    be wired into a live page without the `StepPart` join it was piloted to justify) and
+    **decline the app-page type hierarchy** (a visual change to every heading is not a
+    close-out rider; the brief records it as declined *and* notes the cascade consequence —
+    the global `h2` is UNLAYERED, so changing it would **shrink** the `!` workarounds in the
+    catalog rail and footer, not add more).
+    - **42.1 `DESIGN_BRIEF.md` rewritten** — full 23-token table in both themes, the dual-theme
+      rule and its two guard tests, the elevation scale with "never a `shadow-[…]` literal",
+      the Sprint 40 type/radius ramp, the dark-mode mechanism (inline script + Clerk pairing),
+      and the three cascade rules that have each cost a sprint. **§5's a11y baseline was
+      corrected against reality:** it claimed `aria-current` on "active nav/sort" — the nav
+      does carry it post-36, but **sort is a `<select>`** and takes none; during a search it is
+      a *disabled* "Relevance" control. A banner records what was wrong, so a reader can tell
+      this version was verified rather than merely edited.
+    - **42.3 the coverage matrix is a RE-CHECK, not a restatement** — six claims were re-greped
+      to exact lines rather than trusted (`role="status"` `browse/page.tsx:320`, disabled
+      Relevance `sort-select.tsx:48`, `AUTO_SUBMIT_DEBOUNCE_MS = 650`, `start_url: "/browse"`,
+      `FilterPanel`'s `hasWorkshop: boolean`, header search `text-[1rem]`). It also states what
+      is **not** closed by code: device-bound checks (never claimed), three DRAFT copy strings,
+      one gitignored local artifact.
+    - **42.4 standing checks:** 941 tests / 80 files, `tsc` + `eslint` clean; **5 `@media print`
+      blocks parsed by brace-matching, 39 classes referenced, 0 orphans** — the corpus excludes
+      the print blocks themselves, or every class trivially finds itself and the check passes
+      for the wrong reason (Sprint 38.5's lesson); hardcoded-hex sweep found no new offenders;
+      `NEVER_CACHE_PREFIXES` unchanged at 8 prefixes.
+    - **42.2 `BUILD_PLAN.md` §4 was itself the drift** — its status row still read "🟡 IN
+      PROGRESS … 37–42 scheduled" and its "test suite as of the last verified run" said **524
+      green** (Sprint 27, six weeks of sprints ago; it is 941). Both fixed, plus a new **§4.5**
+      naming `UX_REMEDIATION_PLAN.md` as the phase's governing doc. **And a "nothing is
+      scheduled after Sprint 42" line** — a roadmap whose last row is complete, with no
+      statement that the road ends, is how the next agent invents a Sprint 43.
+    - **Historical §7 entries below still describe the modal's workshop picker and
+      `/api/workshop` — both are GONE as of Sprint 41.4.**
 
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma

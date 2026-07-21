@@ -832,3 +832,71 @@ is numeric; device-bound checks explicitly deferred to Keagan, never claimed; be
 escalate with specifics; every attempt logged in `SPRINT_LOG.md` with the scorecard
 breakdown and commit SHAs. A sprint that ships code violating §1.2's invariants cannot
 pass category 1 regardless of polish — check them first, not last.
+
+---
+
+## 5. Close-out — verified coverage (Sprint 42.3, 2026-07-21)
+
+**Method.** Every row below was re-checked against the code **as it stands now**, not
+against the sprint that claimed it. Each cites a file plus the specific thing that proves
+the finding is closed — the anti-goal of this section is a close-out that asserts
+completeness it never verified, which was the audit's own critique of the 95–97 scores.
+Where a finding is only partly closed, it says so and stays OPEN.
+
+| Audit ID | Sprint | Evidence in the shipped code | State |
+|---|---|---|---|
+| **A1** — light-theme AA failures | 33 | `globals.css` `--accent-text: #a85413` (5.06:1 on `--bg`) + `--muted-2: #75705f` (4.70:1, was 3.64:1); 4 `text-accent-text` usages; `tests/contrast.test.ts` computes WCAG over 15 pairs × 2 themes | **CLOSED** |
+| **M1** — sub-44px targets | 34 | six `2.75rem` minimums in `src/lib/ui.ts`; `tests/touch-targets.test.ts` guards the shared constants | **CLOSED** |
+| **V3** — pagination family + 38px | 34 | pagination is a chip-family pill at `2.75rem`, `aria-current="page"` (`browse/page.tsx:443`) | **CLOSED** |
+| **H1** — review delete without confirm | 35 | `?confirm-delete` / `?confirm-photo` two-step in `reviews-section.tsx` + `plans/[slug]/page.tsx`, visibility gated by `showConfirm()` | **CLOSED** |
+| **A4** — invalid checkbox ids | 35 | `slugify()` in `format.ts`, used by `shopping-list/page.tsx`; `tests/slugify.test.ts` | **CLOSED** |
+| **H2** — no remove-from-list | 35 | `removeFromShoppingListAction` reached from `shopping-list/page.tsx` in both views | **CLOSED** |
+| **A2** — no nav current state | 36 | `nav-current.tsx` sets `aria-current="page"`; rule isolated in `src/lib/nav-active.ts` | **CLOSED** |
+| **A5** — silent result updates | 36 | `role="status"` on the results count (`browse/page.tsx:320`) | **CLOSED** |
+| **H7** — sort vanishes during search | 36 | `sort-select.tsx:48` renders a **disabled** "Relevance" option with the reason in `title` | **CLOSED** |
+| **H11** — no mobile search off `/browse` | 36 | `#drawer-q` search form inside `MobileNav` (`site-header.tsx:213`) | **CLOSED** |
+| **H6** — PWA `start_url` | 36 ⚖️ | `public/manifest.webmanifest` → `"start_url": "/browse"`. **Takes effect on REINSTALL only** | **CLOSED** |
+| polish — no-JS `tabpanel` orphan | 36 | `plan-tabs.tsx:105` sets `role="tabpanel"` post-mount; panels ship role-free | **CLOSED** |
+| **D1** — dark mode reachability | 37 | `THEME_INIT_SCRIPT` (`theme.ts:66`) wired at `layout.tsx:204`; toggles in drawer/footer/modal, all outside `<SignedIn>`; `clerk-appearance.ts` + its parity test | **CLOSED** |
+| **H3 / M3** — step walker | 38 | `src/lib/step-progress.ts` (`clampStep`, `stepToPersist`); `.step { scroll-margin-top: 5.5rem }`; sticky nav bar with `pt-`/`pb-` longhands | **CLOSED** (short-step sticky limit logged) |
+| **H5** — prefill + 200ms queries | 39 ⚖️ | `FilterPanel` takes `hasWorkshop: boolean` (`filter-panel.tsx:56`), not tool slugs; `AUTO_SUBMIT_DEBOUNCE_MS = 650` (`use-soft-get-form.ts:98`) | **CLOSED** |
+| **M2** — drawer Esc / containment | 39 | `src/lib/drawer-guard.ts` walks up inerting siblings; Esc + focus return + scroll lock share one teardown | **CLOSED** |
+| **A6** — `aria-expanded` on avatar | 39 | `account-menu.tsx:30` | **CLOSED** |
+| **A3** — marquees unpausable on touch | 40 ⚖️ | `globals.css:355` `scroll-snap-type: x mandatory` below `lg`; `:focus-within` pause added unconditionally (`globals.css:318`) | **CLOSED** |
+| **C1** — "Hundreds of plans" vs 948 | 40 ⚖️ | `planCountCopy()` (`landing-copy.ts:31`) fed by the `total` already returned; `tests/landing-copy.test.ts` pins the query's argument keys | **CLOSED** (copy is DRAFT) |
+| **V2** — accordion mismatch + 6px lift | 40 | identical `::details-content` dialect in `faq/page.tsx:156` and `page.tsx:414`; lift 6px → 4px | **CLOSED** |
+| **D2** — off-token drift | 40 + 41 + 42 | type/radius ramp guarded by `tests/landing-scale.test.ts`; shadows by `tests/elevation.test.ts`; the brief now documents both | **CLOSED** |
+| **V1** — floating surfaces bypass elevation | 41 | five surfaces on `shadow-e2`/`e3`; the guard **scans for any `shadow-[`** so a sixth fails | **CLOSED** |
+| **V4** — `compactOnMobile` dead code | 41 | deleted from `ui.ts`; `tests/touch-targets.test.ts` asserts it stays gone | **CLOSED** |
+| **C3** — cost tiers lack an anchor | 41 ⚖️ | `COST_TIER_ANCHOR` in `format.ts`, three surfaces; `tests/cost-anchor.test.ts` asserts no digits | **CLOSED** (copy is DRAFT) |
+| **H4** — duplicated workshop picker | 41 ⚖️ | modal links to `/profile#workshop`; `saveWorkshopModalAction` and `GET /api/workshop` deleted, absence asserted | **CLOSED** |
+| **M4** — header search 15px | 36 | `site-header.tsx:222` `text-[1rem]`; `searchInput` likewise | **CLOSED** |
+| **D3** — brief wrong on typography/system | 42.1 | `DESIGN_BRIEF.md` rewritten: 23-token table (was 14), dark-mode mechanism, Tailwind+token system, corrected a11y baseline | **CLOSED** |
+| **D3** — flat app-page `h1`/`h2` hierarchy | 42.6 ⚖️ | **DECLINED** by Keagan 2026-07-21; recorded in `DECISIONS_LOG.md` and in the brief §6 so it reads as a decision, not an oversight | **CLOSED as declined** |
+| C2, A8, A9, print architecture, PE contract, CAD pilot | — | verified fine by the audit; CAD pilot **kept gated** (⚖️ Keagan 2026-07-21) — `dev/diagrams/page.tsx:63` `NODE_ENV === 'production' → notFound()`, and `/dev` is on `NEVER_CACHE_PREFIXES` | **No action, confirmed** |
+
+**Nothing is OPEN.** Every audit ID is closed, declined-on-record, or confirmed
+no-action.
+
+### Not closed by code — carried forward deliberately
+
+These are not audit findings; they are the honest residue of the phase.
+
+1. **Device-bound verification is Keagan's** and was never claimed (rule E3): real-phone
+   cold start on OS-dark, the Android toolbar colour, print previews, iOS zoom, phone
+   Lighthouse, the drawer's new down-cast shadow, and the signed-in account modal.
+2. **DRAFT copy awaiting approval:** the landing plan-count sentence and its sub-floor
+   fallback (40), and the cost-tier anchor (41).
+3. **Local artifact:** `_to_delete/_ux-audit-bundle.tar.gz` — untracked and gitignored, so
+   it never reaches the repo. Left for Keagan to remove; it is not recoverable from git.
+
+### Standing checks re-run at close-out (42.4)
+
+| Check | Result |
+|---|---|
+| Full suite | **941 tests, 80 files, green** |
+| `tsc --noEmit` / `eslint .` | clean |
+| Print-block orphan classes | 5 `@media print` blocks, 39 classes referenced, **0 orphans** |
+| Hardcoded-hex sweep | no new offenders — remaining literals are the landing's deliberate panel + always-dark CTA, Clerk's appearance (which cannot take `var()`, and is parity-tested), and the browser-chrome meta colours |
+| `NEVER_CACHE_PREFIXES` | unchanged, 8 prefixes incl. `/builds`, `/workshop`, `/dev`; `tests/offline.test.ts` green |
+| CI | green on `98a1bd1` (Sprint 40) and `88d9f00` (Sprint 41) |
