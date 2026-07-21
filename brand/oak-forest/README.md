@@ -16,7 +16,7 @@ board mark.
 | `lockup.png` | Icon + wordmark reference |
 | `icon-192.png` / `icon-512.png` / `icon-maskable-512.png` / `apple-touch-icon.png` | PWA (also in `public/icons/`) |
 | `notch-mark.svg` | **Canonical standalone logo** (transparent) |
-| `notch-mark-on-cream.svg` | Same mark on parchment square |
+| `notch-mark-on-cream.svg` | Same mark, transparent (cream `#F6F1E7` square removed) |
 | `../public/brand/notch-mark.svg` | Runtime header icon |
 | `palette-board.png` | Original Option 3 mock board |
 
