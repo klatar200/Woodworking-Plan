@@ -175,9 +175,14 @@ export default async function CatalogPage({
         and the search box below is untouched. The wash is a pseudo-element gradient, so
         it costs no DOM and no request.
       */}
-      <div className="hero-wash relative overflow-hidden mb-[1.5rem] rounded-[0.75rem] border border-border bg-surface px-[1.5rem] py-[2rem] shadow-e2 lg:px-[2.5rem] lg:py-[3rem]">
-        <h1 className="relative">Plans</h1>
-        <p className="subtitle relative max-w-[46ch]">
+      {/* QOL-M catalog fix (2026-07-20, Keagan): the hero was a tall padded box that pushed
+          the grid far down — redundant now the landing page carries the full pitch. Slimmed
+          to a compact header (title + one line). `hero-wash` + `shadow-e2` stay (the print
+          block resets `.hero-wash`, and the standing rule keeps print-named classes on their
+          element); only the padding shrank. */}
+      <div className="hero-wash relative overflow-hidden mb-[1.25rem] rounded-[0.75rem] border border-border bg-surface px-[1.25rem] py-[0.9rem] shadow-e2 lg:px-[1.5rem] lg:py-[1.1rem]">
+        <h1 className="relative m-0 text-[1.6rem]">Plans</h1>
+        <p className="subtitle relative m-0 mt-[0.25rem] max-w-[52ch]">
           Every plan carries a full cut list, a material list and a cost band &mdash; so
           you can compare them before you drive to the lumberyard.
         </p>
@@ -214,7 +219,13 @@ export default async function CatalogPage({
       {/* Sprint 30a: the desktop three-column grid moved to Tailwind. Below 64rem
           there is no grid (plain block, DOM order = mobile order); at lg the
           grid-template-areas place the rail/results/filter columns. */}
-      <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_18rem] lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters'] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
+      {/* QOL-M catalog fix (2026-07-20): pin row 1 (search) to `min-content` and let row 2
+          (results) take the rest. WITHOUT this, the tall filters rail — which spans BOTH
+          rows — made the grid inflate row 1 to ~256px so the two auto rows would sum to the
+          rail's height, opening a big empty gap between the search bar and the results. With
+          `min-content auto`, a spanning item's excess height flows into the flexible row 2,
+          not the pinned row 1, so the search bar hugs its content. */}
+      <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_18rem] lg:[grid-template-areas:'nav_search_filters'_'nav_results_filters'] lg:[grid-template-rows:min-content_auto] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
         {/* Desktop-only (hidden below 64rem): a second way to reach the category
             filter the panel's <select> already offers, not a second capability. */}
         <CategoryNav
@@ -241,8 +252,13 @@ export default async function CatalogPage({
 
         <aside
           className="lg:[grid-area:filters] lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
-          aria-label="Filters"
+          aria-label="Sort and filters"
         >
+          {/* QOL-M catalog fix (2026-07-20, Keagan): Sort lives in the controls sidebar with
+              the filters, not floating above the results grid. SortSelect returns null during
+              a keyword search (relevance is the sort). */}
+          <SortSelect sort={sort} query={query} filters={filters} perPage={perPageParam} />
+
           <FilterPanel
             query={query}
             filters={filters}
@@ -255,10 +271,6 @@ export default async function CatalogPage({
         </aside>
 
         <div className="lg:[grid-area:results] lg:min-w-0">
-          {/* Sort control. Page-size moved up beside the search bar (QOL-J, above).
-              SortSelect returns null during a keyword search (relevance is the sort). */}
-          <SortSelect sort={sort} query={query} filters={filters} perPage={perPageParam} />
-
           {/* Removable chips for each active filter — renders nothing when browsing
               unfiltered. Each chip is a GET link; see filter-chips.tsx. */}
           <FilterChips

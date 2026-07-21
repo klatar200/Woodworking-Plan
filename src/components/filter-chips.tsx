@@ -31,10 +31,10 @@ interface Props {
  * not silently discard the query someone typed or the sort they picked — the
  * same rule sort-select.tsx already enforces in the other direction.
  *
- * "Clear all filters" clears FILTERS ONLY, keeping the search term — it sits
- * in the filter row, so it must scope to filters. The subtitle's "Clear all"
- * (which clears everything, search included) is a different control doing a
- * different job.
+ * There is NO bulk "clear all filters" link here (removed 2026-07-20, Keagan): it sat
+ * directly above the results subtitle's "Clear search and filters", reading as two stacked
+ * clear controls doing nearly the same thing. Per-chip ✕ handles granular removal; the
+ * subtitle's one comprehensive clear handles "reset everything".
  */
 export function FilterChips({ query, filters, sort, perPage, categories, tools }: Props) {
   if (!hasActiveFilters(filters)) return null;
@@ -105,25 +105,6 @@ export function FilterChips({ query, filters, sort, perPage, categories, tools }
           </Link>
         </li>
       ))}
-      <li>
-        <Link
-          href={buildQueryString({
-            query,
-            filters: {
-              category: undefined,
-              difficulty: [],
-              costTier: [],
-              maxMinutes: undefined,
-              ownedTools: [],
-            },
-            sort,
-            perPage,
-          })}
-          className="text-[0.875rem] text-muted underline hover:text-fg"
-        >
-          Clear all filters
-        </Link>
-      </li>
     </ul>
   );
 }

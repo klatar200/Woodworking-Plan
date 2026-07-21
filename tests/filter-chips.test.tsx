@@ -91,9 +91,10 @@ describe('FilterChips', () => {
     expect(html).toContain('sort=popular');
   });
 
-  it('"Clear all filters" clears filters but KEEPS the search term', () => {
+  it('has no bulk "clear all filters" link (removed 2026-07-20 — see the subtitle clear)', () => {
+    // The stacked-duplicate clear is gone; only per-chip ✕ removal remains here.
     const html = render({ ...noFilters, category: 'outdoor' }, 'bench');
-    expect(html).toContain('href="/browse?q=bench"');
+    expect(html).not.toContain('Clear all filters');
   });
 
   it('removing the last filter links to the bare catalog', () => {
