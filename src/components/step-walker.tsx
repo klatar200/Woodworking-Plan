@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { btnGhost, btnPrimary } from '@/lib/ui'; // Sprint 29: shared button classes
+import {
+  clearStoredStep,
+  readStoredStep,
+  shouldScroll,
+  stepToPersist,
+  writeStoredStep,
+} from '@/lib/step-progress';
 
 // Sprint 30c: the step-walker chrome (rail, dots, progress bar, nav, finish CTA) →
 // Tailwind. Active-state colors live per variant (source-order gotcha); the rail
@@ -23,11 +30,48 @@ const dotActive = `${dotBase} bg-fg text-surface`;
 // The chrome classes (step-rail/step-dots/step-walker-bar/-nav/step-finish-cta) are
 // RETAINED alongside the utilities — the print stylesheet hides them by class so paper
 // shows the full step list, not the interactive walker.
+
+/**
+ * Sprint 38.3 (audit M3) — Prev/Next is pinned to the bottom of the viewport on a phone.
+ *
+ * The nav sits after content of wildly varying length, so today the single control you
+ * press most often lands somewhere different on every step: you look for it, then reach
+ * for it, with gloves on, mid-cut. Pinned, advancing becomes one eyes-free gesture at a
+ * fixed position.
+ *
+ * `sticky`, not `fixed`: sticky keeps the bar in flow, so it un-pins into its natural
+ * place at the end of the walker instead of floating over the footer forever, and it
+ * needs no spacer element to avoid overlapping what follows.
+ *
+ * `-mx-[1.25rem] px-[1.25rem]` cancels then re-applies the page shell's gutter, so the
+ * bar's surface reaches the screen edges (content scrolling through a 1.25rem gap either
+ * side of a floating bar reads as a rendering bug). Exactly cancelling the padding means
+ * no horizontal overflow.
+ *
+ * `pt-`/`pb-` rather than `py-`: `py-*` compiles to the `padding-block` SHORTHAND, and a
+ * shorthand vs. the `pb-*` longhand is resolved by Tailwind's source order, not className
+ * order — the standing migration gotcha. Two longhands cannot fight.
+ *
+ * At `lg:` every declaration is returned to its pre-sprint value, so the desktop layout
+ * (where the rail is visible and the page is short) is unchanged by construction. Verified
+ * by compiling this exact list with the repo's Tailwind v4.3.2 toolchain: the `lg:`
+ * variants are emitted well after the unprefixed utilities, so `lg:static` does beat
+ * `sticky` — the ordering that is NOT safe to assume.
+ */
+const stepNav =
+  'step-walker-nav flex gap-[0.75rem] mt-[1.5rem] sticky bottom-0 z-20 -mx-[1.25rem] px-[1.25rem] pt-[0.75rem] pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-border bg-surface lg:static lg:z-auto lg:mx-0 lg:px-0 lg:pt-0 lg:pb-0 lg:border-t-0 lg:bg-transparent';
+
 const finishCta =
   'step-finish-cta block mt-[1.5rem] px-[1.25rem] py-[1rem] border border-accent-tint-border rounded-[0.5rem] bg-accent-tint text-fg no-underline hover:border-accent-strong focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
 interface Props {
   stepTitles: string[];
+  /**
+   * Sprint 38.1 — the plan this walker is for, used only as the localStorage key. It is a
+   * key, never a lookup: nothing here queries by slug, so a wrong one loses your place
+   * rather than showing you someone else's plan.
+   */
+  slug: string;
   /** The server-rendered `<ol className="steps">` — untouched, full content. */
   children: React.ReactNode;
   /**
@@ -68,24 +112,54 @@ interface Props {
  * nodes it finds by that attribute, which is why the underlying content is
  * never at the mercy of this component's own render output.
  */
-export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
+export function StepWalker({ stepTitles, slug, children, reviewCtaHref }: Props) {
   const totalSteps = stepTitles.length;
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
+  /** Last rendered step, so the scroll below fires on a CHANGE and not on mount. */
+  const previousActive = useRef<number | null>(null);
 
-  // Only after mount do we start hiding anything — see the file doc above.
+  /**
+   * Only after mount do we start hiding anything — see the file doc above.
+   *
+   * Sprint 38.1: the remembered step is restored in this SAME effect, on purpose. The
+   * server-rendered document already contains every step and hides nothing, so there is
+   * no window in which the reader sees "step 1" and then watches it change: the walker's
+   * step-1-only view and the restored step arrive in the same commit, and a visitor
+   * without JS reaches neither.
+   */
   useEffect(() => {
+    setActive(readStoredStep(slug, totalSteps));
     setMounted(true);
-  }, []);
+  }, [slug, totalSteps]);
 
   useEffect(() => {
     if (!mounted) return;
-    const steps = containerRef.current?.querySelectorAll<HTMLElement>('[data-step]');
-    steps?.forEach((el) => {
+    const container = containerRef.current;
+    container?.querySelectorAll<HTMLElement>('[data-step]').forEach((el) => {
       el.style.display = Number(el.dataset.step) === active ? '' : 'none';
     });
-  }, [active, mounted]);
+
+    // 38.1 — remember, or forget once the build is finished. See stepToPersist.
+    const persist = stepToPersist(active, totalSteps);
+    if (persist === null) clearStoredStep(slug);
+    else writeStoredStep(slug, persist);
+
+    // 38.2 — show the reader the step they just asked for.
+    const previous = previousActive.current;
+    previousActive.current = active;
+    // Never on mount/restore: the page is at its own scroll offset for reasons that have
+    // nothing to do with a step change, and moving it would be the yank this guards.
+    if (previous === null || previous === active) return;
+    const target = container?.querySelector<HTMLElement>(`[data-step="${active}"]`);
+    if (!container || !target) return;
+    if (!shouldScroll(container.getBoundingClientRect().top, window.innerHeight)) return;
+    // WCAG 2.3.3 — read at call time rather than at mount, so changing the OS setting
+    // takes effect without a reload.
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [active, mounted, slug, totalSteps]);
 
   const goTo = (n: number) => setActive(Math.min(totalSteps, Math.max(1, n)));
 
@@ -125,7 +199,10 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
         </nav>
       )}
 
-      <div className="flex-1 min-w-0">
+      {/* 38.3 — the runway the sticky bar needs. Without it the bar can pin over the
+          finish CTA with nothing left to scroll, so the CTA would never come free of it.
+          Only when enhanced (no bar, no gap) and only below `lg` (no bar there either). */}
+      <div className={`flex-1 min-w-0${enhanced ? ' pb-[4.5rem] lg:pb-0' : ''}`}>
         {enhanced && (
           <>
             <div className="step-walker-bar flex items-center gap-[0.75rem] mb-[1rem]">
@@ -177,7 +254,7 @@ export function StepWalker({ stepTitles, children, reviewCtaHref }: Props) {
         )}
 
         {enhanced && (
-          <div className="step-walker-nav flex gap-[0.75rem] mt-[1.5rem]">
+          <div className={stepNav}>
             <button
               type="button"
               className={btnGhost}

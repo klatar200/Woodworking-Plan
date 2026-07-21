@@ -169,13 +169,16 @@ with it.
 
 ## 7. Current state (keep this updated)
 
-- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–37 are code-complete and
-  browser-verified at localhost:3000 (2026-07-21, Keagan's direction); push is Keagan's.**
+- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–37 are PUSHED, CI green, verified on
+  mobile (Keagan, 2026-07-21). Sprint 38 is code-complete and browser-verified at
+  localhost:3000; push is Keagan's.**
   ⚠️ **Environment note, 2026-07-21:** this session ran NATIVELY on Keagan's Windows machine,
   where `npm run build`, `npx vitest run`, `tsc` and `eslint` all work directly against the repo
   — the `/tmp`-clone rule and the "next build SIGBUS" note in §6 describe the LINUX SANDBOX and
-  do not apply when running here. Sprint 37's gate was run natively: build green, 858 tests, tsc
-  and eslint clean. `UX_REMEDIATION_PLAN.md`, derived from
+  do not apply when running here. Sprints 37–38 were gated natively: build green, 888 tests, tsc
+  and eslint clean. ⚠️ **`npm run build` invalidates a running `next dev`** (they share `.next`) —
+  the dev server started serving 500s and had to be restarted before the browser pass. Run the
+  build after the browser work, or expect to restart dev. `UX_REMEDIATION_PLAN.md`, derived from
   `UX_AUDIT_2026-07-21.md`. A UI/UX quality pass that closes audit findings — **NOT a Phase-4
   feature**, no new business capability; every finding maps to one sprint (that plan's §2 coverage
   matrix). No dev-server restart was needed for any of 33–36 (CSS/TSX hot-reload); the PWA
@@ -288,8 +291,54 @@ with it.
     - **Deferred to Keagan (device-bound, per E3):** real-phone check that the OS-dark cold start
       has no flash, the Android toolbar colour actually following, and a print preview (print
       forces light via the token reset — unchanged by this sprint).
+  - **Sprint 38 (step-walker memory, scroll, sticky nav — audit H3/M3): COMPLETE.** The build
+    page now survives a workshop. **Decisions required: none** — nothing escalated.
+    - **Progress is DEVICE STATE, deliberately.** `localStorage['step:<slug>']`, no table, no
+      server round-trip, **and no `?step=N`** — a URL-encoded step would make every step a
+      distinct service-worker cache entry (the SW matches URLs exactly), so an offline plan would
+      have only the one step you were on cached, and every shared link would carry a stranger's
+      place in the build. The audit asked for memory, not deep links. It also *works with no
+      signal* precisely because it never leaves the phone.
+    - **Stored input is treated as foreign input.** `clampStep()` in the new pure
+      `src/lib/step-progress.ts` takes a digits-only string or falls back to 1, and clamps over-total
+      down to the last step (content edits shrink step counts; the last step beats step 1 as a
+      guess). **`Number.parseInt` is deliberately NOT used** — the `form-fields.ts` lesson: it reads
+      `"9abc"` as 9 and `"1e9"` as 1, i.e. invents a plausible answer out of garbage. Verified
+      end-to-end in the browser, not just in unit tests: `"9abc"` → step 1, `"99"` → step 9 of 9.
+    - **Restore lives in the SAME effect that sets `mounted`**, so the no-JS document is untouched
+      and there is no step-1→step-N flash. A test renders to markup with a **recording localStorage
+      stub and asserts zero calls** — that is what proves the read never migrated into render (a
+      `useState` initialiser would touch a browser global on the server).
+    - **The scroll is guarded, because an unasked-for scroll is its own bug.** `shouldScroll()` only
+      fires when the walker's container top is outside the viewport — i.e. you are deep inside a long
+      step, the audit's actual complaint. Clicking the desktop rail, where everything is already
+      visible, must not yank the page; measured at 1280px, scrollY 0 → 0. `.step` gained
+      `scroll-margin-top: 5.5rem` because the site header is `sticky top-0` and a plain
+      `scrollIntoView` parks the step's title *underneath* it. Measured: the new step lands at
+      exactly 88px, clear of the 65px header.
+    - **Finishing FORGETS.** Reaching the last step clears the key, so returning to a plan you
+      completed starts at step 1 — the next visit is a rebuild, not a resumption. Split out as
+      `stepToPersist()` so the rule is assertable without a DOM.
+    - **🛑 THE TAILWIND TRAP THIS SPRINT: `py-*` compiles to the `padding-block` SHORTHAND**, which
+      fights the `pb-*` longhand by Tailwind's fixed source order, not className order. On the
+      sticky bar that would have silently dropped `pb-[calc(0.75rem+env(safe-area-inset-bottom))]`
+      and parked Prev/Next under the home indicator. Two longhands (`pt-`/`pb-`) cannot fight; a
+      test bans `py-` from that class string. The `lg:static`-beats-`sticky` ordering was
+      **compiled with the real Tailwind v4.3.2 toolchain** — position utilities are emitted
+      `static` *before* `sticky`, so this is exactly the assumption that had to be checked.
+    - **38.5 re-ran the print contract** (`.step` force-shown, all five chrome classes hidden AND
+      still on their elements) because this is the most print-sensitive component in the app and the
+      print stylesheet has been silently orphaned three times. Note the test parses **all five**
+      `@media print` blocks by brace-matching — "everything after the first `@media print`" is most
+      of the file, and that mistake made the first version of the test pass for the wrong reason.
+    - **Honest limit (E3):** `sticky` pins the bar only while its natural position is below the
+      fold, so on a SHORT step it sits in flow. M3 is fixed for long steps, mitigated for short
+      ones — and on a short step the whole walker is on screen anyway. `fixed` would pin always but
+      float over the footer and need a spacer. **Deferred to Keagan:** the real-phone pass
+      (lock/reopen, kill/reopen, airplane mode mid-build) and a print preview; also the
+      `prefers-reduced-motion` scroll branch, which this browser pane cannot emulate.
   - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite, and the
-    §7 entries for 38–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` +
+    §7 entries for 39–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` +
     OS-preference entries are recorded now (2026-07-21).
 
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),

@@ -105,7 +105,7 @@ describe('StepWalker last-step CTA (Sprint 20)', () => {
 
   it('does NOT render the CTA at server-render time (it is enhancement-only)', () => {
     const html = renderToStaticMarkup(
-      <StepWalker stepTitles={['One', 'Two']} reviewCtaHref="#reviews-heading">
+      <StepWalker stepTitles={['One', 'Two']} slug="desk" reviewCtaHref="#reviews-heading">
         <ol>{steps(2)}</ol>
       </StepWalker>,
     );
@@ -119,7 +119,7 @@ describe('StepWalker last-step CTA (Sprint 20)', () => {
     // The CTA prop must not disturb the single-step passthrough the walker has always
     // guaranteed.
     const html = renderToStaticMarkup(
-      <StepWalker stepTitles={['Only']} reviewCtaHref="#reviews-heading">
+      <StepWalker stepTitles={['Only']} slug="desk" reviewCtaHref="#reviews-heading">
         <ol>{steps(1)}</ol>
       </StepWalker>,
     );

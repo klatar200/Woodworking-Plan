@@ -83,6 +83,7 @@ export default async function PlanBuildPage({ params }: { params: Params }) {
       <section aria-label="Instructions" className="mt-[1.5rem]">
         <StepWalker
           stepTitles={plan.steps.map((step) => step.title)}
+          slug={plan.slug}
           reviewCtaHref={`/plans/${plan.slug}#reviews-heading`}
         >
           <PlanSteps steps={plan.steps} ownedToolSlugs={ownedToolSlugs} />

@@ -3644,3 +3644,51 @@ surfaces are hard-coded light"; 37.3→D1 "browser chrome doesn't follow"; 37.4�
 **Keagan's remaining steps:** push + CI check; on a real phone, set the OS to dark, clear the
 `theme` cookie, hard-reload and confirm no flash and that a later explicit *light* choice sticks;
 confirm the Android toolbar colour follows.
+
+**Closed 2026-07-21:** pushed, CI green, verified on mobile (Keagan).
+
+---
+
+## Sprint 38: The mid-build experience — step memory, scroll, reachable controls (audit H3, M3)
+**Dates:** 2026-07-21
+**Scope:** The build page survives a workshop: your place is remembered across a reload or a
+sleeping phone, advancing a step actually shows you the step, and Prev/Next sits in a fixed
+thumb-reachable spot on a phone. All of it still a pure enhancement over the server-rendered
+step list.
+
+**Decisions required:** none (per the plan). Nothing here was escalated.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | 38.1–38.5 all shipped. 38.1 `localStorage['step:<slug>']`, clamped + restored in the mount effect, cleared at the finish state; 38.2 `scrollIntoView` on advance behind a viewport guard, `prefers-reduced-motion` read at call time; 38.3 sticky mobile Prev/Next, reverted at `lg:`; 38.4 pure helpers in `src/lib/step-progress.ts` + 32 tests; 38.5 print contract re-verified. Non-goals honored: **no `?step=N`**, no server-side progress, no walker redesign. |
+| Correctness (/20) | 20 | **Measured in a real browser at 375×812 and 1280×860, not asserted.** Advance from a deep scroll (scrollY 1022) lands the new step's top at **exactly 88px** — the 5.5rem `scroll-margin-top` — clear of the 65px sticky header, twice in a row. Reload restores "Step 4 of 9" with **no scroll yank** (scrollY 0). Reaching step 9 clears the key (`stored: null`) and the next load reads "Step 1 of 9". Stored `"9abc"` → step 1; stored `"99"` → step 9 (clamped), both through the real component. Desktop rail click at 1280px: **scrollY 0 → 0**, no yank. At `lg` every mobile declaration is reverted — `position: static`, `rgba(0,0,0,0)` bg, `0px` border-top, `0px` margin/padding, column padding-bottom `0px`. `document.scrollWidth === 375` (the full-bleed bar adds no horizontal overflow). Console clean. |
+| Tests (/15) | 15 | +30 tests, **888 green** (76 files). `tests/step-progress.test.ts` (17): clamp against garbage/floats/signs/`"9abc"`/`"1e9"`/over-total/absurd-length, `stepToPersist`'s finish→`null`, `shouldScroll` boundaries, and four storage-failure modes (read throws, write throws, no global at all). `tests/step-walker.test.tsx` rewritten (15): SSR still renders every step, **SSR touches no storage** (recording stub asserts zero calls — proves the restore stayed in the effect), the `lg:` counterpart for every mobile class, the `py-`-shorthand ban on the bar, and 38.5's both-halves print check. |
+| Security (/15) | 15 | No new route, server action, schema, or network call; nothing reaches a server. The slug is used **only as a storage key**, never as a lookup, so a wrong one loses your place rather than exposing another plan. Stored input is treated as foreign input (`clampStep`, deliberately not `parseInt` — the `form-fields.ts` lesson). Storage is per-origin and holds a step number: no identity, no library, nothing a sign-out needs to wipe, so `NEVER_CACHE_PREFIXES` and the private-cache rules are untouched. |
+| Code quality (/10) | 10 | Every decision that can be wrong is a pure function in `step-progress.ts`; the component keeps only the DOM work. `stepToPersist` exists specifically so 38.1's "finishing forgets" rule is assertable without a DOM, per the plan's own instruction about untestable DOM assertions. Storage wrappers each swallow their own failure. The `lg:static`-beats-`sticky` ordering was **compiled with the repo's Tailwind v4.3.2 toolchain**, not assumed; `pt-`/`pb-` longhands used because `py-` is the `padding-block` shorthand and would fight `pb-` by source order. |
+| Mobile-offline (/10) | 9 | The bar measures full-bleed 375px with a hairline top border and `pb-[calc(0.75rem+env(safe-area-inset-bottom))]`; pinned flush to the viewport bottom (gap `0`) whenever its natural position is off-screen. Runway verified: at the one scroll offset where the pinned bar overlaps the finish CTA, ~200px more scroll frees it completely. Offline unchanged — no new URLs, and the memory works with no signal *because* it is device state. **Deferred to Keagan (E3):** the real-phone pass (lock/reopen, kill/reopen, airplane mode mid-build), which is the whole point of the feature and is not observable in this pane. |
+| Documentation (/5) | 5 | `CLAUDE.md` §7 entry; this entry; the two non-obvious constraints (the `py-`/`pb-` shorthand trap and why progress is device state, not a row) documented at the code. |
+| **Total** | **99** | Passes attempt 1. **E4:** no new interactive targets — Prev/Next are the existing `btnGhost`/`btnPrimary` at 44px and the dots were fixed in Sprint 34; the bar adds chrome around them, not controls. No new text, so no new contrast pairs; the bar uses `--surface`/`--border`, already AA-audited in both themes and verified live in each (`#ffffff`/`#e4e4e4` light, `rgb(34,30,23)` dark). |
+
+**E1 traceability:** 38.1→H3 "forgets where you were"; 38.2→H3 "Next doesn't move the viewport";
+38.3→M3 "Prev/Next position wanders"; 38.4→the plan's testability requirement; 38.5→the standing
+print-orphan lesson (Sprint 30b/30c, QOL-A).
+
+**Honest note on 38.3 (E3).** `sticky` pins the bar only while its natural position would be below
+the fold, so on a SHORT step the bar sits in flow rather than at the viewport bottom — M3's "the
+target moves" is fixed for long steps, mitigated (not eliminated) for short ones. This is the
+plan's specified mechanism and the right trade: `fixed` would pin always, but would then float over
+the footer and need a spacer, and on a short step there is nothing to hunt for because the whole
+walker is already on screen.
+
+**Not verified in a browser:** the `prefers-reduced-motion` branch of the scroll — this pane cannot
+emulate the media query. It is a single `matchMedia` read at call time; the surrounding decision
+(`shouldScroll`) is unit-tested.
+
+**Gate (native Windows):** `npm run build` ✓ · `npx vitest run` 888 passed / 1 todo ✓ ·
+`npx tsc --noEmit` ✓ · `npx eslint .` ✓.
+
+**Keagan's remaining steps:** push + CI check; the real-phone pass — advance to step 7 of a long
+plan, lock the phone, reopen → step 7; kill the tab, reopen → step 7; finish the plan, reopen →
+step 1; tap Next at the bottom of a long step → the next step's title is visible below the header;
+airplane mode mid-build → all of the above still true; print preview → every step, no bar.
