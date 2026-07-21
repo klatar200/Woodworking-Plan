@@ -74,27 +74,66 @@ export function useSoftGetForm(formRef: RefObject<HTMLFormElement | null>): void
 export function useAutoSubmitOnChange(
   formRef: RefObject<HTMLFormElement | null>,
   selector?: string,
-  debounceMs = 200,
+  debounceMs = AUTO_SUBMIT_DEBOUNCE_MS,
 ): void {
-  useEffect(() => {
-    const form = formRef.current;
-    if (!form || !selector) return;
-    const sel = selector;
-    let timer: ReturnType<typeof setTimeout> | undefined;
+  useEffect(
+    () => createAutoSubmitOnChange(formRef.current, selector, debounceMs),
+    [formRef, selector, debounceMs],
+  );
+}
 
-    function onChange(event: Event) {
-      const target = event.target;
-      if (!(target instanceof Element) || !target.matches(sel)) return;
-      clearTimeout(timer);
-      timer = setTimeout(() => form?.requestSubmit(), debounceMs);
-    }
+/**
+ * How long to wait after the last change before applying — Sprint 39.2 (audit M2).
+ *
+ * Was 200ms, which is shorter than the gap between two deliberate taps: selecting five
+ * tools fired roughly five catalog queries and five client navigations, and the results
+ * shifted under the reader between ticks. Measured guidance for deliberate multi-select
+ * is a 300–600ms inter-tap median, so 650ms sits just past the slow end — a burst
+ * coalesces into ONE navigation, while a single considered tick still applies fast enough
+ * to read as live.
+ *
+ * The trailing edge is the correct edge and stays: leading-edge would fire on the first
+ * tick of a burst, i.e. navigate on the state the user is in the middle of leaving.
+ */
+export const AUTO_SUBMIT_DEBOUNCE_MS = 650;
 
-    form.addEventListener('change', onChange);
-    return () => {
-      clearTimeout(timer);
-      form.removeEventListener('change', onChange);
-    };
-  }, [formRef, selector, debounceMs]);
+/** The slice of `HTMLFormElement` the auto-submit wiring uses. */
+interface SubmittableForm {
+  addEventListener(type: 'change', listener: (event: { target: unknown }) => void): void;
+  removeEventListener(type: 'change', listener: (event: { target: unknown }) => void): void;
+  requestSubmit(): void;
+}
+
+/**
+ * The listener wiring behind {@link useAutoSubmitOnChange}, as a plain function returning
+ * its own teardown.
+ *
+ * Extracted so the debounce is testable: this repo runs vitest in `node` with no DOM, so
+ * anything living only inside a `useEffect` is untested by construction — and "does a
+ * burst of ticks produce exactly one navigation" is the entire point of 39.2. The
+ * `matches` check is passed a structural target so a fake element satisfies it.
+ */
+export function createAutoSubmitOnChange(
+  form: SubmittableForm | null,
+  selector?: string,
+  debounceMs = AUTO_SUBMIT_DEBOUNCE_MS,
+): (() => void) | undefined {
+  if (!form || !selector) return;
+  const sel = selector;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  function onChange(event: { target: unknown }) {
+    const target = event.target as { matches?: (s: string) => boolean } | null;
+    if (!target || typeof target.matches !== 'function' || !target.matches(sel)) return;
+    clearTimeout(timer);
+    timer = setTimeout(() => form?.requestSubmit(), debounceMs);
+  }
+
+  form.addEventListener('change', onChange);
+  return () => {
+    clearTimeout(timer);
+    form.removeEventListener('change', onChange);
+  };
 }
 
 /**

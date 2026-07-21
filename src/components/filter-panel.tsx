@@ -36,14 +36,24 @@ interface Props {
   categories: Array<{ slug: string; name: string }>;
   tools: Array<{ slug: string; name: string; category: string | null }>;
   /**
-   * Sprint 25 — the signed-in user's owned-tools profile (empty for anonymous).
+   * Does this visitor have a saved workshop? — Sprint 39.1 (audit H5).
    *
-   * Used ONLY to pre-tick the "tools you own" checkboxes when the URL carries no tools
-   * filter, so a returning user can hit Apply once. It does NOT drive results — the URL
-   * does — so a shared link renders the same catalog for everyone. When the URL already
-   * has `?tools=`, that wins and the prefill is ignored.
+   * A BOOLEAN, and deliberately not the tool slugs it replaced. Sprint 25 passed the
+   * owned-tool list here and pre-ticked those checkboxes without applying them, so the
+   * panel showed six ticked boxes over an unfiltered catalog: control state that did not
+   * match system state, which is the one thing a checkbox is for. ⚖️ Keagan chose to stop
+   * pre-ticking (2026-07-21) — the "Show plans I can build" CTA above the results already
+   * does this job, URL-driven and therefore identical for whoever you share the link with.
+   *
+   * The rejected alternative was to tick AND apply on load via a redirect. It is honest
+   * about state, but it breaks the standing rule that results come from the URL: a clean
+   * `/browse` link would render a different catalog for each viewer.
+   *
+   * Passing a boolean instead of the slugs makes the fix STRUCTURAL — the component no
+   * longer knows which tools you own, so it cannot pre-tick them again by accident. It
+   * needs only enough to know whether the tip is worth showing.
    */
-  prefillTools?: string[];
+  hasWorkshop?: boolean;
 }
 
 /**
@@ -71,15 +81,16 @@ export function FilterPanel({
   perPage,
   categories,
   tools,
-  prefillTools = [],
+  hasWorkshop = false,
 }: Props) {
   const count = activeFilterCount(filters);
 
-  // The URL wins. Only when it carries NO tools filter do we fall back to the profile
-  // to pre-tick the boxes — never to change what's shown, only what's pre-checked.
-  const toolsFromUrl = filters.ownedTools.length > 0;
-  const checkedTools = new Set(toolsFromUrl ? filters.ownedTools : prefillTools);
-  const showingPrefill = !toolsFromUrl && prefillTools.length > 0;
+  // The URL is the only thing that ticks a box (39.1). What is checked here is exactly
+  // what is filtering the results — nothing else.
+  const checkedTools = new Set(filters.ownedTools);
+  // The tip points at the CTA, so it is worth showing only when that CTA is on the page:
+  // you have a workshop and you are not already filtering by tools.
+  const showWorkshopTip = hasWorkshop && filters.ownedTools.length === 0;
 
   // Group tools by their category ("Power Saw", "Hand Tool"...) — a flat list of
   // 30 checkboxes is a wall, and nobody reads a wall.
@@ -181,11 +192,12 @@ export function FilterPanel({
           <p className="mt-[-0.25rem] mx-0 mb-[0.625rem] text-[0.875rem] text-muted">
             Tick what you have. You&rsquo;ll only see plans you can actually build
             &mdash; optional tools are ignored.
-            {showingPrefill ? (
+            {/* DRAFT copy — public wording is Keagan's to approve. */}
+            {showWorkshopTip ? (
               <>
                 {' '}
-                <strong>Pre-filled from your workshop</strong> &mdash; adjust any filter to
-                apply them, or use &ldquo;Show plans I can build&rdquo; above the results.
+                Tip: &ldquo;Show plans I can build&rdquo; above the results ticks these from
+                your workshop.
               </>
             ) : null}
           </p>

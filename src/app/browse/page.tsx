@@ -101,9 +101,11 @@ export default async function CatalogPage({
    *   (not an empty Set) for an anonymous visitor, so PlanCard can tell "signed
    *   out" apart from "signed in, nothing saved". Gated on `user` because
    *   listSavedPlans requires a session.
-   * - `ownedTools` (Sprint 25): ONLY pre-ticks the filter panel's boxes. It does
-   *   NOT touch `filters` or `queryPlans` — results stay URL-driven so a shared
-   *   link renders the same catalog for everyone.
+   * - `ownedTools` (Sprint 25): feeds the "Show plans I can build" CTA below, and
+   *   nothing else. It does NOT touch `filters` or `queryPlans` — results stay
+   *   URL-driven so a shared link renders the same catalog for everyone. Sprint 39.1
+   *   removed the second use (pre-ticking the filter panel's boxes without applying
+   *   them); the panel now gets a boolean, so it cannot tick anything on its own.
    */
   const [
     { plans, total, totalPages, page: currentPage, query },
@@ -273,7 +275,7 @@ export default async function CatalogPage({
             perPage={perPageParam}
             categories={categories}
             tools={tools}
-            prefillTools={ownedTools}
+            hasWorkshop={ownedTools.length > 0}
           />
         </aside>
 

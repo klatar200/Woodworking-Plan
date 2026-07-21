@@ -1411,6 +1411,34 @@ that one render while the page is dark. The alternatives are worse (script-mutat
 after paint, or dropping the server-side stamp and reintroducing the FOUC the cookie exists to
 prevent). It self-corrects the moment the visitor touches the toggle.
 
+### 2026-07-21 — Workshop tool prefill: stop pre-ticking the filter boxes
+**Status:** Confirmed by user (selected from 3 offered options; the recommended one).
+**Source:** `UX_REMEDIATION_PLAN.md` Sprint 39 ⚖️, from `UX_AUDIT_2026-07-21.md` H5.
+
+Since Sprint 25 the catalog's filter panel pre-ticked the "tools you own" checkboxes from
+the signed-in user's workshop **without applying them** — six ticked boxes above a
+completely unfiltered catalog. A checkbox exists to say what is currently in effect, so
+this was control state contradicting system state, and the panel's own hint had to explain
+the contradiction rather than remove it.
+
+**Chosen (a): the URL is the only thing that ticks a box.** The boxes render unchecked;
+the existing "Show plans I can build" CTA above the results — already URL-driven, already
+shareable — is the one prefill affordance, and the panel carries a one-line tip pointing at
+it. No new machinery.
+
+**Rejected (b): tick AND apply on first load via a redirect when the URL has no `?tools=`.**
+It is honest about state, but it breaks the standing rule that results come from the URL
+(`DECISIONS_LOG.md` 2026-07-15): a clean `/browse` link would render a different catalog for
+each viewer, so nobody could share what they were looking at. Recorded here because it is
+the obvious alternative and someone will propose it again.
+
+**Rejected (c): keep as-is** — that is the audit finding.
+
+**Implementation note that makes it stick:** `FilterPanel` now receives a BOOLEAN
+(`hasWorkshop`) instead of the owned-tool slugs. It no longer knows which tools you own, so
+it cannot pre-tick them again by accident. Same shape as deleting `formatCents` rather than
+leaving it unused — a structural fix, not a convention.
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,

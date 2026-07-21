@@ -3650,7 +3650,7 @@ confirm the Android toolbar colour follows.
 ---
 
 ## Sprint 38: The mid-build experience — step memory, scroll, reachable controls (audit H3, M3)
-**Dates:** 2026-07-21
+**Dates:** 2026-07-21 — **Closed 2026-07-21:** pushed, CI green (Keagan).
 **Scope:** The build page survives a workshop: your place is remembered across a reload or a
 sleeping phone, advancing a step actually shows you the step, and Prev/Next sits in a fixed
 thumb-reachable spot on a phone. All of it still a pure enhancement over the server-rendered
@@ -3692,3 +3692,63 @@ emulate the media query. It is a single `matchMedia` read at call time; the surr
 plan, lock the phone, reopen → step 7; kill the tab, reopen → step 7; finish the plan, reopen →
 step 1; tap Next at the bottom of a long step → the next step's title is visible below the header;
 airplane mode mid-build → all of the above still true; print preview → every step, no bar.
+
+---
+
+## Sprint 39: Filter honesty and drawer manners (audit H5, M2, A6)
+**Dates:** 2026-07-21
+**Scope:** The filter panel never *looks* applied when it isn't, multi-selecting doesn't hammer
+the server, and the mobile drawer behaves like the modal surface it looks like — without giving
+up its no-JS `<details>` soul.
+
+**Decisions required:** ONE, escalated before any code was written. ⚖️ **Keagan chose (a) — stop
+pre-ticking** (`DECISIONS_LOG.md` 2026-07-21). Option (b), tick-and-apply via redirect, was
+presented and is recorded there as rejected with its reason (it would make a clean `/browse` link
+render a different catalog per viewer).
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | 39.1–39.5 all shipped. 39.1 per the ⚖️ decision: `prefillTools` → `hasWorkshop: boolean`, `showingPrefill` branch deleted, hint rewritten (DRAFT), `browse/page.tsx` keeps `ownedTools` for the CTA only. 39.2 debounce 200 → **650ms** as a named constant with the rationale at its definition. 39.3 Escape + focus return + page `inert` + body scroll lock, gated to `enhanced && open && !desktop`. 39.4 `aria-expanded` on the account trigger. 39.5 tests below. Non-goals honored: no batch-apply redesign, no `AutoSubmitSelect` change, no desktop-rail change. |
+| Correctness (/20) | 20 | **Measured in the browser at 390×844 and 1280×860.** Open drawer: `body.style.overflow = hidden`, 11 elements inert (header, footer, skip link, hero wash, category rail, search row, sort form, results column), **drawer and summary not inert**. Escape: closes, `document.activeElement === <summary>`, **0 leaked inert**, overflow back to `""`. Same via the ✕. Debounce measured by instrumenting `history.pushState`: three ticks 200ms apart → **0 navigations at 600ms into the burst, then exactly 1**, carrying all three (`?difficulty=1&2&3`). After that soft navigation the drawer is still open and **zero focusable elements outside it are reachable** — containment survives a client re-render. Resizing to 1280px with the drawer open releases everything (0 inert, overflow `""`, `position: static`). Console clean. |
+| Tests (/15) | 15 | +25 tests, **913 green** (78 files). `tests/drawer-guard.test.ts` (10) against a fake element tree mirroring the real `body > … > main > … > details` nesting; `tests/auto-submit-debounce.test.ts` (7) with fake timers. `filter-panel.test.tsx` rewritten for 39.1 (incl. "never claims the boxes were pre-filled" — if that string returns, so has the bug). `filter-disclosure.test.tsx` gains the gating assertions. |
+| Security (/15) | 15 | No route, server action, schema, data-layer or network change; nothing here reaches a server. 39.1 **narrows** what the client is told: the panel used to receive the user's owned-tool list to render checkboxes, and now receives one boolean — strictly less of the user's profile in the markup. `inert` is applied only to nodes already in the document and only via one attribute; no `innerHTML`, no user-controlled selector. `NEVER_CACHE_PREFIXES`, the allowlist, and the no-`userId` rule are untouched. |
+| Code quality (/10) | 10 | Both behaviours extracted so the parts that can be wrong are testable in `node` with no DOM — `drawer-guard.ts` declares the four `Element` methods it uses; `createAutoSubmitOnChange` is the effect body as a plain function. The three modal manners share ONE teardown, deliberately, so there is no third path to forget. `inert` skips `<script>`/`<link>`-class tags after the browser showed ~200 attribute writes per open in dev. |
+| Mobile-offline (/10) | 10 | 39.2 and 39.3 are both phone-first: 650ms turns a five-tool selection from five catalog queries into one (the direct win on a slow connection), and the scroll lock stops the results scrolling under a thumb dragging inside the sheet. No new URLs, so the service-worker surface is unchanged. Desktop is untouched by construction — the guard early-returns on `desktop`, verified live. |
+| Documentation (/5) | 5 | `DECISIONS_LOG.md` entry (with the rejected option and its reason); `CLAUDE.md` §7; this entry; the two non-obvious constraints — why the walk goes through siblings, and why 650ms — documented at the code. |
+| **Total** | **100** | Passes attempt 1. **E4:** no new interactive targets and no new text; the tip reuses the existing hint paragraph's `text-muted` (AA-audited both themes in Sprint 33). |
+
+**E1 traceability:** 39.1→H5 (prefill that looks applied); 39.2→M2 (auto-apply hammers the server);
+39.3→M2 (drawer isn't a modal surface); 39.4→A6 (trigger never says whether it's open).
+
+**🛑 THE DEVIATION THAT MATTERS — the plan's `inert` recipe would have bricked the page.**
+Sprint 39.3 as written says to set `inert` on `document.querySelector('main')`/header/footer. **The
+drawer is a DESCENDANT of `<main>`** (`browse/page.tsx` renders `FilterPanel` inside the catalog's
+own `<main>`), so that inerts the drawer along with the page: an open sheet, a scrim over
+everything, and not one control in it that responds — precisely the "leaked `inert` is a bricked
+page" failure the plan flags, arrived at by following the plan. Implemented instead as a walk UP
+from the `<details>`, inerting each level's OTHER children. The anchor's ancestor chain is never
+touched, so the drawer stays live **by construction** rather than by remembering an exception.
+`inert` was still the right primitive over a `focusin` trap: it removes the background from the
+accessibility tree too, so a screen reader cannot wander where the sighted user cannot.
+
+**Second-order fix found in the browser, not in a test:** the first working version inerted ~200
+elements per open, because Next injects that many `<script>`/`<link>` tags into `<body>`. Now
+skipped by tag — they render nothing and hold nothing focusable. 11 elements, not 200.
+
+**A `<details>` open across a soft navigation** keeps its `inert` attributes because React does not
+manage that attribute and the layout nodes are reused. Verified rather than assumed: after the
+auto-applied filter navigation, **zero** focusable elements outside the drawer were reachable.
+
+**Vitest passed while `tsc` failed** (`noUncheckedIndexedAccess` on the sibling index) — the Sprint
+38 lesson again: a green suite is not the gate.
+
+**Gate (native Windows):** `npm run build` ✓ · `npx vitest run` 913 passed / 1 todo ✓ ·
+`npx tsc --noEmit` ✓ · `npx eslint .` ✓.
+
+**Keagan's remaining steps:** push + CI check; then on a phone — open the drawer and tick 5 tools
+quickly (network shows ONE navigation), confirm the page behind the sheet does not scroll, Esc on a
+keyboard closes it and focus lands back on the Filters pill, and Tab cannot reach the results
+behind the scrim. VoiceOver/TalkBack if available, else defer per E3. Also worth a glance:
+signed in with a workshop, `/browse` should show **unticked** tool boxes plus the tip pointing at
+"Show plans I can build" — and the DRAFT tip wording is yours to approve.

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { FilterDisclosure } from '@/components/filter-disclosure';
@@ -104,5 +106,43 @@ describe('FilterDisclosure — server render (no JS yet)', () => {
     expect(html).toContain('text-[0.875rem]'); // compact text on mobile
     expect(html).toContain('lg:px-[1rem]'); // desktop restores padding
     expect(html).toContain('lg:text-[1rem]'); // desktop restores 16px
+  });
+});
+
+/**
+ * Sprint 39.3 — the drawer's modal manners. The behaviour itself is unit-tested against a
+ * fake tree in `drawer-guard.test.ts` (no DOM here); what needs asserting at THIS level is
+ * that none of it can reach the two states where it would do damage: a no-JS document, and
+ * the desktop rail — where inerting the page around a panel that is permanently open would
+ * brick the catalog outright.
+ */
+describe('FilterDisclosure — the drawer guard is gated (39.3)', () => {
+  const source = readFileSync(
+    join(process.cwd(), 'src/components/filter-disclosure.tsx'),
+    'utf8',
+  );
+
+  it('runs nothing during a server render — no inert, no lock, no listener', () => {
+    const html = render(3);
+    expect(html).not.toContain('inert');
+    expect(html).not.toContain('overflow:hidden');
+  });
+
+  it('applies the guard only when enhanced, open, and NOT desktop', () => {
+    expect(source).toContain('if (!enhanced || !open || desktop) return;');
+    // The effect must re-run on all three, or the guard outlives the state that justified
+    // it — e.g. rotating to desktop with the drawer open would leave the page inert.
+    expect(source).toContain('}, [enhanced, open, desktop]);');
+  });
+
+  it('returns the guard’s release as the effect cleanup, not a bare call', () => {
+    // `return guardOpenDrawer({…})` is what makes React undo it. Dropping the `return`
+    // leaves `inert` on the page and the body unscrollable, with no way back.
+    expect(source).toMatch(/return guardOpenDrawer\(\{/);
+  });
+
+  it('anchors on the <details> so the summary stays reachable for focus return', () => {
+    expect(source).toContain('anchor: detailsRef.current');
+    expect(source).toContain('summaryRef.current?.focus()');
   });
 });

@@ -25,6 +25,9 @@ export function AccountMenu() {
         href="/profile"
         aria-label="Account"
         aria-haspopup="dialog"
+        // Sprint 39.4 (audit A6): the trigger announced "dialog" but never whether it
+        // was already showing, so reopening it sounded identical to opening it.
+        aria-expanded={open}
         onClick={(event) => {
           event.preventDefault();
           setOpen(true);

@@ -169,9 +169,9 @@ with it.
 
 ## 7. Current state (keep this updated)
 
-- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–37 are PUSHED, CI green, verified on
-  mobile (Keagan, 2026-07-21). Sprint 38 is code-complete and browser-verified at
-  localhost:3000; push is Keagan's.**
+- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–38 are PUSHED, CI green (Keagan,
+  2026-07-21; 33–37 also verified on mobile). Sprint 39 is code-complete and browser-verified
+  at localhost:3000; push is Keagan's.**
   ⚠️ **Environment note, 2026-07-21:** this session ran NATIVELY on Keagan's Windows machine,
   where `npm run build`, `npx vitest run`, `tsc` and `eslint` all work directly against the repo
   — the `/tmp`-clone rule and the "next build SIGBUS" note in §6 describe the LINUX SANDBOX and
@@ -337,8 +337,47 @@ with it.
       float over the footer and need a spacer. **Deferred to Keagan:** the real-phone pass
       (lock/reopen, kill/reopen, airplane mode mid-build) and a print preview; also the
       `prefers-reduced-motion` scroll branch, which this browser pane cannot emulate.
+  - **Sprint 39 (filter honesty + drawer manners — audit H5/M2/A6): COMPLETE.** Browser-verified
+    at localhost:3000; `npm run build`, **913 tests**, `tsc` and `eslint` green on this machine.
+    - **⚖️ Keagan chose (a): STOP PRE-TICKING** (`DECISIONS_LOG.md` 2026-07-21). Since Sprint 25
+      the filter panel pre-ticked your workshop's tools **without applying them** — ticked boxes
+      over an unfiltered catalog. Now the URL is the only thing that ticks a box; the existing
+      "Show plans I can build" CTA is the one prefill affordance, with a DRAFT tip pointing at it.
+      **`FilterPanel` takes `hasWorkshop: boolean`, not the tool slugs** — it can't pre-tick what
+      it doesn't know, so the fix is structural, not a convention. Rejected option (b) — tick AND
+      apply via redirect — is recorded in the decisions log because someone will propose it again:
+      it would make a clean `/browse` link render a different catalog per viewer.
+    - **Debounce 200 → 650ms** (`AUTO_SUBMIT_DEBOUNCE_MS`). 200ms is shorter than the gap between
+      two deliberate taps, so a five-tool selection fired five catalog queries and shifted the
+      results between ticks. Trailing edge stays (leading would navigate on the state you're
+      leaving). Measured in the browser via an instrumented `history.pushState`: three ticks 200ms
+      apart → **0 navigations at 600ms in, then exactly 1**, carrying all three params.
+    - **🛑 THE PLAN'S OWN `inert` RECIPE WOULD HAVE BRICKED THE PAGE.** Sprint 39.3 says to inert
+      `main`/header/footer. **The drawer is a DESCENDANT of `<main>`** — that inerts the drawer
+      too: an open sheet with a scrim and not one working control, i.e. exactly the failure the
+      plan warns about, reached by following the plan. `src/lib/drawer-guard.ts` instead walks UP
+      from the `<details>` inerting each level's OTHER children, so the anchor's ancestor chain is
+      never touched and the drawer stays live **by construction**. `inert` still beats a `focusin`
+      trap: it removes the background from the accessibility tree too, so a screen reader can't
+      wander where the sighted user can't.
+    - **Found in the browser, not in a test:** the first working version inerted ~200 elements per
+      open — Next injects that many `<script>`/`<link>` tags into `<body>`. Now skipped by tag; 11
+      elements, not 200. Also verified that a `<details>` open **across a soft navigation** keeps
+      its `inert` (React doesn't manage that attribute): zero focusable elements outside the drawer
+      were reachable after an auto-applied filter change.
+    - **Escape, focus return and the scroll lock share ONE teardown**, deliberately — a cleanup
+      that runs for two of the three leaves a page that is unscrollable or unusable. The lock
+      restores the PREVIOUS `overflow`, not `''`, so it can't unlock someone else's modal. Gated to
+      `enhanced && open && !desktop`; widening to 1280px with the drawer open releases everything
+      (0 inert, overflow `""`, `position: static`). Verified: Esc closes, `activeElement` is the
+      summary, **0 leaked inert**.
+    - Both behaviours are extracted so they're testable in `node` with no DOM — `drawer-guard.ts`
+      declares the four `Element` methods it uses; `createAutoSubmitOnChange` is the effect body as
+      a plain function. **Vitest passed while `tsc` failed** (`noUncheckedIndexedAccess`): the
+      Sprint 38 lesson again — a green suite is not the gate.
+    - `account-menu.tsx` trigger gained `aria-expanded` (A6).
   - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite, and the
-    §7 entries for 39–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` +
+    §7 entries for 40–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` +
     OS-preference entries are recorded now (2026-07-21).
 
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),

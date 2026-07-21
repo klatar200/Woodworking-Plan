@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { guardOpenDrawer } from '@/lib/drawer-guard';
 
 /** Must match the `--desktop` breakpoint the catalog grid uses (Sprint 18). */
 export const DESKTOP_QUERY = '(min-width: 64rem)';
@@ -52,6 +53,13 @@ interface Props {
  * as removable chips. The cost is that a no-JS DESKTOP visitor with active filters now
  * starts with the rail collapsed rather than open — still one click away, never hidden.
  *
+ * ── Sprint 39: it now behaves like the modal surface it looks like ───────────
+ * Escape closes it and returns focus to the trigger, the page behind it goes `inert`
+ * (so neither Tab nor a screen reader's virtual cursor can wander into results the user
+ * cannot see), and the body stops scrolling underneath. All three live in `drawer-guard.ts`
+ * and are applied ONLY while `enhanced && open && !desktop` — the desktop rail is a plain
+ * inline panel and must never inert anything, and the no-JS path never runs any of it.
+ *
  * `filters` CLASS RETAINED (re-added here): the print stylesheet hides the panel with
  * `.filters { display: none !important }`. Sprint 30b moved this chrome to utilities and
  * dropped the class, which silently orphaned that print rule — a printed catalog page
@@ -61,6 +69,9 @@ interface Props {
 export function FilterDisclosure({ count, children }: Props) {
   const [open, setOpen] = useState(false);
   const [enhanced, setEnhanced] = useState(false);
+  const [desktop, setDesktop] = useState(false);
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const summaryRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setEnhanced(true);
@@ -70,6 +81,10 @@ export function FilterDisclosure({ count, children }: Props) {
     const media = window.matchMedia(DESKTOP_QUERY);
 
     const openOnDesktop = () => {
+      // Tracking `desktop` separately from `open` on purpose: the force-open below only
+      // ever opens (see the file doc), but the drawer guard must switch OFF the moment
+      // the viewport is wide enough that the panel is an inline rail again.
+      setDesktop(media.matches);
       if (media.matches) setOpen(true);
     };
 
@@ -78,8 +93,31 @@ export function FilterDisclosure({ count, children }: Props) {
     return () => media.removeEventListener('change', openOnDesktop);
   }, []);
 
+  /**
+   * Sprint 39.3 — Escape, focus containment and the scroll lock, mobile-open only.
+   *
+   * `detailsRef` is the anchor rather than the drawer element itself so the `<summary>`
+   * stays live: it is the drawer's own trigger, and Escape hands focus straight back to
+   * it. Everything outside the `<details>` goes inert; see drawer-guard.ts for why the
+   * walk goes up through siblings instead of inerting `<main>`.
+   */
+  useEffect(() => {
+    if (!enhanced || !open || desktop) return;
+    return guardOpenDrawer({
+      anchor: detailsRef.current,
+      root: document.body,
+      keyTarget: document,
+      scrollTarget: document.body,
+      onEscape: () => {
+        setOpen(false);
+        summaryRef.current?.focus();
+      },
+    });
+  }, [enhanced, open, desktop]);
+
   return (
     <details
+      ref={detailsRef}
       className="filters mb-[0.75rem] lg:bg-surface lg:border lg:border-border lg:rounded-[0.5rem]"
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
@@ -92,6 +130,7 @@ export function FilterDisclosure({ count, children }: Props) {
         Desktop: every value is (still) restored at `lg:` to the 44px / 16px / 1rem-padded row.
       */}
       <summary
+        ref={summaryRef}
         className="list-none [&::-webkit-details-marker]:hidden inline-flex items-center gap-[0.375rem] min-h-[2.75rem] px-[0.625rem] text-[0.875rem] font-medium cursor-pointer select-none bg-surface border border-border rounded-[999px] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 lg:flex lg:min-h-[2.75rem] lg:px-[1rem] lg:py-[0.75rem] lg:text-[1rem] lg:bg-transparent lg:border-0 lg:rounded-none lg:focus-visible:outline-offset-[-2px]"
       >
         {/* Decorative funnel — the label carries the meaning, so it is aria-hidden.
