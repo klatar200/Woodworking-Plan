@@ -15,8 +15,9 @@ board mark.
 | `mark-1024.png` | Master mark (slab-serif interlocking N) |
 | `lockup.png` | Icon + wordmark reference |
 | `icon-192.png` / `icon-512.png` / `icon-maskable-512.png` / `apple-touch-icon.png` | PWA (also in `public/icons/`) |
-| `../public/brand/notch-mark.png` | Header condensed icon |
-| `../public/brand/notch-mark.svg` | Vector fallback / editable source |
+| `notch-mark.svg` | **Canonical standalone logo** (transparent) |
+| `notch-mark-on-cream.svg` | Same mark on parchment square |
+| `../public/brand/notch-mark.svg` | Runtime header icon |
 | `palette-board.png` | Original Option 3 mock board |
 
 ## Refined tokens (AA-audited — not raw mock hexes)
