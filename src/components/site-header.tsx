@@ -5,6 +5,7 @@ import { AccountMenu } from '@/components/account-menu';
 import { MobileNav } from '@/components/mobile-nav';
 import { BrowseMenu } from '@/components/browse-menu';
 import { HeaderSearch } from '@/components/header-search';
+import { NavLink } from '@/components/nav-current';
 import { InstallMenuItem } from '@/components/install-prompt';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { CATALOG_PATH } from '@/lib/routes';
@@ -133,9 +134,9 @@ export function SiteHeader() {
         <nav className="hidden lg:flex items-center gap-[0.25rem]" aria-label="Main">
           {PUBLIC_NAV.map((item) => (
             <Fragment key={item.href}>
-              <Link href={item.href} className={navLink}>
+              <NavLink href={item.href} className={navLink}>
                 {item.label}
-              </Link>
+              </NavLink>
               {/* Browse sits directly after Home — it is the catalog, expanded. */}
               {item.href === '/' ? (
                 <BrowseMenu
@@ -154,9 +155,9 @@ export function SiteHeader() {
             {/* A hairline divider separates "the site" from "your stuff". */}
             <span className="w-px h-[1.5rem] bg-border mx-[0.5rem]" aria-hidden="true" />
             {SIGNED_IN_NAV.map((item) => (
-              <Link key={item.href} href={item.href} className={navLink}>
+              <NavLink key={item.href} href={item.href} className={navLink}>
                 {item.label}
-              </Link>
+              </NavLink>
             ))}
           </SignedIn>
           {/* QOL-J (2026-07-20, Keagan): Log in / Sign up moved OUT of this left nav group
@@ -193,12 +194,42 @@ export function SiteHeader() {
           {/* The drawer (below lg). Server-rendered links passed through the
               client island — see mobile-nav.tsx. */}
           <MobileNav>
+            {/* Sprint 36 (audit H11): search is reachable on mobile — the desktop HeaderSearch
+                is `hidden lg:flex`, so below lg the drawer carries the only header search. Same
+                plain GET role=search form; 16px input (iOS zoom rule); server-rendered here and
+                passed through MobileNav's children like the nav links. `drawer-q` id avoids
+                colliding with `header-q` / the catalog's `q`. */}
+            <form
+              action={CATALOG_PATH}
+              method="get"
+              role="search"
+              className="flex items-center gap-[0.375rem] mb-[0.5rem]"
+            >
+              <label htmlFor="drawer-q" className="visually-hidden">
+                Search plans
+              </label>
+              <input
+                id="drawer-q"
+                name="q"
+                type="search"
+                placeholder="Search plans…"
+                autoComplete="off"
+                className="flex-1 min-w-0 min-h-[2.75rem] px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1"
+              />
+              <button
+                type="submit"
+                className="inline-flex items-center min-h-[2.75rem] px-[0.875rem] rounded-[0.375rem] border border-border bg-transparent text-fg text-[1rem] font-medium whitespace-nowrap cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+              >
+                Search
+              </button>
+            </form>
+
             <nav className="flex flex-col gap-[0.125rem]" aria-label="Main menu">
               {PUBLIC_NAV.map((item) => (
                 <Fragment key={item.href}>
-                  <Link href={item.href} className={drawerLink}>
+                  <NavLink href={item.href} className={drawerLink}>
                     {item.label}
-                  </Link>
+                  </NavLink>
                   {/* Same six links as the desktop menu, as an inline collapsible
                       section rather than a floating panel — a drawer that overlays
                       itself is unusable. MobileNav is taught not to close when the
@@ -218,9 +249,9 @@ export function SiteHeader() {
               <SignedIn>
                 <span className="block h-px bg-border my-[0.5rem]" aria-hidden="true" />
                 {SIGNED_IN_NAV.map((item) => (
-                  <Link key={item.href} href={item.href} className={drawerLink}>
+                  <NavLink key={item.href} href={item.href} className={drawerLink}>
                     {item.label}
-                  </Link>
+                  </NavLink>
                 ))}
               </SignedIn>
 

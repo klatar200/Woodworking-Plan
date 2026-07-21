@@ -166,7 +166,7 @@ export const selectControl =
 // Sprint 31: when checked, the pill fills with --accent (orange) — its text goes to
 // --accent-fg (dark ink in both themes) so it never becomes light-on-orange in dark mode.
 export const checkbox =
-  'inline-flex items-center gap-[0.4375rem] min-h-[2.5rem] py-0 pr-[0.75rem] pl-[0.625rem] border border-border rounded-[999px] text-[0.875rem] cursor-pointer has-[input:checked]:border-fg has-[input:checked]:bg-accent has-[input:checked]:text-accent-fg has-[input:checked]:font-bold has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-ok has-[input:focus-visible]:outline-offset-2';
+  'inline-flex items-center gap-[0.4375rem] min-h-[2.75rem] py-0 pr-[0.75rem] pl-[0.625rem] border border-border rounded-[999px] text-[0.875rem] cursor-pointer has-[input:checked]:border-fg has-[input:checked]:bg-accent has-[input:checked]:text-accent-fg has-[input:checked]:font-bold has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-ok has-[input:focus-visible]:outline-offset-2';
 
 /** The `<input>` inside a `.checkbox` pill — formerly `.checkbox input`. */
 export const checkboxInput = 'm-0 accent-[var(--fg)]';
@@ -180,7 +180,7 @@ export const checkboxInput = 'm-0 accent-[var(--fg)]';
 // `text-accent-fg` (dark ink) on the orange fill in both themes, while the resting chip uses
 // the theme's `text-fg`.
 const chipBase =
-  'inline-flex items-center gap-[0.25rem] min-h-[2.5rem] px-[0.875rem] border rounded-[999px] text-[0.875rem] no-underline focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+  'inline-flex items-center gap-[0.25rem] min-h-[2.75rem] px-[0.875rem] border rounded-[999px] text-[0.875rem] no-underline focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 export const chip = `${chipBase} border-border text-fg`;
 export const chipActive = `${chipBase} border-fg bg-accent font-bold text-accent-fg`;
 

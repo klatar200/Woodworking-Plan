@@ -56,6 +56,22 @@ const COST_TIER_ORDER: CostTier[] = ['TIER_1', 'TIER_2', 'TIER_3', 'TIER_4', 'TI
  * see below), so silently rendering nothing is no longer a cosmetic bug. Throw instead:
  * a missing tier is a data bug, and it should be impossible to ship one quietly.
  */
+/**
+ * Slugify free text into a value safe as an HTML `id` / URL fragment. Sprint 35 (audit A4):
+ * the shopping-list "have it" checkbox ids were built from raw material names — `Wood glue`,
+ * `Stainless steel screws, #8 x 1-1/4"` — which contain spaces and quotes (invalid in an id and
+ * so silently breaking every `htmlFor`→`id` link), and collided when the same name appeared in
+ * two unit groups. Lowercase, every run of non-alphanumerics → a single `-`, trimmed. Empty
+ * (or all-symbol) input returns `''`, so callers namespace with a prefix that guarantees a
+ * leading letter.
+ */
+export function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export function costTierSymbol(tier: CostTier): string {
   const index = COST_TIER_ORDER.indexOf(tier);
 

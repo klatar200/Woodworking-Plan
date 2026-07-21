@@ -25,13 +25,22 @@
   --surface: #ffffff;
   --fg: #1a1a1a;
   --muted: #6b6b6b;
-  --muted-2: #8a8175;
+  /* Sprint 33 (A1): darkened from #8a8175 (3.64:1 on --bg — failed AA as text) to
+   * #75705f (4.70:1 on --bg, 4.95:1 on --surface). Light theme only; dark's --muted-2
+   * (#8f8578, 4.58:1) already passes. Guarded by tests/contrast.test.ts. */
+  --muted-2: #75705f;
   --border: #e4e4e4;
   --border-strong: #d8d3c6;
   --accent: #e9a86c;
   --accent-strong: #c96a2e;
   --accent-tint: #fdf1e0;
   --accent-tint-border: #e9c98a;
+  /* Sprint 33 (A1): text-safe accent for accent-colored TEXT at body size. --accent-strong
+   * (#c96a2e) is only 3.57:1 on --bg / 3.37:1 on --accent-tint — fails AA as text, though it
+   * stays fine as a background/border/glyph (≥3:1 graphic). #a85413 measures 5.06:1 on --bg,
+   * 5.33:1 on --surface, 4.78:1 on --accent-tint. See UX_AUDIT_2026-07-21 A1; guarded by
+   * tests/contrast.test.ts. */
+  --accent-text: #a85413;
   /* Sprint 31: text/icon color ON an --accent (orange) background — dark ink in BOTH
    * themes, because the accent stays a light orange in dark mode. `--accent-soft` is the
    * soft cream some rules used as `var(--accent-soft, #fdf1e0)`; now a real token. */
@@ -94,6 +103,10 @@
   --accent-strong: #f2b884;
   --accent-tint: #2b2318;
   --accent-tint-border: #5c4a2c;
+  /* Sprint 33 (A1): dark reuses --accent-strong's value — #f2b884 measures 10.46:1 on --bg
+   * and 9.45:1 on --surface, so accent text is already AA-safe in dark. Kept as an explicit
+   * hex (not var()) so tests/contrast.test.ts and tests/dark-theme.test.ts parse it. */
+  --accent-text: #f2b884;
   --accent-fg: #1a1a1a;
   --accent-soft: #2b2318;
   --danger: #e58a5c;
@@ -146,6 +159,10 @@
     --accent-tint-border: #999999;
     --accent-soft: #ffffff;
     --accent-fg: #000000;
+    /* Sprint 33: force accent TEXT to the light-theme value on paper. Without this, printing
+     * while the dark theme is on would use dark's --accent-text (#f2b884, a light orange ~1.3:1
+     * on white) and render the eyebrow / hero emphasis / "Clear filters" link invisible. */
+    --accent-text: #a85413;
     /* Functional colours must also reset for print: the dark theme lightens --err to
      * #e8756c, which prints as a washed-out pink — and .impossible-part on the boards
      * sheet is the ONE warning the buying list must never soften. Force the high-contrast
@@ -624,15 +641,18 @@ code {
   padding: 0 0.125rem;
 }
 
+/* Sprint 34 (audit M1/V3): 38px → 44px, and pulled into the app's chip family — resting is
+   a bordered pill on --surface, the current page is the chipActive treatment (orange fill,
+   --accent-fg ink, 8.5:1). aria-current lives on the active <a> in the TSX, unchanged. */
 .pagination-number {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.375rem;
-  min-height: 2.375rem;
-  padding: 0 0.375rem;
-  border: 1px solid var(--fg);
-  border-radius: 0.5rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
   font-weight: 700;
   font-size: 0.875rem;
   color: var(--fg);
@@ -641,8 +661,9 @@ code {
 }
 
 .pagination-number-active {
-  background: var(--fg);
-  color: var(--surface);
+  border-color: var(--fg);
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 
 .pagination-number:focus-visible {
@@ -673,7 +694,8 @@ code {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  min-height: 2.25rem;
+  /* Sprint 34 (audit M1): 36px → 44px touch target. */
+  min-height: 2.75rem;
   padding: 0 0.75rem;
   border: 1px solid var(--border);
   border-radius: 999px;

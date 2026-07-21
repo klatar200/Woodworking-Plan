@@ -220,7 +220,7 @@ export default async function SavedPage({
                             />
                             <button
                               type="submit"
-                              className="border-none bg-none text-muted cursor-pointer text-[1rem] leading-none py-0 pr-0 pl-[0.375rem] hover:text-fg focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+                              className="inline-flex items-center justify-center min-h-[2.75rem] min-w-[2.75rem] border-none bg-transparent text-muted cursor-pointer text-[1rem] leading-none hover:text-fg focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
                               aria-label={`Remove from ${collection.name}`}
                             >
                               ×

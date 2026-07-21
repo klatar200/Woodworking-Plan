@@ -34,7 +34,7 @@ export function HeaderSearch() {
         type="search"
         placeholder="Search plans…"
         autoComplete="off"
-        className="min-h-[2.25rem] w-[13rem] px-[0.75rem] py-0 text-[0.9375rem] text-fg bg-bg border border-border rounded-[0.375rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1"
+        className="min-h-[2.25rem] w-[13rem] px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-1"
       />
       {/* A TEXT button, not an icon (Keagan 2026-07-20): this control is desktop-only, and
           a labelled "Search" reads clearer than a glyph at desktop density. Outlined, not

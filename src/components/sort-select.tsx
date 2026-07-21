@@ -25,12 +25,35 @@ interface Props {
  * must not silently discard the filters someone just spent time setting — that is
  * the single most annoying bug in any faceted catalog.
  *
- * HIDDEN DURING A KEYWORD SEARCH: when you search, relevance IS the sort (see
- * queryPlans). Offering a dropdown that would be ignored is worse than not
- * offering it — it implies a control the app does not honour.
+ * DURING A KEYWORD SEARCH the sort is fixed to relevance (see queryPlans). Sprint 36
+ * (audit H7): rather than VANISHING — a control disappearing is a system-status lie, the
+ * user can't tell if sorting broke — it stays put as a DISABLED select reading "Relevance",
+ * with the reason in `title`/visually-hidden text. The hidden Apply is disabled too so the
+ * no-JS form can't submit a dead control.
  */
 export function SortSelect({ sort, query, filters, perPage }: Props) {
-  if (query !== '') return null;
+  if (query !== '') {
+    return (
+      <div className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]">
+        <label htmlFor="sort" className="text-[0.75rem] uppercase tracking-[0.06em] text-muted">
+          Sort
+        </label>
+        <select
+          id="sort"
+          disabled
+          aria-disabled="true"
+          title="Search results are ordered by relevance"
+          className={`${selectControl} opacity-70 cursor-not-allowed`}
+        >
+          <option>Relevance</option>
+        </select>
+        <span className="visually-hidden">Search results are ordered by relevance.</span>
+        <button type="submit" disabled className="visually-hidden">
+          Apply
+        </button>
+      </div>
+    );
+  }
 
   return (
     <SoftGetForm className="sort-form flex items-center gap-[0.5rem] mb-[0.75rem]" action={CATALOG_PATH}>

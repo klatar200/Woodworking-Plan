@@ -17,7 +17,7 @@ const railNumBase =
 const railNum = `${railNumBase} bg-surface`;
 const railNumActive = `${railNumBase} bg-fg text-surface`;
 const dotBase =
-  'w-[2rem] h-[2rem] flex-none border border-fg rounded-[50%] text-[0.8125rem] font-bold cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+  'w-[2.75rem] h-[2.75rem] flex-none border border-fg rounded-[50%] text-[0.8125rem] font-bold cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 const dot = `${dotBase} bg-surface text-fg`;
 const dotActive = `${dotBase} bg-fg text-surface`;
 // The chrome classes (step-rail/step-dots/step-walker-bar/-nav/step-finish-cta) are

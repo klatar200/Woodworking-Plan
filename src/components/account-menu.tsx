@@ -29,20 +29,24 @@ export function AccountMenu() {
           event.preventDefault();
           setOpen(true);
         }}
-        className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-[50%] overflow-hidden border border-border bg-[#e9a86c] text-fg no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+        className="inline-flex items-center justify-center min-w-[2.75rem] min-h-[2.75rem] rounded-[50%] text-fg no-underline cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
       >
-        {user?.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- Clerk avatar, not a plan image
-          <img
-            src={user.imageUrl}
-            alt=""
-            width={36}
-            height={36}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <User size={20} aria-hidden="true" />
-        )}
+        {/* Sprint 34 (audit M1): the hit area is 44px (the anchor above), but the visual
+            avatar stays a 36px circle — a 44px avatar unbalances the header. */}
+        <span className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-[50%] overflow-hidden border border-border bg-[#e9a86c]">
+          {user?.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- Clerk avatar, not a plan image
+            <img
+              src={user.imageUrl}
+              alt=""
+              width={36}
+              height={36}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <User size={20} aria-hidden="true" />
+          )}
+        </span>
       </a>
 
       <AccountModal open={open} onClose={() => setOpen(false)} />

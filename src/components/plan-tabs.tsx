@@ -81,22 +81,36 @@ export function PlanTabs({ tabs, children }: Props) {
     setMounted(true);
   }, []);
 
+  // One panel (or none) is not a tab strip — render the sections as-is. A single tab
+  // above a single panel is chrome with no purpose. (Declared before the effect below,
+  // which now gates the tabpanel roles on it.)
+  const enhanced = mounted && shown.length > 1;
+
   useEffect(() => {
     if (!mounted) return;
     const panels = ref.current?.querySelectorAll<HTMLElement>('[data-tab]');
     panels?.forEach((el) => {
+      if (!enhanced) {
+        // Sprint 36 (audit polish): with no tablist rendered (single panel, or pre-mount),
+        // a server-rendered `role="tabpanel"` + `aria-labelledby="tab-x"` points at a tab
+        // that does not exist — an ARIA orphan. So the panels ship with NO roles, and the
+        // roles are added HERE only when enhanced; stripped (and the panel shown) otherwise.
+        el.removeAttribute('role');
+        el.removeAttribute('aria-labelledby');
+        el.removeAttribute('tabindex');
+        el.style.display = '';
+        return;
+      }
       const isActive = el.dataset.tab === active;
+      el.setAttribute('role', 'tabpanel');
+      el.setAttribute('aria-labelledby', `tab-${el.dataset.tab}`);
       el.style.display = isActive ? '' : 'none';
       // The active panel is focusable so keyboard users can read its content; hidden
       // panels (display:none) leave the a11y tree entirely, so no tabindex is needed.
       if (isActive) el.setAttribute('tabindex', '0');
       else el.removeAttribute('tabindex');
     });
-  }, [active, mounted]);
-
-  // One panel (or none) is not a tab strip — render the sections as-is. A single tab
-  // above a single panel is chrome with no purpose.
-  const enhanced = mounted && shown.length > 1;
+  }, [active, mounted, enhanced]);
 
   function onKeyDown(event: React.KeyboardEvent, index: number) {
     const next = nextTabIndex(event.key, index, shown.length);

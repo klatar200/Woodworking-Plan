@@ -65,7 +65,13 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
         onClick={(event) => {
           // A summary toggles a nested section (Browse by category); everything else
           // in here navigates. See the note in the file doc.
-          if ((event.target as HTMLElement).closest('summary')) return;
+          const target = event.target as HTMLElement;
+          if (target.closest('summary')) return;
+          // Sprint 36 (audit H11): the drawer now hosts a search field. Tapping the input to
+          // type must NOT close the drawer — only exempt the field itself; the "Search" submit
+          // button is not an input, so it still closes the drawer AND navigates (which is what
+          // makes a query-only search from /browse close it, since usePathname won't change).
+          if (target.closest('input, select, textarea, label')) return;
           setOpen(false);
         }}
       >

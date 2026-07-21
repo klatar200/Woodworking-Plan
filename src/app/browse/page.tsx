@@ -310,7 +310,12 @@ export default async function CatalogPage({
             </p>
           ) : null}
 
-          <p className="subtitle">
+          {/* Sprint 36 (audit A5): filters/sort auto-apply via soft navigation, so the results
+              count updates with no page reload and nothing tells a screen-reader user what
+              changed. role="status" (a polite live region) announces the new count sentence on
+              each soft nav. The initial render coincides with the page title — a benign
+              double-announce on first load, accepted. */}
+          <p className="subtitle" role="status">
             {isNarrowed ? (
               <>
                 {total} {total === 1 ? 'plan' : 'plans'}
@@ -334,7 +339,7 @@ export default async function CatalogPage({
                     sort: sortParam,
                     perPage: perPageParam,
                   })}
-                  className="text-accent-strong underline underline-offset-2 hover:text-fg"
+                  className="text-accent-text underline underline-offset-2 hover:text-fg"
                 >
                   Clear search and filters
                 </Link>

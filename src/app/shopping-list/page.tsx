@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { page, chip, chipActive } from '@/lib/ui'; // Sprint 29/30b
+import { page, chip, chipActive, btnGhost } from '@/lib/ui'; // Sprint 29/30b
 import type { Metadata } from 'next';
 import { getShoppingList } from '@/lib/shopping-list';
-import { costTierSymbol, costTierForCents } from '@/lib/format';
+import { costTierSymbol, costTierForCents, slugify } from '@/lib/format';
+import { removeFromShoppingListAction } from '@/app/actions/shopping-list'; // Sprint 35
 
 /**
  * Shopping list — Sprint 12, redesigned in Sprint 22.
@@ -55,17 +56,18 @@ function Line({
   line: { name: string; unit: string; species: string | null; quantity: number };
   keyPrefix: string;
 }) {
-  const id = `have-${keyPrefix}-${line.name}`;
+  // Sprint 35 (audit A4): a valid, unique HTML id — raw `line.name` held spaces and quotes.
+  const id = `have-byplan-${keyPrefix}-${slugify(line.name)}-${slugify(line.species ?? '')}`;
   return (
     <li className="shopping-line py-[0.6rem] px-0 border-b border-border">
-      <div className="shopping-line-main flex items-baseline gap-[0.6rem]">
+      <div className="shopping-line-main flex items-center min-h-[2.75rem] gap-[0.6rem]">
         {/* A real checkbox to tick items off on paper. It does NOT persist — the whole
             point is a printable list, and paper is the interaction model in a store. */}
         <input
           type="checkbox"
           id={id}
           aria-label={`Mark ${line.name} as bought`}
-          className="w-[1.15rem] h-[1.15rem] min-w-[1.15rem] m-0 shrink-0 accent-[var(--fg)]"
+          className="w-[1.5rem] h-[1.5rem] min-w-[1.5rem] m-0 shrink-0 accent-[var(--fg)]"
         />
         <label htmlFor={id} className="flex-1 cursor-pointer">
           <strong>
@@ -140,6 +142,34 @@ export default async function ShoppingListPage({
             </Link>
           </nav>
 
+          {/* Sprint 35 (audit H2): remove-from-list is missing from the merged view (the groups
+              are by unit, so there's no per-plan header to hang it on). This compact block lists
+              the plans feeding the list and lets you drop one. no-print — paper doesn't need it. */}
+          {view === 'merged' ? (
+            <section aria-label="Plans on this list" className="no-print mb-[1.5rem]">
+              <h2 className="sub-heading">Plans on this list</h2>
+              <ul className="list-none p-0 m-0 flex flex-col gap-[0.5rem]">
+                {list.byPlan.map((plan) => (
+                  <li
+                    key={plan.slug}
+                    className="flex flex-wrap items-center justify-between gap-[0.5rem]"
+                  >
+                    <Link href={`/plans/${plan.slug}`} className="min-w-0">
+                      {plan.title}
+                    </Link>
+                    <form action={removeFromShoppingListAction}>
+                      <input type="hidden" name="planId" value={plan.id} />
+                      <input type="hidden" name="returnTo" value="/shopping-list" />
+                      <button type="submit" className={btnGhost}>
+                        Remove from list
+                      </button>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
           {view === 'merged' ? (
             list.groups.map((group) => (
               <section key={group.unit} aria-labelledby={`unit-${group.unit}`}>
@@ -150,20 +180,25 @@ export default async function ShoppingListPage({
                   {group.unit}
                 </h2>
                 <ul className="list-none p-0 mt-0 mx-0 mb-[1.5rem]">
-                  {group.lines.map((line) => (
+                  {group.lines.map((line) => {
+                    // Sprint 35 (audit A4): a valid, collision-free id. Namespaced by unit so the
+                    // same material name in two unit groups ("Wood glue" in `each` and in `board
+                    // feet") gets distinct ids, and slugified so spaces/quotes can't invalidate it.
+                    const cbId = `have-merged-${slugify(group.unit)}-${slugify(line.name)}-${slugify(line.species ?? '')}`;
+                    return (
                     <li
                       key={`${line.name}-${line.species ?? ''}`}
                       className="shopping-line py-[0.6rem] px-0 border-b border-border"
                     >
-                      <div className="shopping-line-main flex items-baseline gap-[0.6rem]">
+                      <div className="shopping-line-main flex items-center min-h-[2.75rem] gap-[0.6rem]">
                         <input
                           type="checkbox"
-                          id={`have-${line.name}`}
+                          id={cbId}
                           aria-label={`Mark ${line.name} as bought`}
-                          className="w-[1.15rem] h-[1.15rem] min-w-[1.15rem] m-0 shrink-0 accent-[var(--fg)]"
+                          className="w-[1.5rem] h-[1.5rem] min-w-[1.5rem] m-0 shrink-0 accent-[var(--fg)]"
                         />
                         <label
-                          htmlFor={`have-${line.name}`}
+                          htmlFor={cbId}
                           className="flex-1 cursor-pointer"
                         >
                           <strong>
@@ -181,7 +216,8 @@ export default async function ShoppingListPage({
                         {line.plans.map((plan) => plan.title).join(', ')}
                       </p>
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               </section>
             ))
@@ -189,9 +225,21 @@ export default async function ShoppingListPage({
             <>
               {list.byPlan.map((plan) => (
                 <section key={plan.slug} aria-labelledby={`plan-${plan.slug}`}>
-                  <h2 id={`plan-${plan.slug}`} className="sub-heading">
-                    <Link href={`/plans/${plan.slug}`}>{plan.title}</Link>
-                  </h2>
+                  <div className="flex flex-wrap items-center justify-between gap-[0.5rem]">
+                    <h2 id={`plan-${plan.slug}`} className="sub-heading">
+                      <Link href={`/plans/${plan.slug}`}>{plan.title}</Link>
+                    </h2>
+                    {/* Sprint 35 (audit H2): manage the list FROM the list. Posts the existing
+                        removeFromShoppingListAction (no new write path); no-print — a remove
+                        button on the paper list is noise. */}
+                    <form action={removeFromShoppingListAction} className="no-print">
+                      <input type="hidden" name="planId" value={plan.id} />
+                      <input type="hidden" name="returnTo" value="/shopping-list?view=by-plan" />
+                      <button type="submit" className={btnGhost}>
+                        Remove from list
+                      </button>
+                    </form>
+                  </div>
                   <ul className="list-none p-0 mt-0 mx-0 mb-[1.5rem]">
                     {plan.lines.map((line) => (
                       <Line key={line.name} line={line} keyPrefix={plan.slug} />

@@ -5,7 +5,8 @@ import { Star } from 'lucide-react';
 import { submitReviewAction, deleteReviewAction, deletePhotoAction } from '@/app/actions/reviews';
 import { StarRating } from '@/components/star-rating';
 import { PhotoInput } from '@/components/photo-input';
-import { btnPrimary, btnDanger } from '@/lib/ui'; // Sprint 29: shared button classes
+import { btnPrimary, btnDanger, btnGhost } from '@/lib/ui'; // Sprint 29: shared button classes
+import { showConfirm } from '@/lib/review-confirm'; // Sprint 35: destructive-action confirm
 import { MAX_BODY_LENGTH, MAX_PHOTOS_PER_REVIEW } from '@/lib/reviews';
 import type { PlanReview, RatingSummary } from '@/lib/reviews';
 
@@ -18,6 +19,13 @@ interface Props {
   isSignedIn: boolean;
   isAdmin: boolean;
   photosEnabled: boolean;
+  /**
+   * Sprint 35 — the `?confirm-delete=` / `?confirm-photo=` URL params, passed down from the
+   * plan page. Never reflected into markup; only compared to a review/photo id the session
+   * user is allowed to modify (see showConfirm). Undefined when no confirm is in flight.
+   */
+  confirmDeleteId?: string;
+  confirmPhotoId?: string;
 }
 
 /**
@@ -43,6 +51,8 @@ export function ReviewsSection({
   isSignedIn,
   isAdmin,
   photosEnabled,
+  confirmDeleteId,
+  confirmPhotoId,
 }: Props) {
   return (
     <section
@@ -195,7 +205,7 @@ export function ReviewsSection({
       ) : (
         <ul className="list-none p-0 m-0 flex flex-col gap-[1.25rem]">
           {reviews.map((review) => (
-            <li key={review.id} className="bg-surface p-[1rem] border border-border rounded-[0.5rem]">
+            <li key={review.id} id={`review-${review.id}`} className="bg-surface p-[1rem] border border-border rounded-[0.5rem]">
               <div className="flex flex-wrap items-center gap-[0.75rem] mb-[0.5rem]">
                 <span className="font-semibold">
                   {review.user.displayName ?? 'A maker'}
@@ -238,17 +248,39 @@ export function ReviewsSection({
                             delete everything you wrote — and a photo is the thing
                             most likely to have been posted by mistake. */}
                         {canRemove ? (
-                          <form action={deletePhotoAction} className="build-photo-remove">
-                            <input type="hidden" name="photoId" value={photo.id} />
-                            <input type="hidden" name="slug" value={slug} />
-                            <button
-                              type="submit"
-                              className={btnDanger}
+                          showConfirm(confirmPhotoId, photo.id, canRemove) ? (
+                            <div className="build-photo-remove flex flex-col gap-[0.4rem] p-[0.6rem] border border-border rounded-[0.375rem] bg-bg">
+                              <p className="m-0 text-[0.85rem]">Removes this photo from your review.</p>
+                              <div className="flex flex-wrap gap-[0.4rem]">
+                                <form action={deletePhotoAction}>
+                                  <input type="hidden" name="photoId" value={photo.id} />
+                                  <input type="hidden" name="slug" value={slug} />
+                                  <input type="hidden" name="returnTo" value={`/plans/${slug}`} />
+                                  <button
+                                    type="submit"
+                                    className={btnDanger}
+                                    aria-label={`Confirm remove photo: ${photo.alt}`}
+                                  >
+                                    Yes, remove
+                                  </button>
+                                </form>
+                                <Link
+                                  href={`/plans/${slug}#review-${review.id}`}
+                                  className={btnGhost}
+                                >
+                                  Keep it
+                                </Link>
+                              </div>
+                            </div>
+                          ) : (
+                            <Link
+                              href={`/plans/${slug}?confirm-photo=${photo.id}#review-${review.id}`}
+                              className={`${btnDanger} build-photo-remove`}
                               aria-label={`Remove photo: ${photo.alt}`}
                             >
                               Remove
-                            </button>
-                          </form>
+                            </Link>
+                          )
                         ) : null}
                       </li>
                     );
@@ -257,15 +289,45 @@ export function ReviewsSection({
               ) : null}
 
               {/* Rendered for the author or an admin. The server re-checks; this is
-                  presentation, not authorization. */}
+                  presentation, not authorization. Sprint 35 (audit H1): deletion is a
+                  two-step, no-JS-safe, URL-driven confirm — "Delete" is a GET link that
+                  adds ?confirm-delete=<id>, and the matching card reveals the real form
+                  with the full blast radius stated first. showConfirm gates it to a review
+                  THIS session may modify; the raw param is never reflected into markup. */}
               {isAdmin || myReview?.id === review.id ? (
-                <form action={deleteReviewAction}>
-                  <input type="hidden" name="reviewId" value={review.id} />
-                  <input type="hidden" name="slug" value={slug} />
-                  <button type="submit" className={btnDanger}>
+                showConfirm(confirmDeleteId, review.id, true) ? (
+                  <div
+                    role="group"
+                    aria-label="Confirm delete review"
+                    className="mt-[0.25rem] flex flex-col gap-[0.5rem] p-[0.75rem] border border-border rounded-[0.375rem] bg-bg"
+                  >
+                    <p className="m-0 text-[0.9rem]">
+                      This permanently removes your review, its photos, and this plan&rsquo;s
+                      entry in <strong>Your builds</strong> &mdash; and un-marks it in any
+                      learning path.
+                    </p>
+                    <div className="flex flex-wrap gap-[0.5rem]">
+                      <form action={deleteReviewAction}>
+                        <input type="hidden" name="reviewId" value={review.id} />
+                        <input type="hidden" name="slug" value={slug} />
+                        <input type="hidden" name="returnTo" value={`/plans/${slug}`} />
+                        <button type="submit" className={btnDanger}>
+                          Yes, delete
+                        </button>
+                      </form>
+                      <Link href={`/plans/${slug}#review-${review.id}`} className={btnGhost}>
+                        Keep it
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    href={`/plans/${slug}?confirm-delete=${review.id}#review-${review.id}`}
+                    className={btnDanger}
+                  >
                     Delete
-                  </button>
-                </form>
+                  </Link>
+                )
               ) : null}
             </li>
           ))}

@@ -79,10 +79,19 @@ export default async function PlanDetailPage({
   searchParams,
 }: {
   params: Params;
-  searchParams: Promise<{ notice?: string }>;
+  searchParams: Promise<{
+    notice?: string;
+    'confirm-delete'?: string;
+    'confirm-photo'?: string;
+  }>;
 }) {
   const { slug } = await params;
-  const { notice } = await searchParams;
+  const sp = await searchParams;
+  const notice = sp.notice;
+  // Sprint 35 — destructive-action confirm params. Passed straight through to ReviewsSection,
+  // which only COMPARES them to ids the session user may modify (showConfirm); never reflected.
+  const confirmDeleteId = sp['confirm-delete'];
+  const confirmPhotoId = sp['confirm-photo'];
   const plan = await getPlanBySlug(slug);
 
   // getPlanBySlug returns null for unknown AND unpublished slugs alike, so this
@@ -345,7 +354,10 @@ export default async function PlanDetailPage({
           { id: 'cutlist', label: 'Cut list', present: plan.cutList.length > 0 },
         ]}
       >
-      <section data-tab="tools" id="panel-tools" role="tabpanel" aria-labelledby="tab-tools">
+      {/* Sprint 36: NO server-rendered role="tabpanel"/aria-labelledby — they'd reference a
+          tablist that doesn't exist without JS (an ARIA orphan). PlanTabs adds them after mount
+          only when the tablist renders. `data-tab` + `id` stay (PlanTabs + print target them). */}
+      <section data-tab="tools" id="panel-tools">
         <h2>Tools</h2>
 
         {/* Sprint 26 — how this plan fits YOUR workshop. Only for a signed-in user who
@@ -399,7 +411,7 @@ export default async function PlanDetailPage({
         )}
       </section>
 
-      <section data-tab="materials" id="panel-materials" role="tabpanel" aria-labelledby="tab-materials">
+      <section data-tab="materials" id="panel-materials">
         <h2>Materials</h2>
         <div className="table-scroll">
           {/* NO COST COLUMN. DECISIONS_LOG.md 2026-07-13 — tiers only, no dollar
@@ -457,7 +469,7 @@ export default async function PlanDetailPage({
       </section>
 
       {plan.cutList.length > 0 && (
-        <section data-tab="cutlist" id="panel-cutlist" role="tabpanel" aria-labelledby="tab-cutlist">
+        <section data-tab="cutlist" id="panel-cutlist">
           <h2>Cut list</h2>
           <div className="table-scroll">
             <table className="data-table">
@@ -533,6 +545,8 @@ export default async function PlanDetailPage({
         isSignedIn={user !== null}
         isAdmin={admin}
         photosEnabled={isStorageConfigured()}
+        confirmDeleteId={confirmDeleteId}
+        confirmPhotoId={confirmPhotoId}
       />
         </div>
       </div>

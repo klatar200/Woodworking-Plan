@@ -85,13 +85,14 @@ export function FilterDisclosure({ count, children }: Props) {
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >
       {/*
-        Mobile: a compact pill (2.25rem tall, 13px) — the old 44px full-width bar cost a
-        whole band of the viewport above the plans, which are what people came for.
-        Desktop: every one of those values is restored at `lg:`, so the rail's bar is
-        the same 44px / 16px / 1rem-padded row it was.
+        Mobile: a horizontally-compact pill — narrow padding (px-[0.625rem]) keeps it from
+        eating a band of viewport above the plans, but Sprint 34 (audit M1) restored the
+        HEIGHT to 44px (2.75rem) and the text to 14px so it meets the app's touch-target
+        rule; the pill stays visually small by being tight left-to-right, not short.
+        Desktop: every value is (still) restored at `lg:` to the 44px / 16px / 1rem-padded row.
       */}
       <summary
-        className="list-none [&::-webkit-details-marker]:hidden inline-flex items-center gap-[0.375rem] min-h-[2.25rem] px-[0.625rem] text-[0.8125rem] font-medium cursor-pointer select-none bg-surface border border-border rounded-[999px] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 lg:flex lg:min-h-[2.75rem] lg:px-[1rem] lg:py-[0.75rem] lg:text-[1rem] lg:bg-transparent lg:border-0 lg:rounded-none lg:focus-visible:outline-offset-[-2px]"
+        className="list-none [&::-webkit-details-marker]:hidden inline-flex items-center gap-[0.375rem] min-h-[2.75rem] px-[0.625rem] text-[0.875rem] font-medium cursor-pointer select-none bg-surface border border-border rounded-[999px] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 lg:flex lg:min-h-[2.75rem] lg:px-[1rem] lg:py-[0.75rem] lg:text-[1rem] lg:bg-transparent lg:border-0 lg:rounded-none lg:focus-visible:outline-offset-[-2px]"
       >
         {/* Decorative funnel — the label carries the meaning, so it is aria-hidden.
             Desktop keeps the plain text bar it has always had. */}
@@ -133,7 +134,7 @@ export function FilterDisclosure({ count, children }: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="inline-flex items-center justify-center min-h-[2.25rem] min-w-[2.25rem] bg-transparent border-0 text-fg text-[1rem] cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+              className="inline-flex items-center justify-center min-h-[2.75rem] min-w-[2.75rem] bg-transparent border-0 text-fg text-[1rem] cursor-pointer focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
               aria-label="Close filters"
             >
               &times;

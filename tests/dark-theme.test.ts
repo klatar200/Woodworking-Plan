@@ -42,6 +42,14 @@ describe('light/dark theme tokens stay in sync', () => {
     expect(dark.has('--accent-fg')).toBe(true);
   });
 
+  // Sprint 33 (A1) — text-safe accent. Light darkens the accent for body-size text; dark reuses
+  // its already-AA --accent-strong value. Contrast itself is proven in tests/contrast.test.ts;
+  // here we only lock its presence in both themes (the set checks above cover it, this names it).
+  it('defines --accent-text (text-safe accent) in both themes', () => {
+    expect(light.has('--accent-text')).toBe(true);
+    expect(dark.has('--accent-text')).toBe(true);
+  });
+
   /**
    * QOL-F (2026-07-19) — the elevation scale. Same failure mode as a colour: define it
    * in `:root`, forget it in `.dark`, and dark mode silently keeps light-mode shadows,

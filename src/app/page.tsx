@@ -35,7 +35,7 @@ export const dynamic = 'force-dynamic';
 
 const wrap = 'mx-auto w-full max-w-[76rem] px-[1.5rem] sm:px-[2rem]';
 const eyebrow =
-  'inline-flex items-center gap-[0.45rem] text-[0.72rem] uppercase tracking-[0.09em] text-accent-strong font-semibold before:content-[""] before:w-[1.4rem] before:h-[2px] before:bg-accent before:rounded-[2px]';
+  'inline-flex items-center gap-[0.45rem] text-[0.72rem] uppercase tracking-[0.09em] text-accent-text font-semibold before:content-[""] before:w-[1.4rem] before:h-[2px] before:bg-accent before:rounded-[2px]';
 const sectionH2 = 'font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold mt-[0.5rem] mb-[0.4rem]';
 const isq =
   'inline-flex items-center justify-center w-[2.9rem] h-[2.9rem] rounded-[0.7rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0';
@@ -95,7 +95,7 @@ export default async function LandingPage() {
           <div>
             <span className={eyebrow}>The woodworking plan catalog</span>
             <h1 className="font-display text-[clamp(2.4rem,5vw,3.5rem)] leading-[1.04] font-semibold mt-[1rem] mb-[1.1rem]">
-              Plans you can <em className="not-italic text-accent-strong">actually</em> compare.
+              Plans you can <em className="not-italic text-accent-text">actually</em> compare.
             </h1>
             <p className="text-[1.15rem] text-muted max-w-[42ch] mb-[1.75rem]">
               Every plan carries the same structured detail &mdash; a full cut list, a

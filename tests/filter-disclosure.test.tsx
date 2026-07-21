@@ -90,12 +90,19 @@ describe('FilterDisclosure — server render (no JS yet)', () => {
     expect(html).not.toContain('rgba(0,0,0,0.45)');
   });
 
-  /** The mobile trigger is a compact pill; desktop restores the 44px bar. */
-  it('shrinks the trigger on mobile only', () => {
+  /**
+   * Sprint 34 (audit M1): the mobile trigger is 44px TALL (the touch-target rule) but stays
+   * horizontally COMPACT — narrow padding + 14px text — so it still costs little vertical
+   * space; desktop restores the full 16px / 1rem-padded bar. (Was: a 36px-tall pill, which
+   * failed the app's own 44px minimum.)
+   */
+  it('keeps the trigger 44px tall, compact on mobile and full-size on desktop', () => {
     const html = render(0);
 
-    expect(html).toContain('min-h-[2.25rem]');
-    expect(html).toContain('lg:min-h-[2.75rem]');
-    expect(html).toContain('lg:px-[1rem]');
+    expect(html).toContain('min-h-[2.75rem]'); // 44px tall on mobile too
+    expect(html).not.toContain('min-h-[2.25rem]'); // the old sub-44 height is gone
+    expect(html).toContain('text-[0.875rem]'); // compact text on mobile
+    expect(html).toContain('lg:px-[1rem]'); // desktop restores padding
+    expect(html).toContain('lg:text-[1rem]'); // desktop restores 16px
   });
 });

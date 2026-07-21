@@ -67,6 +67,8 @@ export interface ShoppingListLine {
 
 /** One plan on the shopping list, with its own (unmerged) material lines. */
 export interface ShoppingListPlan {
+  /** Sprint 35 — needed by the "Remove from list" form (removeFromShoppingList takes a planId). */
+  id: string;
   slug: string;
   title: string;
   /** THIS plan's materials, in author order — not merged with other plans. */
@@ -273,6 +275,7 @@ export async function getShoppingList(): Promise<ShoppingList> {
     select: {
       plan: {
         select: {
+          id: true,
           slug: true,
           title: true,
           published: true,
@@ -299,6 +302,7 @@ export async function getShoppingList(): Promise<ShoppingList> {
 
   // --- BY-PLAN view: each plan's own materials, unmerged, in author order. ---
   const byPlan: ShoppingListPlan[] = plans.map((plan) => ({
+    id: plan.id,
     slug: plan.slug,
     title: plan.title,
     lines: plan.materials.map((m) => ({

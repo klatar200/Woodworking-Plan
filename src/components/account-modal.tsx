@@ -163,7 +163,7 @@ export function AccountModal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="inline-flex items-center justify-center min-h-[2.25rem] min-w-[2.25rem] rounded-[0.375rem] border border-border bg-transparent text-fg cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
+            className="inline-flex items-center justify-center min-h-[2.75rem] min-w-[2.75rem] rounded-[0.375rem] border border-border bg-transparent text-fg cursor-pointer hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2"
           >
             <X size={18} aria-hidden="true" />
           </button>

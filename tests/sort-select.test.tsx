@@ -95,7 +95,19 @@ describe('SortSelect — server render (no JS yet)', () => {
     expect(select).not.toContain('text-[0.8125rem]');
   });
 
-  it('renders nothing during a keyword search (relevance IS the sort)', () => {
-    expect(render(noFilters, 'walnut')).toBe('');
+  /**
+   * Sprint 36 (audit H7): during a keyword search the sort is fixed to relevance. Rather than
+   * VANISHING (a control disappearing reads as "sorting broke"), it stays as a DISABLED select
+   * reading "Relevance", with the reason exposed, and a disabled Apply so no-JS can't submit a
+   * dead control. (Was: rendered nothing.)
+   */
+  it('during a keyword search, shows a disabled "Relevance" control instead of vanishing', () => {
+    const html = render(noFilters, 'walnut');
+
+    expect(html).not.toBe('');
+    expect(html).toContain('Relevance');
+    expect(html).toMatch(/<select[^>]*disabled/);
+    expect(html).toContain('ordered by relevance');
+    expect(html).toMatch(/<button[^>]*disabled[^>]*>Apply<\/button>/);
   });
 });
