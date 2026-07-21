@@ -80,6 +80,29 @@ export async function upsertReview(input: ReviewInput): Promise<string> {
   }
 
   /**
+   * AUDIT FIX 2026-07-21 — the cap is enforced against the TOTAL, not just this batch.
+   *
+   * On an EDIT, new photos are APPENDED (see the upsert `update` below:
+   * `photos: { create: uploaded }`). Checking only `photos.length` let a user re-edit
+   * their own review and grow past MAX_PHOTOS_PER_REVIEW four at a time — an unbounded
+   * blob-quota leak that the per-submission check above cannot see. Count what is
+   * already attached and refuse before uploading anything. Runs ONLY when photos are
+   * actually being added, so a text-only edit still pays no extra query.
+   */
+  if (photos.length > 0) {
+    const existing = await prisma.review.findUnique({
+      where: { userId_planId: { userId: user.id, planId: plan.id } },
+      select: { _count: { select: { photos: true } } },
+    });
+    const alreadyAttached = existing?._count?.photos ?? 0;
+    if (alreadyAttached + photos.length > MAX_PHOTOS_PER_REVIEW) {
+      throw new Error(
+        `You can attach up to ${MAX_PHOTOS_PER_REVIEW} photos to a review.`,
+      );
+    }
+  }
+
+  /**
    * Photos are processed and uploaded BEFORE the database write.
    *
    * Ordering matters. If an upload fails, we throw and no review row is touched —

@@ -74,6 +74,10 @@ function validatePlan(plan, vocab) {
     'slug', 'title', 'summary', 'description', 'category', 'difficulty',
     'timeMinMinutes', 'timeMaxMinutes', 'timeLabel', 'costTier', 'costMinCents',
     'costMaxCents', 'tags', 'tools', 'materials', 'cutList', 'steps', 'images',
+    // `unresolvedImages` is an OPTIONAL sibling of `images` (plan-schema.ts:143),
+    // added by the 2026-07-17 R2 image migration for photos whose source URL 404'd.
+    // The real Zod schema accepts it; this mirror must too, or it fails ~150 valid files.
+    'unresolvedImages',
     'published',
   ]);
   for (const key of Object.keys(plan)) {
@@ -219,6 +223,23 @@ function validatePlan(plan, vocab) {
       for (const k of Object.keys(img)) if (!allowed.has(k)) p(`images[${i}]: unexpected key "${k}"`);
     });
     if (primaryCount > 1) p('images: at most one image may have isPrimary: true');
+  }
+
+  // OPTIONAL. Same element shape as `images` (plan-schema.ts: `z.array(image).optional()`),
+  // but no single-primary refinement — these are parked source URLs, not rendered.
+  if (plan.unresolvedImages !== undefined) {
+    if (!Array.isArray(plan.unresolvedImages)) {
+      p('unresolvedImages: if present, must be an array');
+    } else {
+      plan.unresolvedImages.forEach((img, i) => {
+        if (typeof img !== 'object' || img === null) return p(`unresolvedImages[${i}]: must be an object`);
+        if (!isNonEmptyString(img.url) || !/^https?:\/\//.test(img.url)) p(`unresolvedImages[${i}].url: must be a non-empty http(s) URL`);
+        if (!isNonEmptyString(img.alt)) p(`unresolvedImages[${i}].alt: must be a non-empty string`);
+        if (typeof img.isPrimary !== 'boolean') p(`unresolvedImages[${i}].isPrimary: must be a boolean`);
+        const allowed = new Set(['url', 'alt', 'isPrimary']);
+        for (const k of Object.keys(img)) if (!allowed.has(k)) p(`unresolvedImages[${i}]: unexpected key "${k}"`);
+      });
+    }
   }
 
   if (typeof plan.published !== 'boolean') p('published: must be a boolean');

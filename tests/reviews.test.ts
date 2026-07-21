@@ -301,6 +301,31 @@ describe('photos', () => {
     expect(processImage).not.toHaveBeenCalled();
   });
 
+  it('caps the TOTAL photos across edits, counting ones already attached', async () => {
+    const { upsertReview, MAX_PHOTOS_PER_REVIEW } = await import('@/lib/reviews');
+
+    // The review already has MAX-1 photos; adding 2 more would exceed the cap. This is
+    // the edit-again-and-again leak the per-submission check cannot see.
+    review.findUnique.mockResolvedValue({
+      _count: { photos: MAX_PHOTOS_PER_REVIEW - 1 },
+    });
+
+    await expect(
+      upsertReview({
+        planId: 'plan_1',
+        rating: 5,
+        photos: [
+          { buffer: Buffer.from('x'), alt: 'x' },
+          { buffer: Buffer.from('y'), alt: 'y' },
+        ],
+      }),
+    ).rejects.toThrow(/up to/i);
+
+    // Rejected BEFORE any upload — the existing photos already fill the quota.
+    expect(processImage).not.toHaveBeenCalled();
+    expect(review.upsert).not.toHaveBeenCalled();
+  });
+
   it('deletes the BLOBS before the rows — the DB cascade cannot reach object storage', async () => {
     vi.stubEnv('ADMIN_USER_IDS', '');
     review.findFirst.mockResolvedValue({
