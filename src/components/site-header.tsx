@@ -131,11 +131,11 @@ export function SiteHeader() {
           {/* Condensed mark — Oak & Forest interlocking N (brand/oak-forest/). */}
           {/* eslint-disable-next-line @next/next/no-img-element -- static brand asset; next/image adds nothing here */}
           <img
-            src="/brand/notch-mark.png"
+            src="/brand/notch-mark.svg"
             alt=""
             width={28}
             height={28}
-            className="size-[1.75rem] rounded-[0.375rem] shrink-0"
+            className="size-[1.75rem] shrink-0"
           />
           <span>Notch</span>
         </Link>
