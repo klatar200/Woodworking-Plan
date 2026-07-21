@@ -25,7 +25,7 @@ const skipLink =
 const siteHeader =
   'site-header relative flex items-center justify-between gap-[1rem] px-[1.25rem] py-[0.625rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.625rem+env(safe-area-inset-top))]';
 const brand =
-  'font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+  'inline-flex items-center gap-[0.5rem] font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
 // Desktop nav link: quiet by default, ink on hover. 44px tall for touch.
 const navLink =
@@ -128,7 +128,16 @@ export function SiteHeader() {
             the logo, instead of `justify-between` pushing it to the middle of the bar. */}
         <div className="flex items-center gap-[1.5rem] min-w-0">
         <Link href="/" className={brand}>
-          Woodworking Plan
+          {/* Condensed mark — Oak & Forest interlocking N (brand/oak-forest/). */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- static brand asset; next/image adds nothing here */}
+          <img
+            src="/brand/notch-mark.png"
+            alt=""
+            width={28}
+            height={28}
+            className="size-[1.75rem] rounded-[0.375rem] shrink-0"
+          />
+          <span>Notch</span>
         </Link>
 
         {/* ---- Desktop nav (≥ lg): quiet text links, one primary CTA ---- */}

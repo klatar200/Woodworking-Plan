@@ -31,13 +31,13 @@
 /** Light theme — mirrors `:root` in globals.css. */
 export const clerkAppearance = {
   variables: {
-    colorPrimary: '#1a1a1a', // --fg
-    colorBackground: '#ffffff', // --surface
-    colorText: '#1a1a1a', // --fg
-    colorTextSecondary: '#75705f', // --muted-2 (Sprint 33: was #8a8175, failed AA)
-    colorDanger: '#b5551c', // --danger
-    colorInputBackground: '#faf9f6', // --bg
-    colorInputText: '#1a1a1a', // --fg
+    colorPrimary: '#1e2420', // --fg
+    colorBackground: '#fffefb', // --surface
+    colorText: '#1e2420', // --fg
+    colorTextSecondary: '#66706a', // --muted-2
+    colorDanger: '#a84d18', // --danger
+    colorInputBackground: '#f6f1e7', // --bg
+    colorInputText: '#1e2420', // --fg
     borderRadius: '0.5rem',
     fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
   },
@@ -49,10 +49,9 @@ export const clerkAppearance = {
  * Without this, the single most jarring moment in the app was signing in from dark mode:
  * Clerk's pages and its account modal rendered pure white inside an otherwise dark page.
  *
- * `colorPrimary` is the light INK (`--fg`), not the orange accent — in Clerk's system
- * `colorPrimary` fills the primary button, and our accent orange with Clerk's automatic
- * white button text would be a contrast failure. Ink-filled buttons with dark text is what
- * the light theme already does, mirrored.
+ * `colorPrimary` is the light INK (`--fg`), not the accent — in Clerk's system
+ * `colorPrimary` fills the primary button, and a mid green with Clerk's automatic
+ * white button text needs checking; ink-filled buttons match the light theme pattern.
  *
  * KNOWN LIMIT, deliberately not chased: toggling the theme while a Clerk modal is already
  * open does not re-theme that open modal — the provider prop is read at render. It is
@@ -60,13 +59,13 @@ export const clerkAppearance = {
  */
 export const clerkAppearanceDark = {
   variables: {
-    colorPrimary: '#f0ece4', // --fg (dark)
-    colorBackground: '#221e17', // --surface (dark)
-    colorText: '#f0ece4', // --fg (dark)
-    colorTextSecondary: '#8f8578', // --muted-2 (dark)
+    colorPrimary: '#eef0ec', // --fg (dark)
+    colorBackground: '#1c2420', // --surface (dark)
+    colorText: '#eef0ec', // --fg (dark)
+    colorTextSecondary: '#8e978f', // --muted-2 (dark)
     colorDanger: '#e58a5c', // --danger (dark)
-    colorInputBackground: '#17140f', // --bg (dark)
-    colorInputText: '#f0ece4', // --fg (dark)
+    colorInputBackground: '#141a16', // --bg (dark)
+    colorInputText: '#eef0ec', // --fg (dark)
     borderRadius: '0.5rem',
     fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
   },

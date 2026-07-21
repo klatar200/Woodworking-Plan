@@ -1439,12 +1439,34 @@ the obvious alternative and someone will propose it again.
 it cannot pre-tick them again by accident. Same shape as deleting `formatCents` rather than
 leaving it unused — a structural fix, not a convention.
 
+### 2026-07-21 — Branding: Notch + Oak & Forest (resolves #8)
+**Status:** Confirmed by user.
+**Source:** Branding workshop in chat (domain already purchased: `notchplans.com`).
+
+| Piece | Decision |
+|---|---|
+| Brand name | **Notch** |
+| Long form / SEO | Notch Plans |
+| Domain | notchplans.com (Cloudflare Registrar; DNS → Vercel) |
+| Mark | Interlocking half-lap **N** (Option 3 style) |
+| Palette | **Oak & Forest** (Option 3), hues AA-audited before shipping |
+| Archive | Ink & Copper (Option 4) kept under `brand/ink-copper/` |
+
+**Palette note:** mock hexes were not pasted raw. Forest accent keeps light `--accent-fg`
+(unlike the old orange system, which needed dark ink on accent). Oak `#C4A574` is
+logo-only — it fails AA as UI text. Danger/ok/pending were nudged darker so they still
+clear 4.5:1 on parchment `--bg`. Details: `brand/oak-forest/README.md`.
+
+**Still deferred under branding:** lifting `robots: noindex` / public launch remains
+Keagan's explicit call (launch economics / Hobby). About/FAQ body copy may still say
+the old working name in places until a copy pass — header, footer, manifest, and PWA
+icons are updated.
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,
-backend framework, database, hosting/auth stack, and budget (#1-5, #9).
+backend framework, database, hosting/auth stack, budget (#1-5, #9), and
+**branding/domain (#8 — Notch / notchplans.com / Oak & Forest, 2026-07-21).**
 Still open: payment processor (#6, not urgent — deferred until launch
-per the $0-during-development decision above), plan-content admin/CMS
-approach (#7, blocks Sprint 1), and branding/domain (#8, blocks
-public-facing copy, not Sprint 0). **Sprint 0 is unblocked and can
-begin.**
+per the $0-during-development decision above), and plan-content admin/CMS
+approach (#7). **Sprint 0 is unblocked and can begin.**

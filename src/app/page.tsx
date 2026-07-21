@@ -379,17 +379,17 @@ export default async function LandingPage() {
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────── */}
       <section className={`${wrap} py-[3.5rem]`}>
-        <div className="relative overflow-hidden text-center rounded-[1.1rem] px-[1.5rem] py-[3.5rem] bg-[linear-gradient(160deg,#2a2320,#17140f)] text-[#f0ece4] shadow-e3 before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(50%_120%_at_50%_-20%,rgba(233,168,108,0.35),transparent_60%)]">
+        <div className="relative overflow-hidden text-center rounded-[1.1rem] px-[1.5rem] py-[3.5rem] bg-[linear-gradient(160deg,#1e2e26,#141a16)] text-[#eef0ec] shadow-e3 before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(50%_120%_at_50%_-20%,rgba(111,168,136,0.35),transparent_60%)]">
           <h2 className="relative font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold m-0 mb-[0.5rem]">
             Find your next project.
           </h2>
-          <p className="relative text-[#c9c2b6] m-0 mb-[1.6rem]">
+          <p className="relative text-[#a8b0aa] m-0 mb-[1.6rem]">
             Hundreds of plans, each fully specified. Free to browse &mdash; no account
             required.
           </p>
           <Link
             href={CATALOG_PATH}
-            className="relative inline-flex items-center min-h-[2.9rem] px-[1.25rem] rounded-[0.5rem] font-semibold no-underline bg-accent text-[#1a1a1a] border border-accent shadow-e2"
+            className="relative inline-flex items-center min-h-[2.9rem] px-[1.25rem] rounded-[0.5rem] font-semibold no-underline bg-accent text-accent-fg border border-accent shadow-e2"
           >
             Browse the plans →
           </Link>

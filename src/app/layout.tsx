@@ -64,20 +64,18 @@ import './globals.css';
 /**
  * Root layout.
  *
- * NOTE ON COPY AND ICONS: BUILD_PLAN.md §3 decision #8 (branding/app name) is still
- * OPEN. "Woodworking Plan" is the working name from BUSINESS_PLAN.md §1, and the PWA
- * icons are deliberately plain placeholders — not a logo. **Both must be replaced
- * before launch.** Inventing a brand is not the build agent's call.
+ * Brand: Notch (Oak & Forest) — DECISIONS_LOG.md 2026-07-21. Domain notchplans.com.
+ * PWA icons live in public/icons/; condensed mark in public/brand/notch-mark.svg.
  */
 export const metadata: Metadata = {
-  title: 'Woodworking Plan',
+  title: 'Notch',
   description:
     'A searchable repository of woodworking plans, with full cut lists, material lists, and cost estimates.',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Plans',
+    title: 'Notch',
   },
   icons: {
     icon: [
@@ -86,7 +84,7 @@ export const metadata: Metadata = {
     ],
     apple: '/icons/apple-touch-icon.png',
   },
-  // Still not a public release — branding is open, so keep it out of search.
+  // Still not a public release — keep out of search until launch is explicit.
   robots: { index: false, follow: false },
 };
 

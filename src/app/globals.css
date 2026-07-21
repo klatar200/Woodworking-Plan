@@ -1,19 +1,16 @@
 /*
- * Design tokens — Woodworking Plan visual system.
+ * Design tokens — Notch (Oak & Forest) visual system.
  *
- * Adopted 2026-07-13 from the Claude Design prototype
- * (`Woodworking Plan Prototype.dc.html`), per Keagan's explicit direction —
- * see DECISIONS_LOG.md "UI redesign: adopt Claude Design mockup's visual
- * system". Warm/cream palette, replacing the Sprint 0 neutral gray theme.
+ * Brand/palette chosen 2026-07-21 (Keagan): interlocking-N mark + Option 3 Oak &
+ * Forest, with hues AA-audited before shipping (see brand/oak-forest/README.md).
+ * Replaces the 2026-07-13 warm cream/orange Claude Design prototype palette.
+ * Ink & Copper (Option 4) is archived under brand/ink-copper/ if we reverse.
  *
- * Dark mode was RE-ADDED in Sprint 31 (2026-07-16, Keagan's direction) as an
- * explicit `.dark {}` token flip below — NOT `prefers-color-scheme`, so it follows
- * the theme cookie/toggle rather than the OS. (This reverses the earlier "dark mode
- * deleted" call; see DECISIONS_LOG.md 2026-07-16.)
+ * Dark mode: `.dark {}` token flip (Sprint 31), cookie/OS per DECISIONS_LOG.
  *
- * --ok / --pending / --err are FUNCTIONAL status colors (focus rings, success/
- * pending indicators), not part of the brand palette, and are deliberately
- * left alone — they were chosen for contrast against --bg, not for look.
+ * --ok / --pending / --err are FUNCTIONAL status colors. On the new parchment
+ * --bg they were re-tuned slightly so they still clear WCAG AA (guard:
+ * tests/contrast.test.ts).
  */
 
 :root {
@@ -21,34 +18,26 @@
    * in the light scheme. `.dark` flips this to `dark` so those controls follow the theme —
    * without it a native checkbox/select renders light-on-light in dark mode. */
   color-scheme: light;
-  --bg: #faf9f6;
-  --surface: #ffffff;
-  --fg: #1a1a1a;
-  --muted: #6b6b6b;
-  /* Sprint 33 (A1): darkened from #8a8175 (3.64:1 on --bg — failed AA as text) to
-   * #75705f (4.70:1 on --bg, 4.95:1 on --surface). Light theme only; dark's --muted-2
-   * (#8f8578, 4.58:1) already passes. Guarded by tests/contrast.test.ts. */
-  --muted-2: #75705f;
-  --border: #e4e4e4;
-  --border-strong: #d8d3c6;
-  --accent: #e9a86c;
-  --accent-strong: #c96a2e;
-  --accent-tint: #fdf1e0;
-  --accent-tint-border: #e9c98a;
-  /* Sprint 33 (A1): text-safe accent for accent-colored TEXT at body size. --accent-strong
-   * (#c96a2e) is only 3.57:1 on --bg / 3.37:1 on --accent-tint — fails AA as text, though it
-   * stays fine as a background/border/glyph (≥3:1 graphic). #a85413 measures 5.06:1 on --bg,
-   * 5.33:1 on --surface, 4.78:1 on --accent-tint. See UX_AUDIT_2026-07-21 A1; guarded by
-   * tests/contrast.test.ts. */
-  --accent-text: #a85413;
-  /* Sprint 31: text/icon color ON an --accent (orange) background — dark ink in BOTH
-   * themes, because the accent stays a light orange in dark mode. `--accent-soft` is the
-   * soft cream some rules used as `var(--accent-soft, #fdf1e0)`; now a real token. */
-  --accent-fg: #1a1a1a;
-  --accent-soft: #fdf1e0;
-  --danger: #b5551c;
-  --ok: #17803d;
-  --pending: #b45309;
+  --bg: #f6f1e7;
+  --surface: #fffefb;
+  --fg: #1e2420;
+  --muted: #5c6560;
+  --muted-2: #66706a;
+  --border: #ddd6c8;
+  --border-strong: #c9c0ae;
+  --accent: #3d6b4f;
+  --accent-strong: #2a4f3a;
+  --accent-tint: #e8f0ea;
+  --accent-tint-border: #b5c9ba;
+  /* Text-safe accent (body size). Forest strong clears AA on parchment + tint. */
+  --accent-text: #2a4f3a;
+  /* On-accent text: parchment on forest (forest is dark enough — unlike the old
+   * light orange, which needed dark ink). */
+  --accent-fg: #f6f1e7;
+  --accent-soft: #e8f0ea;
+  --danger: #a84d18;
+  --ok: #157538;
+  --pending: #a64c08;
   --err: #b3261e;
 
   /* ── QOL-F — the elevation scale (2026-07-19, variant A; DECISIONS_LOG.md) ──
@@ -92,23 +81,22 @@
  */
 .dark {
   color-scheme: dark;
-  --bg: #17140f;
-  --surface: #221e17;
-  --fg: #f0ece4;
-  --muted: #b3ab9f;
-  --muted-2: #8f8578;
-  --border: #38332b;
-  --border-strong: #4b453a;
-  --accent: #e9a86c;
-  --accent-strong: #f2b884;
-  --accent-tint: #2b2318;
-  --accent-tint-border: #5c4a2c;
-  /* Sprint 33 (A1): dark reuses --accent-strong's value — #f2b884 measures 10.46:1 on --bg
-   * and 9.45:1 on --surface, so accent text is already AA-safe in dark. Kept as an explicit
-   * hex (not var()) so tests/contrast.test.ts and tests/dark-theme.test.ts parse it. */
-  --accent-text: #f2b884;
-  --accent-fg: #1a1a1a;
-  --accent-soft: #2b2318;
+  --bg: #141a16;
+  --surface: #1c2420;
+  --fg: #eef0ec;
+  --muted: #a8b0aa;
+  --muted-2: #8e978f;
+  --border: #2e3832;
+  --border-strong: #3d4840;
+  --accent: #6fa888;
+  --accent-strong: #8fbf9a;
+  --accent-tint: #1e2e26;
+  --accent-tint-border: #3d5a48;
+  /* Light forest on dark surfaces — AA as text (see brand/oak-forest/README.md). */
+  --accent-text: #8fbf9a;
+  /* On-accent: dark ink on the lighter dark-theme accent. */
+  --accent-fg: #141a16;
+  --accent-soft: #1e2e26;
   --danger: #e58a5c;
   --ok: #5cc27a;
   --pending: #d99b3f;
@@ -159,17 +147,16 @@
     --accent-tint-border: #999999;
     --accent-soft: #ffffff;
     --accent-fg: #000000;
-    /* Sprint 33: force accent TEXT to the light-theme value on paper. Without this, printing
-     * while the dark theme is on would use dark's --accent-text (#f2b884, a light orange ~1.3:1
-     * on white) and render the eyebrow / hero emphasis / "Clear filters" link invisible. */
-    --accent-text: #a85413;
+    /* Force accent TEXT to the light-theme forest value on paper. Dark's --accent-text
+     * is a light green that would vanish on white. */
+    --accent-text: #2a4f3a;
     /* Functional colours must also reset for print: the dark theme lightens --err to
      * #e8756c, which prints as a washed-out pink — and .impossible-part on the boards
      * sheet is the ONE warning the buying list must never soften. Force the high-contrast
      * light values on paper. */
-    --danger: #b5551c;
-    --ok: #17803d;
-    --pending: #b45309;
+    --danger: #a84d18;
+    --ok: #157538;
+    --pending: #a64c08;
     --err: #b3261e;
   }
 
@@ -1175,8 +1162,8 @@ code {
 
 /* Rate-limit notice (rate-limit-notice.tsx) — the banner a denied user sees. */
 .rate-limit-notice {
-  background: var(--accent-soft, #fdf1e0);
-  border: 1px solid var(--accent, #e9a86c);
+  background: var(--accent-soft, #e8f0ea);
+  border: 1px solid var(--accent, #3d6b4f);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   font-size: 0.9375rem;

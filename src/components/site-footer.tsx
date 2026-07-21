@@ -16,10 +16,8 @@ import { CATALOG_PATH } from '@/lib/routes';
  * applies to a footer full of category links just as much. This is the standing rule:
  * any class named in an `@media print` block stays on its element.
  *
- * NOTE ON COPY: the product name is still the "Woodworking Plan" placeholder from
- * BUSINESS_PLAN.md §1 — branding decision #8 is open, and inventing a brand is not the
- * build agent's call (BUILD_PLAN.md §2). No new marketing copy is introduced here; the
- * footer only labels and links things that already exist.
+ * NOTE ON COPY: product brand is Notch (domain notchplans.com) — see
+ * DECISIONS_LOG.md 2026-07-21 and brand/oak-forest/.
  */
 /**
  * The group headings are real `<h2>`s (structure), but the global `h2` rule in
@@ -89,7 +87,7 @@ export function SiteFooter() {
       </div>
 
       <p className="max-w-[64rem] mx-auto mt-[2rem] mb-0 text-[0.8125rem] text-muted">
-        &copy; {new Date().getFullYear()} Woodworking Plan. Measure your own material and
+        &copy; {new Date().getFullYear()} Notch. Measure your own material and
         follow the safety guidance for your tools &mdash; a plan is a well-specified
         starting point, not a substitute for judgement at the saw.
       </p>
