@@ -1362,6 +1362,26 @@ explicitly signs off (per `BUILD_PLAN.md` §1.1, factual reasoning only).
   real content-licensing agreement is a legal/money decision requiring
   explicit user sign-off per `BUILD_PLAN.md` §2.
 
+### 2026-07-21 — UX Remediation Plan (Sprints 33–42) opened; 33–36 executed
+**Status:** In progress (Keagan's direction). Sprints 33–36 code-complete and verified at
+localhost:3000; the /tmp gate, `npm run build`, and push to `main` are Keagan's.
+**Source:** `UX_REMEDIATION_PLAN.md`, derived from the independent `UX_AUDIT_2026-07-21.md`.
+This is a UI/UX quality pass that closes audit findings — **not a Phase-4 feature and not a
+new business capability**, so it opens no business/vendor/legal question. Sprints 33 (light-theme
+AA contrast), 34 (44px touch-target sweep) and 35 (destructive-action confirmation + shopping-list
+control) are decision-free engineering and were executed under standing autonomy (`BUILD_PLAN.md`
+§2). The only ⚖️ item in 33–36 is the PWA `start_url`, logged immediately below.
+
+### 2026-07-21 — PWA `start_url` → `/browse` (Sprint 36.5, audit H6)
+**Status:** Confirmed by Keagan (chose `/browse` over keeping `/`).
+**Source:** UX audit H6. The installed PWA now launches to the catalog (`/browse`) instead of the
+marketing landing (`/`): someone who installed the app is a returning user who wants plans, whereas
+the landing page exists for first-time visitors. `scope` stays `/`. Offline-cold behavior is
+unchanged — `/browse` is `force-dynamic` and not pre-cached, so a cold-offline launch shows the SW
+offline fallback exactly as `/` did; the change improves the ONLINE launch. Takes effect only when
+the PWA is reinstalled. This does not reopen the 2026-07-16 "dark mode follows cookie, not OS"
+call — that OS-preference question is Sprint 37's separate ⚖️.
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,

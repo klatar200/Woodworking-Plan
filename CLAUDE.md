@@ -169,6 +169,70 @@ with it.
 
 ## 7. Current state (keep this updated)
 
+- **UX Remediation Plan (Sprints 33–42): IN PROGRESS. 33–36 are code-complete and
+  browser-verified at localhost:3000 (2026-07-21, Keagan's direction); the /tmp gate, `npm run
+  build`, and push are Keagan's.** `UX_REMEDIATION_PLAN.md`, derived from
+  `UX_AUDIT_2026-07-21.md`. A UI/UX quality pass that closes audit findings — **NOT a Phase-4
+  feature**, no new business capability; every finding maps to one sprint (that plan's §2 coverage
+  matrix). No dev-server restart was needed for any of 33–36 (CSS/TSX hot-reload); the PWA
+  `start_url` change (36.5) only takes effect on REINSTALL.
+  - **Sprint 33 (light-theme AA contrast — audit A1): COMPLETE.** New `--accent-text` token
+    (light `#a85413` = 5.06:1 on `--bg`, 4.78:1 on `--accent-tint`; dark reuses `--accent-strong`
+    `#f2b884`; **reset in the print block too**, or dark-mode printing would render accent text as
+    invisible light orange). Darkened light `--muted-2` `#8a8175`→`#75705f` (3.64→4.70:1; dark
+    unchanged). Re-pointed the THREE text usages of `accent-strong` — `page.tsx` eyebrow + hero
+    `<em>`, `browse` "Clear" link — and left every glyph/background/border on `accent-strong`
+    (graphic, ≥3:1). **`tests/contrast.test.ts`** parses the token hexes and computes WCAG on 15
+    usage pairs × both themes (32 asserts) so a sub-AA TEXT token fails red; `--accent-text` is the
+    18th token in the `dark-theme.test` set. Verified live: eyebrow/hero = `rgb(168,84,19)`.
+  - **Sprint 34 (44px touch-target sweep — audit M1/V3): COMPLETE.** Step dots, filter
+    trigger/close, avatar (44px HIT area, 36px visual circle kept), modal close, chip + checkbox
+    pills (`ui.ts`), saved-remove ✕, pagination (→chip-family pill: bordered on `--surface`,
+    orange `--accent` active), breadcrumb, shopping checkbox (18.4→24px) + its line row → all
+    `2.75rem`. **`tests/touch-targets.test.ts`** guards the shared constants; carries an `it.todo`
+    for Sprint 41's `compactOnMobile` deletion. `filter-disclosure.test` updated (was asserting the
+    old 2.25rem). Verified live: avatar/pagination/filter/checkbox all 44×44; only sub-44 leftovers
+    are the intentional `visually-hidden` no-JS buttons and the checkbox `<input>` inside its 44px
+    label.
+  - **Sprint 35 (destructive-action confirms + shopping-list control — audit H1/H2/A4): COMPLETE.**
+    Review + build-photo delete are now a **two-step, no-JS-safe, URL-driven confirm**
+    (`?confirm-delete=<id>` / `?confirm-photo=<id>`) that states the full blast radius (review +
+    photos + Your-builds entry + un-marks learning paths) before deleting. Visibility gated by
+    `showConfirm()` (`src/lib/review-confirm.ts`) to a review/photo the SESSION user may modify — a
+    forged/foreign id reveals nothing and the raw param is never reflected into markup (server
+    action re-checks regardless). `/shopping-list` gains remove-from-list — a per-plan header form
+    in by-plan, a "Plans on this list" block in merged — reusing the existing
+    `removeFromShoppingListAction` (needed `id` added to `ShoppingListPlan` +
+    `getShoppingList` select). New **`slugify()`** in `format.ts` fixes the invalid/colliding
+    checkbox ids (audit A4: raw `have-${line.name}` held spaces/quotes and collided across unit
+    groups). Tests: `slugify.test`, `review-confirm.test` (pure). The delete/remove click-throughs
+    need existing review/list data → Keagan's `npm run dev` pass.
+  - **Sprint 36 (wayfinding — audit A2/A5/H7/H11/H6/M4 + tabpanel polish): COMPLETE.** Header nav
+    current-state via a tiny client island `nav-current.tsx` wrapping `<Link>` (aria-current + ink
+    + `font-semibold` + a 2px `--accent` underline) with the match rule in pure
+    `src/lib/nav-active.ts` (`/` exact, others prefix, `/plans/*` marks nothing) — **NO
+    `useSearchParams`** (the `/_not-found` Suspense trap); PUBLIC_NAV/SIGNED_IN_NAV stay the single
+    source. Results count → `role="status"` live region (A5). Sort **no longer vanishes** during a
+    keyword search — it's a DISABLED "Relevance" control with the reason in `title` (H7). Mobile
+    drawer search (`#drawer-q`, 16px, its own id; **`MobileNav` now exempts `input/label` from its
+    close-on-click** so tapping the field doesn't shut the drawer, while the submit button still
+    closes it for a query-only search-from-`/browse`). Header-search input 15→16px (M4, iOS zoom).
+    `PlanTabs` panels now ship **role-free**; the effect adds `role="tabpanel"`/`aria-labelledby`
+    **only post-mount when the tablist exists** (no ARIA orphan) — the three `<section data-tab>`
+    lost their server-rendered roles. **`start_url` → `/browse`** (⚖️ Keagan). Tests:
+    `nav-active.test` (pure); updated `sort-select.test` (was asserting `''`) +
+    `filter-disclosure.test`. Verified live: nav aria-current on `/paths`, disabled Relevance on
+    `?q=`, results `role=status`, drawer form in DOM, header search 16px.
+  - **⚠️ Staging-cache staleness caught 2026-07-21:** `device_stage_files` served a STALE
+    pre-Sprint-33 snapshot of `browse/page.tsx` (same bytes/mtime, still `accent-strong`). Caught
+    via `git diff` (authoritative), rebased the Sprint-36 edit on the correct copy, and verified
+    on-device that browse carries BOTH 33's `text-accent-text` and 36's `role="status"`. Lesson:
+    for a file already modified this session, cross-check the staged copy against `git diff` before
+    editing — a stale stage will silently revert.
+  - **Pending docs (batched to Sprint 42's doc truth-pass):** `DESIGN_BRIEF.md` rewrite, and the
+    §7 entries for 37–41 as they land. This §7 block and the `DECISIONS_LOG` `start_url` entry are
+    recorded now (2026-07-21).
+
 - **Stack:** Next.js 15 + TypeScript (App Router, frontend + API routes),
   Postgres via Neon, auth via Clerk, hosted on Vercel. All free tiers. Prisma
   ORM. Vitest. GitHub Actions CI.

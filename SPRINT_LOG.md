@@ -3530,3 +3530,80 @@ No fabricated data — panels only use plans whose optimizer result is clean.
 **Result: 96 — passes on the first attempt. The QOL phase set (A–G) is COMPLETE.** This
 one needs no push decision until you have looked: `npm run dev` → `/dev/diagrams`, then
 tell me whether to keep the narrow version, open a `StepPart` sprint, or drop it.
+
+---
+
+# UX Remediation Plan — Sprints 33–42 (`UX_REMEDIATION_PLAN.md`, from `UX_AUDIT_2026-07-21.md`)
+
+Scores below are SELF-assessed pre-gate. Only the pure tests ran in the sandbox
+(`contrast`, `touch-targets`, `dark-theme`, `slugify`, `review-confirm`, `nav-active` — 69
+green); the full vitest suite, `tsc`, `eslint`, `npm run build`, real-phone taps, print
+previews and the PWA reinstall are Keagan's (E3). Sprints 33–36 are code-complete on disk and
+browser-verified at localhost:3000; unpushed at time of writing.
+
+## Sprint 33: Light-theme AA contrast (audit A1)
+**Dates:** 2026-07-21
+**Scope:** Make every rendered text meet WCAG AA in both themes, guarded by a unit test.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 24 | 33.1–33.6 all shipped. Closes A1. New `--accent-text` (`:root`/`.dark`/print + `@theme inline`); light `--muted-2` darkened; 3 text sites re-pointed; `tests/contrast.test.ts` + `dark-theme.test` updated. |
+| Correctness (/20) | 20 | Measured (E2): light `accent-text` 5.06/5.33/4.78:1 (bg/surface/tint), `muted-2` 4.70/4.95; dark `accent-text` 10.46/9.45. Every pair ≥4.5 in BOTH themes. Print block resets `--accent-text` so dark-mode printing isn't invisible orange. Browser: eyebrow/hero `rgb(168,84,19)`. |
+| Tests (/15) | 15 | `contrast.test.ts` = 15 usage pairs × 2 themes (32 asserts) + sanity; `dark-theme.test` locks `--accent-text` in both themes. Both green in the sandbox. |
+| Security (/15) | 15 | Token values + a unit test only; no auth/data/route surface. |
+| Code quality (/10) | 10 | Single source of truth preserved (`@theme inline` var-mapping); breadcrumb comments cite A1 + the guard test. |
+| Mobile-offline (/10) | 9 | No layout change; print path handled + noted. Real-device contrast render is Keagan's (E3). |
+| Documentation (/5) | 5 | Token comments + CLAUDE.md §7 + this entry + `DESIGN_BRIEF` deferred to 42 (stated). |
+| **Total** | **98** | Passes attempt 1. **E4:** new interactive targets — none; new/changed text ≥4.5:1 both themes — yes (worst 4.58 dark `muted-2`/surface, pre-existing pass). |
+
+## Sprint 34: 44px touch-target sweep (audit M1, V3)
+**Dates:** 2026-07-21
+**Scope:** No interactive control below 44×44 CSS px; visual glyphs may stay small if the hit area reaches 44.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 24 | 34.1–34.10 shipped. Dots, filter trigger/close, avatar, modal close, chip/checkbox, saved ✕, pagination, breadcrumb, shopping checkbox+row → 2.75rem; guard test added. Closes M1, V3. |
+| Correctness (/20) | 19 | Measured live (E2): avatar 44×44 (36px inner circle kept), pagination 44×44 pill (orange `--accent` active), filter trigger 44, checkbox pill 44, breadcrumb 44. Pagination restyle to chip-family is an intended visual delta (flagged). |
+| Tests (/15) | 14 | `touch-targets.test.ts` guards `btnBase/chipBase/checkbox/searchInput/selectControl` + per-component strings; `it.todo` marks Sprint 41's `compactOnMobile` deletion; `filter-disclosure.test` corrected. |
+| Security (/15) | 15 | Sizing only. |
+| Code quality (/10) | 10 | One shared-constant edit fixes chips/pills/tabs/toggles at once; stale "36px pill" comment rewritten. |
+| Mobile-offline (/10) | 9 | Mobile-viewport reasoning + print classes retained; real one-handed phone taps + print preview are Keagan's (E3). |
+| Documentation (/5) | 5 | Comments cite M1; §7 + this entry. |
+| **Total** | **96** | Passes attempt 1. **E4:** all new/changed interactive targets ≥44px — yes (exceptions: `visually-hidden` no-JS buttons; checkbox `<input>` glyph whose 44px label is the target). Text unchanged. |
+
+## Sprint 35: Destructive-action confirms + shopping-list control (audit H1, H2, A4)
+**Dates:** 2026-07-21
+**Scope:** No single tap destroys data; blast radius disclosed; shopping list manageable from itself; all no-JS-safe.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 24 | 35.1–35.5 shipped. Review + photo two-step confirm; `/shopping-list` remove (both views); `slugify` fixes ids. Closes H1, H2, A4. |
+| Correctness (/20) | 19 | Confirm is URL-driven (`?confirm-delete/photo`), no-JS-safe, states builds+paths; `showConfirm` unit-tested for own/foreign/no-perm/absent. Remove reuses the existing action (`id` added to `ShoppingListPlan`). Renders clean in-browser; click-through needs data → Keagan. |
+| Tests (/15) | 14 | `slugify.test` (7, incl. audit collision cases), `review-confirm.test` (4) — pure, green. Full render click-through is the gate's. |
+| Security (/15) | 15 | Confirm gated to session-owned id; raw param never reflected; server action re-checks; `returnTo` via `safeReturnTo`; no `userId` params. |
+| Code quality (/10) | 10 | Security decision extracted to a pure, tested helper rather than buried in JSX; no new write path/rate-limit key. |
+| Mobile-offline (/10) | 9 | Remove controls `no-print`; print checkbox rule (`.shopping-line-main input`) untouched. Real print preview → Keagan. |
+| Documentation (/5) | 5 | Comments cite H1/H2/A4; §7 + this entry. |
+| **Total** | **96** | Passes attempt 1. **E4:** new targets ≥44px (btnGhost/btnDanger) — yes; new text unchanged palette. |
+
+## Sprint 36: Wayfinding — nav state, live results, mobile search, PWA entry (audit A2, A5, H7, H11, H6, M4, tabpanel polish)
+**Dates:** 2026-07-21
+**Scope:** Chrome tells the truth about location and change; search reachable on mobile; installed app opens where users go.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 24 | 36.1–36.8 shipped. Nav current-state, results live region, disabled-Relevance sort, mobile drawer search, `start_url=/browse` (⚖️), header 16px, tabpanel ARIA timing. Closes A2/A5/H7/H11/H6/M4 + the tabpanel orphan. |
+| Correctness (/20) | 19 | Verified live: `aria-current="page"` + underline on `/paths`; `#sort` disabled/"Relevance" on `?q=`; results `role="status"`; `#drawer-q` in DOM; header input 16px. Drawer close-on-click now exempts the search field. |
+| Tests (/15) | 14 | `nav-active.test` (pure, 5) green; `sort-select.test` + `filter-disclosure.test` updated to new behaviour (run in the gate). |
+| Security (/15) | 15 | No new server surface; `useSearchParams` avoided (Suspense/`/_not-found` trap); nav lists stay the single source. |
+| Code quality (/10) | 10 | Matcher extracted to pure `nav-active.ts`; island wraps `<Link>`, doesn't re-own nav; `PlanTabs` roles moved into the enhancement effect. |
+| Mobile-offline (/10) | 9 | Mobile search closes drawer on submit; `start_url` offline-cold behavior unchanged + noted; no SW change. Real reinstall/phone → Keagan (E3). |
+| Documentation (/5) | 5 | `DECISIONS_LOG` start_url entry; §7 + this entry. |
+| **Total** | **96** | Passes attempt 1. **E4:** new targets ≥44px (drawer input/button 2.75rem) — yes; new text (nav/labels) uses existing AA tokens. |
+
+**33–36 status:** code-complete, browser-verified, unpushed. Keagan runs the /tmp gate +
+`npm run build` + push, then CI. Sprint 37 (dark mode for everyone) carries the OS-preference ⚖️.
