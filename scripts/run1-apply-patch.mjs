@@ -120,7 +120,31 @@ export function checkPatched(originalPlan, nextPlan, changedFields) {
  * patch making this claim takes the full 3-vote regardless of how cleanly its numbers trace.
  */
 const SHORTFALL_CLAIM =
-  /\b(short(?:fall|s)?\b|not enough|falls? short|won'?t (?:be )?enough|cannot yield|can'?t yield|need (?:a|an|another|one more|a fifth|a fourth)\b|a second board|more \w+ than|buy (?:more|another|an extra))/i;
+  /\b(short(?:fall|s)?\b|not enough|falls? short|won'?t (?:be )?enough|cannot yield|can'?t yield|need (?:a|an|another|one more|a fifth|a fourth)\b|a second board|buy (?:more|another|an extra))/i;
+
+/**
+ * A CLEARED shortfall is the opposite of a claim, and the words look identical.
+ *
+ * Batch 2 routed 18 of 20 patches to the full panel because the agent had diligently
+ * written "verified 2x4 and 2x6 both pack comfortably — no shortfall in either", and a
+ * bare keyword match read that as an assertion. Tiering that fires on the negation of
+ * its own trigger is not tiering.
+ */
+const CLEARED = /\b(no|not|isn'?t|without|never|rather than)\b[^.]{0,40}$|(comfortabl|plenty|clears|packs? (?:in|into|comfortabl)|fits? (?:in|into|comfortabl)|no shortfall|not a shortfall)/i;
+
+/** Sentences that ASSERT a shortfall, ignoring ones that rule one out. */
+function assertsShortfall(text) {
+  return String(text)
+    .split(/(?<=[.!?])\s+/)
+    .some((sentence) => {
+      if (!SHORTFALL_CLAIM.test(sentence)) return false;
+      // Look only at the clause around the match, so a later clearance elsewhere in a
+      // long sentence cannot mask a real claim earlier in it.
+      const idx = sentence.search(SHORTFALL_CLAIM);
+      const clause = sentence.slice(Math.max(0, idx - 60), idx + 60);
+      return !CLEARED.test(clause);
+    });
+}
 
 /**
  * Which verification tier this patch needs (PLAN_AUDIT_BRIEF.md §6.2 item 3, tiered per
@@ -129,8 +153,13 @@ const SHORTFALL_CLAIM =
  */
 export function verificationTier({ derived, untraceable }, patch, nextPlan) {
   const prose = (nextPlan.steps ?? []).map((s) => `${s.title} ${s.body}`).join('\n');
+  // A structural declaration beats inferring intent from prose. When the agent states
+  // it, that is the answer; the text scan is only the fallback for patches written
+  // before the field existed.
   const claimsShortfall =
-    SHORTFALL_CLAIM.test(prose) || (patch.flags ?? []).some((f) => SHORTFALL_CLAIM.test(f));
+    typeof patch.shortfallClaim === 'boolean'
+      ? patch.shortfallClaim
+      : assertsShortfall(prose) || (patch.flags ?? []).some((f) => assertsShortfall(f));
 
   if (untraceable.length || claimsShortfall) return 'triple';
   if (derived.length) return 'single';

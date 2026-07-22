@@ -22,6 +22,48 @@ import { readPlan } from './plan-io.mjs';
 import { applyOps } from './run1-apply-patch.mjs';
 import { lintPlan } from './run1-number-lint.mjs';
 
+/**
+ * Saw kerf, matching src/lib/cut-optimizer.ts. Every cut eats about 1/8", which is why
+ * six 16" parts do NOT fit on a 96" board.
+ */
+export const KERF = 0.125;
+
+/**
+ * First-Fit-Decreasing board packing — the same algorithm and kerf rule as
+ * `src/lib/cut-optimizer.ts`, reimplemented here because that module is TypeScript and
+ * this is a plain-node script.
+ *
+ * WHY THIS IS IN THE PACKET: batch 2's three worst defects were all the same mistake —
+ * the rewrite agent claimed a lumber shortfall after binning each part LENGTH separately
+ * instead of cross-pairing different lengths on one board. A 58 1/4" rafter and a 37 1/2"
+ * one share a 96" board; totalling by part type never sees that. Three separate false
+ * "buy another board" claims reached the verifiers, who each had to re-pack by hand.
+ *
+ * Bin-packing has one correct answer, so per §6.2 item 1 it belongs in a script. Handing
+ * the true board count to both the writer and the verifier removes the whole defect class
+ * rather than catching it downstream.
+ */
+export function packBoards(lengths, stockLengthIn) {
+  const parts = [...lengths].sort((a, b) => b - a);
+  if (parts.some((p) => p > stockLengthIn)) return null; // impossible on this stock
+  const bins = [];
+  for (const p of parts) {
+    // A part needs its own length plus a kerf for the cut that frees it, except when it
+    // finishes the board exactly.
+    const bin = bins.find((b) => b.remaining >= p + (b.used > 0 ? KERF : 0));
+    if (bin) {
+      bin.remaining -= p + (bin.used > 0 ? KERF : 0);
+      bin.used += 1;
+    } else {
+      bins.push({ remaining: stockLengthIn - p, used: 1 });
+    }
+  }
+  return {
+    boards: bins.length,
+    worstSlack: bins.length ? Math.min(...bins.map((b) => b.remaining)) : 0,
+  };
+}
+
 const frac = (v) => {
   const whole = Math.floor(v);
   const f = v - whole;
@@ -32,6 +74,13 @@ const frac = (v) => {
   return whole > 0 ? `${whole} ${n / d}/${16 / d}` : `${n / d}/${16 / d}`;
 };
 
+if (!process.argv[1]?.endsWith('run1-verify-packet.mjs')) {
+  // Imported for `packBoards`/`KERF` — do not run the CLI.
+} else {
+buildPacket();
+}
+
+function buildPacket() {
 const patches = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const out = [];
 
@@ -60,10 +109,19 @@ for (const patch of Array.isArray(patches) ? patches : [patches]) {
   const groups = new Map();
   for (const c of plan.cutList ?? []) {
     const k = `${frac(c.thicknessIn)}" x ${frac(c.widthIn)}"`;
-    groups.set(k, (groups.get(k) ?? 0) + c.quantity * c.lengthIn);
+    if (!groups.has(k)) groups.set(k, { total: 0, lengths: [] });
+    const g = groups.get(k);
+    g.total += c.quantity * c.lengthIn;
+    for (let i = 0; i < c.quantity; i += 1) g.lengths.push(c.lengthIn);
   }
-  for (const [k, total] of groups) out.push(`- parts at ${k}: ${frac(total)}" of length required`);
-  out.push(`- ALL parts: ${frac([...groups.values()].reduce((a, b) => a + b, 0))}" total`);
+  for (const [k, g] of groups) {
+    out.push(`- parts at ${k}: ${frac(g.total)}" of length required`);
+    for (const stock of [96, 120, 144]) {
+      const packed = packBoards(g.lengths, stock);
+      if (packed) out.push(`    at ${stock / 12} ft stock: ${packed.boards} boards (kerf ${frac(KERF)}"), worst offcut ${frac(packed.worstSlack)}"`);
+    }
+  }
+  out.push(`- ALL parts: ${frac([...groups.values()].reduce((a, b) => a + b.total, 0))}" total`);
 
   out.push('\n### TOOLS AVAILABLE (slugs)');
   out.push((plan.tools ?? []).map((t) => t.slug).join(', '));
@@ -90,3 +148,4 @@ for (const patch of Array.isArray(patches) ? patches : [patches]) {
 }
 
 console.log(out.join('\n'));
+}
