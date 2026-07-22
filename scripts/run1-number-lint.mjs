@@ -82,6 +82,21 @@ export function traceableUniverse(plan) {
   const degrees = new Set();
   const feet = new Set();
 
+  /**
+   * The plan's own DESCRIPTION is a source, per §4.4: "Ground every added detail in the
+   * plan's `cutList`, `materials`, and existing `description`."
+   *
+   * Omitting it produced a real false positive that three independent verifiers had to
+   * overturn by hand: welly-boot-rack's description already says "taping the spade bit
+   * 3/4\" up from its tip … a clean 3/4\"-deep dowel socket", so the rewrite repeating
+   * 3/4" was quoting the plan, not inventing. A guard that flags authored values trains
+   * everyone downstream to wave flags through, which is worse than not flagging.
+   */
+  for (const t of extractMeasurements(plan.description ?? '')) {
+    (t.unit === 'deg' ? degrees : t.unit === 'ft' ? feet : inches).add(t.value);
+    if (t.unit === 'ft') inches.add(t.value * 12);
+  }
+
   for (const c of plan.cutList ?? []) {
     for (const v of [c.thicknessIn, c.widthIn, c.lengthIn]) inches.add(v);
     for (const t of extractMeasurements(`${c.part} ${c.material ?? ''} ${c.note ?? ''}`)) {
@@ -93,13 +108,52 @@ export function traceableUniverse(plan) {
     const text = `${mat.name} ${mat.note ?? ''} ${mat.species ?? ''}`;
     for (const t of extractMeasurements(text)) {
       (t.unit === 'deg' ? degrees : t.unit === 'ft' ? feet : inches).add(t.value);
+      // A material sold as "8 ft" justifies discussing it as 96" — the same board.
+      if (t.unit === 'ft') inches.add(t.value * 12);
     }
     // Nominal lumber ("1x4", "2x6") justifies talking about a 1x4 and its members.
     for (const nm of text.matchAll(/\b(\d+)\s*x\s*(\d+)\b/gi)) {
       inches.add(Number(nm[1]));
       inches.add(Number(nm[2]));
     }
+    // A material sold BY LENGTH carries its quantity in that unit: moulding with
+    // { unit: "ft", quantity: 12 } is twelve feet of stock, so "12 ft supplied" is a
+    // direct read of the plan's data even though no name or note spells it out.
+    const unit = (mat.unit ?? '').trim().toLowerCase();
+    if (unit === 'ft' || unit === 'feet' || unit === 'foot') {
+      feet.add(mat.quantity);
+      inches.add(mat.quantity * 12);
+    } else if (unit === 'in' || unit === 'inches' || unit === 'inch') {
+      inches.add(mat.quantity);
+    }
   }
+
+  /**
+   * MATERIAL-YIELD AGGREGATES.
+   *
+   * §4.6 requires a rewrite to state when the declared lumber falls short of the cut
+   * list — which means writing sentences like "the cut list needs 123 1/2\" but one 10 ft
+   * board gives you 120\"". That total is arithmetic on the plan's OWN data, so it must
+   * be traceable, but it is not any single cutList value and pairwise derivation cannot
+   * reach it.
+   *
+   * Only three shapes are admitted, all of them the sums a builder actually computes:
+   * per-row (quantity x length), per-STOCK-GROUP (rows sharing a thickness x width
+   * signature — i.e. parts cut from the same board), and the grand total. This is
+   * deliberately not "any subset sum": that would be so permissive it would justify
+   * almost any number and the guard would stop guarding.
+   */
+  const groups = new Map();
+  let grandTotal = 0;
+  for (const c of plan.cutList ?? []) {
+    const run = c.quantity * c.lengthIn;
+    inches.add(run);
+    grandTotal += run;
+    const key = `${c.thicknessIn}x${c.widthIn}`;
+    groups.set(key, (groups.get(key) ?? 0) + run);
+  }
+  for (const total of groups.values()) inches.add(total);
+  if (grandTotal > 0) inches.add(grandTotal);
 
   return { in: inches, deg: degrees, ft: feet };
 }
