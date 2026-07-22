@@ -42,7 +42,7 @@ if (!queue.length) {
 }
 
 console.log(`# batch of ${queue.length} (${WANT_PUBLISHED ? 'published' : 'unpublished'})\n`);
-for (const [slug, r] of queue) {
+for (const [, r] of queue) {
   const s = r.signals;
   const why = [
     s.missingCutStep && 'NO CUT STEP',
