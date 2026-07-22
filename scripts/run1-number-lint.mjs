@@ -158,6 +158,63 @@ export function traceableUniverse(plan) {
   return { in: inches, deg: degrees, ft: feet };
 }
 
+/**
+ * A FASTENER SIZE is a purchasing claim, so it must trace to the MATERIALS list
+ * specifically — not to the plan's general number universe.
+ *
+ * Two plans were returned by verifiers for exactly this: one prescribed a 2" nail when
+ * the materials sell only 1-1/4" finish nails, the other a 2" screw when only 2-1/2" is
+ * listed. Both sailed through the general lint, because "2" is in every plan that
+ * mentions a 2x4 — nominal lumber contributes 2 and 4 to the universe, so a fastener
+ * length can borrow legitimacy from a board it has nothing to do with.
+ *
+ * Telling someone to drive a 2" screw they do not own is a trip to the hardware store
+ * mid-build; telling them to drive one that punches through the far face is worse. The
+ * plan's own materials are the only honest source for it.
+ */
+const FASTENER_TYPES = /\b(screws?|nails?|brads?|bolts?|staples?|lags?)\b/gi;
+const singular = (w) => w.toLowerCase().replace(/s$/, '');
+
+/** Fastener type -> the sizes this plan's materials actually sell it in. */
+export function fastenerUniverse(plan) {
+  const byType = new Map();
+  const ambiguous = new Set();
+  for (const mat of plan.materials ?? []) {
+    const text = `${mat.name} ${mat.note ?? ''}`;
+    const types = [...text.matchAll(FASTENER_TYPES)].map((m) => singular(m[1]));
+    if (!types.length) continue;
+    const sizes = extractMeasurements(text)
+      .filter((t) => t.unit === 'in')
+      .map((t) => t.value);
+    for (const ty of types) {
+      if (!byType.has(ty)) byType.set(ty, new Set());
+      for (const s of sizes) byType.get(ty).add(s);
+      /**
+       * An ALTERNATIVES row cannot establish a contradiction. `6-cube-organizer` sells
+       * `2" self-tapping wood screws or pocket hole screws` — the 2" binds to the first
+       * option, the pocket-hole screw is unsized, and the prose's 1-1/4" pocket screw
+       * (the correct size for 3/4" stock) is not in dispute with anything. Reading the
+       * row as "screws are 2\" and nothing else" invents a defect out of punctuation.
+       */
+      if (/\bor\b/i.test(text)) ambiguous.add(ty);
+    }
+  }
+  for (const ty of ambiguous) byType.delete(ty);
+  return byType;
+}
+
+/**
+ * A fastener size DIRECTLY after the measurement — "2\" screws", "1-1/4\" brad nails",
+ * "2\" self-tapping trim screws".
+ *
+ * The intervening words are capped at two and conjunctions are excluded, because "cut
+ * four pickets at 16\" and screw them across the frame" uses `screw` as a VERB and the
+ * 16\" is a picket length. A first cut of this guard flagged it, which is the shape of
+ * false positive that teaches everyone downstream to wave flags through.
+ */
+const FASTENER_CONTEXT =
+  /^[\s-]*(?:(?!and\b|or\b|then\b|to\b|into\b|with\b)\w+\s+){0,2}(screws?|nails?|brads?|bolts?|staples?|lags?)\b/i;
+
 /** Sums and differences of two traceable values — one level, no chaining. */
 function derivable(value, pool) {
   const vals = [...pool];
@@ -177,6 +234,7 @@ function derivable(value, pool) {
  */
 export function lintPlan(plan, fields = null) {
   const universe = traceableUniverse(plan);
+  const fasteners = fastenerUniverse(plan);
   const texts =
     fields ??
     [
@@ -191,6 +249,33 @@ export function lintPlan(plan, fields = null) {
   for (const [where, text] of texts) {
     for (const tok of extractMeasurements(text ?? '')) {
       const pool = universe[tok.unit] ?? new Set();
+
+      /**
+       * Fastener sizes answer to the materials list (see fastenerUniverse).
+       *
+       * Only a CONTRADICTION is flagged: the plan sells that fastener in stated sizes and
+       * the prose names a different one. Where the materials list an UNSIZED fastener
+       * ("Brad nails"), naming a length is useful authorial detail the plan does not
+       * dispute — flagging it would bury the real defect, which is being told to drive a
+       * 2" screw when the only screw in the list is 2-1/2".
+       */
+      const after = String(text ?? '').slice(tok.index + tok.raw.length);
+      const ctx = tok.unit === 'in' ? FASTENER_CONTEXT.exec(after) : null;
+      if (ctx) {
+        const sold = fasteners.get(singular(ctx[1]));
+        if (sold?.size && ![...sold].some((v) => near(v, tok.value))) {
+          findings.push({
+            where,
+            raw: tok.raw,
+            value: tok.value,
+            unit: 'in',
+            status: 'untraceable',
+            note: `plan sells ${ctx[1]} only in ${[...sold].join('", ')}"`,
+          });
+          continue;
+        }
+      }
+
       if ((SHOP_CONSTANTS[tok.unit] ?? []).some((v) => near(v, tok.value))) continue;
       if ([...pool].some((v) => near(v, tok.value))) continue;
       // A foot value stated in a plan whose data is in inches is fine if it converts.
