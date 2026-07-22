@@ -50,9 +50,39 @@ export function applyOps(plan, ops) {
   return { ...plan, steps };
 }
 
+/**
+ * A numeric step cross-reference in a plan whose steps have been RENUMBERED.
+ *
+ * x-desk-with-drawer was returned by all three verifiers for this alone: the rewrite
+ * inserted the missing cut step, every later step shifted by one, and an untouched step
+ * went on saying "before step 7" — now pointing at the wrong step. The prose was fine;
+ * the numbering underneath it moved.
+ *
+ * Inserting a cut step is the single most common op in this run, so this is a defect
+ * class, not an incident. It is also perfectly deterministic, so per §6.2 item 1 it
+ * belongs in a script rather than in three verifiers' attention budget.
+ *
+ * The fix is to ban the brittle form outright in any plan an insert has renumbered:
+ * "before you attach the aprons" cannot go stale, and reads better than "before step 7"
+ * regardless. Plans with no insert keep their existing references untouched — this is a
+ * renumbering guard, not a style rule.
+ */
+function staleStepRefs(nextPlan) {
+  const out = [];
+  for (const [n, s] of (nextPlan.steps ?? []).entries()) {
+    for (const m of `${s.title} ${s.body}`.matchAll(/\bsteps?\s+\d+/gi)) {
+      out.push(
+        `step ${n + 1}: "${m[0]}" — an insert renumbered this plan's steps, so a numeric ` +
+          `cross-reference is stale. Name the step instead.`,
+      );
+    }
+  }
+  return out;
+}
+
 /** Returns [] when the candidate is shippable, else the reasons it is not. */
-export function checkPatched(originalPlan, nextPlan, changedFields) {
-  const errors = [];
+export function checkPatched(originalPlan, nextPlan, changedFields, renumbered = false) {
+  const errors = renumbered ? staleStepRefs(nextPlan) : [];
   const toolSlugs = new Set((nextPlan.tools ?? []).map((t) => t.slug));
   const matNames = new Set((nextPlan.materials ?? []).map((m) => m.name));
 
@@ -198,7 +228,8 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
         if (!before || before.body !== s.body) changed.push([`step${n + 1}.body`, s.body]);
       }
 
-      const { errors, derived, untraceable } = checkPatched(plan, next, changed);
+      const renumbered = patch.ops.some((o) => o.op === 'insert');
+      const { errors, derived, untraceable } = checkPatched(plan, next, changed, renumbered);
       const tier = verificationTier({ derived, untraceable }, patch, next);
       if (errors.length) {
         rejected += 1;
