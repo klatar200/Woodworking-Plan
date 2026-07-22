@@ -106,22 +106,27 @@ export function costTierSymbol(tier: CostTier): string {
 /**
  * Upper bound of each tier, in integer cents.
  *
- * NOT INVENTED — derived from the 24 authored plans, whose `costTier` was assigned by
- * hand. Bucketing them by `costMaxCents` separates the tiers with no overlap at all:
+ * ⚠️ THIS IS A MIRROR of `COST_TIER_BOUNDS` in `src/content/plan-schema.ts`, which is
+ * the authoritative pair. It cannot simply import it: `plan-schema.ts` pulls in zod, and
+ * this module is reached from client components, so the import would drag a validation
+ * library into the browser bundle to read four integers.
  *
- *   TIER_1  max cost $45–$50      TIER_4  max cost $620–$720
- *   TIER_2  max cost $55–$150     TIER_5  max cost $2200
- *   TIER_3  max cost $170–$300
+ * The two DID drift, and the drift was real: this table said TIER_3 ≤ $300 / TIER_4 ≤
+ * $720 (empirically derived from the original 24 hand-tiered plans, back when 24 plans
+ * were the whole catalog) while the schema gate said ≤ $350 / ≤ $750. So a $320 shopping
+ * list rendered `$$$$` while every plan authored at $320 rendered `$$$` — one vocabulary,
+ * two answers. Reconciled 2026-07-22 in favour of the schema, per PLAN_AUDIT_BRIEF.md §3
+ * ("if in doubt, plan-schema.ts wins") and because the schema is the validator's own gate:
+ * a tier that disagrees with it is a tier no plan file is allowed to carry.
  *
- * So these thresholds reproduce the human judgement already in the catalog rather than
- * imposing a different one on top of it. If the catalog's price distribution shifts,
- * re-derive them from the data — do not nudge them by feel.
+ * `tests/cost-tier-bounds.test.ts` parses the schema and asserts this table still matches.
+ * A comment is not a mechanism — that test is.
  */
 const TIER_MAX_CENTS: [CostTier, number][] = [
   ['TIER_1', 5_000], // ≤ $50
   ['TIER_2', 15_000], // ≤ $150
-  ['TIER_3', 30_000], // ≤ $300
-  ['TIER_4', 72_000], // ≤ $720
+  ['TIER_3', 35_000], // ≤ $350
+  ['TIER_4', 75_000], // ≤ $750
 ];
 
 /**
