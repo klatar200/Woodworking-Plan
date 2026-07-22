@@ -34,6 +34,45 @@ export function saveLedger(ledger) {
  * for rewrite if the model triage OR these signals flag it, so a cheap triage can only
  * ADD rewrites and can never silently skip a class of plans.
  */
+const NOMINAL = /\b(\d+)\s*x\s*(\d+)\b/i;
+const SHEET_GOODS = /\b(plywood|mdf|particle board|osb|hardboard|melamine)\b/i;
+
+/**
+ * Structural stock the plan tells you to BUY and never tells you what to do with.
+ *
+ * `farmhouse-storage-bed-with-drawers` was rejected 3-0 for exactly this: nine 1x3 and
+ * three 2x2 sat in the materials list, in no cut-list row and in no step, so the mattress
+ * support was never placed by any instruction. Someone follows the plan to the end and
+ * has boards left over and nothing holding the mattress up.
+ *
+ * Restricted to boards and sheet goods ON PURPOSE. A first cut checked every material and
+ * flagged 45 plans, almost all of them glue, sandpaper and screws — consumables that
+ * legitimately appear in no cut list and are often not named in prose. Catching those
+ * would bury the twenty plans where the defect is real.
+ */
+function unplacedStock(plan) {
+  const steps = plan.steps ?? [];
+  const cutList = plan.cutList ?? [];
+  if (!steps.length || !cutList.length) return [];
+  const hay = (
+    cutList.map((c) => `${c.part} ${c.material ?? ''} ${c.note ?? ''}`).join(' ') +
+    ' ' +
+    steps.map((s) => `${s.title} ${s.body} ${(s.materials ?? []).join(' ')}`).join(' ')
+  ).toLowerCase();
+
+  return (plan.materials ?? [])
+    .filter((m) => {
+      // Sheet goods first — "Plywood, 3/4 in, half sheet (2x8)" is a sheet, and the
+      // parenthesised 2x8 is its size, not a nominal board.
+      const sheet = SHEET_GOODS.exec(m.name);
+      if (sheet) return !hay.includes(sheet[1].toLowerCase());
+      const nm = NOMINAL.exec(m.name);
+      if (!nm) return false;
+      return !hay.includes(`${nm[1]}x${nm[2]}`) && !hay.includes(`${nm[1]} x ${nm[2]}`);
+    })
+    .map((m) => m.name);
+}
+
 export function signalsFor(plan) {
   const steps = plan.steps ?? [];
   const cutList = plan.cutList ?? [];
@@ -56,6 +95,7 @@ export function signalsFor(plan) {
     // the one signal here that names a fix rather than a doubt — either the prose adopts
     // the size sold, or the material row is wrong.
     fastenerContradiction: findings.filter((f) => f.note).map((f) => `${f.where}:${f.raw}`),
+    unplacedStock: unplacedStock(plan),
     steps: steps.length,
     cutListRows: cutList.length,
     distinctParts,
@@ -74,6 +114,7 @@ export function deterministicallyFlagged(s) {
     s.lowStepDensity ||
     s.thinSteps.length > 0 ||
     s.untraceableNumbers.length > 0 ||
+    s.unplacedStock?.length > 0 ||
     s.stepsWithNoMeasurement === s.steps
   );
 }
@@ -116,6 +157,7 @@ if (rows.length) {
   console.log(`untraceable numbers     ${by((r) => r.published && r.signals.untraceableNumbers.length)}`);
   console.log('\n-- status --');
   console.log(`fastener contradiction  ${by((r) => r.published && r.signals.fastenerContradiction?.length)}`);
+  console.log(`unplaced structural stock ${by((r) => r.published && r.signals.unplacedStock?.length)}`);
   for (const st of ['pending', 'audited', 'rewritten', 'verified', 'passed', 'returned', 'flagged']) {
     const n = by((r) => r.status === st);
     if (n) console.log(`${st.padEnd(12)} ${n}`);

@@ -25,6 +25,9 @@ function severity(r) {
   return (
     (s.missingCutStep ? 100 : 0) +
     (s.lowStepDensity ? 40 : 0) +
+    // Stock you are told to buy and never told to use is a defect a builder only
+    // discovers at the end, so it ranks with the missing cut step rather than below it.
+    (s.unplacedStock?.length ? 60 : 0) +
     s.untraceableNumbers.length * 15 +
     s.thinSteps.length * 10 +
     (s.stepsWithNoMeasurement === s.steps ? 25 : 0)
@@ -46,6 +49,7 @@ for (const [, r] of queue) {
   const s = r.signals;
   const why = [
     s.missingCutStep && 'NO CUT STEP',
+    s.unplacedStock?.length && `NEVER USED: ${s.unplacedStock.join('; ')}`,
     s.lowStepDensity && `low density (${s.steps} steps / ${s.distinctParts} parts)`,
     s.thinSteps.length && `thin steps: ${s.thinSteps.join(',')}`,
     s.untraceableNumbers.length && `untraceable: ${s.untraceableNumbers.join(', ')}`,
