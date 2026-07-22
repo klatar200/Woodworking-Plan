@@ -110,6 +110,33 @@ export function checkPatched(originalPlan, nextPlan, changedFields) {
   };
 }
 
+/**
+ * Language that asserts the plan's own lumber does not cover its cut list.
+ *
+ * This is the single highest-risk claim a rewrite can make, in BOTH directions: a missed
+ * shortfall sends someone to the lumberyard twice, and an INVENTED one sends them home
+ * with a board they didn't need and quietly discredits the plan. Batch 1 produced one of
+ * each — cubby-dresser invented a 2x2 shortfall while omitting the real 1x10 one — so any
+ * patch making this claim takes the full 3-vote regardless of how cleanly its numbers trace.
+ */
+const SHORTFALL_CLAIM =
+  /\b(short(?:fall|s)?\b|not enough|falls? short|won'?t (?:be )?enough|cannot yield|can'?t yield|need (?:a|an|another|one more|a fifth|a fourth)\b|a second board|more \w+ than|buy (?:more|another|an extra))/i;
+
+/**
+ * Which verification tier this patch needs (PLAN_AUDIT_BRIEF.md §6.2 item 3, tiered per
+ * Keagan's 2026-07-22 call). Tiering may only ADD scrutiny relative to the lint, never
+ * remove it: 'auto' requires that EVERY number traced exactly.
+ */
+export function verificationTier({ derived, untraceable }, patch, nextPlan) {
+  const prose = (nextPlan.steps ?? []).map((s) => `${s.title} ${s.body}`).join('\n');
+  const claimsShortfall =
+    SHORTFALL_CLAIM.test(prose) || (patch.flags ?? []).some((f) => SHORTFALL_CLAIM.test(f));
+
+  if (untraceable.length || claimsShortfall) return 'triple';
+  if (derived.length) return 'single';
+  return 'auto';
+}
+
 if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
   const patchPath = process.argv[2];
   const WRITE = process.argv.includes('--write');
@@ -143,15 +170,16 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
       }
 
       const { errors, derived, untraceable } = checkPatched(plan, next, changed);
-      const needsVerify = derived.length + untraceable.length;
+      const tier = verificationTier({ derived, untraceable }, patch, next);
       if (errors.length) {
         rejected += 1;
         record = { slug: patch.slug, status: 'rejected', errors };
-      } else if (needsVerify && !FORCE) {
-        // Not a failure — the routing decision. These go to the 3-vote verify stage.
+      } else if (tier !== 'auto' && !FORCE) {
+        // Not a failure — the routing decision.
         record = {
           slug: patch.slug,
           status: 'needs-verify',
+          tier,
           derived: derived.length,
           untraceable: untraceable.map((f) => `${f.where}: ${f.raw}`),
           flags: patch.flags ?? [],
@@ -185,7 +213,7 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
       for (const e of r.errors) console.log(`               ${e}`);
     } else if (r.status === 'needs-verify') {
       toVerify += 1;
-      console.log(`needs-verify ${r.slug}  (${r.derived} derived, ${r.untraceable.length} untraced)`);
+      console.log(`${r.tier === 'triple' ? '3-VOTE' : '1-vote'}       ${r.slug}  (${r.derived} derived, ${r.untraceable.length} untraced)`);
       for (const u of r.untraceable) console.log(`               ${u}`);
     } else {
       console.log(`${r.status.padEnd(12)} ${r.slug}`);
