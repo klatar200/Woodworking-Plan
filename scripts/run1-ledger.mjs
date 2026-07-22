@@ -47,9 +47,15 @@ export function signalsFor(plan) {
     (s) => !/\d/.test(`${s.title} ${s.body}`),
   ).length;
 
-  const untraceable = lintPlan(plan).filter((f) => f.status === 'untraceable');
+  const findings = lintPlan(plan);
+  const untraceable = findings.filter((f) => f.status === 'untraceable');
 
   return {
+    // Broken out of `untraceableNumbers` because it is a different KIND of defect: not a
+    // number nobody can source, but one the plan's own materials contradict. It is also
+    // the one signal here that names a fix rather than a doubt — either the prose adopts
+    // the size sold, or the material row is wrong.
+    fastenerContradiction: findings.filter((f) => f.note).map((f) => `${f.where}:${f.raw}`),
     steps: steps.length,
     cutListRows: cutList.length,
     distinctParts,
@@ -109,7 +115,8 @@ if (rows.length) {
   console.log(`low step density        ${by((r) => r.published && r.signals.lowStepDensity)}`);
   console.log(`untraceable numbers     ${by((r) => r.published && r.signals.untraceableNumbers.length)}`);
   console.log('\n-- status --');
-  for (const st of ['pending', 'audited', 'rewritten', 'verified', 'passed', 'flagged']) {
+  console.log(`fastener contradiction  ${by((r) => r.published && r.signals.fastenerContradiction?.length)}`);
+  for (const st of ['pending', 'audited', 'rewritten', 'verified', 'passed', 'returned', 'flagged']) {
     const n = by((r) => r.status === st);
     if (n) console.log(`${st.padEnd(12)} ${n}`);
   }
