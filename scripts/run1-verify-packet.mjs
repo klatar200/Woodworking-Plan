@@ -58,8 +58,27 @@ export function packBoards(lengths, stockLengthIn) {
       bins.push({ remaining: stockLengthIn - p, used: 1 });
     }
   }
+  /**
+   * FFD is an APPROXIMATION, and that cuts against us in exactly one direction.
+   *
+   * It never uses fewer bins than optimal, so when it says the stock is enough, it is.
+   * But it can use MORE than optimal — so "the packer says 6 boards, the plan supplies 5,
+   * therefore buy another" is not a proof. It is the same false-shortfall defect that got
+   * three plans returned, arrived at by trusting a heuristic instead of hand-binning.
+   *
+   * The length lower bound settles it for free: you cannot fit N inches of parts into
+   * fewer than ceil(N / stock) boards, whatever the packing. When FFD matches that bound
+   * the answer is provably minimal and a shortfall claim built on it is safe to assert.
+   * When FFD exceeds it, the true minimum lies somewhere between and the claim has to be
+   * argued, not asserted — `provable: false` says so out loud rather than letting a
+   * confident number travel unqualified.
+   */
+  const totalLength = parts.reduce((a, b) => a + b, 0);
+  const lowerBound = Math.ceil(totalLength / stockLengthIn - 1e-9);
   return {
     boards: bins.length,
+    lowerBound,
+    provable: bins.length === lowerBound,
     worstSlack: bins.length ? Math.min(...bins.map((b) => b.remaining)) : 0,
   };
 }
@@ -118,7 +137,14 @@ for (const patch of Array.isArray(patches) ? patches : [patches]) {
     out.push(`- parts at ${k}: ${frac(g.total)}" of length required`);
     for (const stock of [96, 120, 144]) {
       const packed = packBoards(g.lengths, stock);
-      if (packed) out.push(`    at ${stock / 12} ft stock: ${packed.boards} boards (kerf ${frac(KERF)}"), worst offcut ${frac(packed.worstSlack)}"`);
+      if (packed) {
+        out.push(
+          `    at ${stock / 12} ft stock: ${packed.boards} boards (kerf ${frac(KERF)}"), worst offcut ${frac(packed.worstSlack)}"` +
+            (packed.provable
+              ? ' — PROVABLY MINIMAL (matches the length lower bound)'
+              : `  ⚠ HEURISTIC: length alone allows ${packed.lowerBound}; do NOT assert a shortfall from this number`),
+        );
+      }
     }
   }
   out.push(`- ALL parts: ${frac([...groups.values()].reduce((a, b) => a + b.total, 0))}" total`);
