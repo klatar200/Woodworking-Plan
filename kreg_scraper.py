@@ -220,8 +220,12 @@ def _quantity_items(ul) -> list[dict]:
 
 
 def _tools_kreg(soup: BeautifulSoup) -> list[dict]:
+    """Keep every authored Kreg-tool row.
+
+    Plans often list the same display name twice (e.g. two Zinc Pocket-Hole
+    Screw packs or two drills) with distinct product URLs — de-duping by name
+    silently drops those rows. Preserve document order as-is."""
     tools: list[dict] = []
-    seen: set[str] = set()
     for li in soup.select("ul.tools-list.kreg-tools > li"):
         a = li.select_one(".text-holder a") or li.find("a")
         name = _clean(a) if a else _clean(li.select_one(".text-holder"))
@@ -237,10 +241,6 @@ def _tools_kreg(soup: BeautifulSoup) -> list[dict]:
             href = ""
         img = li.select_one(".img-holder img")
         image = _img_src(img)
-        key = name.lower()
-        if key in seen:
-            continue
-        seen.add(key)
         tools.append({"name": name, "url": href, "image": image})
     return tools
 
@@ -600,11 +600,20 @@ def verify_plan(html: str, row: dict) -> list[str]:
     if dom_steps != len(row["steps"]):
         issues.append(f"steps: DOM has {dom_steps}, JSON has {len(row['steps'])}")
 
-    for step in row["steps"]:
+    # Some authored plans genuinely omit a photo on certain steps — only flag
+    # when the DOM has an <img> we failed to capture.
+    for i, li in enumerate(soup.select("ul.directions-list > li"), 1):
+        step = next((s for s in row["steps"] if s.get("step") == i), None)
+        if step is None:
+            # step numbers can skip; fall back to position
+            step = row["steps"][i - 1] if i - 1 < len(row["steps"]) else None
+        if step is None:
+            continue
         if not step.get("body") and not step.get("title"):
             issues.append(f"step {step.get('step')}: empty title and body")
-        if not step.get("image"):
-            issues.append(f"step {step.get('step')}: missing image")
+        dom_img = li.select_one(".img-holder img")
+        if dom_img is not None and not step.get("image"):
+            issues.append(f"step {step.get('step')}: DOM has image but JSON is empty")
 
     dom_kreg = len(soup.select("ul.tools-list.kreg-tools > li"))
     if dom_kreg != len(row["kreg_tools"]):
