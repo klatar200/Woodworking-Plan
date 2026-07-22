@@ -189,6 +189,49 @@ def _taxonomy(soup: BeautifulSoup, machine_name: str) -> list[str]:
     return list(dict.fromkeys(vals))
 
 
+def _img_src(img) -> str:
+    """Best URL for a single <img>. Prefers a real `src`, then the common
+    lazy-load attributes, then the largest candidate in a `srcset`. Returns ''
+    if none usable. Inline `data:` placeholders (the 1px gifs a lazy-loader
+    swaps out) are skipped so we keep the real photo, not the placeholder."""
+    for attr in ("src", "data-src", "data-original", "data-lazy-src"):
+        val = (img.get(attr) or "").strip()
+        if val and not val.startswith("data:"):
+            return val
+    srcset = (img.get("srcset") or img.get("data-srcset") or "").strip()
+    if srcset:
+        # "url-320 320w, url-640 640w, ..." -> take the last (usually largest).
+        candidates = [part.strip().split(" ")[0] for part in srcset.split(",") if part.strip()]
+        if candidates:
+            return candidates[-1]
+    return ""
+
+
+def _image_urls(soup: BeautifulSoup, page_url: str) -> list[str]:
+    """EVERY photo on the plan page — absolute, de-duplicated, in document order.
+
+    Ana-White keeps plan photos in two Drupal fields — the finished photo(s) and
+    an additional-photos gallery — and either may hold MORE THAN ONE <img>. The
+    original scraper used select_one here and kept only the first, dropping the
+    rest; this collects all of them. Document order puts the finished photo
+    first, so `[0]` remains the primary image."""
+    urls: list[str] = []
+    seen: set[str] = set()
+    selector = (
+        ".field--name-field-finishedphoto img, "
+        ".field--name-field-additionalphotos img"
+    )
+    for img in soup.select(selector):
+        src = _img_src(img)
+        if not src:
+            continue
+        absolute = urllib.parse.urljoin(page_url, src)
+        if absolute not in seen:
+            seen.add(absolute)
+            urls.append(absolute)
+    return urls
+
+
 def extract_plan(url: str, html: str) -> dict:
     soup = BeautifulSoup(html, "lxml")
 
@@ -208,15 +251,15 @@ def extract_plan(url: str, html: str) -> dict:
                 description = tag["content"].strip()
                 break
 
-    # Image: the finished-photo field first, then og:image.
-    image = ""
-    img = soup.select_one(".field--name-field-finishedphoto img, .field--name-field-additionalphotos img")
-    if img and img.get("src"):
-        image = urllib.parse.urljoin(url, img["src"])
-    else:
+    # Images: EVERY photo from the finished-photo and additional-photo fields,
+    # in document order and de-duplicated. Some plans ship several photos;
+    # grabbing only the first (the old behaviour) dropped the rest. og:image is
+    # a last resort, used only when the page exposes no photo field at all.
+    images = _image_urls(soup, url)
+    if not images:
         og_img = soup.find("meta", attrs={"property": "og:image"})
         if og_img and og_img.get("content"):
-            image = og_img["content"]
+            images = [og_img["content"].strip()]
 
     return {
         "url": url,
@@ -227,7 +270,12 @@ def extract_plan(url: str, html: str) -> dict:
         "cut_list": _field_lines(soup, "field-cutlist"),
         "tools": _tools(soup),
         "steps": _steps(soup),
-        "image": image,
+        # Full list of photos, primary first.
+        "images": images,
+        # Backwards-compatible single field: the primary photo. Kept so existing
+        # consumers of this JSON (e.g. the import step's `image` lookup) keep
+        # working unchanged while they migrate to the new `images` list.
+        "image": images[0] if images else "",
     }
 
 
@@ -295,8 +343,21 @@ def verify_plan(html: str, row: dict) -> list[str]:
         issues.append("contains 'Log in or register' — selector overshot into the comments block")
     if not row["title"]:
         issues.append("missing title")
-    if not row["image"]:
-        issues.append("missing image")
+    if not row.get("images"):
+        issues.append("missing images")
+    else:
+        dom_imgs = len(soup.select(
+            ".field--name-field-finishedphoto img, "
+            ".field--name-field-additionalphotos img"
+        ))
+        # The DOM count can legitimately EXCEED the JSON count (duplicate srcs
+        # and data: placeholders are de-duped/skipped during extraction), so
+        # only flag the impossible direction: more images in JSON than the
+        # page's photo fields actually contain.
+        if dom_imgs and len(row["images"]) > dom_imgs:
+            issues.append(
+                f"images: JSON has {len(row['images'])}, DOM photo fields have {dom_imgs}"
+            )
     return issues
 
 

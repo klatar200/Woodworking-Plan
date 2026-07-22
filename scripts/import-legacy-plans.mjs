@@ -398,9 +398,35 @@ function main() {
     }));
 
     // --- images ---
-    const images = p.image
-      ? [{ url: p.image, alt: title, isPrimary: true }]
-      : [];
+    // Prefer the scraper's full `images` list (primary first); fall back to the
+    // legacy single `image` field so older plans.json snapshots still import.
+    // De-dupe by URL, keep source order, mark only the first as primary. `alt`
+    // is a title-derived placeholder (the scraper carries no per-image alt) and
+    // is flagged for review like every other non-mechanical field.
+    const rawImageUrls =
+      Array.isArray(p.images) && p.images.length
+        ? p.images
+        : p.image
+          ? [p.image]
+          : [];
+    const seenImageUrls = new Set();
+    const imageUrls = [];
+    for (const u of rawImageUrls) {
+      const url = typeof u === 'string' ? u.trim() : '';
+      if (url && !seenImageUrls.has(url)) {
+        seenImageUrls.add(url);
+        imageUrls.push(url);
+      }
+    }
+    const altBase = title || slug;
+    const images = imageUrls.map((url, i) => ({
+      url,
+      alt: i === 0 ? altBase : `${altBase} — additional photo ${i}`,
+      isPrimary: i === 0,
+    }));
+    if (images.length > 0) {
+      flags.push(`images: ${images.length} imported; alt auto-generated from title — review`);
+    }
 
     // --- category / difficulty / tags (guessed) ---
     const { category, confident } = guessCategory(title);

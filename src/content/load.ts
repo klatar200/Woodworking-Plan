@@ -143,6 +143,7 @@ export function loadCatalog(contentDir: string = CONTENT_DIR): Catalog {
      */
     const planToolSlugs = new Set(plan.tools.map((t) => t.slug));
     const planMaterialNames = new Set(plan.materials.map((m) => m.name));
+    const planImageUrls = new Set(plan.images.map((img) => img.url));
 
     plan.steps.forEach((step, i) => {
       for (const toolSlug of step.tools) {
@@ -160,6 +161,13 @@ export function loadCatalog(contentDir: string = CONTENT_DIR): Catalog {
               `which is not in the plan's materials`,
           );
         }
+      }
+      // Sprint 21 pattern — a step's image must be one of the plan's own images.
+      if (step.image !== undefined && !planImageUrls.has(step.image)) {
+        refProblems.push(
+          `plan "${plan.slug}" step ${i + 1} references image "${step.image}", ` +
+            `which is not one of the plan's images`,
+        );
       }
     });
   }

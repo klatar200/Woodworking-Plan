@@ -184,6 +184,11 @@ function validatePlan(plan, vocab) {
   if (!Array.isArray(plan.steps) || plan.steps.length < 1) {
     p('steps: must be a non-empty array');
   } else {
+    const imageUrlsOnPlan = new Set(
+      (Array.isArray(plan.images) ? plan.images : [])
+        .map((img) => (img && typeof img.url === 'string' ? img.url : null))
+        .filter(Boolean),
+    );
     plan.steps.forEach((s, i) => {
       if (typeof s !== 'object' || s === null) return p(`steps[${i}]: must be an object`);
       if (!isNonEmptyString(s.title)) p(`steps[${i}].title: must be a non-empty string`);
@@ -204,7 +209,14 @@ function validatePlan(plan, vocab) {
           if (!materialNamesOnPlan.has(name)) p(`steps[${i}].materials: "${name}" is not one of this plan's own material names (must be a subset)`);
         });
       }
-      const allowed = new Set(['title', 'body', 'tools', 'materials']);
+      if (s.image !== undefined) {
+        if (!isNonEmptyString(s.image) || !/^https?:\/\//.test(s.image)) {
+          p(`steps[${i}].image: if present, must be a non-empty http(s) URL`);
+        } else if (!imageUrlsOnPlan.has(s.image)) {
+          p(`steps[${i}].image: "${s.image}" is not one of this plan's own image URLs (must be a subset)`);
+        }
+      }
+      const allowed = new Set(['title', 'body', 'tools', 'materials', 'image']);
       for (const k of Object.keys(s)) if (!allowed.has(k)) p(`steps[${i}]: unexpected key "${k}"`);
     });
   }

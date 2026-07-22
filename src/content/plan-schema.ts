@@ -91,6 +91,14 @@ const step = z
      */
     tools: z.array(slug).default([]),
     materials: z.array(z.string().min(1)).default([]),
+    /**
+     * Optional per-step photo/diagram: a URL that MUST be one of the plan's own
+     * `images[]`. The subset is enforced in load.ts (like `tools`/`materials`)
+     * because Zod can't see the sibling `images` array from inside a step.
+     * Optional and unset by default, so every existing plan validates unchanged
+     * and a step simply renders no image until one is assigned to it.
+     */
+    image: z.string().url().optional(),
   })
   .strict();
 
