@@ -70,7 +70,18 @@ export function applyOps(plan, ops) {
 function staleStepRefs(nextPlan) {
   const out = [];
   for (const [n, s] of (nextPlan.steps ?? []).entries()) {
-    for (const m of `${s.title} ${s.body}`.matchAll(/\bsteps?\s+\d+/gi)) {
+    /**
+     * A trailing measurement means this is a PART, not a cross-reference.
+     * `triple-bunk-staggered-beds` enumerates "four hanging mid-bunk steps 29\"" in its
+     * cut step — bunk ladder steps, with their length. Reading that as a pointer to step
+     * 29 rejects a correct patch, and a guard that cries wolf is how the next real stale
+     * reference gets waved through.
+     */
+    for (const m of `${s.title} ${s.body}`.matchAll(
+      // The `[\d…]` class must lead: without it `\d+` backtracks a digit to satisfy the
+      // lookahead, so `steps 29"` matches as `steps 2` and the exclusion never fires.
+      /\bsteps?\s+\d+(?![\d"″\-/]|\s*(?:in\b|inch|ft\b|feet\b))/gi,
+    )) {
       out.push(
         `step ${n + 1}: "${m[0]}" — an insert renumbered this plan's steps, so a numeric ` +
           `cross-reference is stale. Name the step instead.`,
