@@ -181,7 +181,7 @@ function assertsShortfall(text) {
  * Keagan's 2026-07-22 call). Tiering may only ADD scrutiny relative to the lint, never
  * remove it: 'auto' requires that EVERY number traced exactly.
  */
-export function verificationTier({ derived, untraceable }, patch, nextPlan) {
+export function verificationTier({ untraceable }, patch, nextPlan) {
   const prose = (nextPlan.steps ?? []).map((s) => `${s.title} ${s.body}`).join('\n');
   // A structural declaration beats inferring intent from prose. When the agent states
   // it, that is the answer; the text scan is only the fallback for patches written
@@ -192,8 +192,21 @@ export function verificationTier({ derived, untraceable }, patch, nextPlan) {
       : assertsShortfall(prose) || (patch.flags ?? []).some((f) => assertsShortfall(f));
 
   if (untraceable.length || claimsShortfall) return 'triple';
-  if (derived.length) return 'single';
-  return 'auto';
+
+  /**
+   * A prose rewrite NEVER auto-applies. §6.2 item 2 exempts "a mechanical change that
+   * passes lint + validator" from model review — a cost-tier recomputation or a unit
+   * spelling, where the lint is the whole question. A step rewrite is not that: it is a
+   * judgment change, and the brief routes judgment to verifiers.
+   *
+   * The gap this closes is specific. Tracing every number proves no dimension was
+   * invented; it proves nothing about what the sentence does with them. Two returned
+   * plans had perfect number traceability and were still wrong — 11-1/4" side trims
+   * placed on the 26-1/2" front/back edges, and a frame described as 69-1/2" x 17" that
+   * its own rails make 66-1/2" x 20". Both would have shipped unread under an 'auto'
+   * tier, because every figure in them was real.
+   */
+  return 'single';
 }
 
 if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
