@@ -10,6 +10,7 @@ import { InstallMenuItem } from '@/components/install-prompt';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { CATALOG_PATH } from '@/lib/routes';
+import { BRAND_NAME } from '@/lib/brand';
 import { btnPrimary } from '@/lib/ui';
 
 // Sprint 29 (UI migration, wave 1): the header moved to Tailwind utilities.
@@ -24,8 +25,10 @@ const skipLink =
 // (absolute + top-full in mobile-nav.tsx).
 const siteHeader =
   'site-header relative flex items-center justify-between gap-[1rem] px-[1.25rem] py-[0.625rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.625rem+env(safe-area-inset-top))]';
+// Sprint 45: the brand is a LOCKUP now — mark + wordmark in one link. `inline-flex
+// min-h-[2.75rem]` keeps the 44px hit area the text-only link satisfied by line-height.
 const brand =
-  'font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+  'inline-flex items-center gap-[0.5rem] min-h-[2.75rem] font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
 // Desktop nav link: quiet by default, ink on hover. 44px tall for touch.
 const navLink =
@@ -131,8 +134,20 @@ export function SiteHeader() {
             QOL-J: the brand and the nav are ONE flex group so the nav sits right beside
             the logo, instead of `justify-between` pushing it to the middle of the bar. */}
         <div className="flex items-center gap-[1.5rem] min-w-0">
+        {/* Sprint 45 lockup: Keagan's mark + the wordmark. The mark is decorative
+            (alt="") — the accessible name is the text right beside it. Plain <img>,
+            not next/image: a 10 KB local SVG needs no optimizer hop (same call as
+            the Clerk avatar). */}
         <Link href="/" className={brand}>
-          Woodworking Plan
+          {/* eslint-disable-next-line @next/next/no-img-element -- local brand SVG, no optimization needed */}
+          <img
+            src="/brand/notch-logo.svg"
+            alt=""
+            width={26}
+            height={28}
+            className="h-[1.75rem] w-auto"
+          />
+          {BRAND_NAME}
         </Link>
 
         {/* ---- Desktop nav (≥ lg): quiet text links, one primary CTA ---- */}

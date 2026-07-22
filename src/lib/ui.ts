@@ -154,8 +154,10 @@ export const selectControl =
  * uses `:has()` on the nested input, which out-specifies the base so class order is safe.
  * Reused by the filter panel and the workshop screen.
  */
-// Sprint 31: when checked, the pill fills with --accent (orange) — its text goes to
-// --accent-fg (dark ink in both themes) so it never becomes light-on-orange in dark mode.
+// When checked, the pill fills with --accent — its text goes to --accent-fg, the
+// on-accent token. ⚠️ Sprint 44: --accent-fg is THEME-DIVERGENT now (cream on the dark
+// forest accent in light; dark ink on the legacy orange accent in dark) — the token
+// carries the flip, which is why this class string didn't change in the re-palette.
 export const checkbox =
   'inline-flex items-center gap-[0.4375rem] min-h-[2.75rem] py-0 pr-[0.75rem] pl-[0.625rem] border border-border rounded-[999px] text-[0.875rem] cursor-pointer has-[input:checked]:border-fg has-[input:checked]:bg-accent has-[input:checked]:text-accent-fg has-[input:checked]:font-bold has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-ok has-[input:focus-visible]:outline-offset-2';
 
@@ -167,9 +169,9 @@ export const checkboxInput = 'm-0 accent-[var(--fg)]';
  * active-filter chips. `chip` is the resting state; `chipActive` the selected one — they're
  * rendered as alternatives, so there's no same-element color conflict.
  */
-// Sprint 31: text color lives per-state (not in the base) so the active chip's text can be
-// `text-accent-fg` (dark ink) on the orange fill in both themes, while the resting chip uses
-// the theme's `text-fg`.
+// Text color lives per-state (not in the base) so the active chip's text can be
+// `text-accent-fg` on the accent fill (the token is theme-divergent since Sprint 44 —
+// see `checkbox` above), while the resting chip uses the theme's `text-fg`.
 const chipBase =
   'inline-flex items-center gap-[0.25rem] min-h-[2.75rem] px-[0.875rem] border rounded-[999px] text-[0.875rem] no-underline focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 export const chip = `${chipBase} border-border text-fg`;

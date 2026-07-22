@@ -1,8 +1,8 @@
-# Woodworking Plan
+# Notch
 
-A web and mobile application that acts as a searchable repository of
-woodworking plans and builds — cutting boards, end-grain cutting boards,
-bed frames, sheds, and more.
+**notchplans.com** — a web and mobile application that acts as a searchable
+repository of woodworking plans and builds — cutting boards, end-grain cutting
+boards, bed frames, sheds, and more.
 
 ## Overview
 
@@ -18,8 +18,8 @@ feature roadmap.
 
 ## Status
 
-This project is in the planning stage. No application code has been
-written yet.
+In active development (see `BUILD_PLAN.md` §4 for the sprint roadmap and
+`CLAUDE.md` §7 for current state). Not yet publicly launched.
 
 ## License
 

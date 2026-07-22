@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { CATALOG_PATH } from '@/lib/routes';
+import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/brand';
 
 /**
  * Site footer — QOL-D item 2.
@@ -16,10 +17,9 @@ import { CATALOG_PATH } from '@/lib/routes';
  * applies to a footer full of category links just as much. This is the standing rule:
  * any class named in an `@media print` block stays on its element.
  *
- * NOTE ON COPY: the product name is still the "Woodworking Plan" placeholder from
- * BUSINESS_PLAN.md §1 — branding decision #8 is open, and inventing a brand is not the
- * build agent's call (BUILD_PLAN.md §2). No new marketing copy is introduced here; the
- * footer only labels and links things that already exist.
+ * BRANDING (#8) RESOLVED (Sprint 43): the product is Notch; name and tagline come
+ * from `src/lib/brand.ts`. The tagline line is DRAFT copy pending Keagan's
+ * browser-pass approval, like all public copy (BUILD_PLAN.md §2).
  */
 /**
  * The group headings are real `<h2>`s (structure), but the global `h2` rule in
@@ -88,8 +88,12 @@ export function SiteFooter() {
         </div>
       </div>
 
+      {/* DRAFT copy (Sprint 43) — the brand-sheet tagline, for Keagan's approval. */}
       <p className="max-w-[64rem] mx-auto mt-[2rem] mb-0 text-[0.8125rem] text-muted">
-        &copy; {new Date().getFullYear()} Woodworking Plan. Measure your own material and
+        {BRAND_NAME} &mdash; {BRAND_TAGLINE}
+      </p>
+      <p className="max-w-[64rem] mx-auto mt-[0.5rem] mb-0 text-[0.8125rem] text-muted">
+        &copy; {new Date().getFullYear()} {BRAND_NAME}. Measure your own material and
         follow the safety guidance for your tools &mdash; a plan is a well-specified
         starting point, not a substitute for judgement at the saw.
       </p>

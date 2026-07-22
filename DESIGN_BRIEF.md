@@ -1,4 +1,4 @@
-# Design brief — Woodworking Plan
+# Design brief — Notch
 
 **Purpose.** Paste this into Claude Design when connecting the repo, and keep it in the
 repo for Claude Code to read on handoff. It defines what a UI/UX redesign may change
@@ -16,6 +16,12 @@ Treat everything below as a hard constraint unless Keagan says otherwise.
 > when there are 23. **A brief that argues against the evidence is worse than no brief** —
 > anyone following it would have written plain CSS and hard-coded a light-only palette.
 > Every claim below was re-read out of the source, not carried forward.
+>
+> **Updated Sprint 45 (2026-07-21) for the Notch rebrand.** The product is **Notch**
+> (notchplans.com; branding #8 RESOLVED) and the LIGHT theme is the "Oak & Forest"
+> palette (Sprint 44). ⚠️ **The dark theme still runs the pre-rebrand warm/orange
+> system on purpose** — its re-palette is a separate, not-yet-opened sprint (Keagan's
+> call, `DECISIONS_LOG.md` 2026-07-21). The token table below shows both as they ARE.
 
 ---
 
@@ -59,41 +65,55 @@ Three consequences a redesign must respect:
 ### 2.1 Tokens — the complete set
 
 Every colour token exists in **both** `:root` and `.dark`, and both are reset again inside
-`@media print`. **23 tokens in each theme** — counted from the source, and
-`tests/dark-theme.test.ts` fails if the two sets ever differ. Light value first.
+`@media print`. **24 tokens in each theme** (Sprint 44 added `--oak`) — counted from the
+source, and `tests/dark-theme.test.ts` fails if the two sets ever differ. Light value
+first. ⚠️ **Light = Oak & Forest (the Notch brand); dark = the legacy warm/orange
+system, pending its own re-palette.**
 
-| Token | Light | Dark | What it is |
+| Token | Light (Oak & Forest) | Dark (legacy) | What it is |
 |---|---|---|---|
-| `--bg` | `#faf9f6` | `#17140f` | page (cream / warm near-black) |
-| `--surface` | `#ffffff` | `#221e17` | cards, panels, popovers |
-| `--fg` | `#1a1a1a` | `#f0ece4` | ink |
-| `--muted` | `#6b6b6b` | `#b3ab9f` | secondary text |
-| `--muted-2` | `#75705f` | `#8f8578` | tertiary text — **AA-safe as text in both** |
-| `--border` | `#e4e4e4` | `#38332b` | hairlines |
-| `--border-strong` | `#d8d3c6` | `#4b453a` | emphasised edges |
-| `--accent` | `#e9a86c` | `#e9a86c` | the orange — **light in BOTH themes** |
-| `--accent-strong` | `#c96a2e` | `#f2b884` | accent as a **graphic** (glyphs, borders, fills) |
-| `--accent-text` | `#a85413` | `#f2b884` | accent as **body-size text** (≥4.5:1) |
-| `--accent-fg` | `#1a1a1a` | `#1a1a1a` | text/icons sitting **on** `--accent` |
-| `--accent-tint` | `#fdf1e0` | `#2b2318` | tinted accent background |
-| `--accent-tint-border` | `#e9c98a` | `#5c4a2c` | its edge |
-| `--accent-soft` | `#fdf1e0` | `#2b2318` | soft accent wash |
-| `--danger` | `#b5551c` | `#e58a5c` | destructive |
-| `--ok` / `--pending` / `--err` | `#17803d` / `#b45309` / `#b3261e` | `#5cc27a` / `#d99b3f` / `#e8756c` | functional status — chosen for contrast, not for look |
-| `--elev-1/2/3` | warm-tinted, layered | opaque + **inset top light-catch** | the elevation scale |
+| `--bg` | `#f6f1e7` | `#17140f` | page (brand cream / warm near-black) |
+| `--surface` | `#fffdf8` | `#221e17` | cards, panels, popovers (warmed off-white — pure white would glow on the deeper cream) |
+| `--fg` | `#1e2420` | `#f0ece4` | ink (brand Ink / warm off-white) |
+| `--muted` | `#5f665f` | `#b3ab9f` | secondary text (green-grey in the ink family) |
+| `--muted-2` | `#6f6a59` | `#8f8578` | tertiary text — **AA-safe as text in both** (re-derived twice: Sprint 33, Sprint 44) |
+| `--border` | `#e3dcc9` | `#38332b` | hairlines |
+| `--border-strong` | `#cec5ad` | `#4b453a` | emphasised edges |
+| `--accent` | `#3d6b4f` | `#e9a86c` | the brand accent — **⚠️ DARK green in light, LIGHT orange in dark** |
+| `--accent-strong` | `#2a4f3a` | `#f2b884` | accent as a **graphic** (glyphs, borders, fills) |
+| `--accent-text` | `#3d6b4f` | `#f2b884` | accent as **body-size text** (≥4.5:1). In light it now EQUALS `--accent` (forest is text-safe); kept separate because dark needs the split |
+| `--accent-fg` | `#f6f1e7` | `#1a1a1a` | text/icons sitting **on** `--accent` — **THEME-DIVERGENT by design** (cream-on-forest / ink-on-orange) |
+| `--accent-tint` | `#e4ebdd` | `#2b2318` | tinted accent background (sage wash) |
+| `--accent-tint-border` | `#a9beab` | `#5c4a2c` | its edge |
+| `--accent-soft` | `#e4ebdd` | `#2b2318` | soft accent wash |
+| `--oak` | `#c4a574` | `#c4a574` | brand Secondary. **⚠️ GRAPHIC-ONLY on light backgrounds (2.08:1); text-safe on dark panels only** (6.76–7.86:1) |
+| `--danger` | `#ac511b` | `#e58a5c` | destructive (Sprint 44 re-derivation — the old value fell under AA on the new paper) |
+| `--ok` / `--pending` / `--err` | `#17803d` / `#b45309` / `#b3261e` | `#5cc27a` / `#d99b3f` / `#e8756c` | functional status — chosen for contrast, not for look. `--ok` sharing green with the accent is ACCEPTED (logged) |
+| `--elev-1/2/3` | warm-tinted, layered | opaque + **inset top light-catch** | the elevation scale — the `rgba(60,42,24,…)` warm tint deliberately survived the rebrand (shade, not brand) |
 | `--card-bg`, `--bevel` | raised card gradient + bevel | dark equivalents | landing depth |
 
-**Three rules about this table that have each been broken once:**
+**Rules about this table that have each been broken once (or would have been):**
 
-- **`--accent-strong` is a GRAPHIC colour, `--accent-text` is a TEXT colour.** In light
-  mode `--accent-strong` measures 3.57:1 — fine for a star glyph, a fail as a sentence.
-  Accent-coloured text at body size uses `text-accent-text`.
-- **`--accent` stays light in dark mode**, so anything drawn on it needs `--accent-fg`
-  (dark ink in both themes), never `--fg`.
+- **`--accent-strong` is a GRAPHIC colour, `--accent-text` is a TEXT colour.** The
+  orange system's `--accent-strong` failed AA as text (3.57:1); the forest one happens
+  to pass, but the rule stands — accent-coloured text at body size uses
+  `text-accent-text`, so a future palette can't silently break every accent sentence.
+- **Anything drawn ON `--accent` uses `--accent-fg`, never `--fg` and never a literal.**
+  The accent's polarity DIFFERS BY THEME now (dark green vs light orange) — only the
+  token knows. Sprint 44 found one hardcoded `text-[#1a1a1a]` on an accent fill that
+  would have shipped invisible; there is no test that can see a literal, so this rule
+  is load-bearing.
+- **`--oak` is not a text colour on light surfaces.** 2.08:1 on `--bg`. The landing's
+  always-dark CTA uses it as text legitimately; a `text-oak` caption on cream is a
+  contrast failure the PAIRS table does not guard.
 - **Every colour token must be added to `:root` AND `.dark`.** A token added to one is a
   silently un-themed colour. `tests/dark-theme.test.ts` fails on any mismatch, and
   `tests/contrast.test.ts` computes WCAG on 15 usage pairs × both themes, so a sub-AA
   *text* token fails red rather than shipping.
+- **When the paper moves, everything chosen "for contrast against --bg" must be
+  re-checked.** Sprint 44's palette change silently broke `--danger` and `--muted-2`
+  (4.36:1 / 4.40:1 on the new bg) — the contrast tests caught both before a pixel
+  shipped, which is exactly why the values live in a computed test and not a checklist.
 
 **Elevation is a scale, not a value.** `--elev-1/2/3` → the `shadow-e1/e2/e3` utilities.
 Cards rest at `e1`; popovers and menus sit at `e2`; drawers and modals at `e3`. **Never
@@ -220,19 +240,26 @@ working.
 
 Layout, spacing, typography, card and component styling, the catalog grid, the plan-detail
 composition, empty states, the install prompt, the shopping list and print sheets'
-*appearance*, iconography (PWA icons are still placeholders — branding decision #8 is
-open), and overall visual polish and responsiveness. Make it feel modern and cohesive.
+*appearance*, and overall visual polish and responsiveness. Make it feel modern and
+cohesive. (PWA icons are still placeholder tiles — they get regenerated from Keagan's
+Notch logo SVG in Sprint 45's asset half, which is gated on him supplying the file.)
 
 The app-page heading hierarchy (`h1`/`h2` sizes) was reviewed in Sprint 42 and left
 alone — **declined, not overlooked** (⚖️ Keagan 2026-07-21). It is open for a future pass,
 mockup first; note that the global `h2` rule is unlayered, so changing it also shrinks the
 `!`-override workarounds in the catalog rail and footer.
 
-## 7. Known placeholders (don't design around them as final)
+## 7. Known placeholders and pending pieces (don't design around them as final)
 
-- **Brand name / logo / domain** — "Woodworking Plan" is a working placeholder (#8 open).
-- **Contact** — the About/FAQ contact line is a marked placeholder.
-- The site is `robots: noindex` sitewide until branding lands.
+- **Branding #8 is RESOLVED** (2026-07-21): the product is **Notch** at
+  **notchplans.com**; identity strings live in `src/lib/brand.ts` (the static manifest
+  is cross-checked against it by `tests/brand.test.ts`). Contact is the real
+  `support@notchplans.com`.
+- **Still pending:** the logo/PWA icons (placeholder tiles until Keagan's SVG lands —
+  Sprint 45 asset half), the **dark-theme re-palette** (dark is still the legacy orange
+  system, deliberately), and the tagline/description copy which ships as DRAFT.
+- The site stays `robots: noindex` sitewide — **not** a branding leftover anymore:
+  indexing is a de facto public launch, which is Keagan's explicit go-live call.
 - **All user-facing copy added by an agent ships as DRAFT** and is Keagan's to approve
   (`BUILD_PLAN.md` §2).
 
@@ -254,5 +281,5 @@ mockup first; note that the global `h2` rule is unlayered, so changing it also s
    then a manual check that **print (`Ctrl+P`), no-JS, both themes, and a 375px viewport**
    all still show the full content. The automated guards
    (`contrast`, `touch-targets`, `dark-theme`, `elevation`, `landing-scale`,
-   `clerk-appearance`, `tailwind-setup`) are the design system's teeth — a red one is a
-   real regression, not a test to update.
+   `clerk-appearance`, `tailwind-setup`, `brand`) are the design system's teeth — a red
+   one is a real regression, not a test to update.

@@ -41,6 +41,11 @@
   // PUBLIC cache. Plan content, the catalog, static assets — readable by a logged-out
   // stranger anyway, so caching them leaks nothing. v3: Sprint 14 split public/private,
   // so a stale v2 cache is evicted on activate.
+  //
+  // "woodworking-plan" is the pre-Notch-rebrand name, deliberately KEPT (Sprint 43,
+  // DECISIONS_LOG.md 2026-07-21): these are internal storage keys no user sees, and
+  // renaming PRIVATE_CACHE_NAME would orphan every user's explicitly-downloaded
+  // offline library for zero benefit. Do not "fix" them.
   const CACHE_NAME = 'woodworking-plan-v3';
 
   // PRIVATE cache. The saved library, the shopping list. Written ONLY by the explicit

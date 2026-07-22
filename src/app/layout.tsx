@@ -8,6 +8,12 @@ import {
   THEME_CHROME_COLOR,
   THEME_INIT_SCRIPT,
 } from '@/lib/theme';
+import {
+  BRAND_NAME,
+  BRAND_SHORT_NAME,
+  BRAND_DESCRIPTION,
+  SITE_ORIGIN,
+} from '@/lib/brand';
 
 /**
  * QOL-M Step 2 (2026-07-20, Keagan-approved brand element): Fraunces — a warm display
@@ -64,29 +70,39 @@ import './globals.css';
 /**
  * Root layout.
  *
- * NOTE ON COPY AND ICONS: BUILD_PLAN.md §3 decision #8 (branding/app name) is still
- * OPEN. "Woodworking Plan" is the working name from BUSINESS_PLAN.md §1, and the PWA
- * icons are deliberately plain placeholders — not a logo. **Both must be replaced
- * before launch.** Inventing a brand is not the build agent's call.
+ * BRANDING (#8) IS RESOLVED: the product is Notch (Sprint 43; DECISIONS_LOG.md
+ * 2026-07-21). Identity strings come from `src/lib/brand.ts`. The PWA icons are
+ * still placeholders until Keagan's logo SVG lands (Sprint 45).
  */
 export const metadata: Metadata = {
-  title: 'Woodworking Plan',
-  description:
-    'A searchable repository of woodworking plans, with full cut lists, material lists, and cost estimates.',
+  // The template gives child pages branded tabs ("About · Notch") for free; the
+  // root itself renders the bare default.
+  title: { default: BRAND_NAME, template: `%s · ${BRAND_NAME}` },
+  description: BRAND_DESCRIPTION,
+  // Resolves relative metadata URLs against the real domain. The domain must be
+  // wired to Vercel by Keagan — until DNS lands this only affects generated URLs,
+  // not routing.
+  metadataBase: new URL(SITE_ORIGIN),
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Plans',
+    title: BRAND_SHORT_NAME,
   },
   icons: {
     icon: [
+      // The SVG mark first (crisp at any size — Chromium prefers it via sizes="any");
+      // PNG rasters follow for browsers without SVG-favicon support. The SVG must be
+      // listed HERE: an explicit `icons` config suppresses the src/app/icon.svg
+      // file-convention link tag (verified against the rendered HTML, Sprint 45).
+      { url: '/icon.svg', type: 'image/svg+xml', sizes: 'any' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: '/icons/apple-touch-icon.png',
   },
-  // Still not a public release — branding is open, so keep it out of search.
+  // Deliberately NOT lifted with the rename: letting search engines in is a de
+  // facto public launch, and going publicly live is Keagan's explicit call.
   robots: { index: false, follow: false },
 };
 

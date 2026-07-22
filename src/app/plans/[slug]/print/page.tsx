@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
 import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
+import { SITE_HOST } from '@/lib/brand';
 import { Prose } from '@/components/prose';
 
 /**
@@ -273,7 +274,7 @@ export default async function PlanPrintPage({
           bench six months later should be able to lead you back to the plan. */}
       <footer className="print-footer">
         <p>
-          woodworking-plan.vercel.app/plans/{plan.slug}
+          {SITE_HOST}/plans/{plan.slug}
           {cutListOnly ? ' — cut list' : ''}
         </p>
       </footer>

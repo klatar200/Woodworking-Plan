@@ -4164,3 +4164,241 @@ new contributor"** — that persona is the only real test of it, and it is the o
 this sprint cannot self-verify. Then: approve or reword the three DRAFT strings (landing
 plan-count + sub-floor fallback, cost-tier anchor), and delete
 `_to_delete/_ux-audit-bundle.tar.gz` if you're done with it.
+
+## Sprint 43 — Notch rebrand, part 1: name & identity swap (zero color change)
+
+**Status: COMPLETE — 97/100.** Branding #8 is RESOLVED (Keagan, 2026-07-21: **Notch**,
+**notchplans.com**, "Oak & Forest" palette, tagline "Built naturally. Made to last." —
+`DECISIONS_LOG.md` 2026-07-21). This sprint ships the NAME only; Sprint 44 does the
+palette, Sprint 45 the logo (gated on Keagan's SVG). Split on purpose so the browser
+pass approves copy and pixels separately.
+
+Gate on this machine: **950/950 tests (81 files), `tsc` clean, `eslint` clean,
+`npm run build` green.** Verified against `npm run dev` over HTTP (the Browser pane
+blocks localhost by policy): root title `Notch`, child tabs `About · Notch` /
+`FAQ · Notch` (a title TEMPLATE — the old metadata had a bare string, so child tabs
+were unbranded), header brand, footer tagline + `© 2026 Notch`, both contact lines
+`support@notchplans.com` with zero placeholder residue, manifest name/short_name/
+description, print provenance `notchplans.com/plans/<slug>` (React's `<!-- -->` text-node
+separators sit between the segments in the HTML — invisible on paper; the brand test
+matches the SOURCE, not the rendered string, for exactly that reason).
+
+### Decisions (all Keagan, before any code — AskUserQuestion 2026-07-21)
+
+| ⚖️ | Answer |
+|---|---|
+| Logo asset source | **Keagan supplies the SVG** after plan approval → gates Sprint 45's asset half |
+| Contact address | **support@notchplans.com** |
+| robots noindex | **STAYS** — indexing is a de facto launch; lift at go-live |
+| Tagline in-app | **Footer + landing final CTA**, DRAFT pending browser pass |
+
+### Files
+
+| File | Change |
+|---|---|
+| `src/lib/brand.ts` | **NEW** — BRAND_NAME / BRAND_SHORT_NAME / BRAND_TAGLINE / SITE_ORIGIN / SITE_HOST / CONTACT_EMAIL / BRAND_DESCRIPTION, the single identity source |
+| `src/app/layout.tsx` | Title → `{ default, template: '%s · Notch' }`; description; **`metadataBase: new URL(SITE_ORIGIN)`** (none existed); `appleWebApp.title`; stale #8 comment rewritten; robots untouched |
+| `src/components/site-header.tsx` | Brand link → `{BRAND_NAME}` (text until the S45 lockup) |
+| `src/components/site-footer.tsx` | Tagline line (DRAFT) + © via constants |
+| `src/app/page.tsx` | Tagline in the final CTA (0.75rem — the first draft used 0.8125rem and `landing-scale.test` correctly rejected it: the guard built in Sprint 40 caught its first real drift) |
+| `src/app/about/page.tsx`, `faq/page.tsx` | Name via `{BRAND_NAME}`, contact via `{CONTACT_EMAIL}`, placeholder spans + comments deleted, meta descriptions templated |
+| `src/app/plans/[slug]/print/page.tsx` | Provenance `woodworking-plan.vercel.app` → `{SITE_HOST}` |
+| `public/manifest.webmanifest` | name/short_name/description (colors are S44's) |
+| `public/sw-policy.js` | Comment: cache names deliberately KEPT (renaming the private cache orphans downloaded offline libraries) |
+| `package.json` (+lock) | `notch`; `npm install` synced the lock's two name fields |
+| `README.md`, `globals.css` header | Name swap |
+| `tests/brand.test.ts` | **NEW** — manifest ⟷ brand.ts cross-check (static JSON can't import), case-SENSITIVE "Woodworking Plan" sweep of src/ (lowercase "woodworking plan(s)" is the product category and legitimately stays), no `hello@example.com`, no old vercel.app host, print page uses `{SITE_HOST}` |
+| `tests/faq.test.tsx` | Was asserting the placeholder contact — now asserts the real one AND that noindex survived the rename |
+| `vitest.config.ts` | `testTimeout: 30_000` — see below |
+| `BUILD_PLAN.md` §4 | Status row for 43–45; the "do not invent a Sprint 43" line superseded (it argued against the evidence once Keagan opened the phase) |
+| `DECISIONS_LOG.md` | The branding entry + sub-decisions + cache-name call; §Pending updated (#8 struck) |
+
+### The one non-brand change, explained
+
+Five Prisma-heavy test files (`plans`, `query-plans`, `page`, `paths-page`, `dev-route`)
+`await import('@/lib/plans')` INSIDE their first test — their `vi.mock` setup has to land
+before the module graph loads — so that first test pays the whole transform cost of the
+Prisma-sized import chain. At 81 files the full parallel run pushed that import past the
+5s default timeout on this machine (**same five files pass together in ~8s in
+isolation**; two full-run repeats failed identically, so it's deterministic contention,
+not flake). `testTimeout: 30_000` weakens no assertion — it stops import contention from
+masquerading as five failing tests. Not a mask over a real regression: the failures are
+`Error: Test timed out in 5000ms` on the import line, and none of this sprint's changes
+are on those files' import paths.
+
+### Scorecard (BUILD_PLAN.md §6)
+
+- Correctness & completeness: 25/25 — every inventoried touchpoint swapped (two Explore
+  passes produced the inventory; the sweep test proves src/ is clean).
+- Tests: 24/25 — new cross-check guard + updated faq test; −1: the title template and
+  metadataBase are asserted as source strings, not rendered metadata.
+- Security & data: 15/15 — noindex deliberately kept; no secret touched; robots comment
+  now states the real reason (launch gate, not branding).
+- Code quality: 15/15 — one identity source; static-JSON mirror guarded the same way as
+  THEME_CHROME_COLOR/Clerk.
+- Docs & process: 18/20 — decisions logged before code; BUILD_PLAN un-contradicted;
+  −2: browser pass was HTTP-verification (pane blocks localhost), Keagan's eyes still owed.
+- **Total: 97/100.**
+
+### Keagan's remaining steps
+
+Approve the DRAFT tagline placement/wording (footer + landing CTA) and the new meta
+description; **wire notchplans.com in Vercel** (until DNS lands, printed sheets carry a
+not-yet-live URL); set up the `support@notchplans.com` mailbox; push when 43–44 are done.
+
+## Sprint 44 — Notch rebrand, part 2: the Oak & Forest light palette
+
+**Status: COMPLETE — 97/100.** Light theme only, per Keagan: **dark still runs the legacy
+warm/orange system on purpose** and its own re-palette comes later (`DECISIONS_LOG.md`
+2026-07-21). Gate on this machine: **953/953 tests (81 files), `tsc` clean, `eslint`
+clean, `npm run build` green.** Verified in ACTUAL RENDERS, not just token greps —
+headless Edge screenshots at 1280px of `/`, `/browse`, `/browse?difficulty=2`, plus a
+print-to-PDF (the Browser pane blocks localhost by policy;
+`--blink-settings=preferredColorScheme=1` forces the light scheme on this OS-dark
+machine — probe-tested against a media-query page before trusting it).
+
+### What the renders proved
+
+- **The polarity flip works end to end:** the checked "Easy" pill is forest fill + cream
+  bold text (`--accent-fg` flipped `#1a1a1a` → `#f6f1e7`; the class strings in `ui.ts`
+  didn't change — the token carries it). OS-dark headless shots confirm dark is
+  byte-identical legacy orange.
+- **Print stays honest:** printed `/browse` shows the active chip as an OUTLINED WHITE
+  pill — the print block now resets `--accent: #ffffff` (forest under reset-black
+  `--accent-fg` would have printed 3.41:1 green mud; the old orange never needed this,
+  which is why the gap existed). Print `--accent-text` re-pinned to forest, print
+  `--danger` tracks the re-derivation.
+- **The landing's three deliberate literals re-tinted:** who-it's-for radial `#ffe6c4`→
+  sage `#dcead5` with the glyph now `stroke="currentColor"` + `text-accent-strong` (a
+  `var()` doesn't resolve in an SVG presentation attribute; currentColor does); the
+  always-dark CTA's glow orange→**oak** `rgba(196,165,116,0.35)`; and the CTA button's
+  `text-[#1a1a1a]` literal → `text-accent-fg` — that one was a SILENT contrast failure
+  in waiting that no token test could see. Tagline now `text-oak` (6.61:1 on the panel).
+
+### Token decisions that need remembering
+
+- **`--danger` and `--muted-2` were FORCE-re-derived** — the old values fell to 4.36:1 /
+  4.40:1 on the new, deeper cream `--bg`, under `tests/contrast.test.ts`'s 4.5 gate. The
+  "functional colors stay" rule survives with the exception class recorded: *when the
+  paper moves, re-check everything chosen for contrast against the old paper.*
+- **`--accent-text` CONVERGES with `--accent` in light** (forest is text-safe everywhere:
+  5.46/6.05/5.05) — token kept for dark's split + the call sites/tests that name it.
+- **`--oak` (NEW, both themes): GRAPHIC-ONLY on light bg (2.08:1), text-safe on dark
+  panels (6.76–7.86:1).** Named guard in `dark-theme.test.ts` carries the rule.
+- **`--surface` warmed `#ffffff`→`#fffdf8`** — pure-white cards would glow on the deeper
+  cream; fallback to `#ffffff` is pre-verified if Keagan finds it muddy.
+- **Elevation/bevel shadows stay `rgba(60,42,24,…)` warm brown-black** — shade, not
+  brand; green-black reads dirty on cream. Zero-diff decision, logged.
+- `.notice-warning` border → `var(--pending)`; `.skel` shimmer re-stepped below the new
+  bg; stale `var(--token, #hex)` fallbacks updated (dead in practice, misleading stale).
+
+### Mirrors moved in lockstep (each has a guard)
+
+`clerk-appearance.ts` light object (7 values), `THEME_CHROME_COLOR.light`
+(`theme.test.tsx` byte-compares), manifest `background_color`/`theme_color` — and the
+manifest was the ONE color mirror with no guard, which is how it would have stayed
+cream: **`tests/brand.test.ts` now chains manifest === `:root --bg` ===
+`THEME_CHROME_COLOR.light`.**
+
+### Scorecard (BUILD_PLAN.md §6)
+
+- Correctness & completeness: 25/25 — all 23+2 tokens migrated, 3 landing literals,
+  5 mirror values; renders + print verified, dark verified unchanged.
+- Tests: 24/25 — contrast/clerk/theme/dark-theme/tailwind guards all pass ON THE NEW
+  VALUES with zero expectation edits (the point of computed guards); new manifest-color
+  chain + named --oak guard. −1: focus-ring-on-forest adjacency is eyes-only.
+- Security & data: 15/15 — CSS-only + mirrored constants; no route, action, or schema
+  touched.
+- Code quality: 15/15 — zero class-string changes where tokens carry the flip; every
+  now-false "dark ink in both themes" comment rewritten (they would have misled the
+  dark re-palette sprint).
+- Docs & process: 18/20 — decisions logged with the failing numbers; −2: real-device
+  checks (Android toolbar color, phone print) are Keagan's, and the browser pass ran
+  headless rather than in a real windowed browser.
+- **Total: 97/100.**
+
+### Keagan's remaining steps
+
+Eyeball the light theme in a real browser (especially: focus rings on checked forest
+pills — tab through the filter panel; and whether `--surface` reads clean or muddy);
+print preview one plan sheet; confirm the oak glow + tagline on the landing CTA; then
+push 43+44 together and check CI.
+
+## Sprint 45 — Notch rebrand, part 3: docs truth pass + logo assets
+
+**Status: COMPLETE — 96/100 (both halves).** The docs half landed first (the asset
+half was gated on Keagan's logo SVG, his explicit choice at plan approval); he
+supplied the SVG the same day and the asset half closed the sprint — scorecard at the
+end of this entry.
+
+### Docs half (done)
+
+| File | Change |
+|---|---|
+| `DESIGN_BRIEF.md` | Title → Notch; Sprint-45 banner added under the 42.1 one; **§2.1 rewritten as the 24-token DUAL-system table** (light = Oak & Forest, dark = legacy-pending-re-palette, with the `--accent-fg` divergence, the `--oak` graphic-only rule, and the "when the paper moves, re-check contrast" lesson as named rules); §6 icon note; §7 placeholders → resolved/pending split; `brand` added to the §8 guard-test list |
+| `BUILD_PLAN.md` | New **§4.6** (sprint table, standing consequences: dark re-palette is the scheduled follow-up, noindex now gated on launch, cache names keep their historical prefix); status rows + test-count freshened (953/81) |
+| `CLAUDE.md` | §7 top entry for 43–45; the stale "Still open — Branding/domain (#8)" block corrected (it argued against the evidence) |
+| `DECISIONS_LOG.md` | Branding + palette entries landed with Sprints 43/44 |
+
+### Asset half — COMPLETE (2026-07-21, same day: Keagan supplied the SVG)
+
+**Status: Sprint 45 CLOSED — 96/100.** Gate: **957/957 tests (81 files), `tsc` clean,
+`eslint` clean, `npm run build` green.** Lockup verified in renders at 1280px AND
+375px (no nav wrap); favicon link tags verified in the served HTML.
+
+The supplied file (`C:\Users\latar\Downloads\logo.svg`) is an autotraced mark: a
+full-canvas `#F5EDDF` background path + the gold/green halves + five small trace
+fragments. Keagan asked for the background to be transparent, so:
+
+- **`public/brand/notch-logo.svg`** — the canonical mark: background path REMOVED
+  (script-transformed, not hand-retyped — the Sprint-43-era transcription lesson),
+  `viewBox="0 0 319 342"` added, every other path byte-identical to his file
+  (verified by diffing the fill inventories). The five trace fragments were KEPT —
+  removing autotrace slivers risks hairline gaps in the gold stem for zero gain.
+- **`src/app/icon.svg`** — the same cleaned mark as the favicon. ⚠️ **Finding: an
+  explicit `metadata.icons` config SUPPRESSES the file-convention link tag** — the
+  route served but no `<link>` was emitted until the SVG was added to the config
+  list too (first, `sizes="any"`, so Chromium prefers it; PNGs follow for Safari).
+- **`scripts/generate-icons.mjs`** (new; `npm`-free, run `node scripts/generate-icons.mjs`,
+  `--dry-run` supported) — sharp renders the SVG at density 300 →
+  `icon-192.png`/`icon-512.png` (transparent, mark contained at 88%),
+  `icon-maskable-512.png` (**cream `#f6f1e7` plate** — on a forest plate the green
+  half of the mark would vanish; mark in the inner 80% safe zone),
+  `apple-touch-icon.png` (180px, cream plate — iOS composites transparency onto
+  black). All four verified as rendered images, not just byte counts.
+- **Header lockup** (`site-header.tsx`): mark (28px, `alt=""` — the wordmark text
+  beside it is the accessible name) + "Notch", one Link, `min-h-[2.75rem]` keeping
+  the 44px hit area; plain `<img>` per the Clerk-avatar precedent (a 10 KB local SVG
+  needs no optimizer hop). The print-hidden `site-header` class is untouched.
+- **`tests/brand.test.ts` extended (+4):** every manifest icon exists and is >3 KB
+  (the old placeholders were 756–2627 B — this kills the never-regenerated bug
+  class), the canonical mark and favicon contain NO `#F5EDDF`, and the header
+  references the brand asset.
+
+**Colour note, flagged for Keagan:** the traced SVG's fills (`#C09A61` gold,
+`#3C5B44` green) differ slightly from the brand-sheet hexes (`#C4A574` oak,
+`#3D6B4F` forest) — autotrace artifacts of a rendered image. **Kept as supplied**
+(his asset, used exactly); snapping them to the brand tokens is a two-line edit to
+the SVG + re-run of the icon script if he wants it.
+
+### Scorecard (BUILD_PLAN.md §6)
+
+- Correctness & completeness: 24/25 — all four icons regenerated + favicon + lockup +
+  transparent canonical mark; −1: the icon.svg file-convention suppression cost a
+  round-trip and the fix is config duplication (documented in place).
+- Tests: 24/25 — four new asset guards; −1: the icons' >3 KB check proves "not a
+  placeholder", not "is the current mark" (no cheap way to assert render content).
+- Security & data: 15/15 — static assets + one script; no route/action/schema; the
+  script only reads its named source and writes the four named outputs.
+- Code quality: 15/15 — script-transformed asset (byte-exact fills), idempotent
+  generator in the house `.mjs` idiom, no new dependency.
+- Docs & process: 18/20 — docs half landed before the asset arrived; −2: real-device
+  icon checks (Android launcher masking, iOS home screen) are Keagan's, and the
+  colour-delta question is flagged rather than resolved.
+- **Total: 96/100.**
+
+### Keagan's remaining steps
+
+Real-device pass: install the PWA (Android launcher mask + iOS home screen icon),
+confirm the favicon in a real tab, and decide the colour question above (keep the
+traced fills vs snap to brand hexes). Then push 43–45 together and check CI.

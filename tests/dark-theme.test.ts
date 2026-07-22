@@ -50,6 +50,16 @@ describe('light/dark theme tokens stay in sync', () => {
     expect(dark.has('--accent-text')).toBe(true);
   });
 
+  // Sprint 44 (Notch rebrand) — oak, the brand sheet's Secondary. Named here so the
+  // intent survives: oak is GRAPHIC-ONLY on light backgrounds (2.08:1 on --bg) and
+  // text-safe on dark panels only — a `text-oak` caption on a light surface is a
+  // contrast failure the PAIRS table in contrast.test.ts does not guard, because oak
+  // is not a light-theme text token. The set checks above cover presence; this names it.
+  it('defines --oak (graphic-only-on-light brand secondary) in both themes', () => {
+    expect(light.has('--oak')).toBe(true);
+    expect(dark.has('--oak')).toBe(true);
+  });
+
   /**
    * QOL-F (2026-07-19) — the elevation scale. Same failure mode as a colour: define it
    * in `:root`, forget it in `.dark`, and dark mode silently keeps light-mode shadows,

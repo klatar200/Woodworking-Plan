@@ -1,15 +1,16 @@
 import type { Metadata } from 'next';
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import Link from 'next/link';
+import { BRAND_NAME, CONTACT_EMAIL } from '@/lib/brand';
 
 /**
  * FAQ — Sprint 23. Real copy, drafted for Keagan's review.
  *
  * PUBLIC-FACING COPY IS KEAGAN'S CALL (BUILD_PLAN.md §2). Every answer here is true of
  * the current build — the free framing matches the launch-economics decision ($0, no
- * ads, no affiliate, no forever promise; DECISIONS_LOG.md 2026-07-13/14). Name is the
- * "Woodworking Plan" placeholder; contact is a marked placeholder. Stays noindex until
- * branding/domain (decision #8) lands.
+ * ads, no affiliate, no forever promise; DECISIONS_LOG.md 2026-07-13/14). Rebranded to
+ * Notch in Sprint 43 (branding #8 RESOLVED); contact is the real address from
+ * `src/lib/brand.ts`. Stays noindex until Keagan's go-live call.
  *
  * QOL-C (2026-07-19) — rendered as an ACCORDION: one native <details>/<summary> per
  * question. No copy changed; `robots: noindex` stays until branding decision #8.
@@ -35,9 +36,8 @@ import Link from 'next/link';
  */
 export const metadata: Metadata = {
   title: 'FAQ',
-  description:
-    'Frequently asked questions about Woodworking Plan — pricing, accounts, offline use, cost tiers, and how the plans work.',
-  robots: { index: false, follow: false }, // Branding decision #8 still open.
+  description: `Frequently asked questions about ${BRAND_NAME} — pricing, accounts, offline use, cost tiers, and how the plans work.`,
+  robots: { index: false, follow: false }, // noindex stays until Keagan's go-live call.
 };
 
 const FAQS: { q: string; a: React.ReactNode }[] = [
@@ -80,7 +80,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     q: 'Can I use it in the shop, without signal?',
     a: (
       <>
-        Yes. Woodworking Plan installs to your phone or desktop like an app and works
+        Yes. {BRAND_NAME} installs to your phone or desktop like an app and works
         offline. Any plan you&rsquo;ve opened is cached for offline reading, and you can
         explicitly download your saved library &mdash; plans, their print views, and your
         shopping list &mdash; for a trip to the workshop or the hardware store. Every plan
@@ -182,10 +182,7 @@ export default function FaqPage() {
       </div>
 
       <p className="subtitle">
-        {/* PLACEHOLDER — real contact + product name land with branding/domain (#8). */}
-        Didn&rsquo;t find your answer? Email{' '}
-        <strong>hello@example.com</strong>{' '}
-        <span className="muted">(placeholder &mdash; a real address is coming)</span>, or{' '}
+        Didn&rsquo;t find your answer? Email <strong>{CONTACT_EMAIL}</strong>, or{' '}
         <Link href="/browse">browse the plans</Link>.
       </p>
       </div>

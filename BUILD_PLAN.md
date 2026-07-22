@@ -120,22 +120,28 @@ state rather than assumptions made today.
 | Completion plan (Sprints 24–27) | ✅ COMPLETE, PUSHED & LIVE — 24 (95), 25 (97), 26 (96), 27 (96 — gate passed on Keagan's machine: 524/524 vitest, eslint + tsc clean after `prisma generate`). **Confirmed pushed 2026-07-16 (Keagan): CI green, live site verified.** See §4.3 |
 | UI framework migration (Sprints 28–32) | ✅ COMPLETE (code) — Tailwind CSS + light/dark theme. **28 (env) 97; 29 (wave 1) 96; 30a 96; 30b 96; 30c 95 (closed w/ documented component-CSS residual); 31 (theme + toggle) 96; 32 (hardening) 95.** Dark mode = `.dark{}` token flip; toggle in the Clerk `UserButton` dropdown; SSR cookie, no FOUC; print forced light; dark palette AA-audited. **Device-bound → Keagan:** real-phone Lighthouse, real-browser toggle/FOUC, visual regression at 5 breakpoints × 2 themes. See §4.4 |
 | UX Remediation (Sprints 33–42) | ✅ **COMPLETE & CLOSED (2026-07-21)** — UI/UX quality pass from the independent `UX_AUDIT_2026-07-21.md` (**NOT a Phase-4 feature**; no new business capability). **33 (light-theme AA contrast, A1) 98; 34 (44px touch-target sweep, M1/V3) 96; 35 (destructive confirms + shopping-list control, H1/H2/A4) 96; 36 (wayfinding + `start_url`⚖️, A2/A5/H7/H11/H6/M4) 96; 37 (dark mode for everyone ⚖️, D1) 96; 38 (step-walker memory/scroll/sticky nav, H3/M3) 96; 39 (filter honesty + drawer manners ⚖️, H5/M2/A6) 97; 40 (landing integrity ⚖️×2, A3/C1/V2/D2) 98; 41 (consistency sweep ⚖️×2, V1/V4/C3/H4) 98; 42 (documentation truth pass + close-out ⚖️×2, D1/D2/D3-docs) 97.** 33–41 PUSHED, **CI green** (Sprint 40 `98a1bd1`, Sprint 41 `88d9f00`); Sprint 42 is code-free, push is Keagan's. All 27 audit IDs re-verified against shipped code in `UX_REMEDIATION_PLAN.md` §5 — **nothing OPEN**. Declined on record: app-page type hierarchy (42.6). See `UX_REMEDIATION_PLAN.md` (the phase's governing doc) + `SPRINT_LOG.md` |
-| **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (branding, copy approval, rotation at go-live, launch call) |
-| Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; brand name + contact are marked placeholders pending decision #8.) |
+| **Notch rebrand (Sprints 43–45)** | ✅ COMPLETE (2026-07-21, opened and closed same day; branding #8 RESOLVED: **Notch / notchplans.com**; `DECISIONS_LOG.md` 2026-07-21). **43 (name/identity) 97; 44 (Oak & Forest light palette; dark deferred on purpose) 97; 45 (docs truth pass + logo/icons/favicon/lockup from Keagan's SVG) 96.** Awaiting Keagan: push + CI, real-device icon pass, DRAFT copy approval, domain wiring. The **dark-theme re-palette** is the scheduled follow-up. See §4.6 |
+| **Launch blockers** | 🔴 OPEN — see §4.2 below; all Keagan's (copy approval, rotation at go-live, domain wiring in Vercel, launch call). ~~Branding #8~~ RESOLVED 2026-07-21 |
+| Post-launch-blocker backlog (Sprints 17-23) | ✅ COMPLETE — Sprints 17–23 all done; see §4.1.1. (About/FAQ copy is a DRAFT for Keagan's review; the name + contact placeholders were resolved by the Sprint 43 rebrand.) |
 
 Per-sprint scores and evidence live in `SPRINT_LOG.md`; the operational
 detail behind each ✅ lives in `CLAUDE.md` §7. Test suite as of the last verified
-run: **941 green, 80 files** (Sprint 42 close-out, Keagan's machine, 2026-07-21;
-`tsc` and `eslint` clean, `npm run build` green at Sprint 41). Sprints 24–27
+run: **957 green, 81 files** (Sprint 45 close-out, Keagan's machine, 2026-07-21;
+`tsc` and `eslint` clean, `npm run build` green). Sprints 24–27
 (hardening pass, workshop, tool-aware catalog, build logs) are confirmed pushed
 and live (2026-07-16); the Tailwind migration (§4.4) and the UX Remediation phase
 (§4.5) are both closed.
 
-**Nothing is scheduled after Sprint 42.** The remaining work is Keagan's, not an
-agent's: the launch blockers in §4.2 (branding/domain #8, DRAFT copy approval,
-credential rotation at go-live, the launch call). **Do not open a new phase or
-invent a Sprint 43** — Phase 4 stays shut except for the build logs already
-shipped as Sprint 27.
+**The Notch rebrand (Sprints 43–45) is COMPLETE** (opened and closed
+2026-07-21 by Keagan; it superseded the former "nothing after Sprint 42 /
+do not invent a Sprint 43" rule). It was an identity/palette migration, NOT
+a Phase-4 feature — Phase 4 stays shut except for the build logs already
+shipped as Sprint 27. **The one scheduled follow-up is the dark-theme
+re-palette** (dark still runs the legacy orange system on purpose), which
+Keagan opens once the light migration is verified on the live site — do not
+start it uncommissioned. Everything else is Keagan's: push + CI check,
+real-device icon pass, DRAFT copy approval, domain wiring, and the §4.2
+go-live set (noindex lift, rotation, launch call).
 
 **Important scope note:** the feature ideas discussed in chat before this
 build plan (comments on plans, tool substitution notes, an "owned
@@ -644,6 +650,30 @@ and one route + one server action were *deleted* (Sprint 41.4). Phase 4 is unaff
 - **Two decisions recorded rather than built:** the CAD part-diagram pilot stays gated
   (not rolled out — it needs a `StepPart` join first), and the app-page type hierarchy is
   **declined**, mockup-first if ever revisited. Both in `DECISIONS_LOG.md` 2026-07-21.
+
+### 4.6 Notch rebrand — Sprints 43–45 (opened 2026-07-21, Keagan's direction)
+
+**Branding #8 is RESOLVED: the product is Notch, at notchplans.com** — "Oak & Forest"
+palette (bg `#f6f1e7`, ink `#1e2420`, forest `#3d6b4f`, strong `#2a4f3a`, oak
+`#c4a574`), tagline "Built naturally. Made to last.", contact
+`support@notchplans.com`. Full decision record + sub-decisions: `DECISIONS_LOG.md`
+2026-07-21. An identity/palette migration, NOT a Phase-4 feature.
+
+| Sprint | Scope | Status |
+|---|---|---|
+| 43 | Name & identity swap — `src/lib/brand.ts` single source; title template + `metadataBase`; header/footer/about/faq/manifest/print-provenance; `tests/brand.test.ts` cross-checks + sweep; zero color change | ✅ COMPLETE — 97/100 |
+| 44 | Light palette → Oak & Forest — 24-token migration incl. the `--accent-fg` polarity flip (theme-DIVERGENT now), `--oak` (graphic-only on light), two forced functional re-derivations (`--danger`, `--muted-2`), print `--accent` reset, landing literal re-tints, Clerk/theme-chrome/manifest mirrors. **Dark theme untouched on purpose** | ✅ COMPLETE — 97/100 |
+| 45 | Docs truth pass (this section, `DESIGN_BRIEF.md`, `CLAUDE.md` §7, `DECISIONS_LOG.md`) + logo assets from Keagan's supplied SVG — `public/brand/notch-logo.svg` (background stripped to transparent per his direction), `scripts/generate-icons.mjs` (sharp), real PWA icons + apple-touch, `src/app/icon.svg` favicon (+ explicit `metadata.icons` entry — the config suppresses the file-convention link), header lockup | ✅ COMPLETE — 96/100 |
+
+**Standing consequences for later work:**
+
+- **The dark-theme re-palette is the scheduled follow-up** (Keagan opens it once the
+  light migration is verified on the live site). Until then dark deliberately runs the
+  legacy orange system — a session sees one theme, so the mismatch is contained.
+- `robots: noindex` is now gated on the LAUNCH CALL, not on branding. Lifting it +
+  wiring notchplans.com in Vercel + rotating credentials remain the §4.2 go-live set.
+- The SW cache names keep their historical `woodworking-plan-*` prefix forever
+  (renaming the private cache orphans users' downloaded offline libraries).
 
 ---
 

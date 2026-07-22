@@ -1,10 +1,11 @@
 /*
- * Design tokens — Woodworking Plan visual system.
+ * Design tokens — Notch visual system.
  *
- * Adopted 2026-07-13 from the Claude Design prototype
- * (`Woodworking Plan Prototype.dc.html`), per Keagan's explicit direction —
- * see DECISIONS_LOG.md "UI redesign: adopt Claude Design mockup's visual
- * system". Warm/cream palette, replacing the Sprint 0 neutral gray theme.
+ * Token structure adopted 2026-07-13 from the Claude Design prototype, per
+ * Keagan's explicit direction — see DECISIONS_LOG.md "UI redesign: adopt
+ * Claude Design mockup's visual system". Warm/cream palette, replacing the
+ * Sprint 0 neutral gray theme. (Sprint 44 migrates the light values to the
+ * Oak & Forest brand palette.)
  *
  * Dark mode was RE-ADDED in Sprint 31 (2026-07-16, Keagan's direction) as an
  * explicit `.dark {}` token flip below — NOT `prefers-color-scheme`, so it follows
@@ -21,35 +22,60 @@
    * in the light scheme. `.dark` flips this to `dark` so those controls follow the theme —
    * without it a native checkbox/select renders light-on-light in dark mode. */
   color-scheme: light;
-  --bg: #faf9f6;
-  --surface: #ffffff;
-  --fg: #1a1a1a;
-  --muted: #6b6b6b;
-  /* Sprint 33 (A1): darkened from #8a8175 (3.64:1 on --bg — failed AA as text) to
-   * #75705f (4.70:1 on --bg, 4.95:1 on --surface). Light theme only; dark's --muted-2
-   * (#8f8578, 4.58:1) already passes. Guarded by tests/contrast.test.ts. */
-  --muted-2: #75705f;
-  --border: #e4e4e4;
-  --border-strong: #d8d3c6;
-  --accent: #e9a86c;
-  --accent-strong: #c96a2e;
-  --accent-tint: #fdf1e0;
-  --accent-tint-border: #e9c98a;
-  /* Sprint 33 (A1): text-safe accent for accent-colored TEXT at body size. --accent-strong
-   * (#c96a2e) is only 3.57:1 on --bg / 3.37:1 on --accent-tint — fails AA as text, though it
-   * stays fine as a background/border/glyph (≥3:1 graphic). #a85413 measures 5.06:1 on --bg,
-   * 5.33:1 on --surface, 4.78:1 on --accent-tint. See UX_AUDIT_2026-07-21 A1; guarded by
-   * tests/contrast.test.ts. */
-  --accent-text: #a85413;
-  /* Sprint 31: text/icon color ON an --accent (orange) background — dark ink in BOTH
-   * themes, because the accent stays a light orange in dark mode. `--accent-soft` is the
-   * soft cream some rules used as `var(--accent-soft, #fdf1e0)`; now a real token. */
-  --accent-fg: #1a1a1a;
-  --accent-soft: #fdf1e0;
-  --danger: #b5551c;
+  /* ── Sprint 44: the "Oak & Forest" brand palette (Notch; DECISIONS_LOG.md 2026-07-21).
+   * LIGHT THEME ONLY — `.dark` below still runs the legacy warm/orange system until its
+   * own re-palette sprint. Anchors from the brand sheet: bg #f6f1e7, ink #1e2420,
+   * forest #3d6b4f, strong #2a4f3a, oak #c4a574. Every ratio below is computed and
+   * re-proven forever by tests/contrast.test.ts. */
+  --bg: #f6f1e7;
+  /* Warmed off-white, not #ffffff: the new bg sits ~24 RGB points below pure white, so
+   * white cards would GLOW on it — the most saturated "colour" on the page. #fffdf8
+   * keeps the paper metaphor and still gives cards more definition than the old theme
+   * had (surface:bg 1.11:1 vs the old ~1.05). */
+  --surface: #fffdf8;
+  --fg: #1e2420;
+  /* Green-grey in the ink family (5.25:1 on --bg, 5.82 on --surface) — a neutral grey
+   * reads cold on the warmer paper. */
+  --muted: #5f665f;
+  /* Sprint 33 (A1) darkened this for AA; Sprint 44 re-derived it AGAIN because the old
+   * #75705f fell to 4.40:1 on the NEW bg (the paper got deeper). #6f6a59: 4.81:1 on
+   * --bg, 5.32:1 on --surface. Guarded by tests/contrast.test.ts. */
+  --muted-2: #6f6a59;
+  --border: #e3dcc9;
+  --border-strong: #cec5ad;
+  /* THE POLARITY FLIP (Sprint 44): the old accent was a LIGHT orange carrying dark ink;
+   * forest green is DARK and carries light text. --accent-fg flips with it, below. */
+  --accent: #3d6b4f;
+  --accent-strong: #2a4f3a;
+  --accent-tint: #e4ebdd;
+  --accent-tint-border: #a9beab;
+  /* Text-safe accent (Sprint 33's token, Sprint 44's value). Unlike the orange system —
+   * where the accent itself failed AA as text and needed a darkened twin — forest is
+   * text-safe everywhere it's used: 5.46:1 on --bg, 6.05 on --surface, 5.05 on
+   * --accent-tint. So --accent-text CONVERGES with --accent in light. The token stays:
+   * dark still needs the split (its --accent-text is the lightened #f2b884), and five
+   * call sites plus two guard tests name it. */
+  --accent-text: #3d6b4f;
+  /* Sprint 44: text/icon color ON an --accent background. Cream on forest, 5.46:1.
+   * ⚠️ THEME-DIVERGENT ON PURPOSE: dark mode's accent is still the legacy light orange,
+   * so dark keeps dark ink here. When the dark re-palette lands, re-derive both. */
+  --accent-fg: #f6f1e7;
+  --accent-soft: #e4ebdd;
+  /* Re-derived for the new paper (Sprint 44): the functional-colors-stay rule met the
+   * contrast gate — old #b5551c measured 4.36:1 on the new --bg, under the 4.5 AA
+   * minimum tests/contrast.test.ts enforces. Same hue, ~4% darker: 4.73:1 on --bg,
+   * 5.23:1 on --surface. NOT a brand change. */
+  --danger: #ac511b;
+  /* --ok is a GREEN and the brand accent is now also green — ACCEPTED ambiguity
+   * (DECISIONS_LOG.md 2026-07-21): --ok stays the functional success/focus colour,
+   * --accent the brand colour. Do not "harmonise" them. */
   --ok: #17803d;
   --pending: #b45309;
   --err: #b3261e;
+  /* Oak — the brand sheet's Secondary. ⚠️ GRAPHIC-ONLY on light backgrounds (2.08:1 on
+   * --bg): borders, glyphs, decorative fills. It IS text-safe on dark panels (6.76:1 on
+   * ink, 7.86:1 on #17140f) — the landing's always-dark CTA uses it as text. */
+  --oak: #c4a574;
 
   /* ── QOL-F — the elevation scale (2026-07-19, variant A; DECISIONS_LOG.md) ──
    * The app was FLAT before this: 1px borders on cream, no depth anywhere. These are
@@ -76,19 +102,25 @@
      slightly warmer base — plus a bevel (inset top highlight + underside shadow). Paired
      with --elev-* on the landing's plan panels. Defined in BOTH themes (dark-theme.test
      guards the pair), and reset to none/flat under print with the rest of the shadows. */
-  --card-bg: linear-gradient(180deg, #ffffff, #fbf9f5);
+  /* Sprint 44: top stop = the new --surface, bottom stop midway to --bg. The elevation
+   * shadows and --bevel stay rgba(60,42,24,…) warm brown-black — still the right shade
+   * on cream paper (a green-black would read cool/dirty), so they're untouched. */
+  --card-bg: linear-gradient(180deg, #fffdf8, #fbf6ec);
   --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(60, 42, 24, 0.05);
 }
 
 /*
  * Sprint 31 — DARK THEME (DECISIONS_LOG.md 2026-07-16, Keagan's direction). This is the
  * WHOLE theme: every utility and the component-CSS residual read the tokens below, so
- * flipping them here re-themes the entire app with no `dark:` utilities. Derived from the
- * same cream/ink/orange system — warm-dark surfaces, warm off-white text, the SAME orange
- * accent — and aimed at WCAG AA. Functional colours (danger/ok/pending/err) are lightened
- * so they read on a dark surface. `--accent-fg` stays dark ink (orange is light in both
- * themes). **AA contrast + a real-browser pass are Keagan's to verify (design:accessibility-
- * review, Sprint 32) — these values are a first draft to tune, not a final call.**
+ * flipping them here re-themes the entire app with no `dark:` utilities.
+ *
+ * ⚠️ Sprint 44: DARK STILL RUNS THE LEGACY warm/orange SYSTEM — deliberately
+ * (DECISIONS_LOG.md 2026-07-21). The light theme moved to the Notch "Oak & Forest"
+ * palette; dark gets its own re-palette in a later sprint, at Keagan's direction. The
+ * two themes temporarily disagreeing about the brand is the ACCEPTED cost — each
+ * session sees one theme. Do NOT "fix" the mismatch here uncommissioned. This is also
+ * why --accent-fg is dark ink HERE but cream in :root — dark's accent is still a light
+ * orange.
  */
 .dark {
   color-scheme: dark;
@@ -113,6 +145,10 @@
   --ok: #5cc27a;
   --pending: #d99b3f;
   --err: #e8756c;
+  /* Sprint 44: same value as light — oak is a mid-tone, and on dark surfaces it is
+   * genuinely text-safe (7.86:1 on --bg). Mirrored here because dark-theme.test locks
+   * both themes to the same token set. */
+  --oak: #c4a574;
 
   /* ── QOL-F — dark elevation. A SEPARATE SET, not the light one reused. ────────
    * A shadow is the absence of light, so on a near-black surface it barely registers —
@@ -158,16 +194,24 @@
     --accent-tint: #ffffff;
     --accent-tint-border: #999999;
     --accent-soft: #ffffff;
+    /* Sprint 44: --accent MUST reset now. The old light-orange accent printed tolerably
+     * unreset, but forest green (#3d6b4f) as a printed FILL under reset-black --accent-fg
+     * is 3.41:1 toner-heavy mud — and the active pagination pill and checked filter chips
+     * genuinely print with `background: var(--accent)`. White fill + the borders those
+     * elements already carry (`border-fg`) keeps the active state legible as an OUTLINED
+     * pill, which is what print wants anyway. */
+    --accent: #ffffff;
     --accent-fg: #000000;
-    /* Sprint 33: force accent TEXT to the light-theme value on paper. Without this, printing
-     * while the dark theme is on would use dark's --accent-text (#f2b884, a light orange ~1.3:1
-     * on white) and render the eyebrow / hero emphasis / "Clear filters" link invisible. */
-    --accent-text: #a85413;
+    /* Sprint 33 (value updated Sprint 44): force accent TEXT to the light-theme value on
+     * paper. Without this, printing while the dark theme is on would use dark's
+     * --accent-text (#f2b884, a light orange ~1.3:1 on white) and render the eyebrow /
+     * hero emphasis / "Clear filters" link invisible. Forest is 6.15:1 on white. */
+    --accent-text: #3d6b4f;
     /* Functional colours must also reset for print: the dark theme lightens --err to
      * #e8756c, which prints as a washed-out pink — and .impossible-part on the boards
      * sheet is the ONE warning the buying list must never soften. Force the high-contrast
-     * light values on paper. */
-    --danger: #b5551c;
+     * light values on paper (--danger tracks the Sprint 44 re-derivation). */
+    --danger: #ac511b;
     --ok: #17803d;
     --pending: #b45309;
     --err: #b3261e;
@@ -756,7 +800,7 @@ code {
 
 .breadcrumb a:hover {
   border-color: var(--fg);
-  background: var(--accent-soft, #fdf1e0);
+  background: var(--accent-soft, #e4ebdd);
 }
 
 .breadcrumb a:focus-visible {
@@ -1219,8 +1263,10 @@ code {
 
 /* Rate-limit notice (rate-limit-notice.tsx) — the banner a denied user sees. */
 .rate-limit-notice {
-  background: var(--accent-soft, #fdf1e0);
-  border: 1px solid var(--accent, #e9a86c);
+  /* Fallbacks are dead in practice (the tokens always exist) but a stale fallback
+   * misleads the reader — kept in step with the Sprint 44 palette. */
+  background: var(--accent-soft, #e4ebdd);
+  border: 1px solid var(--accent, #3d6b4f);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   font-size: 0.9375rem;
@@ -1244,7 +1290,9 @@ code {
 }
 
 .skel {
-  background: linear-gradient(90deg, #eae6dc 25%, #f3f0e8 37%, #eae6dc 63%);
+  /* Sprint 44: same −5% step below the (new) light --bg as before — a visible shimmer,
+   * not a flash. Dark's shimmer (below) is untouched with the rest of the dark theme. */
+  background: linear-gradient(90deg, #e9e2d1 25%, #f1ebde 37%, #e9e2d1 63%);
   background-size: 400px 100%;
   animation: skel-shimmer 1.4s ease-in-out infinite;
   border-radius: 3px;
@@ -1523,7 +1571,9 @@ code {
 }
 
 .notice-warning {
-  border-left-color: #d98c1f;
+  /* Sprint 44: it's a WARNING — the functional amber token is the honest colour here,
+   * and this kills the last brand-orange literal in the stylesheet. */
+  border-left-color: var(--pending);
 }
 
 .impossible-part {

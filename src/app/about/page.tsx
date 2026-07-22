@@ -1,21 +1,17 @@
 import type { Metadata } from 'next';
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import Link from 'next/link';
+import { BRAND_NAME, CONTACT_EMAIL } from '@/lib/brand';
 
 /**
- * About — Sprint 23. Real copy, drafted for Keagan's review.
- *
- * PUBLIC-FACING COPY IS KEAGAN'S CALL (BUILD_PLAN.md §2). This is a draft grounded in
- * what the app actually does; every claim is true of the current build. The name
- * "Woodworking Plan" is the working placeholder — branding/domain (decision #8) is still
- * open, so this stays `robots: noindex` and the one contact line is a marked placeholder
- * to swap at launch. See DECISIONS_LOG.md 2026-07-14.
+ * About — Sprint 23 copy, rebranded in Sprint 43 (branding #8 RESOLVED: Notch,
+ * DECISIONS_LOG.md 2026-07-21). PUBLIC-FACING COPY IS KEAGAN'S CALL (BUILD_PLAN.md
+ * §2) — every claim is true of the current build; the contact address is real now.
  */
 export const metadata: Metadata = {
   title: 'About',
-  description:
-    'What Woodworking Plan is: a searchable catalog of woodworking plans, each with a material list, tools, and a cost estimate — most with a full cut list too.',
-  robots: { index: false, follow: false }, // Branding decision #8 still open.
+  description: `What ${BRAND_NAME} is: a searchable catalog of woodworking plans, each with a material list, tools, and a cost band — most with a full cut list too.`,
+  robots: { index: false, follow: false }, // noindex stays until Keagan's go-live call.
 };
 
 export default function AboutPage() {
@@ -25,7 +21,7 @@ export default function AboutPage() {
           long-form prose at that width runs ~120 chars/line. Constrain the reading column
           to a comfortable measure (~42rem, ~75 chars), centered within the wider shell. */}
       <div className="max-w-[42rem] mx-auto">
-      <h1>About Woodworking Plan</h1>
+      <h1>About {BRAND_NAME}</h1>
 
       <p className="subtitle">
         A woodworking catalog where every plan carries the same structured detail &mdash;
@@ -40,7 +36,7 @@ export default function AboutPage() {
           reading two entirely different formats and guessing at the parts they leave out.
         </p>
         <p>
-          Woodworking Plan takes a narrower bet: every plan in the catalog carries the{' '}
+          {BRAND_NAME} takes a narrower bet: every plan in the catalog carries the{' '}
           <em>same</em> structured information &mdash; difficulty, realistic shop time, a
           cost band, the tools you need (and which are optional), and a full material list,
           most with a complete cut list in tape-measure fractions. Because it&rsquo;s all
@@ -86,17 +82,14 @@ export default function AboutPage() {
       <section>
         <h2>Where it&rsquo;s at</h2>
         <p>
-          Woodworking Plan is in active development. It&rsquo;s free to use right now, with
+          {BRAND_NAME} is in active development. It&rsquo;s free to use right now, with
           no ads and no affiliate links. It is not finished &mdash; the catalog is growing,
           and some rough edges are still being smoothed &mdash; and feedback genuinely
           shapes what gets built next.
         </p>
         <p className="muted">
-          {/* PLACEHOLDER — update at launch alongside branding/domain (decision #8):
-              product name, and a real contact method. */}
           Questions or found something broken? Reach out at{' '}
-          <strong>hello@example.com</strong>{' '}
-          <span className="muted">(placeholder &mdash; a real address is coming)</span>.
+          <strong>{CONTACT_EMAIL}</strong>.
         </p>
       </section>
 

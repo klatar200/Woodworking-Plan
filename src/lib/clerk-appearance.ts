@@ -28,16 +28,16 @@
  * fails a named test instead of leaving Clerk behind.
  */
 
-/** Light theme — mirrors `:root` in globals.css. */
+/** Light theme — mirrors `:root` in globals.css (Sprint 44: Oak & Forest values). */
 export const clerkAppearance = {
   variables: {
-    colorPrimary: '#1a1a1a', // --fg
-    colorBackground: '#ffffff', // --surface
-    colorText: '#1a1a1a', // --fg
-    colorTextSecondary: '#75705f', // --muted-2 (Sprint 33: was #8a8175, failed AA)
-    colorDanger: '#b5551c', // --danger
-    colorInputBackground: '#faf9f6', // --bg
-    colorInputText: '#1a1a1a', // --fg
+    colorPrimary: '#1e2420', // --fg
+    colorBackground: '#fffdf8', // --surface
+    colorText: '#1e2420', // --fg
+    colorTextSecondary: '#6f6a59', // --muted-2 (re-derived twice: Sprint 33 for AA, Sprint 44 for the new paper)
+    colorDanger: '#ac511b', // --danger (Sprint 44 re-derivation — old value fell under AA on the new --bg)
+    colorInputBackground: '#f6f1e7', // --bg
+    colorInputText: '#1e2420', // --fg
     borderRadius: '0.5rem',
     fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
   },

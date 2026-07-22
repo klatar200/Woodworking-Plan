@@ -31,7 +31,7 @@ export function themeCookie(theme: Theme): string {
  * toolbar over a cream page in the DEFAULT theme (audit D1).
  */
 export const THEME_CHROME_COLOR: Record<Theme, string> = {
-  light: '#faf9f6',
+  light: '#f6f1e7', // Sprint 44: the Oak & Forest --bg. tests/theme.test.tsx byte-compares this against globals.css.
   dark: '#17140f',
 };
 

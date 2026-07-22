@@ -11,6 +11,7 @@ import {
 import { NAV_CATEGORIES } from '@/lib/nav-categories';
 import { planCountCopy } from '@/lib/landing-copy';
 import { CATALOG_PATH } from '@/lib/routes';
+import { BRAND_TAGLINE } from '@/lib/brand';
 import { PlanCard } from '@/components/plan-card';
 import { LandingPlanPanel } from '@/components/landing-plan-panel';
 import { btnPrimary, btnGhost } from '@/lib/ui';
@@ -24,8 +25,9 @@ import { btnPrimary, btnGhost } from '@/lib/ui';
  * actual cut list and board-buying count (`getPlanBySlug` + the same `optimize()` the
  * catalog uses). No fabricated "staff picks", user counts, or testimonials.
  *
- * PUBLIC COPY IS A DRAFT (BUILD_PLAN.md §2). The brand name is the "Woodworking Plan"
- * placeholder pending decision #8; every claim here is true of the current app.
+ * PUBLIC COPY IS A DRAFT (BUILD_PLAN.md §2). Branding #8 is RESOLVED (Notch, Sprint
+ * 43); the tagline in the final CTA is DRAFT copy from `src/lib/brand.ts`. Every
+ * claim here is true of the current app.
  *
  * The page is its own full-bleed layout (not the `page` shell): section backgrounds and
  * the carousels run edge-to-edge, while `.landing-wrap` bounds the content so it never
@@ -350,15 +352,19 @@ export default async function LandingPage() {
       {/* ── WHO IT'S FOR ─────────────────────────────────────────────────── */}
       <section className={`${wrap} py-[3.5rem]`}>
         <div className="grid lg:grid-cols-[0.85fr_1.15fr] rounded-[1rem] border border-accent-tint-border overflow-hidden shadow-e3">
-          <div className="relative min-h-[14rem] bg-[radial-gradient(130%_130%_at_25%_15%,#ffe6c4,var(--accent)_120%)] flex items-center justify-center">
+          {/* Sprint 44: the cream-orange radial became a sage wash toward the forest
+              accent. The plane glyph strokes `currentColor` (a `var()` doesn't resolve
+              in an SVG presentation attribute; currentColor does) so it tracks
+              `text-accent-strong` — 7.56:1 on the light stop, comfortably graphic-safe. */}
+          <div className="relative min-h-[14rem] bg-[radial-gradient(130%_130%_at_25%_15%,#dcead5,var(--accent)_120%)] flex items-center justify-center">
             <svg
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#7a4a12"
+              stroke="currentColor"
               strokeWidth="1.4"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-[7rem] h-[7rem] opacity-90 -rotate-[8deg] drop-shadow-[0_8px_14px_rgba(60,42,24,0.25)]"
+              className="w-[7rem] h-[7rem] text-accent-strong opacity-90 -rotate-[8deg] drop-shadow-[0_8px_14px_rgba(60,42,24,0.25)]"
               aria-hidden="true"
             >
               <path d="M2 20l4-1 9-9-3-3-9 9z" />
@@ -441,16 +447,28 @@ export default async function LandingPage() {
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────── */}
       <section className={`${wrap} py-[3.5rem]`}>
-        <div className="relative overflow-hidden text-center rounded-[1rem] px-[1.5rem] py-[3.5rem] bg-[linear-gradient(160deg,#2a2320,#17140f)] text-[#f0ece4] shadow-e3 before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(50%_120%_at_50%_-20%,rgba(233,168,108,0.35),transparent_60%)]">
+        {/* Sprint 44: the glow over the always-dark panel is OAK (was the orange accent
+            at the same alpha) — a warm glow that harmonises with the deliberately-kept
+            brown-black panel AND survives the dark-theme deferral. The panel gradient
+            itself stays: it belongs to the dark theme's family, which re-palettes later. */}
+        <div className="relative overflow-hidden text-center rounded-[1rem] px-[1.5rem] py-[3.5rem] bg-[linear-gradient(160deg,#2a2320,#17140f)] text-[#f0ece4] shadow-e3 before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(50%_120%_at_50%_-20%,rgba(196,165,116,0.35),transparent_60%)]">
+          {/* DRAFT copy (Sprint 43) — the brand-sheet tagline, in oak: text-safe HERE
+              (6.61:1 on this dark panel) though graphic-only on light backgrounds. */}
+          <p className="relative m-0 mb-[0.75rem] text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-oak">
+            {BRAND_TAGLINE}
+          </p>
           <h2 className="relative font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold m-0 mb-[0.5rem]">
             Find your next project.
           </h2>
           <p className="relative text-[#c9c2b6] m-0 mb-[1.6rem]">
             {count.sentence} Free to browse &mdash; no account required.
           </p>
+          {/* Sprint 44: `text-accent-fg`, not the old `text-[#1a1a1a]` literal — with
+              the dark forest accent, hardcoded ink would be a silent contrast failure
+              no token test could see. */}
           <Link
             href={CATALOG_PATH}
-            className="relative inline-flex items-center min-h-[2.9rem] px-[1.25rem] rounded-[0.5rem] font-semibold no-underline bg-accent text-[#1a1a1a] border border-accent shadow-e2"
+            className="relative inline-flex items-center min-h-[2.9rem] px-[1.25rem] rounded-[0.5rem] font-semibold no-underline bg-accent text-accent-fg border border-accent shadow-e2"
           >
             Browse the plans →
           </Link>

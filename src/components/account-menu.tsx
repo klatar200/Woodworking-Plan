@@ -38,12 +38,13 @@ export function AccountMenu() {
             avatar stays a 36px circle — a 44px avatar unbalances the header.
 
             Sprint 37.5 (dark sweep) fixed two things here. The fill was a literal
-            `bg-[#e9a86c]` — the value of `--accent`, so it looked right but had stopped
-            tracking the token. Worse, the fallback <User> glyph inherited `text-fg` from
-            the anchor: dark ink on orange in light mode (8.5:1), but near-white on orange
-            in DARK mode — 1.7:1, an invisible icon. `--accent` is light in BOTH themes,
-            which is exactly what `--accent-fg` (dark ink, both themes) exists for. Same
-            fix as the active chips and checkbox pills in ui.ts. */}
+            `bg-[#e9a86c]` — the then-value of `--accent`, so it looked right but had
+            stopped tracking the token. Worse, the fallback <User> glyph inherited
+            `text-fg` from the anchor — an invisible icon in dark mode. `--accent-fg`
+            (the on-accent token) is the fix, same as the active chips and checkbox
+            pills in ui.ts. Sprint 44 made that token THEME-DIVERGENT (cream on the
+            forest accent in light, ink on the legacy orange in dark) — this class
+            string rides the token and needed no change. */}
         <span className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-[50%] overflow-hidden border border-border bg-accent text-accent-fg">
           {user?.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- Clerk avatar, not a plan image

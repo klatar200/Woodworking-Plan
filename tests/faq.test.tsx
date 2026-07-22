@@ -9,6 +9,7 @@ vi.mock('next/link', () => ({
 }));
 
 const { default: FaqPage, metadata } = await import('@/app/faq/page');
+const { CONTACT_EMAIL } = await import('@/lib/brand');
 
 const html = renderToStaticMarkup(<FaqPage />);
 
@@ -72,9 +73,13 @@ describe('motion is optional (WCAG 2.3.3)', () => {
   });
 });
 
-describe('copy and indexing are unchanged (QOL-C is not a content sprint)', () => {
-  it('keeps the placeholder contact and the noindex flag', () => {
-    expect(html).toContain('hello@example.com');
+describe('copy and indexing (rebranded Sprint 43)', () => {
+  it('renders the real contact address and keeps the noindex flag', () => {
+    // Sprint 43: hello@example.com → the real support mailbox (brand.ts).
+    // noindex deliberately did NOT lift with the rename — indexing is a de facto
+    // public launch, which is Keagan's explicit go-live call.
+    expect(html).toContain(CONTACT_EMAIL);
+    expect(html).not.toContain('hello@example.com');
     expect(metadata.robots).toEqual({ index: false, follow: false });
   });
 });

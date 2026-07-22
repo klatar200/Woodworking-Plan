@@ -1563,12 +1563,80 @@ as declined and flags the cascade consequence for whoever picks it up: the globa
 `globals.css` is UNLAYERED, so changing it also *shrinks* the `!`-override workarounds in
 the catalog rail heading and the footer rather than adding more of them.
 
+### 2026-07-21 — 🏷️ BRANDING (#8) RESOLVED: the product is **Notch**, at **notchplans.com** (Sprints 43–45)
+
+**Decision (Keagan, with the brand sheet):** name **Notch**; domain **notchplans.com**;
+palette **"Oak & Forest"** — Background `#F6F1E7`, Ink `#1E2420`, Accent (Forest)
+`#3D6B4F`, Strong `#2A4F3A`, Oak (Secondary) `#C4A574`; tagline **"Built naturally.
+Made to last."**; logo = the interlocking two-tone serif N monogram (SVG to be supplied
+by Keagan; gates the Sprint 45 asset work). This closes the decision that has blocked
+public copy, SEO, and real PWA icons since Sprint 0.
+
+**Sub-decisions taken with it (Keagan, AskUserQuestion 2026-07-21):**
+- **Contact address: `support@notchplans.com`** (replaces the `hello@example.com`
+  placeholder on /about and /faq). Keagan sets up the mailbox on the domain.
+- **`robots: noindex` STAYS.** Branding no longer blocks it, but letting search engines
+  in is a de facto public launch, and going publicly live is Keagan's explicit call.
+  Lift it as a go-live step, after the domain is wired in Vercel.
+- **Tagline renders in the app** (site footer + landing final CTA), as DRAFT copy for
+  the browser pass — not just in the logo lockup.
+- **Dark theme does NOT change in this phase.** Sprint 44 migrates the LIGHT theme only;
+  dark keeps the legacy warm/orange palette until its own re-palette sprint (after the
+  migration is verified). Accepted consequence: the two themes temporarily belong to
+  different brands; each session sees one theme, so the toggle moment is the only
+  exposure.
+
+**Engineering decision recorded with it: the service-worker cache names
+(`woodworking-plan-v3`, `woodworking-plan-private-v1`) are deliberately KEPT.** They are
+internal storage keys no user ever sees; renaming the private cache would orphan every
+user's explicitly-downloaded offline library for zero user benefit, and sw.js is
+network-first so no version bump is needed for the rebrand. A comment in
+`public/sw-policy.js` marks them as deliberate.
+
+**Identity is code now:** `src/lib/brand.ts` (BRAND_NAME / SITE_ORIGIN / CONTACT_EMAIL /
+BRAND_TAGLINE / BRAND_DESCRIPTION) is the single source; the static
+`public/manifest.webmanifest` cannot import it and is cross-checked by
+`tests/brand.test.ts` instead. The printed provenance line now reads
+`notchplans.com/plans/<slug>` — **Keagan must wire the domain in Vercel** (or accept a
+dead-URL window on printed sheets until DNS lands).
+
+### 2026-07-21 — Sprint 44: Oak & Forest light-palette calls (re-derivations + accepted ambiguities)
+
+**Two functional colors were re-derived, as contrast fixes, not brand changes.** The
+"functional colors stay" rule (globals.css header) met `tests/contrast.test.ts`'s 4.5:1
+gate on the new, deeper cream paper: **`--danger` `#b5551c` measured 4.36:1** on the new
+`--bg` and **`--muted-2` `#75705f` measured 4.40:1** — both under AA. Re-derived to
+`#ac511b` (4.73/5.23) and `#6f6a59` (4.81/5.32): same hue, a few percent darker,
+visually indistinguishable. The rule survives with one documented exception class:
+*when the paper moves, colors chosen "for contrast against --bg" must be re-checked
+against the new --bg.* Cascaded to Clerk `colorDanger` and the print block.
+
+**Accepted: `--ok` (success green `#17803d`) now shares a family with the brand accent
+(forest `#3d6b4f`).** `--ok` stays the functional success/focus color; `--accent` the
+brand color. Focus rings on active accent surfaces are a browser-pass checkpoint
+(ring-to-pill adjacency ~1.2:1; the ring reads against the page via its 2px offset).
+
+**Kept: the warm brown-black shadow system** (`rgba(60,42,24,…)` in `--elev-*`,
+`--bevel`, `.landing-band-inset`) — on cream paper it reads as shade; a green-black
+would read cool/dirty. Zero-diff decision, recorded so nobody "harmonises" it later.
+
+**Print now resets `--accent` to white.** The old light-orange accent printed tolerably
+unreset; forest under reset-black `--accent-fg` would print 3.41:1 green mud on the
+active pagination pill / checked chips (which DO print with `background: var(--accent)`).
+White fill + the `border-fg` those elements already carry = outlined pills on paper.
+
+**`--accent-text` converges with `--accent` in light** (forest is text-safe everywhere
+it's used: 5.46/6.05/5.05) — the token is KEPT because dark still needs the split and
+five call sites + two guard tests name it. **`--accent-fg` is now THEME-DIVERGENT by
+design**: cream-on-forest in light, ink-on-legacy-orange in dark, until the dark
+re-palette.
+
 ## Pending — Pre-Sprint-0 Decisions
 
 See `BUILD_PLAN.md` §3 for the full list. Confirmed: frontend framework,
 backend framework, database, hosting/auth stack, and budget (#1-5, #9).
 Still open: payment processor (#6, not urgent — deferred until launch
-per the $0-during-development decision above), plan-content admin/CMS
-approach (#7, blocks Sprint 1), and branding/domain (#8, blocks
-public-facing copy, not Sprint 0). **Sprint 0 is unblocked and can
-begin.**
+per the $0-during-development decision above) and plan-content admin/CMS
+approach (#7, blocks Sprint 1). ~~Branding/domain (#8)~~ — **RESOLVED
+2026-07-21: Notch / notchplans.com** (see the entry above). **Sprint 0 is
+unblocked and can begin.**

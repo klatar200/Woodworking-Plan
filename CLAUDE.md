@@ -169,6 +169,65 @@ with it.
 
 ## 7. Current state (keep this updated)
 
+- **🏷️ NOTCH REBRAND (Sprints 43–45): COMPLETE — opened and closed 2026-07-21,
+  Keagan's direction. Branding #8 is RESOLVED: the product is Notch, at
+  notchplans.com** ("Oak & Forest"
+  palette, tagline "Built naturally. Made to last." — full decision + sub-decisions in
+  `DECISIONS_LOG.md` 2026-07-21). Historical §7/§5 references to "branding #8 open",
+  the "Woodworking Plan" placeholder, and `hello@example.com` are SUPERSEDED.
+  - **Sprint 43 (name & identity swap): COMPLETE — 97/100.** Zero color change.
+    `src/lib/brand.ts` is the single identity source (BRAND_NAME/SITE_ORIGIN/
+    CONTACT_EMAIL = support@notchplans.com/BRAND_TAGLINE/BRAND_DESCRIPTION); layout
+    metadata gained a **title template** (`%s · Notch`) and **`metadataBase`**;
+    manifest name/short_name; print provenance → `notchplans.com/plans/<slug>`;
+    tagline (DRAFT) in footer + landing final CTA. `tests/brand.test.ts` cross-checks
+    the static manifest against brand.ts and sweeps src/ for the old name
+    (case-SENSITIVE — lowercase "woodworking plan(s)" is the product category and
+    stays). **`robots: noindex` deliberately did NOT lift** — indexing is a de facto
+    launch, Keagan's call at go-live. **SW cache names deliberately KEPT** (renaming
+    the private cache orphans downloaded offline libraries). `vitest.config.ts` gained
+    `testTimeout: 30_000` — five Prisma-heavy files lazy-import `@/lib/plans` inside
+    their first test and the 81-file parallel run pushed that import past the 5s
+    default (deterministic, machine-local; the same files pass in isolation).
+    Gate: 950/950, tsc/eslint clean, build green; verified over HTTP against dev
+    (Browser pane blocks localhost by policy).
+  - **Sprint 44 (light palette → Oak & Forest): COMPLETE — 97/100.** 953/953, tsc,
+    eslint, build all green; verified in RENDERS (headless Edge — the Browser pane
+    blocks localhost; `--blink-settings=preferredColorScheme=1` forces light on this
+    OS-dark machine) + print-to-PDF. **Dark theme deliberately unchanged** (legacy
+    orange) until its own re-palette sprint — do NOT "fix" the mismatch. The
+    polarity flip: `--accent-fg` is now THEME-DIVERGENT (cream on forest in light,
+    ink on orange in dark) and the on-accent class strings in `ui.ts`/`account-menu`
+    didn't change — the token carries it. Forced re-derivations: `--danger`→`#ac511b`,
+    `--muted-2`→`#6f6a59` (old values fell under the 4.5 contrast gate on the new
+    paper). New `--oak` token, BOTH themes: **GRAPHIC-ONLY on light bg (2.08:1)**,
+    text-safe on dark panels. `--accent-text` == `--accent` in light (kept for dark's
+    split). Print block now resets `--accent: #ffffff` (chips/pagination print as
+    outlined white pills; forest fill would print 3.41:1 mud). Landing literals:
+    sage radial, oak glow, `text-[#1a1a1a]`→`text-accent-fg` on the CTA button (was a
+    silent contrast failure in waiting), glyph → currentColor. Mirrors moved with
+    guards: Clerk light object, `THEME_CHROME_COLOR.light`, manifest colors — the
+    manifest was the one UNGUARDED color mirror; `tests/brand.test.ts` now chains it
+    to `:root --bg` and `THEME_CHROME_COLOR.light`.
+  - **Sprint 45 (logo + docs truth pass): COMPLETE — 96/100** (Keagan supplied the
+    SVG same-day). Docs: `DESIGN_BRIEF.md` (title, banner, §2.1 = the 24-token
+    dual-system table with the divergence warnings, §6/§7 placeholders resolved,
+    `brand` in the guard list), `BUILD_PLAN.md` §4.6 + status rows, this section.
+    Assets: **`public/brand/notch-logo.svg`** = his autotraced mark with the
+    full-canvas `#F5EDDF` background REMOVED (his direction: transparent) —
+    script-transformed, fills byte-identical, trace fragments kept;
+    **`scripts/generate-icons.mjs`** (sharp) regenerates all four
+    `public/icons/*.png` (maskable + apple-touch on a CREAM `#f6f1e7` plate — the
+    green half vanishes on forest); **`src/app/icon.svg`** favicon — ⚠️ an explicit
+    `metadata.icons` config SUPPRESSES the file-convention link tag, so the SVG is
+    also FIRST in the config list (`sizes="any"`); header lockup = mark + wordmark,
+    44px hit area kept. Gate: **957/957, tsc/eslint/build green**; lockup verified
+    at 1280 + 375px in renders. **Flagged, Keagan's call:** the traced fills
+    (`#C09A61`/`#3C5B44`) differ slightly from the brand hexes
+    (`#C4A574`/`#3D6B4F`) — kept as supplied; snapping them is a 2-line SVG edit +
+    icon re-run. **No SW cache bump** (network-first). Icons regenerate ONLY via
+    `node scripts/generate-icons.mjs`.
+
 - **UX Remediation Plan (Sprints 33–42): COMPLETE and CLOSED (2026-07-21).** 33–41 are
   PUSHED with **CI green** — Sprint 40 = `98a1bd1`, Sprint 41 = `88d9f00` (verified via the
   Actions API, not assumed); 33–37 also verified on mobile. **Sprint 42 (documentation truth
@@ -1403,8 +1462,12 @@ tier gating, or save/collection limits. There is nothing to charge for yet.
 
 ### Still open
 
-- **Branding/domain (#8).** PWA icons are placeholders; `robots: noindex` is set
-  sitewide because of it. Blocks SEO and HSTS preload.
+- ~~**Branding/domain (#8).**~~ **RESOLVED 2026-07-21: Notch / notchplans.com**
+  (Sprints 43–45, §7 top entry). PWA icons stay placeholders until Keagan's logo SVG
+  lands (Sprint 45 asset half). `robots: noindex` is now gated on the LAUNCH CALL,
+  not branding; HSTS preload waits with it. Keagan still owes: the SVG, the Vercel
+  domain wiring, the `support@notchplans.com` mailbox, and the Clerk dashboard
+  app-name change.
 - **Going publicly live is Keagan's call, explicitly.** A free unmonetized product on
   Hobby is defensible, but "public launch" was named as a gate trigger out of caution
   and that caution stands.
