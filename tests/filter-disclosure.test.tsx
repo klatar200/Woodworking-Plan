@@ -146,3 +146,25 @@ describe('FilterDisclosure — the drawer guard is gated (39.3)', () => {
     expect(source).toContain('summaryRef.current?.focus()');
   });
 });
+
+/**
+ * Sprint 46 (Workstream E) — the filter scroll containers hide their scrollbar (content still
+ * scrolls). Cross-browser: a Firefox `scrollbar-width` rule plus a WebKit pseudo-element,
+ * both under one opt-in class, applied to the mobile drawer here and the desktop rail in
+ * browse/page.tsx.
+ */
+describe('FilterDisclosure — hidden scrollbar on the drawer (Workstream E)', () => {
+  const css = readFileSync(join(process.cwd(), 'src/app/globals.css'), 'utf8');
+
+  it('defines a cross-browser scrollbar-hiding utility that does not disable scrolling', () => {
+    expect(css).toContain('.no-scrollbar');
+    expect(css).toContain('scrollbar-width: none');
+    expect(css).toContain('.no-scrollbar::-webkit-scrollbar');
+    // The class hides the bar; the container keeps `overflow-y-auto`, so it still scrolls.
+    expect(render(0)).toContain('overflow-y-auto');
+  });
+
+  it('applies the utility to the drawer scroll container', () => {
+    expect(render(0)).toContain('no-scrollbar');
+  });
+});

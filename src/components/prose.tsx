@@ -1,3 +1,5 @@
+import { formatStepBody } from '@/lib/step-format';
+
 /**
  * Renders authored plan/step copy — descriptions and step bodies.
  *
@@ -37,6 +39,50 @@ export function Prose({ text, className = 'prose' }: { text: string; className?:
       {paragraphs.map((para, i) => (
         <p key={i}>{renderInline(para, `p${i}`)}</p>
       ))}
+    </div>
+  );
+}
+
+/**
+ * The STEP-body variant — Sprint 46 (Workstream F).
+ *
+ * Same inline pass as `Prose` (paragraphs + `**bold**`), plus the runtime step
+ * formatter: a paragraph that clearly sequences actions renders as a bulleted action
+ * list, and fastener sizes are bolded. The structure decisions are all in the pure,
+ * unit-tested `formatStepBody` (src/lib/step-format.ts); this only turns its blocks
+ * into elements. It shares `renderInline` with `Prose`, so authored `**bold**` and the
+ * formatter's injected fastener bold render identically.
+ *
+ * Used by EVERY step render site — PlanSteps (plan detail + /build) and the print
+ * sheet — so there is one formatter and no drift. Fails soft to plain paragraphs, which
+ * keeps the progressive-enhancement / print / offline / no-JS contract intact: nothing
+ * here needs JS, and a body that does not match the heuristics reads exactly as before.
+ *
+ * Plan and path DESCRIPTIONS keep plain `Prose` on purpose — the action-list heuristics
+ * are for instructions, not narrative copy.
+ */
+export function StepProse({
+  text,
+  className = 'prose',
+}: {
+  text: string;
+  className?: string;
+}) {
+  const blocks = formatStepBody(text);
+
+  return (
+    <div className={className}>
+      {blocks.map((block, i) =>
+        block.kind === 'list' ? (
+          <ul key={i} className="step-body-list">
+            {block.items.map((item, j) => (
+              <li key={j}>{renderInline(item, `l${i}-${j}`)}</li>
+            ))}
+          </ul>
+        ) : (
+          <p key={i}>{renderInline(block.text, `p${i}`)}</p>
+        ),
+      )}
     </div>
   );
 }

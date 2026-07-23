@@ -51,11 +51,16 @@ export const dynamic = 'force-dynamic';
  *   radius  0.375 · 0.5 · 0.75 · 1rem, plus 2px (hairlines), 50% and 999px (pills)
  */
 const wrap = 'mx-auto w-full max-w-[76rem] px-[1.5rem] sm:px-[2rem]';
+// Sprint 46 (Direction C, Ink & Oak): the eyebrow is quiet MUTED text with an OAK tick — an
+// understated editorial label that lets the ink headline dominate, with oak (not forest)
+// drawing the structural mark. Forest is reserved for CTAs/interactive on this page now.
 const eyebrow =
-  'inline-flex items-center gap-[0.45rem] text-[0.75rem] uppercase tracking-[0.09em] text-accent-text font-semibold before:content-[""] before:w-[1.4rem] before:h-[2px] before:bg-accent before:rounded-[2px]';
+  'inline-flex items-center gap-[0.45rem] text-[0.75rem] uppercase tracking-[0.1em] text-muted font-semibold before:content-[""] before:w-[1.6rem] before:h-[3px] before:bg-oak before:rounded-[2px]';
 const sectionH2 = 'font-display text-[clamp(1.5rem,3vw,2rem)] font-semibold mt-[0.5rem] mb-[0.4rem]';
+// Direction C: INK icon tiles (cream glyph on ink), not the sage/forest tile — the ink
+// hierarchy the direction is built on. `--surface` on `--fg` is the guarded btnPrimary pair.
 const isq =
-  'inline-flex items-center justify-center w-[2.9rem] h-[2.9rem] rounded-[0.5rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0';
+  'inline-flex items-center justify-center w-[2.9rem] h-[2.9rem] rounded-[0.5rem] bg-fg text-surface shrink-0';
 const catPill =
   'inline-flex items-center border border-border rounded-[999px] px-[1.15rem] py-[0.6rem] text-[0.9375rem] font-medium text-fg no-underline bg-surface shadow-e1 whitespace-nowrap';
 const sectionLead = 'text-muted text-[1rem] max-w-[52ch]';
@@ -125,7 +130,13 @@ export default async function LandingPage() {
           <div>
             <span className={eyebrow}>The woodworking plan catalog</span>
             <h1 className="font-display text-[clamp(2.4rem,5vw,3.5rem)] leading-[1.04] font-semibold mt-[1rem] mb-[1.1rem]">
-              Plans you can <em className="not-italic text-accent-text">actually</em> compare.
+              {/* Direction C: the emphasis is an OAK underline, not forest text — the word
+                  stays ink (it is content), oak draws under it (structure). */}
+              Plans you can{' '}
+              <em className="not-italic underline decoration-oak decoration-[0.16em] underline-offset-[0.12em]">
+                actually
+              </em>{' '}
+              compare.
             </h1>
             <p className="text-[1.125rem] text-muted max-w-[42ch] mb-[1.75rem]">
               Every plan carries the same structured detail &mdash; a full cut list, a
@@ -148,9 +159,12 @@ export default async function LandingPage() {
           {/* Real showcase plan: its actual cut list + a real board-buying plan, drawn. */}
           {heroShow ? (
             <div className="relative">
+              {/* Direction C: an OAK offset keyline FRAME behind the panel (was a blurred
+                  forest radial halo) — the structural, drawn look the direction is built on,
+                  and it keeps forest off a decorative surface. Graphic-only, aria-hidden. */}
               <div
                 aria-hidden="true"
-                className="absolute inset-[-8%_-6%_-12%_6%] rounded-[50%] bg-[radial-gradient(60%_60%_at_60%_40%,var(--accent)_0%,transparent_70%)] opacity-[0.35] blur-[28px]"
+                className="absolute inset-0 translate-x-[0.7rem] translate-y-[0.7rem] rounded-[0.75rem] border-2 border-oak"
               />
               <div className="relative">
                 <LandingPlanPanel
@@ -208,7 +222,8 @@ export default async function LandingPage() {
             <ul className="list-none m-0 p-0">
               {NOTES.map((n) => (
                 <li key={n.title} className="flex gap-[0.85rem] items-start my-[1.15rem]">
-                  <span className="inline-flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-[0.5rem] bg-accent-tint border border-accent-tint-border text-accent-strong shrink-0">
+                  {/* Direction C: ink tile, cream glyph. */}
+                  <span className="inline-flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-[0.5rem] bg-fg text-surface shrink-0">
                     {n.icon}
                   </span>
                   <div>
@@ -236,7 +251,9 @@ export default async function LandingPage() {
             {FEATURES.map((f) => (
               <li
                 key={f.title}
-                className="bg-surface border border-border rounded-[0.75rem] p-[1.4rem] shadow-e1 transition-[translate,box-shadow] duration-200 hover:-translate-y-[4px] hover:shadow-e3 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                // Direction C: an OAK top-line frames each card (a `::before` bar, not a
+                // border override, so it never depends on Tailwind's border source order).
+                className="relative bg-surface border border-border rounded-[0.75rem] p-[1.4rem] shadow-e1 transition-[translate,box-shadow] duration-200 hover:-translate-y-[4px] hover:shadow-e3 motion-reduce:transition-none motion-reduce:hover:translate-y-0 before:content-[''] before:absolute before:inset-x-[-1px] before:top-[-1px] before:h-[3px] before:bg-oak before:rounded-t-[0.75rem]"
               >
                 <span className={isq}>{f.icon}</span>
                 <h3 className="font-display text-[1.125rem] font-semibold mt-[0.85rem] mb-[0.4rem]">
@@ -386,7 +403,7 @@ export default async function LandingPage() {
               {AUDIENCE.map((a) => (
                 <li key={a} className="flex items-center gap-[0.75rem] my-[0.7rem] text-[1rem]">
                   <span
-                    className="inline-flex items-center justify-center w-[2.2rem] h-[2.2rem] rounded-[0.5rem] bg-accent-tint text-accent-strong shrink-0"
+                    className="inline-flex items-center justify-center w-[2.2rem] h-[2.2rem] rounded-[0.5rem] bg-fg text-surface shrink-0"
                     aria-hidden="true"
                   >
                     <Check size={16} />

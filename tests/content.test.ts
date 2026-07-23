@@ -97,6 +97,39 @@ describe('catalog data integrity — what keeps the filters honest', () => {
   });
 });
 
+/**
+ * Sprint 46 / Workstream C (Keagan 2026-07-23) — imageless plans are UNPUBLISHED.
+ *
+ * ~85 plans with an empty `images` array were set `published: false` in the content JSON to
+ * thin the catalog until real photos exist (DECISIONS_LOG.md 2026-07-23). This is the guard
+ * that makes it stick: a future authoring or seed pass that flips a photoless plan back to
+ * published fails CI HERE — at the source of truth, before a card with an honest-placeholder
+ * image can reach the live catalog. It is deliberately NOT a query-layer hide (the standing
+ * rule is that `published: true` is the only read filter, in `src/lib/plans.ts`); this asserts
+ * the CONTENT instead, so the two can never disagree.
+ */
+describe('published plans carry a photo (Workstream C, 2026-07-23)', () => {
+  it('no published plan has an empty images array', () => {
+    // `published` defaults to true in planSchema, so an unset value counts as published.
+    const offenders = catalog.plans
+      .filter((plan) => plan.published)
+      .filter((plan) => plan.images.length === 0)
+      .map((plan) => plan.slug);
+
+    expect(
+      offenders,
+      `${offenders.length} published plan(s) have no image — unpublish or add a photo: ${offenders.join(', ')}`,
+    ).toEqual([]);
+  });
+
+  it('the unpublish thinned the catalog without emptying it', () => {
+    // A floor, not an exact count: guards against a bulk edit that unpublishes everything
+    // (which would still pass the check above vacuously).
+    const published = catalog.plans.filter((plan) => plan.published);
+    expect(published.length).toBeGreaterThan(500);
+  });
+});
+
 describe('catalog spread — the seed data must actually exercise the filters', () => {
   /**
    * Twenty plans that are all "intermediate, $$, 4 hours" would pass every test

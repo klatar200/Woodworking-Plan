@@ -169,6 +169,36 @@ with it.
 
 ## 7. Current state (keep this updated)
 
+- **Sprint 46 (catalog UX + Oak & Forest authority mockups + runtime step formatting): batch
+  shipped, ONE gate open. 2026-07-23.** Gate green in a Linux `/tmp` clone (tsc/eslint clean,
+  vitest **1017/1017**); `npm run build` + real-device/print pass are Keagan's. Device edits via
+  node in-place writes + `device_commit_files` (the mount denies `unlink`, so git left a stale
+  `.git/index.lock` + `tar`/`rm` fail — Keagan clears the lock and commits locally).
+  - **C — imageless plans UNPUBLISHED in content.** 85 plans with empty `images` → `published:false`;
+    catalog **948→863**. Guard test (`tests/content.test.ts`) forbids a published plan with no image.
+    All 5 learning paths referenced ONLY imageless plans, so **the 5 paths are unpublished too**
+    (Keagan, AskUserQuestion 2026-07-23; `DECISIONS_LOG.md`). 🛑 **prod needs `npm run db:seed`** —
+    content does not deploy with code.
+  - **D — `/browse` `hero-wash` banner REMOVED** → plain compact `<h1>`; orphan `.hero-wash` CSS +
+    its `@media print` reset removed after grep (no other use).
+  - **E — filter rail:** scrollbar hidden (`.no-scrollbar` on the desktop rail + mobile drawer, still
+    scrolls); each group is a collapsed native `<details>` (`FilterSection`) that AUTO-OPENS when its
+    URL filter is active. GET form / no-JS / drawer guard preserved.
+  - **B — Browse menu HOVERS on desktop** (`hoverEnabled`, after-mount `(hover:hover) and
+    (min-width:64rem)`, 150ms close grace, Esc-dismiss); mobile drawer stays tap; no-JS = native tap,
+    SSR byte-identical. Hover interaction asserted via source (node env can't dispatch pointer events).
+  - **F — runtime step formatter SHIPPED** (`src/lib/step-format.ts` + `StepProse` in `prose.tsx`).
+    Action-sequence paragraphs → bulleted action lines, fastener sizes bolded (cut dims left plain),
+    **fails soft** to today's paragraphs. NO content JSON rewrite; a deterministic parser, NOT a
+    markdown dependency. One component across build + plan detail + print (no drift). F1 examples in
+    `mockups/step-format/example.md`.
+  - 🚧 **A — GATED, options only.** 3 self-contained homepage mockups (`mockups/oak-authority/`:
+    A Forest Weight / B Sage Atmosphere / C Ink & Oak, brand anchors only, AA-checked, no orange,
+    dark theme untouched). **No palette code shipped** — awaiting Keagan's A/B/C(/hybrid) pick;
+    then A2 implements it in `globals.css`/landing/chrome and re-runs the contrast guards.
+    Recommendation in `README.md`: **A (Forest Weight)**, grafting B's oak glow + C's oak rules.
+
+
 - **🏷️ NOTCH REBRAND (Sprints 43–45): COMPLETE — opened and closed 2026-07-21,
   Keagan's direction. Branding #8 is RESOLVED: the product is Notch, at
   notchplans.com** ("Oak & Forest"

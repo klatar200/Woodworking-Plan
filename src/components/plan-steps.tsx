@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import { Prose } from '@/components/prose';
+import { StepProse } from '@/components/prose';
 
 /**
  * The server-rendered step list — extracted 2026-07-16 when "Start building"
@@ -106,7 +106,7 @@ export function PlanSteps({
             </div>
           )}
 
-          <Prose text={step.body} />
+          <StepProse text={step.body} />
         </li>
       ))}
     </ol>

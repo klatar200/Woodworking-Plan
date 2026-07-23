@@ -1640,3 +1640,39 @@ per the $0-during-development decision above) and plan-content admin/CMS
 approach (#7, blocks Sprint 1). ~~Branding/domain (#8)~~ — **RESOLVED
 2026-07-21: Notch / notchplans.com** (see the entry above). **Sprint 0 is
 unblocked and can begin.**
+
+---
+
+### 2026-07-23 — Sprint 46: catalog UX, imageless-plan unpublish, runtime step formatting
+
+**Imageless plans → UNPUBLISHED (Workstream C).** 85 plans whose `images` array is empty were
+set `published: false` in `content/plans/*.json` — thinning the catalog until real photos
+exist. NOT a query-layer hide: the content JSON is the source of truth, and a guard test
+(`tests/content.test.ts` → "no published plan has an empty images array") fails CI if a
+future seed reintroduces one. Published catalog: **948 → 863**.
+
+- **Paths consequence — escalated; Keagan chose (AskUserQuestion 2026-07-23).** All 5 learning
+  paths referenced ONLY now-unpublished plans (all 17 unique referenced plans were imageless),
+  so `getPathBySlug` (published-only step filter) would have rendered them as empty shells.
+  **Chosen: unpublish the 5 paths too** — `furnish-a-room`, `outfit-your-shop`,
+  `screws-to-dovetails`, `the-cutting-board-path`, `your-first-five` → `published: false`;
+  re-curate when photos return. Rejected: leaving empty path shells; keeping the 17 flagship
+  plans live via a guard-test allowlist (would reintroduce imageless plans into the live
+  catalog, against the decision above).
+- 🛑 **Production needs a re-seed** — content does not deploy with code (`DEPLOYMENT.md`). The
+  unpublish only takes effect in prod after `npm run db:seed` against the live DB.
+
+**Oak & Forest light authority (Workstream A) — OPTIONS ONLY, gated.** 3 self-contained
+homepage mockups delivered under `mockups/oak-authority/` (A Forest Weight / B Sage Atmosphere
+/ C Ink & Oak), first viewport + one below-fold band each, brand anchors only, AA-checked, no
+orange, dark theme untouched. **No palette code shipped** — awaiting Keagan's A/B/C(/hybrid)
+pick before any token/utility change. Recommendation: **A (Forest Weight)**, grafting B's oak
+hero glow and C's oak structural rules.
+
+**Step-body formatter (Workstream F) — RUNTIME only, shipped.** No content JSON rewrite. F1
+before/after examples (`mockups/step-format/example.md`) judged a clear readability win, so F2
+shipped in the same batch per the brief's "proceed if it clearly improves" clause. Deterministic
+parser (`src/lib/step-format.ts`), not a markdown dependency (no new XSS surface); fails soft to
+today's paragraphs. Bullets (not numbers) chosen for action lists; fastener sizes bolded, cut
+dimensions left plain. Keagan can dial thresholds / numbering / bold scope — all runtime, no
+content edits either way.

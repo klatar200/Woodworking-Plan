@@ -65,8 +65,10 @@ const PAIRS: Array<{ fg: string; bg: string; min: number; where: string }> = [
   { fg: '--muted', bg: '--surface', min: 4.5, where: 'muted text inside a card' },
   { fg: '--muted-2', bg: '--bg', min: 4.5, where: 'landing footnote / trust marquee' },
   { fg: '--muted-2', bg: '--surface', min: 4.5, where: 'step-rail label' },
-  { fg: '--accent-text', bg: '--bg', min: 4.5, where: 'landing eyebrow / hero <em>' },
-  { fg: '--accent-text', bg: '--surface', min: 4.5, where: 'accent text inside a card' },
+  // Sprint 46 (Direction C): the landing eyebrow/<em> moved to muted+oak; forest-as-text now
+  // lives on interactive surfaces — the "Clear search and filters" link and the header nav hover.
+  { fg: '--accent-text', bg: '--bg', min: 4.5, where: 'accent link text (Clear search and filters)' },
+  { fg: '--accent-text', bg: '--surface', min: 4.5, where: 'accent text in a card / header nav hover' },
   { fg: '--accent-text', bg: '--accent-tint', min: 4.5, where: 'eyebrow / tool-fit text on tint' },
   { fg: '--accent-fg', bg: '--accent', min: 4.5, where: 'on-accent ink (chipActive, active pill)' },
   { fg: '--danger', bg: '--bg', min: 4.5, where: 'destructive-action / error text' },

@@ -11,10 +11,13 @@ import { isNavActive } from '@/lib/nav-active';
  * adds `aria-current="page"` and an active class when `usePathname()` matches (see
  * isNavActive for the exact/prefix rule). Pathname only — NO `useSearchParams`, which would
  * force a Suspense boundary on the statically-prerendered `/_not-found` (this renders in the
- * always-present header). Active marker: ink + semibold + a 2px accent underline bar, used
- * identically in the desktop row and the drawer.
+ * always-present header). Active marker: ink + semibold + a 2px OAK underline bar (Sprint 46,
+ * Direction C — oak is the structural "you are here" line; forest stays reserved for
+ * hover/CTAs), used identically in the desktop row and the drawer. The bar is supplementary:
+ * the state is also carried by `aria-current="page"` and the ink+semibold weight, so oak's
+ * low on-cream contrast is fine — it never has to stand alone.
  */
-const ACTIVE = 'text-fg font-semibold shadow-[inset_0_-2px_0_var(--accent)]';
+const ACTIVE = 'text-fg font-semibold shadow-[inset_0_-2px_0_var(--oak)]';
 
 export function NavLink({
   href,

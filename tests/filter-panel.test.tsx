@@ -149,3 +149,47 @@ describe('FilterPanel — auto-apply chrome (QOL-I)', () => {
     expect(html).not.toContain('name="perPage"');
   });
 });
+
+/**
+ * Sprint 46 (Workstream E) — each filter group is its own collapsed <details>, and a
+ * section auto-opens when the URL already carries a filter for it. A STATIC render is the
+ * no-JS view and the SSR snapshot both, which is exactly the state that must stay honest:
+ * a native <details> opens/closes with no JS, and every control (checked or not) is still
+ * in the DOM even while collapsed — SSR renders a <details>'s children regardless of `open`.
+ */
+describe('FilterPanel — collapsible filter sections (Workstream E)', () => {
+  it('renders each group as a <details> section, all closed with no active filters', () => {
+    const html = render(noFilters);
+    const sections = html.match(/<details class="filter-section/g) ?? [];
+    expect(sections).toHaveLength(5); // Category, Difficulty, Cost, Time, Tools
+    // Nothing is filtered, so nothing is auto-opened.
+    expect(html).not.toMatch(/<details class="filter-section[^"]*" open/);
+  });
+
+  it('auto-opens exactly the section that has an active URL filter, leaving the rest closed', () => {
+    const html = render({ ...noFilters, costTier: ['TIER_2'] });
+    const opened = html.match(/<details class="filter-section[^"]*" open/g) ?? [];
+    expect(opened).toHaveLength(1);
+    // …and it is the Cost section (its summary label follows immediately).
+    expect(html).toMatch(
+      /<details class="filter-section[^"]*" open[^>]*>\s*<summary[^>]*>\s*<span>Cost<\/span>/,
+    );
+  });
+
+  it('keeps every group label reachable on its summary', () => {
+    const html = render(noFilters);
+    for (const label of ['Category', 'Difficulty', 'Cost', 'Time available', 'Tools you own']) {
+      expect(html).toContain(`<span>${label}</span>`);
+    }
+  });
+
+  it('still renders every control while collapsed (SSR keeps <details> children in the DOM)', () => {
+    // A collapsed Tools section must not drop the checkboxes — no-JS / crawler must reach them.
+    const html = render(noFilters);
+    expect(checked(html, 'table-saw')).toBe(false);
+    expect(html).toContain('value="table-saw"');
+    // …and the tool grouping survives the restructure.
+    expect(html).toContain('Power Saw');
+    expect(html).toContain('Milling');
+  });
+});

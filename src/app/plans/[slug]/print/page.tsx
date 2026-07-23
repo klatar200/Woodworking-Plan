@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { getPlanBySlug } from '@/lib/plans';
 import { costTierSymbol, difficultyLabel, formatDimensions } from '@/lib/format';
 import { SITE_HOST } from '@/lib/brand';
-import { Prose } from '@/components/prose';
+import { StepProse } from '@/components/prose';
 
 /**
  * Print view — Sprint 13. BUSINESS_PLAN.md §10 ("print-friendly / offline PDF export").
@@ -262,7 +262,7 @@ export default async function PlanPrintPage({
                       )}
                     </p>
                   )}
-                  <Prose text={step.body} />
+                  <StepProse text={step.body} />
                 </li>
               ))}
             </ol>

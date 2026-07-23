@@ -163,33 +163,15 @@ export default async function CatalogPage({
     // grid with its own auto-fill card columns reads better using the whole
     // window than centered in a 96rem cap with dead margins either side.
     <main id="main" className={`${pageShell} lg:max-w-none`}>
-      {/*
-        QOL-F (2026-07-19) — the hero.
-
-        The catalog used to open with `<h1>Plans</h1>` and go straight to the grid. This
-        gives it a stage: a soft radial wash in `--accent-tint` over the surface, and the
-        one sentence that says what the catalog is FOR.
-
-        NO ILLUSTRATION AND NO PHOTOGRAPHY — nothing here needs art the project does not
-        have, which is the same reason `PlanImageSlot` renders an honest placeholder
-        rather than an AI render (DECISIONS_LOG.md 2026-07-14).
-
-        It is DECORATION, not content: the `<h1>` still reads "Plans" for a screen reader
-        and the search box below is untouched. The wash is a pseudo-element gradient, so
-        it costs no DOM and no request.
-      */}
-      {/* QOL-M catalog fix (2026-07-20, Keagan): the hero was a tall padded box that pushed
-          the grid far down — redundant now the landing page carries the full pitch. Slimmed
-          to a compact header (title + one line). `hero-wash` + `shadow-e2` stay (the print
-          block resets `.hero-wash`, and the standing rule keeps print-named classes on their
-          element); only the padding shrank. */}
-      <div className="hero-wash relative overflow-hidden mb-[1.25rem] rounded-[0.75rem] border border-border bg-surface px-[1.25rem] py-[0.9rem] shadow-e2 lg:px-[1.5rem] lg:py-[1.1rem]">
-        <h1 className="relative m-0 text-[1.6rem]">Plans</h1>
-        <p className="subtitle relative m-0 mt-[0.25rem] max-w-[52ch]">
-          Every plan carries a full cut list, a material list and a cost band &mdash; so
-          you can compare them before you drive to the lumberyard.
-        </p>
-      </div>
+      {/* Sprint 46 (Workstream D, Keagan 2026-07-23): the /browse hero-wash banner is
+          REMOVED. The marketing landing at `/` carries the pitch now, and the results header
+          just below already states what the catalog offers (material list, tools, cost band),
+          so the padded, washed title box was decoration paying rent it no longer earns. A
+          plain compact `<h1>` keeps the heading order (h1 → the results-column h2) intact for
+          a screen reader; no marketing band replaces it (brief: default is removal). The
+          `.hero-wash` CSS + its print reset were removed with it — grep-confirmed this was
+          the only use. */}
+      <h1>Plans</h1>
 
       <RateLimitNotice
         show={hasRateLimitNotice(params.notice)}
@@ -260,7 +242,7 @@ export default async function CatalogPage({
         </div>
 
         <aside
-          className="lg:[grid-area:filters] lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+          className="no-scrollbar lg:[grid-area:filters] lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
           aria-label="Sort and filters"
         >
           {/* QOL-M catalog fix (2026-07-20, Keagan): Sort lives in the controls sidebar with

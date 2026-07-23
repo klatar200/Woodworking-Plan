@@ -176,7 +176,7 @@ export function FilterDisclosure({ count, children }: Props) {
         putting the literal back. `lg:shadow-none` still wins — a variant is emitted
         after its base, which is how these two same-property utilities coexist.
       */}
-      <div className="fixed inset-y-0 right-0 z-40 w-[min(20rem,88vw)] overflow-y-auto overscroll-contain bg-surface border-l border-border shadow-e3 pt-[0.5rem] pb-[calc(1rem+env(safe-area-inset-bottom))] lg:static lg:w-auto lg:overflow-y-visible lg:bg-transparent lg:border-l-0 lg:shadow-none lg:pt-0 lg:pb-0">
+      <div className="no-scrollbar fixed inset-y-0 right-0 z-40 w-[min(20rem,88vw)] overflow-y-auto overscroll-contain bg-surface border-l border-border shadow-e3 pt-[0.5rem] pb-[calc(1rem+env(safe-area-inset-bottom))] lg:static lg:w-auto lg:overflow-y-visible lg:bg-transparent lg:border-l-0 lg:shadow-none lg:pt-0 lg:pb-0">
         {enhanced ? (
           <div className="flex justify-end px-[1rem] lg:hidden">
             <button

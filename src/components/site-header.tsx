@@ -23,16 +23,23 @@ const skipLink =
 // `site-header` class RETAINED — the print stylesheet still targets it. `relative`
 // is load-bearing: the mobile drawer positions itself against the header
 // (absolute + top-full in mobile-nav.tsx).
+// Sprint 46 (Direction C, Ink & Oak): the header keyline is a 2px OAK rule, not a 1px
+// border-border hairline — the structural line that gives every page its chrome authority.
+// Oak is graphic-only here (a rule, not text) and the same hex in both themes; the print
+// stylesheet hides `.site-header` by class, so it never prints.
 const siteHeader =
-  'site-header relative flex items-center justify-between gap-[1rem] px-[1.25rem] py-[0.625rem] border-b border-border sticky top-0 z-10 bg-surface pt-[calc(0.625rem+env(safe-area-inset-top))]';
+  'site-header relative flex items-center justify-between gap-[1rem] px-[1.25rem] py-[0.625rem] border-b-2 border-oak sticky top-0 z-10 bg-surface pt-[calc(0.625rem+env(safe-area-inset-top))]';
 // Sprint 45: the brand is a LOCKUP now — mark + wordmark in one link. `inline-flex
 // min-h-[2.75rem]` keeps the 44px hit area the text-only link satisfied by line-height.
 const brand =
   'inline-flex items-center gap-[0.5rem] min-h-[2.75rem] font-bold text-[1.125rem] text-fg no-underline whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
-// Desktop nav link: quiet by default, ink on hover. 44px tall for touch.
+// Desktop nav link: quiet by default. Sprint 46 (Direction C): hover goes FOREST, the
+// direction's single "interactive" signal — green means "do/go", ink means "read", oak is
+// structure. (The active page is marked separately: ink + semibold + an oak underline, see
+// nav-current.tsx.) 44px tall for touch.
 const navLink =
-  'inline-flex items-center gap-[0.375rem] min-h-[2.75rem] px-[0.625rem] rounded-[0.375rem] text-[0.9375rem] font-medium text-muted no-underline whitespace-nowrap hover:text-fg hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
+  'inline-flex items-center gap-[0.375rem] min-h-[2.75rem] px-[0.625rem] rounded-[0.375rem] text-[0.9375rem] font-medium text-muted no-underline whitespace-nowrap hover:text-accent-text hover:bg-[color-mix(in_srgb,var(--fg)_5%,transparent)] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2';
 
 // Drawer link: a full-width row with a generous tap target.
 const drawerLink =
@@ -164,6 +171,9 @@ export function SiteHeader() {
                   className="relative"
                   summaryClassName={browseSummary}
                   panelClassName={browsePanel}
+                  // Sprint 46 (Workstream B): desktop opens on hover. The mobile drawer
+                  // copy below leaves this off and stays tap-only.
+                  hoverEnabled
                 >
                   {categoryLinks(drawerLink)}
                 </BrowseMenu>

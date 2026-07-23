@@ -241,21 +241,26 @@
   box-sizing: border-box;
 }
 
-/* QOL-F — the catalog hero's wash. A CSS-only radial gradient, kept here rather than as
- * a Tailwind arbitrary value because it is a two-layer gradient with a pseudo-element,
- * which reads as line noise inlined. `.hero-wash` is a CLASS ON THE ELEMENT and is named
- * in the print block below — the standing rule (any class an @media print block targets
- * stays on its element). Purely decorative: `pointer-events: none`, no content. */
-.hero-wash::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    120% 100% at 12% 0%,
-    var(--accent-tint) 0%,
-    transparent 60%
-  );
-  pointer-events: none;
+/* Sprint 46 (Workstream D): the `.hero-wash` gradient (and its @media print reset below)
+ * were removed with the /browse hero banner — grep-confirmed the class had no other use. */
+
+/* Sprint 46 (Workstream E) — hide the scrollbar on the filter rail / drawer scroll
+ * containers while keeping them scrollable. Opt-in via this class (the desktop rail and the
+ * mobile filter drawer), never global. Cross-browser: Firefox `scrollbar-width: none` +
+ * the WebKit/Blink pseudo-element. Content still scrolls; only the visible bar is gone. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sprint 46 (Workstream E) — the filter-group disclosure chevron. Points down when the
+ * section is collapsed, flips up when open. No transition (keeps it clear of the
+ * prefers-reduced-motion / print rules), and it is aria-hidden decoration — the <summary>
+ * text and native `aria-expanded` carry the state. */
+.filter-section[open] .filter-section-chevron {
+  transform: rotate(180deg);
 }
 
 html,
@@ -427,13 +432,16 @@ h2 {
   border-bottom-color: var(--border-strong);
   box-shadow: var(--elev-3), var(--bevel);
 }
-/* Hero backdrop: a warm radial glow + a faint diagonal hatch (worked-wood texture). */
+/* Hero backdrop: a faint sage radial + a diagonal worked-wood hatch. Sprint 46 (Direction C,
+ * Ink & Oak): the hatch is OAK now — the structural/material line the whole direction is built
+ * on — rather than the forest accent, which Direction C reserves for CTAs and interactive state.
+ * Oak is the same hex in both themes and stays graphic-only here (a faint texture). */
 .landing-hatch {
   background:
     radial-gradient(60% 90% at 92% 0%, var(--accent-tint) 0%, transparent 60%),
     repeating-linear-gradient(
       115deg,
-      color-mix(in srgb, var(--accent-strong) 5%, transparent) 0 2px,
+      color-mix(in srgb, var(--oak) 12%, transparent) 0 2px,
       transparent 2px 22px
     );
 }
@@ -443,7 +451,10 @@ h2 {
     inset 0 11px 22px -16px rgba(60, 42, 24, 0.16),
     inset 0 -11px 22px -16px rgba(60, 42, 24, 0.12);
 }
-/* How-it-works timeline: a dashed accent connector behind the three step cards (desktop). */
+/* How-it-works timeline: a dashed connector behind the three step cards (desktop).
+ * Sprint 46 (Direction C): OAK, not the forest accent — it is a structural line, not an
+ * action, and Direction C keeps forest for CTAs/interactive. Oak reads as the worked-wood
+ * seam that ties the three steps together. */
 .landing-timeline {
   position: relative;
 }
@@ -455,8 +466,8 @@ h2 {
   right: 16%;
   height: 3px;
   border-radius: 3px;
-  background: repeating-linear-gradient(90deg, var(--accent) 0 10px, transparent 10px 18px);
-  opacity: 0.5;
+  background: repeating-linear-gradient(90deg, var(--oak) 0 10px, transparent 10px 18px);
+  opacity: 0.75;
   z-index: 0;
 }
 @media (max-width: 64rem) {
@@ -880,6 +891,29 @@ code {
   margin-bottom: 0;
 }
 
+/* Sprint 46 (Workstream F) — the runtime step formatter's action list. A paragraph that
+ * clearly sequences actions renders as this bulleted list (src/lib/step-format.ts);
+ * everything else stays a `.prose p`. Marker + rhythm only — the text inherits the
+ * surrounding `.prose` styling, and `.prose strong` already styles the fastener bold. */
+.prose .step-body-list {
+  margin: 0 0 0.875rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.prose .step-body-list:last-child {
+  margin-bottom: 0;
+}
+
+.prose .step-body-list li {
+  margin-bottom: 0.4rem;
+  line-height: 1.55;
+}
+
+.prose .step-body-list li:last-child {
+  margin-bottom: 0;
+}
+
 .tool-name {
   font-weight: 500;
 }
@@ -1177,20 +1211,6 @@ code {
   .page {
     max-width: none;
     padding: 0;
-  }
-
-  /* QOL-F — the hero KEEPS its heading on paper but loses its decoration. Hiding the
-     whole block would take the `<h1>` with it; a printed page with no title is worse
-     than one with no gradient. So the tint, the frame and the padding go, and the
-     words stay. */
-  .hero-wash {
-    padding: 0;
-    border: none;
-    border-radius: 0;
-  }
-
-  .hero-wash::before {
-    display: none;
   }
 
   /* QOL-F — see the settle-in above: `animation-fill-mode: both` holds a card at
@@ -1901,6 +1921,21 @@ code {
 
 .print-steps .prose p:last-child {
   margin-bottom: 0;
+}
+
+/* Sprint 46 (Workstream F) — the step formatter's action list on paper. `.print-steps ol`
+ * kills its own marker (the heading carries the step number); that `list-style: none` would
+ * inherit into this nested list, so restore a disc here explicitly. Font size matches the
+ * printed step paragraphs. */
+.print-steps .prose .step-body-list {
+  list-style: disc;
+  padding-left: 1.2rem;
+  margin: 0 0 0.6rem;
+  font-size: 0.9375rem;
+}
+
+.print-steps .prose .step-body-list li {
+  margin-bottom: 0.3rem;
 }
 
 .print-footer {

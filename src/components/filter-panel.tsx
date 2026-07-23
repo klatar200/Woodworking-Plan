@@ -17,11 +17,55 @@ import {
 } from '@/lib/ui'; // Sprint 29/30b: shared classes
 
 // Sprint 30b: filter-panel styling → Tailwind. `filters-form` layout, the fieldset
-// reset, legend eyebrow, the checkbox pills (shared `checkbox`), selects (shared
-// `selectControl`), hints and tool groups all inline below. The `.filters` / summary
-// chrome lives in filter-disclosure.tsx.
-const legendClass =
-  'p-0 text-[0.75rem] uppercase tracking-[0.06em] text-muted mb-[0.5rem]';
+// reset, the checkbox pills (shared `checkbox`), selects (shared `selectControl`), hints
+// and tool groups all inline below. The `.filters` / summary chrome lives in
+// filter-disclosure.tsx.
+
+/**
+ * Sprint 46 (Workstream E) — each filter group is its own collapsed disclosure.
+ *
+ * A native `<details>`, so it opens and closes with NO JavaScript — the panel stays the
+ * plain GET form it has always been. Collapsed by default keeps the rail short (five groups
+ * + 30 tool checkboxes was a tall wall); a section AUTO-OPENS when the URL already carries a
+ * filter for it (`active`), so a ticked control is never hidden behind a closed summary —
+ * control state matching system state, the same rule 39.1 fought for. The group's real
+ * label lives on the `<summary>`; the inner `<legend>` stays for the fieldset's a11y grouping
+ * but is visually hidden so it isn't shown twice.
+ */
+function FilterSection({
+  label,
+  active,
+  children,
+}: {
+  label: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <details className="filter-section border-t border-border" open={active}>
+      <summary className="filter-section-summary list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-[0.5rem] min-h-[2.75rem] text-[0.75rem] uppercase tracking-[0.06em] font-medium text-muted cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]">
+        <span>{label}</span>
+        <svg
+          className="filter-section-chevron flex-none"
+          width="12"
+          height="12"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M4 6l4 4 4-4" />
+        </svg>
+      </summary>
+      <div className="pb-[1.25rem]">{children}</div>
+    </details>
+  );
+}
+
+const legendHidden = 'visually-hidden';
 
 interface Props {
   query: string;
@@ -109,7 +153,7 @@ export function FilterPanel({
           JS off it is still a plain GET form and the visually-hidden Apply button submits
           it. */}
       <SoftGetForm
-        className="pt-0 px-[1rem] pb-[1rem] grid gap-[1.25rem]"
+        className="pt-0 px-[1rem] pb-[1rem]"
         action={CATALOG_PATH}
         autoSubmitOnChange="input[type=checkbox]"
       >
@@ -119,116 +163,126 @@ export function FilterPanel({
         {sort && <input type="hidden" name="sort" value={sort} />}
         {perPage && <input type="hidden" name="perPage" value={perPage} />}
 
-        <fieldset className="border-none p-0 m-0 min-w-0">
-          <legend className={legendClass}>Category</legend>
-          <AutoSubmitSelect
-            name="category"
-            defaultValue={filters.category ?? ''}
-            className={`w-full ${selectControl}`}
-          >
-            <option value="">Any category</option>
-            {categories.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </AutoSubmitSelect>
-        </fieldset>
+        <FilterSection label="Category" active={filters.category != null}>
+          <fieldset className="border-none p-0 m-0 min-w-0">
+            <legend className={legendHidden}>Category</legend>
+            <AutoSubmitSelect
+              name="category"
+              defaultValue={filters.category ?? ''}
+              className={`w-full ${selectControl}`}
+            >
+              <option value="">Any category</option>
+              {categories.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </AutoSubmitSelect>
+          </fieldset>
+        </FilterSection>
 
-        <fieldset className="border-none p-0 m-0 min-w-0">
-          <legend className={legendClass}>Difficulty</legend>
-          <div className="flex flex-wrap gap-[0.375rem]">
-            {DIFFICULTIES.map((d) => (
-              <label key={d} className={checkbox}>
-                <input
-                  type="checkbox"
-                  name="difficulty"
-                  value={d}
-                  defaultChecked={filters.difficulty.includes(d)}
-                  className={checkboxInput}
-                />
-                <span>{difficultyLabel(d)}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="border-none p-0 m-0 min-w-0">
-          <legend className={legendClass}>Cost</legend>
-          {/* Sprint 41.3 (audit C3): the anchor is VISIBLE TEXT here, not only a
-              tooltip — this is where someone is deciding which boxes to tick, and a
-              `title` is unreachable on a touch screen and to a keyboard. The badge
-              tooltips elsewhere are the extra, not the affordance. */}
-          <p className="mt-0 mb-[0.5rem] text-[0.8125rem] text-muted">
-            {COST_TIER_ANCHOR}
-          </p>
-          <div className="flex flex-wrap gap-[0.375rem]">
-            {COST_TIERS.map((tier) => (
-              <label key={tier} className={checkbox}>
-                <input
-                  type="checkbox"
-                  name="cost"
-                  value={tier}
-                  defaultChecked={filters.costTier.includes(tier)}
-                  className={checkboxInput}
-                />
-                <span>{costTierSymbol(tier)}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="border-none p-0 m-0 min-w-0">
-          <legend className={legendClass}>Time available</legend>
-          <AutoSubmitSelect
-            name="time"
-            defaultValue={filters.maxMinutes ?? ''}
-            className={`w-full ${selectControl}`}
-          >
-            <option value="">Any amount of time</option>
-            {TIME_BUCKETS.map((b) => (
-              <option key={b.value} value={b.value}>
-                {b.label}
-              </option>
-            ))}
-          </AutoSubmitSelect>
-        </fieldset>
-
-        <fieldset className="border-none p-0 m-0 min-w-0">
-          <legend className={legendClass}>Tools you own</legend>
-          <p className="mt-[-0.25rem] mx-0 mb-[0.625rem] text-[0.875rem] text-muted">
-            Tick what you have. You&rsquo;ll only see plans you can actually build
-            &mdash; optional tools are ignored.
-            {/* DRAFT copy — public wording is Keagan's to approve. */}
-            {showWorkshopTip ? (
-              <>
-                {' '}
-                Tip: &ldquo;Show plans I can build&rdquo; above the results ticks these from
-                your workshop.
-              </>
-            ) : null}
-          </p>
-
-          {[...grouped.entries()].map(([group, groupTools]) => (
-            <div key={group} className="mb-[0.75rem]">
-              <span className="block text-[0.8125rem] text-muted mb-[0.375rem]">{group}</span>
-              <div className="flex flex-wrap gap-[0.375rem]">
-                {groupTools.map((tool) => (
-                  <label key={tool.slug} className={checkbox}>
-                    <input
-                      type="checkbox"
-                      name="tools"
-                      value={tool.slug}
-                      defaultChecked={checkedTools.has(tool.slug)}
-                      className={checkboxInput}
-                    />
-                    <span>{tool.name}</span>
-                  </label>
-                ))}
-              </div>
+        <FilterSection label="Difficulty" active={filters.difficulty.length > 0}>
+          <fieldset className="border-none p-0 m-0 min-w-0">
+            <legend className={legendHidden}>Difficulty</legend>
+            <div className="flex flex-wrap gap-[0.375rem]">
+              {DIFFICULTIES.map((d) => (
+                <label key={d} className={checkbox}>
+                  <input
+                    type="checkbox"
+                    name="difficulty"
+                    value={d}
+                    defaultChecked={filters.difficulty.includes(d)}
+                    className={checkboxInput}
+                  />
+                  <span>{difficultyLabel(d)}</span>
+                </label>
+              ))}
             </div>
-          ))}
-        </fieldset>
+          </fieldset>
+        </FilterSection>
+
+        <FilterSection label="Cost" active={filters.costTier.length > 0}>
+          <fieldset className="border-none p-0 m-0 min-w-0">
+            <legend className={legendHidden}>Cost</legend>
+            {/* Sprint 41.3 (audit C3): the anchor is VISIBLE TEXT here, not only a
+                tooltip — this is where someone is deciding which boxes to tick, and a
+                `title` is unreachable on a touch screen and to a keyboard. The badge
+                tooltips elsewhere are the extra, not the affordance. */}
+            <p className="mt-0 mb-[0.5rem] text-[0.8125rem] text-muted">
+              {COST_TIER_ANCHOR}
+            </p>
+            <div className="flex flex-wrap gap-[0.375rem]">
+              {COST_TIERS.map((tier) => (
+                <label key={tier} className={checkbox}>
+                  <input
+                    type="checkbox"
+                    name="cost"
+                    value={tier}
+                    defaultChecked={filters.costTier.includes(tier)}
+                    className={checkboxInput}
+                  />
+                  <span>{costTierSymbol(tier)}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </FilterSection>
+
+        <FilterSection label="Time available" active={filters.maxMinutes != null}>
+          <fieldset className="border-none p-0 m-0 min-w-0">
+            <legend className={legendHidden}>Time available</legend>
+            <AutoSubmitSelect
+              name="time"
+              defaultValue={filters.maxMinutes ?? ''}
+              className={`w-full ${selectControl}`}
+            >
+              <option value="">Any amount of time</option>
+              {TIME_BUCKETS.map((b) => (
+                <option key={b.value} value={b.value}>
+                  {b.label}
+                </option>
+              ))}
+            </AutoSubmitSelect>
+          </fieldset>
+        </FilterSection>
+
+        <FilterSection label="Tools you own" active={filters.ownedTools.length > 0}>
+          <fieldset className="border-none p-0 m-0 min-w-0">
+            <legend className={legendHidden}>Tools you own</legend>
+            <p className="mt-0 mx-0 mb-[0.625rem] text-[0.875rem] text-muted">
+              Tick what you have. You&rsquo;ll only see plans you can actually build
+              &mdash; optional tools are ignored.
+              {/* DRAFT copy — public wording is Keagan's to approve. */}
+              {showWorkshopTip ? (
+                <>
+                  {' '}
+                  Tip: &ldquo;Show plans I can build&rdquo; above the results ticks these from
+                  your workshop.
+                </>
+              ) : null}
+            </p>
+
+            {[...grouped.entries()].map(([group, groupTools]) => (
+              <div key={group} className="mb-[0.75rem]">
+                <span className="block text-[0.8125rem] text-muted mb-[0.375rem]">{group}</span>
+                <div className="flex flex-wrap gap-[0.375rem]">
+                  {groupTools.map((tool) => (
+                    <label key={tool.slug} className={checkbox}>
+                      <input
+                        type="checkbox"
+                        name="tools"
+                        value={tool.slug}
+                        defaultChecked={checkedTools.has(tool.slug)}
+                        className={checkboxInput}
+                      />
+                      <span>{tool.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </fieldset>
+        </FilterSection>
 
         {/* QOL-I: every field now auto-applies, so an explicit Apply is visually
             redundant — but it stays in the document (visually hidden, not removed) as the

@@ -231,7 +231,12 @@ describe('catalog page — filters', () => {
     // true is that the page TELLS you filters are on: the count rides in the trigger,
     // and FilterChips lists each one above the results (asserted separately below).
     // See filter-disclosure.tsx for the full reasoning.
-    expect(html).not.toMatch(/<details[^>]*\bopen\b/);
+    //
+    // Sprint 46 (Workstream E): the assertion targets the OUTER `.filters` drawer
+    // specifically. The INNER filter-section for an active filter (Category, here) DOES
+    // auto-open now — that is the point — so a blanket "no open <details>" would wrongly
+    // catch it.
+    expect(html).not.toMatch(/<details class="filters\b[^>]*\bopen\b/);
     expect(html).toContain('Filters (1)');
     expect(html).toContain('aria-label="Active filters"');
   });
@@ -258,13 +263,14 @@ describe('catalog page — filters', () => {
  * highest-traffic page — and that is a decision, not a refactor.
  */
 describe('catalog visual pass (QOL-F)', () => {
-  it('opens with the hero, keeping the h1 and the class the print rule targets', async () => {
+  it('opens with a plain compact h1, not the removed hero-wash banner (Workstream D)', async () => {
     const html = await render();
 
-    expect(html).toContain('hero-wash');
-    // Decoration, not content: the heading is still a real h1 for a screen reader.
+    // Sprint 46 (Workstream D): the hero-wash banner is GONE — the landing page carries
+    // the pitch. The heading survives as a real h1 for a screen reader (heading order
+    // h1 → results h2 intact), but nothing washed or shadowed replaces the wash.
     expect(html).toMatch(/<h1[^>]*>Plans<\/h1>/);
-    expect(html).toContain('shadow-e2');
+    expect(html).not.toContain('hero-wash');
   });
 
   it('gives cards a resting elevation and a hover lift, with a reduced-motion escape', async () => {

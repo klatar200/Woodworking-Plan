@@ -4402,3 +4402,106 @@ the SVG + re-run of the icon script if he wants it.
 Real-device pass: install the PWA (Android launcher mask + iOS home screen icon),
 confirm the favicon in a real tab, and decide the colour question above (keep the
 traced fills vs snap to brand hexes). Then push 43–45 together and check CI.
+
+---
+
+## Sprint 46: Catalog UX + Oak & Forest authority (A1) + runtime step formatting
+**Dates:** 2026-07-23
+**Scope (from sprint brief):** A1 Oak & Forest homepage mockups (GATE); B Browse desktop
+hover; C unpublish imageless plans; D remove /browse hero banner; E filter panel scrollbar +
+section dropdowns; F1/F2 runtime step-body formatter.
+**PR(s):** prepared for Keagan (sandbox git blocked by an unlink-denied `.git/index.lock` on
+the mount — see handoff below); all changes are on the working tree.
+
+### Attempt 1 — 2026-07-23
+
+**C — Unpublish imageless plans (content, source of truth).** Deterministic pass over
+`content/plans/*.json`: 85 plans with empty `images` and `published:true` → `published:false`
+(single-line text swap; verified one `published:true` per file first). Published catalog
+**948 → 863**, 0 published-with-empty-images remaining. Guard test added
+(`tests/content.test.ts` → "no published plan has an empty images array", + a floor check that
+the catalog wasn't emptied). **Paths escalation:** all 5 learning paths referenced ONLY
+now-unpublished plans (17 unique, all imageless) → `getPathBySlug`'s published-only step filter
+would render empty shells. Escalated via AskUserQuestion; Keagan chose **unpublish the 5 paths
+too** (DECISIONS_LOG 2026-07-23). `content.test.ts` referential checks still pass (loader reads
+all files regardless of `published`). 🛑 **Production re-seed required** (`npm run db:seed`) —
+content does not deploy with code.
+
+**D — Remove /browse hero banner.** Deleted the `hero-wash` title/subtitle box in
+`browse/page.tsx`; replaced with a plain compact `<h1>Plans</h1>` (heading order h1→results-h2
+intact for a screen reader; the unlayered `h1` rule sizes it). Grep-confirmed `.hero-wash` had
+no other use, so removed its `::before` gradient AND its `@media print` reset from
+`globals.css` (no orphaned print rule). Updated `tests/page.test.tsx` (asserts the plain h1 and
+that `hero-wash` is gone).
+
+**E — Filter panel: hidden scrollbar + section dropdowns.** New `.no-scrollbar` utility
+(`scrollbar-width:none` + `::-webkit-scrollbar{display:none}`) applied to the desktop rail
+(`browse/page.tsx` aside) and the mobile drawer (`filter-disclosure.tsx`) — scrolls, no bar.
+Each filter group (Category/Difficulty/Cost/Time/Tools) is now a native `<details>`
+`FilterSection` (no JS to open/close), collapsed by default, **auto-opening when the URL has an
+active filter for it** (`open={active}`); visible label on the `<summary>`, fieldset `<legend>`
+kept but visually hidden for a11y grouping; chevron flips via `.filter-section[open]` CSS (no
+motion rule needed). Tests: sections render + default closed, exactly the active section opens,
+labels reachable, controls stay in the DOM while collapsed (no-JS), scrollbar rule present.
+
+**B — Browse menu: desktop hover.** `browse-menu.tsx` gains `hoverEnabled` (passed only by the
+desktop header instance in `site-header.tsx`; the mobile drawer copy stays tap). After mount,
+gated on `matchMedia('(hover: hover) and (min-width: 64rem)')`, pointer-enter opens and
+pointer-leave closes after a 150ms grace (panel `onPointerEnter` cancels the pending close so
+the trigger→panel gap doesn't flicker). Native `<details>` click/keyboard toggle untouched
+(`aria-expanded` reflected from `open`); Esc dismisses + returns focus; timer cleared on
+unmount. No-JS/touch = unchanged native tap (SSR output byte-identical with/without
+`hoverEnabled`). Tests: SSR PE-equivalence + source assertions for the desktop-gated pointer
+path, grace/cancel, Esc, and the site-header wiring (desktop yes / mobile no).
+
+**F1/F2 — Runtime step-body formatter (no JSON rewrite).** New pure module
+`src/lib/step-format.ts`: splits a step body into blocks; a paragraph with ≥3 sentences and ≥2
+opening with an action verb becomes a bulleted action list (reasoning sentences weld onto the
+action above them); fastener sizes (`1-1/4" screws`, `#8 x 2"`) bolded, cut dimensions left
+plain; **fails soft** to today's paragraphs on anything unmatched. Deliberately a small
+deterministic parser, NOT a markdown dependency (no new XSS surface). New `StepProse` sibling in
+`prose.tsx` (shares the `**bold**` inline renderer with `Prose`) is used by `PlanSteps`
+(detail + /build) AND the print sheet — one formatter, no drift; plan/path DESCRIPTIONS keep
+plain `Prose`. `globals.css` gains `.step-body-list` (screen + a print rule so the nested list
+survives `.print-steps ol{list-style:none}`). F1 before/after shown on
+`happier-homemaker-farmhouse-table` + `extra-long-buffet-cabinet-drawers`
+(`mockups/step-format/example.md`); judged a clear readability win → F2 shipped same batch.
+Unit tests on the pure helpers with real step fixtures (15 cases incl. fail-soft/never-drop-text).
+
+**A1 — Oak & Forest authority mockups (GATE — STOPPED for Keagan).** 3 self-contained HTML
+mockups under `mockups/oak-authority/` (outside `src/`, not routed/linted): **A Forest Weight**
+(forest fills in CTA/nav/chrome/hero wash, oak bevel/rail), **B Sage Atmosphere** (deep sage
+wash + forest hatch + oak glow, full sage bands), **C Ink & Oak** (ink hierarchy + oak
+structural keylines, forest reserved for CTAs/interactive). Each: landing first viewport + one
+below-fold band, brand anchors only, no orange, dark theme untouched, banned AI-default looks
+avoided. All text pairs contrast-checked (≥4.5:1 AA; `--oak` graphic-only, never text on light).
+`README.md` chooser note recommends **A**, grafting B's oak hero glow + C's oak rules.
+**No palette code shipped** — awaiting Keagan's A/B/C(/hybrid) pick before touching
+`globals.css`/landing/chrome + the contrast guards.
+
+**Gate (Linux `/tmp` clone of the device source, fresh `npm ci`):** `npx tsc --noEmit` clean ·
+`npx vitest run` **1017/1017** across 85 files · `npx eslint .` clean. `npm run build` +
+real-device/print pass are Keagan's (sandbox can't reach his localhost; Next build not run
+here).
+
+**Handoff / environment note.** Device edits landed via node in-place writes + `device_commit_files`
+(the mount denies `unlink`, so `tar` overwrite and `rm` fail; `git` left a stale
+`.git/index.lock` it couldn't clear). `kreg-plans.json` (12MB, appeared mid-session) is
+Keagan's concurrent work, untouched by this sprint. Keagan clears the lock (`Remove-Item
+.git\index.lock`) and runs the gate/commit locally — exact commands provided in chat.
+
+### Self-score — 96/100 (pass)
+
+| # | Category | Score | Evidence |
+|---|---|---|---|
+| 1 | Requirements fidelity | 24/25 | Every workstream maps to a brief item; A correctly gated (options only, STOP). −1: D's `<h1>` sits at page top rather than literally "in the results column" (within the brief's "or visually consistent" latitude). |
+| 2 | Correctness & functionality | 19/20 | tsc + eslint clean, 1017 vitest pass on the real source; content re-counted on disk (863/0/5-paths); mockups rendered + contrast-checked numerically. −1: no live run of the built app (localhost unreachable from sandbox; `npm run build` is Keagan's). |
+| 3 | Automated test coverage | 14/15 | New behavior tests: step-format (15, real fixtures), browse-menu (9), filter sections + scrollbar (6), C guard (2), updated page/hero. −1: desktop hover open/close asserted via source (node env can't dispatch pointer events), per the repo's own SSR-test convention. |
+| 4 | Security | 15/15 | Formatter is a deterministic non-markdown parser (no new XSS surface; React-escaped, only `**`→`<strong>`); C is content-only; `published:true`-only reads unchanged; filter panel stays a GET form; no client `userId`. |
+| 5 | Code quality & simplicity | 10/10 | Reused native `<details>` + the shared inline renderer (one formatter, no drift); orphan `.hero-wash` CSS removed after grep; removed the now-dead `legendClass`; small deterministic parser over a dependency. |
+| 6 | Mobile/offline behavior | 9/10 | PE contract preserved by construction and asserted by SSR tests (no-JS filter reachability, fail-soft steps, native mobile tap, hidden-scrollbar still scrolls); print rule added for the step list. −1: not verified on a physical device / print preview. |
+| 7 | Documentation & handoff | 5/5 | SPRINT_LOG + DECISIONS_LOG + CLAUDE.md §7 updated; F1 example + A1 chooser README; exact PowerShell commands (lock clear, gate, build, re-seed) — the specified handoff when the sandbox blocks git. |
+
+**Remaining (Keagan):** pick A/B/C for Workstream A → I implement A2; run `npm run build` +
+real-device/print pass; `npm run db:seed` to apply the unpublish in prod; clear the git lock,
+review `git diff`, commit/push.
