@@ -33,6 +33,10 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const UNPUBLISH = process.argv.includes('--unpublish');
 const SKIP_EMPTY_CUTLIST = process.argv.includes('--skip-empty-cutlist');
 const SKIP_EMPTY_IMAGES = process.argv.includes('--skip-empty-images');
+// --only-empty-cutlist (unpublish direction): unpublish ONLY plans whose cutList is [] —
+// i.e. hide plans without a structured cut list, keeping the ones that have one published.
+// Reversible: publish them again after a cut-list parse pass fills the missing ones.
+const ONLY_EMPTY_CUTLIST = process.argv.includes('--only-empty-cutlist');
 
 const FROM = UNPUBLISH ? 'true' : 'false';
 const TO = UNPUBLISH ? 'false' : 'true';
@@ -71,6 +75,9 @@ async function main() {
         held.images.push(json.slug ?? f);
         continue;
       }
+    } else if (ONLY_EMPTY_CUTLIST && (json.cutList ?? []).length > 0) {
+      // Keep plans that HAVE a structured cut list published; only hide the empty ones.
+      continue;
     }
 
     const needle = `"published": ${FROM}`;
