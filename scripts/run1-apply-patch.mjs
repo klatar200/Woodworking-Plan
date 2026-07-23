@@ -28,6 +28,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { readPlan, writePlanIfFaithful } from './plan-io.mjs';
 import { lintPlan } from './run1-number-lint.mjs';
+import { geometryNotes } from './run1-box-geometry.mjs';
 
 const STEP_KEYS = new Set(['title', 'body', 'tools', 'materials', 'image']);
 
@@ -312,6 +313,7 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
 
   let applied = 0;
   let rejected = 0;
+  let errored = 0;
   const results = [];
 
   for (const patch of list) {
@@ -373,15 +375,32 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
         }
       }
     } catch (err) {
-      rejected += 1;
-      record = { slug: patch.slug, status: 'rejected', errors: [err.message] };
+      /**
+       * A CRASH IS NOT A VERDICT.
+       *
+       * This catch used to file any thrown error as `rejected`, so when `geometryNotes`
+       * was called without being imported, 17 perfectly good patches across three groups
+       * printed as "REJECT ... geometryNotes is not defined" — a tooling bug wearing the
+       * costume of a content judgement. Had the message been less obviously a JS error, or
+       * had I been reading only the counts, that is 17 plans silently discarded and a
+       * rejection rate quietly poisoned.
+       *
+       * `errored` is its own status and its own exit code, because the two need different
+       * responses: a rejection means fix the patch, an error means fix the pipeline and
+       * re-run every patch it touched.
+       */
+      errored += 1;
+      record = { slug: patch.slug, status: 'errored', errors: [`PIPELINE ERROR: ${err.message}`] };
     }
     results.push(record);
   }
 
   let toVerify = 0;
   for (const r of results) {
-    if (r.status === 'rejected') {
+    if (r.status === 'errored') {
+      console.log(`💥 ERROR     ${r.slug}`);
+      for (const e of r.errors) console.log(`               ${e}`);
+    } else if (r.status === 'rejected') {
       console.log(`REJECT       ${r.slug}`);
       for (const e of r.errors) console.log(`               ${e}`);
     } else if (r.status === 'needs-verify') {
@@ -393,6 +412,11 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
     }
   }
   writeFileSync('run1-batch-report.json', JSON.stringify(results, null, 2), 'utf8');
-  console.log(`\n${applied} applied/ok, ${toVerify} need verification, ${rejected} rejected.`);
-  process.exit(rejected ? 1 : 0);
+  console.log(
+    `\n${applied} applied/ok, ${toVerify} need verification, ${rejected} rejected` +
+      (errored ? `, 💥 ${errored} ERRORED (pipeline bug — re-run these, they were never judged)` : '') +
+      '.',
+  );
+  // Exit 2 for a pipeline error: louder than a rejection, because the run is not trustworthy.
+  process.exit(errored ? 2 : rejected ? 1 : 0);
 }

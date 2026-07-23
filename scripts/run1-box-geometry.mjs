@@ -30,7 +30,7 @@
  *   node scripts/run1-box-geometry.mjs [slug ...]
  */
 import { planFiles, readPlan } from './plan-io.mjs';
-import { inches } from './run1-cut-step.mjs';
+import { inches } from './run1-inches.mjs';
 
 /** A sixteenth is the finest mark on a tape; anything closer is the same measurement. */
 const TOL = 0.0313;

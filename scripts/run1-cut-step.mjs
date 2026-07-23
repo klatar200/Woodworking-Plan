@@ -21,18 +21,10 @@
 import { writeFileSync } from 'node:fs';
 import { planFiles, readPlan, writePlanIfFaithful } from './plan-io.mjs';
 import { packBoards } from './run1-verify-packet.mjs';
-
 /** Matches src/lib/format.ts formatInches — tape-measure fractions, never decimals. */
-export function inches(v) {
-  const whole = Math.floor(v + 1e-9);
-  const sixteenths = Math.round((v - whole) * 16);
-  if (sixteenths === 0) return `${whole}"`;
-  if (sixteenths === 16) return `${whole + 1}"`;
-  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
-  const d = gcd(sixteenths, 16);
-  const frac = `${sixteenths / d}/${16 / d}`;
-  return whole > 0 ? `${whole}-${frac}"` : `${frac}"`;
-}
+import { inches } from './run1-inches.mjs';
+
+export { inches };
 
 const COUNT = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 const count = (n) => COUNT[n] ?? String(n);
