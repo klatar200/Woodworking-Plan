@@ -10,7 +10,7 @@
  * their OWN hardcoded `{ index: false, follow: false }` regardless of this flag — they are
  * never meant to be indexed.
  */
-export const SITE_INDEXABLE = false;
+export const SITE_INDEXABLE = true;
 
 /** Robots policy for public pages — follows SITE_INDEXABLE. */
 export const publicRobots = SITE_INDEXABLE
