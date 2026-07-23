@@ -132,7 +132,15 @@ export function geometryNotes(plan) {
       }
       continue;
     }
-    const key = `${f.a.part}|${f.b.part}|${f.panel}`;
+    /**
+     * One proof per member pair, not one per panel that happens to confirm it.
+     *
+     * A plan with a back AND a floor of the same size proves the same reading twice, and
+     * the dollhouse emitted the identical 15-1/2" sentence six times. Extra copies of a
+     * settled fact are packet weight, and a wall of near-identical lines is read less
+     * carefully than one line — which is the opposite of what this section is for.
+     */
+    const key = pairKey;
     if (seen.has(key)) continue;
     seen.add(key);
 
@@ -144,11 +152,28 @@ export function geometryNotes(plan) {
       );
       continue;
     }
+    /**
+     * State the OUTER DIMENSION the reading implies, not just the reading.
+     *
+     * `modular-stackable-dollhouse` obeyed this section for its deck ("the two 14" pieces
+     * fitted between them, since 14" plus a 3/4" end at each side is 15-1/2"") and
+     * contradicted it for its roof, from an identical 14" member — asserting the roof
+     * "does NOT share the 15-1/2" footprint" and so changing the footprint of every
+     * stacking module. The determination was right there; the number it implies was not,
+     * so the writer re-derived it once and guessed it once.
+     *
+     * A number is harder to contradict by accident than a relationship, and it gives the
+     * verifier a single value to check rather than a sentence to interpret.
+     */
+    const outer = f.between.lengthIn + 2 * f.thicknessIn;
     out.push(
       `"${f.full.part}" (${inches(f.full.lengthIn)}) runs the FULL length and ` +
         `"${f.between.part}" (${inches(f.between.lengthIn)}) sits BETWEEN them — ` +
         `proved by the "${f.panel}" at ${dims}, which closes only on that reading ` +
-        `(${inches(f.thicknessIn)} stock at each end).`,
+        `(${inches(f.thicknessIn)} stock at each end). ` +
+        `The assembly's OUTSIDE dimension across that axis is therefore ` +
+        `${inches(outer)} (${inches(f.between.lengthIn)} + two ${inches(f.thicknessIn)} ends); ` +
+        `use that figure and do not contradict it elsewhere.`,
     );
   }
   return out;
