@@ -246,8 +246,8 @@ def _tools_kreg(soup: BeautifulSoup) -> list[dict]:
 
 
 def _tools_other(soup: BeautifulSoup) -> list[str]:
+    """Keep every authored other-tool row (same rationale as kreg_tools)."""
     names: list[str] = []
-    seen: set[str] = set()
     for li in soup.select("ul.tools-list.other-tools > li"):
         text_holder = li.select_one(".text-holder")
         name = _clean(text_holder) if text_holder else _clean(li)
@@ -255,10 +255,8 @@ def _tools_other(soup: BeautifulSoup) -> list[str]:
             img = li.select_one("img")
             name = (img.get("alt") or "").strip() if img else ""
         name = _clean_text(name)
-        key = name.lower()
-        if not name or key in seen:
+        if not name:
             continue
-        seen.add(key)
         names.append(name)
     return names
 
