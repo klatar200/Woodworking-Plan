@@ -63,6 +63,16 @@ export function solveBoxes(plan) {
 
       for (const panel of rows) {
         if (panel === A || panel === B) continue;
+        /**
+         * The proving panel must actually be a PANEL.
+         *
+         * A plan holding two cabinets (a play kitchen with a sink and a stove) will
+         * happily "prove" a sink side against a stove toekick using another pair of sides
+         * as the panel — three parts from two different boxes, arithmetic that closes by
+         * coincidence. A real back or bottom is either a singleton or cut from different
+         * stock than the frame; a second pair of same-thickness members is neither.
+         */
+        if (panel.quantity > 1 && near(panel.thicknessIn, t)) continue;
         const aFull =
           sameRect(panel.widthIn, panel.lengthIn, A.lengthIn, B.lengthIn + 2 * t) ||
           sameRect(panel.widthIn, panel.lengthIn, A.lengthIn - 2 * t, B.lengthIn);
