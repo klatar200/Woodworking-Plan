@@ -286,6 +286,27 @@ Autonomous per-plan loop over **published (948) first, then unpublished (167)**:
 5. **Machine gates after every batch** (all must pass or the batch is reverted and retried):
    `node scripts/validate-plans.mjs` clean, `tsc`, and the content-load test. Commit the batch.
 
+**🛑 A patch's indices belong to the array it was read from. Never mutate `content/plans/`
+while a patch against it is outstanding.** This cost a whole batch. 34 patches were written
+at 16:06; at 21:10 `scripts/run1-cut-step.mjs` scaffolded a cut step into 311 plans,
+including most of those 34. Every `replace` index then pointed one step late, so each patch
+overwrote the step *after* its target and left the target duplicated further down. Four
+independent verifiers reported it as "a step was destroyed" and charged it to the rewrite
+agents; it was neither theirs nor `applyOps`' — the indices were correct for a different
+array, and nothing in the pipeline was positioned to notice.
+
+Two rules follow, and the second is the one that actually holds:
+
+- **Sequence, don't interleave.** A scripted content pass and a model rewrite pass are both
+  writers. Land one, then generate against the result.
+- **Every rewrite patch carries `baseStepTitles`** — the verbatim title of every step as the
+  agent read it. `checkPatchBase()` refuses the patch if the plan has moved. A step *count*
+  is not enough: a delete plus an insert nets to zero.
+
+Discipline alone would not have caught this — the scaffold and the rewrites were correct in
+isolation, and each looked complete on its own. Only a patch that carries its own base state
+can tell.
+
 **Run 1 finalize (autonomous):** full `vitest` + `next build`; a **completeness-critic sweep**
 ("what's unverified, skipped, or unsupported?") whose findings re-enter the loop until it comes back
 dry. Then the **safe-autonomous seed** (see §6.1).
