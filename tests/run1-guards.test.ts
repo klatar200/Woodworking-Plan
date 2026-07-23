@@ -13,6 +13,8 @@ import { verificationTier } from '../scripts/run1-apply-patch.mjs';
 import { packBoards } from '../scripts/run1-verify-packet.mjs';
 // @ts-expect-error — plain-node audit script, no types
 import { fastenerUniverse, lintPlan } from '../scripts/run1-number-lint.mjs';
+// @ts-expect-error — plain-node audit script, no types
+import { geometryNotes } from '../scripts/run1-box-geometry.mjs';
 
 const STALE_STEP_REF = /\bsteps?\s+\d+(?![\d"″\-/]|\s*(?:in\b|inch|ft\b|feet\b))/gi;
 
@@ -122,6 +124,58 @@ describe('fastener sizes', () => {
       'Cut four pickets at 16" and screw them across the frame.',
     );
     expect(lintPlan(p).filter((f: { note?: string }) => f.note)).toHaveLength(0);
+  });
+});
+
+describe('box geometry solver', () => {
+  const box = (a: number, b: number, panelW: number, panelL: number, t = 0.75) => ({
+    cutList: [
+      { part: 'A member', quantity: 2, thicknessIn: t, widthIn: 3.5, lengthIn: a },
+      { part: 'B member', quantity: 2, thicknessIn: t, widthIn: 3.5, lengthIn: b },
+      { part: 'Panel', quantity: 1, thicknessIn: 0.25, widthIn: panelW, lengthIn: panelL },
+    ],
+  });
+
+  /**
+   * The two cases that cost real rejections, reduced to their arithmetic.
+   * printers-console-table: a 58" x 33" back proves the 33" sides run full height, so the
+   * 56-1/2" top and bottom sit between them — the rewrite had it backwards and told the
+   * builder to cut two correct shelves shorter.
+   */
+  it('reads an OUTER panel as proving the other member runs full', () => {
+    const notes = geometryNotes(box(56.5, 33, 58, 33));
+    expect(notes).toHaveLength(1);
+    expect(notes[0]).toContain('"B member" (33") runs the FULL length');
+    expect(notes[0]).toContain('"A member" (56-1/2") sits BETWEEN');
+  });
+
+  /**
+   * mini-farmhouse-bedside-table: a 9" x 11-1/4" drawer bottom proves the 10-1/2" fronts
+   * wrap OUTSIDE the 11-1/4" sides (10-1/2 less two 3/4" = 9). The rewrite reversed it and
+   * built a 12" box for a 10-3/4" opening.
+   */
+  it('reads an INNER panel as proving the same member runs full', () => {
+    const notes = geometryNotes(box(10.5, 11.25, 9, 11.25));
+    expect(notes).toHaveLength(1);
+    expect(notes[0]).toContain('"A member" (10-1/2") runs the FULL length');
+  });
+
+  it('claims nothing when no panel closes on either reading', () => {
+    expect(geometryNotes(box(20, 10, 7, 3))).toHaveLength(0);
+  });
+
+  it('refuses a square frame, which settles nothing', () => {
+    expect(geometryNotes(box(12, 12, 13.5, 12))).toHaveLength(0);
+  });
+
+  it('reports a contradiction instead of picking the first answer', () => {
+    // Two panels, one proving each reading — the plan disagrees with itself.
+    const plan = box(20, 10, 20, 11.5);
+    plan.cutList.push({ part: 'Second panel', quantity: 1, thicknessIn: 0.25, widthIn: 21.5, lengthIn: 10 });
+    const notes = geometryNotes(plan);
+    expect(notes).toHaveLength(1);
+    expect(notes[0]).toContain('OPPOSITE readings');
+    expect(notes.join()).not.toContain('runs the FULL length');
   });
 });
 

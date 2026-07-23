@@ -21,6 +21,7 @@ import { readFileSync } from 'node:fs';
 import { readPlan } from './plan-io.mjs';
 import { applyOps } from './run1-apply-patch.mjs';
 import { lintPlan } from './run1-number-lint.mjs';
+import { geometryNotes } from './run1-box-geometry.mjs';
 
 /**
  * Saw kerf, matching src/lib/cut-optimizer.ts. Every cut eats about 1/8", which is why
@@ -148,6 +149,12 @@ for (const patch of Array.isArray(patches) ? patches : [patches]) {
     }
   }
   out.push(`- ALL parts: ${frac([...groups.values()].reduce((a, b) => a + b.total, 0))}" total`);
+
+  const geometry = geometryNotes(plan);
+  if (geometry.length) {
+    out.push('\n### BOX GEOMETRY (solved from the cut list — do not re-derive, do not contradict)');
+    for (const g of geometry) out.push(`- ${g}`);
+  }
 
   out.push('\n### TOOLS AVAILABLE (slugs)');
   out.push((plan.tools ?? []).map((t) => t.slug).join(', '));
