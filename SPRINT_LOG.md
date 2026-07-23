@@ -4505,3 +4505,57 @@ Keagan's concurrent work, untouched by this sprint. Keagan clears the lock (`Rem
 **Remaining (Keagan):** pick A/B/C for Workstream A → I implement A2; run `npm run build` +
 real-device/print pass; `npm run db:seed` to apply the unpublish in prod; clear the git lock,
 review `git diff`, commit/push.
+
+### Attempt 2 — Workstream A2 (Direction C, Ink & Oak) — 2026-07-23
+
+**Pick.** Keagan chose **C — Ink & Oak** from the three A1 mockups
+(`mockups/oak-authority/03-ink-and-oak.html` is the reference), overriding the A1 README's
+"A" recommendation (DECISIONS_LOG 2026-07-23). Direction C's rules: **oak structural lines
+carry the authority; ink carries the hierarchy; FOREST is reserved for CTAs / interactive;
+`--oak` is GRAPHIC-ONLY on light (never text); and NO token VALUE changes** — this is a
+usage *redistribution*, not a palette change, so the contrast / dark-theme / elevation guards
+stay green by construction.
+
+**Changes (landing + chrome, all token-referenced — zero literals):**
+
+| Area | Change | Direction-C rationale |
+|---|---|---|
+| Header chrome (`site-header.tsx`) | 2px **oak** bottom keyline; active-nav **oak** underline; nav-hover uses **forest** | oak = structure, forest = the interactive signal |
+| Hero headline (`page.tsx`) | Emphasis word gets an **oak** underline (was forest text) — the word stays ink (content), oak draws under it (structure) | ink hierarchy; forest off decorative text |
+| Hero panel (`page.tsx`) | **Oak** offset keyline frame behind the showcase panel (replaced a blurred forest radial halo) | drawn/structural look; forest off a decorative surface |
+| Hero band (`page.tsx` / `globals.css`) | Hero background hatch tinted **oak** | graphic-only oak texture |
+| Eyebrows (`page.tsx`) | Quiet **muted** label + **oak** tick (was forest) | understated editorial label, ink headline dominates |
+| Icon tiles (`page.tsx`) | **Ink** tiles (`bg-fg`) with cream/surface glyphs (were sage/forest) | ink hierarchy; theme-correct max-contrast chips |
+| "Why this catalog" cards (`page.tsx`) | **Oak** top-line on each card (`::before` bar, not a border override → independent of Tailwind border source order) | oak structural keyline |
+| "How it works" timeline (`page.tsx`) | Connector rule tinted **oak** | oak structure |
+| **"Who it's for" panel (`page.tsx`) — TASK 1 this session** | Left panel re-treated from a sage→forest radial (`bg-[radial-gradient(…#dcead5,var(--accent)…)]`, `text-accent-strong` glyph, `border-accent-tint-border`) to an **ink ground (`bg-fg`) + inset oak keyline + cream glyph (`text-surface`)**, wrapper border neutralized to `border-border`. **Removed the hardcoded `#dcead5` literal** (and a decorative rgba drop-shadow); tokens only. | the last "generic subtle green" block brought into C |
+| Contrast guard (`tests/contrast.test.ts`) | where-note comments updated to reflect the redistributed accent/oak usage (no pair values changed — no token VALUE moved) | keeps the guard's provenance honest |
+
+**Design-system invariants held:** every text pair still ≥ AA (glyph + keyline are decorative
+`aria-hidden` graphics); `--oak` used graphic-only on light throughout; **dark theme untouched**
+(usage flips with the tokens, no `.dark` edits, no `dark:` utilities); **no token VALUE changes**
+(so `contrast` / `dark-theme` / `elevation` / `landing-scale` stay green); copy & DOM structure
+unchanged (reskin, not rewrite).
+
+**Gate (Linux `/tmp` clone of the device source, fresh `npm ci`):** `npx tsc --noEmit` clean ·
+`npx vitest run` **1022/1022** · `npx eslint .` clean. `npm run build` + the real-device / print /
+both-themes / 375px pass are Keagan's (no DB in-sandbox to render the landing; localhost
+unreachable from here).
+
+#### Self-score — A2 — 95/100 (pass)
+
+| # | Category | Score | Evidence |
+|---|---|---|---|
+| 1 | Requirements fidelity | 25/25 | Implements exactly the chosen Direction C (oak structure / ink hierarchy / forest reserved / oak graphic-only-on-light / no token VALUE change); TASK 1's "who it's for" re-treatment brought into the same language; no scope creep beyond the landing + header chrome. |
+| 2 | Correctness & functionality | 19/20 | tsc + eslint clean, 1022 vitest pass on the real source; every changed class re-read off disk. −1: no live render of the built landing (no DB / localhost in-sandbox; `npm run build` + visual pass are Keagan's). |
+| 3 | Automated test coverage | 14/15 | The design-system guards (`contrast`, `dark-theme`, `elevation`, `landing-scale`) exercise the actual invariants this work leans on and stay green because only usage moved; `page.test.tsx` still green. −1: the visual "reads as authority" judgment is inherently not unit-testable — mockup + numeric contrast stand in. |
+| 4 | Security | 15/15 | Pure presentational reskin — no new inputs, actions, auth boundaries, or secrets; no client `userId`; no new dependency or `dangerouslySetInnerHTML`. |
+| 5 | Code quality & simplicity | 10/10 | Tokens only (removed the `#dcead5` literal + a decorative rgba shadow); reused existing C idioms (`::before` oak bars, inset keyline, `bg-fg`/`text-surface` tiles); no dead code, no new abstraction. |
+| 6 | Mobile/offline behavior | 9/10 | One DOM, same source order; decorative graphics are `aria-hidden`; no PE/no-JS hook touched; theme flip preserved by construction. −1: not verified on a physical device / print preview. |
+| 7 | Documentation & handoff | 5/5 | This addendum + DECISIONS_LOG follow-up + CLAUDE.md §7 flip; exact PowerShell (lock clear, gate, commit) provided in chat. |
+
+**Point ceded (the −1 that keeps this at 95, not higher):** the live landing couldn't be
+rendered in-sandbox — no database and localhost is unreachable from the cloud harness — so the
+"does it actually read as oak-authority in a browser, both themes, at 375px and in print" check
+is Keagan's to run. Everything mechanically verifiable (types, lint, 1022 tests, on-disk class
+audit, numeric contrast) is green.

@@ -192,11 +192,18 @@ with it.
     **fails soft** to today's paragraphs. NO content JSON rewrite; a deterministic parser, NOT a
     markdown dependency. One component across build + plan detail + print (no drift). F1 examples in
     `mockups/step-format/example.md`.
-  - 🚧 **A — GATED, options only.** 3 self-contained homepage mockups (`mockups/oak-authority/`:
-    A Forest Weight / B Sage Atmosphere / C Ink & Oak, brand anchors only, AA-checked, no orange,
-    dark theme untouched). **No palette code shipped** — awaiting Keagan's A/B/C(/hybrid) pick;
-    then A2 implements it in `globals.css`/landing/chrome and re-runs the contrast guards.
-    Recommendation in `README.md`: **A (Forest Weight)**, grafting B's oak glow + C's oak rules.
+  - ✅ **A — Direction C (Ink & Oak) SHIPPED (A2, 2026-07-23).** Keagan picked **C** from the 3
+    A1 mockups (`mockups/oak-authority/03-ink-and-oak.html`), overriding the README's "A" rec.
+    Implemented on the landing + header chrome: **oak structural keylines carry authority, ink
+    carries hierarchy, forest reserved for CTAs/interactive, `--oak` graphic-only on light.**
+    2px oak header keyline + oak active-nav underline + forest nav-hover; oak-underlined hero
+    emphasis + oak offset frame on the hero panel + oak hero hatch; muted+oak eyebrows + ink
+    icon tiles; oak card top-lines + oak how-it-works connector; the "who it's for" panel
+    re-treated out of its sage→forest radial (dropped a hardcoded `#dcead5` literal) into
+    ink+oak. **NO token VALUE changed — usage redistribution only**, so contrast / dark-theme /
+    elevation guards stay green and **dark theme is untouched**. Gate green in the Linux harness
+    (tsc/eslint clean, 1022 vitest); `npm run build` + real-device/print/both-themes/375px pass
+    are Keagan's (no DB/localhost in-sandbox).
 
 
 - **🏷️ NOTCH REBRAND (Sprints 43–45): COMPLETE — opened and closed 2026-07-21,

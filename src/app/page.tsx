@@ -368,12 +368,23 @@ export default async function LandingPage() {
 
       {/* ── WHO IT'S FOR ─────────────────────────────────────────────────── */}
       <section className={`${wrap} py-[3.5rem]`}>
-        <div className="grid lg:grid-cols-[0.85fr_1.15fr] rounded-[1rem] border border-accent-tint-border overflow-hidden shadow-e3">
-          {/* Sprint 44: the cream-orange radial became a sage wash toward the forest
-              accent. The plane glyph strokes `currentColor` (a `var()` doesn't resolve
-              in an SVG presentation attribute; currentColor does) so it tracks
-              `text-accent-strong` — 7.56:1 on the light stop, comfortably graphic-safe. */}
-          <div className="relative min-h-[14rem] bg-[radial-gradient(130%_130%_at_25%_15%,#dcead5,var(--accent)_120%)] flex items-center justify-center">
+        <div className="grid lg:grid-cols-[0.85fr_1.15fr] rounded-[1rem] border border-border overflow-hidden shadow-e3">
+          {/* Direction C (Ink & Oak, Sprint 46 A2): the sage→forest radial — and its
+              hardcoded #dcead5 literal — is replaced by an INK ground (bg-fg) carrying an
+              inset OAK structural keyline with a CREAM plane glyph. Oak lines carry the
+              authority; forest is kept off this decorative surface. Oak is graphic-only
+              here (the keyline is aria-hidden; ~6.8:1 on the ink ground anyway) and the
+              glyph reuses the page's ink-tile/cream-glyph pairing (bg-fg + text-surface),
+              so it stays max-contrast in BOTH themes. The glyph strokes `currentColor`
+              (a `var()` doesn't resolve in an SVG presentation attribute; currentColor
+              does) so it tracks `text-surface`. */}
+          <div className="relative min-h-[14rem] bg-fg flex items-center justify-center">
+            {/* Oak structural keyline, INSET so the wrapper's rounded overflow-hidden
+                never clips it (an offset frame would be). Graphic-only, decorative. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-[0.9rem] rounded-[0.5rem] border border-oak opacity-70"
+            />
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -381,7 +392,7 @@ export default async function LandingPage() {
               strokeWidth="1.4"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-[7rem] h-[7rem] text-accent-strong opacity-90 -rotate-[8deg] drop-shadow-[0_8px_14px_rgba(60,42,24,0.25)]"
+              className="relative w-[7rem] h-[7rem] text-surface opacity-90 -rotate-[8deg]"
               aria-hidden="true"
             >
               <path d="M2 20l4-1 9-9-3-3-9 9z" />

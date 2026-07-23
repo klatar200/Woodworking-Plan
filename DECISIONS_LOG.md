@@ -1676,3 +1676,13 @@ parser (`src/lib/step-format.ts`), not a markdown dependency (no new XSS surface
 today's paragraphs. Bullets (not numbers) chosen for action lists; fastener sizes bolded, cut
 dimensions left plain. Keagan can dial thresholds / numbering / bold scope — all runtime, no
 content edits either way.
+
+**Light authority direction — RESOLVED (Workstream A → A2), 2026-07-23.** Keagan picked
+**C — Ink & Oak** from the three A1 mockups (overriding the README's "A" recommendation) and
+A2 was implemented on the landing + header chrome: oak structural keylines carry the authority,
+ink carries the hierarchy, forest is reserved for CTAs / interactive, and `--oak` stays
+graphic-only on light. **No token VALUE changed** — a usage redistribution only, so the
+contrast / dark-theme / elevation guards stayed green and the dark theme is untouched. Includes
+re-treating the "who it's for" panel out of its sage→forest radial (dropping a hardcoded
+`#dcead5` literal) into the same ink+oak language. Gate green in the Linux harness
+(tsc/eslint clean, 1022 vitest); `npm run build` + real-device/print pass are Keagan's.
