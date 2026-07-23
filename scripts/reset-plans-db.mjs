@@ -19,6 +19,10 @@
 import { PrismaClient } from '@prisma/client';
 
 const YES = process.argv.includes('--yes');
+// --paths-only: clear just the learning-path rows (leave plans). Used to remove stale
+// Path rows the plan-reset leaves behind (Path is not a child of Plan, so it doesn't
+// cascade). A full reset (no flag) clears BOTH, so the seed rebuilds both from content.
+const PATHS_ONLY = process.argv.includes('--paths-only');
 const url = process.env.DATABASE_URL || '';
 if (!url) {
   console.error('✗ DATABASE_URL not set. Run via:  npx dotenv -e .env.local -- node scripts/reset-plans-db.mjs');
@@ -30,19 +34,29 @@ try { host = new URL(url).host; } catch { /* keep placeholder */ }
 const prisma = new PrismaClient();
 
 async function main() {
-  const n = await prisma.plan.count();
+  const nPlans = await prisma.plan.count();
+  const nPaths = await prisma.path.count();
   console.log(`Target DB host : ${host}`);
-  console.log(`Plans in DB    : ${n}`);
+  console.log(`Plans in DB    : ${nPlans}`);
+  console.log(`Paths in DB    : ${nPaths}`);
   console.log(
-    'This will DELETE ALL plans — steps, images, materials, cut lists, tool links, and any\n' +
-      'user rows tied to plans (reviews, likes, saves, shopping-list, views) via ON DELETE CASCADE.',
+    PATHS_ONLY
+      ? 'This will DELETE ALL learning paths (path steps cascade). Plans are left untouched.'
+      : 'This will DELETE ALL plans — steps, images, materials, cut lists, tool links, and any user\n' +
+          'rows tied to plans (reviews, likes, saves, shopping-list, views) via ON DELETE CASCADE —\n' +
+          'AND all learning paths, so the seed rebuilds the catalog exactly from content.',
   );
   if (!YES) {
     console.log('\n[dry-run] nothing deleted. CONFIRM the host above is the intended DB, then re-run with --yes.');
     return;
   }
-  const res = await prisma.plan.deleteMany({});
-  console.log(`\n✓ Deleted ${res.count} plans (children + user rows cascaded). Now run:  npm run db:seed`);
+  if (!PATHS_ONLY) {
+    const rp = await prisma.plan.deleteMany({});
+    console.log(`Deleted ${rp.count} plans (children + user rows cascaded).`);
+  }
+  const rpath = await prisma.path.deleteMany({});
+  console.log(`Deleted ${rpath.count} learning paths.`);
+  console.log(PATHS_ONLY ? '\n✓ Stale paths cleared.' : '\n✓ Catalog reset. Now run:  npm run db:seed');
 }
 
 main()
