@@ -31,6 +31,46 @@ import { lintPlan } from './run1-number-lint.mjs';
 
 const STEP_KEYS = new Set(['title', 'body', 'tools', 'materials', 'image']);
 
+/**
+ * Did the plan move under this patch between writing it and applying it?
+ *
+ * THE INCIDENT. 34 patches were written at 16:06 against the plans as they then stood.
+ * At 21:10 `run1-cut-step.mjs` scaffolded a "Cut all the parts" step into 311 plans —
+ * including most of those 34. Every `replace` index in those patches was now off by one,
+ * so each one silently overwrote the step AFTER its target and left the target's content
+ * duplicated further down. Four independent verifiers reported it as "a step was
+ * destroyed" and charged it to the rewrite agents. It was neither theirs nor the
+ * applier's: `applyOps` did exactly what the patch said, to a different array than the
+ * patch was written for.
+ *
+ * An index is only meaningful against the array it was computed from. So a patch has to
+ * carry enough of that array to prove it is still looking at it — a step count is not
+ * enough (a delete plus an insert nets to zero), hence the titles.
+ *
+ * Patches predating this field are ACCEPTED with a warning rather than blocked: the field
+ * cannot be retrofitted onto a patch that has already been written, and refusing them
+ * outright would discard work that may be perfectly valid. The warning is what routes a
+ * human to check.
+ */
+export function checkPatchBase(plan, patch) {
+  const expected = patch.baseStepTitles;
+  if (!Array.isArray(expected)) {
+    return [`⚠ patch carries no baseStepTitles — cannot prove its indices match this plan`];
+  }
+  const actual = (plan.steps ?? []).map((s) => s.title);
+  if (expected.length !== actual.length) {
+    return [
+      `🛑 plan has ${actual.length} steps, patch was written against ${expected.length} — ` +
+        `every index in it is suspect (did a scaffold run in between?)`,
+    ];
+  }
+  const moved = actual.map((t, i) => (t === expected[i] ? null : i)).filter((i) => i !== null);
+  if (moved.length) {
+    return [`🛑 steps ${moved.map((i) => i + 1).join(', ')} are not the steps this patch was written against`];
+  }
+  return [];
+}
+
 export function applyOps(plan, ops) {
   const steps = structuredClone(plan.steps ?? []);
   // Inserts are applied by descending index so earlier ops don't shift later ones.
@@ -118,6 +158,26 @@ export function checkPatched(originalPlan, nextPlan, changedFields, renumbered =
     if (/<[a-z/][^>]*>/i.test(text)) errors.push(`${at}: contains HTML`);
   }
 
+  /**
+   * A patch must not leave two steps saying the same thing.
+   *
+   * `simple-adirondack-side-table` was returned for shipping TWO identical finishing
+   * steps: the agent replaced the original step 5 and then also emitted it as an insert,
+   * so the applied plan ended "Finish: apply exterior stain or paint" twice. That is not
+   * a judgement call and no verifier should have to spend a vote on it — identical bodies
+   * are a mechanical fact about the array.
+   */
+  const bodies = new Map();
+  for (const [n, s] of (nextPlan.steps ?? []).entries()) {
+    const key = (s.body ?? '').trim().toLowerCase();
+    if (!key) continue;
+    if (bodies.has(key)) {
+      errors.push(`step ${n + 1}: body is identical to step ${bodies.get(key) + 1}`);
+    } else {
+      bodies.set(key, n);
+    }
+  }
+
   // Nothing outside `steps` may move in a step rewrite (§4.4).
   for (const key of Object.keys(originalPlan)) {
     if (key === 'steps') continue;
@@ -194,6 +254,27 @@ function assertsShortfall(text) {
  */
 export function verificationTier({ untraceable }, patch, nextPlan) {
   const prose = (nextPlan.steps ?? []).map((s) => `${s.title} ${s.body}`).join('\n');
+  /**
+   * Frame geometry asserted where the solver could not settle it.
+   *
+   * `scripts/run1-box-geometry.mjs` answers "which pair runs full length" only when one
+   * of the plan's own panels closes on exactly one reading. Its SILENCE is a real result:
+   * the cut list does not determine the assembly, and the brief says to describe the joint
+   * without asserting which piece is captured.
+   *
+   * Both plans in the batch-4 held-over set ignored that. `simple-adirondack-side-table`
+   * declared "two 15\" long sides parallel, two 14-1/2\" short sides fitted between them"
+   * on a cut list that supports neither reading cleanly, then invented a lap joint to
+   * absorb the 1-1/2" that didn't fit. The solver was silent for it; the prose was not.
+   *
+   * This does not reject — an assertion can still be right, and the plan's `description`
+   * may carry a footprint the cut list alone doesn't. It buys the extra votes.
+   */
+  const assertsGeometry =
+    /\b(?:fit(?:ted|s)?|sit(?:s|ting)?|captur\w+|nest(?:ed|s)?|inset)\s+(?:in\s+)?between\b|\bruns?\s+the\s+full\b|\bbetween\s+(?:the\s+)?two\b/i.test(
+      prose,
+    );
+  if (assertsGeometry && !geometryNotes(nextPlan).length) return 'triple';
   // A structural declaration beats inferring intent from prose. When the agent states
   // it, that is the answer; the text scan is only the fallback for patches written
   // before the field existed.
@@ -242,6 +323,14 @@ if (process.argv[1]?.endsWith('run1-apply-patch.mjs')) {
         results.push({ slug: patch.slug, status: 'pass', score: patch.score, flags: patch.flags ?? [] });
         continue;
       }
+      // Before trusting a single index in this patch, prove it still describes this plan.
+      const baseProblems = checkPatchBase(plan, patch);
+      if (baseProblems.some((p) => p.startsWith('🛑'))) {
+        rejected += 1;
+        results.push({ slug: patch.slug, status: 'rejected', errors: baseProblems });
+        continue;
+      }
+
       const next = applyOps(plan, patch.ops);
 
       // Which fields this patch actually changed — the lint scope.

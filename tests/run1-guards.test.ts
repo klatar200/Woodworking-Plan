@@ -8,7 +8,7 @@
  */
 import { describe, expect, it } from 'vitest';
 // @ts-expect-error — plain-node audit script, no types
-import { verificationTier } from '../scripts/run1-apply-patch.mjs';
+import { checkPatchBase, checkPatched, verificationTier } from '../scripts/run1-apply-patch.mjs';
 // @ts-expect-error — plain-node audit script, no types
 import { packBoards } from '../scripts/run1-verify-packet.mjs';
 // @ts-expect-error — plain-node audit script, no types
@@ -176,6 +176,69 @@ describe('box geometry solver', () => {
     expect(notes).toHaveLength(1);
     expect(notes[0]).toContain('OPPOSITE readings');
     expect(notes.join()).not.toContain('runs the FULL length');
+  });
+});
+
+describe('patch base state', () => {
+  const plan = { steps: [{ title: 'Cut the parts' }, { title: 'Assemble' }, { title: 'Finish' }] };
+
+  it('accepts a patch written against this exact array', () => {
+    expect(
+      checkPatchBase(plan, { baseStepTitles: ['Cut the parts', 'Assemble', 'Finish'] }),
+    ).toEqual([]);
+  });
+
+  /**
+   * The incident this exists for: a scaffold inserted "Cut all the parts" at index 0 of
+   * 311 plans while 34 patches sat written against the pre-scaffold arrays. Every replace
+   * in them then landed one step late.
+   */
+  it('blocks a patch whose plan gained a step underneath it', () => {
+    const errs = checkPatchBase(plan, { baseStepTitles: ['Assemble', 'Finish'] });
+    expect(errs[0]).toContain('🛑');
+    expect(errs[0]).toContain('3 steps, patch was written against 2');
+  });
+
+  /** A delete plus an insert nets to the same COUNT, so the titles are what prove it. */
+  it('blocks a same-length array whose steps are not the same steps', () => {
+    const errs = checkPatchBase(plan, {
+      baseStepTitles: ['Cut the parts', 'Build the box', 'Finish'],
+    });
+    expect(errs[0]).toContain('🛑');
+    expect(errs[0]).toContain('steps 2');
+  });
+
+  it('warns but does not block a patch predating the field', () => {
+    const errs = checkPatchBase(plan, {});
+    expect(errs).toHaveLength(1);
+    expect(errs[0]).toContain('⚠');
+    expect(errs[0]).not.toContain('🛑');
+  });
+});
+
+describe('duplicate steps', () => {
+  const base = {
+    tools: [],
+    materials: [],
+    cutList: [],
+    description: '',
+  };
+
+  /**
+   * simple-adirondack-side-table shipped its finishing step twice — the agent replaced
+   * the original and then also emitted it as an insert. Identical bodies are a mechanical
+   * fact about the array; no verifier should spend a vote on it.
+   */
+  it('rejects a plan with two identical step bodies', () => {
+    const next = {
+      ...base,
+      steps: [
+        { title: 'Finish', body: 'Apply exterior stain or paint.', tools: [], materials: [] },
+        { title: 'Finish it', body: 'Apply exterior stain or paint.', tools: [], materials: [] },
+      ],
+    };
+    const { errors } = checkPatched(next, next, []);
+    expect(errors.some((e: string) => e.includes('identical to step 1'))).toBe(true);
   });
 });
 
