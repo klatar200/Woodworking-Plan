@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import Link from 'next/link';
 import { BRAND_NAME, CONTACT_EMAIL } from '@/lib/brand';
+import { publicRobots } from '@/lib/seo';
 
 /**
  * FAQ — Sprint 23. Real copy, drafted for Keagan's review.
@@ -37,7 +38,7 @@ import { BRAND_NAME, CONTACT_EMAIL } from '@/lib/brand';
 export const metadata: Metadata = {
   title: 'FAQ',
   description: `Frequently asked questions about ${BRAND_NAME} — pricing, accounts, offline use, cost tiers, and how the plans work.`,
-  robots: { index: false, follow: false }, // noindex stays until Keagan's go-live call.
+  robots: publicRobots, // follows the launch switch in @/lib/seo
 };
 
 const FAQS: { q: string; a: React.ReactNode }[] = [

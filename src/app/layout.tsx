@@ -3,6 +3,7 @@ import { Fraunces } from 'next/font/google';
 import { cookies, headers } from 'next/headers';
 import { ClerkProvider } from '@clerk/nextjs';
 import { clerkAppearance, clerkAppearanceDark } from '@/lib/clerk-appearance';
+import { publicRobots } from '@/lib/seo';
 import {
   THEME_COOKIE,
   THEME_CHROME_COLOR,
@@ -101,9 +102,10 @@ export const metadata: Metadata = {
     ],
     apple: '/icons/apple-touch-icon.png',
   },
-  // Deliberately NOT lifted with the rename: letting search engines in is a de
-  // facto public launch, and going publicly live is Keagan's explicit call.
-  robots: { index: false, follow: false },
+  // Sitewide default. Follows the launch switch in `@/lib/seo` (flipped by go-live.ps1);
+  // private routes still set their own noindex. Letting crawlers in is a de facto public
+  // launch — Keagan's explicit call.
+  robots: publicRobots,
 };
 
 /**

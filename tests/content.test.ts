@@ -138,9 +138,13 @@ describe('catalog spread — the seed data must actually exercise the filters', 
    * assert the catalog is a real test bed, not twenty clones.
    */
 
-  it('spans at least 4 of the 5 difficulty levels', () => {
+  // Kreg classifies plans in THREE tiers (easy / moderate / advanced → difficulty 2/3/4),
+  // so the catalog genuinely spans three levels, not four. Relaxed from 4 with the Kreg
+  // swap (2026-07-23). A future pass could spread difficulty across 1–5 from a complexity
+  // signal (step/part count) to widen the filter; until then three is the honest number.
+  it('spans at least 3 difficulty levels', () => {
     const levels = new Set(catalog.plans.map((p) => p.difficulty));
-    expect(levels.size).toBeGreaterThanOrEqual(4);
+    expect(levels.size).toBeGreaterThanOrEqual(3);
   });
 
   it('spans at least 4 of the 5 cost tiers', () => {
@@ -392,8 +396,10 @@ describe('learning-path taxonomy (QOL-E)', () => {
     const categorySlugs = new Set(catalog.categories.map((c) => c.slug));
     expect(categorySlugs.has('not-a-real-category')).toBe(false);
     // The real catalog loads clean — which is what proves the check is not firing
-    // spuriously on the content that exists.
-    expect(catalog.paths.length).toBeGreaterThan(0);
+    // spuriously on the content that exists. The Kreg swap (2026-07-23) removed the
+    // learning paths (they referenced the outgoing ana-white plans), so prove "real
+    // content loaded" via plans rather than paths until paths are re-curated.
+    expect(catalog.plans.length).toBeGreaterThan(0);
   });
 });
 

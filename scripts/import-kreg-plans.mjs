@@ -64,7 +64,6 @@ function mapTool(name) {
 }
 
 function toHours(min, max) {
-  const h = (m) => (m / 60);
   const fmt = (m) => (m % 60 === 0 ? `${m / 60}` : (m / 60).toFixed(1).replace(/\.0$/, ''));
   if (max < 60) return `${min}–${max} min`;
   return `${fmt(min)}–${fmt(max)} hours`;

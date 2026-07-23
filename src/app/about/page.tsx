@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 import Link from 'next/link';
 import { BRAND_NAME, CONTACT_EMAIL } from '@/lib/brand';
+import { publicRobots } from '@/lib/seo';
 
 /**
  * About — Sprint 23 copy, rebranded in Sprint 43 (branding #8 RESOLVED: Notch,
@@ -11,7 +12,7 @@ import { BRAND_NAME, CONTACT_EMAIL } from '@/lib/brand';
 export const metadata: Metadata = {
   title: 'About',
   description: `What ${BRAND_NAME} is: a searchable catalog of woodworking plans, each with a material list, tools, and a cost band — most with a full cut list too.`,
-  robots: { index: false, follow: false }, // noindex stays until Keagan's go-live call.
+  robots: publicRobots, // follows the launch switch in @/lib/seo
 };
 
 export default function AboutPage() {
