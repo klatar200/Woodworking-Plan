@@ -10,6 +10,7 @@ vi.mock('next/link', () => ({
 
 const { default: FaqPage, metadata } = await import('@/app/faq/page');
 const { CONTACT_EMAIL } = await import('@/lib/brand');
+const { publicRobots } = await import('@/lib/seo');
 
 const html = renderToStaticMarkup(<FaqPage />);
 
@@ -74,12 +75,12 @@ describe('motion is optional (WCAG 2.3.3)', () => {
 });
 
 describe('copy and indexing (rebranded Sprint 43)', () => {
-  it('renders the real contact address and keeps the noindex flag', () => {
+  it('renders the real contact address and follows the site indexing policy', () => {
     // Sprint 43: hello@example.com → the real support mailbox (brand.ts).
-    // noindex deliberately did NOT lift with the rename — indexing is a de facto
-    // public launch, which is Keagan's explicit go-live call.
+    // Indexing is driven by the launch switch in @/lib/seo (flipped at go-live), so this
+    // asserts the page tracks that policy rather than a hardcoded noindex.
     expect(html).toContain(CONTACT_EMAIL);
     expect(html).not.toContain('hello@example.com');
-    expect(metadata.robots).toEqual({ index: false, follow: false });
+    expect(metadata.robots).toEqual(publicRobots);
   });
 });

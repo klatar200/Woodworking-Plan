@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Hammer } from 'lucide-react';
 import { getPlanBySlug } from '@/lib/plans';
+import { publicRobots } from '@/lib/seo';
 import { isPlanSaved } from '@/lib/saves';
 import { isPlanLiked } from '@/lib/likes';
 import { isOnShoppingList } from '@/lib/shopping-list';
@@ -70,8 +71,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title: plan.title,
     description: plan.summary,
-    // Branding decision #8 is still open, so still no indexing.
-    robots: { index: false, follow: false },
+    // Public plan detail — follows the launch switch in `@/lib/seo`.
+    robots: publicRobots,
   };
 }
 
