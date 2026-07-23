@@ -205,7 +205,10 @@ async function main() {
           sortOrder: i,
         })),
       });
-    });
+      // Per-plan transaction: raised from Prisma's 5s default because the largest Kreg
+      // plans (many steps, each with its own tool/material links) run past 5s against the
+      // higher-latency production Neon branch (P2028). 60s is ample for a one-off seed.
+    }, { maxWait: 15000, timeout: 60000 });
 
     console.log(`  ✓ ${plan.slug}`);
   }
