@@ -263,6 +263,17 @@ export default async function PlanPrintPage({
                     </p>
                   )}
                   <StepProse text={step.body} />
+                  {step.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- print: plain img, no next/image optimizer
+                    <img
+                      className="print-step-image"
+                      src={step.imageUrl}
+                      alt={
+                        plan.images.find((img) => img.url === step.imageUrl)?.alt ??
+                        step.title
+                      }
+                    />
+                  ) : null}
                 </li>
               ))}
             </ol>

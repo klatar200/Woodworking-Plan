@@ -174,6 +174,7 @@ async function main() {
             stepNumber: i + 1,
             title: s.title,
             body: s.body,
+            imageUrl: s.image ?? null,
           },
         });
 

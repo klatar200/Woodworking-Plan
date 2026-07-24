@@ -1,0 +1,13 @@
+---
+description: Plan JSON publish gates and seed — load when editing content or catalog scripts
+globs: content/plans/**/*.json,content/paths/**/*.json,scripts/*plan*,scripts/*publish*,scripts/*kreg*,scripts/*seed*,scripts/park-dead*,scripts/set-published*,prisma/seed.ts
+alwaysApply: false
+---
+
+# Content / catalog
+
+- Live: `content/plans/`. Staging only: `content/plans-draft/` (not seeded by default).
+- `published:true` needs full `cutList` AND ≥1 live image. Publish in JSON, not DB-only.
+- Content ≠ code deploy → `npm run db:seed` on the intended DB after content changes.
+- Dimensions = tape fractions (`13/16″`), never decimals.
+- Catalog URL seam: `CATALOG_PATH` (`/browse`), never hardcode `/` as catalog.
