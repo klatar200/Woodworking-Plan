@@ -24,17 +24,22 @@ setup caveats are captured below.
 ### Clerk auth is required to open the app in a real browser (big gotcha)
 - The root layout renders `<ClerkProvider>` and `src/middleware.ts` wraps
   `clerkMiddleware()`, so every route depends on a valid Clerk instance.
-- `.env.local` currently holds the **placeholder** `pk_test_`/`sk_test_` keys CI
-  uses for the build only. With these, `next dev` returns 200 to `curl` (SSR
-  works), but a **real browser** navigation triggers Clerk's dev-browser
-  handshake, which 302s to the FAPI host encoded in the key
-  (`example.clerk.accounts.dev`) and dead-ends on `{"code":"host_invalid"}` —
-  even for public pages like `/` and `/browse`.
-- To test anything in a browser, put **real** Clerk dev keys
-  (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` + `CLERK_SECRET_KEY`) in `.env.local` and
-  restart `next dev`. Anonymous browse/search/plan-detail then work with no login
-  (see the allowlist in `src/lib/public-routes.ts`); a login is only needed for
-  saves/likes/collections/reviews.
+- Real `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` + `CLERK_SECRET_KEY` are provided as
+  **Cursor secrets**, injected into `process.env` on each fresh VM. Next.js gives
+  `process.env` precedence over `.env.local` (verified with `@next/env`), so those
+  injected keys automatically override the `.env.local` placeholders — no manual
+  edit needed. Just start `next dev` and the app is browsable, including auth.
+- Caveat: secrets are injected only at VM startup. In an **already-running** shell
+  from before the secrets were added they are absent, so `next dev` there falls
+  back to the `.env.local` placeholder. With the placeholder, `next dev` returns
+  200 to `curl` (SSR works), but a **real browser** navigation triggers Clerk's
+  dev-browser handshake, which 302s to the FAPI host encoded in the key
+  (`example.clerk.accounts.dev`) and dead-ends on `{"code":"host_invalid"}` — even
+  for public pages. Fix: start a fresh shell (so the injected keys are present)
+  and restart `next dev`.
+- Anonymous browse/search/plan-detail work with no login (see the allowlist in
+  `src/lib/public-routes.ts`); a login is only needed for saves/likes/collections/
+  reviews.
 - Server-side verification without real keys: `curl` public routes (e.g.
   `curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/plans/x-leg-tv-stand`)
   returns real seeded data.
