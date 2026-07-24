@@ -16,12 +16,11 @@
 | Closest shipped analog | Sprint 15 cut-list optimizer: `src/lib/cut-optimizer.ts` + `/plans/[slug]/boards` |
 | Monetization | **$0 / Hobby.** No PRO paywall, ads, or affiliate lumber links. |
 | Auth | **Sign-in required** for all `/designer(.*)`. Do **not** add to `public-routes.ts`. |
-| Nav | **Hard** — first-class chrome. Exact copy = Keagan (still owed before strings ship). |
+| Nav | **Hard** — signed-in nav `Designer`; landing CTA `Design a board →` (copy settled) |
 | Shopping list | **Later phase** — not MVP. |
 | Preview bar | **3D is the differentiator.** Lightweight shell OK early; “done” includes modern sleek real-time 3D. |
 | Thumbs / Blob | Not required for MVP. |
-
-**Still blocked (copy only):** nav label, header/landing CTA wording.
+| Copy | Settled — see DECISIONS_LOG 2026-07-24 copy table. |
 
 ---
 
@@ -39,7 +38,7 @@ Hobby / intermediate woodworkers already browsing Notch’s `cutting-boards` cat
 3. Cut list + board-feet (with waste margin) + finished dimensions are correct for kerf + slice count (golden fixtures).
 4. User can export PNG (and/or capture from 3D) and print; designs persist to their account.
 5. Feels native: Oak & Forest tokens, tape-measure fractions, cost **tiers only** if shown, Clerk session identity.
-6. Discoverable via **hard nav** once Keagan supplies copy.
+6. Discoverable via **hard nav**: signed-in `Designer`; landing `Design a board →`.
 
 ### Explicitly not MVP
 Shopping-list push; anonymous use; PRO/paywall; AR; publishing designs into the public catalog.
@@ -310,7 +309,7 @@ All Vitest-covered; UI is a thin adapter.
 | Actions | `src/app/actions/board-designs.ts` |
 | Schema | `prisma/schema.prisma` + migration |
 | SW | `public/sw-policy.js` — `/designer` in `NEVER_CACHE_PREFIXES`; `tests/offline.test.ts` |
-| Nav | header / landing — **blocked on Keagan copy** |
+| Nav | header / landing — settled copy (`Designer`, `Design a board →`) |
 | Deps | `three`, `@react-three/fiber`, `@react-three/drei` (verify free/compatible; no paid SDK) |
 | Format / cost | `src/lib/format.ts` — fractions; no dollar UI |
 
@@ -337,8 +336,7 @@ BoardDesign.config
 ## 8. Implementation units
 
 ### U0 — Product gate
-- ✅ Done 2026-07-24 (promotion + calls in DECISIONS_LOG).
-- ⏳ Remaining: Keagan supplies hard-nav / landing copy strings.
+- ✅ Done 2026-07-24 (promotion + product calls + recommended copy accepted).
 
 ### U1 — Domain library
 **Files:** `src/lib/board-designer/{types,species,metrics,to-parts,templates,serialize}.ts`, `tests/board-designer-*.test.ts`
@@ -360,7 +358,12 @@ Strip list, settings, templates, metrics panel; thin preview OK as scaffold.
 **Tests:** mapping unit tests where practical; manual desktop + one mobile GPU pass.
 
 ### U5 — Print + hard nav
-Print cut list; ship nav/landing only with Keagan copy; `noindex` on tool routes.
+Print cut list; ship settled copy:
+- `SIGNED_IN_NAV`: `{ href: '/designer', label: 'Designer' }`
+- Landing secondary CTA: `Design a board →` → `/designer`
+- Library empty: `No boards saved yet. Start from a template.`
+- Page h1: `Board designer`; library heading: `Your boards`
+`noindex` on tool routes.
 
 ### U6 — Phase 2: shopping list + optimizer panel
 Materials → `ShoppingListEntry`; optional `BoardBar` / `optimize()`.
@@ -382,12 +385,17 @@ Undo, share, multi-panel, angles, custom species.
 | Shopping deferred too long | Feels like a toy vs Notch | Keep `Part[]` clean; schedule U6 deliberately |
 
 ### Settled (do not re-ask)
-Schedule Now · Sign-in required · Hard nav · Shopping later · 3D = differentiator.
+Schedule Now · Sign-in required · Hard nav · Shopping later · 3D = differentiator · **Copy pack above**.
 
-### Still need from Keagan (copy)
-1. Exact **nav label** (e.g. “Designer” vs “Board designer” vs …).  
-2. Header and/or **landing CTA** sentence(s).  
-3. Optional empty-library microcopy.
+### Copy pack (binding)
+| Surface | String |
+|---|---|
+| Nav | `Designer` |
+| Page h1 | `Board designer` |
+| Landing CTA | `Design a board →` |
+| Landing support (if section) | `Design edge- and end-grain cutting boards with a live 3D preview.` |
+| Library empty | `No boards saved yet. Start from a template.` |
+| Library heading | `Your boards` |
 
 ---
 
@@ -410,8 +418,8 @@ Schedule Now · Sign-in required · Hard nav · Shopping later · 3D = different
 
 | Sure | Assumption-based | Top risks now |
 |---|---|---|
-| Product calls logged; feature scheduled | Exact 3D aesthetic bar (“sleek”) | (1) 3D polish/perf |
+| Product calls + copy logged; feature scheduled | Exact 3D aesthetic bar (“sleek”) | (1) 3D polish/perf |
 | Sign-in-only + SW denylist path | Species material look | (2) Geometry trust |
-| Shopping intentionally later | Nav/landing copy wording | (3) Shipping chrome before copy |
+| Shopping intentionally later | — | (3) Bundle/CSP for R3F island |
 
-**Bottom line:** Build a **sign-in-gated, 3D-led** Notch designer; shopping later; hard nav waits on Keagan’s words. Clean-room only.
+**Bottom line:** Build a **sign-in-gated, 3D-led** Notch designer with settled chrome copy; shopping later. Clean-room only. U0 complete — implementation may start at U1.

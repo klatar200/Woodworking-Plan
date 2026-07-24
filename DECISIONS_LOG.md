@@ -26,7 +26,7 @@
 - **UX Remediation calls (2026-07-21):** stop pre-ticking workshop filter boxes; landing states the real catalog size; CAD part-diagram pilot stays GATED (needs a `StepPart` join); app-page type hierarchy DECLINED. `start_url` → `/browse`.
 - **🏷️ Branding #8 RESOLVED (2026-07-21):** the product is **Notch** at **notchplans.com**, "Oak & Forest" palette, tagline "Built naturally. Made to last.", `support@notchplans.com`.
 - **Sprint 46 (2026-07-23):** catalog UX batch; imageless plans unpublished; runtime step formatting.
-- **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). Exact nav/landing copy still owed by Keagan before chrome ships.
+- **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 
 _(Full history below, chronological.)_
 
@@ -1746,4 +1746,15 @@ content edits either way.
 
 **Rejected / superseded from planner defaults:** public anonymous draft; soft-only nav; shopping-list-in-MVP; SVG-2D-as-the-product-bar.
 
-**Still open (copy only):** exact nav label, landing/header CTA text, any marketing blurb — Keagan supplies before those strings ship.
+**Copy (Keagan 2026-07-24 follow-up: accept planner recommendations):**
+
+| Surface | Binding string |
+|---|---|
+| Signed-in header / mobile nav label | `Designer` → `/designer` (alongside Saved / Builds) |
+| Tool page `<h1>` / document title base | `Board designer` |
+| Landing hard CTA (secondary to Browse) | Label: `Design a board →` · href `/designer` (Clerk sign-in bounce OK) |
+| Landing supporting line (if a dedicated band/section ships) | `Design edge- and end-grain cutting boards with a live 3D preview.` |
+| Library empty state | `No boards saved yet. Start from a template.` |
+| Library heading | `Your boards` |
+
+Do not invent alternate marketing blurbs without a new decision. Tiny UI chrome (“Save”, “Export PNG”, “Print”, template names) stays engineering judgment.
