@@ -26,7 +26,7 @@ function read(rel: string): string {
 
 /** file → the elevation step that surface is supposed to sit at. */
 const FLOATING: Array<[string, string, 'e2' | 'e3']> = [
-  ['../src/components/site-header.tsx', 'Browse menu panel', 'e2'],
+  // Sprint 49: Browse mega-menu deleted — no floating panel in the header.
   ['../src/components/overflow-menu.tsx', '“…” overflow menu', 'e2'],
   ['../src/components/mobile-nav.tsx', 'mobile drawer sheet', 'e3'],
   // Sprint 47: account modal deleted — settings panes use shadow-e1 cards instead.
