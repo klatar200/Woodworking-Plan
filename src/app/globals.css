@@ -53,12 +53,12 @@
    * where the accent itself failed AA as text and needed a darkened twin — forest is
    * text-safe everywhere it's used: 5.46:1 on --bg, 6.05 on --surface, 5.05 on
    * --accent-tint. So --accent-text CONVERGES with --accent in light. The token stays:
-   * dark still needs the split (its --accent-text is the lightened #f2b884), and five
-   * call sites plus two guard tests name it. */
+   * dark still needs the split (its --accent-text is a lightened emerald, #35c98a), and
+   * five call sites plus two guard tests name it. */
   --accent-text: #3d6b4f;
   /* Sprint 44: text/icon color ON an --accent background. Cream on forest, 5.46:1.
-   * ⚠️ THEME-DIVERGENT ON PURPOSE: dark mode's accent is still the legacy light orange,
-   * so dark keeps dark ink here. When the dark re-palette lands, re-derive both. */
+   * Since the 2026-07-24 dark re-palette this CONVERGES with dark's --accent-fg — both
+   * themes are now cream on a green --accent (dark's is a deep emerald). */
   --accent-fg: #f6f1e7;
   --accent-soft: #e4ebdd;
   /* Re-derived for the new paper (Sprint 44): the functional-colors-stay rule met the
@@ -114,33 +114,45 @@
  * WHOLE theme: every utility and the component-CSS residual read the tokens below, so
  * flipping them here re-themes the entire app with no `dark:` utilities.
  *
- * ⚠️ Sprint 44: DARK STILL RUNS THE LEGACY warm/orange SYSTEM — deliberately
- * (DECISIONS_LOG.md 2026-07-21). The light theme moved to the Notch "Oak & Forest"
- * palette; dark gets its own re-palette in a later sprint, at Keagan's direction. The
- * two themes temporarily disagreeing about the brand is the ACCEPTED cost — each
- * session sees one theme. Do NOT "fix" the mismatch here uncommissioned. This is also
- * why --accent-fg is dark ink HERE but cream in :root — dark's accent is still a light
- * orange.
+ * 2026-07-24 — THE DARK RE-PALETTE (commissioned). Dark now runs the Notch "Oak & Forest"
+ * brand, matching light: a forest-family GREEN accent + oak secondary on warm charcoal
+ * paper. This replaces the legacy warm/orange system the earlier sprints deferred. Because
+ * dark's paper is near-black, the accent is split BY ROLE the same way light splits it,
+ * only inverted:
+ *   --accent      a DEEP EMERALD fill (as dark as a dark forest) — used for accent
+ *                 BACKGROUNDS: the final CTA, the active pagination pill, checked chips.
+ *   --accent-fg   CREAM ink ON that fill. This CONVERGES with :root now — both themes are
+ *                 cream-on-green, so --accent-fg is no longer theme-divergent.
+ *   --accent-text a LIGHTER emerald for accent TEXT on the dark paper. A deep emerald as
+ *                 text on near-black would fail AA — the mirror of why light's --accent-text
+ *                 converges with --accent while dark's must diverge upward.
+ * Every pairing here is AA-locked by tests/contrast.test.ts; keep the values hex so it and
+ * tests/dark-theme.test.ts can parse them.
  */
 .dark {
   color-scheme: dark;
-  --bg: #17140f;
-  --surface: #221e17;
-  --fg: #f0ece4;
-  --muted: #b3ab9f;
+  --bg: #14130f;
+  --surface: #1f1d16;
+  --fg: #ece7db;
+  --muted: #b1aa97;
   --muted-2: #8f8578;
-  --border: #38332b;
-  --border-strong: #4b453a;
-  --accent: #e9a86c;
-  --accent-strong: #f2b884;
-  --accent-tint: #2b2318;
-  --accent-tint-border: #5c4a2c;
-  /* Sprint 33 (A1): dark reuses --accent-strong's value — #f2b884 measures 10.46:1 on --bg
-   * and 9.45:1 on --surface, so accent text is already AA-safe in dark. Kept as an explicit
-   * hex (not var()) so tests/contrast.test.ts and tests/dark-theme.test.ts parse it. */
-  --accent-text: #f2b884;
-  --accent-fg: #1a1a1a;
-  --accent-soft: #2b2318;
+  --border: #34302a;
+  --border-strong: #494439;
+  /* Deep emerald — rgb(13,122,78), about as dark as light's forest --accent but more
+   * saturated. A FILL colour: 4.69:1 under cream --accent-fg (AA body text) and 3.46:1 on
+   * --bg (over the 3:1 UI-boundary), so the CTA reads as a raised block, not a dark smudge. */
+  --accent: #0d7a4e;
+  /* A brighter emerald for `text-accent-strong` emphasis on the dark paper. */
+  --accent-strong: #4bd89b;
+  --accent-tint: #13251c;
+  --accent-tint-border: #2c5340;
+  /* Lighter emerald for accent TEXT on dark: 8.74:1 on --bg, 7.93 on --surface, 7.54 on
+   * --accent-tint. Explicit hex (not var()) so contrast/dark-theme tests parse it. */
+  --accent-text: #35c98a;
+  /* Cream ink ON the emerald --accent fill (4.69:1). Same family as :root's --accent-fg now:
+   * the re-palette CONVERGED the two themes here (was dark ink on the legacy orange accent). */
+  --accent-fg: #f4efe6;
+  --accent-soft: #13251c;
   --danger: #e58a5c;
   --ok: #5cc27a;
   --pending: #d99b3f;
