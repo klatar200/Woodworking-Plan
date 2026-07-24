@@ -302,7 +302,7 @@ describe('catalog page — page size (QOL-I)', () => {
       queryPlans.mockClear();
       queryPlans.mockResolvedValue(result());
       await render({ perPage: bad });
-      expect(queryPlans.mock.calls[0]![0].perPage, `perPage="${bad}"`).toBe(12);
+      expect(queryPlans.mock.calls[0]![0].perPage, `perPage="${bad}"`).toBe(24);
     }
   });
 

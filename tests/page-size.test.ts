@@ -28,9 +28,15 @@ describe('parsePageSize', () => {
   });
 
   it('rejects anything off the list, degrading to the default', () => {
-    for (const bad of ['13', '100000', '0', '-1', '11.9', 'abc', '', '48; DROP', undefined]) {
+    for (const bad of ['12', '13', '100000', '0', '-1', '11.9', 'abc', '', '48; DROP', undefined]) {
       expect(parsePageSize(bad), `perPage=${bad}`).toBe(DEFAULT_PAGE_SIZE);
     }
+  });
+
+  it('Sprint 48: legacy ?perPage=12 clamps to 24 (removed from the allowlist)', () => {
+    expect(PAGE_SIZES).not.toContain(12);
+    expect(DEFAULT_PAGE_SIZE).toBe(24);
+    expect(parsePageSize('12')).toBe(24);
   });
 
   it('rejects a repeated param (string[])', () => {
