@@ -10,7 +10,7 @@ import { DEFAULT_OPTIONS, type BoardGroup } from '@/lib/cut-optimizer';
 
 /**
  * The landing "plan panel" — the depth card in the hero and the "what a plan looks like"
- * section (QOL-M redesign, 2026-07-20, matching mockups/qol-m/landing.html).
+ * section (QOL-M redesign, 2026-07-20, matching the QOL-M landing mockup).
  *
  * It is the whole point of the page made concrete: NOT a photo and a paragraph, but the
  * structured thing — a real cut list on the left and the **real board-buying plan** on the
