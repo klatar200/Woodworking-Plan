@@ -86,7 +86,11 @@ export default async function PlanBuildPage({ params }: { params: Params }) {
           slug={plan.slug}
           reviewCtaHref={`/plans/${plan.slug}#reviews-heading`}
         >
-          <PlanSteps steps={plan.steps} ownedToolSlugs={ownedToolSlugs} />
+          <PlanSteps
+            steps={plan.steps}
+            images={plan.images}
+            ownedToolSlugs={ownedToolSlugs}
+          />
         </StepWalker>
       </section>
     </main>

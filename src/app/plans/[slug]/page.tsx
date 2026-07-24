@@ -522,7 +522,11 @@ export default async function PlanDetailPage({
       <InstructionsDisclosure href={`/plans/${plan.slug}/build`}>
       <section>
         <h2>Instructions</h2>
-        <PlanSteps steps={plan.steps} ownedToolSlugs={ownedToolSlugs} />
+        <PlanSteps
+          steps={plan.steps}
+          images={plan.images}
+          ownedToolSlugs={ownedToolSlugs}
+        />
       </section>
       </InstructionsDisclosure>
 

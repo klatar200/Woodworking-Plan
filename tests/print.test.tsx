@@ -93,8 +93,27 @@ const plan = {
     // include), so real steps carry these arrays even when empty. The fixture must
     // mirror that — the print page reads `step.tools.length`, and a mock missing them
     // is a mock that doesn't match production.
-    { id: 's1', stepNumber: 1, title: 'Mill the stock', body: 'Flatten one face.', tools: [], materials: [] },
-    { id: 's2', stepNumber: 2, title: 'Rip the strips', body: 'Six at 2".', tools: [], materials: [] },
+    {
+      id: 's1',
+      stepNumber: 1,
+      title: 'Mill the stock',
+      body: 'Flatten one face.',
+      imageUrl: 'https://cdn.example/plans/mill.webp',
+      tools: [],
+      materials: [],
+    },
+    {
+      id: 's2',
+      stepNumber: 2,
+      title: 'Rip the strips',
+      body: 'Six at 2".',
+      imageUrl: null,
+      tools: [],
+      materials: [],
+    },
+  ],
+  images: [
+    { url: 'https://cdn.example/plans/mill.webp', alt: 'Milling the maple stock' },
   ],
   _count: { likes: 0 },
 };
@@ -178,6 +197,16 @@ describe('two layouts, because they are two different jobs', () => {
     expect(html).toContain('Mill the stock');
     expect(html).toContain('Rip the strips');
     expect(html).toContain('Table Saw');
+  });
+
+  it('prints the step photo under the body when imageUrl is set', async () => {
+    const html = await render('edge-grain-maple-cutting-board');
+
+    expect(html).toContain('print-step-image');
+    expect(html).toContain('https://cdn.example/plans/mill.webp');
+    expect(html).toContain('Milling the maple stock');
+    // Step 2 has no image — only one print-step-image for the two-step fixture.
+    expect(html.match(/print-step-image/g)?.length).toBe(1);
   });
 
   it('the CUT-LIST view drops the steps and tools, keeping it to one page', async () => {

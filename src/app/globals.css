@@ -1105,6 +1105,59 @@ code {
   font-weight: 600;
 }
 
+/* --- per-step build photos (2026-07-24) ---
+ * Desktop: body left · image right. Mobile: body then image.
+ * Size gates keep every plan's step media in the same footprint. */
+
+.step-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem 1.25rem;
+  align-items: start;
+}
+
+.step-image {
+  /* Layout constants — not theme tokens (stay out of :root / .dark parity). */
+  --step-img-max-w: 320px;
+  --step-img-max-h: 240px;
+  margin: 0;
+  width: var(--step-img-max-w);
+  max-width: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  box-shadow: var(--elev-1);
+}
+
+.step-image-img {
+  display: block;
+  width: 100%;
+  max-width: var(--step-img-max-w);
+  max-height: var(--step-img-max-h);
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+@media (max-width: 63.99rem) {
+  .step-main {
+    grid-template-columns: 1fr;
+  }
+
+  .step-image {
+    --step-img-max-w: 100%;
+    --step-img-max-h: 200px;
+    width: 100%;
+  }
+
+  .step-image-img {
+    max-height: var(--step-img-max-h);
+    height: var(--step-img-max-h);
+    aspect-ratio: auto;
+  }
+}
+
 .tool-fit {
   margin: 0 0 1rem;
   padding: 0.625rem 0.875rem;
@@ -1901,6 +1954,18 @@ code {
   margin: 0.2rem 0 0.4rem;
   font-size: 0.82rem;
   color: var(--muted, #6b6b6b);
+}
+
+/* Step photo under the body — capped so a tall source doesn't dominate the sheet. */
+.print-step-image {
+  display: block;
+  max-width: 320px;
+  max-height: 240px;
+  width: auto;
+  height: auto;
+  margin: 0.5rem 0 0;
+  object-fit: cover;
+  border: 1px solid var(--border, #ccc);
 }
 
 .print-tools {

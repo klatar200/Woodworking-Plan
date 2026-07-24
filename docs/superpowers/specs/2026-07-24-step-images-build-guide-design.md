@@ -1,7 +1,7 @@
 # Step images on the build guide
 
 **Date:** 2026-07-24  
-**Status:** draft — awaiting approval  
+**Status:** approved 2026-07-24 — implementing  
 **Approach:** 1 — nullable `imageUrl` on `Step`  
 **Surfaces:** `/plans/[slug]/build`, plan-page `PlanSteps` fallback, print (same media)
 
