@@ -1,0 +1,16 @@
+---
+description: Auth, plans publish-gate, actions, SW, uploads — load only when touching these surfaces
+globs: src/lib/plans.ts,src/lib/public-routes.ts,src/lib/action-guard.ts,src/lib/form-fields.ts,src/lib/storage.ts,src/lib/rate-limit.ts,src/**/actions*.ts,src/app/**/actions.ts,public/sw-policy.js,public/sw.js,src/middleware.ts,next.config.ts,prisma/**/*
+alwaysApply: false
+---
+
+# Server / data hotspots
+
+- Plan reads → `src/lib/plans.ts` only (`published:true`). Never raw `prisma.plan` in pages.
+- `public-routes.ts` = allowlist. New private route → `NEVER_CACHE_PREFIXES` + `tests/offline.test.ts`.
+- Identity from session only (`getCurrentUser`/`requireUser`). No client `userId`.
+- Actions: never throw; `guardAction`; `formInt` bounded; `safeReturnTo`; rate-limit returns bool.
+- Uploads only `storage.ts`. New image host → `img-src` AND `images.remotePatterns`.
+- `DATABASE_URL` pooled + `DIRECT_URL` direct, same DB. Keep `check-db-urls.mjs`. No `buildCommand` in `vercel.json`.
+- Public cost = tiers `$`…`$$$$$` only. No `formatCents` / dollar UI.
+- `PlanView` has no `userId`; log views client-side only.
