@@ -33,6 +33,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Kreg catalog swap | ✅ LIVE — ana-white replaced; 1128 plans (639 pub/489 hidden), images→R2 webp. CLAUDE.md §6 |
 | Public launch | 🟡 REACHABLE, NOT LAUNCHED — `SITE_INDEXABLE=true`; crawlable/indexable but still in development (no marketing/subscriptions/commercialization/users). live≠launched (AGENTS_CONTEXT §"Settled") |
 | Phase 4 | 🟡 PARTIAL — build logs (27) + tool-aware search (25–26) only; rest CLOSED |
+| Sprint 47+ (Cutting Board Designer) | 🟡 SCHEDULED 2026-07-24 — plan `docs/superpowers/plans/cutting-board-designer-build-plan.md`; DECISIONS_LOG same date. Sign-in only; hard nav; 3D differentiator; shopping-list later. **Current sprint when implementation starts.** |
 
 Test suite — expected: 1017/1017 (latest verified: Kreg-swap gate, Linux `/tmp` clone, tsc/eslint clean; build+device = Keagan's). Update this single figure each sprint close; 957/941 superseded, not current.
 

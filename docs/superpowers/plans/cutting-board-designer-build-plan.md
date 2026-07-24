@@ -1,23 +1,27 @@
 # Cutting Board Designer — Notch Build Plan
 
-**Status:** Planning only — **not scheduled for implementation**.  
-**Canonical parking:** `FUTURE_IDEAS.md` (2026-07-19) — *“edge/end-grain cutting-board designer (interactive tool ~ 2nd cut-list optimizer)”*.  
-**Gate:** Keagan must promote this into `BUSINESS_PLAN.md` + `BUILD_PLAN.md` §4 before any code sprint. This document is the execution brief once that happens.  
-**Date:** 2026-07-24  
+**Status:** **Scheduled** — Sprint 47+ (`BUILD_PLAN` §4).  
+**Promoted:** 2026-07-24 from `FUTURE_IDEAS.md` (Keagan).  
+**Decisions:** `DECISIONS_LOG.md` 2026-07-24 — Cutting Board Designer.  
+**Execution brief date:** 2026-07-24 (revised same day after product calls)  
 **References researched:** [cuttingboarddesigner.app](https://cuttingboarddesigner.app) (live), [MvRens/CuttingBoard](https://github.com/MvRens/CuttingBoard), [ryan-parag/cutting-board-designer-rebuild](https://github.com/ryan-parag/cutting-board-designer-rebuild)
 
 ---
 
-## 0. Scope gate & assumption
+## 0. Scope gate & settled product calls
 
-| Item | Decision |
+| Item | Binding (Keagan 2026-07-24) |
 |---|---|
-| Is this in current roadmap? | **No.** Parked in `FUTURE_IDEAS.md`. Absent from `BUILD_PLAN` §4. |
+| On roadmap? | **Yes** — Sprint 47+. |
 | Closest shipped analog | Sprint 15 cut-list optimizer: `src/lib/cut-optimizer.ts` + `/plans/[slug]/boards` |
-| Monetization | **Must stay $0 / Hobby.** Live reference is freemium ($9.99/yr PRO). Notch must **not** copy paywalls, ads, or affiliate lumber links. |
-| Recommended default if promoted | Ship as a **first-party workshop tool** (like `/workshop` inventory), not a clone of the commercial web app. Anonymous design OK; cloud save gated by Clerk (same pattern as saves/collections). |
+| Monetization | **$0 / Hobby.** No PRO paywall, ads, or affiliate lumber links. |
+| Auth | **Sign-in required** for all `/designer(.*)`. Do **not** add to `public-routes.ts`. |
+| Nav | **Hard** — first-class chrome. Exact copy = Keagan (still owed before strings ship). |
+| Shopping list | **Later phase** — not MVP. |
+| Preview bar | **3D is the differentiator.** Lightweight shell OK early; “done” includes modern sleek real-time 3D. |
+| Thumbs / Blob | Not required for MVP. |
 
-**Assumption used below (labeled):** Implementation is approved as a free Notch surface with no PRO tier, no dollar cost UI, imperial fractions first, 2D-first rendering, and designs that can emit into existing Notch cut/shopping primitives.
+**Still blocked (copy only):** nav label, header/landing CTA wording.
 
 ---
 
@@ -27,17 +31,18 @@
 Hobby / intermediate woodworkers already browsing Notch’s `cutting-boards` catalog who want to **design their own edge- or end-grain board** instead of (or before) following a published plan.
 
 ### Job to be done
-> “Show me what this strip layout will look like, how many slices I get after kerf, and exactly what stock to buy — then let me print it and add materials to my shopping list.”
+> “Show me what this strip layout will look like in a believable 3D board I can orbit, how many slices I get after kerf, and give me a cut list I can print/save — shopping list comes once the designer feels solid.”
 
-### Success criteria (MVP)
-1. User can start from a template or blank board and produce a valid edge-grain or end-grain design in under 5 minutes.
-2. Preview updates live as strips/species/dimensions change.
+### Success criteria (MVP / first shippable)
+1. Signed-in user can start from a template or blank board and produce a valid edge- or end-grain design quickly.
+2. **Modern real-time 3D preview** (orbit/zoom, wood materials) updates as strips/species/dimensions change — this is the quality bar, not a later PRO upsell.
 3. Cut list + board-feet (with waste margin) + finished dimensions are correct for kerf + slice count (golden fixtures).
-4. User can export a PNG (or print view) and, if signed in, save the design and push materials into the existing shopping list.
-5. Feels native: Oak & Forest tokens, tape-measure fractions, cost **tiers only**, Clerk session identity, no parallel auth/DB stack.
+4. User can export PNG (and/or capture from 3D) and print; designs persist to their account.
+5. Feels native: Oak & Forest tokens, tape-measure fractions, cost **tiers only** if shown, Clerk session identity.
+6. Discoverable via **hard nav** once Keagan supplies copy.
 
-### Non-goals for MVP
-Pixel-clone of cuttingboarddesigner.app; AR; native apps; marketplace; AI redesign; metric as primary; selling lumber; publishing user designs into the public catalog.
+### Explicitly not MVP
+Shopping-list push; anonymous use; PRO/paywall; AR; publishing designs into the public catalog.
 
 ---
 
@@ -53,38 +58,27 @@ Pixel-clone of cuttingboarddesigner.app; AR; native apps; marketplace; AI redesi
 | Kerf-aware slicing | Yes (default ~0.13″) | Yes (`bladeKerf`) | Yes (`kerf` 0.125″) | **Adopt** |
 | Templates / presets | 6 templates (some PRO) | Defaults only | Presets / loadPreset | **Adopt** 3–4 free templates |
 | Trailing angle / diagonal | PRO-adjacent | No | Field exists (`trailingAngle`) | **Defer** |
-| 2D preview | Free (textured) | CSS/SVG color blocks | — | **Adopt** (SVG primary) |
-| 3D preview | PRO (Three-like) | No | Three.js / R3F | **Defer** (Phase 2) |
+| 2D preview | Free (textured) | CSS/SVG color blocks | — | Optional early shell / print fallback |
+| 3D preview | PRO (Three-like) | No | Three.js / R3F | **Adopt as core differentiator** |
 | AR | PRO / native | No | No | **Out** |
 | Undo/redo | Not observed | No | No | **Phase 2** (nice) |
 | Cut list / BF | Yes + 15% margin | Layer table + BOM | Metrics BF + cost $ | **Adopt** BF + margin; **adapt** cost → tiers only |
-| PNG export | Yes | Print CSS | Optional / incomplete | **Adopt** |
-| SVG/PDF | No (observed) | Print | Mentioned optional | Print page MVP; SVG Phase 2 |
-| Share URL | Project UUID URLs | MsgPack hash in URL | Optional checklist item | **Phase 2** (signed-in share) |
-| Persistence | Local free / cloud PRO | URL hash + JSON file | localStorage + Supabase | **Adapt** → local draft + Clerk/Postgres |
+| PNG export | Yes | Print CSS | Optional / incomplete | **Adopt** (incl. 3D capture) |
+| SVG/PDF | No (observed) | Print | Mentioned optional | Print page MVP |
+| Share URL | Project UUID URLs | MsgPack hash in URL | Optional checklist item | **Phase 2** |
+| Persistence | Local free / cloud PRO | URL hash + JSON file | localStorage + Supabase | **Clerk + Prisma only** (sign-in required) |
 | Custom woods | PRO | Yes (name+color) | Catalog + price/Janka | Curated list MVP; custom Phase 2 |
-| Auth | Optional | None | Supabase | **Reuse Clerk** |
-| Licensing | Proprietary product | **Unlicense** | **No LICENSE** (assume all rights reserved) | Clean-room inspiration; do not vendor ryan-parag code |
+| Auth | Optional | None | Supabase | **Clerk; entire tool gated** |
+| Shopping list | N/A | N/A | N/A | **Later Notch phase** |
+| Licensing | Proprietary product | **Unlicense** | **No LICENSE** | Clean-room; do not vendor ryan-parag code |
 
 ### What to adopt / adapt / defer
 
-**Adopt (interaction + domain):**
-- Ordered strips with species + width.
-- Board params: source length, stock thickness, finished strip/row height or end-grain slice thickness, kerf.
-- Pattern toggles: flip every other, rotate every other (end-grain).
-- Live preview + live cut-list/metrics.
-- Starter templates (blank stripes, classic stripes, checkerboard / alternating).
+**Adopt:** strips + kerf + flip/rotate; templates; live metrics/cut list; **real-time 3D board** (R3F-style architecture, clean-room).
 
-**Adapt to Notch:**
-- Cost → `costTierForCents` / `$`…`$$$$$` only (no `pricePerBF` UI; optional internal cents for tier derivation later).
-- Dimensions → `formatInches` tape fractions (`src/lib/format.ts`), not decimal-only.
-- Persistence → Prisma + Clerk, not Supabase.
-- Cut list → emit `Part[]` compatible with `src/lib/cut-optimizer.ts` so “what to buy” reuses Sprint 15.
-- Visual language → Notch tokens (`globals.css`), not reference chrome.
-- Routing / SW / allowlist → existing security model.
+**Adapt:** tiers-only cost if shown; tape fractions; Prisma/Clerk; private routes + SW denylist; hard nav with Keagan copy; `Part[]` emission ready for later shopping/optimizer.
 
-**Defer:**
-- 3D/AR, angled strips, multi-board end-grain assembly editor, cloud share links, custom species editor, metric-primary, dollar pricing, freemium gating, blog/SEO microsite.
+**Defer:** shopping-list push; AR; angled strips; multi-board editor; share links; anonymous try; freemium.
 
 ### Repo structural notes (inspiration only)
 
@@ -102,31 +96,21 @@ Pixel-clone of cuttingboarddesigner.app; AR; native apps; marketplace; AI redesi
 
 ## 3. Scope
 
-### MVP (Phase A — first buildable sprint set)
-1. Pure geometry + metrics library (strips → finished size, slices, BF, waste, `Part[]`).
-2. Curated wood species catalog (color + display name; optional hardness metadata unused in UI).
-3. Designer client island: canvas (SVG), strip list, board settings, templates.
-4. Routes: public design surface + signed-in library of saved designs.
-5. PNG export of 2D top view; print view for cut list / glue-up summary.
-6. “Add to shopping list” for signed-in users (mapped materials).
-7. Optional: feed `Part[]` into existing `optimize()` for a board-buy plan panel (reuse `BoardBar`).
+### MVP (Sprint 47+ — first shippable)
+1. Pure geometry + metrics library (strips → finished size, slices, BF, waste, `Part[]` for later).
+2. Curated wood species (color + name; procedural/safe 3D materials — no scraped photo textures).
+3. Designer island: strip list, board settings, templates, cut-list panel.
+4. **Modern 3D preview** (orbit/zoom, edge + end grain appearance) as the primary canvas — optional thin 2D/skeleton only as an early scaffolding step, not the product bar.
+5. Private routes only: `/designer`, library, `[id]`, print — Clerk-gated.
+6. Save/load designs; PNG export (incl. canvas capture); print cut list.
+7. Hard nav entry once Keagan supplies copy.
 
-### Phase 2
-- Undo/redo history.
-- Shareable read-only links for a design (owner-controlled).
-- Multi-panel / multi-glue-up end-grain editor (MvRens strength).
-- Trailing-angle / herringbone.
-- Lightweight 3D orbit preview (opt-in island; code-split).
-- Custom species (name + hex only).
-- SVG download; glue-up step narrative UI (ryan-parag `steps/*` pattern).
+### Phase 2 (after designer feels solid)
+- Shopping-list materials push + optional `optimize()` / `BoardBar` buy plan.
+- Undo/redo; share links; multi-panel end-grain; trailing angle; custom species.
 
-### Later / out of scope until re-decided
-- AR / native apps.
-- Publishing designs into `content/plans` / public catalog (licensing + QC).
-- Dollar lumber pricing, affiliate links, PRO subscriptions (Hobby + launch economics forbid).
-- AI pattern generation (overlaps parked “AI plan customization”; inference cost).
-- CNC toolpaths.
-- Metric as primary unit system (BUSINESS_PLAN/FUTURE_IDEAS stance on dishonest 2×4 conversion — display conversion only if ever needed).
+### Out of scope until re-decided
+- AR / native apps; catalog publishing of user designs; dollar pricing / affiliate / PRO; AI generation; CNC; metric-primary.
 
 ---
 
@@ -135,30 +119,31 @@ Pixel-clone of cuttingboarddesigner.app; AR; native apps; marketplace; AI redesi
 ### Primary flows
 
 ```text
-Browse / Workshop CTA
-    → /designer                 (anonymous OK: draft in memory + localStorage)
+Hard nav / landing CTA (Keagan copy)
+    → sign-in if needed
+    → /designer
         → Template picker
-        → Editor (preview | strips | settings | cut list)
-            → Export PNG / Print
-            → Sign in to Save
-            → /designer/library (signed-in)
-            → Add materials → /shopping-list
-            → (optional) “Board plan” using optimize()
+        → Editor (3D preview | strips | settings | cut list)
+            → Export PNG / Print / Save
+            → /designer/library
+        → (Phase 2) Add materials → /shopping-list
 ```
 
 ### Screens
-| Surface | Purpose |
-|---|---|
-| `/designer` | New/edit current draft (full-viewport workshop tool) |
-| `/designer/library` | Saved designs (signed-in) |
-| `/designer/[id]` | Open saved design |
-| `/designer/[id]/print` | Printable cut list + preview (Ctrl+P → PDF) |
+| Surface | Auth | Purpose |
+|---|---|---|
+| `/designer` | **Private** | New/edit draft |
+| `/designer/library` | Private | Saved designs |
+| `/designer/[id]` | Private (owner) | Open saved |
+| `/designer/[id]/print` | Private (owner) | Print cut list |
+
+Do **not** add these to `src/lib/public-routes.ts`. Add `/designer` to `NEVER_CACHE_PREFIXES` in `public/sw-policy.js`.
 
 ### Editor IA (desktop)
-- **Left/center:** 2D preview (top view); toggle Edge vs End appearance.
-- **Right panel:** Board settings → Layers/strips → Cut list / metrics.
-- **Top bar:** Back, design name, template, Export PNG, Save, Print.
-- **Mobile:** Stack preview on top; bottom sheet for strips/settings; accept that dense editing is desktop-primary (matches live web app).
+- **Center:** **3D board** (primary); edge vs end appearance via model/toggles.
+- **Right panel:** Board settings → Strips → Cut list / metrics.
+- **Top bar:** Back, name, template, Export, Save, Print.
+- **Mobile:** 3D on top; sheet for controls; editing remains desktop-primary.
 
 ### Key interactions
 - Add / duplicate / delete strip; reorder (up/down buttons MVP; drag Phase 2).
@@ -266,37 +251,30 @@ BoardDesign
 
 ## 6. Technical approach
 
-### Rendering stack — recommendation
+### Rendering stack — recommendation (revised for Keagan’s 3D bet)
 
 | Option | Pros | Cons | Verdict |
 |---|---|---|---|
-| **SVG 2D** | Crisp print/export, easy hit-testing, SSR-friendly shell, small bundle | Textures less “photo real” | **MVP default** |
-| Canvas 2D | Fast texture fills | Harder a11y/print; hit-testing manual | Alt for texture layer if needed |
-| Three.js / R3F | Matches ryan-parag / live PRO | Heavy for Next, mobile cost, CSP/nonce care | **Phase 2** code-split island only |
+| SVG / Canvas 2D | Light, print-friendly | Not the differentiator you want | **Scaffold only** if needed |
+| **Three.js / React Three Fiber** | Orbit/zoom, materials, matches “modern sleek”; ryan-parag proves strip→mesh mapping | Bundle size, mobile GPU, CSP/nonce, Next client-island discipline | **MVP product bar** |
+| Full photoreal / AR | Wow | Cost, device limits, IP textures | **Out** |
 
-**Rationale:** Notch already ships SSR-first pages and print-as-PDF. The live app’s free tier is 2D. SVG keeps MVP honest and testable (DOM assertions). Procedural or CSS grain (subtle) beats shipping copyrighted photo textures.
+**Rationale:** Live app gates 3D behind PRO; Notch ships 3D as the free first-party experience — that’s the wedge. Use `@react-three/fiber` + `@react-three/drei` in a **dynamically imported client island** (`ssr: false`). Procedural or hand-authored PBR-ish wood materials from curated hex/species — never hotlink or rip live-app textures.
+
+**Performance:** code-split 3D chunk; cap strip count; pause loop when tab hidden; degrade gracefully on weak GPUs (static frame + message) without blocking cut-list editing.
 
 ### State / history
-- Client editor state in a small store (React state or Zustand **inside the island only** — don’t invent a global app store).
-- Dirty flag; `beforeunload` warn.
-- localStorage draft key `notch.designer.draft.v1` for anonymous continuity.
-- Undo/redo: command stack Phase 2; MVP confirm on destructive clear/template replace.
+- Client store inside the island only.
+- Server is source of truth for saved designs; optional local draft buffer while signed in.
+- Undo/redo Phase 2.
 
 ### Persistence
-1. Draft: localStorage (anon + signed-in autosave buffer).
-2. Saved: server actions → Prisma `BoardDesign` (signed-in).
-3. No Supabase / parallel auth.
+- Prisma `BoardDesign` + Clerk `requireUser()`; IDOR-safe queries.
+- No Supabase; no anonymous public designs.
 
 ### Exports
-- **PNG:** client SVG → canvas serialize → download.
-- **Print:** dedicated print route (mirror `/plans/[slug]/print` patterns: black-on-white, keep print classes on elements).
-- **JSON:** download/upload of serialization (MvRens pattern) — useful for support & tests.
-
-### Performance constraints
-- Recalc metrics O(strips) on every edit — fine under ~100 strips; soft-cap strip count (e.g. 64) with warning.
-- Debounce PNG export; don’t block typing.
-- No WebGL on MVP path → avoids GPU/CSP surprises on low-end phones.
-- Designer page: dynamic import the island (`next/dynamic`, `ssr: false` for canvas bits if needed).
+- PNG from WebGL canvas capture and/or orthographic snapshot.
+- Print route for cut list (2D/print-safe; don’t rely on WebGL for paper).
 
 ### Pure lib placement (mirror cut-optimizer)
 ```text
@@ -314,38 +292,31 @@ All Vitest-covered; UI is a thin adapter.
 
 ## 7. Notch integration plan
 
-### Routes (proposed)
+### Routes (binding)
 | Path | Auth | Notes |
 |---|---|---|
-| `/designer` | **Public** (add to `src/lib/public-routes.ts` — security decision) | Drafting tool; no other user’s data |
-| `/designer/library` | Private | List own designs |
-| `/designer/[id]` | Private (owner) | Edit saved |
-| `/designer/[id]/print` | Private (owner) | Print |
-
-**Alternative (if Keagan prefers fail-closed):** keep entire `/designer(.*)` private — forces sign-in before try. **Recommended:** public draft + gated save (matches BUSINESS_PLAN habit-building: content/tools free, persistence gated).
+| `/designer` | **Private** | Not on allowlist |
+| `/designer/library` | Private | Own designs |
+| `/designer/[id]` | Private (owner) | |
+| `/designer/[id]/print` | Private (owner) | |
 
 ### Files likely involved (repo-relative)
 
 | Area | Paths |
 |---|---|
 | App routes | `src/app/designer/page.tsx`, `library/page.tsx`, `[id]/page.tsx`, `[id]/print/page.tsx` |
-| Island UI | `src/components/designer/*` (editor shell, svg-preview, strip-list, settings, template-picker, metrics-panel) |
-| Lib | `src/lib/board-designer/*`, `src/lib/board-designs.ts` (CRUD) |
-| Actions | `src/app/actions/board-designs.ts` (`guardAction`, rate limit, `safeReturnTo`) |
+| Island UI | `src/components/designer/*` (shell, **r3f-canvas**, strip-list, settings, templates, metrics) |
+| Lib | `src/lib/board-designer/*`, `src/lib/board-designs.ts` |
+| Actions | `src/app/actions/board-designs.ts` |
 | Schema | `prisma/schema.prisma` + migration |
-| Auth allowlist | `src/lib/public-routes.ts` (+ tests) |
-| SW | `public/sw-policy.js` — add `/designer/library`, `/designer/` private ids to `NEVER_CACHE_PREFIXES` as needed; public `/designer` cacheable only if no private JSON in HTML |
-| Shopping | `src/lib/shopping-list.ts` + action to insert derived materials |
-| Optimizer reuse | `src/lib/cut-optimizer.ts`, `src/components/board-bar.tsx` |
-| Format / cost | `src/lib/format.ts` — fractions + tiers only |
-| Nav entry | site header / workshop / browse empty-state CTA (copy = Keagan) |
-| Deletion | `src/lib/user-deletion.ts` if blobs |
-| SEO | `noindex` on designer tools (like boards/print/build) unless product wants indexable landing |
+| SW | `public/sw-policy.js` — `/designer` in `NEVER_CACHE_PREFIXES`; `tests/offline.test.ts` |
+| Nav | header / landing — **blocked on Keagan copy** |
+| Deps | `three`, `@react-three/fiber`, `@react-three/drei` (verify free/compatible; no paid SDK) |
+| Format / cost | `src/lib/format.ts` — fractions; no dollar UI |
 
 ### Auth / permissions
-- `getCurrentUser` / `requireUser` only.
-- Library queries always `where: { userId: sessionUser.id }`.
-- Public `/designer` must not embed other users’ designs.
+- Every page/action: `requireUser()` / session-scoped queries.
+- Unsigned hit → Clerk sign-in with `safeReturnTo` back to `/designer`.
 
 ### Design-system reuse
 - Tokens from `src/app/globals.css` / `DESIGN_BRIEF.md`.
@@ -439,65 +410,50 @@ Undo stack, share link, drag-reorder, 3D island — only if scheduled.
 
 ---
 
-## 9. Risks & open decisions
+## 9. Risks & remaining opens
 
 ### Risks
-| Risk | Why it matters | Mitigation |
+| Risk | Why | Mitigation |
 |---|---|---|
-| Geometry wrong (kerf/slices) | Users waste lumber; trust damage | Golden fixtures; treat like cut-optimizer invariants |
-| Texture/IP | Photo woods from live app are proprietary | Procedural/CSS colors only; curated hex palette |
-| Scope creep toward clone | Freemium 3D/AR/angled | Hard MVP list; Phase 2 parking |
-| Parallel systems | Supabase-style second backend | Forbid; Clerk + Prisma only |
-| Cost UI regression | Dollar figures reappear via BF×price | No price fields in species MVP; tier-only display |
-| Offline cache leak | Saving designs under public cache | Private routes on denylist; careful public draft HTML |
-| Mobile editing pain | Live web app is desktop-first | Honest MVP: usable view on mobile, edit desktop-primary |
-| FUTURE_IDEAS violation | Building without promotion | U0 gate mandatory |
+| Geometry wrong | Waste lumber / trust | Golden fixtures like cut-optimizer |
+| 3D quality / perf | Core bet fails on mid phones | Code-split; degrade; desktop-first polish |
+| Texture/IP | Live-app woods proprietary | Procedural materials only |
+| Bundle / CSP | WebGL + Clerk nonce | Dynamic island; follow existing CSP patterns |
+| Cost UI regression | $ creep via BF×price | No species price fields |
+| Hard nav without copy | Wrong brand voice | Block chrome strings until Keagan writes them |
+| Shopping deferred too long | Feels like a toy vs Notch | Keep `Part[]` clean; schedule U6 deliberately |
 
-### Open decisions (need Keagan)
+### Settled (do not re-ask)
+Schedule Now · Sign-in required · Hard nav · Shopping later · 3D = differentiator.
 
-1. **Schedule:** Promote to `BUILD_PLAN` §4 now, later, or never?  
-   - *Recommended:* Later, after catalog UX / go-live blockers; keep this plan ready.
-2. **Public `/designer` vs sign-in required?**  
-   - *Recommended:* Public draft + gated save.
-3. **Nav entry & public copy** (branding/copy escalation).  
-   - *Recommended:* Soft entry from `/workshop` + cutting-boards browse empty/header link; landing marketing blurb only if Keagan writes it.
-4. **Shopping-list integration in MVP or Phase 2?**  
-   - *Recommended:* MVP — it’s the Notch differentiator vs standalone designers.
-5. **Thumbnail storage** (Blob vs client-only PNG)?  
-   - *Recommended:* Client PNG export first; Blob thumbnails Phase 2.
+### Still need from Keagan (copy)
+1. Exact **nav label** (e.g. “Designer” vs “Board designer” vs …).  
+2. Header and/or **landing CTA** sentence(s).  
+3. Optional empty-library microcopy.
 
 ---
 
 ## 10. Milestones & verification
 
-### MVP done when
-1. U1–U4 merged; CI green (`lint`, `typecheck`, `test`).
-2. Manual script:
-   - Load Checkerboard template → switch end grain → confirm slice math by hand for one fixture.
-   - Change kerf 0 → 0.125 → slice count drops as expected.
-   - Export PNG; open print view; Save while signed in; reload library.
-   - Add to shopping list; confirm entries on `/shopping-list`.
-   - Sign out; confirm library/print not publicly readable.
-3. Invariants still hold: published plan filter untouched; cost-tier-only; offline denylist covers private designer routes; no secrets in client.
-4. Self-score ≥95% per `BUILD_PLAN` §6 with evidence; `SPRINT_LOG` entry.
+### First shippable (“MVP”) done when
+1. U1–U5 complete (domain, private persist, **3D quality bar**, print, hard nav with approved copy).
+2. Manual: template → edit → 3D updates → kerf changes slice math → save → library → print → PNG; sign-out cannot open `/designer`.
+3. No shopping-list requirement yet (U6 later).
+4. CI green; offline denylist covers `/designer`; no dollar formatters; self-score ≥95%.
 
 ### Automated checks (minimum)
-- `tests/board-designer-metrics.test.ts` — kerf, slices, BF, warnings.
-- `tests/board-designer-serialize.test.ts` — schemaVersion round-trip.
-- `tests/board-designs.test.ts` — authz/IDOR.
-- `tests/public-routes.test.ts` / offline tests updated.
+- Metrics/serialize/authz tests as in U1–U2.
+- Offline + public-routes: designer private.
 - `tests/format.test.ts` still forbids dollar formatters.
-- Optional component test: designer strip add/remove.
 
 ---
 
 ## Confidence check
 
-| Sure | Assumption-based | Top 3 risks |
+| Sure | Assumption-based | Top risks now |
 |---|---|---|
-| Live app interaction model (strips, kerf, flip/rotate, cut list, PNG, templates) from hands-on inspection | Exact live-app internal geometry formula (re-derived from first principles + ryan-parag metrics as cross-check, not copied) | (1) Kerf/slice math trust |
-| Feature is parked in `FUTURE_IDEAS` — must not implement until promoted | Public-vs-private `/designer` preference | (2) Accidental monetization/cost-UI clone |
-| Notch integration seams (optimizer, print, shopping, Clerk, allowlist, SW) | Species list & template aesthetics (product taste) | (3) Building before U0 / scope-creep into 3D-AR |
-| ryan-parag domain types are the best structural mirror; MvRens Unlicense + multi-board is Phase 2 inspiration | Thumbnail/Blob necessity | |
+| Product calls logged; feature scheduled | Exact 3D aesthetic bar (“sleek”) | (1) 3D polish/perf |
+| Sign-in-only + SW denylist path | Species material look | (2) Geometry trust |
+| Shopping intentionally later | Nav/landing copy wording | (3) Shipping chrome before copy |
 
-**Bottom line:** Treat this as the definitive execution brief for a **2D, Notch-native, cut-list-connected** designer. Do not vendor reference code. Do not start U1 until U0 (Keagan promotion + decisions) is done.
+**Bottom line:** Build a **sign-in-gated, 3D-led** Notch designer; shopping later; hard nav waits on Keagan’s words. Clean-room only.

@@ -26,6 +26,7 @@
 - **UX Remediation calls (2026-07-21):** stop pre-ticking workshop filter boxes; landing states the real catalog size; CAD part-diagram pilot stays GATED (needs a `StepPart` join); app-page type hierarchy DECLINED. `start_url` → `/browse`.
 - **🏷️ Branding #8 RESOLVED (2026-07-21):** the product is **Notch** at **notchplans.com**, "Oak & Forest" palette, tagline "Built naturally. Made to last.", `support@notchplans.com`.
 - **Sprint 46 (2026-07-23):** catalog UX batch; imageless plans unpublished; runtime step formatting.
+- **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). Exact nav/landing copy still owed by Keagan before chrome ships.
 
 _(Full history below, chronological.)_
 
@@ -1728,3 +1729,21 @@ content edits either way.
 **G2 — image hosting (Keagan): re-host all plan images to Cloudflare R2** (webp, ~16k). Non-R2 dead images (404/410) parked into `unresolvedImages[]` by `park-dead-images.mjs`; a plan left with no images → `published:false`. (Consistent with the 2026-07-17 R2 image-storage decision.)
 
 **G3 — estimates (Keagan): derive cost tier and time from each plan's steps/materials/process** (the Kreg source lacks them). Estimators in `scripts/kreg-mapping.config.mjs`; cost stays TIER-ONLY per the 2026-07-13 rule (no dollar figures).
+
+### 2026-07-24 — Cutting Board Designer: promote + product calls
+
+**Decision (Keagan):** Promote the edge/end-grain cutting-board designer out of `FUTURE_IDEAS` and schedule it on `BUILD_PLAN` §4 (Sprint 47+). Execution brief: `docs/superpowers/plans/cutting-board-designer-build-plan.md`. Add to `BUSINESS_PLAN` roadmap as a first-party workshop tool (not a freemium clone of cuttingboarddesigner.app; no PRO paywall; no dollar lumber UI; Hobby/$0 economics unchanged).
+
+**Product calls (Keagan, answering plan §9):**
+
+| # | Call | Binding |
+|---|---|---|
+| 1 Schedule | **Now** | On roadmap; implement after plan docs updated. |
+| 2 Auth | **Sign-in required** | Entire `/designer(.*)` stays **off** `public-routes.ts` allowlist. Fail closed. |
+| 3 Nav / copy | **Hard** | First-class chrome (header and/or landing). **Exact labels/blurbs = Keagan copy** before shipping visible marketing strings (branding escalation still open for wording only). |
+| 4 Shopping list | **Later phase** | MVP = design + persist + export/print + 3D-led preview. Wire `ShoppingListEntry` / materials push after the designer surface is solid. |
+| 5 Preview / thumbs | **Lightweight OK first; differentiator = modern sleek 3D** | Do not treat 3D as a nice-to-have clone of the live app’s PRO tier — it is the Notch bet. A thin early shell is allowed; the quality bar for “done” includes a polished real-time 3D board model (orbit/zoom). Prefer procedural/safe wood materials (no scraped proprietary textures). Blob thumbnails not required for MVP. |
+
+**Rejected / superseded from planner defaults:** public anonymous draft; soft-only nav; shopping-list-in-MVP; SVG-2D-as-the-product-bar.
+
+**Still open (copy only):** exact nav label, landing/header CTA text, any marketing blurb — Keagan supplies before those strings ship.
