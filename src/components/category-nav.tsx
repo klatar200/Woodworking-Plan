@@ -51,7 +51,7 @@ export function CategoryNav({ query, filters, sort, perPage, categories }: Props
 
   return (
     <nav
-      className="catalog-nav hidden lg:block lg:[grid-area:nav] lg:sticky lg:top-[4.5rem]"
+      className="catalog-nav hidden lg:block"
       aria-label="Categories"
     >
       <h2 className="catalog-nav-heading">Categories</h2>

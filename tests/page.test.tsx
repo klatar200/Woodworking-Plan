@@ -160,6 +160,18 @@ describe('catalog page — browse', () => {
     expect(html).toContain('Tools you own');
   });
 
+  it('Sprint 50: two-column rail grid with one sticky container', async () => {
+    const html = await render();
+    expect(html).toContain('lg:grid-cols-[16rem_minmax(0,1fr)]');
+    // Quotes are HTML-escaped in the serialized class attribute.
+    expect(html).toMatch(/lg:\[grid-template-areas:(&#x27;|')\._search(&#x27;|')_(&#x27;|')rail_results(&#x27;|')\]/);
+    const stickyMatches = html.match(/lg:sticky/g) ?? [];
+    expect(stickyMatches).toHaveLength(1);
+    expect(html).not.toContain('lg:[grid-area:nav]');
+    expect(html).not.toContain('lg:[grid-area:filters]');
+    expect(html).not.toContain('13rem_minmax(0,1fr)_18rem');
+  });
+
   it('shows an empty state rather than a blank page', async () => {
     queryPlans.mockResolvedValue(result({ plans: [], total: 0 }));
     expect(await render()).toContain('No plans yet');

@@ -190,45 +190,14 @@ export default async function CatalogPage({
       */}
 
       {/*
-        Sprint 18 — the desktop catalog is a three-column grid: category rail,
-        results, filter rail. It is ONE DOM in ONE order, placed by
-        `grid-template-areas` at ≥64rem (see .catalog in globals.css) — not a
-        desktop tree and a mobile tree.
-
-        Which is why the source order below is exactly the mobile order it has
-        always been (search → filters → sort → chips → results): on a phone the
-        grid is not applied, the rail is display:none, and the page flows in DOM
-        order, unchanged. Reordering the DOM to suit the desktop columns would
-        have silently reordered the phone.
+        Sprint 50 — desktop is TWO columns: a single left rail (Sort → Categories →
+        Filters) and results. Search stays on its own row (rail cell is null there so a
+        tall rail cannot inflate it). ONE sticky container — the rail wrapper — no nested
+        stickies. DOM order = mobile order: search → rail (sort + filters; CategoryNav is
+        `hidden lg:block`) → results.
       */}
-      {/* Sprint 30a: the desktop three-column grid moved to Tailwind. Below 64rem
-          there is no grid (plain block, DOM order = mobile order); at lg the
-          grid-template-areas place the rail/results/filter columns. */}
-      {/* QOL-M catalog fix v2 (2026-07-20): the tall side rails must NOT span the search row.
-          The first attempt (`grid-template-rows: min-content auto`) did not work — a
-          min-content grid row still GROWS to absorb a tall item that spans it, and both the
-          categories rail and the filters rail spanned rows 1+2, so the very tall filters rail
-          inflated row 1 (search) by ~450px, leaving a big empty gap under the search bar.
-          Now row 1 holds ONLY the search box (`. search .`; the side columns are null cells),
-          and `nav | results | filters` all live in row 2, each top-aligned. Nothing spans the
-          search row, so it can't be inflated. Mobile is unchanged: below lg there is no grid,
-          and the DOM order (nav → search → filters → results) flows top-to-bottom as before. */}
-      <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_18rem] lg:[grid-template-areas:'._search_.'_'nav_results_filters'] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
-        {/* Desktop-only (hidden below 64rem): a second way to reach the category
-            filter the panel's <select> already offers, not a second capability. */}
-        <CategoryNav
-          query={query}
-          filters={filters}
-          sort={sortParam}
-          perPage={perPageParam}
-          categories={categories}
-        />
-
-        {/* QOL-J (2026-07-20, Keagan): the page-size control sits to the RIGHT of the
-            search bar on this row, not on the line below with the sort. The row owns the
-            vertical spacing (the child forms are now marginless) so the search box and the
-            page-size control align on one baseline; gap-y keeps them apart when they wrap on
-            a phone. */}
+      <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:[grid-template-areas:'._search'_'rail_results'] lg:gap-x-[2.5rem] lg:gap-y-0 lg:items-start">
+        {/* QOL-J: page-size to the RIGHT of search on this row. */}
         <div className="lg:[grid-area:search] flex flex-wrap items-center gap-x-[1rem] gap-y-[0.75rem] mt-[1rem] mb-[0.75rem]">
           <div className="flex-1 min-w-[16rem]">
             <SearchBox query={query} />
@@ -241,14 +210,21 @@ export default async function CatalogPage({
           />
         </div>
 
-        <aside
-          className="no-scrollbar lg:[grid-area:filters] lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
+        <div
+          className="no-scrollbar flex flex-col lg:[grid-area:rail] lg:sticky lg:top-[4.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto"
           aria-label="Sort and filters"
         >
-          {/* QOL-M catalog fix (2026-07-20, Keagan): Sort lives in the controls sidebar with
-              the filters, not floating above the results grid. SortSelect returns null during
-              a keyword search (relevance is the sort). */}
           <SortSelect sort={sort} query={query} filters={filters} perPage={perPageParam} />
+
+          {/* Desktop-only category list — duplicate of the filter panel's Category
+              select, which stays in the DOM (lg:hidden) so submits keep the value. */}
+          <CategoryNav
+            query={query}
+            filters={filters}
+            sort={sortParam}
+            perPage={perPageParam}
+            categories={categories}
+          />
 
           <FilterPanel
             query={query}
@@ -259,7 +235,7 @@ export default async function CatalogPage({
             tools={tools}
             hasWorkshop={ownedTools.length > 0}
           />
-        </aside>
+        </div>
 
         <div className="lg:[grid-area:results] lg:min-w-0">
           {/* Removable chips for each active filter — renders nothing when browsing
