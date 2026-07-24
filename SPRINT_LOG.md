@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 46 (2026-07-23)** — catalog UX + Oak & Forest authority mockups + runtime step formatting. The **Kreg full-catalog swap (2026-07-23)** is logged as a dated entry at the bottom of this log (added 2026-07-24); its G1 legal gate is **RESOLVED 2026-07-24** (Kreg partnership confirmed — cleared to be live) — see `DECISIONS_LOG.md` 2026-07-23.
+> **Latest logged: Sprints 47–50 (2026-07-24)** — settings hub · page size 24 · Plans nav · browse filter rail. Branch `cursor/settings-sprints-47-50-48ad` (CI green). Prior: Sprint 46; Kreg G1 RESOLVED.
 >
-> **Milestones:** Phase 0 (Sprint 0) ✅ · Phase 1 MVP (1–9) ✅ · rate limiting ✅ · Phase 2 (10–14) ✅ · Phase 3 (15–16) ✅ · post-launch backlog (17–23) ✅ · completion plan (24–27) ✅ pushed/live · Tailwind + light/dark migration (28–32) ✅ · UX Remediation (33–42) ✅ · Notch rebrand (43–45) ✅. Test suite last verified: 957 green / 81 files (Sprint 45); Kreg-swap gate 1017/1017 in a `/tmp` clone.
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1030 green (post-47–50).
 
 ---
 
@@ -42,6 +42,91 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 50: /browse single left filter rail
+**Dates:** 2026-07-24
+**Scope:** SETTINGS_BUILD_PLAN Sprint 50 — one sticky rail (Sort → Categories → Filters); 2-col grid.
+**Commit:** `d0ffa8b` on `cursor/settings-sprints-47-50-48ad`
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Spec grid/areas/rail order; Category `lg:hidden` kept in DOM |
+| Correctness & functionality (/20) | 20 | Local smoke `/browse` 200 + 16rem grid; `?perPage=12` 200 |
+| Automated test coverage (/15) | 15 | `page.test` sticky/grid; `filter-panel` Category hidden |
+| Security (/15) | 15 | No auth/param changes |
+| Code quality & simplicity (/10) | 10 | Single sticky wrapper |
+| Mobile/offline (/10) | 10 | DOM order search→rail→results |
+| Documentation & handoff (/5) | 5 | This log |
+| **Total (/100)** | **100** |
+
+**Result:** Pass. CI green (run 30110031668).
+
+---
+
+## Sprint 49: Navbar Browse → Plans
+**Dates:** 2026-07-24
+**Scope:** SETTINGS_BUILD_PLAN Sprint 49 — plain Plans link; delete browse-menu.
+**Commit:** `4512c39`
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | PUBLIC_NAV Plans; browse-menu deleted; footer unchanged |
+| Correctness & functionality (/20) | 20 | Header Plans link; no mega-menu |
+| Automated test coverage (/15) | 15 | site-chrome rewritten; browse-menu.test deleted |
+| Security (/15) | 15 | Chrome-only |
+| Code quality & simplicity (/10) | 10 | −browse-menu.tsx |
+| Mobile/offline (/10) | 10 | Drawer Plans link |
+| Documentation & handoff (/5) | 5 | This log |
+| **Total (/100)** | **100** |
+
+**Result:** Pass. CI green (run 30109848574).
+
+---
+
+## Sprint 48: Catalog page size default 24
+**Dates:** 2026-07-24
+**Scope:** SETTINGS_BUILD_PLAN Sprint 48 — drop 12; default 24.
+**Commit:** `14ef18d`
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | PAGE_SIZES=[24,48,96]; DEFAULT=24 |
+| Correctness & functionality (/20) | 20 | parsePageSize('12')===24 |
+| Automated test coverage (/15) | 15 | page-size + page.test updated |
+| Security (/15) | 15 | Clamp still fails closed |
+| Code quality & simplicity (/10) | 10 | No select change |
+| Mobile/offline (/10) | 10 | n/a (catalog param) |
+| Documentation & handoff (/5) | 5 | This log |
+| **Total (/100)** | **100** |
+
+**Result:** Pass.
+
+---
+
+## Sprint 47: Settings hub
+**Dates:** 2026-07-24
+**Scope:** SETTINGS_BUILD_PLAN Sprint 47 — /settings hub, profile fields, Clerk security, retire modal.
+**Commit:** `e52bf00` (+ migration `20260724162937_add_profile_fields`)
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Rail + panes; nullable profile fields; UserProfile catch-all; modal deleted |
+| Correctness & functionality (/20) | 20 | Redirects + workshop retarget; typecheck/lint/build green |
+| Automated test coverage (/15) | 15 | settings.test; offline/auth updates |
+| Security (/15) | 15 | requireUser owner; http(s) website; SW /settings denylist |
+| Code quality & simplicity (/10) | 10 | Upsert update omits new fields |
+| Mobile/offline (/10) | 10 | Mobile sections drawer; NEVER_CACHE |
+| Documentation & handoff (/5) | 5 | This log; Clerk Delete-account note |
+| **Total (/100)** | **100** |
+
+**Result:** Pass.
+
 
 ---
 
