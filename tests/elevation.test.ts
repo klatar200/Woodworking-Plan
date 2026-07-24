@@ -26,10 +26,10 @@ function read(rel: string): string {
 
 /** file → the elevation step that surface is supposed to sit at. */
 const FLOATING: Array<[string, string, 'e2' | 'e3']> = [
-  ['../src/components/site-header.tsx', 'Browse menu panel', 'e2'],
+  // Sprint 49: Browse mega-menu deleted — no floating panel in the header.
   ['../src/components/overflow-menu.tsx', '“…” overflow menu', 'e2'],
   ['../src/components/mobile-nav.tsx', 'mobile drawer sheet', 'e3'],
-  ['../src/components/account-modal.tsx', 'account modal', 'e3'],
+  // Sprint 47: account modal deleted — settings panes use shadow-e1 cards instead.
   ['../src/components/filter-disclosure.tsx', 'filter drawer', 'e3'],
 ];
 
@@ -73,52 +73,28 @@ describe('the floating layer is on the elevation scale (41.1)', () => {
 });
 
 /**
- * Sprint 41.4 (audit H4, ⚖️ Keagan 2026-07-21) — ONE workshop picker.
+ * Sprint 41.4 (audit H4) / Sprint 47 — ONE workshop picker, now at /settings/workshop.
  *
- * The modal held a full second implementation: its own fetch, its own owned-tools state,
- * its own save action. Two write paths to the same rows, with copy that had to be
- * maintained in lockstep. It is now a link to `/profile#workshop`, which is the picker.
- *
- * Asserting the ABSENCE is the point — a passing "the link renders" test would still pass
- * with all the plumbing sitting next to it.
+ * The account modal (retired Sprint 47) held a full second implementation. Asserting
+ * ABSENCE of that plumbing and of the modal file itself is the point.
  */
-describe('the account modal links to the one workshop picker (41.4)', () => {
-  const modal = read('../src/components/account-modal.tsx');
-
-  it('links to /profile#workshop and closes the modal on the way', () => {
-    expect(modal).toContain('/profile#workshop');
-    // Same treatment as the Activity links: navigating away must not leave a modal
-    // open behind the new page.
-    expect(modal).toMatch(/href="\/profile#workshop"[\s\S]{0,160}onClick=\{onClose\}/);
+describe('the account modal is retired; one workshop picker remains (41.4 / 47)', () => {
+  it('account-modal.tsx is deleted', () => {
+    expect(() => read('../src/components/account-modal.tsx')).toThrow();
   });
 
-  it('carries no tool-picker plumbing at all', () => {
-    for (const gone of [
-      "fetch('/api/workshop')",
-      'saveWorkshopModalAction',
-      'WorkshopSaveResult',
-      'checkboxInput',
-      'toggleTool',
-    ]) {
-      // The file's doc comment explains what was removed and names two of these, so
-      // match them as CODE (an identifier in a statement), not as prose.
-      const asCode = new RegExp(`^(?!\\s*\\*).*${gone.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'm');
-      expect(asCode.test(modal), `${gone} still present as code`).toBe(false);
-    }
+  it('the plan page and settings rail point at /settings/workshop', () => {
+    const plan = read('../src/app/plans/[slug]/page.tsx');
+    expect(plan).toContain('/settings/workshop');
+    expect(plan).not.toContain('/profile#workshop');
   });
 
-  /**
-   * The endpoint that existed only to feed the duplicate UI is gone. One fewer
-   * authenticated route is one fewer thing to get wrong — and this one was never on
-   * `PUBLIC_ROUTES` (verified), so nothing about the allowlist changes.
-   */
   it('the /api/workshop route and the modal action are deleted, not just unused', () => {
     expect(() => read('../src/app/api/workshop/route.ts')).toThrow();
 
     const action = read('../src/app/actions/workshop.ts');
     expect(action).not.toMatch(/^export (async function|type) .*WorkshopSaveResult/m);
     expect(action).not.toMatch(/^export async function saveWorkshopModalAction/m);
-    // The real form's action is untouched — that is the whole point of choosing (a).
     expect(action).toMatch(/^export async function saveWorkshopAction/m);
   });
 });

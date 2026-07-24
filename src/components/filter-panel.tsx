@@ -35,14 +35,20 @@ import {
 function FilterSection({
   label,
   active,
+  className,
   children,
 }: {
   label: string;
   active: boolean;
+  /** Optional extras — Sprint 50: Category gets `lg:hidden` (desktop uses CategoryNav). */
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <details className="filter-section border-t border-border" open={active}>
+    <details
+      className={`filter-section border-t border-border${className ? ` ${className}` : ''}`}
+      open={active}
+    >
       <summary className="filter-section-summary list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-[0.5rem] min-h-[2.75rem] text-[0.75rem] uppercase tracking-[0.06em] font-medium text-muted cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-[-2px]">
         <span>{label}</span>
         <svg
@@ -163,7 +169,11 @@ export function FilterPanel({
         {sort && <input type="hidden" name="sort" value={sort} />}
         {perPage && <input type="hidden" name="perPage" value={perPage} />}
 
-        <FilterSection label="Category" active={filters.category != null}>
+        <FilterSection
+          label="Category"
+          active={filters.category != null}
+          className="lg:hidden"
+        >
           <fieldset className="border-none p-0 m-0 min-w-0">
             <legend className={legendHidden}>Category</legend>
             <AutoSubmitSelect

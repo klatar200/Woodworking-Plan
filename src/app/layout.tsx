@@ -186,9 +186,9 @@ export default async function RootLayout({
      * every route is already `force-dynamic`.
      */
     /* Sprint 37.2: appearance is set ONCE, here. Every Clerk surface (the sign-in and
-       sign-up pages, and `clerk.openUserProfile()` from the account modal) inherits it,
-       which is why the per-page `appearance` props were removed — a second source is how
-       a Clerk page ends up white inside a dark app. */
+       sign-up pages, and `<UserProfile>` at /settings/security) inherits it, which is
+       why the per-page `appearance` props were removed — a second source is how a Clerk
+       page ends up white inside a dark app. */
     <ClerkProvider dynamic appearance={isDark ? clerkAppearanceDark : clerkAppearance}>
       <html
         lang="en"

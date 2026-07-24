@@ -192,4 +192,13 @@ describe('FilterPanel — collapsible filter sections (Workstream E)', () => {
     expect(html).toContain('Power Saw');
     expect(html).toContain('Milling');
   });
+
+  it('Sprint 50: Category section stays in the DOM but is lg:hidden (desktop uses CategoryNav)', () => {
+    const html = render(noFilters);
+    expect(html).toMatch(
+      /<details class="filter-section[^"]*lg:hidden[^"]*"[^>]*>\s*<summary[^>]*>\s*<span>Category<\/span>/,
+    );
+    // The select must still be present so filter submits keep the category value.
+    expect(html).toContain('name="category"');
+  });
 });

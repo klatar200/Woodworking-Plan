@@ -10,9 +10,9 @@
  *
  * ONE PLACE, ONE SOURCE. Both objects are passed to `<ClerkProvider>` in the root layout
  * (`appearance={isDark ? clerkAppearanceDark : clerkAppearance}`), and every Clerk surface
- * — the sign-in and sign-up pages, and `clerk.openUserProfile()` — inherits from the
- * provider. Do NOT re-pass `appearance` at a call site: that is how a page ends up light
- * inside a dark app, which is the bug Sprint 37 fixed.
+ * — the sign-in and sign-up pages, and `<UserProfile>` at /settings/security — inherits
+ * from the provider. Do NOT re-pass `appearance` at a call site: that is how a page ends
+ * up light inside a dark app, which is the bug Sprint 37 fixed.
  *
  * NOTE: these are literal hex values, not `var(--...)` references — Clerk's
  * components render inside their own iframe/portal in some flows and don't

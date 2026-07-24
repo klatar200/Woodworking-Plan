@@ -1,5 +1,5 @@
 /**
- * Catalog page-size — QOL-I item 4.
+ * Catalog page-size — QOL-I item 4; Sprint 48 raised the default.
  *
  * How many cards per page, chosen by the user via a `?perPage=` query param. Kept in its
  * own module (like `sort.ts`) so the allowlist and the untrusted-input clamp live in one
@@ -10,16 +10,17 @@
  * construction — anything not in the list degrades SILENTLY to the default, the same
  * doctrine as every other catalog param (`parseFilters`, `parseSort`, the `page` clamp).
  *
- * The values are multiples of 12 (the default and the smallest), which lands on whole
- * rows across the catalog's 3/4/5-column responsive grid at every breakpoint without a
- * ragged last row on the common widths.
+ * The values are multiples of 12 (24 / 48 / 96), which lands on whole rows across the
+ * catalog's 3/4/5-column responsive grid at every breakpoint without a ragged last row
+ * on the common widths. 12 was removed in Sprint 48 — too small once the catalog grew
+ * past a few hundred plans; weak-wifi visitors still get a modest 24 by default.
  */
-export const PAGE_SIZES = [12, 24, 48, 96] as const;
+export const PAGE_SIZES = [24, 48, 96] as const;
 
 export type PageSize = (typeof PAGE_SIZES)[number];
 
-/** The default — small on purpose (BUSINESS_PLAN.md §5: phones, weak workshop wifi). */
-export const DEFAULT_PAGE_SIZE: PageSize = 12;
+/** The default — modest on purpose (phones, weak workshop wifi); Sprint 48: was 12. */
+export const DEFAULT_PAGE_SIZE: PageSize = 24;
 
 /**
  * Parses an untrusted `?perPage=` value, hard-clamped to {@link PAGE_SIZES}.

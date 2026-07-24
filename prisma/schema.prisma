@@ -69,6 +69,14 @@ model User {
   displayName String?
   imageUrl    String?
 
+  /// Optional profile fields — Sprint 47. User-written, NOT mirrored from Clerk.
+  /// CRITICAL: do NOT add these to getCurrentUser()'s upsert().update block — that
+  /// re-runs every sign-in from Clerk data and would wipe edits.
+  phone    String?
+  company  String?
+  jobTitle String?
+  website  String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
