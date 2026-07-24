@@ -91,7 +91,7 @@ the list lives in one place:
 
 ## Parked 2026-07-19 (Keagan's call, from the QOL/UI planning pass)
 
-Surfaced while drafting `QOL_UI_BUILD_PLAN.md`. None of these are UI polish — each is a
+Surfaced during the 2026-07-19 QOL/UI planning pass. None of these are UI polish — each is a
 genuinely new product surface with its own scope, and none are in `BUSINESS_PLAN.md`.
 Keagan confirmed appending all eight rather than building any of them now.
 
@@ -119,3 +119,10 @@ Keagan confirmed appending all eight rather than building any of them now.
 
 **What would have to change to revisit any of these:** Keagan adding it to
 `BUSINESS_PLAN.md` himself, same rule as every other item in this file.
+
+---
+
+## Parked 2026-07-24 (docs cleanup — capturing removed briefs)
+
+- **Catalog audit & enrichment pass.** A full audit/improve sweep over `content/plans/*.json` (originally spec'd for the ana-white catalog; now applies to the Kreg catalog). The one concrete live piece is re-publishing the **489 hidden Kreg plans** once a 2nd cut-list parse fills their empty `cutList` — already tracked in `BUILD_PLAN.md` open follow-ups + `CLAUDE.md` §6. The detailed briefs (`PLAN_AUDIT_BRIEF.md`, `step-detail-rewrite-sample.md`) were removed in the 2026-07-24 docs cleanup; recover from git history if this work is scheduled.
+- **Step-detail depth rewrite.** Rewrite step prose catalog-wide to "buildable by reading alone" depth (the runtime `src/lib/step-format.ts` formatter already improves presentation; this is a content pass, not code). Parked; calibration sample removed, in git history.

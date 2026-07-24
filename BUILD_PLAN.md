@@ -43,7 +43,7 @@ Frontend = React+Next.js · Backend = Node/TS as Next API routes · DB = Postgre
 | Post-launch backlog (17–23) | ✅ complete (About/FAQ copy is a DRAFT for Keagan) |
 | Completion plan (24–27) | ✅ pushed & live 2026-07-16 (CI green) — hardening, workshop, tool-aware catalog, build logs |
 | UI framework migration (28–32) | ✅ CLOSED — Tailwind CSS + light/dark theme (`.dark{}` token flip; SSR cookie, no FOUC; print forced light) |
-| UX Remediation (33–42) | ✅ CLOSED — quality pass from `UX_AUDIT_2026-07-21.md` (governing doc `UX_REMEDIATION_PLAN.md`); NOT a Phase-4 feature |
+| UX Remediation (33–42) | ✅ CLOSED — quality pass from an independent UI/UX audit (per-finding detail in `SPRINT_LOG.md` + git history); NOT a Phase-4 feature |
 | Notch rebrand (43–45) | ✅ CLOSED — branding #8 resolved; light palette → Oak & Forest; dark deliberately still legacy orange |
 | Sprint 46 (catalog-UX batch) | ✅ shipped 2026-07-23 |
 | **Kreg catalog swap (2026-07-23)** | ✅ LIVE — ana-white fully replaced; 1128 plans (639 published / 489 hidden, empty cut list), images re-hosted to R2 as webp. See `CLAUDE.md` §6 |
