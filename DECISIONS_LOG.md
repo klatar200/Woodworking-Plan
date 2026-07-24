@@ -1,4 +1,35 @@
+<!-- AGENT-INDEX-V1 -->
 # Decisions Log
+
+> **Append-only decision record — every entry is FACT; do not re-derive or second-guess.** This index (read first) summarizes the *settled/binding* decisions; scroll to the dated entry for the full reasoning. **Current catalog/stack/launch state is NOT here — see `CLAUDE.md` §6.** New decisions append at the bottom under a `### YYYY-MM-DD — <title>` heading.
+>
+> **Kreg full-catalog swap (2026-07-23):** recorded as a dated entry at the bottom of this log (added 2026-07-24), including the **G1 legal gate (RESOLVED 2026-07-24 — Kreg partnership confirmed)** — see that entry.
+
+## Settled decisions — index (date → what's binding)
+- **Stack (2026-07-12):** React+Next.js · Node/TS as Next API routes (no 2nd host) · Postgres/Neon · Vercel Hobby · Clerk · Prisma. All genuine free tiers.
+- **$0 during development (2026-07-12, #9):** every vendor a perpetual free tier, not a trial. Never enter a card.
+- **Vercel Hobby commercial-use gate (2026-07-12):** build on Hobby; the moment ads/affiliate/billing appear, move to a commercial-use-permitted host FIRST (enforcement = suspension).
+- **Trunk-based (2026-07-12):** commit straight to `main`; no branches/PRs; CI is a detector.
+- **Content pipeline (2026-07-12):** version-controlled seed files + idempotent seed; no admin UI; headless CMS rejected.
+- **Single DB during dev (2026-07-14):** ONE Neon branch `sparkling-band` = production; dev+prod share it on purpose. Separate dev branch = pre-go-live task. **Credentials rotate PRE-GO-LIVE only — settled, don't re-raise.**
+- **Launch economics (2026-07-13):** stay on Hobby, NO monetization (no ads/affiliate/billing), $0/mo. Pricing (#7) + processor (#6) deferred; build no billing/tier-gating/limits. **No affiliate links** on the shopping list.
+- **Image storage:** build-photo UPLOADS on **Vercel Blob** (2026-07-13, replaced an earlier R2 call that was SUPERSEDED/never implemented); **plan catalog images on Cloudflare R2** (2026-07-17, stop hotlinking ana-white — Keagan confirmed re-host rights; the Kreg swap re-hosted to R2 as webp).
+- **Cost display (2026-07-13):** TIERS ONLY ($…$$$$$), no dollar figures anywhere public; `formatCents`/`formatCostRange` deleted.
+- **Shopping list (2026-07-13):** merge on EXACT identity only (fuzzy = safety bug); fix the CONTENT not the matcher; cost is a BALLPARK — show `≈ $X` + unpriced count, don't withhold. **Decoupled from saves → built from `ShoppingListEntry` explicit adds (2026-07-14).**
+- **Print (2026-07-13):** print CSS + browser Save-as-PDF, NOT a server-generated PDF (a network round-trip is the least-offline option). Two layouts: full plan + cut-list one-pager.
+- **Offline library (2026-07-13):** opt-in, WIPED ON SIGN-OUT.
+- **Learning paths (2026-07-13):** progress DERIVED from reviews, no `PathProgress` table; 5 authored paths (deleted in the Kreg swap — `content/paths/` now empty).
+- **View log (2026-07-14):** `PlanView` stores NO user id (a view log with one is browsing history).
+- **Per-step tags (2026-07-14):** delivered as `apply-step-tags.mjs`, not 24 hand edits.
+- **UI redesign (2026-07-13/14):** adopt the Claude Design mockup as a visual reskin (not a re-architecture); dollar figures / tier limits / custom auth screens / extra sorts explicitly NOT built.
+- **Tailwind + dark mode (2026-07-16):** approved (reinstating dark mode at Keagan's direction). **Dark follows OS when no cookie (2026-07-21).**
+- **UX Remediation calls (2026-07-21):** stop pre-ticking workshop filter boxes; landing states the real catalog size; CAD part-diagram pilot stays GATED (needs a `StepPart` join); app-page type hierarchy DECLINED. `start_url` → `/browse`.
+- **🏷️ Branding #8 RESOLVED (2026-07-21):** the product is **Notch** at **notchplans.com**, "Oak & Forest" palette, tagline "Built naturally. Made to last.", `support@notchplans.com`.
+- **Sprint 46 (2026-07-23):** catalog UX batch; imageless plans unpublished; runtime step formatting.
+
+_(Full history below, chronological.)_
+
+---
 
 Every business, vendor, legal, or money decision affecting this project,
 in the order it was made. This is the factual record `BUILD_PLAN.md`
@@ -1677,12 +1708,19 @@ today's paragraphs. Bullets (not numbers) chosen for action lists; fastener size
 dimensions left plain. Keagan can dial thresholds / numbering / bold scope — all runtime, no
 content edits either way.
 
-**Light authority direction — RESOLVED (Workstream A → A2), 2026-07-23.** Keagan picked
-**C — Ink & Oak** from the three A1 mockups (overriding the README's "A" recommendation) and
-A2 was implemented on the landing + header chrome: oak structural keylines carry the authority,
-ink carries the hierarchy, forest is reserved for CTAs / interactive, and `--oak` stays
-graphic-only on light. **No token VALUE changed** — a usage redistribution only, so the
-contrast / dark-theme / elevation guards stayed green and the dark theme is untouched. Includes
-re-treating the "who it's for" panel out of its sage→forest radial (dropping a hardcoded
-`#dcead5` literal) into the same ink+oak language. Gate green in the Linux harness
-(tsc/eslint clean, 1022 vitest); `npm run build` + real-device/print pass are Keagan's.
+
+### 2026-07-23 — Catalog: full swap ana-white → Kreg plans (G1 legal gate, G2 R2, G3 estimates)
+
+**Decision (Keagan): replace the ENTIRE ana-white catalog with the Kreg plan set.** Source `kreg-plans.json` split into individual `content/plans/*.json`, mapped into the app's existing structure (title/description/images/steps/tools/materials/categories) via `scripts/import-kreg-plans.mjs` + `scripts/kreg-mapping.config.mjs`. ana-white removed from `content/plans` and the prod DB; **preserved** in git history + staged into `content/plans-draft/` (~1115 files) + orphaned R2 images. `content/paths/` emptied (the 5 learning paths were ana-white-specific).
+
+**Result (live 2026-07-23):** 1128 valid plans; **639 published** (full structured cut list), **489 hidden** (`published:false`, empty `cutList`) pending a 2nd cut-list parse pass. Difficulty spread 1:147 / 2:372 / 3:483 / 4:88 / 5:38.
+
+**Cut list — FULL ONLY (Keagan):** import a plan's cut list only when it parses to a complete structured list; a partial/ambiguous list → empty `cutList` → the plan is held back (`published:false`), reversible via a later parse pass. We do not ship a half cut list.
+
+**G1 — legal/IP gate (Keagan): do NOT publish the Kreg plans/images until Keagan confirms Kreg as a legitimate partner.** Importing / re-hosting / building proceed; PUBLISHING is gated on that confirmation.
+
+> ✅ **RESOLVED 2026-07-24 (Keagan): Kreg partnership CONFIRMED — the Kreg catalog is cleared to be publicly live.** G1's publish gate is satisfied; 639 published + `SITE_INDEXABLE = true` (publicly crawlable) is intended. No IP exposure outstanding.
+
+**G2 — image hosting (Keagan): re-host all plan images to Cloudflare R2** (webp, ~16k). Non-R2 dead images (404/410) parked into `unresolvedImages[]` by `park-dead-images.mjs`; a plan left with no images → `published:false`. (Consistent with the 2026-07-17 R2 image-storage decision.)
+
+**G3 — estimates (Keagan): derive cost tier and time from each plan's steps/materials/process** (the Kreg source lacks them). Estimators in `scripts/kreg-mapping.config.mjs`; cost stays TIER-ONLY per the 2026-07-13 rule (no dollar figures).
