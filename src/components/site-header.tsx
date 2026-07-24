@@ -63,7 +63,7 @@ const PUBLIC_NAV = [
 
 // QOL-D: `🧰 Workshop` was REMOVED from this row (Keagan, DECISIONS_LOG.md
 // 2026-07-19). The tool picker is settings — you set it once — so it does not earn a
-// permanent nav slot; it lives at /profile#workshop and is prompted from the plan page
+// permanent nav slot; it lives at /settings/workshop and is prompted from the plan page
 // where someone actually discovers they need it. /workshop still redirects there, so
 // nothing anyone bookmarked broke.
 // Text-only, no leading icon (2026-07-20, Keagan): icons on text nav items are visual

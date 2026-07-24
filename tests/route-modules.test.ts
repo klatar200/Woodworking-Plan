@@ -32,6 +32,13 @@ const ROUTE_MODULES = [
   'paths/page.tsx',
   'paths/[slug]/page.tsx',
   'profile/page.tsx',
+  'settings/page.tsx',
+  'settings/profile/page.tsx',
+  'settings/workshop/page.tsx',
+  'settings/preferences/page.tsx',
+  'settings/security/[[...rest]]/page.tsx',
+  'settings/billing/page.tsx',
+  'settings/terms/page.tsx',
   'about/page.tsx',
   'faq/page.tsx',
 ];

@@ -59,9 +59,10 @@
   // Path prefixes the worker must NEVER cache on its own initiative.
   const NEVER_CACHE_PREFIXES = [
     '/saved', // a user's private library
-    '/profile', // account details
+    '/profile', // legacy account URL (Sprint 47 redirects into /settings)
+    '/settings', // settings hub — profile, security, tools, prefs (Sprint 47)
     '/builds', // a user's build log — a per-person timeline (Sprint 27)
-    '/workshop', // a user's owned-tools profile (Sprint 25)
+    '/workshop', // a user's owned-tools profile (Sprint 25; settings/workshop now)
     '/api', // health today; anything tomorrow
     '/sign-in', // Clerk's flow, and its tokens
     '/sign-up',

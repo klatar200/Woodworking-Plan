@@ -47,7 +47,7 @@ export async function WorkshopForm() {
     <form action={saveWorkshopAction} className="grid gap-[1.25rem]">
       {/* Attacker-controlled once submitted, so it goes through safeReturnTo on the
           server. It only decides where a RATE-LIMIT DENIAL bounces back to. */}
-      <input type="hidden" name="returnTo" value="/profile" />
+      <input type="hidden" name="returnTo" value="/settings/workshop" />
 
       <fieldset className="border-none p-0 m-0 min-w-0">
         <legend className={legendClass}>Tools you own</legend>

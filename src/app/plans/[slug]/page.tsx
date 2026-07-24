@@ -382,9 +382,8 @@ export default async function PlanDetailPage({
                   You own {fit.ownedCount} of {fit.total} essential tools.
                 </strong>{' '}
                 Missing: {fit.missing.join(', ')}.{' '}
-                {/* QOL-D: the picker lives in the profile page's Workshop section now.
-                    Linked directly rather than via the /workshop redirect — one hop. */}
-                <Link href="/profile#workshop">Update your workshop</Link>
+                {/* Sprint 47: tools picker lives at /settings/workshop (rail label "Tools"). */}
+                <Link href="/settings/workshop">Update your workshop</Link>
               </>
             )}
           </p>

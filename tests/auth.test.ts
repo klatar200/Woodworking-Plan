@@ -215,6 +215,13 @@ describe('public route allowlist', () => {
     expect(await check('/profile')).toBe(false);
   });
 
+  it('SECURITY: /settings is NOT public — settings hub (Sprint 47)', async () => {
+    expect(await check('/settings')).toBe(false);
+    expect(await check('/settings/profile')).toBe(false);
+    expect(await check('/settings/security')).toBe(false);
+    expect(await check('/settings/workshop')).toBe(false);
+  });
+
   it('SECURITY: /saved is NOT public — it is user-owned data (Sprint 6)', async () => {
     expect(await check('/saved')).toBe(false);
   });

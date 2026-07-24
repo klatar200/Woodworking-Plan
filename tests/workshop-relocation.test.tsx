@@ -1,15 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 /**
- * QOL-D item 3 — the Workshop moved into the profile page (`DECISIONS_LOG.md`
- * 2026-07-19), and `/workshop` was kept as a redirect rather than deleted.
+ * QOL-D item 3 — Workshop relocated; Sprint 47 retargeted to `/settings/workshop`.
  *
- * What has to stay true after a move like this is not "the form renders" — it is that
- * nothing that used to work stopped working. There were at least three inbound paths to
- * `/workshop`: the header link (deliberately removed), the plan page's "Update your
- * workshop" prompt, and any bookmark. The first two are updated; the third is why the
- * route still exists. And every redirect target in the save action had to move with it,
- * or a save would land somewhere that cannot show its own confirmation.
+ * `/workshop` stays as a redirect. Save action targets, rate-limit bounces, and
+ * revalidate paths must follow the form — bouncing to a redirect hops and drops
+ * `?saved=` / `?notice=`.
  */
 
 const redirect = vi.fn();
@@ -38,24 +34,22 @@ beforeEach(() => {
   redirect.mockReset().mockImplementation((url: string) => {
     throw new RedirectSignal(url);
   });
-  // Mirrors the real `unstable_rethrow` (used by the action guard): framework
-  // control-flow signals pass through; real errors do not.
   unstableRethrow.mockReset().mockImplementation((error: unknown) => {
     if (error instanceof RedirectSignal) throw error;
   });
 });
 
 describe('/workshop is kept as a redirect, not deleted', () => {
-  it('sends visitors to the profile page’s workshop section', async () => {
+  it('sends visitors to /settings/workshop', async () => {
     const { default: WorkshopPage } = await import('@/app/workshop/page');
 
-    expect(() => WorkshopPage()).toThrow('NEXT_REDIRECT:/profile#workshop');
-    expect(redirect).toHaveBeenCalledWith('/profile#workshop');
+    expect(() => WorkshopPage()).toThrow('NEXT_REDIRECT:/settings/workshop');
+    expect(redirect).toHaveBeenCalledWith('/settings/workshop');
   });
 });
 
-describe('saveWorkshopAction follows the form to /profile', () => {
-  it('PRG-redirects to the profile section with the saved flag', async () => {
+describe('saveWorkshopAction follows the form to /settings/workshop', () => {
+  it('PRG-redirects with the saved flag', async () => {
     const { saveWorkshopAction } = await import('@/app/actions/workshop');
 
     const formData = new FormData();
@@ -63,40 +57,27 @@ describe('saveWorkshopAction follows the form to /profile', () => {
     formData.append('tools', 'router');
 
     await expect(saveWorkshopAction(formData)).rejects.toThrow(
-      'NEXT_REDIRECT:/profile?saved=1#workshop',
+      'NEXT_REDIRECT:/settings/workshop?saved=1',
     );
 
-    // Replace-all: the whole checked set is written, exactly as before the move.
     expect(setOwnedTools).toHaveBeenCalledWith(['table-saw', 'router']);
-    // The catalog's tool-filter prefill is now stale — catalog is /browse (QOL-M), not `/`.
     expect(revalidatePath).toHaveBeenCalledWith('/browse');
-    expect(revalidatePath).toHaveBeenCalledWith('/profile');
-    // …and NOT the route that is now only a redirect.
+    expect(revalidatePath).toHaveBeenCalledWith('/settings/workshop');
     expect(revalidatePath).not.toHaveBeenCalledWith('/workshop');
   });
 
-  /**
-   * The standing rule: a limiter DROPS a request, it must never THROW — an uncaught
-   * throw out of a server action is an HTTP 500. The denial has to land somewhere that
-   * can render the notice, which after this move is /profile; bouncing to /workshop
-   * would hop through the redirect and lose the `?notice=` query on the way.
-   */
-  it('a rate-limited save lands on /profile with the slow-down notice, doing no work', async () => {
+  it('a rate-limited save lands on /settings/workshop with the slow-down notice', async () => {
     checkRateLimit.mockResolvedValue(false);
     const { saveWorkshopAction } = await import('@/app/actions/workshop');
 
     await expect(saveWorkshopAction(new FormData())).rejects.toThrow(/NEXT_REDIRECT/);
 
     const target = redirect.mock.calls[0]![0] as string;
-    expect(target).toContain('/profile');
+    expect(target).toContain('/settings/workshop');
     expect(target).toContain('notice=slow-down');
     expect(setOwnedTools).not.toHaveBeenCalled();
   });
 
-  /**
-   * `returnTo` is attacker-controlled FormData. `safeReturnTo` rejects absolute and
-   * protocol-relative targets — remove that and every denial is an open redirect.
-   */
   it('SECURITY: a forged returnTo cannot bounce the user off-site', async () => {
     checkRateLimit.mockResolvedValue(false);
     const { saveWorkshopAction } = await import('@/app/actions/workshop');
@@ -108,6 +89,6 @@ describe('saveWorkshopAction follows the form to /profile', () => {
 
     const target = redirect.mock.calls[0]![0] as string;
     expect(target).not.toContain('evil.example');
-    expect(target.startsWith('/profile')).toBe(true);
+    expect(target.startsWith('/settings/workshop')).toBe(true);
   });
 });

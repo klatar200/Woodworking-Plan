@@ -85,6 +85,12 @@ describe('SECURITY: private routes are NEVER cached', () => {
     expect(isCacheable(req('/profile'))).toBe(false);
   });
 
+  it('does not cache /settings — settings hub (Sprint 47)', () => {
+    expect(isCacheable(req('/settings'))).toBe(false);
+    expect(isCacheable(req('/settings/profile'))).toBe(false);
+    expect(isCacheable(req('/settings/workshop'))).toBe(false);
+  });
+
   it('does not cache /builds — a per-person build log (Sprint 27)', () => {
     expect(isCacheable(req('/builds'))).toBe(false);
   });
@@ -107,6 +113,7 @@ describe('SECURITY: private routes are NEVER cached', () => {
   it('the denylist covers every private surface the app has', () => {
     expect(NEVER_CACHE_PREFIXES).toContain('/saved');
     expect(NEVER_CACHE_PREFIXES).toContain('/profile');
+    expect(NEVER_CACHE_PREFIXES).toContain('/settings');
     expect(NEVER_CACHE_PREFIXES).toContain('/builds');
     expect(NEVER_CACHE_PREFIXES).toContain('/workshop');
     expect(NEVER_CACHE_PREFIXES).toContain('/api');

@@ -50,16 +50,15 @@ describe('Sprint 34 per-component fixes stay at 44px', () => {
     expect(src).not.toContain('min-w-[2.25rem]');
   });
 
-  it('account avatar trigger + modal close are 44px hit areas', () => {
+  it('account avatar trigger is a 44px hit area', () => {
     const menu = read('../src/components/account-menu.tsx');
     expect(menu).toContain('min-w-[2.75rem]');
     expect(menu).toContain('min-h-[2.75rem]');
     // the 36px VISUAL circle is preserved (audit: a 44px avatar unbalances the header)
     expect(menu).toContain('w-[36px]');
-    const modal = read('../src/components/account-modal.tsx');
-    expect(modal).toContain('min-h-[2.75rem]');
-    expect(modal).toContain('min-w-[2.75rem]');
-    expect(modal).not.toContain('min-h-[2.25rem]');
+    // Sprint 47: account modal retired — avatar is a plain link to /settings/profile
+    expect(menu).toContain('/settings/profile');
+    expect(menu).not.toContain('AccountModal');
   });
 
   it('saved-page collection-remove ✕ is a 44px hit area', () => {

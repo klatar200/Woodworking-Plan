@@ -59,6 +59,10 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
 
   // Refresh the cached display fields on every sign-in so a name change in Clerk
   // doesn't leave us rendering a stale one forever.
+  //
+  // Sprint 47: phone/company/jobTitle/website are USER-WRITTEN. Do NOT put them in
+  // `update` — this upsert re-runs on every authenticated request from Clerk data and
+  // would wipe profile edits on the next sign-in.
   return prisma.user.upsert({
     where: { clerkId: userId },
     create: {
