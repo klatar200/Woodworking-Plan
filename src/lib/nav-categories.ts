@@ -38,8 +38,15 @@ import categories from '../../content/categories.json';
 export interface NavCategory {
   slug: string;
   name: string;
+  /**
+   * The one-line category blurb from `content/categories.json`. Carried through so the
+   * landing page's category cards can describe each category without a second import or a
+   * database read; the header/footer nav ignore it. Optional so a category without a
+   * description in the content file (there is none today) still type-checks.
+   */
+  description?: string;
 }
 
 export const NAV_CATEGORIES: NavCategory[] = [...categories]
   .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name))
-  .map(({ slug, name }) => ({ slug, name }));
+  .map(({ slug, name, description }) => ({ slug, name, description }));

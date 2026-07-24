@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { queryPlans, getPlanBySlug } from '@/lib/plans';
@@ -64,6 +65,12 @@ const isq =
 const catPill =
   'inline-flex items-center border border-border rounded-[999px] px-[1.15rem] py-[0.6rem] text-[0.9375rem] font-medium text-fg no-underline bg-surface shadow-e1 whitespace-nowrap';
 const sectionLead = 'text-muted text-[1rem] max-w-[52ch]';
+// The desktop category CARD (lg+). Same surface/oak-topline/4px-lift language as the
+// FEATURES cards, but it is a whole-card LINK (a CTA into the filtered catalog) rather
+// than a list item, so it carries the focus ring and `group` for the arrow nudge. Below
+// lg this card is not rendered — the section falls back to the auto-scrolling pill marquee.
+const categoryCard =
+  "group relative flex flex-col h-full bg-surface border border-border rounded-[0.75rem] p-[1.4rem] shadow-e1 no-underline text-fg transition-[translate,box-shadow] duration-200 hover:-translate-y-[4px] hover:shadow-e3 motion-reduce:transition-none motion-reduce:hover:translate-y-0 focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 before:content-[''] before:absolute before:inset-x-[-1px] before:top-[-1px] before:h-[3px] before:bg-oak before:rounded-t-[0.75rem]";
 
 // How many times each marquee repeats its content. A CSS marquee (translateX(-50%) on a
 // track holding N identical copies) only looks seamless when the content still on screen at
@@ -335,9 +342,52 @@ export default async function LandingPage() {
               Or browse by category
             </div>
           </div>
-          <div className="landing-marquee landing-marquee-on-surface pb-[3.5rem]">
-            {/* Scrolls the OPPOSITE way to the featured carousel above (reverse) — a
-                deliberate counter-motion so the two rows don't read as one moving block. */}
+
+          {/* ── DESKTOP (lg+): category CARDS as CTAs into the filtered catalog ──────
+              Replaces the auto-scrolling pill marquee with a static grid of large,
+              showcase cards (the ana-white.com pattern): each card is a whole-card link
+              to /browse?category=<slug>. `hidden lg:block` so it renders ONLY at lg+; the
+              marquee below carries the same links on smaller screens. Two independent DOM
+              blocks, but only one is ever in the accessibility tree at a time — the other
+              is `display:none` at its breakpoint. */}
+          <div className={`${wrap} hidden lg:block pb-[3.5rem]`}>
+            <ul className="list-none m-0 p-0 grid gap-[1.1rem] grid-cols-3">
+              {NAV_CATEGORIES.map((c) => (
+                <li key={c.slug}>
+                  <Link href={`${CATALOG_PATH}?category=${c.slug}`} className={categoryCard}>
+                    <span className={isq}>{CATEGORY_ICONS[c.slug] ?? CATEGORY_ICON_FALLBACK}</span>
+                    <h3 className="font-display text-[1.125rem] font-semibold mt-[0.85rem] mb-[0.4rem]">
+                      {c.name}
+                    </h3>
+                    {c.description ? (
+                      <p className="m-0 text-muted text-[0.9375rem]">{c.description}</p>
+                    ) : null}
+                    <span className="mt-auto pt-[1rem] inline-flex items-center gap-[0.35rem] text-[0.875rem] font-semibold text-accent-text">
+                      View plans
+                      <span
+                        aria-hidden="true"
+                        className="transition-transform duration-200 group-hover:translate-x-[0.2rem] motion-reduce:transition-none"
+                      >
+                        →
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-[1.5rem]">
+              <Link href={CATALOG_PATH} className={btnGhost}>
+                All plans →
+              </Link>
+            </div>
+          </div>
+
+          {/* ── MOBILE (below lg): unchanged auto-scrolling pill marquee ─────────────
+              Same logic as before — a reverse marquee that scrolls opposite the featured
+              carousel. `lg:hidden` so the card grid above takes over on desktop. It is NOT
+              a `landing-marquee-swipe` band (that stays exclusive to the featured plans),
+              so it keeps animating on touch and pauses on hover/focus. */}
+          <div className="landing-marquee landing-marquee-on-surface pb-[3.5rem] lg:hidden">
             <ul className="landing-marquee-track landing-marquee-reverse list-none m-0 p-0 px-[1.5rem] [--speed:102s]">
               {Array.from({ length: MARQUEE_COPIES }, (_, set) => {
                 // Only copy 0 is interactive; the rest are visual loop duplicates.
@@ -515,6 +565,59 @@ const stroke = {
   strokeLinejoin: 'round' as const,
   // Decorative icons paired with a visible text label — hidden from assistive tech.
   'aria-hidden': true,
+};
+
+// Per-category line glyphs for the desktop category cards, keyed by the same slugs the
+// catalog filters on (content/categories.json). Decorative (the card's name is the label),
+// so they inherit `stroke`'s aria-hidden. Falls back to a generic tag icon if a new
+// category is added to the content file before it gets a glyph here.
+const CATEGORY_ICON_FALLBACK = (
+  <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+    <path d="M3 7v5l9 9 5-5-9-9z" />
+    <circle cx="7.5" cy="7.5" r="1.3" />
+  </svg>
+);
+const CATEGORY_ICONS: Record<string, ReactNode> = {
+  'cutting-boards': (
+    <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+      <rect x="3" y="8" width="12" height="11" rx="2" />
+      <path d="M9 8V5" />
+      <path d="M18 3l3 3-6.5 6.5-3-3z" />
+    </svg>
+  ),
+  furniture: (
+    <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+      <path d="M4 10V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3" />
+      <path d="M3 10h18v6H3z" />
+      <path d="M5 16v3M19 16v3" />
+    </svg>
+  ),
+  storage: (
+    <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+      <rect x="4" y="3" width="16" height="18" rx="1" />
+      <path d="M4 9h16M4 15h16" />
+      <path d="M14 6h2M14 12h2M14 18h2" />
+    </svg>
+  ),
+  outdoor: (
+    <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+      <path d="M12 2l4 6h-2.5L17 14H7l3.5-6H8z" />
+      <path d="M12 14v7" />
+    </svg>
+  ),
+  'shop-projects': (
+    <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+      <path d="M14.7 3.3l6 6-2 2-6-6z" />
+      <path d="M12.7 5.3L3 15v6h6l9.7-9.7" />
+    </svg>
+  ),
+  'gifts-and-small-projects': (
+    <svg viewBox="0 0 24 24" {...stroke} className="w-[1.5rem] h-[1.5rem]">
+      <path d="M4 9h16v11H4z" />
+      <path d="M2 9h20v3H2zM12 9v11" />
+      <path d="M12 9C10.5 9 8.5 8.6 8.2 7A1.6 1.6 0 0 1 12 6a1.6 1.6 0 0 1 3.8 1C15.5 8.6 13.5 9 12 9z" />
+    </svg>
+  ),
 };
 
 // Sprint 40.2: the lead chip carries the live catalog size (see src/lib/landing-copy.ts).
