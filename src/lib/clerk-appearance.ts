@@ -60,13 +60,13 @@ export const clerkAppearance = {
  */
 export const clerkAppearanceDark = {
   variables: {
-    colorPrimary: '#ece7db', // --fg (dark)
-    colorBackground: '#1f1d16', // --surface (dark)
-    colorText: '#ece7db', // --fg (dark)
-    colorTextSecondary: '#8f8578', // --muted-2 (dark)
+    colorPrimary: '#e9efe9', // --fg (dark)
+    colorBackground: '#0f241a', // --surface (dark)
+    colorText: '#e9efe9', // --fg (dark)
+    colorTextSecondary: '#7f8f83', // --muted-2 (dark)
     colorDanger: '#e58a5c', // --danger (dark)
-    colorInputBackground: '#14130f', // --bg (dark)
-    colorInputText: '#ece7db', // --fg (dark)
+    colorInputBackground: '#08160f', // --bg (dark)
+    colorInputText: '#e9efe9', // --fg (dark)
     borderRadius: '0.5rem',
     fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
   },
