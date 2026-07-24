@@ -32,7 +32,7 @@ export function themeCookie(theme: Theme): string {
  */
 export const THEME_CHROME_COLOR: Record<Theme, string> = {
   light: '#f6f1e7', // Sprint 44: the Oak & Forest --bg. tests/theme.test.tsx byte-compares this against globals.css.
-  dark: '#08160f',
+  dark: '#14130f',
 };
 
 /**
