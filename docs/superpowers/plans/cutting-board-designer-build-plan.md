@@ -326,89 +326,47 @@ All Vitest-covered; UI is a thin adapter.
 ### How a design becomes a Notch artifact
 ```text
 BoardDesign.config
-  → metrics.toParts() → Part[]
-  → optimize(parts) → board buy plan (optional panel)
-  → materials[{name, species, unit, qty}] → ShoppingListEntry (explicit add)
-  → PNG / print → user keeps offline reference
+  → metrics + cut list + 3D preview + PNG/print   (MVP)
+  → metrics.toParts() → Part[]                    (ready in lib)
+  → ShoppingListEntry / optimize()                (Phase 2 / U6)
 ```
-**Not** auto-creating a `Plan` row in the catalog (that would be community submissions / licensing — parked).
+**Not** auto-creating a catalog `Plan` (community submissions — parked).
 
 ---
 
 ## 8. Implementation units
 
-Sequenced work packages. Each is independently shippable once the feature is on `BUILD_PLAN` §4.
+### U0 — Product gate
+- ✅ Done 2026-07-24 (promotion + calls in DECISIONS_LOG).
+- ⏳ Remaining: Keagan supplies hard-nav / landing copy strings.
 
-### U0 — Product gate (non-code)
-- Promote out of `FUTURE_IDEAS` → `BUSINESS_PLAN` + `BUILD_PLAN` §4.
-- Settle open decisions in §9 (public vs private route, nav placement, copy).
-- Record in `DECISIONS_LOG.md`.
-
-### U1 — Domain library (foundation)
-**Depends on:** U0  
+### U1 — Domain library
 **Files:** `src/lib/board-designer/{types,species,metrics,to-parts,templates,serialize}.ts`, `tests/board-designer-*.test.ts`
+**Acceptance:** golden kerf/slice/BF fixtures; zod round-trip; `toParts()` accepted by `optimize()` (for Phase 2).
+**Tests:** checkerboard fixture; zero-slice warning; waste factor; serialize identity.
 
-**Acceptance:**
-- Given strips + kerf, metrics match golden fixtures for edge and end modes.
-- `toParts()` output accepted by `optimize()` without transformation hacks.
-- Zod rejects unknown schema / invalid dimensions.
+### U2 — Private routes + persistence
+**Files:** `src/app/designer/**`, `src/lib/board-designs.ts`, `src/app/actions/board-designs.ts`, Prisma migration, `public/sw-policy.js`, offline tests
+**Acceptance:** unsigned → sign-in; owner-scoped CRUD; no public-routes entry.
+**Tests:** IDOR; rate-limit no-throw; `/designer` in NEVER_CACHE_PREFIXES.
 
-**Tests:**
-- Checkerboard 6× alternating 1″ strips, length 20″, kerf 0.125″, end thickness 1″ → expected slice count + finished L×W×T.
-- Kerf too large → `sliceCount === 0` + warning string present.
-- Waste factor 0.15 increases BF vs raw sum.
-- `formatInches` used by UI consumers (lib returns numbers; display test in component later).
-- Serialize → deserialize round-trip identity.
+### U3 — Editor chrome (+ optional lightweight preview)
+Strip list, settings, templates, metrics panel; thin preview OK as scaffold.
+**Not** MVP-complete without U4.
 
-### U2 — Designer island (UI shell, no DB)
-**Depends on:** U1  
-**Files:** `src/components/designer/*`, `src/app/designer/page.tsx`, public-routes + offline tests if public
+### U4 — 3D product preview (MVP quality bar)
+**Files:** `src/components/designer/r3f-*`, wood materials; `three` / R3F / drei via dynamic import
+**Acceptance:** orbit/zoom; edge vs end; live strip updates; Notch-looking; PNG capture.
+**Tests:** mapping unit tests where practical; manual desktop + one mobile GPU pass.
 
-**Acceptance:**
-- Template → edit strips → live SVG preview + metrics panel.
-- localStorage draft restores after refresh.
-- PNG export downloads.
-- Light + dark token contrast OK (manual + existing contrast guards still green).
+### U5 — Print + hard nav
+Print cut list; ship nav/landing only with Keagan copy; `noindex` on tool routes.
 
-**Tests:**
-- Render strip list: add/remove updates count.
-- Preview exposes aria labels for species bands.
-- Invalid width shows error; preview does not render NaN.
-- `tests/offline.test.ts` updated for any new private prefixes.
-- Public route allowlist test includes `/designer` only if chosen public.
+### U6 — Phase 2: shopping list + optimizer panel
+Materials → `ShoppingListEntry`; optional `BoardBar` / `optimize()`.
 
-### U3 — Persistence (Clerk + Prisma)
-**Depends on:** U2  
-**Files:** `prisma/schema.prisma`, migration, `src/lib/board-designs.ts`, `src/app/actions/board-designs.ts`, `src/app/designer/library/page.tsx`, `src/app/designer/[id]/page.tsx`
-
-**Acceptance:**
-- Signed-in save/list/rename/delete; IDOR attempt with another user’s id returns bounce/not found.
-- Server recalculates/ignores client metrics on write.
-- Rate limit false → no-op (no throw).
-
-**Tests:**
-- `board-designs` lib: create scoped to user; getById other user → null.
-- Action guard: anonymous save redirects to sign-in with return URL.
-- form fields bounded (`formString`/`formInt` patterns).
-
-### U4 — Print + shopping list + optimizer panel
-**Depends on:** U1–U3  
-**Files:** `src/app/designer/[id]/print/page.tsx`, shopping-list action glue, optional `BoardBar` embed
-
-**Acceptance:**
-- Print view shows fractions, cut list, species BF, finished size; Ctrl+P usable.
-- “Add to shopping list” creates entries with waterproof glue note if applicable (existing shopping rules).
-- No dollar amounts anywhere (`tests/format.test.ts` still asserts absence).
-
-**Tests:**
-- Print render contains species names + `formatInches` outputs.
-- Shopping add is exact-merge safe (name/unit/species).
-- Optimizer panel: known parts → expected board count for fixture.
-
-### U5 — Polish / Phase 2 hooks (optional same epic)
-Undo stack, share link, drag-reorder, 3D island — only if scheduled.
-
----
+### U7 — Phase 2 polish
+Undo, share, multi-panel, angles, custom species.
 
 ## 9. Risks & remaining opens
 
