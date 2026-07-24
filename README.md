@@ -1,26 +1,9 @@
-# Notch
+<!-- README.md — agent-optimized. Repo pointer. -->
 
-**notchplans.com** — a web and mobile application that acts as a searchable
-repository of woodworking plans and builds — cutting boards, end-grain cutting
-boards, bed frames, sheds, and more.
+# Notch — notchplans.com
 
-## Overview
+Mobile-first PWA: searchable repository of woodworking plans/builds. Log in to search/browse a large catalog, save plans into custom categories, like builds, filter by category/difficulty/cost/time. Every plan carries structured data (tools, materials, time, cost tier $–$$$$$).
 
-Users log in to search and browse a large catalog of woodworking plans,
-save plans into custom named categories, like builds they're interested
-in, and filter by category, difficulty level, cost, and time to complete.
-Every plan includes structured data: required tools, required materials,
-estimated build time, and a cost breakdown rated on a $ to $$$$$ scale.
+Agents: read `AGENTS_CONTEXT.md` first (entry point + read order for both Claude Code/Cowork and Cursor). Product = `BUSINESS_PLAN.md`; operating rules = `BUILD_PLAN.md`; current state = `CLAUDE.md` §6.
 
-See [`BUSINESS_PLAN.md`](./BUSINESS_PLAN.md) for the full product and
-business plan, including target audience, monetization strategy, and the
-feature roadmap.
-
-## Status
-
-In active development (see `BUILD_PLAN.md` §4 for the sprint roadmap and
-`CLAUDE.md` §7 for current state). Not yet publicly launched.
-
-## License
-
-Proprietary — see [`LICENSE`](./LICENSE). All rights reserved.
+Status: publicly reachable/indexable but NOT launched — still in development (no marketing/subscriptions/commercialization/users). License: proprietary, all rights reserved (`LICENSE`).

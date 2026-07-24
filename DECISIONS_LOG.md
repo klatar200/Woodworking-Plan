@@ -12,7 +12,7 @@
 - **Trunk-based (2026-07-12):** commit straight to `main`; no branches/PRs; CI is a detector.
 - **Content pipeline (2026-07-12):** version-controlled seed files + idempotent seed; no admin UI; headless CMS rejected.
 - **Single DB during dev (2026-07-14):** ONE Neon branch `sparkling-band` = production; dev+prod share it on purpose. Separate dev branch = pre-go-live task. **Credentials rotate PRE-GO-LIVE only — settled, don't re-raise.**
-- **Launch economics (2026-07-13):** stay on Hobby, NO monetization (no ads/affiliate/billing), $0/mo. Pricing (#7) + processor (#6) deferred; build no billing/tier-gating/limits. **No affiliate links** on the shopping list.
+- **Launch economics (2026-07-13; reconciled 2026-07-24):** stay on Hobby, NO monetization (no ads/affiliate/billing), $0/mo. Pricing (#7) + processor (#6) deferred; build no billing/tier-gating/limits. **No affiliate links** on the shopping list. **The move-off-Hobby trigger is MONETIZATION (ads/affiliate/billing/paid tiers), not mere public reachability** — the site being publicly indexable on Hobby with no monetization and no users is permitted; the earlier "any public launch" wording is superseded by this narrower reading.
 - **Image storage:** build-photo UPLOADS on **Vercel Blob** (2026-07-13, replaced an earlier R2 call that was SUPERSEDED/never implemented); **plan catalog images on Cloudflare R2** (2026-07-17, stop hotlinking ana-white — Keagan confirmed re-host rights; the Kreg swap re-hosted to R2 as webp).
 - **Cost display (2026-07-13):** TIERS ONLY ($…$$$$$), no dollar figures anywhere public; `formatCents`/`formatCostRange` deleted.
 - **Shopping list (2026-07-13):** merge on EXACT identity only (fuzzy = safety bug); fix the CONTENT not the matcher; cost is a BALLPARK — show `≈ $X` + unpriced count, don't withhold. **Decoupled from saves → built from `ShoppingListEntry` explicit adds (2026-07-14).**
@@ -349,8 +349,12 @@ names "thin/low-quality catalog kills trust" as the **top risk to the product**,
 **This unblocks a new vendor decision: image storage.** Build photos are user-uploaded
 files, and there is nowhere to put them today. See the next entry.
 
-### 2026-07-13 — Image storage: Cloudflare R2 — ⛔ SUPERSEDED, DO NOT IMPLEMENT
-**Status:** REVERSED same day. See the Vercel Blob entry below. Kept for the record
+### 2026-07-13 — Image storage: Cloudflare R2 for BUILD-PHOTO UPLOADS — ⛔ SUPERSEDED, DO NOT IMPLEMENT
+**Scope note (2026-07-24):** this "do not implement" applies to **R2 for user build-photo
+uploads only** (rejected below because R2 needs a card on file = breaks $0). R2 the vendor
+was later **adopted for plan-catalog images** on 2026-07-17 (see that entry) — so R2 is *not*
+banned outright; build-photo *uploads* just live on Vercel Blob instead.
+**Status:** REVERSED same day *for uploads*. See the Vercel Blob entry below. Kept for the record
 because the reason it was wrong matters more than the decision itself.
 
 **Why it was reversed.** I recommended R2 without checking how it is *activated*.
