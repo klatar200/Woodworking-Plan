@@ -51,7 +51,7 @@ export function LandingPlanPanel({
   const chip =
     'inline-flex items-center text-[0.75rem] border border-border rounded-[999px] px-[0.6rem] py-[0.18rem] text-muted whitespace-nowrap';
   const chipEssential =
-    'inline-flex items-center gap-[0.2rem] text-[0.75rem] border border-accent-tint-border rounded-[999px] px-[0.6rem] py-[0.18rem] bg-accent-tint text-accent-fg font-semibold whitespace-nowrap';
+    'inline-flex items-center gap-[0.2rem] text-[0.75rem] border border-accent-tint-border rounded-[999px] px-[0.6rem] py-[0.18rem] bg-accent-tint text-accent-text font-semibold whitespace-nowrap';
 
   const essential = plan.tools.filter((t) => t.essential).slice(0, 2);
   const optional = plan.tools.filter((t) => !t.essential).slice(0, 2);
