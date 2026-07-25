@@ -93,6 +93,12 @@ export const PUBLIC_ROUTES = [
   // that their saved *list* is NOT available offline, precisely because we refuse
   // to write a private library to an unencrypted device cache.
   '/offline',
+
+  // Luxury light-theme MOCKUP (design review). Static markup + scoped CSS — no
+  // user data, no catalog queries. Safe for anonymous local/preview review.
+  // Live production still 404s via `VERCEL_ENV === 'production'` in the page.
+  // Exact path (no catch-all) so nothing else under /dev is exposed.
+  '/dev/theme-mockup',
 ] as const;
 
 export const isPublicRoute = createRouteMatcher([...PUBLIC_ROUTES]);
