@@ -36,7 +36,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprints 47–50 | ✅ shipped (settings hub · page size 24 · navbar Browse→Plans · `/browse` filter rail) — detail in SPRINT_LOG. Listed so the next sprint number is not re-used. |
 | Sprints 51–52 (Cutting Board Designer) | 🟡 Sprint **51** code on `main` (U0–U3; close Attempt 2 = 92 — Vercel migrate-log + signed-in smoke still Keagan queue). Sprint **52 CLOSED** 2026-07-25 (U4 3D + U5 print/hard nav) — `bdae2d9`/`9e33384` on `main`; suite **1099/1099**; `/designer` First Load **113 kB**; `/` **138 kB** + `/browse` **140 kB** unchanged. |
 
-Test suite — expected: 1088/1088 (Sprint 51 join gate, Cursor VM; lint/tsc/build clean). Update this single figure each sprint close; 1017/1017 and earlier superseded.
+Test suite — expected: 1099/1099 (Sprint 52 join gate, Cursor VM; lint/tsc/build clean). Update this single figure each sprint close; 1088/1088 and earlier superseded.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 

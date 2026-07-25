@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 51 (2026-07-25)** — Cutting Board Designer foundation (U1–U3). Prior: Sprints 47–50.
+> **Latest logged: Sprint 52 (2026-07-25)** — Cutting Board Designer 3D + print/hard nav (U4–U5). Prior: Sprint 51 (foundation; close Attempt 2 = 92 pending Keagan queue).
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1088 green (post-51).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1099 green (post-52).
 
 ---
 
@@ -42,6 +42,41 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 52: Cutting Board Designer 3D + print/hard nav (U4–U5)
+**Dates:** 2026-07-25
+**Scope:** R3F 3D preview behind BoardPreview seam; PNG export; print sheet; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line. U6/U7 unopened.
+**Commits on `main`:** `bdae2d9` (U5 print+nav) · `9e33384` (U4 R3F)
+**CI:** run on `9e33384` success
+**Vercel:** Production deploy for `9e33384` status **success** (`GnyzzR2DthkriLsYrm6KVQZENGvv` / GH deployment `5604086712`)
+**/designer First Load JS:** 113 kB (build table). `/` 138 kB · `/browse` 140 kB unchanged vs Sprint 51 build.
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | U4+U5 only; B6 strings byte-exact on prod landing; no shopping/Board-plan button (B7); no middleware/CSP widen (T2) |
+| Correctness & functionality (/20) | 16 | Join: lint/typecheck/1099 tests/`next build` green; R3F async chunks; instanced-mesh grouping tested; prod signed-out `/designer`→Clerk; CTA+support line observed. Signed-in save/print/FPS/PNG left in Keagan queue |
+| Automated test coverage (/15) | 15 | `board-3d-layout`, `designer-print`, `site-chrome` Designer assert, `landing-copy` CTA, route-modules print |
+| Security (/15) | 15 | Print owner-scoped 404; designer still absent from public-routes; CSP untouched; SW never-cache already covers `/designer` |
+| Code quality & simplicity (/10) | 10 | BoardPreview seam; one InstancedMesh/species; procedural materials only; deps MIT pinned |
+| Mobile/offline (/10) | 10 | Print = SVG only; `/designer` denylisted; touch/ui classes reused |
+| Documentation & handoff (/5) | 5 | This entry + §9 versions/decisions + Keagan queue |
+| **Total (/100)** | **96** |
+
+**Result:** Pass (≥95).
+
+### Keagan verification queue
+1. Desktop: open `/designer` signed-in — orbit/zoom ≥50 fps; change species/kerf — scene updates without full remount.
+2. One mid-range phone: orbit/zoom ≥30 fps (or confirm on-screen SVG fallback reason if throttled).
+3. Worst-case board (~60 strips / many slices): either holds ≥30 fps desktop or shows `too many pieces for 3D preview` while metrics stay editable.
+4. Export PNG — filename matches design name; image is not blank.
+5. Console clean on `/designer`: no CSP / Clerk / React key warnings.
+6. Save → `/designer/library` lists under `Your boards` → reopen identical config.
+7. `/designer/<id>/print` — one page, black-on-white, tape fractions, no shadows; Ctrl+P PDF usable.
+8. Sign out → DevTools → Cache Storage contains no `/designer` entry.
+9. Open Vercel Production build log for `9e33384` and confirm `prisma migrate deploy` / `add_board_design` lines (Sprint 51 leftover; still unread — MCP needsAuth).
 
 ---
 
