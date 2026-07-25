@@ -1,0 +1,93 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { describe, expect, it } from 'vitest';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { DesignerShell } from '@/components/designer/designer-shell';
+import type { BoardDesignConfig } from '@/lib/board-designer/types';
+
+const source = (path: string) => readFileSync(join(process.cwd(), path), 'utf8');
+
+const goldenConfig: BoardDesignConfig = {
+  schemaVersion: 1,
+  name: 'Golden checkerboard',
+  grain: 'end',
+  sourceLengthIn: 20,
+  stockThicknessIn: 1.5,
+  sliceThicknessIn: 1.5,
+  kerfIn: 0.125,
+  wasteFactor: 0.15,
+  flipEveryOtherSlice: true,
+  strips: Array.from({ length: 12 }, (_, i) => ({
+    id: `golden-${i + 1}`,
+    speciesId: i % 2 === 0 ? 'walnut' : 'hard-maple',
+    widthIn: 1.5,
+    repeat: 1,
+  })),
+};
+
+const actions = {
+  saveAction: async () => {},
+  updateAction: async () => {},
+};
+
+function render(config: BoardDesignConfig, designId: string | null = null) {
+  return renderToStaticMarkup(
+    <DesignerShell designId={designId} initialConfig={config} {...actions} />,
+  );
+}
+
+function visibleMarkup(html: string) {
+  return html.replace(/<script[\s\S]*?<\/script>/g, '');
+}
+
+describe('DesignerShell static render', () => {
+  it('renders the golden config with finished dimensions as tape fractions and no invalid UI values', () => {
+    const html = render(goldenConfig);
+    const visible = visibleMarkup(html);
+
+    expect(visible).toContain('Board designer');
+    expect(visible).toContain('Finished');
+    expect(visible).toContain('18&quot; x 18&quot; x 1 1/2&quot;');
+    expect(visible).not.toMatch(/\bNaN\b|undefined|\$/);
+  });
+
+  it('renders zero strips with an Add a strip CTA and the exact warning without crashing', () => {
+    const html = render({ ...goldenConfig, strips: [] });
+    const visible = visibleMarkup(html);
+
+    expect(visible).toContain('Add a strip');
+    expect(visible).toContain('Add a strip to see your board.');
+    expect(visible).not.toMatch(/\bNaN\b|undefined|\$/);
+  });
+
+  it('renders zero-slice warning prominently while controls remain editable', () => {
+    const html = render({
+      ...goldenConfig,
+      sourceLengthIn: 1,
+      sliceThicknessIn: 4,
+    });
+
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('No slices fit — increase panel length or reduce slice thickness.');
+    expect(html).toContain('name="sourceLengthIn"');
+    expect(html).toContain('name="sliceThicknessIn"');
+  });
+
+  it('keeps preview behind BoardPreview and uses 44px controls with no arbitrary elevation', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const files = [
+      shell,
+      source('src/components/designer/strip-list.tsx'),
+      source('src/components/designer/board-settings.tsx'),
+      source('src/components/designer/template-picker.tsx'),
+      source('src/components/designer/metrics-panel.tsx'),
+      source('src/components/designer/board-diagram.tsx'),
+      source('src/components/designer/board-preview.tsx'),
+    ].join('\n');
+
+    expect(shell).toContain("from './board-preview'");
+    expect(shell).not.toContain("from './board-diagram'");
+    expect(files).toContain('min-h-[2.75rem]');
+    expect(files).not.toContain('shadow-[');
+  });
+});

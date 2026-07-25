@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprints 47–50 (2026-07-24)** — settings hub · page size 24 · Plans nav · browse filter rail. Branch `cursor/settings-sprints-47-50-48ad` (CI green). Prior: Sprint 46; Kreg G1 RESOLVED.
+> **Latest logged: Sprint 51 (2026-07-25)** — Cutting Board Designer foundation (U1–U3). Prior: Sprints 47–50.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1030 green (post-47–50).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1088 green (post-51).
 
 ---
 
@@ -42,6 +42,27 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 51: Cutting Board Designer foundation (U1–U3)
+**Dates:** 2026-07-25
+**Scope:** Geometry lib + private BoardDesign persistence + editor/SVG preview. Sprint 52 (U4 3D + U5 print/nav) unopened.
+**Commit:** _(filled after push)_
+
+### Attempt 1
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | B1 Sprint 51 = U1+U2+U3 only; no nav/3D/shopping (B5/B7); §3 frozen |
+| Correctness & functionality (/20) | 18 | Golden/kerf/zero-slice + template dims; build lists `/designer*`; signed-out Clerk `auth.protect` on `/designer` (same as `/shopping-list`); signed-in kerf/species live pass deferred to browser with Clerk session |
+| Automated test coverage (/15) | 15 | 1088/1088; `board-designer-*`, `board-designs-authz`, `board-diagram`, `designer-shell`, offline/route-modules |
+| Security (/15) | 15 | Session-scoped CRUD; form `userId` ignored; 8 KB pre-parse; rate-limit 303; not in `public-routes`; `/designer` in `NEVER_CACHE_PREFIXES` |
+| Code quality & simplicity (/10) | 10 | shopping-list action pattern; BoardPreview U4 seam; no extra models/deps |
+| Mobile/offline (/10) | 10 | Responsive shell grid; 44px controls; SW denylist assertion |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN §4 + suite figure; plan status U2/U3 ✅; §9 handoff lines |
+| **Total (/100)** | **98** |
+
+**Result:** Pass (≥95). Join gate: migrate applied · lint · typecheck · test 1088 · `next build` green. No U4/U5.
 
 ---
 

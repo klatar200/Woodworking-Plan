@@ -9,7 +9,7 @@
 
 **Sprints 51 (foundation) + 52 (3D).** Sprints 47–50 are TAKEN (settings hub, page size, navbar, filter rail — `SPRINT_LOG.md`). Every earlier doc reference to "Sprint 47+" is a stale number, not a stale decision.
 **Decisions of record:** `DECISIONS_LOG.md` 2026-07-24. **Roadmap row:** `BUILD_PLAN.md` §4.
-**Status:** U0 ✅ · U1 ✅ · U2 ⬜ · U3 ⬜ · U4 ⬜ · U5 ⬜ · U6/U7 = Phase 2, unopened.
+**Status:** U0 ✅ · U1 ✅ · U2 ✅ · U3 ✅ · U4 ⬜ · U5 ⬜ · U6/U7 = Phase 2, unopened.
 
 ---
 
@@ -435,3 +435,5 @@ Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/k
 
 **Unit handoff log** (append one line per unit: decisions taken, and any cross-unit edit request per §6 rule 2):
 - U1 2026-07-25: geometry accepted as-written (§2); strip ids `cs-*`/`cb-*`/`bb-*`/`as-*`/`g-*`; edge templates set `sliceThicknessIn = stockThicknessIn`; `rotateByOne` = left-rotate for flip rows; unknown species name falls back to id in board-feet rows.
+- U2 2026-07-25: BoardDesign model + migration; session-scoped CRUD; 8 KB pre-parse cap; `/designer` never-cache; pages import DesignerShell (U3); no public-routes change.
+- U3 2026-07-25: DesignerShell + SVG via BoardPreview seam; 1/16″ width snap; KERF_OPTIONS_IN select; ~23k cell fallback copy "too many pieces to draw"; join removed duplicate page h1 + draft blurb (B6).

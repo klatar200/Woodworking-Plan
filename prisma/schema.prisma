@@ -86,6 +86,7 @@ model User {
   reviews     Review[]
   shoppingList ShoppingListEntry[]
   tools       UserTool[]
+  boardDesigns BoardDesign[]
 
   @@index([clerkId])
 }
@@ -433,6 +434,26 @@ model ShoppingListEntry {
   @@unique([userId, planId])
   @@index([userId])
   @@index([planId])
+}
+
+/// A saved cutting board designer configuration.
+///
+/// Same ownership rule as every user-written table: `userId` comes only from the
+/// verified session. The JSON payload is validated through
+/// `src/lib/board-designer/serialize.ts` on every write before it reaches this table.
+model BoardDesign {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name   String
+  config Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
 }
 
 /// A user-defined folder for organizing saved plans — BUSINESS_PLAN.md §4.4

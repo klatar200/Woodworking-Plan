@@ -1,0 +1,41 @@
+import { TEMPLATES } from '@/lib/board-designer/templates';
+import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import { btnGhost } from '@/lib/ui';
+
+export function TemplatePicker({
+  dirty,
+  onLoad,
+}: {
+  dirty: boolean;
+  onLoad: (config: BoardDesignConfig) => void;
+}) {
+  return (
+    <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+      <h2 className="!mt-0 text-[1.125rem]">Templates</h2>
+      <div className="flex flex-wrap gap-[0.5rem]">
+        {TEMPLATES.map((template) => (
+          <button
+            key={template.id}
+            type="button"
+            className={btnGhost}
+            onClick={() => {
+              if (dirty && !window.confirm('Replace your current draft with this template?')) {
+                return;
+              }
+              onLoad(cloneConfig(template.config));
+            }}
+          >
+            {template.config.name}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function cloneConfig(config: BoardDesignConfig): BoardDesignConfig {
+  return {
+    ...config,
+    strips: config.strips.map((strip) => ({ ...strip })),
+  };
+}

@@ -67,6 +67,7 @@
     '/sign-in', // Clerk's flow, and its tokens
     '/sign-up',
     '/shopping-list', // derived from the saved library — as private as the library
+    '/designer', // saved board designs are user-authored private work
     // Dev-only scaffolding (QOL-G pilot and whatever comes next). Production 404s it
     // and the response gate refuses non-200s, so nothing caches today — but this list
     // is the rule "every private route goes on the denylist", and a route whose

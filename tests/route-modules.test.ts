@@ -25,6 +25,9 @@ const ROUTE_MODULES = [
   'plans/[slug]/build/page.tsx', // "Start building" — the one that shipped as a pointer with no page
   'plans/[slug]/print/page.tsx', // print sheet
   'plans/[slug]/boards/page.tsx', // board optimizer
+  'designer/page.tsx',
+  'designer/library/page.tsx',
+  'designer/[id]/page.tsx',
   'saved/page.tsx',
   'shopping-list/page.tsx',
   'workshop/page.tsx',

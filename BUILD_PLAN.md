@@ -34,9 +34,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Public launch | 🟡 REACHABLE, NOT LAUNCHED — `SITE_INDEXABLE=true`; crawlable/indexable but still in development (no marketing/subscriptions/commercialization/users). live≠launched (AGENTS_CONTEXT §"Settled") |
 | Phase 4 | 🟡 PARTIAL — build logs (27) + tool-aware search (25–26) only; rest CLOSED |
 | Sprints 47–50 | ✅ shipped (settings hub · page size 24 · navbar Browse→Plans · `/browse` filter rail) — detail in SPRINT_LOG. Listed so the next sprint number is not re-used. |
-| Sprints 51–52 (Cutting Board Designer) | 🟡 SCHEDULED 2026-07-24, renumbered 2026-07-25 (47–50 were taken) — execution contract `docs/superpowers/plans/cutting-board-designer-build-plan.md` (§1 binding · §2 geometry · §5 units · §6 parallelism); DECISIONS_LOG 2026-07-24. **51** = geometry lib + private persistence + editor/SVG preview (shippable alone); **52** = 3D island + print + hard nav. Sign-in only; $0/no monetization; shopping-list + optimizer UI = Phase 2. **U0 complete — start at U1.** |
+| Sprints 51–52 (Cutting Board Designer) | 🟡 Sprint **51 CLOSED** 2026-07-25 (U0–U3: geometry lib + private persistence + editor/SVG) — `3d33c37` (U1) + join SHA on `main`; suite **1088/1088**. Sprint **52** still open (U4 3D + U5 print/hard nav). Execution contract `docs/superpowers/plans/cutting-board-designer-build-plan.md`. Sign-in only; $0/no monetization; shopping-list + optimizer UI = Phase 2. |
 
-Test suite — expected: 1017/1017 (latest verified: Kreg-swap gate, Linux `/tmp` clone, tsc/eslint clean; build+device = Keagan's). Update this single figure each sprint close; 957/941 superseded, not current.
+Test suite — expected: 1088/1088 (Sprint 51 join gate, Cursor VM; lint/tsc/build clean). Update this single figure each sprint close; 1017/1017 and earlier superseded.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 

@@ -119,6 +119,7 @@ describe('SECURITY: private routes are NEVER cached', () => {
     expect(NEVER_CACHE_PREFIXES).toContain('/api');
     expect(NEVER_CACHE_PREFIXES).toContain('/sign-in');
     expect(NEVER_CACHE_PREFIXES).toContain('/sign-up');
+    expect(NEVER_CACHE_PREFIXES).toContain('/designer');
     // Dev scaffolding (QOL-G pilot) — added in the 2026-07-19 audit.
     expect(NEVER_CACHE_PREFIXES).toContain('/dev');
   });
@@ -272,8 +273,14 @@ describe('SPRINT 14: the worker still NEVER caches private data on its own', () 
     expect(isCacheable(req('/shopping-list?collection=abc'))).toBe(false);
   });
 
+  it('refuses /designer — saved board designs are private user data', () => {
+    expect(isCacheable(req('/designer'))).toBe(false);
+    expect(isCacheable(req('/designer/library'))).toBe(false);
+    expect(isCacheable(req('/designer/design_123'))).toBe(false);
+  });
+
   it('browsing to a private page while ONLINE caches nothing', () => {
-    for (const path of ['/saved', '/profile', '/shopping-list']) {
+    for (const path of ['/saved', '/profile', '/shopping-list', '/designer']) {
       expect(isCacheable(req(path))).toBe(false);
     }
   });
@@ -282,6 +289,7 @@ describe('SPRINT 14: the worker still NEVER caches private data on its own', () 
     expect(NEVER_CACHE_PREFIXES).toContain('/shopping-list');
     expect(NEVER_CACHE_PREFIXES).toContain('/saved');
     expect(NEVER_CACHE_PREFIXES).toContain('/profile');
+    expect(NEVER_CACHE_PREFIXES).toContain('/designer');
   });
 });
 
@@ -301,9 +309,12 @@ describe('SPRINT 14: CONSENT — what the user may explicitly download', () => {
     expect(isDownloadable(req('/profile'))).toBe(false);
     expect(isDownloadable(req('/api/health'))).toBe(false);
     expect(isDownloadable(req('/sign-in'))).toBe(false);
+    expect(isDownloadable(req('/designer'))).toBe(false);
+    expect(isDownloadable(req('/designer/library'))).toBe(false);
 
     expect(DOWNLOADABLE_PREFIXES).not.toContain('/profile');
     expect(DOWNLOADABLE_PREFIXES).not.toContain('/api');
+    expect(DOWNLOADABLE_PREFIXES).not.toContain('/designer');
   });
 
   it('SECURITY: still refuses cross-origin and non-GET, consent or not', () => {
