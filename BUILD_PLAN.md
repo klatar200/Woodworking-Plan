@@ -40,6 +40,21 @@ Test suite — expected: 1104/1104 across 94 files (Sprint 51 Attempt 3, reprodu
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
+### Designer follow-ups — raised by Keagan 2026-07-25 (NOT scheduled; no sprint number assigned)
+Sprints 51–52 delivered U1–U5 and are closed. U6/U7 remain Phase 2, unopened. These nine are Keagan's; **none is started**. Tier A = routine engineering, fits one polish sprint. Tier B = needs a DECISIONS_LOG entry first. Tier C = already U6/U7 scope, or needs a §3 type-contract change (contract §6 rule 3: stop and amend §3, don't negotiate it in code).
+
+| # | Item | Tier | Note |
+|---|---|---|---|
+| 2 | Designer spans full page width, like `/browse` | **A** | `page-wide` already exists (Sprint 52 P1-A). Widen further + let the preview column take the slack |
+| 3 | Preview stays in view while editing strips/settings | **A** | Sticky/split-pane preview. Biggest usability win on the list; also the thing item 1 is really reacting to |
+| 4 | `PREVIEW` heading and `Export PNG` on one line, heading left / button right | **A** | Trivial flex fix |
+| 6 | Strip verbiage — `Up`/`Down` unclear once the camera has moved | **A** | Real defect: labels are panel-order, but the user reads them against a rotated 3D view. Prefer order-relative wording tied to the diagram, not the camera. New user-visible copy ⇒ contract §8 wants it approved, but B6 leaves "tiny chrome" to engineering judgment — keep to labels, no new marketing lines |
+| 7 | Species pills wrap to 2 lines; `Purpleheart` overflows its pill | **A** | Confirmed live on prod. CSS bug, not a data problem |
+| 1 | Designer = desktop/tablet authoring; mobile read-only | **B** | Posture change vs §6 cat-6 "PWA-first" and BUSINESS_PLAN §5. Gate on viewport width, never UA sniffing. Read-only mobile = `/designer/library` + `/designer/[id]` view + print sheet. **Keagan's stated reason ("desktop-only packages/builds") does not hold for a web app** — the same bundle and the same WebGL2/three.js/R3F run in mobile Safari and Android Chrome; there is no desktop-only web dependency to gain. The valid reasons are screen real estate, pointer precision, GPU/thermal headroom, and dropping the touch-gesture surface. **Undecided — no DECISIONS_LOG entry yet; do not build against it** |
+| 8 | Extend the species list beyond the initial 8 | **B** | B14 + contract §8: touching the species list after ship is an escalation. **Adding** is safe (new ids orphan nothing); removing/renaming is not. Needs §3.2 amended, `dark-theme`/`contrast` guards re-run, and hex values that stay distinguishable in 3D |
+| 5 | Undo/redo (⌘Z) instead of the "Replace your current draft?" confirm; Canva-like editing/export | **C** | Undo/redo is **explicitly U7**. In-memory only per Keagan (not persisted across reload). "Canva-like" is open-ended ⇒ needs a concrete list before it can be scoped |
+| 9 | Advanced end-grain templates — plaid, zigzag, 3D box | **C** | **Splits.** Plaid ≈ representable today (strip widths + `flipEveryOtherSlice`). Zigzag and 3D-box are **not**: `Strip` has no angle and `Cell` is axis-aligned `{xIn,yIn,wIn,hIn}`, so a rhombus/offset cell cannot be expressed. Those need a §3 change + new geometry + new tests — U7-scale, not "add a template" |
+
 Out of scope until Keagan adds to BUSINESS_PLAN: comments · tool-substitution notes · lumber-price sync · plan versioning · offline "shopping mode" · community submissions.
 Phase 3 removed pre-code (FUTURE_IDEAS, do NOT build): creator marketplace · native iOS/Android · local lumber pricing. Still launch-gated: makerspace/team accounts (paid tier = leave Hobby + #6 + #7 together).
 Phase 4 per item: build logs ✅(27, forums stay CLOSED) · tool-aware search ✅(25–26) · AI plan customization ⛔(inference costs money) · video ⛔(no content) · metric/regional pricing ⛔(2x4 doesn't convert honestly; regional dead under cost-tier rule).
