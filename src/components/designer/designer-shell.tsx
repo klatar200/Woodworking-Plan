@@ -54,9 +54,14 @@ export function DesignerShell(props: {
       {dirty && <p className="m-0 text-[0.875rem] text-muted">Unsaved changes</p>}
 
       {/* Preview column takes slack; settings rail stays readable. Sticky preview
-          so strip/settings edits never require scrolling back up to see the board. */}
-      <div className="grid gap-[1.25rem] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)] lg:items-start">
-        <div className="grid min-w-0 gap-[1rem]">
+          so strip/settings edits never require scrolling back up to see the board.
+          The columns MUST stay stretched: a sticky element can only travel inside
+          its own containing block, so `items-start` would shrink-wrap this column
+          to its content and the preview would scroll away after ~130px of a
+          ~6700px page. `content-start` keeps the children at their natural height
+          inside the now-full-height column. */}
+      <div className="grid gap-[1.25rem] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)]">
+        <div className="grid min-w-0 gap-[1rem] lg:content-start">
           <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1] lg:max-h-[calc(100vh-5.25rem)] lg:overflow-y-auto">
             <BoardPreview config={config} metrics={metrics} />
           </section>

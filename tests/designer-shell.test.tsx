@@ -132,6 +132,14 @@ describe('DesignerShell static render', () => {
     expect(shell).toMatch(/lg:sticky/);
     expect(shell).toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_minmax\(20rem,26rem\)\]/);
 
+    // A sticky element only travels inside its own containing block. `items-start`
+    // shrink-wrapped the preview column to 732px against a 6749px page, so the
+    // preview left the viewport after 130px of scroll while `lg:sticky` was still
+    // in the markup and this suite was still green. Measured on prod 2026-07-25.
+    // jsdom has no sticky layout, so the column stretch is guarded at source level.
+    expect(shell).not.toContain('lg:items-start');
+    expect(shell).toContain('lg:content-start');
+
     // Preview heading + Export PNG share one flex row (heading left, button right).
     expect(preview).toMatch(
       /flex items-center justify-between[\s\S]*Preview[\s\S]*Export PNG/,
