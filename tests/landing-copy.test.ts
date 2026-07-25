@@ -86,4 +86,12 @@ describe('the landing reads the count from data, not from a literal', () => {
     const keys = [...call.matchAll(/(\w+)\s*:/g)].map((m) => m[1]);
     expect(keys.sort()).toEqual(['perPage', 'sort']);
   });
+
+  it('links to the board designer with the exact Sprint 52 CTA copy', () => {
+    expect(SOURCE).toContain('Design a board →');
+    expect(SOURCE).toContain('href="/designer"');
+    expect(SOURCE).toContain(
+      'Design edge- and end-grain cutting boards with a live 3D preview.',
+    );
+  });
 });

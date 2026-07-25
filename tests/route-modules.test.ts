@@ -28,6 +28,7 @@ const ROUTE_MODULES = [
   'designer/page.tsx',
   'designer/library/page.tsx',
   'designer/[id]/page.tsx',
+  'designer/[id]/print/page.tsx',
   'saved/page.tsx',
   'shopping-list/page.tsx',
   'workshop/page.tsx',

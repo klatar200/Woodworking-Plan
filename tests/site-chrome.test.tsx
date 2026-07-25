@@ -110,6 +110,10 @@ describe('the signed-in nav after QOL-D', () => {
     expect(header).toContain('href="/saved"');
     expect(header).toContain('href="/builds"');
   });
+
+  it('adds the cutting board Designer link with the exact Sprint 52 label', () => {
+    expect(header).toMatch(/href="\/designer"[^>]*>Designer</);
+  });
 });
 
 describe('the site footer (QOL-D item 2)', () => {

@@ -154,11 +154,14 @@ export default async function LandingPage() {
               <Link href={CATALOG_PATH} className={btnPrimary}>
                 Browse the plans →
               </Link>
-              <Link href="/sign-up" className={btnGhost}>
-                Create a free account
+              <Link href="/designer" className={btnGhost}>
+                Design a board →
               </Link>
             </div>
             <p className="mt-[1.5rem] text-[0.9375rem] text-muted-2">
+              Design edge- and end-grain cutting boards with a live 3D preview.
+            </p>
+            <p className="mt-[0.5rem] text-[0.9375rem] text-muted-2">
               Free &mdash; no ads, no affiliate links · Installs to your phone, works offline
             </p>
           </div>

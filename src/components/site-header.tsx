@@ -63,6 +63,7 @@ const PUBLIC_NAV = [
 const SIGNED_IN_NAV = [
   { href: '/saved', label: 'Saved' },
   { href: '/builds', label: 'Builds' }, // Sprint 27
+  { href: '/designer', label: 'Designer' },
 ] as const;
 
 /**
