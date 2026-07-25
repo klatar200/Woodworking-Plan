@@ -26,7 +26,7 @@ export default async function SavedDesignerPage({ params }: PageProps) {
   if (!design) notFound();
 
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
       <p className="breadcrumb no-print">
         <Link href="/designer/library">Your boards</Link>
       </p>

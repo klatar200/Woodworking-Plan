@@ -1,7 +1,13 @@
 import { formatInches } from '@/lib/format';
-import type { BoardMetrics } from '@/lib/board-designer/types';
+import type { BoardMetrics, Grain } from '@/lib/board-designer/types';
 
-export function MetricsPanel({ metrics }: { metrics: BoardMetrics }) {
+export function MetricsPanel({
+  metrics,
+  grain,
+}: {
+  metrics: BoardMetrics;
+  grain: Grain;
+}) {
   return (
     <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
       <h2 className="!mt-0 text-[1.125rem]">Metrics</h2>
@@ -30,10 +36,14 @@ export function MetricsPanel({ metrics }: { metrics: BoardMetrics }) {
           {formatInches(metrics.panelLengthIn)} x {formatInches(metrics.panelWidthIn)} x{' '}
           {formatInches(metrics.panelThicknessIn)}
         </dd>
-        <dt className="text-muted">Slices</dt>
-        <dd className="m-0">{metrics.sliceCount}</dd>
-        <dt className="text-muted">Leftover length</dt>
-        <dd className="m-0">{formatInches(metrics.leftoverIn)}</dd>
+        {grain === 'end' && (
+          <>
+            <dt className="text-muted">Slices</dt>
+            <dd className="m-0">{metrics.sliceCount}</dd>
+            <dt className="text-muted">Leftover length</dt>
+            <dd className="m-0">{formatInches(metrics.leftoverIn)}</dd>
+          </>
+        )}
         <dt className="text-muted">Total board feet</dt>
         <dd className="m-0">{formatBoardFeet(metrics.totalBoardFeet)} bd ft</dd>
       </dl>

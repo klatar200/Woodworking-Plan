@@ -67,7 +67,10 @@ export function BoardScene({
         makeDefault
         enableDamping
         enablePan={false}
-        minDistance={maxDim * 0.35}
+        enableZoom
+        zoomSpeed={0.85}
+        // Keep the board framed — no flying inside the stock or losing it in the void.
+        minDistance={Math.max(maxDim * 0.45, thickness * 2.5)}
         maxDistance={maxDim * 3.2}
         maxPolarAngle={Math.PI * 0.48}
         target={[0, thickness * 0.18, 0]}

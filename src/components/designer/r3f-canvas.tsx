@@ -1,5 +1,6 @@
 import { Canvas, useThree } from '@react-three/fiber';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { PCFShadowMap } from 'three';
 import type { Cell } from '@/lib/board-designer/layout';
 import type { BoardMetrics } from '@/lib/board-designer/types';
 import { BoardScene } from './r3f-scene';
@@ -17,6 +18,7 @@ export function BoardR3FCanvas({
   onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
   onContextLost: () => void;
 }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(() => !document.hidden);
   const [recentInput, setRecentInput] = useState(true);
   const idleTimer = useRef<number | null>(null);
@@ -58,19 +60,38 @@ export function BoardR3FCanvas({
     };
   }, [markActive]);
 
+  // Non-passive wheel listener so we can preventDefault and stop the page scroll
+  // while OrbitControls dollies (passive listeners ignore preventDefault).
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      markActive();
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [markActive]);
+
   return (
     <div
-      className="h-[min(68vh,34rem)] min-h-[18rem] overflow-hidden rounded-[0.75rem] border border-border bg-bg"
+      ref={containerRef}
+      className="h-[min(68vh,34rem)] min-h-[18rem] w-full overflow-hidden rounded-[0.75rem] border border-border bg-bg"
+      style={{ touchAction: 'none' }}
       onPointerDown={markActive}
       onPointerMove={markActive}
-      onWheel={markActive}
     >
       <Canvas
-        shadows
+        // "percentage" → PCFShadowMap (avoids PCFSoftShadowMap deprecation spam)
+        shadows="percentage"
         dpr={[1, 2]}
         frameloop={isVisible && recentInput ? 'always' : 'demand'}
         camera={camera}
         gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
+        onCreated={({ gl }) => {
+          gl.shadowMap.type = PCFShadowMap;
+        }}
+        style={{ width: '100%', height: '100%', touchAction: 'none' }}
       >
         <CanvasLifecycle
           onCanvasReady={onCanvasReady}

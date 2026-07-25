@@ -6,6 +6,12 @@ import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { getTemplate } from '@/lib/board-designer/templates';
 import type { BoardDesignConfig, Strip } from '@/lib/board-designer/types';
 import { groupCellsBySpecies, shouldUseSvgFallback } from '@/components/designer/r3f-layout';
+import {
+  createGrainRoughnessMap,
+  speciesColorLinear,
+} from '@/components/designer/r3f-materials';
+import { SPECIES } from '@/lib/board-designer/species';
+import { RGBAFormat, UnsignedByteType, NoColorSpace, RGBFormat } from 'three';
 
 describe('board 3D layout helpers', () => {
   test('groups checkerboard cells into one instanced mesh group per species', () => {
@@ -80,5 +86,34 @@ describe('board 3D layout helpers', () => {
     expect(r3fSources.join('\n')).not.toMatch(
       /https?:\/\/|\.hdr\b|\.exr\b|\.ktx2?\b|\.jpe?g\b|\.png\b|textureLoader|useTexture/i,
     );
+  });
+
+  test('grain roughness map uses RGBAFormat + UnsignedByteType (not RGBFormat + sRGB)', () => {
+    // Regression for solid-black board: RGBFormat + SRGBColorSpace failed the WebGL
+    // upload and multiplied albedo to zero.
+    const map = createGrainRoughnessMap();
+    expect(map.format).toBe(RGBAFormat);
+    expect(map.format).not.toBe(RGBFormat);
+    expect(map.type).toBe(UnsignedByteType);
+    expect(map.colorSpace).toBe(NoColorSpace);
+    map.dispose();
+  });
+
+  test('species material colour wiring keeps §3.2 hexes as non-black albedo inputs', () => {
+    const materialsSource = readFileSync(
+      join(process.cwd(), 'src/components/designer/r3f-materials.tsx'),
+      'utf8',
+    );
+    expect(materialsSource).toContain('color={colorHex}');
+    expect(materialsSource).toContain('roughnessMap');
+    expect(materialsSource).toMatch(/RGBAFormat/);
+    expect(materialsSource).not.toMatch(/\bRGBFormat\b/);
+
+    for (const species of SPECIES) {
+      const rgb = speciesColorLinear(species.colorHex);
+      expect(rgb.r + rgb.g + rgb.b).toBeGreaterThan(0.2);
+      // Purpleheart / padauk stay distinctly chromatic — not near-grey black.
+      expect(Math.max(rgb.r, rgb.g, rgb.b)).toBeGreaterThan(0.25);
+    }
   });
 });

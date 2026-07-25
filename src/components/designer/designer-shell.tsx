@@ -78,7 +78,7 @@ export function DesignerShell(props: {
             onMove={(id, direction) => dispatch({ type: 'move-strip', id, direction })}
             onUpdate={(id, patch) => dispatch({ type: 'update-strip', id, patch })}
           />
-          <MetricsPanel metrics={metrics} />
+          <MetricsPanel metrics={metrics} grain={config.grain} />
         </div>
       </div>
     </form>

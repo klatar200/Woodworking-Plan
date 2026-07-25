@@ -25,7 +25,7 @@ export default async function DesignerPage() {
   }
 
   return (
-    <main id="main" className={page}>
+    <main id="main" className={`${page} page-wide`}>
       <p className="breadcrumb no-print">
         <Link href="/designer/library">Your boards</Link>
       </p>

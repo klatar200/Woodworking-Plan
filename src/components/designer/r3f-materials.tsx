@@ -1,51 +1,82 @@
 import { useEffect, useMemo } from 'react';
 import {
-  Color,
   DataTexture,
-  RGBFormat,
+  LinearFilter,
+  NoColorSpace,
+  RGBAFormat,
   RepeatWrapping,
-  SRGBColorSpace,
+  UnsignedByteType,
 } from 'three';
 
+/**
+ * Procedural wood: solid §3.2 hex on `color`, grayscale grain on `roughnessMap`.
+ *
+ * Root cause of the solid-black board (Sprint 52 attempt 1): a colour DataTexture used
+ * three-channel format + sRGB color space. Three.js then fails the upload ("sRGB encoded
+ * textures have to use RGBAFormat and UnsignedByteType") and the map samples as black,
+ * multiplying the base colour to zero. Grain stays grayscale + NoColorSpace so it never
+ * owns the hue.
+ */
 export function ProceduralWoodMaterial({ colorHex }: { colorHex: string }) {
-  const map = useMemo(() => createGrainMap(colorHex), [colorHex]);
+  const roughnessMap = useMemo(() => createGrainRoughnessMap(), []);
 
-  useEffect(() => () => map.dispose(), [map]);
+  useEffect(() => () => roughnessMap.dispose(), [roughnessMap]);
 
   return (
     <meshStandardMaterial
       color={colorHex}
-      map={map}
-      roughness={0.78}
+      roughnessMap={roughnessMap}
+      roughness={0.82}
       metalness={0}
     />
   );
 }
 
-function createGrainMap(colorHex: string) {
+/** Exported for Node tests — format/type/colorSpace wiring that kept the board black. */
+export function createGrainRoughnessMap(): DataTexture {
   const size = 64;
-  const color = new Color(colorHex);
-  const data = new Uint8Array(size * size * 3);
+  const data = new Uint8Array(size * size * 4);
   let offset = 0;
 
   for (let y = 0; y < size; y++) {
-    const wave = Math.sin(y * 0.42) * 0.035;
+    const wave = Math.sin(y * 0.42) * 0.04;
     for (let x = 0; x < size; x++) {
-      const noise = seededNoise(x, y) * 0.06;
-      const shade = 0.92 + wave + noise;
-      data[offset++] = clampByte(color.r * 255 * shade);
-      data[offset++] = clampByte(color.g * 255 * shade);
-      data[offset++] = clampByte(color.b * 255 * shade);
+      const noise = seededNoise(x, y) * 0.05;
+      // Mid-grey band — modulates roughness, not albedo.
+      const shade = clampByte((0.55 + wave + noise) * 255);
+      data[offset++] = shade;
+      data[offset++] = shade;
+      data[offset++] = shade;
+      data[offset++] = 255;
     }
   }
 
-  const map = new DataTexture(data, size, size, RGBFormat);
+  const map = new DataTexture(data, size, size, RGBAFormat, UnsignedByteType);
   map.wrapS = RepeatWrapping;
   map.wrapT = RepeatWrapping;
   map.repeat.set(2, 6);
-  map.colorSpace = SRGBColorSpace;
+  map.magFilter = LinearFilter;
+  map.minFilter = LinearFilter;
+  map.colorSpace = NoColorSpace;
   map.needsUpdate = true;
   return map;
+}
+
+/** Species hex → linear RGB 0–1 for histogram / colour-fidelity tests (no WebGL). */
+export function speciesColorLinear(colorHex: string): {
+  r: number;
+  g: number;
+  b: number;
+} {
+  const hex = colorHex.replace('#', '');
+  if (hex.length !== 6) {
+    return { r: 0, g: 0, b: 0 };
+  }
+  return {
+    r: parseInt(hex.slice(0, 2), 16) / 255,
+    g: parseInt(hex.slice(2, 4), 16) / 255,
+    b: parseInt(hex.slice(4, 6), 16) / 255,
+  };
 }
 
 function seededNoise(x: number, y: number): number {

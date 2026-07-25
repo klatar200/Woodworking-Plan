@@ -342,6 +342,7 @@ State: `useState`/`useReducer` inside the island. **No localStorage (B9), no sto
 - No WebGL / lost context → `board-diagram` SVG renders instead, with one plain line of explanation; the cut list and every control still work.
 - PNG downloads with the design name as filename and is not blank.
 - Console clean: no CSP violation, no Clerk warning, no React key warning.
+- Colour fidelity: a canvas pixel histogram must contain a colour within ΔE 10 of each rendered species' §3.2 hex. A geometrically correct board in the wrong colour is a FAIL.
 **STOP** before: editing `src/middleware.ts` (T2), adding any fourth 3D dependency, adding a jsdom/WebGL test environment (T3), or downloading any texture/HDRI asset (B8).
 
 ---
@@ -441,3 +442,4 @@ Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/k
 - U4 2026-07-25: deps `three@0.185.1` / `@react-three/fiber@9.6.1` / `@react-three/drei@10.7.7` (all MIT); `MAX_3D_CELLS=8000`; one InstancedMesh/species; SVG fallback + PNG export; no middleware/CSP edits; updated obsolete U3 board-preview seam assert in `tests/board-diagram.test.tsx`.
 - U5 2026-07-25: print route `/designer/[id]/print`; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line; ROUTE_MODULES print entry.
 - Sprint 52 re-close 2026-07-25: tip CI `7ac9f20` green; First Load baseline cited from Sprint 51 join build (`/` 138 · `/browse` 140). **Blocked on Keagan queue results** — prompt arrived with unfilled `<PASS / FAIL>` placeholders for items 1–8; cannot triage or re-score Correctness until filled.
+- Sprint 52 Attempt 2 2026-07-25: P0-A black = RGBFormat+sRGB grain map → roughnessMap RGBA/NoColorSpace; P0-B denylist already on prod:70 (U2 tests green — false FAIL); P1-A `page-wide` on editor routes; P1-B non-passive wheel + zoom clamps; P2 three@0.182 + PCFShadowMap; P3 edge metrics hide + radiogroup; U4 ACCEPTANCE colour-fidelity bullet; score **98/100**.

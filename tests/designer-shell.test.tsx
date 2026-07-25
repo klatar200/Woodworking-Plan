@@ -73,6 +73,31 @@ describe('DesignerShell static render', () => {
     expect(html).toContain('name="sliceThicknessIn"');
   });
 
+  it('hides slice/leftover rows for edge grain while metrics still return zeros', () => {
+    const html = render({
+      ...goldenConfig,
+      grain: 'edge',
+      stockThicknessIn: 0.75,
+      sliceThicknessIn: 0.75,
+      strips: Array.from({ length: 7 }, (_, i) => ({
+        id: `edge-${i + 1}`,
+        speciesId: i % 2 === 0 ? 'hard-maple' : 'walnut',
+        widthIn: 1.5,
+        repeat: 1,
+      })),
+    });
+    expect(html).not.toContain('Slices');
+    expect(html).not.toContain('Leftover length');
+  });
+
+  it('species swatches use radiogroup semantics', () => {
+    const stripList = source('src/components/designer/strip-list.tsx');
+    expect(stripList).toContain('role="radiogroup"');
+    expect(stripList).toContain('role="radio"');
+    expect(stripList).toContain('aria-checked');
+    expect(stripList).not.toContain('aria-pressed');
+  });
+
   it('keeps preview behind BoardPreview and uses 44px controls with no arbitrary elevation', () => {
     const shell = source('src/components/designer/designer-shell.tsx');
     const files = [

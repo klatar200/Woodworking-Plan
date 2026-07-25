@@ -82,20 +82,38 @@ export function StripList({
               <div className="grid gap-[0.75rem]">
                 <fieldset className="m-0 border-none p-0">
                   <legend className="mb-[0.375rem] text-[0.875rem] font-bold">Species</legend>
-                  <div className="grid grid-cols-2 gap-[0.375rem] sm:grid-cols-4">
+                  <div
+                    role="radiogroup"
+                    aria-label="Species"
+                    className="grid grid-cols-2 gap-[0.375rem] sm:grid-cols-4"
+                  >
                     {SPECIES.map((species) => {
                       const selected = species.id === strip.speciesId;
                       return (
                         <button
                           key={species.id}
                           type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          tabIndex={selected ? 0 : -1}
                           className={`min-h-[2.75rem] rounded-[0.375rem] border px-[0.625rem] py-0 text-left text-[0.875rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 ${
                             selected
                               ? 'border-fg bg-accent-tint font-bold text-fg'
                               : 'border-border bg-surface text-fg'
                           }`}
-                          aria-pressed={selected}
                           onClick={() => onUpdate(strip.id, { speciesId: species.id })}
+                          onKeyDown={(event) => {
+                            if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+                              return;
+                            }
+                            event.preventDefault();
+                            const index = SPECIES.findIndex((s) => s.id === strip.speciesId);
+                            if (index < 0) return;
+                            const delta = event.key === 'ArrowRight' ? 1 : -1;
+                            const next =
+                              SPECIES[(index + delta + SPECIES.length) % SPECIES.length]!;
+                            onUpdate(strip.id, { speciesId: next.id });
+                          }}
                         >
                           <span
                             aria-hidden="true"
