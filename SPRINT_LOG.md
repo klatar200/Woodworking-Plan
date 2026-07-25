@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 52 Attempt 3 (2026-07-25)** — wheel scroll root-cause fix + orbit/zoom feel; score 98/100. Prior: Attempt 2 colour/width (Keagan-confirmed); Attempt 1’s 96 invalidated.
+> **Latest logged: Sprint 52 Attempt 3 (2026-07-25) — CLOSED 100/100** — wheel scroll root-cause fix + orbit/zoom feel; the 2 withheld Correctness points released after Keagan’s browser PASS on prod `7a6b12e`. Prior: Attempt 2 colour/width (Keagan-confirmed); Attempt 1’s 96 invalidated.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1104 green (post-52-a3).
 
@@ -106,22 +106,26 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | U4+U5 only; no U6/U7 |
-| Correctness & functionality (/20) | 18 | Colour/width/console Keagan-confirmed; wheel+orbit fixed in `25cc107` but **not** browser-observed here — last 2 pts withheld |
+| Correctness & functionality (/20) | 20 | Colour/width/console Keagan-confirmed; wheel+orbit now **browser-observed PASS** by Keagan on prod `7a6b12e` — withheld 2 pts released |
 | Automated test coverage (/15) | 15 | **1104** tests; orbit source guard (three.js controls → `gl.domElement`, no host wheel preventDefault) |
 | Security (/15) | 15 | Denylist unchanged/present; CSP/middleware untouched |
 | Code quality & simplicity (/10) | 10 | Fix at OrbitControls layer; no scroll trap beyond canvas |
 | Mobile/offline (/10) | 10 | Items 2+7 accepted unverified |
 | Documentation & handoff (/5) | 5 | Attempt 3 + §9 + one-item re-verify |
-| **Total (/100)** | **98** |
+| **Total (/100)** | **100** |
 
-**Result:** Pass (≥95). Attempt 1’s 96 was incorrect (black board + wheel). Offline denylist was never missing.
+**Result:** Pass (≥95) — **100/100, sprint closed.** Attempt 1’s 96 was incorrect (black board + wheel). Offline denylist was never missing.
+
+**Release of the withheld 2 points (2026-07-25):** Attempt 3 scored 18/20 on Correctness because the wheel/orbit fix was shipped but unobserved. Keagan re-ran the one-item check in a real browser on prod `7a6b12e` and reported PASS — wheel over the canvas zooms and the page does not move. The points were released on that observed evidence, not on the code diff.
+
+**Why automation could not release them (record this before re-testing):** a CDP-driven scroll (Claude-in-Chrome, Playwright, Puppeteer `mouse.wheel`) synthesizes the scroll at the compositor and does **not** honour `preventDefault`. Measured on prod `7a6b12e`: the wheel event arrives `isTrusted: true`, `cancelable: true`, and `defaultPrevented === true` at the end of the bubble phase — the app cancels it correctly — yet `scrollY` still moved 150→250. So the page-scroll half of the Attempt 2 “wheel CONFIRMED BROKEN” evidence was never diagnostic; the diagnostic half was `touch-action: auto` on the canvas (now `none`). **Only a human mouse wheel can verify this acceptance.** Do not re-open it on an automated scrollY reading.
 
 ### Accepted unverified (Keagan, 2026-07-25)
 - Item 2 phone ≥30 fps — neither pass nor deduction
 - Item 7 paper print — neither pass nor deduction
 
-### Keagan re-verification (Attempt 3 — one item)
-Pointer over the canvas: wheel both directions — camera zooms, `scrollY` does not change; a short (~40px) drag visibly rotates the board.
+### Keagan re-verification (Attempt 3 — one item) — **PASS 2026-07-25**
+Pointer over the canvas: wheel both directions — camera zooms, `scrollY` does not change; a short (~40px) drag visibly rotates the board. **Result: PASS**, observed by Keagan in a real browser on prod `7a6b12e`. Correctness → 20/20, sprint → 100/100.
 
 ---
 

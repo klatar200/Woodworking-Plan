@@ -34,7 +34,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Public launch | 🟡 REACHABLE, NOT LAUNCHED — `SITE_INDEXABLE=true`; crawlable/indexable but still in development (no marketing/subscriptions/commercialization/users). live≠launched (AGENTS_CONTEXT §"Settled") |
 | Phase 4 | 🟡 PARTIAL — build logs (27) + tool-aware search (25–26) only; rest CLOSED |
 | Sprints 47–50 | ✅ shipped (settings hub · page size 24 · navbar Browse→Plans · `/browse` filter rail) — detail in SPRINT_LOG. Listed so the next sprint number is not re-used. |
-| Sprints 51–52 (Cutting Board Designer) | 🟡 Sprint **51** on `main` (close Attempt 2 = 92). Sprint **52 CLOSED** 2026-07-25 — Attempt 1 score 96 **invalidated**; Attempt 2 **98/100**; Attempt 3 **98/100** (`25cc107` — wheel bind to canvas OrbitControls, orbit/zoom feel); suite **1104/1104**; `/designer` First Load **113 kB**. |
+| Sprints 51–52 (Cutting Board Designer) | 🟡 Sprint **51** on `main` (close Attempt 2 = 92). Sprint **52 CLOSED** 2026-07-25 — Attempt 1 score 96 **invalidated**; Attempt 2 **98/100**; Attempt 3 **100/100** (`25cc107` — wheel bind to canvas OrbitControls, orbit/zoom feel; final 2 Correctness pts released on Keagan's browser PASS on prod `7a6b12e`); suite **1104/1104**; `/designer` First Load **113 kB**. |
 
 Test suite — expected: 1104/1104 (Sprint 52 Attempt 3, Cursor VM). Update this single figure each sprint close; 1103/1103 and earlier superseded.
 
