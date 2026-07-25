@@ -3,7 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 52 Attempt 3 (2026-07-25) — CLOSED 100/100** — wheel scroll root-cause fix + orbit/zoom feel; the 2 withheld Correctness points released after Keagan’s browser PASS on prod `7a6b12e`. Prior: Attempt 2 colour/width (Keagan-confirmed); Attempt 1’s 96 invalidated.
+> **Latest logged: Sprint 51 Attempt 3 (2026-07-25) — CLOSED 100/100** — Attempt 2's 92 was a *verification-access* deduction, not a defect; both blockers cleared against prod (migrate status on `sparkling-band`; signed-in save→library→reopen) and the §9 manual pass re-run. No product code changed.
+>
+> **Sprint 52 Attempt 3 (2026-07-25) — CLOSED 100/100** — wheel scroll root-cause fix + orbit/zoom feel; the 2 withheld Correctness points released after Keagan’s browser PASS on prod `7a6b12e`. Prior: Attempt 2 colour/width (Keagan-confirmed); Attempt 1’s 96 invalidated.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1104 green (post-52-a3).
 
@@ -163,6 +165,44 @@ Pointer over the canvas: wheel both directions — camera zooms, `scrollY` does 
 | **Total (/100)** | **92** |
 
 **Result:** Fail (<95). Underlying issue is **verification access**, not product code. Escalate to Keagan (Vercel log access + Clerk test sign-in). No U4/U5. No nav/CTA "fix".
+
+### Attempt 3 — §7 loop, blockers cleared by direct verification
+**No product code changed.** Attempt 2's only deduction was Correctness 12/20, for two *blocked* checks rather than two defects. Both were re-run against prod with a signed-in session on `31f0392`; nothing in U1/U2/U3 needed a fix.
+
+**Blockers cleared:**
+| Attempt 2 blocker | How it was closed |
+|---|---|
+| Vercel build log unreadable → cannot quote `migrate deploy` / `add_board_design` | `prisma migrate status` against `ep-sparkling-band-aj5za9wv…neon.tech` (the prod branch): **"16 migrations found … Database schema is up to date!"**, including `20260725184759_add_board_design`. Confirms the *applied end state*, which is stronger evidence than a log line saying a command ran |
+| Signed-in save → library → reopen (no test credentials) | Keagan's session. Saved `verify-51` → redirect `/designer/cms0xd1wh0003jo04q7h5bvka`, no `?notice=`; `/designer/library` lists it under `Your boards`; reopened payload **byte-identical** (12 strips `cb-1…cb-12`, end grain, 14/1.5/1.5, kerf 0.125, waste 0.15, flip true) and metrics identical |
+
+**§9 manual pass re-run on prod (observed outcomes, not "ok"):**
+| # | Check | Observed |
+|---|---|---|
+| 2 | species change updates preview live | Strip 1 → Purpleheart: new canvas clusters `80,48,96` ≈ `#5C3A6E`; board feet recomputed live (Purpleheart 0.25 / Walnut 1.51 / Maple 1.26, total 3.02) |
+| 3 | kerf + slice both move the numbers | kerf 1/8→3/16: leftover 1 1/8″ → **11/16″**. slice 1.5→2: slices **8 → 6**, leftover 1 1/16″. Arithmetic independently checked against `n×slice + (n−1)×kerf` — all three exact |
+| 4 | sub-slice panel length | `role=alert` "No slices fit — increase panel length or reduce slice thickness."; metrics still compute (0 slices, leftover 1″); 190 controls still enabled; no crash |
+| 5 | save → library → reopen | PASS (above) |
+| 6 | id you don't own → 404 | Well-formed unowned id → `notFound()` 404 UI, zero design data in the response. The exists-but-owned-by-another permutation is asserted by `board-designs-authz` (`where: { id: 'design-a', userId: 'user-b' }` + `if (!design) notFound()`) — identical query path |
+| — | U3 SVG diagram (via print route, read-only) | `viewBox="0 0 18 12"` matching finished size; **96 rects** = 12 strips × 8 slices; fills exactly `#E7D3A9` / `#4A3524` (§3.2 tokens); zero `$`; no `shadow-[` inside `main` |
+
+**Local gate on `31f0392` (Windows):** `lint` clean · `typecheck` clean · `test` **1104/1104, 94 files** · `build` success. (First run of typecheck failed on missing `three`/`@react-three/fiber` and a stale Prisma client — local `node_modules` predated Sprint 52; `npm ci` + `prisma generate` fixed it. Environment staleness, not source.)
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | U1–U3 only; §3 frozen; nav/CTA correctly absent from this sprint (U5 added them later by design) |
+| Correctness & functionality (/20) | 20 | Both Attempt 2 blockers cleared with observed prod evidence; §9 items 2/3/4/5/6 re-run with recorded outcomes; geometry arithmetic verified independently |
+| Automated test coverage (/15) | 15 | 1104/1104 across 94 files, reproduced locally — not just CI-reported |
+| Security (/15) | 15 | Owner-scoped read observed returning 404 with no leak; `private, no-cache, no-store` on all designer routes; `/designer` in `NEVER_CACHE_PREFIXES`; authz tests for IDOR/`userId`/8 KB/rate-limit |
+| Code quality & simplicity (/10) | 10 | No code changed this attempt |
+| Mobile/offline (/10) | 10 | Responsive shell grid; 44px controls (`touch-targets` guard); SW denylist |
+| Documentation & handoff (/5) | 5 | This attempt + §9 line + Keagan residual list |
+| **Total (/100)** | **100** |
+
+**Result:** Pass (≥95) — **Sprint 51 CLOSED at 100/100.** The 92 was honestly earned under the evidence available at the time; it was never a product defect, and re-verification found none.
+
+**Residuals (not claimed, on Keagan's list):** post-auth *return* to `/designer` after signing in (Attempt 2 observed the redirect + `redirect_url`; completing it needs a sign-out this session could not afford) · a genuine second account opening another user's id. Neither is a known defect.
+
+**Out of scope, pre-existing, flagged not fixed:** a missing design renders the 404 UI but the response status is **200** (soft 404). Site-wide, not designer-specific — there is no `src/app/**/not-found.tsx` anywhere, and `/plans/<bad-slug>` behaves identically with Next's default black 404 body against the light theme. A styled global 404 is public copy (§2/§8 escalation) and touches every route, so it is Keagan's call, not Sprint 51's.
 
 ---
 
