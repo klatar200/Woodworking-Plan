@@ -1,4 +1,3 @@
-import { OrbitControls } from '@react-three/drei';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { DynamicDrawUsage, InstancedMesh, Object3D } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
@@ -6,6 +5,7 @@ import type { Cell } from '@/lib/board-designer/layout';
 import type { BoardMetrics } from '@/lib/board-designer/types';
 import { groupCellsBySpecies } from './r3f-layout';
 import { ProceduralWoodMaterial } from './r3f-materials';
+import { BoardOrbitControls } from './r3f-orbit-controls';
 
 export function BoardScene({
   cells,
@@ -41,6 +41,11 @@ export function BoardScene({
         penumbra={0.55}
         intensity={1.3}
       />
+      {/* Soft rim so light maple silhouette doesn't dissolve into --bg. */}
+      <directionalLight
+        position={[-maxDim * 0.15, maxDim * 0.35, -maxDim * 1.05]}
+        intensity={0.55}
+      />
       {groups.map((group) => (
         <SpeciesInstances
           key={group.speciesId}
@@ -63,18 +68,7 @@ export function BoardScene({
         <planeGeometry args={[groundSize, groundSize]} />
         <meshStandardMaterial color={surface} roughness={0.94} />
       </mesh>
-      <OrbitControls
-        makeDefault
-        enableDamping
-        enablePan={false}
-        enableZoom
-        zoomSpeed={0.85}
-        // Keep the board framed — no flying inside the stock or losing it in the void.
-        minDistance={Math.max(maxDim * 0.45, thickness * 2.5)}
-        maxDistance={maxDim * 3.2}
-        maxPolarAngle={Math.PI * 0.48}
-        target={[0, thickness * 0.18, 0]}
-      />
+      <BoardOrbitControls maxDim={maxDim} thickness={thickness} />
     </>
   );
 }

@@ -116,4 +116,41 @@ describe('board 3D layout helpers', () => {
       expect(Math.max(rgb.r, rgb.g, rgb.b)).toBeGreaterThan(0.25);
     }
   });
+
+  test('orbit controls bind three.js OrbitControls to gl.domElement (not drei/stdlib)', () => {
+    // Regression: drei→three-stdlib listened on events.connected without
+    // {passive:false}, so wheel zoomed AND scrolled the page; canvas stayed
+    // touch-action:auto.
+    const orbitSource = readFileSync(
+      join(process.cwd(), 'src/components/designer/r3f-orbit-controls.tsx'),
+      'utf8',
+    );
+    const canvasSource = readFileSync(
+      join(process.cwd(), 'src/components/designer/r3f-canvas.tsx'),
+      'utf8',
+    );
+    const sceneSource = readFileSync(
+      join(process.cwd(), 'src/components/designer/r3f-scene.tsx'),
+      'utf8',
+    );
+
+    expect(orbitSource).toContain(
+      "from 'three/examples/jsm/controls/OrbitControls.js'",
+    );
+    expect(orbitSource).toContain('controls.connect(gl.domElement)');
+    expect(orbitSource).toMatch(/rotateSpeed\s*=\s*1\.85/);
+    expect(orbitSource).toMatch(/defaultDistance\s*=\s*maxDim\s*\*\s*1\.35/);
+    expect(orbitSource).not.toMatch(
+      /from ['"]@react-three\/drei['"]|from ['"]three-stdlib/,
+    );
+    expect(sceneSource).toContain('BoardOrbitControls');
+    expect(sceneSource).not.toMatch(/from ['"]@react-three\/drei['"]/);
+    // Wake-only wheel listener (passive); scroll lock stays on OrbitControls.
+    expect(canvasSource).toMatch(
+      /addEventListener\(\s*['"]wheel['"],\s*onWheel,\s*\{\s*passive:\s*true\s*\}/,
+    );
+    expect(canvasSource).not.toMatch(
+      /const onWheel = \([^)]*\) => \{[^}]*preventDefault/,
+    );
+  });
 });

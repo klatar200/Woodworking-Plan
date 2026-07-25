@@ -60,16 +60,15 @@ export function BoardR3FCanvas({
     };
   }, [markActive]);
 
-  // Non-passive wheel listener so we can preventDefault and stop the page scroll
-  // while OrbitControls dollies (passive listeners ignore preventDefault).
+  // Wake the demand frameloop on wheel; scroll locking is OrbitControls' job
+  // (bound to gl.domElement with a non-passive wheel listener — see r3f-orbit-controls).
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault();
+    const onWheel = () => {
       markActive();
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('wheel', onWheel, { passive: true });
     return () => el.removeEventListener('wheel', onWheel);
   }, [markActive]);
 
@@ -77,7 +76,6 @@ export function BoardR3FCanvas({
     <div
       ref={containerRef}
       className="h-[min(68vh,34rem)] min-h-[18rem] w-full overflow-hidden rounded-[0.75rem] border border-border bg-bg"
-      style={{ touchAction: 'none' }}
       onPointerDown={markActive}
       onPointerMove={markActive}
     >
@@ -91,7 +89,7 @@ export function BoardR3FCanvas({
         onCreated={({ gl }) => {
           gl.shadowMap.type = PCFShadowMap;
         }}
-        style={{ width: '100%', height: '100%', touchAction: 'none' }}
+        style={{ width: '100%', height: '100%' }}
       >
         <CanvasLifecycle
           onCanvasReady={onCanvasReady}
