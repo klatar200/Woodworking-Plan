@@ -45,11 +45,13 @@ describe('BoardDiagram', () => {
     );
   });
 
-  it('keeps BoardPreview as the U4 seam that only renders BoardDiagram', () => {
+  it('keeps BoardPreview as the U4 seam with BoardDiagram fallback', () => {
     const preview = source('src/components/designer/board-preview.tsx');
 
+    expect(preview).toContain("'use client'");
     expect(preview).toContain('BoardDiagram');
-    expect(preview).not.toContain('layoutTopFace');
+    expect(preview).toContain('next/dynamic');
+    expect(preview).toContain('ssr: false');
     expect(preview).not.toContain('<svg');
   });
 });
