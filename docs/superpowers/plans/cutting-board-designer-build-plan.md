@@ -9,7 +9,7 @@
 
 **Sprints 51 (foundation) + 52 (3D).** Sprints 47–50 are TAKEN (settings hub, page size, navbar, filter rail — `SPRINT_LOG.md`). Every earlier doc reference to "Sprint 47+" is a stale number, not a stale decision.
 **Decisions of record:** `DECISIONS_LOG.md` 2026-07-24. **Roadmap row:** `BUILD_PLAN.md` §4.
-**Status:** U0 ✅ · U1 ⬜ · U2 ⬜ · U3 ⬜ · U4 ⬜ · U5 ⬜ · U6/U7 = Phase 2, unopened.
+**Status:** U0 ✅ · U1 ✅ · U2 ⬜ · U3 ⬜ · U4 ⬜ · U5 ⬜ · U6/U7 = Phase 2, unopened.
 
 ---
 
@@ -434,4 +434,4 @@ Then the manual pass — record the observed outcome of each, not "ok":
 Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/klatar200/Woodworking-Plan/actions/runs?per_page=5"`), confirm the Vercel deploy, self-score against `BUILD_PLAN` §6 with per-category evidence, write one `SPRINT_LOG` entry, update `BUILD_PLAN` §4's row and test-count figure, and flip this file's status line.
 
 **Unit handoff log** (append one line per unit: decisions taken, and any cross-unit edit request per §6 rule 2):
-- _(empty)_
+- U1 2026-07-25: geometry accepted as-written (§2); strip ids `cs-*`/`cb-*`/`bb-*`/`as-*`/`g-*`; edge templates set `sliceThicknessIn = stockThicknessIn`; `rotateByOne` = left-rotate for flip rows; unknown species name falls back to id in board-feet rows.
