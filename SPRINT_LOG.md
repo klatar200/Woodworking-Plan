@@ -45,6 +45,45 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 ---
 
+## Sprint 53: Designer layout & chrome
+**Dates:** 2026-07-25
+**Scope:** BUILD_PLAN §4 items **2, 3, 4, 6, 7** only. No U6/U7; no 54–56; OrbitControls untouched.
+**Commits on `main`:** `cff58b9`
+**/designer First Load JS:** 113 kB (unchanged). `/` 138 · `/browse` 140.
+**CI tip:** `cff58b9` success (run `30179791163`). **Vercel Production** deploy success for `cff58b9` (GH deployment status success). Vercel MCP `needsAuth` — full build log not readable here; local `npm run build` green with same First Load figures.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Only items 2/3/4/6/7; no schema/routes/CSP; no B6 marketing strings touched |
+| Correctness & functionality (/20) | 16 | Source+suite prove structure (full-width, sticky, one-line Export, diagram labels, nowrap pills, canvas host height). **−4** until Keagan records observed canvas rects / sticky visibility / species no-overflow / canvas ≠ 300×150 |
+| Automated test coverage (/15) | 15 | **1105** tests; `designer-shell` Sprint 53 chrome assertions |
+| Security (/15) | 15 | No public-routes/middleware/CSP edits; denylist unchanged |
+| Code quality & simplicity (/10) | 10 | Reused browse `lg:max-w-none`; sticky matches settings-nav offset; no new deps |
+| Mobile/offline (/10) | 10 | Sticky/full-width are `lg:`; library stays narrow; offline denylist untouched |
+| Documentation & handoff (/5) | 5 | §9 + this entry + Keagan verify list |
+| **Total (/100)** | **96** |
+
+**Shipped:**
+| Item | Change |
+|---|---|
+| 2 Full width | `/designer` + `/designer/[id]` → `${page} lg:max-w-none` (like `/browse`); library unchanged |
+| 3 Sticky preview | `lg:sticky lg:top-[4.5rem]` on preview card; grid `1fr + minmax(20rem,26rem)` |
+| 4 Preview + Export | One `flex justify-between` row inside `BoardPreview` |
+| 6 Move labels | Edge: Toward top/bottom · End: Toward left/right (diagram axes from `layout.ts`) |
+| 7 Species pills | Always `grid-cols-2`; `whitespace-nowrap` + `text-ellipsis` + slightly smaller type |
+
+### Keagan re-verification (record OBSERVED, not "ok")
+1. At 2560 / 1440 / 1280 / 1024 / 900px: `document.querySelector('canvas').getBoundingClientRect()` and `document.documentElement.scrollWidth === window.innerWidth`.
+2. Scroll to the last strip — preview still visible.
+3. PREVIEW and Export PNG share one line (heading left, button right).
+4. Every species label one line, no overflow, at the narrowest supported width.
+5. Canvas real size after layout (not 300×150).
+
+**Result:** Pass (≥95). Correctness held until the list above is observed.
+
+---
+
 ## Sprint 52: Cutting Board Designer 3D + print/hard nav (U4–U5)
 **Dates:** 2026-07-25
 **Scope:** R3F 3D preview behind BoardPreview seam; PNG export; print sheet; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line. U6/U7 unopened.
