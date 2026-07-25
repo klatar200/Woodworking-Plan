@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 52: Cutting Board Designer 3D + print/hard nav (U4–U5)
 **Dates:** 2026-07-25
 **Scope:** R3F 3D preview behind BoardPreview seam; PNG export; print sheet; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line. U6/U7 unopened.
-**Commits on `main`:** `bdae2d9` (U5) · `9e33384` (U4) · fix SHA below (Attempt 2)
+**Commits on `main`:** `bdae2d9` (U5) · `9e33384` (U4) · a62956b (Attempt 2 fixes)
 **/designer First Load JS:** 113 kB. `/` 138 kB · `/browse` 140 kB (Sprint 51 join baseline).
 
 ### Attempt 1 — score 96/100 — INVALIDATED
