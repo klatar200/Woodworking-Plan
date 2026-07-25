@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 52 Attempt 2 (2026-07-25)** — designer 3D colour/zoom/width fixes; score 98/100 (Attempt 1’s 96 invalidated). Prior: Sprint 51.
+> **Latest logged: Sprint 52 Attempt 3 (2026-07-25)** — wheel scroll root-cause fix + orbit/zoom feel; score 98/100. Prior: Attempt 2 colour/width (Keagan-confirmed); Attempt 1’s 96 invalidated.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1103 green (post-52-a2).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1104 green (post-52-a3).
 
 ---
 
@@ -48,8 +48,9 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 52: Cutting Board Designer 3D + print/hard nav (U4–U5)
 **Dates:** 2026-07-25
 **Scope:** R3F 3D preview behind BoardPreview seam; PNG export; print sheet; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line. U6/U7 unopened.
-**Commits on `main`:** `bdae2d9` (U5) · `9e33384` (U4) · a62956b (Attempt 2 fixes)
+**Commits on `main`:** `bdae2d9` (U5) · `9e33384` (U4) · `a62956b` (Attempt 2) · `25cc107` (Attempt 3)
 **/designer First Load JS:** 113 kB. `/` 138 kB · `/browse` 140 kB (Sprint 51 join baseline).
+**CI tip:** `25cc107` success (run `30174271826`). **Vercel Production** deploy `5604702206` success for `25cc107`.
 
 ### Attempt 1 — score 96/100 — INVALIDATED
 | Category | Score | Evidence |
@@ -57,51 +58,70 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 | Requirements fidelity (/25) | 25 | U4+U5 only; B6 on prod |
 | Correctness & functionality (/20) | 16 | Overstated — browser later found solid-black albedo + wheel scroll instead of zoom |
 | Automated test coverage (/15) | 15 | 1099 tests; colour fidelity not covered |
-| Security (/15) | 15 | Overstated claim style — denylist was actually present (see Attempt 2 note) but reported without line-level proof |
+| Security (/15) | 15 | `/designer` denylist was present (U2); score stood, but acceptance was cited without line-level proof |
 | Code quality & simplicity (/10) | 10 | — |
 | Mobile/offline (/10) | 10 | — |
 | Documentation & handoff (/5) | 5 | — |
 | **Total (/100)** | **96** |
 
-**Why invalid:** Correctness treated “PNG not blank / instanced meshes” as proof the board looked right; a geometrically correct black board passed. Zoom acceptance unmet (wheel scrolled the page).
+**Why invalid:** Correctness treated “PNG not blank / instanced meshes” as proof the board looked right; a geometrically correct black board passed. Zoom acceptance unmet (wheel scrolled the page). Offline denylist was **never missing** — a later false FAIL misread `NEVER_CACHE_PREFIXES`; prod `sw-policy.js:70` has had `'/designer'` since U2.
 
 ### Attempt 2 — §7 loop after Keagan browser pass
 **Keagan results (2026-07-25):** fps median 59.9 / no remount PASS · worst-case fallback PASS · PNG real file PASS · save/library/reopen PASS · Cache Storage no `/designer` PASS. Phone + paper print = accepted unverified (Keagan). Clerk DEV-keys console warning = deferred, not counted.
 
 **Defects fixed:**
-| ID | Cause | Fix |
-|---|---|---|
-| P0-A black board | Grain `DataTexture` used three-channel format + sRGB → WebGL upload failed; map sampled black × albedo = black | Grayscale `roughnessMap` with `RGBAFormat` + `UnsignedByteType` + `NoColorSpace`; albedo stays `color={colorHex}` |
-| P0-B denylist | **Already present** on `main` + prod `sw-policy.js:70` since U2 (`f168999`); tests assert it. False FAIL from reading array start (~line 60) | No code change; how U2 passed: acceptance tests `toContain('/designer')` + `isCacheable('/designer')===false` were green |
-| P1-A 124px canvas | Editor used `page` (max-w 40rem) + 26rem sidebar | `${page} page-wide` on `/designer` + `/designer/[id]` only (library stays narrow) |
-| P1-B no wheel zoom | Passive bubbled; passive listeners | Non-passive `preventDefault` on canvas host; `touch-action: none`; OrbitControls `enableZoom` + distance clamps |
-| P2 THREE warnings | sRGB texture + PCFSoft + Clock@r183 | Texture+shadow fixed; `three` pinned `0.182.0` (pre-Clock deprecate); `shadows="percentage"` → PCFShadowMap |
-| P3a/b | UX | Hide slice/leftover when `grain==='edge'`; species `radiogroup`/`radio` |
+| ID | Cause | Fix | SHA |
+|---|---|---|---|
+| P0-A black board | Grain `DataTexture` used three-channel format + sRGB → WebGL upload failed; map sampled black × albedo = black | Grayscale `roughnessMap` with `RGBAFormat` + `UnsignedByteType` + `NoColorSpace`; albedo stays `color={colorHex}` | `a62956b` |
+| P0-B denylist | **Already present** on `main` + prod `sw-policy.js:70` since U2 (`f168999`); tests assert it. False FAIL from reading array start (~line 60) | No code change | — |
+| P1-A 124px canvas | Editor used `page` (max-w 40rem) + 26rem sidebar | `${page} page-wide` on `/designer` + `/designer/[id]` only | `a62956b` |
+| P1-B wheel zoom | Attempted host `preventDefault` patch + drei OrbitControls | Partial — camera dollied but page still scrolled (see Attempt 3) | `a62956b` |
+| P2 THREE warnings | sRGB texture + PCFSoft + Clock@r183 | Texture+shadow fixed; `three` pinned `0.182.0`; `shadows="percentage"` → PCFShadowMap | `a62956b` |
+| P3a/b | UX | Hide slice/leftover when `grain==='edge'`; species `radiogroup`/`radio` | `a62956b` |
 
 **U4 ACCEPTANCE amended** (authorized): colour-fidelity ΔE10 bullet. Node tests cover texture format + non-black §3.2 albedo wiring.
 
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | Same scope; U4 acceptance tightened for colour; no Phase 2 |
-| Correctness & functionality (/20) | 18 | Keagan PASS on fps/fallback/PNG/save/cache; black/zoom/width fixed in code; −2 until Keagan confirms wood colours + wheel zoom + wide preview + no THREE warnings |
-| Automated test coverage (/15) | 15 | 1103 tests; material RGBA/NoColorSpace + species albedo + radiogroup + edge metrics hide |
-| Security (/15) | 15 | `/designer` in `NEVER_CACHE_PREFIXES` (prod+tests); not in DOWNLOADABLE; CSP untouched |
-| Code quality & simplicity (/10) | 10 | Reused `page-wide`; roughnessMap not colour-map; no middleware edits |
-| Mobile/offline (/10) | 10 | Denylist confirmed; phone/print accepted unverified |
-| Documentation & handoff (/5) | 5 | This Attempt 2 + §9 + Keagan re-verify list |
+| Correctness & functionality (/20) | 18 | −2 pending browser confirm of colour/width/console/wheel |
+| Automated test coverage (/15) | 15 | 1103 tests |
+| Security (/15) | 15 | `/designer` in `NEVER_CACHE_PREFIXES` since U2 (never absent) |
+| Code quality & simplicity (/10) | 10 | — |
+| Mobile/offline (/10) | 10 | Denylist confirmed on notchplans.com `/sw-policy.js`; phone/print accepted unverified |
+| Documentation & handoff (/5) | 5 | — |
 | **Total (/100)** | **98** |
 
-**Result:** Pass (≥95). Attempt 1’s 96 was incorrect.
+### Attempt 3 — §7 loop (wheel + orbit usability)
+**Keagan confirmations (post-Attempt 2):** colour PASS (maple/walnut/purpleheart histograms) · width PASS (472×542 via `page-wide`) · console PASS (zero THREE.*) · denylist independently confirmed on prod. **Wheel CONFIRMED BROKEN:** one tick moved `scrollY` 150→250 while board dollied.
+
+**Defects fixed:**
+| ID | Cause | Fix | SHA |
+|---|---|---|---|
+| P0 wheel scrolls page | drei OrbitControls → `three-stdlib` binds `events.connected` (wrapper), registers `wheel` without `{passive:false}`; canvas stayed `touch-action:auto`; host-level preventDefault patch did not stop scroll | `BoardOrbitControls` uses `three/examples/jsm/controls/OrbitControls.js` connected to `gl.domElement` (non-passive wheel + `touch-action:none` on the canvas). Removed host preventDefault patch | `25cc107` |
+| P1-A dead small orbit | Default `rotateSpeed` 1.0 felt dead on ~470px canvas | `rotateSpeed = 1.85`, `dampingFactor = 0.08` | `25cc107` |
+| P1-B lopsided zoom | min/max not centred on default framing | `defaultDistance = maxDim*1.35`; min/max = ±2.1× (floor `thickness*2.5`) | `25cc107` |
+| P2 maple blends into `--bg` | Lit maple ≈ page background | Soft rim `directionalLight` | `25cc107` |
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | U4+U5 only; no U6/U7 |
+| Correctness & functionality (/20) | 18 | Colour/width/console Keagan-confirmed; wheel+orbit fixed in `25cc107` but **not** browser-observed here — last 2 pts withheld |
+| Automated test coverage (/15) | 15 | **1104** tests; orbit source guard (three.js controls → `gl.domElement`, no host wheel preventDefault) |
+| Security (/15) | 15 | Denylist unchanged/present; CSP/middleware untouched |
+| Code quality & simplicity (/10) | 10 | Fix at OrbitControls layer; no scroll trap beyond canvas |
+| Mobile/offline (/10) | 10 | Items 2+7 accepted unverified |
+| Documentation & handoff (/5) | 5 | Attempt 3 + §9 + one-item re-verify |
+| **Total (/100)** | **98** |
+
+**Result:** Pass (≥95). Attempt 1’s 96 was incorrect (black board + wheel). Offline denylist was never missing.
 
 ### Accepted unverified (Keagan, 2026-07-25)
 - Item 2 phone ≥30 fps — neither pass nor deduction
 - Item 7 paper print — neither pass nor deduction
 
-### Keagan re-verification (post-fix)
-1. Classic stripe + Checkerboard: maple/walnut/purpleheart read as wood, not black.
-2. Wheel over canvas dollies zoom; page does not scroll.
-3. Preview fills the wide editor column (not ~124px).
-4. Console: no THREE warnings (sRGB / PCFSoft / Clock). Clerk DEV-keys line still expected — ignore.
+### Keagan re-verification (Attempt 3 — one item)
+Pointer over the canvas: wheel both directions — camera zooms, `scrollY` does not change; a short (~40px) drag visibly rotates the board.
 
 ---
 
