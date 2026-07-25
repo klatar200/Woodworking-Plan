@@ -1,61 +1,92 @@
 /*
- * Luxury light-theme MOCKUP tokens — scoped to `.lux-mock` only.
- * Does NOT touch live `:root` / Oak & Forest. Review at /dev/theme-mockup.
+ * Luxury light-theme MOCKUP v2 — scoped to `.lux-mock` only.
+ * Direction: softer contrast. Page = luminous tan cream; dark green = fabric accent.
  *
- * Palette (from Keagan refs + slight hue tuning):
- *   Forest  #0A341F  · Olive #2F4630  · Gold #B28538
- *   Rust    #8B4F2E  · Cream #E4D9C4  · Cream-lit #F0E8D8
+ *   Tan paper  #EFE6D4  · Tan deep #E2D5BE
+ *   Fabric     #1A3D2A  · Olive ink #2A4030
+ *   Gold       #A88845  · Rust label #8A5E3C
  */
 
 .lux-mock {
-  --lux-forest: #0a341f;
-  --lux-forest-deep: #062417;
-  --lux-forest-lift: #0f4228;
-  --lux-olive: #2f4630;
-  --lux-olive-soft: #3d5540;
-  --lux-gold: #b28538;
-  --lux-gold-lit: #c9a04a;
-  --lux-gold-dim: #8f6a2c;
-  --lux-rust: #8b4f2e;
-  --lux-rust-soft: #a66b45;
-  --lux-cream: #e4d9c4;
-  --lux-cream-lit: #f0e8d8;
-  --lux-cream-deep: #d4c7ae;
-  --lux-ink: #0a341f;
-  --lux-muted: #5c6b5a;
-  --lux-elev: 0 12px 40px rgba(6, 36, 23, 0.35), 0 2px 8px rgba(6, 36, 23, 0.2);
+  --lux-tan: #efe6d4;
+  --lux-tan-lit: #f5efe3;
+  --lux-tan-deep: #e2d5be;
+  --lux-fabric: #1a3d2a;
+  --lux-fabric-lift: #244a34;
+  --lux-fabric-deep: #122a1c;
+  --lux-olive-ink: #2a4030;
+  --lux-gold: #a88845;
+  --lux-gold-lit: #b99a55;
+  --lux-gold-dim: #8a6f38;
+  --lux-rust: #8a5e3c;
+  --lux-muted: #6a6558;
+  --lux-elev: 0 10px 28px rgba(42, 64, 48, 0.12), 0 2px 6px rgba(42, 64, 48, 0.08);
 
-  color: var(--lux-cream);
-  background: var(--lux-forest);
+  color: var(--lux-olive-ink);
+  background: var(--lux-tan);
   font-family: Georgia, 'Times New Roman', serif;
-  /* Escape site chrome padding feel — full-bleed under header */
-  margin: calc(-1 * var(--page-pad-y, 0px)) calc(-1 * var(--page-pad-x, 0px));
 }
 
 .lux-mock * {
   box-sizing: border-box;
 }
 
-/* Fine stone/velvet grain — SVG noise as data URI, soft multiply */
-.lux-mock__grain {
+/* Soft paper grain on tan — barely there */
+.lux-mock__paper-grain {
   pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Fabric weave on green surfaces — denser, softer */
+.lux-mock__fabric {
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 70% at 35% 25%, var(--lux-fabric-lift) 0%, transparent 55%),
+    linear-gradient(160deg, var(--lux-fabric-lift) 0%, var(--lux-fabric) 45%, var(--lux-fabric-deep) 100%);
+  overflow: hidden;
+}
+
+.lux-mock__fabric::before {
+  content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
-  opacity: 0.22;
+  opacity: 0.45;
   mix-blend-mode: soft-light;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
+  /* Dual-axis weave: looks more like cloth than digital noise */
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.02) 2px,
+      rgba(255, 255, 255, 0.02) 3px
+    );
+  background-size: 120px 120px, 4px 4px, 4px 4px;
 }
 
-.lux-mock__vignette {
-  pointer-events: none;
+.lux-mock__fabric::after {
+  content: '';
   position: absolute;
   inset: 0;
   z-index: 2;
+  pointer-events: none;
   background:
-    radial-gradient(ellipse 75% 70% at 40% 35%, transparent 0%, rgba(4, 20, 12, 0.55) 100%),
-    linear-gradient(180deg, rgba(4, 20, 12, 0.15) 0%, transparent 28%, rgba(4, 20, 12, 0.45) 100%);
+    radial-gradient(ellipse 70% 60% at 50% 40%, transparent 30%, rgba(8, 20, 14, 0.35) 100%);
 }
 
 .lux-mock__banner {
@@ -67,166 +98,105 @@
   justify-content: space-between;
   gap: 0.75rem 1.25rem;
   padding: 0.85rem 1.5rem;
-  background: color-mix(in srgb, var(--lux-forest-deep) 88%, black);
-  border-bottom: 1px solid color-mix(in srgb, var(--lux-gold) 35%, transparent);
+  background: var(--lux-tan-deep);
+  border-bottom: 1px solid color-mix(in srgb, var(--lux-olive-ink) 12%, transparent);
   font-family: system-ui, sans-serif;
   font-size: 0.8125rem;
   letter-spacing: 0.04em;
-  color: var(--lux-cream-deep);
+  color: var(--lux-muted);
 }
 
 .lux-mock__banner strong {
-  color: var(--lux-gold-lit);
+  color: var(--lux-rust);
   font-weight: 600;
 }
 
 .lux-mock__banner a {
-  color: var(--lux-cream);
+  color: var(--lux-olive-ink);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
 .lux-mock__banner a:hover {
-  color: var(--lux-gold-lit);
+  color: var(--lux-rust);
 }
 
-/* ── Hero: one full-bleed forest plane ───────────────────────────────────── */
+/* ── Hero: tan paper + fabric accent plane ───────────────────────────────── */
 .lux-mock__hero {
   position: relative;
   isolation: isolate;
-  min-height: min(92vh, 54rem);
+  min-height: min(88vh, 48rem);
   display: grid;
-  align-items: end;
+  align-items: center;
   grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem) clamp(3.5rem, 7vw, 5.5rem);
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 5vw, 4rem);
   background:
-    radial-gradient(ellipse 90% 80% at 70% 20%, var(--lux-forest-lift) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 15% 80%, color-mix(in srgb, var(--lux-olive) 55%, transparent) 0%, transparent 60%),
-    linear-gradient(145deg, var(--lux-forest-deep) 0%, var(--lux-forest) 42%, var(--lux-olive) 100%);
+    radial-gradient(ellipse 90% 70% at 10% 0%, var(--lux-tan-lit) 0%, transparent 50%),
+    linear-gradient(180deg, var(--lux-tan-lit) 0%, var(--lux-tan) 55%, var(--lux-tan-deep) 100%);
   overflow: hidden;
 }
 
 @media (min-width: 960px) {
   .lux-mock__hero {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    align-items: center;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.9fr);
   }
 }
 
 .lux-mock__hero-inner {
   position: relative;
   z-index: 3;
-  max-width: 40rem;
+  max-width: 38rem;
 }
 
-/* Atmospheric plane — velvet panel + gold rim, not a content card */
-.lux-mock__hero-plane {
-  position: relative;
-  z-index: 3;
-  display: none;
-  min-height: min(52vh, 28rem);
-  border-radius: 2px;
-  background:
-    radial-gradient(ellipse 70% 60% at 40% 30%, color-mix(in srgb, var(--lux-gold) 14%, transparent), transparent 65%),
-    linear-gradient(165deg, var(--lux-olive-soft) 0%, var(--lux-forest-deep) 55%, #041810 100%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--lux-gold) 28%, transparent),
-    inset 0 -40px 60px rgba(0, 0, 0, 0.35),
-    0 24px 60px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  animation: lux-rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
-}
-
-@media (min-width: 960px) {
-  .lux-mock__hero-plane {
-    display: block;
-  }
-}
-
-.lux-mock__hero-plane::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  mix-blend-mode: soft-light;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 140px 140px;
-}
-
-.lux-mock__hero-plane::after {
-  content: '';
-  position: absolute;
-  inset: 12% 14%;
-  border: 1px solid color-mix(in srgb, var(--lux-gold) 40%, transparent);
-  border-radius: 1px;
-  box-shadow: inset 0 0 40px color-mix(in srgb, var(--lux-gold) 8%, transparent);
-}
-
-.lux-mock__hero-plane-mark {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(5rem, 12vw, 8rem);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--lux-gold-lit) 22%, transparent);
-  text-shadow: 0 0 40px color-mix(in srgb, var(--lux-gold) 25%, transparent);
-  user-select: none;
+.lux-mock__brand-mark {
+  display: block;
+  width: 2.75rem;
+  height: 2px;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(90deg, var(--lux-gold), var(--lux-gold-dim));
+  transform-origin: left center;
+  animation: lux-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
 .lux-mock__brand {
   display: block;
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(3.25rem, 9vw, 5.75rem);
+  font-size: clamp(3rem, 8vw, 5.25rem);
   font-weight: 600;
   line-height: 0.95;
   letter-spacing: 0.02em;
-  color: var(--lux-cream-lit);
-  margin: 0 0 1.25rem;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+  color: var(--lux-olive-ink);
+  margin: 0 0 1.1rem;
   animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.lux-mock__brand-mark {
-  display: block;
-  width: 3.5rem;
-  height: 2px;
-  margin-bottom: 1.35rem;
-  background: linear-gradient(90deg, var(--lux-gold-lit), var(--lux-gold-dim));
-  box-shadow: 0 0 18px color-mix(in srgb, var(--lux-gold) 50%, transparent);
-  animation: lux-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-  transform-origin: left center;
 }
 
 .lux-mock__headline {
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  font-size: clamp(1.3rem, 2.6vw, 1.75rem);
   font-weight: 500;
   line-height: 1.25;
-  color: var(--lux-cream);
+  color: var(--lux-olive-ink);
   margin: 0 0 0.85rem;
   max-width: 22ch;
-  animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
 .lux-mock__lede {
   font-family: system-ui, sans-serif;
   font-size: 1.0625rem;
   line-height: 1.55;
-  color: color-mix(in srgb, var(--lux-cream) 78%, var(--lux-olive-soft));
+  color: var(--lux-muted);
   margin: 0 0 2rem;
   max-width: 38ch;
-  animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+  animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
 }
 
 .lux-mock__ctas {
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
-  animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
+  animation: lux-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.26s both;
 }
 
 .lux-mock__btn {
@@ -252,110 +222,94 @@
   transform: translateY(1px);
 }
 
+/* Soft gold fill — less metallic punch */
 a.lux-mock__btn--gold {
   background: linear-gradient(180deg, var(--lux-gold-lit), var(--lux-gold));
-  color: var(--lux-forest-deep) !important;
-  border: 1px solid color-mix(in srgb, var(--lux-gold-lit) 70%, white);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 8px 24px rgba(0, 0, 0, 0.28);
+  color: var(--lux-tan-lit) !important;
+  border: 1px solid color-mix(in srgb, var(--lux-gold-dim) 50%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), var(--lux-elev);
 }
 
 a.lux-mock__btn--gold:hover {
-  background: linear-gradient(180deg, #d4af5a, var(--lux-gold-lit));
-  color: var(--lux-forest-deep) !important;
+  background: linear-gradient(180deg, #c4a86a, var(--lux-gold-lit));
+  color: var(--lux-tan-lit) !important;
 }
 
 a.lux-mock__btn--ghost {
   background: transparent;
-  color: var(--lux-cream) !important;
-  border: 1px solid color-mix(in srgb, var(--lux-cream) 35%, transparent);
+  color: var(--lux-olive-ink) !important;
+  border: 1px solid color-mix(in srgb, var(--lux-olive-ink) 22%, transparent);
 }
 
 a.lux-mock__btn--ghost:hover {
-  border-color: var(--lux-gold);
-  color: var(--lux-gold-lit) !important;
+  border-color: var(--lux-gold-dim);
+  color: var(--lux-gold-dim) !important;
 }
 
-/* Ambient gold flecks (decorative) */
-.lux-mock__flecks {
+/* Fabric accent — the green lives here, not as the page ground */
+.lux-mock__hero-plane {
+  position: relative;
+  z-index: 3;
+  display: none;
+  min-height: min(48vh, 26rem);
+  border-radius: 3px;
+  box-shadow: var(--lux-elev);
+  animation: lux-rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+@media (min-width: 960px) {
+  .lux-mock__hero-plane {
+    display: block;
+  }
+}
+
+.lux-mock__hero-plane-mark {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  overflow: hidden;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(5rem, 11vw, 7.5rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--lux-tan) 18%, transparent);
+  user-select: none;
 }
 
-.lux-mock__fleck {
+.lux-mock__hero-plane-rim {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--lux-gold-lit);
-  opacity: 0.35;
-  box-shadow: 0 0 10px var(--lux-gold);
-  animation: lux-glimmer 4.5s ease-in-out infinite;
+  inset: 10% 12%;
+  z-index: 3;
+  border: 1px solid color-mix(in srgb, var(--lux-gold) 32%, transparent);
+  border-radius: 1px;
+  pointer-events: none;
 }
 
-.lux-mock__fleck:nth-child(1) {
-  top: 18%;
-  left: 62%;
-  animation-delay: 0s;
-}
-.lux-mock__fleck:nth-child(2) {
-  top: 42%;
-  left: 78%;
-  width: 2px;
-  height: 2px;
-  animation-delay: 1.2s;
-}
-.lux-mock__fleck:nth-child(3) {
-  top: 28%;
-  left: 88%;
-  animation-delay: 2.1s;
-}
-.lux-mock__fleck:nth-child(4) {
-  top: 55%;
-  left: 70%;
-  width: 2px;
-  height: 2px;
-  animation-delay: 0.7s;
-}
-
-/* Soft light wash that drifts — presence, not noise */
+/* Soft gold wash — very quiet */
 .lux-mock__wash {
   position: absolute;
   z-index: 0;
-  width: 55%;
-  height: 70%;
-  top: -10%;
-  right: -5%;
+  width: 45%;
+  height: 55%;
+  top: -8%;
+  right: 5%;
   background: radial-gradient(
     ellipse at center,
-    color-mix(in srgb, var(--lux-gold) 18%, transparent) 0%,
+    color-mix(in srgb, var(--lux-gold) 10%, transparent) 0%,
     transparent 70%
   );
-  animation: lux-drift 14s ease-in-out infinite alternate;
+  animation: lux-drift 16s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
-/* ── Cream editorial band ────────────────────────────────────────────────── */
+/* ── Tan editorial bands ─────────────────────────────────────────────────── */
 .lux-mock__band {
   position: relative;
-  background: var(--lux-cream-lit);
-  color: var(--lux-ink);
-  padding: clamp(3.5rem, 8vw, 5.5rem) clamp(1.5rem, 5vw, 4rem);
-}
-
-.lux-mock__band::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.14;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-  mix-blend-mode: multiply;
+  background: var(--lux-tan);
+  color: var(--lux-olive-ink);
+  padding: clamp(3.25rem, 7vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+  border-top: 1px solid color-mix(in srgb, var(--lux-olive-ink) 10%, transparent);
 }
 
 .lux-mock__band-inner {
@@ -380,17 +334,17 @@ a.lux-mock__btn--ghost:hover {
 
 .lux-mock__eyebrow::before {
   content: '';
-  width: 1.5rem;
+  width: 1.35rem;
   height: 1px;
   background: var(--lux-gold);
 }
 
 .lux-mock__h2 {
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.2rem);
   font-weight: 600;
   line-height: 1.15;
-  color: var(--lux-forest);
+  color: var(--lux-olive-ink);
   margin: 0 0 0.65rem;
 }
 
@@ -403,27 +357,26 @@ a.lux-mock__btn--ghost:hover {
   margin: 0 0 2rem;
 }
 
-/* Feature list — not cards; hairline rules + gold ticks */
 .lux-mock__features {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
   gap: 0;
-  border-top: 1px solid color-mix(in srgb, var(--lux-olive) 22%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--lux-olive-ink) 12%, transparent);
 }
 
 .lux-mock__features li {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1rem 1.35rem;
-  padding: 1.35rem 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--lux-olive) 22%, transparent);
+  gap: 1rem 1.25rem;
+  padding: 1.3rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--lux-olive-ink) 12%, transparent);
 }
 
 .lux-mock__feat-num {
   font-family: var(--font-display), Georgia, serif;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--lux-gold-dim);
   line-height: 1.2;
@@ -433,7 +386,7 @@ a.lux-mock__btn--ghost:hover {
   font-family: var(--font-display), Georgia, serif;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--lux-forest);
+  color: var(--lux-olive-ink);
   margin: 0 0 0.25rem;
 }
 
@@ -451,92 +404,92 @@ a.lux-mock__btn--ghost:hover {
     gap: 0 2.5rem;
   }
   .lux-mock__features li:nth-child(odd) {
-    border-right: 1px solid color-mix(in srgb, var(--lux-olive) 18%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--lux-olive-ink) 10%, transparent);
     padding-right: 1.5rem;
   }
 }
 
-/* ── Deep forest mid band ────────────────────────────────────────────────── */
-.lux-mock__band--forest {
-  background:
-    radial-gradient(ellipse 70% 60% at 80% 0%, var(--lux-forest-lift) 0%, transparent 55%),
-    linear-gradient(180deg, var(--lux-forest) 0%, var(--lux-forest-deep) 100%);
-  color: var(--lux-cream);
-  overflow: hidden;
+/* Fabric inset on tan — green as material sample, not a reverse-theme band */
+.lux-mock__fabric-inset {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  align-items: center;
 }
 
-.lux-mock__band--forest .lux-mock__h2 {
-  color: var(--lux-cream-lit);
+@media (min-width: 800px) {
+  .lux-mock__fabric-inset {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
 }
 
-.lux-mock__band--forest .lux-mock__p {
-  color: color-mix(in srgb, var(--lux-cream) 72%, var(--lux-olive));
+.lux-mock__fabric-sample {
+  min-height: 14rem;
+  border-radius: 3px;
+  box-shadow: var(--lux-elev);
 }
 
-.lux-mock__band--forest .lux-mock__eyebrow {
-  color: var(--lux-gold-lit);
+.lux-mock__fabric-sample-label {
+  position: absolute;
+  z-index: 3;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lux-tan) 75%, transparent);
 }
 
 .lux-mock__swatches {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
   gap: 0.85rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .lux-mock__swatch {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.5rem;
 }
 
 .lux-mock__swatch-chip {
-  height: 4.5rem;
+  height: 3.75rem;
   border-radius: 2px;
-  border: 1px solid color-mix(in srgb, var(--lux-cream) 18%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--lux-elev);
+  border: 1px solid color-mix(in srgb, var(--lux-olive-ink) 12%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.lux-mock__swatch-chip--fabric {
+  /* fabric texture preview on the chip */
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  background-size: 80px 80px;
+  background-blend-mode: soft-light;
 }
 
 .lux-mock__swatch-meta {
   font-family: system-ui, sans-serif;
   font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--lux-cream) 70%, transparent);
+  letter-spacing: 0.03em;
+  color: var(--lux-muted);
 }
 
 .lux-mock__swatch-meta strong {
   display: block;
-  color: var(--lux-cream-lit);
+  color: var(--lux-olive-ink);
   font-weight: 600;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.1rem;
 }
 
-/* ── CTA close ───────────────────────────────────────────────────────────── */
+/* Close — still tan, slightly deeper */
 .lux-mock__close {
   position: relative;
   text-align: center;
-  padding: clamp(4rem, 10vw, 6.5rem) clamp(1.5rem, 5vw, 4rem);
-  background:
-    linear-gradient(
-      180deg,
-      var(--lux-cream-deep) 0%,
-      var(--lux-cream-lit) 40%,
-      var(--lux-cream) 100%
-    );
-  color: var(--lux-ink);
+  padding: clamp(3.75rem, 9vw, 5.75rem) clamp(1.5rem, 5vw, 4rem);
+  background: linear-gradient(180deg, var(--lux-tan) 0%, var(--lux-tan-deep) 100%);
+  border-top: 1px solid color-mix(in srgb, var(--lux-olive-ink) 10%, transparent);
   overflow: hidden;
-}
-
-.lux-mock__close::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 50% 40% at 50% 100%,
-    color-mix(in srgb, var(--lux-gold) 22%, transparent),
-    transparent 70%
-  );
 }
 
 .lux-mock__close-inner {
@@ -560,24 +513,10 @@ a.lux-mock__btn--ghost:hover {
   justify-content: center;
 }
 
-.lux-mock__close a.lux-mock__btn--gold {
-  color: var(--lux-forest-deep) !important;
-}
-
-.lux-mock__close a.lux-mock__btn--ghost {
-  color: var(--lux-forest) !important;
-  border-color: color-mix(in srgb, var(--lux-forest) 28%, transparent);
-}
-
-.lux-mock__close a.lux-mock__btn--ghost:hover {
-  border-color: var(--lux-rust);
-  color: var(--lux-rust) !important;
-}
-
 @keyframes lux-rise {
   from {
     opacity: 0;
-    transform: translateY(1.1rem);
+    transform: translateY(0.9rem);
   }
   to {
     opacity: 1;
@@ -596,24 +535,12 @@ a.lux-mock__btn--ghost:hover {
   }
 }
 
-@keyframes lux-glimmer {
-  0%,
-  100% {
-    opacity: 0.15;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.55;
-    transform: scale(1.4);
-  }
-}
-
 @keyframes lux-drift {
   from {
     transform: translate(-2%, 2%) scale(1);
   }
   to {
-    transform: translate(3%, -3%) scale(1.08);
+    transform: translate(3%, -2%) scale(1.06);
   }
 }
 
@@ -623,7 +550,7 @@ a.lux-mock__btn--ghost:hover {
   .lux-mock__headline,
   .lux-mock__lede,
   .lux-mock__ctas,
-  .lux-mock__fleck,
+  .lux-mock__hero-plane,
   .lux-mock__wash {
     animation: none !important;
   }

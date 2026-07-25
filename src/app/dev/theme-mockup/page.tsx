@@ -16,6 +16,9 @@ import './mockup.css';
  *
  * Scoped under `.lux-mock` — does NOT mutate live `:root` Oak & Forest tokens.
  * Approve palette → separate light-theme re-palette sprint.
+ *
+ * v2 direction: tan paper as the page ground; textured fabric green as accent
+ * only — soft contrast, not forest-vs-cream blocks.
  */
 export const dynamic = 'force-dynamic';
 
@@ -48,11 +51,11 @@ const FEATURES = [
 ] as const;
 
 const SWATCHES = [
-  { name: 'Forest', hex: '#0A341F', color: '#0A341F' },
-  { name: 'Olive', hex: '#2F4630', color: '#2F4630' },
-  { name: 'Beige gold', hex: '#B28538', color: '#B28538' },
-  { name: 'Rusty brown', hex: '#8B4F2E', color: '#8B4F2E' },
-  { name: 'Creamy tan', hex: '#E4D9C4', color: '#E4D9C4' },
+  { name: 'Tan paper', hex: '#EFE6D4', color: '#EFE6D4', fabric: false },
+  { name: 'Tan deep', hex: '#E2D5BE', color: '#E2D5BE', fabric: false },
+  { name: 'Fabric green', hex: '#1A3D2A', color: '#1A3D2A', fabric: true },
+  { name: 'Soft gold', hex: '#A88845', color: '#A88845', fabric: false },
+  { name: 'Rust label', hex: '#8A5E3C', color: '#8A5E3C', fabric: false },
 ] as const;
 
 export default function LuxuryThemeMockupPage() {
@@ -63,23 +66,16 @@ export default function LuxuryThemeMockupPage() {
     <div className="lux-mock">
       <div className="lux-mock__banner" role="status">
         <span>
-          <strong>MOCKUP</strong> — luxury light palette exploration. Live site tokens
-          unchanged.
+          <strong>MOCKUP v2</strong> — tan paper + fabric green. Soft contrast. Live
+          tokens unchanged.
         </span>
         <Link href="/">← Back to live landing</Link>
       </div>
 
-      {/* Hero: brand + one line + one lede + CTAs on full-bleed forest */}
+      {/* Hero: tan ground, fabric plane as the green accent */}
       <section className="lux-mock__hero" aria-label="Luxury theme hero mockup">
+        <div className="lux-mock__paper-grain" aria-hidden="true" />
         <div className="lux-mock__wash" aria-hidden="true" />
-        <div className="lux-mock__grain" aria-hidden="true" />
-        <div className="lux-mock__vignette" aria-hidden="true" />
-        <div className="lux-mock__flecks" aria-hidden="true">
-          <span className="lux-mock__fleck" />
-          <span className="lux-mock__fleck" />
-          <span className="lux-mock__fleck" />
-          <span className="lux-mock__fleck" />
-        </div>
 
         <div className="lux-mock__hero-inner">
           <span className="lux-mock__brand-mark" aria-hidden="true" />
@@ -99,13 +95,14 @@ export default function LuxuryThemeMockupPage() {
           </div>
         </div>
 
-        <div className="lux-mock__hero-plane" aria-hidden="true">
+        <div className="lux-mock__hero-plane lux-mock__fabric" aria-hidden="true">
+          <span className="lux-mock__hero-plane-rim" />
           <span className="lux-mock__hero-plane-mark">N</span>
         </div>
       </section>
 
-      {/* Cream editorial — features as rules, not cards */}
       <section className="lux-mock__band">
+        <div className="lux-mock__paper-grain" aria-hidden="true" />
         <div className="lux-mock__band-inner">
           <p className="lux-mock__eyebrow">Why this catalog</p>
           <h2 className="lux-mock__h2">Craft, specified.</h2>
@@ -129,42 +126,51 @@ export default function LuxuryThemeMockupPage() {
         </div>
       </section>
 
-      {/* Forest band — palette reference for review */}
-      <section className="lux-mock__band lux-mock__band--forest">
-        <div className="lux-mock__grain" aria-hidden="true" />
-        <div className="lux-mock__band-inner" style={{ position: 'relative', zIndex: 1 }}>
-          <p className="lux-mock__eyebrow">Proposed light tokens</p>
-          <h2 className="lux-mock__h2">Forest, gold, and cream.</h2>
-          <p className="lux-mock__p">
-            Tuned from your references: deeper forest than today&rsquo;s Oak &amp; Forest
-            paper, metallic gold for accent, rust for quiet labels, cream for reading
-            surfaces. Grain + vignette give the green weight.
-          </p>
-          <div className="lux-mock__swatches" role="list">
-            {SWATCHES.map((s) => (
-              <div key={s.hex} className="lux-mock__swatch" role="listitem">
-                <div
-                  className="lux-mock__swatch-chip"
-                  style={{ background: s.color }}
-                  aria-hidden="true"
-                />
-                <div className="lux-mock__swatch-meta">
-                  <strong>{s.name}</strong>
-                  {s.hex}
-                </div>
+      {/* Fabric as a material sample on tan — not a full reverse band */}
+      <section className="lux-mock__band">
+        <div className="lux-mock__band-inner">
+          <div className="lux-mock__fabric-inset">
+            <div className="lux-mock__fabric lux-mock__fabric-sample">
+              <span className="lux-mock__fabric-sample-label">Fabric green</span>
+            </div>
+            <div>
+              <p className="lux-mock__eyebrow">Proposed light tokens</p>
+              <h2 className="lux-mock__h2">Tan paper. Fabric green.</h2>
+              <p className="lux-mock__p">
+                Page ground is a luminous tan cream. Dark green shows up as a textured
+                fabric accent — panels and marks — not as a competing full-page field.
+              </p>
+              <div className="lux-mock__swatches" role="list">
+                {SWATCHES.map((s) => (
+                  <div key={s.hex} className="lux-mock__swatch" role="listitem">
+                    <div
+                      className={
+                        s.fabric
+                          ? 'lux-mock__swatch-chip lux-mock__swatch-chip--fabric'
+                          : 'lux-mock__swatch-chip'
+                      }
+                      style={{ backgroundColor: s.color }}
+                      aria-hidden="true"
+                    />
+                    <div className="lux-mock__swatch-meta">
+                      <strong>{s.name}</strong>
+                      {s.hex}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Close CTA on cream */}
       <section className="lux-mock__close">
+        <div className="lux-mock__paper-grain" aria-hidden="true" />
         <div className="lux-mock__close-inner">
           <p className="lux-mock__eyebrow">Next</p>
           <h2 className="lux-mock__h2">{BRAND_TAGLINE}</h2>
           <p className="lux-mock__p">
-            If this direction feels right, we promote these hues into live{' '}
+            If this softer direction feels right, we promote these hues into live{' '}
             <code style={{ fontSize: '0.9em' }}>:root</code> tokens in a dedicated
             light-theme sprint — contrast guards and Clerk chrome included.
           </p>
