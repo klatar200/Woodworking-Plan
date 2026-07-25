@@ -62,7 +62,8 @@ export function BoardPreview(props: {
 
   return (
     <section className="grid gap-[0.75rem]" aria-label="Board preview">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-[0.75rem]">
+        <h2 className="!m-0 text-[1.125rem]">Preview</h2>
         <button
           type="button"
           className={btnGhost}

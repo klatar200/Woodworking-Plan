@@ -115,4 +115,49 @@ describe('DesignerShell static render', () => {
     expect(files).toContain('min-h-[2.75rem]');
     expect(files).not.toContain('shadow-[');
   });
+
+  it('Sprint 53 chrome: sticky full-width preview, one-line Export, diagram move labels, species nowrap', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const preview = source('src/components/designer/board-preview.tsx');
+    const stripList = source('src/components/designer/strip-list.tsx');
+    const canvas = source('src/components/designer/r3f-canvas.tsx');
+    const newPage = source('src/app/designer/page.tsx');
+    const editPage = source('src/app/designer/[id]/page.tsx');
+    const libraryPage = source('src/app/designer/library/page.tsx');
+
+    expect(newPage).toContain('lg:max-w-none');
+    expect(editPage).toContain('lg:max-w-none');
+    expect(libraryPage).not.toContain('lg:max-w-none');
+
+    expect(shell).toMatch(/lg:sticky/);
+    expect(shell).toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_minmax\(20rem,26rem\)\]/);
+
+    // Preview heading + Export PNG share one flex row (heading left, button right).
+    expect(preview).toMatch(
+      /flex items-center justify-between[\s\S]*Preview[\s\S]*Export PNG/,
+    );
+    expect(shell).not.toMatch(/<h2[^>]*>Preview<\/h2>/);
+
+    expect(stripList).toContain('Toward top');
+    expect(stripList).toContain('Toward bottom');
+    expect(stripList).toContain('Toward left');
+    expect(stripList).toContain('Toward right');
+    expect(stripList).not.toMatch(/>\s*Up\s*</);
+    expect(stripList).not.toMatch(/>\s*Down\s*</);
+    expect(stripList).toContain('whitespace-nowrap');
+    expect(stripList).toContain('text-ellipsis');
+    expect(stripList).toContain('grid-cols-2');
+    expect(stripList).not.toContain('sm:grid-cols-4');
+
+    expect(canvas).toContain('designer-canvas-host');
+    expect(canvas).toMatch(/min-h-\[18rem\]/);
+    expect(canvas).toMatch(/h-\[min\(60vh,32rem\)\]/);
+
+    const endHtml = render(goldenConfig);
+    expect(endHtml).toContain('Toward left');
+    expect(endHtml).toContain('Toward right');
+    const edgeHtml = render({ ...goldenConfig, grain: 'edge' });
+    expect(edgeHtml).toContain('Toward top');
+    expect(edgeHtml).toContain('Toward bottom');
+  });
 });

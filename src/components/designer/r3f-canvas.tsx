@@ -75,7 +75,9 @@ export function BoardR3FCanvas({
   return (
     <div
       ref={containerRef}
-      className="h-[min(68vh,34rem)] min-h-[18rem] w-full overflow-hidden rounded-[0.75rem] border border-border bg-bg"
+      // Explicit host size so R3F's resize observer never falls back to 300×150
+      // after the sticky/split-pane layout changes available width/height.
+      className="designer-canvas-host h-[min(60vh,32rem)] min-h-[18rem] w-full overflow-hidden rounded-[0.75rem] border border-border bg-bg"
       onPointerDown={markActive}
       onPointerMove={markActive}
     >
@@ -89,7 +91,8 @@ export function BoardR3FCanvas({
         onCreated={({ gl }) => {
           gl.shadowMap.type = PCFShadowMap;
         }}
-        style={{ width: '100%', height: '100%' }}
+        style={{ display: 'block', width: '100%', height: '100%' }}
+        resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
       >
         <CanvasLifecycle
           onCanvasReady={onCanvasReady}

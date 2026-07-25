@@ -25,7 +25,8 @@ export default async function DesignerPage() {
   }
 
   return (
-    <main id="main" className={`${page} page-wide`}>
+    // Full-width on desktop like /browse — preview column takes the slack.
+    <main id="main" className={`${page} lg:max-w-none`}>
       <p className="breadcrumb no-print">
         <Link href="/designer/library">Your boards</Link>
       </p>

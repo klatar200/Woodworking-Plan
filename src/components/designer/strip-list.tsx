@@ -1,5 +1,5 @@
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
-import type { Strip } from '@/lib/board-designer/types';
+import type { Grain, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 import type { ChangeEvent } from 'react';
@@ -7,7 +7,16 @@ import type { ChangeEvent } from 'react';
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
 
+/** Labels follow the top-face diagram axes (layout.ts), never the orbit camera. */
+export function stripMoveLabels(grain: Grain): { earlier: string; later: string } {
+  if (grain === 'edge') {
+    return { earlier: 'Toward top', later: 'Toward bottom' };
+  }
+  return { earlier: 'Toward left', later: 'Toward right' };
+}
+
 export function StripList({
+  grain,
   strips,
   onAdd,
   onDuplicate,
@@ -15,6 +24,7 @@ export function StripList({
   onMove,
   onUpdate,
 }: {
+  grain: Grain;
   strips: Strip[];
   onAdd: () => void;
   onDuplicate: (id: string) => void;
@@ -22,6 +32,8 @@ export function StripList({
   onMove: (id: string, direction: -1 | 1) => void;
   onUpdate: (id: string, patch: Partial<Strip>) => void;
 }) {
+  const move = stripMoveLabels(grain);
+
   return (
     <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
       <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
@@ -58,17 +70,19 @@ export function StripList({
                     type="button"
                     className={btnGhost}
                     disabled={index === 0}
+                    aria-label={`Move strip ${move.earlier.toLowerCase()} of the board face`}
                     onClick={() => onMove(strip.id, -1)}
                   >
-                    Up
+                    {move.earlier}
                   </button>
                   <button
                     type="button"
                     className={btnGhost}
                     disabled={index === strips.length - 1}
+                    aria-label={`Move strip ${move.later.toLowerCase()} of the board face`}
                     onClick={() => onMove(strip.id, 1)}
                   >
-                    Down
+                    {move.later}
                   </button>
                   <button type="button" className={btnGhost} onClick={() => onDuplicate(strip.id)}>
                     Duplicate
@@ -85,7 +99,7 @@ export function StripList({
                   <div
                     role="radiogroup"
                     aria-label="Species"
-                    className="grid grid-cols-2 gap-[0.375rem] sm:grid-cols-4"
+                    className="grid grid-cols-2 gap-[0.375rem]"
                   >
                     {SPECIES.map((species) => {
                       const selected = species.id === strip.speciesId;
@@ -96,7 +110,8 @@ export function StripList({
                           role="radio"
                           aria-checked={selected}
                           tabIndex={selected ? 0 : -1}
-                          className={`min-h-[2.75rem] rounded-[0.375rem] border px-[0.625rem] py-0 text-left text-[0.875rem] focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 ${
+                          title={species.name}
+                          className={`inline-flex min-h-[2.75rem] min-w-0 items-center rounded-[0.375rem] border px-[0.5rem] text-left text-[0.8125rem] leading-none whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 ${
                             selected
                               ? 'border-fg bg-accent-tint font-bold text-fg'
                               : 'border-border bg-surface text-fg'
@@ -107,20 +122,22 @@ export function StripList({
                               return;
                             }
                             event.preventDefault();
-                            const index = SPECIES.findIndex((s) => s.id === strip.speciesId);
-                            if (index < 0) return;
+                            const speciesIndex = SPECIES.findIndex((s) => s.id === strip.speciesId);
+                            if (speciesIndex < 0) return;
                             const delta = event.key === 'ArrowRight' ? 1 : -1;
                             const next =
-                              SPECIES[(index + delta + SPECIES.length) % SPECIES.length]!;
+                              SPECIES[(speciesIndex + delta + SPECIES.length) % SPECIES.length]!;
                             onUpdate(strip.id, { speciesId: next.id });
                           }}
                         >
                           <span
                             aria-hidden="true"
-                            className="mr-[0.375rem] inline-block h-[0.875rem] w-[0.875rem] rounded-[50%] border border-border align-[-0.125rem]"
+                            className="mr-[0.375rem] inline-block h-[0.875rem] w-[0.875rem] shrink-0 rounded-[50%] border border-border"
                             style={{ backgroundColor: species.colorHex }}
                           />
-                          {species.name}
+                          <span className="min-w-0 overflow-hidden text-ellipsis">
+                            {species.name}
+                          </span>
                         </button>
                       );
                     })}
