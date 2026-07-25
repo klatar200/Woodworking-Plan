@@ -9,7 +9,7 @@
 
 **Sprints 51 (foundation) + 52 (3D).** Sprints 47–50 are TAKEN (settings hub, page size, navbar, filter rail — `SPRINT_LOG.md`). Every earlier doc reference to "Sprint 47+" is a stale number, not a stale decision.
 **Decisions of record:** `DECISIONS_LOG.md` 2026-07-24. **Roadmap row:** `BUILD_PLAN.md` §4.
-**Status:** U0 ✅ · U1 ✅ · U2 ✅ · U3 ✅ · U4 ⬜ · U5 ⬜ · U6/U7 = Phase 2, unopened.
+**Status:** U0 ✅ · U1 ✅ · U2 ✅ · U3 ✅ · U4 ✅ · U5 ✅ · U6/U7 = Phase 2, unopened.
 
 ---
 
@@ -438,3 +438,5 @@ Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/k
 - U2 2026-07-25: BoardDesign model + migration; session-scoped CRUD; 8 KB pre-parse cap; `/designer` never-cache; pages import DesignerShell (U3); no public-routes change.
 - U3 2026-07-25: DesignerShell + SVG via BoardPreview seam; 1/16″ width snap; KERF_OPTIONS_IN select; ~23k cell fallback copy "too many pieces to draw"; join removed duplicate page h1 + draft blurb (B6).
 - Sprint 51 close 2026-07-25 Attempt 2: score 92/100 — blocked on Vercel MCP/dashboard auth (cannot quote migrate lines for `add_board_design`) and Clerk signed-in smoke (Google OAuth, no test user). Prod signed-out `/designer` → Clerk sign-in `redirect_url=…/designer` observed. No U4/U5; no nav/CTA.
+- U4 2026-07-25: deps `three@0.185.1` / `@react-three/fiber@9.6.1` / `@react-three/drei@10.7.7` (all MIT); `MAX_3D_CELLS=8000`; one InstancedMesh/species; SVG fallback + PNG export; no middleware/CSP edits; updated obsolete U3 board-preview seam assert in `tests/board-diagram.test.tsx`.
+- U5 2026-07-25: print route `/designer/[id]/print`; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line; ROUTE_MODULES print entry.

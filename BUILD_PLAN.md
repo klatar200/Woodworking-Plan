@@ -34,7 +34,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Public launch | 🟡 REACHABLE, NOT LAUNCHED — `SITE_INDEXABLE=true`; crawlable/indexable but still in development (no marketing/subscriptions/commercialization/users). live≠launched (AGENTS_CONTEXT §"Settled") |
 | Phase 4 | 🟡 PARTIAL — build logs (27) + tool-aware search (25–26) only; rest CLOSED |
 | Sprints 47–50 | ✅ shipped (settings hub · page size 24 · navbar Browse→Plans · `/browse` filter rail) — detail in SPRINT_LOG. Listed so the next sprint number is not re-used. |
-| Sprints 51–52 (Cutting Board Designer) | 🟡 Sprint **51 code on `main`** 2026-07-25 (U0–U3: `3d33c37`/`f168999`/`84cdc55`; suite **1088/1088**; Vercel Production deploy success) — **close blocked** on reading vercel-build migrate log + signed-in save/library smoke (see SPRINT_LOG Attempt 2, 92/100). Sprint **52** unopened (U4 3D + U5 print/hard nav). No nav/landing CTA until U5 (B5). |
+| Sprints 51–52 (Cutting Board Designer) | 🟡 Sprint **51** code on `main` (U0–U3; close Attempt 2 = 92 — Vercel migrate-log + signed-in smoke still Keagan queue). Sprint **52 CLOSED** 2026-07-25 (U4 3D + U5 print/hard nav) — `bdae2d9`/`9e33384` on `main`; suite **1099/1099**; `/designer` First Load **113 kB**; `/` **138 kB** + `/browse` **140 kB** unchanged. |
 
 Test suite — expected: 1088/1088 (Sprint 51 join gate, Cursor VM; lint/tsc/build clean). Update this single figure each sprint close; 1017/1017 and earlier superseded.
 
