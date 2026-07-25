@@ -49,9 +49,9 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 **Dates:** 2026-07-25
 **Scope:** R3F 3D preview behind BoardPreview seam; PNG export; print sheet; SIGNED_IN_NAV `Designer`; landing CTA `Design a board →` + B6 support line. U6/U7 unopened.
 **Commits on `main`:** `bdae2d9` (U5 print+nav) · `9e33384` (U4 R3F)
-**CI:** run on `9e33384` success
+**CI:** tip of `main` `7ac9f20` success (also `9e33384` U4 success; docs `899cbb8` cancelled after superseded by `7ac9f20`)
 **Vercel:** Production deploy for `9e33384` status **success** (`GnyzzR2DthkriLsYrm6KVQZENGvv` / GH deployment `5604086712`)
-**/designer First Load JS:** 113 kB (build table). `/` 138 kB · `/browse` 140 kB unchanged vs Sprint 51 build.
+**/designer First Load JS:** 113 kB (Sprint 52 build table). `/` **138 kB** · `/browse` **140 kB** — baseline from Sprint 51 join `next build` table (post-`f168999`): `/` 138 kB · `/browse` 140 kB · `/designer` 111 kB; home/browse unchanged at Sprint 52 tip.
 
 ### Attempt 1
 | Category | Score | Evidence |
