@@ -13,7 +13,7 @@
 
 ## Parked 2026-07-19 (QOL/UI pass — each a new product surface, none in BUSINESS_PLAN)
 - CNC plans (new plan type: toolpaths not cut lists; needs a taxonomy decision) · woodworking jig plans (maybe just a Category) · custom community-driven plans (plan-ownership licensing, don't rush) · lumber board-foot standalone calculator (own UI surface; distinct from the QOL-B per-material tooltip) · repository of known woodworking tools by skill level (a 2nd content type).
-- **edge/end-grain cutting-board designer — ✅ PROMOTED 2026-07-24 (Keagan).** Now BUILD_PLAN Sprint 47+; plan `docs/superpowers/plans/cutting-board-designer-build-plan.md`; decisions in DECISIONS_LOG 2026-07-24. No longer parked.
+- **edge/end-grain cutting-board designer — ✅ PROMOTED 2026-07-24 (Keagan).** Now BUILD_PLAN Sprints 51–52 (renumbered 2026-07-25; 47–50 taken); contract `docs/superpowers/plans/cutting-board-designer-build-plan.md`; decisions in DECISIONS_LOG 2026-07-24. No longer parked.
 - **Site map** + **SEO optimization** — blocker LIFTED (site indexable, `SITE_INDEXABLE=true`, branding resolved). No longer blocked; simply NOT SCHEDULED (not in BUSINESS_PLAN).
 
 ## Parked 2026-07-24 (removed briefs, recover from git if scheduled)
