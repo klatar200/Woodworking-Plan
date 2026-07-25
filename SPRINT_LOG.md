@@ -47,14 +47,16 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 ## Sprint 51: Cutting Board Designer foundation (U1–U3)
 **Dates:** 2026-07-25
-**Scope:** Geometry lib + private BoardDesign persistence + editor/SVG preview. Sprint 52 (U4 3D + U5 print/nav) unopened.
-**Commit:** `f168999` on `main`
+**Scope:** Geometry lib + private BoardDesign persistence + editor/SVG preview. Sprint 52 (U4 3D + U5 print/nav) unopened. No nav/landing CTA (B5 → U5).
+**Commits on `main`:** `3d33c37` (U1) · `f168999` (U2+U3) · `84cdc55` (score docs)
+**CI:** run `30170553951` success on `84cdc55`
+**Vercel:** Production deploy `dpl_Cfv4j68dvEfYcDRyXZ9gBj6mHDX3` / GH deployment `5603913325` status **success** for `84cdc55`
 
 ### Attempt 1
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | B1 Sprint 51 = U1+U2+U3 only; no nav/3D/shopping (B5/B7); §3 frozen |
-| Correctness & functionality (/20) | 18 | Golden/kerf/zero-slice + template dims; build lists `/designer*`; signed-out Clerk `auth.protect` on `/designer` (same as `/shopping-list`); signed-in kerf/species live pass deferred to browser with Clerk session |
+| Correctness & functionality (/20) | 18 | Local join gate only; signed-in prod smoke + Vercel build-log migrate line not yet read |
 | Automated test coverage (/15) | 15 | 1088/1088; `board-designer-*`, `board-designs-authz`, `board-diagram`, `designer-shell`, offline/route-modules |
 | Security (/15) | 15 | Session-scoped CRUD; form `userId` ignored; 8 KB pre-parse; rate-limit 303; not in `public-routes`; `/designer` in `NEVER_CACHE_PREFIXES` |
 | Code quality & simplicity (/10) | 10 | shopping-list action pattern; BoardPreview U4 seam; no extra models/deps |
@@ -62,7 +64,21 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 | Documentation & handoff (/5) | 5 | BUILD_PLAN §4 + suite figure; plan status U2/U3 ✅; §9 handoff lines |
 | **Total (/100)** | **98** |
 
-**Result:** Pass (≥95). Join gate: migrate applied · lint · typecheck · test 1088 · `next build` green. No U4/U5.
+**Result:** Provisional local pass — superseded by Attempt 2 after prod verification gaps.
+
+### Attempt 2 — prod close verification
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | U1–U3 only on `main`; `/browse` nav has Home/Plans/Learning/About/FAQ — no Designer; no "Design a board →" (B5) |
+| Correctness & functionality (/20) | 12 | Prod signed-out `GET /designer` (browser) → Clerk sign-in with `redirect_url=https://notchplans.com/designer`; curl+UA → HTTP 307 handshake same. **Blocked:** Vercel build log not readable (MCP `needsAuth` + dashboard login wall) so cannot quote `migrate deploy` / `add_board_design`. **Blocked:** signed-in save → library → reopen (Google OAuth, no test credentials) |
+| Automated test coverage (/15) | 15 | CI `30170553951` success; suite figure 1088/1088 |
+| Security (/15) | 15 | Prod Clerk protect on `/designer` + `/designer/library`; authz tests for IDOR/userId/8KB/rate-limit |
+| Code quality & simplicity (/10) | 10 | unchanged |
+| Mobile/offline (/10) | 10 | unchanged |
+| Documentation & handoff (/5) | 5 | This attempt logs blockers; §9 handoff lines present |
+| **Total (/100)** | **92** |
+
+**Result:** Fail (<95). Underlying issue is **verification access**, not product code. Escalate to Keagan (Vercel log access + Clerk test sign-in). No U4/U5. No nav/CTA "fix".
 
 ---
 
