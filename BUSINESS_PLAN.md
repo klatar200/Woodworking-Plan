@@ -26,3 +26,5 @@ This section is from the original build, not revisited since; may or may not cha
 
 ## Roadmap (product-level; authoritative status in BUILD_PLAN §4)
 Phase 2: reviews/build photos, personalized recs, shopping-list generator, print/offline export, expanded offline. Phase 3: creator marketplace, cut-list optimizer, cost estimator, makerspace/team accounts, learning paths, native re-eval. Phase 4: AI plan customization, forums/build logs, video, international/metric, tool-inventory-aware search. (Several deferred/cut — see FUTURE_IDEAS + BUILD_PLAN §4.)
+
+**Cutting Board Designer (added 2026-07-24, Keagan):** first-party interactive edge/end-grain board designer — sign-in required; hard nav presence; modern real-time **3D** preview as the product differentiator (lightweight shell allowed early); save/export/print in first ship; shopping-list push in a later phase. Not a freemium clone; no PRO paywall / dollar lumber UI. Status → BUILD_PLAN §4 Sprint 47+.
