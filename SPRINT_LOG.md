@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 51: Cutting Board Designer foundation (U1–U3)
 **Dates:** 2026-07-25
 **Scope:** Geometry lib + private BoardDesign persistence + editor/SVG preview. Sprint 52 (U4 3D + U5 print/nav) unopened.
-**Commit:** _(filled after push)_
+**Commit:** `f168999` on `main`
 
 ### Attempt 1
 | Category | Score | Evidence |
