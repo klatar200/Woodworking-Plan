@@ -26,6 +26,8 @@
 - **UX Remediation calls (2026-07-21):** stop pre-ticking workshop filter boxes; landing states the real catalog size; CAD part-diagram pilot stays GATED (needs a `StepPart` join); app-page type hierarchy DECLINED. `start_url` → `/browse`.
 - **🏷️ Branding #8 RESOLVED (2026-07-21):** the product is **Notch** at **notchplans.com**, "Oak & Forest" palette, tagline "Built naturally. Made to last.", `support@notchplans.com`.
 - **Sprint 46 (2026-07-23):** catalog UX batch; imageless plans unpublished; runtime step formatting.
+- **Mobile-first is scoped to the PLANS side (2026-07-25):** browsing plans / cut lists / build steps stay mobile-first; the **designer is desktop-only authoring**, and a saved design's plan + cut list must be reachable on mobile. Narrows — does not reverse — the 2026-07-12 platform strategy. Gate on VIEWPORT WIDTH, never UA sniffing. B7 still holds: do not meet "cut list on mobile" by rendering `toParts()`.
+- **Designer undo/redo (2026-07-25):** table stakes, pulled out of U7 into its own sprint; replaces the template-replace confirm; in-memory only. Advanced templates + the wider "Canva-like" feature set are DEFERRED to their own conversations.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 
 _(Full history below, chronological.)_
@@ -1758,3 +1760,30 @@ content edits either way.
 | Library heading | `Your boards` |
 
 Do not invent alternate marketing blurbs without a new decision. Tiny UI chrome (“Save”, “Export PNG”, “Print”, template names) stays engineering judgment.
+
+---
+
+### 2026-07-25 — Mobile-first is scoped to the PLANS side; the designer is desktop-only
+**Status:** Confirmed by Keagan.
+
+**Decision.** The 2026-07-12 "mobile-first PWA" platform strategy is **narrowed, not reversed**. It governs the *plans* side — browsing plans, cut lists, and walking the build steps — which stays mobile-first with desktop as the optional bigger screen. The **designer is a separate application inside the application** and is **authoring on desktop only**. Once a design is saved, its **plan and cut list must be reachable on mobile**, because that is the surface a user takes to the workshop.
+
+**Why this is a narrowing.** The original decision's stated source was phone-only use "in the workshop, outdoors, and at the hardware store, often with weak connectivity" (`BUSINESS_PLAN` §5). That is a *consumption* context. Authoring a board is a desk activity. So the two are consistent; the earlier wording just never distinguished authoring from consumption.
+
+**Agent's correction, recorded so it is not repeated.** Keagan's initial rationale — that desktop offers "design packages and builds" unavailable on mobile — **does not hold for a web app.** We ship one bundle everywhere, and WebGL2 / three.js / React Three Fiber all run in mobile Safari (iOS 15+) and Android Chrome. There is no desktop-only web dependency to gain. That would only be true of a native or Electron desktop build, which is parked (FUTURE_IDEAS, native app). The decision is **still correct on other grounds**, which are the binding rationale:
+1. Screen real estate — the editor is preview + a fixed 26rem settings column; a phone cannot hold both.
+2. Pointer precision — orbit/zoom/drag-reorder want a mouse; touch needs a separate gesture layer (pinch-zoom vs page-zoom, one-finger orbit vs scroll), the exact bug class that cost Sprint 52 two extra attempts on desktop alone.
+3. GPU/thermal headroom — 8,000 instanced cells with shadows throttles on a phone.
+4. Scope — it retires the phone-fps acceptance that has been accepted-unverified twice.
+
+**Binding constraints on implementation.**
+- Gate on **viewport width, never user-agent sniffing**.
+- `BUILD_PLAN` §6 category 6 ("Mobile/offline /10, PWA-first") is **still scored** for designer sprints — against the *mobile read-only* surface, not against an authoring UI that deliberately does not exist there.
+- **B7 still holds.** "Cut list on mobile" must NOT be met by rendering `toParts()`, which is Phase 2 / U6 and explicitly unrendered today. The existing print sheet (`/designer/[id]/print`) already carries the strip table, board feet, dimensions and diagram — making that mobile-legible satisfies this decision without opening U6. Rendering `toParts()` is a separate decision.
+
+### 2026-07-25 — Undo/redo is table stakes for the designer, not a Phase 2 nicety
+**Status:** Confirmed by Keagan.
+
+**Decision.** Undo (⌘Z / Ctrl+Z) is expected native behaviour for a design tool and is **pulled out of U7 into its own scheduled sprint**. It replaces the "Replace your current draft with this template?" confirm dialog: applying a template becomes an ordinary undoable action rather than a blocking prompt. **In-memory only** — history does not survive a reload or leaving the page, by Keagan's explicit call.
+
+**Deferred to their own conversations (do not fold into these sprints):** the broader "Canva-like editing/export" feature set, and advanced templates (plaid / zigzag / 3D box). Keagan's reason: both need dedicated scoping and would muddy the queued work. The engineering constraint on the templates half is already recorded — `Strip` has no angle and `Cell` is axis-aligned `{xIn,yIn,wIn,hIn}`, so zigzag and 3D-box cannot be expressed without a §3 type-contract change, whereas plaid can.
