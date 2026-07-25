@@ -3,11 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 51 Attempt 3 (2026-07-25) — CLOSED 100/100** — Attempt 2's 92 was a *verification-access* deduction, not a defect; both blockers cleared against prod (migrate status on `sparkling-band`; signed-in save→library→reopen) and the §9 manual pass re-run. No product code changed.
+> **Latest logged: Sprint 53 Attempt 1 (2026-07-25) — CLOSED 96/100** — designer layout/chrome (`cff58b9`). Prior: Sprint 51/52 both **100/100**.
 >
-> **Sprint 52 Attempt 3 (2026-07-25) — CLOSED 100/100** — wheel scroll root-cause fix + orbit/zoom feel; the 2 withheld Correctness points released after Keagan’s browser PASS on prod `7a6b12e`. Prior: Attempt 2 colour/width (Keagan-confirmed); Attempt 1’s 96 invalidated.
->
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1104 green (post-52-a3).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1105 green (post-53).
 
 ---
 
