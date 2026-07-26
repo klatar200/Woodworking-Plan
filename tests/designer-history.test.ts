@@ -111,6 +111,29 @@ describe('designer history reducer', () => {
     expect(configsEqual(state.present, base)).toBe(true);
   });
 
+  it('coalesced label typing collapses to one undo step and empty labels are omitted', () => {
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { label: 'M' } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { label: 'Ma' } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { label: 'Maple rail' } },
+    );
+    expect(state.past).toHaveLength(1);
+    expect(stripsOf(state.present)[0]!.label).toBe('Maple rail');
+
+    state = apply(state, {
+      type: 'update-strip',
+      panelId: 'panel-1',
+      id: 's1',
+      patch: { label: undefined },
+    });
+    expect(stripsOf(state.present)[0]).not.toHaveProperty('label');
+
+    state = apply(state, { type: 'undo' });
+    expect(stripsOf(state.present)[0]).not.toHaveProperty('label');
+  });
+
   it('commit-coalesce starts a new undo step for the next typed edit', () => {
     let state = createHistoryState(base);
     state = apply(
@@ -186,6 +209,34 @@ describe('designer history reducer', () => {
 
     state = apply(state, { type: 'undo' });
     expect(JSON.stringify(state.present)).toBe(JSON.stringify(base));
+  });
+
+  it('strip labels survive reorder and serialized reload', async () => {
+    const { parseConfig } = await import('@/lib/board-designer/serialize');
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      {
+        type: 'update-strip',
+        panelId: 'panel-1',
+        id: 's1',
+        patch: { label: 'Maple rail' },
+      },
+      {
+        type: 'reorder-strip',
+        panelId: 'panel-1',
+        fromIndex: 0,
+        toIndex: 1,
+      },
+    );
+
+    const reloaded = parseConfig(JSON.parse(JSON.stringify(state.present)));
+    expect(reloaded.ok).toBe(true);
+    if (!reloaded.ok) return;
+    expect(stripsOf(reloaded.config).map((strip) => [strip.id, strip.label])).toEqual([
+      ['s2', undefined],
+      ['s1', 'Maple rail'],
+    ]);
   });
 
   it('discrete species changes do not coalesce', () => {

@@ -8,7 +8,7 @@
  * Pointer capture APIs are also stubbed. This is honest coverage of the gesture
  * math + history wiring; it is not a browser pixel drag.
  */
-import { act, cleanup, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useReducer } from 'react';
 import { StripList } from '@/components/designer/strip-list';
@@ -186,7 +186,7 @@ describe('StripList pointer drag → history', () => {
     expect(screen.getByTestId('harness').getAttribute('data-can-undo')).toBe('1');
 
     const live = container.querySelector('[aria-live="polite"]');
-    expect(live?.textContent).toBe('Hard Maple moved to position 3 of 3');
+    expect(live?.textContent).toBe('Strip 1 moved to position 3 of 3');
 
     await act(async () => {
       screen.getByText('Undo').click();
@@ -216,9 +216,24 @@ describe('StripList pointer drag → history', () => {
   });
 
   it('announcement shape matches the arrow path helper', () => {
-    const strip: Strip = makeStrip('s1', 'hard-maple');
-    expect(stripReorderAnnouncement(strip, 2, 3)).toBe(
-      'Hard Maple moved to position 3 of 3',
+    const strip: Strip = { ...makeStrip('s1', 'hard-maple'), label: 'Maple rail' };
+    expect(stripReorderAnnouncement(strip, 0, 2, 3)).toBe(
+      'Maple rail moved to position 3 of 3',
     );
+  });
+
+  it('renders compact label rows and only one selected detail panel', () => {
+    render(<DragHarness initial={threeStripConfig} />);
+
+    const labelInputs = screen.getAllByLabelText('Strip label');
+    expect(labelInputs).toHaveLength(3);
+    expect(screen.getByLabelText('Selected strip details for Strip 1')).toBeTruthy();
+    expect(screen.getAllByText('Species')).toHaveLength(1);
+    expect(screen.getAllByText('Width')).toHaveLength(1);
+    expect(screen.getAllByText('Repeat')).toHaveLength(1);
+    expect(screen.getByText('Mitered')).toBeTruthy();
+
+    fireEvent.focus(labelInputs[1]!);
+    expect(screen.getByLabelText('Selected strip details for Strip 2')).toBeTruthy();
   });
 });

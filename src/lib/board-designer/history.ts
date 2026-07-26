@@ -190,6 +190,12 @@ export function configReducer(
         strips: panel.strips.map((strip) => {
           if (strip.id !== action.id) return strip;
           const next = { ...strip, ...action.patch };
+          if (
+            'label' in action.patch &&
+            (typeof action.patch.label !== 'string' || action.patch.label.trim() === '')
+          ) {
+            delete next.label;
+          }
           if ('miter' in action.patch) {
             next.miter = action.patch.miter
               ? { ...action.patch.miter }
@@ -265,7 +271,7 @@ export function configReducer(
   }
 }
 
-const COALESCE_UPDATE_STRIP_FIELDS = new Set(['widthIn', 'repeat']);
+const COALESCE_UPDATE_STRIP_FIELDS = new Set(['label', 'widthIn', 'repeat']);
 const COALESCE_UPDATE_PANEL_FIELDS = new Set(['thicknessIn', 'label']);
 const COALESCE_PATCH_FIELDS = new Set([
   'name',

@@ -94,7 +94,7 @@ describe('DesignerShell static render', () => {
     expect(html).not.toContain('Leftover length');
   });
 
-  it('species uses a native select with a live swatch (Sprint 57 Part A)', () => {
+  it('selected strip detail uses a native species select with compact label rows', () => {
     const stripList = source('src/components/designer/strip-list.tsx');
     expect(stripList).toContain('<select');
     expect(stripList).not.toContain('role="radiogroup"');
@@ -108,11 +108,13 @@ describe('DesignerShell static render', () => {
         /<select[^>]*name="strip-[^"]*-speciesId"[^>]*>([\s\S]*?)<\/select>/g,
       ),
     ];
-    expect(speciesSelects).toHaveLength(12);
+    expect(speciesSelects).toHaveLength(1);
     for (const match of speciesSelects) {
       const body = match[1] ?? '';
       expect((body.match(/<option/g) ?? []).length).toBe(15);
     }
+    expect([...html.matchAll(/id="strip-[^"]*-label"/g)]).toHaveLength(12);
+    expect(html).toContain('Selected strip details for Strip 1');
     // First golden strip is walnut — its option must be selected.
     expect(speciesSelects[0]![1]).toMatch(
       /<option[^>]*value="walnut"[^>]*selected|<option[^>]*selected[^>]*value="walnut"/,

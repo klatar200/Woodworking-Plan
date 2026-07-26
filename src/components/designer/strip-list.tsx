@@ -2,6 +2,7 @@
 
 import { closingThicknessHint } from '@/lib/board-designer/miter-geometry';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
+import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import { formatStripReorderAnnouncement, stripReorderAnnouncement } from '@/lib/board-designer/strip-reorder-announce';
 import { dropIndexFromClientY } from '@/lib/board-designer/strip-drag';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
@@ -61,6 +62,7 @@ export function StripList({
   const listRef = useRef<HTMLOListElement>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
+  const [selectedStripId, setSelectedStripId] = useState<string | null>(strips[0]?.id ?? null);
   const [announce, setAnnounce] = useState('');
   const dragFrom = useRef<number | null>(null);
   /** null until after mount — skip announcing the initial strip list. */
@@ -73,6 +75,16 @@ export function StripList({
     const t = window.setTimeout(() => setAnnounce(''), 1500);
     return () => window.clearTimeout(t);
   }, [announce]);
+
+  useEffect(() => {
+    if (strips.length === 0) {
+      if (selectedStripId !== null) setSelectedStripId(null);
+      return;
+    }
+    if (!selectedStripId || !strips.some((strip) => strip.id === selectedStripId)) {
+      setSelectedStripId(strips[0]!.id);
+    }
+  }, [selectedStripId, strips]);
 
   function speakReorder(message: string) {
     // Clear first so polite live regions re-fire when text matches a prior announce.
@@ -107,6 +119,12 @@ export function StripList({
     if (show) firstHintForKey.add(key);
     showClosingHintById.set(strip.id, show);
   }
+
+  const selectedIndex = Math.max(
+    0,
+    strips.findIndex((strip) => strip.id === selectedStripId),
+  );
+  const selectedStrip = strips[selectedIndex] ?? null;
 
   function indexFromClientY(clientY: number): number {
     const list = listRef.current;
@@ -149,7 +167,7 @@ export function StripList({
     const strip = strips[from];
     if (strip) {
       skipEffectAnnounceRef.current = true;
-      speakReorder(stripReorderAnnouncement(strip, to, strips.length));
+      speakReorder(stripReorderAnnouncement(strip, from, to, strips.length));
     }
     onReorder(from, to);
   }
@@ -175,168 +193,221 @@ export function StripList({
           </button>
         </div>
       ) : (
-        <ol ref={listRef} className="m-0 grid list-none gap-[0.875rem] p-0">
-          {strips.map((strip, index) => {
-            const dragging = dragIndex === index;
-            const dropTarget = overIndex === index && dragIndex !== null && dragIndex !== index;
-            return (
-            <li
-              key={strip.id}
-              data-strip-index={index}
-              className={[
-                'rounded-[0.5rem] border bg-bg p-[0.875rem] transition-[border-color,opacity,box-shadow] duration-150',
-                dropTarget
-                  ? 'border-accent shadow-e2'
-                  : 'border-border shadow-e1',
-                dragging ? 'opacity-60' : 'opacity-100',
-              ].join(' ')}
+        <>
+          <ol ref={listRef} className="m-0 grid list-none gap-[0.625rem] p-0">
+            {strips.map((strip, index) => {
+              const dragging = dragIndex === index;
+              const dropTarget = overIndex === index && dragIndex !== null && dragIndex !== index;
+              const selected = strip.id === selectedStrip?.id;
+              const displayName = stripDisplayName(strip, index);
+              return (
+                <li
+                  key={strip.id}
+                  data-strip-index={index}
+                  data-selected={selected ? 'true' : undefined}
+                  onClick={() => setSelectedStripId(strip.id)}
+                  className={[
+                    'rounded-[0.5rem] border bg-bg p-[0.625rem] transition-[border-color,opacity,box-shadow] duration-150',
+                    dropTarget
+                      ? 'border-accent shadow-e2 ring-2 ring-accent/40'
+                      : selected
+                        ? 'border-accent shadow-e2'
+                        : 'border-border shadow-e1',
+                    dragging ? 'opacity-60' : 'opacity-100',
+                  ].join(' ')}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-[0.625rem]">
+                    <div className="flex min-w-[14rem] flex-1 items-center gap-[0.5rem]">
+                      {/* Pointer-only affordance: Toward left/right are the keyboard path
+                          (SC 2.1.1). An inert focusable control is worse than none. */}
+                      <button
+                        type="button"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        className={`${btnGhost} cursor-grab touch-none px-[0.5rem]! active:cursor-grabbing`}
+                        onPointerDown={(e) => onHandlePointerDown(e, index)}
+                        onPointerMove={onHandlePointerMove}
+                        onPointerUp={onHandlePointerUp}
+                        onPointerCancel={onHandlePointerUp}
+                      >
+                        ⋮⋮
+                      </button>
+                      <span
+                        aria-hidden="true"
+                        className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
+                        style={{
+                          backgroundColor:
+                            getSpecies(strip.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
+                        }}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <label className="sr-only" htmlFor={`strip-${strip.id}-label`}>
+                          Strip label
+                        </label>
+                        <input
+                          id={`strip-${strip.id}-label`}
+                          className="min-h-[2.25rem] w-full rounded-[0.375rem] border border-border bg-bg px-[0.625rem] py-0 text-[0.9375rem] text-fg"
+                          maxLength={40}
+                          placeholder={displayName}
+                          value={strip.label ?? ''}
+                          onFocus={() => setSelectedStripId(strip.id)}
+                          onChange={(event) => {
+                            const label = event.currentTarget.value.slice(0, 40);
+                            onUpdate(strip.id, {
+                              label: label.trim() ? label : undefined,
+                            });
+                          }}
+                          onBlur={() => {
+                            const label = normalizeStripLabel(strip.label);
+                            if (label !== strip.label) onUpdate(strip.id, { label });
+                            onCommitCoalesce();
+                          }}
+                        />
+                        <p className="m-0 mt-[0.25rem] truncate text-[0.8125rem] text-muted">
+                          {getSpecies(strip.speciesId)?.name ?? strip.speciesId} ·{' '}
+                          {formatInches(strip.widthIn)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-[0.375rem]">
+                      <button
+                        type="button"
+                        className={btnGhost}
+                        disabled={index === 0}
+                        aria-label={`Move ${displayName} ${move.earlier.toLowerCase()} of the board face`}
+                        onClick={() => {
+                          const to = index - 1;
+                          skipEffectAnnounceRef.current = true;
+                          speakReorder(stripReorderAnnouncement(strip, index, to, strips.length));
+                          onMove(strip.id, -1);
+                        }}
+                      >
+                        {move.earlier}
+                      </button>
+                      <button
+                        type="button"
+                        className={btnGhost}
+                        disabled={index === strips.length - 1}
+                        aria-label={`Move ${displayName} ${move.later.toLowerCase()} of the board face`}
+                        onClick={() => {
+                          const to = index + 1;
+                          skipEffectAnnounceRef.current = true;
+                          speakReorder(stripReorderAnnouncement(strip, index, to, strips.length));
+                          onMove(strip.id, 1);
+                        }}
+                      >
+                        {move.later}
+                      </button>
+                      <button type="button" className={btnGhost} onClick={() => onDuplicate(strip.id)}>
+                        Duplicate
+                      </button>
+                      <button type="button" className={btnGhost} onClick={() => onDelete(strip.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+
+          {selectedStrip ? (
+            <section
+              aria-label={`Selected strip details for ${stripDisplayName(selectedStrip, selectedIndex)}`}
+              className="mt-[0.875rem] grid gap-[0.75rem] rounded-[0.5rem] border border-accent bg-surface p-[0.875rem] shadow-e1"
             >
-              <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
-                <div className="flex min-w-0 items-start gap-[0.5rem]">
-                  {/* Pointer-only affordance: Toward left/right are the keyboard path
-                      (SC 2.1.1). An inert focusable control is worse than none. */}
-                  <button
-                    type="button"
-                    tabIndex={-1}
+              <div>
+                <h4 className="!m-0 text-[1rem]">
+                  {stripDisplayName(selectedStrip, selectedIndex)}
+                </h4>
+                <p className="m-0 text-[0.875rem] text-muted">
+                  Selected strip details
+                </p>
+              </div>
+
+              <label className="grid gap-[0.375rem]">
+                <span className="text-[0.875rem] font-bold">Species</span>
+                <div className="flex min-w-0 items-center gap-[0.5rem]">
+                  <span
                     aria-hidden="true"
-                    className={`${btnGhost} cursor-grab touch-none px-[0.5rem]! active:cursor-grabbing`}
-                    onPointerDown={(e) => onHandlePointerDown(e, index)}
-                    onPointerMove={onHandlePointerMove}
-                    onPointerUp={onHandlePointerUp}
-                    onPointerCancel={onHandlePointerUp}
-                  >
-                    ⋮⋮
-                  </button>
-                  <div>
-                    <h4 className="m-0 text-[1rem]">Strip {index + 1}</h4>
-                    <p className="m-0 text-[0.875rem] text-muted">
-                      {getSpecies(strip.speciesId)?.name ?? strip.speciesId} ·{' '}
-                      {formatInches(strip.widthIn)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-[0.375rem]">
-                  <button
-                    type="button"
-                    className={btnGhost}
-                    disabled={index === 0}
-                    aria-label={`Move strip ${move.earlier.toLowerCase()} of the board face`}
-                    onClick={() => {
-                      const to = index - 1;
-                      skipEffectAnnounceRef.current = true;
-                      speakReorder(stripReorderAnnouncement(strip, to, strips.length));
-                      onMove(strip.id, -1);
+                    className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
+                    style={{
+                      backgroundColor:
+                        getSpecies(selectedStrip.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
                     }}
+                  />
+                  <select
+                    className={`${inputControl} min-w-0 flex-1`}
+                    name={`strip-${selectedStrip.id}-speciesId`}
+                    value={selectedStrip.speciesId}
+                    onChange={(event) =>
+                      onUpdate(selectedStrip.id, { speciesId: event.currentTarget.value })
+                    }
                   >
-                    {move.earlier}
-                  </button>
-                  <button
-                    type="button"
-                    className={btnGhost}
-                    disabled={index === strips.length - 1}
-                    aria-label={`Move strip ${move.later.toLowerCase()} of the board face`}
-                    onClick={() => {
-                      const to = index + 1;
-                      skipEffectAnnounceRef.current = true;
-                      speakReorder(stripReorderAnnouncement(strip, to, strips.length));
-                      onMove(strip.id, 1);
-                    }}
-                  >
-                    {move.later}
-                  </button>
-                  <button type="button" className={btnGhost} onClick={() => onDuplicate(strip.id)}>
-                    Duplicate
-                  </button>
-                  <button type="button" className={btnGhost} onClick={() => onDelete(strip.id)}>
-                    Delete
-                  </button>
+                    {!getSpecies(selectedStrip.speciesId) && (
+                      <option value={selectedStrip.speciesId} disabled>
+                        {selectedStrip.speciesId}
+                      </option>
+                    )}
+                    {SPECIES.map((species) => (
+                      <option key={species.id} value={species.id}>
+                        {species.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </div>
+              </label>
 
-              <div className="grid gap-[0.75rem]">
+              <div className="grid gap-[0.75rem] sm:grid-cols-2">
                 <label className="grid gap-[0.375rem]">
-                  <span className="text-[0.875rem] font-bold">Species</span>
-                  <div className="flex min-w-0 items-center gap-[0.5rem]">
-                    <span
-                      aria-hidden="true"
-                      className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
-                      style={{
-                        backgroundColor:
-                          getSpecies(strip.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
-                      }}
-                    />
-                    <select
-                      className={`${inputControl} min-w-0 flex-1`}
-                      name={`strip-${strip.id}-speciesId`}
-                      value={strip.speciesId}
-                      onChange={(event) =>
-                        onUpdate(strip.id, { speciesId: event.currentTarget.value })
-                      }
-                    >
-                      {!getSpecies(strip.speciesId) && (
-                        <option value={strip.speciesId} disabled>
-                          {strip.speciesId}
-                        </option>
-                      )}
-                      {SPECIES.map((species) => (
-                        <option key={species.id} value={species.id}>
-                          {species.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <span className="text-[0.875rem] font-bold">Width</span>
+                  <input
+                    className={inputControl}
+                    name={`strip-${selectedStrip.id}-widthIn`}
+                    type="number"
+                    min={0.0625}
+                    max={24}
+                    step={0.0625}
+                    value={selectedStrip.widthIn}
+                    onChange={(event) =>
+                      onUpdate(selectedStrip.id, { widthIn: boundedNumber(event, 0.0625, 24) })
+                    }
+                    onBlur={() => {
+                      onUpdate(selectedStrip.id, { widthIn: snapToSixteenth(selectedStrip.widthIn) });
+                      onCommitCoalesce();
+                    }}
+                  />
                 </label>
-
-                <div className="grid gap-[0.75rem] sm:grid-cols-2">
-                  <label className="grid gap-[0.375rem]">
-                    <span className="text-[0.875rem] font-bold">Width</span>
-                    <input
-                      className={inputControl}
-                      name={`strip-${strip.id}-widthIn`}
-                      type="number"
-                      min={0.0625}
-                      max={24}
-                      step={0.0625}
-                      value={strip.widthIn}
-                      onChange={(event) =>
-                        onUpdate(strip.id, { widthIn: boundedNumber(event, 0.0625, 24) })
-                      }
-                      onBlur={() => {
-                        onUpdate(strip.id, { widthIn: snapToSixteenth(strip.widthIn) });
-                        onCommitCoalesce();
-                      }}
-                    />
-                  </label>
-                  <label className="grid gap-[0.375rem]">
-                    <span className="text-[0.875rem] font-bold">Repeat</span>
-                    <input
-                      className={inputControl}
-                      name={`strip-${strip.id}-repeat`}
-                      type="number"
-                      min={1}
-                      max={20}
-                      step={1}
-                      value={strip.repeat}
-                      onChange={(event) =>
-                        onUpdate(strip.id, { repeat: Math.round(boundedNumber(event, 1, 20)) })
-                      }
-                      onBlur={() => onCommitCoalesce()}
-                    />
-                  </label>
-                </div>
-
-                <MiterControls
-                  strip={strip}
-                  panelThicknessIn={panelThicknessIn}
-                  showClosingHint={showClosingHintById.get(strip.id) === true}
-                  onUpdate={onUpdate}
-                  onCommitCoalesce={onCommitCoalesce}
-                />
+                <label className="grid gap-[0.375rem]">
+                  <span className="text-[0.875rem] font-bold">Repeat</span>
+                  <input
+                    className={inputControl}
+                    name={`strip-${selectedStrip.id}-repeat`}
+                    type="number"
+                    min={1}
+                    max={20}
+                    step={1}
+                    value={selectedStrip.repeat}
+                    onChange={(event) =>
+                      onUpdate(selectedStrip.id, {
+                        repeat: Math.round(boundedNumber(event, 1, 20)),
+                      })
+                    }
+                    onBlur={() => onCommitCoalesce()}
+                  />
+                </label>
               </div>
-            </li>
-            );
-          })}
-        </ol>
+
+              <MiterControls
+                strip={selectedStrip}
+                panelThicknessIn={panelThicknessIn}
+                showClosingHint={showClosingHintById.get(selectedStrip.id) === true}
+                onUpdate={onUpdate}
+                onCommitCoalesce={onCommitCoalesce}
+              />
+            </section>
+          ) : null}
+        </>
       )}
 
       {strips.some(
@@ -502,4 +573,9 @@ function boundedNumber(
 
 function snapToSixteenth(value: number): number {
   return Math.min(24, Math.max(0.0625, Math.round(value * 16) / 16));
+}
+
+function normalizeStripLabel(value: string | undefined): string | undefined {
+  const label = value?.trim();
+  return label ? label : undefined;
 }

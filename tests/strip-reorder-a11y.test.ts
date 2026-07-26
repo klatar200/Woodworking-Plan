@@ -5,6 +5,7 @@ import {
   formatStripReorderAnnouncement,
   stripReorderAnnouncement,
 } from '@/lib/board-designer/strip-reorder-announce';
+import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import { makeStrip } from './fixtures/board-design';
 
 describe('strip reorder a11y — Sprint 65 fix pass', () => {
@@ -37,21 +38,21 @@ describe('strip reorder a11y — Sprint 65 fix pass', () => {
     expect(findPrimaryStripMove(prevIds, prevIds)).toBeNull();
 
     // Call-site string for drag/arrow (acted-upon strip).
-    expect(stripReorderAnnouncement(strips[0]!, 2, 3)).toBe(
-      'Hard Maple moved to position 3 of 3',
+    expect(stripReorderAnnouncement(strips[0]!, 0, 2, 3)).toBe(
+      'Strip 1 moved to position 3 of 3',
     );
 
     // Observed multi-step: Hard Maple 0 → 2 is unique by travel distance.
     const reordered = [strips[1]!, strips[2]!, strips[0]!];
     expect(formatStripReorderAnnouncement(prevIds, reordered)).toBe(
-      'Hard Maple moved to position 3 of 3',
+      'Strip 1 moved to position 3 of 3',
     );
 
     // Observed adjacent: stable lower-fromIndex picks the acted strip for a
     // Toward-right on Hard Maple ([s1,s2,s3] → [s2,s1,s3]).
     const oneStep = [strips[1]!, strips[0]!, strips[2]!];
     expect(formatStripReorderAnnouncement(prevIds, oneStep)).toBe(
-      'Hard Maple moved to position 2 of 3',
+      'Strip 1 moved to position 2 of 3',
     );
 
     // Undo of that adjacent move: lower-from picks Walnut (also a valid splice).
@@ -60,7 +61,20 @@ describe('strip reorder a11y — Sprint 65 fix pass', () => {
     expect(formatStripReorderAnnouncement(
       oneStep.map((s) => s.id),
       strips,
-    )).toBe('Walnut moved to position 2 of 3');
+    )).toBe('Strip 1 moved to position 2 of 3');
+  });
+
+  it('strip display names prefer trimmed labels', () => {
+    expect(stripDisplayName({ ...makeStrip('s1', 'hard-maple'), label: '  Accent rail  ' }, 0)).toBe(
+      'Accent rail',
+    );
+    expect(stripDisplayName(makeStrip('s2', 'walnut'), 1)).toBe('Strip 2');
+    expect(stripReorderAnnouncement(
+      { ...makeStrip('s3', 'cherry'), label: 'Cherry pin' },
+      2,
+      0,
+      3,
+    )).toBe('Cherry pin moved to position 1 of 3');
   });
 
   it('length changes and non-reorder edits are silent', () => {

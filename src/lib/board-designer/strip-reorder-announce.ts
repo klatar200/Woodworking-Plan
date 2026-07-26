@@ -1,4 +1,4 @@
-import { getSpecies } from '@/lib/board-designer/species';
+import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import type { Strip } from '@/lib/board-designer/types';
 
 export type StripMove = { id: string; fromIndex: number; toIndex: number };
@@ -46,10 +46,11 @@ export function findPrimaryStripMove(
 
 export function stripReorderAnnouncement(
   strip: Strip,
+  displayIndex: number,
   toIndex: number,
   total: number,
 ): string {
-  const name = getSpecies(strip.speciesId)?.name ?? strip.speciesId;
+  const name = stripDisplayName(strip, displayIndex);
   return `${name} moved to position ${toIndex + 1} of ${total}`;
 }
 
@@ -63,5 +64,5 @@ export function formatStripReorderAnnouncement(
   if (!move) return null;
   const strip = nextStrips.find((s) => s.id === move.id);
   if (!strip) return null;
-  return stripReorderAnnouncement(strip, move.toIndex, nextStrips.length);
+  return stripReorderAnnouncement(strip, move.fromIndex, move.toIndex, nextStrips.length);
 }

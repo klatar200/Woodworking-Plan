@@ -64,7 +64,7 @@ Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list par
 OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
 SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
-ORDER:     67 ✅ → 68 ✅ → 69 → 70 → 71 → 72. One sprint at a time. NEXT=69.
+ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 → 71 → 72. One sprint at a time. NEXT=70.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
