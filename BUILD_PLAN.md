@@ -47,12 +47,13 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
 | Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
 | Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Suite **1309/1309**. |
-| Sprint 68 (dock behavior + parity) | ✅ **CLOSED** 2026-07-26 — **98/100**. Cut plan expanded; Metrics/Cut plan tab badges; `designer-shell-parity.test.ts`. Suite **1312/1312** / 114 files. |
-| Sprints 69–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 69**. Agent contract below. |
+| Sprint 68 (dock behavior + parity) | ✅ **CLOSED** 2026-07-26 — **98/100**. Suite **1312/1312**. |
+| Sprint 69 (strip directory) | ✅ **CLOSED** 2026-07-26 — **97/100**. Optional `Strip.label`; directory rows + selected detail; coalesce. Suite **1318/1318**. |
+| Sprints 70–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 70**. Agent contract below. |
 
-Test suite — expected: **1312/1312** across **114 files** (Sprint 68). Update each sprint close.
+Test suite — expected: **1318/1318** across **114 files** (Sprint 69). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–68 ✅** · **next = 69**. Parked FUTURE_IDEAS 2026-07-26.
+**Designer:** U0–U7 ✅ · **67–69 ✅** · **next = 70**. Parked FUTURE_IDEAS 2026-07-26.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -139,13 +140,10 @@ SHIPPED: Cut plan always-expanded section; Metrics/Cut plan tab badges; designer
     locks PARITY_INVENTORY + mounted/hidden dock panels; edge hides Pattern tab control.
 ```
 
-**69 — strip directory**
+**69 — strip directory** ✅ CLOSED 2026-07-26 · 97/100
 ```
-DO: optional Strip.label (additive zod/serialize/history coalesce; absent OK);
-    right rail panel folders (P6 on header) + nested strips + selection + reorder ghost;
-    keep arrows+reorder-strip+announce; selected detail=species/widthIn/repeat/miter.
-DONT: required unique names · visibility eye · print redesign · dock rewrite · 2D · Save a copy.
-ACCEPT: rename survives reorder+save/reload · P5–P7 · old configs load.
+SHIPPED: optional Strip.label (zod/serialize/history coalesce); stripDisplayName; compact directory
+    rows + selection + detail pane (species/width/repeat/miter); reorder/announce preserved.
 ```
 
 **70 — literacy (IA track DoD w/ 69)**

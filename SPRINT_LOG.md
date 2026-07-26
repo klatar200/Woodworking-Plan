@@ -3,9 +3,28 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 68 (2026-07-26) — CLOSED 98/100** — dock badges + cut plan expanded + parity lock.
+> **Latest logged: Sprint 69 (2026-07-26) — CLOSED 97/100** — strip directory + optional labels.
 >
-> **Milestones:** … · shell 67–68 ✅. Suite: 1312 green. Next: 69.
+> **Milestones:** … · shell 67–69 ✅. Suite: 1318 green. Next: 70.
+
+---
+
+## Sprint 69: Strip directory
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 69 — optional strip.label, directory UI, selected detail.
+
+### Attempt 1 — score 97/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | label optional · directory+detail · P5–P7 kept |
+| Correctness & functionality (/20) | 17 | Suite/serialize/history; browser rename round-trip not re-run (−3) |
+| Automated test coverage (/15) | 15 | serialize/history/display/strip-drag/shell · 1318 |
+| Security (/15) | 15 | Additive schema only |
+| Code quality (/10) | 10 | strip-display helper; coalesce label |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **97/100** — Pass. Next: Sprint 70.
 
 ---
 
