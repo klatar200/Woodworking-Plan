@@ -31,6 +31,7 @@
 - **Designer undo/redo (2026-07-25):** table stakes, pulled out of U7 into its own sprint; replaces the template-replace confirm; in-memory only. Advanced templates + the wider "Canva-like" feature set are DEFERRED to their own conversations.
 - **Designer species expansion (2026-07-26):** append exactly seven ids after the original eight (yellowheart, bloodwood, beech, ash, birch, hickory, bamboo) with the stated hexes; min pairwise distance floor 0.127; B13/B14 hold; `schemaVersion` stays 1. See dated entry.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
+- **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
 
 _(Full history below, chronological.)_
 
@@ -1825,3 +1826,12 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 **Colour floor.** Hexes are the output of a separation search over the full 15-species palette (2026-07-26). Botanically accurate candidates were rejected (min pairwise euclidean sRGB/255 distance 0.047 — beech/ash). These values hold a **0.127** floor (same as the prior cherry/padauk closest pair). Changing a hex requires re-running that check and reporting the new minimum.
 
 **Binding constraints.** B14 (ids permanent — add only) · B13 (`{id,name,colorHex}` only) · `schemaVersion` stays 1 · do not rename `WoodSpecies` for bamboo · amend contract §3.2 from "exactly these 8" to the full fifteen.
+
+### 2026-07-26 — U6 designer shopping-list entries (Sprint 64 Q1)
+**Status:** Confirmed by Keagan (accepted recommendation as written).
+
+**Decision.** `ShoppingListEntry.planId` becomes nullable; add nullable `boardDesignId` FK to `BoardDesign` with `onDelete: Cascade`. Exactly one of the two FKs is set — CHECK in migration SQL plus action reject-before-DB (constraint violation would throw; server actions never throw). Unique `(userId, boardDesignId)`; existing `(userId, planId)` unique survives nullability because Postgres treats NULLs as distinct (verified on local migrate). No backfill (additive + nullable).
+
+**Read path.** Synthesize materials from `designBoardFeetBySpecies` (panel geometry only — no `layoutTopFace` / closure). Waste already applied in `boardFeetBySpeciesFor`; do not multiply again. Scope design lookup by session user — unowned design yields nothing.
+
+**Naming.** Unit `"board feet"` (preferred `BOARD_FEET_UNITS` spelling). Name = species display name; `species` null (catalog column always null). Kreg catalog uses unit `"board"` for piece counts — different semantic; exact matcher must not be loosened.

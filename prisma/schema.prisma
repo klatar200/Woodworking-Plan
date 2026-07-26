@@ -416,9 +416,12 @@ model UserTool {
 /// lumberyard. This model decouples them (`DECISIONS_LOG.md` 2026-07-14): a plan is on
 /// the shopping list only when the user explicitly adds it.
 ///
+/// Sprint 64 (U6): a saved board design can also be added. Exactly one of `planId` /
+/// `boardDesignId` is set (CHECK in migration + action reject-before-DB). Materials for
+/// designs are synthesized on read from board feet — membership, not a snapshot.
+///
 /// Same ownership rules as SavedPlan/Like: `userId` comes ONLY from the verified
-/// session, never from client input. `@@unique([userId, planId])` makes "add" idempotent
-/// at the database level — a double-tap cannot create two rows.
+/// session, never from client input. Composite uniques make "add" idempotent.
 /// ═══════════════════════════════════════════════════════════════════════════════
 model ShoppingListEntry {
   id String @id @default(cuid())
@@ -426,14 +429,19 @@ model ShoppingListEntry {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  planId String
-  plan   Plan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId String?
+  plan   Plan?  @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  boardDesignId String?
+  boardDesign   BoardDesign? @relation(fields: [boardDesignId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
   @@unique([userId, planId])
+  @@unique([userId, boardDesignId])
   @@index([userId])
   @@index([planId])
+  @@index([boardDesignId])
 }
 
 /// A saved cutting board designer configuration.
@@ -449,6 +457,8 @@ model BoardDesign {
 
   name   String
   config Json
+
+  shoppingList ShoppingListEntry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

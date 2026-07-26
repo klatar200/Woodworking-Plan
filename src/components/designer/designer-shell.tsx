@@ -32,8 +32,15 @@ export function DesignerShell(props: {
   initialConfig: BoardDesignConfig;
   saveAction: (fd: FormData) => Promise<void>;
   updateAction: (fd: FormData) => Promise<void>;
+  addToShoppingListAction?: (fd: FormData) => Promise<void>;
 }) {
-  const { designId, initialConfig, saveAction, updateAction } = props;
+  const {
+    designId,
+    initialConfig,
+    saveAction,
+    updateAction,
+    addToShoppingListAction,
+  } = props;
   const [history, dispatch] = useReducer(historyReducer, initialConfig, createHistoryState);
   const config = history.present;
   const metrics = useMemo(() => calculateMetrics(config), [config]);
@@ -60,95 +67,117 @@ export function DesignerShell(props: {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  const shoppingListControl =
+    designId && addToShoppingListAction ? (
+      <form action={addToShoppingListAction}>
+        <input type="hidden" name="designId" value={designId} />
+        <input type="hidden" name="returnTo" value={`/designer/${designId}`} />
+        <button type="submit" className={btnGhost}>
+          Add to shopping list
+        </button>
+      </form>
+    ) : (
+      <p className="m-0 text-[0.875rem] text-muted">
+        Save this design before adding it to your shopping list.
+      </p>
+    );
+
   return (
-    <form action={formAction} className="grid gap-[1.25rem]">
-      {designId && <input type="hidden" name="designId" value={designId} />}
-      <input type="hidden" name="config" value={serializedConfig} />
+    <div className="grid gap-[1.25rem]">
+      {/* Sibling to the save form — HTML forbids nesting forms. */}
+      <div className="hidden lg:block">{shoppingListControl}</div>
 
-      {/* Narrow surface: CSS-shown below lg. Authoring tree stays mounted (max-lg:hidden)
-          so a resize / rotate with an unsaved draft does not destroy in-memory state. */}
-      <div className="lg:hidden">
-        <h1 className="m-0 mb-[1rem]">Board designer</h1>
-        <DesignerNarrowSurface
-          designId={designId}
-          config={config}
-          metrics={metrics}
-        />
-      </div>
+      <form action={formAction} className="grid gap-[1.25rem]">
+        {designId && <input type="hidden" name="designId" value={designId} />}
+        <input type="hidden" name="config" value={serializedConfig} />
 
-      {/* Authoring chrome — always in the React tree; display:none below lg. */}
-      <div className="hidden lg:grid lg:gap-[1.25rem]">
-        <div className="flex flex-wrap items-start justify-between gap-[1rem]">
-          <div>
-            <h1 className="m-0">Board designer</h1>
-          </div>
-          <div className="flex flex-wrap gap-[0.5rem]">
-            <button
-              type="button"
-              className={btnGhost}
-              disabled={!undoEnabled}
-              onClick={() => dispatch({ type: 'undo' })}
-            >
-              Undo
-            </button>
-            <button
-              type="button"
-              className={btnGhost}
-              disabled={!redoEnabled}
-              onClick={() => dispatch({ type: 'redo' })}
-            >
-              Redo
-            </button>
-            <button
-              type="button"
-              className={btnGhost}
-              onClick={() => dispatch({ type: 'load', config: initialConfig })}
-            >
-              Reset
-            </button>
-            <button type="submit" className={btnPrimary}>
-              Save
-            </button>
-          </div>
+        {/* Narrow surface: CSS-shown below lg. Authoring tree stays mounted (max-lg:hidden)
+            so a resize / rotate with an unsaved draft does not destroy in-memory state. */}
+        <div className="lg:hidden">
+          <h1 className="m-0 mb-[1rem]">Board designer</h1>
+          <DesignerNarrowSurface
+            designId={designId}
+            config={config}
+            metrics={metrics}
+          />
         </div>
 
-        {dirty && <p className="m-0 text-[0.875rem] text-muted">Unsaved changes</p>}
-
-        {/* Preview column takes slack; settings rail stays readable. Sticky preview
-            so strip/settings edits never require scrolling back up to see the board.
-            The columns MUST stay stretched: a sticky element can only travel inside
-            its own containing block, so `items-start` would shrink-wrap this column
-            to its content and the preview would scroll away after ~130px of a
-            ~6700px page. `content-start` keeps the children at their natural height
-            inside the now-full-height column. */}
-        <div className="grid gap-[1.25rem] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)]">
-          <div className="grid min-w-0 gap-[1rem] lg:content-start">
-            <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1] lg:max-h-[calc(100vh-5.25rem)] lg:overflow-y-auto">
-              <BoardPreview config={config} metrics={metrics} />
-            </section>
-            <TemplatePicker
-              onLoad={(templateConfig) => dispatch({ type: 'load', config: templateConfig })}
-            />
+        {/* Authoring chrome — always in the React tree; display:none below lg. */}
+        <div className="hidden lg:grid lg:gap-[1.25rem]">
+          <div className="flex flex-wrap items-start justify-between gap-[1rem]">
+            <div>
+              <h1 className="m-0">Board designer</h1>
+            </div>
+            <div className="flex flex-wrap gap-[0.5rem]">
+              <button
+                type="button"
+                className={btnGhost}
+                disabled={!undoEnabled}
+                onClick={() => dispatch({ type: 'undo' })}
+              >
+                Undo
+              </button>
+              <button
+                type="button"
+                className={btnGhost}
+                disabled={!redoEnabled}
+                onClick={() => dispatch({ type: 'redo' })}
+              >
+                Redo
+              </button>
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => dispatch({ type: 'load', config: initialConfig })}
+              >
+                Reset
+              </button>
+              <button type="submit" className={btnPrimary}>
+                Save
+              </button>
+            </div>
           </div>
 
-          <div className="grid min-w-0 gap-[1rem]">
-            <BoardSettings
-              config={config}
-              onChange={(patch) => dispatch({ type: 'patch', patch })}
-              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
-            />
-            <PanelEditor
-              config={config}
-              metrics={metrics}
-              dispatch={dispatch}
-              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
-            />
-            <MetricsPanel metrics={metrics} grain={config.grain} />
-            {/* U6 — desktop only (this tree is CSS-hidden below lg). */}
-            <OptimizerPanel config={config} />
+          {dirty && <p className="m-0 text-[0.875rem] text-muted">Unsaved changes</p>}
+
+          {/* Preview column takes slack; settings rail stays readable. Sticky preview
+              so strip/settings edits never require scrolling back up to see the board.
+              The columns MUST stay stretched: a sticky element can only travel inside
+              its own containing block, so `items-start` would shrink-wrap this column
+              to its content and the preview would scroll away after ~130px of a
+              ~6700px page. `content-start` keeps the children at their natural height
+              inside the now-full-height column. */}
+          <div className="grid gap-[1.25rem] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)]">
+            <div className="grid min-w-0 gap-[1rem] lg:content-start">
+              <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1] lg:max-h-[calc(100vh-5.25rem)] lg:overflow-y-auto">
+                <BoardPreview config={config} metrics={metrics} />
+              </section>
+              <TemplatePicker
+                onLoad={(templateConfig) =>
+                  dispatch({ type: 'load', config: templateConfig })
+                }
+              />
+            </div>
+
+            <div className="grid min-w-0 gap-[1rem]">
+              <BoardSettings
+                config={config}
+                onChange={(patch) => dispatch({ type: 'patch', patch })}
+                onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
+              />
+              <PanelEditor
+                config={config}
+                metrics={metrics}
+                dispatch={dispatch}
+                onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
+              />
+              <MetricsPanel metrics={metrics} grain={config.grain} />
+              {/* U6 — desktop only (this tree is CSS-hidden below lg). */}
+              <OptimizerPanel config={config} />
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

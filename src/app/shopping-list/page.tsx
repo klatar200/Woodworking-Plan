@@ -104,9 +104,11 @@ export default async function ShoppingListPage({
       {list.planCount === 0 ? (
         <p className="muted">
           Your shopping list is empty. Open a plan and choose{' '}
-          <strong>Add to shopping list</strong> — saving a plan no longer adds it here, so
-          this stays the list of what you&rsquo;re actually building.{' '}
-          <Link href="/browse">Browse plans</Link>.
+          <strong>Add to shopping list</strong>, or push a saved board from the designer —
+          saving alone no longer adds anything here, so this stays the list of what
+          you&rsquo;re actually building. <Link href="/browse">Browse plans</Link>
+          {' · '}
+          <Link href="/designer/library">Your boards</Link>.
         </p>
       ) : (
         <>
@@ -151,14 +153,25 @@ export default async function ShoppingListPage({
               <ul className="list-none p-0 m-0 flex flex-col gap-[0.5rem]">
                 {list.byPlan.map((plan) => (
                   <li
-                    key={plan.slug}
+                    key={`${plan.source}-${plan.id}`}
                     className="flex flex-wrap items-center justify-between gap-[0.5rem]"
                   >
-                    <Link href={`/plans/${plan.slug}`} className="min-w-0">
+                    <Link
+                      href={
+                        plan.source === 'design'
+                          ? `/designer/${plan.id}`
+                          : `/plans/${plan.slug}`
+                      }
+                      className="min-w-0"
+                    >
                       {plan.title}
                     </Link>
                     <form action={removeFromShoppingListAction}>
-                      <input type="hidden" name="planId" value={plan.id} />
+                      {plan.source === 'design' ? (
+                        <input type="hidden" name="designId" value={plan.id} />
+                      ) : (
+                        <input type="hidden" name="planId" value={plan.id} />
+                      )}
                       <input type="hidden" name="returnTo" value="/shopping-list" />
                       <button type="submit" className={btnGhost}>
                         Remove from list
@@ -224,17 +237,39 @@ export default async function ShoppingListPage({
           ) : (
             <>
               {list.byPlan.map((plan) => (
-                <section key={plan.slug} aria-labelledby={`plan-${plan.slug}`}>
+                <section
+                  key={`${plan.source}-${plan.id}`}
+                  aria-labelledby={`plan-${plan.source}-${plan.id}`}
+                >
                   <div className="flex flex-wrap items-center justify-between gap-[0.5rem]">
-                    <h2 id={`plan-${plan.slug}`} className="sub-heading">
-                      <Link href={`/plans/${plan.slug}`}>{plan.title}</Link>
+                    <h2
+                      id={`plan-${plan.source}-${plan.id}`}
+                      className="sub-heading"
+                    >
+                      <Link
+                        href={
+                          plan.source === 'design'
+                            ? `/designer/${plan.id}`
+                            : `/plans/${plan.slug}`
+                        }
+                      >
+                        {plan.title}
+                      </Link>
                     </h2>
                     {/* Sprint 35 (audit H2): manage the list FROM the list. Posts the existing
                         removeFromShoppingListAction (no new write path); no-print — a remove
                         button on the paper list is noise. */}
                     <form action={removeFromShoppingListAction} className="no-print">
-                      <input type="hidden" name="planId" value={plan.id} />
-                      <input type="hidden" name="returnTo" value="/shopping-list?view=by-plan" />
+                      {plan.source === 'design' ? (
+                        <input type="hidden" name="designId" value={plan.id} />
+                      ) : (
+                        <input type="hidden" name="planId" value={plan.id} />
+                      )}
+                      <input
+                        type="hidden"
+                        name="returnTo"
+                        value="/shopping-list?view=by-plan"
+                      />
                       <button type="submit" className={btnGhost}>
                         Remove from list
                       </button>
@@ -242,7 +277,11 @@ export default async function ShoppingListPage({
                   </div>
                   <ul className="list-none p-0 mt-0 mx-0 mb-[1.5rem]">
                     {plan.lines.map((line) => (
-                      <Line key={line.name} line={line} keyPrefix={plan.slug} />
+                      <Line
+                        key={line.name}
+                        line={line}
+                        keyPrefix={`${plan.source}-${plan.id}`}
+                      />
                     ))}
                   </ul>
                 </section>

@@ -1,16 +1,27 @@
 import { prisma } from '@/lib/db';
 import { requireUser, getCurrentUser } from '@/lib/auth';
+import {
+  DESIGN_LUMBER_UNIT,
+  designBoardFeetBySpecies,
+} from '@/lib/board-designer/design-board-feet';
+import { parseConfig } from '@/lib/board-designer/serialize';
+import type { Prisma } from '@prisma/client';
 
 /**
  * Shopping list generator — Sprint 12. BUSINESS_PLAN.md §10.
  *
- * Aggregates materials across the plans a user has EXPLICITLY added to their shopping
- * list into one consolidated list they can take to a lumberyard.
+ * Aggregates materials across the plans (and, Sprint 64, board designs) a user has
+ * EXPLICITLY added to their shopping list into one consolidated list they can take
+ * to a lumberyard.
  *
  * SPRINT 22: the source changed from "everything you saved" to an explicit
  * `ShoppingListEntry` set (DECISIONS_LOG.md 2026-07-14). Saving is "maybe someday";
  * the shopping list is "buying for these now" — different intents, so a different table.
  * The merge machinery below is UNCHANGED; only where the plans come from changed.
+ *
+ * SPRINT 64: `ShoppingListEntry` may point at a `BoardDesign` instead of a `Plan`.
+ * Design materials are synthesized on read from `designBoardFeetBySpecies` (membership,
+ * not a snapshot). Exactly one of planId / boardDesignId is set.
  *
  * ═══════════════════════════════════════════════════════════════════════════════
  * NO AFFILIATE LINKS. NOT AN OVERSIGHT — A CONSTRAINT.
@@ -61,17 +72,18 @@ export interface ShoppingListLine {
   costCents: number;
   /** How many contributing materials had no price. Drives the "≈" and the caveat. */
   unpricedCount: number;
-  /** Which saved plans need this. The user asked for a list; they still own the why. */
+  /** Which saved plans / designs need this. The user asked for a list; they still own the why. */
   plans: { slug: string; title: string }[];
 }
 
-/** One plan on the shopping list, with its own (unmerged) material lines. */
+/** One plan or board design on the shopping list, with its own (unmerged) material lines. */
 export interface ShoppingListPlan {
-  /** Sprint 35 — needed by the "Remove from list" form (removeFromShoppingList takes a planId). */
   id: string;
   slug: string;
   title: string;
-  /** THIS plan's materials, in author order — not merged with other plans. */
+  /** Sprint 64 — designs link to `/designer/[id]`, not `/plans/[slug]`. */
+  source: 'plan' | 'design';
+  /** THIS source's materials, in author order — not merged with other sources. */
   lines: ShoppingListLine[];
 }
 
@@ -210,7 +222,7 @@ export function mergeMaterials(materials: MaterialInput[]): ShoppingListLine[] {
   return [...merged.values()];
 }
 
-// ──────────────────────── membership (Sprint 22) ────────────────────────
+// ──────────────────────── membership (Sprint 22 / 64) ────────────────────────
 //
 // Same security rule as the rest of this file and all of saves.ts: NO function takes a
 // `userId`. The owner is the verified session, and every write is scoped by `userId` in
@@ -226,6 +238,30 @@ export async function addToShoppingList(planId: string): Promise<void> {
   });
 }
 
+/**
+ * Adds a board design to the session user's shopping list. Idempotent.
+ * Unowned / missing design → no-op (no leak, no throw).
+ */
+export async function addBoardDesignToShoppingList(
+  designId: string,
+): Promise<void> {
+  const user = await requireUser();
+
+  const owned = await prisma.boardDesign.findFirst({
+    where: { id: designId, userId: user.id },
+    select: { id: true },
+  });
+  if (!owned) return;
+
+  await prisma.shoppingListEntry.upsert({
+    where: {
+      userId_boardDesignId: { userId: user.id, boardDesignId: designId },
+    },
+    create: { userId: user.id, boardDesignId: designId },
+    update: {},
+  });
+}
+
 /** Removes a plan from the session user's shopping list. */
 export async function removeFromShoppingList(planId: string): Promise<void> {
   const user = await requireUser();
@@ -233,6 +269,16 @@ export async function removeFromShoppingList(planId: string): Promise<void> {
   // who guesses a row id delete anyone's entry. This silently affects zero rows for a
   // plan that isn't the caller's, which is exactly right.
   await prisma.shoppingListEntry.deleteMany({ where: { userId: user.id, planId } });
+}
+
+/** Removes a board design from the session user's shopping list. */
+export async function removeBoardDesignFromShoppingList(
+  designId: string,
+): Promise<void> {
+  const user = await requireUser();
+  await prisma.shoppingListEntry.deleteMany({
+    where: { userId: user.id, boardDesignId: designId },
+  });
 }
 
 /** Whether a plan is on the current user's shopping list. False for anonymous visitors. */
@@ -258,6 +304,28 @@ function emptyList(): ShoppingList {
   };
 }
 
+type EntryRow = {
+  plan: {
+    id: string;
+    slug: string;
+    title: string;
+    published: boolean;
+    materials: {
+      name: string;
+      unit: string;
+      species: string | null;
+      quantity: number;
+      costCents: number | null;
+    }[];
+  } | null;
+  boardDesign: {
+    id: string;
+    name: string;
+    userId: string;
+    config: Prisma.JsonValue;
+  } | null;
+};
+
 /**
  * Generates the signed-in user's shopping list from the plans they've explicitly added.
  *
@@ -269,7 +337,7 @@ function emptyList(): ShoppingList {
 export async function getShoppingList(): Promise<ShoppingList> {
   const user = await requireUser();
 
-  const entries = await prisma.shoppingListEntry.findMany({
+  const entries: EntryRow[] = await prisma.shoppingListEntry.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: 'asc' },
     select: {
@@ -291,42 +359,105 @@ export async function getShoppingList(): Promise<ShoppingList> {
           },
         },
       },
+      boardDesign: {
+        select: {
+          id: true,
+          name: true,
+          userId: true,
+          config: true,
+        },
+      },
     },
   });
 
-  // An unpublished plan contributes nothing — even to someone who added it before it was
-  // unpublished. `published: true` on every read, per the standing rule.
-  const plans = entries.map((entry) => entry.plan).filter((plan) => plan.published);
+  const byPlan: ShoppingListPlan[] = [];
+  const materials: MaterialInput[] = [];
 
-  if (plans.length === 0) return emptyList();
+  for (const entry of entries) {
+    if (entry.plan) {
+      // An unpublished plan contributes nothing — even to someone who added it before it
+      // was unpublished. `published: true` on every read, per the standing rule.
+      if (!entry.plan.published) continue;
 
-  // --- BY-PLAN view: each plan's own materials, unmerged, in author order. ---
-  const byPlan: ShoppingListPlan[] = plans.map((plan) => ({
-    id: plan.id,
-    slug: plan.slug,
-    title: plan.title,
-    lines: plan.materials.map((m) => ({
-      name: m.name.trim(),
-      unit: m.unit,
-      species: m.species,
-      quantity: m.quantity,
-      costCents: m.costCents ?? 0,
-      unpricedCount: m.costCents === null ? 1 : 0,
-      plans: [{ slug: plan.slug, title: plan.title }],
-    })),
-  }));
+      const source = {
+        slug: entry.plan.slug,
+        title: entry.plan.title,
+      };
+      const lines: ShoppingListLine[] = entry.plan.materials.map((m) => ({
+        name: m.name.trim(),
+        unit: m.unit,
+        species: m.species,
+        quantity: m.quantity,
+        costCents: m.costCents ?? 0,
+        unpricedCount: m.costCents === null ? 1 : 0,
+        plans: [source],
+      }));
 
-  // --- MERGED view: combined across plans, grouped by unit (Sprint 12, unchanged). ---
-  const materials: MaterialInput[] = plans.flatMap((plan) =>
-    plan.materials.map((material) => ({
-      name: material.name,
-      unit: material.unit,
-      species: material.species,
-      quantity: material.quantity,
-      costCents: material.costCents,
-      plan: { slug: plan.slug, title: plan.title },
-    })),
-  );
+      byPlan.push({
+        id: entry.plan.id,
+        slug: entry.plan.slug,
+        title: entry.plan.title,
+        source: 'plan',
+        lines,
+      });
+
+      for (const material of entry.plan.materials) {
+        materials.push({
+          name: material.name,
+          unit: material.unit,
+          species: material.species,
+          quantity: material.quantity,
+          costCents: material.costCents,
+          plan: source,
+        });
+      }
+      continue;
+    }
+
+    const design = entry.boardDesign;
+    // Scope by session user — an entry pointing at someone else's design yields nothing
+    // (no leak, no error). Should not happen if writes always verify ownership.
+    if (!design || design.userId !== user.id) continue;
+
+    const parsed = parseConfig(design.config);
+    if (!parsed.ok) continue;
+
+    const feet = designBoardFeetBySpecies(parsed.config);
+    const source = {
+      slug: `designer/${design.id}`,
+      title: design.name,
+    };
+    const lines: ShoppingListLine[] = feet.map((row) => ({
+      name: row.name,
+      unit: DESIGN_LUMBER_UNIT,
+      species: null,
+      quantity: row.boardFeet,
+      costCents: 0,
+      unpricedCount: 1,
+      plans: [source],
+    }));
+
+    byPlan.push({
+      id: design.id,
+      slug: source.slug,
+      title: design.name,
+      source: 'design',
+      lines,
+    });
+
+    for (const row of feet) {
+      materials.push({
+        name: row.name,
+        unit: DESIGN_LUMBER_UNIT,
+        species: null,
+        quantity: row.boardFeet,
+        costCents: null,
+        plan: source,
+      });
+    }
+  }
+
+  if (byPlan.length === 0) return emptyList();
 
   const lines = mergeMaterials(materials);
 
@@ -350,7 +481,7 @@ export async function getShoppingList(): Promise<ShoppingList> {
   return {
     groups,
     byPlan,
-    planCount: plans.length,
+    planCount: byPlan.length,
     lineCount: lines.length,
     // Sum what we know. The UI marks it "≈" and says how many items are missing a
     // price — that is what makes a ballpark honest, rather than refusing to give one.

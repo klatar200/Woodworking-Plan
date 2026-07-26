@@ -16,6 +16,7 @@ import {
   createBoardDesignAction,
   updateBoardDesignAction,
 } from '@/app/actions/board-designs';
+import { addBoardDesignToShoppingListAction } from '@/app/actions/shopping-list';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,6 +57,7 @@ export default async function SavedDesignerPage({ params, searchParams }: PagePr
         initialConfig={design.config}
         saveAction={createBoardDesignAction}
         updateAction={updateBoardDesignAction}
+        addToShoppingListAction={addBoardDesignToShoppingListAction}
       />
     </main>
   );

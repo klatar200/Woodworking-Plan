@@ -22,10 +22,16 @@ const shoppingListEntry = {
   upsert: vi.fn(),
   deleteMany: vi.fn(),
 };
+const boardDesign = {
+  findFirst: vi.fn(),
+  deleteMany: vi.fn(),
+};
 const requireUser = vi.fn();
 const getCurrentUser = vi.fn();
 
-vi.mock('@/lib/db', () => ({ prisma: { shoppingListEntry } }));
+vi.mock('@/lib/db', () => ({
+  prisma: { shoppingListEntry, boardDesign },
+}));
 vi.mock('@/lib/auth', () => ({ requireUser, getCurrentUser }));
 
 const ALICE = { id: 'user_alice' };
@@ -49,17 +55,39 @@ beforeEach(() => {
   shoppingListEntry.findUnique.mockReset().mockResolvedValue(null);
   shoppingListEntry.upsert.mockReset().mockResolvedValue({});
   shoppingListEntry.deleteMany.mockReset().mockResolvedValue({ count: 0 });
+  boardDesign.findFirst.mockReset().mockResolvedValue(null);
+  boardDesign.deleteMany.mockReset().mockResolvedValue({ count: 0 });
   requireUser.mockReset().mockResolvedValue(ALICE);
   getCurrentUser.mockReset().mockResolvedValue(ALICE);
 });
 
 /** Shape a ShoppingListEntry row the way getShoppingList selects it. */
 const entry = (plan: {
+  id?: string;
   slug: string;
   title: string;
   published?: boolean;
   materials: unknown[];
-}) => ({ plan: { published: true, ...plan } });
+}) => ({
+  plan: { id: plan.id ?? `id-${plan.slug}`, published: true, ...plan },
+  boardDesign: null,
+});
+
+const designEntry = (design: {
+  id: string;
+  name: string;
+  userId?: string;
+  config: unknown;
+}) => ({
+  plan: null,
+  boardDesign: {
+    id: design.id,
+    name: design.name,
+    userId: design.userId ?? ALICE.id,
+    config: design.config,
+  },
+});
+
 
 describe('SAFETY: what must NOT be merged', () => {
   it('does NOT merge two different screws just because both say "screws"', async () => {
@@ -238,17 +266,14 @@ describe('MONEY: a ballpark, marked as one — not silence', () => {
 
   it('the LIST total is always a number, with a count of what is missing', async () => {
     shoppingListEntry.findMany.mockResolvedValue([
-      {
-        plan: {
-          slug: 'p',
-          title: 'P',
-          published: true,
-          materials: [
-            { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
-            { name: 'Scrap', unit: 'each', species: null, quantity: 1, costCents: null },
-          ],
-        },
-      },
+      entry({
+        slug: 'p',
+        title: 'P',
+        materials: [
+          { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
+          { name: 'Scrap', unit: 'each', species: null, quantity: 1, costCents: null },
+        ],
+      }),
     ]);
 
     const { getShoppingList } = await import('@/lib/shopping-list');
@@ -262,17 +287,14 @@ describe('MONEY: a ballpark, marked as one — not silence', () => {
 
   it('the total is exact when everything IS priced', async () => {
     shoppingListEntry.findMany.mockResolvedValue([
-      {
-        plan: {
-          slug: 'p',
-          title: 'P',
-          published: true,
-          materials: [
-            { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
-            { name: 'Wood glue', unit: 'oz', species: null, quantity: 4, costCents: 250 },
-          ],
-        },
-      },
+      entry({
+        slug: 'p',
+        title: 'P',
+        materials: [
+          { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
+          { name: 'Wood glue', unit: 'oz', species: null, quantity: 4, costCents: 250 },
+        ],
+      }),
     ]);
 
     const { getShoppingList } = await import('@/lib/shopping-list');
@@ -399,26 +421,21 @@ describe('the two views (Sprint 22)', () => {
 describe('published: true is enforced', () => {
   it('an unpublished plan contributes NO materials, even if it was saved', async () => {
     shoppingListEntry.findMany.mockResolvedValue([
-      {
-        plan: {
-          slug: 'staged',
-          title: 'Staged',
-          published: false,
-          materials: [
-            { name: 'Secret', unit: 'each', species: null, quantity: 1, costCents: 100 },
-          ],
-        },
-      },
-      {
-        plan: {
-          slug: 'live',
-          title: 'Live',
-          published: true,
-          materials: [
-            { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
-          ],
-        },
-      },
+      entry({
+        slug: 'staged',
+        title: 'Staged',
+        published: false,
+        materials: [
+          { name: 'Secret', unit: 'each', species: null, quantity: 1, costCents: 100 },
+        ],
+      }),
+      entry({
+        slug: 'live',
+        title: 'Live',
+        materials: [
+          { name: 'Cedar', unit: 'each', species: null, quantity: 2, costCents: 500 },
+        ],
+      }),
     ]);
 
     const { getShoppingList } = await import('@/lib/shopping-list');
@@ -435,18 +452,15 @@ describe('published: true is enforced', () => {
 describe('grouping and presentation', () => {
   it('groups by unit — you buy board feet and screws in different aisles', async () => {
     shoppingListEntry.findMany.mockResolvedValue([
-      {
-        plan: {
-          slug: 'p',
-          title: 'P',
-          published: true,
-          materials: [
-            { name: 'Walnut', unit: 'board feet', species: 'Walnut', quantity: 6, costCents: 4000 },
-            { name: 'Screws', unit: 'each', species: null, quantity: 40, costCents: 600 },
-            { name: 'Oil', unit: 'oz', species: null, quantity: 8, costCents: 500 },
-          ],
-        },
-      },
+      entry({
+        slug: 'p',
+        title: 'P',
+        materials: [
+          { name: 'Walnut', unit: 'board feet', species: 'Walnut', quantity: 6, costCents: 4000 },
+          { name: 'Screws', unit: 'each', species: null, quantity: 40, costCents: 600 },
+          { name: 'Oil', unit: 'oz', species: null, quantity: 8, costCents: 500 },
+        ],
+      }),
     ]);
 
     const { getShoppingList } = await import('@/lib/shopping-list');
@@ -463,5 +477,174 @@ describe('grouping and presentation', () => {
     expect(list.planCount).toBe(0);
     expect(list.lineCount).toBe(0);
     expect(list.groups).toEqual([]);
+  });
+});
+
+describe('Sprint 64 — board design membership', () => {
+  it('pushing the same design twice upserts on (userId, boardDesignId)', async () => {
+    boardDesign.findFirst.mockResolvedValue({ id: 'des_1' });
+    const { addBoardDesignToShoppingList } = await import('@/lib/shopping-list');
+    await addBoardDesignToShoppingList('des_1');
+    await addBoardDesignToShoppingList('des_1');
+
+    expect(shoppingListEntry.upsert).toHaveBeenCalledTimes(2);
+    expect(shoppingListEntry.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          userId_boardDesignId: { userId: 'user_alice', boardDesignId: 'des_1' },
+        },
+        create: { userId: 'user_alice', boardDesignId: 'des_1' },
+      }),
+    );
+  });
+
+  it('unowned designId creates nothing (no leak)', async () => {
+    boardDesign.findFirst.mockResolvedValue(null);
+    const { addBoardDesignToShoppingList } = await import('@/lib/shopping-list');
+    await addBoardDesignToShoppingList('not-mine');
+    expect(shoppingListEntry.upsert).not.toHaveBeenCalled();
+  });
+
+  it('deleting a design removes its entry (cascade contract — deleteMany scoped)', async () => {
+    const { removeBoardDesignFromShoppingList } = await import('@/lib/shopping-list');
+    await removeBoardDesignFromShoppingList('des_1');
+    expect(shoppingListEntry.deleteMany).toHaveBeenCalledWith({
+      where: { userId: 'user_alice', boardDesignId: 'des_1' },
+    });
+  });
+
+  it('a design owned by another user yields nothing on read', async () => {
+    const { makeV2Config, makePanel, makeStrip } = await import(
+      './fixtures/board-design'
+    );
+    const config = makeV2Config({
+      name: 'Bob board',
+      grain: 'edge',
+      sourceLengthIn: 18,
+      panels: [
+        makePanel('p1', 'P', 1.5, [makeStrip('s1', 'hard-maple', 1.5, 1)]),
+      ],
+    });
+    shoppingListEntry.findMany.mockResolvedValue([
+      designEntry({
+        id: 'des_bob',
+        name: 'Bob board',
+        userId: 'user_bob',
+        config,
+      }),
+    ]);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const list = await getShoppingList();
+    expect(list.planCount).toBe(0);
+    expect(list.lineCount).toBe(0);
+  });
+
+  it('board feet on the list equal the designer figure exactly — waste once', async () => {
+    const { makeV2Config, makePanel, makeStrip } = await import(
+      './fixtures/board-design'
+    );
+    const { calculateMetrics } = await import('@/lib/board-designer/metrics');
+    const { DESIGN_LUMBER_UNIT } = await import(
+      '@/lib/board-designer/design-board-feet'
+    );
+    const config = makeV2Config({
+      name: 'Maple strip',
+      grain: 'edge',
+      sourceLengthIn: 18,
+      wasteFactor: 0.15,
+      panels: [
+        makePanel('p1', 'P', 1.5, [
+          makeStrip('s1', 'hard-maple', 1.5, 1),
+          makeStrip('s2', 'walnut', 1.5, 1),
+        ]),
+      ],
+    });
+    const metrics = calculateMetrics(config);
+    shoppingListEntry.findMany.mockResolvedValue([
+      designEntry({ id: 'des_1', name: config.name, config }),
+    ]);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const list = await getShoppingList();
+
+    expect(list.byPlan[0]!.source).toBe('design');
+    expect(list.byPlan[0]!.title).toBe(config.name);
+    for (const row of metrics.boardFeetBySpecies) {
+      const line = list.byPlan[0]!.lines.find((l) => l.name === row.name);
+      expect(line).toBeDefined();
+      expect(line!.unit).toBe(DESIGN_LUMBER_UNIT);
+      expect(line!.species).toBeNull();
+      expect(line!.quantity).toBe(row.boardFeet);
+    }
+    const mergedTotal = list.groups
+      .flatMap((g) => g.lines)
+      .reduce((sum, l) => sum + l.quantity, 0);
+    expect(mergedTotal).toBeCloseTo(metrics.totalBoardFeet, 10);
+  });
+
+  it('editing a design changes the list on next read (membership, not snapshot)', async () => {
+    const { makeV2Config, makePanel, makeStrip } = await import(
+      './fixtures/board-design'
+    );
+    const base = makeV2Config({
+      name: 'Edit me',
+      grain: 'edge',
+      sourceLengthIn: 12,
+      wasteFactor: 0,
+      panels: [
+        makePanel('p1', 'P', 1.5, [makeStrip('s1', 'hard-maple', 1.5, 1)]),
+      ],
+    });
+    shoppingListEntry.findMany.mockResolvedValue([
+      designEntry({ id: 'des_1', name: base.name, config: base }),
+    ]);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const before = await getShoppingList();
+    const mapleBefore = before.byPlan[0]!.lines.find((l) => l.name === 'Hard Maple')!;
+
+    const longer = {
+      ...base,
+      sourceLengthIn: 24,
+      panels: [
+        makePanel('p1', 'P', 1.5, [makeStrip('s1', 'hard-maple', 1.5, 1)]),
+      ],
+    };
+    shoppingListEntry.findMany.mockResolvedValue([
+      designEntry({ id: 'des_1', name: longer.name, config: longer }),
+    ]);
+    const after = await getShoppingList();
+    const mapleAfter = after.byPlan[0]!.lines.find((l) => l.name === 'Hard Maple')!;
+    expect(mapleAfter.quantity).toBe(mapleBefore.quantity * 2);
+  });
+
+  it('species-only difference does not merge', async () => {
+    const { makeV2Config, makePanel, makeStrip } = await import(
+      './fixtures/board-design'
+    );
+    const maple = makeV2Config({
+      name: 'Maple',
+      grain: 'edge',
+      sourceLengthIn: 18,
+      wasteFactor: 0,
+      panels: [
+        makePanel('p1', 'P', 1.5, [makeStrip('s1', 'hard-maple', 1.5, 1)]),
+      ],
+    });
+    const cherry = makeV2Config({
+      name: 'Cherry',
+      grain: 'edge',
+      sourceLengthIn: 18,
+      wasteFactor: 0,
+      panels: [
+        makePanel('p1', 'P', 1.5, [makeStrip('s1', 'cherry', 1.5, 1)]),
+      ],
+    });
+    shoppingListEntry.findMany.mockResolvedValue([
+      designEntry({ id: 'des_m', name: 'Maple', config: maple }),
+      designEntry({ id: 'des_c', name: 'Cherry', config: cherry }),
+    ]);
+    const { getShoppingList } = await import('@/lib/shopping-list');
+    const list = await getShoppingList();
+    const bf = list.groups.find((g) => g.unit === 'board feet')!;
+    expect(bf.lines.map((l) => l.name).sort()).toEqual(['Cherry', 'Hard Maple']);
   });
 });
