@@ -8,6 +8,7 @@ import { dropIndexFromClientY } from '@/lib/board-designer/strip-drag';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+import { FieldHint } from './field-hint';
 import {
   useEffect,
   useRef,
@@ -360,7 +361,8 @@ export function StripList({
 
               <div className="grid gap-[0.75rem] sm:grid-cols-2">
                 <label className="grid gap-[0.375rem]">
-                  <span className="text-[0.875rem] font-bold">Width</span>
+                  <span className="text-[0.875rem] font-bold">Width (in)</span>
+                  <FieldHint>Strip width in inches.</FieldHint>
                   <input
                     className={inputControl}
                     name={`strip-${selectedStrip.id}-widthIn`}
@@ -379,7 +381,8 @@ export function StripList({
                   />
                 </label>
                 <label className="grid gap-[0.375rem]">
-                  <span className="text-[0.875rem] font-bold">Repeat</span>
+                  <span className="text-[0.875rem] font-bold">Repeat (count)</span>
+                  <FieldHint>Number of times this strip repeats.</FieldHint>
                   <input
                     className={inputControl}
                     name={`strip-${selectedStrip.id}-repeat`}

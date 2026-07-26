@@ -5,6 +5,7 @@ import {
 } from '@/lib/board-designer/row-transform';
 import type { BoardDesignConfig, RowStep } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+import { FieldHint } from './field-hint';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
@@ -34,7 +35,8 @@ export function RowPatternEditor({
       </div>
 
       <label className="mb-[1rem] grid max-w-[12rem] gap-[0.375rem]">
-        <span className="text-[0.875rem] font-bold">Rows</span>
+        <span className="text-[0.875rem] font-bold">Rows (count)</span>
+        <FieldHint>Total row count for the board face.</FieldHint>
         <input
           className={inputControl}
           type="number"

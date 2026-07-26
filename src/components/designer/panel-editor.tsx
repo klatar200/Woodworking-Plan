@@ -5,6 +5,7 @@ import { StripList } from './strip-list';
 import type { ConfigAction } from '@/lib/board-designer/history';
 import type { BoardDesignConfig, BoardMetrics, Panel } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+import { FieldHint } from './field-hint';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
@@ -178,7 +179,8 @@ function PanelHeader({
           />
         </label>
         <label className="grid gap-[0.375rem]">
-          <span className="text-[0.875rem] font-bold">Thickness</span>
+          <span className="text-[0.875rem] font-bold">Thickness (in)</span>
+          <FieldHint>Panel thickness in inches.</FieldHint>
           <input
             className={inputControl}
             type="number"

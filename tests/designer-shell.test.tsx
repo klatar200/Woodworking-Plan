@@ -334,6 +334,18 @@ describe('DesignerShell static render', () => {
     expect(html).toContain('>Edge</button>');
     expect(html).toContain('>End</button>');
   });
+
+  it('Sprint 70: board settings explain kerf and waste allowance in-page', () => {
+    const settings = source('src/components/designer/board-settings.tsx');
+    const html = visibleMarkup(render(goldenConfig));
+
+    expect(settings).toContain('material removed by the saw cut');
+    expect(settings).toContain('mistakes/defects');
+    expect(html).toContain('Blade kerf is material removed by the saw cut');
+    expect(html).toContain('Extra % of board feet added for mistakes/defects');
+    expect(html).toContain('Waste allowance (%)');
+    expect(html).not.toContain('Waste allowance</span><input');
+  });
 });
 
 describe('dockTabForGrain', () => {

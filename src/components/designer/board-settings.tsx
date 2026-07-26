@@ -2,6 +2,7 @@ import { KERF_OPTIONS_IN } from '@/lib/cut-optimizer';
 import { btnGhost, btnPrimary, selectControl } from '@/lib/ui';
 import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
 import type { ChangeEvent, ReactNode } from 'react';
+import { FieldHint } from './field-hint';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
@@ -52,6 +53,7 @@ export function BoardSettingsDisclosure({
         {config.grain === 'edge' && (
           <NumberField
             label="Panel length (in)"
+            hint="Usable source board length before strips are laid out."
             name="sourceLengthIn"
             value={config.sourceLengthIn}
             min={1}
@@ -64,6 +66,7 @@ export function BoardSettingsDisclosure({
         {config.grain === 'end' && (
           <NumberField
             label="Slice thickness (in)"
+            hint="Thickness of each end-grain slice after glue-up."
             name="sliceThicknessIn"
             value={config.sliceThicknessIn}
             min={0.25}
@@ -75,6 +78,7 @@ export function BoardSettingsDisclosure({
 
         <label className="grid gap-[0.375rem]">
           <span className="text-[0.875rem] font-bold">Kerf (in)</span>
+          <FieldHint>Blade kerf is material removed by the saw cut, in inches.</FieldHint>
           <select
             className={`${selectControl} w-full`}
             name="kerfIn"
@@ -91,6 +95,7 @@ export function BoardSettingsDisclosure({
 
         <label className="grid gap-[0.375rem]">
           <span className="text-[0.875rem] font-bold">Waste allowance (%)</span>
+          <FieldHint>Extra % of board feet added for mistakes/defects.</FieldHint>
           <input
             className={inputControl}
             name="wasteFactor"
@@ -136,6 +141,7 @@ function GrainButton({
 
 function NumberField({
   label,
+  hint,
   name,
   value,
   min,
@@ -144,6 +150,7 @@ function NumberField({
   onCommitCoalesce,
 }: {
   label: string;
+  hint: string;
   name: string;
   value: number;
   min: number;
@@ -154,6 +161,7 @@ function NumberField({
   return (
     <label className="grid gap-[0.375rem]">
       <span className="text-[0.875rem] font-bold">{label}</span>
+      <FieldHint>{hint}</FieldHint>
       <input
         className={inputControl}
         name={name}

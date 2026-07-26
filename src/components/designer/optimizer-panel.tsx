@@ -15,6 +15,7 @@ import {
   type BoardGroup,
 } from '@/lib/cut-optimizer';
 import { selectControl } from '@/lib/ui';
+import { FieldHint } from './field-hint';
 
 /** Spoken article for N-ft stock — "an 8 ft", "a 6 ft". */
 function stockFtArticle(ft: number): 'a' | 'an' {
@@ -65,7 +66,8 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
       <div className="grid gap-[1rem]">
         <div className="grid gap-[0.75rem] sm:grid-cols-2">
           <label className="grid gap-[0.375rem]">
-            <span className="text-[0.875rem] font-bold">Board length</span>
+            <span className="text-[0.875rem] font-bold">Board length (ft)</span>
+            <FieldHint>Stock board length used for the cut plan.</FieldHint>
             <select
               className={`${selectControl} w-full`}
               value={String(stockLengthIn)}
@@ -80,7 +82,8 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
           </label>
 
           <label className="grid gap-[0.375rem]">
-            <span className="text-[0.875rem] font-bold">Board width</span>
+            <span className="text-[0.875rem] font-bold">Board width (in)</span>
+            <FieldHint>Stock width for ripped strips, or buy each part&apos;s width.</FieldHint>
             <select
               className={`${selectControl} w-full`}
               value={stockWidthIn === null ? 'rip-none' : String(stockWidthIn)}
