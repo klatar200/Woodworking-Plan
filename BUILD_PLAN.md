@@ -46,12 +46,13 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
 | Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
 | Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
-| Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Top bar + Board settings ⋯; sticky preview+dock; full dock panels mounted/hidden; preview max-w 1200px / max-h~55vh; surplus → right rail; grain→Templates; RowPatternEditor extracted. Suite **1309/1309**. |
-| Sprints 68–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 68**. Agent contract below. Facts: DECISIONS_LOG 2026-07-26. |
+| Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Suite **1309/1309**. |
+| Sprint 68 (dock behavior + parity) | ✅ **CLOSED** 2026-07-26 — **98/100**. Cut plan expanded; Metrics/Cut plan tab badges; `designer-shell-parity.test.ts`. Suite **1312/1312** / 114 files. |
+| Sprints 69–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 69**. Agent contract below. |
 
-Test suite — expected: **1309/1309** across **113 files** (Sprint 67). Update each sprint close.
+Test suite — expected: **1312/1312** across **114 files** (Sprint 68). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67 ✅** · **next = 68**. Parked FUTURE_IDEAS 2026-07-26: profile UOM · in-app design tabs · share links · custom species. Dark re-palette uncommissioned.
+**Designer:** U0–U7 ✅ · **67–68 ✅** · **next = 69**. Parked FUTURE_IDEAS 2026-07-26.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -63,7 +64,7 @@ Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list par
 OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
 SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
-ORDER:     67 ✅ → 68 → 69 → 70 → 71 → 72. One sprint at a time. NEXT=68.
+ORDER:     67 ✅ → 68 ✅ → 69 → 70 → 71 → 72. One sprint at a time. NEXT=69.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
@@ -132,13 +133,10 @@ SHIPPED: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping,Board settings �
     grain→Templates; RowPatternEditor extracted from PanelEditor.
 ```
 
-**68 — dock behavior + parity lock**
+**68 — dock behavior + parity lock** ✅ CLOSED 2026-07-26 · 98/100
 ```
-DO: tab default Pattern if end else Templates; hide Pattern if edge; badges on Metrics/Cut plan
-    when warnings/impossible; Cut plan expanded in tab; add tests/designer-shell-parity.test.ts
-    (or equiv) locking PARITY_INVENTORY in desktop tree; assert dock panels remain in DOM when hidden.
-DONT: relocate again · strip redesign · tooltips · 2D · Save a copy · unmount inactive tabs.
-ACCEPT: parity test green · badge toggle · default-tab rule · grain edge forces Templates.
+SHIPPED: Cut plan always-expanded section; Metrics/Cut plan tab badges; designer-shell-parity.test.ts
+    locks PARITY_INVENTORY + mounted/hidden dock panels; edge hides Pattern tab control.
 ```
 
 **69 — strip directory**

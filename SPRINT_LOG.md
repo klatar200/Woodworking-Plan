@@ -3,9 +3,28 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 67 (2026-07-26) — CLOSED 96/100** — designer shell relocate (top bar + sticky preview/dock).
+> **Latest logged: Sprint 68 (2026-07-26) — CLOSED 98/100** — dock badges + cut plan expanded + parity lock.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 ✅ · shell 67 ✅. Suite: 1309 green. Next: 68.
+> **Milestones:** … · shell 67–68 ✅. Suite: 1312 green. Next: 69.
+
+---
+
+## Sprint 68: Dock behavior + parity lock
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 68 — badges, cut plan expanded, parity test, dock stay mounted.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Expanded cut plan · badges · parity test · Pattern hide on edge |
+| Correctness & functionality (/20) | 18 | Badge + impossible helpers; browser sticky census still open (−2) |
+| Automated test coverage (/15) | 15 | `designer-shell-parity.test.ts` · suite 1312/114 |
+| Security (/15) | 15 | No new trust boundary |
+| Code quality (/10) | 10 | `cutPlanHasImpossible`; OptimizerPanel section not details |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **98/100** — Pass. Next: Sprint 69.
 
 ---
 
