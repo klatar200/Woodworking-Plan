@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 64 Attempt 1 (2026-07-26) — OPEN** — U6 cut optimizer panel + shopping-list push. Prior: Sprint 63 **96/100**.
+> **Latest logged: Sprint 64 Attempt 1 (2026-07-26) — CLOSED 96/100** — U6 cut optimizer panel + shopping-list push. First Load **122 kB**. Prior: Sprint 63 **96/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1203 green (post-63; Sprint 64 in progress).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅. Test suite: 1228 green (post-64).
 
 ---
 
@@ -90,8 +90,37 @@ Score: **96/100** — Pass. Closure is wedge membership, not base colour.
 
 ## Sprint 64: U6 — cut optimizer panel + shopping-list push
 **Dates:** 2026-07-26
-**Scope:** Part 0 S63 browser verify + open U6 · Part A optimizer panel · Part B shopping-list push (pending Q1) · trunk-based to `main`.
-**Status:** OPEN — Part 0 recorded; Part A in progress; Part B blocked on Q1.
+**Scope:** Part 0 S63 browser verify + open U6 · Part A optimizer panel · Part B shopping-list push (Q1 accepted) · trunk-based to `main`.
+**Commits on `main`:** `7fec772` (Part 0) · `c4712fb` (Part A) · `54c4914` (Part B) · (this close)
+**/designer First Load JS:** **122 kB** (was 120; CI build on `54c4914` — OptimizerPanel + BoardBar).
+**Suite:** **1228/1228** across 107 files.
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30208116055 success.
+**Migration:** `20260726160000_shopping_list_board_design` — additive nullable `boardDesignId` + xor CHECK; **no backfill**. Prod deploy succeeded (GitHub deployment `5611477661`).
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | U6 optimizer panel + push; Q1 schema as accepted; waste once; unit `"board feet"`; desktop-only panel; no dollars |
+| Correctness & functionality (/20) | 16 | Kerf/impossible/rips/yield/waste tests green; upsert + xor reject + unowned no-op; bf equals metrics. **−4**: browser unrun (Clerk) |
+| Automated test coverage (/15) | 15 | `board-designer-optimizer` · `board-designer-board-feet` · `shopping-list` design suite · `shopping-list-design-actions`; suite **1228** |
+| Security (/15) | 15 | `/designer`+`/shopping-list` out of public-routes + in NEVER_CACHE; session ownership; actions never throw; forged userId ignored |
+| Code quality & simplicity (/10) | 10 | Reused `toParts`/`optimize`/`BoardBar`; cheap `panelGeometry` path; no third table |
+| Mobile/offline behavior (/10) | 10 | Optimizer not on narrow surface; offline denylist unchanged / green |
+| Documentation & handoff (/5) | 5 | Part 0 S63 verify; U6 opened/U7 retired; DECISIONS_LOG Q1; BUILD_PLAN §4 |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Browser checks (unrun — Clerk OAuth blocked for agent):**
+1. Optimizer panel shows boards, offcut and yield; no dollar figures
+2. Over-long part appears as impossible
+3. Pushing a design adds entries; pushing twice merges (one membership row)
+4. Pre-Sprint-64 saved design reopens identically
+
+**Naming note:** synthesized lines use unit `"board feet"` (preferred `BOARD_FEET_UNITS` spelling); name = species display name; `species` null. Kreg catalog uses `"board"` for piece counts — different semantic.
+
+### Final outcome
+Score: **96/100** — Pass. U6 shipped: cut plan panel + designer → shopping list.
 
 ---
 
