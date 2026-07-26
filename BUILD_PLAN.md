@@ -38,8 +38,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprints 53–56 (Designer polish) | ✅ **ALL CLOSED** — 53 **98** · 54 **98** · 55 **95** · 56 **100**. |
 | Sprint 57 (Species dropdown + multi-panel v2) | ✅ **CLOSED** 2026-07-26 — **99/100** Part A `aeb7d19` · Part B `32f6379`. Suite **1152/1152** across 98 files; `/designer` First Load **117 kB**. All seven browser checks run on prod by Claude Code 2026-07-26 — six PASS, one PARTIAL (three-panel print unverified; needs a saved plaid design). Derived-length board feet confirmed to the digit. |
 | Sprint 58 (Mitered strips / hexagon) | ✅ **CLOSED** 2026-07-26 — **82/100**. Template incorrect — reopened as Sprint 59. Primitive/clip/transforms/editor sound; named `hexagon` rendered isolated rhombi (check 1 FAIL on prod). Suite **1165/1165**; First Load **120 kB**. |
+| Sprint 59 (Harlequin + hex honesty) | ✅ **CLOSED** 2026-07-26 — **96/100**. Rename `hexagon`→`harlequin`; t=w·secθ; `speciesComponents`; Part B: no one-miter hex lattice (documented). Suite **1168/1168**; First Load **120 kB**. |
 
-Test suite — expected: 1165/1165 across 100 files (Sprint 58, Cursor VM). Update this single figure each sprint close; 1152/1152 and earlier superseded.
+Test suite — expected: 1168/1168 across 100 files (Sprint 59, Cursor VM). Update this single figure each sprint close; 1165/1165 and earlier superseded.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
@@ -55,7 +56,7 @@ Sprints 51–52 delivered U1–U5 and are closed. **U6/U7 remain Phase 2, unopen
 | **57 — Species dropdown + multi-panel v2** | — | ✅ **CLOSED** 2026-07-26 — **99/100**. Part A native `<select>` (`aeb7d19`). Part B `schemaVersion:2` panels/rowPattern/`RowTransform`; `rotateByOne` deleted; v1 migrates; +plaid/brick/diagonal/thue-morse; First Load **117 kB**. All seven browser checks run on prod by Claude Code 2026-07-26 — six PASS, one PARTIAL (three-panel print unverified; needs a saved plaid design). Derived-length board feet confirmed to the digit. |
 
 **Deferred to their own conversations — do not fold into 53–58:**
-- **Star / tumbling-block / chevron / diamond templates** — same miter primitive as Sprint 58 `hexagon`; each needs its own visual verification.
+- **True hexagon lattice / star / tumbling-block / chevron templates** — corner-miter harlequin is rhombi; closed hex needs a richer primitive (e.g. two miters/strip — contract change). Each needs its own visual verification.
 - **Advanced zigzag / 3D-box templates** — still need a Cell or Strip contract change beyond optional `wedge`.
 - **The wider "Canva-like" editing/export set (item 5b)** — open-ended; needs a concrete behaviour list before it can be scoped.
 

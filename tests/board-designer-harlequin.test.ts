@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { layoutTopFace } from '@/lib/board-designer/layout';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
+import { evaluateHexagonLattice } from '@/lib/board-designer/hexagon-criteria';
 import {
   cellsColorClosed,
   closingThicknessIn,
@@ -107,5 +108,64 @@ describe('harlequin template — shape + closure (Sprint 59)', () => {
     };
     const cells = layoutTopFace(broken, calculateMetrics(broken));
     expect(cellsColorClosed(cells)).toBe(false);
+  });
+
+  it('fails the hexagonal-lattice criteria (Sprint 59 §B2)', () => {
+    const tpl = getTemplate('harlequin')!;
+    const cells = layoutTopFace(tpl.config, calculateMetrics(tpl.config));
+    const result = evaluateHexagonLattice(cells, 'hard-maple', 'walnut', 40);
+    expect(result.ok).toBe(false);
+    // Harlequin: many contrast components (rhombi), not a single web.
+    expect(result.contrastComponents).toBeGreaterThan(1);
+    expect(result.reason).toMatch(/not a single connected web/);
+  });
+
+  it('one-miter 60° web is connected but not hexagonal (4/8-gons)', () => {
+    // Part B candidate (2): d ≥ t at θ=60°. Forms a walnut web + many maple
+    // cells, but simplified hulls are 4- and 8-gons — never 6.
+    const strips = Array.from({ length: 8 }, (_, i) => ({
+      id: `s${i}`,
+      speciesId: 'hard-maple',
+      widthIn: 0.875,
+      repeat: 1,
+      miter: {
+        speciesId: 'walnut',
+        angleDeg: 60,
+        corner: (i % 2 === 0 ? ('tr' as const) : ('tl' as const)),
+      },
+    }));
+    const config: BoardDesignConfig = {
+      schemaVersion: 2,
+      name: '60-web',
+      grain: 'end',
+      sourceLengthIn: 20,
+      sliceThicknessIn: 1.5,
+      kerfIn: 0.125,
+      wasteFactor: 0.15,
+      panels: [{ id: 'panel-1', label: 'C', thicknessIn: 1.5, strips }],
+      rowPattern: [
+        { panelId: 'panel-1', transform: 'none' },
+        { panelId: 'panel-1', transform: 'mirrorY' },
+      ],
+      rowCount: 8,
+    };
+    const cells = layoutTopFace(config, calculateMetrics(config));
+    expect(cellsColorClosed(cells)).toBe(true);
+    const comps = speciesComponents(cells, 40);
+    expect(comps.get('walnut')!.count).toBe(1);
+    expect(comps.get('hard-maple')!.count).toBeGreaterThanOrEqual(6);
+    const result = evaluateHexagonLattice(cells, 'hard-maple', 'walnut', 40);
+    expect(result.ok).toBe(false);
+    // Connectivity may pass; area equality and/or 6-vertex hulls fail.
+    expect(
+      result.reason === 'interior base cell areas differ by more than 5%' ||
+        result.reason === 'interior cells are not 6-vertex hexagons',
+    ).toBe(true);
+    if (result.interiorHullVertices.length > 0) {
+      expect(
+        result.interiorHullVertices.every((v) => v === 4 || v === 8),
+      ).toBe(true);
+      expect(result.interiorHullVertices.includes(6)).toBe(false);
+    }
   });
 });

@@ -200,9 +200,9 @@ Colors live in **TypeScript, never in `globals.css`** — a CSS custom property 
 | `brick` | end | Full course + Half course, alternating, `rowCount 12` | 8.75 × 18 × 1.5 |
 | `diagonal` | end | four shifted courses, `rowCount 12` | 10 × 18 × 1.5 |
 | `thue-morse` | end | one panel, length-8 antipalindromic transforms, `rowCount 8` | 12 × 12 × 1.5 |
-| `hexagon` | end | maple base + walnut wedge @ 30°, corners `tr/tl` alt, `[none, mirrorY]`, ⅞″ / 1½″ | 7 × 12 × 1.5 |
+| `harlequin` | end | maple + walnut @ 30°, `tr/tl` alt, `[none, mirrorY]`, ⅞″ / **t = w·secθ ≈ 1.0104″** (Sprint 59 rename; was misnamed `hexagon`) | ≈ 7 × 8.083 × 1.5 |
 
-All use `kerfIn 0.125`, `wasteFactor 0.15`, `repeat 1`. Every strip listed explicitly. Do not generalise `thue-morse` to other sizes. Star / tumbling-block templates deferred — same primitive, separate visual verification.
+All use `kerfIn 0.125`, `wasteFactor 0.15`, `repeat 1`. Every strip listed explicitly. Do not generalise `thue-morse` to other sizes. Star / tumbling-block / true hexagon templates deferred — corner miters produce rhombi (two-row bands); a closed hexagonal web is not reachable with one corner miter per strip (Sprint 59 Part B).
 
 ### 3.4 Serialization — `src/lib/board-designer/serialize.ts`
 
@@ -233,7 +233,7 @@ export function layoutTopFace(config: BoardDesignConfig, metrics: BoardMetrics):
 - **end:** `rowPattern` cycled to `rowCount`; each row looks up its panel, expands repeats, applies transform (`rot180`/`mirrorX` reverse **and** map miter corners per §A2); `hIn = panel.thicknessIn`; **y accumulates** row heights. Missing panel ⇒ no cells for that row (metrics warns).
 - `Cell` stays an **axis-aligned rectangle**. Only the fill changes (optional `wedge` via convex half-plane clip). No parallelogram/`ExtrudeGeometry`-replacing-the-grid. `rotateByOne` deleted (Sprint 57).
 - Solid strips emit no `wedge` and are byte-identical to pre-58 output.
-- Closure helper `miterLatticeCloses` (colour edge samples + closing-thickness 5% gate) — hexagon acceptance + panel mismatch warning.
+- Closure helper `miterLatticeCloses` (colour edge samples + closing-thickness 5% gate). Closing thickness for corner miters is **t = w·secθ** (two-row bands — a corner wedge spans its full horizontal edge). Shape acceptance uses `speciesComponents` / `evaluateHexagonLattice`.
 
 Pure, deterministic, node-testable. Both renderers honour `cell.hIn`; SVG draws `wedge` polygon; R3F instances `ExtrudeGeometry` per congruence key `w|h|angle|corner`.
 
@@ -483,4 +483,5 @@ Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/k
 - Sprint 56 2026-07-26 (`784ecf8`): append seven species (yellowheart→bamboo) after the original eight; §3.2 amended to exactly 15; B13/B14/`schemaVersion:1` held; pairwise sRGB floor 0.127 tested; `dark-theme`/`contrast` re-run; `/designer` First Load **115 kB** (no three.js regression). Score **96/100**. Designer polish track (53–56) complete; U6/U7 still unopened.
 - Sprint 57 Part A 2026-07-26 (`aeb7d19`): native species `<select>` + live swatch; unknown id survives disabled; pill radiogroup deleted.
 - Sprint 57 Part B 2026-07-26 (`32f6379`): `schemaVersion: 2` multi-panel model; B12/§2/§3 amended; `rotateByOne` deleted; v1 migrates on read; templates +4 (plaid/brick/diagonal/thue-morse); First Load **117 kB**. One-way deploy.
-- Sprint 58 2026-07-26: optional `Strip.miter` + `Cell.wedge` (schemaVersion stays 2); convex half-plane clip; row transforms map corners; board feet by wedge area; SVG polygon + R3F congruence-keyed ExtrudeGeometry; `hexagon` template (⅞″/1½″/30°, tr/tl alt, `[none,mirrorY]`); `miterLatticeCloses` = colour samples + 5% closing-thickness gate. First Load **120 kB**. Star/tumbling-block deferred.
+- Sprint 58 2026-07-26: optional `Strip.miter` + `Cell.wedge` (schemaVersion stays 2); convex half-plane clip; row transforms map corners; board feet by wedge area; SVG polygon + R3F congruence-keyed ExtrudeGeometry; template misnamed `hexagon` (rhombi). First Load **120 kB**. Re-scored **82/100**.
+- Sprint 59 2026-07-26: rename → `harlequin`; closing t = w·secθ; `speciesComponents` shape gate; continuity control; Part B — one-miter closed hex web **not reachable** (60° yields walnut web but 4/8-gon maple cells; two-miter contract change not taken). No template named hexagon. First Load **120 kB**.

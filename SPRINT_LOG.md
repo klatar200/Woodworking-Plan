@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 58 Attempt 1 (2026-07-26) — CLOSED 82/100** — Template incorrect (rhombi, not hexagons); reopened as Sprint 59. First Load **120 kB**. Prior: Sprint 57 **99/100**.
+> **Latest logged: Sprint 59 Attempt 1 (2026-07-26) — CLOSED 96/100** — `harlequin` rename + t=w·secθ; hexagon not reachable with one corner miter. First Load **120 kB**. Prior: Sprint 58 **82/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1165 green (post-58; env-polluted health/clerk cases aside on Cloud VM).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1168 green (post-59).
 
 ---
 
@@ -42,6 +42,46 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 59: Correct the miter template (harlequin) + hex honesty
+**Dates:** 2026-07-26
+**Scope:** Part 0 S58 re-score · Part A rename+closing-t+shape tests · Part B hex reachability (honest no-ship). Trunk-based to `main`.
+**Commits on `main`:** `5c03f70`/`9299432` (Part 0) · `0108df7` (Part A) · (this close)
+**/designer First Load JS:** **120 kB** (held).
+**Perf:** `calculateMetrics`+closure at 2400 cells ≈ **33 ms**; schema-max 48k cells ≈ **110–125 ms** — colour continuity gated above 4k cells.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | `hexagon`→`harlequin`; t=w·secθ; `speciesComponents`; continuity control; vacuous assert removed; Part B no false hexagon template |
+| Correctness & functionality (/20) | 16 | Shape asserts (walnut disjoint / maple=1); 1.5″ now warns; broken alternation fails colour continuity; 60° web is 4/8-gons not hex. **−4**: browser checks unrun (Clerk) |
+| Automated test coverage (/15) | 15 | `board-designer-harlequin` (7) incl. hex-criteria fail + 60° web; suite **1168** |
+| Security (/15) | 15 | `/designer` out of public-routes; 16 KB cap; no new deps/secrets |
+| Code quality & simplicity (/10) | 10 | Honest Part B stop; adjacency-optimised colour check + 4k gate |
+| Mobile/offline behavior (/10) | 10 | No authoring-path change beyond thickness number; gate held |
+| Documentation & handoff (/5) | 5 | Contract §3.3/§3.5; BUILD_PLAN; Part B findings below |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+### Part B findings — closed hexagonal web with one corner miter
+Tried in order:
+1. **Two miters/strip** — would need `Miter[]` or a second optional field (contract change). **Not implemented** this sprint (ask protocol); flagged for a future decision.
+2. **d ≥ t (θ ≥ ~60° at ⅞″/1½″)** — with `tr/tl` alt + `[none, mirrorY]`, colour-closed boards appear with **walnut = 1 web** and **maple ≥ 6 cells**. Simplified convex hulls of those cells are **4-gons and 8-gons**, never 6. Connectivity alone is not a hexagon lattice.
+3. **Richer primitive** — out of scope.
+
+**Conclusion:** ship nothing named `hexagon`. `evaluateHexagonLattice` encodes the three §B2 gates; harlequin fails (contrast not a web); the 60° web fails (not 6-vertex). A correct "we can't get there from here" for one corner miter.
+
+**Keagan browser verify (unrun — Clerk OAuth blocked):**
+1. `harlequin` = even rows of diamonds, evenly spaced, no seam through any diamond
+2. Panel thickness 1.5″ raises the mismatch warning (old shipped value is now wrong)
+3. Pre-Sprint-59 saved design reopens identically
+4. (N/A — Part B did not ship a hexagon template)
+
+### Final outcome
+Score: **96/100** — Pass. No hexagon template.
 
 ---
 
