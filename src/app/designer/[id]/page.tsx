@@ -13,6 +13,7 @@ import {
   hasRateLimitNotice,
 } from '@/lib/rate-limit-feedback';
 import {
+  copyBoardDesignAction,
   createBoardDesignAction,
   updateBoardDesignAction,
 } from '@/app/actions/board-designs';
@@ -57,6 +58,7 @@ export default async function SavedDesignerPage({ params, searchParams }: PagePr
         initialConfig={design.config}
         saveAction={createBoardDesignAction}
         updateAction={updateBoardDesignAction}
+        copyAction={copyBoardDesignAction}
         addToShoppingListAction={addBoardDesignToShoppingListAction}
       />
     </main>

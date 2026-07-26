@@ -187,9 +187,9 @@ describe('DesignerShell static render', () => {
     expect(shell).not.toContain('lg:items-start');
     expect(shell).toContain('lg:content-start');
 
-    // Preview heading + Export PNG share one flex row (heading left, button right).
+    // Preview heading + Export PNG share one flex row (heading left, controls right).
     expect(preview).toMatch(
-      /flex items-center justify-between[\s\S]*Preview[\s\S]*Export PNG/,
+      /flex flex-wrap items-center justify-between[\s\S]*Preview[\s\S]*Export PNG/,
     );
     expect(shell).not.toMatch(/<h2[^>]*>Preview<\/h2>/);
 
@@ -296,6 +296,32 @@ describe('DesignerShell static render', () => {
     expect(canvas).toContain('matchMedia');
     expect(canvas).toMatch(/if\s*\(\s*!wideEnough\s*\)\s*\{\s*return null/);
     expect(canvas).not.toMatch(/userAgent|userAgentData/);
+  });
+
+  it('Sprint 71: preview exposes 3D/2D toggle and view-only rotate copy', () => {
+    const preview = source('src/components/designer/board-preview.tsx');
+    expect(preview).toContain("useState<PreviewMode>('3d')");
+    expect(preview).toContain('Rotate left');
+    expect(preview).toContain('Rotate right');
+    expect(preview).toContain('svgElementToPngBlob');
+    expect(preview).toContain('Rotation is view-only');
+    expect(preview).not.toMatch(/onClick=\{\(\) => setMode\('2d'\)\}[\s\S]*default/);
+  });
+
+  it('Sprint 72: Save a copy sibling form when designId; disabled otherwise', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    expect(shell).toContain('Save a copy');
+    expect(shell).toContain('copyAction');
+    expect(source('src/app/actions/board-designs.ts')).toContain(
+      'copyBoardDesignAction',
+    );
+    expect(source('src/app/designer/[id]/page.tsx')).toContain('copyBoardDesignAction');
+
+    const saved = visibleMarkup(render(goldenConfig, 'design-1'));
+    expect(saved).toMatch(/Save a copy<\/button>/);
+    const draft = visibleMarkup(render(goldenConfig, null));
+    expect(draft).toContain('disabled');
+    expect(draft).toContain('Save a copy');
   });
 
   it('Sprint 67: top bar + sticky preview/dock relocate; panels stay mounted', () => {

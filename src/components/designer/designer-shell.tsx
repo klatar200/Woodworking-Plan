@@ -44,6 +44,7 @@ export function DesignerShell(props: {
   initialConfig: BoardDesignConfig;
   saveAction: (fd: FormData) => Promise<void>;
   updateAction: (fd: FormData) => Promise<void>;
+  copyAction?: (fd: FormData) => Promise<void>;
   addToShoppingListAction?: (fd: FormData) => Promise<void>;
 }) {
   const {
@@ -51,6 +52,7 @@ export function DesignerShell(props: {
     initialConfig,
     saveAction,
     updateAction,
+    copyAction,
     addToShoppingListAction,
   } = props;
   const [history, dispatch] = useReducer(historyReducer, initialConfig, createHistoryState);
@@ -103,9 +105,26 @@ export function DesignerShell(props: {
       </form>
     ) : null;
 
+  /** Sibling form — posts dirty config JSON + designId (Sprint 72). */
+  const saveCopyControl =
+    designId && copyAction ? (
+      <form action={copyAction}>
+        <input type="hidden" name="designId" value={designId} />
+        <input type="hidden" name="config" value={serializedConfig} />
+        <input type="hidden" name="returnTo" value={`/designer/${designId}`} />
+        <button type="submit" className={btnGhost}>
+          Save a copy
+        </button>
+      </form>
+    ) : (
+      <button type="button" className={btnGhost} disabled title="Save the design first">
+        Save a copy
+      </button>
+    );
+
   return (
     <div className="grid gap-[1.25rem]">
-      {/* Top bar outside save form so shopping list stays a sibling form (no nest). */}
+      {/* Top bar outside save form so shopping/copy stay sibling forms (no nest). */}
       <div className="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-[0.75rem]">
         <label className="grid min-w-[12rem] flex-[1_1_14rem] gap-[0.25rem]">
           <span className="text-[0.75rem] font-bold text-muted">Name</span>
@@ -149,6 +168,7 @@ export function DesignerShell(props: {
             Reset
           </button>
           {shoppingListControl}
+          {saveCopyControl}
           <button type="submit" form={SAVE_FORM_ID} className={btnPrimary}>
             Save
           </button>
