@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 59 Attempt 1 (2026-07-26) — CLOSED 96/100** — `harlequin` rename + t=w·secθ; hexagon not reachable with one corner miter. First Load **120 kB**. Prior: Sprint 58 **82/100**.
+> **Latest logged: Sprint 59 Attempt 1 (2026-07-26) — CLOSED 90/100** after browser verify — dimension-display defects (fixed in Sprint 60). Code close was 96; First Load **120 kB**. Prior: Sprint 58 **82/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1168 green (post-59).
 
@@ -81,7 +81,25 @@ Tried in order:
 4. (N/A — Part B did not ship a hexagon template)
 
 ### Final outcome
-Score: **96/100** — Pass. No hexagon template.
+Score: **96/100** — Pass. No hexagon template. *(Re-scored to 90/100 after browser verification — see below.)*
+
+### Sprint 59 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Harlequin renders as even diamonds | PASS | 60/120 rhombi in evenly spaced rows, no seam splitting any diamond. Finished 7″ × 8 1/16″ × 1½″ (8 rows × 1.0104). Config carries `thicknessIn: 1.010362971081845` = 0.875·sec30° exactly. |
+| 2 | 1.5″ raises the mismatch warning | PASS | Fires at 1.5″, clears at the shipped thickness. Breaking strip 1's corner alternation still fires `Miter pattern does not close — check corners and row transforms.` |
+| 3 | Pre-59 design reopens | PASS | `verify-51` identical to its Sprint 58 reading: v2, 12 strips, `[none, rot180]`, no miter, 18″ × 12″ × 1½″, 2.78 bd ft, no spurious "Unsaved changes". |
+`hexagon` is gone from the template list; `Harlequin` is present. Part B's honest stop is
+accepted — the 4-gon/8-gon result at θ=60° follows from the quad-wedge case and is consistent.
+**Three dimension-display defects found during verification** (all user-visible, all on this
+sprint's own template, none caught by the suite):
+1. Editor hint reads `Closing thickness for a 7/8" strip at 30° is ≈ 1 0/1"`.
+2. Metrics warning uses decimals: `Miter at 30° wants panel thickness ≈ 1.010″ for a 0.875″ strip`
+   — a direct §7 violation, shipped in Sprint 58 and carried through 59.
+3. The Thickness field displays `1.010362971081845` — 16 digits, not a dressable thickness.
+**Re-score: 96 → 90/100.** The rename, the corrected closing condition, `speciesComponents` and
+the honest Part B stop are all correct and stand. Correctness and Craft lose points for three
+dimension-display defects on the sprint's own deliverable, one of them an §7 invariant violation.
 
 ---
 
