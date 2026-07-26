@@ -22,36 +22,58 @@ function stockFtArticle(ft: number): 'a' | 'an' {
   return ft === 8 || ft === 11 || ft === 18 ? 'an' : 'a';
 }
 
-/** Default-stock cut plan — dock badge + tests (Sprint 68). */
-export function cutPlanGroupsForConfig(config: BoardDesignConfig): BoardGroup[] {
+export type CutPlanStock = {
+  stockLengthIn: number;
+  stockWidthIn: number | null;
+};
+
+/** Cut plan groups — dock badge must use the same stock as the panel. */
+export function cutPlanGroupsForConfig(
+  config: BoardDesignConfig,
+  stock: Partial<CutPlanStock> = {},
+): BoardGroup[] {
   return designCutPlan(config, {
-    stockLengthIn: DEFAULT_OPTIONS.stockLengthIn,
-    stockWidthIn: null,
+    stockLengthIn: stock.stockLengthIn ?? DEFAULT_OPTIONS.stockLengthIn,
+    stockWidthIn: stock.stockWidthIn ?? null,
     kerfIn: config.kerfIn,
     endTrimIn: DEFAULT_OPTIONS.endTrimIn,
   });
 }
 
-export function cutPlanHasImpossible(config: BoardDesignConfig): boolean {
-  return hasImpossibleParts(cutPlanGroupsForConfig(config));
+export function cutPlanHasImpossible(
+  config: BoardDesignConfig,
+  stock: Partial<CutPlanStock> = {},
+): boolean {
+  return hasImpossibleParts(cutPlanGroupsForConfig(config, stock));
 }
 
 /**
  * Desktop cut-plan panel (Sprint 64 / U6; Sprint 68 always expanded in dock).
  * Reuses `toParts` → `designCutPlan` → `optimize` / `BoardBar`. No dollar figures.
+ * Stock may be controlled by the dock so the Cut plan tab badge stays in sync.
  */
-export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
-  const [stockLengthIn, setStockLengthIn] = useState(DEFAULT_OPTIONS.stockLengthIn);
-  const [stockWidthIn, setStockWidthIn] = useState<number | null>(null);
+export function OptimizerPanel({
+  config,
+  stockLengthIn: stockLengthProp,
+  stockWidthIn: stockWidthProp,
+  onStockLengthChange,
+  onStockWidthChange,
+}: {
+  config: BoardDesignConfig;
+  stockLengthIn?: number;
+  stockWidthIn?: number | null;
+  onStockLengthChange?: (lengthIn: number) => void;
+  onStockWidthChange?: (widthIn: number | null) => void;
+}) {
+  const [internalLength, setInternalLength] = useState(DEFAULT_OPTIONS.stockLengthIn);
+  const [internalWidth, setInternalWidth] = useState<number | null>(null);
+  const stockLengthIn = stockLengthProp ?? internalLength;
+  const stockWidthIn = stockWidthProp !== undefined ? stockWidthProp : internalWidth;
+  const setStockLengthIn = onStockLengthChange ?? setInternalLength;
+  const setStockWidthIn = onStockWidthChange ?? setInternalWidth;
 
   const groups = useMemo(
-    () =>
-      designCutPlan(config, {
-        stockLengthIn,
-        stockWidthIn,
-        kerfIn: config.kerfIn,
-        endTrimIn: DEFAULT_OPTIONS.endTrimIn,
-      }),
+    () => cutPlanGroupsForConfig(config, { stockLengthIn, stockWidthIn }),
     [config, stockLengthIn, stockWidthIn],
   );
 

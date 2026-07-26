@@ -148,7 +148,15 @@ export function BoardPreview(props: {
         <div className="grid gap-[0.5rem]">
           <div
             ref={svgHostRef}
-            className="flex min-h-[18rem] items-center justify-center overflow-hidden rounded-[0.75rem] border border-border bg-surface p-[0.75rem]"
+            className="flex items-center justify-center overflow-visible rounded-[0.75rem] border border-border bg-surface p-[0.75rem]"
+            style={{
+              // 90°/270° swaps axes — give the host enough box so non-square boards
+              // aren't clipped (export already swaps W/H; on-screen must match).
+              minHeight:
+                rotation === 90 || rotation === 270
+                  ? `max(18rem, ${Math.max(metrics.finishedLengthIn / Math.max(metrics.finishedWidthIn, 0.001), 1) * 18}rem)`
+                  : '18rem',
+            }}
           >
             <div
               className="w-full origin-center transition-transform duration-200 motion-reduce:transition-none"

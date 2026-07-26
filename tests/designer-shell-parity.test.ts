@@ -97,7 +97,10 @@ describe('Sprint 68 — designer shell PARITY_INVENTORY', () => {
       'hidden={tab !==',
     );
     expect(src('src/components/designer/designer-dock.tsx')).toContain(
-      '<OptimizerPanel config={config} />',
+      'onStockLengthChange={setStockLengthIn}',
+    );
+    expect(src('src/components/designer/designer-dock.tsx')).toContain(
+      'cutPlanHasImpossible(config, { stockLengthIn, stockWidthIn })',
     );
   });
 
@@ -147,6 +150,10 @@ describe('Sprint 68 — designer shell PARITY_INVENTORY', () => {
       ],
     });
     expect(cutPlanHasImpossible(impossibleConfig)).toBe(true);
+    // Longer stock clears the default-stock impossibility — badge must track stock.
+    expect(
+      cutPlanHasImpossible(impossibleConfig, { stockLengthIn: 144 }),
+    ).toBe(false);
     const cutHtml = renderToStaticMarkup(
       createElement(OptimizerPanel, { config: impossibleConfig }),
     );

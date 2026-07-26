@@ -305,6 +305,7 @@ describe('DesignerShell static render', () => {
     expect(preview).toContain('Rotate right');
     expect(preview).toContain('svgElementToPngBlob');
     expect(preview).toContain('Rotation is view-only');
+    expect(preview).toContain('overflow-visible');
     expect(preview).not.toMatch(/onClick=\{\(\) => setMode\('2d'\)\}[\s\S]*default/);
   });
 
@@ -384,5 +385,23 @@ describe('dockTabForGrain', () => {
     expect(dockTabForGrain('edge', 'pattern')).toBe('templates');
     expect(dockTabForGrain('edge', 'metrics')).toBe('metrics');
     expect(dockTabForGrain('end', 'pattern')).toBe('pattern');
+  });
+
+  it('shell syncs dock tab from present.grain (load/undo/redo/reset, not only toggle)', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    expect(shell).toContain('dockTabForGrain(config.grain, current)');
+    expect(shell).toMatch(
+      /useEffect\(\(\) => \{\s*setDockTab\(\(current\) => dockTabForGrain\(config\.grain, current\)\);\s*\}, \[config\.grain\]\)/,
+    );
+  });
+
+  it('top-bar action order is Save → Save a copy → shopping (FINAL_LAYOUT)', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const saveIdx = shell.indexOf('form={SAVE_FORM_ID}');
+    const copyIdx = shell.indexOf('{saveCopyControl}');
+    const shopIdx = shell.indexOf('{shoppingListControl}');
+    expect(saveIdx).toBeGreaterThan(-1);
+    expect(copyIdx).toBeGreaterThan(saveIdx);
+    expect(shopIdx).toBeGreaterThan(copyIdx);
   });
 });

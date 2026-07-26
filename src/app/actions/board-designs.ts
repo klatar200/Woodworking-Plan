@@ -13,7 +13,12 @@ import {
 } from '@/lib/rate-limit-feedback';
 import { copyDesignName } from '@/lib/board-designer/copy-name';
 import { parseConfig } from '@/lib/board-designer/serialize';
-import { createDesign, updateDesign, deleteDesign } from '@/lib/board-designs';
+import {
+  createDesign,
+  getDesign,
+  updateDesign,
+  deleteDesign,
+} from '@/lib/board-designs';
 import { MAX_CONFIG_BYTES } from '@/lib/board-designer/config-limits';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
@@ -111,6 +116,18 @@ export async function copyBoardDesignAction(formData: FormData): Promise<void> {
 
   const parsed = parseConfigField(formData);
   if (!parsed.ok) bounceParseFailure(formData, `/designer/${designId}`, parsed);
+
+  // Ownership gate — UI requires a saved id; forged POSTs must not create orphans.
+  let owned = false;
+  await guardAction(
+    getDesign(designId).then((row) => {
+      owned = row !== null;
+    }),
+    formData,
+    `/designer/${designId}`,
+  );
+  // Unowned / missing source → library entry, not a forged returnTo detail URL.
+  if (!owned) redirect(FALLBACK);
 
   const config: BoardDesignConfig = {
     ...parsed.config,

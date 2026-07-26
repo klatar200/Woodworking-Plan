@@ -68,6 +68,12 @@ export function DesignerShell(props: {
     defaultDockTab(initialConfig.grain),
   );
 
+  // Template load / undo / redo / reset can change grain without the top-bar
+  // toggle — keep Pattern→Templates in sync whenever present.grain is edge.
+  useEffect(() => {
+    setDockTab((current) => dockTabForGrain(config.grain, current));
+  }, [config.grain]);
+
   useEffect(() => {
     const mq = window.matchMedia(DESIGNER_WIDE_MQ);
     const onKeyDown = (event: KeyboardEvent) => {
@@ -89,7 +95,6 @@ export function DesignerShell(props: {
 
   const setGrain = (grain: Grain) => {
     patchConfig({ grain });
-    setDockTab((current) => dockTabForGrain(grain, current));
   };
 
   const sizeReadout = `${formatInches(metrics.finishedLengthIn)} × ${formatInches(metrics.finishedWidthIn)} × ${formatInches(metrics.finishedThicknessIn)}`;
@@ -167,11 +172,11 @@ export function DesignerShell(props: {
           >
             Reset
           </button>
-          {shoppingListControl}
-          {saveCopyControl}
           <button type="submit" form={SAVE_FORM_ID} className={btnPrimary}>
             Save
           </button>
+          {saveCopyControl}
+          {shoppingListControl}
           <BoardSettingsDisclosure
             config={config}
             onChange={patchConfig}

@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { ConfigAction } from '@/lib/board-designer/history';
 import type { BoardDesignConfig, BoardMetrics, Grain } from '@/lib/board-designer/types';
+import { DEFAULT_OPTIONS } from '@/lib/cut-optimizer';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 import { MetricsPanel } from './metrics-panel';
 import { cutPlanHasImpossible, OptimizerPanel } from './optimizer-panel';
@@ -45,7 +46,13 @@ export function DesignerDock({
 }) {
   const endGrain = config.grain === 'end';
   const metricsBadge = metrics.warnings.length > 0;
-  const cutPlanBadge = useMemo(() => cutPlanHasImpossible(config), [config]);
+  // Stock lives here so the tab badge matches the panel (not default-only).
+  const [stockLengthIn, setStockLengthIn] = useState(DEFAULT_OPTIONS.stockLengthIn);
+  const [stockWidthIn, setStockWidthIn] = useState<number | null>(null);
+  const cutPlanBadge = useMemo(
+    () => cutPlanHasImpossible(config, { stockLengthIn, stockWidthIn }),
+    [config, stockLengthIn, stockWidthIn],
+  );
 
   const tabs: {
     id: DesignerDockTab;
@@ -139,7 +146,13 @@ export function DesignerDock({
           hidden={tab !== 'cut-plan'}
           data-dock-panel="cut-plan"
         >
-          <OptimizerPanel config={config} />
+          <OptimizerPanel
+            config={config}
+            stockLengthIn={stockLengthIn}
+            stockWidthIn={stockWidthIn}
+            onStockLengthChange={setStockLengthIn}
+            onStockWidthChange={setStockWidthIn}
+          />
         </div>
       </div>
     </section>
