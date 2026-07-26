@@ -16,7 +16,7 @@ export type MiterCorner = 'tl' | 'tr' | 'bl' | 'br';
 export interface Miter {
   /** Wedge species — the piece glued to the cut face. */
   speciesId: string;
-  /** 5–85; 30 = hexagon family. Not int — 22.5 is a real miter. */
+  /** 5–85; 30 = harlequin (60°/120° rhombi). Not int — 22.5 is a real miter. */
   angleDeg: number;
   corner: MiterCorner;
 }

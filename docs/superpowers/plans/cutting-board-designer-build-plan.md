@@ -141,7 +141,7 @@ One `Part` per strip per panel: `thicknessIn = panel.thicknessIn`, `lengthIn = r
 export type Grain = 'edge' | 'end';
 export interface WoodSpecies { id: string; name: string; colorHex: string }
 export type MiterCorner = 'tl' | 'tr' | 'bl' | 'br';
-/** angleDeg from HORIZONTAL (strip-width) axis. 30 = hexagon family. Optional — absent = solid. */
+/** angleDeg from HORIZONTAL (strip-width) axis. 30 = harlequin rhombi. Optional — absent = solid. */
 export interface Miter { speciesId: string; angleDeg: number; corner: MiterCorner }
 export interface Strip {
   id: string; speciesId: string; widthIn: number; repeat: number;
