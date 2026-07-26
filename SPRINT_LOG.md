@@ -76,6 +76,24 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ### Final outcome
 Score: **96/100** — Pass. §7 decimal inches gated by suite.
 
+### Sprint 60 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Thickness `1`, clean hint | PASS | Field reads `1`; config `thicknessIn: 1`; finished 7″ × 8″ × 1½″; hint is a single line — `Closing thickness for a 7/8" strip at 30° is ≈ 1".` |
+| 2 | 1.5″ → one fraction warning | PASS | One distinct string: `… ≈ 1" — panel is 1 1/2" (>5% off; lattice will not close).` Zero decimal-inch matches on the page. |
+| 3 | Pre-60 design reopens | PASS | `verify-51`: v2, 12 strips, `[none, rot180]`, 18″ × 12″ × 1½″, 2.78 bd ft, no spurious "Unsaved changes". |
+The old bug was exercised directly rather than assumed fixed: a 2.01″ panel now renders `2"`
+(previously `2 0/1"`). The print sheet was swept as well — no decimal inches, no `0/n`,
+`Row order` and `Required length` present, and the miter note correctly ABSENT on a solid
+design, confirming the gate works in the negative direction.
+**Three items verified as already-closed — do not reopen:**
+1. `/designer` IS on the service-worker denylist (`public/sw-policy.js`, in `NEVER_CACHE_PREFIXES`).
+2. `cloneConfig` (`src/lib/board-designer/history.ts`) deep-clones panels, nested strips, `miter`
+   and `rowPattern`; the whole reducer is immutable. The Sprint 57 undo-aliasing risk is closed.
+3. Miter angle coalescing keys on species+corner, so a corner or species change cannot merge into
+   a prior angle edit.
+Sprint 60 stands at 96/100.
+
 ---
 
 ## Sprint 59: Correct the miter template (harlequin) + hex honesty
