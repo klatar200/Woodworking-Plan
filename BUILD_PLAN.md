@@ -44,9 +44,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS). Deleted unreachable colour gate; always-run check; reachability witness suite. Closure false-positive on mixed base species — fixed in Sprint 63. Suite **1195/1195**; First Load **120 kB**. |
 | Sprint 63 (Geometric closure) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2eab289`). `wedgeWebContinuous` replaces species equality; accent strips no longer false-positive. Suite **1203/1203**; First Load **120 kB**. |
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
-| Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **96/100**. Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`); `reorder-strip` + pointer drag (arrows stay); shopping-list footer neutral. Suite **1247/1247**; `/designer` First Load **123 kB** (+1 from drag client; library **106 kB**). |
+| Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Thumbs + `reorder-strip`; pointer-only handle; live-region announce. Suite **1251/1251**; `/designer` First Load **123 kB**. |
 
-Test suite — expected: 1247/1247 across 109 files (Sprint 65). Update this single figure each sprint close; 1234/1234 and earlier superseded.
+Test suite — expected: 1251/1251 across 110 files (Sprint 65 Attempt 2). Update this single figure each sprint close; 1247/1247 and earlier superseded.
 
 **U6 CLOSED** 2026-07-26. **U7 remainder CLOSED** 2026-07-26 (Sprint 65). Share links / custom species stay deferred.
 

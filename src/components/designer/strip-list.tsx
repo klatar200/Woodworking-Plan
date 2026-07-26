@@ -2,6 +2,7 @@
 
 import { closingThicknessHint } from '@/lib/board-designer/miter-geometry';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
+import { formatStripReorderAnnouncement, stripReorderAnnouncement } from '@/lib/board-designer/strip-reorder-announce';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
@@ -61,12 +62,36 @@ export function StripList({
   const [overIndex, setOverIndex] = useState<number | null>(null);
   const [announce, setAnnounce] = useState('');
   const dragFrom = useRef<number | null>(null);
+  /** null until after mount — skip announcing the initial strip list. */
+  const prevStripIdsRef = useRef<string[] | null>(null);
+  /** Call-site already announced (arrow/drag); effect must not double-speak. */
+  const skipEffectAnnounceRef = useRef(false);
 
   useEffect(() => {
     if (!announce) return;
     const t = window.setTimeout(() => setAnnounce(''), 1500);
     return () => window.clearTimeout(t);
   }, [announce]);
+
+  function speakReorder(message: string) {
+    // Clear first so polite live regions re-fire when text matches a prior announce.
+    setAnnounce('');
+    queueMicrotask(() => setAnnounce(message));
+  }
+
+  // Undo/redo of a reorder updates `strips` without going through onMove/onReorder.
+  useEffect(() => {
+    const ids = strips.map((s) => s.id);
+    const prev = prevStripIdsRef.current;
+    prevStripIdsRef.current = ids;
+    if (prev === null) return;
+    if (skipEffectAnnounceRef.current) {
+      skipEffectAnnounceRef.current = false;
+      return;
+    }
+    const msg = formatStripReorderAnnouncement(prev, strips);
+    if (msg) speakReorder(msg);
+  }, [strips]);
 
   // One closing-thickness hint per distinct (width, thickness, angle).
   const firstHintForKey = new Set<string>();
@@ -120,8 +145,12 @@ export function StripList({
       // Already released.
     }
     if (from === to) return;
+    const strip = strips[from];
+    if (strip) {
+      skipEffectAnnounceRef.current = true;
+      speakReorder(stripReorderAnnouncement(strip, to, strips.length));
+    }
     onReorder(from, to);
-    setAnnounce(`Strip ${from + 1} moved to position ${to + 1}`);
   }
 
   return (
@@ -163,10 +192,13 @@ export function StripList({
             >
               <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
                 <div className="flex min-w-0 items-start gap-[0.5rem]">
+                  {/* Pointer-only affordance: Toward left/right are the keyboard path
+                      (SC 2.1.1). An inert focusable control is worse than none. */}
                   <button
                     type="button"
+                    tabIndex={-1}
+                    aria-hidden="true"
                     className={`${btnGhost} cursor-grab touch-none px-[0.5rem]! active:cursor-grabbing`}
-                    aria-label={`Drag to reorder strip ${index + 1}`}
                     onPointerDown={(e) => onHandlePointerDown(e, index)}
                     onPointerMove={onHandlePointerMove}
                     onPointerUp={onHandlePointerUp}
@@ -188,7 +220,12 @@ export function StripList({
                     className={btnGhost}
                     disabled={index === 0}
                     aria-label={`Move strip ${move.earlier.toLowerCase()} of the board face`}
-                    onClick={() => onMove(strip.id, -1)}
+                    onClick={() => {
+                      const to = index - 1;
+                      skipEffectAnnounceRef.current = true;
+                      speakReorder(stripReorderAnnouncement(strip, to, strips.length));
+                      onMove(strip.id, -1);
+                    }}
                   >
                     {move.earlier}
                   </button>
@@ -197,7 +234,12 @@ export function StripList({
                     className={btnGhost}
                     disabled={index === strips.length - 1}
                     aria-label={`Move strip ${move.later.toLowerCase()} of the board face`}
-                    onClick={() => onMove(strip.id, 1)}
+                    onClick={() => {
+                      const to = index + 1;
+                      skipEffectAnnounceRef.current = true;
+                      speakReorder(stripReorderAnnouncement(strip, to, strips.length));
+                      onMove(strip.id, 1);
+                    }}
                   >
                     {move.later}
                   </button>

@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 65 (2026-07-26) — CLOSED 96/100** — library thumbs + strip drag reorder. Prior: Sprint 64 **96/100**.
+> **Latest logged: Sprint 65 Attempt 2 (2026-07-26) — CLOSED 98/100** — thumbs + drag; a11y fix pass. Prior Attempt-1 prod re-score **94**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1247 green (post-65).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: (post-65 fix) green.
 
 ---
 
@@ -189,6 +189,44 @@ All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
 
 ### Final outcome
 Score: **96/100** — Pass. U7 remainder (thumbs + drag) closed.
+
+### Sprint 65 Attempt 2 — prod verification (Claude Code, signed in, 2026-07-26) → **94/100** then fix
+
+Verified on prod at `3538a26`. Thumbnails, degradation, arrows, single-step undo, footer, and the carried-over miter print offcut note all PASS. Two a11y defects: inert drag-handle tab stop; live region empty after reorder.
+
+`verify-65` is a Claude Code test fixture (540 cells, mitered, non-closing by design) and may be deleted once the thumbnail budget has a unit test covering it (it does — `library-thumb.test.tsx` over-budget case).
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Thumbnails render | PASS | `verify-51` 96 rects `viewBox 0 0 18 12`; `verify-52` 7 rects `0 0 18 10.5` |
+| 2 | Over-budget degrades | PASS | `verify-65`, 540 cells → no SVG, "Too many pieces to preview", row still openable |
+| 3 | Miter print offcut note | PASS | Renders on `verify-65`; Miter column `Walnut · 30° · Top right` (carried since Sprint 61) |
+| 4 | Arrow buttons still reorder | PASS | `[M,W,M,W]` → `[W,M,M,W]` |
+| 5 | One undo restores | PASS | One click restores; Undo then disabled — exactly one history entry |
+| 6 | Footer copy | PASS | `summed across everything on this list` |
+| 7 | Pointer drag | NOT MEASURED | Synthetic drag emits no intermediate `pointermove`; no reorder and no history entry resulted |
+| 8 | Handle keyboard-operable | **FAIL** | Focusable `<button>`, Enter is a no-op |
+| 9 | Reorder announced | **FAIL** | Sole `aria-live="polite"` node empty after a completed move |
+
+**Attempt-1 score corrected to 94/100** (two a11y defects on prod). Fix below.
+
+### Attempt 2 — fix pass score (after a11y fix)
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Same U7 remainder; a11y fix chooses pointer-only handle (arrows = SC 2.1.1) + announce on all reorder commits |
+| Correctness & functionality (/20) | 18 | Prod verify table PASS on 1–6 + miter note; fixes 8–9 in code. **−2**: pointer drag NOT MEASURED (synthetic pointermove gap) |
+| Automated test coverage (/15) | 15 | `strip-reorder-a11y.test.ts` (tabIndex/−1, announce copy, no-op silent); history reorder suite still green |
+| Security (/15) | 15 | Unchanged private `/designer` surface |
+| Code quality & simplicity (/10) | 10 | Pure `strip-reorder-announce.ts`; no grab-mode half-build |
+| Mobile/offline behavior (/10) | 10 | Offline denylist unchanged; keyboard path via arrows |
+| Documentation & handoff (/5) | 5 | This verification table + re-score |
+| **Total (/100)** | **98** | |
+
+**Result:** Pass (≥95)
+
+### Final outcome (Attempt 2)
+Score: **98/100** — Pass. Inert drag handle removed from tab order; reorder announces on drag/arrows/undo.
 
 ---
 
