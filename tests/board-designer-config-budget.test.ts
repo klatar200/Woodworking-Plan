@@ -59,10 +59,9 @@ describe('schema-max config byte budget (Sprint 61)', () => {
     const bytes = new TextEncoder().encode(raw).byteLength;
 
     // Measurement for the sprint log / cap derivation comment.
-    // eslint-disable-next-line no-console
-    console.log(`schema-max serialized bytes: ${bytes}; cap: ${MAX_CONFIG_BYTES}`);
-
-    expect(bytes).toBeLessThanOrEqual(MAX_CONFIG_BYTES * 0.75);
+    expect(bytes, `schema-max bytes=${bytes} cap=${MAX_CONFIG_BYTES}`).toBeLessThanOrEqual(
+      MAX_CONFIG_BYTES * 0.75,
+    );
     expect(MAX_CONFIG_BYTES).toBe(32 * 1024);
   });
 
