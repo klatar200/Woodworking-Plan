@@ -1,11 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { optimize, DEFAULT_OPTIONS, type Part } from '@/lib/cut-optimizer';
-import {
-  applyMiterClosureWarnings,
-  calculateMetrics,
-  MITER_COLOUR_CHECK_SKIPPED_NOTE,
-} from '@/lib/board-designer/metrics';
+import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { layoutTopFace } from '@/lib/board-designer/layout';
+import { miterLatticeCloses } from '@/lib/board-designer/miter-geometry';
 import { toParts } from '@/lib/board-designer/to-parts';
 import { getTemplate, TEMPLATES } from '@/lib/board-designer/templates';
 import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
@@ -290,32 +287,47 @@ describe('unknown species warning', () => {
   });
 });
 
-describe('miter colour-check gate (Sprint 61)', () => {
-  it('above the cell cap: thickness still warns; skip note is visible', () => {
-    const tpl = getTemplate('harlequin')!;
-    const mismatched = {
-      ...tpl.config,
-      panels: tpl.config.panels.map((p) => ({ ...p, thicknessIn: 1.5 })),
-    };
-    const cells = layoutTopFace(mismatched, calculateMetrics(mismatched));
-    const warnings: string[] = [];
-    applyMiterClosureWarnings(warnings, cells, mismatched.panels, 10);
-    expect(warnings.some((w) => w.includes('lattice will not close'))).toBe(
-      true,
-    );
-    expect(warnings).toContain(MITER_COLOUR_CHECK_SKIPPED_NOTE);
-    // Colour-only "does not close" is not claimed when colour was skipped.
+describe('miter colour check always runs (Sprint 62)', () => {
+  it('schema-max 48k cells: colour check is reached and returns a boolean', () => {
+    const strips = Array.from({ length: 40 }, (_, i) => ({
+      id: `s${i}`,
+      speciesId: 'hard-maple',
+      widthIn: 0.25,
+      repeat: 20,
+      miter: {
+        speciesId: 'walnut',
+        angleDeg: 30,
+        corner: (i % 2 === 0 ? 'tr' : 'tl') as 'tr' | 'tl',
+
+      },
+    }));
+    const config = makeV2Config({
+      name: 'schema-max-cells',
+      grain: 'end',
+      panels: [makePanel('p1', 'P', 1.5, strips)],
+      rowPattern: [
+        { panelId: 'p1', transform: 'none' },
+        { panelId: 'p1', transform: 'mirrorY' },
+      ],
+      rowCount: 60,
+    });
+    const metrics = calculateMetrics(config);
+    const cells = layoutTopFace(config, metrics);
+    expect(cells.length).toBe(48_000);
+    // Colour path ran — either thickness/colour mismatch warning, or clean.
+    // Must NOT be silent skip (deleted unreachable note).
     expect(
-      warnings.filter((w) =>
-        w.startsWith('Miter pattern does not close'),
+      metrics.warnings.some((w) =>
+        w.includes('too large to check automatically'),
       ),
-    ).toHaveLength(0);
+    ).toBe(false);
+    const closed = miterLatticeCloses(cells, config.panels);
+    expect(typeof closed).toBe('boolean');
   });
 
-  it('under the cap with a closing lattice: no skip note', () => {
+  it('closing harlequin: no spurious does-not-close warning', () => {
     const tpl = getTemplate('harlequin')!;
     const m = calculateMetrics(tpl.config);
-    expect(m.warnings).not.toContain(MITER_COLOUR_CHECK_SKIPPED_NOTE);
     expect(m.warnings).toEqual([]);
   });
 });

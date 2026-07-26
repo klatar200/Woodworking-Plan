@@ -1,4 +1,10 @@
-import type { BoardDesignConfig, Panel, Strip } from '@/lib/board-designer/types';
+import { randomUUID } from 'node:crypto';
+import type {
+  BoardDesignConfig,
+  MiterCorner,
+  Panel,
+  Strip,
+} from '@/lib/board-designer/types';
 
 export function makeStrip(
   id: string,
@@ -46,6 +52,51 @@ export function makeV2Config(
     rowPattern: overrides.rowPattern ?? [
       { panelId: panels[0]!.id, transform: 'none' },
     ],
+  };
+}
+
+/** Largest config the schema accepts — 4 panels, 80 mitered strips, 24 steps, 60 rows. */
+export function buildSchemaMaxConfig(): BoardDesignConfig {
+  const panels: Panel[] = [];
+  for (let p = 0; p < 4; p += 1) {
+    const strips: Strip[] = [];
+    for (let i = 0; i < 20; i += 1) {
+      strips.push({
+        id: randomUUID(),
+        speciesId: 'hard-maple',
+        widthIn: 0.875,
+        repeat: 1,
+        miter: {
+          speciesId: 'walnut',
+          angleDeg: 30,
+          corner: (i % 2 === 0 ? 'tr' : 'tl') as MiterCorner,
+        },
+      });
+    }
+    panels.push({
+      id: randomUUID(),
+      label: `Panel ${p + 1}`,
+      thicknessIn: 1.5,
+      strips,
+    });
+  }
+
+  const rowPattern = Array.from({ length: 24 }, (_, i) => ({
+    panelId: panels[i % 4]!.id,
+    transform: (['none', 'rot180', 'mirrorX', 'mirrorY'] as const)[i % 4]!,
+  }));
+
+  return {
+    schemaVersion: 2,
+    name: 'X'.repeat(80),
+    grain: 'end',
+    sourceLengthIn: 96,
+    sliceThicknessIn: 4,
+    kerfIn: 0.5,
+    wasteFactor: 1,
+    panels,
+    rowPattern,
+    rowCount: 60,
   };
 }
 

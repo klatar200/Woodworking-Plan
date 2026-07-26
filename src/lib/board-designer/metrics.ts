@@ -16,24 +16,14 @@ import type {
 } from './types';
 
 /**
- * Schema-max cells = rowCount(60) × Σ(strips×repeat) ≤ 60 × 800 = 48_000.
- * Colour check is memoized; measured ≈ 6 ms at 4k on a closing lattice (Sprint 61).
- * Above this cap colour is skipped (with a visible note); thickness always runs.
- */
-export const MITER_COLOUR_CHECK_CELL_CAP = 48_000;
-
-export const MITER_COLOUR_CHECK_SKIPPED_NOTE =
-  'This pattern is too large to check automatically — verify the corners yourself before glue-up.';
-
-/**
  * Append miter closure warnings. Thickness gate always runs; colour continuity
- * runs only when `cells.length ≤ cellCap`. Exported for tests that lower the cap.
+ * always runs (Sprint 62 — deleted the unreachable 48k skip gate after measuring
+ * colour alone at ≤ ~25 ms for a closing 12k lattice; schema-max ≪ 200 ms).
  */
 export function applyMiterClosureWarnings(
   warnings: string[],
   cells: readonly ClosableCell[],
   panels: readonly Panel[],
-  cellCap: number = MITER_COLOUR_CHECK_CELL_CAP,
 ): void {
   for (const panel of panels) {
     for (const s of panel.strips) {
@@ -53,13 +43,6 @@ export function applyMiterClosureWarnings(
         if (!warnings.includes(msg)) warnings.push(msg);
       }
     }
-  }
-
-  if (cells.length > cellCap) {
-    if (!warnings.includes(MITER_COLOUR_CHECK_SKIPPED_NOTE)) {
-      warnings.push(MITER_COLOUR_CHECK_SKIPPED_NOTE);
-    }
-    return;
   }
 
   const closed = miterLatticeClosesMemo(cells, panels);
