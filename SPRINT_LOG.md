@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 63 Attempt 1 (2026-07-26) — CLOSED 96/100** — wedge membership closure (not species equality). First Load pending. Prior: Sprint 62 **96/100**.
+> **Latest logged: Sprint 63 Attempt 1 (2026-07-26) — CLOSED 96/100** — wedge membership closure (not species equality). First Load **120 kB**. Prior: Sprint 62 **96/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1203 green (post-63).
 
@@ -49,8 +49,9 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 **Dates:** 2026-07-26
 **Scope:** Part 0 S62 browser verify · replace `cellsColorClosed` with `wedgeWebContinuous` · both-direction tests. Trunk-based to `main`.
 **Commits on `main`:** `af51d3e` (Part 0) · `1c59690` (code) · (this close)
-**/designer First Load JS:** pending CI.
+**/designer First Load JS:** **120 kB** (held; CI on `39cc16e`).
 **Suite:** **1203/1203** across 104 files.
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30207218217 success.
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |
