@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 55 Attempt 1 (2026-07-26) — CLOSED 95/100** — designer undo/redo (`31a5940` + review fixes `7701bad`); in-memory history + coalesced typing; template confirm removed. All 9 behaviours verified on prod. Two defects fixed on review: dead `Ctrl+Shift+Z`, and a constant import that tripled `/designer` First Load JS. Prior: Sprint 54 **98/100**.
+> **Latest logged: Sprint 56 Attempt 1 (2026-07-26) — CLOSED 96/100** — seven species appended (`784ecf8`); §3.2 → 15; 0.127 pairwise floor guarded; First Load held 115 kB. Prior: Sprint 55 **95/100**. Designer polish track 53–56 complete.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1117 green (post-55).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1125 green (post-56).
 
 ---
 
@@ -42,6 +42,42 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 56: Species expansion
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 row **56** only (Keagan item **8**). No U6/U7; no advanced templates / Canva-like; no §3 type rename for bamboo; no schema/routes/deps.
+**Commit on `main`:** `784ecf8`
+**/designer First Load JS:** **115 kB** (held — same as post-`7701bad` Sprint 55 baseline; measured from local `npm run build` route table).
+**CI / Vercel:** see close notes after Actions + deploy log.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Exactly the seven Keagan ids/hexes appended in order; §3.2 + `species.ts` doc amended to 15; B13/B14/`schemaVersion:1`; `WoodSpecies` not renamed for bamboo |
+| Correctness & functionality (/20) | 16 | Albedo + pairwise floors green in tests; unknown-id fallback unchanged for pre-sprint saves. **−4**: 1024px Hickory/Pecan ellipsis, pale-group 3D separability, theme swatch borders, arrow-key wrap across 15, 12-strip rail — browser-only (list below) |
+| Automated test coverage (/15) | 15 | **1125** / 96 files; `board-designer-species.test.ts` asserts count/order, albedo floors, **0.127 pairwise floor across all pairs**, B13 key set — behaviour, not strings |
+| Security (/15) | 15 | No new routes/schema/persistence; ids only appended (cannot orphan existing JSON); unknown species still falls back to grey swatch |
+| Code quality & simplicity (/10) | 10 | Data-only change + contract amend; no deps; did not import from `r3f-canvas` (Sprint 55 trap) |
+| Mobile/offline behavior (/10) | 10 | Authoring still desktop-gated; species list is shared data used by narrow SVG too; no SW/cache change |
+| Documentation & handoff (/5) | 5 | DECISIONS_LOG 2026-07-26 species entry; contract §3.2 + §9; BUILD_PLAN §4 row + test-count + First Load |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Guards re-run (explicit):** `tests/dark-theme.test.ts` (10) and `tests/contrast.test.ts` (32) — both green. Species pigments stay in TS, not CSS tokens.
+
+**Keagan browser verify (expected — do not claim until observed):**
+1. At **1024px**: every species label full on one line; report `scrollWidth` vs `clientWidth` for **"Hickory / Pecan"** specifically (risk: truncates to `Hickory / Pe…`).
+2. Adjacent strips hard-maple / birch / ash / beech — separable in 3D? Report honestly (closest pale cluster after cherry/padauk).
+3. Light + dark: swatch borders still visible on pills.
+4. Open a design saved **before** this sprint — correct species, no unknown grey.
+5. ArrowLeft/ArrowRight cycles all **fifteen** and wraps.
+6. 12-strip board at 1024px — settings rail still navigable (pill grid is now 8 rows).
+
+### Final outcome
+Score: **96/100** — Pass. Designer polish track (53–56) complete. U6/U7 unopened.
 
 ---
 
