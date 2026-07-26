@@ -3,6 +3,7 @@
 import { closingThicknessHint } from '@/lib/board-designer/miter-geometry';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
 import { formatStripReorderAnnouncement, stripReorderAnnouncement } from '@/lib/board-designer/strip-reorder-announce';
+import { dropIndexFromClientY } from '@/lib/board-designer/strip-drag';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
@@ -111,11 +112,11 @@ export function StripList({
     const list = listRef.current;
     if (!list) return dragFrom.current ?? 0;
     const items = [...list.querySelectorAll<HTMLElement>('[data-strip-index]')];
-    for (let i = 0; i < items.length; i += 1) {
-      const rect = items[i]!.getBoundingClientRect();
-      if (clientY < rect.top + rect.height / 2) return i;
-    }
-    return Math.max(0, items.length - 1);
+    const rects = items.map((el) => {
+      const r = el.getBoundingClientRect();
+      return { top: r.top, height: r.height };
+    });
+    return dropIndexFromClientY(clientY, rects, dragFrom.current ?? 0);
   }
 
   function onHandlePointerDown(event: ReactPointerEvent<HTMLButtonElement>, index: number) {

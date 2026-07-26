@@ -1,17 +1,14 @@
 /**
- * Plan-detail skeleton — mirrors the mockup's loading state for the step
- * view: meta-chip row, title block, a few text lines, and an image slot.
+ * Plan-detail skeleton — meta-chip row, title block, text lines, image slot.
  *
- * Same rules as the catalog skeleton (src/app/loading.tsx): static markup,
- * shimmer hidden from assistive tech, one polite live-region sentence.
+ * Sprint 66: not a `<main>` — see browse/loading.tsx (orphaned Suspense bags
+ * must not duplicate the document landmark).
  */
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 
 export default function PlanLoading() {
   return (
-    // `plan-detail` matches the loaded page's shell (84rem at lg, 2026-07-16)
-    // so the layout doesn't jump when the data lands.
-    <main id="main" className={`${page} page-wide plan-detail`}>
+    <div className={`${page} page-wide plan-detail`}>
       <p className="visually-hidden" role="status">
         Loading plan…
       </p>
@@ -29,6 +26,6 @@ export default function PlanLoading() {
         <div className="skel skel-line" style={{ width: '60%' }} />
         <div className="skel skel-photo skel-photo-detail" />
       </div>
-    </main>
+    </div>
   );
 }

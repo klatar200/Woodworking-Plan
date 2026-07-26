@@ -1,25 +1,17 @@
-/**
- * Catalog skeleton — the mockup's shimmer cards, shown by Next.js while the
- * server component (a `force-dynamic` page that queries Postgres) renders.
- *
- * QOL-M (2026-07-20): moved here with the catalog when it went from `/` to `/browse`.
- *
- * Static markup only, on purpose: a loading state that itself needs data or
- * JS to appear is a loading state that arrives late. Six slots matches the
- * mockup and roughly one desktop viewport of cards — enough to communicate
- * "the grid is coming" without a scrollbar full of ghosts.
- *
- * `aria-hidden` on the shimmer, plus one polite live-region sentence for
- * screen readers: rows of empty animated divs are meaningless to announce.
- */
 import { page } from '@/lib/ui'; // Sprint 29: page-shell utilities (retains `page` class)
 
+/**
+ * Catalog skeleton — shown while the force-dynamic catalog queries Postgres.
+ *
+ * Sprint 66: deliberately NOT a `<main>`. Route `loading.tsx` content is
+ * streamed into a hidden React Suspense bag (`div#S:N`) and swapped in by
+ * `$RC`. When that swap races / postpones (`$~`), the bag can survive beside
+ * the real page — a second `<main id="main">` is a broken landmark. A plain
+ * div keeps the shimmer without duplicating the document landmark.
+ */
 export default function CatalogLoading() {
   return (
-    // Same shell width as the loaded catalog (browse/page.tsx: full-width at lg,
-    // 2026-07-16) — a skeleton narrower than the page it stands in for makes
-    // the whole layout visibly jump when the data lands.
-    <main id="main" className={`${page} lg:max-w-none`}>
+    <div className={`${page} lg:max-w-none`}>
       <h1>Plans</h1>
       <p className="visually-hidden" role="status">
         Loading plans…
@@ -40,6 +32,6 @@ export default function CatalogLoading() {
           ))}
         </ul>
       </div>
-    </main>
+    </div>
   );
 }

@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 65 Attempt 2 (2026-07-26) — CLOSED 98/100** — thumbs + drag; a11y fix pass. Prior Attempt-1 prod re-score **94**.
+> **Latest logged: Sprint 66 (2026-07-26) — CLOSED** — stream-orphan characterize + drag coverage. Prior: Sprint 65 **98/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1251 green (post-65 Attempt 2).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: (post-66) green.
 
 ---
 
@@ -227,6 +227,64 @@ Verified on prod at `3538a26`. Thumbnails, degradation, arrows, single-step undo
 
 ### Final outcome (Attempt 2)
 Score: **98/100** — Pass. Inert drag handle removed from tab order; reorder announces on drag/arrows/undo.
+
+### Sprint 65 Attempt 2 — browser re-verify (Claude Code, prod, `e47448b`, signed in, 2026-07-26)
+
+| # | Check | Result | Evidence (prod, `e47448b`, signed in) |
+|---|---|---|---|
+| 1 | Handle out of tab order | PASS | All 24 handles `<button type="button" tabindex="-1" aria-hidden="true">⋮⋮` |
+| 2 | Arrow move announces | PASS | `Hard Maple moved to position 2 of 12`, cleared at ~1.5 s |
+| 3 | Undo announces | PASS | `Walnut moved to position 2 of 12` — describes resulting state |
+| 4 | Redo announces | PASS | `Hard Maple moved to position 2 of 12` |
+| 5 | Arrows still reorder | PASS | `[M,W,M,W]` → `[W,M,M,W]`, restored exactly through undo/redo/undo |
+| 6 | One history entry per move | PASS | Single undo restores; Undo then disabled, Redo enabled |
+| 7 | Pointer drag | NOT MEASURED | Tooling cannot emit intermediate `pointermove`; see Sprint 66 Part B |
+| 8 | Duplicate `<main>` | NEW FINDING | 2 mains / 172 buttons after hard reload; see Sprint 66 Part A |
+
+**98/100 confirmed** on Attempt 2 a11y fixes. Carry-overs → Sprint 66.
+
+---
+
+## Sprint 66: orphaned stream container + drag coverage
+**Dates:** 2026-07-26
+**Scope:** Part A characterize/fix orphaned React stream `S:` bags · Part B pointer-drag handler tests · Part C next BUILD_PLAN §4 item (or idle). Trunk-based to `main`.
+**Status:** CLOSED
+**Part C (next §4 item):** **none** — every BUILD_PLAN §4 shippable row through Sprint 65 is closed; remaining open follow-ups are Keagan-owned (dark re-palette uncommissioned, Clerk prod keys, launch blockers) or BUSINESS_PLAN-absent / deferred contract changes (true hex lattice, Canva-like 5b). No invented scope.
+**Commits on `main`:** (this close)
+**/designer First Load JS:** hold ~123 kB (drag tests + loading markup; no designer client change beyond `dropIndexFromClientY` extract).
+**Suite:** **1259/1259** across 112 files.
+**CI / Vercel:** on tip after push.
+
+### Part A — conclusion
+**Trigger (one sentence):** When an App Router Suspense boundary (route `loading.tsx` / segment shell) streams under React’s postponed opener `<!--$~-->`, `$RC` silently no-ops and leaves `div#S:N` holding a full page copy beside the already-visible tree.
+
+**Nonce:** SETTLED — not CSP. Prod `/browse` HTML: every `$RC(...)` completion script carries the middleware request nonce; **0** unnonced inline scripts. Console silence was not the proof — the emitted HTML was.
+
+**/browse vs designer:** same mechanism. `/browse` raw HTML already has two `<main>`s inside stream bags (skeleton ~2 KB in `S:1` + page ~14 KB in `S:3`) before `$RC`; designer has no skeleton `loading.tsx`, so both copies are the full editor when the race hits. Not ordinary duplicate markup.
+
+**Fix:** Framework — we cannot teach `$RC` to handle `$~` (Next #94170 / #94750). **Mitigations shipped:** deleted null root `app/loading.tsx` (empty boundary only); browse + plan `loading.tsx` no longer use `<main>` (surviving bag ≠ second landmark). Orphaned full-page `S:` bags on `$~` remain possible and inert (hidden, no shared state) — documented.
+
+**Cost:** Prod `/browse` document ~234 KB; largest page bag `S:3` ≈ **14 KB** duplicate HTML when left behind; skeleton bag `S:1` ≈ **2 KB**. Approx **17%** of that response sits in `hidden` stream bags before `$RC` (normal streaming tax). Designer duplicate ≈ one full editor SSR tree (buttons×2 as measured on prod). Server render time: not re-timed here (local DB URL overridden by injected placeholder); duplicate cost is HTML bytes + hydration walk, not a second data fetch.
+
+### Part B — drag coverage
+jsdom + Testing Library; `getBoundingClientRect` stubbed per row (jsdom has no layout). Pointerdown→move→up asserts reorder, **one** history entry, announcement shape, same-index no-op. Honest note in `tests/strip-drag.test.tsx`.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | A characterize→nonce→mitigate; B handler tests; C named idle (no invented roadmap item) |
+| Correctness & functionality (/20) | 18 | Trigger + nonce proven from emitted HTML; mitigations landed. **−2**: `$~` orphan itself is framework-unfixable (accepted) |
+| Automated test coverage (/15) | 15 | `stream-orphan.test.ts` · `strip-drag.test.tsx` (jsdom gesture + history); suite **1259** |
+| Security (/15) | 15 | Confirmed streaming scripts are nonced; no CSP/public-routes/img-src change |
+| Code quality & simplicity (/10) | 10 | Pure `dropIndexFromClientY`; no grab-mode; no false “fixed PPR” claim |
+| Mobile/offline behavior (/10) | 10 | Landmark mitigation; offline denylist untouched |
+| Documentation & handoff (/5) | 5 | This entry + S65 verify table appended |
+| **Total (/100)** | **98** | |
+
+**Result:** Pass (≥95)
+
+### Final outcome
+Score: **98/100**. Stream orphan characterised; mitigations only; drag gesture covered in jsdom.
 
 ---
 
