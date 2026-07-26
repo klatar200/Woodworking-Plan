@@ -9,7 +9,7 @@
 
 **Sprints 51 (foundation) + 52 (3D).** Sprints 47–50 are TAKEN (settings hub, page size, navbar, filter rail — `SPRINT_LOG.md`). Every earlier doc reference to "Sprint 47+" is a stale number, not a stale decision.
 **Decisions of record:** `DECISIONS_LOG.md` 2026-07-24. **Roadmap row:** `BUILD_PLAN.md` §4.
-**Status:** U0 ✅ · U1 ✅ · U2 ✅ · U3 ✅ · U4 ✅ · U5 ✅ · U6/U7 = Phase 2, unopened.
+**Status:** U0 ✅ · U1 ✅ · U2 ✅ · U3 ✅ · U4 ✅ · U5 ✅ · U6 🔓 OPEN (Sprint 64) · U7 retired (shipped across 53–63).
 
 ---
 
@@ -390,8 +390,14 @@ State: `useState`/`useReducer` inside the island. **No localStorage (B9), no sto
 
 ---
 
-### U6 / U7 — Phase 2. **Unopened.** Do not start, do not scaffold, do not add a TODO for it.
-U6 = `ShoppingListEntry` push + optimizer panel (`optimize()` / `BoardBar`). U7 = undo/redo, share links, multi-panel end grain, angled strips, custom species, drag reorder, thumbnails.
+### U6 — Optimizer panel + shopping-list push  *(Sprint 64 · OPENED 2026-07-26)*
+**OWNS** designer optimizer panel · shopping-list push for `BoardDesign` (schema TBD — Q1)
+**READS** `toParts` · `optimize`/`BoardBar` · `src/lib/shopping-list.ts` pattern
+**DO** Render cut plan (desktop only); push saved designs to shopping list after Q1.
+**DON'T** Dollar figures · mobile optimizer · third shopping table · fork packing.
+
+### U7 — Retired as a unit
+Contents shipped across Sprints 53–63 (undo/redo, multi-panel end grain, miters/harlequin, species). Remaining items (share links, custom species, drag reorder, thumbnails) stay deferred individually — not a bundled Phase-2 unit.
 
 ---
 

@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 63 Attempt 1 (2026-07-26) — CLOSED 96/100** — wedge membership closure (not species equality). First Load **120 kB**. Prior: Sprint 62 **96/100**.
+> **Latest logged: Sprint 64 Attempt 1 (2026-07-26) — OPEN** — U6 cut optimizer panel + shopping-list push. Prior: Sprint 63 **96/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1203 green (post-63).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1203 green (post-63; Sprint 64 in progress).
 
 ---
 
@@ -74,6 +74,24 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 ### Final outcome
 Score: **96/100** — Pass. Closure is wedge membership, not base colour.
+
+### Sprint 63 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Contrasting base strip closes | PASS | Harlequin with strip 1 base → `cherry`, corners untouched (`tr,tl,tr,tl,…`): no warning. The Sprint 62 false positive is gone. |
+| 2 | Multiple contrasting bases close | PASS | Bases `cherry, hard-maple, white-oak, padauk, ash, …` with alternation intact: no warning. |
+| 3 | Corner flip still fails | PASS | Strip 1 corner → `tl` (corners `tl,tl,tr,…`): `Miter pattern does not close — check corners and row transforms.` Teeth intact. |
+| 4 | Pre-63 reopen | PASS | `verify-51`: v2, 12 strips, 18″ × 12″ × 1½″, 2.78 bd ft, no decimal inches. |
+
+`wedgeWebContinuous` is correct: membership-based, base species ignored. Sprint 63 stands at 96/100.
+
+---
+
+## Sprint 64: U6 — cut optimizer panel + shopping-list push
+**Dates:** 2026-07-26
+**Scope:** Part 0 S63 browser verify + open U6 · Part A optimizer panel · Part B shopping-list push (pending Q1) · trunk-based to `main`.
+**Status:** OPEN — Part 0 recorded; Part A in progress; Part B blocked on Q1.
 
 ---
 
