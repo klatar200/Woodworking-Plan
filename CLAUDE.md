@@ -71,7 +71,7 @@ Server actions NEVER throw (throw = HTTP 500 on public endpoint):
 - Rate limiter DROPS never THROWS: `checkRateLimit()` returns bool; actions no-op on false.
 - Shared `src/lib/form-fields.ts` `formString`/`formInt` return null never throw; actions bail with `redirect(bounceTarget(...))`. `formInt` requires BOUNDS (`parseInt("5abc")`=5, `"1e9"`=1; ratings computed-on-read, one junk poisons averages).
 - Only missing-RATING bail carries a notice (`?notice=rating-required`); missing structural ids bounce silent.
-  Exception (Sprint 61): designer config over `MAX_CONFIG_BYTES` bounces with `?notice=design-too-large` — that is the user's real work rejected for size, not tampering; silent bounce is data loss. Do not delete the notice to "restore" this line.
+  Exception (Sprint 61/62): `?notice=design-too-large` is defence-in-depth for an over-cap posted config. No schema-valid config can currently exceed `MAX_CONFIG_BYTES` (~14.9 KB vs 32 KiB), so a legitimate client never hits it — only a tampered oversized payload can. Kept because the byte cap is a second line of defence whose reachability could change if schema caps rise. **Not** a precedent for adding notices to structural-id bounces.
 - Every lib call in an action → `guardAction()` (`src/lib/action-guard.ts`): `unstable_rethrow` passes framework signals; name-matched `UnauthorizedError` → sign-in w/ return URL; else logged silent bounce.
 - Rate-limit bounce target = attacker input → `safeReturnTo()` rejects absolute/protocol-relative(`//evil`)/backslash URLs (else open redirect). `redirect()` = 303 not throw.
 - Tests assert the behaviour the APP needs, not that code throws.

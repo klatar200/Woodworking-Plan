@@ -48,13 +48,14 @@ export const RATING_NOTICE_VALUE = 'rating-required';
 export const UPLOAD_NOTICE_VALUE = 'upload-failed';
 
 /**
- * Designer config over the byte cap (Sprint 61).
+ * Designer config over the byte cap (Sprint 61; rationale corrected Sprint 62).
  *
- * WHY THIS ONE CARRIES A NOTICE. CLAUDE.md §7 says only missing-RATING (and later
- * upload-failed) bails carry a notice; missing structural ids bounce silent —
- * those mean tampering or a bug, and a message helps nobody. An over-cap config
- * is different in kind: it is the user's real work, rejected for size. Silent
- * bounce is data loss. Do not "restore consistency" by deleting this notice.
+ * Defence-in-depth only: schema-max serializes to ~14.9 KB, under both the old
+ * 16 KiB and current 32 KiB caps, so a legitimate client cannot hit this bounce.
+ * Only a tampered oversized payload can. Kept because the byte cap is a second
+ * line of defence whose reachability could change if schema strip/panel/row
+ * caps rise. NOT a precedent for adding notices to structural-id bounces
+ * (CLAUDE.md §7 — those stay silent).
  */
 export const DESIGN_TOO_LARGE_NOTICE_VALUE = 'design-too-large';
 

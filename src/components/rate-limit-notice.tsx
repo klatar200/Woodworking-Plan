@@ -80,9 +80,9 @@ export function UploadFailedNotice({ show, dismissHref }: Props) {
 }
 
 /**
- * "Design too large to save" — Sprint 61. Visible half of the over-cap bounce in
- * `createBoardDesignAction` / `updateBoardDesignAction`. Silent rejection was a
- * data-loss path; this sentence is the fix's user-facing half.
+ * "Design too large to save" — Sprint 61. Visible half of the over-cap bounce.
+ * Unreachable via a schema-valid config today (defence-in-depth); see
+ * `DESIGN_TOO_LARGE_NOTICE_VALUE` comment. Not a precedent for structural notices.
  */
 export function DesignTooLargeNotice({ show, dismissHref }: Props) {
   if (!show) return null;

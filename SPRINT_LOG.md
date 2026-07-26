@@ -75,7 +75,27 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 3. Pre-Sprint-61 saved design reopens rendering identically
 
 ### Final outcome
-Score: **96/100** — Pass. Silent save-loss path closed.
+Score: **96/100** — Pass. Silent save-loss path closed. *(Re-scored to 93/100 after browser verification — see below.)*
+
+### Sprint 61 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Over-cap refuse is visible | PASS (partial) | `?notice=design-too-large` renders `Your board wasn't saved — the design is too large. Remove some strips or panels and try again.` in `role="status"` with a Dismiss control. Could not be triggered for real — no schema-valid config can exceed the cap (see below). |
+| 2 | Large-board skip note | **FAIL** | Built exactly 48,000 cells — 40 strips × repeat 20 × rowCount 60, the schema ceiling — with a mitered strip. The thickness warning fires correctly; the skip note never renders. |
+| 3 | Pre-61 reopen | PASS | `verify-51`: v2, 12 strips, `[none, rot180]`, 18″ × 12″ × 1½″, 2.78 bd ft, no decimal inches, no stray notice. |
+**The skip note is unreachable.** The cell cap is 48k and 48,000 is the exact maximum a
+schema-valid config can produce (40 strips/panel × repeat 20 × rowCount 60). The branch can
+never fire. A single checkbox toggle at that size took ~950 ms of wall clock — far too fast for
+a naive quadratic over 48k cells — so the colour check did skip; it simply said nothing, which
+is the gap Sprint 61 Part B existed to close.
+**Correction — the Part A premise was wrong, and the error was in the Sprint 61 prompt, not the
+implementation.** Schema-max serializes to **14,893 B**, already under the OLD 16,384 B cap. The
+"silent data-loss path" that Part A was written to fix **did not exist**. The 32 KiB raise and the
+`design-too-large` notice are sound defence-in-depth and stay, but they did not fix a live defect
+and must not be recorded as having done so.
+**Re-score: 96 → 93/100.** Everything requested was delivered; one requirement — "when the colour
+check is skipped, say so" — shipped unobservable. The Part A premise error is not counted against
+the sprint.
 
 ---
 
