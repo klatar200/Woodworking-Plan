@@ -1,7 +1,4 @@
-import {
-  closingThicknessIn,
-  thicknessMismatchesClose,
-} from '@/lib/board-designer/miter-geometry';
+import { closingThicknessHint } from '@/lib/board-designer/miter-geometry';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
@@ -48,6 +45,20 @@ export function StripList({
   onCommitCoalesce: () => void;
 }) {
   const move = stripMoveLabels(grain);
+
+  // One closing-thickness hint per distinct (width, thickness, angle).
+  const firstHintForKey = new Set<string>();
+  const showClosingHintById = new Map<string, boolean>();
+  for (const strip of strips) {
+    if (!strip.miter) {
+      showClosingHintById.set(strip.id, false);
+      continue;
+    }
+    const key = `${strip.widthIn}\0${panelThicknessIn}\0${strip.miter.angleDeg}`;
+    const show = !firstHintForKey.has(key);
+    if (show) firstHintForKey.add(key);
+    showClosingHintById.set(strip.id, show);
+  }
 
   return (
     <div>
@@ -183,6 +194,7 @@ export function StripList({
                 <MiterControls
                   strip={strip}
                   panelThicknessIn={panelThicknessIn}
+                  showClosingHint={showClosingHintById.get(strip.id) === true}
                   onUpdate={onUpdate}
                   onCommitCoalesce={onCommitCoalesce}
                 />
@@ -213,11 +225,13 @@ export function StripList({
 function MiterControls({
   strip,
   panelThicknessIn,
+  showClosingHint,
   onUpdate,
   onCommitCoalesce,
 }: {
   strip: Strip;
   panelThicknessIn: number;
+  showClosingHint: boolean;
   onUpdate: (id: string, patch: Partial<Strip>) => void;
   onCommitCoalesce: () => void;
 }) {
@@ -227,10 +241,6 @@ function MiterControls({
     angleDeg: 30,
     corner: 'tr',
   };
-  const ideal = closingThicknessIn(strip.widthIn, miter.angleDeg);
-  const mismatch =
-    enabled &&
-    thicknessMismatchesClose(strip.widthIn, panelThicknessIn, miter.angleDeg);
 
   return (
     <div className="grid gap-[0.75rem] rounded-[0.375rem] border border-border/80 p-[0.75rem]">
@@ -334,13 +344,11 @@ function MiterControls({
             </label>
           </div>
 
-          <p className="m-0 text-[0.875rem] text-muted">
-            Closing thickness for a {formatInches(strip.widthIn)} strip at{' '}
-            {miter.angleDeg}° is ≈ {formatInches(ideal)}
-            {mismatch
-              ? ` — panel is ${formatInches(panelThicknessIn)} (>5% off; lattice will not close).`
-              : '.'}
-          </p>
+          {showClosingHint ? (
+            <p className="m-0 text-[0.875rem] text-muted">
+              {closingThicknessHint(strip.widthIn, panelThicknessIn, miter.angleDeg)}
+            </p>
+          ) : null}
         </>
       ) : null}
     </div>

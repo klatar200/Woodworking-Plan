@@ -206,6 +206,8 @@ export function difficultyLabel(difficulty: number): string {
  * decimals is a cut list nobody can use in a workshop, so this is not cosmetic.
  */
 export function formatInches(value: number): string {
+  if (!Number.isFinite(value)) return '';
+
   const whole = Math.floor(value);
   const fraction = value - whole;
 
@@ -214,6 +216,8 @@ export function formatInches(value: number): string {
   // Snap to the nearest 1/16 — the practical resolution of a tape measure.
   const sixteenths = Math.round(fraction * 16);
   if (sixteenths === 16) return `${whole + 1}"`;
+  // Sub-1/32 leftovers round to 0/16 → whole inch (else "1 0/1\"").
+  if (sixteenths === 0) return `${whole}"`;
 
   // Reduce the fraction: 8/16 → 1/2, 12/16 → 3/4.
   const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));

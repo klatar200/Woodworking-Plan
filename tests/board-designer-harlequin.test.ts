@@ -4,6 +4,7 @@ import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { evaluateHexagonLattice } from '@/lib/board-designer/hexagon-criteria';
 import {
   cellsColorClosed,
+  closingThicknessHint,
   closingThicknessIn,
   miterLatticeCloses,
   speciesComponents,
@@ -11,18 +12,22 @@ import {
 import { getTemplate } from '@/lib/board-designer/templates';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
-const T_CLOSE = 0.875 / Math.cos(Math.PI / 6); // ≈ 1.0104
-
-describe('harlequin template — shape + closure (Sprint 59)', () => {
-  it('finished dims match ⅞″ strips at t = w·secθ', () => {
+describe('harlequin template — shape + closure (Sprint 59/60)', () => {
+  it('ships thicknessIn === 1; finished 7 × 8 × 1½; no warnings', () => {
     const tpl = getTemplate('harlequin');
     expect(tpl).toBeTruthy();
     expect(getTemplate('hexagon')).toBeUndefined();
+    expect(tpl!.config.panels[0]!.thicknessIn).toBe(1);
     const metrics = calculateMetrics(tpl!.config);
-    expect(metrics.finishedLengthIn).toBeCloseTo(7, 5); // 8 × 0.875
-    expect(metrics.finishedWidthIn).toBeCloseTo(8 * T_CLOSE, 4);
-    expect(metrics.finishedThicknessIn).toBeCloseTo(1.5, 5);
-    expect(tpl!.config.panels[0]!.thicknessIn).toBeCloseTo(T_CLOSE, 6);
+    expect(metrics.finishedLengthIn).toBe(7);
+    expect(metrics.finishedWidthIn).toBe(8);
+    expect(metrics.finishedThicknessIn).toBe(1.5);
+    expect(metrics.warnings).toEqual([]);
+    // 1″ is within 5% of ideal t = w·secθ ≈ 1.0104
+    expect(
+      Math.abs(1 - closingThicknessIn(0.875, 30)) /
+        closingThicknessIn(0.875, 30),
+    ).toBeLessThan(0.05);
   });
 
   it('speciesComponents: walnut = disjoint rhombi; maple = 1 field', () => {
@@ -58,14 +63,14 @@ describe('harlequin template — shape + closure (Sprint 59)', () => {
     expect(halfMean / fullMean).toBeLessThan(0.6);
   });
 
-  it('colour continuity holds; thickness gate accepts the closing t', () => {
+  it('colour continuity holds; thickness gate accepts shipped 1″', () => {
     const tpl = getTemplate('harlequin')!;
     const cells = layoutTopFace(tpl.config, calculateMetrics(tpl.config));
     expect(cellsColorClosed(cells)).toBe(true);
     expect(miterLatticeCloses(cells, tpl.config.panels)).toBe(true);
   });
 
-  it('1.5″ panel (old shipped t) raises mismatch; 1″ is near-close', () => {
+  it('1.5″ panel raises exactly one fraction mismatch warning', () => {
     const tpl = getTemplate('harlequin')!;
     const oldT: BoardDesignConfig = {
       ...tpl.config,
@@ -73,24 +78,31 @@ describe('harlequin template — shape + closure (Sprint 59)', () => {
     };
     const oldCells = layoutTopFace(oldT, calculateMetrics(oldT));
     expect(miterLatticeCloses(oldCells, oldT.panels)).toBe(false);
-    expect(
-      calculateMetrics(oldT).warnings.some((w) =>
-        w.includes('lattice will not close'),
-      ),
-    ).toBe(true);
+    const warnings = calculateMetrics(oldT).warnings.filter((w) =>
+      w.includes('lattice will not close'),
+    );
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toBe(closingThicknessHint(0.875, 1.5, 30));
+    expect(warnings[0]).toMatch(/7\/8"/);
+    expect(warnings[0]).toMatch(/1 1\/2"/);
+    expect(warnings[0]).not.toMatch(/\d+\.\d+\s*[″"]/);
+  });
 
-    // 1″ is within 5% of t = 1.0104 — the old "failing control" is now near-correct.
-    expect(
-      Math.abs(1 - closingThicknessIn(0.875, 30)) /
-        closingThicknessIn(0.875, 30),
-    ).toBeLessThan(0.05);
-    const near: BoardDesignConfig = {
+  it('metrics warning and editor hint share one string', () => {
+    const msg = closingThicknessHint(0.875, 1.5, 30);
+    const tpl = getTemplate('harlequin')!;
+    const mismatched: BoardDesignConfig = {
       ...tpl.config,
-      panels: tpl.config.panels.map((p) => ({ ...p, thicknessIn: 1 })),
+      panels: tpl.config.panels.map((p) => ({ ...p, thicknessIn: 1.5 })),
     };
-    expect(
-      miterLatticeCloses(layoutTopFace(near, calculateMetrics(near)), near.panels),
-    ).toBe(true);
+    const fromMetrics = calculateMetrics(mismatched).warnings.find((w) =>
+      w.includes('lattice will not close'),
+    );
+    expect(fromMetrics).toBe(msg);
+    // Editor path is the same helper (strip-list imports closingThicknessHint).
+    expect(msg).toBe(
+      'Closing thickness for a 7/8" strip at 30° is ≈ 1" — panel is 1 1/2" (>5% off; lattice will not close).',
+    );
   });
 
   it('cellsColorClosed is false when strip-1 corner breaks the alternation', () => {

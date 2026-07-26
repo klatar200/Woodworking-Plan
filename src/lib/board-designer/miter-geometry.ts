@@ -1,3 +1,4 @@
+import { formatInches } from '@/lib/format';
 import type { Miter, MiterCorner, RowTransform } from './types';
 
 /** Minimal cell shape for closure sampling — avoids a layout↔geometry cycle. */
@@ -53,6 +54,23 @@ export function thicknessMismatchesClose(
   const ideal = closingThicknessIn(widthIn, angleDeg);
   if (!(ideal > 0) || !Number.isFinite(ideal)) return false;
   return Math.abs(thicknessIn - ideal) / ideal > tolerance;
+}
+
+/**
+ * Single user-facing closing-thickness line (editor hint + metrics warning).
+ * Every inch goes through `formatInches` — never decimals (§7).
+ */
+export function closingThicknessHint(
+  widthIn: number,
+  thicknessIn: number,
+  angleDeg: number,
+): string {
+  const ideal = closingThicknessIn(widthIn, angleDeg);
+  const base = `Closing thickness for a ${formatInches(widthIn)} strip at ${angleDeg}° is ≈ ${formatInches(ideal)}`;
+  if (thicknessMismatchesClose(widthIn, thicknessIn, angleDeg)) {
+    return `${base} — panel is ${formatInches(thicknessIn)} (>5% off; lattice will not close).`;
+  }
+  return `${base}.`;
 }
 
 export function mapMiterCorner(

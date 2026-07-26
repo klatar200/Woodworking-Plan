@@ -231,7 +231,7 @@ describe('templates — finished dimensions + panelPlan', () => {
       'thue-morse': { length: 12, width: 12, thickness: 1.5 },
       harlequin: {
         length: 7,
-        width: 8 * (0.875 / Math.cos(Math.PI / 6)),
+        width: 8,
         thickness: 1.5,
       },
     };

@@ -345,10 +345,15 @@ export const TEMPLATES: readonly BoardTemplate[] = [
      *
      * Same strips/angle/corners as shipped: maple base + walnut wedge @ 30°,
      * corners alternating tr/tl, rowPattern [none, mirrorY], 8 strips × 0.875″.
-     * Panel thickness is the two-row closing value t = w·secθ =
-     * 0.875 / cos(π/6) ≈ 1.0104″ (not the unreachable one-row form).
      *
-     * Finished ≈ 7 × 8.083 × 1.5 (8×0.875 · 8×t · slice 1.5).
+     * Panel thickness is exactly **1″** — a deliberate ~1.03% approximation of
+     * the two-row closing value t = w·secθ = 0.875/cos(π/6) ≈ 1.0104″. Inside
+     * the 5% gate (no warning). At θ=30° rhombus shape depends only on θ
+     * (half-diagonals w and w·tanθ), never on t, so the diamonds are unchanged.
+     * 1″ dressed from 5/4 is standard stock; do not "fix" back to the
+     * irrational ideal (that shipped 16 digits in the Thickness field).
+     *
+     * Finished = 7 × 8 × 1½ (8×0.875 · 8×1 · slice 1.5).
      * Walnut → disjoint rhombi (12 full + 8 edge-halves with shipped
      * [none, mirrorY]); maple → one connected field.
      */
@@ -363,8 +368,8 @@ export const TEMPLATES: readonly BoardTemplate[] = [
         panel(
           'course',
           'Course',
-          // t = w · sec(30°) = 0.875 / cos(π/6)
-          0.875 / Math.cos(Math.PI / 6),
+          // Deliberate 1″ ≈ w·secθ (1.03% off); see comment above.
+          1,
           Array.from({ length: 8 }, (_, i) =>
             miteredStrip(
               `hx-${i + 1}`,

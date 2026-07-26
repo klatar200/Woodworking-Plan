@@ -97,6 +97,28 @@ describe('formatInches — decimals to tape-measure fractions', () => {
     expect(formatInches(1.9999)).toBe('2"');
   });
 
+  it('rounds near-whole leftovers to a whole inch (no zero numerator)', () => {
+    // 1.0104 → sixteenths round to 0; previously printed "1 0/1\"".
+    expect(formatInches(1.0104)).toBe('1"');
+    expect(formatInches(2.03)).toBe('2"');
+    expect(formatInches(1.0)).toBe('1"');
+    expect(formatInches(0.875 / Math.cos(Math.PI / 6))).toBe('1"');
+  });
+
+  it('never emits a zero-numerator fraction across a dense sweep', () => {
+    for (let i = 0; i <= 4000; i += 1) {
+      const value = i / 1000; // 0.000 … 4.000 inclusive
+      const out = formatInches(value);
+      expect(out).not.toMatch(/\b0\/\d/);
+    }
+  });
+
+  it('returns empty string for non-finite input', () => {
+    expect(formatInches(Number.NaN)).toBe('');
+    expect(formatInches(Number.POSITIVE_INFINITY)).toBe('');
+    expect(formatInches(Number.NEGATIVE_INFINITY)).toBe('');
+  });
+
   it('formats a full cut-list dimension the way a plan prints it', () => {
     expect(formatDimensions(0.8125, 2, 19)).toBe('13/16" × 2" × 19"');
     expect(formatDimensions(1.5, 7.25, 96)).toBe('1 1/2" × 7 1/4" × 96"');

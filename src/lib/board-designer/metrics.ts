@@ -1,6 +1,6 @@
 import { layoutTopFace } from './layout';
 import {
-  closingThicknessIn,
+  closingThicknessHint,
   miterLatticeCloses,
   miterWedgeFraction,
   thicknessMismatchesClose,
@@ -198,8 +198,11 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
               s.miter.angleDeg,
             )
           ) {
-            const ideal = closingThicknessIn(s.widthIn, s.miter.angleDeg);
-            const msg = `Miter at ${s.miter.angleDeg}° wants panel thickness ≈ ${ideal.toFixed(3)}″ for a ${s.widthIn}″ strip — lattice will not close.`;
+            const msg = closingThicknessHint(
+              s.widthIn,
+              panel.thicknessIn,
+              s.miter.angleDeg,
+            );
             if (!warnings.includes(msg)) warnings.push(msg);
           }
         }
