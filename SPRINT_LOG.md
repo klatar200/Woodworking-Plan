@@ -5,7 +5,7 @@
 >
 > **Latest logged: Sprint 65 Attempt 2 (2026-07-26) — CLOSED 98/100** — thumbs + drag; a11y fix pass. Prior Attempt-1 prod re-score **94**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: (post-65 fix) green.
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1251 green (post-65 Attempt 2).
 
 ---
 
@@ -162,11 +162,11 @@ All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
 **Dates:** 2026-07-26
 **Scope:** Part 0 S64 Attempt-2 verify · library thumbnails from config · `reorder-strip` + drag · shopping-list footer copy. Trunk-based to `main`.
 **Status:** CLOSED
-**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · `423fb0e` (close)
+**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · `423fb0e` (close) · (Attempt 2 fix)
 **/designer First Load JS:** **123 kB** (was 122; +1 from strip-list pointer drag client — library thumbs are SSR, `/designer/library` **106 kB**).
-**Suite:** **1247/1247** across 109 files.
-**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 success.
-**Vercel:** Production deploy `3538a26` success (GitHub deployment 5611975139).
+**Suite:** **1251/1251** across 110 files (Attempt 2).
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 success (Attempt 1 code); Attempt 2 CI on tip.
+**Vercel:** Production deploy `3538a26` success (GitHub deployment 5611975139); Attempt 2 redeploy on tip.
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |
