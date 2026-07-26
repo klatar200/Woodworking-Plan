@@ -35,9 +35,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Phase 4 | 🟡 PARTIAL — build logs (27) + tool-aware search (25–26) only; rest CLOSED |
 | Sprints 47–50 | ✅ shipped (settings hub · page size 24 · navbar Browse→Plans · `/browse` filter rail) — detail in SPRINT_LOG. Listed so the next sprint number is not re-used. |
 | Sprints 51–52 (Cutting Board Designer) | ✅ **BOTH CLOSED** 2026-07-25. Sprint **51 100/100** (Attempt 3 — Attempt 2's 92 was a verification-access deduction, not a defect; blockers cleared via `prisma migrate status` on the prod branch + signed-in save→library→reopen; §9 manual pass re-run; no product code changed). Sprint **52 100/100** (Attempt 1's 96 **invalidated**; Attempt 2 98; Attempt 3 `25cc107` — wheel bind to canvas OrbitControls, orbit/zoom feel; final 2 Correctness pts released on Keagan's browser PASS on prod `7a6b12e`); suite **1104/1104**; `/designer` First Load **113 kB**. |
-| Sprints 53–56 (Designer polish) | 🟡 Sprint **53 CLOSED** 98/100 · Sprint **54 CLOSED** 2026-07-26 — **96/100** (`4e8f2bf` desktop-gate + mobile read-only/print; header search `a728a0e` xl); suite **1106/1106**. 55–56 still scheduled, unopened. U6/U7 still unopened; advanced templates + wider Canva-like set deferred. |
+| Sprints 53–56 (Designer polish) | 🟡 Sprint **53 CLOSED** 98/100 · Sprint **54 CLOSED** 98/100 · Sprint **55 CLOSED** 2026-07-26 — **98/100** (`31a5940` undo/redo); suite **1117/1117**. 56 still scheduled. U6/U7 still unopened; advanced templates + wider Canva-like set deferred. |
 
-Test suite — expected: 1106/1106 (Sprint 54, Cursor VM). Update this single figure each sprint close; 1105/1105 and earlier superseded.
+Test suite — expected: 1117/1117 (Sprint 55, Cursor VM). Update this single figure each sprint close; 1106/1106 and earlier superseded.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
@@ -48,7 +48,7 @@ Sprints 51–52 delivered U1–U5 and are closed. **U6/U7 remain Phase 2, unopen
 |---|---|---|
 | **53 — Designer layout & chrome** | **2** full-page width like `/browse` · **3** preview stays in view while editing · **4** `PREVIEW` left + `Export PNG` right on one line · **6** strip `Up`/`Down` verbiage · **7** species pills one line, `Purpleheart` overflow | ✅ **CLOSED** 2026-07-25 — Attempt 2 **98/100** (`cff58b9` + `c4a4e99`). |
 | **54 — Desktop-only designer + mobile plan/cut list** | **1** | ✅ **CLOSED** 2026-07-26 — **98/100** (`4e8f2bf`). Viewport gate flips at exactly **1024** (verified); form stays mounted so a resize cannot destroy a draft (verified round-trip); `canvas === null` below the gate; exact notices; print sheet clean at 366px. B7 held (no `toParts()`). Header now a single `xl` breakpoint (`a728a0e` + `2844c22`) — the first attempt left a 1024–1279 band with no search at all. |
-| **55 — Undo/redo** | **5a** | ⌘Z / Ctrl+Z, in-memory only (no persistence across reload — Keagan's call). Replaces the "Replace your current draft with this template?" confirm: applying a template becomes an ordinary undoable action. Pulled out of U7 by decision |
+| **55 — Undo/redo** | **5a** | ✅ **CLOSED** 2026-07-26 — **98/100** (`31a5940`). In-memory history (cap 50); coalesce typed width/repeat/name; template apply undoable (confirm removed); Ctrl/Cmd+Z + Ctrl+Y / Ctrl+Shift+Z; `DESIGNER_WIDE_MQ` gate; no new deps. |
 | **56 — Species expansion** | **8** | B14 + contract §8 escalation: **adding** ids is safe (orphans nothing), removing/renaming is not. Requires §3.2 amended (currently "exactly these 8"), hexes that stay distinguishable in 3D, and `dark-theme`/`contrast` guards re-run |
 
 **Deferred to their own conversations (Keagan, 2026-07-25) — do not fold into 53–56:**

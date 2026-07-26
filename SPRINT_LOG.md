@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 54 Attempt 1 (2026-07-26) — CLOSED 98/100** — desktop-only authoring + mobile read-only/print (`4e8f2bf`); header single-`xl` breakpoint (`a728a0e` + `2844c22`). Withheld Correctness points released on prod observation; −2 stands on test coverage (header dead band shipped green). Prior: Sprint 53 **98/100**.
+> **Latest logged: Sprint 55 Attempt 1 (2026-07-26) — CLOSED 98/100** — designer undo/redo (`31a5940`); in-memory history + coalesced typing; template confirm removed. Prior: Sprint 54 **98/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1106 green (post-54).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1117 green (post-55).
 
 ---
 
@@ -42,6 +42,50 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 55: Designer undo/redo
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 row **55** only (Keagan item **5a**). No 56; no U6/U7; no sticky/viewport-gate edits; no §3/schema/routes/deps.
+**Commit:** `31a5940` on `cursor/designer-undo-redo-1e77` (merge to `main` via PR).
+**/designer First Load JS:** 358 kB shared chunk path unchanged in shape (local `npm run build`).
+**CI / Vercel:** pending merge to `main`.
+
+### Coalescing policy (explicit)
+- Consecutive `update-strip` on the same strip id + typed field (`widthIn` | `repeat`) → **one** undo step.
+- Consecutive `patch` on the same typed board field (`name`, panel/stock/slice length, `wasteFactor`) → **one** undo step.
+- Window ends on a different action/key, or `commit-coalesce` (blur on Width/Repeat/Name/dimension/waste inputs).
+- Discrete clicks (species, grain, kerf, flip, add/delete/move/duplicate/load) **never** coalesce.
+- Cap **50** past snapshots; oldest dropped first. In-memory only — no localStorage/DB/URL.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | §4/5a only: Z/Y shortcuts, in-memory, template confirm deleted, all listed actions undoable; U3 STOP held (no state lib) |
+| Correctness & functionality (/20) | 18 | Reducer behaviour green (`designer-history.test.ts`); dirty clears when present===initial; hidden `config` tracks present. **−2**: keyboard / 900px gate / Name-native-undo / template-no-confirm UI path need Keagan browser (list below) — not claimed |
+| Automated test coverage (/15) | 15 | **1117** tests; history reducer asserts undo/redo/clear-future/no-ops/cap/coalesce/template/dirty/config serialization — behaviour, not class strings |
+| Security (/15) | 15 | No persistence; no new routes/public-routes; shortcuts ignored in text entry; listener gated on `DESIGNER_WIDE_MQ` so mounted-but-hidden narrow authoring cannot be mutated via keys |
+| Code quality & simplicity (/10) | 10 | Single pure `historyReducer` wrapping config reducer; shell stays the one `useReducer`; no deps |
+| Mobile/offline behavior (/10) | 10 | Same wide MQ as canvas; Sprint 54 mount-but-hide preserved; history not written to SW caches |
+| Documentation & handoff (/5) | 5 | This entry + contract §9 + BUILD_PLAN §4 row/test-count; coalescing policy recorded |
+| **Total (/100)** | **98** | |
+
+**Result:** Pass (≥95)
+
+**Keagan browser verify (expected — do not claim until observed):**
+1. Add strip → change species → change width → Ctrl+Z ×3: width, then species, then strip removed.
+2. Type 4 chars into Width → one Undo clears all four.
+3. Focus Name, type, Ctrl+Z → text undoes; board unchanged.
+4. With dirty draft, Apply template → no confirm; one Undo restores prior board exactly.
+5. Undo then new edit → Redo disabled.
+6. Undo to start → "Unsaved changes" gone.
+7. After Undo, `document.querySelector('input[name=config]').value` matches on-screen board.
+8. At 900px width, Ctrl+Z → no board change.
+9. Ctrl+Y and Ctrl+Shift+Z both redo.
+
+### Final outcome
+Score: **98/100** — Pass. Sprint 56 not started.
 
 ---
 
