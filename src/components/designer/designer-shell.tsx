@@ -5,7 +5,7 @@ import { BoardPreview } from './board-preview';
 import { BoardSettings } from './board-settings';
 import { DesignerNarrowSurface } from './designer-narrow';
 import { MetricsPanel } from './metrics-panel';
-import { DESIGNER_WIDE_MQ } from './r3f-canvas';
+import { DESIGNER_WIDE_MQ } from '@/lib/board-designer/viewport';
 import { StripList } from './strip-list';
 import { TemplatePicker } from './template-picker';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
@@ -14,6 +14,7 @@ import {
   canUndo,
   createHistoryState,
   historyReducer,
+  undoRedoShortcut,
 } from '@/lib/board-designer/history';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
@@ -46,18 +47,13 @@ export function DesignerShell(props: {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!mq.matches) return;
       if (isTextEntryTarget(event.target)) return;
-      const mod = event.metaKey || event.ctrlKey;
-      if (!mod) return;
+      // Mapping lives in history.ts so the case-folding is unit-tested — real
+      // hardware sends 'Z' for Shift+Z, synthesized events send 'z'.
+      const intent = undoRedoShortcut(event);
+      if (!intent) return;
 
-      if (event.key === 'z' && !event.shiftKey) {
-        event.preventDefault();
-        dispatch({ type: 'undo' });
-        return;
-      }
-      if ((event.key === 'z' && event.shiftKey) || event.key === 'y' || event.key === 'Y') {
-        event.preventDefault();
-        dispatch({ type: 'redo' });
-      }
+      event.preventDefault();
+      dispatch({ type: intent });
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);

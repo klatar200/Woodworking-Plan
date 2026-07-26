@@ -27,6 +27,28 @@ export type HistoryState = {
   coalesceKey: string | null;
 };
 
+/**
+ * Maps a keyboard event to an undo/redo intent. Pure and exported so the
+ * case-folding is TESTABLE rather than buried in an effect.
+ *
+ * `KeyboardEvent.key` is case-shifted: real hardware reports `'Z'` for Shift+Z,
+ * so comparing against `'z'` alone silently drops Ctrl+Shift+Z. A synthesized
+ * (CDP) keystroke reports `'z'` with `shiftKey` set instead, which means an
+ * automated keypress CANNOT distinguish the two — folding case removes the
+ * distinction rather than betting on which one arrives.
+ */
+export function undoRedoShortcut(event: {
+  key: string;
+  shiftKey: boolean;
+  ctrlKey: boolean;
+  metaKey: boolean;
+}): 'undo' | 'redo' | null {
+  if (!event.ctrlKey && !event.metaKey) return null;
+  const key = event.key.toLowerCase();
+  if (key !== 'z' && key !== 'y') return null;
+  return key === 'y' || event.shiftKey ? 'redo' : 'undo';
+}
+
 export function cloneConfig(config: BoardDesignConfig): BoardDesignConfig {
   return {
     ...config,

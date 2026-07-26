@@ -6,6 +6,7 @@ import {
   configsEqual,
   createHistoryState,
   historyReducer,
+  undoRedoShortcut,
   type HistoryState,
 } from '@/lib/board-designer/history';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
@@ -178,5 +179,41 @@ describe('designer history reducer', () => {
       { type: 'update-strip', id: 's1', patch: { speciesId: 'walnut' } },
     );
     expect(state.past).toHaveLength(2);
+  });
+});
+
+describe('undoRedoShortcut — key case is NOT stable across input sources', () => {
+  const ev = (over: Partial<KeyboardEvent> & { key: string }) => ({
+    shiftKey: false,
+    ctrlKey: false,
+    metaKey: false,
+    ...over,
+  });
+
+  it('undoes on Ctrl+Z and Cmd+Z', () => {
+    expect(undoRedoShortcut(ev({ key: 'z', ctrlKey: true }))).toBe('undo');
+    expect(undoRedoShortcut(ev({ key: 'z', metaKey: true }))).toBe('undo');
+  });
+
+  // Real hardware reports 'Z' for Shift+Z; a CDP-synthesized keystroke reports
+  // 'z' with shiftKey set. BOTH must redo — the original handler matched only
+  // lowercase 'z' for the shift branch, so Ctrl+Shift+Z was a silent no-op on a
+  // real keyboard while any automated test would have passed.
+  it('redoes on Ctrl+Shift+Z whichever case the platform reports', () => {
+    expect(undoRedoShortcut(ev({ key: 'Z', ctrlKey: true, shiftKey: true }))).toBe('redo');
+    expect(undoRedoShortcut(ev({ key: 'z', ctrlKey: true, shiftKey: true }))).toBe('redo');
+    expect(undoRedoShortcut(ev({ key: 'Z', metaKey: true, shiftKey: true }))).toBe('redo');
+  });
+
+  it('redoes on Ctrl+Y in either case', () => {
+    expect(undoRedoShortcut(ev({ key: 'y', ctrlKey: true }))).toBe('redo');
+    expect(undoRedoShortcut(ev({ key: 'Y', ctrlKey: true }))).toBe('redo');
+  });
+
+  it('ignores the keys without a modifier, and unrelated modified keys', () => {
+    expect(undoRedoShortcut(ev({ key: 'z' }))).toBeNull();
+    expect(undoRedoShortcut(ev({ key: 'Z', shiftKey: true }))).toBeNull();
+    expect(undoRedoShortcut(ev({ key: 's', ctrlKey: true }))).toBeNull();
+    expect(undoRedoShortcut(ev({ key: 'ArrowLeft', ctrlKey: true }))).toBeNull();
   });
 });

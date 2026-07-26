@@ -3,12 +3,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PCFShadowMap } from 'three';
 import type { Cell } from '@/lib/board-designer/layout';
 import type { BoardMetrics } from '@/lib/board-designer/types';
+// The gate constant lives in `@/lib/board-designer/viewport` — NOT here. This
+// module pulls in three.js, so anything that imports from it drags the 3D stack
+// into the importer's bundle. See that file's note.
+import { DESIGNER_WIDE_MQ } from '@/lib/board-designer/viewport';
 import { BoardScene } from './r3f-scene';
 
 const IDLE_PAUSE_MS = 2_000;
-
-/** Tailwind `lg` — authoring / WebGL gate (viewport width, never UA). */
-export const DESIGNER_WIDE_MQ = '(min-width: 64rem)';
 
 function useDesignerWideEnough(): boolean {
   // This module is only loaded via dynamic(..., { ssr: false }), so `window`

@@ -185,6 +185,16 @@ describe('DesignerShell static render', () => {
     expect(picker).not.toContain('window.confirm');
     expect(picker).not.toContain('Replace your current draft');
     expect(shell).toContain('DESIGNER_WIDE_MQ');
+
+    // BUNDLE GUARD. r3f-canvas.tsx imports three.js at module scope and is meant
+    // to be reached ONLY through dynamic(..., {ssr:false}). Sprint 55 imported the
+    // gate constant from it into this statically-imported shell, which pulled the
+    // whole 3D stack into the initial bundle: /designer First Load JS 114 kB ->
+    // 358 kB, and three.js started downloading on phones — defeating the Sprint 54
+    // gate the import existed to implement. Measured 2026-07-26. A bundle boundary
+    // cannot be observed from vitest, so it is guarded at the import site.
+    expect(shell).not.toMatch(/from '\.\/r3f-canvas'/);
+    expect(shell).toContain("from '@/lib/board-designer/viewport'");
     expect(shell).toContain("type: 'undo'");
     expect(shell).toContain("type: 'redo'");
     expect(shell).toContain('historyReducer');
@@ -234,7 +244,11 @@ describe('DesignerShell static render', () => {
 
     // WebGL gate: matchMedia on Tailwind lg; Canvas only when wide enough.
     // Behaviour (canvas null below lg) is browser-only; guard the wiring here.
-    expect(canvas).toContain("'(min-width: 64rem)'");
+    // The MQ literal itself lives in @/lib/board-designer/viewport — three.js must
+    // not be reachable from a statically-imported module (see the bundle guard in
+    // the Sprint 55 case), so the constant cannot live in this file.
+    expect(source('src/lib/board-designer/viewport.ts')).toContain("'(min-width: 64rem)'");
+    expect(canvas).toContain("from '@/lib/board-designer/viewport'");
     expect(canvas).toContain('matchMedia');
     expect(canvas).toMatch(/if\s*\(\s*!wideEnough\s*\)\s*\{\s*return null/);
     expect(canvas).not.toMatch(/userAgent|userAgentData/);
