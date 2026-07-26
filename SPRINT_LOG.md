@@ -161,7 +161,34 @@ All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
 ## Sprint 65: U7 remainder — library thumbnails + strip drag reorder
 **Dates:** 2026-07-26
 **Scope:** Part 0 S64 Attempt-2 verify · library thumbnails from config · `reorder-strip` + drag · shopping-list footer copy. Trunk-based to `main`.
-**Status:** OPEN
+**Status:** CLOSED
+**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · (this close)
+**/designer First Load JS:** **123 kB** (was 122; +1 from strip-list pointer drag client — library thumbs are SSR, `/designer/library` **106 kB**).
+**Suite:** **1247/1247** across 109 files.
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 success.
+**Vercel:** Production deploy `3538a26` success (GitHub deployment 5611975139).
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Thumbs from config via `layoutTopFace`/`calculateMetrics` (no R2/store); `MAX_THUMB_CELLS=500` + visible degrade; `reorder-strip` one undo; arrows kept; footer neutral; share/species out |
+| Correctness & functionality (/20) | 16 | Unit+source verified (cells/colours, over-budget placeholder, parse fail keeps rows, one drag=one undo, OOB no-op, past snapshot clone). **−4**: browser checks unrun (Clerk OAuth) |
+| Automated test coverage (/15) | 15 | `library-thumb.test.tsx` · `designer-history` reorder suite · footer source guard; suite **1247** |
+| Security (/15) | 15 | `/designer` still off public-routes + in `NEVER_CACHE`; no `img-src`/`remotePatterns`; thumbnails never throw; no stored hostile bytes |
+| Code quality & simplicity (/10) | 10 | No layout fork; pointer events only (no DnD lib); budget rationale in comment |
+| Mobile/offline behavior (/10) | 10 | Offline denylist unchanged / green; drag has AT path via existing buttons + `aria-live` |
+| Documentation & handoff (/5) | 5 | This entry + BUILD_PLAN §4; First Load noted |
+| **Total (/100)** | **96** | |
+
+### Browser checks (unrun — Clerk blocks agent OAuth)
+1. `/designer/library` thumbnail per design, both themes — **UNRUN**
+2. Over-budget design degrades visibly — **UNRUN** (source+unit PASS)
+3. Drag reorder; one undo restores — **UNRUN** (unit PASS)
+4. Arrow buttons still work — **UNRUN** (unit PASS)
+5. **Carried over:** print view miter offcut note (`designer/[id]/print` gate) — **UNRUN** (source-verified only)
+
+### Final outcome
+Score: **96/100** — Pass. U7 remainder (thumbs + drag) closed.
 
 ---
 
