@@ -46,11 +46,12 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
 | Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
 | Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
-| Sprints 67–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 67**. Agent contract below. Facts: DECISIONS_LOG 2026-07-26. |
+| Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Top bar + Board settings ⋯; sticky preview+dock; full dock panels mounted/hidden; preview max-w 1200px / max-h~55vh; surplus → right rail; grain→Templates; RowPatternEditor extracted. Suite **1309/1309**. |
+| Sprints 68–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 68**. Agent contract below. Facts: DECISIONS_LOG 2026-07-26. |
 
-Test suite — expected: **1307/1307** across **113 files** (Sprint 66 Attempt 2). Update each sprint close.
+Test suite — expected: **1309/1309** across **113 files** (Sprint 67). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **next = 67**. Parked FUTURE_IDEAS 2026-07-26: profile UOM · in-app design tabs · share links · custom species. Dark re-palette uncommissioned.
+**Designer:** U0–U7 ✅ · **67 ✅** · **next = 68**. Parked FUTURE_IDEAS 2026-07-26: profile UOM · in-app design tabs · share links · custom species. Dark re-palette uncommissioned.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -62,7 +63,7 @@ Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list par
 OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
 SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
-ORDER:     67 → 68 → 69 → 70 → 71 → 72. One sprint at a time.
+ORDER:     67 ✅ → 68 → 69 → 70 → 71 → 72. One sprint at a time. NEXT=68.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
@@ -123,19 +124,12 @@ profile UOM · in-app design tabs · share links · custom species · dark re-pa
 [right flex] panel folders → strip directory → selected strip detail
 ```
 
-**67 — shell relocate**
+**67 — shell relocate** ✅ CLOSED 2026-07-26 · 96/100
 ```
-DO: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping if designId,⋯ settings w/ unit suffixes);
-    grid left sticky(preview+dock)|right PanelEditor; dock mounts FULL TemplatePicker,
-    RowPatternEditor(end), MetricsPanel, OptimizerPanel (no stubs; inactive tabs hidden, stay mounted);
-    preview max-w~1200px max-h~50-55vh; surplus WIDTH→right; sticky max-h~viewport; dock min-h≥12rem;
-    tab overflow-y:auto; remove duplicate Settings card from right rail;
-    grain→edge while Pattern selected → select Templates.
-DONT: strip.label · directory redesign · tooltips · 2D/rotate · Save a copy · badges · UOM ·
-      math/history changes · narrow edits · empty tabs · unmount inactive dock panels.
-ACCEPT: PARITY_INVENTORY except 71/72-only · Templates inside sticky dock · P1–P11 · suite green ·
-        First Load no three.js in initial chunk · Cut plan stock state survives tab hide.
-TEST: browser lg sticky+dock; ultrawide cap; edge+end open ⋯; leave Cut plan stock≠default, switch tab, return — stock kept.
+SHIPPED: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping,Board settings ⋯ w/ unit suffixes);
+    sticky preview+dock; DesignerDock mounts TemplatePicker/RowPatternEditor/Metrics/Optimizer
+    (hidden not unmounted); preview max-w 1200px max-h min(55vh,32rem); right rail flex;
+    grain→Templates; RowPatternEditor extracted from PanelEditor.
 ```
 
 **68 — dock behavior + parity lock**

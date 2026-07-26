@@ -3,9 +3,28 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 66 Attempt 2 (2026-07-26) — CLOSED 99/100** — delete browse/plan loading.tsx. Attempt-1 prod re-score **90**.
+> **Latest logged: Sprint 67 (2026-07-26) — CLOSED 96/100** — designer shell relocate (top bar + sticky preview/dock).
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1307 green (post-66 Attempt 2).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 ✅ · shell 67 ✅. Suite: 1309 green. Next: 68.
+
+---
+
+## Sprint 67: Designer shell relocate
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 67 agent contract — top bar, Board settings ⋯, sticky preview+dock, full dock panels mounted/hidden, preview caps, surplus width → right rail, grain→Templates. No badges/2D/Save-a-copy/strip.label.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | DO complete; DONT held; Settings card removed from right rail |
+| Correctness & functionality (/20) | 16 | Suite + dockTabForGrain; sticky/ultrawide browser census not re-run this attempt (−4) |
+| Automated test coverage (/15) | 15 | `designer-shell` Sprint 67 case + `dockTabForGrain`; suite 1309 |
+| Security (/15) | 15 | Shopping sibling form; Save via `form=` attr; no nested forms; no client userId |
+| Code quality (/10) | 10 | RowPatternEditor extracted; single relocate; no three.js static import |
+| Mobile/offline (/10) | 10 | Narrow untouched (Sprint 54 gate) |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN 67 ✅ · this entry |
+
+Score: **96/100** — Pass. Next: Sprint 68 (dock behavior + parity lock).
 
 ---
 

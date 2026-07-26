@@ -1,14 +1,20 @@
 'use client';
 
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import { BoardPreview } from './board-preview';
-import { BoardSettings } from './board-settings';
+import {
+  BoardGrainToggle,
+  BoardSettingsDisclosure,
+} from './board-settings';
+import {
+  DesignerDock,
+  defaultDockTab,
+  dockTabForGrain,
+  type DesignerDockTab,
+} from './designer-dock';
 import { DesignerNarrowSurface } from './designer-narrow';
-import { MetricsPanel } from './metrics-panel';
-import { OptimizerPanel } from './optimizer-panel';
 import { DESIGNER_WIDE_MQ } from '@/lib/board-designer/viewport';
 import { PanelEditor } from './panel-editor';
-import { TemplatePicker } from './template-picker';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import {
   canRedo,
@@ -17,8 +23,14 @@ import {
   historyReducer,
   undoRedoShortcut,
 } from '@/lib/board-designer/history';
-import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
+import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+
+const SAVE_FORM_ID = 'designer-save-form';
+
+const inputControl =
+  'min-h-[2.75rem] min-w-[12rem] flex-1 px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
 
 function isTextEntryTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -50,13 +62,15 @@ export function DesignerShell(props: {
   const undoEnabled = canUndo(history);
   const redoEnabled = canRedo(history);
 
+  const [dockTab, setDockTab] = useState<DesignerDockTab>(() =>
+    defaultDockTab(initialConfig.grain),
+  );
+
   useEffect(() => {
     const mq = window.matchMedia(DESIGNER_WIDE_MQ);
     const onKeyDown = (event: KeyboardEvent) => {
       if (!mq.matches) return;
       if (isTextEntryTarget(event.target)) return;
-      // Mapping lives in history.ts so the case-folding is unit-tested — real
-      // hardware sends 'Z' for Shift+Z, synthesized events send 'z'.
       const intent = undoRedoShortcut(event);
       if (!intent) return;
 
@@ -67,6 +81,17 @@ export function DesignerShell(props: {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  const patchConfig = (patch: Partial<BoardDesignConfig>) => {
+    dispatch({ type: 'patch', patch });
+  };
+
+  const setGrain = (grain: Grain) => {
+    patchConfig({ grain });
+    setDockTab((current) => dockTabForGrain(grain, current));
+  };
+
+  const sizeReadout = `${formatInches(metrics.finishedLengthIn)} × ${formatInches(metrics.finishedWidthIn)} × ${formatInches(metrics.finishedThicknessIn)}`;
+
   const shoppingListControl =
     designId && addToShoppingListAction ? (
       <form action={addToShoppingListAction}>
@@ -76,23 +101,77 @@ export function DesignerShell(props: {
           Add to shopping list
         </button>
       </form>
-    ) : (
-      <p className="m-0 text-[0.875rem] text-muted">
-        Save this design before adding it to your shopping list.
-      </p>
-    );
+    ) : null;
 
   return (
     <div className="grid gap-[1.25rem]">
-      {/* Sibling to the save form — HTML forbids nesting forms. */}
-      <div className="hidden lg:block">{shoppingListControl}</div>
+      {/* Top bar outside save form so shopping list stays a sibling form (no nest). */}
+      <div className="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-[0.75rem]">
+        <label className="grid min-w-[12rem] flex-[1_1_14rem] gap-[0.25rem]">
+          <span className="text-[0.75rem] font-bold text-muted">Name</span>
+          <input
+            className={inputControl}
+            value={config.name}
+            maxLength={80}
+            onChange={(event) => patchConfig({ name: event.currentTarget.value })}
+            onBlur={() => dispatch({ type: 'commit-coalesce' })}
+          />
+        </label>
 
-      <form action={formAction} className="grid gap-[1.25rem]">
+        <BoardGrainToggle grain={config.grain} onChange={setGrain} />
+
+        <p className="m-0 text-[0.875rem] text-muted" aria-label="Finished size">
+          {sizeReadout}
+        </p>
+
+        <div className="ml-auto flex flex-wrap items-center gap-[0.5rem]">
+          <button
+            type="button"
+            className={btnGhost}
+            disabled={!undoEnabled}
+            onClick={() => dispatch({ type: 'undo' })}
+          >
+            Undo
+          </button>
+          <button
+            type="button"
+            className={btnGhost}
+            disabled={!redoEnabled}
+            onClick={() => dispatch({ type: 'redo' })}
+          >
+            Redo
+          </button>
+          <button
+            type="button"
+            className={btnGhost}
+            onClick={() => dispatch({ type: 'load', config: initialConfig })}
+          >
+            Reset
+          </button>
+          {shoppingListControl}
+          <button type="submit" form={SAVE_FORM_ID} className={btnPrimary}>
+            Save
+          </button>
+          <BoardSettingsDisclosure
+            config={config}
+            onChange={patchConfig}
+            onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
+          />
+        </div>
+      </div>
+
+      {dirty && (
+        <p className="m-0 hidden text-[0.875rem] text-muted lg:block">Unsaved changes</p>
+      )}
+
+      <form
+        id={SAVE_FORM_ID}
+        action={formAction}
+        className="grid gap-[1.25rem]"
+      >
         {designId && <input type="hidden" name="designId" value={designId} />}
         <input type="hidden" name="config" value={serializedConfig} />
 
-        {/* Narrow surface: CSS-shown below lg. Authoring tree stays mounted (max-lg:hidden)
-            so a resize / rotate with an unsaved draft does not destroy in-memory state. */}
         <div className="lg:hidden">
           <h1 className="m-0 mb-[1rem]">Board designer</h1>
           <DesignerNarrowSurface
@@ -102,79 +181,35 @@ export function DesignerShell(props: {
           />
         </div>
 
-        {/* Authoring chrome — always in the React tree; display:none below lg. */}
-        <div className="hidden lg:grid lg:gap-[1.25rem]">
-          <div className="flex flex-wrap items-start justify-between gap-[1rem]">
-            <div>
-              <h1 className="m-0">Board designer</h1>
-            </div>
-            <div className="flex flex-wrap gap-[0.5rem]">
-              <button
-                type="button"
-                className={btnGhost}
-                disabled={!undoEnabled}
-                onClick={() => dispatch({ type: 'undo' })}
-              >
-                Undo
-              </button>
-              <button
-                type="button"
-                className={btnGhost}
-                disabled={!redoEnabled}
-                onClick={() => dispatch({ type: 'redo' })}
-              >
-                Redo
-              </button>
-              <button
-                type="button"
-                className={btnGhost}
-                onClick={() => dispatch({ type: 'load', config: initialConfig })}
-              >
-                Reset
-              </button>
-              <button type="submit" className={btnPrimary}>
-                Save
-              </button>
-            </div>
-          </div>
-
-          {dirty && <p className="m-0 text-[0.875rem] text-muted">Unsaved changes</p>}
-
-          {/* Preview column takes slack; settings rail stays readable. Sticky preview
-              so strip/settings edits never require scrolling back up to see the board.
-              The columns MUST stay stretched: a sticky element can only travel inside
-              its own containing block, so `items-start` would shrink-wrap this column
-              to its content and the preview would scroll away after ~130px of a
-              ~6700px page. `content-start` keeps the children at their natural height
-              inside the now-full-height column. */}
-          <div className="grid gap-[1.25rem] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)]">
-            <div className="grid min-w-0 gap-[1rem] lg:content-start">
-              <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1] lg:max-h-[calc(100vh-5.25rem)] lg:overflow-y-auto">
-                <BoardPreview config={config} metrics={metrics} />
-              </section>
-              <TemplatePicker
-                onLoad={(templateConfig) =>
-                  dispatch({ type: 'load', config: templateConfig })
-                }
-              />
-            </div>
-
-            <div className="grid min-w-0 gap-[1rem]">
-              <BoardSettings
-                config={config}
-                onChange={(patch) => dispatch({ type: 'patch', patch })}
-                onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
-              />
-              <PanelEditor
+        {/*
+          Left sticky = preview + dock (Sprint 67). Preview width/height capped;
+          surplus WIDTH → right rail. Do not use items-start on this grid (sticky
+          containing-block trap — Sprint 53). content-start keeps natural heights.
+        */}
+        <div className="hidden lg:grid lg:grid-cols-[minmax(0,1200px)_minmax(20rem,1fr)] lg:gap-[1.25rem] lg:content-start">
+          <div className="flex min-w-0 flex-col gap-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1] lg:max-h-[calc(100vh-5.25rem)]">
+            <section className="max-h-[min(55vh,32rem)] shrink-0 overflow-y-auto rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+              <BoardPreview config={config} metrics={metrics} />
+            </section>
+            <div className="flex min-h-[12rem] min-w-0 flex-1 flex-col overflow-hidden">
+              <DesignerDock
+                tab={dockTab}
+                onTabChange={setDockTab}
                 config={config}
                 metrics={metrics}
                 dispatch={dispatch}
                 onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
               />
-              <MetricsPanel metrics={metrics} grain={config.grain} />
-              {/* U6 — desktop only (this tree is CSS-hidden below lg). */}
-              <OptimizerPanel config={config} />
             </div>
+          </div>
+
+          <div className="grid min-w-0 gap-[1rem] lg:content-start">
+            <PanelEditor
+              config={config}
+              metrics={metrics}
+              dispatch={dispatch}
+              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
+            />
           </div>
         </div>
       </form>
