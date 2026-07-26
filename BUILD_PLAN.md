@@ -46,46 +46,137 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
 | Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
 | Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
-| Sprints 67–72 (Designer shell / IA) | 🟡 **COMMISSIONED** 2026-07-26 — next work = **Sprint 67**. Decisions: DECISIONS_LOG 2026-07-26. Parity: relocate Metrics/Cut plan/Pattern/Settings — **delete nothing**. Scope table below. |
+| Sprints 67–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 67**. Agent contract below. Facts: DECISIONS_LOG 2026-07-26. |
 
-Test suite — expected: **1307/1307** across **113 files** (Sprint 66 Attempt 2). Update this single figure each sprint close; 1259/1259 and earlier superseded.
+Test suite — expected: **1307/1307** across **113 files** (Sprint 66 Attempt 2). Update each sprint close.
 
-**Cutting Board Designer status:** U0–U5 ✅ · polish/miter 53–63 ✅ · **U6 ✅** · **U7 remainder ✅** · **next = Sprint 67** (shell). Parked (FUTURE_IDEAS 2026-07-26): site-wide profile UOM · in-app multi-design tabs · share links · custom species. Dark re-palette still uncommissioned.
+**Designer:** U0–U7 ✅ · **next = 67**. Parked FUTURE_IDEAS 2026-07-26: profile UOM · in-app design tabs · share links · custom species. Dark re-palette uncommissioned.
 
-**SSR / Suspense (settled engineering, Sprint 66):** Do **not** add route-level `app/**/loading.tsx` for `force-dynamic` pages that render a document `<main>` — under React postponed `$~`, `$RC` can leave a full duplicate page in `div#S:N` (invisible to `fetch()`; only a real browser load shows it). Nonce/`strict-dynamic` was ruled out (0 unnonced inline). Detector: source `main-landmark` + optional `smoke:stream-dom`.
+**SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
-Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
+Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list parse for 489 · credential rotation pre-go-live · Kreg G1 RESOLVED.
 
-### Sprints 67–72 — Designer shell & information architecture (COMMISSIONED 2026-07-26; quality amendments 2026-07-26)
+### Sprints 67–72 — designer shell IA (agent contract)
 
-**Hard rule — data parity:** Relayout only. **No** Metrics / Cut plan / Row pattern / Settings / panel / strip field may be removed or summarized away. Optional summary chips are additive. Dock tab bodies = **full** current panel content in a scroll region. **No empty/stub tab bodies on `main`.**
-
-**Target layout (desktop `lg+` only; narrow unchanged per Sprint 54):**
 ```
-Top bar: Name · Edge/End · size · Undo/Redo · Reset · Save · Save a copy · Add to shopping list · Board settings (⋯)
-Left sticky column (preview + dock; max-h ≈ viewport; preview height-capped so dock stays usable):
-  Preview (max-width ~1200px; max-height ~50–55vh; surplus width → strip rail)
-    · 3D default / 2D toggle · view-only rotate · Export PNG (2D has its own export path)
-  Dock tabs: Templates | Pattern (= Row pattern only; hide for edge) | Metrics [badge] | Cut plan [badge]
-    each tab panel: min-height ≥ ~12rem, overflow-y auto inside sticky budget
-Right flex rail: panel folders (add/label/thickness on folder header) → nested strips + selected-strip detail
+OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
+SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
+GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
+ORDER:     67 → 68 → 69 → 70 → 71 → 72. One sprint at a time.
+TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
+FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
 
-**Settled calls (Keagan 2026-07-26):** dock = full panels (1A) · alert **copy** only in its tab (2B) + **tab badges** when Metrics has warnings / Cut plan has impossible parts · Board settings top-bar disclosure (3A) · Pattern = row pattern only (4A) · panel folders (5A) · sticky preview+dock; per-card internal scroll (6B) · Cut plan expanded in-tab (7) · default tab Pattern if end else Templates (8C) · 2D rotate view-only (9A) · Save a copy → new id + navigate; clones **current in-memory (dirty) config**; original row last-saved unchanged (10A + dirty-A) · optional strip labels (11A) · desktop-only (12A) · deferred → FUTURE_IDEAS (13) · no field retirement (14).
+**INVARIANTS**
+1. RELOCATE ≠ DELETE. Every PARITY_INVENTORY row stays reachable with same semantics.
+2. No stub/empty dock tab bodies on `main`.
+3. No second relocate of the same component (67 moves; later sprints = behavior/CSS/tests/features per DO only).
+4. Do not invent routes/fields/vendors/monetization/share/profile-UOM/in-app-tabs/custom-species/dark-repalette/advanced-templates.
+5. Preserve: history undo/redo/coalesce · `guardAction`+rate-limit · shopping-list form **sibling** (no nested `<form>`) · WebGL null below lg · draft mounted on resize · forward-only schema migrate · no dollar UI · `formatInches` · First Load must not pull three.js into initial designer chunk.
+6. Alert copy only inside its tab. Tab badge OK on Metrics/Cut plan when warnings/impossible.
+7. Storage stays inches (`*In`, `wasteFactor` 0–1). Suffixes/tooltips = display only.
 
-**Track DoD:** density/IA goals met after **69 + 70**; **71–72** are feature closes on that shell. Every sprint: First Load must not regress three.js into the initial designer chunk (Sprint 55 lesson); dock tabs keyboard + `aria-selected`; browser verify sticky/dock scroll/ultrawide cap/edge vs end default tab.
+**HARD_STOP → escalate**
+breaking saved-config w/o migrate · site-wide UOM/mm storage · in-app tabs · share · custom species · money · branding/public copy · FUTURE_IDEAS items · anything outside this contract
 
-| Sprint | Scope | Parity / gates |
-|---|---|---|
-| **67 — Shell** | Top bar (name, grain, size, Undo/Redo/**Reset**/Save; shopping-list control when saved); preview `max-width` ~1200px + **max-height ~50–55vh**; surplus width → editor rail; sticky **preview+dock** with dock `min-height` ≥ ~12rem; dock tab chrome with **full panels already mounted** (no stubs); Board settings `⋯` = kerf / waste % / panel length / slice thickness with unit suffixes | Settings still editable · Templates inside sticky dock (not orphaned) · Reset + shopping list not lost · First Load watch |
-| **68 — Dock polish** | Tabs wired/labeled; Pattern **hidden** for edge grain; Cut plan expanded in-tab (drop outer `<details>` or force open); per-tab `overflow-y: auto`; **badges** on Metrics/Cut plan tab labels when warnings/impossible | **Parity test required** (source or RTL): Metrics = finished L×W×T, total bd ft, warnings, panel table, end-grain slice note, by-species · Cut plan = stock L/W, buy count, impossible alert, BoardBars, yield, cut lists · Pattern = full row-pattern editor · Templates = full picker |
-| **69 — Strip layers** | Optional `strip.label` (additive); rename in directory; **panel folders own** add/delete/label/thickness; nested strips; selection highlight; stronger reorder ghost; selected-strip detail (species, width″, repeat, miter) | Strip/panel fields unchanged in meaning · print may show label when present |
-| **70 — Literacy** | Tooltips (kerf, waste allowance, …) + visible units on every control — designer-local only | No profile UOM (parked) · closes density/IA track DoD with 69 |
-| **71 — 2D + rotate** | Explicit 3D (default) / 2D toggle via `BoardDiagram`; view-only 0/90/180/270; **Export PNG works in 2D** (or disabled with explicit reason) | Does not mutate strip order |
-| **72 — Save a copy** | From current **in-memory config** → `createDesign` → navigate `/designer/[newId]`; original id’s last-saved row untouched | Never-saved draft: disable or Save first · rate-limit/guardAction |
+**OUT**
+profile UOM · in-app design tabs · share links · custom species · dark re-palette · hex/star/tumbling-block/chevron · Canva 5b set
 
-**Do not fold into 67–72:** site-wide UOM · in-app multi-design tabs · share links · custom species (FUTURE_IDEAS) · dark re-palette · advanced templates (hex lattice etc., still deferred).
+**PRESERVE_BEHAVIORS (regress = fail)**
+| ID | Behavior |
+|---|---|
+| P1 | Undo/Redo/Reset (`load` initialConfig) + lg keyboard shortcuts |
+| P2 | Save → create/update action via hidden `config` JSON |
+| P3 | Add to shopping list when `designId` (sibling form) |
+| P4 | Template apply = history `load` (undoable) |
+| P5 | Strip add/dup/delete/move/reorder + species/width/repeat/miter |
+| P6 | Panel add/delete/label/thickness (end max 4) |
+| P7 | Row pattern editor (end only) |
+| P8 | Metrics: warnings · finished · total bd ft · panelPlan · by-species |
+| P9 | Cut plan: stock L/W · buy N · impossible · BoardBar · yield=consumed |
+| P10 | Export PNG (71 defines 2D path or explicit disable) |
+| P11 | Library / print / narrow read paths unchanged |
 
+**PARITY_INVENTORY**
+| Slot | Must include |
+|---|---|
+| Top | name · grain · finished size (metrics) · Undo · Redo · Reset · Save |
+| Top if saved | Add to shopping list |
+| Top from 72 | Save a copy — enabled iff `designId!=null` |
+| Board settings ⋯ | kerfIn · wasteFactor(UI%) · sourceLengthIn(edge) · sliceThicknessIn(end) + unit suffix |
+| Dock Templates | full TemplatePicker |
+| Dock Pattern | full RowPatternEditor · show only grain=end · default tab when end |
+| Dock Metrics | warnings · L×W×T · totalBoardFeet · panel table · end slice note · boardFeetBySpecies |
+| Dock Cut plan | stock L/W · buy N · impossible · BoardBar/yield/offcut — expanded in tab (not collapsed `<details>`) |
+| Right rail | panels+strips (P5–P6). 67=existing accordion OK. 69=folder directory + optional strip.label |
+| Preview | BoardPreview/R3F · Export PNG. 71=+3D/2D + view-only rotate |
+
+**FINAL_LAYOUT (after 72)**
+```
+[top] name | Edge/End | size | Undo Redo Reset | Save | Save a copy | shopping | ⋯
+[left sticky preview+dock | preview max-w~1200px max-h~50-55vh | dock min-h≥12rem | tab overflow-y:auto]
+  preview (+ 3D|2D + rotate @71)
+  tabs: Templates | Pattern(end) | Metrics[badge?] | Cut plan[badge?]
+[right flex] panel folders → strip directory → selected strip detail
+```
+
+**67 — shell relocate**
+```
+DO: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping if designId,⋯ settings w/ unit suffixes);
+    grid left sticky(preview+dock)|right PanelEditor; dock mounts FULL TemplatePicker,
+    RowPatternEditor(end), MetricsPanel, OptimizerPanel (no stubs); preview max-w~1200px
+    max-h~50-55vh; surplus WIDTH→right; sticky max-h~viewport; dock min-h≥12rem; tab overflow-y:auto;
+    remove duplicate Settings card from right rail.
+DONT: strip.label · directory redesign · tooltips · 2D/rotate · Save a copy · badges · UOM ·
+      math/history changes · narrow edits · empty tabs.
+ACCEPT: PARITY_INVENTORY except 71/72-only · Templates inside sticky dock · P1–P11 · suite green ·
+        First Load no three.js in initial chunk.
+TEST: browser lg sticky+dock; ultrawide cap; edge+end open ⋯
+```
+
+**68 — dock behavior + parity lock**
+```
+DO: tab default Pattern if end else Templates; hide Pattern if edge; badges on Metrics/Cut plan
+    when warnings/impossible; Cut plan expanded in tab; add tests/designer-shell-parity.test.ts
+    (or equiv) locking PARITY_INVENTORY in desktop tree.
+DONT: relocate again · strip redesign · tooltips · 2D · Save a copy.
+ACCEPT: parity test green · badge toggle · default-tab rule.
+```
+
+**69 — strip directory**
+```
+DO: optional Strip.label (additive zod/serialize/history coalesce; absent OK);
+    right rail panel folders (P6 on header) + nested strips + selection + reorder ghost;
+    keep arrows+reorder-strip+announce; selected detail=species/widthIn/repeat/miter.
+DONT: required unique names · visibility eye · print redesign · dock rewrite · 2D · Save a copy.
+ACCEPT: rename survives reorder+save/reload · P5–P7 · old configs load.
+```
+
+**70 — literacy (IA track DoD w/ 69)**
+```
+DO: tooltips for kerf, waste, panel length, slice thickness, strip width, repeat, stock fields;
+    unit suffix on every remaining numeric designer control.
+DONT: profile UOM · convert stored config · catalog metric.
+ACCEPT: kerf/waste discoverable in-page · waste not bare unitless 15.
+```
+
+**71 — 2D + rotate**
+```
+DO: preview toggle 3D(default)|2D(BoardDiagram); view-only rotate 0/90/180/270 (no config mutate);
+    Export PNG works in 2D OR disabled with visible reason.
+DONT: 2D default · geometry mutate on rotate · new renderer dep.
+ACCEPT: 3D default · rotate visual only · P10.
+```
+
+**72 — Save a copy**
+```
+DO: enabled iff designId!=null; else disabled. Payload=current in-memory config (dirty OK) →
+    createDesign → redirect /designer/[newId]. Original last-saved untouched. guardAction+rate-limit.
+DONT: clone last-saved-only · in-app tabs · share URL.
+ACCEPT: dirty copy→new id; original reopen=prior saved state.
+```
+
+### Sprints 53–56 — Designer polish (CLOSED).
 ### Sprints 53–56 — Designer polish (CLOSED).
 Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** **U7 remainder CLOSED 2026-07-26 (Sprint 65).** U7 retired as a bucket (contents shipped piecemeal across 53–65). **Shell/IA track = Sprints 67–72** (above). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo); 2026-07-26 (shell IA).
 

@@ -32,7 +32,7 @@
 - **Designer species expansion (2026-07-26):** append exactly seven ids after the original eight (yellowheart, bloodwood, beech, ash, birch, hickory, bamboo) with the stated hexes; min pairwise distance floor 0.127; B13/B14 hold; `schemaVersion` stays 1. See dated entry.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
-- **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs); tab badges for warnings/impossible; Reset + shopping list kept; Pattern = row pattern only; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy clones **dirty in-memory** config → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. See dated entries.
+- **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs); tab badges for warnings/impossible; Reset + shopping list kept; Pattern = row pattern only; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy clones **dirty in-memory** config → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. Agent contract in BUILD_PLAN §4. See dated entries.
 
 _(Full history below, chronological.)_
 
@@ -1875,3 +1875,9 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 - **G.** Sprint 71: Export PNG must work in 2D (or be explicitly disabled with reason).
 - **H.** Mandated parity test (68+) · per-sprint browser DoD · First Load must not pull three.js into initial chunk · dock tab a11y.
 - **I.** Track density/IA DoD = through Sprint **70**; 71–72 are feature closes.
+
+
+### 2026-07-26 — BUILD_PLAN §4 67–72 agent-contract rewrite
+**Status:** Process/docs only (Keagan: agent-optimized, non-redundant, no behavior change to settled calls).
+
+**Change.** `BUILD_PLAN.md` Sprints 67–72 rewritten as agent contract: INVARIANTS · HARD_STOP · PRESERVE_BEHAVIORS · PARITY_INVENTORY · per-sprint DO/DONT/ACCEPT. Ambiguity removed: Save a copy disabled when `designId==null`; 67=sole relocate; 68=dock behavior+parity test only. Settled product answers (Q1–Q14 + dirty-A + amendments A–I) unchanged.
