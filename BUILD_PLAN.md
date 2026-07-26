@@ -75,6 +75,9 @@ FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 5. Preserve: history undo/redo/coalesce · `guardAction`+rate-limit · shopping-list form **sibling** (no nested `<form>`) · WebGL null below lg · draft mounted on resize · forward-only schema migrate · no dollar UI · `formatInches` · First Load must not pull three.js into initial designer chunk.
 6. Alert copy only inside its tab. Tab badge OK on Metrics/Cut plan when warnings/impossible.
 7. Storage stays inches (`*In`, `wasteFactor` 0–1). Suffixes/tooltips = display only.
+8. Dock tab panels stay **mounted**; inactive = hidden (CSS/hidden attr). Preserves Cut plan stock L/W state.
+9. Grain → edge while Pattern active: switch tab to Templates (Pattern hidden).
+10. Save a copy name = `Copy of {name}` trimmed to max 80.
 
 **HARD_STOP → escalate**
 breaking saved-config w/o migrate · site-wide UOM/mm storage · in-app tabs · share · custom species · money · branding/public copy · FUTURE_IDEAS items · anything outside this contract
@@ -124,23 +127,24 @@ profile UOM · in-app design tabs · share links · custom species · dark re-pa
 ```
 DO: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping if designId,⋯ settings w/ unit suffixes);
     grid left sticky(preview+dock)|right PanelEditor; dock mounts FULL TemplatePicker,
-    RowPatternEditor(end), MetricsPanel, OptimizerPanel (no stubs); preview max-w~1200px
-    max-h~50-55vh; surplus WIDTH→right; sticky max-h~viewport; dock min-h≥12rem; tab overflow-y:auto;
-    remove duplicate Settings card from right rail.
+    RowPatternEditor(end), MetricsPanel, OptimizerPanel (no stubs; inactive tabs hidden, stay mounted);
+    preview max-w~1200px max-h~50-55vh; surplus WIDTH→right; sticky max-h~viewport; dock min-h≥12rem;
+    tab overflow-y:auto; remove duplicate Settings card from right rail;
+    grain→edge while Pattern selected → select Templates.
 DONT: strip.label · directory redesign · tooltips · 2D/rotate · Save a copy · badges · UOM ·
-      math/history changes · narrow edits · empty tabs.
+      math/history changes · narrow edits · empty tabs · unmount inactive dock panels.
 ACCEPT: PARITY_INVENTORY except 71/72-only · Templates inside sticky dock · P1–P11 · suite green ·
-        First Load no three.js in initial chunk.
-TEST: browser lg sticky+dock; ultrawide cap; edge+end open ⋯
+        First Load no three.js in initial chunk · Cut plan stock state survives tab hide.
+TEST: browser lg sticky+dock; ultrawide cap; edge+end open ⋯; leave Cut plan stock≠default, switch tab, return — stock kept.
 ```
 
 **68 — dock behavior + parity lock**
 ```
 DO: tab default Pattern if end else Templates; hide Pattern if edge; badges on Metrics/Cut plan
     when warnings/impossible; Cut plan expanded in tab; add tests/designer-shell-parity.test.ts
-    (or equiv) locking PARITY_INVENTORY in desktop tree.
-DONT: relocate again · strip redesign · tooltips · 2D · Save a copy.
-ACCEPT: parity test green · badge toggle · default-tab rule.
+    (or equiv) locking PARITY_INVENTORY in desktop tree; assert dock panels remain in DOM when hidden.
+DONT: relocate again · strip redesign · tooltips · 2D · Save a copy · unmount inactive tabs.
+ACCEPT: parity test green · badge toggle · default-tab rule · grain edge forces Templates.
 ```
 
 **69 — strip directory**
@@ -170,10 +174,11 @@ ACCEPT: 3D default · rotate visual only · P10.
 
 **72 — Save a copy**
 ```
-DO: enabled iff designId!=null; else disabled. Payload=current in-memory config (dirty OK) →
-    createDesign → redirect /designer/[newId]. Original last-saved untouched. guardAction+rate-limit.
-DONT: clone last-saved-only · in-app tabs · share URL.
-ACCEPT: dirty copy→new id; original reopen=prior saved state.
+DO: enabled iff designId!=null; else disabled. Payload=current in-memory config (dirty OK);
+    set name to `Copy of {name}` (max 80) → createDesign → redirect /designer/[newId].
+    Original last-saved untouched. guardAction+rate-limit.
+DONT: clone last-saved-only · in-app tabs · share URL · prompt for name.
+ACCEPT: dirty copy→new id named Copy of …; original reopen=prior saved state.
 ```
 
 ### Sprints 53–56 — Designer polish (CLOSED).
