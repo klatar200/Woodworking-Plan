@@ -48,8 +48,9 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 57: Species dropdown + multi-panel board model
 **Dates:** 2026-07-26
 **Scope:** Part A native species select · Part B `schemaVersion: 2` multi-panel / rowPattern / RowTransform. No U6/U7; no miter/angle/split-cell; Cell contract unchanged.
-**Commits on `main`:** `aeb7d19` (Part A) · `32f6379` (Part B)
-**/designer First Load JS:** **117 kB** (local `npm run build`; was 115 kB — panel-editor UI only, not a three.js pull-in).
+**Commits on `main`:** `aeb7d19` (Part A) · `32f6379` (Part B) · `1b207a9` (docs close)
+**/designer First Load JS:** **117 kB** (local `npm run build`; was 115 kB — panel-editor UI only, not a three.js pull-in). Vercel MCP `needsAuth` — full build-log text unread; GH deployment status success for `1b207a9`.
+**CI:** `aeb7d19` + `1b207a9` Actions **success** (`32f6379` cancelled as superseded). **Vercel Production** success; prod health `ok`/DB `ok`.
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |
