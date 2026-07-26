@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 53 Attempt 2 (2026-07-25) — CLOSED 98/100** — designer layout/chrome (`cff58b9`) + sticky-preview fix (`c4a4e99`). Attempt 1's item 3 FAILED on observation (preview left the viewport after 130px of a 6749px page); root-caused to `lg:items-start`. Prior: Sprint 51/52 both **100/100**.
+> **Latest logged: Sprint 54 Attempt 1 (2026-07-26) — CLOSED 96/100** — desktop-only authoring + mobile read-only/print (`4e8f2bf`); header search xl (`a728a0e`). Prior: Sprint 53 **98/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1105 green (post-53).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1106 green (post-54).
 
 ---
 
@@ -42,6 +42,49 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 54: Desktop-only designer + mobile plan/cut list
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 item **1** only. No 55/56; no U6/U7; OrbitControls untouched; no `toParts()`.
+**Commits on `main`:** `a728a0e` (HeaderSearch → xl, separate) · `4e8f2bf` (designer gate)
+**/designer First Load JS:** 114 kB. `/` 138 · `/browse` 140.
+**CI tip:** `4e8f2bf` success. **Vercel Production** deploy success for `4e8f2bf`. Vercel MCP `needsAuth` — full build log unread; local `npm run build` green.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Item 1 only; exact DECISIONS_LOG 2026-07-26 strings; B7 held; no new routes/schema/deps |
+| Correctness & functionality (/20) | 16 | Source+suite: CSS gate keeps authoring mounted; `matchMedia('(min-width: 64rem)')` returns null Canvas below lg; notices + Print sheet. **−4** until Keagan observes flip width, canvas null, resize draft survival, print at 390, no hydration warning |
+| Automated test coverage (/15) | 15 | **1106** tests; Sprint 54 shell + print `data-label` / screen-stack CSS guards. Canvas-null behaviour noted as browser-only |
+| Security (/15) | 15 | Viewport MQ only (no UA); no public-routes/middleware/CSP edits; denylist unchanged |
+| Code quality & simplicity (/10) | 10 | CSS hide + client MQ inside existing `dynamic(ssr:false)` canvas; no `lg:items-start` reintroduced |
+| Mobile/offline (/10) | 10 | Read-only SVG surface + print sheet screen stack at ≤40rem; library link; WebGL never created below gate (wiring asserted) |
+| Documentation & handoff (/5) | 5 | DECISIONS_LOG copy+resize; §9; Keagan verify list |
+| **Total (/100)** | **96** |
+
+**Shipped:**
+| Piece | Detail |
+|---|---|
+| Gate | Tailwind `lg` (64rem); CSS `hidden lg:grid` / `lg:hidden` |
+| Draft survival | Authoring tree stays mounted; notice overlays below lg |
+| WebGL | `BoardR3FCanvas` short-circuits before `<Canvas>` when MQ fails |
+| Notices | Exact new vs edit strings; `Your boards`; `Print sheet` + hint |
+| Print | `data-label` + `@media screen (max-width: 40rem)` stacked rows; `@media print` untouched |
+| Header (own commit) | `HeaderSearch` `lg` → `xl` |
+
+### Keagan re-verification (record OBSERVED)
+At 1280, 1024, 900, 768, 390:
+1. Which surface (editor vs read-only) and the exact flip width.
+2. `scrollWidth === innerWidth` (no h-overflow).
+3. Below gate: `document.querySelector('canvas') === null` (not merely hidden).
+4. `/designer/[id]/print` at 390: strip table readable without horizontal scroll.
+5. Console: no hydration mismatch.
+6. Edit a strip at 1280 → resize to 900 → back to 1280 — edit survived.
+7. Header (signed in + out) at 1279/1280: no nav/search overlap; search via drawer at 1279.
+
+**Result:** Pass (≥95). Correctness held for browser observations.
 
 ---
 
