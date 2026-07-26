@@ -9,10 +9,12 @@ import { CATALOG_PATH } from '@/lib/routes';
  * plan, the FAQ, a 404 — lands on the catalog with `?q=`. That's the whole point of a
  * header search over the catalog-only box: reach is everywhere the header is.
  *
- * Desktop only (`hidden lg:flex`). Below `lg` the header stays uncluttered and search is
- * reached through the catalog page's own full-width box; the mobile drawer owns that
- * width. The catalog keeps its inline SearchBox too — its page-level placeholder carries
- * context ("Search plans, tools, materials…") this compact version can't.
+ * Desktop-wide only (`hidden xl:flex`). At `lg` (1024) the signed-in row
+ * (brand + public links + signed-in links + 13rem search + Search + avatar)
+ * overflows and the search field overlaps "Designer". Nav / SignedOut CTAs /
+ * MobileNav stay on `lg`; below `xl`, search is the drawer form (and the
+ * catalog SearchBox). The catalog keeps its inline SearchBox too — its
+ * page-level placeholder carries context this compact version can't.
  *
  * `id="header-q"` (not `q`) so it never collides with the catalog SearchBox's `id="q"`
  * when both render on the catalog page; the `name` stays `q` — that's the query param.
@@ -23,7 +25,7 @@ export function HeaderSearch() {
       action={CATALOG_PATH}
       method="get"
       role="search"
-      className="hidden lg:flex items-center gap-[0.375rem]"
+      className="hidden xl:flex items-center gap-[0.375rem]"
     >
       <label htmlFor="header-q" className="visually-hidden">
         Search plans

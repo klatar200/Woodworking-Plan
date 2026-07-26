@@ -79,8 +79,12 @@ describe('the desktop header search (QOL-J)', () => {
     expect(header).toMatch(/<form[^>]*action="\/browse"[^>]*method="get"/);
   });
 
-  it('is desktop-only — below lg, search is the catalog box + drawer, not the header', () => {
-    expect(header).toMatch(/<form[^>]*class="[^"]*hidden lg:flex/);
+  it('is xl-only — at lg (1024) signed-in search overlapped Designer; drawer covers <xl', () => {
+    // HeaderSearch alone moves to xl; nav / SignedOut / MobileNav stay on lg.
+    // Measured 2026-07-25: brand + 5 public + divider + 3 signed-in + 13rem
+    // search + Search + avatar does not fit 1024.
+    expect(header).toMatch(/<form[^>]*class="[^"]*hidden xl:flex/);
+    expect(header).not.toMatch(/<form[^>]*class="[^"]*hidden lg:flex/);
   });
 
   it('uses a header-scoped input id so it never collides with the catalog SearchBox', () => {
