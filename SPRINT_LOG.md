@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 54: Desktop-only designer + mobile plan/cut list
 **Dates:** 2026-07-26
 **Scope:** BUILD_PLAN §4 item **1** only. No 55/56; no U6/U7; OrbitControls untouched; no `toParts()`.
-**Commits on `main`:** `a728a0e` (HeaderSearch → xl, separate) · `4e8f2bf` (designer gate)
+**Commits on `main`:** `a728a0e` (HeaderSearch → xl) · `4e8f2bf` (designer gate) · `4ad6064` (header: single xl breakpoint)
 **/designer First Load JS:** 114 kB. `/` 138 · `/browse` 140.
 **CI tip:** `4e8f2bf` success. **Vercel Production** deploy success for `4e8f2bf`. Vercel MCP `needsAuth` — full build log unread; local `npm run build` green.
 
@@ -56,7 +56,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | Item 1 only; exact DECISIONS_LOG 2026-07-26 strings; B7 held; no new routes/schema/deps |
-| Correctness & functionality (/20) | 16 | Source+suite: CSS gate keeps authoring mounted; `matchMedia('(min-width: 64rem)')` returns null Canvas below lg; notices + Print sheet. **−4** until Keagan observes flip width, canvas null, resize draft survival, print at 390, no hydration warning |
+| Correctness & functionality (/20) | 16 | Source+suite: CSS gate keeps authoring mounted; `matchMedia('(min-width: 64rem)')` returns null Canvas below lg; notices + Print sheet. **−4 still withheld** — designer below-gate checks (flip width, canvas === null below 1024, print at 390, draft survives 1280→900→1280, console) have **not** been observed yet |
 | Automated test coverage (/15) | 15 | **1106** tests; Sprint 54 shell + print `data-label` / screen-stack CSS guards. Canvas-null behaviour noted as browser-only |
 | Security (/15) | 15 | Viewport MQ only (no UA); no public-routes/middleware/CSP edits; denylist unchanged |
 | Code quality & simplicity (/10) | 10 | CSS hide + client MQ inside existing `dynamic(ssr:false)` canvas; no `lg:items-start` reintroduced |
@@ -72,7 +72,18 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 | WebGL | `BoardR3FCanvas` short-circuits before `<Canvas>` when MQ fails |
 | Notices | Exact new vs edit strings; `Your boards`; `Print sheet` + hint |
 | Print | `data-label` + `@media screen (max-width: 40rem)` stacked rows; `@media print` untouched |
-| Header (own commit) | `HeaderSearch` `lg` → `xl` |
+| Header (own commit) | `HeaderSearch` `lg` → `xl` (`a728a0e`) — **incomplete; see follow-on** |
+
+### Header follow-on — 1024–1279 search dead band (`a728a0e` rationale was wrong)
+`a728a0e` moved only HeaderSearch to `xl` on the claim that “the drawer already renders its own search form.” That was false: MobileNav is `lg:hidden`, so the drawer is **absent** above 1023. Measured on prod 2026-07-26 (signed out, `/browse`):
+
+| Viewport | nav links | header search | drawer | search reachable |
+|---|---|---|---|---|
+| ≤1023 | none | none | block | yes |
+| 1024–1279 | flex | none | none | **NO** |
+| ≥1280 | flex | flex | none | yes |
+
+Collision gone; a 256px dead band replaced it. **Keagan fix (`4ad6064`):** one header breakpoint at `xl` — Main nav + SignedOut CTAs + MobileNav all on `xl` with HeaderSearch (already `xl`). Below `xl` = hamburger + drawer search; at/above `xl` = full desktop header. Accepted trade-off: 1024–1279 get a hamburger instead of visible nav links. Designer `lg:` gates untouched. `site-chrome` test now asserts the single breakpoint and forbids `lg:flex`/`lg:hidden` in header markup.
 
 ### Keagan re-verification (record OBSERVED)
 At 1280, 1024, 900, 768, 390:
@@ -82,9 +93,13 @@ At 1280, 1024, 900, 768, 390:
 4. `/designer/[id]/print` at 390: strip table readable without horizontal scroll.
 5. Console: no hydration mismatch.
 6. Edit a strip at 1280 → resize to 900 → back to 1280 — edit survived.
-7. Header (signed in + out) at 1279/1280: no nav/search overlap; search via drawer at 1279.
 
-**Result:** Pass (≥95). Correctness held for browser observations.
+Header (signed in **and** signed out) at 1023 / 1024 / 1279 / 1280:
+- `getComputedStyle` of `nav[aria-label="Main"]`, `header form[role=search]`, `header details`
+- search affordance reachable from the header at **every** width; no nav/search overlap
+- drawer opens with JS disabled; panel full-width at 1279
+
+**Result:** Pass (≥95). Correctness −4 still withheld (designer observations only).
 
 ---
 

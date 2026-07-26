@@ -9,10 +9,8 @@ import { CATALOG_PATH } from '@/lib/routes';
  * plan, the FAQ, a 404 — lands on the catalog with `?q=`. That's the whole point of a
  * header search over the catalog-only box: reach is everywhere the header is.
  *
- * Desktop-wide only (`hidden xl:flex`). At `lg` (1024) the signed-in row
- * (brand + public links + signed-in links + 13rem search + Search + avatar)
- * overflows and the search field overlaps "Designer". Nav / SignedOut CTAs /
- * MobileNav stay on `lg`; below `xl`, search is the drawer form (and the
+ * Desktop-wide only (`hidden xl:flex`), same `xl` seam as Main nav /
+ * SignedOut CTAs / MobileNav. Below `xl` the drawer carries search (and the
  * catalog SearchBox). The catalog keeps its inline SearchBox too — its
  * page-level placeholder carries context this compact version can't.
  *

@@ -96,7 +96,7 @@ export function SiteHeader() {
             {BRAND_NAME}
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-[0.25rem]" aria-label="Main">
+          <nav className="hidden xl:flex items-center gap-[0.25rem]" aria-label="Main">
             {PUBLIC_NAV.map((item) => (
               <NavLink key={item.href} href={item.href} className={navLink}>
                 {item.label}
@@ -122,7 +122,7 @@ export function SiteHeader() {
           </SignedIn>
 
           <SignedOut>
-            <div className="hidden lg:flex items-center gap-[0.5rem]">
+            <div className="hidden xl:flex items-center gap-[0.5rem]">
               <Link href="/sign-in" className={navLink}>
                 Log in
               </Link>

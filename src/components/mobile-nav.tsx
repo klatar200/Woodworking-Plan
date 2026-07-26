@@ -44,7 +44,7 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
 
   return (
     <details
-      className="lg:hidden"
+      className="xl:hidden"
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >

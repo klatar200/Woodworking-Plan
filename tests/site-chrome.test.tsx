@@ -79,12 +79,23 @@ describe('the desktop header search (QOL-J)', () => {
     expect(header).toMatch(/<form[^>]*action="\/browse"[^>]*method="get"/);
   });
 
-  it('is xl-only — at lg (1024) signed-in search overlapped Designer; drawer covers <xl', () => {
-    // HeaderSearch alone moves to xl; nav / SignedOut / MobileNav stay on lg.
-    // Measured 2026-07-25: brand + 5 public + divider + 3 signed-in + 13rem
-    // search + Search + avatar does not fit 1024.
-    expect(header).toMatch(/<form[^>]*class="[^"]*hidden xl:flex/);
-    expect(header).not.toMatch(/<form[^>]*class="[^"]*hidden lg:flex/);
+  it('uses one xl breakpoint — search reachable at every width, no 1024–1279 dead band', () => {
+    // Measured on prod 2026-07-26 after a728a0e moved only HeaderSearch to xl
+    // while nav stayed on lg and MobileNav stayed lg:hidden:
+    //   ≤1023     nav none · search none · drawer block · search reachable
+    //   1024–1279 nav flex · search none · drawer none  · search NOT reachable
+    //   ≥1280     nav flex · search flex · drawer none  · search reachable
+    // Fix (Keagan): one header breakpoint at xl — hamburger+drawer below,
+    // full desktop header at xl+. Accepted: 1024–1279 gets hamburger, not links.
+    expect(header).toMatch(/<form[^>]*\bhidden xl:flex\b[^>]*>/);
+    expect(header).toMatch(/role="search"/);
+    expect(header).toMatch(
+      /<nav class="[^"]*\bhidden xl:flex\b[^"]*" aria-label="Main"/,
+    );
+    expect(header).toMatch(/<details class="[^"]*\bxl:hidden\b[^"]*"/);
+    // Guard: no header chrome left on lg, or the dead band reopens.
+    expect(header).not.toMatch(/\blg:flex\b/);
+    expect(header).not.toMatch(/\blg:hidden\b/);
   });
 
   it('uses a header-scoped input id so it never collides with the catalog SearchBox', () => {
