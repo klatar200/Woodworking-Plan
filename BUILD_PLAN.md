@@ -41,7 +41,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 59 (Harlequin + hex honesty) | ✅ **CLOSED** 2026-07-26 — **90/100** (browser re-score; was 96). Rename `hexagon`→`harlequin`; t=w·secθ; `speciesComponents`; Part B: no one-miter hex lattice. Dimension display defects — fixed in Sprint 60. Suite **1168/1168**; First Load **120 kB**. |
 | Sprint 60 (Dimension display) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2fd0b61`). `formatInches` zero-numerator + non-finite; `closingThicknessHint`; harlequin thicknessIn=1; §7 decimal-inch guard. Suite **1174/1174**; First Load **120 kB**. |
 | Sprint 61 (Close the gaps) | ✅ **CLOSED** 2026-07-26 — **93/100** (browser re-score; was 96). Skip note unreachable at 48k=schema max — fixed in Sprint 62. 32 KiB defence-in-depth kept. Suite **1182/1182**; First Load **120 kB**. |
-| Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100**. Deleted unreachable colour gate; always-run check; reachability witness suite. Suite **1195/1195**; First Load pending. |
+| Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100**. Deleted unreachable colour gate; always-run check; reachability witness suite. Suite **1195/1195**; First Load **120 kB**. |
 
 Test suite — expected: 1195/1195 across 103 files (Sprint 62, Cursor VM). Update this single figure each sprint close; 1182/1182 and earlier superseded.
 

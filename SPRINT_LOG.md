@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 62 Attempt 1 (2026-07-26) — CLOSED 96/100** — deleted unreachable colour gate; reachability guard. First Load pending. Prior: Sprint 61 **93/100**.
+> **Latest logged: Sprint 62 Attempt 1 (2026-07-26) — CLOSED 96/100** — deleted unreachable colour gate; reachability guard. First Load **120 kB**. Prior: Sprint 61 **93/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1195 green (post-62).
 
@@ -49,8 +49,9 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 **Dates:** 2026-07-26
 **Scope:** Part 0 S61 re-score + notice rationale · A measure colour check → delete gate · reachability suite · record MAX_DRAWN/3D caps. Trunk-based to `main`.
 **Commits on `main`:** `b4cd2ef` (Part 0) · `3709fcd` (code) · (this close)
-**/designer First Load JS:** pending CI.
+**/designer First Load JS:** **120 kB** (held; CI on `3900572`).
 **Suite:** **1195/1195** across 103 files.
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30193192371 success.
 **Colour check (memo cold, Cursor VM):** 1k closing ≈ **2.1 ms** · 12k closing ≈ **21 ms** · 48k (non-closing / early-exit) ≈ **4–6 ms**. Gate deleted — always run (≪200 ms budget).
 **Draw caps (unchanged):** `MAX_DRAWN_CELLS=5_000`, `MAX_3D_CELLS=8_000` — both engage well below schema-max 48k (explains ~950 ms toggle; not tuned this sprint).
 
