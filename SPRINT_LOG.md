@@ -5,7 +5,7 @@
 >
 > **Latest logged: Sprint 66 (2026-07-26) — CLOSED** — stream-orphan characterize + drag coverage. Prior: Sprint 65 **98/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: (post-66) green.
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1259 green (post-66).
 
 ---
 
@@ -250,10 +250,11 @@ Score: **98/100** — Pass. Inert drag handle removed from tab order; reorder an
 **Scope:** Part A characterize/fix orphaned React stream `S:` bags · Part B pointer-drag handler tests · Part C next BUILD_PLAN §4 item (or idle). Trunk-based to `main`.
 **Status:** CLOSED
 **Part C (next §4 item):** **none** — every BUILD_PLAN §4 shippable row through Sprint 65 is closed; remaining open follow-ups are Keagan-owned (dark re-palette uncommissioned, Clerk prod keys, launch blockers) or BUSINESS_PLAN-absent / deferred contract changes (true hex lattice, Canva-like 5b). No invented scope.
-**Commits on `main`:** (this close)
-**/designer First Load JS:** hold ~123 kB (drag tests + loading markup; no designer client change beyond `dropIndexFromClientY` extract).
+**Commits on `main`:** `15fa502`
+**/designer First Load JS:** **123 kB** (held).
 **Suite:** **1259/1259** across 112 files.
-**CI / Vercel:** on tip after push.
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30212038510 success.
+**Vercel:** Production deploy `15fa502` success.
 
 ### Part A — conclusion
 **Trigger (one sentence):** When an App Router Suspense boundary (route `loading.tsx` / segment shell) streams under React’s postponed opener `<!--$~-->`, `$RC` silently no-ops and leaves `div#S:N` holding a full page copy beside the already-visible tree.
