@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 54: Desktop-only designer + mobile plan/cut list
 **Dates:** 2026-07-26
 **Scope:** BUILD_PLAN §4 item **1** only. No 55/56; no U6/U7; OrbitControls untouched; no `toParts()`.
-**Commits on `main`:** `a728a0e` (HeaderSearch → xl) · `4e8f2bf` (designer gate) · `4ad6064` (header: single xl breakpoint)
+**Commits on `main`:** `a728a0e` (HeaderSearch → xl) · `4e8f2bf` (designer gate) · `2844c22` (header: single xl breakpoint)
 **/designer First Load JS:** 114 kB. `/` 138 · `/browse` 140.
 **CI tip:** `4e8f2bf` success. **Vercel Production** deploy success for `4e8f2bf`. Vercel MCP `needsAuth` — full build log unread; local `npm run build` green.
 
@@ -83,7 +83,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 | 1024–1279 | flex | none | none | **NO** |
 | ≥1280 | flex | flex | none | yes |
 
-Collision gone; a 256px dead band replaced it. **Keagan fix (`4ad6064`):** one header breakpoint at `xl` — Main nav + SignedOut CTAs + MobileNav all on `xl` with HeaderSearch (already `xl`). Below `xl` = hamburger + drawer search; at/above `xl` = full desktop header. Accepted trade-off: 1024–1279 get a hamburger instead of visible nav links. Designer `lg:` gates untouched. `site-chrome` test now asserts the single breakpoint and forbids `lg:flex`/`lg:hidden` in header markup.
+Collision gone; a 256px dead band replaced it. **Keagan fix (`2844c22`):** one header breakpoint at `xl` — Main nav + SignedOut CTAs + MobileNav all on `xl` with HeaderSearch (already `xl`). Below `xl` = hamburger + drawer search; at/above `xl` = full desktop header. Accepted trade-off: 1024–1279 get a hamburger instead of visible nav links. Designer `lg:` gates untouched. `site-chrome` test now asserts the single breakpoint and forbids `lg:flex`/`lg:hidden` in header markup.
 
 ### Keagan re-verification (record OBSERVED)
 At 1280, 1024, 900, 768, 390:
