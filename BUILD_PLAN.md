@@ -48,12 +48,13 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
 | Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Suite **1309/1309**. |
 | Sprint 68 (dock behavior + parity) | ✅ **CLOSED** 2026-07-26 — **98/100**. Suite **1312/1312**. |
-| Sprint 69 (strip directory) | ✅ **CLOSED** 2026-07-26 — **97/100**. Optional `Strip.label`; directory rows + selected detail; coalesce. Suite **1318/1318**. |
-| Sprints 70–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 70**. Agent contract below. |
+| Sprint 69 (strip directory) | ✅ **CLOSED** 2026-07-26 — **97/100**. Suite **1318/1318**. |
+| Sprint 70 (literacy) | ✅ **CLOSED** 2026-07-26 — **98/100**. FieldHint kerf/waste; unit/count suffixes. Suite **1319/1319**. IA track DoD with 69. |
+| Sprints 71–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 71**. Agent contract below. |
 
-Test suite — expected: **1318/1318** across **114 files** (Sprint 69). Update each sprint close.
+Test suite — expected: **1319/1319** across **114 files** (Sprint 70). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–69 ✅** · **next = 70**. Parked FUTURE_IDEAS 2026-07-26.
+**Designer:** U0–U7 ✅ · **67–70 ✅** · **next = 71**. Parked FUTURE_IDEAS 2026-07-26.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -65,7 +66,7 @@ Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list par
 OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
 SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
-ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 → 71 → 72. One sprint at a time. NEXT=70.
+ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 ✅ → 71 → 72. One sprint at a time. NEXT=71.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
@@ -146,12 +147,9 @@ SHIPPED: optional Strip.label (zod/serialize/history coalesce); stripDisplayName
     rows + selection + detail pane (species/width/repeat/miter); reorder/announce preserved.
 ```
 
-**70 — literacy (IA track DoD w/ 69)**
+**70 — literacy (IA track DoD w/ 69)** ✅ CLOSED 2026-07-26 · 98/100
 ```
-DO: tooltips for kerf, waste, panel length, slice thickness, strip width, repeat, stock fields;
-    unit suffix on every remaining numeric designer control.
-DONT: profile UOM · convert stored config · catalog metric.
-ACCEPT: kerf/waste discoverable in-page · waste not bare unitless 15.
+SHIPPED: FieldHint for kerf/waste; unit/count suffixes on remaining numeric controls.
 ```
 
 **71 — 2D + rotate**

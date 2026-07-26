@@ -3,9 +3,28 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 69 (2026-07-26) — CLOSED 97/100** — strip directory + optional labels.
+> **Latest logged: Sprint 70 (2026-07-26) — CLOSED 98/100** — literacy (kerf/waste hints + units).
 >
-> **Milestones:** … · shell 67–69 ✅. Suite: 1318 green. Next: 70.
+> **Milestones:** … · shell 67–70 ✅ (IA track DoD). Suite: 1319 green. Next: 71.
+
+---
+
+## Sprint 70: Literacy
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 70 — field hints + unit suffixes.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Kerf/waste help · unit/count labels |
+| Correctness & functionality (/20) | 18 | Suite; browser literacy skim not re-run (−2) |
+| Automated test coverage (/15) | 15 | designer-shell Sprint 70 guard · 1319 |
+| Security (/15) | 15 | Display-only copy |
+| Code quality (/10) | 10 | Shared FieldHint |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **98/100** — Pass. IA track DoD with 69. Next: Sprint 71.
 
 ---
 
