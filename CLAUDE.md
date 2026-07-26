@@ -63,6 +63,7 @@ Deploy/migrate/CI:
 - Schema→prod auto; DATA does not. A migration adding a column computed from existing rows needs a prod backfill (DEPLOYMENT.md). Column≠populated (Sprint 4 `searchVector` shipped empty; prod search dead, dev worked).
 - Prefer compute-on-read over denormalized column (like/rating counts use `_count`/`_avg`). Denormalize only when measured, with txn+backfill.
 - Green deploy/suite ≠ proof. Read the build log. Deploy early each sprint.
+- A RED Vercel prod deploy showing `Error: P1001: Can't reach database server` is a COLD NEON COMPUTE, not a broken build (`prisma migrate deploy` in `vercel-build` hits the direct endpoint; free-tier autosuspend doesn't wake in time). `check-db-urls` passing + local/CI green confirms it. Fix = `npx vercel redeploy <dpl-id>` (CLI is authed on Keagan's Windows box); don't debug the build. Get the log with `npx vercel inspect <dpl-id> --logs`; the dpl id is in the GH deployment status `description`.
 - Check GH Actions after every push: `curl -s "https://api.github.com/repos/klatar200/Woodworking-Plan/actions/runs?per_page=5"`. `next build` prerenders `/_not-found`→root layout→`ClerkProvider`→needs `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (CI dummy). Stale comments that argue against evidence are worse than none.
 - `git rm` a renamed/superseded test file IN THE REPO, in the sprint's commit block (sandbox delete doesn't reach Keagan's repo).
 

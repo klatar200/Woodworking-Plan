@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 53 Attempt 1 (2026-07-25) — CLOSED 96/100** — designer layout/chrome (`cff58b9`). Prior: Sprint 51/52 both **100/100**.
+> **Latest logged: Sprint 53 Attempt 2 (2026-07-25) — CLOSED 96/100** — designer layout/chrome (`cff58b9`) + sticky-preview fix (`c4a4e99`). Attempt 1's item 3 FAILED on observation (preview left the viewport after 130px of a 6749px page); root-caused to `lg:items-start`. Prior: Sprint 51/52 both **100/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1105 green (post-53).
 
@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 53: Designer layout & chrome
 **Dates:** 2026-07-25
 **Scope:** BUILD_PLAN §4 items **2, 3, 4, 6, 7** only. No U6/U7; no 54–56; OrbitControls untouched.
-**Commits on `main`:** `cff58b9`
+**Commits on `main`:** `cff58b9` (Attempt 1) · `c4a4e99` (Attempt 2 — sticky fix)
 **/designer First Load JS:** 113 kB (unchanged). `/` 138 · `/browse` 140.
 **CI tip:** `cff58b9` success (run `30179791163`). **Vercel Production** deploy success for `cff58b9` (GH deployment status success). Vercel MCP `needsAuth` — full build log not readable here; local `npm run build` green with same First Load figures.
 
@@ -80,7 +80,42 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 4. Every species label one line, no overflow, at the narrowest supported width.
 5. Canvas real size after layout (not 300×150).
 
-**Result:** Pass (≥95). Correctness held until the list above is observed.
+**Result:** Attempt 1 SUPERSEDED — item 3 FAILED on observation. See Attempt 2.
+
+### Attempt 2 — score 96/100 — PASS (`c4a4e99`, redeploy `dgonzokyx`)
+Attempt 1's withheld 4 Correctness points were withheld for the right reason: **item 3 did not work.**
+
+**Defect (observed on prod, 2544px viewport, before fix):** scrolled to the last strip, the preview canvas sat at `top: -5491px`, **0 visible pixels**. Same at page bottom (`top: -6323`).
+
+**Root cause (one line):** `lg:items-start` on the designer grid shrink-wrapped the preview column to **732px**, and a sticky element can only travel inside its own containing block — so the preview stuck for **130px** of a **6749px** page (1.9%) and then scrolled away for good. `lg:sticky` was present and correct the whole time.
+
+**Fix:** dropped `lg:items-start` (columns stretch: left column 732 → **7266px**, matching the right) and added `lg:content-start` to the preview column so its children keep natural height inside the now-full-height column.
+
+**Why the suite stayed green:** `designer-shell.test.tsx` asserted `toMatch(/lg:sticky/)` — a source-string check that the class exists, not that the preview stays in view. Green test, broken feature. jsdom has no sticky layout, so the stretch is now guarded at source level (`not.toContain('lg:items-start')` + `toContain('lg:content-start')`) with the measurement recorded in the test so the class is not silently re-added.
+
+**Verified on prod after fix** (`?cb=53fix3`, foreground tab, frame forced before every canvas read):
+| # | Item | Observed |
+|---|---|---|
+| 1 | Full width, no h-overflow | `max-width: none`; `scrollWidth − innerWidth = −15` (scrollbar) at vw 2544 |
+| 2 | Preview stays in view | at last strip: canvas `top 146 / bottom 656`, **510px fully in view**; at page bottom (scrollY 6749): identical. Travel 6664px vs 6749px scrollable |
+| 3 | PREVIEW + Export PNG one line | both centres on the same baseline |
+| 4 | Species labels one line | 96 pills, every one 44px tall (single row), **0 truncated** (`scrollWidth == clientWidth` incl. Purpleheart) |
+| 5 | Canvas real size | `canvas 1977×510 == host 1977×510` |
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | All five items now delivered; no schema/routes/CSP; no B6 marketing strings |
+| Correctness & functionality (/20) | 18 | Item 3 defect found, root-caused and fixed; all 5 items observed on prod. **−2**: only the 2544px viewport measured — 1440/1280/1024/900 still unmeasured (blocker below) |
+| Automated test coverage (/15) | 13 | **1105** green. **−2**: the Sprint 53 assertions were green while item 3 was broken; the replacement guard is source-level because jsdom cannot evaluate sticky |
+| Security (/15) | 15 | CSS-only change; no public-routes/middleware/CSP edits; denylist unchanged |
+| Code quality & simplicity (/10) | 10 | Two utility classes; no new deps; comment records the measurement, not an intention |
+| Mobile/offline (/10) | 10 | Sticky/stretch are `lg:`-gated; below `lg` the columns stack as before |
+| Documentation & handoff (/5) | 5 | This entry + the residual below |
+| **Total (/100)** | **96** |
+
+**Deploy note (new, cost ~20 min):** the first prod deploy of `c4a4e99` **failed** — `Error: P1001: Can't reach database server` from `prisma migrate deploy` in `vercel-build`. Not a code fault (`check-db-urls` passed, both URLs on the same host); Neon's free-tier compute autosuspends and did not wake inside the migrate timeout. `npx vercel redeploy <dpl>` succeeded unchanged. **A red Vercel deploy with P1001 is a cold Neon compute, not a broken build — redeploy before debugging.**
+
+**Residual (blocked, NOT verified):** viewports **1440 / 1280 / 1024 / 900** were never measured. `resize_window` reports success but is a no-op against a maximized Chrome window, and the browser is granted read-only tier so it cannot be un-maximized from here. Needs the Brave window restored (un-maximized) — then all four are one batch.
 
 ---
 
