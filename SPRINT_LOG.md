@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 54 Attempt 1 (2026-07-26) — CLOSED 96/100** — desktop-only authoring + mobile read-only/print (`4e8f2bf`); header search xl (`a728a0e`). Prior: Sprint 53 **98/100**.
+> **Latest logged: Sprint 54 Attempt 1 (2026-07-26) — CLOSED 98/100** — desktop-only authoring + mobile read-only/print (`4e8f2bf`); header single-`xl` breakpoint (`a728a0e` + `2844c22`). Withheld Correctness points released on prod observation; −2 stands on test coverage (header dead band shipped green). Prior: Sprint 53 **98/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1106 green (post-54).
 
@@ -52,17 +52,36 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 **/designer First Load JS:** 114 kB. `/` 138 · `/browse` 140.
 **CI tip:** `4e8f2bf` success. **Vercel Production** deploy success for `4e8f2bf`. Vercel MCP `needsAuth` — full build log unread; local `npm run build` green.
 
-### Attempt 1 — score 96/100 — PASS
+### Attempt 1 — score 98/100 — PASS (withheld points released 2026-07-26 on observation)
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | Item 1 only; exact DECISIONS_LOG 2026-07-26 strings; B7 held; no new routes/schema/deps |
-| Correctness & functionality (/20) | 16 | Source+suite: CSS gate keeps authoring mounted; `matchMedia('(min-width: 64rem)')` returns null Canvas below lg; notices + Print sheet. **−4 still withheld** — designer below-gate checks (flip width, canvas === null below 1024, print at 390, draft survives 1280→900→1280, console) have **not** been observed yet |
-| Automated test coverage (/15) | 15 | **1106** tests; Sprint 54 shell + print `data-label` / screen-stack CSS guards. Canvas-null behaviour noted as browser-only |
+| Correctness & functionality (/20) | 20 | **−4 RELEASED** — every below-gate check observed on prod, signed in (table below): flip exactly at 1024, `canvas === null` below it, draft survives a round trip, print sheet clean at 366, no hydration warning |
+| Automated test coverage (/15) | 13 | **1106** tests; Sprint 54 shell + print `data-label` / screen-stack CSS guards. **−2**: the header dead band shipped with a green suite, and the test that covered it asserted a *false* rationale ("drawer covers <xl"). Now guarded by forbidding `lg:flex`/`lg:hidden` in header markup |
 | Security (/15) | 15 | Viewport MQ only (no UA); no public-routes/middleware/CSP edits; denylist unchanged |
 | Code quality & simplicity (/10) | 10 | CSS hide + client MQ inside existing `dynamic(ssr:false)` canvas; no `lg:items-start` reintroduced |
 | Mobile/offline (/10) | 10 | Read-only SVG surface + print sheet screen stack at ≤40rem; library link; WebGL never created below gate (wiring asserted) |
 | Documentation & handoff (/5) | 5 | DECISIONS_LOG copy+resize; §9; Keagan verify list |
-| **Total (/100)** | **96** |
+| **Total (/100)** | **98** |
+
+### Below-gate verification — OBSERVED on prod, signed in, 2026-07-26
+Driven directly (a second Brave window was resizable; the maximized one silently no-ops `resize_window`). Widths are `innerWidth`.
+
+| Check | Observed |
+|---|---|
+| Flip width | **Exactly 1024.** Root font-size is `16px`, so Tailwind `lg` = 64rem = 1024px, and `matchMedia('(min-width:64rem)')` ≡ `(min-width:1024px)`. At 1024 → editor + canvas; at 922 → read-only |
+| Surface at 1024 / 922 / 761 / 366 | editor · read-only · read-only · read-only |
+| `canvas === null` below gate | **true** at 922, 761 and 366 — element absent, not hidden |
+| No h-overflow | `scrollWidth − innerWidth = 0` at 1024, 922, 761, 366 |
+| Notice string | byte-exact: `Designing a board needs a wider screen. Your saved boards are available here.` |
+| **Draft survives resize** | Set strip 1 → Padauk at 1024 (`aria-checked=true`, "Unsaved changes" appears) → 922 → back to 1024: strip 1 still `Padauk · 1 1/2"`, still dirty, hidden `input[name=config]` still `speciesId:"padauk"`. Draft also intact at 366. **Reducer state and form payload both survive.** |
+| 3D recovers after crossing | Canvas returns, renders the Padauk strip, and the latching `contextLost` SVG fallback does **not** trigger |
+| Print sheet | at **366** (narrower than the 390 target): no horizontal scroll (`doc` and `body` overflow both 0), both live tables `scrollWidth == clientWidth`, cut-list content present, smallest font 12.8px, `data-label` rows stacked |
+| Console | no hydration mismatch on `/designer` or the print route — only the known Clerk dev-keys warning |
+
+1280 was not reachable in that window (it clamps at `innerWidth` 1024). Covered by construction — the gate is `≥1024`, verified at the boundary — and the header at 1280 was separately observed in the browser pane.
+
+**Benign, do not chase:** crossing the gate logs `THREE.WebGLRenderer: Context Lost.` once per crossing. That is THREE's own disposal message; `CanvasLifecycle` removes our `webglcontextlost` listener before disposal, so `onContextLost` never fires and the preview recovers fully. Verified across three crossings.
 
 **Shipped:**
 | Piece | Detail |
