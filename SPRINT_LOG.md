@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 60 Attempt 1 (2026-07-26) — CLOSED 96/100** — tape-measure inches everywhere; harlequin thicknessIn=1; §7 decimal-inch guard. First Load **120 kB**. Prior: Sprint 59 **90/100**.
+> **Latest logged: Sprint 61 Attempt 1 (2026-07-26) — CLOSED 96/100** — save notice · closure skip note · print coverage · SPI identity. First Load pending. Prior: Sprint 60 **96/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1174 green (post-60).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1182 green (post-61).
 
 ---
 
@@ -42,6 +42,38 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 61: Close the gaps
+**Dates:** 2026-07-26
+**Scope:** Part 0 S60 browser verify · A max-config byte cap + save notice · B large-board closure note + memo · C print coverage · D speciesComponents SPI · E security. Trunk-based to `main`.
+**Commits on `main`:** `d2c0aba` (Part 0) · `e5760bc` (code) · (this close)
+**/designer First Load JS:** pending CI build log.
+**Suite:** **1182/1182** across 102 files.
+**Perf (colour check, Cursor VM):** closing lattice ≈ **6 ms** at 4,000 cells; schema-max 48,000 cells layout-dominated (~90 ms layout); colour memoized so unchanged lattices skip recompute. Cap raised to **48_000**.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Measured max config 14_893 B → 32 KiB cap; design-too-large notice; closure skip note; print mitered/plaid/solid; SPI identity; no new features |
+| Correctness & functionality (/20) | 16 | Over-cap bounces with notice before parse; schema still rejects 81 strips/5 panels/25 steps; thickness gate above cell cap; skip note when colour skipped. **−4**: browser checks unrun (Clerk) |
+| Automated test coverage (/15) | 15 | `config-budget` · authz notice · metrics skip · print C1–C3 · harlequin SPI; suite **1182** |
+| Security (/15) | 15 | `/designer` out of public-routes + in NEVER_CACHE; owner from session; byte cap before decode; actions never throw; CLAUDE.md §7 notice exception documented |
+| Code quality & simplicity (/10) | 10 | Cap derivation in `config-limits.ts`; `applyMiterClosureWarnings` testable; colour memo |
+| Mobile/offline behavior (/10) | 10 | Offline denylist test still passes; no SW policy change needed |
+| Documentation & handoff (/5) | 5 | Part 0 S60 verify + already-closed list; BUILD_PLAN; invariant comment |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Browser checks (unrun — Clerk OAuth blocked for agent):**
+1. Schema-max design saves, or is refused with a visible message — never silently
+2. Board above cell limit shows the "too large to check" note rather than nothing
+3. Pre-Sprint-61 saved design reopens rendering identically
+
+### Final outcome
+Score: **96/100** — Pass. Silent save-loss path closed.
 
 ---
 
