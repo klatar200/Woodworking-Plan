@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { optimize, DEFAULT_OPTIONS, type Part } from '@/lib/cut-optimizer';
-import { calculateMetrics } from '@/lib/board-designer/metrics';
+import {
+  applyMiterClosureWarnings,
+  calculateMetrics,
+  MITER_COLOUR_CHECK_SKIPPED_NOTE,
+} from '@/lib/board-designer/metrics';
+import { layoutTopFace } from '@/lib/board-designer/layout';
 import { toParts } from '@/lib/board-designer/to-parts';
 import { getTemplate, TEMPLATES } from '@/lib/board-designer/templates';
 import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
@@ -282,5 +287,35 @@ describe('unknown species warning', () => {
     );
     expect(m.warnings).toContain('Unknown wood: bogus-wood');
     expect(m.complete).toBe(true);
+  });
+});
+
+describe('miter colour-check gate (Sprint 61)', () => {
+  it('above the cell cap: thickness still warns; skip note is visible', () => {
+    const tpl = getTemplate('harlequin')!;
+    const mismatched = {
+      ...tpl.config,
+      panels: tpl.config.panels.map((p) => ({ ...p, thicknessIn: 1.5 })),
+    };
+    const cells = layoutTopFace(mismatched, calculateMetrics(mismatched));
+    const warnings: string[] = [];
+    applyMiterClosureWarnings(warnings, cells, mismatched.panels, 10);
+    expect(warnings.some((w) => w.includes('lattice will not close'))).toBe(
+      true,
+    );
+    expect(warnings).toContain(MITER_COLOUR_CHECK_SKIPPED_NOTE);
+    // Colour-only "does not close" is not claimed when colour was skipped.
+    expect(
+      warnings.filter((w) =>
+        w.startsWith('Miter pattern does not close'),
+      ),
+    ).toHaveLength(0);
+  });
+
+  it('under the cap with a closing lattice: no skip note', () => {
+    const tpl = getTemplate('harlequin')!;
+    const m = calculateMetrics(tpl.config);
+    expect(m.warnings).not.toContain(MITER_COLOUR_CHECK_SKIPPED_NOTE);
+    expect(m.warnings).toEqual([]);
   });
 });

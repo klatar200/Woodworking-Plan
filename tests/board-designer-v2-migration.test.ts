@@ -271,13 +271,18 @@ describe('Sprint 57 v2 migration + geometry', () => {
     expect(parseConfig(missing).ok).toBe(false);
   });
 
-  it('17 KB config string is rejected before JSON.parse in the action gate', () => {
-    const source = readFileSync(
+  it('byte cap is applied before JSON.parse (32 KiB, Sprint 61)', () => {
+    const action = readFileSync(
       join(process.cwd(), 'src/app/actions/board-designs.ts'),
       'utf8',
     );
-    expect(source).toContain('16 * 1024');
-    expect(source).toMatch(
+    const limits = readFileSync(
+      join(process.cwd(), 'src/lib/board-designer/config-limits.ts'),
+      'utf8',
+    );
+    expect(limits).toContain('32 * 1024');
+    expect(action).toContain('MAX_CONFIG_BYTES');
+    expect(action).toMatch(
       /byteLength\s*>\s*MAX_CONFIG_BYTES[\s\S]*JSON\.parse/,
     );
   });

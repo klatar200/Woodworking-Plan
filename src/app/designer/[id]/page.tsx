@@ -5,6 +5,14 @@ import { page } from '@/lib/ui';
 import { getDesign } from '@/lib/board-designs';
 import { DesignerShell } from '@/components/designer/designer-shell';
 import {
+  DesignTooLargeNotice,
+  RateLimitNotice,
+} from '@/components/rate-limit-notice';
+import {
+  hasDesignTooLargeNotice,
+  hasRateLimitNotice,
+} from '@/lib/rate-limit-feedback';
+import {
   createBoardDesignAction,
   updateBoardDesignAction,
 } from '@/app/actions/board-designs';
@@ -18,16 +26,28 @@ export const metadata: Metadata = {
 
 type PageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ notice?: string }>;
 };
 
-export default async function SavedDesignerPage({ params }: PageProps) {
+export default async function SavedDesignerPage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const { notice } = await searchParams;
   const design = await getDesign(id);
   if (!design) notFound();
+
+  const dismissHref = `/designer/${design.id}`;
 
   return (
     // Full-width on desktop like /browse — preview column takes the slack.
     <main id="main" className={`${page} lg:max-w-none`}>
+      <RateLimitNotice
+        show={hasRateLimitNotice(notice)}
+        dismissHref={dismissHref}
+      />
+      <DesignTooLargeNotice
+        show={hasDesignTooLargeNotice(notice)}
+        dismissHref={dismissHref}
+      />
       <p className="breadcrumb no-print">
         <Link href="/designer/library">Your boards</Link>
       </p>

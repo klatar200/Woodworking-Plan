@@ -71,6 +71,7 @@ Server actions NEVER throw (throw = HTTP 500 on public endpoint):
 - Rate limiter DROPS never THROWS: `checkRateLimit()` returns bool; actions no-op on false.
 - Shared `src/lib/form-fields.ts` `formString`/`formInt` return null never throw; actions bail with `redirect(bounceTarget(...))`. `formInt` requires BOUNDS (`parseInt("5abc")`=5, `"1e9"`=1; ratings computed-on-read, one junk poisons averages).
 - Only missing-RATING bail carries a notice (`?notice=rating-required`); missing structural ids bounce silent.
+  Exception (Sprint 61): designer config over `MAX_CONFIG_BYTES` bounces with `?notice=design-too-large` — that is the user's real work rejected for size, not tampering; silent bounce is data loss. Do not delete the notice to "restore" this line.
 - Every lib call in an action → `guardAction()` (`src/lib/action-guard.ts`): `unstable_rethrow` passes framework signals; name-matched `UnauthorizedError` → sign-in w/ return URL; else logged silent bounce.
 - Rate-limit bounce target = attacker input → `safeReturnTo()` rejects absolute/protocol-relative(`//evil`)/backslash URLs (else open redirect). `redirect()` = 303 not throw.
 - Tests assert the behaviour the APP needs, not that code throws.

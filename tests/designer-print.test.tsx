@@ -113,7 +113,7 @@ describe('designer print route', () => {
     );
   });
 
-  it('shows miter column and offcut note for a mitered design', async () => {
+  it('shows mitered offcut note, both species in board-feet, no decimal inches', async () => {
     const { getTemplate } = await import('@/lib/board-designer/templates');
     const hex = getTemplate('harlequin')!.config;
     const { getDesign } = await import('@/lib/board-designs');
@@ -132,7 +132,71 @@ describe('designer print route', () => {
     expect(html).toContain('Top right');
     expect(html).toContain('print-miter-note');
     expect(html).toContain('two composite strips');
+    expect(html).toMatch(/discarding the mates means buying roughly twice/i);
     expect(html).toContain('Walnut');
+    expect(html).toContain('Hard Maple');
+    // Both species appear with a bd-ft figure (wedge split).
+    expect(html).toMatch(/Walnut[\s\S]*?bd ft/);
+    expect(html).toMatch(/Hard Maple[\s\S]*?bd ft/);
+    const text = html.replace(/<[^>]+>/g, ' ');
+    expect(text).not.toMatch(/\d+\.\d+\s*[″"]/);
+  });
+
+  it('three-panel plaid: per-panel tables, row order labels, distinct required lengths', async () => {
+    const { getTemplate } = await import('@/lib/board-designer/templates');
+    const { calculateMetrics } = await import('@/lib/board-designer/metrics');
+    const plaid = getTemplate('plaid')!.config;
+    expect(plaid.panels).toHaveLength(3);
+    const metrics = calculateMetrics(plaid);
+    expect(metrics.panelPlan).toHaveLength(3);
+    const lengths = metrics.panelPlan.map((p) => p.requiredLengthIn);
+    expect(new Set(lengths).size).toBeGreaterThan(1);
+
+    const { getDesign } = await import('@/lib/board-designs');
+    vi.mocked(getDesign).mockResolvedValue({
+      id: 'design-plaid',
+      name: 'Plaid',
+      config: plaid,
+      createdAt: new Date('2026-07-26T00:00:00Z'),
+      updatedAt: new Date('2026-07-26T00:00:00Z'),
+    });
+    const { default: PrintPage } = await import('@/app/designer/[id]/print/page');
+    const html = renderToStaticMarkup(
+      await PrintPage({ params: Promise.resolve({ id: 'design-plaid' }) }),
+    );
+
+    expect(html).toContain('Wide A');
+    expect(html).toContain('Wide B');
+    expect(html).toContain('Line');
+    expect(html).toContain('Row order');
+    expect(html).toContain('As cut');
+    // Three required-length cells (one per panel table) — different values.
+    for (const len of lengths) {
+      const { formatInches } = await import('@/lib/format');
+      expect(html).toContain(formatInches(len).replace(/"/g, '&quot;'));
+    }
+    expect(html).not.toContain('print-miter-note');
+  });
+
+  it('solid single-panel: no offcut note, exactly one panel table', async () => {
+    const { getDesign } = await import('@/lib/board-designs');
+    vi.mocked(getDesign).mockResolvedValue({
+      id: 'design-solid',
+      name: 'Golden end-grain',
+      config: designConfig,
+      createdAt: new Date('2026-07-25T00:00:00Z'),
+      updatedAt: new Date('2026-07-25T00:00:00Z'),
+    });
+    const { default: PrintPage } = await import('@/app/designer/[id]/print/page');
+    const html = renderToStaticMarkup(
+      await PrintPage({ params: Promise.resolve({ id: 'design-solid' }) }),
+    );
+    expect(html).not.toContain('print-miter-note');
+    expect(html).not.toContain('two composite strips');
+    // One panel section heading beyond the shared chrome.
+    expect(html.match(/<h2>/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(html).toContain('Panel 1');
+    expect(html).not.toContain('Wide A');
   });
 
   it('404s when getDesign returns null for a missing or foreign id', async () => {

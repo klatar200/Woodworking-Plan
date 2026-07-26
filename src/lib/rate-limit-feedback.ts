@@ -48,6 +48,17 @@ export const RATING_NOTICE_VALUE = 'rating-required';
 export const UPLOAD_NOTICE_VALUE = 'upload-failed';
 
 /**
+ * Designer config over the byte cap (Sprint 61).
+ *
+ * WHY THIS ONE CARRIES A NOTICE. CLAUDE.md §7 says only missing-RATING (and later
+ * upload-failed) bails carry a notice; missing structural ids bounce silent —
+ * those mean tampering or a bug, and a message helps nobody. An over-cap config
+ * is different in kind: it is the user's real work, rejected for size. Silent
+ * bounce is data loss. Do not "restore consistency" by deleting this notice.
+ */
+export const DESIGN_TOO_LARGE_NOTICE_VALUE = 'design-too-large';
+
+/**
  * Validates an untrusted `returnTo` from FormData.
  *
  * A redirect target read from a form is ATTACKER INPUT — anyone can POST any
@@ -128,4 +139,11 @@ export function hasRatingNotice(raw: string | string[] | undefined): boolean {
 /** True when a page's searchParams carry the "photo couldn't be processed" notice. */
 export function hasUploadNotice(raw: string | string[] | undefined): boolean {
   return raw === UPLOAD_NOTICE_VALUE;
+}
+
+/** True when the designer save bounced because the config exceeded the byte cap. */
+export function hasDesignTooLargeNotice(
+  raw: string | string[] | undefined,
+): boolean {
+  return raw === DESIGN_TOO_LARGE_NOTICE_VALUE;
 }

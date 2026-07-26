@@ -4,6 +4,7 @@ import {
   miterLatticeCloses,
   miterWedgeFraction,
   thicknessMismatchesClose,
+  type ClosableCell,
 } from './miter-geometry';
 import { getSpecies } from './species';
 import type {
@@ -13,6 +14,64 @@ import type {
   PanelPlan,
   SpeciesBoardFeet,
 } from './types';
+
+/**
+ * Schema-max cells = rowCount(60) × Σ(strips×repeat) ≤ 60 × 800 = 48_000.
+ * Colour check is memoized; measured ≈ 6 ms at 4k on a closing lattice (Sprint 61).
+ * Above this cap colour is skipped (with a visible note); thickness always runs.
+ */
+export const MITER_COLOUR_CHECK_CELL_CAP = 48_000;
+
+export const MITER_COLOUR_CHECK_SKIPPED_NOTE =
+  'This pattern is too large to check automatically — verify the corners yourself before glue-up.';
+
+/**
+ * Append miter closure warnings. Thickness gate always runs; colour continuity
+ * runs only when `cells.length ≤ cellCap`. Exported for tests that lower the cap.
+ */
+export function applyMiterClosureWarnings(
+  warnings: string[],
+  cells: readonly ClosableCell[],
+  panels: readonly Panel[],
+  cellCap: number = MITER_COLOUR_CHECK_CELL_CAP,
+): void {
+  for (const panel of panels) {
+    for (const s of panel.strips) {
+      if (!s.miter) continue;
+      if (
+        thicknessMismatchesClose(
+          s.widthIn,
+          panel.thicknessIn,
+          s.miter.angleDeg,
+        )
+      ) {
+        const msg = closingThicknessHint(
+          s.widthIn,
+          panel.thicknessIn,
+          s.miter.angleDeg,
+        );
+        if (!warnings.includes(msg)) warnings.push(msg);
+      }
+    }
+  }
+
+  if (cells.length > cellCap) {
+    if (!warnings.includes(MITER_COLOUR_CHECK_SKIPPED_NOTE)) {
+      warnings.push(MITER_COLOUR_CHECK_SKIPPED_NOTE);
+    }
+    return;
+  }
+
+  const closed = miterLatticeClosesMemo(cells, panels);
+  if (
+    !closed &&
+    !warnings.some((w) => w.includes('lattice will not close'))
+  ) {
+    warnings.push(
+      'Miter pattern does not close — check corners and row transforms.',
+    );
+  }
+}
 
 /**
  * Panel + finished-board metrics for a cutting-board design.
@@ -160,57 +219,11 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     complete,
   };
 
-  // Miter lattice closure (colour + closing-thickness). Same helpers as the
-  // harlequin acceptance tests — do not silently draw a non-closing pattern.
-  //
-  // Perf (Sprint 59, Cursor VM): 2400 cells ≈ 33 ms; schema-max 40×20×60 =
-  // 48000 cells ≈ 110–125 ms for full colour sampling. Gate colour continuity
-  // above 4k cells (thickness check always runs) so the editor keystroke path
-  // stays under ~50 ms at the bound.
+  // Miter lattice closure — see applyMiterClosureWarnings / Sprint 61 notes.
   const hasMiter = panels.some((p) => p.strips.some((s) => s.miter));
   if (hasMiter) {
     const cells = layoutTopFace(config, metricsSoFar);
-    const COLOUR_CHECK_CELL_CAP = 4000;
-    let closed: boolean;
-    if (cells.length > COLOUR_CHECK_CELL_CAP) {
-      closed = !panels.some((panel) =>
-        panel.strips.some(
-          (s) =>
-            s.miter &&
-            thicknessMismatchesClose(
-              s.widthIn,
-              panel.thicknessIn,
-              s.miter.angleDeg,
-            ),
-        ),
-      );
-    } else {
-      closed = miterLatticeCloses(cells, panels);
-    }
-    if (!closed) {
-      for (const panel of panels) {
-        for (const s of panel.strips) {
-          if (!s.miter) continue;
-          if (
-            thicknessMismatchesClose(
-              s.widthIn,
-              panel.thicknessIn,
-              s.miter.angleDeg,
-            )
-          ) {
-            const msg = closingThicknessHint(
-              s.widthIn,
-              panel.thicknessIn,
-              s.miter.angleDeg,
-            );
-            if (!warnings.includes(msg)) warnings.push(msg);
-          }
-        }
-      }
-      if (!warnings.some((w) => w.includes('lattice will not close'))) {
-        warnings.push('Miter pattern does not close — check corners and row transforms.');
-      }
-    }
+    applyMiterClosureWarnings(warnings, cells, panels);
   }
 
   return {
@@ -218,6 +231,50 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     warnings,
     complete,
   };
+}
+
+/** Last colour-closure result — skip recompute when the lattice fingerprint is unchanged. */
+let colourMemoKey = '';
+let colourMemoClosed = true;
+
+function miterLatticeClosesMemo(
+  cells: readonly ClosableCell[],
+  panels: readonly Panel[],
+): boolean {
+  const key = colourClosureKey(cells, panels);
+  if (key === colourMemoKey) return colourMemoClosed;
+  const closed = miterLatticeCloses(cells, panels);
+  colourMemoKey = key;
+  colourMemoClosed = closed;
+  return closed;
+}
+
+function colourClosureKey(
+  cells: readonly ClosableCell[],
+  panels: readonly Panel[],
+): string {
+  // Fingerprint the lattice geometry + miter fields that affect colour continuity.
+  // Name / wasteFactor changes must not bust the memo.
+  return JSON.stringify({
+    cells: cells.map((c) => [
+      c.xIn,
+      c.yIn,
+      c.wIn,
+      c.hIn,
+      c.speciesId,
+      c.wedge?.speciesId ?? null,
+      c.wedge?.polygon ?? null,
+    ]),
+    panels: panels.map((p) => [
+      p.thicknessIn,
+      p.strips.map((s) => [
+        s.widthIn,
+        s.miter?.angleDeg ?? null,
+        s.miter?.corner ?? null,
+        s.miter?.speciesId ?? null,
+      ]),
+    ]),
+  });
 }
 
 function boardFeetBySpeciesFor(

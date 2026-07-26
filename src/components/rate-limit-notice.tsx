@@ -78,3 +78,20 @@ export function UploadFailedNotice({ show, dismissHref }: Props) {
     </p>
   );
 }
+
+/**
+ * "Design too large to save" — Sprint 61. Visible half of the over-cap bounce in
+ * `createBoardDesignAction` / `updateBoardDesignAction`. Silent rejection was a
+ * data-loss path; this sentence is the fix's user-facing half.
+ */
+export function DesignTooLargeNotice({ show, dismissHref }: Props) {
+  if (!show) return null;
+
+  return (
+    <p className="rate-limit-notice" role="status">
+      Your board wasn&rsquo;t saved &mdash; the design is too large. Remove some
+      strips or panels and try again.{' '}
+      <Link href={dismissHref}>Dismiss</Link>
+    </p>
+  );
+}

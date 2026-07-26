@@ -79,6 +79,7 @@ import {
   deleteBoardDesignAction,
   updateBoardDesignAction,
 } from '@/app/actions/board-designs';
+import { MAX_CONFIG_BYTES } from '@/lib/board-designer/config-limits';
 
 const validConfig: BoardDesignConfig = makeV2Config({
   name: 'Weekend checkerboard',
@@ -226,17 +227,47 @@ describe('BoardDesign auth gates', () => {
     expect(mocks.prisma.boardDesign.deleteMany).not.toHaveBeenCalled();
   });
 
-  it('17KB config bounces before JSON.parse and never writes', async () => {
+  it('over-cap config bounces with design-too-large notice and never writes', async () => {
     const parseSpy = vi.spyOn(JSON, 'parse');
 
     await expectRedirect(
-      createBoardDesignAction(form({ config: '{'.repeat(17 * 1024), returnTo: '/designer' })),
-      '/designer',
+      createBoardDesignAction(
+        form({
+          config: '{'.repeat(MAX_CONFIG_BYTES + 1),
+          returnTo: '/designer',
+        }),
+      ),
+      '/designer?notice=design-too-large',
     );
 
     expect(parseSpy).not.toHaveBeenCalled();
     expect(mocks.prisma.boardDesign.create).not.toHaveBeenCalled();
     parseSpy.mockRestore();
+  });
+
+  it('normal config still saves with no notice', async () => {
+    await expectRedirect(
+      createBoardDesignAction(
+        form({
+          config: JSON.stringify(validConfig),
+          returnTo: '/designer',
+        }),
+      ),
+      '/designer/design-a',
+    );
+    expect(mocks.prisma.boardDesign.create).toHaveBeenCalledOnce();
+  });
+
+  it('designer pages render the design-too-large notice', async () => {
+    const designer = readFileSync(resolve(process.cwd(), 'src/app/designer/page.tsx'), 'utf8');
+    const detail = readFileSync(
+      resolve(process.cwd(), 'src/app/designer/[id]/page.tsx'),
+      'utf8',
+    );
+    expect(designer).toContain('DesignTooLargeNotice');
+    expect(designer).toContain('hasDesignTooLargeNotice');
+    expect(detail).toContain('DesignTooLargeNotice');
+    expect(detail).toContain('hasDesignTooLargeNotice');
   });
 
   it('designer is not added to the public route allowlist', () => {

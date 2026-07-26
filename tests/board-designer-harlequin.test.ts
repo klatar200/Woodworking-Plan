@@ -30,7 +30,7 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
     ).toBeLessThan(0.05);
   });
 
-  it('speciesComponents: walnut = disjoint rhombi; maple = 1 field', () => {
+  it('speciesComponents counts are identical at two sample resolutions', () => {
     const tpl = getTemplate('harlequin')!;
     const cells = layoutTopFace(tpl.config, calculateMetrics(tpl.config));
     // High SPI keeps the maple waist connected; tip-to-tip rhombi stay 4-connected-separate.
@@ -38,8 +38,10 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
     // 12 full + 8 half = 20 walnut components (verified at spi 40 and 48).
     const a = speciesComponents(cells, 40);
     const b = speciesComponents(cells, 48);
+    // Identical component counts across resolutions — not aliasing.
     expect(a.get('walnut')!.count).toBe(b.get('walnut')!.count);
     expect(a.get('hard-maple')!.count).toBe(b.get('hard-maple')!.count);
+    expect([...a.keys()].sort()).toEqual([...b.keys()].sort());
 
     const walnut = a.get('walnut')!;
     const maple = a.get('hard-maple')!;

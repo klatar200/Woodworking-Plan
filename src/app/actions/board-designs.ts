@@ -5,39 +5,64 @@ import { redirect } from 'next/navigation';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { guardAction } from '@/lib/action-guard';
 import { formString } from '@/lib/form-fields';
-import { denialTarget, bounceTarget } from '@/lib/rate-limit-feedback';
+import {
+  denialTarget,
+  bounceTarget,
+  noticeUrl,
+  DESIGN_TOO_LARGE_NOTICE_VALUE,
+} from '@/lib/rate-limit-feedback';
 import { parseConfig } from '@/lib/board-designer/serialize';
 import { createDesign, updateDesign, deleteDesign } from '@/lib/board-designs';
+import { MAX_CONFIG_BYTES } from '@/lib/board-designer/config-limits';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
 const FALLBACK = '/designer';
-const MAX_CONFIG_BYTES = 16 * 1024;
 
-function parseConfigField(formData: FormData): BoardDesignConfig | null {
+export { MAX_CONFIG_BYTES };
+
+type ParseResult =
+  | { ok: true; config: BoardDesignConfig }
+  | { ok: false; reason: 'missing' | 'too-large' | 'invalid' };
+
+function parseConfigField(formData: FormData): ParseResult {
   const raw = formString(formData, 'config');
-  if (raw === null) return null;
-  if (new TextEncoder().encode(raw).byteLength > MAX_CONFIG_BYTES) return null;
+  if (raw === null) return { ok: false, reason: 'missing' };
+  if (new TextEncoder().encode(raw).byteLength > MAX_CONFIG_BYTES) {
+    return { ok: false, reason: 'too-large' };
+  }
 
   let json: unknown;
   try {
     json = JSON.parse(raw);
   } catch {
-    return null;
+    return { ok: false, reason: 'invalid' };
   }
 
   const parsed = parseConfig(json);
-  return parsed.ok ? parsed.config : null;
+  return parsed.ok
+    ? { ok: true, config: parsed.config }
+    : { ok: false, reason: 'invalid' };
+}
+
+function bounceParseFailure(formData: FormData, fallback: string, reason: ParseResult & { ok: false }): never {
+  const target = bounceTarget(formData, fallback);
+  // Size rejection is the user's real work, not tampering — carry a notice.
+  // Missing/invalid (structural) stays silent per CLAUDE.md §7.
+  if (reason.reason === 'too-large') {
+    redirect(noticeUrl(target, DESIGN_TOO_LARGE_NOTICE_VALUE));
+  }
+  redirect(target);
 }
 
 export async function createBoardDesignAction(formData: FormData): Promise<void> {
   if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, FALLBACK));
 
-  const config = parseConfigField(formData);
-  if (config === null) redirect(bounceTarget(formData, FALLBACK));
+  const parsed = parseConfigField(formData);
+  if (!parsed.ok) bounceParseFailure(formData, FALLBACK, parsed);
 
   let designId: string | null = null;
   await guardAction(
-    createDesign(config).then((design) => {
+    createDesign(parsed.config).then((design) => {
       designId = design.id;
     }),
     formData,
@@ -52,10 +77,11 @@ export async function updateBoardDesignAction(formData: FormData): Promise<void>
   if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, FALLBACK));
 
   const designId = formString(formData, 'designId');
-  const config = parseConfigField(formData);
-  if (designId === null || config === null) redirect(bounceTarget(formData, FALLBACK));
+  const parsed = parseConfigField(formData);
+  if (designId === null) redirect(bounceTarget(formData, FALLBACK));
+  if (!parsed.ok) bounceParseFailure(formData, `/designer/${designId}`, parsed);
 
-  await guardAction(updateDesign(designId, config), formData, FALLBACK);
+  await guardAction(updateDesign(designId, parsed.config), formData, FALLBACK);
 
   revalidatePath(`/designer/${designId}`);
   revalidatePath('/designer/library');
