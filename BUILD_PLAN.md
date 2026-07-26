@@ -43,11 +43,12 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 61 (Close the gaps) | ✅ **CLOSED** 2026-07-26 — **93/100** (browser re-score; was 96). Skip note unreachable at 48k=schema max — fixed in Sprint 62. 32 KiB defence-in-depth kept. Suite **1182/1182**; First Load **120 kB**. |
 | Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS). Deleted unreachable colour gate; always-run check; reachability witness suite. Closure false-positive on mixed base species — fixed in Sprint 63. Suite **1195/1195**; First Load **120 kB**. |
 | Sprint 63 (Geometric closure) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2eab289`). `wedgeWebContinuous` replaces species equality; accent strips no longer false-positive. Suite **1203/1203**; First Load **120 kB**. |
-| Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**). Cut plan + designer shopping push; fix pass: `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
+| Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
+| Sprint 65 (U7 remainder: thumbs + drag) | 🔓 **OPEN** 2026-07-26. Library thumbnails from config (no stored image); `reorder-strip` + pointer drag (buttons stay). |
 
-Test suite — expected: 1234/1234 across 108 files (Sprint 64 fix-pass, Cursor VM). Update this single figure each sprint close; 1228/1228 and earlier superseded.
+Test suite — expected: 1234/1234 across 108 files (Sprint 64; Sprint 65 in progress). Update this single figure each sprint close; 1228/1228 and earlier superseded.
 
-**U6 CLOSED** 2026-07-26. **U7 retired as a unit** — its contents shipped across Sprints 53–63 (undo/redo, multi-panel end grain, angled/miter strips, species expansion, geometric closure). Remaining U7 items (share links, custom species, drag reorder, thumbnails) stay deferred, not a bundled unit.
+**U6 CLOSED** 2026-07-26. **U7 remainder OPEN** (Sprint 65: thumbnails + drag reorder). Share links / custom species stay deferred.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 

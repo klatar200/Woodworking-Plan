@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 64 Attempt 2 (2026-07-26) — CLOSED 96/100** — U6 fix pass (bf render + copy + yield label). First Load held. Prior Attempt 1 prod re-score **92/100**.
+> **Latest logged: Sprint 65 Attempt 1 (2026-07-26) — OPEN** — U7 remainder: library thumbnails + strip drag reorder. Prior: Sprint 64 **96/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅. Test suite: 1234 green (post-64 fix).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅. Test suite: 1234 green (post-64; Sprint 65 in progress).
 
 ---
 
@@ -144,6 +144,24 @@ Score: **96/100** — Pass. Closure is wedge membership, not base colour.
 
 ### Final outcome
 Score: **96/100** — Pass (after Attempt 2 fix). U6 shipped with render-seam board-feet formatting.
+
+### Sprint 64 Attempt 2 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+
+| # | Fix | Result | Evidence |
+|---|---|---|---|
+| 1 | Board-feet quantity | PASS | `1.39 board feet` (not raw float) |
+| 2 | Source count / heading | PASS | `2 items across 1 board` · `ON THIS LIST` |
+| 3 | Yield label | PASS | `82% of each board consumed` |
+| 4 | Article + inch mark | PASS | `an 8 ft board` · ASCII `"` in shipped bundle |
+
+All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
+
+---
+
+## Sprint 65: U7 remainder — library thumbnails + strip drag reorder
+**Dates:** 2026-07-26
+**Scope:** Part 0 S64 Attempt-2 verify · library thumbnails from config · `reorder-strip` + drag · shopping-list footer copy. Trunk-based to `main`.
+**Status:** OPEN
 
 ---
 
