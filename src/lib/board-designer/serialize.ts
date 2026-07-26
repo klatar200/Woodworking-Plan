@@ -8,11 +8,18 @@ import type {
   Strip,
 } from './types';
 
+const miterSchema = z.object({
+  speciesId: z.string().min(1),
+  angleDeg: z.number().min(5).max(85),
+  corner: z.enum(['tl', 'tr', 'bl', 'br']),
+});
+
 const stripSchema = z.object({
   id: z.string().min(1),
   speciesId: z.string().min(1),
   widthIn: z.number().min(0.0625).max(24),
   repeat: z.number().int().min(1).max(20),
+  miter: miterSchema.optional(),
 });
 
 const panelSchema = z.object({

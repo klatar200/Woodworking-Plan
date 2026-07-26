@@ -1,7 +1,13 @@
 import { getSpecies, UNKNOWN_SPECIES_COLOR } from './species';
+import {
+  clipMiterWedge,
+  mapMiterCorner,
+} from './miter-geometry';
 import type {
   BoardDesignConfig,
   BoardMetrics,
+  CellWedge,
+  Miter,
   Panel,
   RowTransform,
   Strip,
@@ -14,6 +20,8 @@ export interface Cell {
   hIn: number;
   colorHex: string;
   speciesId: string;
+  /** Present only for a mitered strip. Absolute inches, same space as x/y/w/h. */
+  wedge?: CellWedge;
 }
 
 /** Expand strip.repeat into one entry per physical strip (left → right / top → bottom). */
@@ -31,23 +39,67 @@ function colorFor(speciesId: string): string {
   return getSpecies(speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR;
 }
 
+function transformStrip(strip: Strip, transform: RowTransform): Strip {
+  if (!strip.miter) {
+    return strip;
+  }
+  const miter: Miter = {
+    ...strip.miter,
+    corner: mapMiterCorner(strip.miter.corner, transform),
+  };
+  return { ...strip, miter };
+}
+
 /**
  * Apply a row transform to an expanded strip list.
- * rot180 / mirrorX reverse; none / mirrorY leave order.
+ * rot180 / mirrorX reverse order; none / mirrorY keep order.
+ * Miter corners transform with the row (§A2) so lattices can close.
  */
 export function applyRowTransform(strips: Strip[], transform: RowTransform): Strip[] {
+  const mapped = strips.map((s) => transformStrip(s, transform));
   if (transform === 'rot180' || transform === 'mirrorX') {
-    return strips.slice().reverse();
+    return mapped.reverse();
   }
-  return strips.slice();
+  return mapped;
+}
+
+function cellForStrip(
+  strip: Strip,
+  xIn: number,
+  yIn: number,
+  wIn: number,
+  hIn: number,
+): Cell {
+  const cell: Cell = {
+    xIn,
+    yIn,
+    wIn,
+    hIn,
+    colorHex: colorFor(strip.speciesId),
+    speciesId: strip.speciesId,
+  };
+  if (!strip.miter) return cell;
+
+  const polygon = clipMiterWedge(xIn, yIn, wIn, hIn, strip.miter);
+  if (!polygon) return cell;
+
+  cell.wedge = {
+    speciesId: strip.miter.speciesId,
+    colorHex: colorFor(strip.miter.speciesId),
+    polygon,
+    angleDeg: strip.miter.angleDeg,
+    corner: strip.miter.corner,
+  };
+  return cell;
 }
 
 /**
  * Top-face cell layout for SVG + 3D. Origin top-left; x along finishedLengthIn,
  * y along finishedWidthIn. Pure and deterministic.
  *
- * edge: panels[0] strips stacked down y; row height = panel thickness.
+ * edge: panels[0] strips stacked down y; row height = strip width.
  * end:  rowPattern cycled to rowCount; y accumulates per-row panel thickness.
+ * Solid strips emit no wedge and stay byte-identical to pre-miter output.
  */
 export function layoutTopFace(
   config: BoardDesignConfig,
@@ -60,14 +112,9 @@ export function layoutTopFace(
     const cells: Cell[] = [];
     let y = 0;
     for (const s of expanded) {
-      cells.push({
-        xIn: 0,
-        yIn: y,
-        wIn: metrics.finishedLengthIn,
-        hIn: s.widthIn,
-        colorHex: colorFor(s.speciesId),
-        speciesId: s.speciesId,
-      });
+      cells.push(
+        cellForStrip(s, 0, y, metrics.finishedLengthIn, s.widthIn),
+      );
       y += s.widthIn;
     }
     return cells;
@@ -88,14 +135,7 @@ export function layoutTopFace(
     const order = applyRowTransform(expandStrips(panel.strips), step.transform);
     let x = 0;
     for (const s of order) {
-      cells.push({
-        xIn: x,
-        yIn: y,
-        wIn: s.widthIn,
-        hIn: panel.thicknessIn,
-        colorHex: colorFor(s.speciesId),
-        speciesId: s.speciesId,
-      });
+      cells.push(cellForStrip(s, x, y, s.widthIn, panel.thicknessIn));
       x += s.widthIn;
     }
     y += panel.thicknessIn;

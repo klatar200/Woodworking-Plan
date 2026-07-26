@@ -48,13 +48,16 @@ export function undoRedoShortcut(event: {
   return key === 'y' || event.shiftKey ? 'redo' : 'undo';
 }
 
-/** Deep-clone panels, nested strips, and rowPattern. */
+/** Deep-clone panels, nested strips (incl. miter), and rowPattern. */
 export function cloneConfig(config: BoardDesignConfig): BoardDesignConfig {
   return {
     ...config,
     panels: config.panels.map((panel) => ({
       ...panel,
-      strips: panel.strips.map((strip) => ({ ...strip })),
+      strips: panel.strips.map((strip) => ({
+        ...strip,
+        miter: strip.miter ? { ...strip.miter } : undefined,
+      })),
     })),
     rowPattern: config.rowPattern.map((step) => ({ ...step })),
   };
@@ -122,7 +125,12 @@ export function configReducer(
       return mapPanel(config, action.panelId, (panel) => {
         const index = panel.strips.findIndex((strip) => strip.id === action.id);
         if (index < 0) return panel;
-        const copy = { ...panel.strips[index]!, id: newStripId() };
+        const src = panel.strips[index]!;
+        const copy = {
+          ...src,
+          id: newStripId(),
+          miter: src.miter ? { ...src.miter } : undefined,
+        };
         return {
           ...panel,
           strips: [
@@ -153,9 +161,18 @@ export function configReducer(
     case 'update-strip':
       return mapPanel(config, action.panelId, (panel) => ({
         ...panel,
-        strips: panel.strips.map((strip) =>
-          strip.id === action.id ? { ...strip, ...action.patch } : strip,
-        ),
+        strips: panel.strips.map((strip) => {
+          if (strip.id !== action.id) return strip;
+          const next = { ...strip, ...action.patch };
+          if ('miter' in action.patch) {
+            next.miter = action.patch.miter
+              ? { ...action.patch.miter }
+              : undefined;
+          } else if (strip.miter) {
+            next.miter = { ...strip.miter };
+          }
+          return next;
+        }),
       }));
     case 'add-panel': {
       if (config.panels.length >= 4) return config;
@@ -168,7 +185,11 @@ export function configReducer(
         id: newPanelId(),
         label: `Panel ${nextIndex}`.slice(0, 24),
         thicknessIn: source.thicknessIn,
-        strips: source.strips.map((s) => ({ ...s, id: newStripId() })),
+        strips: source.strips.map((s) => ({
+          ...s,
+          id: newStripId(),
+          miter: s.miter ? { ...s.miter } : undefined,
+        })),
       };
       return { ...config, panels: [...config.panels, copy] };
     }
@@ -231,6 +252,19 @@ const COALESCE_PATCH_FIELDS = new Set([
 export function coalesceKeyFor(action: ConfigAction): string | null {
   if (action.type === 'update-strip') {
     const keys = Object.keys(action.patch);
+    // Typed miter angle coalesces; species/corner stay discrete.
+    if (
+      keys.length === 1 &&
+      keys[0] === 'miter' &&
+      action.patch.miter &&
+      action.patch.miter.angleDeg !== undefined
+    ) {
+      // Only coalesce when the patch is an angle-only miter update from the UI
+      // (same species+corner, changing angleDeg). Key includes species+corner so
+      // a corner click cannot merge with a prior angle type.
+      const m = action.patch.miter;
+      return `update-strip:${action.panelId}:${action.id}:miter.angleDeg:${m.speciesId}:${m.corner}`;
+    }
     if (keys.length !== 1) return null;
     const field = keys[0]!;
     if (!COALESCE_UPDATE_STRIP_FIELDS.has(field)) return null;

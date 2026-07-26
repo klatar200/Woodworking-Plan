@@ -1,3 +1,8 @@
+import {
+  closingThicknessIn,
+  miterWedgeFraction,
+  thicknessMismatchesClose,
+} from './miter-geometry';
 import { getSpecies } from './species';
 import type {
   BoardDesignConfig,
@@ -119,6 +124,33 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
         seenUnknown.add(s.speciesId);
         warnings.push(`Unknown wood: ${s.speciesId}`);
       }
+      if (
+        s.miter &&
+        !getSpecies(s.miter.speciesId) &&
+        !seenUnknown.has(s.miter.speciesId)
+      ) {
+        seenUnknown.add(s.miter.speciesId);
+        warnings.push(`Unknown wood: ${s.miter.speciesId}`);
+      }
+    }
+  }
+
+  // Closing-thickness hint: any mitered strip whose panel is >5% off ideal.
+  for (const panel of panels) {
+    for (const s of panel.strips) {
+      if (!s.miter) continue;
+      if (
+        thicknessMismatchesClose(
+          s.widthIn,
+          panel.thicknessIn,
+          s.miter.angleDeg,
+        )
+      ) {
+        const ideal = closingThicknessIn(s.widthIn, s.miter.angleDeg);
+        const msg = `Miter at ${s.miter.angleDeg}° wants panel thickness ≈ ${ideal.toFixed(3)}″ for a ${s.widthIn}″ strip — lattice will not close.`;
+        if (!warnings.includes(msg)) warnings.push(msg);
+        // Still buildable — complete stays as-is (mismatch is a geometry warning).
+      }
     }
   }
 
@@ -161,13 +193,17 @@ function boardFeetBySpeciesFor(
     const plan = planById.get(panel.id);
     const lengthIn = plan?.requiredLengthIn ?? 0;
     for (const s of panel.strips) {
-      if (!totals.has(s.speciesId)) {
-        order.push(s.speciesId);
-        totals.set(s.speciesId, 0);
-      }
-      const bf =
+      const stripBf =
         (panel.thicknessIn * s.widthIn * lengthIn * s.repeat) / 144;
-      totals.set(s.speciesId, (totals.get(s.speciesId) ?? 0) + bf);
+      const wedgeFrac = s.miter
+        ? miterWedgeFraction(s.widthIn, panel.thicknessIn, s.miter)
+        : 0;
+      const baseFrac = 1 - wedgeFrac;
+
+      addBf(order, totals, s.speciesId, stripBf * baseFrac);
+      if (s.miter && wedgeFrac > 0) {
+        addBf(order, totals, s.miter.speciesId, stripBf * wedgeFrac);
+      }
     }
   }
 
@@ -180,4 +216,17 @@ function boardFeetBySpeciesFor(
       boardFeet: raw * (1 + config.wasteFactor),
     };
   });
+}
+
+function addBf(
+  order: string[],
+  totals: Map<string, number>,
+  speciesId: string,
+  amount: number,
+): void {
+  if (!totals.has(speciesId)) {
+    order.push(speciesId);
+    totals.set(speciesId, 0);
+  }
+  totals.set(speciesId, (totals.get(speciesId) ?? 0) + amount);
 }

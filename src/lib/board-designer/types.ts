@@ -6,11 +6,38 @@ export interface WoodSpecies {
   colorHex: string;
 }
 
+/** Which corner of the tile the miter wedge occupies. */
+export type MiterCorner = 'tl' | 'tr' | 'bl' | 'br';
+
+/**
+ * Optional two-tone miter on a strip. Absent = solid strip (every pre-58 design).
+ * angleDeg is from the HORIZONTAL (strip-width) axis — see miter-geometry.ts.
+ */
+export interface Miter {
+  /** Wedge species — the piece glued to the cut face. */
+  speciesId: string;
+  /** 5–85; 30 = hexagon family. Not int — 22.5 is a real miter. */
+  angleDeg: number;
+  corner: MiterCorner;
+}
+
 export interface Strip {
   id: string;
   speciesId: string;
   widthIn: number;
   repeat: number;
+  /** Absent = solid. Additive on schemaVersion 2 — no migration. */
+  miter?: Miter;
+}
+
+/** Wedge payload on a laid-out cell (absolute inches). */
+export interface CellWedge {
+  speciesId: string;
+  colorHex: string;
+  /** 3–5 vertices, convex, clockwise. */
+  polygon: ReadonlyArray<readonly [number, number]>;
+  angleDeg: number;
+  corner: MiterCorner;
 }
 
 export interface Panel {

@@ -44,17 +44,27 @@ export function BoardDiagram({
       className="block w-full max-h-[34rem] rounded-[0.75rem] border border-border bg-surface"
     >
       {cells.map((cell, i) => (
-        <rect
-          key={`${cell.speciesId}-${i}-${cell.xIn}-${cell.yIn}`}
-          x={cell.xIn}
-          y={cell.yIn}
-          width={cell.wIn}
-          height={cell.hIn}
-          fill={cell.colorHex}
-          stroke="var(--border)"
-          strokeWidth={0.03}
-          vectorEffect="non-scaling-stroke"
-        />
+        <g key={`${cell.speciesId}-${i}-${cell.xIn}-${cell.yIn}`}>
+          <rect
+            x={cell.xIn}
+            y={cell.yIn}
+            width={cell.wIn}
+            height={cell.hIn}
+            fill={cell.colorHex}
+            stroke="var(--border)"
+            strokeWidth={0.03}
+            vectorEffect="non-scaling-stroke"
+          />
+          {cell.wedge ? (
+            <polygon
+              points={cell.wedge.polygon.map(([x, y]) => `${x},${y}`).join(' ')}
+              fill={cell.wedge.colorHex}
+              stroke="var(--border)"
+              strokeWidth={0.03}
+              vectorEffect="non-scaling-stroke"
+            />
+          ) : null}
+        </g>
       ))}
     </svg>
   );
