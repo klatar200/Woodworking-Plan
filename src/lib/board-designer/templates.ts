@@ -339,15 +339,23 @@ export const TEMPLATES: readonly BoardTemplate[] = [
   },
   {
     /**
-     * Hexagon lattice — verified 2026-07-26 against cellsColorClosed:
-     * same base (maple) + walnut wedge @ 30°, corners alternating tr/tl,
-     * rowPattern [none, mirrorY]. Closes colour-continuously; a 1″ panel
-     * control with the same strips fails the same helper.
+     * Harlequin (60°/120° rhombi) — Sprint 59 rename of the Sprint 58 "hexagon"
+     * template. Template ids are not persisted (configs are stored whole), so
+     * renaming is safe for saved designs.
+     *
+     * Same strips/angle/corners as shipped: maple base + walnut wedge @ 30°,
+     * corners alternating tr/tl, rowPattern [none, mirrorY], 8 strips × 0.875″.
+     * Panel thickness is the two-row closing value t = w·secθ =
+     * 0.875 / cos(π/6) ≈ 1.0104″ (not the unreachable one-row form).
+     *
+     * Finished ≈ 7 × 8.083 × 1.5 (8×0.875 · 8×t · slice 1.5).
+     * Walnut → disjoint rhombi (12 full + 8 edge-halves with shipped
+     * [none, mirrorY]); maple → one connected field.
      */
-    id: 'hexagon',
+    id: 'harlequin',
     config: {
       ...BASE,
-      name: 'Hexagon',
+      name: 'Harlequin',
       grain: 'end',
       sourceLengthIn: 20,
       sliceThicknessIn: 1.5,
@@ -355,7 +363,8 @@ export const TEMPLATES: readonly BoardTemplate[] = [
         panel(
           'course',
           'Course',
-          1.5,
+          // t = w · sec(30°) = 0.875 / cos(π/6)
+          0.875 / Math.cos(Math.PI / 6),
           Array.from({ length: 8 }, (_, i) =>
             miteredStrip(
               `hx-${i + 1}`,

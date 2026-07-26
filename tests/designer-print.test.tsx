@@ -115,18 +115,18 @@ describe('designer print route', () => {
 
   it('shows miter column and offcut note for a mitered design', async () => {
     const { getTemplate } = await import('@/lib/board-designer/templates');
-    const hex = getTemplate('hexagon')!.config;
+    const hex = getTemplate('harlequin')!.config;
     const { getDesign } = await import('@/lib/board-designs');
     vi.mocked(getDesign).mockResolvedValue({
-      id: 'design-hex',
-      name: 'Hexagon',
+      id: 'design-harlequin',
+      name: 'Harlequin',
       config: hex,
       createdAt: new Date('2026-07-26T00:00:00Z'),
       updatedAt: new Date('2026-07-26T00:00:00Z'),
     });
     const { default: PrintPage } = await import('@/app/designer/[id]/print/page');
     const html = renderToStaticMarkup(
-      await PrintPage({ params: Promise.resolve({ id: 'design-hex' }) }),
+      await PrintPage({ params: Promise.resolve({ id: 'design-harlequin' }) }),
     );
     expect(html).toContain('Miter');
     expect(html).toContain('Top right');

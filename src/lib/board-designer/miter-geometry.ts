@@ -21,14 +21,26 @@ export type Point = readonly [number, number];
  * complement of θ = 30° here — the two get confused constantly.
  *
  * Vertical drop of the split across full tile width w: d = w · tan θ.
+ *
+ * `lineForCorner`: every corner wedge spans its full horizontal edge
+ * (tl/tr cover the entire top; bl/br the entire bottom). Colour continuity
+ * across a row boundary therefore requires wedges on both sides — bands are
+ * always two rows deep. See Sprint 59 §A0.
  */
 
 const CORNERS: readonly MiterCorner[] = ['tl', 'tr', 'bl', 'br'];
 
-/** Ideal panel thickness for a regular-hexagon lattice at angle θ. */
+/**
+ * Contrasting bands from corner miters are always two rows deep (a corner wedge
+ * spans its full horizontal edge, so wedges must pair across a row boundary).
+ * Base-species waist = 2t − 2d; setting it equal to the rhombus edge w/cosθ:
+ *     t = w · sec θ
+ * The one-row form t = w(tanθ + secθ) is unreachable with a single corner wedge
+ * per strip — see Sprint 58's failed check 1.
+ */
 export function closingThicknessIn(widthIn: number, angleDeg: number): number {
   const theta = (angleDeg * Math.PI) / 180;
-  return widthIn * (Math.tan(theta) + 1 / Math.cos(theta));
+  return widthIn / Math.cos(theta);
 }
 
 /** True when |actual − ideal| / ideal > 5%. */
@@ -304,12 +316,11 @@ export function colorAtCell(cell: ClosableCell, x: number, y: number): string {
 /**
  * Full lattice-closure check for mitered boards:
  * 1) colour continuous across every shared cell edge (sampled), and
- * 2) every mitered strip's panel thickness within 5% of t = w(tanθ+secθ).
+ * 2) every mitered strip's panel thickness within 5% of t = w·secθ.
  *
- * (2) is required because colour continuity alone still holds when d < t for
- * a wrong thickness — the hexagons distort but edges still match. The
- * reference generators draw that silently; we refuse to. One helper powers
- * both the hexagon acceptance test and the panel mismatch warning.
+ * Colour continuity is necessary but not sufficient for a named lattice —
+ * use `speciesComponents` to assert shape. Thickness gate stops the
+ * one-row-form warning from being backwards on the two-row harlequin.
  */
 export function miterLatticeCloses(
   cells: readonly ClosableCell[],
@@ -333,7 +344,11 @@ export function miterLatticeCloses(
   return cellsColorClosed(cells, samplesPerEdge);
 }
 
-/** Colour continuity only — every shared edge agrees species at every sample. */
+/**
+ * Colour continuity only — every shared edge agrees species at every sample.
+ * Compares only spatially adjacent cells (same-row neighbours + next-row
+ * neighbours), not the O(n²) all-pairs scan.
+ */
 export function cellsColorClosed(
   cells: readonly ClosableCell[],
   samplesPerEdge = 24,
@@ -341,46 +356,164 @@ export function cellsColorClosed(
   if (cells.length === 0) return true;
   const eps = 1e-7;
 
-  for (let i = 0; i < cells.length; i += 1) {
-    const a = cells[i]!;
-    for (let j = i + 1; j < cells.length; j += 1) {
-      const b = cells[j]!;
-      // Vertical shared edge: a's right == b's left (or vice versa)
-      if (edgesTouchVertical(a, b, eps)) {
-        const x = Math.max(a.xIn, b.xIn) < Math.min(a.xIn + a.wIn, b.xIn + b.wIn)
-          ? // overlapping in x somehow — skip non-edge
-            null
-          : nearEqual(a.xIn + a.wIn, b.xIn, eps)
-            ? a.xIn + a.wIn
-            : nearEqual(b.xIn + b.wIn, a.xIn, eps)
-              ? b.xIn + b.wIn
-              : null;
-        if (x !== null) {
-          const y0 = Math.max(a.yIn, b.yIn);
-          const y1 = Math.min(a.yIn + a.hIn, b.yIn + b.hIn);
-          if (y1 - y0 > eps && !edgeColorsMatch(a, b, 'v', x, y0, y1, samplesPerEdge)) {
-            return false;
-          }
-        }
+  // Group by row (yIn) so we only compare neighbours.
+  const byRow = new Map<number, ClosableCell[]>();
+  for (const cell of cells) {
+    const key = Math.round(cell.yIn * 1e6) / 1e6;
+    const list = byRow.get(key);
+    if (list) list.push(cell);
+    else byRow.set(key, [cell]);
+  }
+  const rowKeys = [...byRow.keys()].sort((a, b) => a - b);
+
+  for (const key of rowKeys) {
+    const row = byRow.get(key)!;
+    row.sort((a, b) => a.xIn - b.xIn);
+    for (let i = 0; i < row.length - 1; i += 1) {
+      const a = row[i]!;
+      const b = row[i + 1]!;
+      if (!edgesTouchVertical(a, b, eps)) continue;
+      const x = nearEqual(a.xIn + a.wIn, b.xIn, eps)
+        ? a.xIn + a.wIn
+        : nearEqual(b.xIn + b.wIn, a.xIn, eps)
+          ? b.xIn + b.wIn
+          : null;
+      if (x === null) continue;
+      const y0 = Math.max(a.yIn, b.yIn);
+      const y1 = Math.min(a.yIn + a.hIn, b.yIn + b.hIn);
+      if (y1 - y0 > eps && !edgeColorsMatch(a, b, 'v', x, y0, y1, samplesPerEdge)) {
+        return false;
       }
-      // Horizontal shared edge
-      if (edgesTouchHorizontal(a, b, eps)) {
+    }
+  }
+
+  for (let r = 0; r < rowKeys.length - 1; r += 1) {
+    const upper = byRow.get(rowKeys[r]!)!;
+    const lower = byRow.get(rowKeys[r + 1]!)!;
+    // Two-pointer over x-sorted rows — only overlapping x-ranges (O(n) per row pair).
+    let j = 0;
+    for (const a of upper) {
+      while (j < lower.length && lower[j]!.xIn + lower[j]!.wIn <= a.xIn + eps) {
+        j += 1;
+      }
+      for (let k = j; k < lower.length; k += 1) {
+        const b = lower[k]!;
+        if (b.xIn >= a.xIn + a.wIn - eps) break;
+        if (!edgesTouchHorizontal(a, b, eps)) continue;
         const y = nearEqual(a.yIn + a.hIn, b.yIn, eps)
           ? a.yIn + a.hIn
           : nearEqual(b.yIn + b.hIn, a.yIn, eps)
             ? b.yIn + b.hIn
             : null;
-        if (y !== null) {
-          const x0 = Math.max(a.xIn, b.xIn);
-          const x1 = Math.min(a.xIn + a.wIn, b.xIn + b.wIn);
-          if (x1 - x0 > eps && !edgeColorsMatch(a, b, 'h', y, x0, x1, samplesPerEdge)) {
-            return false;
-          }
+        if (y === null) continue;
+        const x0 = Math.max(a.xIn, b.xIn);
+        const x1 = Math.min(a.xIn + a.wIn, b.xIn + b.wIn);
+        if (x1 - x0 > eps && !edgeColorsMatch(a, b, 'h', y, x0, x1, samplesPerEdge)) {
+          return false;
         }
       }
     }
   }
   return true;
+}
+
+/**
+ * Rasterize the top face and connected-component-label it per species.
+ * Returns component counts and areas (in square inches). This is the only
+ * honest way to ask "what shape is this?" — edge sampling cannot distinguish
+ * a lattice of closed cells from one connected field with wavy edges.
+ */
+export function speciesComponents(
+  cells: readonly ClosableCell[],
+  samplesPerInch = 16,
+): Map<string, { count: number; areas: number[] }> {
+  const empty = new Map<string, { count: number; areas: number[] }>();
+  if (cells.length === 0 || !(samplesPerInch > 0)) return empty;
+
+  let maxX = 0;
+  let maxY = 0;
+  for (const c of cells) {
+    maxX = Math.max(maxX, c.xIn + c.wIn);
+    maxY = Math.max(maxY, c.yIn + c.hIn);
+  }
+  if (!(maxX > 0) || !(maxY > 0)) return empty;
+
+  // Cap total samples ~400k.
+  let spi = samplesPerInch;
+  const rough = maxX * spi * maxY * spi;
+  if (rough > 400_000) {
+    spi = Math.sqrt(400_000 / (maxX * maxY));
+  }
+  const cols = Math.max(1, Math.ceil(maxX * spi));
+  const rows = Math.max(1, Math.ceil(maxY * spi));
+  const dx = maxX / cols;
+  const dy = maxY / rows;
+  const sampleArea = dx * dy;
+
+  // Cell lookup acceleration: bucket by integer row of cell.yIn
+  const grid: (string | null)[] = new Array(cols * rows).fill(null);
+  for (let ry = 0; ry < rows; ry += 1) {
+    const y = (ry + 0.5) * dy;
+    for (let cx = 0; cx < cols; cx += 1) {
+      const x = (cx + 0.5) * dx;
+      const cell = findCellAt(cells, x, y);
+      if (!cell) continue;
+      grid[ry * cols + cx] = colorAtCell(cell, x, y);
+    }
+  }
+
+  const seen = new Uint8Array(cols * rows);
+  const result = new Map<string, { count: number; areas: number[] }>();
+
+  for (let i = 0; i < grid.length; i += 1) {
+    const species = grid[i];
+    if (!species || seen[i]) continue;
+    // Flood fill
+    let areaSamples = 0;
+    const stack = [i];
+    seen[i] = 1;
+    while (stack.length) {
+      const idx = stack.pop()!;
+      areaSamples += 1;
+      const x = idx % cols;
+      const y = (idx - x) / cols;
+      const neighbors = [
+        x > 0 ? idx - 1 : -1,
+        x + 1 < cols ? idx + 1 : -1,
+        y > 0 ? idx - cols : -1,
+        y + 1 < rows ? idx + cols : -1,
+      ];
+      for (const n of neighbors) {
+        if (n < 0 || seen[n]) continue;
+        if (grid[n] !== species) continue;
+        seen[n] = 1;
+        stack.push(n);
+      }
+    }
+    const entry = result.get(species) ?? { count: 0, areas: [] };
+    entry.count += 1;
+    entry.areas.push(areaSamples * sampleArea);
+    result.set(species, entry);
+  }
+  return result;
+}
+
+function findCellAt(
+  cells: readonly ClosableCell[],
+  x: number,
+  y: number,
+): ClosableCell | undefined {
+  for (const c of cells) {
+    if (
+      x >= c.xIn &&
+      x < c.xIn + c.wIn &&
+      y >= c.yIn &&
+      y < c.yIn + c.hIn
+    ) {
+      return c;
+    }
+  }
+  return undefined;
 }
 
 function nearEqual(a: number, b: number, eps: number): boolean {

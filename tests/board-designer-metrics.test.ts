@@ -229,7 +229,11 @@ describe('templates — finished dimensions + panelPlan', () => {
       brick: { length: 8.75, width: 18, thickness: 1.5 },
       diagonal: { length: 10, width: 18, thickness: 1.5 },
       'thue-morse': { length: 12, width: 12, thickness: 1.5 },
-      hexagon: { length: 7, width: 12, thickness: 1.5 },
+      harlequin: {
+        length: 7,
+        width: 8 * (0.875 / Math.cos(Math.PI / 6)),
+        thickness: 1.5,
+      },
     };
     expect(TEMPLATES).toHaveLength(9);
     for (const t of TEMPLATES) {

@@ -125,13 +125,9 @@ describe('miter geometry — row transforms', () => {
     // Corner mapping asserted explicitly via applyRowTransform
     const expanded = expandStrips(strips);
     expect(applyRowTransform(expanded, 'none')[0]!.miter!.corner).toBe('tl');
-    expect(applyRowTransform(expanded, 'rot180')[0]!.miter!.corner).toBe(
-      mapMiterCorner('bl', 'rot180') === 'tr'
-        ? applyRowTransform(expanded, 'rot180')[0]!.miter!.corner
-        : applyRowTransform(expanded, 'rot180')[0]!.miter!.corner,
-    );
     // After rot180: order reversed [c,b,a], corners mapped tl↔br, tr↔bl, bl↔tr
     const rot = applyRowTransform(expanded, 'rot180');
+    expect(mapMiterCorner('bl', 'rot180')).toBe('tr');
     expect(rot.map((s) => s.id)).toEqual(['c', 'b', 'a']);
     expect(rot.map((s) => s.miter!.corner)).toEqual(['tr', 'bl', 'br']);
 
@@ -146,12 +142,13 @@ describe('miter geometry — row transforms', () => {
 });
 
 describe('miter geometry — closing thickness', () => {
-  it('t/w = tan θ + sec θ within 2% for ⅞″ / 1½″ / 30°', () => {
+  it('t = w·secθ for the two-row corner-miter band', () => {
     const w = 0.875;
-    const t = 1.5;
     const ideal = closingThicknessIn(w, 30);
-    expect(Math.abs(t / w - ideal / w) / (ideal / w)).toBeLessThan(0.02);
-    expect(Math.abs(t - ideal) / ideal).toBeLessThan(0.02);
+    expect(ideal).toBeCloseTo(w / Math.cos(Math.PI / 6), 9);
+    // One-row form is NOT the closing condition.
+    const oneRowForm = w * (Math.tan(Math.PI / 6) + 1 / Math.cos(Math.PI / 6));
+    expect(Math.abs(ideal - oneRowForm) / oneRowForm).toBeGreaterThan(0.2);
   });
 });
 

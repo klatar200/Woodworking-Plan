@@ -160,12 +160,34 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     complete,
   };
 
-  // Miter lattice closure (colour + closing-thickness). Same helper as the
-  // hexagon acceptance test — do not silently draw a non-closing pattern.
+  // Miter lattice closure (colour + closing-thickness). Same helpers as the
+  // harlequin acceptance tests — do not silently draw a non-closing pattern.
+  //
+  // Perf (Sprint 59, Cursor VM): 2400 cells ≈ 33 ms; schema-max 40×20×60 =
+  // 48000 cells ≈ 110–125 ms for full colour sampling. Gate colour continuity
+  // above 4k cells (thickness check always runs) so the editor keystroke path
+  // stays under ~50 ms at the bound.
   const hasMiter = panels.some((p) => p.strips.some((s) => s.miter));
   if (hasMiter) {
     const cells = layoutTopFace(config, metricsSoFar);
-    if (!miterLatticeCloses(cells, panels)) {
+    const COLOUR_CHECK_CELL_CAP = 4000;
+    let closed: boolean;
+    if (cells.length > COLOUR_CHECK_CELL_CAP) {
+      closed = !panels.some((panel) =>
+        panel.strips.some(
+          (s) =>
+            s.miter &&
+            thicknessMismatchesClose(
+              s.widthIn,
+              panel.thicknessIn,
+              s.miter.angleDeg,
+            ),
+        ),
+      );
+    } else {
+      closed = miterLatticeCloses(cells, panels);
+    }
+    if (!closed) {
       for (const panel of panels) {
         for (const s of panel.strips) {
           if (!s.miter) continue;
