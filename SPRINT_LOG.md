@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 55 Attempt 1 (2026-07-26) — CLOSED 98/100** — designer undo/redo (`31a5940`); in-memory history + coalesced typing; template confirm removed. Prior: Sprint 54 **98/100**.
+> **Latest logged: Sprint 55 Attempt 1 (2026-07-26) — CLOSED 95/100** — designer undo/redo (`31a5940` + review fixes `7701bad`); in-memory history + coalesced typing; template confirm removed. All 9 behaviours verified on prod. Two defects fixed on review: dead `Ctrl+Shift+Z`, and a constant import that tripled `/designer` First Load JS. Prior: Sprint 54 **98/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1117 green (post-55).
 
@@ -59,17 +59,39 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 - Discrete clicks (species, grain, kerf, flip, add/delete/move/duplicate/load) **never** coalesce.
 - Cap **50** past snapshots; oldest dropped first. In-memory only — no localStorage/DB/URL.
 
-### Attempt 1 — score 98/100 — PASS
+### Attempt 1 — RE-SCORED 95/100 after review + prod verification (`7701bad`)
+Merged to `main` by the lead engineer after the local gate: Cursor worked on a branch (`cursor/designer-undo-redo-1e77`) and asked for a PR, but CLAUDE.md §4 mandates trunk-based — no branches/PRs. Merged, not PR'd. **Two defects were found on review before it reached prod.**
+
+**Defect 1 — `Ctrl+Shift+Z` was a silent no-op.** The handler matched only lowercase `'z'` on the shift branch (the `'Y'` branch was already written both ways). `KeyboardEvent.key` is case-shifted: real hardware sends `'Z'` for Shift+Z. Fix: mapping extracted to a pure `undoRedoShortcut()` in `history.ts`, case-folded, unit-tested both ways.
+**A synthesized keystroke could not have caught this and cannot verify it.** Measured via CDP on prod: `ctrl+shift+z` arrives as `{key:'z', shiftKey:true, code:''}` — lowercase, with no `code`. Same class of limitation as the Sprint 52 wheel/`preventDefault` finding. The unit test is the real guard; the browser test only exercises the lowercase path.
+
+**Defect 2 — `/designer` First Load JS 114 kB → 358 kB.** `designer-shell.tsx` imported `DESIGNER_WIDE_MQ` from `r3f-canvas.tsx`, which imports three.js at module scope and is meant to be reachable ONLY via `dynamic(..., {ssr:false})`. That single constant import put the whole 3D stack in the designer's **initial, blocking** bundle. Fix: constant moved to `src/lib/board-designer/viewport.ts` (no three.js import); restored to **115 kB**. Guarded at the import site in `designer-shell.test.tsx`, since a bundle boundary cannot be observed from vitest.
+
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | §4/5a only: Z/Y shortcuts, in-memory, template confirm deleted, all listed actions undoable; U3 STOP held (no state lib) |
-| Correctness & functionality (/20) | 18 | Reducer behaviour green (`designer-history.test.ts`); dirty clears when present===initial; hidden `config` tracks present. **−2**: keyboard / 900px gate / Name-native-undo / template-no-confirm UI path need Keagan browser (list below) — not claimed |
-| Automated test coverage (/15) | 15 | **1117** tests; history reducer asserts undo/redo/clear-future/no-ops/cap/coalesce/template/dirty/config serialization — behaviour, not class strings |
-| Security (/15) | 15 | No persistence; no new routes/public-routes; shortcuts ignored in text entry; listener gated on `DESIGNER_WIDE_MQ` so mounted-but-hidden narrow authoring cannot be mutated via keys |
-| Code quality & simplicity (/10) | 10 | Single pure `historyReducer` wrapping config reducer; shell stays the one `useReducer`; no deps |
+| Correctness & functionality (/20) | 18 | All 9 behaviours observed on prod (table below). **−2**: `Ctrl+Shift+Z` shipped dead and the bundle tripled; neither was caught by the sprint's own gate, and the sprint's manual list never checked bundle size |
+| Automated test coverage (/15) | 13 | **1121** tests / 95 files. History reducer asserts real behaviour. **−2**: the suite was green while a listed shortcut did nothing and First Load tripled; both are guarded now |
+| Security (/15) | 15 | No persistence; no new routes/public-routes; shortcuts ignored in text entry; listener gated on the viewport MQ so mounted-but-hidden narrow authoring cannot be mutated via keys |
+| Code quality & simplicity (/10) | 9 | Single pure `historyReducer`; no deps. **−1**: the cross-module constant import that collapsed code-splitting |
 | Mobile/offline behavior (/10) | 10 | Same wide MQ as canvas; Sprint 54 mount-but-hide preserved; history not written to SW caches |
 | Documentation & handoff (/5) | 5 | This entry + contract §9 + BUILD_PLAN §4 row/test-count; coalescing policy recorded |
-| **Total (/100)** | **98** | |
+| **Total (/100)** | **95** | |
+
+### Prod verification — OBSERVED, signed in, 2026-07-26 (`7701bad`)
+| # | Check | Observed |
+|---|---|---|
+| 1 | Add → species → width, Ctrl+Z ×3 | reverts in exact reverse: width `2.75→1.5`, then `purpleheart→hard-maple`, then 13→12 strips |
+| 2 | 4 typed chars → one Undo | typed `2.75` as 4 real keystrokes; **one** undo cleared all four (coalescing works) |
+| 3 | Ctrl+Z in Name field | text reverted `CheckerboardXYZ→Checkerboard`; board untouched (14 strips, config byte-identical) |
+| 4 | Template apply | `window.confirm` never called; one Undo restored the **byte-identical** prior config (`restoredExactly: true`) |
+| 5 | Undo then new edit | Redo enabled after undo, then `redoDisabled: true` after the new edit |
+| 6 | Undo to start | "Unsaved changes" gone, Undo button disabled |
+| 7 | `input[name=config]` vs screen | agreed at every step; explicitly `purpleheart@1.5` in the input while screen read `Purpleheart · 1 1/2"` |
+| 8 | Ctrl+Z at 922px | **no-op** — config byte-identical, with focus on BODY so the gate was the only thing blocking it |
+| 9 | Ctrl+Y / Ctrl+Shift+Z | both redo (Ctrl+Y 12→13 strips; Ctrl+Shift+Z restored the species). See the synthesized-keystroke caveat above |
+
+**Open, NOT fixed here (pre-existing Sprint 54, not a Sprint 55 regression):** the lazy three.js chunk still downloads below the gate. Measured on prod: a fresh load at 922px and at 1024px fetch an identical script set (20 scripts, 2116 kB decoded, largest 432 kB). `BoardPreview` renders `<BoardR3FCanvas>` at any width, so the `dynamic()` import resolves before the inner `wideEnough` check returns null. The WebGL context is still never created (verified `canvas === null`), so this is bytes, not GPU. To actually keep three.js off phones the gate must move UP, above the `dynamic()` boundary in `board-preview.tsx`. Keagan's call whether to schedule it.
 
 **Result:** Pass (≥95)
 
