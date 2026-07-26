@@ -162,11 +162,11 @@ All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
 **Dates:** 2026-07-26
 **Scope:** Part 0 S64 Attempt-2 verify · library thumbnails from config · `reorder-strip` + drag · shopping-list footer copy. Trunk-based to `main`.
 **Status:** CLOSED
-**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · `423fb0e` (close) · (Attempt 2 fix)
+**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · `423fb0e` (close) · `e47448b` (Attempt 2 a11y fix)
 **/designer First Load JS:** **123 kB** (was 122; +1 from strip-list pointer drag client — library thumbs are SSR, `/designer/library` **106 kB**).
 **Suite:** **1251/1251** across 110 files (Attempt 2).
-**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 success (Attempt 1 code); Attempt 2 CI on tip.
-**Vercel:** Production deploy `3538a26` success (GitHub deployment 5611975139); Attempt 2 redeploy on tip.
+**CI:** Attempt 1 code https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 · Attempt 2 tip https://github.com/klatar200/Woodworking-Plan/actions/runs/30211158680 success.
+**Vercel:** Production deploy for Attempt 2 tip success (includes `e47448b` a11y fix).
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |
