@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 57 Attempt 1 (2026-07-26) — CLOSED 96/100** — Part A species `<select>` (`aeb7d19`) · Part B multi-panel `schemaVersion:2` (`32f6379`). First Load **117 kB**. Prior: Sprint 56 **100/100**.
+> **Latest logged: Sprint 57 Attempt 1 (2026-07-26) — CLOSED 99/100** — Part A species `<select>` (`aeb7d19`) · Part B multi-panel `schemaVersion:2` (`32f6379`). First Load **117 kB**. Browser verify (Claude Code, prod) six PASS / one PARTIAL. Prior: Sprint 56 **100/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1152 green (post-57).
 
@@ -77,6 +77,36 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 ### Final outcome
 Score: **96/100** — Pass. One-way v2 deploy — fix forward, do not roll back.
+
+### Sprint 57 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+Cursor could not run these (Clerk blocked agent OAuth). Run against `28c7d33` on prod.
+Evidence is what was measured in the page, not what was expected.
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | 4 templates in SVG + 3D | PASS | Finished dims exact — plaid 9¾×12×1½, brick 8¾×18×1½, diagonal 10×18×1½, thue-morse 12×12×1½. All render in both surfaces. |
+| 2 | thue-morse 8×8, 8 rows | PASS | 8 rows × 8 cols; rendered grid equals `parity(popcount(i XOR j))` **cell for cell**, checked against an independently generated grid in the page. |
+| 3 | Delete plaid Panel 2 | PASS | Exact string `Row pattern uses a panel that was deleted.`; dangling `wide-b` row entries **kept**, not silently rewritten; board still renders (156 → 129 cells); no crash. |
+| 4 | Line panel 0.25 → 1.75 | PASS | Distinct row heights collapse `{0.25, 1.75}` → `{1.75}`; a single Undo restores both the field value and the geometry. |
+| 5 | Pre-sprint v1 design reopens | PASS | `verify-51` migrates on read to v2 (1 panel, `[none, rot180]`, rowCount 8); row 1 is the exact reverse of row 0; no spurious "Unsaved changes" on open. |
+| 6 | Multi-panel → edge grain | PASS | `Add a panel` not rendered; row-pattern editor 0×0 with null `offsetParent` and 0 visible transform selects; exact string `Extra panels are unused in edge grain.` |
+| 7 | Plaid print: 3 panel tables + row order | **PARTIAL** | Structure verified on the single-panel saved design: per-panel table with a `Required length` column, `Row order` table using shop language (`As cut`, `Turned end-for-end`), leftover removed. The **three-panel** case is unobserved — the print route renders the saved config from the DB, and no plaid design has been saved. |
+**Derived-length board feet verified independently.** Print sheet shows required length 12⅞″
+(= 8 × 1.5 + 7 × 0.125) and Hard Maple 1.39 bd ft
+(= (1.5 × 1.5 × 12.875 × 6 ÷ 144) × 1.15). Both match to the digit, confirming §B5's per-panel
+thickness and derived length feed board feet correctly.
+**One false alarm chased to ground.** Two `DesignerShell` instances appeared mounted mid-session,
+one hidden holding a stale config. A hard reload showed exactly one `input[name="config"]`, one
+diagram, one canvas — an artifact of repeated navigation inside the automated tab, not shipped
+markup. No defect, no action.
+**CI record correction.** `32f6379` shows **cancelled** in GitHub Actions, superseded mid-run by
+`1b207a9` — not a failure, but "CI green" is true of the tip `28c7d33`, not of every commit in the
+sprint.
+**Re-score: 96 → 99/100.** The four withheld Correctness points were for unverified browser
+behaviour; six checks are now observed with evidence and no defect surfaced. One point is held for
+check 7's unverified three-panel print.
+
+### Final outcome (re-scored)
+Score: **99/100** — Pass. One-way v2 deploy — fix forward, do not roll back.
 
 ---
 
