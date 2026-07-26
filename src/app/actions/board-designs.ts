@@ -18,8 +18,6 @@ import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
 const FALLBACK = '/designer';
 
-export { MAX_CONFIG_BYTES };
-
 type ParseResult =
   | { ok: true; config: BoardDesignConfig }
   | { ok: false; reason: 'missing' | 'too-large' | 'invalid' };
