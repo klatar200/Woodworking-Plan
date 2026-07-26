@@ -32,15 +32,14 @@ export function StripList({
   onDelete: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
   onUpdate: (id: string, patch: Partial<Strip>) => void;
-  /** Ends coalesced Width/Repeat typing so the next edit is a new undo step. */
   onCommitCoalesce: () => void;
 }) {
   const move = stripMoveLabels(grain);
 
   return (
-    <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+    <div>
       <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
-        <h2 className="!m-0 text-[1.125rem]">Strips</h2>
+        <h3 className="!m-0 text-[1rem]">Strips</h3>
         <button type="button" className={btnPrimary} onClick={onAdd}>
           Add a strip
         </button>
@@ -62,7 +61,7 @@ export function StripList({
             >
               <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
                 <div>
-                  <h3 className="m-0 text-[1rem]">Strip {index + 1}</h3>
+                  <h4 className="m-0 text-[1rem]">Strip {index + 1}</h4>
                   <p className="m-0 text-[0.875rem] text-muted">
                     {getSpecies(strip.speciesId)?.name ?? strip.speciesId} ·{' '}
                     {formatInches(strip.widthIn)}
@@ -183,7 +182,7 @@ export function StripList({
           />
         </p>
       )}
-    </section>
+    </div>
   );
 }
 

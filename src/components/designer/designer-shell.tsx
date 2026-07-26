@@ -6,7 +6,7 @@ import { BoardSettings } from './board-settings';
 import { DesignerNarrowSurface } from './designer-narrow';
 import { MetricsPanel } from './metrics-panel';
 import { DESIGNER_WIDE_MQ } from '@/lib/board-designer/viewport';
-import { StripList } from './strip-list';
+import { PanelEditor } from './panel-editor';
 import { TemplatePicker } from './template-picker';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import {
@@ -136,14 +136,10 @@ export function DesignerShell(props: {
               onChange={(patch) => dispatch({ type: 'patch', patch })}
               onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
             />
-            <StripList
-              grain={config.grain}
-              strips={config.strips}
-              onAdd={() => dispatch({ type: 'add-strip' })}
-              onDuplicate={(id) => dispatch({ type: 'duplicate-strip', id })}
-              onDelete={(id) => dispatch({ type: 'delete-strip', id })}
-              onMove={(id, direction) => dispatch({ type: 'move-strip', id, direction })}
-              onUpdate={(id, patch) => dispatch({ type: 'update-strip', id, patch })}
+            <PanelEditor
+              config={config}
+              metrics={metrics}
+              dispatch={dispatch}
               onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
             />
             <MetricsPanel metrics={metrics} grain={config.grain} />

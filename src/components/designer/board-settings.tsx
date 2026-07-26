@@ -13,7 +13,6 @@ export function BoardSettings({
 }: {
   config: BoardDesignConfig;
   onChange: (patch: Partial<BoardDesignConfig>) => void;
-  /** Ends coalesced Name (and similar) typing so the next edit is a new undo step. */
   onCommitCoalesce: () => void;
 }) {
   return (
@@ -53,33 +52,29 @@ export function BoardSettings({
           </div>
         </fieldset>
 
-        <NumberField
-          label="Panel length"
-          name="sourceLengthIn"
-          value={config.sourceLengthIn}
-          min={1}
-          max={96}
-          onChange={(sourceLengthIn) => onChange({ sourceLengthIn })}
-          onCommitCoalesce={onCommitCoalesce}
-        />
-        <NumberField
-          label="Stock thickness"
-          name="stockThicknessIn"
-          value={config.stockThicknessIn}
-          min={0.25}
-          max={4}
-          onChange={(stockThicknessIn) => onChange({ stockThicknessIn })}
-          onCommitCoalesce={onCommitCoalesce}
-        />
-        <NumberField
-          label="Slice thickness"
-          name="sliceThicknessIn"
-          value={config.sliceThicknessIn}
-          min={0.25}
-          max={4}
-          onChange={(sliceThicknessIn) => onChange({ sliceThicknessIn })}
-          onCommitCoalesce={onCommitCoalesce}
-        />
+        {config.grain === 'edge' && (
+          <NumberField
+            label="Panel length"
+            name="sourceLengthIn"
+            value={config.sourceLengthIn}
+            min={1}
+            max={96}
+            onChange={(sourceLengthIn) => onChange({ sourceLengthIn })}
+            onCommitCoalesce={onCommitCoalesce}
+          />
+        )}
+
+        {config.grain === 'end' && (
+          <NumberField
+            label="Slice thickness"
+            name="sliceThicknessIn"
+            value={config.sliceThicknessIn}
+            min={0.25}
+            max={4}
+            onChange={(sliceThicknessIn) => onChange({ sliceThicknessIn })}
+            onCommitCoalesce={onCommitCoalesce}
+          />
+        )}
 
         <label className="grid gap-[0.375rem]">
           <span className="text-[0.875rem] font-bold">Kerf</span>
@@ -110,16 +105,6 @@ export function BoardSettings({
             onChange={(event) => onChange({ wasteFactor: boundedNumber(event, 0, 100) / 100 })}
             onBlur={() => onCommitCoalesce()}
           />
-        </label>
-
-        <label className="flex min-h-[2.75rem] items-center gap-[0.625rem] text-[0.9375rem]">
-          <input
-            type="checkbox"
-            name="flipEveryOtherSlice"
-            checked={config.flipEveryOtherSlice}
-            onChange={(event) => onChange({ flipEveryOtherSlice: event.currentTarget.checked })}
-          />
-          <span>Flip every other slice</span>
         </label>
       </div>
     </section>

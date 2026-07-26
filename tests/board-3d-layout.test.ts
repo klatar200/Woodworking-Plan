@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { layoutTopFace } from '@/lib/board-designer/layout';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { getTemplate } from '@/lib/board-designer/templates';
-import type { BoardDesignConfig, Strip } from '@/lib/board-designer/types';
 import { groupCellsBySpecies, shouldUseSvgFallback } from '@/components/designer/r3f-layout';
 import {
   createGrainRoughnessMap,
@@ -12,6 +11,7 @@ import {
 } from '@/components/designer/r3f-materials';
 import { SPECIES } from '@/lib/board-designer/species';
 import { RGBAFormat, UnsignedByteType, NoColorSpace, RGBFormat } from 'three';
+import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
 describe('board 3D layout helpers', () => {
   test('groups checkerboard cells into one instanced mesh group per species', () => {
@@ -35,24 +35,22 @@ describe('board 3D layout helpers', () => {
   });
 
   test('keeps worst-case layout complete while selecting the SVG fallback', () => {
-    const strips: Strip[] = Array.from({ length: 60 }, (_, i) => ({
-      id: `worst-${i + 1}`,
-      speciesId: i % 2 === 0 ? 'hard-maple' : 'walnut',
-      widthIn: 1,
-      repeat: 1,
-    }));
-    const config: BoardDesignConfig = {
-      schemaVersion: 1,
+    const strips = Array.from({ length: 60 }, (_, i) =>
+      makeStrip(`worst-${i + 1}`, i % 2 === 0 ? 'hard-maple' : 'walnut', 1),
+    );
+    const config = makeV2Config({
       name: 'Worst case',
       grain: 'end',
       sourceLengthIn: 96,
-      stockThicknessIn: 0.25,
       sliceThicknessIn: 0.25,
       kerfIn: 0,
-      wasteFactor: 0.15,
-      flipEveryOtherSlice: true,
-      strips,
-    };
+      panels: [makePanel('panel-1', 'Panel 1', 0.25, strips)],
+      rowPattern: [
+        { panelId: 'panel-1', transform: 'none' },
+        { panelId: 'panel-1', transform: 'rot180' },
+      ],
+      rowCount: 384,
+    });
 
     const metrics = calculateMetrics(config);
     const cells = layoutTopFace(config, metrics);

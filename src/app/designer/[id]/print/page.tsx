@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth';
 import { getDesign } from '@/lib/board-designs';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
+import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
 import { BoardDiagram } from '@/components/designer/board-diagram';
 import { formatInches } from '@/lib/format';
 import { SITE_HOST } from '@/lib/brand';
@@ -35,6 +36,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
   ]
     .map(formatInches)
     .join(' × ');
+  const planById = new Map(metrics.panelPlan.map((p) => [p.panelId, p]));
 
   return (
     <main id="main" className="print-page">
@@ -67,9 +69,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
           {config.grain === 'end' ? (
             <div>
               <dt>Slices</dt>
-              <dd>
-                {metrics.sliceCount} slices · {formatInches(metrics.leftoverIn)} leftover
-              </dd>
+              <dd>{metrics.sliceCount}</dd>
             </div>
           ) : null}
         </dl>
@@ -82,47 +82,90 @@ export default async function DesignerPrintPage({ params }: PageProps) {
         </figure>
       </section>
 
-      <section className="print-section">
-        <h2>Strips</h2>
-        <table className="print-table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Species</th>
-              <th scope="col" className="numeric">
-                Width
-              </th>
-              <th scope="col" className="numeric">
-                Repeat
-              </th>
-              <th scope="col" className="numeric">
-                Source length
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {config.strips.map((strip, index) => (
-              <tr key={strip.id}>
-                <td className="numeric" data-label="#">
-                  {index + 1}
-                </td>
-                <td data-label="Species">
-                  {speciesName(strip.speciesId, metrics)}
-                </td>
-                <td className="numeric mono" data-label="Width">
-                  {formatInches(strip.widthIn)}
-                </td>
-                <td className="numeric" data-label="Repeat">
-                  {strip.repeat}
-                </td>
-                <td className="numeric mono" data-label="Source length">
-                  {formatInches(config.sourceLengthIn)}
-                </td>
+      {config.panels.map((panel) => {
+        const plan = planById.get(panel.id);
+        return (
+          <section key={panel.id} className="print-section">
+            <h2>{panel.label}</h2>
+            <p className="muted small">
+              Thickness {formatInches(panel.thicknessIn)}
+              {plan
+                ? ` · width ${formatInches(plan.widthIn)} · required length ${formatInches(plan.requiredLengthIn)}`
+                : ''}
+            </p>
+            <table className="print-table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Species</th>
+                  <th scope="col" className="numeric">
+                    Width
+                  </th>
+                  <th scope="col" className="numeric">
+                    Repeat
+                  </th>
+                  <th scope="col" className="numeric">
+                    Required length
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {panel.strips.map((strip, index) => (
+                  <tr key={strip.id}>
+                    <td className="numeric" data-label="#">
+                      {index + 1}
+                    </td>
+                    <td data-label="Species">
+                      {speciesName(strip.speciesId, metrics)}
+                    </td>
+                    <td className="numeric mono" data-label="Width">
+                      {formatInches(strip.widthIn)}
+                    </td>
+                    <td className="numeric" data-label="Repeat">
+                      {strip.repeat}
+                    </td>
+                    <td className="numeric mono" data-label="Required length">
+                      {formatInches(plan?.requiredLengthIn ?? 0)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        );
+      })}
+
+      {config.grain === 'end' && (
+        <section className="print-section">
+          <h2>Row order</h2>
+          <table className="print-table">
+            <thead>
+              <tr>
+                <th scope="col">Row</th>
+                <th scope="col">Panel</th>
+                <th scope="col">Placement</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+            </thead>
+            <tbody>
+              {Array.from({ length: config.rowCount }, (_, i) => {
+                const step = config.rowPattern[i % config.rowPattern.length]!;
+                const panel = config.panels.find((p) => p.id === step.panelId);
+                return (
+                  <tr key={i}>
+                    <td className="numeric" data-label="Row">
+                      {i + 1}
+                    </td>
+                    <td data-label="Panel">{panel?.label ?? step.panelId}</td>
+                    <td data-label="Placement">
+                      {ROW_TRANSFORM_LABELS[step.transform]}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </section>
+      )}
 
       <section className="print-section">
         <h2>Board feet by species</h2>

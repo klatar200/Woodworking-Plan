@@ -9,26 +9,25 @@ import {
   PRINT_SHEET_HINT,
 } from '@/components/designer/designer-narrow';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
 const source = (path: string) => readFileSync(join(process.cwd(), path), 'utf8');
 
-const goldenConfig: BoardDesignConfig = {
-  schemaVersion: 1,
+const goldenStrips = Array.from({ length: 12 }, (_, i) =>
+  makeStrip(`golden-${i + 1}`, i % 2 === 0 ? 'walnut' : 'hard-maple'),
+);
+
+const goldenConfig: BoardDesignConfig = makeV2Config({
   name: 'Golden checkerboard',
-  grain: 'end',
   sourceLengthIn: 20,
-  stockThicknessIn: 1.5,
   sliceThicknessIn: 1.5,
-  kerfIn: 0.125,
-  wasteFactor: 0.15,
-  flipEveryOtherSlice: true,
-  strips: Array.from({ length: 12 }, (_, i) => ({
-    id: `golden-${i + 1}`,
-    speciesId: i % 2 === 0 ? 'walnut' : 'hard-maple',
-    widthIn: 1.5,
-    repeat: 1,
-  })),
-};
+  panels: [makePanel('panel-1', 'Panel 1', 1.5, goldenStrips)],
+  rowPattern: [
+    { panelId: 'panel-1', transform: 'none' },
+    { panelId: 'panel-1', transform: 'rot180' },
+  ],
+  rowCount: 12,
+});
 
 const actions = {
   saveAction: async () => {},
@@ -57,7 +56,12 @@ describe('DesignerShell static render', () => {
   });
 
   it('renders zero strips with an Add a strip CTA and the exact warning without crashing', () => {
-    const html = render({ ...goldenConfig, strips: [] });
+    const html = render(
+      makeV2Config({
+        ...goldenConfig,
+        panels: [makePanel('panel-1', 'Panel 1', 1.5, [])],
+      }),
+    );
     const visible = visibleMarkup(html);
 
     expect(visible).toContain('Add a strip');
@@ -65,32 +69,27 @@ describe('DesignerShell static render', () => {
     expect(visible).not.toMatch(/\bNaN\b|undefined|\$/);
   });
 
-  it('renders zero-slice warning prominently while controls remain editable', () => {
-    const html = render({
-      ...goldenConfig,
-      sourceLengthIn: 1,
-      sliceThicknessIn: 4,
-    });
-
-    expect(html).toContain('role="alert"');
-    expect(html).toContain('No slices fit — increase panel length or reduce slice thickness.');
-    expect(html).toContain('name="sourceLengthIn"');
-    expect(html).toContain('name="sliceThicknessIn"');
-  });
-
   it('hides slice/leftover rows for edge grain while metrics still return zeros', () => {
-    const html = render({
-      ...goldenConfig,
-      grain: 'edge',
-      stockThicknessIn: 0.75,
-      sliceThicknessIn: 0.75,
-      strips: Array.from({ length: 7 }, (_, i) => ({
-        id: `edge-${i + 1}`,
-        speciesId: i % 2 === 0 ? 'hard-maple' : 'walnut',
-        widthIn: 1.5,
-        repeat: 1,
-      })),
-    });
+    const html = render(
+      makeV2Config({
+        name: 'Edge stripe',
+        grain: 'edge',
+        sourceLengthIn: 18,
+        sliceThicknessIn: 0.75,
+        panels: [
+          makePanel(
+            'panel-1',
+            'Panel 1',
+            0.75,
+            Array.from({ length: 7 }, (_, i) =>
+              makeStrip(`edge-${i + 1}`, i % 2 === 0 ? 'hard-maple' : 'walnut'),
+            ),
+          ),
+        ],
+        rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+        rowCount: 1,
+      }),
+    );
     expect(html).not.toContain('Slices');
     expect(html).not.toContain('Leftover length');
   });
@@ -121,10 +120,15 @@ describe('DesignerShell static render', () => {
   });
 
   it('unknown speciesId survives as a disabled selected option with the fallback footnote', () => {
-    const html = render({
-      ...goldenConfig,
-      strips: [{ id: 'u1', speciesId: 'not-a-wood', widthIn: 1.5, repeat: 1 }],
-    });
+    const html = render(
+      makeV2Config({
+        panels: [
+          makePanel('panel-1', 'Panel 1', 1.5, [
+            makeStrip('u1', 'not-a-wood'),
+          ]),
+        ],
+      }),
+    );
     const match = html.match(
       /<select[^>]*name="strip-u1-speciesId"[^>]*>([\s\S]*?)<\/select>/,
     );

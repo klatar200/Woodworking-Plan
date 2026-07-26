@@ -78,25 +78,30 @@ export function DesignerNarrowSurface({
         <BoardDiagram config={config} metrics={metrics} />
       </div>
 
-      <div className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
-        <h2 className="!mt-0 text-[1.125rem]">Strips</h2>
-        <ol className="m-0 grid list-none gap-[0.5rem] p-0">
-          {config.strips.map((strip, index) => (
-            <li
-              key={strip.id}
-              className="flex flex-wrap items-baseline justify-between gap-[0.5rem] border-b border-border pb-[0.5rem] text-[0.9375rem] last:border-b-0 last:pb-0"
-            >
-              <span>
-                {index + 1}. {getSpecies(strip.speciesId)?.name ?? strip.speciesId}
-              </span>
-              <span className="text-muted">
-                {formatInches(strip.widthIn)}
-                {strip.repeat > 1 ? ` × ${strip.repeat}` : ''}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </div>
+      {config.panels.map((panel) => (
+        <div
+          key={panel.id}
+          className="rounded-[0.75rem] border border-border bg-surface p-[1rem]"
+        >
+          <h2 className="!mt-0 text-[1.125rem]">{panel.label}</h2>
+          <ol className="m-0 grid list-none gap-[0.5rem] p-0">
+            {panel.strips.map((strip, index) => (
+              <li
+                key={strip.id}
+                className="flex flex-wrap items-baseline justify-between gap-[0.5rem] border-b border-border pb-[0.5rem] text-[0.9375rem] last:border-b-0 last:pb-0"
+              >
+                <span>
+                  {index + 1}. {getSpecies(strip.speciesId)?.name ?? strip.speciesId}
+                </span>
+                <span className="text-muted">
+                  {formatInches(strip.widthIn)}
+                  {strip.repeat > 1 ? ` × ${strip.repeat}` : ''}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
 
       <div className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
         <Link href={`/designer/${designId}/print`} className={btnPrimary}>

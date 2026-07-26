@@ -11,7 +11,7 @@ import { createDesign, updateDesign, deleteDesign } from '@/lib/board-designs';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
 const FALLBACK = '/designer';
-const MAX_CONFIG_BYTES = 8 * 1024;
+const MAX_CONFIG_BYTES = 16 * 1024;
 
 function parseConfigField(formData: FormData): BoardDesignConfig | null {
   const raw = formString(formData, 'config');

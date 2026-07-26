@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { ReactNode } from 'react';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
 vi.mock('next/link', () => ({
   default: ({
@@ -37,23 +38,22 @@ vi.mock('@/lib/board-designs', () => ({
 
 const source = (path: string) => readFileSync(join(process.cwd(), path), 'utf8');
 
-const designConfig: BoardDesignConfig = {
-  schemaVersion: 1,
+const goldenStrips = Array.from({ length: 12 }, (_, i) =>
+  makeStrip(`golden-${i + 1}`, i % 2 === 0 ? 'walnut' : 'hard-maple'),
+);
+
+const designConfig: BoardDesignConfig = makeV2Config({
   name: 'Golden end-grain',
   grain: 'end',
   sourceLengthIn: 20,
-  stockThicknessIn: 1.5,
   sliceThicknessIn: 1.5,
-  kerfIn: 0.125,
-  wasteFactor: 0.15,
-  flipEveryOtherSlice: true,
-  strips: Array.from({ length: 12 }, (_, i) => ({
-    id: `golden-${i + 1}`,
-    speciesId: i % 2 === 0 ? 'walnut' : 'hard-maple',
-    widthIn: 1.5,
-    repeat: 1,
-  })),
-};
+  panels: [makePanel('panel-1', 'Panel 1', 1.5, goldenStrips)],
+  rowPattern: [
+    { panelId: 'panel-1', transform: 'none' },
+    { panelId: 'panel-1', transform: 'rot180' },
+  ],
+  rowCount: 12,
+});
 
 describe('designer print route', () => {
   it('is private, noindex, and owner-scoped through getDesign', async () => {
@@ -88,9 +88,10 @@ describe('designer print route', () => {
     expect(html).toContain('18&quot; × 18&quot; × 1 1/2&quot;');
     expect(html).toContain('Walnut');
     expect(html).toContain('Hard Maple');
-    expect(html).toContain('2.16 bd ft');
-    expect(html).toContain('12 slices');
-    expect(html).toContain('5/8&quot; leftover');
+    expect(html).toContain('4.18 bd ft');
+    expect(html).toContain('12');
+    expect(html).toContain('Slices');
+    expect(html).not.toContain('leftover');
     expect(html).not.toMatch(/\bNaN\b|undefined|\$/);
   });
 

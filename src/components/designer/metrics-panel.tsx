@@ -31,22 +31,42 @@ export function MetricsPanel({
           {formatInches(metrics.finishedLengthIn)} x {formatInches(metrics.finishedWidthIn)} x{' '}
           {formatInches(metrics.finishedThicknessIn)}
         </dd>
-        <dt className="text-muted">Glue-up panel</dt>
-        <dd className="m-0">
-          {formatInches(metrics.panelLengthIn)} x {formatInches(metrics.panelWidthIn)} x{' '}
-          {formatInches(metrics.panelThicknessIn)}
-        </dd>
-        {grain === 'end' && (
-          <>
-            <dt className="text-muted">Slices</dt>
-            <dd className="m-0">{metrics.sliceCount}</dd>
-            <dt className="text-muted">Leftover length</dt>
-            <dd className="m-0">{formatInches(metrics.leftoverIn)}</dd>
-          </>
-        )}
         <dt className="text-muted">Total board feet</dt>
         <dd className="m-0">{formatBoardFeet(metrics.totalBoardFeet)} bd ft</dd>
       </dl>
+
+      <div className="mt-[1rem]">
+        <h3 className="m-0 mb-[0.5rem] text-[0.9375rem]">Panels</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-[0.875rem]">
+            <thead>
+              <tr className="border-b border-border text-muted">
+                <th className="py-[0.375rem] pr-[0.5rem] font-medium">Panel</th>
+                <th className="py-[0.375rem] pr-[0.5rem] font-medium">Size</th>
+                <th className="py-[0.375rem] pr-[0.5rem] font-medium">Rows</th>
+                <th className="py-[0.375rem] font-medium">Required length</th>
+              </tr>
+            </thead>
+            <tbody>
+              {metrics.panelPlan.map((plan) => (
+                <tr key={plan.panelId} className="border-b border-border last:border-b-0">
+                  <td className="py-[0.5rem] pr-[0.5rem]">{plan.label}</td>
+                  <td className="py-[0.5rem] pr-[0.5rem]">
+                    {formatInches(plan.widthIn)} × {formatInches(plan.thicknessIn)}
+                  </td>
+                  <td className="py-[0.5rem] pr-[0.5rem]">{plan.rows}</td>
+                  <td className="py-[0.5rem]">{formatInches(plan.requiredLengthIn)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {grain === 'end' && (
+          <p className="mt-[0.5rem] mb-0 text-[0.8125rem] text-muted">
+            {metrics.sliceCount} slices on the finished face
+          </p>
+        )}
+      </div>
 
       {metrics.boardFeetBySpecies.length > 0 && (
         <div className="mt-[1rem]">

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
 const mocks = vi.hoisted(() => {
   const redirect = vi.fn((url: string) => {
@@ -79,21 +80,23 @@ import {
   updateBoardDesignAction,
 } from '@/app/actions/board-designs';
 
-const validConfig: BoardDesignConfig = {
-  schemaVersion: 1,
+const validConfig: BoardDesignConfig = makeV2Config({
   name: 'Weekend checkerboard',
   grain: 'end',
   sourceLengthIn: 14,
-  stockThicknessIn: 1.5,
   sliceThicknessIn: 1.5,
-  kerfIn: 0.125,
-  wasteFactor: 0.15,
-  flipEveryOtherSlice: true,
-  strips: [
-    { id: 'a', speciesId: 'hard-maple', widthIn: 1.5, repeat: 1 },
-    { id: 'b', speciesId: 'walnut', widthIn: 1.5, repeat: 1 },
+  panels: [
+    makePanel('panel-1', 'Panel 1', 1.5, [
+      makeStrip('a', 'hard-maple'),
+      makeStrip('b', 'walnut'),
+    ]),
   ],
-};
+  rowPattern: [
+    { panelId: 'panel-1', transform: 'none' },
+    { panelId: 'panel-1', transform: 'rot180' },
+  ],
+  rowCount: 8,
+});
 
 const now = new Date('2026-07-25T18:00:00.000Z');
 
@@ -223,11 +226,11 @@ describe('BoardDesign auth gates', () => {
     expect(mocks.prisma.boardDesign.deleteMany).not.toHaveBeenCalled();
   });
 
-  it('9KB config bounces before JSON.parse and never writes', async () => {
+  it('17KB config bounces before JSON.parse and never writes', async () => {
     const parseSpy = vi.spyOn(JSON, 'parse');
 
     await expectRedirect(
-      createBoardDesignAction(form({ config: '{'.repeat(9 * 1024), returnTo: '/designer' })),
+      createBoardDesignAction(form({ config: '{'.repeat(17 * 1024), returnTo: '/designer' })),
       '/designer',
     );
 

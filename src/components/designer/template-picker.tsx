@@ -1,4 +1,5 @@
 import { TEMPLATES } from '@/lib/board-designer/templates';
+import { cloneConfig } from '@/lib/board-designer/history';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 import { btnGhost } from '@/lib/ui';
 
@@ -24,11 +25,4 @@ export function TemplatePicker({
       </div>
     </section>
   );
-}
-
-function cloneConfig(config: BoardDesignConfig): BoardDesignConfig {
-  return {
-    ...config,
-    strips: config.strips.map((strip) => ({ ...strip })),
-  };
 }

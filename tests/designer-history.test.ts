@@ -3,6 +3,7 @@ import {
   HISTORY_CAP,
   canRedo,
   canUndo,
+  cloneConfig,
   configsEqual,
   createHistoryState,
   historyReducer,
@@ -10,32 +11,36 @@ import {
   type HistoryState,
 } from '@/lib/board-designer/history';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
-const base: BoardDesignConfig = {
-  schemaVersion: 1,
+const base: BoardDesignConfig = makeV2Config({
   name: 'Start',
   grain: 'edge',
   sourceLengthIn: 20,
-  stockThicknessIn: 1.5,
   sliceThicknessIn: 1.5,
-  kerfIn: 0.125,
-  wasteFactor: 0.15,
-  flipEveryOtherSlice: false,
-  strips: [
-    { id: 's1', speciesId: 'hard-maple', widthIn: 1.5, repeat: 1 },
-    { id: 's2', speciesId: 'walnut', widthIn: 1, repeat: 1 },
+  panels: [
+    makePanel('panel-1', 'Panel 1', 1.5, [
+      makeStrip('s1', 'hard-maple'),
+      makeStrip('s2', 'walnut', 1),
+    ]),
   ],
-};
+  rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+  rowCount: 1,
+});
 
 function apply(state: HistoryState, ...actions: Parameters<typeof historyReducer>[1][]) {
   return actions.reduce((s, action) => historyReducer(s, action), state);
 }
 
+function stripsOf(config: BoardDesignConfig) {
+  return config.panels[0]!.strips;
+}
+
 describe('designer history reducer', () => {
   it('undo restores the previous config; redo restores the undone one', () => {
     let state = createHistoryState(base);
-    state = apply(state, { type: 'add-strip' });
-    expect(state.present.strips).toHaveLength(3);
+    state = apply(state, { type: 'add-strip', panelId: 'panel-1' });
+    expect(stripsOf(state.present)).toHaveLength(3);
     const afterAdd = state.present;
 
     state = apply(state, { type: 'undo' });
@@ -59,10 +64,10 @@ describe('designer history reducer', () => {
     expect(state.present.name).toBe('A');
     expect(canRedo(state)).toBe(true);
 
-    state = apply(state, { type: 'add-strip' });
+    state = apply(state, { type: 'add-strip', panelId: 'panel-1' });
     expect(canRedo(state)).toBe(false);
     expect(state.future).toHaveLength(0);
-    expect(state.present.strips).toHaveLength(3);
+    expect(stripsOf(state.present)).toHaveLength(3);
     expect(state.present.name).toBe('A');
   });
 
@@ -70,7 +75,7 @@ describe('designer history reducer', () => {
     const start = createHistoryState(base);
     expect(historyReducer(start, { type: 'undo' })).toBe(start);
 
-    const atEnd = apply(start, { type: 'add-strip' });
+    const atEnd = apply(start, { type: 'add-strip', panelId: 'panel-1' });
     expect(historyReducer(atEnd, { type: 'redo' })).toBe(atEnd);
   });
 
@@ -93,16 +98,16 @@ describe('designer history reducer', () => {
     let state = createHistoryState(base);
     state = apply(
       state,
-      { type: 'update-strip', id: 's1', patch: { widthIn: 1 } },
-      { type: 'update-strip', id: 's1', patch: { widthIn: 2 } },
-      { type: 'update-strip', id: 's1', patch: { widthIn: 3 } },
-      { type: 'update-strip', id: 's1', patch: { widthIn: 4 } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { widthIn: 1 } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { widthIn: 2 } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { widthIn: 3 } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { widthIn: 4 } },
     );
     expect(state.past).toHaveLength(1);
-    expect(state.present.strips[0]!.widthIn).toBe(4);
+    expect(stripsOf(state.present)[0]!.widthIn).toBe(4);
 
     state = apply(state, { type: 'undo' });
-    expect(state.present.strips[0]!.widthIn).toBe(1.5);
+    expect(stripsOf(state.present)[0]!.widthIn).toBe(1.5);
     expect(configsEqual(state.present, base)).toBe(true);
   });
 
@@ -110,37 +115,48 @@ describe('designer history reducer', () => {
     let state = createHistoryState(base);
     state = apply(
       state,
-      { type: 'update-strip', id: 's1', patch: { widthIn: 2 } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { widthIn: 2 } },
       { type: 'commit-coalesce' },
-      { type: 'update-strip', id: 's1', patch: { widthIn: 3 } },
+      { type: 'update-strip', panelId: 'panel-1', id: 's1', patch: { widthIn: 3 } },
     );
     expect(state.past).toHaveLength(2);
 
     state = apply(state, { type: 'undo' });
-    expect(state.present.strips[0]!.widthIn).toBe(2);
+    expect(stripsOf(state.present)[0]!.widthIn).toBe(2);
     state = apply(state, { type: 'undo' });
-    expect(state.present.strips[0]!.widthIn).toBe(1.5);
+    expect(stripsOf(state.present)[0]!.widthIn).toBe(1.5);
   });
 
   it('template/load is undoable and restores the exact prior config', () => {
-    const template: BoardDesignConfig = {
-      ...base,
+    const template: BoardDesignConfig = makeV2Config({
       name: 'Template board',
-      strips: [{ id: 't1', speciesId: 'cherry', widthIn: 2, repeat: 2 }],
-    };
+      grain: 'edge',
+      panels: [
+        makePanel('panel-1', 'Panel 1', 1.5, [
+          makeStrip('t1', 'cherry', 2, 2),
+        ]),
+      ],
+      rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+      rowCount: 1,
+    });
     let state = createHistoryState(base);
     state = apply(
       state,
-      { type: 'update-strip', id: 's1', patch: { speciesId: 'cherry' } },
+      {
+        type: 'update-strip',
+        panelId: 'panel-1',
+        id: 's1',
+        patch: { speciesId: 'cherry' },
+      },
       { type: 'load', config: template },
     );
     expect(state.present.name).toBe('Template board');
-    expect(state.present.strips).toHaveLength(1);
+    expect(stripsOf(state.present)).toHaveLength(1);
 
     state = apply(state, { type: 'undo' });
     expect(state.present.name).toBe('Start');
-    expect(state.present.strips[0]!.speciesId).toBe('cherry');
-    expect(state.present.strips).toHaveLength(2);
+    expect(stripsOf(state.present)[0]!.speciesId).toBe('cherry');
+    expect(stripsOf(state.present)).toHaveLength(2);
 
     state = apply(state, { type: 'undo' });
     expect(configsEqual(state.present, base)).toBe(true);
@@ -148,7 +164,7 @@ describe('designer history reducer', () => {
 
   it('undoing to the initial config clears dirty (serialized equality)', () => {
     let state = createHistoryState(base);
-    state = apply(state, { type: 'add-strip' });
+    state = apply(state, { type: 'add-strip', panelId: 'panel-1' });
     expect(configsEqual(state.present, base)).toBe(false);
 
     state = apply(state, { type: 'undo' });
@@ -161,11 +177,12 @@ describe('designer history reducer', () => {
     let state = createHistoryState(base);
     state = apply(state, {
       type: 'update-strip',
+      panelId: 'panel-1',
       id: 's1',
       patch: { widthIn: 2.25 },
     });
     const submitted = JSON.stringify(state.present);
-    expect(JSON.parse(submitted).strips[0].widthIn).toBe(2.25);
+    expect(JSON.parse(submitted).panels[0].strips[0].widthIn).toBe(2.25);
 
     state = apply(state, { type: 'undo' });
     expect(JSON.stringify(state.present)).toBe(JSON.stringify(base));
@@ -175,10 +192,34 @@ describe('designer history reducer', () => {
     let state = createHistoryState(base);
     state = apply(
       state,
-      { type: 'update-strip', id: 's1', patch: { speciesId: 'cherry' } },
-      { type: 'update-strip', id: 's1', patch: { speciesId: 'walnut' } },
+      {
+        type: 'update-strip',
+        panelId: 'panel-1',
+        id: 's1',
+        patch: { speciesId: 'cherry' },
+      },
+      {
+        type: 'update-strip',
+        panelId: 'panel-1',
+        id: 's1',
+        patch: { speciesId: 'walnut' },
+      },
     );
     expect(state.past).toHaveLength(2);
+  });
+
+  it('cloneConfig deep-clones panels, strips, and rowPattern', () => {
+    const config = makeV2Config({
+      rowPattern: [
+        { panelId: 'panel-1', transform: 'none' },
+        { panelId: 'panel-1', transform: 'rot180' },
+      ],
+    });
+    const cloned = cloneConfig(config);
+    cloned.panels[0]!.strips[0]!.widthIn = 9;
+    cloned.rowPattern[0]!.transform = 'mirrorY';
+    expect(config.panels[0]!.strips[0]!.widthIn).toBe(1.5);
+    expect(config.rowPattern[0]!.transform).toBe('none');
   });
 });
 

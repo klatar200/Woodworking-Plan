@@ -30,8 +30,12 @@ describe('BoardDiagram', () => {
     expect(stripeHtml.match(/<rect\b/g)?.length).toBe(7);
   });
 
-  it('offsets every other end-grain row when flipEveryOtherSlice is enabled', () => {
+  it('offsets every other end-grain row when rowPattern uses rot180', () => {
     const checkerboard = templateConfig('checkerboard');
+    expect(checkerboard.rowPattern).toEqual([
+      { panelId: 'panel-1', transform: 'none' },
+      { panelId: 'panel-1', transform: 'rot180' },
+    ]);
     const html = renderToStaticMarkup(
       <BoardDiagram config={checkerboard} metrics={calculateMetrics(checkerboard)} />,
     );
