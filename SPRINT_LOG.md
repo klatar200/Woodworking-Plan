@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 62 Attempt 1 (2026-07-26) — CLOSED 96/100** — deleted unreachable colour gate; reachability guard. First Load **120 kB**. Prior: Sprint 61 **93/100**.
+> **Latest logged: Sprint 63 Attempt 1 (2026-07-26) — CLOSED 96/100** — wedge membership closure (not species equality). First Load pending. Prior: Sprint 62 **96/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1195 green (post-62).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1203 green (post-63).
 
 ---
 
@@ -42,6 +42,37 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 63: Closure is geometric, not chromatic
+**Dates:** 2026-07-26
+**Scope:** Part 0 S62 browser verify · replace `cellsColorClosed` with `wedgeWebContinuous` · both-direction tests. Trunk-based to `main`.
+**Commits on `main`:** `af51d3e` (Part 0) · `1c59690` (code) · (this close)
+**/designer First Load JS:** pending CI.
+**Suite:** **1203/1203** across 104 files.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Membership + wedge-species predicate; base species ignored; thickness gate untouched; warning text kept; no geometry/template changes |
+| Correctness & functionality (/20) | 16 | Cherry accent closes; multi-base closes; corner flip / repeat20 / split-wedge fail; 1.5″ thickness-only fails lattice but passes web; plaid silent. **−4**: browser unrun (Clerk) |
+| Automated test coverage (/15) | 15 | `board-designer-wedge-closure` (8); harlequin renamed; reachability still witnesses does-not-close; suite **1203** |
+| Security (/15) | 15 | `/designer` out of public-routes + in NEVER_CACHE; no new actions/deps |
+| Code quality & simplicity (/10) | 10 | Renamed predicate + comment recording why species equality was wrong |
+| Mobile/offline behavior (/10) | 10 | No chrome/SW change; offline denylist green |
+| Documentation & handoff (/5) | 5 | Part 0 S62 verify + timing correction; BUILD_PLAN §4 |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Browser checks (unrun — Clerk OAuth blocked for agent):**
+1. Harlequin with one base strip → cherry shows **no** closure warning
+2. Harlequin with a corner flipped still shows the closure warning
+3. Pre-Sprint-63 saved design reopens rendering identically
+
+### Final outcome
+Score: **96/100** — Pass. Closure is wedge membership, not base colour.
 
 ---
 

@@ -42,9 +42,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 60 (Dimension display) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2fd0b61`). `formatInches` zero-numerator + non-finite; `closingThicknessHint`; harlequin thicknessIn=1; §7 decimal-inch guard. Suite **1174/1174**; First Load **120 kB**. |
 | Sprint 61 (Close the gaps) | ✅ **CLOSED** 2026-07-26 — **93/100** (browser re-score; was 96). Skip note unreachable at 48k=schema max — fixed in Sprint 62. 32 KiB defence-in-depth kept. Suite **1182/1182**; First Load **120 kB**. |
 | Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS). Deleted unreachable colour gate; always-run check; reachability witness suite. Closure false-positive on mixed base species — fixed in Sprint 63. Suite **1195/1195**; First Load **120 kB**. |
-| Sprint 63 (Geometric closure) | 🔄 **OPEN** — wedge membership continuity, not species equality. |
+| Sprint 63 (Geometric closure) | ✅ **CLOSED** 2026-07-26 — **96/100**. `wedgeWebContinuous` replaces species equality; accent strips no longer false-positive. Suite **1203/1203**; First Load pending. |
 
-Test suite — expected: 1195/1195 across 103 files (Sprint 62, Cursor VM; Sprint 63 in flight). Update this single figure each sprint close; 1182/1182 and earlier superseded.
+Test suite — expected: 1203/1203 across 104 files (Sprint 63, Cursor VM). Update this single figure each sprint close; 1195/1195 and earlier superseded.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
