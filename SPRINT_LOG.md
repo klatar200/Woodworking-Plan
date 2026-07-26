@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 61 Attempt 1 (2026-07-26) — CLOSED 96/100** — save notice · closure skip note · print coverage · SPI identity. First Load pending. Prior: Sprint 60 **96/100**.
+> **Latest logged: Sprint 61 Attempt 1 (2026-07-26) — CLOSED 96/100** — save notice · closure skip note · print coverage · SPI identity. First Load **120 kB**. Prior: Sprint 60 **96/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1182 green (post-61).
 
@@ -48,10 +48,12 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 61: Close the gaps
 **Dates:** 2026-07-26
 **Scope:** Part 0 S60 browser verify · A max-config byte cap + save notice · B large-board closure note + memo · C print coverage · D speciesComponents SPI · E security. Trunk-based to `main`.
-**Commits on `main`:** `d2c0aba` (Part 0) · `e5760bc` (code) · (this close)
-**/designer First Load JS:** pending CI build log.
+**Commits on `main`:** `d2c0aba` (Part 0) · `e5760bc` (code) · `496f347`/`82cee22` (close docs) · (build fix)
+**/designer First Load JS:** **120 kB** (held; local `next build`).
 **Suite:** **1182/1182** across 102 files.
+**CI / Vercel:** tip after build-fix push.
 **Perf (colour check, Cursor VM):** closing lattice ≈ **6 ms** at 4,000 cells; schema-max 48,000 cells layout-dominated (~90 ms layout); colour memoized so unchanged lattices skip recompute. Cap raised to **48_000**.
+**Schema-max config bytes:** **14_893** → cap **32_768** (≥25% headroom).
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |
