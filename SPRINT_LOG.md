@@ -76,6 +76,24 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ### Final outcome
 Score: **96/100** — Pass. Unreachable skip note deleted; reachability guard in suite.
 
+### Sprint 62 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | 48k board gives a real closure result | PASS | At exactly 48,000 cells (40 strips × repeat 20 × rowCount 60): `Miter pattern does not close — check corners and row transforms.` ~50 ms real work. No silence. |
+| 2 | Pre-62 reopen | PASS | `verify-51`: v2, 12 strips, `[none, rot180]`, 18″ × 12″ × 1½″, 2.78 bd ft, no decimal inches. |
+Preview degradation is messaged, not silent: `too many pieces for 3D preview`, Export PNG
+auto-disabled. The deferred MAX_DRAWN_CELLS / MAX_3D_CELLS item is cosmetic only.
+**Correction — the recorded timings measured early exits, not full scans.** `cellsColorClosed`
+returns on the first mismatching edge. Any mitered strip with `repeat > 1` places identical
+corners side by side and breaks continuity immediately (verified: harlequin at repeat 1 warns
+nothing; the same board at repeat 20 warns "does not close"). Since columns = Σ(repeat) and a
+panel caps at 40 strips, **a board that CAN close is structurally limited to 40 columns × 60
+rows = 2,400 cells.** Every larger mitered board bails early. The 4–6 ms at 48k timed a bail;
+the true worst case is a full scan at 2,400 cells ≈ 33 ms.
+Deleting the gate remains correct — the bound is schema-enforced, which is a stronger
+justification than the measurement recorded.
+Sprint 62 stands at 96/100. The defect below is not attributed to it.
+
 ---
 
 ## Sprint 61: Close the gaps
