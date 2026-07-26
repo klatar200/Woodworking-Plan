@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 56 Attempt 1 (2026-07-26) — CLOSED 100/100** — seven species appended (`784ecf8`); §3.2 → 15; 0.127 pairwise floor guarded; First Load held 115 kB (confirmed in the Vercel build log). All six browser checks observed on prod, no defects found. Prior: Sprint 55 **95/100**. **Designer polish track 53–56 COMPLETE** (98 · 98 · 95 · 100).
+> **Latest logged: Sprint 57 Attempt 1 (2026-07-26) — CLOSED 96/100** — Part A species `<select>` (`aeb7d19`) · Part B multi-panel `schemaVersion:2` (`32f6379`). First Load **117 kB**. Prior: Sprint 56 **100/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1125 green (post-56).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1152 green (post-57).
 
 ---
 
@@ -42,6 +42,40 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 57: Species dropdown + multi-panel board model
+**Dates:** 2026-07-26
+**Scope:** Part A native species select · Part B `schemaVersion: 2` multi-panel / rowPattern / RowTransform. No U6/U7; no miter/angle/split-cell; Cell contract unchanged.
+**Commits on `main`:** `aeb7d19` (Part A) · `32f6379` (Part B)
+**/designer First Load JS:** **117 kB** (local `npm run build`; was 115 kB — panel-editor UI only, not a three.js pull-in).
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Part A select+swatch+unknown; Part B types/serialize/layout/metrics/templates/history/UI/print per prompt; B12/§2/§3 amended; `rotateByOne` gone |
+| Correctness & functionality (/20) | 16 | Thue-Morse popcount oracle green; v1 golden cell-identical migrate; transform reverse≠rotate on unequal/odd. **−4**: seven prod browser checks (new templates SVG/3D, delete Panel 2, Line thickness undo, v1 reopen, edge hide, plaid print) — Clerk OAuth blocked here |
+| Automated test coverage (/15) | 15 | **1152** / 98 files; `board-designer-thue-morse`, `board-designer-v2-migration`, updated designer suites — behaviour asserts |
+| Security (/15) | 15 | `/designer` still out of public-routes; 16 KB cap before decode; parseConfig on write; no new deps/secrets |
+| Code quality & simplicity (/10) | 10 | Deep-clone history; panel accordion; no board-diagram/r3f-scene edits |
+| Mobile/offline behavior (/10) | 10 | Sprint 54 gate + narrow per-panel strip lists; sticky guards held |
+| Documentation & handoff (/5) | 5 | Contract §0.5 amendments; BUILD_PLAN §4; this entry |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Keagan browser verify (expected — do not claim):**
+1. plaid / brick / diagonal / thue-morse load in SVG + 3D
+2. thue-morse shows 8×8 checker-of-checkers; count rows = 8
+3. Delete Panel 2 of plaid → exact deleted-panel warning; no crash
+4. Line thickness 0.25→1.75 equalises rows; one Undo restores
+5. Pre-sprint v1 save reopens unchanged (migrated in memory, written as v2 on save)
+6. Multi-panel → edge grain: panel-add + row editor hidden; extra-panels warning
+7. Plaid print: three panel tables with required lengths + row-order table
+
+### Final outcome
+Score: **96/100** — Pass. One-way v2 deploy — fix forward, do not roll back.
 
 ---
 

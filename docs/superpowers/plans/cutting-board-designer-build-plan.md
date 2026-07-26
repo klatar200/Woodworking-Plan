@@ -51,7 +51,7 @@ Referenced everywhere else by id. **Stated once, here.**
 | B9 | **Unsaved drafts are in-memory only.** No `localStorage`, no `IndexedDB`, no service-worker caching of a design. A refresh losing an unsaved draft is correct behaviour. |
 | B10 | Inches only. Display through `formatInches` (`src/lib/format.ts`) — tape fractions (`13/16″`), never decimals. No metric (`BUILD_PLAN` §4: metric is ⛔). |
 | B11 | Persistence = Prisma + Clerk session. No Supabase, no anonymous designs, no share links or URL-encoded state (Phase 2). |
-| B12 | Geometry = §2, exactly. Slice count is **derived from panel length**, never entered. |
+| B12 | Geometry = §2, exactly. **Amended Sprint 57:** in edge grain, `sourceLengthIn` is entered and is the board length; in end grain the row list is the design and each panel's required length is **derived** from the rows drawn from it. No entered number may misdescribe the geometry — the print sheet tells the maker how long to glue each panel up. |
 | B13 | **No food-safety, health, or durability claims** in copy, data model, or species metadata. No `foodSafe` field. Such a claim is a product/legal statement ⇒ escalate. |
 | B14 | Species and templates = §3 lists. Species ids are permanent: removing or renaming one after ship orphans saved JSON ⇒ escalate before touching the list. |
 | B15 | Metrics are **computed on read, never stored**. No metrics columns, no cached totals (CLAUDE.md §7: compute-on-read over denormalized). |
@@ -62,72 +62,72 @@ Referenced everywhere else by id. **Stated once, here.**
 
 All lengths in inches, `number` (float). No rounding inside the math; round only at display, and only via `formatInches`. Inputs snap to 1/16″ at the **input control**, not in the library.
 
-### 2.1 Glue-up 1 — the panel (both grain modes)
+### 2.1 Glue-up 1 — panels (both grain modes)
 
+A design has 1–4 `Panel`s. Each panel:
 ```
-panelWidthIn     = Σ over strips of (widthIn × repeat)      // strips run side by side
-panelLengthIn    = sourceLengthIn
-panelThicknessIn = stockThicknessIn
+panel.widthIn      = Σ over its strips of (widthIn × repeat)
+panel.thicknessIn  = entered (0.125–4) — on the finished END-GRAIN face this is the ROW HEIGHT
 ```
+Edge grain uses `panels[0]` only. End grain may use several panels of equal width.
 
 ### 2.2 `grain: 'edge'` — the panel IS the board
 
 ```
-finishedLengthIn    = panelLengthIn
-finishedWidthIn     = panelWidthIn
-finishedThicknessIn = panelThicknessIn
-sliceCount = 0 ; leftoverIn = 0        // not applicable; report as 0, never null
+finishedLengthIn    = sourceLengthIn          // entered
+finishedWidthIn     = panels[0].widthIn
+finishedThicknessIn = panels[0].thicknessIn
+sliceCount          = 0
+panelPlan           = [{ panels[0], rows: 1, requiredLengthIn: sourceLengthIn }]
 ```
 
-### 2.3 `grain: 'end'` — cross-cut the panel, rotate, re-glue
+### 2.3 `grain: 'end'` — cross-cut panels, lay slices, re-glue (Sprint 57)
 
-n slices need `n×slice + (n−1)×kerf ≤ panelLength`, therefore:
+The design is the **row list** (`rowPattern` cycled to `rowCount`), not a derived slice count from panel length.
 
 ```
-sliceCount   = max(0, floor((panelLengthIn + kerfIn) / (sliceThicknessIn + kerfIn)))
-usedIn       = sliceCount × sliceThicknessIn + max(0, sliceCount − 1) × kerfIn
-leftoverIn   = panelLengthIn − usedIn
-
-// each slice is rotated 90° so the cut face (end grain) is the top face:
-finishedLengthIn    = panelWidthIn                        // strip pattern runs the length
-finishedWidthIn     = sliceCount × panelThicknessIn       // slices glued side by side
-finishedThicknessIn = sliceThicknessIn
+rows                = rowPattern cycled to rowCount
+panelWidthIn        = panels[0].widthIn          // all panels must match
+finishedLengthIn    = panelWidthIn
+finishedWidthIn     = Σ over rows of panel(row).thicknessIn
+finishedThicknessIn = sliceThicknessIn           // entered — board thickness
+sliceCount          = rowCount
+rows_p              = count of rows drawn from panel p
+requiredLengthIn(p) = rows_p × sliceThicknessIn + max(0, rows_p − 1) × kerfIn
+panelPlan           = one entry per panel (including rows_p === 0)
 ```
 
-**Golden fixture (must be a test):** 12 strips × 1.5″ alternating walnut/maple, `sourceLengthIn 20`, `stockThicknessIn 1.5`, `sliceThicknessIn 1.5`, `kerfIn 0.125`
-→ `panelWidth 18` · `sliceCount 12` · `usedIn 19.375` · `leftoverIn 0.625` · finished **18 × 18 × 1.5**.
+**Row transforms** (only physically achievable placements of a cut slice): `none` · `rot180` · `mirrorX` · `mirrorY`. `rot180`/`mirrorX` **reverse** the expanded strip order; `none`/`mirrorY` leave it. **Never cyclically rotate** (`rotateByOne` deleted — it is not buildable).
 
-**Kerf-trap fixture (must be a test):** `panelLength 18`, `slice 1.5`, `kerf 0.125` → `floor(18.125/1.625) = 11`, **not** 12. Naive `18/1.5 = 12` is the bug this fixture exists to catch — same failure class as the six-16″-on-a-96″-board case in `cut-optimizer.ts`.
-
-**Zero-slice fixture (must be a test):** `panelLength 1`, `slice 1.5` → `sliceCount 0`, warning `No slices fit — increase panel length or reduce slice thickness.`, `complete: false`. Reported loudly, never silently zero (CLAUDE.md §7 cut-optimizer rule 4).
+**Golden fixture (v1 → v2 migrate test):** 12 strips × 1.5″ alternating walnut/maple, `sourceLengthIn 20`, stock/thickness 1.5, `sliceThicknessIn 1.5`, `kerfIn 0.125`, flip → `rowPattern: [none, rot180]`, `rowCount 12` · finished **18 × 18 × 1.5**. Cell layout must match the frozen v1 oracle (equal-width alternating sequences agree under reverse vs the deleted rotate).
 
 ### 2.4 Board feet
 
-You buy the **panel**, in both modes — end-grain slices come out of material already counted. Leftover is waste inside the panel and is already paid for.
+Per panel, using that panel's own thickness and its **derived** required length:
 
 ```
-bfForStrip(s) = (stockThicknessIn × s.widthIn × sourceLengthIn × s.repeat) / 144
-boardFeetBySpecies[speciesId] = Σ bfForStrip over that species, × (1 + wasteFactor)
-totalBoardFeet = Σ boardFeetBySpecies
+bf(strip in panel p) = (p.thicknessIn × strip.widthIn × requiredLengthIn(p) × strip.repeat) / 144
+boardFeetBySpecies   = Σ by speciesId across panels, × (1 + wasteFactor)
+totalBoardFeet       = Σ boardFeetBySpecies
 ```
-`wasteFactor` default `0.15` — same allowance and reasoning as `DEFAULT_OPTIONS.wasteFactor` in `cut-optimizer.ts`.
+Edge grain counts `panels[0]` only. `wasteFactor` default `0.15`.
 
 ### 2.5 `toParts()` — the Phase-2 bridge (built now, rendered never, per B7)
 
-One `Part` (interface in `src/lib/cut-optimizer.ts`) per strip:
-`{ id: strip.id, label: '<Species> strip <n>', quantity: strip.repeat, thicknessIn: stockThicknessIn, widthIn: strip.widthIn, lengthIn: sourceLengthIn, material: species.name }`
-Grain never rotates a part (CLAUDE.md §7). Test: the array type-checks as `Part[]` and `optimize(parts, DEFAULT_OPTIONS)` returns without `impossible` entries for the §2.3 golden fixture.
+One `Part` per strip per panel: `thicknessIn = panel.thicknessIn`, `lengthIn = requiredLengthIn(panel)`, `widthIn = strip.widthIn`, `quantity = strip.repeat`. Label `'<Species> strip <n>'`, prefixed with the panel label when there is more than one panel.
 
 ### 2.6 Warnings — accumulate, never throw
 
 | Condition | Warning string | `complete` |
 |---|---|---|
-| `strips.length === 0` | `Add a strip to see your board.` | false |
-| end grain, `sliceCount === 0` | `No slices fit — increase panel length or reduce slice thickness.` | false |
-| unknown `speciesId` | `Unknown wood: <id>` (render falls back to `--muted` swatch) | true |
+| no strips on the active panel | `Add a strip to see your board.` | false |
+| end grain, two panels of different total width | `Panels must be the same width — slices will not line up.` | false |
+| `rowPattern` names a panel that was deleted | `Row pattern uses a panel that was deleted.` | false |
+| edge grain with `panels.length > 1` | `Extra panels are unused in edge grain.` | true |
+| unknown `speciesId` | `Unknown wood: <id>` | true |
 | `finishedWidthIn > 24` | `Wider than most planers — plan to hand-flatten.` | true |
 
-`calculateMetrics()` is **pure and total**: it never throws, never returns `NaN`, and always returns a full `BoardMetrics`. Invalid *shapes* are rejected upstream by zod (§3.4), not by throwing here.
+`No slices fit — …` is **deleted** (`rowCount ≥ 1` is a zod bound). `calculateMetrics()` stays pure and total.
 
 ---
 
@@ -135,39 +135,42 @@ Grain never rotates a part (CLAUDE.md §7). Test: the array type-checks as `Part
 
 **These signatures are the parallel-execution interface (§6). Changing anything here mid-sprint invalidates every unit running in parallel — stop them, amend this section, restart.**
 
-### 3.1 Types — `src/lib/board-designer/types.ts`
+### 3.1 Types — `src/lib/board-designer/types.ts` (schemaVersion **2** — Sprint 57)
 
 ```ts
 export type Grain = 'edge' | 'end';
-
 export interface WoodSpecies { id: string; name: string; colorHex: string }
-
 export interface Strip { id: string; speciesId: string; widthIn: number; repeat: number }
-
-export interface BoardDesignConfig {
-  schemaVersion: 1;
-  name: string;
-  grain: Grain;
-  sourceLengthIn: number;     // panel length
-  stockThicknessIn: number;   // dressed stock thickness
-  sliceThicknessIn: number;   // end grain only; ignored (but present) when grain === 'edge'
-  kerfIn: number;
-  wasteFactor: number;
-  flipEveryOtherSlice: boolean; // RENDER ONLY — see §3.5. Never touches §2 math.
-  strips: Strip[];
+export interface Panel {
+  id: string; label: string;      // 1–24
+  thicknessIn: number;            // 0.125–4 — row height on finished end-grain face
+  strips: Strip[];                // 1–40
 }
-
-export interface SpeciesBoardFeet { speciesId: string; name: string; boardFeet: number }
-
+export type RowTransform = 'none' | 'rot180' | 'mirrorX' | 'mirrorY';
+export interface RowStep { panelId: string; transform: RowTransform }
+export interface BoardDesignConfig {
+  schemaVersion: 2;
+  name: string; grain: Grain;
+  sourceLengthIn: number;         // EDGE ONLY — board length; ignored in end grain
+  sliceThicknessIn: number;       // END ONLY — finished board thickness
+  kerfIn: number; wasteFactor: number;
+  panels: Panel[];                // 1–4; total strips across panels ≤ 80
+  rowPattern: RowStep[];          // 1–24 — cycles to fill rowCount
+  rowCount: number;               // 1–60
+}
+export interface PanelPlan {
+  panelId: string; label: string; rows: number;
+  requiredLengthIn: number; widthIn: number; thicknessIn: number;
+}
 export interface BoardMetrics {
-  panelWidthIn: number; panelLengthIn: number; panelThicknessIn: number;
+  panelWidthIn: number;
   finishedLengthIn: number; finishedWidthIn: number; finishedThicknessIn: number;
-  sliceCount: number; leftoverIn: number;
+  sliceCount: number; panelPlan: PanelPlan[];
   boardFeetBySpecies: SpeciesBoardFeet[]; totalBoardFeet: number;
   warnings: string[]; complete: boolean;
 }
 ```
-The original brief's `stripHeightIn` (two meanings) is **deleted** — `sliceThicknessIn` is the only slice field. `flipEveryOther` / `rotateEveryOther` are replaced by the single render-only `flipEveryOtherSlice`.
+`stockThicknessIn`, `flipEveryOtherSlice`, root `strips`, `leftoverIn`, `panelLengthIn`, `panelThicknessIn` are **removed**. v1 is accepted on read and upgraded in memory; v2 is the only thing written. **One-way deploy — do not roll prod back.**
 
 ### 3.2 Species — `src/lib/board-designer/species.ts` (exactly these 15; B13: no other metadata)
 
@@ -177,38 +180,42 @@ Order is append-only after the original eight (Sprint 56, 2026-07-26). Ids are p
 
 Colors live in **TypeScript, never in `globals.css`** — a CSS custom property would have to exist in both `:root` and `.dark` or `tests/dark-theme.test.ts` fails, and these are pigment values, not theme tokens.
 
-### 3.3 Templates — `src/lib/board-designer/templates.ts` (exactly these 4)
+### 3.3 Templates — `src/lib/board-designer/templates.ts` (exactly these 8; schemaVersion 2)
 
-| id | grain | strips, in order (species @ widthIn) | settings | finished |
-|---|---|---|---|---|
-| `classic-stripe` | edge | maple 1.5, walnut 1.5, maple 1.5, walnut 1.5, maple 1.5, walnut 1.5, maple 1.5 | length 18, stock 0.75 | 18 × 10.5 × 0.75 |
-| `checkerboard` | end | 12 strips alternating maple 1.5 / walnut 1.5 | length 14, stock 1.5, slice 1.5, `flipEveryOtherSlice: true` | 18 × 12 × 1.5 (8 slices, leftover 1.125) |
-| `butcher-block` | edge | maple 2.5, walnut 1, maple 2.5, walnut 1, maple 2.5 | length 20, stock 1.5 | 20 × 9.5 × 1.5 |
-| `accent-stripe` | edge | maple 2.5, purpleheart 0.5, maple 5, purpleheart 0.5, maple 2.5 | length 16, stock 0.75 | 16 × 11 × 0.75 |
+| id | grain | notes | finished |
+|---|---|---|---|
+| `classic-stripe` | edge | one panel, thickness 0.75, 7×1.5 maple/walnut | 18 × 10.5 × 0.75 |
+| `checkerboard` | end | one panel, `rowPattern: [none, rot180]`, `rowCount 8` | 18 × 12 × 1.5 |
+| `butcher-block` | edge | one panel, thickness 1.5 | 20 × 9.5 × 1.5 |
+| `accent-stripe` | edge | one panel with purpleheart accents | 16 × 11 × 0.75 |
+| `plaid` | end | Wide A / Wide B / Line (0.25″), pattern A-Line-B-Line, `rowCount 12` | 9.75 × 12 × 1.5 |
+| `brick` | end | Full course + Half course, alternating, `rowCount 12` | 8.75 × 18 × 1.5 |
+| `diagonal` | end | four shifted courses, `rowCount 12` | 10 × 18 × 1.5 |
+| `thue-morse` | end | one panel, length-8 antipalindromic transforms, `rowCount 8` | 12 × 12 × 1.5 |
 
-All templates use `kerfIn 0.125`, `wasteFactor 0.15`, `repeat 1`, `schemaVersion 1`. Every strip is listed explicitly — no shorthand to interpret. The `checkerboard` template deliberately differs from §2.3's golden fixture (which uses length 20 to make the arithmetic legible); the template's numbers are the ones a real maker would start from. Both are asserted in tests.
+All use `kerfIn 0.125`, `wasteFactor 0.15`, `repeat 1`. Every strip listed explicitly. Do not generalise `thue-morse` to other sizes.
 
 ### 3.4 Serialization — `src/lib/board-designer/serialize.ts`
 
-`parseConfig(raw: unknown): { ok: true; config } | { ok: false; error: string }` — **zod `safeParse`, never a throwing parse.**
+`parseConfig(raw)` accepts **v1 or v2** and **always returns v2**. zod `safeParse`, never throws.
 
-Bounds (all required — an unbounded numeric field is the `formInt("1e9")` trap in float clothing):
-`name` 1–80 chars · `strips` 1–60 items · `widthIn` 0.0625–24 · `repeat` 1–20 · `sourceLengthIn` 1–96 · `stockThicknessIn` 0.25–4 · `sliceThicknessIn` 0.25–4 · `kerfIn` 0–0.5 · `wasteFactor` 0–1 · `schemaVersion` literal `1`.
+v1 → v2: one panel from `strips`/`stockThicknessIn`; `flipEveryOtherSlice` → `[none, rot180]` else `[none]`; end-grain `rowCount` derived from old slice formula; `schemaVersion: 2`.
 
-**Security:** the action caps the raw JSON **string** at 8 KB *before* `JSON.parse` (byte cap before decode — same discipline as `src/lib/storage.ts`). Over cap ⇒ silent bounce, no parse attempt.
+Bounds: `panels` 1–4 · strips/panel 1–40 · **total strips ≤ 80** (`superRefine`) · `label` 1–24 · `thicknessIn` 0.125–4 · `rowPattern` 1–24 · `rowCount` 1–60 · panel ids unique · every `rowPattern[].panelId` must exist. Existing per-strip/name/kerf/waste bounds unchanged.
 
-### 3.5 Render layout — `src/lib/board-designer/layout.ts` (pure; used by BOTH the SVG diagram and the 3D scene)
+**Security:** raw JSON string capped at **16 KB** before `JSON.parse` (was 8 KB). Over cap ⇒ silent bounce.
+
+### 3.5 Render layout — `src/lib/board-designer/layout.ts` (pure; SVG + 3D)
 
 ```ts
 export interface Cell { xIn: number; yIn: number; wIn: number; hIn: number; colorHex: string; speciesId: string }
 export function layoutTopFace(config: BoardDesignConfig, metrics: BoardMetrics): Cell[];
 ```
-Top face, origin top-left, x along `finishedLengthIn`, y along `finishedWidthIn`.
-- **edge:** one cell per strip-repeat. `wIn = finishedLengthIn`, `hIn = strip.widthIn`, stacked down y.
-- **end:** grid — columns = strips (`wIn = strip.widthIn`), rows = slices (`hIn = stockThicknessIn`), `sliceCount` rows. When `flipEveryOtherSlice`, odd rows use the strip order rotated by one (this is what produces the checkerboard).
-- Unknown species ⇒ `colorHex` = `'#8A8A8A'` + the §2.6 warning. Never crash.
+- **edge:** `panels[0]` strips; `hIn = strip.widthIn`; stacked down y.
+- **end:** `rowPattern` cycled to `rowCount`; each row looks up its panel, expands repeats, applies transform (`rot180`/`mirrorX` reverse); `hIn = panel.thicknessIn`; **y accumulates** row heights. Missing panel ⇒ no cells for that row (metrics warns).
+- `Cell` contract unchanged — no miter/angle/split fields. `rotateByOne` deleted.
 
-Pure, deterministic, node-testable. **U4's 3D scene consumes this same function** — it maps `Cell[]` to instanced boxes and extrudes by `finishedThicknessIn`. There is exactly one geometry mapping in the codebase.
+Pure, deterministic, node-testable. Both renderers already honour `cell.hIn`.
 
 ### 3.6 Prisma — `prisma/schema.prisma`
 
@@ -454,3 +461,5 @@ Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/k
 - Sprint 54 header follow-on 2026-07-26 (`2844c22`): `a728a0e` left a 1024–1279 search dead band (drawer is `lg:hidden`, not present with nav); single header breakpoint at `xl` (Main nav + SignedOut + MobileNav + search). Designer untouched. Correctness −4 still withheld.
 - Sprint 55 2026-07-26 (`31a5940`): undo/redo via pure `historyReducer` (`past`/`present`/`future`, cap 50, no new deps); coalesce typed `update-strip` width/repeat + typed `patch` fields; blur `commit-coalesce`; template confirm deleted (load undoable); shortcuts gated on `DESIGNER_WIDE_MQ` and ignored in text entry; Undo/Redo buttons. Score **98/100**.
 - Sprint 56 2026-07-26 (`784ecf8`): append seven species (yellowheart→bamboo) after the original eight; §3.2 amended to exactly 15; B13/B14/`schemaVersion:1` held; pairwise sRGB floor 0.127 tested; `dark-theme`/`contrast` re-run; `/designer` First Load **115 kB** (no three.js regression). Score **96/100**. Designer polish track (53–56) complete; U6/U7 still unopened.
+- Sprint 57 Part A 2026-07-26 (`aeb7d19`): native species `<select>` + live swatch; unknown id survives disabled; pill radiogroup deleted.
+- Sprint 57 Part B 2026-07-26 (`32f6379`): `schemaVersion: 2` multi-panel model; B12/§2/§3 amended; `rotateByOne` deleted; v1 migrates on read; templates +4 (plaid/brick/diagonal/thue-morse); First Load **117 kB**. One-way deploy.
