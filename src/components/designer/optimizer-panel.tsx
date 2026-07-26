@@ -12,6 +12,7 @@ import {
   hasImpossibleParts,
   totalBoards,
   yieldRatio,
+  type BoardGroup,
 } from '@/lib/cut-optimizer';
 import { selectControl } from '@/lib/ui';
 
@@ -20,10 +21,22 @@ function stockFtArticle(ft: number): 'a' | 'an' {
   return ft === 8 || ft === 11 || ft === 18 ? 'an' : 'a';
 }
 
+/** Default-stock cut plan — dock badge + tests (Sprint 68). */
+export function cutPlanGroupsForConfig(config: BoardDesignConfig): BoardGroup[] {
+  return designCutPlan(config, {
+    stockLengthIn: DEFAULT_OPTIONS.stockLengthIn,
+    stockWidthIn: null,
+    kerfIn: config.kerfIn,
+    endTrimIn: DEFAULT_OPTIONS.endTrimIn,
+  });
+}
+
+export function cutPlanHasImpossible(config: BoardDesignConfig): boolean {
+  return hasImpossibleParts(cutPlanGroupsForConfig(config));
+}
+
 /**
- * Desktop cut-plan panel (Sprint 64 / U6). Collapsed by default; not mounted on the
- * narrow surface — authoring already gates at 1024, and mobile keeps the print sheet.
- *
+ * Desktop cut-plan panel (Sprint 64 / U6; Sprint 68 always expanded in dock).
  * Reuses `toParts` → `designCutPlan` → `optimize` / `BoardBar`. No dollar figures.
  */
 export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
@@ -46,12 +59,10 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
   const stockFt = stockLengthIn / 12;
 
   return (
-    <details className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
-      <summary className="cursor-pointer text-[1.125rem] font-bold">
-        Cut plan — what to buy
-      </summary>
+    <section className="grid gap-[1rem] rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+      <h2 className="!m-0 text-[1.125rem]">Cut plan — what to buy</h2>
 
-      <div className="mt-[1rem] grid gap-[1rem]">
+      <div className="grid gap-[1rem]">
         <div className="grid gap-[0.75rem] sm:grid-cols-2">
           <label className="grid gap-[0.375rem]">
             <span className="text-[0.875rem] font-bold">Board length</span>
@@ -129,8 +140,7 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
                     each {formatInches(group.stockWidthIn)} board
                   </>
                 )}{' '}
-                {/* Relabel (Sprint 64 fix): yieldRatio numerator includes kerf + end trim
-                    (consumed sawdust), not just finished parts — "used" implied product. */}
+                {/* yieldRatio numerator includes kerf + end trim (consumed sawdust). */}
                 · {yieldPct}% of each board consumed
               </p>
 
@@ -168,6 +178,6 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
           );
         })}
       </div>
-    </details>
+    </section>
   );
 }

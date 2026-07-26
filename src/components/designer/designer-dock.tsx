@@ -1,10 +1,11 @@
 'use client';
 
+import { useMemo } from 'react';
 import type { ConfigAction } from '@/lib/board-designer/history';
 import type { BoardDesignConfig, BoardMetrics, Grain } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 import { MetricsPanel } from './metrics-panel';
-import { OptimizerPanel } from './optimizer-panel';
+import { cutPlanHasImpossible, OptimizerPanel } from './optimizer-panel';
 import { RowPatternEditor } from './row-pattern-editor';
 import { TemplatePicker } from './template-picker';
 
@@ -24,8 +25,8 @@ export function dockTabForGrain(
 }
 
 /**
- * Dock under preview. All panels stay mounted; inactive = hidden (Sprint 67).
- * Badges = Sprint 68 — not here.
+ * Dock under preview. All panels stay mounted; inactive = hidden.
+ * Sprint 68: tab badges for Metrics warnings / Cut plan impossible.
  */
 export function DesignerDock({
   tab,
@@ -43,11 +44,19 @@ export function DesignerDock({
   onCommitCoalesce: () => void;
 }) {
   const endGrain = config.grain === 'end';
-  const tabs: { id: DesignerDockTab; label: string; show: boolean }[] = [
-    { id: 'templates', label: 'Templates', show: true },
-    { id: 'pattern', label: 'Pattern', show: endGrain },
-    { id: 'metrics', label: 'Metrics', show: true },
-    { id: 'cut-plan', label: 'Cut plan', show: true },
+  const metricsBadge = metrics.warnings.length > 0;
+  const cutPlanBadge = useMemo(() => cutPlanHasImpossible(config), [config]);
+
+  const tabs: {
+    id: DesignerDockTab;
+    label: string;
+    show: boolean;
+    badge: boolean;
+  }[] = [
+    { id: 'templates', label: 'Templates', show: true, badge: false },
+    { id: 'pattern', label: 'Pattern', show: endGrain, badge: false },
+    { id: 'metrics', label: 'Metrics', show: true, badge: metricsBadge },
+    { id: 'cut-plan', label: 'Cut plan', show: true, badge: cutPlanBadge },
   ];
 
   return (
@@ -73,18 +82,24 @@ export function DesignerDock({
               onClick={() => onTabChange(item.id)}
             >
               {item.label}
+              {item.badge ? (
+                <span
+                  className="ml-[0.375rem] inline-block h-[0.5rem] w-[0.5rem] rounded-[999px] bg-danger"
+                  aria-label="Needs attention"
+                />
+              ) : null}
             </button>
           ) : null,
         )}
       </div>
 
       <div className="min-h-[12rem] flex-1 overflow-y-auto p-[0.75rem]">
-        {/* Keep mounted — hide inactive. Cut plan stock state survives tab switches. */}
         <div
           id="designer-dock-panel-templates"
           role="tabpanel"
           aria-labelledby="designer-dock-tab-templates"
           hidden={tab !== 'templates'}
+          data-dock-panel="templates"
         >
           <TemplatePicker
             onLoad={(templateConfig) =>
@@ -98,6 +113,7 @@ export function DesignerDock({
           role="tabpanel"
           aria-labelledby="designer-dock-tab-pattern"
           hidden={tab !== 'pattern' || !endGrain}
+          data-dock-panel="pattern"
         >
           <RowPatternEditor
             config={config}
@@ -111,6 +127,7 @@ export function DesignerDock({
           role="tabpanel"
           aria-labelledby="designer-dock-tab-metrics"
           hidden={tab !== 'metrics'}
+          data-dock-panel="metrics"
         >
           <MetricsPanel metrics={metrics} grain={config.grain} />
         </div>
@@ -120,6 +137,7 @@ export function DesignerDock({
           role="tabpanel"
           aria-labelledby="designer-dock-tab-cut-plan"
           hidden={tab !== 'cut-plan'}
+          data-dock-panel="cut-plan"
         >
           <OptimizerPanel config={config} />
         </div>
