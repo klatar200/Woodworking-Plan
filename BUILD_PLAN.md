@@ -53,10 +53,11 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 71 (2D + rotate) | ✅ **CLOSED** 2026-07-26 — **97/100**. 3D default / 2D toggle; view-only rotate; 2D PNG export. |
 | Sprint 72 (Save a copy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Dirty config → `Copy of {name}` → new id. Suite **1322/1322** / 115 files. |
 | Sprints 67–72 (Designer shell / IA) | ✅ **TRACK CLOSED** 2026-07-26. |
+| Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — tip `c1a9867`. Grain→dock sync · Cut plan badge=panel stock · copy ownership · 2D rotate clip · FINAL_LAYOUT button order. Suite **1326/1326** / 115 files. |
 
-Test suite — expected: **1322/1322** across **115 files** (Sprint 72). Update each sprint close.
+Test suite — expected: **1326/1326** across **115 files** (shell IA post-close audit). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed). Parked FUTURE_IDEAS 2026-07-26.
+**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed + post-close audit). Parked FUTURE_IDEAS 2026-07-26.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -70,6 +71,7 @@ SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/acti
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
 ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 ✅ → 71 ✅ → 72 ✅. TRACK CLOSED.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
+POST_CLOSE: audit `c1a9867` (2026-07-26) — grain→dock · badge/stock · copy authz · 2D clip · button order.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
 
@@ -79,11 +81,11 @@ FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 3. No second relocate of the same component (67 moves; later sprints = behavior/CSS/tests/features per DO only).
 4. Do not invent routes/fields/vendors/monetization/share/profile-UOM/in-app-tabs/custom-species/dark-repalette/advanced-templates.
 5. Preserve: history undo/redo/coalesce · `guardAction`+rate-limit · shopping-list form **sibling** (no nested `<form>`) · WebGL null below lg · draft mounted on resize · forward-only schema migrate · no dollar UI · `formatInches` · First Load must not pull three.js into initial designer chunk.
-6. Alert copy only inside its tab. Tab badge OK on Metrics/Cut plan when warnings/impossible.
+6. Alert copy only inside its tab. Tab badge OK on Metrics/Cut plan when warnings/impossible — Cut plan badge uses the **same stock L/W** as the panel.
 7. Storage stays inches (`*In`, `wasteFactor` 0–1). Suffixes/tooltips = display only.
-8. Dock tab panels stay **mounted**; inactive = hidden (CSS/hidden attr). Preserves Cut plan stock L/W state.
-9. Grain → edge while Pattern active: switch tab to Templates (Pattern hidden).
-10. Save a copy name = `Copy of {name}` trimmed to max 80.
+8. Dock tab panels stay **mounted**; inactive = hidden (CSS/hidden attr). Preserves Cut plan stock L/W state (stock owned by dock, not only OptimizerPanel).
+9. Grain → edge while Pattern active: switch tab to Templates (Pattern hidden) — sync on **any** present.grain change (toggle, template load, undo/redo, reset), not only the top-bar toggle.
+10. Save a copy name = `Copy of {name}` trimmed to max 80; action requires owned `designId` (`getDesign`) before create.
 
 **HARD_STOP → escalate**
 breaking saved-config w/o migrate · site-wide UOM/mm storage · in-app tabs · share · custom species · money · branding/public copy · FUTURE_IDEAS items · anything outside this contract
@@ -141,6 +143,7 @@ SHIPPED: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping,Board settings �
 ```
 SHIPPED: Cut plan always-expanded section; Metrics/Cut plan tab badges; designer-shell-parity.test.ts
     locks PARITY_INVENTORY + mounted/hidden dock panels; edge hides Pattern tab control.
+AUDIT: Cut plan badge stock lifted into DesignerDock (matches panel L/W).
 ```
 
 **69 — strip directory** ✅ CLOSED 2026-07-26 · 97/100
@@ -162,10 +165,17 @@ SHIPPED: 3D default / 2D BoardDiagram; view-only rotate; svg→PNG export in 2D.
 **72 — Save a copy** ✅ CLOSED 2026-07-26 · 98/100
 ```
 SHIPPED: copyBoardDesignAction; dirty config; copyDesignName; disabled without designId.
+AUDIT: getDesign ownership gate before create; FINAL_LAYOUT top-bar order Save → copy → shopping.
+```
+
+**Post-close audit** ✅ CLOSED 2026-07-26 · `c1a9867`
+```
+SHIPPED: config.grain→dockTab useEffect; dock-owned cut-plan stock for badge; 2D 90/270 host
+    overflow-visible + aspect minHeight; copy authz tests; suite 1326/1326.
 ```
 
 ### Sprints 53–56 — Designer polish (CLOSED).
-51–52=U1–U5. 53–65 closed. Active designer track = **67–72 agent contract above**. DECISIONS_LOG 2026-07-25 · 2026-07-26.
+51–52=U1–U5. 53–65 closed. Designer shell track = **67–72 closed** (+ post-close audit). DECISIONS_LOG 2026-07-25 · 2026-07-26.
 
 | Sprint | Scope (Keagan's item #s) | Notes / gates |
 |---|---|---|

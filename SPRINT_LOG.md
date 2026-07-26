@@ -3,9 +3,28 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 72 (2026-07-26) — CLOSED 98/100** — Save a copy. Shell IA track 67–72 ✅.
+> **Latest logged: Shell IA post-close audit (2026-07-26) — CLOSED** — tip `c1a9867`. Suite: 1326 green.
 >
-> **Milestones:** … · shell 67–72 ✅. Suite: 1322 green.
+> **Milestones:** … · shell 67–72 ✅ · post-close audit ✅. Suite: 1326 green.
+
+---
+
+## Shell IA post-close audit
+**Dates:** 2026-07-26
+**Scope:** Second-pass verification of BUILD_PLAN §4 Sprints 67–72 after TRACK CLOSED. No new §4 scope.
+
+### Attempt 1 — PASS (fix-forward)
+| Finding | Severity | Fix |
+|---|---|---|
+| `dockTab` only synced from top-bar `setGrain` — template load / undo / redo / reset could leave Pattern active with tab hidden → empty dock | bug | `useEffect` on `config.grain` → `dockTabForGrain` |
+| Cut plan tab badge used default stock; panel used local `stockLengthIn`/`stockWidthIn` | bug | Stock state lifted into `DesignerDock`; badge + `OptimizerPanel` share it |
+| 2D 90°/270° CSS rotate clipped non-square boards (`overflow-hidden`; export already swapped W/H) | bug | `overflow-visible` + aspect-aware host `minHeight` |
+| `copyBoardDesignAction` did not verify owned `designId` before create | gap | `getDesign(designId)` ownership gate; foreign → `/designer` |
+| Top-bar order shopping/copy/Save vs FINAL_LAYOUT | nit | Save → Save a copy → shopping |
+
+**Evidence:** suite **1326/1326** / 115 files; typecheck + lint green; authz tests for copy foreign/owned/rate-limit; shell + parity guards. SHA: `c1a9867` (+ docs commit on `main`).
+
+**Still withheld:** signed-in prod browser census / First Load re-measure (same as sprint closes).
 
 ---
 
@@ -24,7 +43,7 @@
 | Mobile/offline (/10) | 10 | Narrow untouched |
 | Documentation & handoff (/5) | 5 | BUILD_PLAN track closed |
 
-Score: **98/100** — Pass. Shell IA track closed.
+Score: **98/100** — Pass. Shell IA track closed. Post-close audit added ownership gate (`c1a9867`).
 
 ---
 
