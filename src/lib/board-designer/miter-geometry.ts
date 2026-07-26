@@ -320,7 +320,7 @@ export function pointInPolygon(x: number, y: number, polygon: readonly Point[]):
   return inside;
 }
 
-/** Colour (speciesId) at a point inside a cell. */
+/** Colour (speciesId) at a point inside a cell. Used by raster/`speciesComponents`. */
 export function colorAtCell(cell: ClosableCell, x: number, y: number): string {
   if (
     cell.wedge &&
@@ -331,12 +331,17 @@ export function colorAtCell(cell: ClosableCell, x: number, y: number): string {
   return cell.speciesId;
 }
 
+/** True when (x,y) lies in the cell's miter wedge polygon. */
+export function inWedge(cell: ClosableCell, x: number, y: number): boolean {
+  return Boolean(cell.wedge && pointInPolygon(x, y, cell.wedge.polygon));
+}
+
 /**
  * Full lattice-closure check for mitered boards:
- * 1) colour continuous across every shared cell edge (sampled), and
+ * 1) wedge web continuous across every shared cell edge (sampled), and
  * 2) every mitered strip's panel thickness within 5% of t = w·secθ.
  *
- * Colour continuity is necessary but not sufficient for a named lattice —
+ * Wedge continuity is necessary but not sufficient for a named lattice —
  * use `speciesComponents` to assert shape. Thickness gate stops the
  * one-row-form warning from being backwards on the two-row harlequin.
  */
@@ -359,15 +364,22 @@ export function miterLatticeCloses(
       }
     }
   }
-  return cellsColorClosed(cells, samplesPerEdge);
+  return wedgeWebContinuous(cells, samplesPerEdge);
 }
 
 /**
- * Colour continuity only — every shared edge agrees species at every sample.
- * Compares only spatially adjacent cells (same-row neighbours + next-row
- * neighbours), not the O(n²) all-pairs scan.
+ * Wedge-web continuity across shared cell edges (Sprint 63).
+ *
+ * Original Sprint 58 criterion required species strings equal via `colorAtCell`
+ * ("colour continuous"). That conflated geometric closure with uniform base
+ * colour — a harlequin with one accent strip falsely failed. Closure is
+ * geometric: wedge meets wedge / base meets base. When both sides are in a
+ * wedge, wedge species must also match (a mid-run colour change is still a
+ * defect). Base species is irrelevant.
+ *
+ * Early-exit on first mismatch — large boards stay cheap.
  */
-export function cellsColorClosed(
+export function wedgeWebContinuous(
   cells: readonly ClosableCell[],
   samplesPerEdge = 24,
 ): boolean {
@@ -399,7 +411,7 @@ export function cellsColorClosed(
       if (x === null) continue;
       const y0 = Math.max(a.yIn, b.yIn);
       const y1 = Math.min(a.yIn + a.hIn, b.yIn + b.hIn);
-      if (y1 - y0 > eps && !edgeColorsMatch(a, b, 'v', x, y0, y1, samplesPerEdge)) {
+      if (y1 - y0 > eps && !edgeWedgeMatch(a, b, 'v', x, y0, y1, samplesPerEdge)) {
         return false;
       }
     }
@@ -426,7 +438,7 @@ export function cellsColorClosed(
         if (y === null) continue;
         const x0 = Math.max(a.xIn, b.xIn);
         const x1 = Math.min(a.xIn + a.wIn, b.xIn + b.wIn);
-        if (x1 - x0 > eps && !edgeColorsMatch(a, b, 'h', y, x0, x1, samplesPerEdge)) {
+        if (x1 - x0 > eps && !edgeWedgeMatch(a, b, 'h', y, x0, x1, samplesPerEdge)) {
           return false;
         }
       }
@@ -556,7 +568,7 @@ function edgesTouchHorizontal(a: ClosableCell, b: ClosableCell, eps: number): bo
   );
 }
 
-function edgeColorsMatch(
+function edgeWedgeMatch(
   a: ClosableCell,
   b: ClosableCell,
   axis: 'v' | 'h',
@@ -573,11 +585,6 @@ function edgeColorsMatch(
     let bx: number;
     let by: number;
     if (axis === 'v') {
-      // Sample just inside each cell
-      ax = fixed - 1e-6;
-      if (ax < a.xIn) ax = fixed + 1e-6;
-      if (ax > a.xIn + a.wIn) ax = a.xIn + a.wIn / 2;
-      // Determine which cell is on the left of the edge
       const aLeft = a.xIn + a.wIn <= b.xIn + 1e-6;
       ax = aLeft ? fixed - 1e-6 : fixed + 1e-6;
       bx = aLeft ? fixed + 1e-6 : fixed - 1e-6;
@@ -590,7 +597,15 @@ function edgeColorsMatch(
       ax = t;
       bx = t;
     }
-    if (colorAtCell(a, ax, ay) !== colorAtCell(b, bx, by)) return false;
+    const aIn = inWedge(a, ax, ay);
+    const bIn = inWedge(b, bx, by);
+    // Membership must agree — wedge meets wedge, base meets base.
+    if (aIn !== bIn) return false;
+    // When both are in a wedge, species must match (no mid-web colour change).
+    // Base species is irrelevant (Sprint 63).
+    if (aIn && bIn) {
+      if (a.wedge!.speciesId !== b.wedge!.speciesId) return false;
+    }
   }
   return true;
 }

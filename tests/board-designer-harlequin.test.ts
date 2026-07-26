@@ -3,11 +3,11 @@ import { layoutTopFace } from '@/lib/board-designer/layout';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { evaluateHexagonLattice } from '@/lib/board-designer/hexagon-criteria';
 import {
-  cellsColorClosed,
   closingThicknessHint,
   closingThicknessIn,
   miterLatticeCloses,
   speciesComponents,
+  wedgeWebContinuous,
 } from '@/lib/board-designer/miter-geometry';
 import { getTemplate } from '@/lib/board-designer/templates';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
@@ -65,10 +65,10 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
     expect(halfMean / fullMean).toBeLessThan(0.6);
   });
 
-  it('colour continuity holds; thickness gate accepts shipped 1″', () => {
+  it('wedge web continuous; thickness gate accepts shipped 1″', () => {
     const tpl = getTemplate('harlequin')!;
     const cells = layoutTopFace(tpl.config, calculateMetrics(tpl.config));
-    expect(cellsColorClosed(cells)).toBe(true);
+    expect(wedgeWebContinuous(cells)).toBe(true);
     expect(miterLatticeCloses(cells, tpl.config.panels)).toBe(true);
   });
 
@@ -107,7 +107,7 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
     );
   });
 
-  it('cellsColorClosed is false when strip-1 corner breaks the alternation', () => {
+  it('wedgeWebContinuous is false when strip-1 corner breaks the alternation', () => {
     const tpl = getTemplate('harlequin')!;
     const broken: BoardDesignConfig = {
       ...tpl.config,
@@ -121,7 +121,7 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
       })),
     };
     const cells = layoutTopFace(broken, calculateMetrics(broken));
-    expect(cellsColorClosed(cells)).toBe(false);
+    expect(wedgeWebContinuous(cells)).toBe(false);
   });
 
   it('fails the hexagonal-lattice criteria (Sprint 59 §B2)', () => {
@@ -164,7 +164,7 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
       rowCount: 8,
     };
     const cells = layoutTopFace(config, calculateMetrics(config));
-    expect(cellsColorClosed(cells)).toBe(true);
+    expect(wedgeWebContinuous(cells)).toBe(true);
     const comps = speciesComponents(cells, 40);
     expect(comps.get('walnut')!.count).toBe(1);
     expect(comps.get('hard-maple')!.count).toBeGreaterThanOrEqual(6);
