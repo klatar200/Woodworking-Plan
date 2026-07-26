@@ -97,55 +97,38 @@ export function StripList({
               </div>
 
               <div className="grid gap-[0.75rem]">
-                <fieldset className="m-0 border-none p-0">
-                  <legend className="mb-[0.375rem] text-[0.875rem] font-bold">Species</legend>
-                  <div
-                    role="radiogroup"
-                    aria-label="Species"
-                    className="grid grid-cols-2 gap-[0.375rem]"
-                  >
-                    {SPECIES.map((species) => {
-                      const selected = species.id === strip.speciesId;
-                      return (
-                        <button
-                          key={species.id}
-                          type="button"
-                          role="radio"
-                          aria-checked={selected}
-                          tabIndex={selected ? 0 : -1}
-                          title={species.name}
-                          className={`inline-flex min-h-[2.75rem] min-w-0 items-center rounded-[0.375rem] border px-[0.5rem] text-left text-[0.8125rem] leading-none whitespace-nowrap focus-visible:outline-2 focus-visible:outline-ok focus-visible:outline-offset-2 ${
-                            selected
-                              ? 'border-fg bg-accent-tint font-bold text-fg'
-                              : 'border-border bg-surface text-fg'
-                          }`}
-                          onClick={() => onUpdate(strip.id, { speciesId: species.id })}
-                          onKeyDown={(event) => {
-                            if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
-                              return;
-                            }
-                            event.preventDefault();
-                            const speciesIndex = SPECIES.findIndex((s) => s.id === strip.speciesId);
-                            if (speciesIndex < 0) return;
-                            const delta = event.key === 'ArrowRight' ? 1 : -1;
-                            const next =
-                              SPECIES[(speciesIndex + delta + SPECIES.length) % SPECIES.length]!;
-                            onUpdate(strip.id, { speciesId: next.id });
-                          }}
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="mr-[0.375rem] inline-block h-[0.875rem] w-[0.875rem] shrink-0 rounded-[50%] border border-border"
-                            style={{ backgroundColor: species.colorHex }}
-                          />
-                          <span className="min-w-0 overflow-hidden text-ellipsis">
-                            {species.name}
-                          </span>
-                        </button>
-                      );
-                    })}
+                <label className="grid gap-[0.375rem]">
+                  <span className="text-[0.875rem] font-bold">Species</span>
+                  <div className="flex min-w-0 items-center gap-[0.5rem]">
+                    <span
+                      aria-hidden="true"
+                      className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
+                      style={{
+                        backgroundColor:
+                          getSpecies(strip.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
+                      }}
+                    />
+                    <select
+                      className={`${inputControl} min-w-0 flex-1`}
+                      name={`strip-${strip.id}-speciesId`}
+                      value={strip.speciesId}
+                      onChange={(event) =>
+                        onUpdate(strip.id, { speciesId: event.currentTarget.value })
+                      }
+                    >
+                      {!getSpecies(strip.speciesId) && (
+                        <option value={strip.speciesId} disabled>
+                          {strip.speciesId}
+                        </option>
+                      )}
+                      {SPECIES.map((species) => (
+                        <option key={species.id} value={species.id}>
+                          {species.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                </fieldset>
+                </label>
 
                 <div className="grid gap-[0.75rem] sm:grid-cols-2">
                   <label className="grid gap-[0.375rem]">

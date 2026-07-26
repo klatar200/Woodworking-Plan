@@ -95,12 +95,45 @@ describe('DesignerShell static render', () => {
     expect(html).not.toContain('Leftover length');
   });
 
-  it('species swatches use radiogroup semantics', () => {
+  it('species uses a native select with a live swatch (Sprint 57 Part A)', () => {
     const stripList = source('src/components/designer/strip-list.tsx');
-    expect(stripList).toContain('role="radiogroup"');
-    expect(stripList).toContain('role="radio"');
-    expect(stripList).toContain('aria-checked');
-    expect(stripList).not.toContain('aria-pressed');
+    expect(stripList).toContain('<select');
+    expect(stripList).not.toContain('role="radiogroup"');
+    expect(stripList).not.toContain('role="radio"');
+    expect(stripList).not.toContain('aria-checked');
+    expect(stripList).not.toMatch(/ArrowLeft|ArrowRight/);
+
+    const html = render(goldenConfig);
+    const speciesSelects = [
+      ...html.matchAll(
+        /<select[^>]*name="strip-[^"]*-speciesId"[^>]*>([\s\S]*?)<\/select>/g,
+      ),
+    ];
+    expect(speciesSelects).toHaveLength(12);
+    for (const match of speciesSelects) {
+      const body = match[1] ?? '';
+      expect((body.match(/<option/g) ?? []).length).toBe(15);
+    }
+    // First golden strip is walnut — its option must be selected.
+    expect(speciesSelects[0]![1]).toMatch(
+      /<option[^>]*value="walnut"[^>]*selected|<option[^>]*selected[^>]*value="walnut"/,
+    );
+  });
+
+  it('unknown speciesId survives as a disabled selected option with the fallback footnote', () => {
+    const html = render({
+      ...goldenConfig,
+      strips: [{ id: 'u1', speciesId: 'not-a-wood', widthIn: 1.5, repeat: 1 }],
+    });
+    const match = html.match(
+      /<select[^>]*name="strip-u1-speciesId"[^>]*>([\s\S]*?)<\/select>/,
+    );
+    expect(match).not.toBeNull();
+    const body = match![1]!;
+    expect((body.match(/<option/g) ?? []).length).toBe(16);
+    expect(body).toMatch(/<option[^>]*value="not-a-wood"[^>]*disabled/);
+    expect(html).toContain('Unknown wood uses the fallback swatch.');
+    expect(html).not.toMatch(/\bNaN\b|undefined/);
   });
 
   it('keeps preview behind BoardPreview and uses 44px controls with no arbitrary elevation', () => {
@@ -121,7 +154,7 @@ describe('DesignerShell static render', () => {
     expect(files).not.toContain('shadow-[');
   });
 
-  it('Sprint 53 chrome: sticky full-width preview, one-line Export, diagram move labels, species nowrap', () => {
+  it('Sprint 53 chrome: sticky full-width preview, one-line Export, diagram move labels', () => {
     const shell = source('src/components/designer/designer-shell.tsx');
     const preview = source('src/components/designer/board-preview.tsx');
     const stripList = source('src/components/designer/strip-list.tsx');
@@ -157,10 +190,6 @@ describe('DesignerShell static render', () => {
     expect(stripList).toContain('Toward right');
     expect(stripList).not.toMatch(/>\s*Up\s*</);
     expect(stripList).not.toMatch(/>\s*Down\s*</);
-    expect(stripList).toContain('whitespace-nowrap');
-    expect(stripList).toContain('text-ellipsis');
-    expect(stripList).toContain('grid-cols-2');
-    expect(stripList).not.toContain('sm:grid-cols-4');
 
     expect(canvas).toContain('designer-canvas-host');
     expect(canvas).toMatch(/min-h-\[18rem\]/);
