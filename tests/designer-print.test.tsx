@@ -103,8 +103,13 @@ describe('designer print route', () => {
     expect(pageSource).not.toContain('shadow-[');
     expect(pageSource).toContain('print-table');
     expect(pageSource).toContain('print-page');
+    expect(pageSource).toContain('data-label');
     expect(css).toMatch(/\.print-table tr,[\s\S]{0,120}break-inside:\s*avoid/);
     expect(css).toMatch(/\.print-table thead[\s\S]{0,120}table-header-group/);
+    // Screen-only stacked rows for phone legibility — must not live in @media print.
+    expect(css).toMatch(
+      /@media screen and \(max-width: 40rem\)[\s\S]*\.print-page \.print-table td::before/,
+    );
   });
 
   it('404s when getDesign returns null for a missing or foreign id', async () => {

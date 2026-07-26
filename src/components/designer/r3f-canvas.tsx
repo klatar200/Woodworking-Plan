@@ -7,6 +7,27 @@ import { BoardScene } from './r3f-scene';
 
 const IDLE_PAUSE_MS = 2_000;
 
+/** Tailwind `lg` — authoring / WebGL gate (viewport width, never UA). */
+export const DESIGNER_WIDE_MQ = '(min-width: 64rem)';
+
+function useDesignerWideEnough(): boolean {
+  // This module is only loaded via dynamic(..., { ssr: false }), so `window`
+  // exists on the first client render — no hydration mismatch risk.
+  const [wideEnough, setWideEnough] = useState(
+    () => window.matchMedia(DESIGNER_WIDE_MQ).matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(DESIGNER_WIDE_MQ);
+    const onChange = () => setWideEnough(mq.matches);
+    onChange();
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  return wideEnough;
+}
+
 export function BoardR3FCanvas({
   cells,
   metrics,
@@ -18,6 +39,7 @@ export function BoardR3FCanvas({
   onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
   onContextLost: () => void;
 }) {
+  const wideEnough = useDesignerWideEnough();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(() => !document.hidden);
   const [recentInput, setRecentInput] = useState(true);
@@ -36,11 +58,18 @@ export function BoardR3FCanvas({
     }, IDLE_PAUSE_MS);
   }, []);
 
+  // Below lg: never create a WebGL context (CSS-hiding still mounts GPU memory).
   useEffect(() => {
-    markActive();
-  }, [cells, markActive, metrics]);
+    if (!wideEnough) onCanvasReady(null);
+  }, [onCanvasReady, wideEnough]);
 
   useEffect(() => {
+    if (!wideEnough) return;
+    markActive();
+  }, [cells, markActive, metrics, wideEnough]);
+
+  useEffect(() => {
+    if (!wideEnough) return;
     const onVisibilityChange = () => {
       const nextVisible = !document.hidden;
       setIsVisible(nextVisible);
@@ -58,11 +87,12 @@ export function BoardR3FCanvas({
         window.clearTimeout(idleTimer.current);
       }
     };
-  }, [markActive]);
+  }, [markActive, wideEnough]);
 
   // Wake the demand frameloop on wheel; scroll locking is OrbitControls' job
   // (bound to gl.domElement with a non-passive wheel listener — see r3f-orbit-controls).
   useEffect(() => {
+    if (!wideEnough) return;
     const el = containerRef.current;
     if (!el) return;
     const onWheel = () => {
@@ -70,7 +100,11 @@ export function BoardR3FCanvas({
     };
     el.addEventListener('wheel', onWheel, { passive: true });
     return () => el.removeEventListener('wheel', onWheel);
-  }, [markActive]);
+  }, [markActive, wideEnough]);
+
+  if (!wideEnough) {
+    return null;
+  }
 
   return (
     <div

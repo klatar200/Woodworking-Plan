@@ -103,11 +103,21 @@ export default async function DesignerPrintPage({ params }: PageProps) {
           <tbody>
             {config.strips.map((strip, index) => (
               <tr key={strip.id}>
-                <td className="numeric">{index + 1}</td>
-                <td>{speciesName(strip.speciesId, metrics)}</td>
-                <td className="numeric mono">{formatInches(strip.widthIn)}</td>
-                <td className="numeric">{strip.repeat}</td>
-                <td className="numeric mono">{formatInches(config.sourceLengthIn)}</td>
+                <td className="numeric" data-label="#">
+                  {index + 1}
+                </td>
+                <td data-label="Species">
+                  {speciesName(strip.speciesId, metrics)}
+                </td>
+                <td className="numeric mono" data-label="Width">
+                  {formatInches(strip.widthIn)}
+                </td>
+                <td className="numeric" data-label="Repeat">
+                  {strip.repeat}
+                </td>
+                <td className="numeric mono" data-label="Source length">
+                  {formatInches(config.sourceLengthIn)}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -128,8 +138,10 @@ export default async function DesignerPrintPage({ params }: PageProps) {
           <tbody>
             {metrics.boardFeetBySpecies.map((row) => (
               <tr key={row.speciesId}>
-                <td>{row.name}</td>
-                <td className="numeric">{formatBoardFeet(row.boardFeet)} bd ft</td>
+                <td data-label="Species">{row.name}</td>
+                <td className="numeric" data-label="Board feet">
+                  {formatBoardFeet(row.boardFeet)} bd ft
+                </td>
               </tr>
             ))}
           </tbody>

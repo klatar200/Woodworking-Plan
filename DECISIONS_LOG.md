@@ -27,6 +27,7 @@
 - **🏷️ Branding #8 RESOLVED (2026-07-21):** the product is **Notch** at **notchplans.com**, "Oak & Forest" palette, tagline "Built naturally. Made to last.", `support@notchplans.com`.
 - **Sprint 46 (2026-07-23):** catalog UX batch; imageless plans unpublished; runtime step formatting.
 - **Mobile-first is scoped to the PLANS side (2026-07-25):** browsing plans / cut lists / build steps stay mobile-first; the **designer is desktop-only authoring**, and a saved design's plan + cut list must be reachable on mobile. Narrows — does not reverse — the 2026-07-12 platform strategy. Gate on VIEWPORT WIDTH, never UA sniffing. B7 still holds: do not meet "cut list on mobile" by rendering `toParts()`.
+- **Designer desktop-gate copy + resize (2026-07-26):** two notice strings (new vs saved); WebGL never created below `lg`; unsaved draft stays mounted across resize (notice overlays, does not unmount). See dated entry.
 - **Designer undo/redo (2026-07-25):** table stakes, pulled out of U7 into its own sprint; replaces the template-replace confirm; in-memory only. Advanced templates + the wider "Canva-like" feature set are DEFERRED to their own conversations.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 
@@ -1787,3 +1788,20 @@ Do not invent alternate marketing blurbs without a new decision. Tiny UI chrome 
 **Decision.** Undo (⌘Z / Ctrl+Z) is expected native behaviour for a design tool and is **pulled out of U7 into its own scheduled sprint**. It replaces the "Replace your current draft with this template?" confirm dialog: applying a template becomes an ordinary undoable action rather than a blocking prompt. **In-memory only** — history does not survive a reload or leaving the page, by Keagan's explicit call.
 
 **Deferred to their own conversations (do not fold into these sprints):** the broader "Canva-like editing/export" feature set, and advanced templates (plaid / zigzag / 3D box). Keagan's reason: both need dedicated scoping and would muddy the queued work. The engineering constraint on the templates half is already recorded — `Strip` has no angle and `Cell` is axis-aligned `{xIn,yIn,wIn,hIn}`, so zigzag and 3D-box cannot be expressed without a §3 type-contract change, whereas plaid can.
+
+---
+
+### 2026-07-26 — Designer desktop-gate copy, WebGL, and resize behaviour (Sprint 54)
+**Status:** Confirmed by Keagan (answers to Sprint 54 open questions).
+
+**Notice copy (byte-exact):**
+| Surface | String |
+|---|---|
+| `/designer` (new board, below `lg`) | `Designing a board needs a wider screen. Your saved boards are available here.` |
+| `/designer/[id]` (read-only, below `lg`) | `Editing needs a wider screen. You can still view this board and its print sheet.` |
+
+Link label to the library stays the settled B6 string `Your boards`. Print CTA label: `Print sheet`, with one descriptive line beneath: `Includes the cut list, dimensions and diagram.` (not a feature claim; B7 still forbids rendering `toParts()`).
+
+**WebGL:** "No editor chrome" below the gate means the WebGL context is **never created**, not CSS-hidden. Width check lives inside the already-`dynamic(..., { ssr: false })` canvas component so it cannot hydrate-mismatch. Acceptance: `document.querySelector('canvas') === null` below `lg`.
+
+**Resize / unsaved draft:** the gate is width-reactive. Keep the authoring form state **mounted** and show the notice over it (CSS hide), so dragging a desktop window below `lg` or rotating a tablet does **not** destroy an unsaved draft; widening restores the same in-memory board. Do not unmount the authoring tree on resize.

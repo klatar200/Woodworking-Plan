@@ -1936,6 +1936,68 @@ code {
   white-space: nowrap;
 }
 
+/*
+ * Sprint 54 — screen-only stacked rows so the designer print sheet is readable
+ * at ~390px without horizontal scroll. @media print rules below are untouched;
+ * every print-targeted class stays on its element.
+ */
+@media screen and (max-width: 40rem) {
+  .print-page .print-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .print-page .print-table,
+  .print-page .print-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .print-page .print-table tr {
+    display: block;
+    margin: 0 0 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--surface);
+  }
+
+  .print-page .print-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.25rem 0;
+    border-bottom: none;
+    text-align: left;
+  }
+
+  .print-page .print-table td.numeric {
+    text-align: left;
+  }
+
+  .print-page .print-table td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .print-page .print-table .mono {
+    white-space: normal;
+  }
+}
+
 /* The tick column. A pencil is the interaction model on paper. */
 .print-tick {
   width: 2rem;

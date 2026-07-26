@@ -3,6 +3,11 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DesignerShell } from '@/components/designer/designer-shell';
+import {
+  DESIGNER_EDIT_NARROW_NOTICE,
+  DESIGNER_NEW_NARROW_NOTICE,
+  PRINT_SHEET_HINT,
+} from '@/components/designer/designer-narrow';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
 const source = (path: string) => readFileSync(join(process.cwd(), path), 'utf8');
@@ -167,5 +172,55 @@ describe('DesignerShell static render', () => {
     const edgeHtml = render({ ...goldenConfig, grain: 'edge' });
     expect(edgeHtml).toContain('Toward top');
     expect(edgeHtml).toContain('Toward bottom');
+  });
+
+  it('Sprint 54: desktop gate keeps authoring mounted, exact notices, no toParts, no WebGL below lg', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const narrow = source('src/components/designer/designer-narrow.tsx');
+    const canvas = source('src/components/designer/r3f-canvas.tsx');
+
+    // Authoring tree stays in the React tree (CSS-hidden below lg) so resize
+    // does not destroy an unsaved draft. Narrow surface is the lg:hidden sibling.
+    expect(shell).toContain('hidden lg:grid');
+    expect(shell).toContain('lg:hidden');
+    expect(shell).toContain('DesignerNarrowSurface');
+    // Sticky column stretch guard from Sprint 53 Attempt 2 — do not reintroduce.
+    expect(shell).not.toContain('lg:items-start');
+    expect(shell).toContain('lg:content-start');
+
+    expect(DESIGNER_NEW_NARROW_NOTICE).toBe(
+      'Designing a board needs a wider screen. Your saved boards are available here.',
+    );
+    expect(DESIGNER_EDIT_NARROW_NOTICE).toBe(
+      'Editing needs a wider screen. You can still view this board and its print sheet.',
+    );
+    expect(PRINT_SHEET_HINT).toBe(
+      'Includes the cut list, dimensions and diagram.',
+    );
+
+    const newHtml = visibleMarkup(render(goldenConfig, null));
+    expect(newHtml).toContain(DESIGNER_NEW_NARROW_NOTICE);
+    expect(newHtml).toContain('Your boards');
+    expect(newHtml).toContain('href="/designer/library"');
+    expect(newHtml).not.toContain(DESIGNER_EDIT_NARROW_NOTICE);
+
+    const savedHtml = visibleMarkup(render(goldenConfig, 'design-1'));
+    expect(savedHtml).toContain(DESIGNER_EDIT_NARROW_NOTICE);
+    expect(savedHtml).toContain('Print sheet');
+    expect(savedHtml).toContain(PRINT_SHEET_HINT);
+    expect(savedHtml).toContain('href="/designer/design-1/print"');
+    expect(savedHtml).not.toContain(DESIGNER_NEW_NARROW_NOTICE);
+
+    // B7 — cut list on mobile is the print sheet, not a parts optimizer UI.
+    expect(narrow).not.toMatch(/\btoParts\s*\(/);
+    expect(shell).not.toMatch(/\btoParts\s*\(/);
+    expect(narrow).not.toMatch(/userAgent|userAgentData|navigator\.platform/);
+
+    // WebGL gate: matchMedia on Tailwind lg; Canvas only when wide enough.
+    // Behaviour (canvas null below lg) is browser-only; guard the wiring here.
+    expect(canvas).toContain("'(min-width: 64rem)'");
+    expect(canvas).toContain('matchMedia');
+    expect(canvas).toMatch(/if\s*\(\s*!wideEnough\s*\)\s*\{\s*return null/);
+    expect(canvas).not.toMatch(/userAgent|userAgentData/);
   });
 });
