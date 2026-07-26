@@ -177,8 +177,7 @@ ACCEPT: dirty copy→new id; original reopen=prior saved state.
 ```
 
 ### Sprints 53–56 — Designer polish (CLOSED).
-### Sprints 53–56 — Designer polish (CLOSED).
-Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** **U7 remainder CLOSED 2026-07-26 (Sprint 65).** U7 retired as a bucket (contents shipped piecemeal across 53–65). **Shell/IA track = Sprints 67–72** (above). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo); 2026-07-26 (shell IA).
+51–52=U1–U5. 53–65 closed. Active designer track = **67–72 agent contract above**. DECISIONS_LOG 2026-07-25 · 2026-07-26.
 
 | Sprint | Scope (Keagan's item #s) | Notes / gates |
 |---|---|---|
