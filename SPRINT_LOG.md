@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 60 Attempt 1 (2026-07-26) — CLOSED 96/100** — tape-measure inches everywhere; harlequin thicknessIn=1; §7 decimal-inch guard. Prior: Sprint 59 **90/100**.
+> **Latest logged: Sprint 60 Attempt 1 (2026-07-26) — CLOSED 96/100** — tape-measure inches everywhere; harlequin thicknessIn=1; §7 decimal-inch guard. First Load **120 kB**. Prior: Sprint 59 **90/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1174 green (post-60).
 
@@ -49,8 +49,10 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 **Dates:** 2026-07-26
 **Scope:** Part 0 S59 browser re-score · A1 `formatInches` zero-numerator + non-finite · A2 unified `closingThicknessHint` · A3 harlequin `thicknessIn=1` · A4 tests · A5 security re-verify. Trunk-based to `main`.
 **Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · `c658726` (this close)
-**/designer First Load JS:** pending Vercel build log (Sprint 59 held **120 kB**).
+**/designer First Load JS:** **120 kB** (held; CI build on `2fd0b61`).
 **Suite:** **1174/1174** across 101 files (`env -u DATABASE_URL -u CLERK_*` — Cursor secrets otherwise trip env/health).
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30192335214 success.
+**Vercel prod:** deployment for tip `2fd0b61` succeeded.
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |

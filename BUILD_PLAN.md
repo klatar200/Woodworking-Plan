@@ -39,7 +39,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 57 (Species dropdown + multi-panel v2) | ✅ **CLOSED** 2026-07-26 — **99/100** Part A `aeb7d19` · Part B `32f6379`. Suite **1152/1152** across 98 files; `/designer` First Load **117 kB**. All seven browser checks run on prod by Claude Code 2026-07-26 — six PASS, one PARTIAL (three-panel print unverified; needs a saved plaid design). Derived-length board feet confirmed to the digit. |
 | Sprint 58 (Mitered strips / hexagon) | ✅ **CLOSED** 2026-07-26 — **82/100**. Template incorrect — reopened as Sprint 59. Primitive/clip/transforms/editor sound; named `hexagon` rendered isolated rhombi (check 1 FAIL on prod). Suite **1165/1165**; First Load **120 kB**. |
 | Sprint 59 (Harlequin + hex honesty) | ✅ **CLOSED** 2026-07-26 — **90/100** (browser re-score; was 96). Rename `hexagon`→`harlequin`; t=w·secθ; `speciesComponents`; Part B: no one-miter hex lattice. Dimension display defects — fixed in Sprint 60. Suite **1168/1168**; First Load **120 kB**. |
-| Sprint 60 (Dimension display) | ✅ **CLOSED** 2026-07-26 — **96/100**. `formatInches` zero-numerator + non-finite; `closingThicknessHint`; harlequin thicknessIn=1; §7 decimal-inch guard. Suite **1174/1174**; First Load pending deploy log. |
+| Sprint 60 (Dimension display) | ✅ **CLOSED** 2026-07-26 — **96/100**. `formatInches` zero-numerator + non-finite; `closingThicknessHint`; harlequin thicknessIn=1; §7 decimal-inch guard. Suite **1174/1174**; First Load **120 kB**. |
 
 Test suite — expected: 1174/1174 across 101 files (Sprint 60, Cursor VM). Update this single figure each sprint close; 1168/1168 and earlier superseded.
 
