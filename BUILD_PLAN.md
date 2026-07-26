@@ -16,7 +16,7 @@ Don't escalate routine implementation (library, structure, test framework, names
 ## 3. Pre-Sprint-0 (all resolved; in DECISIONS_LOG)
 Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Host Vercel Hobby · Auth Clerk · Content version-controlled seed files (no admin UI; headless CMS rejected) · Budget $0/dev, every vendor genuine perpetual free tier. Processor #6 + pricing #7 DEFERRED (no billing until launch economics reopen). Branding #8 RESOLVED: Notch/notchplans.com.
 
-## 4. Roadmap — status (2026-07-24, post-Kreg swap)
+## 4. Roadmap — status (2026-07-26, post–Sprint 66)
 | Phase | Status |
 |---|---|
 | Phase 0 | ✅ 99 |
@@ -44,17 +44,19 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS). Deleted unreachable colour gate; always-run check; reachability witness suite. Closure false-positive on mixed base species — fixed in Sprint 63. Suite **1195/1195**; First Load **120 kB**. |
 | Sprint 63 (Geometric closure) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2eab289`). `wedgeWebContinuous` replaces species equality; accent strips no longer false-positive. Suite **1203/1203**; First Load **120 kB**. |
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
-| Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Thumbs + `reorder-strip`; pointer-only handle; live-region announce. Suite **1251/1251**; `/designer` First Load **123 kB**. |
-| Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90** — `/browse` still orphaned). Deleted browse+plan `loading.tsx`; Chrome census 1 main on catalog/plan. Suite **1307/1307**. |
+| Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
+| Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
 
-Test suite — expected: 1307/1307 across 113 files (Sprint 66 Attempt 2). Update this single figure each sprint close; 1259/1259 and earlier superseded.
+Test suite — expected: **1307/1307** across **113 files** (Sprint 66 Attempt 2). Update this single figure each sprint close; 1259/1259 and earlier superseded.
 
-**U6 CLOSED** 2026-07-26. **U7 remainder CLOSED** 2026-07-26 (Sprint 65). Share links / custom species stay deferred. Designer polish/roadmap idle pending Keagan commission (dark re-palette) or BUSINESS_PLAN additions.
+**Cutting Board Designer status:** U0–U5 ✅ (51–52) · polish 53–56 ✅ · miter/closure 57–63 ✅ · **U6 ✅** (Sprint 64) · **U7 remainder ✅** (Sprint 65). Share links / custom species stay deferred. **No next §4 shippable item** without Keagan commission (dark re-palette) or a BUSINESS_PLAN addition.
+
+**SSR / Suspense (settled engineering, Sprint 66):** Do **not** add route-level `app/**/loading.tsx` for `force-dynamic` pages that render a document `<main>` — under React postponed `$~`, `$RC` can leave a full duplicate page in `div#S:N` (invisible to `fetch()`; only a real browser load shows it). Nonce/`strict-dynamic` was ruled out (0 unnonced inline). Detector: source `main-landmark` + optional `smoke:stream-dom`.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
 ### Sprints 53–56 — Designer polish (CLOSED).
-Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** U7 retired (contents shipped piecemeal). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo).
+Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** **U7 remainder CLOSED 2026-07-26 (Sprint 65).** U7 retired as a bucket (contents shipped piecemeal across 53–65). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo).
 
 | Sprint | Scope (Keagan's item #s) | Notes / gates |
 |---|---|---|
