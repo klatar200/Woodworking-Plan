@@ -32,6 +32,7 @@
 - **Designer species expansion (2026-07-26):** append exactly seven ids after the original eight (yellowheart, bloodwood, beech, ash, birch, hickory, bamboo) with the stated hexes; min pairwise distance floor 0.127; B13/B14 hold; `schemaVersion` stays 1. See dated entry.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
+- **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview cap ~1200px; sticky preview+dock with per-card internal scroll; dock tabs = full Metrics/Cut plan/Templates/Row pattern (no field loss); Pattern = row pattern only; panel folders; Board settings disclosure for kerf/waste/length; 3D default + view-only 2D rotate; Save a copy → new id; desktop-only; site-wide UOM / in-app tabs / share / custom species → FUTURE_IDEAS. See dated entry.
 
 _(Full history below, chronological.)_
 
@@ -1835,3 +1836,28 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 **Read path.** Synthesize materials from `designBoardFeetBySpecies` (panel geometry only — no `layoutTopFace` / closure). Waste already applied in `boardFeetBySpeciesFor`; do not multiply again. Scope design lookup by session user — unowned design yields nothing.
 
 **Naming.** Unit `"board feet"` (preferred `BOARD_FEET_UNITS` spelling). Name = species display name; `species` null (catalog column always null). Kreg catalog uses unit `"board"` for piece counts — different semantic; exact matcher must not be loosened.
+
+### 2026-07-26 — Designer shell & IA track (Sprints 67–72)
+**Status:** Confirmed by Keagan (answers to clarifying Q1–Q14).
+
+**Decision.** Commission BUILD_PLAN Sprints 67–72 to relayout the desktop designer. **Data parity is binding:** Metrics, Cut plan, Row pattern, Settings, panel, and strip fields are relocated/repacked only — none removed or replaced by summary-only UI. Optional summary chips may be additive.
+
+**Layout / chrome**
+1. Dock tab bodies = **full** current panel content in a scroll region (not summary-only).
+2. Warnings / impossible-parts alerts appear **only when that tab is active** (no cross-tab alert chip).
+3. Kerf, waste %, panel length / slice thickness live in a **Board settings** disclosure on the top bar (with unit labels); name + grain + finished-size summary stay visible in the bar.
+4. **Pattern** tab = **Row pattern editor only**; strip/panel editing stays in the right rail. Hide or inert the Pattern tab for edge grain.
+5. Multi-panel end grain = Photoshop-style **panel folders** with nested strips in the directory.
+6. Sticky block = **preview + dock together**. Each dock card scrolls internally when its content exceeds the visible budget inside that sticky column.
+7. Cut plan **starts expanded** inside its tab (tab selection implies intent).
+8. Default dock tab = **Pattern if end grain, else Templates**.
+9. 2D rotate is **view-only** (0/90/180/270 display); does not mutate design orientation / strip order. **3D remains the default** preview (BUSINESS_PLAN differentiator).
+10. **Save a copy** clones a saved design to a new `BoardDesign` and navigates to `/designer/[newId]`; original unchanged.
+11. Strip **labels optional**; fallback `Strip n` / species display.
+12. Track is **desktop `lg+` only**; narrow/mobile stays Sprint 54 read-only plan/cut list.
+13. Deferred to FUTURE_IDEAS (do not build in 67–72): site-wide profile UOM · in-app multi-design tabs · designer share links · custom species.
+14. No field retirement.
+
+**Preview cap.** Preview column max-width ~1200px; surplus viewport width widens the strip/editor rail (multi-panel visibility).
+
+**Not commissioned:** dark-theme re-palette (still separate).

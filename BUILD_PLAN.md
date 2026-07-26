@@ -16,7 +16,7 @@ Don't escalate routine implementation (library, structure, test framework, names
 ## 3. Pre-Sprint-0 (all resolved; in DECISIONS_LOG)
 Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Host Vercel Hobby · Auth Clerk · Content version-controlled seed files (no admin UI; headless CMS rejected) · Budget $0/dev, every vendor genuine perpetual free tier. Processor #6 + pricing #7 DEFERRED (no billing until launch economics reopen). Branding #8 RESOLVED: Notch/notchplans.com.
 
-## 4. Roadmap — status (2026-07-26, post–Sprint 66)
+## 4. Roadmap — status (2026-07-26, post–Sprint 66; designer UX 67–72 commissioned)
 | Phase | Status |
 |---|---|
 | Phase 0 | ✅ 99 |
@@ -46,17 +46,44 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
 | Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
 | Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
+| Sprints 67–72 (Designer shell / IA) | 🟡 **COMMISSIONED** 2026-07-26 — next work = **Sprint 67**. Decisions: DECISIONS_LOG 2026-07-26. Parity: relocate Metrics/Cut plan/Pattern/Settings — **delete nothing**. Scope table below. |
 
 Test suite — expected: **1307/1307** across **113 files** (Sprint 66 Attempt 2). Update this single figure each sprint close; 1259/1259 and earlier superseded.
 
-**Cutting Board Designer status:** U0–U5 ✅ (51–52) · polish 53–56 ✅ · miter/closure 57–63 ✅ · **U6 ✅** (Sprint 64) · **U7 remainder ✅** (Sprint 65). Share links / custom species stay deferred. **No next §4 shippable item** without Keagan commission (dark re-palette) or a BUSINESS_PLAN addition.
+**Cutting Board Designer status:** U0–U5 ✅ · polish/miter 53–63 ✅ · **U6 ✅** · **U7 remainder ✅** · **next = Sprint 67** (shell). Parked (FUTURE_IDEAS 2026-07-26): site-wide profile UOM · in-app multi-design tabs · share links · custom species. Dark re-palette still uncommissioned.
 
 **SSR / Suspense (settled engineering, Sprint 66):** Do **not** add route-level `app/**/loading.tsx` for `force-dynamic` pages that render a document `<main>` — under React postponed `$~`, `$RC` can leave a full duplicate page in `div#S:N` (invisible to `fetch()`; only a real browser load shows it). Nonce/`strict-dynamic` was ruled out (0 unnonced inline). Detector: source `main-landmark` + optional `smoke:stream-dom`.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
+### Sprints 67–72 — Designer shell & information architecture (COMMISSIONED 2026-07-26)
+
+**Hard rule — data parity:** Relayout only. **No** Metrics / Cut plan / Row pattern / Settings / panel / strip field may be removed or summarized away. Optional summary chips are additive. Dock tab bodies = **full** current panel content in a scroll region.
+
+**Target layout (desktop `lg+` only; narrow unchanged per Sprint 54):**
+```
+Top bar: Name · Edge/End · size · Undo/Redo · Save · Save a copy · Board settings (⋯ kerf/waste/length)
+Left sticky column (preview + dock as one sticky block; each dock card scrolls internally if overflow):
+  Preview (max-width ~1200px; surplus width → strip rail) · 3D default / 2D toggle · view-only rotate · Export PNG
+  Dock tabs: Templates | Pattern (= Row pattern only; hide/empty for edge) | Metrics | Cut plan
+Right flex rail: panel folders → nested strips (directory) + selected-strip detail
+```
+
+**Settled calls (Keagan 2026-07-26):** dock = full panels (1A) · alerts only in their tab (2B) · Board settings in top-bar disclosure (3A) · Pattern = row pattern only (4A) · Photoshop panel folders (5A) · sticky preview+dock; per-card internal scroll (6B) · Cut plan **expanded** inside its tab (7) · default tab Pattern if end else Templates (8C) · 2D rotate view-only (9A) · Save a copy → new id + navigate (10A) · optional strip labels (11A) · desktop-only (12A) · deferred items → FUTURE_IDEAS (13) · no field retirement (14).
+
+| Sprint | Scope | Parity / gates |
+|---|---|---|
+| **67 — Shell** | Top bar (name, grain, size, undo/redo/save); preview `max-width` ~1200px; surplus → editor rail; sticky **preview+dock** column; dock tab chrome (bodies can be stubs that still mount full panels); Board settings `⋯` holds kerf / waste % / panel length / slice thickness with unit labels | Settings fields still editable · Templates not under sticky-alone orphan · First Load watch |
+| **68 — Dock bodies** | Wire full Templates, Row pattern, Metrics, Cut plan into tabs; Pattern tab hidden or inert for edge grain; Cut plan opens expanded in-tab; each tab panel `overflow-y: auto` within sticky budget | **Metrics parity:** finished L×W×T, total bd ft, warnings, panel table, end-grain slice note, by-species. **Cut plan parity:** stock L/W, buy count, impossible alert, BoardBars, yield, cut lists. **Pattern parity:** full row-pattern editor |
+| **69 — Strip layers** | Optional `strip.label` (additive schema); rename in directory; panel folders + nested strips; selection highlight; stronger reorder ghost | Strip editor fields unchanged (species, width″, repeat, miter) · panel add/delete/label/thickness stay |
+| **70 — Literacy** | Tooltips + visible units on every numeric/control (kerf″, waste %, length″, width″, …) — designer-local only | No profile UOM (parked) |
+| **71 — 2D + rotate** | Explicit 3D (default) / 2D toggle via existing `BoardDiagram`; view-only 0/90/180/270 | Does not mutate strip order · 3D remains product default |
+| **72 — Save a copy** | Clone saved design → new `BoardDesign` → navigate `/designer/[newId]`; original untouched | Requires existing saved id (unsaved: Save first or disable) |
+
+**Do not fold into 67–72:** site-wide UOM · in-app multi-design tabs · share links · custom species (FUTURE_IDEAS) · dark re-palette · advanced templates (hex lattice etc., still deferred).
+
 ### Sprints 53–56 — Designer polish (CLOSED).
-Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** **U7 remainder CLOSED 2026-07-26 (Sprint 65).** U7 retired as a bucket (contents shipped piecemeal across 53–65). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo).
+Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** **U7 remainder CLOSED 2026-07-26 (Sprint 65).** U7 retired as a bucket (contents shipped piecemeal across 53–65). **Shell/IA track = Sprints 67–72** (above). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo); 2026-07-26 (shell IA).
 
 | Sprint | Scope (Keagan's item #s) | Notes / gates |
 |---|---|---|
