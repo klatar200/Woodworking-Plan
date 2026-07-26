@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 59 Attempt 1 (2026-07-26) — CLOSED 90/100** after browser verify — dimension-display defects (fixed in Sprint 60). Code close was 96; First Load **120 kB**. Prior: Sprint 58 **82/100**.
+> **Latest logged: Sprint 60 Attempt 1 (2026-07-26) — CLOSED 96/100** — tape-measure inches everywhere; harlequin thicknessIn=1; §7 decimal-inch guard. Prior: Sprint 59 **90/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1168 green (post-59).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1174 green (post-60).
 
 ---
 
@@ -42,6 +42,37 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 60: Dimension display — make every measurement a measurement
+**Dates:** 2026-07-26
+**Scope:** Part 0 S59 browser re-score · A1 `formatInches` zero-numerator + non-finite · A2 unified `closingThicknessHint` · A3 harlequin `thicknessIn=1` · A4 tests · A5 security re-verify. Trunk-based to `main`.
+**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · (this close)
+**/designer First Load JS:** pending Vercel build log (Sprint 59 held **120 kB**).
+**Suite:** **1174/1174** across 101 files (`env -u DATABASE_URL -u CLERK_*` — Cursor secrets otherwise trip env/health).
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Four fixes only: `sixteenths===0`→whole; non-finite→`''`; one hint helper; harlequin t=1 with comment; no contract/miter/template-family changes |
+| Correctness & functionality (/20) | 16 | `1.0104`→`1"`; mismatch warning fractions only; harlequin finished 7×8×1½, zero warnings; speciesComponents 20/1 held. **−4**: browser checks unrun (Clerk OAuth blocked) |
+| Automated test coverage (/15) | 15 | format sweep + non-finite; `board-designer-dimension-display` §7 guard (metrics+print HTML); metrics≡hint string; suite **1174** |
+| Security (/15) | 15 | `/designer` absent from `public-routes`; no new actions/deps/throws on metrics path |
+| Code quality & simplicity (/10) | 10 | Single `closingThicknessHint`; editor dedupe per (w,t,θ); deleted decimal `toFixed(3)` path |
+| Mobile/offline behavior (/10) | 10 | No authoring-path/chrome change beyond hint text + thickness number |
+| Documentation & handoff (/5) | 5 | Part 0 S59 verify; BUILD_PLAN §4; template comment records 1.03% approx |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Browser checks (unrun — Clerk OAuth blocked for agent):**
+1. Harlequin Thickness field reads `1`; hint is a clean fraction with no `0/1`
+2. Panel 1.5″ → exactly one warning, in fractions, no decimal inches
+3. Pre-Sprint-60 saved design reopens rendering identically
+
+### Final outcome
+Score: **96/100** — Pass. §7 decimal inches gated by suite.
 
 ---
 
