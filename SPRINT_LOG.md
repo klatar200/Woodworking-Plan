@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 56 Attempt 1 (2026-07-26) — CLOSED 96/100** — seven species appended (`784ecf8`); §3.2 → 15; 0.127 pairwise floor guarded; First Load held 115 kB. Prior: Sprint 55 **95/100**. Designer polish track 53–56 complete.
+> **Latest logged: Sprint 56 Attempt 1 (2026-07-26) — CLOSED 100/100** — seven species appended (`784ecf8`); §3.2 → 15; 0.127 pairwise floor guarded; First Load held 115 kB (confirmed in the Vercel build log). All six browser checks observed on prod, no defects found. Prior: Sprint 55 **95/100**. **Designer polish track 53–56 COMPLETE** (98 · 98 · 95 · 100).
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1125 green (post-56).
 
@@ -53,21 +53,37 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 **CI:** `529a987` Actions **success** (lint/typecheck/test/build). Prior `784ecf8` run cancelled as superseded by the docs push.
 **Vercel Production:** GitHub deployment statuses **success** for `784ecf8` + `529a987`. Prod `https://notchplans.com/api/health` → `status:ok`, database `ok` (15ms). Full Vercel build-log text unread — Vercel MCP `needsAuth`; local `npm run build` route table is the First Load evidence.
 
-### Attempt 1 — score 96/100 — PASS
+### Attempt 1 — score 100/100 — PASS (withheld points released 2026-07-26 on observation)
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | Exactly the seven Keagan ids/hexes appended in order; §3.2 + `species.ts` doc amended to 15; B13/B14/`schemaVersion:1`; `WoodSpecies` not renamed for bamboo |
-| Correctness & functionality (/20) | 16 | Albedo + pairwise floors green in tests; unknown-id fallback unchanged for pre-sprint saves. **−4**: 1024px Hickory/Pecan ellipsis, pale-group 3D separability, theme swatch borders, arrow-key wrap across 15, 12-strip rail — browser-only (list below) |
+| Correctness & functionality (/20) | 20 | **−4 RELEASED** — all six browser checks observed on prod, signed in (table below). No defects found |
 | Automated test coverage (/15) | 15 | **1125** / 96 files; `board-designer-species.test.ts` asserts count/order, albedo floors, **0.127 pairwise floor across all pairs**, B13 key set — behaviour, not strings |
 | Security (/15) | 15 | No new routes/schema/persistence; ids only appended (cannot orphan existing JSON); unknown species still falls back to grey swatch |
 | Code quality & simplicity (/10) | 10 | Data-only change + contract amend; no deps; did not import from `r3f-canvas` (Sprint 55 trap) |
 | Mobile/offline behavior (/10) | 10 | Authoring still desktop-gated; species list is shared data used by narrow SVG too; no SW/cache change |
 | Documentation & handoff (/5) | 5 | DECISIONS_LOG 2026-07-26 species entry; contract §3.2 + §9; BUILD_PLAN §4 row + test-count + First Load |
-| **Total (/100)** | **96** | |
+| **Total (/100)** | **100** | |
 
-**Result:** Pass (≥95)
+**Result:** Pass. First 100 of the designer polish track; no defects found on review or in the browser.
 
 **Guards re-run (explicit):** `tests/dark-theme.test.ts` (10) and `tests/contrast.test.ts` (32) — both green. Species pigments stay in TS, not CSS tokens.
+
+### Browser verification — OBSERVED on prod, signed in, 2026-07-26
+| # | Check | Observed |
+|---|---|---|
+| 1 | Labels at 1024px | **15 species, ZERO truncated.** `Hickory / Pecan` `scrollWidth 91 / clientWidth 91`. Rail 416px, no h-overflow. Also clean at 1784px |
+| 2 | Pale group separable in 3D | Sampled the actual WebGL framebuffer (`preserveDrawingBuffer`) with hard-maple/birch/ash/beech adjacent: four distinct clusters, tightest rendered pair **0.070**. **Control:** cherry/padauk — the tightest pair already shipped — renders at **0.073** under identical lighting. So the pale group is no worse than production already is, but sits exactly at the palette's limit. Lighting roughly halves source separation (0.127 → ~0.07) |
+| 3 | Swatch borders, both themes | Visible in both. Weakest is **Birch in LIGHT theme**: border `rgb(227,220,201)` vs fill `rgb(241,227,196)` = **0.064** border-vs-fill, the softest edge in the palette (previous worst was walnut-on-dark at 0.092). The dot itself is still clearly visible against the pill (`fillVsPillBg` 0.235), so this is a soft outline, not an invisible swatch |
+| 4 | Pre-sprint saved design | `verify-51` (saved Sprint 51) opens on `/designer/[id]`: `schemaVersion 1`, 12 strips, species `hard-maple`/`walnut` all resolving, **no unknown-swatch fallback**, now offering 15 pills per strip |
+| 5 | Arrow cycling | 15 × ArrowRight returns exactly to `hard-maple`; ArrowLeft from the first wraps to `bamboo` |
+| 6 | 12-strip board at 1024 | Usable, but **each strip card grew ~490px → 697px** (8 pill rows instead of 4), so a 12-strip board now scrolls **9269px** vs 6749px before. Sprint 53's sticky preview still holds at page bottom (canvas fully in view, columns stretched 9666/9666) |
+
+**Vercel build log READ** (`npx vercel inspect <url> --logs`, the step Cursor could not do — MCP `needsAuth`, but the CLI is authed on Keagan's box): `check-db-urls` OK (both URLs on `ep-sparkling-band`), compiled clean, **`/designer` First Load 115 kB on the production build** (confirms the local figure), Build Completed, Deployment completed.
+
+**New operational note from that log:** Vercel warns `"engines": { "node": ">=20.0.0" }` in `package.json` will **auto-upgrade on each new Node major**. A future Node major could break a prod build with no code change. Not a Sprint 56 defect — flagged for Keagan to decide whether to pin a major.
+
+**Ergonomics observation (not a defect, consequence of 15 species):** the pill grid is `grid-cols-2`, so species count drives strip-card height linearly. At 15 species a strip card is 697px and roughly 1.6 cards fit a 1121px viewport. If the list grows again, the pill grid needs a rethink (denser columns, or a collapsed picker) before the count does.
 
 **Keagan browser verify (expected — do not claim until observed):**
 1. At **1024px**: every species label full on one line; report `scrollWidth` vs `clientWidth` for **"Hickory / Pecan"** specifically (risk: truncates to `Hickory / Pe…`).
