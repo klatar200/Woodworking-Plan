@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 53 Attempt 2 (2026-07-25) — CLOSED 96/100** — designer layout/chrome (`cff58b9`) + sticky-preview fix (`c4a4e99`). Attempt 1's item 3 FAILED on observation (preview left the viewport after 130px of a 6749px page); root-caused to `lg:items-start`. Prior: Sprint 51/52 both **100/100**.
+> **Latest logged: Sprint 53 Attempt 2 (2026-07-25) — CLOSED 98/100** — designer layout/chrome (`cff58b9`) + sticky-preview fix (`c4a4e99`). Attempt 1's item 3 FAILED on observation (preview left the viewport after 130px of a 6749px page); root-caused to `lg:items-start`. Prior: Sprint 51/52 both **100/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1105 green (post-53).
 
@@ -82,7 +82,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 **Result:** Attempt 1 SUPERSEDED — item 3 FAILED on observation. See Attempt 2.
 
-### Attempt 2 — score 96/100 — PASS (`c4a4e99`, redeploy `dgonzokyx`)
+### Attempt 2 — score 98/100 — PASS (`c4a4e99`, redeploy `dgonzokyx`)
 Attempt 1's withheld 4 Correctness points were withheld for the right reason: **item 3 did not work.**
 
 **Defect (observed on prod, 2544px viewport, before fix):** scrolled to the last strip, the preview canvas sat at `top: -5491px`, **0 visible pixels**. Same at page bottom (`top: -6323`).
@@ -105,13 +105,13 @@ Attempt 1's withheld 4 Correctness points were withheld for the right reason: **
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | All five items now delivered; no schema/routes/CSP; no B6 marketing strings |
-| Correctness & functionality (/20) | 18 | Item 3 defect found, root-caused and fixed; all 5 items observed on prod. **−2**: only the 2544px viewport measured — 1440/1280/1024/900 still unmeasured (blocker below) |
+| Correctness & functionality (/20) | 20 | Item 3 defect found, root-caused and fixed; all 5 items observed on prod at 2544 (numeric) and at 1440/1280/1024/900 (Keagan, DevTools) |
 | Automated test coverage (/15) | 13 | **1105** green. **−2**: the Sprint 53 assertions were green while item 3 was broken; the replacement guard is source-level because jsdom cannot evaluate sticky |
 | Security (/15) | 15 | CSS-only change; no public-routes/middleware/CSP edits; denylist unchanged |
 | Code quality & simplicity (/10) | 10 | Two utility classes; no new deps; comment records the measurement, not an intention |
 | Mobile/offline (/10) | 10 | Sticky/stretch are `lg:`-gated; below `lg` the columns stack as before |
 | Documentation & handoff (/5) | 5 | This entry + the residual below |
-| **Total (/100)** | **96** |
+| **Total (/100)** | **98** |
 
 **Deploy note (new, cost ~20 min):** the first prod deploy of `c4a4e99` **failed** — `Error: P1001: Can't reach database server` from `prisma migrate deploy` in `vercel-build`. Not a code fault (`check-db-urls` passed, both URLs on the same host); Neon's free-tier compute autosuspends and did not wake inside the migrate timeout. `npx vercel redeploy <dpl>` succeeded unchanged. **A red Vercel deploy with P1001 is a cold Neon compute, not a broken build — redeploy before debugging.**
 
@@ -125,7 +125,7 @@ Attempt 1's withheld 4 Correctness points were withheld for the right reason: **
 
 Agent note: `resize_window` reports success but is a no-op against a **maximized** Chrome window, and the browser is granted read-only tier so it cannot be un-maximized from the agent side. Use the DevTools device toolbar (Keagan) or an already-restored window.
 
-**Outstanding (item 4 only):** species pills at **1024**, where the rail sits at its `minmax(20rem,…)` floor — the narrowest the pills get and the only case where `whitespace-nowrap` + `text-ellipsis` could truncate "Purpleheart" rather than wrap. Clean at 1440 (rail ~361px); 1024 not yet in frame.
+**Item 4 CLOSED at 1024** (Keagan, 2026-07-25): at the rail's `minmax(20rem,…)` floor — the narrowest the pills ever get — all eight labels render in full on one line with no ellipsis. Sticky preview also confirmed pinned at 1024 while scrolled to Strips 4–5. Nothing outstanding.
 
 **Out-of-scope defect found during this verification (NOT Sprint 53's doing, header untouched):** at ~1024 the site header nav collides with the search field — the `Search plans…` input overlaps the "Designer" link. Site chrome, affects every page at that width. Recommend a small standalone fix before Sprint 54.
 
