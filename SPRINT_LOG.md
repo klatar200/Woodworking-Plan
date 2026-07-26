@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 58 Attempt 1 (2026-07-26) — CLOSED 96/100** — Part 0 S57 re-score · Part A miter geometry · Part B `hexagon` + editor. First Load **120 kB**. Prior: Sprint 57 **99/100**.
+> **Latest logged: Sprint 58 Attempt 1 (2026-07-26) — CLOSED 82/100** — Template incorrect (rhombi, not hexagons); reopened as Sprint 59. First Load **120 kB**. Prior: Sprint 57 **99/100**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1165 green (post-58; env-polluted health/clerk cases aside on Cloud VM).
 
@@ -75,6 +75,27 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 ### Final outcome
 Score: **96/100** — Pass. Star/tumbling-block templates deferred (same primitive).
+
+### Sprint 58 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Hexagon renders as closed hexagons | **FAIL** | Renders isolated walnut rhombi — 4 per band, bands every 3″ along the 12″ axis, meeting tip-to-tip. No closed cells; the maple is one connected region. |
+| 2 | Corner toggle through four values | PASS | `strip-hx-1-miter-corner` accepts tl/tr/bl/br; config updates each time; labels "Top left"…"Bottom right". |
+| 3 | 1″ mismatch warning | PASS | Exact string: `Closing thickness for a 7/8" strip at 30° is ≈ 1 1/2" — panel is 1" (>5% off; lattice will not close).` Tape fractions throughout. |
+| 4 | Pre-58 design reopens | PASS | `verify-51`: schemaVersion 2, 12 strips, `[none, rot180]`, no `miter` key added, no warnings, no spurious "Unsaved changes", 18″ × 12″ × 1½″ / 2.7 bd ft. |
+| 5 | Print offcut note | SOURCE ONLY | Present at `src/app/designer/[id]/print/page.tsx:206`, gated on `strips.some(s => s.miter)`. No mitered design is saved; browser-unverified. |
+**Two findings recorded as clean.** (a) The colour-continuity half of the closure helper has real
+teeth in production: setting strip 1's corner to `tl`, breaking the alternation, fires
+`Miter pattern does not close — check corners and row transforms.` The gap is that no *test*
+asserts it. (b) The "two DesignerShell instances" chased in Sprint 57 is settled — two **forms**,
+one `config` input each (`siblingsNamedConfig: 1` on both), identical values. Never a duplicate
+mount; no stale-value hazard on save. Close that thread.
+**Re-score: 96 → 82/100.** Correctness loses the headline deliverable: the sprint's one template
+does not produce its named pattern, and both acceptance gates passed on it. The primitive, convex
+clip, transform table, area-split board feet and editor are all sound and are not re-litigated.
+
+### Final outcome (re-scored)
+Score: **82/100** — Fail threshold vs headline deliverable. Template incorrect — reopened as Sprint 59.
 
 ---
 
