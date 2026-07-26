@@ -1,0 +1,182 @@
+import { describe, expect, it } from 'vitest';
+import {
+  HISTORY_CAP,
+  canRedo,
+  canUndo,
+  configsEqual,
+  createHistoryState,
+  historyReducer,
+  type HistoryState,
+} from '@/lib/board-designer/history';
+import type { BoardDesignConfig } from '@/lib/board-designer/types';
+
+const base: BoardDesignConfig = {
+  schemaVersion: 1,
+  name: 'Start',
+  grain: 'edge',
+  sourceLengthIn: 20,
+  stockThicknessIn: 1.5,
+  sliceThicknessIn: 1.5,
+  kerfIn: 0.125,
+  wasteFactor: 0.15,
+  flipEveryOtherSlice: false,
+  strips: [
+    { id: 's1', speciesId: 'hard-maple', widthIn: 1.5, repeat: 1 },
+    { id: 's2', speciesId: 'walnut', widthIn: 1, repeat: 1 },
+  ],
+};
+
+function apply(state: HistoryState, ...actions: Parameters<typeof historyReducer>[1][]) {
+  return actions.reduce((s, action) => historyReducer(s, action), state);
+}
+
+describe('designer history reducer', () => {
+  it('undo restores the previous config; redo restores the undone one', () => {
+    let state = createHistoryState(base);
+    state = apply(state, { type: 'add-strip' });
+    expect(state.present.strips).toHaveLength(3);
+    const afterAdd = state.present;
+
+    state = apply(state, { type: 'undo' });
+    expect(configsEqual(state.present, base)).toBe(true);
+    expect(canRedo(state)).toBe(true);
+
+    state = apply(state, { type: 'redo' });
+    expect(configsEqual(state.present, afterAdd)).toBe(true);
+    expect(canUndo(state)).toBe(true);
+  });
+
+  it('a new action after undo clears the redo stack', () => {
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      { type: 'patch', patch: { name: 'A' } },
+      { type: 'commit-coalesce' },
+      { type: 'patch', patch: { name: 'B' } },
+      { type: 'undo' },
+    );
+    expect(state.present.name).toBe('A');
+    expect(canRedo(state)).toBe(true);
+
+    state = apply(state, { type: 'add-strip' });
+    expect(canRedo(state)).toBe(false);
+    expect(state.future).toHaveLength(0);
+    expect(state.present.strips).toHaveLength(3);
+    expect(state.present.name).toBe('A');
+  });
+
+  it('undo at the start and redo at the end are no-ops', () => {
+    const start = createHistoryState(base);
+    expect(historyReducer(start, { type: 'undo' })).toBe(start);
+
+    const atEnd = apply(start, { type: 'add-strip' });
+    expect(historyReducer(atEnd, { type: 'redo' })).toBe(atEnd);
+  });
+
+  it('caps past at HISTORY_CAP and drops the oldest entry', () => {
+    let state = createHistoryState(base);
+    for (let i = 0; i < HISTORY_CAP + 5; i += 1) {
+      state = historyReducer(state, {
+        type: 'patch',
+        patch: { name: `n-${i}` },
+      });
+      state = historyReducer(state, { type: 'commit-coalesce' });
+    }
+    expect(state.past).toHaveLength(HISTORY_CAP);
+    // Oldest kept snapshot is after the first 5 dropped edits (names n-0..n-4 gone).
+    expect(state.past[0]!.name).toBe('n-4');
+    expect(state.present.name).toBe(`n-${HISTORY_CAP + 4}`);
+  });
+
+  it('coalesced width typing collapses to one undo step', () => {
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      { type: 'update-strip', id: 's1', patch: { widthIn: 1 } },
+      { type: 'update-strip', id: 's1', patch: { widthIn: 2 } },
+      { type: 'update-strip', id: 's1', patch: { widthIn: 3 } },
+      { type: 'update-strip', id: 's1', patch: { widthIn: 4 } },
+    );
+    expect(state.past).toHaveLength(1);
+    expect(state.present.strips[0]!.widthIn).toBe(4);
+
+    state = apply(state, { type: 'undo' });
+    expect(state.present.strips[0]!.widthIn).toBe(1.5);
+    expect(configsEqual(state.present, base)).toBe(true);
+  });
+
+  it('commit-coalesce starts a new undo step for the next typed edit', () => {
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      { type: 'update-strip', id: 's1', patch: { widthIn: 2 } },
+      { type: 'commit-coalesce' },
+      { type: 'update-strip', id: 's1', patch: { widthIn: 3 } },
+    );
+    expect(state.past).toHaveLength(2);
+
+    state = apply(state, { type: 'undo' });
+    expect(state.present.strips[0]!.widthIn).toBe(2);
+    state = apply(state, { type: 'undo' });
+    expect(state.present.strips[0]!.widthIn).toBe(1.5);
+  });
+
+  it('template/load is undoable and restores the exact prior config', () => {
+    const template: BoardDesignConfig = {
+      ...base,
+      name: 'Template board',
+      strips: [{ id: 't1', speciesId: 'cherry', widthIn: 2, repeat: 2 }],
+    };
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      { type: 'update-strip', id: 's1', patch: { speciesId: 'cherry' } },
+      { type: 'load', config: template },
+    );
+    expect(state.present.name).toBe('Template board');
+    expect(state.present.strips).toHaveLength(1);
+
+    state = apply(state, { type: 'undo' });
+    expect(state.present.name).toBe('Start');
+    expect(state.present.strips[0]!.speciesId).toBe('cherry');
+    expect(state.present.strips).toHaveLength(2);
+
+    state = apply(state, { type: 'undo' });
+    expect(configsEqual(state.present, base)).toBe(true);
+  });
+
+  it('undoing to the initial config clears dirty (serialized equality)', () => {
+    let state = createHistoryState(base);
+    state = apply(state, { type: 'add-strip' });
+    expect(configsEqual(state.present, base)).toBe(false);
+
+    state = apply(state, { type: 'undo' });
+    expect(configsEqual(state.present, base)).toBe(true);
+    // Mirrors DesignerShell: dirty = serialize(present) !== serialize(initial)
+    expect(JSON.stringify(state.present) !== JSON.stringify(base)).toBe(false);
+  });
+
+  it('present serialization is what a hidden config input would submit', () => {
+    let state = createHistoryState(base);
+    state = apply(state, {
+      type: 'update-strip',
+      id: 's1',
+      patch: { widthIn: 2.25 },
+    });
+    const submitted = JSON.stringify(state.present);
+    expect(JSON.parse(submitted).strips[0].widthIn).toBe(2.25);
+
+    state = apply(state, { type: 'undo' });
+    expect(JSON.stringify(state.present)).toBe(JSON.stringify(base));
+  });
+
+  it('discrete species changes do not coalesce', () => {
+    let state = createHistoryState(base);
+    state = apply(
+      state,
+      { type: 'update-strip', id: 's1', patch: { speciesId: 'cherry' } },
+      { type: 'update-strip', id: 's1', patch: { speciesId: 'walnut' } },
+    );
+    expect(state.past).toHaveLength(2);
+  });
+});

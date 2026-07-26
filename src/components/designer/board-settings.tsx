@@ -9,9 +9,12 @@ const inputControl =
 export function BoardSettings({
   config,
   onChange,
+  onCommitCoalesce,
 }: {
   config: BoardDesignConfig;
   onChange: (patch: Partial<BoardDesignConfig>) => void;
+  /** Ends coalesced Name (and similar) typing so the next edit is a new undo step. */
+  onCommitCoalesce: () => void;
 }) {
   return (
     <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
@@ -26,6 +29,7 @@ export function BoardSettings({
             value={config.name}
             maxLength={80}
             onChange={(event) => onChange({ name: event.currentTarget.value })}
+            onBlur={() => onCommitCoalesce()}
           />
         </label>
 
@@ -56,6 +60,7 @@ export function BoardSettings({
           min={1}
           max={96}
           onChange={(sourceLengthIn) => onChange({ sourceLengthIn })}
+          onCommitCoalesce={onCommitCoalesce}
         />
         <NumberField
           label="Stock thickness"
@@ -64,6 +69,7 @@ export function BoardSettings({
           min={0.25}
           max={4}
           onChange={(stockThicknessIn) => onChange({ stockThicknessIn })}
+          onCommitCoalesce={onCommitCoalesce}
         />
         <NumberField
           label="Slice thickness"
@@ -72,6 +78,7 @@ export function BoardSettings({
           min={0.25}
           max={4}
           onChange={(sliceThicknessIn) => onChange({ sliceThicknessIn })}
+          onCommitCoalesce={onCommitCoalesce}
         />
 
         <label className="grid gap-[0.375rem]">
@@ -101,6 +108,7 @@ export function BoardSettings({
             step={1}
             value={Math.round(config.wasteFactor * 100)}
             onChange={(event) => onChange({ wasteFactor: boundedNumber(event, 0, 100) / 100 })}
+            onBlur={() => onCommitCoalesce()}
           />
         </label>
 
@@ -149,6 +157,7 @@ function NumberField({
   min,
   max,
   onChange,
+  onCommitCoalesce,
 }: {
   label: string;
   name: string;
@@ -156,6 +165,7 @@ function NumberField({
   min: number;
   max: number;
   onChange: (value: number) => void;
+  onCommitCoalesce: () => void;
 }) {
   return (
     <label className="grid gap-[0.375rem]">
@@ -169,6 +179,7 @@ function NumberField({
         step={0.0625}
         value={value}
         onChange={(event) => onChange(boundedNumber(event, min, max))}
+        onBlur={() => onCommitCoalesce()}
       />
     </label>
   );

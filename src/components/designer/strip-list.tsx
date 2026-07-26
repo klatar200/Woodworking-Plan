@@ -23,6 +23,7 @@ export function StripList({
   onDelete,
   onMove,
   onUpdate,
+  onCommitCoalesce,
 }: {
   grain: Grain;
   strips: Strip[];
@@ -31,6 +32,8 @@ export function StripList({
   onDelete: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
   onUpdate: (id: string, patch: Partial<Strip>) => void;
+  /** Ends coalesced Width/Repeat typing so the next edit is a new undo step. */
+  onCommitCoalesce: () => void;
 }) {
   const move = stripMoveLabels(grain);
 
@@ -158,7 +161,10 @@ export function StripList({
                       onChange={(event) =>
                         onUpdate(strip.id, { widthIn: boundedNumber(event, 0.0625, 24) })
                       }
-                      onBlur={() => onUpdate(strip.id, { widthIn: snapToSixteenth(strip.widthIn) })}
+                      onBlur={() => {
+                        onUpdate(strip.id, { widthIn: snapToSixteenth(strip.widthIn) });
+                        onCommitCoalesce();
+                      }}
                     />
                   </label>
                   <label className="grid gap-[0.375rem]">
@@ -174,6 +180,7 @@ export function StripList({
                       onChange={(event) =>
                         onUpdate(strip.id, { repeat: Math.round(boundedNumber(event, 1, 20)) })
                       }
+                      onBlur={() => onCommitCoalesce()}
                     />
                   </label>
                 </div>

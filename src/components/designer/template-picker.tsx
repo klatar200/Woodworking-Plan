@@ -3,10 +3,8 @@ import type { BoardDesignConfig } from '@/lib/board-designer/types';
 import { btnGhost } from '@/lib/ui';
 
 export function TemplatePicker({
-  dirty,
   onLoad,
 }: {
-  dirty: boolean;
   onLoad: (config: BoardDesignConfig) => void;
 }) {
   return (
@@ -18,12 +16,7 @@ export function TemplatePicker({
             key={template.id}
             type="button"
             className={btnGhost}
-            onClick={() => {
-              if (dirty && !window.confirm('Replace your current draft with this template?')) {
-                return;
-              }
-              onLoad(cloneConfig(template.config));
-            }}
+            onClick={() => onLoad(cloneConfig(template.config))}
           >
             {template.config.name}
           </button>

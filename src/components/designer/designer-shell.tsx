@@ -1,24 +1,29 @@
 'use client';
 
-import { useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { BoardPreview } from './board-preview';
 import { BoardSettings } from './board-settings';
 import { DesignerNarrowSurface } from './designer-narrow';
 import { MetricsPanel } from './metrics-panel';
+import { DESIGNER_WIDE_MQ } from './r3f-canvas';
 import { StripList } from './strip-list';
 import { TemplatePicker } from './template-picker';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
-import type { BoardDesignConfig, Strip } from '@/lib/board-designer/types';
+import {
+  canRedo,
+  canUndo,
+  createHistoryState,
+  historyReducer,
+} from '@/lib/board-designer/history';
+import type { BoardDesignConfig } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 
-type Action =
-  | { type: 'load'; config: BoardDesignConfig }
-  | { type: 'patch'; patch: Partial<BoardDesignConfig> }
-  | { type: 'add-strip' }
-  | { type: 'duplicate-strip'; id: string }
-  | { type: 'delete-strip'; id: string }
-  | { type: 'move-strip'; id: string; direction: -1 | 1 }
-  | { type: 'update-strip'; id: string; patch: Partial<Strip> };
+function isTextEntryTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  const tag = target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  return target.isContentEditable;
+}
 
 export function DesignerShell(props: {
   designId: string | null;
@@ -27,11 +32,36 @@ export function DesignerShell(props: {
   updateAction: (fd: FormData) => Promise<void>;
 }) {
   const { designId, initialConfig, saveAction, updateAction } = props;
-  const [config, dispatch] = useReducer(reducer, initialConfig, cloneConfig);
+  const [history, dispatch] = useReducer(historyReducer, initialConfig, createHistoryState);
+  const config = history.present;
   const metrics = useMemo(() => calculateMetrics(config), [config]);
   const serializedConfig = useMemo(() => JSON.stringify(config), [config]);
   const dirty = serializedConfig !== JSON.stringify(initialConfig);
   const formAction = designId ? updateAction : saveAction;
+  const undoEnabled = canUndo(history);
+  const redoEnabled = canRedo(history);
+
+  useEffect(() => {
+    const mq = window.matchMedia(DESIGNER_WIDE_MQ);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!mq.matches) return;
+      if (isTextEntryTarget(event.target)) return;
+      const mod = event.metaKey || event.ctrlKey;
+      if (!mod) return;
+
+      if (event.key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        dispatch({ type: 'undo' });
+        return;
+      }
+      if ((event.key === 'z' && event.shiftKey) || event.key === 'y' || event.key === 'Y') {
+        event.preventDefault();
+        dispatch({ type: 'redo' });
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <form action={formAction} className="grid gap-[1.25rem]">
@@ -56,6 +86,22 @@ export function DesignerShell(props: {
             <h1 className="m-0">Board designer</h1>
           </div>
           <div className="flex flex-wrap gap-[0.5rem]">
+            <button
+              type="button"
+              className={btnGhost}
+              disabled={!undoEnabled}
+              onClick={() => dispatch({ type: 'undo' })}
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              className={btnGhost}
+              disabled={!redoEnabled}
+              onClick={() => dispatch({ type: 'redo' })}
+            >
+              Redo
+            </button>
             <button
               type="button"
               className={btnGhost}
@@ -84,7 +130,6 @@ export function DesignerShell(props: {
               <BoardPreview config={config} metrics={metrics} />
             </section>
             <TemplatePicker
-              dirty={dirty}
               onLoad={(templateConfig) => dispatch({ type: 'load', config: templateConfig })}
             />
           </div>
@@ -93,6 +138,7 @@ export function DesignerShell(props: {
             <BoardSettings
               config={config}
               onChange={(patch) => dispatch({ type: 'patch', patch })}
+              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
             />
             <StripList
               grain={config.grain}
@@ -102,6 +148,7 @@ export function DesignerShell(props: {
               onDelete={(id) => dispatch({ type: 'delete-strip', id })}
               onMove={(id, direction) => dispatch({ type: 'move-strip', id, direction })}
               onUpdate={(id, patch) => dispatch({ type: 'update-strip', id, patch })}
+              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
             />
             <MetricsPanel metrics={metrics} grain={config.grain} />
           </div>
@@ -109,74 +156,4 @@ export function DesignerShell(props: {
       </div>
     </form>
   );
-}
-
-function reducer(config: BoardDesignConfig, action: Action): BoardDesignConfig {
-  switch (action.type) {
-    case 'load':
-      return cloneConfig(action.config);
-    case 'patch':
-      return { ...config, ...action.patch };
-    case 'add-strip':
-      return {
-        ...config,
-        strips: [
-          ...config.strips,
-          {
-            id: newStripId(),
-            speciesId: 'hard-maple',
-            widthIn: 1.5,
-            repeat: 1,
-          },
-        ],
-      };
-    case 'duplicate-strip': {
-      const index = config.strips.findIndex((strip) => strip.id === action.id);
-      if (index < 0) return config;
-      const copy = { ...config.strips[index]!, id: newStripId() };
-      return {
-        ...config,
-        strips: [
-          ...config.strips.slice(0, index + 1),
-          copy,
-          ...config.strips.slice(index + 1),
-        ],
-      };
-    }
-    case 'delete-strip':
-      return {
-        ...config,
-        strips: config.strips.filter((strip) => strip.id !== action.id),
-      };
-    case 'move-strip': {
-      const index = config.strips.findIndex((strip) => strip.id === action.id);
-      const nextIndex = index + action.direction;
-      if (index < 0 || nextIndex < 0 || nextIndex >= config.strips.length) return config;
-      const strips = config.strips.slice();
-      const [strip] = strips.splice(index, 1);
-      if (!strip) return config;
-      strips.splice(nextIndex, 0, strip);
-      return { ...config, strips };
-    }
-    case 'update-strip':
-      return {
-        ...config,
-        strips: config.strips.map((strip) =>
-          strip.id === action.id ? { ...strip, ...action.patch } : strip,
-        ),
-      };
-    default:
-      return config;
-  }
-}
-
-function cloneConfig(config: BoardDesignConfig): BoardDesignConfig {
-  return {
-    ...config,
-    strips: config.strips.map((strip) => ({ ...strip })),
-  };
-}
-
-function newStripId(): string {
-  return `strip-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }

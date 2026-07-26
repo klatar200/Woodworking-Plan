@@ -174,6 +174,22 @@ describe('DesignerShell static render', () => {
     expect(edgeHtml).toContain('Toward bottom');
   });
 
+  it('Sprint 55: Undo/Redo controls, no template confirm, history wiring uses DESIGNER_WIDE_MQ', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const picker = source('src/components/designer/template-picker.tsx');
+    const html = visibleMarkup(render(goldenConfig));
+
+    expect(html).toContain('>Undo</button>');
+    expect(html).toContain('>Redo</button>');
+    expect(html).toContain('name="config"');
+    expect(picker).not.toContain('window.confirm');
+    expect(picker).not.toContain('Replace your current draft');
+    expect(shell).toContain('DESIGNER_WIDE_MQ');
+    expect(shell).toContain("type: 'undo'");
+    expect(shell).toContain("type: 'redo'");
+    expect(shell).toContain('historyReducer');
+  });
+
   it('Sprint 54: desktop gate keeps authoring mounted, exact notices, no toParts, no WebGL below lg', () => {
     const shell = source('src/components/designer/designer-shell.tsx');
     const narrow = source('src/components/designer/designer-narrow.tsx');
