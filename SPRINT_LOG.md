@@ -3,7 +3,7 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 66 Attempt 2 (2026-07-26) — CLOSED 98/100** — delete browse/plan loading.tsx. Attempt-1 prod re-score **90**.
+> **Latest logged: Sprint 66 Attempt 2 (2026-07-26) — CLOSED 99/100** — delete browse/plan loading.tsx. Attempt-1 prod re-score **90**.
 >
 > **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1307 green (post-66 Attempt 2).
 
@@ -250,9 +250,11 @@ Score: **98/100** — Pass. Inert drag handle removed from tab order; reorder an
 **Scope:** Part A characterize/fix orphaned React stream `S:` bags · Part B pointer-drag handler tests · Part C next BUILD_PLAN §4 item (or idle). Trunk-based to `main`.
 **Status:** CLOSED (Attempt 2)
 **Part C (next §4 item):** **none** — every BUILD_PLAN §4 shippable row through Sprint 65 is closed; remaining open follow-ups are Keagan-owned (dark re-palette uncommissioned, Clerk prod keys, launch blockers) or BUSINESS_PLAN-absent / deferred contract changes (true hex lattice, Canva-like 5b). No invented scope.
-**Commits on `main`:** `15fa502` (Attempt 1) · (Attempt 2 tip)
+**Commits on `main`:** `15fa502` (Attempt 1) · `9c6a038` (Attempt 2)
 **/designer First Load JS:** **123 kB** (held).
 **Suite:** **1307/1307** across 113 files (Attempt 2).
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30212607663 success.
+**Vercel:** Production deploy `9c6a038` success.
 
 ### Part A — Attempt 1 (corrected)
 **Trigger (one sentence):** When an App Router Suspense boundary from route `loading.tsx` streams under React’s postponed opener `<!--$~-->`, `$RC` silently no-ops and leaves `div#S:N` holding a full page copy beside the already-visible tree.
@@ -286,18 +288,31 @@ Score: **98/100** — Pass. Inert drag handle removed from tab order; reorder an
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | Browse/plans loading deleted; report corrected; browser census script + source detector |
-| Correctness & functionality (/20) | 18 | Designer already clean; browse/plans fixed by removing boundary. **−2**: signed-in hard-reload re-verify on tip pending Claude Code (agent Clerk OAuth) |
+| Correctness & functionality (/20) | 19 | Chrome hard-path census on tip: `/`, `/browse`, filters, pagination, `/plans/*` → **1 main, 0 `$~`, 0 bags** (throttled early+late). Pre-fix throttled `/browse` had `$~`+71 KB bag. **−1**: signed-in `/designer`/`/saved`/`/shopping-list` not re-measured here (Clerk OAuth; Attempt-1 designer already 1 main) |
 | Automated test coverage (/15) | 15 | `main-landmark` · updated `stream-orphan` · suite **1307** |
 | Security (/15) | 15 | Nonce unchanged/confirmed |
 | Code quality & simplicity (/10) | 10 | Delete loading vs half-mitigation; smoke script documented |
 | Mobile/offline behavior (/10) | 10 | Landmark census; offline untouched |
 | Documentation & handoff (/5) | 5 | Corrected Attempt 1 + route difference |
-| **Total (/100)** | **98** | |
+| **Total (/100)** | **99** | |
 
 **Result:** Pass (≥95)
 
+### Browser census (Chrome headless, prod `9c6a038`, signed out, 2026-07-26)
+
+| Route | mains | `$~` | largest `S:` bag |
+|---|---|---|---|
+| `/` | 1 | 0 | none |
+| `/browse` | 1 | 0 | none (was 2 mains / ~101 KB orphan at `15fa502`) |
+| `/browse?page=2` | 1 | 0 | none |
+| `/browse?difficulty=1` | 1 | 0 | none |
+| `/plans/x-leg-tv-stand` | 1 | 0 | none |
+| `/designer`, `/designer/library`, `/saved`, `/shopping-list` | 0 (Clerk sign-in shell, signed out) | 0 | none |
+
+Throttled early snapshot on `/browse` after fix: still 1 main / 0 bags (pre-fix same throttle: 2× `$~` + 71 KB `S:1` with a `<main>`).
+
 ### Final outcome (Attempt 2)
-Score: **98/100**. Browse/plans match designer: no route `loading.tsx`.
+Score: **99/100**. Browse/plans match designer: no route `loading.tsx`.
 
 ---
 

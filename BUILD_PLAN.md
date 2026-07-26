@@ -45,7 +45,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 63 (Geometric closure) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2eab289`). `wedgeWebContinuous` replaces species equality; accent strips no longer false-positive. Suite **1203/1203**; First Load **120 kB**. |
 | Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
 | Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Thumbs + `reorder-strip`; pointer-only handle; live-region announce. Suite **1251/1251**; `/designer` First Load **123 kB**. |
-| Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **90** — `/browse` still orphaned). Deleted browse+plan `loading.tsx`; designer was already clean. Suite **1307/1307**. |
+| Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90** — `/browse` still orphaned). Deleted browse+plan `loading.tsx`; Chrome census 1 main on catalog/plan. Suite **1307/1307**. |
 
 Test suite — expected: 1307/1307 across 113 files (Sprint 66 Attempt 2). Update this single figure each sprint close; 1259/1259 and earlier superseded.
 
