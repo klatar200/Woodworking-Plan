@@ -49,12 +49,14 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Suite **1309/1309**. |
 | Sprint 68 (dock behavior + parity) | ✅ **CLOSED** 2026-07-26 — **98/100**. Suite **1312/1312**. |
 | Sprint 69 (strip directory) | ✅ **CLOSED** 2026-07-26 — **97/100**. Suite **1318/1318**. |
-| Sprint 70 (literacy) | ✅ **CLOSED** 2026-07-26 — **98/100**. FieldHint kerf/waste; unit/count suffixes. Suite **1319/1319**. IA track DoD with 69. |
-| Sprints 71–72 (Designer shell / IA) | 🟡 **COMMISSIONED** — **next = 71**. Agent contract below. |
+| Sprint 70 (literacy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Suite **1319/1319**. IA track DoD with 69. |
+| Sprint 71 (2D + rotate) | ✅ **CLOSED** 2026-07-26 — **97/100**. 3D default / 2D toggle; view-only rotate; 2D PNG export. |
+| Sprint 72 (Save a copy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Dirty config → `Copy of {name}` → new id. Suite **1322/1322** / 115 files. |
+| Sprints 67–72 (Designer shell / IA) | ✅ **TRACK CLOSED** 2026-07-26. |
 
-Test suite — expected: **1319/1319** across **114 files** (Sprint 70). Update each sprint close.
+Test suite — expected: **1322/1322** across **115 files** (Sprint 72). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–70 ✅** · **next = 71**. Parked FUTURE_IDEAS 2026-07-26.
+**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed). Parked FUTURE_IDEAS 2026-07-26.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -66,7 +68,7 @@ Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list par
 OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
 SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
-ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 ✅ → 71 → 72. One sprint at a time. NEXT=71.
+ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 ✅ → 71 ✅ → 72 ✅. TRACK CLOSED.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
@@ -152,21 +154,14 @@ SHIPPED: optional Strip.label (zod/serialize/history coalesce); stripDisplayName
 SHIPPED: FieldHint for kerf/waste; unit/count suffixes on remaining numeric controls.
 ```
 
-**71 — 2D + rotate**
+**71 — 2D + rotate** ✅ CLOSED 2026-07-26 · 97/100
 ```
-DO: preview toggle 3D(default)|2D(BoardDiagram); view-only rotate 0/90/180/270 (no config mutate);
-    Export PNG works in 2D OR disabled with visible reason.
-DONT: 2D default · geometry mutate on rotate · new renderer dep.
-ACCEPT: 3D default · rotate visual only · P10.
+SHIPPED: 3D default / 2D BoardDiagram; view-only rotate; svg→PNG export in 2D.
 ```
 
-**72 — Save a copy**
+**72 — Save a copy** ✅ CLOSED 2026-07-26 · 98/100
 ```
-DO: enabled iff designId!=null; else disabled. Payload=current in-memory config (dirty OK);
-    set name to `Copy of {name}` (max 80) → createDesign → redirect /designer/[newId].
-    Original last-saved untouched. guardAction+rate-limit.
-DONT: clone last-saved-only · in-app tabs · share URL · prompt for name.
-ACCEPT: dirty copy→new id named Copy of …; original reopen=prior saved state.
+SHIPPED: copyBoardDesignAction; dirty config; copyDesignName; disabled without designId.
 ```
 
 ### Sprints 53–56 — Designer polish (CLOSED).

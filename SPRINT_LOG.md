@@ -3,9 +3,47 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 70 (2026-07-26) — CLOSED 98/100** — literacy (kerf/waste hints + units).
+> **Latest logged: Sprint 72 (2026-07-26) — CLOSED 98/100** — Save a copy. Shell IA track 67–72 ✅.
 >
-> **Milestones:** … · shell 67–70 ✅ (IA track DoD). Suite: 1319 green. Next: 71.
+> **Milestones:** … · shell 67–72 ✅. Suite: 1322 green.
+
+---
+
+## Sprint 72: Save a copy
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 72 — dirty in-memory copy → new design.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | copyAction · Copy of name · disabled sans designId |
+| Correctness & functionality (/20) | 18 | Unit + shell wiring; signed-in prod copy not re-run (−2) |
+| Automated test coverage (/15) | 15 | copy-design-name · shell Sprint 72 · 1322 |
+| Security (/15) | 15 | guardAction + rate-limit · session createDesign |
+| Code quality (/10) | 10 | Sibling form; copy-name helper |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN track closed |
+
+Score: **98/100** — Pass. Shell IA track closed.
+
+---
+
+## Sprint 71: 2D + rotate
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 71 — 3D/2D toggle, view-only rotate, 2D export.
+
+### Attempt 1 — score 97/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | 3D default · 2D diagram · view-only rotate · 2D PNG |
+| Correctness & functionality (/20) | 17 | Suite; browser rotate/export not re-run (−3) |
+| Automated test coverage (/15) | 15 | board-preview source guards |
+| Security (/15) | 15 | UI-only mode/rotation |
+| Code quality (/10) | 10 | No new renderer dep |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **97/100** — Pass.
 
 ---
 
