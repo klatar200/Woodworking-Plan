@@ -223,6 +223,110 @@ describe('designer history reducer', () => {
   });
 });
 
+describe('reorder-strip — one drag, one undo (Sprint 65)', () => {
+  const threeStrip: BoardDesignConfig = makeV2Config({
+    name: 'Reorder',
+    grain: 'edge',
+    panels: [
+      makePanel('panel-1', 'Panel 1', 1.5, [
+        makeStrip('s1', 'hard-maple'),
+        makeStrip('s2', 'walnut', 1),
+        makeStrip('s3', 'cherry', 2),
+      ]),
+    ],
+    rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+    rowCount: 1,
+  });
+
+  it('moves strip i to index j in one reduction', () => {
+    let state = createHistoryState(threeStrip);
+    state = apply(state, {
+      type: 'reorder-strip',
+      panelId: 'panel-1',
+      fromIndex: 0,
+      toIndex: 2,
+    });
+    expect(stripsOf(state.present).map((s) => s.id)).toEqual(['s2', 's3', 's1']);
+    expect(state.past).toHaveLength(1);
+  });
+
+  it('same-index reorder is a no-op that writes no history entry', () => {
+    const start = createHistoryState(threeStrip);
+    const next = historyReducer(start, {
+      type: 'reorder-strip',
+      panelId: 'panel-1',
+      fromIndex: 1,
+      toIndex: 1,
+    });
+    expect(next).toBe(start);
+    expect(next.past).toHaveLength(0);
+  });
+
+  it('one reorder → exactly one undo entry; undo restores original order', () => {
+    let state = createHistoryState(threeStrip);
+    state = apply(state, {
+      type: 'reorder-strip',
+      panelId: 'panel-1',
+      fromIndex: 2,
+      toIndex: 0,
+    });
+    expect(state.past).toHaveLength(1);
+    expect(stripsOf(state.present).map((s) => s.id)).toEqual(['s3', 's1', 's2']);
+
+    state = apply(state, { type: 'undo' });
+    expect(stripsOf(state.present).map((s) => s.id)).toEqual(['s1', 's2', 's3']);
+    expect(canRedo(state)).toBe(true);
+
+    state = apply(state, { type: 'redo' });
+    expect(stripsOf(state.present).map((s) => s.id)).toEqual(['s3', 's1', 's2']);
+  });
+
+  it('out-of-range indices are ignored (same bail as delete-row / move-strip)', () => {
+    const start = createHistoryState(threeStrip);
+    for (const action of [
+      { type: 'reorder-strip' as const, panelId: 'panel-1', fromIndex: -1, toIndex: 0 },
+      { type: 'reorder-strip' as const, panelId: 'panel-1', fromIndex: 0, toIndex: 99 },
+      { type: 'reorder-strip' as const, panelId: 'panel-1', fromIndex: 99, toIndex: 0 },
+      { type: 'move-strip' as const, panelId: 'panel-1', id: 's1', direction: -1 as const },
+      { type: 'delete-row' as const, index: -1 },
+    ]) {
+      expect(historyReducer(start, action)).toBe(start);
+    }
+  });
+
+  it('arrow move-strip still reorders one step at a time', () => {
+    let state = createHistoryState(threeStrip);
+    state = apply(state, {
+      type: 'move-strip',
+      panelId: 'panel-1',
+      id: 's1',
+      direction: 1,
+    });
+    expect(stripsOf(state.present).map((s) => s.id)).toEqual(['s2', 's1', 's3']);
+    expect(state.past).toHaveLength(1);
+  });
+
+  it('mutating present after reorder does not mutate the past snapshot', () => {
+    let state = createHistoryState(threeStrip);
+    state = apply(state, {
+      type: 'reorder-strip',
+      panelId: 'panel-1',
+      fromIndex: 0,
+      toIndex: 2,
+    });
+    const pastFrozen = JSON.stringify(state.past[0]);
+    stripsOf(state.present)[0]!.widthIn = 99;
+    expect(JSON.stringify(state.past[0])).toBe(pastFrozen);
+    expect(stripsOf(state.past[0]!)[0]!.widthIn).toBe(1.5);
+
+    state = apply(state, { type: 'undo' });
+    const futureFrozen = JSON.stringify(state.future[0]);
+    stripsOf(state.present)[0]!.speciesId = 'padauk';
+    expect(JSON.stringify(state.future[0])).toBe(futureFrozen);
+  });
+});
+
+
 describe('undoRedoShortcut — key case is NOT stable across input sources', () => {
   const ev = (over: Partial<KeyboardEvent> & { key: string }) => ({
     shiftKey: false,

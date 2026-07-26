@@ -322,10 +322,10 @@ export default async function ShoppingListPage({
 
           {view === 'merged' ? (
             <p className="footnote">
-              Quantities are summed across plans. Consumables like glue, sandpaper and
-              finish are listed generically &mdash; buy the brand you like. Fasteners are
-              listed by exact size and are never combined, because a 1-1/4&Prime; screw is
-              not a 1-5/8&Prime; screw.
+              Quantities are summed across everything on this list. Consumables like glue,
+              sandpaper and finish are listed generically &mdash; buy the brand you like.
+              Fasteners are listed by exact size and are never combined, because a
+              1-1/4&Prime; screw is not a 1-5/8&Prime; screw.
             </p>
           ) : null}
         </>

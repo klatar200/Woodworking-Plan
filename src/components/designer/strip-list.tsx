@@ -1,9 +1,17 @@
+'use client';
+
 import { closingThicknessHint } from '@/lib/board-designer/miter-geometry';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
-import type { ChangeEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
@@ -31,6 +39,7 @@ export function StripList({
   onDuplicate,
   onDelete,
   onMove,
+  onReorder,
   onUpdate,
   onCommitCoalesce,
 }: {
@@ -41,10 +50,23 @@ export function StripList({
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
+  /** One call per completed drag — maps to a single `reorder-strip` history entry. */
+  onReorder: (fromIndex: number, toIndex: number) => void;
   onUpdate: (id: string, patch: Partial<Strip>) => void;
   onCommitCoalesce: () => void;
 }) {
   const move = stripMoveLabels(grain);
+  const listRef = useRef<HTMLOListElement>(null);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+  const [announce, setAnnounce] = useState('');
+  const dragFrom = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!announce) return;
+    const t = window.setTimeout(() => setAnnounce(''), 1500);
+    return () => window.clearTimeout(t);
+  }, [announce]);
 
   // One closing-thickness hint per distinct (width, thickness, angle).
   const firstHintForKey = new Set<string>();
@@ -60,6 +82,48 @@ export function StripList({
     showClosingHintById.set(strip.id, show);
   }
 
+  function indexFromClientY(clientY: number): number {
+    const list = listRef.current;
+    if (!list) return dragFrom.current ?? 0;
+    const items = [...list.querySelectorAll<HTMLElement>('[data-strip-index]')];
+    for (let i = 0; i < items.length; i += 1) {
+      const rect = items[i]!.getBoundingClientRect();
+      if (clientY < rect.top + rect.height / 2) return i;
+    }
+    return Math.max(0, items.length - 1);
+  }
+
+  function onHandlePointerDown(event: ReactPointerEvent<HTMLButtonElement>, index: number) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragFrom.current = index;
+    setDragIndex(index);
+    setOverIndex(index);
+  }
+
+  function onHandlePointerMove(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (dragFrom.current === null) return;
+    setOverIndex(indexFromClientY(event.clientY));
+  }
+
+  function onHandlePointerUp(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (dragFrom.current === null) return;
+    const from = dragFrom.current;
+    const to = indexFromClientY(event.clientY);
+    dragFrom.current = null;
+    setDragIndex(null);
+    setOverIndex(null);
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // Already released.
+    }
+    if (from === to) return;
+    onReorder(from, to);
+    setAnnounce(`Strip ${from + 1} moved to position ${to + 1}`);
+  }
+
   return (
     <div>
       <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
@@ -69,6 +133,10 @@ export function StripList({
         </button>
       </div>
 
+      <p className="sr-only" aria-live="polite">
+        {announce}
+      </p>
+
       {strips.length === 0 ? (
         <div className="rounded-[0.5rem] border border-dashed border-border p-[1rem] text-[0.9375rem] text-muted">
           <p className="m-0 mb-[0.75rem]">Add a strip to see your board.</p>
@@ -77,19 +145,42 @@ export function StripList({
           </button>
         </div>
       ) : (
-        <ol className="m-0 grid list-none gap-[0.875rem] p-0">
-          {strips.map((strip, index) => (
+        <ol ref={listRef} className="m-0 grid list-none gap-[0.875rem] p-0">
+          {strips.map((strip, index) => {
+            const dragging = dragIndex === index;
+            const dropTarget = overIndex === index && dragIndex !== null && dragIndex !== index;
+            return (
             <li
               key={strip.id}
-              className="rounded-[0.5rem] border border-border bg-bg p-[0.875rem]"
+              data-strip-index={index}
+              className={[
+                'rounded-[0.5rem] border bg-bg p-[0.875rem] transition-[border-color,opacity,box-shadow] duration-150',
+                dropTarget
+                  ? 'border-accent shadow-e2'
+                  : 'border-border shadow-e1',
+                dragging ? 'opacity-60' : 'opacity-100',
+              ].join(' ')}
             >
               <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
-                <div>
-                  <h4 className="m-0 text-[1rem]">Strip {index + 1}</h4>
-                  <p className="m-0 text-[0.875rem] text-muted">
-                    {getSpecies(strip.speciesId)?.name ?? strip.speciesId} ·{' '}
-                    {formatInches(strip.widthIn)}
-                  </p>
+                <div className="flex min-w-0 items-start gap-[0.5rem]">
+                  <button
+                    type="button"
+                    className={`${btnGhost} cursor-grab touch-none px-[0.5rem]! active:cursor-grabbing`}
+                    aria-label={`Drag to reorder strip ${index + 1}`}
+                    onPointerDown={(e) => onHandlePointerDown(e, index)}
+                    onPointerMove={onHandlePointerMove}
+                    onPointerUp={onHandlePointerUp}
+                    onPointerCancel={onHandlePointerUp}
+                  >
+                    ⋮⋮
+                  </button>
+                  <div>
+                    <h4 className="m-0 text-[1rem]">Strip {index + 1}</h4>
+                    <p className="m-0 text-[0.875rem] text-muted">
+                      {getSpecies(strip.speciesId)?.name ?? strip.speciesId} ·{' '}
+                      {formatInches(strip.widthIn)}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-[0.375rem]">
                   <button
@@ -200,7 +291,8 @@ export function StripList({
                 />
               </div>
             </li>
-          ))}
+            );
+          })}
         </ol>
       )}
 

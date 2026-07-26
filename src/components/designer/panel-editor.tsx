@@ -104,6 +104,14 @@ export function PanelEditor({
                           direction,
                         })
                       }
+                      onReorder={(fromIndex, toIndex) =>
+                        dispatch({
+                          type: 'reorder-strip',
+                          panelId: panel.id,
+                          fromIndex,
+                          toIndex,
+                        })
+                      }
                       onUpdate={(id, patch) =>
                         dispatch({
                           type: 'update-strip',

@@ -29,6 +29,9 @@ afterEach(() => {
 
 describe('checkDatabase', () => {
   it('reports not_configured (not an error) when DATABASE_URL is absent', async () => {
+    // Cloud VM injects DATABASE_URL; clear it so this case is real.
+    vi.stubEnv('DATABASE_URL', undefined as unknown as string);
+    vi.resetModules();
     const { checkDatabase } = await import('@/lib/db');
     const result = await checkDatabase();
 
@@ -80,6 +83,10 @@ describe('checkDatabase', () => {
 
 describe('GET /api/health', () => {
   it('returns 200 and status ok when the database is not configured', async () => {
+    vi.stubEnv('DATABASE_URL', undefined as unknown as string);
+    vi.stubEnv('CLERK_SECRET_KEY', undefined as unknown as string);
+    vi.stubEnv('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY', undefined as unknown as string);
+    vi.resetModules();
     const { GET } = await import('@/app/api/health/route');
     const response = await GET();
     const body = await response.json();

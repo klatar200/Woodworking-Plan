@@ -103,12 +103,16 @@ describe('isClerkConfigured', () => {
   });
 
   it('is false when neither key is set', async () => {
+    // Cloud VM injects Clerk keys; clear both so "neither" is real.
+    vi.stubEnv('CLERK_SECRET_KEY', undefined as unknown as string);
+    vi.stubEnv('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY', undefined as unknown as string);
     vi.resetModules();
     const { isClerkConfigured } = await import('@/env');
     expect(isClerkConfigured()).toBe(false);
   });
 
   it('is FALSE when only one of the two keys is set - a half-configured Clerk must not count as configured', async () => {
+    vi.stubEnv('CLERK_SECRET_KEY', undefined as unknown as string);
     vi.stubEnv(
       'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',
       BASE.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

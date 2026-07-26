@@ -38,6 +38,12 @@ describe('shopping-list quantity render — no raw floats', () => {
     expect(page).toMatch(/On this list/);
     expect(page).not.toMatch(/Plans on this list/);
   });
+
+  it('merged footer is source-neutral (designs are not plans)', () => {
+    const page = readFileSync('src/app/shopping-list/page.tsx', 'utf8');
+    expect(page).toMatch(/Quantities are summed across everything on this list/);
+    expect(page).not.toMatch(/Quantities are summed across plans/);
+  });
 });
 
 describe('yield label — consumed, not used (Sprint 64 fix)', () => {
