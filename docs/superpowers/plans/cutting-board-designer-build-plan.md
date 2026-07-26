@@ -169,9 +169,11 @@ export interface BoardMetrics {
 ```
 The original brief's `stripHeightIn` (two meanings) is **deleted** — `sliceThicknessIn` is the only slice field. `flipEveryOther` / `rotateEveryOther` are replaced by the single render-only `flipEveryOtherSlice`.
 
-### 3.2 Species — `src/lib/board-designer/species.ts` (exactly these 8; B13: no other metadata)
+### 3.2 Species — `src/lib/board-designer/species.ts` (exactly these 15; B13: no other metadata)
 
-`hard-maple` Hard Maple `#E7D3A9` · `walnut` Walnut `#4A3524` · `cherry` Cherry `#9C5A3C` · `white-oak` White Oak `#C6A67C` · `red-oak` Red Oak `#B4784F` · `sapele` Sapele `#7A3B26` · `purpleheart` Purpleheart `#5C3A6E` · `padauk` Padauk `#A8422A`
+`hard-maple` Hard Maple `#E7D3A9` · `walnut` Walnut `#4A3524` · `cherry` Cherry `#9C5A3C` · `white-oak` White Oak `#C6A67C` · `red-oak` Red Oak `#B4784F` · `sapele` Sapele `#7A3B26` · `purpleheart` Purpleheart `#5C3A6E` · `padauk` Padauk `#A8422A` · `yellowheart` Yellowheart `#C9A227` · `bloodwood` Bloodwood `#A01818` · `beech` Beech `#EBC889` · `ash` Ash `#CDBEA7` · `birch` Birch `#F1E3C4` · `hickory` Hickory / Pecan `#D2895D` · `bamboo` Bamboo `#EFAB76`
+
+Order is append-only after the original eight (Sprint 56, 2026-07-26). Ids are permanent (B14) — adding is safe; never remove or rename. Hexes are the output of a separation search over the full 15-species palette (min pairwise euclidean sRGB/255 distance **0.127**, matching the prior cherry/padauk floor). Botanically accurate candidates were rejected (min 0.047). Bamboo is a grass; the `WoodSpecies` type name is unchanged.
 
 Colors live in **TypeScript, never in `globals.css`** — a CSS custom property would have to exist in both `:root` and `.dark` or `tests/dark-theme.test.ts` fails, and these are pigment values, not theme tokens.
 

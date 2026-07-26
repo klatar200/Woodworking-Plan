@@ -1,6 +1,10 @@
 import type { WoodSpecies } from './types';
 
-/** Exactly eight species — ids are permanent (B14). Colors are pigment, not theme tokens. */
+/**
+ * Fifteen species — ids are permanent (B14). ADDING is safe; never remove or
+ * rename. Colors are pigment, not theme tokens. Bamboo is a grass; the
+ * `WoodSpecies` type name is unchanged (Sprint 56 — out of scope to rename).
+ */
 export const SPECIES: readonly WoodSpecies[] = [
   { id: 'hard-maple', name: 'Hard Maple', colorHex: '#E7D3A9' },
   { id: 'walnut', name: 'Walnut', colorHex: '#4A3524' },
@@ -10,6 +14,13 @@ export const SPECIES: readonly WoodSpecies[] = [
   { id: 'sapele', name: 'Sapele', colorHex: '#7A3B26' },
   { id: 'purpleheart', name: 'Purpleheart', colorHex: '#5C3A6E' },
   { id: 'padauk', name: 'Padauk', colorHex: '#A8422A' },
+  { id: 'yellowheart', name: 'Yellowheart', colorHex: '#C9A227' },
+  { id: 'bloodwood', name: 'Bloodwood', colorHex: '#A01818' },
+  { id: 'beech', name: 'Beech', colorHex: '#EBC889' },
+  { id: 'ash', name: 'Ash', colorHex: '#CDBEA7' },
+  { id: 'birch', name: 'Birch', colorHex: '#F1E3C4' },
+  { id: 'hickory', name: 'Hickory / Pecan', colorHex: '#D2895D' },
+  { id: 'bamboo', name: 'Bamboo', colorHex: '#EFAB76' },
 ] as const;
 
 const BY_ID = new Map(SPECIES.map((s) => [s.id, s]));

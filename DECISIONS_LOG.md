@@ -29,6 +29,7 @@
 - **Mobile-first is scoped to the PLANS side (2026-07-25):** browsing plans / cut lists / build steps stay mobile-first; the **designer is desktop-only authoring**, and a saved design's plan + cut list must be reachable on mobile. Narrows — does not reverse — the 2026-07-12 platform strategy. Gate on VIEWPORT WIDTH, never UA sniffing. B7 still holds: do not meet "cut list on mobile" by rendering `toParts()`.
 - **Designer desktop-gate copy + resize (2026-07-26):** two notice strings (new vs saved); WebGL never created below `lg`; unsaved draft stays mounted across resize (notice overlays, does not unmount). See dated entry.
 - **Designer undo/redo (2026-07-25):** table stakes, pulled out of U7 into its own sprint; replaces the template-replace confirm; in-memory only. Advanced templates + the wider "Canva-like" feature set are DEFERRED to their own conversations.
+- **Designer species expansion (2026-07-26):** append exactly seven ids after the original eight (yellowheart, bloodwood, beech, ash, birch, hickory, bamboo) with the stated hexes; min pairwise distance floor 0.127; B13/B14 hold; `schemaVersion` stays 1. See dated entry.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 
 _(Full history below, chronological.)_
@@ -1805,3 +1806,22 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 **WebGL:** "No editor chrome" below the gate means the WebGL context is **never created**, not CSS-hidden. Width check lives inside the already-`dynamic(..., { ssr: false })` canvas component so it cannot hydrate-mismatch. Acceptance: `document.querySelector('canvas') === null` below `lg`.
 
 **Resize / unsaved draft:** the gate is width-reactive. Keep the authoring form state **mounted** and show the notice over it (CSS hide), so dragging a desktop window below `lg` or rotating a tablet does **not** destroy an unsaved draft; widening restores the same in-memory board. Do not unmount the authoring tree on resize.
+
+### 2026-07-26 — Designer species expansion: seven append-only ids + hexes (Sprint 56)
+**Status:** Confirmed by Keagan.
+
+**Decision.** Append these seven to `SPECIES` **in this order**, after the existing eight. Do not extend, reorder-with-renaming, or edit the hexes without re-running the separation check:
+
+| id | name | colorHex |
+|---|---|---|
+| `yellowheart` | Yellowheart | `#C9A227` |
+| `bloodwood` | Bloodwood | `#A01818` |
+| `beech` | Beech | `#EBC889` |
+| `ash` | Ash | `#CDBEA7` |
+| `birch` | Birch | `#F1E3C4` |
+| `hickory` | Hickory / Pecan | `#D2895D` |
+| `bamboo` | Bamboo | `#EFAB76` |
+
+**Colour floor.** Hexes are the output of a separation search over the full 15-species palette (2026-07-26). Botanically accurate candidates were rejected (min pairwise euclidean sRGB/255 distance 0.047 — beech/ash). These values hold a **0.127** floor (same as the prior cherry/padauk closest pair). Changing a hex requires re-running that check and reporting the new minimum.
+
+**Binding constraints.** B14 (ids permanent — add only) · B13 (`{id,name,colorHex}` only) · `schemaVersion` stays 1 · do not rename `WoodSpecies` for bamboo · amend contract §3.2 from "exactly these 8" to the full fifteen.
