@@ -36,6 +36,11 @@ describe('board feet — making a volume something you can picture', () => {
     expect(isBoardFeetUnit(' Board Feet ')).toBe(true);
   });
 
+  it('formatBoardFeet rounds volume to designer precision (not sixteenths)', async () => {
+    const { formatBoardFeet } = await import('@/lib/format');
+    expect(formatBoardFeet(1.3880859374999999)).toBe('1.39');
+  });
+
   it('does NOT claim units that merely contain the word "board"', () => {
     // 2 plans quantify a material as plain "board" — a count of boards, not a volume.
     // Treating that as board feet would print a nonsense example beside a real number.

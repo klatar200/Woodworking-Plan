@@ -15,6 +15,11 @@ import {
 } from '@/lib/cut-optimizer';
 import { selectControl } from '@/lib/ui';
 
+/** Spoken article for N-ft stock — "an 8 ft", "a 6 ft". */
+function stockFtArticle(ft: number): 'a' | 'an' {
+  return ft === 8 || ft === 11 || ft === 18 ? 'an' : 'a';
+}
+
 /**
  * Desktop cut-plan panel (Sprint 64 / U6). Collapsed by default; not mounted on the
  * narrow surface — authoring already gates at 1024, and mobile keeps the print sheet.
@@ -94,7 +99,7 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
             className="rounded-[0.5rem] border border-danger bg-accent-tint p-[0.75rem] text-[0.9375rem]"
           >
             <strong>
-              Some parts do not fit on a {stockFt} ft board.
+              Some parts do not fit on {stockFtArticle(stockFt)} {stockFt} ft board.
             </strong>{' '}
             They are listed below and are not included in the board count. Pick a longer
             stock length, or plan to join them.
@@ -124,7 +129,9 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
                     each {formatInches(group.stockWidthIn)} board
                   </>
                 )}{' '}
-                · {yieldPct}% of the boards you buy used
+                {/* Relabel (Sprint 64 fix): yieldRatio numerator includes kerf + end trim
+                    (consumed sawdust), not just finished parts — "used" implied product. */}
+                · {yieldPct}% of each board consumed
               </p>
 
               {group.impossible.length > 0 && (

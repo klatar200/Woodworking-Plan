@@ -1,4 +1,4 @@
-import { formatInches } from '@/lib/format';
+import { formatInches, formatBoardFeet } from '@/lib/format';
 import type { BoardMetrics, Grain } from '@/lib/board-designer/types';
 
 export function MetricsPanel({
@@ -82,9 +82,4 @@ export function MetricsPanel({
       )}
     </section>
   );
-}
-
-function formatBoardFeet(value: number): string {
-  if (!Number.isFinite(value)) return '0';
-  return value.toFixed(value >= 10 ? 1 : 2);
 }

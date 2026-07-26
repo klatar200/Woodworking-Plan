@@ -171,7 +171,10 @@ export default async function BoardPlanPage({
           is worse than no buying list at all. */}
       {impossible && (
         <div className="notice notice-warning">
-          <strong>Some parts do not fit on a {stockLengthIn / 12} ft board.</strong> Pick a
+          <strong>
+            Some parts do not fit on{' '}
+            {stockLengthIn / 12 === 8 ? 'an' : 'a'} {stockLengthIn / 12} ft board.
+          </strong> Pick a
           longer board above, or plan to join them. They are listed with their groups
           below — they are <em>not</em> included in the board count.
         </div>
@@ -211,7 +214,7 @@ export default async function BoardPlanPage({
                   board — hiding it would be hiding the tool's own limitation. This is
                   the whole board you pay for: length offcut AND, when ripping, any rip
                   lane left empty both count against it. */}
-              {yieldPct}% of the boards you buy used
+              {yieldPct}% of each board consumed
             </p>
 
             {group.impossible.length > 0 && (

@@ -259,6 +259,19 @@ export function isBoardFeetUnit(unit: string): boolean {
 }
 
 /**
+ * Board-feet quantity for display — volume, not a tape dimension.
+ *
+ * Two decimal places below 10 (matches the designer metrics panel); one above.
+ * Render-seam only: shopping-list membership stores no snapshot, so rounding here
+ * keeps the list aligned with what the designer shows without mutating the float
+ * on read. Never use `formatInches` for board feet.
+ */
+export function formatBoardFeet(value: number): string {
+  if (!Number.isFinite(value)) return '0';
+  return value.toFixed(value >= 10 ? 1 : 2);
+}
+
+/**
  * Board feet → something you can picture on a rack, e.g. "about 21 ft of 3/4" × 6"
  * board".
  *
