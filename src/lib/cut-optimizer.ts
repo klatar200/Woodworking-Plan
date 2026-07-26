@@ -292,7 +292,7 @@ export function optimize(parts: Part[], options: OptimizerOptions): BoardGroup[]
           id: part.id,
           label: part.label,
           lengthIn: part.lengthIn,
-          reason: `Wider than the ${stockWidthIn}″ stock — it cannot be ripped from it.`,
+          reason: `Wider than the ${stockWidthIn}" stock — it cannot be ripped from it.`,
         })),
         boardFeet: 0,
         ripsPerBoard: 0,
@@ -327,7 +327,7 @@ export function optimize(parts: Part[], options: OptimizerOptions): BoardGroup[]
       boards: lanes,
       impossible: impossible.map((part) => ({
         ...part,
-        reason: `Longer than a ${options.stockLengthIn}″ board once the end trim is taken off.`,
+        reason: `Longer than a ${options.stockLengthIn}" board once the end trim is taken off.`,
       })),
       // Waste allowance applied HERE, not to the board count. You buy extra board FEET
       // to cover defects; you do not buy 15% of an extra board.
@@ -377,9 +377,14 @@ export function hasImpossibleParts(groups: BoardGroup[]): boolean {
  * a 3-of-4 rip reported ~95% when the truth was ~70%. Dividing by lanes BOUGHT makes both
  * the length offcut and the unused rip lane count against the yield.
  *
- * `usedIn` includes kerf and end trim — board you had to consume, not offcut — so a yield
- * of 1.0 means every inch of every lane you bought became a part or a necessary cut, with
- * nothing left over and no empty lane. Waste is 1 − yield.
+ * `usedIn` includes kerf and end trim — board you had to *consume*, not offcut —
+ * so a ratio of 1.0 means every inch of every lane you bought became a part or a
+ * necessary cut, with nothing left over and no empty lane. Waste is 1 − ratio.
+ *
+ * Sprint 64 fix: UI labels this "% of each board consumed", NOT "used". Kerf and
+ * end trim are sawdust (consumed), not product yield. The denominator is still
+ * physicalBoards × ripsPerBoard × stockLength (§7). Do not drop kerf/trim from
+ * the numerator — that would understate what the saw takes.
  */
 export function yieldRatio(group: BoardGroup, stockLengthIn: number): number {
   const purchasedLaneInches = group.physicalBoards * group.ripsPerBoard * stockLengthIn;

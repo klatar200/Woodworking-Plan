@@ -2,7 +2,13 @@ import Link from 'next/link';
 import { page, chip, chipActive, btnGhost } from '@/lib/ui'; // Sprint 29/30b
 import type { Metadata } from 'next';
 import { getShoppingList } from '@/lib/shopping-list';
-import { costTierSymbol, costTierForCents, slugify } from '@/lib/format';
+import {
+  costTierSymbol,
+  costTierForCents,
+  formatBoardFeet,
+  isBoardFeetUnit,
+  slugify,
+} from '@/lib/format';
 import { removeFromShoppingListAction } from '@/app/actions/shopping-list'; // Sprint 35
 
 /**
@@ -49,6 +55,13 @@ function CostNotice({ unpricedCount }: { unpricedCount: number }) {
   );
 }
 
+function formatQuantity(quantity: number, unit: string): string {
+  // Board feet: volume quantity at the render seam (Sprint 64 fix) — matches designer
+  // `formatBoardFeet`. Membership is not a snapshot; do not round in getShoppingList.
+  if (isBoardFeetUnit(unit)) return `${formatBoardFeet(quantity)} ${unit}`;
+  return `${quantity} ${unit}`;
+}
+
 function Line({
   line,
   keyPrefix,
@@ -71,7 +84,7 @@ function Line({
         />
         <label htmlFor={id} className="flex-1 cursor-pointer">
           <strong>
-            {line.quantity} {line.unit}
+            {formatQuantity(line.quantity, line.unit)}
           </strong>{' '}
           &mdash; {line.name}
           {line.species ? <span className="muted"> ({line.species})</span> : null}
@@ -81,6 +94,18 @@ function Line({
       </div>
     </li>
   );
+}
+
+/** "1 plan", "2 boards", "1 plan and 1 board" — designs are not plans. */
+function sourceSummary(
+  byPlan: { source: 'plan' | 'design' }[],
+): string {
+  const plans = byPlan.filter((s) => s.source === 'plan').length;
+  const boards = byPlan.filter((s) => s.source === 'design').length;
+  const parts: string[] = [];
+  if (plans > 0) parts.push(`${plans} ${plans === 1 ? 'plan' : 'plans'}`);
+  if (boards > 0) parts.push(`${boards} ${boards === 1 ? 'board' : 'boards'}`);
+  return parts.join(' and ');
 }
 
 export default async function ShoppingListPage({
@@ -114,7 +139,7 @@ export default async function ShoppingListPage({
         <>
           <p className="subtitle">
             {list.lineCount} {list.lineCount === 1 ? 'item' : 'items'} across{' '}
-            {list.planCount} {list.planCount === 1 ? 'plan' : 'plans'} &middot;{' '}
+            {sourceSummary(list.byPlan)} &middot;{' '}
             {/* A TIER, not a figure (DECISIONS_LOG.md 2026-07-13 — no dollar amounts in
                 the public UI). Still does the "don't expect a butcher block for $10" job,
                 without printing a number we'd only be pretending to know. */}
@@ -148,8 +173,8 @@ export default async function ShoppingListPage({
               are by unit, so there's no per-plan header to hang it on). This compact block lists
               the plans feeding the list and lets you drop one. no-print — paper doesn't need it. */}
           {view === 'merged' ? (
-            <section aria-label="Plans on this list" className="no-print mb-[1.5rem]">
-              <h2 className="sub-heading">Plans on this list</h2>
+            <section aria-label="On this list" className="no-print mb-[1.5rem]">
+              <h2 className="sub-heading">On this list</h2>
               <ul className="list-none p-0 m-0 flex flex-col gap-[0.5rem]">
                 {list.byPlan.map((plan) => (
                   <li
@@ -215,7 +240,7 @@ export default async function ShoppingListPage({
                           className="flex-1 cursor-pointer"
                         >
                           <strong>
-                            {line.quantity} {line.unit}
+                            {formatQuantity(line.quantity, line.unit)}
                           </strong>{' '}
                           &mdash; {line.name}
                           {line.species ? (
@@ -297,10 +322,10 @@ export default async function ShoppingListPage({
 
           {view === 'merged' ? (
             <p className="footnote">
-              Quantities are summed across plans. Consumables like glue, sandpaper and
-              finish are listed generically &mdash; buy the brand you like. Fasteners are
-              listed by exact size and are never combined, because a 1-1/4&Prime; screw is
-              not a 1-5/8&Prime; screw.
+              Quantities are summed across everything on this list. Consumables like glue,
+              sandpaper and finish are listed generically &mdash; buy the brand you like.
+              Fasteners are listed by exact size and are never combined, because a
+              1-1/4&Prime; screw is not a 1-5/8&Prime; screw.
             </p>
           ) : null}
         </>

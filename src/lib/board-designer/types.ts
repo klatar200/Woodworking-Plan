@@ -23,6 +23,8 @@ export interface Miter {
 
 export interface Strip {
   id: string;
+  /** Optional shop-friendly row label. Empty/blank labels are omitted on save. */
+  label?: string;
   speciesId: string;
   widthIn: number;
   repeat: number;

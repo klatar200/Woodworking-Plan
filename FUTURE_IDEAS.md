@@ -20,4 +20,11 @@
 - Catalog audit & enrichment pass over `content/plans/*.json` — the one live piece = re-publish the 489 hidden Kreg plans once a 2nd cut-list parse fills empty `cutList` (tracked in BUILD_PLAN follow-ups + CLAUDE.md §6). Briefs `PLAN_AUDIT_BRIEF.md`/`step-detail-rewrite-sample.md` removed 2026-07-24.
 - Step-detail depth rewrite (content pass to "buildable by reading alone"; runtime `src/lib/step-format.ts` already improves presentation). Sample removed, in git history.
 
+## Parked 2026-07-26 (designer shell track — out of Sprints 67–72)
+Explicitly deferred when commissioning BUILD_PLAN Sprints 67–72. Do not fold into the shell/IA work.
+- **Site-wide profile unit-of-measure (in/mm/cm)** — conflicts with settled “metric deferred” (2×4 doesn't convert honestly); designer keeps inch-canonical storage + per-field unit labels (Sprint 70) only.
+- **In-app multi-design tabs** — browser tabs + “Save a copy” (Sprint 72) cover v1; in-app tab strip needs dirty-state/history product design first.
+- **Designer share links** — still deferred (was post-U7).
+- **Custom / user-defined species** — still deferred (palette + contrast floor).
+
 Revisit any: Keagan adds it to BUSINESS_PLAN himself.

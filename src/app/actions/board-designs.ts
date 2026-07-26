@@ -11,8 +11,14 @@ import {
   noticeUrl,
   DESIGN_TOO_LARGE_NOTICE_VALUE,
 } from '@/lib/rate-limit-feedback';
+import { copyDesignName } from '@/lib/board-designer/copy-name';
 import { parseConfig } from '@/lib/board-designer/serialize';
-import { createDesign, updateDesign, deleteDesign } from '@/lib/board-designs';
+import {
+  createDesign,
+  getDesign,
+  updateDesign,
+  deleteDesign,
+} from '@/lib/board-designs';
 import { MAX_CONFIG_BYTES } from '@/lib/board-designer/config-limits';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
@@ -96,4 +102,47 @@ export async function deleteBoardDesignAction(formData: FormData): Promise<void>
 
   revalidatePath('/designer/library');
   redirect(bounceTarget(formData, '/designer/library'));
+}
+
+/**
+ * Sprint 72 — clone current in-memory (dirty) config to a new BoardDesign.
+ * Enabled only when a saved designId exists; original last-saved row untouched.
+ */
+export async function copyBoardDesignAction(formData: FormData): Promise<void> {
+  if (!(await checkRateLimit('create'))) redirect(denialTarget(formData, FALLBACK));
+
+  const designId = formString(formData, 'designId');
+  if (designId === null) redirect(bounceTarget(formData, FALLBACK));
+
+  const parsed = parseConfigField(formData);
+  if (!parsed.ok) bounceParseFailure(formData, `/designer/${designId}`, parsed);
+
+  // Ownership gate — UI requires a saved id; forged POSTs must not create orphans.
+  let owned = false;
+  await guardAction(
+    getDesign(designId).then((row) => {
+      owned = row !== null;
+    }),
+    formData,
+    `/designer/${designId}`,
+  );
+  // Unowned / missing source → library entry, not a forged returnTo detail URL.
+  if (!owned) redirect(FALLBACK);
+
+  const config: BoardDesignConfig = {
+    ...parsed.config,
+    name: copyDesignName(parsed.config.name),
+  };
+
+  let newId: string | null = null;
+  await guardAction(
+    createDesign(config).then((design) => {
+      newId = design.id;
+    }),
+    formData,
+    `/designer/${designId}`,
+  );
+
+  revalidatePath('/designer/library');
+  redirect(newId ? `/designer/${newId}` : bounceTarget(formData, `/designer/${designId}`));
 }

@@ -32,6 +32,7 @@
 - **Designer species expansion (2026-07-26):** append exactly seven ids after the original eight (yellowheart, bloodwood, beech, ash, birch, hickory, bamboo) with the stated hexes; min pairwise distance floor 0.127; B13/B14 hold; `schemaVersion` stays 1. See dated entry.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
+- **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs; inactive **mounted/hidden**); tab badges; Reset + shopping list; Pattern = row pattern only; grain→edge switches tab to Templates; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy = dirty config, name `Copy of {name}` → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. Agent contract in BUILD_PLAN §4. See dated entries.
 
 _(Full history below, chronological.)_
 
@@ -1836,6 +1837,7 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 
 **Naming.** Unit `"board feet"` (preferred `BOARD_FEET_UNITS` spelling). Name = species display name; `species` null (catalog column always null). Kreg catalog uses unit `"board"` for piece counts — different semantic; exact matcher must not be loosened.
 
+<<<<<<< HEAD
 ### 2026-07-26 — Designer upgrade programme: four decisions (COMPETITIVE_AUDIT_CBD.md)
 **Status:** Confirmed by Keagan. Source: audit of cuttingboarddesigner.com (owner granted permission to use observed data; behaviour/algorithms/constants only, **not** assets).
 
@@ -1877,3 +1879,56 @@ Consequences, accepted:
 **D8 — Cadence.** Consecutive designer sprints (65 onward) as one programme.
 
 **Still open:** none blocking. ESC-7 (metric) closed as already-decided — BUILD_PLAN §4 line 72 and FUTURE_IDEAS line 11 both rule it out; A6/C19 → DO-NOT-BUILD.
+=======
+### 2026-07-26 — Designer shell & IA track (Sprints 67–72)
+**Status:** Confirmed by Keagan (answers to clarifying Q1–Q14).
+
+**Decision.** Commission BUILD_PLAN Sprints 67–72 to relayout the desktop designer. **Data parity is binding:** Metrics, Cut plan, Row pattern, Settings, panel, and strip fields are relocated/repacked only — none removed or replaced by summary-only UI. Optional summary chips may be additive.
+
+**Layout / chrome**
+1. Dock tab bodies = **full** current panel content in a scroll region (not summary-only).
+2. Warnings / impossible-parts alerts appear **only when that tab is active** (no cross-tab alert chip).
+3. Kerf, waste %, panel length / slice thickness live in a **Board settings** disclosure on the top bar (with unit labels); name + grain + finished-size summary stay visible in the bar.
+4. **Pattern** tab = **Row pattern editor only**; strip/panel editing stays in the right rail. Hide or inert the Pattern tab for edge grain.
+5. Multi-panel end grain = Photoshop-style **panel folders** with nested strips in the directory.
+6. Sticky block = **preview + dock together**. Each dock card scrolls internally when its content exceeds the visible budget inside that sticky column.
+7. Cut plan **starts expanded** inside its tab (tab selection implies intent).
+8. Default dock tab = **Pattern if end grain, else Templates**.
+9. 2D rotate is **view-only** (0/90/180/270 display); does not mutate design orientation / strip order. **3D remains the default** preview (BUSINESS_PLAN differentiator).
+10. **Save a copy** creates a new `BoardDesign` from the **current in-memory (dirty) config** and navigates to `/designer/[newId]`; the original row’s last-saved config is untouched. (Confirmed dirty-A 2026-07-26.)
+11. Strip **labels optional**; fallback `Strip n` / species display.
+12. Track is **desktop `lg+` only**; narrow/mobile stays Sprint 54 read-only plan/cut list.
+13. Deferred to FUTURE_IDEAS (do not build in 67–72): site-wide profile UOM · in-app multi-design tabs · designer share links · custom species.
+14. No field retirement.
+
+**Preview cap.** Preview column max-width ~1200px **and** max-height ~50–55vh so the dock remains usable; surplus viewport **width** widens the strip/editor rail. Dock tab panels `min-height` ≥ ~12rem with internal scroll.
+
+**Not commissioned:** dark-theme re-palette (still separate).
+
+### 2026-07-26 — Designer shell quality amendments (post-audit)
+**Status:** Confirmed by Keagan (Save-a-copy dirty-A; apply audit amendments A–I).
+
+**Amendments to the 67–72 commission:**
+- **A.** No stub/empty dock tab bodies on `main` — full panels stay mounted from Sprint 67.
+- **B.** Preview height-capped (~50–55vh) + dock `min-height` ≥ ~12rem; per-tab internal scroll inside sticky budget.
+- **C.** Metrics / Cut plan **tab badges** when warnings / impossible parts exist (alert **copy** still only inside the tab — honors 2B).
+- **D.** Top bar keeps **Reset** and **Add to shopping list** (saved designs).
+- **E.** Sprint 69 owns panel add/delete/label/thickness on folder headers.
+- **F.** Save a copy = **current dirty config** → new design → navigate (original last-saved unchanged).
+- **G.** Sprint 71: Export PNG must work in 2D (or be explicitly disabled with reason).
+- **H.** Mandated parity test (68+) · per-sprint browser DoD · First Load must not pull three.js into initial chunk · dock tab a11y.
+- **I.** Track density/IA DoD = through Sprint **70**; 71–72 are feature closes.
+
+
+### 2026-07-26 — BUILD_PLAN §4 67–72 agent-contract rewrite
+**Status:** Process/docs only (Keagan: agent-optimized, non-redundant, no behavior change to settled calls).
+
+**Change.** `BUILD_PLAN.md` Sprints 67–72 rewritten as agent contract: INVARIANTS · HARD_STOP · PRESERVE_BEHAVIORS · PARITY_INVENTORY · per-sprint DO/DONT/ACCEPT. Ambiguity removed: Save a copy disabled when `designId==null`; 67=sole relocate; 68=dock behavior+parity test only. Settled product answers (Q1–Q14 + dirty-A + amendments A–I) unchanged.
+
+### 2026-07-26 — Designer shell follow-ups (name / dock mount / grain→tab)
+**Status:** Confirmed by Keagan (1A · 2A · 3A).
+
+1. **Save a copy name:** `Copy of {current name}`, trimmed to max 80.
+2. **Grain Edge while Pattern tab active:** auto-select Templates (Pattern hidden for edge).
+3. **Inactive dock tabs:** stay **mounted**, hide inactive — preserves Cut plan stock L/W local state.
+>>>>>>> ff5eb816d4650df90037b2268557c5c2178c6da9

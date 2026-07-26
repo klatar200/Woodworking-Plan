@@ -2,11 +2,38 @@ import { KERF_OPTIONS_IN } from '@/lib/cut-optimizer';
 import { btnGhost, btnPrimary, selectControl } from '@/lib/ui';
 import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
 import type { ChangeEvent, ReactNode } from 'react';
+import { FieldHint } from './field-hint';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
 
-export function BoardSettings({
+/** Top-bar grain toggle (Sprint 67). */
+export function BoardGrainToggle({
+  grain,
+  onChange,
+}: {
+  grain: Grain;
+  onChange: (grain: Grain) => void;
+}) {
+  return (
+    <fieldset className="m-0 flex flex-wrap items-center gap-[0.5rem] border-none p-0">
+      <legend className="sr-only">Grain</legend>
+      <GrainButton grain="edge" active={grain === 'edge'} onClick={() => onChange('edge')}>
+        Edge
+      </GrainButton>
+      <GrainButton grain="end" active={grain === 'end'} onClick={() => onChange('end')}>
+        End
+      </GrainButton>
+    </fieldset>
+  );
+}
+
+/**
+ * Board settings disclosure for top bar (Sprint 67).
+ * Kerf / waste % / panel length / slice thickness — unit suffixes on controls.
+ * Name + grain live in the top bar, not here.
+ */
+export function BoardSettingsDisclosure({
   config,
   onChange,
   onCommitCoalesce,
@@ -16,45 +43,17 @@ export function BoardSettings({
   onCommitCoalesce: () => void;
 }) {
   return (
-    <section className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
-      <h2 className="!mt-0 text-[1.125rem]">Settings</h2>
-
-      <div className="grid gap-[0.875rem]">
-        <label className="grid gap-[0.375rem]">
-          <span className="text-[0.875rem] font-bold">Name</span>
-          <input
-            className={inputControl}
-            name="name"
-            value={config.name}
-            maxLength={80}
-            onChange={(event) => onChange({ name: event.currentTarget.value })}
-            onBlur={() => onCommitCoalesce()}
-          />
-        </label>
-
-        <fieldset className="m-0 border-none p-0">
-          <legend className="mb-[0.375rem] text-[0.875rem] font-bold">Grain</legend>
-          <div className="flex flex-wrap gap-[0.5rem]">
-            <GrainButton
-              grain="edge"
-              active={config.grain === 'edge'}
-              onClick={() => onChange({ grain: 'edge' })}
-            >
-              Edge grain
-            </GrainButton>
-            <GrainButton
-              grain="end"
-              active={config.grain === 'end'}
-              onClick={() => onChange({ grain: 'end' })}
-            >
-              End grain
-            </GrainButton>
-          </div>
-        </fieldset>
-
+    <details className="relative">
+      <summary
+        className={`${btnGhost} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+      >
+        Board settings
+      </summary>
+      <div className="absolute right-0 z-[2] mt-[0.5rem] grid w-[min(100vw-2rem,22rem)] gap-[0.875rem] rounded-[0.75rem] border border-border bg-surface p-[1rem] shadow-e2">
         {config.grain === 'edge' && (
           <NumberField
-            label="Panel length"
+            label="Panel length (in)"
+            hint="Usable source board length before strips are laid out."
             name="sourceLengthIn"
             value={config.sourceLengthIn}
             min={1}
@@ -66,7 +65,8 @@ export function BoardSettings({
 
         {config.grain === 'end' && (
           <NumberField
-            label="Slice thickness"
+            label="Slice thickness (in)"
+            hint="Thickness of each end-grain slice after glue-up."
             name="sliceThicknessIn"
             value={config.sliceThicknessIn}
             min={0.25}
@@ -77,7 +77,8 @@ export function BoardSettings({
         )}
 
         <label className="grid gap-[0.375rem]">
-          <span className="text-[0.875rem] font-bold">Kerf</span>
+          <span className="text-[0.875rem] font-bold">Kerf (in)</span>
+          <FieldHint>Blade kerf is material removed by the saw cut, in inches.</FieldHint>
           <select
             className={`${selectControl} w-full`}
             name="kerfIn"
@@ -93,7 +94,8 @@ export function BoardSettings({
         </label>
 
         <label className="grid gap-[0.375rem]">
-          <span className="text-[0.875rem] font-bold">Waste allowance</span>
+          <span className="text-[0.875rem] font-bold">Waste allowance (%)</span>
+          <FieldHint>Extra % of board feet added for mistakes/defects.</FieldHint>
           <input
             className={inputControl}
             name="wasteFactor"
@@ -102,12 +104,14 @@ export function BoardSettings({
             max={100}
             step={1}
             value={Math.round(config.wasteFactor * 100)}
-            onChange={(event) => onChange({ wasteFactor: boundedNumber(event, 0, 100) / 100 })}
+            onChange={(event) =>
+              onChange({ wasteFactor: boundedNumber(event, 0, 100) / 100 })
+            }
             onBlur={() => onCommitCoalesce()}
           />
         </label>
       </div>
-    </section>
+    </details>
   );
 }
 
@@ -137,6 +141,7 @@ function GrainButton({
 
 function NumberField({
   label,
+  hint,
   name,
   value,
   min,
@@ -145,6 +150,7 @@ function NumberField({
   onCommitCoalesce,
 }: {
   label: string;
+  hint: string;
   name: string;
   value: number;
   min: number;
@@ -155,6 +161,7 @@ function NumberField({
   return (
     <label className="grid gap-[0.375rem]">
       <span className="text-[0.875rem] font-bold">{label}</span>
+      <FieldHint>{hint}</FieldHint>
       <input
         className={inputControl}
         name={name}

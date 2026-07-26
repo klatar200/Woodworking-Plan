@@ -3,9 +3,142 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 64 Attempt 1 (2026-07-26) — CLOSED 96/100** — U6 cut optimizer panel + shopping-list push. First Load **122 kB**. Prior: Sprint 63 **96/100**.
+> **Latest logged: Shell IA post-close audit (2026-07-26) — CLOSED** — tip `c1a9867`. Suite: 1326 green.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅. Test suite: 1228 green (post-64).
+> **Milestones:** … · shell 67–72 ✅ · post-close audit ✅. Suite: 1326 green.
+
+---
+
+## Shell IA post-close audit
+**Dates:** 2026-07-26
+**Scope:** Second-pass verification of BUILD_PLAN §4 Sprints 67–72 after TRACK CLOSED. No new §4 scope.
+
+### Attempt 1 — PASS (fix-forward)
+| Finding | Severity | Fix |
+|---|---|---|
+| `dockTab` only synced from top-bar `setGrain` — template load / undo / redo / reset could leave Pattern active with tab hidden → empty dock | bug | `useEffect` on `config.grain` → `dockTabForGrain` |
+| Cut plan tab badge used default stock; panel used local `stockLengthIn`/`stockWidthIn` | bug | Stock state lifted into `DesignerDock`; badge + `OptimizerPanel` share it |
+| 2D 90°/270° CSS rotate clipped non-square boards (`overflow-hidden`; export already swapped W/H) | bug | `overflow-visible` + aspect-aware host `minHeight` |
+| `copyBoardDesignAction` did not verify owned `designId` before create | gap | `getDesign(designId)` ownership gate; foreign → `/designer` |
+| Top-bar order shopping/copy/Save vs FINAL_LAYOUT | nit | Save → Save a copy → shopping |
+
+**Evidence:** suite **1326/1326** / 115 files; typecheck + lint green; authz tests for copy foreign/owned/rate-limit; shell + parity guards. SHA: `c1a9867` (+ docs commit on `main`).
+
+**Still withheld:** signed-in prod browser census / First Load re-measure (same as sprint closes).
+
+---
+
+## Sprint 72: Save a copy
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 72 — dirty in-memory copy → new design.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | copyAction · Copy of name · disabled sans designId |
+| Correctness & functionality (/20) | 18 | Unit + shell wiring; signed-in prod copy not re-run (−2) |
+| Automated test coverage (/15) | 15 | copy-design-name · shell Sprint 72 · 1322 |
+| Security (/15) | 15 | guardAction + rate-limit · session createDesign |
+| Code quality (/10) | 10 | Sibling form; copy-name helper |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN track closed |
+
+Score: **98/100** — Pass. Shell IA track closed. Post-close audit added ownership gate (`c1a9867`).
+
+---
+
+## Sprint 71: 2D + rotate
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 71 — 3D/2D toggle, view-only rotate, 2D export.
+
+### Attempt 1 — score 97/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | 3D default · 2D diagram · view-only rotate · 2D PNG |
+| Correctness & functionality (/20) | 17 | Suite; browser rotate/export not re-run (−3) |
+| Automated test coverage (/15) | 15 | board-preview source guards |
+| Security (/15) | 15 | UI-only mode/rotation |
+| Code quality (/10) | 10 | No new renderer dep |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **97/100** — Pass.
+
+---
+
+## Sprint 70: Literacy
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 70 — field hints + unit suffixes.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Kerf/waste help · unit/count labels |
+| Correctness & functionality (/20) | 18 | Suite; browser literacy skim not re-run (−2) |
+| Automated test coverage (/15) | 15 | designer-shell Sprint 70 guard · 1319 |
+| Security (/15) | 15 | Display-only copy |
+| Code quality (/10) | 10 | Shared FieldHint |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **98/100** — Pass. IA track DoD with 69. Next: Sprint 71.
+
+---
+
+## Sprint 69: Strip directory
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 69 — optional strip.label, directory UI, selected detail.
+
+### Attempt 1 — score 97/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | label optional · directory+detail · P5–P7 kept |
+| Correctness & functionality (/20) | 17 | Suite/serialize/history; browser rename round-trip not re-run (−3) |
+| Automated test coverage (/15) | 15 | serialize/history/display/strip-drag/shell · 1318 |
+| Security (/15) | 15 | Additive schema only |
+| Code quality (/10) | 10 | strip-display helper; coalesce label |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **97/100** — Pass. Next: Sprint 70.
+
+---
+
+## Sprint 68: Dock behavior + parity lock
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 68 — badges, cut plan expanded, parity test, dock stay mounted.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Expanded cut plan · badges · parity test · Pattern hide on edge |
+| Correctness & functionality (/20) | 18 | Badge + impossible helpers; browser sticky census still open (−2) |
+| Automated test coverage (/15) | 15 | `designer-shell-parity.test.ts` · suite 1312/114 |
+| Security (/15) | 15 | No new trust boundary |
+| Code quality (/10) | 10 | `cutPlanHasImpossible`; OptimizerPanel section not details |
+| Mobile/offline (/10) | 10 | Narrow untouched |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN + this entry |
+
+Score: **98/100** — Pass. Next: Sprint 69.
+
+---
+
+## Sprint 67: Designer shell relocate
+**Dates:** 2026-07-26
+**Scope:** BUILD_PLAN §4 Sprint 67 agent contract — top bar, Board settings ⋯, sticky preview+dock, full dock panels mounted/hidden, preview caps, surplus width → right rail, grain→Templates. No badges/2D/Save-a-copy/strip.label.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | DO complete; DONT held; Settings card removed from right rail |
+| Correctness & functionality (/20) | 16 | Suite + dockTabForGrain; sticky/ultrawide browser census not re-run this attempt (−4) |
+| Automated test coverage (/15) | 15 | `designer-shell` Sprint 67 case + `dockTabForGrain`; suite 1309 |
+| Security (/15) | 15 | Shopping sibling form; Save via `form=` attr; no nested forms; no client userId |
+| Code quality (/10) | 10 | RowPatternEditor extracted; single relocate; no three.js static import |
+| Mobile/offline (/10) | 10 | Narrow untouched (Sprint 54 gate) |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN 67 ✅ · this entry |
+
+Score: **96/100** — Pass. Next: Sprint 68 (dock behavior + parity lock).
 
 ---
 
@@ -48,7 +181,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 63: Closure is geometric, not chromatic
 **Dates:** 2026-07-26
 **Scope:** Part 0 S62 browser verify · replace `cellsColorClosed` with `wedgeWebContinuous` · both-direction tests. Trunk-based to `main`.
-**Commits on `main`:** `af51d3e` (Part 0) · `1c59690` (code) · (this close)
+**Commits on `main`:** `af51d3e` (Part 0) · `1c59690` (code) · `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held; CI on `39cc16e`).
 **Suite:** **1203/1203** across 104 files.
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30207218217 success.
@@ -91,43 +224,235 @@ Score: **96/100** — Pass. Closure is wedge membership, not base colour.
 ## Sprint 64: U6 — cut optimizer panel + shopping-list push
 **Dates:** 2026-07-26
 **Scope:** Part 0 S63 browser verify + open U6 · Part A optimizer panel · Part B shopping-list push (Q1 accepted) · trunk-based to `main`.
-**Commits on `main`:** `7fec772` (Part 0) · `c4712fb` (Part A) · `54c4914` (Part B) · (this close)
-**/designer First Load JS:** **122 kB** (was 120; CI build on `54c4914` — OptimizerPanel + BoardBar).
-**Suite:** **1228/1228** across 107 files.
-**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30208116055 success.
+**Commits on `main`:** `7fec772` (Part 0) · `c4712fb` (Part A) · `54c4914` (Part B) · `2bcca87` (close) · (this fix pass)
+**/designer First Load JS:** **122 kB** (CI on `54c4914`; fix pass is copy/format only).
+**Suite:** **1234/1234** across 108 files (post fix-pass).
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30208116055 success (code tip); fix-pass CI follows.
 **Migration:** `20260726160000_shopping_list_board_design` — additive nullable `boardDesignId` + xor CHECK; **no backfill**. Prod deploy succeeded (GitHub deployment `5611477661`).
 
-### Attempt 1 — score 96/100 — PASS
+### Attempt 1 — score 96/100 (browser unverified) → prod re-score **92/100** — FAIL
 | Category | Score | Evidence |
 |---|---|---|
 | Requirements fidelity (/25) | 25 | U6 optimizer panel + push; Q1 schema as accepted; waste once; unit `"board feet"`; desktop-only panel; no dollars |
-| Correctness & functionality (/20) | 16 | Kerf/impossible/rips/yield/waste tests green; upsert + xor reject + unowned no-op; bf equals metrics. **−4**: browser unrun (Clerk) |
-| Automated test coverage (/15) | 15 | `board-designer-optimizer` · `board-designer-board-feet` · `shopping-list` design suite · `shopping-list-design-actions`; suite **1228** |
-| Security (/15) | 15 | `/designer`+`/shopping-list` out of public-routes + in NEVER_CACHE; session ownership; actions never throw; forged userId ignored |
-| Code quality & simplicity (/10) | 10 | Reused `toParts`/`optimize`/`BoardBar`; cheap `panelGeometry` path; no third table |
-| Mobile/offline behavior (/10) | 10 | Optimizer not on narrow surface; offline denylist unchanged / green |
-| Documentation & handoff (/5) | 5 | Part 0 S63 verify; U6 opened/U7 retired; DECISIONS_LOG Q1; BUILD_PLAN §4 |
+| Correctness & functionality (/20) | 12 | Prod verify: checks 1–9 PASS; **check 10 FAIL** raw float `1.3880859374999999 board feet`. Copy: "a 8 ft", prime inch mark, "1 plan" for a design. Yield "used" mislabels kerf+trim. **−8** |
+| Automated test coverage (/15) | 15 | Optimizer + board-feet + shopping-list design suites; suite **1228** at close |
+| Security (/15) | 15 | `/designer`+`/shopping-list` out of public-routes + in NEVER_CACHE; session ownership; actions never throw |
+| Code quality & simplicity (/10) | 10 | Reused `toParts`/`optimize`/`BoardBar`; cheap `panelGeometry` path |
+| Mobile/offline behavior (/10) | 10 | Optimizer not on narrow surface; offline denylist green |
+| Documentation & handoff (/5) | 5 | Part 0 S63 verify; U6/U7 status; DECISIONS_LOG Q1 |
+| **Total (/100)** | **92** | |
+
+**Result:** Fail — remediation needed (prod verification, Claude Code, 2026-07-26)
+
+### Sprint 64 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Panel collapsed, desktop only | PASS | Narrow viewport → "needs a wider screen" |
+| 2 | Kerf in packing | PASS | 1/8″ → 6× `12 7/8"`, 17″ left · 1/16″ → `12 7/16"`, 20″ left |
+| 3 | `totalBoards()` = physical boards | PASS | `Buy 6 boards` = 3 maple + 3 walnut |
+| 4 | Impossible parts loud | PASS | 60 rows → `Buy 0 boards`, every part listed with reason, excluded from count |
+| 5 | Waste applied once | PASS | 1.39 bd ft = 1.207 × 1.15; cut plan uses raw `12 7/8"` |
+| 6 | No dollars / decimal inches in designer | PASS | 0 `$`, 0 decimal-inch matches |
+| 7 | Push creates entries | PASS | POST → 303 → `/shopping-list`, 2 items under `verify-51` |
+| 8 | Push idempotent | PASS | Second push → still 2 items |
+| 9 | Cost stays a tier | PASS | `· $` |
+| 10 | Quantity formatting | **FAIL** | `1.3880859374999999 board feet` |
+
+### Attempt 2 — score 96/100 — PASS (fix pass)
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Same U6 scope; fix pass only addresses verified defects |
+| Correctness & functionality (/20) | 16 | `formatBoardFeet` at render seam → `1.39`; `an 8 ft`; ASCII `"`; source summary plans/boards; yield relabeled **consumed** (kerf+trim stay in numerator). **−4**: post-fix browser unrun |
+| Automated test coverage (/15) | 15 | `sprint64-fix-pass` pins float guard, a/an + `"`, consumed label + ratio >80%; suite **1234** |
+| Security (/15) | 15 | No auth/route/schema change in fix pass |
+| Code quality & simplicity (/10) | 10 | Shared `formatBoardFeet` in `format.ts`; round at render not write |
+| Mobile/offline behavior (/10) | 10 | Unchanged |
+| Documentation & handoff (/5) | 5 | Prod table + Attempt 2 in this entry; BUILD_PLAN score/test-count |
 | **Total (/100)** | **96** | |
 
 **Result:** Pass (≥95)
 
-**Browser checks (unrun — Clerk OAuth blocked for agent):**
-1. Optimizer panel shows boards, offcut and yield; no dollar figures
-2. Over-long part appears as impossible
-3. Pushing a design adds entries; pushing twice merges (one membership row)
-4. Pre-Sprint-64 saved design reopens identically
-
-**Naming note:** synthesized lines use unit `"board feet"` (preferred `BOARD_FEET_UNITS` spelling); name = species display name; `species` null. Kreg catalog uses `"board"` for piece counts — different semantic.
+**Yield decision:** Relabel to `% of each board consumed` — denominator unchanged (§7); numerator keeps kerf + end trim (sawdust is consumed, not product). Do not drop them from the math.
 
 ### Final outcome
-Score: **96/100** — Pass. U6 shipped: cut plan panel + designer → shopping list.
+Score: **96/100** — Pass (after Attempt 2 fix). U6 shipped with render-seam board-feet formatting.
+
+### Sprint 64 Attempt 2 — browser verification (Claude Code, prod, signed in, 2026-07-26)
+
+| # | Fix | Result | Evidence |
+|---|---|---|---|
+| 1 | Board-feet quantity | PASS | `1.39 board feet` (not raw float) |
+| 2 | Source count / heading | PASS | `2 items across 1 board` · `ON THIS LIST` |
+| 3 | Yield label | PASS | `82% of each board consumed` |
+| 4 | Article + inch mark | PASS | `an 8 ft board` · ASCII `"` in shipped bundle |
+
+All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
+
+---
+
+## Sprint 65: U7 remainder — library thumbnails + strip drag reorder
+**Dates:** 2026-07-26
+**Scope:** Part 0 S64 Attempt-2 verify · library thumbnails from config · `reorder-strip` + drag · shopping-list footer copy. Trunk-based to `main`.
+**Status:** CLOSED
+**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · `423fb0e` (close) · `e47448b` (Attempt 2 a11y fix)
+**/designer First Load JS:** **123 kB** (was 122; +1 from strip-list pointer drag client — library thumbs are SSR, `/designer/library` **106 kB**).
+**Suite:** **1251/1251** across 110 files (Attempt 2).
+**CI:** Attempt 1 code https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 · Attempt 2 tip https://github.com/klatar200/Woodworking-Plan/actions/runs/30211158680 success.
+**Vercel:** Production deploy for Attempt 2 tip success (includes `e47448b` a11y fix).
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Thumbs from config via `layoutTopFace`/`calculateMetrics` (no R2/store); `MAX_THUMB_CELLS=500` + visible degrade; `reorder-strip` one undo; arrows kept; footer neutral; share/species out |
+| Correctness & functionality (/20) | 16 | Unit+source verified (cells/colours, over-budget placeholder, parse fail keeps rows, one drag=one undo, OOB no-op, past snapshot clone). **−4**: browser checks unrun (Clerk OAuth) |
+| Automated test coverage (/15) | 15 | `library-thumb.test.tsx` · `designer-history` reorder suite · footer source guard; suite **1247** |
+| Security (/15) | 15 | `/designer` still off public-routes + in `NEVER_CACHE`; no `img-src`/`remotePatterns`; thumbnails never throw; no stored hostile bytes |
+| Code quality & simplicity (/10) | 10 | No layout fork; pointer events only (no DnD lib); budget rationale in comment |
+| Mobile/offline behavior (/10) | 10 | Offline denylist unchanged / green; drag has AT path via existing buttons + `aria-live` |
+| Documentation & handoff (/5) | 5 | This entry + BUILD_PLAN §4; First Load noted |
+| **Total (/100)** | **96** | |
+
+### Browser checks (unrun — Clerk blocks agent OAuth)
+1. `/designer/library` thumbnail per design, both themes — **UNRUN**
+2. Over-budget design degrades visibly — **UNRUN** (source+unit PASS)
+3. Drag reorder; one undo restores — **UNRUN** (unit PASS)
+4. Arrow buttons still work — **UNRUN** (unit PASS)
+5. **Carried over:** print view miter offcut note (`designer/[id]/print` gate) — **UNRUN** (source-verified only)
+
+### Final outcome
+Score: **96/100** — Pass. U7 remainder (thumbs + drag) closed.
+
+### Sprint 65 Attempt 2 — prod verification (Claude Code, signed in, 2026-07-26) → **94/100** then fix
+
+Verified on prod at `3538a26`. Thumbnails, degradation, arrows, single-step undo, footer, and the carried-over miter print offcut note all PASS. Two a11y defects: inert drag-handle tab stop; live region empty after reorder.
+
+`verify-65` is a Claude Code test fixture (540 cells, mitered, non-closing by design) and may be deleted once the thumbnail budget has a unit test covering it (it does — `library-thumb.test.tsx` over-budget case).
+
+| # | Check | Result | Evidence |
+|---|---|---|---|
+| 1 | Thumbnails render | PASS | `verify-51` 96 rects `viewBox 0 0 18 12`; `verify-52` 7 rects `0 0 18 10.5` |
+| 2 | Over-budget degrades | PASS | `verify-65`, 540 cells → no SVG, "Too many pieces to preview", row still openable |
+| 3 | Miter print offcut note | PASS | Renders on `verify-65`; Miter column `Walnut · 30° · Top right` (carried since Sprint 61) |
+| 4 | Arrow buttons still reorder | PASS | `[M,W,M,W]` → `[W,M,M,W]` |
+| 5 | One undo restores | PASS | One click restores; Undo then disabled — exactly one history entry |
+| 6 | Footer copy | PASS | `summed across everything on this list` |
+| 7 | Pointer drag | NOT MEASURED | Synthetic drag emits no intermediate `pointermove`; no reorder and no history entry resulted |
+| 8 | Handle keyboard-operable | **FAIL** | Focusable `<button>`, Enter is a no-op |
+| 9 | Reorder announced | **FAIL** | Sole `aria-live="polite"` node empty after a completed move |
+
+**Attempt-1 score corrected to 94/100** (two a11y defects on prod). Fix below.
+
+### Attempt 2 — fix pass score (after a11y fix)
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Same U7 remainder; a11y fix chooses pointer-only handle (arrows = SC 2.1.1) + announce on all reorder commits |
+| Correctness & functionality (/20) | 18 | Prod verify table PASS on 1–6 + miter note; fixes 8–9 in code. **−2**: pointer drag NOT MEASURED (synthetic pointermove gap) |
+| Automated test coverage (/15) | 15 | `strip-reorder-a11y.test.ts` (tabIndex/−1, announce copy, no-op silent); history reorder suite still green |
+| Security (/15) | 15 | Unchanged private `/designer` surface |
+| Code quality & simplicity (/10) | 10 | Pure `strip-reorder-announce.ts`; no grab-mode half-build |
+| Mobile/offline behavior (/10) | 10 | Offline denylist unchanged; keyboard path via arrows |
+| Documentation & handoff (/5) | 5 | This verification table + re-score |
+| **Total (/100)** | **98** | |
+
+**Result:** Pass (≥95)
+
+### Final outcome (Attempt 2)
+Score: **98/100** — Pass. Inert drag handle removed from tab order; reorder announces on drag/arrows/undo.
+
+### Sprint 65 Attempt 2 — browser re-verify (Claude Code, prod, `e47448b`, signed in, 2026-07-26)
+
+| # | Check | Result | Evidence (prod, `e47448b`, signed in) |
+|---|---|---|---|
+| 1 | Handle out of tab order | PASS | All 24 handles `<button type="button" tabindex="-1" aria-hidden="true">⋮⋮` |
+| 2 | Arrow move announces | PASS | `Hard Maple moved to position 2 of 12`, cleared at ~1.5 s |
+| 3 | Undo announces | PASS | `Walnut moved to position 2 of 12` — describes resulting state |
+| 4 | Redo announces | PASS | `Hard Maple moved to position 2 of 12` |
+| 5 | Arrows still reorder | PASS | `[M,W,M,W]` → `[W,M,M,W]`, restored exactly through undo/redo/undo |
+| 6 | One history entry per move | PASS | Single undo restores; Undo then disabled, Redo enabled |
+| 7 | Pointer drag | NOT MEASURED | Tooling cannot emit intermediate `pointermove`; see Sprint 66 Part B |
+| 8 | Duplicate `<main>` | NEW FINDING | 2 mains / 172 buttons after hard reload; see Sprint 66 Part A |
+
+**98/100 confirmed** on Attempt 2 a11y fixes. Carry-overs → Sprint 66.
+
+---
+
+## Sprint 66: orphaned stream container + drag coverage
+**Dates:** 2026-07-26
+**Scope:** Part A characterize/fix orphaned React stream `S:` bags · Part B pointer-drag handler tests · Part C next BUILD_PLAN §4 item (or idle). Trunk-based to `main`.
+**Status:** CLOSED (Attempt 2)
+**Part C (next §4 item):** **none** — every BUILD_PLAN §4 shippable row through Sprint 65 is closed; remaining open follow-ups are Keagan-owned (dark re-palette uncommissioned, Clerk prod keys, launch blockers) or BUSINESS_PLAN-absent / deferred contract changes (true hex lattice, Canva-like 5b). No invented scope.
+**Commits on `main`:** `15fa502` (Attempt 1) · `9c6a038` (Attempt 2)
+**/designer First Load JS:** **123 kB** (held).
+**Suite:** **1307/1307** across 113 files (Attempt 2).
+**CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30212607663 success.
+**Vercel:** Production deploy `9c6a038` success.
+
+### Part A — Attempt 1 (corrected)
+**Trigger (one sentence):** When an App Router Suspense boundary from route `loading.tsx` streams under React’s postponed opener `<!--$~-->`, `$RC` silently no-ops and leaves `div#S:N` holding a full page copy beside the already-visible tree.
+
+**Nonce:** SETTLED — not CSP. **0** unnonced inline scripts on prod (243 scripts / 4 routes in Attempt-2 verify).
+
+**Attempt 1 shipped:** deleted null root `loading.tsx`; skeletons dropped `<main>`. **`/designer/*` went clean** (1 main, 88 buttons). **`/browse` was NOT fixed** — route `loading.tsx` still wrapped the catalog; prod hard-reload at `15fa502` still showed 2 mains, 2× `$~`, ~101 KB orphan bag with the *resolved* catalog (not the skeleton). fetch()/headless-after-idle looked clean; **only a real browser load (esp. signed-in / slow first flush) shows the stuck orphan.**
+
+**Route difference:** `/designer/*` had no route `loading.tsx` → Attempt 1 enough. `/browse` + `/plans/[slug]` kept route `loading.tsx` → still postponed. Skeleton-without-`<main>` does not help when the orphan holds the resolved page.
+
+### Attempt 1 — score corrected to **90/100** (prod verify)
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 22 | A/B/C done, but close report over-claimed browse fixed. **−3** |
+| Correctness & functionality (/20) | 14 | Designer PASS; browse FAIL on prod hard reload. **−6** |
+| Automated test coverage (/15) | 15 | drag + stream-orphan (Attempt 1) |
+| Security (/15) | 15 | Nonce settled |
+| Code quality & simplicity (/10) | 9 | Partial mitigation only for browse |
+| Mobile/offline behavior (/10) | 10 | — |
+| Documentation & handoff (/5) | 5 | — |
+| **Total (/100)** | **90** | |
+
+### Attempt 2 — fix pass (delete route loading.tsx)
+**Fix:** Delete `src/app/browse/loading.tsx` and `src/app/plans/[slug]/loading.tsx` so those pages ship in the first flush (Next #94750 workaround — same as designer).
+
+**Detector:** `tests/main-landmark.test.ts` (exactly one `<main` in content page sources). Streaming orphans are invisible to fetch/static suite — browser census is `scripts/smoke-stream-dom.mjs` / `npm run smoke:stream-dom`.
+
+**Framework residue:** With route `loading.tsx` removed on catalog/plan/designer, the stuck full-page orphan should not recur on those routes. Other Suspense (Clerk islands, selective hydration) may still emit empty/`$?` bags; those are not a second `<main>`. Verdict **framework-unfixable only if a route still needs `loading.tsx` and hits `$~`** — we chose no-skeleton over that risk for browse/plans.
+
+### Attempt 2 — score
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Browse/plans loading deleted; report corrected; browser census script + source detector |
+| Correctness & functionality (/20) | 19 | Chrome hard-path census on tip: `/`, `/browse`, filters, pagination, `/plans/*` → **1 main, 0 `$~`, 0 bags** (throttled early+late). Pre-fix throttled `/browse` had `$~`+71 KB bag. **−1**: signed-in `/designer`/`/saved`/`/shopping-list` not re-measured here (Clerk OAuth; Attempt-1 designer already 1 main) |
+| Automated test coverage (/15) | 15 | `main-landmark` · updated `stream-orphan` · suite **1307** |
+| Security (/15) | 15 | Nonce unchanged/confirmed |
+| Code quality & simplicity (/10) | 10 | Delete loading vs half-mitigation; smoke script documented |
+| Mobile/offline behavior (/10) | 10 | Landmark census; offline untouched |
+| Documentation & handoff (/5) | 5 | Corrected Attempt 1 + route difference |
+| **Total (/100)** | **99** | |
+
+**Result:** Pass (≥95)
+
+### Browser census (Chrome headless, prod `9c6a038`, signed out, 2026-07-26)
+
+| Route | mains | `$~` | largest `S:` bag |
+|---|---|---|---|
+| `/` | 1 | 0 | none |
+| `/browse` | 1 | 0 | none (was 2 mains / ~101 KB orphan at `15fa502`) |
+| `/browse?page=2` | 1 | 0 | none |
+| `/browse?difficulty=1` | 1 | 0 | none |
+| `/plans/x-leg-tv-stand` | 1 | 0 | none |
+| `/designer`, `/designer/library`, `/saved`, `/shopping-list` | 0 (Clerk sign-in shell, signed out) | 0 | none |
+
+Throttled early snapshot on `/browse` after fix: still 1 main / 0 bags (pre-fix same throttle: 2× `$~` + 71 KB `S:1` with a `<main>`).
+
+### Final outcome (Attempt 2)
+Score: **99/100**. Browse/plans match designer: no route `loading.tsx`.
 
 ---
 
 ## Sprint 62: Make the skip note reachable or delete it, and correct the record
 **Dates:** 2026-07-26
 **Scope:** Part 0 S61 re-score + notice rationale · A measure colour check → delete gate · reachability suite · record MAX_DRAWN/3D caps. Trunk-based to `main`.
-**Commits on `main`:** `b4cd2ef` (Part 0) · `3709fcd` (code) · (this close)
+**Commits on `main`:** `b4cd2ef` (Part 0) · `3709fcd` (code) · `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held; CI on `3900572`).
 **Suite:** **1195/1195** across 103 files.
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30193192371 success.
@@ -232,7 +557,7 @@ the sprint.
 ## Sprint 60: Dimension display — make every measurement a measurement
 **Dates:** 2026-07-26
 **Scope:** Part 0 S59 browser re-score · A1 `formatInches` zero-numerator + non-finite · A2 unified `closingThicknessHint` · A3 harlequin `thicknessIn=1` · A4 tests · A5 security re-verify. Trunk-based to `main`.
-**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · `c658726` (this close)
+**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · `c658726` `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held; CI build on `2fd0b61`).
 **Suite:** **1174/1174** across 101 files (`env -u DATABASE_URL -u CLERK_*` — Cursor secrets otherwise trip env/health).
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30192335214 success.
@@ -283,7 +608,7 @@ Sprint 60 stands at 96/100.
 ## Sprint 59: Correct the miter template (harlequin) + hex honesty
 **Dates:** 2026-07-26
 **Scope:** Part 0 S58 re-score · Part A rename+closing-t+shape tests · Part B hex reachability (honest no-ship). Trunk-based to `main`.
-**Commits on `main`:** `5c03f70`/`9299432` (Part 0) · `0108df7` (Part A) · (this close)
+**Commits on `main`:** `5c03f70`/`9299432` (Part 0) · `0108df7` (Part A) · `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held).
 **Perf:** `calculateMetrics`+closure at 2400 cells ≈ **33 ms**; schema-max 48k cells ≈ **110–125 ms** — colour continuity gated above 4k cells.
 

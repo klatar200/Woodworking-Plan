@@ -7,12 +7,18 @@ import type { Prisma } from '@prisma/client';
 export interface BoardDesignSummary {
   id: string;
   name: string;
+  /** Raw JSON — library thumbnails parse per-row without throwing the page. */
+  config: Prisma.JsonValue;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface BoardDesignRecord extends BoardDesignSummary {
+export interface BoardDesignRecord {
+  id: string;
+  name: string;
   config: BoardDesignConfig;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 function validateConfig(config: BoardDesignConfig): BoardDesignConfig {
@@ -44,6 +50,7 @@ export async function listDesigns(): Promise<BoardDesignSummary[]> {
     select: {
       id: true,
       name: true,
+      config: true,
       createdAt: true,
       updatedAt: true,
     },

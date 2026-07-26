@@ -7,7 +7,7 @@ import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
 import type { MiterCorner } from '@/lib/board-designer/types';
 import { BoardDiagram } from '@/components/designer/board-diagram';
-import { formatInches } from '@/lib/format';
+import { formatInches, formatBoardFeet } from '@/lib/format';
 import { SITE_HOST } from '@/lib/brand';
 import { btnGhost } from '@/lib/ui';
 
@@ -220,13 +220,6 @@ export default async function DesignerPrintPage({ params }: PageProps) {
       </footer>
     </main>
   );
-}
-
-function formatBoardFeet(value: number): string {
-  return value.toLocaleString('en-US', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  });
 }
 
 function speciesName(

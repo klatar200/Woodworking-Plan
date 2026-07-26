@@ -75,6 +75,7 @@ import {
   updateDesign,
 } from '@/lib/board-designs';
 import {
+  copyBoardDesignAction,
   createBoardDesignAction,
   deleteBoardDesignAction,
   updateBoardDesignAction,
@@ -221,10 +222,74 @@ describe('BoardDesign auth gates', () => {
       deleteBoardDesignAction(form({ designId: 'design-a', returnTo: '/designer/library' })),
       '/designer/library?notice=slow-down',
     );
+    await expectRedirect(
+      copyBoardDesignAction(
+        form({ designId: 'design-a', config, returnTo: '/designer/design-a' }),
+      ),
+      '/designer/design-a?notice=slow-down',
+    );
 
     expect(mocks.prisma.boardDesign.create).not.toHaveBeenCalled();
     expect(mocks.prisma.boardDesign.updateMany).not.toHaveBeenCalled();
     expect(mocks.prisma.boardDesign.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it('copy rejects foreign designId and does not create', async () => {
+    mocks.prisma.boardDesign.findFirst.mockResolvedValue(null);
+
+    await expectRedirect(
+      copyBoardDesignAction(
+        form({
+          designId: 'foreign',
+          config: JSON.stringify(validConfig),
+          returnTo: '/designer/foreign',
+        }),
+      ),
+      '/designer',
+    );
+
+    expect(mocks.prisma.boardDesign.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'foreign', userId: 'user-a' } }),
+    );
+    expect(mocks.prisma.boardDesign.create).not.toHaveBeenCalled();
+  });
+
+  it('copy clones dirty in-memory config for an owned design', async () => {
+    mocks.prisma.boardDesign.findFirst.mockResolvedValue({
+      id: 'design-a',
+      name: validConfig.name,
+      config: validConfig,
+      createdAt: now,
+      updatedAt: now,
+    });
+    mocks.prisma.boardDesign.create.mockResolvedValue({
+      id: 'design-b',
+      name: 'Copy of Dirty name',
+      config: { ...validConfig, name: 'Copy of Dirty name' },
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const dirty = { ...validConfig, name: 'Dirty name' };
+    await expectRedirect(
+      copyBoardDesignAction(
+        form({
+          designId: 'design-a',
+          config: JSON.stringify(dirty),
+          returnTo: '/designer/design-a',
+        }),
+      ),
+      '/designer/design-b',
+    );
+
+    expect(mocks.prisma.boardDesign.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          userId: 'user-a',
+          name: 'Copy of Dirty name',
+        }),
+      }),
+    );
   });
 
   it('over-cap config bounces with design-too-large notice and never writes', async () => {

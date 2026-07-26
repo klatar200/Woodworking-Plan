@@ -16,7 +16,7 @@ Don't escalate routine implementation (library, structure, test framework, names
 ## 3. Pre-Sprint-0 (all resolved; in DECISIONS_LOG)
 Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Host Vercel Hobby · Auth Clerk · Content version-controlled seed files (no admin UI; headless CMS rejected) · Budget $0/dev, every vendor genuine perpetual free tier. Processor #6 + pricing #7 DEFERRED (no billing until launch economics reopen). Branding #8 RESOLVED: Notch/notchplans.com.
 
-## 4. Roadmap — status (2026-07-24, post-Kreg swap)
+## 4. Roadmap — status (2026-07-26, post–Sprint 66; designer UX 67–72 commissioned)
 | Phase | Status |
 |---|---|
 | Phase 0 | ✅ 99 |
@@ -43,16 +43,139 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 61 (Close the gaps) | ✅ **CLOSED** 2026-07-26 — **93/100** (browser re-score; was 96). Skip note unreachable at 48k=schema max — fixed in Sprint 62. 32 KiB defence-in-depth kept. Suite **1182/1182**; First Load **120 kB**. |
 | Sprint 62 (Skip note / reachability) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS). Deleted unreachable colour gate; always-run check; reachability witness suite. Closure false-positive on mixed base species — fixed in Sprint 63. Suite **1195/1195**; First Load **120 kB**. |
 | Sprint 63 (Geometric closure) | ✅ **CLOSED** 2026-07-26 — **96/100** (browser verify PASS on prod `2eab289`). `wedgeWebContinuous` replaces species equality; accent strips no longer false-positive. Suite **1203/1203**; First Load **120 kB**. |
-| Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100**. Cut plan panel (reuse `toParts`/`optimize`/`BoardBar`); `boardDesignId` membership + cheap board-feet read; unit `"board feet"`. Suite **1228/1228**; First Load **122 kB**. |
+| Sprint 64 (U6: optimizer + shopping push) | ✅ **CLOSED** 2026-07-26 — **96/100** (Attempt 2; prod Attempt 1 re-score **92**; Attempt-2 browser verify PASS). Cut plan + designer shopping push; `formatBoardFeet` render seam, copy, yield=consumed. Suite **1234/1234**; First Load **122 kB**. |
+| Sprint 65 (U7 remainder: thumbs + drag) | ✅ **CLOSED** 2026-07-26 — **98/100** (Attempt 2; Attempt-1 prod re-score **94** a11y). Library thumbs from `layoutTopFace` (`MAX_THUMB_CELLS=500`, no R2); `reorder-strip` + pointer-only drag handle (`tabIndex=-1`); live-region announce on arrow/drag/undo; shopping-list footer neutral. Suite **1251/1251**; `/designer` First Load **123 kB**. Tip a11y fix `e47448b`. |
+| Sprint 66 (stream orphan + drag tests) | ✅ **CLOSED** 2026-07-26 — **99/100** (Attempt 2; Attempt-1 prod re-score **90**). **Attempt 1** (`15fa502`): deleted null root `loading.tsx`; skeletons dropped `<main>`; jsdom pointer-drag tests — `/designer/*` clean, **`/browse` still orphaned**. **Attempt 2** (`9c6a038`): deleted route `browse/loading.tsx` + `plans/[slug]/loading.tsx` (Next #94750 / same as designer); `tests/main-landmark.test.ts`; `npm run smoke:stream-dom`. Chrome census on tip: `/`, `/browse` (+filters/pagination), `/plans/*` → **1 `<main>`, 0 `$~`, 0 `S:` bags**. Suite **1307/1307** across 113 files; `/designer` First Load **123 kB**. Docs pin `177176f`. |
+| Sprint 67 (shell relocate) | ✅ **CLOSED** 2026-07-26 — **96/100**. Suite **1309/1309**. |
+| Sprint 68 (dock behavior + parity) | ✅ **CLOSED** 2026-07-26 — **98/100**. Suite **1312/1312**. |
+| Sprint 69 (strip directory) | ✅ **CLOSED** 2026-07-26 — **97/100**. Suite **1318/1318**. |
+| Sprint 70 (literacy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Suite **1319/1319**. IA track DoD with 69. |
+| Sprint 71 (2D + rotate) | ✅ **CLOSED** 2026-07-26 — **97/100**. 3D default / 2D toggle; view-only rotate; 2D PNG export. |
+| Sprint 72 (Save a copy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Dirty config → `Copy of {name}` → new id. Suite **1322/1322** / 115 files. |
+| Sprints 67–72 (Designer shell / IA) | ✅ **TRACK CLOSED** 2026-07-26. |
+| Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — tip `c1a9867`. Grain→dock sync · Cut plan badge=panel stock · copy ownership · 2D rotate clip · FINAL_LAYOUT button order. Suite **1326/1326** / 115 files. |
 
-Test suite — expected: 1228/1228 across 107 files (Sprint 64, Cursor VM). Update this single figure each sprint close; 1203/1203 and earlier superseded.
+Test suite — expected: **1326/1326** across **115 files** (shell IA post-close audit). Update each sprint close.
 
-**U6 CLOSED** 2026-07-26. **U7 retired as a unit** — its contents shipped across Sprints 53–63 (undo/redo, multi-panel end grain, angled/miter strips, species expansion, geometric closure). Remaining U7 items (share links, custom species, drag reorder, thumbnails) stay deferred, not a bundled unit.
+**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed + post-close audit). Parked FUTURE_IDEAS 2026-07-26.
 
-Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
+**SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
+
+Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list parse for 489 · credential rotation pre-go-live · Kreg G1 RESOLVED.
+
+### Sprints 67–72 — designer shell IA (agent contract)
+
+```
+OBJECTIVE: desktop designer density + IA. Relocate UI. Zero field/behavior loss.
+SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/actions/board-designs.ts
+GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
+ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 ✅ → 71 ✅ → 72 ✅. TRACK CLOSED.
+TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
+POST_CLOSE: audit `c1a9867` (2026-07-26) — grain→dock · badge/stock · copy authz · 2D clip · button order.
+FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
+```
+
+**INVARIANTS**
+1. RELOCATE ≠ DELETE. Every PARITY_INVENTORY row stays reachable with same semantics.
+2. No stub/empty dock tab bodies on `main`.
+3. No second relocate of the same component (67 moves; later sprints = behavior/CSS/tests/features per DO only).
+4. Do not invent routes/fields/vendors/monetization/share/profile-UOM/in-app-tabs/custom-species/dark-repalette/advanced-templates.
+5. Preserve: history undo/redo/coalesce · `guardAction`+rate-limit · shopping-list form **sibling** (no nested `<form>`) · WebGL null below lg · draft mounted on resize · forward-only schema migrate · no dollar UI · `formatInches` · First Load must not pull three.js into initial designer chunk.
+6. Alert copy only inside its tab. Tab badge OK on Metrics/Cut plan when warnings/impossible — Cut plan badge uses the **same stock L/W** as the panel.
+7. Storage stays inches (`*In`, `wasteFactor` 0–1). Suffixes/tooltips = display only.
+8. Dock tab panels stay **mounted**; inactive = hidden (CSS/hidden attr). Preserves Cut plan stock L/W state (stock owned by dock, not only OptimizerPanel).
+9. Grain → edge while Pattern active: switch tab to Templates (Pattern hidden) — sync on **any** present.grain change (toggle, template load, undo/redo, reset), not only the top-bar toggle.
+10. Save a copy name = `Copy of {name}` trimmed to max 80; action requires owned `designId` (`getDesign`) before create.
+
+**HARD_STOP → escalate**
+breaking saved-config w/o migrate · site-wide UOM/mm storage · in-app tabs · share · custom species · money · branding/public copy · FUTURE_IDEAS items · anything outside this contract
+
+**OUT**
+profile UOM · in-app design tabs · share links · custom species · dark re-palette · hex/star/tumbling-block/chevron · Canva 5b set
+
+**PRESERVE_BEHAVIORS (regress = fail)**
+| ID | Behavior |
+|---|---|
+| P1 | Undo/Redo/Reset (`load` initialConfig) + lg keyboard shortcuts |
+| P2 | Save → create/update action via hidden `config` JSON |
+| P3 | Add to shopping list when `designId` (sibling form) |
+| P4 | Template apply = history `load` (undoable) |
+| P5 | Strip add/dup/delete/move/reorder + species/width/repeat/miter |
+| P6 | Panel add/delete/label/thickness (end max 4) |
+| P7 | Row pattern editor (end only) |
+| P8 | Metrics: warnings · finished · total bd ft · panelPlan · by-species |
+| P9 | Cut plan: stock L/W · buy N · impossible · BoardBar · yield=consumed |
+| P10 | Export PNG (71 defines 2D path or explicit disable) |
+| P11 | Library / print / narrow read paths unchanged |
+
+**PARITY_INVENTORY**
+| Slot | Must include |
+|---|---|
+| Top | name · grain · finished size (metrics) · Undo · Redo · Reset · Save |
+| Top if saved | Add to shopping list |
+| Top from 72 | Save a copy — enabled iff `designId!=null` |
+| Board settings ⋯ | kerfIn · wasteFactor(UI%) · sourceLengthIn(edge) · sliceThicknessIn(end) + unit suffix |
+| Dock Templates | full TemplatePicker |
+| Dock Pattern | full RowPatternEditor · show only grain=end · default tab when end |
+| Dock Metrics | warnings · L×W×T · totalBoardFeet · panel table · end slice note · boardFeetBySpecies |
+| Dock Cut plan | stock L/W · buy N · impossible · BoardBar/yield/offcut — expanded in tab (not collapsed `<details>`) |
+| Right rail | panels+strips (P5–P6). 67=existing accordion OK. 69=folder directory + optional strip.label |
+| Preview | BoardPreview/R3F · Export PNG. 71=+3D/2D + view-only rotate |
+
+**FINAL_LAYOUT (after 72)**
+```
+[top] name | Edge/End | size | Undo Redo Reset | Save | Save a copy | shopping | ⋯
+[left sticky preview+dock | preview max-w~1200px max-h~50-55vh | dock min-h≥12rem | tab overflow-y:auto]
+  preview (+ 3D|2D + rotate @71)
+  tabs: Templates | Pattern(end) | Metrics[badge?] | Cut plan[badge?]
+[right flex] panel folders → strip directory → selected strip detail
+```
+
+**67 — shell relocate** ✅ CLOSED 2026-07-26 · 96/100
+```
+SHIPPED: top bar (name,grain,size,Undo,Redo,Reset,Save,shopping,Board settings ⋯ w/ unit suffixes);
+    sticky preview+dock; DesignerDock mounts TemplatePicker/RowPatternEditor/Metrics/Optimizer
+    (hidden not unmounted); preview max-w 1200px max-h min(55vh,32rem); right rail flex;
+    grain→Templates; RowPatternEditor extracted from PanelEditor.
+```
+
+**68 — dock behavior + parity lock** ✅ CLOSED 2026-07-26 · 98/100
+```
+SHIPPED: Cut plan always-expanded section; Metrics/Cut plan tab badges; designer-shell-parity.test.ts
+    locks PARITY_INVENTORY + mounted/hidden dock panels; edge hides Pattern tab control.
+AUDIT: Cut plan badge stock lifted into DesignerDock (matches panel L/W).
+```
+
+**69 — strip directory** ✅ CLOSED 2026-07-26 · 97/100
+```
+SHIPPED: optional Strip.label (zod/serialize/history coalesce); stripDisplayName; compact directory
+    rows + selection + detail pane (species/width/repeat/miter); reorder/announce preserved.
+```
+
+**70 — literacy (IA track DoD w/ 69)** ✅ CLOSED 2026-07-26 · 98/100
+```
+SHIPPED: FieldHint for kerf/waste; unit/count suffixes on remaining numeric controls.
+```
+
+**71 — 2D + rotate** ✅ CLOSED 2026-07-26 · 97/100
+```
+SHIPPED: 3D default / 2D BoardDiagram; view-only rotate; svg→PNG export in 2D.
+```
+
+**72 — Save a copy** ✅ CLOSED 2026-07-26 · 98/100
+```
+SHIPPED: copyBoardDesignAction; dirty config; copyDesignName; disabled without designId.
+AUDIT: getDesign ownership gate before create; FINAL_LAYOUT top-bar order Save → copy → shopping.
+```
+
+**Post-close audit** ✅ CLOSED 2026-07-26 · `c1a9867`
+```
+SHIPPED: config.grain→dockTab useEffect; dock-owned cut-plan stock for badge; 2D 90/270 host
+    overflow-visible + aspect minHeight; copy authz tests; suite 1326/1326.
+```
 
 ### Sprints 53–56 — Designer polish (CLOSED).
-Sprints 51–52 delivered U1–U5. Polish track 53–56 + miter/closure 57–63 closed. **U6 CLOSED 2026-07-26 (Sprint 64).** U7 retired (contents shipped piecemeal). Decisions of record: DECISIONS_LOG 2026-07-25 (mobile-first scoping; undo/redo).
+51–52=U1–U5. 53–65 closed. Designer shell track = **67–72 closed** (+ post-close audit). DECISIONS_LOG 2026-07-25 · 2026-07-26.
 
 | Sprint | Scope (Keagan's item #s) | Notes / gates |
 |---|---|---|

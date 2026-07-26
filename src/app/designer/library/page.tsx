@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { page, btnGhost, btnPrimary } from '@/lib/ui';
 import { listDesigns } from '@/lib/board-designs';
 import { deleteBoardDesignAction } from '@/app/actions/board-designs';
+import { DesignThumbnail } from '@/components/designer/design-thumbnail';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,15 +34,18 @@ export default async function DesignerLibraryPage() {
           {designs.map((design) => (
             <li
               key={design.id}
-              className="flex flex-wrap items-center justify-between gap-[0.75rem] rounded-[1rem] border border-border bg-surface p-[1rem]"
+              className="flex flex-wrap items-center justify-between gap-[0.75rem] rounded-[1rem] border border-border bg-surface p-[1rem] shadow-e1"
             >
-              <div>
-                <Link href={`/designer/${design.id}`} className="font-medium!">
-                  {design.name}
-                </Link>
-                <p className="small muted m-0">
-                  Updated {design.updatedAt.toLocaleDateString()}
-                </p>
+              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-[0.875rem]">
+                <DesignThumbnail name={design.name} configJson={design.config} />
+                <div className="min-w-0">
+                  <Link href={`/designer/${design.id}`} className="font-medium!">
+                    {design.name}
+                  </Link>
+                  <p className="small muted m-0">
+                    Updated {design.updatedAt.toLocaleDateString()}
+                  </p>
+                </div>
               </div>
               <form action={deleteBoardDesignAction}>
                 <input type="hidden" name="designId" value={design.id} />

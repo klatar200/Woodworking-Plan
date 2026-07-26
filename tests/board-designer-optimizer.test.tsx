@@ -185,7 +185,7 @@ describe('OptimizerPanel render', () => {
     expect(html).toMatch(/Cut plan/);
     expect(html).toMatch(/board/i);
     expect(html).toMatch(/left over/);
-    expect(html).toMatch(/% of the boards you buy used/);
+    expect(html).toMatch(/% of each board consumed/);
     expect(html).not.toMatch(/\$\d/);
     // Visible text only — option value="3.5" / style flex-grow decimals are not inches.
     const visible = html

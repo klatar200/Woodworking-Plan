@@ -14,13 +14,26 @@ const miterSchema = z.object({
   corner: z.enum(['tl', 'tr', 'bl', 'br']),
 });
 
-const stripSchema = z.object({
-  id: z.string().min(1),
-  speciesId: z.string().min(1),
-  widthIn: z.number().min(0.0625).max(24),
-  repeat: z.number().int().min(1).max(20),
-  miter: miterSchema.optional(),
-});
+const stripLabelSchema = z.preprocess((value) => {
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  return trimmed === '' ? undefined : trimmed;
+}, z.string().max(40).optional());
+
+const stripSchema = z
+  .object({
+    id: z.string().min(1),
+    label: stripLabelSchema,
+    speciesId: z.string().min(1),
+    widthIn: z.number().min(0.0625).max(24),
+    repeat: z.number().int().min(1).max(20),
+    miter: miterSchema.optional(),
+  })
+  .transform((strip) => {
+    if (strip.label) return strip;
+    const { label: _label, ...rest } = strip;
+    return rest;
+  });
 
 const panelSchema = z.object({
   id: z.string().min(1),

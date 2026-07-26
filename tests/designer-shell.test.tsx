@@ -94,7 +94,7 @@ describe('DesignerShell static render', () => {
     expect(html).not.toContain('Leftover length');
   });
 
-  it('species uses a native select with a live swatch (Sprint 57 Part A)', () => {
+  it('selected strip detail uses a native species select with compact label rows', () => {
     const stripList = source('src/components/designer/strip-list.tsx');
     expect(stripList).toContain('<select');
     expect(stripList).not.toContain('role="radiogroup"');
@@ -108,11 +108,13 @@ describe('DesignerShell static render', () => {
         /<select[^>]*name="strip-[^"]*-speciesId"[^>]*>([\s\S]*?)<\/select>/g,
       ),
     ];
-    expect(speciesSelects).toHaveLength(12);
+    expect(speciesSelects).toHaveLength(1);
     for (const match of speciesSelects) {
       const body = match[1] ?? '';
       expect((body.match(/<option/g) ?? []).length).toBe(15);
     }
+    expect([...html.matchAll(/id="strip-[^"]*-label"/g)]).toHaveLength(12);
+    expect(html).toContain('Selected strip details for Strip 1');
     // First golden strip is walnut — its option must be selected.
     expect(speciesSelects[0]![1]).toMatch(
       /<option[^>]*value="walnut"[^>]*selected|<option[^>]*selected[^>]*value="walnut"/,
@@ -172,7 +174,10 @@ describe('DesignerShell static render', () => {
     expect(libraryPage).not.toContain('lg:max-w-none');
 
     expect(shell).toMatch(/lg:sticky/);
-    expect(shell).toMatch(/lg:grid-cols-\[minmax\(0,1fr\)_minmax\(20rem,26rem\)\]/);
+    // Sprint 67: preview column capped ~1200px; surplus width → right rail.
+    expect(shell).toMatch(
+      /lg:grid-cols-\[minmax\(0,1200px\)_minmax\(20rem,1fr\)\]/,
+    );
 
     // A sticky element only travels inside its own containing block. `items-start`
     // shrink-wrapped the preview column to 732px against a 6749px page, so the
@@ -182,9 +187,9 @@ describe('DesignerShell static render', () => {
     expect(shell).not.toContain('lg:items-start');
     expect(shell).toContain('lg:content-start');
 
-    // Preview heading + Export PNG share one flex row (heading left, button right).
+    // Preview heading + Export PNG share one flex row (heading left, controls right).
     expect(preview).toMatch(
-      /flex items-center justify-between[\s\S]*Preview[\s\S]*Export PNG/,
+      /flex flex-wrap items-center justify-between[\s\S]*Preview[\s\S]*Export PNG/,
     );
     expect(shell).not.toMatch(/<h2[^>]*>Preview<\/h2>/);
 
@@ -270,11 +275,14 @@ describe('DesignerShell static render', () => {
     expect(savedHtml).toContain('href="/designer/design-1/print"');
     expect(savedHtml).not.toContain(DESIGNER_NEW_NARROW_NOTICE);
 
-    // U6 — cut plan is desktop-only (OptimizerPanel lives in the lg authoring tree).
+    // U6 — cut plan is desktop-only (OptimizerPanel in DesignerDock, lg authoring tree).
     // Narrow surface still must not import toParts / the optimizer.
     expect(narrow).not.toMatch(/\btoParts\s*\(/);
     expect(narrow).not.toMatch(/OptimizerPanel|designCutPlan|optimize\s*\(/);
-    expect(shell).toContain('OptimizerPanel');
+    expect(shell).toContain('DesignerDock');
+    expect(source('src/components/designer/designer-dock.tsx')).toContain(
+      'OptimizerPanel',
+    );
     expect(shell).toContain('hidden lg:grid');
     expect(narrow).not.toMatch(/userAgent|userAgentData|navigator\.platform/);
 
@@ -288,5 +296,112 @@ describe('DesignerShell static render', () => {
     expect(canvas).toContain('matchMedia');
     expect(canvas).toMatch(/if\s*\(\s*!wideEnough\s*\)\s*\{\s*return null/);
     expect(canvas).not.toMatch(/userAgent|userAgentData/);
+  });
+
+  it('Sprint 71: preview exposes 3D/2D toggle and view-only rotate copy', () => {
+    const preview = source('src/components/designer/board-preview.tsx');
+    expect(preview).toContain("useState<PreviewMode>('3d')");
+    expect(preview).toContain('Rotate left');
+    expect(preview).toContain('Rotate right');
+    expect(preview).toContain('svgElementToPngBlob');
+    expect(preview).toContain('Rotation is view-only');
+    expect(preview).toContain('overflow-visible');
+    expect(preview).not.toMatch(/onClick=\{\(\) => setMode\('2d'\)\}[\s\S]*default/);
+  });
+
+  it('Sprint 72: Save a copy sibling form when designId; disabled otherwise', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    expect(shell).toContain('Save a copy');
+    expect(shell).toContain('copyAction');
+    expect(source('src/app/actions/board-designs.ts')).toContain(
+      'copyBoardDesignAction',
+    );
+    expect(source('src/app/designer/[id]/page.tsx')).toContain('copyBoardDesignAction');
+
+    const saved = visibleMarkup(render(goldenConfig, 'design-1'));
+    expect(saved).toMatch(/Save a copy<\/button>/);
+    const draft = visibleMarkup(render(goldenConfig, null));
+    expect(draft).toContain('disabled');
+    expect(draft).toContain('Save a copy');
+  });
+
+  it('Sprint 67: top bar + sticky preview/dock relocate; panels stay mounted', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const dock = source('src/components/designer/designer-dock.tsx');
+    const settings = source('src/components/designer/board-settings.tsx');
+    const panelEditor = source('src/components/designer/panel-editor.tsx');
+    const html = visibleMarkup(render(goldenConfig));
+
+    expect(shell).toContain('BoardSettingsDisclosure');
+    expect(shell).toContain('BoardGrainToggle');
+    expect(shell).toContain('DesignerDock');
+    expect(shell).toContain('Add to shopping list');
+    expect(shell).toContain('form={SAVE_FORM_ID}');
+    expect(shell).toMatch(/max-h-\[min\(55vh,32rem\)\]/);
+    expect(shell).toContain('min-h-[12rem]');
+    expect(settings).toContain('Waste allowance (%)');
+    expect(settings).toContain('Kerf (in)');
+    expect(settings).toContain('Panel length (in)');
+    expect(settings).toContain('Slice thickness (in)');
+    expect(panelEditor).not.toContain('RowPatternEditor');
+    expect(dock).toContain('hidden={tab !==');
+    expect(dock).toContain('OptimizerPanel');
+    expect(dock).toContain('RowPatternEditor');
+    expect(dock).toContain('MetricsPanel');
+    expect(dock).toContain('TemplatePicker');
+
+    // All dock bodies present in SSR tree (mounted); Pattern tabpanel exists for end grain.
+    expect(html).toContain('id="designer-dock-panel-templates"');
+    expect(html).toContain('id="designer-dock-panel-pattern"');
+    expect(html).toContain('id="designer-dock-panel-metrics"');
+    expect(html).toContain('id="designer-dock-panel-cut-plan"');
+    expect(html).toContain('Row pattern');
+    expect(html).toContain('Cut plan — what to buy');
+    expect(html).toContain('Board settings');
+    expect(html).toContain('>Edge</button>');
+    expect(html).toContain('>End</button>');
+  });
+
+  it('Sprint 70: board settings explain kerf and waste allowance in-page', () => {
+    const settings = source('src/components/designer/board-settings.tsx');
+    const html = visibleMarkup(render(goldenConfig));
+
+    expect(settings).toContain('material removed by the saw cut');
+    expect(settings).toContain('mistakes/defects');
+    expect(html).toContain('Blade kerf is material removed by the saw cut');
+    expect(html).toContain('Extra % of board feet added for mistakes/defects');
+    expect(html).toContain('Waste allowance (%)');
+    expect(html).not.toContain('Waste allowance</span><input');
+  });
+});
+
+describe('dockTabForGrain', () => {
+  it('switches Pattern → Templates when grain becomes edge', async () => {
+    const { dockTabForGrain, defaultDockTab } = await import(
+      '@/components/designer/designer-dock'
+    );
+    expect(defaultDockTab('end')).toBe('pattern');
+    expect(defaultDockTab('edge')).toBe('templates');
+    expect(dockTabForGrain('edge', 'pattern')).toBe('templates');
+    expect(dockTabForGrain('edge', 'metrics')).toBe('metrics');
+    expect(dockTabForGrain('end', 'pattern')).toBe('pattern');
+  });
+
+  it('shell syncs dock tab from present.grain (load/undo/redo/reset, not only toggle)', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    expect(shell).toContain('dockTabForGrain(config.grain, current)');
+    expect(shell).toMatch(
+      /useEffect\(\(\) => \{\s*setDockTab\(\(current\) => dockTabForGrain\(config\.grain, current\)\);\s*\}, \[config\.grain\]\)/,
+    );
+  });
+
+  it('top-bar action order is Save → Save a copy → shopping (FINAL_LAYOUT)', () => {
+    const shell = source('src/components/designer/designer-shell.tsx');
+    const saveIdx = shell.indexOf('form={SAVE_FORM_ID}');
+    const copyIdx = shell.indexOf('{saveCopyControl}');
+    const shopIdx = shell.indexOf('{shoppingListControl}');
+    expect(saveIdx).toBeGreaterThan(-1);
+    expect(copyIdx).toBeGreaterThan(saveIdx);
+    expect(shopIdx).toBeGreaterThan(copyIdx);
   });
 });

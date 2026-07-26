@@ -12,27 +12,68 @@ import {
   hasImpossibleParts,
   totalBoards,
   yieldRatio,
+  type BoardGroup,
 } from '@/lib/cut-optimizer';
 import { selectControl } from '@/lib/ui';
+import { FieldHint } from './field-hint';
+
+/** Spoken article for N-ft stock — "an 8 ft", "a 6 ft". */
+function stockFtArticle(ft: number): 'a' | 'an' {
+  return ft === 8 || ft === 11 || ft === 18 ? 'an' : 'a';
+}
+
+export type CutPlanStock = {
+  stockLengthIn: number;
+  stockWidthIn: number | null;
+};
+
+/** Cut plan groups — dock badge must use the same stock as the panel. */
+export function cutPlanGroupsForConfig(
+  config: BoardDesignConfig,
+  stock: Partial<CutPlanStock> = {},
+): BoardGroup[] {
+  return designCutPlan(config, {
+    stockLengthIn: stock.stockLengthIn ?? DEFAULT_OPTIONS.stockLengthIn,
+    stockWidthIn: stock.stockWidthIn ?? null,
+    kerfIn: config.kerfIn,
+    endTrimIn: DEFAULT_OPTIONS.endTrimIn,
+  });
+}
+
+export function cutPlanHasImpossible(
+  config: BoardDesignConfig,
+  stock: Partial<CutPlanStock> = {},
+): boolean {
+  return hasImpossibleParts(cutPlanGroupsForConfig(config, stock));
+}
 
 /**
- * Desktop cut-plan panel (Sprint 64 / U6). Collapsed by default; not mounted on the
- * narrow surface — authoring already gates at 1024, and mobile keeps the print sheet.
- *
+ * Desktop cut-plan panel (Sprint 64 / U6; Sprint 68 always expanded in dock).
  * Reuses `toParts` → `designCutPlan` → `optimize` / `BoardBar`. No dollar figures.
+ * Stock may be controlled by the dock so the Cut plan tab badge stays in sync.
  */
-export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
-  const [stockLengthIn, setStockLengthIn] = useState(DEFAULT_OPTIONS.stockLengthIn);
-  const [stockWidthIn, setStockWidthIn] = useState<number | null>(null);
+export function OptimizerPanel({
+  config,
+  stockLengthIn: stockLengthProp,
+  stockWidthIn: stockWidthProp,
+  onStockLengthChange,
+  onStockWidthChange,
+}: {
+  config: BoardDesignConfig;
+  stockLengthIn?: number;
+  stockWidthIn?: number | null;
+  onStockLengthChange?: (lengthIn: number) => void;
+  onStockWidthChange?: (widthIn: number | null) => void;
+}) {
+  const [internalLength, setInternalLength] = useState(DEFAULT_OPTIONS.stockLengthIn);
+  const [internalWidth, setInternalWidth] = useState<number | null>(null);
+  const stockLengthIn = stockLengthProp ?? internalLength;
+  const stockWidthIn = stockWidthProp !== undefined ? stockWidthProp : internalWidth;
+  const setStockLengthIn = onStockLengthChange ?? setInternalLength;
+  const setStockWidthIn = onStockWidthChange ?? setInternalWidth;
 
   const groups = useMemo(
-    () =>
-      designCutPlan(config, {
-        stockLengthIn,
-        stockWidthIn,
-        kerfIn: config.kerfIn,
-        endTrimIn: DEFAULT_OPTIONS.endTrimIn,
-      }),
+    () => cutPlanGroupsForConfig(config, { stockLengthIn, stockWidthIn }),
     [config, stockLengthIn, stockWidthIn],
   );
 
@@ -41,15 +82,14 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
   const stockFt = stockLengthIn / 12;
 
   return (
-    <details className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
-      <summary className="cursor-pointer text-[1.125rem] font-bold">
-        Cut plan — what to buy
-      </summary>
+    <section className="grid gap-[1rem] rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+      <h2 className="!m-0 text-[1.125rem]">Cut plan — what to buy</h2>
 
-      <div className="mt-[1rem] grid gap-[1rem]">
+      <div className="grid gap-[1rem]">
         <div className="grid gap-[0.75rem] sm:grid-cols-2">
           <label className="grid gap-[0.375rem]">
-            <span className="text-[0.875rem] font-bold">Board length</span>
+            <span className="text-[0.875rem] font-bold">Board length (ft)</span>
+            <FieldHint>Stock board length used for the cut plan.</FieldHint>
             <select
               className={`${selectControl} w-full`}
               value={String(stockLengthIn)}
@@ -64,7 +104,8 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
           </label>
 
           <label className="grid gap-[0.375rem]">
-            <span className="text-[0.875rem] font-bold">Board width</span>
+            <span className="text-[0.875rem] font-bold">Board width (in)</span>
+            <FieldHint>Stock width for ripped strips, or buy each part&apos;s width.</FieldHint>
             <select
               className={`${selectControl} w-full`}
               value={stockWidthIn === null ? 'rip-none' : String(stockWidthIn)}
@@ -94,7 +135,7 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
             className="rounded-[0.5rem] border border-danger bg-accent-tint p-[0.75rem] text-[0.9375rem]"
           >
             <strong>
-              Some parts do not fit on a {stockFt} ft board.
+              Some parts do not fit on {stockFtArticle(stockFt)} {stockFt} ft board.
             </strong>{' '}
             They are listed below and are not included in the board count. Pick a longer
             stock length, or plan to join them.
@@ -124,7 +165,8 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
                     each {formatInches(group.stockWidthIn)} board
                   </>
                 )}{' '}
-                · {yieldPct}% of the boards you buy used
+                {/* yieldRatio numerator includes kerf + end trim (consumed sawdust). */}
+                · {yieldPct}% of each board consumed
               </p>
 
               {group.impossible.length > 0 && (
@@ -161,6 +203,6 @@ export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
           );
         })}
       </div>
-    </details>
+    </section>
   );
 }

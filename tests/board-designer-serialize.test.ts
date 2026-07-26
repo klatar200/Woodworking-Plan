@@ -74,6 +74,34 @@ describe('parseConfig — v1 migrates to v2', () => {
 });
 
 describe('parseConfig round-trip', () => {
+  it('accepts old strip configs with no label', () => {
+    const result = parseConfig(goldenV2Raw());
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.config.panels[0]!.strips[0]).not.toHaveProperty('label');
+  });
+
+  it('round-trips strip labels and omits empty labels', () => {
+    const raw = goldenV2Raw({
+      panels: [
+        {
+          id: 'panel-1',
+          label: 'Panel 1',
+          thicknessIn: 1.5,
+          strips: [
+            { id: 's1', label: '  Maple rail  ', speciesId: 'hard-maple', widthIn: 1.5, repeat: 1 },
+            { id: 's2', label: '   ', speciesId: 'walnut', widthIn: 1, repeat: 1 },
+          ],
+        },
+      ],
+    });
+    const result = parseConfig(raw);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.config.panels[0]!.strips[0]!.label).toBe('Maple rail');
+    expect(result.config.panels[0]!.strips[1]).not.toHaveProperty('label');
+  });
+
   it('round-trips a golden v2 config', () => {
     const raw = goldenV2Raw();
     const result = parseConfig(raw);

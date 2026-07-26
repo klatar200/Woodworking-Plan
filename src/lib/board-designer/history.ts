@@ -15,6 +15,12 @@ export type ConfigAction =
   | { type: 'duplicate-strip'; panelId: string; id: string }
   | { type: 'delete-strip'; panelId: string; id: string }
   | { type: 'move-strip'; panelId: string; id: string; direction: -1 | 1 }
+  | {
+      type: 'reorder-strip';
+      panelId: string;
+      fromIndex: number;
+      toIndex: number;
+    }
   | { type: 'update-strip'; panelId: string; id: string; patch: Partial<Strip> }
   | { type: 'add-panel'; sourcePanelId?: string }
   | { type: 'delete-panel'; id: string }
@@ -158,12 +164,38 @@ export function configReducer(
         strips.splice(nextIndex, 0, strip);
         return { ...panel, strips };
       });
+    case 'reorder-strip':
+      // One drag = one history entry (Sprint 65). Out-of-range / same index → no-op.
+      return mapPanel(config, action.panelId, (panel) => {
+        const { fromIndex, toIndex } = action;
+        const len = panel.strips.length;
+        if (
+          fromIndex === toIndex ||
+          fromIndex < 0 ||
+          toIndex < 0 ||
+          fromIndex >= len ||
+          toIndex >= len
+        ) {
+          return panel;
+        }
+        const strips = panel.strips.slice();
+        const [strip] = strips.splice(fromIndex, 1);
+        if (!strip) return panel;
+        strips.splice(toIndex, 0, strip);
+        return { ...panel, strips };
+      });
     case 'update-strip':
       return mapPanel(config, action.panelId, (panel) => ({
         ...panel,
         strips: panel.strips.map((strip) => {
           if (strip.id !== action.id) return strip;
           const next = { ...strip, ...action.patch };
+          if (
+            'label' in action.patch &&
+            (typeof action.patch.label !== 'string' || action.patch.label.trim() === '')
+          ) {
+            delete next.label;
+          }
           if ('miter' in action.patch) {
             next.miter = action.patch.miter
               ? { ...action.patch.miter }
@@ -239,7 +271,7 @@ export function configReducer(
   }
 }
 
-const COALESCE_UPDATE_STRIP_FIELDS = new Set(['widthIn', 'repeat']);
+const COALESCE_UPDATE_STRIP_FIELDS = new Set(['label', 'widthIn', 'repeat']);
 const COALESCE_UPDATE_PANEL_FIELDS = new Set(['thicknessIn', 'label']);
 const COALESCE_PATCH_FIELDS = new Set([
   'name',
