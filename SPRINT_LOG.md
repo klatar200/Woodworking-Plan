@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 65 Attempt 1 (2026-07-26) — OPEN** — U7 remainder: library thumbnails + strip drag reorder. Prior: Sprint 64 **96/100**.
+> **Latest logged: Sprint 65 (2026-07-26) — CLOSED 96/100** — library thumbs + strip drag reorder. Prior: Sprint 64 **96/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅. Test suite: 1234 green (post-64; Sprint 65 in progress).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅ · U6 ✅ · U7 remainder ✅. Test suite: 1247 green (post-65).
 
 ---
 
@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 63: Closure is geometric, not chromatic
 **Dates:** 2026-07-26
 **Scope:** Part 0 S62 browser verify · replace `cellsColorClosed` with `wedgeWebContinuous` · both-direction tests. Trunk-based to `main`.
-**Commits on `main`:** `af51d3e` (Part 0) · `1c59690` (code) · (this close)
+**Commits on `main`:** `af51d3e` (Part 0) · `1c59690` (code) · `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held; CI on `39cc16e`).
 **Suite:** **1203/1203** across 104 files.
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30207218217 success.
@@ -162,7 +162,7 @@ All five Attempt-2 fixes PASS. Sprint 64 stands at **96/100**.
 **Dates:** 2026-07-26
 **Scope:** Part 0 S64 Attempt-2 verify · library thumbnails from config · `reorder-strip` + drag · shopping-list footer copy. Trunk-based to `main`.
 **Status:** CLOSED
-**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · (this close)
+**Commits on `main`:** `72afc4c` (Part 0) · `3538a26` (code) · `423fb0e` (close)
 **/designer First Load JS:** **123 kB** (was 122; +1 from strip-list pointer drag client — library thumbs are SSR, `/designer/library` **106 kB**).
 **Suite:** **1247/1247** across 109 files.
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30210398689 success.
@@ -195,7 +195,7 @@ Score: **96/100** — Pass. U7 remainder (thumbs + drag) closed.
 ## Sprint 62: Make the skip note reachable or delete it, and correct the record
 **Dates:** 2026-07-26
 **Scope:** Part 0 S61 re-score + notice rationale · A measure colour check → delete gate · reachability suite · record MAX_DRAWN/3D caps. Trunk-based to `main`.
-**Commits on `main`:** `b4cd2ef` (Part 0) · `3709fcd` (code) · (this close)
+**Commits on `main`:** `b4cd2ef` (Part 0) · `3709fcd` (code) · `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held; CI on `3900572`).
 **Suite:** **1195/1195** across 103 files.
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30193192371 success.
@@ -300,7 +300,7 @@ the sprint.
 ## Sprint 60: Dimension display — make every measurement a measurement
 **Dates:** 2026-07-26
 **Scope:** Part 0 S59 browser re-score · A1 `formatInches` zero-numerator + non-finite · A2 unified `closingThicknessHint` · A3 harlequin `thicknessIn=1` · A4 tests · A5 security re-verify. Trunk-based to `main`.
-**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · `c658726` (this close)
+**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · `c658726` `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held; CI build on `2fd0b61`).
 **Suite:** **1174/1174** across 101 files (`env -u DATABASE_URL -u CLERK_*` — Cursor secrets otherwise trip env/health).
 **CI:** https://github.com/klatar200/Woodworking-Plan/actions/runs/30192335214 success.
@@ -351,7 +351,7 @@ Sprint 60 stands at 96/100.
 ## Sprint 59: Correct the miter template (harlequin) + hex honesty
 **Dates:** 2026-07-26
 **Scope:** Part 0 S58 re-score · Part A rename+closing-t+shape tests · Part B hex reachability (honest no-ship). Trunk-based to `main`.
-**Commits on `main`:** `5c03f70`/`9299432` (Part 0) · `0108df7` (Part A) · (this close)
+**Commits on `main`:** `5c03f70`/`9299432` (Part 0) · `0108df7` (Part A) · `423fb0e` (close)
 **/designer First Load JS:** **120 kB** (held).
 **Perf:** `calculateMetrics`+closure at 2400 cells ≈ **33 ms**; schema-max 48k cells ≈ **110–125 ms** — colour continuity gated above 4k cells.
 
