@@ -85,6 +85,22 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 
 Collision gone; a 256px dead band replaced it. **Keagan fix (`2844c22`):** one header breakpoint at `xl` — Main nav + SignedOut CTAs + MobileNav all on `xl` with HeaderSearch (already `xl`). Below `xl` = hamburger + drawer search; at/above `xl` = full desktop header. Accepted trade-off: 1024–1279 get a hamburger instead of visible nav links. Designer `lg:` gates untouched. `site-chrome` test now asserts the single breakpoint and forbids `lg:flex`/`lg:hidden` in header markup.
 
+**Post-fix VERIFIED on prod 2026-07-26 (signed out, `/browse`, viewport driven directly):**
+| Viewport | nav | header search | drawer | search reachable | nav/search overlap |
+|---|---|---|---|---|---|
+| 1023 | none | none | block | ✅ | 0 |
+| 1024 | none | none | block | ✅ | 0 |
+| 1279 | none | none | block | ✅ | 0 |
+| 1280 | flex | flex | none | ✅ | 0 |
+
+Flip is exactly at `innerWidth` 1280 (Chrome evaluates the `xl` media query against `innerWidth`, which includes the 15px scrollbar — layout viewport reads 1265 at that point). No h-overflow at any of the four. At 1279 the drawer panel spans 0→1264 (full layout viewport) and contains a real `input[type=search]`. **Dead band closed.**
+
+Two residuals, labelled honestly:
+- **Signed-in at 1280 is DERIVED, not observed.** Below 1280 nav is `display:none` so overlap is structurally impossible (certain). At 1280: signed-in nav ends at 687px and the signed-in right group measures 364px from search-left to the viewport edge → search left ≈901px, **~214px clearance** (wider than signed-out, since an avatar is narrower than Log in + Sign up). Arithmetic on measured intrinsic widths, not a reading.
+- **JS-off drawer is REASONED, not observed.** Native `<details>`/`<summary>`; with JS off React never hydrates so no `open` prop is applied and native toggling works. Not exercised with scripting actually disabled.
+
+Agent note: the in-app browser pane CAN set the viewport directly (unlike `resize_window` against a maximized Chrome window, which silently no-ops). It is signed OUT, so it reaches public surfaces only — fine for site chrome, useless for `/designer`.
+
 ### Keagan re-verification (record OBSERVED)
 At 1280, 1024, 900, 768, 390:
 1. Which surface (editor vs read-only) and the exact flip width.
