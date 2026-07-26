@@ -5,7 +5,11 @@ import type {
   Strip,
 } from '@/lib/board-designer/types';
 
-/** Max past snapshots kept in memory. Oldest entries drop first. */
+/**
+ * Max past snapshots kept in memory.
+ * The loaded baseline is always kept as past[0] when trimming so undo-to-bottom
+ * restores the opened design (including its name) — never a mid-edit empty name.
+ */
 export const HISTORY_CAP = 50;
 
 export type ConfigAction =
@@ -36,6 +40,8 @@ export type HistoryAction =
   | { type: 'commit-coalesce' };
 
 export type HistoryState = {
+  /** Immutable seed from open/create — undo floor; never dropped by HISTORY_CAP. */
+  baseline: BoardDesignConfig;
   past: BoardDesignConfig[];
   present: BoardDesignConfig;
   future: BoardDesignConfig[];
@@ -74,12 +80,25 @@ export function configsEqual(a: BoardDesignConfig, b: BoardDesignConfig): boolea
 }
 
 export function createHistoryState(initial: BoardDesignConfig): HistoryState {
+  const seed = cloneConfig(initial);
   return {
+    baseline: cloneConfig(seed),
     past: [],
-    present: cloneConfig(initial),
+    present: seed,
     future: [],
     coalesceKey: null,
   };
+}
+
+/** Cap past while keeping the loaded design as the undo floor. */
+export function trimPast(
+  past: BoardDesignConfig[],
+  baseline: BoardDesignConfig,
+  cap: number = HISTORY_CAP,
+): BoardDesignConfig[] {
+  if (past.length <= cap) return past;
+  const recent = past.slice(-(cap - 1));
+  return [cloneConfig(baseline), ...recent];
 }
 
 export function canUndo(state: HistoryState): boolean {
@@ -330,6 +349,7 @@ export function historyReducer(state: HistoryState, action: HistoryAction): Hist
     const past = state.past.slice();
     const previous = past.pop()!;
     return {
+      ...state,
       past,
       present: previous,
       future: [cloneConfig(state.present), ...state.future],
@@ -342,6 +362,7 @@ export function historyReducer(state: HistoryState, action: HistoryAction): Hist
     const [next, ...rest] = state.future;
     if (!next) return state;
     return {
+      ...state,
       past: [...state.past, cloneConfig(state.present)],
       present: next,
       future: rest,
@@ -362,12 +383,13 @@ export function historyReducer(state: HistoryState, action: HistoryAction): Hist
     };
   }
 
-  const past = [...state.past, cloneConfig(state.present)];
-  if (past.length > HISTORY_CAP) {
-    past.splice(0, past.length - HISTORY_CAP);
-  }
+  const past = trimPast(
+    [...state.past, cloneConfig(state.present)],
+    state.baseline,
+  );
 
   return {
+    ...state,
     past,
     present: next,
     future: [],

@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Shell IA post-close audit (2026-07-26) — CLOSED** — tip `c1a9867`. Suite: 1326 green.
+> **Latest logged: Shell IA audit fix pass (2026-07-26) — CLOSED 97/100** — Attempt 2. Suite: 1331 green.
 >
-> **Milestones:** … · shell 67–72 ✅ · post-close audit ✅. Suite: 1326 green.
+> **Milestones:** … · shell 67–72 ✅ · post-close audit ✅ · audit fix pass ✅. Suite: 1331 green.
 
 ---
 
@@ -13,7 +13,7 @@
 **Dates:** 2026-07-26
 **Scope:** Second-pass verification of BUILD_PLAN §4 Sprints 67–72 after TRACK CLOSED. No new §4 scope.
 
-### Attempt 1 — PASS (fix-forward)
+### Attempt 1 — PASS (fix-forward) — tip `c1a9867`
 | Finding | Severity | Fix |
 |---|---|---|
 | `dockTab` only synced from top-bar `setGrain` — template load / undo / redo / reset could leave Pattern active with tab hidden → empty dock | bug | `useEffect` on `config.grain` → `dockTabForGrain` |
@@ -24,7 +24,33 @@
 
 **Evidence:** suite **1326/1326** / 115 files; typecheck + lint green; authz tests for copy foreign/owned/rate-limit; shell + parity guards. SHA: `c1a9867` (+ docs commit on `main`).
 
-**Still withheld:** signed-in prod browser census / First Load re-measure (same as sprint closes).
+Keagan prod signed-in verify at `ff5eb81`: four of five Attempt-1 fixes confirmed (grain→dock toggle+redo, stock in dock, mounted-hidden panels, FINAL_LAYOUT order). **93/100** before Attempt 2 — two missed defects + docs contradiction.
+
+### Attempt 2 — score 97/100 — PASS (fix pass A–D)
+| Finding | Severity | Fix |
+|---|---|---|
+| A. `strip.label` unused in cut plan / print / shopping by-plan | bug | `toParts` → `stripDisplayName`; print Label column; `designMaterialLineName` on by-plan design lines |
+| B. Undo-to-bottom emptied Name (HISTORY_CAP dropped loaded seed; empty name in mid-stack) | bug | `HistoryState.baseline` + `trimPast` keeps loaded design as undo floor |
+| C. Metrics finished size used letter `x`; top bar used `×` | nit | Metrics → `×` |
+| D. DECISIONS_LOG upgrade-programme entry had merge conflict markers + D2 stale pro-pricing bullets + D1 “Sprint 65” mislabel | docs | Resolve conflict (keep both programme + shell IA entries); delete four stale D2 bullets; renumber D1 |
+
+**Empty name → database?** **No data loss path.** `parseConfig` / zod require `name.min(1)`; `updateBoardDesignAction` / `createBoardDesignAction` bounce invalid config before write. Empty name can exist only in in-memory history present (UX bug, now floored by baseline). Did not Save over a real design to prove — schema gate is the proof.
+
+**Part E:** No Sprint 73+; D3/D5/D7 gated — no scaffold.
+
+**Part F — still open (not verified this pass):** sticky/preview/dock live viewport numbers; 2D rotate clip + PNG export in browser; Save a copy E2E + second-account ownership. No `next dev` / measurable viewport in this agent session (`innerWidth` unavailable).
+
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | A–D delivered; E no new features; F left open |
+| Correctness & functionality (/20) | 17 | Unit + history/toParts/print/shopping tests; empty-name DB-safe; Part F browser −3 |
+| Automated test coverage (/15) | 15 | toParts labels · history baseline/undo-to-bottom · print labels · design-shopping-label · suite 1331 |
+| Security (/15) | 15 | Empty name rejected pre-write; copy ownership gate retained; conflict markers removed from DECISIONS_LOG |
+| Code quality (/10) | 10 | Shared `stripDisplayName`; baseline outside cap drop |
+| Mobile/offline (/10) | 10 | Print Label column (yard sheet); designer still desktop-only |
+| Documentation & handoff (/5) | 5 | DECISIONS_LOG D1/D2 hygiene + this scorecard |
+
+Score: **97/100** — Pass. Suite **1331/1331** / 116 files.
 
 ---
 

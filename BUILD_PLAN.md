@@ -53,11 +53,11 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 71 (2D + rotate) | ✅ **CLOSED** 2026-07-26 — **97/100**. 3D default / 2D toggle; view-only rotate; 2D PNG export. |
 | Sprint 72 (Save a copy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Dirty config → `Copy of {name}` → new id. Suite **1322/1322** / 115 files. |
 | Sprints 67–72 (Designer shell / IA) | ✅ **TRACK CLOSED** 2026-07-26. |
-| Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — tip `c1a9867`. Grain→dock sync · Cut plan badge=panel stock · copy ownership · 2D rotate clip · FINAL_LAYOUT button order. Suite **1326/1326** / 115 files. |
+| Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — Attempt 1 `c1a9867`; Attempt 2 **97/100** (strip labels · history baseline · Metrics `×` · DECISIONS_LOG D1/D2 hygiene). Suite **1331/1331** / 116 files. |
 
-Test suite — expected: **1326/1326** across **115 files** (shell IA post-close audit). Update each sprint close.
+Test suite — expected: **1331/1331** across **116 files** (shell IA audit Attempt 2). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed + post-close audit). Parked FUTURE_IDEAS 2026-07-26.
+**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed + audit Attempts 1–2). Parked FUTURE_IDEAS 2026-07-26.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -71,7 +71,7 @@ SURFACE:   src/components/designer/* · src/lib/board-designer/* · src/app/acti
 GATE:      lg+ only (DESIGNER_WIDE_MQ / Sprint 54). Narrow = NO EDIT this track.
 ORDER:     67 ✅ → 68 ✅ → 69 ✅ → 70 ✅ → 71 ✅ → 72 ✅. TRACK CLOSED.
 TRACK_DOD: 69+70 close density/IA. 71–72 = feature closes only.
-POST_CLOSE: audit `c1a9867` (2026-07-26) — grain→dock · badge/stock · copy authz · 2D clip · button order.
+POST_CLOSE: audit Attempt 1 `c1a9867` + Attempt 2 (labels · history baseline · Metrics × · DECISIONS_LOG D1/D2) — 97/100.
 FACTS:     DECISIONS_LOG 2026-07-26. Do not re-decide.
 ```
 
@@ -168,10 +168,12 @@ SHIPPED: copyBoardDesignAction; dirty config; copyDesignName; disabled without d
 AUDIT: getDesign ownership gate before create; FINAL_LAYOUT top-bar order Save → copy → shopping.
 ```
 
-**Post-close audit** ✅ CLOSED 2026-07-26 · `c1a9867`
+**Post-close audit** ✅ CLOSED 2026-07-26 · Attempt 1 `c1a9867` · Attempt 2 **97/100**
 ```
-SHIPPED: config.grain→dockTab useEffect; dock-owned cut-plan stock for badge; 2D 90/270 host
-    overflow-visible + aspect minHeight; copy authz tests; suite 1326/1326.
+SHIPPED A1: grain→dockTab; dock-owned cut-plan stock; 2D clip host; copy authz; FINAL_LAYOUT order.
+SHIPPED A2: toParts/print/shopping strip.label; history.baseline undo floor; Metrics ×;
+    DECISIONS_LOG conflict+D2/D1 hygiene. Suite 1331/1331 / 116 files.
+OPEN: Part F browser (sticky/2D export/Save-a-copy E2E) — not measured this pass.
 ```
 
 ### Sprints 53–56 — Designer polish (CLOSED).

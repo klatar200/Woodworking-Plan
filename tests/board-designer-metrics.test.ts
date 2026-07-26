@@ -107,19 +107,34 @@ describe('toParts()', () => {
     expect(parts).toHaveLength(12);
     expect(parts[0]).toMatchObject({
       id: 'g-1',
-      label: 'Walnut strip 1',
+      label: 'Strip 1',
       quantity: 1,
       thicknessIn: 1.5,
       widthIn: 1.5,
       lengthIn: 19.375,
       material: 'Walnut',
     });
-    expect(parts[1]?.label).toBe('Hard Maple strip 2');
+    expect(parts[1]?.label).toBe('Strip 2');
 
     const groups = optimize(parts, DEFAULT_OPTIONS);
     for (const g of groups) {
       expect(g.impossible).toEqual([]);
     }
+  });
+
+  it('uses strip.label in part labels; falls back to Strip n', () => {
+    const labelled = makeStrip('a', 'hard-maple');
+    labelled.label = 'Accent A';
+    const parts = toParts(
+      makeV2Config({
+        grain: 'edge',
+        panels: [makePanel('panel-1', 'Panel 1', 1.5, [labelled, makeStrip('b', 'walnut')])],
+        rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+        rowCount: 1,
+      }),
+    );
+    expect(parts[0]?.label).toBe('Accent A');
+    expect(parts[1]?.label).toBe('Strip 2');
   });
 });
 

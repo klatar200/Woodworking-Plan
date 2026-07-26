@@ -88,11 +88,39 @@ describe('designer print route', () => {
     expect(html).toContain('18&quot; × 18&quot; × 1 1/2&quot;');
     expect(html).toContain('Walnut');
     expect(html).toContain('Hard Maple');
+    expect(html).toContain('Strip 1');
+    expect(html).toContain('data-label="Label"');
     expect(html).toContain('4.18 bd ft');
     expect(html).toContain('12');
     expect(html).toContain('Slices');
     expect(html).not.toContain('leftover');
     expect(html).not.toMatch(/\bNaN\b|undefined|\$/);
+  });
+
+  it('print strip table shows custom labels and Strip n fallback', async () => {
+    const labelled = makeStrip('a', 'hard-maple');
+    labelled.label = 'Accent A';
+    const config = makeV2Config({
+      name: 'Label sheet',
+      grain: 'edge',
+      panels: [makePanel('panel-1', 'Panel 1', 1.5, [labelled, makeStrip('b', 'walnut')])],
+      rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+      rowCount: 1,
+    });
+    const { getDesign } = await import('@/lib/board-designs');
+    vi.mocked(getDesign).mockResolvedValue({
+      id: 'design-label',
+      name: 'Label sheet',
+      config,
+      createdAt: new Date('2026-07-25T00:00:00Z'),
+      updatedAt: new Date('2026-07-25T00:00:00Z'),
+    });
+    const { default: PrintPage } = await import('@/app/designer/[id]/print/page');
+    const html = renderToStaticMarkup(
+      await PrintPage({ params: Promise.resolve({ id: 'design-label' }) }),
+    );
+    expect(html).toContain('Accent A');
+    expect(html).toContain('Strip 2');
   });
 
   it('keeps print-only constraints in source and CSS', () => {

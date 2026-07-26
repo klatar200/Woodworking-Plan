@@ -28,7 +28,7 @@ export function MetricsPanel({
       <dl className="m-0 grid grid-cols-[minmax(0,1fr)_auto] gap-x-[1rem] gap-y-[0.625rem] text-[0.9375rem]">
         <dt className="text-muted">Finished</dt>
         <dd className="m-0 font-bold">
-          {formatInches(metrics.finishedLengthIn)} x {formatInches(metrics.finishedWidthIn)} x{' '}
+          {formatInches(metrics.finishedLengthIn)} × {formatInches(metrics.finishedWidthIn)} ×{' '}
           {formatInches(metrics.finishedThicknessIn)}
         </dd>
         <dt className="text-muted">Total board feet</dt>

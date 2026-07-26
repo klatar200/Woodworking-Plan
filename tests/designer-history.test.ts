@@ -79,8 +79,9 @@ describe('designer history reducer', () => {
     expect(historyReducer(atEnd, { type: 'redo' })).toBe(atEnd);
   });
 
-  it('caps past at HISTORY_CAP and drops the oldest entry', () => {
+  it('caps past at HISTORY_CAP but keeps the loaded baseline as undo floor', () => {
     let state = createHistoryState(base);
+    expect(state.baseline.name).toBe('Start');
     for (let i = 0; i < HISTORY_CAP + 5; i += 1) {
       state = historyReducer(state, {
         type: 'patch',
@@ -89,9 +90,52 @@ describe('designer history reducer', () => {
       state = historyReducer(state, { type: 'commit-coalesce' });
     }
     expect(state.past).toHaveLength(HISTORY_CAP);
-    // Oldest kept snapshot is after the first 5 dropped edits (names n-0..n-4 gone).
-    expect(state.past[0]!.name).toBe('n-4');
+    // Floor is always the opened design — never a mid-edit empty/partial name.
+    expect(state.past[0]!.name).toBe('Start');
+    expect(configsEqual(state.past[0]!, state.baseline)).toBe(true);
     expect(state.present.name).toBe(`n-${HISTORY_CAP + 4}`);
+  });
+
+  it('opening a saved design seeds baseline; undo-to-bottom restores name/grain/strips', () => {
+    const loaded = makeV2Config({
+      name: 'verify-51',
+      grain: 'end',
+      panels: [
+        makePanel('panel-1', 'Panel 1', 1.5, [
+          makeStrip('s1', 'hard-maple'),
+          makeStrip('s2', 'walnut', 1),
+        ]),
+      ],
+      rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+      rowCount: 1,
+    });
+    let state = createHistoryState(loaded);
+    expect(configsEqual(state.present, loaded)).toBe(true);
+    expect(configsEqual(state.baseline, loaded)).toBe(true);
+
+    state = apply(
+      state,
+      { type: 'patch', patch: { name: '' } },
+      { type: 'commit-coalesce' },
+      { type: 'add-strip', panelId: 'panel-1' },
+      {
+        type: 'update-strip',
+        panelId: 'panel-1',
+        id: 's1',
+        patch: { label: 'Accent A' },
+      },
+      { type: 'commit-coalesce' },
+    );
+    expect(state.present.name).toBe('');
+    expect(stripsOf(state.present)).toHaveLength(3);
+
+    while (canUndo(state)) {
+      state = apply(state, { type: 'undo' });
+    }
+    expect(state.present.name).toBe('verify-51');
+    expect(state.present.grain).toBe('end');
+    expect(stripsOf(state.present).map((s) => s.id)).toEqual(['s1', 's2']);
+    expect(configsEqual(state.present, loaded)).toBe(true);
   });
 
   it('coalesced width typing collapses to one undo step', () => {

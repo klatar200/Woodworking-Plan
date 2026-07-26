@@ -51,7 +51,7 @@ describe('DesignerShell static render', () => {
 
     expect(visible).toContain('Board designer');
     expect(visible).toContain('Finished');
-    expect(visible).toContain('18&quot; x 18&quot; x 1 1/2&quot;');
+    expect(visible).toContain('18&quot; × 18&quot; × 1 1/2&quot;');
     expect(visible).not.toMatch(/\bNaN\b|undefined|\$/);
   });
 

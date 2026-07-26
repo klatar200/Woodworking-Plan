@@ -4,6 +4,7 @@ import {
   DESIGN_LUMBER_UNIT,
   designBoardFeetBySpecies,
 } from '@/lib/board-designer/design-board-feet';
+import { designMaterialLineName } from '@/lib/board-designer/design-shopping-label';
 import { parseConfig } from '@/lib/board-designer/serialize';
 import type { Prisma } from '@prisma/client';
 
@@ -427,8 +428,10 @@ export async function getShoppingList(): Promise<ShoppingList> {
       slug: `designer/${design.id}`,
       title: design.name,
     };
+    // By-plan lines carry strip labels so the sheet matches the editor; merged
+    // materials stay bare species names (exact matcher / cross-plan aggregate).
     const lines: ShoppingListLine[] = feet.map((row) => ({
-      name: row.name,
+      name: designMaterialLineName(parsed.config, row.speciesId, row.name),
       unit: DESIGN_LUMBER_UNIT,
       species: null,
       quantity: row.boardFeet,

@@ -33,6 +33,7 @@
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
 - **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs; inactive **mounted/hidden**); tab badges; Reset + shopping list; Pattern = row pattern only; grain→edge switches tab to Templates; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy = dirty config, name `Copy of {name}` → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. Agent contract in BUILD_PLAN §4. See dated entries.
+- **Designer upgrade programme (2026-07-26):** D2 **NO lumber pricing** (estimated or otherwise) — `format.test` unmodified; D1 material-math authorised but **unscheduled** (not Sprint 65); D3/D5/D7 gated on BUSINESS_PLAN + §4 — do not scaffold. See dated entry.
 
 _(Full history below, chronological.)_
 
@@ -1837,28 +1838,20 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 
 **Naming.** Unit `"board feet"` (preferred `BOARD_FEET_UNITS` spelling). Name = species display name; `species` null (catalog column always null). Kreg catalog uses unit `"board"` for piece counts — different semantic; exact matcher must not be loosened.
 
-<<<<<<< HEAD
 ### 2026-07-26 — Designer upgrade programme: four decisions (COMPETITIVE_AUDIT_CBD.md)
 **Status:** Confirmed by Keagan. Source: audit of cuttingboarddesigner.com (owner granted permission to use observed data; behaviour/algorithms/constants only, **not** assets).
 
-**D1 — Sprint 65 scope.** A1–A4 material-math rework. Our model computes finished volume × `(1 + wasteFactor)`; a flat percentage cannot scale with cut count (12 × 1″ strips need ~29% for kerf + planing vs our 15%; 5 wide strips need ~14%). Replace with a computed allowance: add `planeBuffer` (default 0.175″) applied at every glue-up stage, `(n−1) × kerf` across strip widths, and retain `wasteFactor` for defects/snipe only. `wasteFactor` UI label changes accordingly. This is a rework of an existing defect, **not** a new feature — no BUSINESS_PLAN addition required.
+**D1 — Material-math rework (A1–A4). Authorised; sprint number provisional — not Sprint 65.** Our model computes finished volume × `(1 + wasteFactor)`; a flat percentage cannot scale with cut count (12 × 1″ strips need ~29% for kerf + planing vs our 15%; 5 wide strips need ~14%). Replace with a computed allowance: add `planeBuffer` (default 0.175″) applied at every glue-up stage, `(n−1) × kerf` across strip widths, and retain `wasteFactor` for defects/snipe only. `wasteFactor` UI label changes accordingly. This is a rework of an existing defect, **not** a new feature — no BUSINESS_PLAN addition required. **Renumber note (2026-07-26):** Sprint 65 shipped library thumbnails + strip drag reorder (BUILD_PLAN); A1–A4 remains authorised and **unscheduled** until Keagan opens a §4 sprint for it. Do not treat “Sprint 65” in earlier drafts of this entry as binding.
 
 **D2 — Cost display (ESC-1). RESOLVED: NO lumber pricing, estimated or otherwise.**
 
-History, kept because the process matters: Keagan first answered *"offer our estimation and allow the user to overwrite via the settings."* That answer was given against an incompletely framed question — it cited only the `format.test` assertion, not BUSINESS_PLAN line 30 (*"no PRO paywall / dollar lumber UI"*, the designer's own entry), BUILD_PLAN §4 line 73 (*"Do-NOT-build (decided out): dollar figures/per-material prices"*), or FUTURE_IDEAS line 8 (estimator parked for producing *"confidently-wrong prices"*). On being shown those, Keagan 2026-07-26: **"let's not include lumber pricing - even estimated."**
+History, kept because the process matters: Keagan first answered *"offer our estimation and allow the user to overwrite via the settings."* That answer was given against an incompletely framed question — it cited only the `format.test` assertion, not BUSINESS_PLAN line 30 (*"no PRO paywall / dollar lumber UI"*, the designer's own entry), BUILD_PLAN §4 (*"Do-NOT-build (decided out): dollar figures/per-material prices"*), or FUTURE_IDEAS line 8 (estimator parked for producing *"confidently-wrong prices"*). On being shown those, Keagan 2026-07-26: **"let's not include lumber pricing - even estimated."** The superseded pro-pricing “Consequences, accepted” bullets (settings override required, dated disclaimer, “Scope that assertion”) were deleted 2026-07-26 so this entry states one position.
 
 **Decision.** Tiers-only stands unchanged across every surface, designer included. `formatCents`/`formatCostRange` stay deleted; `format.test` keeps its absence assertion **unmodified** — no scoping, no exception. `Material.costCents` / `Plan.costMin/MaxCents` remain as tier inputs only. No $/bf table, no per-species prices, no cost settings.
 
-**Consequences.** COMPETITIVE_AUDIT_CBD.md item D2 → DO-NOT-BUILD (not deferred). The reference site's price table in that spec is competitive record only and must not be seeded anywhere. BUSINESS_PLAN line 30, BUILD_PLAN line 73, CLAUDE.md §7 and FUTURE_IDEAS line 8 all stand as written — **no document needs amending.**
+**Consequences.** COMPETITIVE_AUDIT_CBD.md item D2 → DO-NOT-BUILD (not deferred). The reference site's price table in that spec is competitive record only and must not be seeded anywhere. BUSINESS_PLAN, BUILD_PLAN, CLAUDE.md §7 and FUTURE_IDEAS all stand as written — **no document needs amending.** Not monetization; Vercel Hobby launch gate unaffected.
 
-Consequences, accepted:
-- We are making an implicit pricing claim. Defaults go stale and lumber prices vary widely by region and supplier — any default is arbitrary for a given user. The override is what makes it honest, so the settings path is **not optional**; it ships with the defaults, not after.
-- Requires a dated disclaimer ("estimates, last reviewed <date>") and a documented refresh procedure. Without those this becomes an unmaintained pricing claim.
-- `format.test` asserts `formatCents`/`formatCostRange` are absent. **Scope that assertion; do not delete it.**
-- **Assumption pending contradiction:** designer surfaces only. Catalog, plan pages, materials, shopping list and print stay tiers-only (`$`…`$$$$$`). The tiers-only invariant is otherwise unchanged.
-- Not monetization; Vercel Hobby launch gate unaffected.
-
-**D3 — Wood textures (ESC-5).** Procedural generation from species colour + noise. $0, entirely ours, no licensing exposure. The reference site's textures are licensed from wood-database.com and are **not** ours to redistribute — do not copy their image files or URLs. Sprite sheet (F5) is therefore unnecessary. A licensed set remains a later upgrade if procedural proves insufficient.
+**D3 — Wood textures (ESC-5).** Procedural generation from species colour + noise. $0, entirely ours, no licensing exposure. The reference site's textures are licensed from wood-database.com and are **not** ours to redistribute — do not copy their image files or URLs. Sprite sheet (F5) is therefore unnecessary. A licensed set remains a later upgrade if procedural proves insufficient. **Gated:** not in BUSINESS_PLAN / BUILD_PLAN §4 — do not scaffold until Keagan adds it.
 
 **D4 — Public/anonymous designer (ESC-2).** Deferred until after the DSL and generator refactor land. The compact serialisation that makes share URLs viable depends on the DSL anyway. Security surface unchanged for now; revisiting requires a `src/lib/public-routes.ts` allowlist entry (fails closed by design) plus SW cache-policy work.
 
@@ -1866,11 +1859,11 @@ Consequences, accepted:
 - `Strip.repeat` in the pattern DSL → extend the grammar to `3x1.5M` rather than expanding to repeated tokens. Expansion loses authoring intent and would fail the lossless round-trip acceptance criterion.
 - Species physical data source → **USDA Wood Handbook** (public domain, authoritative for density, shrinkage, Janka). Former ESC-8 dissolved.
 
-**D5 — Scope authorised (ESC-3).** Keagan adds to BUSINESS_PLAN: **build steps** and a **global settings page**. NOT authorised: new board styles (Chevron/Pinwheel/Bubble/Weave) and the standalone domain-intelligence items. Those stay out of scope until separately added.
+**D5 — Scope authorised (ESC-3).** Keagan adds to BUSINESS_PLAN: **build steps** and a **global settings page**. NOT authorised: new board styles (Chevron/Pinwheel/Bubble/Weave) and the standalone domain-intelligence items. Those stay out of scope until separately added. **Until BUSINESS_PLAN + BUILD_PLAN §4 list them, do not scaffold, spike, or prepare.**
 
 **D6 — Mobile (ESC-6). CLOSED: designer is permanently desktop-only.** Sprint 54's `lg` gate and its byte-exact notices stand indefinitely. COMPETITIVE_AUDIT_CBD.md item I3 → DO-NOT-BUILD. Every designer sprint budgets the scorecard cat-6 (Mobile/offline /10) loss explicitly, as Sprint 54 did; the read-only narrow surface plus the print sheet remain the mobile story.
 
-**D7 — Workshop safety guidance: APPROVED**, framed as general practice rather than instruction, sourced from the USDA Wood Handbook (public domain). Covers end-grain planing caution, dust sensitisation on exotic species, and wood-movement advisories.
+**D7 — Workshop safety guidance: APPROVED**, framed as general practice rather than instruction, sourced from the USDA Wood Handbook (public domain). Covers end-grain planing caution, dust sensitisation on exotic species, and wood-movement advisories. **Gated with D5 build steps** — not a standalone feature; do not build until build steps are in BUSINESS_PLAN / §4.
 
 **Scope note on D5/D7 (agent resolution, flag if wrong).** D7 approves safety guidance but D5 did not add domain guidance to BUSINESS_PLAN. Resolved as: safety content ships **as part of build steps**, not as a standalone feature. A generated procedure that says "plane the board" without noting end-grain planing risk is incomplete, so the caution is intrinsic to the authorised deliverable. Standalone domain items with no build-step home — board weight, Janka display, thickness gates, value-contrast check, size presets, symmetry helpers — remain unauthorised.
 
@@ -1878,8 +1871,8 @@ Consequences, accepted:
 
 **D8 — Cadence.** Consecutive designer sprints (65 onward) as one programme.
 
-**Still open:** none blocking. ESC-7 (metric) closed as already-decided — BUILD_PLAN §4 line 72 and FUTURE_IDEAS line 11 both rule it out; A6/C19 → DO-NOT-BUILD.
-=======
+**Still open:** none blocking. ESC-7 (metric) closed as already-decided — BUILD_PLAN §4 and FUTURE_IDEAS both rule it out; A6/C19 → DO-NOT-BUILD.
+
 ### 2026-07-26 — Designer shell & IA track (Sprints 67–72)
 **Status:** Confirmed by Keagan (answers to clarifying Q1–Q14).
 
@@ -1931,4 +1924,3 @@ Consequences, accepted:
 1. **Save a copy name:** `Copy of {current name}`, trimmed to max 80.
 2. **Grain Edge while Pattern tab active:** auto-select Templates (Pattern hidden for edge).
 3. **Inactive dock tabs:** stay **mounted**, hide inactive — preserves Cut plan stock L/W local state.
->>>>>>> ff5eb816d4650df90037b2268557c5c2178c6da9

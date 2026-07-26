@@ -75,7 +75,7 @@ describe('designCutPlan', () => {
     expect(impossible.length).toBeGreaterThan(0);
     expect(impossible.every((p) => p.lengthIn === 90)).toBe(true);
     // Parts still appear — not filtered out of the plan.
-    expect(impossible.map((p) => p.label).join(' ')).toMatch(/Walnut|Hard Maple/);
+    expect(impossible.map((p) => p.label).join(' ')).toMatch(/Strip \d+/);
   });
 
   it('totalBoards reflects physical boards, not ripped lanes', () => {
@@ -202,7 +202,7 @@ describe('OptimizerPanel render', () => {
       }),
     );
     expect(html).toMatch(/do not fit/);
-    expect(html).toMatch(/Walnut strip|Hard Maple strip/);
+    expect(html).toMatch(/Strip \d+/);
     expect(html).toMatch(/longer than/i);
   });
 });

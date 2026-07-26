@@ -5,6 +5,7 @@ import { requireUser } from '@/lib/auth';
 import { getDesign } from '@/lib/board-designs';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
+import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import type { MiterCorner } from '@/lib/board-designer/types';
 import { BoardDiagram } from '@/components/designer/board-diagram';
 import { formatInches, formatBoardFeet } from '@/lib/format';
@@ -105,6 +106,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
               <thead>
                 <tr>
                   <th scope="col">#</th>
+                  <th scope="col">Label</th>
                   <th scope="col">Species</th>
                   <th scope="col" className="numeric">
                     Width
@@ -124,6 +126,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
                     <td className="numeric" data-label="#">
                       {index + 1}
                     </td>
+                    <td data-label="Label">{stripDisplayName(strip, index)}</td>
                     <td data-label="Species">
                       {speciesName(strip.speciesId, metrics)}
                     </td>
