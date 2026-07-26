@@ -56,29 +56,33 @@ Test suite — expected: **1307/1307** across **113 files** (Sprint 66 Attempt 2
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
-### Sprints 67–72 — Designer shell & information architecture (COMMISSIONED 2026-07-26)
+### Sprints 67–72 — Designer shell & information architecture (COMMISSIONED 2026-07-26; quality amendments 2026-07-26)
 
-**Hard rule — data parity:** Relayout only. **No** Metrics / Cut plan / Row pattern / Settings / panel / strip field may be removed or summarized away. Optional summary chips are additive. Dock tab bodies = **full** current panel content in a scroll region.
+**Hard rule — data parity:** Relayout only. **No** Metrics / Cut plan / Row pattern / Settings / panel / strip field may be removed or summarized away. Optional summary chips are additive. Dock tab bodies = **full** current panel content in a scroll region. **No empty/stub tab bodies on `main`.**
 
 **Target layout (desktop `lg+` only; narrow unchanged per Sprint 54):**
 ```
-Top bar: Name · Edge/End · size · Undo/Redo · Save · Save a copy · Board settings (⋯ kerf/waste/length)
-Left sticky column (preview + dock as one sticky block; each dock card scrolls internally if overflow):
-  Preview (max-width ~1200px; surplus width → strip rail) · 3D default / 2D toggle · view-only rotate · Export PNG
-  Dock tabs: Templates | Pattern (= Row pattern only; hide/empty for edge) | Metrics | Cut plan
-Right flex rail: panel folders → nested strips (directory) + selected-strip detail
+Top bar: Name · Edge/End · size · Undo/Redo · Reset · Save · Save a copy · Add to shopping list · Board settings (⋯)
+Left sticky column (preview + dock; max-h ≈ viewport; preview height-capped so dock stays usable):
+  Preview (max-width ~1200px; max-height ~50–55vh; surplus width → strip rail)
+    · 3D default / 2D toggle · view-only rotate · Export PNG (2D has its own export path)
+  Dock tabs: Templates | Pattern (= Row pattern only; hide for edge) | Metrics [badge] | Cut plan [badge]
+    each tab panel: min-height ≥ ~12rem, overflow-y auto inside sticky budget
+Right flex rail: panel folders (add/label/thickness on folder header) → nested strips + selected-strip detail
 ```
 
-**Settled calls (Keagan 2026-07-26):** dock = full panels (1A) · alerts only in their tab (2B) · Board settings in top-bar disclosure (3A) · Pattern = row pattern only (4A) · Photoshop panel folders (5A) · sticky preview+dock; per-card internal scroll (6B) · Cut plan **expanded** inside its tab (7) · default tab Pattern if end else Templates (8C) · 2D rotate view-only (9A) · Save a copy → new id + navigate (10A) · optional strip labels (11A) · desktop-only (12A) · deferred items → FUTURE_IDEAS (13) · no field retirement (14).
+**Settled calls (Keagan 2026-07-26):** dock = full panels (1A) · alert **copy** only in its tab (2B) + **tab badges** when Metrics has warnings / Cut plan has impossible parts · Board settings top-bar disclosure (3A) · Pattern = row pattern only (4A) · panel folders (5A) · sticky preview+dock; per-card internal scroll (6B) · Cut plan expanded in-tab (7) · default tab Pattern if end else Templates (8C) · 2D rotate view-only (9A) · Save a copy → new id + navigate; clones **current in-memory (dirty) config**; original row last-saved unchanged (10A + dirty-A) · optional strip labels (11A) · desktop-only (12A) · deferred → FUTURE_IDEAS (13) · no field retirement (14).
+
+**Track DoD:** density/IA goals met after **69 + 70**; **71–72** are feature closes on that shell. Every sprint: First Load must not regress three.js into the initial designer chunk (Sprint 55 lesson); dock tabs keyboard + `aria-selected`; browser verify sticky/dock scroll/ultrawide cap/edge vs end default tab.
 
 | Sprint | Scope | Parity / gates |
 |---|---|---|
-| **67 — Shell** | Top bar (name, grain, size, undo/redo/save); preview `max-width` ~1200px; surplus → editor rail; sticky **preview+dock** column; dock tab chrome (bodies can be stubs that still mount full panels); Board settings `⋯` holds kerf / waste % / panel length / slice thickness with unit labels | Settings fields still editable · Templates not under sticky-alone orphan · First Load watch |
-| **68 — Dock bodies** | Wire full Templates, Row pattern, Metrics, Cut plan into tabs; Pattern tab hidden or inert for edge grain; Cut plan opens expanded in-tab; each tab panel `overflow-y: auto` within sticky budget | **Metrics parity:** finished L×W×T, total bd ft, warnings, panel table, end-grain slice note, by-species. **Cut plan parity:** stock L/W, buy count, impossible alert, BoardBars, yield, cut lists. **Pattern parity:** full row-pattern editor |
-| **69 — Strip layers** | Optional `strip.label` (additive schema); rename in directory; panel folders + nested strips; selection highlight; stronger reorder ghost | Strip editor fields unchanged (species, width″, repeat, miter) · panel add/delete/label/thickness stay |
-| **70 — Literacy** | Tooltips + visible units on every numeric/control (kerf″, waste %, length″, width″, …) — designer-local only | No profile UOM (parked) |
-| **71 — 2D + rotate** | Explicit 3D (default) / 2D toggle via existing `BoardDiagram`; view-only 0/90/180/270 | Does not mutate strip order · 3D remains product default |
-| **72 — Save a copy** | Clone saved design → new `BoardDesign` → navigate `/designer/[newId]`; original untouched | Requires existing saved id (unsaved: Save first or disable) |
+| **67 — Shell** | Top bar (name, grain, size, Undo/Redo/**Reset**/Save; shopping-list control when saved); preview `max-width` ~1200px + **max-height ~50–55vh**; surplus width → editor rail; sticky **preview+dock** with dock `min-height` ≥ ~12rem; dock tab chrome with **full panels already mounted** (no stubs); Board settings `⋯` = kerf / waste % / panel length / slice thickness with unit suffixes | Settings still editable · Templates inside sticky dock (not orphaned) · Reset + shopping list not lost · First Load watch |
+| **68 — Dock polish** | Tabs wired/labeled; Pattern **hidden** for edge grain; Cut plan expanded in-tab (drop outer `<details>` or force open); per-tab `overflow-y: auto`; **badges** on Metrics/Cut plan tab labels when warnings/impossible | **Parity test required** (source or RTL): Metrics = finished L×W×T, total bd ft, warnings, panel table, end-grain slice note, by-species · Cut plan = stock L/W, buy count, impossible alert, BoardBars, yield, cut lists · Pattern = full row-pattern editor · Templates = full picker |
+| **69 — Strip layers** | Optional `strip.label` (additive); rename in directory; **panel folders own** add/delete/label/thickness; nested strips; selection highlight; stronger reorder ghost; selected-strip detail (species, width″, repeat, miter) | Strip/panel fields unchanged in meaning · print may show label when present |
+| **70 — Literacy** | Tooltips (kerf, waste allowance, …) + visible units on every control — designer-local only | No profile UOM (parked) · closes density/IA track DoD with 69 |
+| **71 — 2D + rotate** | Explicit 3D (default) / 2D toggle via `BoardDiagram`; view-only 0/90/180/270; **Export PNG works in 2D** (or disabled with explicit reason) | Does not mutate strip order |
+| **72 — Save a copy** | From current **in-memory config** → `createDesign` → navigate `/designer/[newId]`; original id’s last-saved row untouched | Never-saved draft: disable or Save first · rate-limit/guardAction |
 
 **Do not fold into 67–72:** site-wide UOM · in-app multi-design tabs · share links · custom species (FUTURE_IDEAS) · dark re-palette · advanced templates (hex lattice etc., still deferred).
 

@@ -32,7 +32,7 @@
 - **Designer species expansion (2026-07-26):** append exactly seven ids after the original eight (yellowheart, bloodwood, beech, ash, birch, hickory, bamboo) with the stated hexes; min pairwise distance floor 0.127; B13/B14 hold; `schemaVersion` stays 1. See dated entry.
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
-- **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview cap ~1200px; sticky preview+dock with per-card internal scroll; dock tabs = full Metrics/Cut plan/Templates/Row pattern (no field loss); Pattern = row pattern only; panel folders; Board settings disclosure for kerf/waste/length; 3D default + view-only 2D rotate; Save a copy → new id; desktop-only; site-wide UOM / in-app tabs / share / custom species → FUTURE_IDEAS. See dated entry.
+- **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs); tab badges for warnings/impossible; Reset + shopping list kept; Pattern = row pattern only; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy clones **dirty in-memory** config → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. See dated entries.
 
 _(Full history below, chronological.)_
 
@@ -1852,12 +1852,26 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 7. Cut plan **starts expanded** inside its tab (tab selection implies intent).
 8. Default dock tab = **Pattern if end grain, else Templates**.
 9. 2D rotate is **view-only** (0/90/180/270 display); does not mutate design orientation / strip order. **3D remains the default** preview (BUSINESS_PLAN differentiator).
-10. **Save a copy** clones a saved design to a new `BoardDesign` and navigates to `/designer/[newId]`; original unchanged.
+10. **Save a copy** creates a new `BoardDesign` from the **current in-memory (dirty) config** and navigates to `/designer/[newId]`; the original row’s last-saved config is untouched. (Confirmed dirty-A 2026-07-26.)
 11. Strip **labels optional**; fallback `Strip n` / species display.
 12. Track is **desktop `lg+` only**; narrow/mobile stays Sprint 54 read-only plan/cut list.
 13. Deferred to FUTURE_IDEAS (do not build in 67–72): site-wide profile UOM · in-app multi-design tabs · designer share links · custom species.
 14. No field retirement.
 
-**Preview cap.** Preview column max-width ~1200px; surplus viewport width widens the strip/editor rail (multi-panel visibility).
+**Preview cap.** Preview column max-width ~1200px **and** max-height ~50–55vh so the dock remains usable; surplus viewport **width** widens the strip/editor rail. Dock tab panels `min-height` ≥ ~12rem with internal scroll.
 
 **Not commissioned:** dark-theme re-palette (still separate).
+
+### 2026-07-26 — Designer shell quality amendments (post-audit)
+**Status:** Confirmed by Keagan (Save-a-copy dirty-A; apply audit amendments A–I).
+
+**Amendments to the 67–72 commission:**
+- **A.** No stub/empty dock tab bodies on `main` — full panels stay mounted from Sprint 67.
+- **B.** Preview height-capped (~50–55vh) + dock `min-height` ≥ ~12rem; per-tab internal scroll inside sticky budget.
+- **C.** Metrics / Cut plan **tab badges** when warnings / impossible parts exist (alert **copy** still only inside the tab — honors 2B).
+- **D.** Top bar keeps **Reset** and **Add to shopping list** (saved designs).
+- **E.** Sprint 69 owns panel add/delete/label/thickness on folder headers.
+- **F.** Save a copy = **current dirty config** → new design → navigate (original last-saved unchanged).
+- **G.** Sprint 71: Export PNG must work in 2D (or be explicitly disabled with reason).
+- **H.** Mandated parity test (68+) · per-sprint browser DoD · First Load must not pull three.js into initial chunk · dock tab a11y.
+- **I.** Track density/IA DoD = through Sprint **70**; 71–72 are feature closes.
