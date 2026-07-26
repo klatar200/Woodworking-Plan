@@ -1,5 +1,6 @@
 import type {
   BoardDesignConfig,
+  MiterCorner,
   Panel,
   RowStep,
   RowTransform,
@@ -8,6 +9,23 @@ import type {
 
 function strip(id: string, speciesId: string, widthIn: number): Strip {
   return { id, speciesId, widthIn, repeat: 1 };
+}
+
+function miteredStrip(
+  id: string,
+  speciesId: string,
+  widthIn: number,
+  wedgeSpeciesId: string,
+  angleDeg: number,
+  corner: MiterCorner,
+): Strip {
+  return {
+    id,
+    speciesId,
+    widthIn,
+    repeat: 1,
+    miter: { speciesId: wedgeSpeciesId, angleDeg, corner },
+  };
 }
 
 function panel(
@@ -316,6 +334,41 @@ export const TEMPLATES: readonly BoardTemplate[] = [
         step('course', 'none'),
         step('course', 'rot180'),
       ],
+      rowCount: 8,
+    },
+  },
+  {
+    /**
+     * Hexagon lattice — verified 2026-07-26 against cellsColorClosed:
+     * same base (maple) + walnut wedge @ 30°, corners alternating tr/tl,
+     * rowPattern [none, mirrorY]. Closes colour-continuously; a 1″ panel
+     * control with the same strips fails the same helper.
+     */
+    id: 'hexagon',
+    config: {
+      ...BASE,
+      name: 'Hexagon',
+      grain: 'end',
+      sourceLengthIn: 20,
+      sliceThicknessIn: 1.5,
+      panels: [
+        panel(
+          'course',
+          'Course',
+          1.5,
+          Array.from({ length: 8 }, (_, i) =>
+            miteredStrip(
+              `hx-${i + 1}`,
+              'hard-maple',
+              0.875,
+              'walnut',
+              30,
+              i % 2 === 0 ? 'tr' : 'tl',
+            ),
+          ),
+        ),
+      ],
+      rowPattern: [step('course', 'none'), step('course', 'mirrorY')],
       rowCount: 8,
     },
   },

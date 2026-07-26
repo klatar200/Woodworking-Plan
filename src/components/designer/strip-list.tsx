@@ -1,11 +1,22 @@
+import {
+  closingThicknessIn,
+  thicknessMismatchesClose,
+} from '@/lib/board-designer/miter-geometry';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
-import type { Grain, Strip } from '@/lib/board-designer/types';
+import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 import type { ChangeEvent } from 'react';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
+
+const CORNER_OPTIONS: { value: MiterCorner; label: string }[] = [
+  { value: 'tl', label: 'Top left' },
+  { value: 'tr', label: 'Top right' },
+  { value: 'bl', label: 'Bottom left' },
+  { value: 'br', label: 'Bottom right' },
+];
 
 /** Labels follow the top-face diagram axes (layout.ts), never the orbit camera. */
 export function stripMoveLabels(grain: Grain): { earlier: string; later: string } {
@@ -18,6 +29,7 @@ export function stripMoveLabels(grain: Grain): { earlier: string; later: string 
 export function StripList({
   grain,
   strips,
+  panelThicknessIn,
   onAdd,
   onDuplicate,
   onDelete,
@@ -27,6 +39,7 @@ export function StripList({
 }: {
   grain: Grain;
   strips: Strip[];
+  panelThicknessIn: number;
   onAdd: () => void;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
@@ -166,13 +179,24 @@ export function StripList({
                     />
                   </label>
                 </div>
+
+                <MiterControls
+                  strip={strip}
+                  panelThicknessIn={panelThicknessIn}
+                  onUpdate={onUpdate}
+                  onCommitCoalesce={onCommitCoalesce}
+                />
               </div>
             </li>
           ))}
         </ol>
       )}
 
-      {strips.some((strip) => !getSpecies(strip.speciesId)) && (
+      {strips.some(
+        (strip) =>
+          !getSpecies(strip.speciesId) ||
+          (strip.miter && !getSpecies(strip.miter.speciesId)),
+      ) && (
         <p className="mt-[0.75rem] mb-0 text-[0.875rem] text-muted">
           Unknown wood uses the fallback swatch.
           <span
@@ -182,6 +206,143 @@ export function StripList({
           />
         </p>
       )}
+    </div>
+  );
+}
+
+function MiterControls({
+  strip,
+  panelThicknessIn,
+  onUpdate,
+  onCommitCoalesce,
+}: {
+  strip: Strip;
+  panelThicknessIn: number;
+  onUpdate: (id: string, patch: Partial<Strip>) => void;
+  onCommitCoalesce: () => void;
+}) {
+  const enabled = Boolean(strip.miter);
+  const miter: Miter = strip.miter ?? {
+    speciesId: strip.speciesId === 'walnut' ? 'hard-maple' : 'walnut',
+    angleDeg: 30,
+    corner: 'tr',
+  };
+  const ideal = closingThicknessIn(strip.widthIn, miter.angleDeg);
+  const mismatch =
+    enabled &&
+    thicknessMismatchesClose(strip.widthIn, panelThicknessIn, miter.angleDeg);
+
+  return (
+    <div className="grid gap-[0.75rem] rounded-[0.375rem] border border-border/80 p-[0.75rem]">
+      <label className="flex min-h-[2.75rem] items-center gap-[0.625rem]">
+        <input
+          type="checkbox"
+          className="h-[1.25rem] w-[1.25rem]"
+          name={`strip-${strip.id}-mitered`}
+          checked={enabled}
+          onChange={(event) => {
+            if (event.currentTarget.checked) {
+              onUpdate(strip.id, { miter: { ...miter } });
+            } else {
+              onUpdate(strip.id, { miter: undefined });
+            }
+          }}
+        />
+        <span className="text-[0.875rem] font-bold">Mitered</span>
+      </label>
+
+      {enabled ? (
+        <>
+          <label className="grid gap-[0.375rem]">
+            <span className="text-[0.875rem] font-bold">Wedge species</span>
+            <div className="flex min-w-0 items-center gap-[0.5rem]">
+              <span
+                aria-hidden="true"
+                className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
+                style={{
+                  backgroundColor:
+                    getSpecies(miter.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
+                }}
+              />
+              <select
+                className={`${inputControl} min-w-0 flex-1`}
+                name={`strip-${strip.id}-miter-speciesId`}
+                value={miter.speciesId}
+                onChange={(event) =>
+                  onUpdate(strip.id, {
+                    miter: { ...miter, speciesId: event.currentTarget.value },
+                  })
+                }
+              >
+                {!getSpecies(miter.speciesId) && (
+                  <option value={miter.speciesId} disabled>
+                    {miter.speciesId}
+                  </option>
+                )}
+                {SPECIES.map((species) => (
+                  <option key={species.id} value={species.id}>
+                    {species.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
+
+          <div className="grid gap-[0.75rem] sm:grid-cols-2">
+            <label className="grid gap-[0.375rem]">
+              <span className="text-[0.875rem] font-bold">Angle (°)</span>
+              <input
+                className={inputControl}
+                name={`strip-${strip.id}-miter-angleDeg`}
+                type="number"
+                min={5}
+                max={85}
+                step={0.5}
+                value={miter.angleDeg}
+                onChange={(event) =>
+                  onUpdate(strip.id, {
+                    miter: {
+                      ...miter,
+                      angleDeg: boundedNumber(event, 5, 85),
+                    },
+                  })
+                }
+                onBlur={() => onCommitCoalesce()}
+              />
+            </label>
+            <label className="grid gap-[0.375rem]">
+              <span className="text-[0.875rem] font-bold">Corner</span>
+              <select
+                className={inputControl}
+                name={`strip-${strip.id}-miter-corner`}
+                value={miter.corner}
+                onChange={(event) =>
+                  onUpdate(strip.id, {
+                    miter: {
+                      ...miter,
+                      corner: event.currentTarget.value as MiterCorner,
+                    },
+                  })
+                }
+              >
+                {CORNER_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <p className="m-0 text-[0.875rem] text-muted">
+            Closing thickness for a {formatInches(strip.widthIn)} strip at{' '}
+            {miter.angleDeg}° is ≈ {formatInches(ideal)}
+            {mismatch
+              ? ` — panel is ${formatInches(panelThicknessIn)} (>5% off; lattice will not close).`
+              : '.'}
+          </p>
+        </>
+      ) : null}
     </div>
   );
 }

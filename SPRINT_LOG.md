@@ -3,9 +3,9 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 57 Attempt 1 (2026-07-26) — CLOSED 99/100** — Part A species `<select>` (`aeb7d19`) · Part B multi-panel `schemaVersion:2` (`32f6379`). First Load **117 kB**. Browser verify (Claude Code, prod) six PASS / one PARTIAL. Prior: Sprint 56 **100/100**.
+> **Latest logged: Sprint 58 Attempt 1 (2026-07-26) — CLOSED 96/100** — Part 0 S57 re-score · Part A miter geometry · Part B `hexagon` + editor. First Load **120 kB**. Prior: Sprint 57 **99/100**.
 >
-> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1152 green (post-57).
+> **Milestones:** Phase 0–3 ✅ · Tailwind 28–32 ✅ · UX 33–42 ✅ · Notch 43–45 ✅. Test suite: 1165 green (post-58; env-polluted health/clerk cases aside on Cloud VM).
 
 ---
 
@@ -42,6 +42,39 @@ Entry template:
 ### Final outcome
 Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ```
+
+---
+
+## Sprint 58: Mitered strips (hexagon family)
+**Dates:** 2026-07-26
+**Scope:** Part 0 docs (S57 browser re-score) · Part A miter geometry primitive · Part B editor + `hexagon` template + closure test. No star/tumbling-block templates; Cell stays axis-aligned; schemaVersion stays 2.
+**Branch:** `cursor/sprint-58-mitered-strips-1e77`
+**/designer First Load JS:** **120 kB** (was 117 — miter UI only; no three.js pull-in).
+**CI / Vercel:** recorded at tip after push.
+
+### Attempt 1 — score 96/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Optional `Miter`/`Cell.wedge`; convex clip; corner maps on row transforms; area-split board feet; SVG+R3F wedges; strip miter UI; `hexagon` template; contract §3.1/§3.5; print offcut note |
+| Correctness & functionality (/20) | 16 | Solid strips byte-identical to frozen oracle; clip tri/quad; four transforms diverge on unequal/odd; `miterLatticeCloses` passes hexagon and fails ⅞″/1″/30°; t/w within 2%. **−4**: five prod browser checks unrun (Clerk OAuth blocked) |
+| Automated test coverage (/15) | 15 | `board-designer-miter` (8) · `board-designer-hexagon` (4) · print miter note · suite **1165** / 100 files |
+| Security (/15) | 15 | `/designer` still out of public-routes; 16 KB cap before decode; parseConfig on write; no new deps/secrets/`NEXT_PUBLIC_` |
+| Code quality & simplicity (/10) | 10 | General convex clip (not hard-coded triangle); congruence-keyed ExtrudeGeometry; no Cell non-rect |
+| Mobile/offline behavior (/10) | 10 | Sprint 54 gate held; narrow lists show miter species; controls ≥ 2.75rem |
+| Documentation & handoff (/5) | 5 | Contract §3.1/§3.3/§3.5; BUILD_PLAN §4; this entry; browser checklist below |
+| **Total (/100)** | **96** | |
+
+**Result:** Pass (≥95)
+
+**Keagan browser verify (expected — do not claim; Clerk blocked agent OAuth):**
+1. `hexagon` renders as closed hexagons in the 3D preview — no visible seams or T-junctions.
+2. Toggling a strip's corner through all four values changes the pattern coherently.
+3. Setting panel thickness to 1″ with ⅞″ strips at 30° raises the mismatch warning.
+4. A pre-Sprint-58 saved design reopens rendering identically.
+5. Print sheet shows the wedge species in the board-feet table and the offcut note.
+
+### Final outcome
+Score: **96/100** — Pass. Star/tumbling-block templates deferred (same primitive).
 
 ---
 

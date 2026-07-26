@@ -88,6 +88,7 @@ export function PanelEditor({
                     <StripList
                       grain={config.grain}
                       strips={panel.strips}
+                      panelThicknessIn={panel.thicknessIn}
                       onAdd={() => dispatch({ type: 'add-strip', panelId: panel.id })}
                       onDuplicate={(id) =>
                         dispatch({ type: 'duplicate-strip', panelId: panel.id, id })

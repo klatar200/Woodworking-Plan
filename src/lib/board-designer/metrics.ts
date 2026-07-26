@@ -1,5 +1,7 @@
+import { layoutTopFace } from './layout';
 import {
   closingThicknessIn,
+  miterLatticeCloses,
   miterWedgeFraction,
   thicknessMismatchesClose,
 } from './miter-geometry';
@@ -135,25 +137,6 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     }
   }
 
-  // Closing-thickness hint: any mitered strip whose panel is >5% off ideal.
-  for (const panel of panels) {
-    for (const s of panel.strips) {
-      if (!s.miter) continue;
-      if (
-        thicknessMismatchesClose(
-          s.widthIn,
-          panel.thicknessIn,
-          s.miter.angleDeg,
-        )
-      ) {
-        const ideal = closingThicknessIn(s.widthIn, s.miter.angleDeg);
-        const msg = `Miter at ${s.miter.angleDeg}° wants panel thickness ≈ ${ideal.toFixed(3)}″ for a ${s.widthIn}″ strip — lattice will not close.`;
-        if (!warnings.includes(msg)) warnings.push(msg);
-        // Still buildable — complete stays as-is (mismatch is a geometry warning).
-      }
-    }
-  }
-
   if (finishedWidthIn > 24) {
     warnings.push('Wider than most planers — plan to hand-flatten.');
   }
@@ -164,7 +147,7 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     0,
   );
 
-  return {
+  const metricsSoFar: BoardMetrics = {
     panelWidthIn,
     finishedLengthIn,
     finishedWidthIn,
@@ -173,6 +156,40 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     panelPlan,
     boardFeetBySpecies,
     totalBoardFeet,
+    warnings,
+    complete,
+  };
+
+  // Miter lattice closure (colour + closing-thickness). Same helper as the
+  // hexagon acceptance test — do not silently draw a non-closing pattern.
+  const hasMiter = panels.some((p) => p.strips.some((s) => s.miter));
+  if (hasMiter) {
+    const cells = layoutTopFace(config, metricsSoFar);
+    if (!miterLatticeCloses(cells, panels)) {
+      for (const panel of panels) {
+        for (const s of panel.strips) {
+          if (!s.miter) continue;
+          if (
+            thicknessMismatchesClose(
+              s.widthIn,
+              panel.thicknessIn,
+              s.miter.angleDeg,
+            )
+          ) {
+            const ideal = closingThicknessIn(s.widthIn, s.miter.angleDeg);
+            const msg = `Miter at ${s.miter.angleDeg}° wants panel thickness ≈ ${ideal.toFixed(3)}″ for a ${s.widthIn}″ strip — lattice will not close.`;
+            if (!warnings.includes(msg)) warnings.push(msg);
+          }
+        }
+      }
+      if (!warnings.some((w) => w.includes('lattice will not close'))) {
+        warnings.push('Miter pattern does not close — check corners and row transforms.');
+      }
+    }
+  }
+
+  return {
+    ...metricsSoFar,
     warnings,
     complete,
   };

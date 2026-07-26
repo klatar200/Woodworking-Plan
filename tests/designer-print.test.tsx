@@ -113,6 +113,28 @@ describe('designer print route', () => {
     );
   });
 
+  it('shows miter column and offcut note for a mitered design', async () => {
+    const { getTemplate } = await import('@/lib/board-designer/templates');
+    const hex = getTemplate('hexagon')!.config;
+    const { getDesign } = await import('@/lib/board-designs');
+    vi.mocked(getDesign).mockResolvedValue({
+      id: 'design-hex',
+      name: 'Hexagon',
+      config: hex,
+      createdAt: new Date('2026-07-26T00:00:00Z'),
+      updatedAt: new Date('2026-07-26T00:00:00Z'),
+    });
+    const { default: PrintPage } = await import('@/app/designer/[id]/print/page');
+    const html = renderToStaticMarkup(
+      await PrintPage({ params: Promise.resolve({ id: 'design-hex' }) }),
+    );
+    expect(html).toContain('Miter');
+    expect(html).toContain('Top right');
+    expect(html).toContain('print-miter-note');
+    expect(html).toContain('two composite strips');
+    expect(html).toContain('Walnut');
+  });
+
   it('404s when getDesign returns null for a missing or foreign id', async () => {
     const { getDesign } = await import('@/lib/board-designs');
     vi.mocked(getDesign).mockResolvedValue(null);

@@ -135,12 +135,18 @@ One `Part` per strip per panel: `thicknessIn = panel.thicknessIn`, `lengthIn = r
 
 **These signatures are the parallel-execution interface (§6). Changing anything here mid-sprint invalidates every unit running in parallel — stop them, amend this section, restart.**
 
-### 3.1 Types — `src/lib/board-designer/types.ts` (schemaVersion **2** — Sprint 57)
+### 3.1 Types — `src/lib/board-designer/types.ts` (schemaVersion **2** — Sprint 57; `Miter` additive Sprint 58)
 
 ```ts
 export type Grain = 'edge' | 'end';
 export interface WoodSpecies { id: string; name: string; colorHex: string }
-export interface Strip { id: string; speciesId: string; widthIn: number; repeat: number }
+export type MiterCorner = 'tl' | 'tr' | 'bl' | 'br';
+/** angleDeg from HORIZONTAL (strip-width) axis. 30 = hexagon family. Optional — absent = solid. */
+export interface Miter { speciesId: string; angleDeg: number; corner: MiterCorner }
+export interface Strip {
+  id: string; speciesId: string; widthIn: number; repeat: number;
+  miter?: Miter;                  // Sprint 58 — additive; no schemaVersion bump
+}
 export interface Panel {
   id: string; label: string;      // 1–24
   thicknessIn: number;            // 0.125–4 — row height on finished end-grain face
@@ -172,6 +178,8 @@ export interface BoardMetrics {
 ```
 `stockThicknessIn`, `flipEveryOtherSlice`, root `strips`, `leftoverIn`, `panelLengthIn`, `panelThicknessIn` are **removed**. v1 is accepted on read and upgraded in memory; v2 is the only thing written. **One-way deploy — do not roll prod back.**
 
+`miter` is additive on v2 — no migration. A v2 config carrying `miter` rendered by an older deploy degrades to a solid strip (zod strips unknown keys) — acceptable because deploys are forward-only. Bounds: `angleDeg` 5–85 (number, not int), `corner` enum, wedge `speciesId` 1+ chars.
+
 ### 3.2 Species — `src/lib/board-designer/species.ts` (exactly these 15; B13: no other metadata)
 
 `hard-maple` Hard Maple `#E7D3A9` · `walnut` Walnut `#4A3524` · `cherry` Cherry `#9C5A3C` · `white-oak` White Oak `#C6A67C` · `red-oak` Red Oak `#B4784F` · `sapele` Sapele `#7A3B26` · `purpleheart` Purpleheart `#5C3A6E` · `padauk` Padauk `#A8422A` · `yellowheart` Yellowheart `#C9A227` · `bloodwood` Bloodwood `#A01818` · `beech` Beech `#EBC889` · `ash` Ash `#CDBEA7` · `birch` Birch `#F1E3C4` · `hickory` Hickory / Pecan `#D2895D` · `bamboo` Bamboo `#EFAB76`
@@ -180,7 +188,7 @@ Order is append-only after the original eight (Sprint 56, 2026-07-26). Ids are p
 
 Colors live in **TypeScript, never in `globals.css`** — a CSS custom property would have to exist in both `:root` and `.dark` or `tests/dark-theme.test.ts` fails, and these are pigment values, not theme tokens.
 
-### 3.3 Templates — `src/lib/board-designer/templates.ts` (exactly these 8; schemaVersion 2)
+### 3.3 Templates — `src/lib/board-designer/templates.ts` (exactly these 9; schemaVersion 2)
 
 | id | grain | notes | finished |
 |---|---|---|---|
@@ -192,8 +200,9 @@ Colors live in **TypeScript, never in `globals.css`** — a CSS custom property 
 | `brick` | end | Full course + Half course, alternating, `rowCount 12` | 8.75 × 18 × 1.5 |
 | `diagonal` | end | four shifted courses, `rowCount 12` | 10 × 18 × 1.5 |
 | `thue-morse` | end | one panel, length-8 antipalindromic transforms, `rowCount 8` | 12 × 12 × 1.5 |
+| `hexagon` | end | maple base + walnut wedge @ 30°, corners `tr/tl` alt, `[none, mirrorY]`, ⅞″ / 1½″ | 7 × 12 × 1.5 |
 
-All use `kerfIn 0.125`, `wasteFactor 0.15`, `repeat 1`. Every strip listed explicitly. Do not generalise `thue-morse` to other sizes.
+All use `kerfIn 0.125`, `wasteFactor 0.15`, `repeat 1`. Every strip listed explicitly. Do not generalise `thue-morse` to other sizes. Star / tumbling-block templates deferred — same primitive, separate visual verification.
 
 ### 3.4 Serialization — `src/lib/board-designer/serialize.ts`
 
@@ -208,14 +217,25 @@ Bounds: `panels` 1–4 · strips/panel 1–40 · **total strips ≤ 80** (`super
 ### 3.5 Render layout — `src/lib/board-designer/layout.ts` (pure; SVG + 3D)
 
 ```ts
-export interface Cell { xIn: number; yIn: number; wIn: number; hIn: number; colorHex: string; speciesId: string }
+export interface Cell {
+  xIn: number; yIn: number; wIn: number; hIn: number;
+  colorHex: string; speciesId: string;
+  /** Present only for a mitered strip. Axis-aligned cell; fill is two polygons. */
+  wedge?: {
+    speciesId: string; colorHex: string;
+    polygon: ReadonlyArray<readonly [number, number]>; // 3–5 verts, convex, clockwise
+    angleDeg: number; corner: MiterCorner;
+  };
+}
 export function layoutTopFace(config: BoardDesignConfig, metrics: BoardMetrics): Cell[];
 ```
 - **edge:** `panels[0]` strips; `hIn = strip.widthIn`; stacked down y.
-- **end:** `rowPattern` cycled to `rowCount`; each row looks up its panel, expands repeats, applies transform (`rot180`/`mirrorX` reverse); `hIn = panel.thicknessIn`; **y accumulates** row heights. Missing panel ⇒ no cells for that row (metrics warns).
-- `Cell` contract unchanged — no miter/angle/split fields. `rotateByOne` deleted.
+- **end:** `rowPattern` cycled to `rowCount`; each row looks up its panel, expands repeats, applies transform (`rot180`/`mirrorX` reverse **and** map miter corners per §A2); `hIn = panel.thicknessIn`; **y accumulates** row heights. Missing panel ⇒ no cells for that row (metrics warns).
+- `Cell` stays an **axis-aligned rectangle**. Only the fill changes (optional `wedge` via convex half-plane clip). No parallelogram/`ExtrudeGeometry`-replacing-the-grid. `rotateByOne` deleted (Sprint 57).
+- Solid strips emit no `wedge` and are byte-identical to pre-58 output.
+- Closure helper `miterLatticeCloses` (colour edge samples + closing-thickness 5% gate) — hexagon acceptance + panel mismatch warning.
 
-Pure, deterministic, node-testable. Both renderers already honour `cell.hIn`.
+Pure, deterministic, node-testable. Both renderers honour `cell.hIn`; SVG draws `wedge` polygon; R3F instances `ExtrudeGeometry` per congruence key `w|h|angle|corner`.
 
 ### 3.6 Prisma — `prisma/schema.prisma`
 
@@ -463,3 +483,4 @@ Then: push to `main`, check GH Actions (`curl -s "https://api.github.com/repos/k
 - Sprint 56 2026-07-26 (`784ecf8`): append seven species (yellowheart→bamboo) after the original eight; §3.2 amended to exactly 15; B13/B14/`schemaVersion:1` held; pairwise sRGB floor 0.127 tested; `dark-theme`/`contrast` re-run; `/designer` First Load **115 kB** (no three.js regression). Score **96/100**. Designer polish track (53–56) complete; U6/U7 still unopened.
 - Sprint 57 Part A 2026-07-26 (`aeb7d19`): native species `<select>` + live swatch; unknown id survives disabled; pill radiogroup deleted.
 - Sprint 57 Part B 2026-07-26 (`32f6379`): `schemaVersion: 2` multi-panel model; B12/§2/§3 amended; `rotateByOne` deleted; v1 migrates on read; templates +4 (plaid/brick/diagonal/thue-morse); First Load **117 kB**. One-way deploy.
+- Sprint 58 2026-07-26: optional `Strip.miter` + `Cell.wedge` (schemaVersion stays 2); convex half-plane clip; row transforms map corners; board feet by wedge area; SVG polygon + R3F congruence-keyed ExtrudeGeometry; `hexagon` template (⅞″/1½″/30°, tr/tl alt, `[none,mirrorY]`); `miterLatticeCloses` = colour samples + 5% closing-thickness gate. First Load **120 kB**. Star/tumbling-block deferred.

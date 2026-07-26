@@ -1,5 +1,17 @@
-import type { Cell } from './layout';
 import type { Miter, MiterCorner, RowTransform } from './types';
+
+/** Minimal cell shape for closure sampling — avoids a layout↔geometry cycle. */
+export interface ClosableCell {
+  xIn: number;
+  yIn: number;
+  wIn: number;
+  hIn: number;
+  speciesId: string;
+  wedge?: {
+    speciesId: string;
+    polygon: ReadonlyArray<readonly [number, number]>;
+  };
+}
 
 export type Point = readonly [number, number];
 
@@ -279,7 +291,7 @@ export function pointInPolygon(x: number, y: number, polygon: readonly Point[]):
 }
 
 /** Colour (speciesId) at a point inside a cell. */
-export function colorAtCell(cell: Cell, x: number, y: number): string {
+export function colorAtCell(cell: ClosableCell, x: number, y: number): string {
   if (
     cell.wedge &&
     pointInPolygon(x, y, cell.wedge.polygon)
@@ -290,12 +302,40 @@ export function colorAtCell(cell: Cell, x: number, y: number): string {
 }
 
 /**
- * Lattice colour-closure: every shared edge between adjacent cells must show
- * the same species from both sides at every sample. Pure; used by the hexagon
- * acceptance test and the panel-thickness mismatch warning path.
+ * Full lattice-closure check for mitered boards:
+ * 1) colour continuous across every shared cell edge (sampled), and
+ * 2) every mitered strip's panel thickness within 5% of t = w(tanθ+secθ).
+ *
+ * (2) is required because colour continuity alone still holds when d < t for
+ * a wrong thickness — the hexagons distort but edges still match. The
+ * reference generators draw that silently; we refuse to. One helper powers
+ * both the hexagon acceptance test and the panel mismatch warning.
  */
+export function miterLatticeCloses(
+  cells: readonly ClosableCell[],
+  panels: readonly { thicknessIn: number; strips: readonly { widthIn: number; miter?: Miter }[] }[],
+  samplesPerEdge = 24,
+): boolean {
+  for (const panel of panels) {
+    for (const strip of panel.strips) {
+      if (!strip.miter) continue;
+      if (
+        thicknessMismatchesClose(
+          strip.widthIn,
+          panel.thicknessIn,
+          strip.miter.angleDeg,
+        )
+      ) {
+        return false;
+      }
+    }
+  }
+  return cellsColorClosed(cells, samplesPerEdge);
+}
+
+/** Colour continuity only — every shared edge agrees species at every sample. */
 export function cellsColorClosed(
-  cells: readonly Cell[],
+  cells: readonly ClosableCell[],
   samplesPerEdge = 24,
 ): boolean {
   if (cells.length === 0) return true;
@@ -347,7 +387,7 @@ function nearEqual(a: number, b: number, eps: number): boolean {
   return Math.abs(a - b) <= eps;
 }
 
-function edgesTouchVertical(a: Cell, b: Cell, eps: number): boolean {
+function edgesTouchVertical(a: ClosableCell, b: ClosableCell, eps: number): boolean {
   const yOverlap =
     Math.min(a.yIn + a.hIn, b.yIn + b.hIn) - Math.max(a.yIn, b.yIn) > eps;
   if (!yOverlap) return false;
@@ -356,7 +396,7 @@ function edgesTouchVertical(a: Cell, b: Cell, eps: number): boolean {
   );
 }
 
-function edgesTouchHorizontal(a: Cell, b: Cell, eps: number): boolean {
+function edgesTouchHorizontal(a: ClosableCell, b: ClosableCell, eps: number): boolean {
   const xOverlap =
     Math.min(a.xIn + a.wIn, b.xIn + b.wIn) - Math.max(a.xIn, b.xIn) > eps;
   if (!xOverlap) return false;
@@ -366,8 +406,8 @@ function edgesTouchHorizontal(a: Cell, b: Cell, eps: number): boolean {
 }
 
 function edgeColorsMatch(
-  a: Cell,
-  b: Cell,
+  a: ClosableCell,
+  b: ClosableCell,
   axis: 'v' | 'h',
   fixed: number,
   from: number,

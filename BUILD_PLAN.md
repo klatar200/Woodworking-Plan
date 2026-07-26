@@ -36,9 +36,10 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprints 47–50 | ✅ shipped (settings hub · page size 24 · navbar Browse→Plans · `/browse` filter rail) — detail in SPRINT_LOG. Listed so the next sprint number is not re-used. |
 | Sprints 51–52 (Cutting Board Designer) | ✅ **BOTH CLOSED** 2026-07-25. Sprint **51 100/100** (Attempt 3 — Attempt 2's 92 was a verification-access deduction, not a defect; blockers cleared via `prisma migrate status` on the prod branch + signed-in save→library→reopen; §9 manual pass re-run; no product code changed). Sprint **52 100/100** (Attempt 1's 96 **invalidated**; Attempt 2 98; Attempt 3 `25cc107` — wheel bind to canvas OrbitControls, orbit/zoom feel; final 2 Correctness pts released on Keagan's browser PASS on prod `7a6b12e`); suite **1104/1104**; `/designer` First Load **113 kB**. |
 | Sprints 53–56 (Designer polish) | ✅ **ALL CLOSED** — 53 **98** · 54 **98** · 55 **95** · 56 **100**. |
-| Sprint 57 (Species dropdown + multi-panel v2) | ✅ **CLOSED** 2026-07-26 — **99/100** Part A `aeb7d19` · Part B `32f6379`. Suite **1152/1152** across 98 files; `/designer` First Load **117 kB**. All seven browser checks run on prod by Claude Code 2026-07-26 — six PASS, one PARTIAL (three-panel print unverified; needs a saved plaid design). Derived-length board feet confirmed to the digit. U6/U7 still unopened; mitered/two-tone strips deferred. |
+| Sprint 57 (Species dropdown + multi-panel v2) | ✅ **CLOSED** 2026-07-26 — **99/100** Part A `aeb7d19` · Part B `32f6379`. Suite **1152/1152** across 98 files; `/designer` First Load **117 kB**. All seven browser checks run on prod by Claude Code 2026-07-26 — six PASS, one PARTIAL (three-panel print unverified; needs a saved plaid design). Derived-length board feet confirmed to the digit. |
+| Sprint 58 (Mitered strips / hexagon) | ✅ **CLOSED** 2026-07-26 — **96/100**. Part 0 S57→99 · Part A miter clip/transforms/SVG+R3F · Part B editor + `hexagon`. Suite **1165/1165** across 100 files; `/designer` First Load **120 kB**. Browser checks listed unrun (Clerk). |
 
-Test suite — expected: 1152/1152 across 98 files (Sprint 57, Cursor VM). Update this single figure each sprint close; 1125/1125 and earlier superseded.
+Test suite — expected: 1165/1165 across 100 files (Sprint 58, Cursor VM). Update this single figure each sprint close; 1152/1152 and earlier superseded.
 
 Open follow-ups (Keagan): dark-theme re-palette (one scheduled sprint; opens once light migration verified live; don't start uncommissioned) · Clerk prod keys · optional 2nd cut-list parse to re-publish the 489 · credential rotation at go-live (settled: once, pre-launch) · Kreg legal gate RESOLVED 2026-07-24.
 
@@ -53,9 +54,9 @@ Sprints 51–52 delivered U1–U5 and are closed. **U6/U7 remain Phase 2, unopen
 | **56 — Species expansion** | **8** | ✅ **CLOSED** 2026-07-26 — **100/100** (`784ecf8`). Appended seven ids (yellowheart→bamboo) with Keagan hexes; §3.2 → exactly 15; pairwise floor 0.127 guarded; `dark-theme`/`contrast` re-run green; First Load held at **115 kB**. All six browser checks observed on prod, no defects. Rendered separation of the pale group is **0.070** vs the shipped cherry/padauk control at **0.073** — at the palette's limit, so a further species needs the pill grid rethought first (strip cards are now 697px tall). |
 | **57 — Species dropdown + multi-panel v2** | — | ✅ **CLOSED** 2026-07-26 — **99/100**. Part A native `<select>` (`aeb7d19`). Part B `schemaVersion:2` panels/rowPattern/`RowTransform`; `rotateByOne` deleted; v1 migrates; +plaid/brick/diagonal/thue-morse; First Load **117 kB**. All seven browser checks run on prod by Claude Code 2026-07-26 — six PASS, one PARTIAL (three-panel print unverified; needs a saved plaid design). Derived-length board feet confirmed to the digit. |
 
-**Deferred to their own conversations — do not fold into 53–57:**
-- **Mitered / two-tone strips** (tumbling blocks, kaleidoscope, diamond inlay) — next designer sprint; depends on Sprint 57's panel/row model. No `miter`/`angleDeg`/split-cell yet.
-- **Advanced zigzag / 3D-box templates** — still need a Cell or Strip contract change.
+**Deferred to their own conversations — do not fold into 53–58:**
+- **Star / tumbling-block / chevron / diamond templates** — same miter primitive as Sprint 58 `hexagon`; each needs its own visual verification.
+- **Advanced zigzag / 3D-box templates** — still need a Cell or Strip contract change beyond optional `wedge`.
 - **The wider "Canva-like" editing/export set (item 5b)** — open-ended; needs a concrete behaviour list before it can be scoped.
 
 Out of scope until Keagan adds to BUSINESS_PLAN: comments · tool-substitution notes · lumber-price sync · plan versioning · offline "shopping mode" · community submissions.

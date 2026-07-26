@@ -5,10 +5,18 @@ import { requireUser } from '@/lib/auth';
 import { getDesign } from '@/lib/board-designs';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
+import type { MiterCorner } from '@/lib/board-designer/types';
 import { BoardDiagram } from '@/components/designer/board-diagram';
 import { formatInches } from '@/lib/format';
 import { SITE_HOST } from '@/lib/brand';
 import { btnGhost } from '@/lib/ui';
+
+const CORNER_LABELS: Record<MiterCorner, string> = {
+  tl: 'Top left',
+  tr: 'Top right',
+  bl: 'Bottom left',
+  br: 'Bottom right',
+};
 
 export const dynamic = 'force-dynamic';
 
@@ -104,6 +112,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
                   <th scope="col" className="numeric">
                     Repeat
                   </th>
+                  <th scope="col">Miter</th>
                   <th scope="col" className="numeric">
                     Required length
                   </th>
@@ -123,6 +132,11 @@ export default async function DesignerPrintPage({ params }: PageProps) {
                     </td>
                     <td className="numeric" data-label="Repeat">
                       {strip.repeat}
+                    </td>
+                    <td data-label="Miter">
+                      {strip.miter
+                        ? `${speciesName(strip.miter.speciesId, metrics)} · ${strip.miter.angleDeg}° · ${CORNER_LABELS[strip.miter.corner]}`
+                        : '—'}
                     </td>
                     <td className="numeric mono" data-label="Required length">
                       {formatInches(plan?.requiredLengthIn ?? 0)}
@@ -189,6 +203,14 @@ export default async function DesignerPrintPage({ params }: PageProps) {
             ))}
           </tbody>
         </table>
+        {config.panels.some((p) => p.strips.some((s) => s.miter)) ? (
+          <p className="muted small print-miter-note">
+            Mitered strips are ripped at an angle and glued to a contrasting
+            wedge. One rip yields two composite strips (A-base/B-wedge and
+            B-base/A-wedge). Board feet above count the area you keep if you use
+            both offcuts; discarding the mates means buying roughly twice this.
+          </p>
+        ) : null}
       </section>
 
       <footer className="print-footer">

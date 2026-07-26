@@ -92,6 +92,9 @@ export function DesignerNarrowSurface({
               >
                 <span>
                   {index + 1}. {getSpecies(strip.speciesId)?.name ?? strip.speciesId}
+                  {strip.miter
+                    ? ` / ${getSpecies(strip.miter.speciesId)?.name ?? strip.miter.speciesId} miter`
+                    : ''}
                 </span>
                 <span className="text-muted">
                   {formatInches(strip.widthIn)}
