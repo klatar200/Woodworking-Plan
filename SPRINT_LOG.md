@@ -48,9 +48,10 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 56: Species expansion
 **Dates:** 2026-07-26
 **Scope:** BUILD_PLAN §4 row **56** only (Keagan item **8**). No U6/U7; no advanced templates / Canva-like; no §3 type rename for bamboo; no schema/routes/deps.
-**Commit on `main`:** `784ecf8`
+**Commit on `main`:** `784ecf8` (code) · `529a987` (docs close)
 **/designer First Load JS:** **115 kB** (held — same as post-`7701bad` Sprint 55 baseline; measured from local `npm run build` route table).
-**CI / Vercel:** see close notes after Actions + deploy log.
+**CI:** `529a987` Actions **success** (lint/typecheck/test/build). Prior `784ecf8` run cancelled as superseded by the docs push.
+**Vercel Production:** GitHub deployment statuses **success** for `784ecf8` + `529a987`. Prod `https://notchplans.com/api/health` → `status:ok`, database `ok` (15ms). Full Vercel build-log text unread — Vercel MCP `needsAuth`; local `npm run build` route table is the First Load evidence.
 
 ### Attempt 1 — score 96/100 — PASS
 | Category | Score | Evidence |
