@@ -48,7 +48,7 @@ Score: __ /100 — Pass / Escalated to user after 3 attempts (see notes).
 ## Sprint 60: Dimension display — make every measurement a measurement
 **Dates:** 2026-07-26
 **Scope:** Part 0 S59 browser re-score · A1 `formatInches` zero-numerator + non-finite · A2 unified `closingThicknessHint` · A3 harlequin `thicknessIn=1` · A4 tests · A5 security re-verify. Trunk-based to `main`.
-**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · (this close)
+**Commits on `main`:** `7bf253b` (Part 0) · `19928a8` (code) · `c658726` (this close)
 **/designer First Load JS:** pending Vercel build log (Sprint 59 held **120 kB**).
 **Suite:** **1174/1174** across 101 files (`env -u DATABASE_URL -u CLERK_*` — Cursor secrets otherwise trip env/health).
 
