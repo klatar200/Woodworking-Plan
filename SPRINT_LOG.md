@@ -115,7 +115,19 @@ Attempt 1's withheld 4 Correctness points were withheld for the right reason: **
 
 **Deploy note (new, cost ~20 min):** the first prod deploy of `c4a4e99` **failed** — `Error: P1001: Can't reach database server` from `prisma migrate deploy` in `vercel-build`. Not a code fault (`check-db-urls` passed, both URLs on the same host); Neon's free-tier compute autosuspends and did not wake inside the migrate timeout. `npx vercel redeploy <dpl>` succeeded unchanged. **A red Vercel deploy with P1001 is a cold Neon compute, not a broken build — redeploy before debugging.**
 
-**Residual (blocked, NOT verified):** viewports **1440 / 1280 / 1024 / 900** were never measured. `resize_window` reports success but is a no-op against a maximized Chrome window, and the browser is granted read-only tier so it cannot be un-maximized from here. Needs the Brave window restored (un-maximized) — then all four are one batch.
+**Narrow viewports — verified by Keagan via DevTools device toolbar (screenshots, 2026-07-25):**
+| Width | Observed |
+|---|---|
+| 1440 | Preview **pinned** while scrolled to Strips 2–3 (sticky fix confirmed at a second width). All 8 species labels one line, no ellipsis. Preview + Export one line. No h-overflow |
+| 1280 | Two-column; Preview + Export one line; no h-overflow |
+| 1024 | Two-column (`lg` applies at exactly 1024); no h-overflow in `main` |
+| ~900 | Correctly stacked to one column + hamburger; `lg:`-gating behaving as designed |
+
+Agent note: `resize_window` reports success but is a no-op against a **maximized** Chrome window, and the browser is granted read-only tier so it cannot be un-maximized from the agent side. Use the DevTools device toolbar (Keagan) or an already-restored window.
+
+**Outstanding (item 4 only):** species pills at **1024**, where the rail sits at its `minmax(20rem,…)` floor — the narrowest the pills get and the only case where `whitespace-nowrap` + `text-ellipsis` could truncate "Purpleheart" rather than wrap. Clean at 1440 (rail ~361px); 1024 not yet in frame.
+
+**Out-of-scope defect found during this verification (NOT Sprint 53's doing, header untouched):** at ~1024 the site header nav collides with the search field — the `Search plans…` input overlaps the "Designer" link. Site chrome, affects every page at that width. Recommend a small standalone fix before Sprint 54.
 
 ---
 
