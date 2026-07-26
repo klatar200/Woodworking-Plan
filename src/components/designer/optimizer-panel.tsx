@@ -1,0 +1,166 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import { BoardBar } from '@/components/board-bar';
+import { designCutPlan } from '@/lib/board-designer/design-cut-plan';
+import type { BoardDesignConfig } from '@/lib/board-designer/types';
+import { formatInches } from '@/lib/format';
+import {
+  DEFAULT_OPTIONS,
+  STOCK_LENGTHS_IN,
+  STOCK_WIDTHS_IN,
+  hasImpossibleParts,
+  totalBoards,
+  yieldRatio,
+} from '@/lib/cut-optimizer';
+import { selectControl } from '@/lib/ui';
+
+/**
+ * Desktop cut-plan panel (Sprint 64 / U6). Collapsed by default; not mounted on the
+ * narrow surface — authoring already gates at 1024, and mobile keeps the print sheet.
+ *
+ * Reuses `toParts` → `designCutPlan` → `optimize` / `BoardBar`. No dollar figures.
+ */
+export function OptimizerPanel({ config }: { config: BoardDesignConfig }) {
+  const [stockLengthIn, setStockLengthIn] = useState(DEFAULT_OPTIONS.stockLengthIn);
+  const [stockWidthIn, setStockWidthIn] = useState<number | null>(null);
+
+  const groups = useMemo(
+    () =>
+      designCutPlan(config, {
+        stockLengthIn,
+        stockWidthIn,
+        kerfIn: config.kerfIn,
+        endTrimIn: DEFAULT_OPTIONS.endTrimIn,
+      }),
+    [config, stockLengthIn, stockWidthIn],
+  );
+
+  const boards = totalBoards(groups);
+  const impossible = hasImpossibleParts(groups);
+  const stockFt = stockLengthIn / 12;
+
+  return (
+    <details className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+      <summary className="cursor-pointer text-[1.125rem] font-bold">
+        Cut plan — what to buy
+      </summary>
+
+      <div className="mt-[1rem] grid gap-[1rem]">
+        <div className="grid gap-[0.75rem] sm:grid-cols-2">
+          <label className="grid gap-[0.375rem]">
+            <span className="text-[0.875rem] font-bold">Board length</span>
+            <select
+              className={`${selectControl} w-full`}
+              value={String(stockLengthIn)}
+              onChange={(event) => setStockLengthIn(Number(event.currentTarget.value))}
+            >
+              {STOCK_LENGTHS_IN.map((length) => (
+                <option key={length} value={length}>
+                  {length / 12} ft ({formatInches(length)})
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="grid gap-[0.375rem]">
+            <span className="text-[0.875rem] font-bold">Board width</span>
+            <select
+              className={`${selectControl} w-full`}
+              value={stockWidthIn === null ? 'rip-none' : String(stockWidthIn)}
+              onChange={(event) => {
+                const value = event.currentTarget.value;
+                setStockWidthIn(value === 'rip-none' ? null : Number(value));
+              }}
+            >
+              <option value="rip-none">Buy each part&apos;s width</option>
+              {STOCK_WIDTHS_IN.map((width) => (
+                <option key={width} value={width}>
+                  Rip from {formatInches(width)} stock
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <p className="m-0 text-[0.9375rem]">
+          Buy <strong>{boards}</strong> {boards === 1 ? 'board' : 'boards'} at {stockFt} ft
+          (kerf {formatInches(config.kerfIn)}).
+        </p>
+
+        {impossible && (
+          <div
+            role="alert"
+            className="rounded-[0.5rem] border border-danger bg-accent-tint p-[0.75rem] text-[0.9375rem]"
+          >
+            <strong>
+              Some parts do not fit on a {stockFt} ft board.
+            </strong>{' '}
+            They are listed below and are not included in the board count. Pick a longer
+            stock length, or plan to join them.
+          </div>
+        )}
+
+        {groups.map((group) => {
+          const yieldPct = Math.round(yieldRatio(group, stockLengthIn) * 100);
+          const key = `${group.material ?? 'stock'}-${group.thicknessIn}x${group.widthIn}`;
+
+          return (
+            <section key={key} className="grid gap-[0.5rem]">
+              <h3 className="m-0 text-[0.9375rem]">
+                {group.material ? `${group.material} — ` : null}
+                {formatInches(group.thicknessIn)} × {formatInches(group.widthIn)}
+              </h3>
+
+              <p className="m-0 text-[0.8125rem] text-muted">
+                <strong>
+                  {group.physicalBoards}{' '}
+                  {group.physicalBoards === 1 ? 'board' : 'boards'}
+                </strong>
+                {group.ripsPerBoard > 1 && (
+                  <>
+                    {' '}
+                    — {group.lanes} lengths, {group.ripsPerBoard} ripped side-by-side from
+                    each {formatInches(group.stockWidthIn)} board
+                  </>
+                )}{' '}
+                · {yieldPct}% of the boards you buy used
+              </p>
+
+              {group.impossible.length > 0 && (
+                <ul
+                  role="alert"
+                  className="m-0 grid gap-[0.375rem] rounded-[0.5rem] border border-danger bg-accent-tint p-[0.75rem] pl-[1.5rem] text-[0.875rem]"
+                >
+                  {group.impossible.map((item) => (
+                    <li key={item.id}>
+                      <strong>{item.label}</strong> at {formatInches(item.lengthIn)} —{' '}
+                      {item.reason}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <ol className="board-list m-0 grid gap-[0.75rem] p-0 list-none">
+                {group.boards.map((board, index) => (
+                  <li key={index} className="board grid gap-[0.25rem]">
+                    <p className="m-0 text-[0.8125rem] text-muted">
+                      {group.ripsPerBoard > 1 ? 'Length' : 'Board'} {index + 1}
+                      {' · '}
+                      {formatInches(board.offcutIn)} left over
+                    </p>
+                    <BoardBar
+                      board={board}
+                      number={index + 1}
+                      ripped={group.ripsPerBoard > 1}
+                    />
+                  </li>
+                ))}
+              </ol>
+            </section>
+          );
+        })}
+      </div>
+    </details>
+  );
+}

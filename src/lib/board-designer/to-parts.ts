@@ -4,8 +4,9 @@ import { getSpecies } from './species';
 import type { BoardDesignConfig } from './types';
 
 /**
- * Phase-2 bridge (B7): one Part per strip per panel for the cut-list optimizer.
- * Built now, rendered never.
+ * One Part per strip per panel for the cut-list optimizer (U1 bridge; rendered in
+ * U6 / Sprint 64 via `designCutPlan` + `BoardBar`). Lengths come from each panel's
+ * derived `requiredLengthIn` — not board feet.
  */
 export function toParts(config: BoardDesignConfig): Part[] {
   const metrics = calculateMetrics(config);

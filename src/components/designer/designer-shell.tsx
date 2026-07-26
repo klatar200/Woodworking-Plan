@@ -5,6 +5,7 @@ import { BoardPreview } from './board-preview';
 import { BoardSettings } from './board-settings';
 import { DesignerNarrowSurface } from './designer-narrow';
 import { MetricsPanel } from './metrics-panel';
+import { OptimizerPanel } from './optimizer-panel';
 import { DESIGNER_WIDE_MQ } from '@/lib/board-designer/viewport';
 import { PanelEditor } from './panel-editor';
 import { TemplatePicker } from './template-picker';
@@ -143,6 +144,8 @@ export function DesignerShell(props: {
               onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
             />
             <MetricsPanel metrics={metrics} grain={config.grain} />
+            {/* U6 — desktop only (this tree is CSS-hidden below lg). */}
+            <OptimizerPanel config={config} />
           </div>
         </div>
       </div>

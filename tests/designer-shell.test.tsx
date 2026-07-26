@@ -270,9 +270,12 @@ describe('DesignerShell static render', () => {
     expect(savedHtml).toContain('href="/designer/design-1/print"');
     expect(savedHtml).not.toContain(DESIGNER_NEW_NARROW_NOTICE);
 
-    // B7 — cut list on mobile is the print sheet, not a parts optimizer UI.
+    // U6 — cut plan is desktop-only (OptimizerPanel lives in the lg authoring tree).
+    // Narrow surface still must not import toParts / the optimizer.
     expect(narrow).not.toMatch(/\btoParts\s*\(/);
-    expect(shell).not.toMatch(/\btoParts\s*\(/);
+    expect(narrow).not.toMatch(/OptimizerPanel|designCutPlan|optimize\s*\(/);
+    expect(shell).toContain('OptimizerPanel');
+    expect(shell).toContain('hidden lg:grid');
     expect(narrow).not.toMatch(/userAgent|userAgentData|navigator\.platform/);
 
     // WebGL gate: matchMedia on Tailwind lg; Canvas only when wide enough.
