@@ -1881,3 +1881,11 @@ Link label to the library stays the settled B6 string `Your boards`. Print CTA l
 **Status:** Process/docs only (Keagan: agent-optimized, non-redundant, no behavior change to settled calls).
 
 **Change.** `BUILD_PLAN.md` Sprints 67–72 rewritten as agent contract: INVARIANTS · HARD_STOP · PRESERVE_BEHAVIORS · PARITY_INVENTORY · per-sprint DO/DONT/ACCEPT. Ambiguity removed: Save a copy disabled when `designId==null`; 67=sole relocate; 68=dock behavior+parity test only. Settled product answers (Q1–Q14 + dirty-A + amendments A–I) unchanged.
+
+
+### 2026-07-26 — Designer shell follow-ups (name / dock mount / grain→tab)
+**Status:** Confirmed by Keagan (1A · 2A · 3A).
+
+1. **Save a copy name:** `Copy of {current name}`, trimmed to max 80.
+2. **Grain Edge while Pattern tab active:** auto-select Templates (Pattern hidden for edge).
+3. **Inactive dock tabs:** stay **mounted**, hide inactive — preserves Cut plan stock L/W local state.
