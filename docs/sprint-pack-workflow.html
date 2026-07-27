@@ -726,8 +726,8 @@
 
       <div class="step b" data-actor="You">
         <span class="step-n">03</span>
-        <h3>Commit &amp; cut the diff</h3>
-        <p>The only shell you touch. Two lines, identical every sprint.</p>
+        <h3>Pull &amp; cut the diff</h3>
+        <p>Cursor runs in Cursor Cloud — its own clone. Its work reaches you only through a pull, and a pack reaches it only through a push. <code>origin/main</code> is the transport.</p>
         <p class="out"><span>writes →</span> changes.diff</p>
       </div>
 
@@ -803,7 +803,7 @@
         <ul>
           <li>Supply the change list once, at sprint open.</li>
           <li>Type four short pointers (below).</li>
-          <li>Run <code>git</code> — commit, diff, push. Agents don't touch it.</li>
+          <li>Run <code>git</code> — push packs out, pull work back, cut the diff. Both agents are read-only w.r.t. git, and Cursor Cloud sees nothing you haven't pushed.</li>
           <li>Make the calls CLAUDE.md §4 reserves for you: money, vendors, legal, branding, scope.</li>
         </ul>
         <p class="never"><b>Never again:</b> paste a plan, a scorecard, or a fix list between windows.</p>
@@ -849,10 +849,15 @@ citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.</pre>
 
       <li>
         <div class="script-body">
-          <span class="what">Commit and cut the diff — PowerShell, your box</span>
-          <pre class="to-b">git add -A; git commit -m "sprint 47: &lt;summary&gt;"
-git diff HEAD~1 &gt; sprints/47/changes.diff</pre>
-          <span class="why">The second line is the whole trick — Claude reads a few hundred diff lines instead of re-reading a repo of thousands of files.</span>
+          <span class="what">Publish the pack, then pull Cursor's work — PowerShell, your box</span>
+          <pre class="to-b"><span class="cmt"># after step 1, so Cursor Cloud can see the pack</span>
+node scripts/verify.mjs lock sprints/47
+git add -A; git commit -m "sprint 47: pack"; git push
+
+<span class="cmt"># after step 2 — run these back to back</span>
+git pull --rebase origin main
+git diff HEAD@{1}..HEAD &gt; sprints/47/changes.diff</pre>
+          <span class="why">The last line is the whole trick — Claude reads a few hundred diff lines instead of re-reading a repo of thousands of files. <code>HEAD@{1}</code> means "where HEAD was before the pull", so it captures exactly what Cursor sent.</span>
         </div>
       </li>
 
@@ -996,7 +1001,7 @@ Re-run verify, update verify.txt and SCORECARD.md.</pre>
       <div class="hub">
         <span class="hub-tag">The interface</span>
         <span class="hub-path">sprints/47/</span>
-        <span class="hub-sub">The only thing both agents read. Survives a context reset. Reviewable in git.</span>
+        <span class="hub-sub">The only thing both agents read — carried between them on <code>origin/main</code>, since Cursor Cloud has its own clone. Survives a context reset. Reviewable in git.</span>
       </div>
 
       <article class="branch right bc">

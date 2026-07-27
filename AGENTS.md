@@ -23,17 +23,20 @@ Upstash Redis (rate limit, fails open), Vercel Blob (build-photo uploads), Cloud
 ## Sprint pack protocol (Sprint 00 — binding)
 Work arrives as a folder, never as a pasted prompt. Full loop + formats: `sprints/README.md`, `sprints/_template/README.md`.
 
+**You are in a different clone.** This VM does not share a working tree with Claude Code or with Keagan's box — `origin/main` is the only transport. So: **PULL before reading a pack** (a pack Claude wrote minutes ago does not exist here until Keagan pushed it), and **PUSH when done** (your `verify.txt` and `SCORECARD.md` are invisible to the audit until you do). A pack folder that is absent or missing `FIXES.md` almost always means "not pushed yet" — say so, do not improvise around it.
+
 Standing prompt — implement:
 ```
-Read sprints/NN/. Implement PLAN.md in order.
+Pull main, then read sprints/NN/. Implement PLAN.md in order.
 Then run: npm run verify > sprints/NN/verify.txt 2>&1
 Grade every ACCEPTANCE.md check in sprints/NN/SCORECARD.md,
 citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.
+Commit and push verify.txt and SCORECARD.md with the code.
 ```
 Standing prompt — fix round:
 ```
-Read sprints/NN/FIXES.md. Apply only those fixes.
-Re-run verify, update verify.txt and SCORECARD.md.
+Pull main, then read sprints/NN/FIXES.md. Apply only those fixes.
+Re-run verify, update verify.txt and SCORECARD.md, commit and push.
 ```
 
 Hard rules (each is enforced by `tests/sprint-pack.test.ts`, which runs inside `npm run verify` — violating one turns the suite red, it is not a style note):

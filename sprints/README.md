@@ -6,20 +6,38 @@ no plan, scorecard, or fix list is ever pasted between chat windows again.
 Packs are for sprints. A change touching fewer than ~3 files goes direct; the pack would cost
 more than the work.
 
+## Topology — read this before the loop
+
+The three actors do **not** share a working tree:
+
+- **Claude Code** edits Keagan's local checkout directly.
+- **Cursor runs in Cursor Cloud** — its own VM, its own clone (`AGENTS.md`). It sees a pack only
+  after that pack is **pushed**, and its work reaches Keagan only after Keagan **pulls**.
+- **Keagan** owns every `git` operation. Both agents are read-only with respect to git.
+
+So `origin/main` is the actual transport, and the pack is the payload. Every handoff between
+Claude and Cursor costs one push and one pull. That is the price of Cursor being in the cloud —
+it is still far cheaper than re-pasting the context, which is what it replaces.
+
 ## The loop
 
 | # | Actor | Model | Does | Writes |
 |---|-------|-------|------|--------|
-| 1 | Claude Code | **Opus** | Reads CLAUDE.md + BUILD_PLAN §4 + your change list. No repo re-audit. | `GOAL.md` `PLAN.md` `ACCEPTANCE.md` + lock |
-| 2 | Cursor | Auto / premium | Opens the folder itself. Implements PLAN.md in order. | source · `verify.txt` · `SCORECARD.md` |
-| 3 | Keagan | — | Commit, cut the diff. | `changes.diff` |
-| 4 | Claude Code | **Sonnet** | Audits diff + verify.txt against the bar. §7 invariants, security, architecture. | `FIXES.md` |
-| 5 | Cursor | Auto | Reads `FIXES.md` only. Re-runs verify. | `verify.txt` `SCORECARD.md` |
-| — | | | **<95% → back to 3. Max 3 rounds, then escalate (CLAUDE.md §4).** | |
-| 6 | Claude Code | **Opus** | Closes out, opens the next pack. | `SPRINT_LOG.md` · `sprints/<NN+1>/` |
+| 1 | Claude Code | **Opus** | Reads CLAUDE.md + BUILD_PLAN §4 + your change list. No repo re-audit. | `GOAL.md` `PLAN.md` `ACCEPTANCE.md` |
+| 2 | Keagan | — | Lock the bar, **commit + push the pack** so Cursor Cloud can see it. | `ACCEPTANCE.sha256` |
+| 3 | Cursor | Auto / premium | Pulls, opens the folder itself, implements PLAN.md in order, **pushes**. | source · `verify.txt` · `SCORECARD.md` |
+| 4 | Keagan | — | **Pull**, then cut the diff over exactly what arrived. | `changes.diff` |
+| 5 | Claude Code | **Sonnet** | Audits diff + verify.txt against the bar. §7 invariants, security, architecture. | `FIXES.md` |
+| 6 | Keagan | — | **Commit + push `FIXES.md`.** | — |
+| 7 | Cursor | Auto | Pulls, reads `FIXES.md` only, re-runs verify, **pushes**. | `verify.txt` `SCORECARD.md` |
+| — | | | **<95% → back to 4. Max 3 rounds, then escalate (CLAUDE.md §4).** | |
+| 8 | Claude Code | **Opus** | Closes out, opens the next pack. | `SPRINT_LOG.md` · `sprints/<NN+1>/` |
 
-Model routing is the point of steps 4 vs 1/6: auditing a diff against a written bar is
+Model routing is the point of step 5 vs 1/8: auditing a diff against a written bar is
 mechanical and belongs on Sonnet. Planning and closing need judgment and belong on Opus.
+
+**If you ever run Cursor locally instead of in the Cloud**, steps 2/4/6 collapse into a single
+commit and the loop shrinks by two git operations. Nothing else changes — the pack is the same.
 
 ## The four standing prompts
 
@@ -31,36 +49,50 @@ Plan sprint NN. Changes I want:
 Write sprints/NN/GOAL.md, PLAN.md, ACCEPTANCE.md.
 Agent-focused, not human-readable. Don't re-audit the repo.
 ```
-Claude hands back a lock command to run before step 2 — `lock` writes a file, so it runs in your
-shell, never from the Claude sandbox (CLAUDE.md §5):
+Then lock and publish the pack. `lock` writes a file, so it runs in your shell, never from the
+Claude sandbox (CLAUDE.md §5). **Cursor Cloud cannot see the pack until it is pushed.**
 ```
 node scripts/verify.mjs lock sprints/NN
+git add -A; git commit -m "sprint NN: pack"; git push
 ```
 
 **2 — hand off (Cursor)**
 ```
-Read sprints/NN/. Implement PLAN.md in order.
+Pull main, then read sprints/NN/. Implement PLAN.md in order.
 Then run: npm run verify > sprints/NN/verify.txt 2>&1
 Grade every ACCEPTANCE.md check in sprints/NN/SCORECARD.md,
 citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.
+Commit and push verify.txt and SCORECARD.md with the code.
+```
+
+Pull Cursor's work and cut the diff over exactly what arrived — run these two **back to back**,
+because `HEAD@{1}` means "where HEAD was before the pull":
+```
+git pull --rebase origin main
+git diff HEAD@{1}..HEAD > sprints/NN/changes.diff
+```
+If you did other git work in between, find the base by eye instead:
+```
+git log --oneline -8
+git diff <sha-before-cursors-first-commit>..HEAD > sprints/NN/changes.diff
 ```
 
 **3 — audit (Claude Code, Sonnet)**
 ```
 Audit sprints/NN. Append FIXES.md — gaps only, exact remediation.
 ```
+Then publish the delta so Cursor Cloud can see it:
+```
+git add -A; git commit -m "sprint NN: fixes round N"; git push
+```
 
 **4 — fix round (Cursor)**
 ```
-Read sprints/NN/FIXES.md. Apply only those fixes.
-Re-run verify, update verify.txt and SCORECARD.md.
+Pull main, then read sprints/NN/FIXES.md. Apply only those fixes.
+Re-run verify, update verify.txt and SCORECARD.md, commit and push.
 ```
 
-Between 2 and 3, and after every 4, you run:
-```
-git add -A; git commit -m "sprint NN: <summary>"
-git diff HEAD~1 > sprints/NN/changes.diff
-```
+Then repeat the pull-and-diff pair from step 2 and go back to prompt 3.
 
 ## Why this is enforced and not merely documented
 
