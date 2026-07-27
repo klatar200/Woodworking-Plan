@@ -1,0 +1,1102 @@
+<title>Sprint Pack Workflow — Claude + Cursor</title>
+
+<style>
+  :root {
+    --paper:      #f6f1e7;
+    --surface:    #fffdf8;
+    --surface-2:  #fbf6ec;
+    --ink:        #1e2420;
+    --ink-soft:   #5f665f;
+    --ink-faint:  #83887f;
+    --rule:       #e3dcc9;
+    --rule-hard:  #cec5ad;
+
+    --forest:     #3d6b4f;
+    --forest-dim: #e4ebdd;
+    --oak:        #8a6a35;
+    --oak-dim:    #f2e8d5;
+    --steel:      #43596b;
+    --steel-dim:  #e2e9ee;
+
+    --lane-a:     var(--forest);
+    --lane-a-bg:  var(--forest-dim);
+    --lane-b:     var(--oak);
+    --lane-b-bg:  var(--oak-dim);
+    --lane-c:     var(--steel);
+    --lane-c-bg:  var(--steel-dim);
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+    --sans:  "Segoe UI Variable Text", "Segoe UI", system-ui, ui-sans-serif, sans-serif;
+    --mono:  "Cascadia Mono", Consolas, ui-monospace, "SFMono-Regular", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #14130f;
+      --surface:    #1f1d16;
+      --surface-2:  #242118;
+      --ink:        #ece7db;
+      --ink-soft:   #b1aa97;
+      --ink-faint:  #8f8578;
+      --rule:       #34302a;
+      --rule-hard:  #494439;
+
+      --forest:     #35c98a;
+      --forest-dim: #13251c;
+      --oak:        #c4a574;
+      --oak-dim:    #2a2318;
+      --steel:      #8fb0c0;
+      --steel-dim:  #1a2228;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #14130f;
+    --surface:    #1f1d16;
+    --surface-2:  #242118;
+    --ink:        #ece7db;
+    --ink-soft:   #b1aa97;
+    --ink-faint:  #8f8578;
+    --rule:       #34302a;
+    --rule-hard:  #494439;
+
+    --forest:     #35c98a;
+    --forest-dim: #13251c;
+    --oak:        #c4a574;
+    --oak-dim:    #2a2318;
+    --steel:      #8fb0c0;
+    --steel-dim:  #1a2228;
+  }
+
+  :root[data-theme="light"] {
+    --paper:      #f6f1e7;
+    --surface:    #fffdf8;
+    --surface-2:  #fbf6ec;
+    --ink:        #1e2420;
+    --ink-soft:   #5f665f;
+    --ink-faint:  #83887f;
+    --rule:       #e3dcc9;
+    --rule-hard:  #cec5ad;
+
+    --forest:     #3d6b4f;
+    --forest-dim: #e4ebdd;
+    --oak:        #8a6a35;
+    --oak-dim:    #f2e8d5;
+    --steel:      #43596b;
+    --steel-dim:  #e2e9ee;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  a { color: var(--forest); }
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--forest);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---------- type ---------- */
+
+  h1, h2, h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: clamp(1.9rem, 1.3rem + 2.4vw, 2.9rem); line-height: 1.12; }
+  h2 { font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem); line-height: 1.2; }
+  h3 { font-size: 1.05rem; line-height: 1.3; }
+
+  p { margin: 0; max-width: 65ch; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0;
+  }
+
+  .lede {
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  .note { font-size: 0.9rem; color: var(--ink-soft); max-width: 68ch; }
+
+  code, .mono { font-family: var(--mono); font-size: 0.86em; }
+
+  p code, li code, td code, th code {
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.08em 0.34em;
+    white-space: nowrap;
+  }
+
+  /* ---------- sections ---------- */
+
+  section { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .sec-head { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  hr.rule {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 0;
+  }
+
+  /* ---------- masthead ---------- */
+
+  header.masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    padding-bottom: 2rem;
+    border-bottom: 3px double var(--rule-hard);
+  }
+
+  .masthead .lede { font-size: 1.15rem; }
+
+  /* ---------- lane legend ---------- */
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.6rem 0.3rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .chip::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 1px;
+    background: currentColor;
+    flex: none;
+  }
+
+  .l-a { color: var(--lane-a); background: var(--lane-a-bg); border-color: var(--lane-a); }
+  .l-b { color: var(--lane-b); background: var(--lane-b-bg); border-color: var(--lane-b); }
+  .l-c { color: var(--lane-c); background: var(--lane-c-bg); border-color: var(--lane-c); }
+
+  /* ---------- callout ---------- */
+
+  .thesis {
+    background: var(--surface-2);
+    border: 1px solid var(--rule-hard);
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .thesis p { max-width: 62ch; }
+  .thesis p:first-of-type {
+    font-family: var(--serif);
+    font-size: 1.06rem;
+    line-height: 1.5;
+  }
+
+  /* ---------- tables ---------- */
+
+  .tbl-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 34rem;
+  }
+  caption {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-bottom: 0.6rem;
+  }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule-hard);
+    padding: 0 0.9rem 0.5rem 0;
+    vertical-align: bottom;
+  }
+  td {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.7rem 0.9rem 0.7rem 0;
+    vertical-align: top;
+  }
+  th:last-child, td:last-child { padding-right: 0; }
+  tbody tr:last-child td { border-bottom: 0; }
+
+  td.file { white-space: nowrap; }
+  td.file code { background: none; border: 0; padding: 0; font-weight: 600; }
+
+  /* ---------- the loop (swimlane) ---------- */
+
+  .lanes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .lane-head {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid;
+    background: var(--paper);
+  }
+  .lane-head.l-a { color: var(--lane-a); border-color: var(--lane-a); background: var(--paper); }
+  .lane-head.l-b { color: var(--lane-b); border-color: var(--lane-b); background: var(--paper); }
+  .lane-head.l-c { color: var(--lane-c); border-color: var(--lane-c); background: var(--paper); }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 3px solid;
+    padding: 0.85rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .step.a { border-top-color: var(--lane-a); grid-column: 1; }
+  .step.b { border-top-color: var(--lane-b); grid-column: 2; }
+  .step.c { border-top-color: var(--lane-c); grid-column: 3; }
+
+  .step-n {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .step.a .step-n { color: var(--lane-a); }
+  .step.b .step-n { color: var(--lane-b); }
+  .step.c .step-n { color: var(--lane-c); }
+
+  .step h3 { font-family: var(--sans); font-size: 0.95rem; font-weight: 600; }
+  .step p { font-size: 0.86rem; color: var(--ink-soft); }
+
+  .step .out {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--ink);
+    padding-top: 0.4rem;
+    border-top: 1px dashed var(--rule-hard);
+    word-break: break-word;
+  }
+  .step .out span { color: var(--ink-faint); }
+
+  .loopback {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--oak);
+    background: var(--lane-b-bg);
+    border: 1px dashed var(--oak);
+    padding: 0.6rem 0.9rem;
+  }
+  .loopback strong { font-weight: 700; }
+
+  .gate {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--forest);
+    background: var(--lane-a-bg);
+    border: 1px solid var(--forest);
+    padding: 0.6rem 0.9rem;
+  }
+
+  .step::before { content: none; }
+
+  @media (max-width: 46rem) {
+    .lanes { grid-template-columns: 1fr; }
+    .lane-head { display: none; }
+    .step.a, .step.b, .step.c { grid-column: 1; }
+    .step::before {
+      content: attr(data-actor);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+  }
+
+  /* ---------- contracts ---------- */
+
+  .contracts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--rule-hard);
+    padding: 1.1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .card.a { border-top-color: var(--lane-a); }
+  .card.b { border-top-color: var(--lane-b); }
+  .card.c { border-top-color: var(--lane-c); }
+
+  .card h3 { font-family: var(--sans); font-size: 1rem; }
+
+  .card ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .card li { font-size: 0.88rem; }
+  .card li::marker { color: var(--ink-faint); }
+
+  .never {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--rule-hard);
+    padding-top: 0.7rem;
+  }
+  .never b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- your script ---------- */
+
+  ol.script {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  ol.script > li {
+    counter-increment: s;
+    display: grid;
+    grid-template-columns: 2.1rem minmax(0, 1fr);
+    gap: 0.9rem;
+    align-items: start;
+  }
+  ol.script > li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--oak);
+    background: var(--lane-b-bg);
+    border: 1px solid var(--oak);
+    text-align: center;
+    padding: 0.25rem 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .script-body { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+  .script-body .what { font-size: 0.95rem; font-weight: 600; }
+  .script-body .why { font-size: 0.85rem; color: var(--ink-soft); }
+
+  pre {
+    margin: 0;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule-hard);
+    padding: 0.7rem 0.9rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  pre.to-c { border-left-color: var(--lane-c); }
+  pre.to-a { border-left-color: var(--lane-a); }
+  pre.to-b { border-left-color: var(--lane-b); }
+
+  pre .cmt { color: var(--ink-faint); }
+
+  /* ---------- savings ---------- */
+
+  .delta {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--forest);
+  }
+  .delta.mid { color: var(--oak); }
+
+  /* ---------- mind map ---------- */
+
+  .map {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 1rem 1.75rem;
+    align-items: center;
+  }
+
+  .hub {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    padding: 1.1rem 1.2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-self: center;
+    max-width: 15rem;
+  }
+  .hub .hub-path {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .hub .hub-sub { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.45; }
+  .hub .hub-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .branch {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 0.8rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    position: relative;
+  }
+  .branch h3 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .branch ul { margin: 0; padding-left: 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .branch li { font-size: 0.83rem; color: var(--ink-soft); }
+  .branch li b { color: var(--ink); font-weight: 600; }
+
+  .branch.left  { grid-column: 1; border-right: 3px solid var(--rule); }
+  .branch.right { grid-column: 3; border-left: 3px solid var(--rule); }
+
+  .branch.ba.left  { border-right-color: var(--lane-a); }
+  .branch.ba h3 { color: var(--lane-a); }
+  .branch.bb.left  { border-right-color: var(--lane-b); }
+  .branch.bb h3 { color: var(--lane-b); }
+  .branch.bc.right { border-left-color: var(--lane-c); }
+  .branch.bc h3 { color: var(--lane-c); }
+  .branch.bd.right { border-left-color: var(--ink-faint); }
+  .branch.bd h3 { color: var(--ink-soft); }
+
+  /* connector stubs into the hub */
+  .branch.left::after,
+  .branch.right::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 1.75rem;
+    border-top: 1px dashed var(--rule-hard);
+  }
+  .branch.left::after  { left: 100%; }
+  .branch.right::after { right: 100%; }
+
+  @media (max-width: 52rem) {
+    .map { grid-template-columns: minmax(0, 1fr); }
+    .hub { grid-column: 1; grid-row: auto; max-width: none; order: -1; }
+    .branch.left, .branch.right {
+      grid-column: 1;
+      border-left-width: 3px;
+      border-left-style: solid;
+      border-right: 1px solid var(--rule);
+    }
+    .branch.ba.left { border-left-color: var(--lane-a); }
+    .branch.bb.left { border-left-color: var(--lane-b); }
+    .branch.left::after, .branch.right::after { display: none; }
+  }
+
+  /* ---------- setup ---------- */
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    max-width: 65ch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Notch · Operating procedure · 27 Jul 2026</p>
+    <h1>The sprint pack: a file-backed loop for Claude&nbsp;+&nbsp;Cursor</h1>
+    <p class="lede">
+      Both agents already read your repo. So stop routing their conversation through your clipboard.
+      One folder per sprint becomes the only interface between them — and you go from pasting
+      mega-prompts to typing four short lines.
+    </p>
+    <div class="legend">
+      <span class="chip l-a">Claude Code — plans &amp; verifies</span>
+      <span class="chip l-b">You — 4 messages, 1 command</span>
+      <span class="chip l-c">Cursor — implements &amp; grades</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">The one idea</p>
+      <h2>The folder is the message bus</h2>
+    </div>
+    <div class="thesis">
+      <p>
+        Today the sprint's state lives in two chat windows and your clipboard. Every fix round,
+        Claude regenerates a full prompt, you paste it, Cursor re-ingests it, Cursor writes long prose,
+        you paste that back. You pay for the same context four or five times per round.
+      </p>
+      <p>
+        Move that state into <code>sprints/47/</code>. Claude writes the plan and the bar. Cursor writes
+        the code and the grade. Each reads what the other left. You carry a pointer, not the payload.
+      </p>
+    </div>
+    <p class="note">
+      A side effect that matters as much as the token savings: if a Claude session hits its limit or
+      resets context mid-sprint, <b>you lose nothing</b>. The sprint is on disk, not in a transcript.
+    </p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Artifact</p>
+      <h2>What lives in the sprint pack</h2>
+      <p class="note">
+        Seven files, one owner each. No file is written by two actors — that's what keeps the
+        grade honest and the diffs clean.
+      </p>
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <caption>sprints/47/</caption>
+        <thead>
+          <tr>
+            <th scope="col">File</th>
+            <th scope="col">Written by</th>
+            <th scope="col">Contents</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="file"><code>GOAL.md</code></td>
+            <td><span class="chip l-a">Claude</span></td>
+            <td>Objective, explicit out-of-scope, user impact. Under 40 lines.</td>
+          </tr>
+          <tr>
+            <td class="file"><code>PLAN.md</code></td>
+            <td><span class="chip l-a">Claude</span></td>
+            <td>Ordered tasks with real file paths, guardrails, and the CLAUDE.md §7 invariants each task must not break.</td>
+          </tr>
+          <tr>
+            <td class="file"><code>ACCEPTANCE.md</code></td>
+            <td><span class="chip l-a">Claude</span></td>
+            <td>BUILD_PLAN §6 categories instantiated for <em>this</em> sprint as binary checks. Written <b>before</b> any code exists.</td>
+          </tr>
+          <tr>
+            <td class="file"><code>verify.txt</code></td>
+            <td><span class="chip l-c">Cursor</span></td>
+            <td>Raw, unedited output of <code>npm run verify</code>. Machine evidence, not prose.</td>
+          </tr>
+          <tr>
+            <td class="file"><code>SCORECARD.md</code></td>
+            <td><span class="chip l-c">Cursor</span></td>
+            <td>Pass/fail against every <code>ACCEPTANCE.md</code> line, citing <code>verify.txt</code>. The percentage falls out of the count.</td>
+          </tr>
+          <tr>
+            <td class="file"><code>changes.diff</code></td>
+            <td><span class="chip l-b">You</span></td>
+            <td>One command. What Claude reads instead of re-auditing the repo.</td>
+          </tr>
+          <tr>
+            <td class="file"><code>FIXES.md</code></td>
+            <td><span class="chip l-a">Claude</span></td>
+            <td>Gaps only, with exact remediation. Appended per round — never a rewritten plan.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Context files stay exactly where they are: <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
+      <code>BUILD_PLAN.md</code>, <code>BUSINESS_PLAN.md</code>, <code>DESIGN_BRIEF.md</code>,
+      <code>DECISIONS_LOG.md</code>. <b>No new architecture doc.</b> A second source of truth drifts,
+      and drift is the failure mode your §7 invariants exist to prevent.
+    </p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Sequence</p>
+      <h2>The loop, lane by lane</h2>
+      <p class="note">Read top to bottom. Each card sits in the lane of whoever performs it.</p>
+    </div>
+
+    <div class="lanes">
+      <div class="lane-head l-a">Claude Code</div>
+      <div class="lane-head l-b">You</div>
+      <div class="lane-head l-c">Cursor</div>
+
+      <div class="step a" data-actor="Claude Code">
+        <span class="step-n">01 · Opus</span>
+        <h3>Write the pack</h3>
+        <p>Reads CLAUDE.md + BUILD_PLAN §4 + your change list. No repo re-audit.</p>
+        <p class="out"><span>writes →</span> GOAL.md · PLAN.md · ACCEPTANCE.md</p>
+      </div>
+
+      <div class="step c" data-actor="Cursor">
+        <span class="step-n">02 · Auto or premium</span>
+        <h3>Implement</h3>
+        <p>Opens the folder itself. Never receives a pasted prompt body.</p>
+        <p class="out"><span>writes →</span> source code · verify.txt · SCORECARD.md</p>
+      </div>
+
+      <div class="step b" data-actor="You">
+        <span class="step-n">03</span>
+        <h3>Commit &amp; cut the diff</h3>
+        <p>The only shell you touch. Two lines, identical every sprint.</p>
+        <p class="out"><span>writes →</span> changes.diff</p>
+      </div>
+
+      <div class="step a" data-actor="Claude Code">
+        <span class="step-n">04 · Sonnet</span>
+        <h3>Audit against the bar</h3>
+        <p>Reads verify.txt + changes.diff + SCORECARD.md. Checks the §7 invariants a script can't. Browser-walks only the manual paths ACCEPTANCE.md names.</p>
+        <p class="out"><span>writes →</span> FIXES.md</p>
+      </div>
+
+      <div class="step c" data-actor="Cursor">
+        <span class="step-n">05 · Auto</span>
+        <h3>Apply the delta</h3>
+        <p>Reads FIXES.md <em>only</em>. Does not re-read the original plan. Re-runs verify.</p>
+        <p class="out"><span>updates →</span> verify.txt · SCORECARD.md</p>
+      </div>
+
+      <div class="loopback">
+        <strong>↺ Under 95%?</strong>
+        <span>Back to step 03. Cap at three rounds — then stop and escalate, per CLAUDE.md §4.</span>
+      </div>
+
+      <div class="step a" data-actor="Claude Code">
+        <span class="step-n">06 · Opus</span>
+        <h3>Close and plan forward</h3>
+        <p>Appends SPRINT_LOG, updates BUILD_PLAN §4 status, writes the next pack.</p>
+        <p class="out"><span>writes →</span> SPRINT_LOG.md · sprints/48/</p>
+      </div>
+
+      <div class="gate">
+        <strong>✓ 95% or better</strong>
+        <span>Ship it. You commit and push — that stays yours.</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Contracts</p>
+      <h2>Exactly what each actor may and may not do</h2>
+    </div>
+
+    <div class="contracts">
+      <article class="card a">
+        <h3><span class="chip l-a">Claude Code</span></h3>
+        <ul>
+          <li>Writes <code>GOAL</code>, <code>PLAN</code>, <code>ACCEPTANCE</code>, <code>FIXES</code>.</li>
+          <li>Derives ACCEPTANCE from BUILD_PLAN §6 — same bar, instantiated per sprint.</li>
+          <li>Audits from <code>changes.diff</code> and <code>verify.txt</code>.</li>
+          <li>Browser-verifies only the manual paths ACCEPTANCE names.</li>
+          <li>Owns §7 invariant review, security, multi-tenancy, architecture.</li>
+          <li>Closes the sprint into SPRINT_LOG / BUILD_PLAN.</li>
+        </ul>
+        <p class="never"><b>Never:</b> re-audits the repo at session start. Never writes SCORECARD — the actor that sets the bar doesn't get to declare it met.</p>
+      </article>
+
+      <article class="card c">
+        <h3><span class="chip l-c">Cursor</span></h3>
+        <ul>
+          <li>Implements <code>PLAN.md</code> in order.</li>
+          <li>Runs <code>npm run verify</code>, pipes raw output to <code>verify.txt</code>.</li>
+          <li>Grades every ACCEPTANCE line pass/fail in SCORECARD, citing evidence.</li>
+          <li>On a fix round, reads <code>FIXES.md</code> and nothing else.</li>
+          <li>Auto model for rote work; premium only for the hard slice.</li>
+        </ul>
+        <p class="never"><b>Never:</b> edits ACCEPTANCE.md. Never marks a check passed without a verify.txt line or a named file:line. Never expands scope beyond PLAN.md.</p>
+      </article>
+
+      <article class="card b">
+        <h3><span class="chip l-b">You</span></h3>
+        <ul>
+          <li>Supply the change list once, at sprint open.</li>
+          <li>Type four short pointers (below).</li>
+          <li>Run <code>git</code> — commit, diff, push. Agents don't touch it.</li>
+          <li>Make the calls CLAUDE.md §4 reserves for you: money, vendors, legal, branding, scope.</li>
+        </ul>
+        <p class="never"><b>Never again:</b> paste a plan, a scorecard, or a fix list between windows.</p>
+      </article>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Your part, verbatim</p>
+      <h2>The four messages and one command</h2>
+      <p class="note">
+        This is the whole of your manual involvement per sprint. Only the sprint number
+        and the opening change list ever change.
+      </p>
+    </div>
+
+    <ol class="script">
+      <li>
+        <div class="script-body">
+          <span class="what">Open the sprint — to Claude Code</span>
+          <pre class="to-a">Plan sprint 47. Changes I want:
+- <span class="cmt">&lt;your list, in your own words&gt;</span>
+
+Write sprints/47/GOAL.md, PLAN.md, ACCEPTANCE.md.
+Agent-focused, not human-readable. Don't re-audit the repo.</pre>
+          <span class="why">Model: <b>Opus</b>. The only step that needs the expensive model's judgment.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="script-body">
+          <span class="what">Hand off — to Cursor</span>
+          <pre class="to-c">Read sprints/47/. Implement PLAN.md in order.
+Then run: npm run verify &gt; sprints/47/verify.txt 2&gt;&amp;1
+Grade every ACCEPTANCE.md check in sprints/47/SCORECARD.md,
+citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.</pre>
+          <span class="why">Four lines instead of a two-thousand-word prompt. Cursor opens the pack itself.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="script-body">
+          <span class="what">Commit and cut the diff — PowerShell, your box</span>
+          <pre class="to-b">git add -A; git commit -m "sprint 47: &lt;summary&gt;"
+git diff HEAD~1 &gt; sprints/47/changes.diff</pre>
+          <span class="why">The second line is the whole trick — Claude reads a few hundred diff lines instead of re-reading a repo of thousands of files.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="script-body">
+          <span class="what">Audit — to Claude Code</span>
+          <pre class="to-a">Audit sprints/47. Append FIXES.md — gaps only, exact remediation.</pre>
+          <span class="why">Model: <b>Sonnet</b>. Reading a diff against a written bar is mechanical. Switch back to Opus only if it flags an architecture or security problem.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="script-body">
+          <span class="what">Fix round — to Cursor, then repeat step 03</span>
+          <pre class="to-c">Read sprints/47/FIXES.md. Apply only those fixes.
+Re-run verify, update verify.txt and SCORECARD.md.</pre>
+          <span class="why">Cursor Auto handles most fix rounds. Stop at three and escalate rather than grinding.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="script-body">
+          <span class="what">Close — to Claude Code once the grade clears 95%</span>
+          <pre class="to-a">Sprint 47 passed. Log it and write sprints/48.</pre>
+          <span class="why">Model: <b>Opus</b>. Then you're back at step 02 with no re-audit and nothing re-explained.</span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Economics</p>
+      <h2>Where the savings actually come from</h2>
+      <p class="note">
+        Directional, not measured. The <em>ordering</em> below is structural and reliable; the
+        magnitudes are estimates worth confirming against your own usage after two sprints.
+      </p>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <caption>Per phase, per sprint</caption>
+        <thead>
+          <tr>
+            <th scope="col">Phase</th>
+            <th scope="col">Today</th>
+            <th scope="col">Under the pack</th>
+            <th scope="col">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Session open</td>
+            <td>Claude re-audits the architecture</td>
+            <td>Reads CLAUDE.md + BUILD_PLAN §4 + the pack</td>
+            <td><span class="delta">largest single cut</span></td>
+          </tr>
+          <tr>
+            <td>Verification</td>
+            <td>Opus reads Cursor's prose, re-reads source</td>
+            <td>Sonnet reads verify.txt + changes.diff</td>
+            <td><span class="delta">large — cheaper model, smaller input</span></td>
+          </tr>
+          <tr>
+            <td>Fix rounds 2–3</td>
+            <td>Full prompt regenerated and re-pasted each round</td>
+            <td>FIXES.md delta only, on both sides</td>
+            <td><span class="delta">large — scales with round count</span></td>
+          </tr>
+          <tr>
+            <td>Plan handoff</td>
+            <td>Prompt billed twice: Claude writes it, Cursor ingests it</td>
+            <td>Written once to disk; you paste a pointer</td>
+            <td><span class="delta mid">moderate</span></td>
+          </tr>
+          <tr>
+            <td>Cursor model mix</td>
+            <td>Premium model carries the fix rounds</td>
+            <td>Auto handles bounded FIXES.md deltas</td>
+            <td><span class="delta mid">moderate — hits your Cursor cap</span></td>
+          </tr>
+          <tr>
+            <td>Context loss</td>
+            <td>Limit hit mid-sprint means redoing the setup</td>
+            <td>State on disk; resume cold</td>
+            <td><span class="delta">removes a whole failure mode</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="setup-grid">
+      <article class="card">
+        <h3>Time</h3>
+        <p class="note">
+          Roughly six large copy-pastes per sprint become four one-line messages and one shell
+          command. You also stop reading long agent prose to decide what to forward — SCORECARD is
+          a pass/fail list, FIXES is a delta.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Effort</h3>
+        <p class="note">
+          You stop being the integration layer. What's left is the part only you can do: supplying
+          the change list and making the §4 business calls.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Quality</h3>
+        <p class="note">
+          The bar is written before the code, by a different actor than the one graded against it.
+          That closes the self-grading hole — today Cursor both does the work and decides it's done.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Mind map</p>
+      <h2>How it ties together</h2>
+      <p class="note">Everything radiates from one folder. Nothing crosses between agents except through it.</p>
+    </div>
+
+    <div class="map">
+      <article class="branch left ba">
+        <h3>Claude writes</h3>
+        <ul>
+          <li><b>GOAL.md</b> — objective + out-of-scope</li>
+          <li><b>PLAN.md</b> — tasks, paths, §7 guardrails</li>
+          <li><b>ACCEPTANCE.md</b> — §6 bar, binary, up front</li>
+          <li><b>FIXES.md</b> — gaps only, per round</li>
+        </ul>
+      </article>
+
+      <div class="hub">
+        <span class="hub-tag">The interface</span>
+        <span class="hub-path">sprints/47/</span>
+        <span class="hub-sub">The only thing both agents read. Survives a context reset. Reviewable in git.</span>
+      </div>
+
+      <article class="branch right bc">
+        <h3>Cursor writes</h3>
+        <ul>
+          <li><b>source code</b> — PLAN.md in order</li>
+          <li><b>verify.txt</b> — raw machine evidence</li>
+          <li><b>SCORECARD.md</b> — graded against Claude's bar</li>
+        </ul>
+      </article>
+
+      <article class="branch left bb">
+        <h3>You supply</h3>
+        <ul>
+          <li><b>the change list</b> — once, at open</li>
+          <li><b>4 pointer messages</b> — never a payload</li>
+          <li><b>changes.diff</b> — one git command</li>
+          <li><b>§4 business calls</b> — money, scope, brand</li>
+        </ul>
+      </article>
+
+      <article class="branch right bd">
+        <h3>What it buys</h3>
+        <ul>
+          <li><b>No re-audit</b> — the context files already hold it</li>
+          <li><b>Sonnet-able verify</b> — diff against a written bar</li>
+          <li><b>Delta fix loops</b> — rounds 2–3 get cheap</li>
+          <li><b>Honest grade</b> — bar author ≠ grader</li>
+          <li><b>Resumable</b> — sprint state lives on disk</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Setup</p>
+      <h2>What has to be built first — and by whom</h2>
+    </div>
+
+    <div class="tbl-scroll">
+      <table>
+        <caption>One-time, before sprint 47</caption>
+        <thead>
+          <tr>
+            <th scope="col">Piece</th>
+            <th scope="col">What it is</th>
+            <th scope="col">Built by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="file"><code>npm run verify</code></td>
+            <td>One script chaining typecheck, lint, test, and plan validation. The thing SCORECARD must cite.</td>
+            <td><span class="chip l-a">Claude</span></td>
+          </tr>
+          <tr>
+            <td class="file"><code>sprints/_template/</code></td>
+            <td>Empty GOAL / PLAN / ACCEPTANCE skeletons so every pack has the same shape.</td>
+            <td><span class="chip l-a">Claude</span></td>
+          </tr>
+          <tr>
+            <td class="file"><code>AGENTS.md</code></td>
+            <td>The Cursor-side contract above, so Cursor knows the protocol without being told each sprint.</td>
+            <td><span class="chip l-a">Claude</span></td>
+          </tr>
+          <tr>
+            <td class="file"><code>CLAUDE.md</code></td>
+            <td>A short §9 recording the same protocol from Claude's side.</td>
+            <td><span class="chip l-a">Claude</span></td>
+          </tr>
+          <tr>
+            <td class="file">first <code>git commit</code></td>
+            <td>Landing the scaffold on main.</td>
+            <td><span class="chip l-b">You</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="thesis">
+      <p>
+        <b>Nothing here needs Cursor.</b> It's four small files, one line in <code>package.json</code>,
+        and edits to the two agent-contract docs — and those docs are Claude's own operating
+        instructions, so Claude should own them. Delegating the setup would spend a premium Cursor
+        request to save nothing.
+      </p>
+      <p>
+        The one thing Cursor genuinely needs is the standing prompt from step 02 — and that's a
+        permanent four-liner you reuse every sprint, not a setup task.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    Operating procedure for the Notch build loop · Claude Max 5× + Cursor Pro ·
+    Savings are directional estimates derived from where context is duplicated, not measurements.
+    Re-check against real usage after two sprints and adjust the model split.
+  </footer>
+
+</div>

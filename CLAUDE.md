@@ -115,3 +115,17 @@ Launch economics (DECISIONS_LOG 2026-07-13): stay Vercel Hobby, NO monetization 
 - Theme init: `THEME_INIT_SCRIPT` (`src/lib/theme.ts`), only inline script, first child of `<body>`, carries nonce from `x-nonce`. Reads one cookie; none → `prefers-color-scheme`. Traps: `\s` collapses in a JS string → source writes `\\s`; regex must not require `theme` as first cookie (Clerk cookies precede). React doesn't serialize `nonce` → hydration mismatch site-wide (`suppressHydrationWarning` on `<html>` doesn't cover it); caught via console.
 - Landing `queryPlans` call stays UNFILTERED (shared w/ featured carousel; narrowing turns headline count into a subset). `landing-copy.test` whitelists arg keys to `['perPage','sort']`. Landing states real catalog size from `total`; below 100-plan floor DROPS the size claim.
 - No radius tokens (all radii literals); `landing-scale.test` is a source test.
+
+## 9. Sprint pack protocol (Sprint 00 — binding)
+Sprint state lives in `sprints/<NN>/`, not in a chat transcript. Full loop + standing prompts: `sprints/README.md`; line formats: `sprints/_template/README.md`. Packs are for sprints — under ~3 files changed, go direct.
+
+Ownership, one writer per file: Claude = `GOAL`/`PLAN`/`ACCEPTANCE`/`ACCEPTANCE.sha256`/`FIXES`. Cursor = `verify.txt`/`SCORECARD`. Keagan = `changes.diff` (gitignored, regenerable) + all `git`. Everything else in a pack IS committed — that's what makes a sprint resumable when a session hits its limit mid-flight.
+
+- **Never re-audit the repo at session start.** Read this file + `BUILD_PLAN` §4 + the pack. The audit's conclusions are already written down; re-deriving them is the single largest avoidable token cost in the loop.
+- **Audit from `changes.diff` + `verify.txt`**, not by re-reading `src/`. A sprint diff is hundreds of lines against a repo of thousands of files.
+- `ACCEPTANCE.md` derives from `BUILD_PLAN` §6 instantiated for that sprint, is written BEFORE implementation, and is locked with `node scripts/verify.mjs lock sprints/<NN>` at the end of planning. Statements must be binary — if a human has to judge it, it isn't a check. `lock` WRITES a file, so it runs natively (Keagan's shell), never from the Claude sandbox (§5: bash-writing the mount corrupts the real file). Hand it to Keagan in the closing message with the rest of his block.
+- **The bar's author never writes `SCORECARD.md`.** Claude sets the bar, Cursor grades against it, Claude audits the grade. Never write or edit a SCORECARD.
+- `FIXES.md` = delta only, one `## Round N` heading per round, max 3 → then stop and escalate (§4). Never restate the plan.
+- Model routing: **Opus** to plan (step 1) and close (step 6); **Sonnet** to audit (step 4) — reading a diff against a written bar is mechanical and it is the step run most often.
+- `tests/sprint-pack.test.ts` enforces all of the above mechanically (ungraded checks, grading without verify, a tampered bar, a 4th round, malformed ids) and runs inside `npm run verify`. Don't weaken it to make a sprint pass.
+- `npm run verify` (`scripts/verify.mjs`) runs typecheck+lint+test+content and CONTINUES PAST FAILURES on purpose — a `&&` chain hides three failures behind the first and buys a needless fix round. Its `=== VERIFY SUMMARY ===` block is the contract SCORECARD cites; changing those strings breaks the guard test, update both together. No network, no DB, no `next build`.

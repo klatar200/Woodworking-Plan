@@ -19,6 +19,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "// verify": "Sprint-pack evidence producer (Sprint 00). Runs typecheck + lint + test + content and CONTINUES PAST FAILURES, then prints one '=== VERIFY SUMMARY ===' block. A '&&' chain would short-circuit, so verify.txt would show only the first broken step and the fix round would be scoped to a fraction of the real problem — guaranteeing another round. Output redirected to sprints/<NN>/verify.txt is the only evidence SCORECARD.md may cite. Proves CODE, not content shipped: content changes still need `npm run db:seed` against prod.",
+    "verify": "node scripts/verify.mjs",
     "smoke:stream-dom": "node scripts/smoke-stream-dom.mjs",
     "// db scripts": "Prisma's CLI only reads .env — but .env.local is the Next.js convention and the file that actually holds our secrets. dotenv-cli bridges the two so DATABASE_URL is visible to migrate/seed/studio. Without this, every db command fails with 'Environment variable not found: DATABASE_URL'. db:generate is excluded on purpose: it needs no database connection, and Vercel/CI run it with no .env.local present.",
     "db:generate": "prisma generate",
