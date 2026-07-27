@@ -42,7 +42,7 @@ Grade = 26 PASS ÷ 27 = **96%** (M1 manual). Gate ≥95%. No `R` FAIL.
 ## Regression gate
 
 - R1 | PASS | `git diff --name-only origin/main...HEAD` — no paths under src/, prisma/, content/, public/, tests/, scripts/
-- R2 | PASS | verify.txt:183–188 — all four PASS; `=== EXIT: 0 ===`
+- R2 | PASS | verify.txt:183-188 — typecheck/lint/test/content PASS; `=== EXIT: 0 ===`
 - R3 | PASS | SPRINT_LOG.md + DECISIONS_LOG.md exist at repo root
 - R4 | PASS | BUILD_PLAN.md, AGENTS.md, AGENTS_CONTEXT.md, BUSINESS_PLAN.md, DESIGN_BRIEF.md, DEPLOYMENT.md byte-identical to origin/main (`cmp`)
 - R5 | PASS | package.json byte-identical to origin/main (`cmp`)
