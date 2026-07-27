@@ -25,8 +25,8 @@ it is still far cheaper than re-pasting the context, which is what it replaces.
 |---|-------|-------|------|--------|
 | 1 | Claude Code | **Opus** | Reads CLAUDE.md + BUILD_PLAN §4 + your change list. No repo re-audit. | `GOAL.md` `PLAN.md` `ACCEPTANCE.md` |
 | 2 | Keagan | — | Lock the bar, **commit + push the pack** so Cursor Cloud can see it. | `ACCEPTANCE.sha256` |
-| 3 | Cursor | Auto / premium | Pulls, opens the folder itself, implements PLAN.md in order, **pushes**. | source · `verify.txt` · `SCORECARD.md` |
-| 4 | Keagan | — | **Pull**, then cut the diff over exactly what arrived. | `changes.diff` |
+| 3 | Cursor | Auto / premium | Pulls, opens the folder itself, implements PLAN.md in order, **pushes a `cursor/*` branch**. | source · `verify.txt` · `SCORECARD.md` |
+| 4 | Keagan | — | **Fetch**, then diff that branch against `main`. Merge only after the audit passes. | `changes.diff` |
 | 5 | Claude Code | **Sonnet** | Audits diff + verify.txt against the bar. §7 invariants, security, architecture. | `FIXES.md` |
 | 6 | Keagan | — | **Commit + push `FIXES.md`.** | — |
 | 7 | Cursor | Auto | Pulls, reads `FIXES.md` only, re-runs verify, **pushes**. | `verify.txt` `SCORECARD.md` |
@@ -65,16 +65,23 @@ citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.
 Commit and push verify.txt and SCORECARD.md with the code.
 ```
 
-Pull Cursor's work and cut the diff over exactly what arrived — run these two **back to back**,
-because `HEAD@{1}` means "where HEAD was before the pull":
+Cursor Cloud pushes a `cursor/sprint-NN-*` branch, not `main`. Fetch it and diff the branch
+against `main` — substitute the real branch name, this is a template not a runnable line:
 ```
-git pull --rebase origin main
-git diff HEAD@{1}..HEAD > sprints/NN/changes.diff
+git fetch origin
+git diff "origin/main...origin/cursor/<real-branch-name>" --output=sprints/NN/changes.diff
 ```
-If you did other git work in between, find the base by eye instead:
+Three properties of that command are load-bearing, each learned the hard way in Sprint 75:
+- **`--output=`, never `>`.** PowerShell 5.1 redirection writes **UTF-16LE**, which every text
+  tool downstream then fails to parse. `--output=` makes git write the file as UTF-8.
+- **Quoted.** PowerShell parses a bare `@{` as a hashtable literal and eats it.
+- **Three dots.** `A...B` is "what B added since it diverged from A" — correct against a branch,
+  and it does not require merging first.
+
+Audit before merging. Once the audit passes:
 ```
-git log --oneline -8
-git diff <sha-before-cursors-first-commit>..HEAD > sprints/NN/changes.diff
+git merge --ff-only origin/cursor/<real-branch-name>
+git push
 ```
 
 **3 — audit (Claude Code, Sonnet)**

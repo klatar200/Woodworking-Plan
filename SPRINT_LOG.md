@@ -3,11 +3,57 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 74 (2026-07-27) — CLOSED 98/100** — retire stale wasteFactor / schema v3. Suite: 1344 green.
+> **Latest logged: Sprint 75 (2026-07-27) — CLOSED 27/27** — doc truth pass + repo compaction. Suite: 1359 green / 119 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅. Suite: 1344 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅. Suite: 1359 green.
 >
-> **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each. Newest-first throughout.
+> **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
+>
+> **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 75: Doc truth pass + repo compaction
+**Dates:** 2026-07-27
+**Scope:** BUILD_PLAN §4 Sprint 75 — `CLAUDE.md` §6 truth pass; compact `SPRINT_LOG` + `DECISIONS_LOG`; move `COMPETITIVE_AUDIT_CBD.md`; sweep root artifacts. Docs only.
+
+### Attempt 1 — score 27/27 (100%) — PASS
+| Category | Result | Evidence |
+|---|---|---|
+| CLAUDE.md §6 (A1–A5) | 5/5 | One hunk, §6 only. Every status claim corroborated against BUILD_PLAN §4. Now names Cutting Board Designer 51–74; last closed = 74 @ 98/100. |
+| SPRINT_LOG (A6–A12) | 7/7 | 5907→510 lines. 65–74 full + Shell IA audit. All 0–64 present, 67 one-liners each carrying a score. Zero ascending steps. Template stub removed. |
+| DECISIONS_LOG (A13–A17) | 5/5 | 1937→319. **88 `###` headings in, 88 out, 0 removed, 0 added.** ⛔ SUPERSEDED preserved. Six standing constraints intact. Index untouched. |
+| Hygiene (A18–A21) | 4/4 | `git mv` at +0/−0. `run1-ledger.json` absent from diff. 4 removals, no inbound refs. |
+| Regression (R1–R5) | 5/5 | Nothing under `src/ prisma/ content/ public/ tests/ scripts/`. `=== EXIT: 0 ===`. |
+| Manual (M1) | 1/1 | `npm run build` green on Keagan's box. |
+
+**First sprint graded by an actor that did not author the bar.** `tests/sprint-pack.test.ts` passing inside `verify` mechanically proves every id was graded and `ACCEPTANCE.sha256` was untouched — Cursor could not have skipped a check or moved the bar.
+
+**Deliberately retained:** `run1-ledger.json` (force-committed resume point), `kreg_scraper.py`, `scraper.py`, `_harness.tgz`, `run1-cut-step-preview.txt`. Retire only with evidence of no inbound reference.
+
+**Nit, not a gap:** `DECISIONS_LOG` mentions `COMPETITIVE_AUDIT_CBD.md` by bare filename in three places; prose mentions, not links, so nothing dangles — but the file now lives in `docs/`.
+
+**Commits:** `25da286` (branch `cursor/sprint-75-print-layout-10d8`, ff-merged to main).
+
+---
+
+## Sprint 00: File-backed sprint-pack loop (out-of-band infrastructure)
+**Dates:** 2026-07-27
+**Scope:** Replace clipboard-as-integration-layer between Claude Code and Cursor with `sprints/<NN>/`. Numbered `00` deliberately — process infrastructure, not a product sprint.
+
+### Self-executed — ungraded
+Planner and executor were the same actor (Claude Code), so no independent grade exists and the bar/grader split went untested until Sprint 75. Recorded here for the history, not as a scored sprint.
+
+**Shipped:**
+- `npm run verify` (`scripts/verify.mjs`) — typecheck + lint + test + content, **continuing past failures** so one red step never hides three others, then a fixed `=== VERIFY SUMMARY ===` block. Plus `lock <dir>` for the acceptance hash.
+- `tests/sprint-pack.test.ts` — fails the suite on an ungraded ACCEPTANCE id, grading without a verify run, a tampered `ACCEPTANCE.sha256`, a 4th fix round, or malformed ids.
+- `sprints/_template/` + `sprints/README.md`; protocol sections in `AGENTS.md` and `CLAUDE.md` §9.
+
+**Found on its first run** (would have been hidden by a `&&` chain): a stale local Prisma client and a `node_modules` missing `jsdom` + `@testing-library/react`.
+
+**Three topology corrections, each learned in use:** Cursor Cloud has its own clone (push/pull required); it pushes a `cursor/*` branch, not `main`; and PowerShell `>` writes UTF-16LE, so `changes.diff` needs `git diff --output=`.
+
+**Commits:** `052c585`, `f834701`.
 
 ---
 

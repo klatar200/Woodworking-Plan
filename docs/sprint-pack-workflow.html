@@ -849,15 +849,15 @@ citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.</pre>
 
       <li>
         <div class="script-body">
-          <span class="what">Publish the pack, then pull Cursor's work — PowerShell, your box</span>
+          <span class="what">Publish the pack, then fetch Cursor's branch — PowerShell, your box</span>
           <pre class="to-b"><span class="cmt"># after step 1, so Cursor Cloud can see the pack</span>
-node scripts/verify.mjs lock sprints/47
-git add -A; git commit -m "sprint 47: pack"; git push
+node scripts/verify.mjs lock sprints/75
+git add -A; git commit -m "sprint 75: pack"; git push
 
-<span class="cmt"># after step 2 — run these back to back</span>
-git pull --rebase origin main
-git diff HEAD@{1}..HEAD &gt; sprints/47/changes.diff</pre>
-          <span class="why">The last line is the whole trick — Claude reads a few hundred diff lines instead of re-reading a repo of thousands of files. <code>HEAD@{1}</code> means "where HEAD was before the pull", so it captures exactly what Cursor sent.</span>
+<span class="cmt"># after step 2 — substitute the real branch name</span>
+git fetch origin
+git diff "origin/main...origin/cursor/&lt;branch&gt;" --output=sprints/75/changes.diff</pre>
+          <span class="why">The last line is the whole trick — Claude reads a few hundred diff lines instead of re-reading a repo of thousands of files. Three details are load-bearing: <code>--output=</code> rather than <code>&gt;</code> (PowerShell redirection writes UTF-16LE), the quotes (PowerShell eats a bare <code>@{</code>), and three dots (what the branch added since it diverged). Merge only after the audit passes.</span>
         </div>
       </li>
 

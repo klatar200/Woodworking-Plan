@@ -57,7 +57,7 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 73 (material-math D1 / A1–A4) | ✅ **CLOSED** 2026-07-27 — Attempt 2 **98/100** (Keagan A1 prod **90/100** — magnitude). Glue-up axes only; `wasteFactor` default 0; volume ~29%/~~14%. Suite **1338/1338** / 117 files. |
 | Sprint 74 (retire stale wasteFactor) | ✅ **CLOSED** 2026-07-27 — **98/100**. `schemaVersion` 2→3 zeroes stored `0.15` on read; optional dry-run backfill. Suite **1344/1344** / 118 files. |
 
-Test suite — expected: **1344/1344** across **118 files** (Sprint 74). Update each sprint close.
+Test suite — expected: **1359/1359** across **119 files** (Sprint 75). Update each sprint close.
 
 **Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅**. Parked FUTURE_IDEAS 2026-07-26. D3/D5/D7 still gated.
 
@@ -85,6 +85,35 @@ FACT:      DECISIONS_LOG 2026-07-26 stale wasteFactor retirement. Links D1.
 OUT:       D3/D5/D7 · cut-plan packing · changing non-0.15 waste values
 SHIPPED:   schemaVersion 3; v2→v3 zeroes 0.15 only; v1→v3; dry-run backfill; suite 1344.
 FLAG:      Part C viewport/2D/Save-a-copy still open (no auth’d layout this session).
+```
+
+### Sprint 75 — doc truth pass + repo compaction ✅ CLOSED 2026-07-27 · 27/27 (100%)
+
+```
+OBJECTIVE: CLAUDE.md §6 was 28 sprints stale (stopped at 46, never named the designer). Fix it;
+           compact both long logs without losing a binding fact.
+SURFACE:   CLAUDE.md §6 · SPRINT_LOG · DECISIONS_LOG · docs/COMPETITIVE_AUDIT_CBD.md · root artifacts
+FACT:      No BUSINESS_PLAN addition. Docs only; zero files under src/prisma/content/public/tests/scripts.
+OUT:       deleting either log · BUILD_PLAN itself (it is the source §6 was corrected toward)
+SHIPPED:   §6 now runs through Sprint 74 incl. Cutting Board Designer 51–74. SPRINT_LOG 5907→510
+           (65–74 full, 0–64 one line each, newest-first). DECISIONS_LOG 1937→319, all 88 ### headings
+           byte-identical, ⛔ SUPERSEDED markers intact. 4 unreferenced root artifacts removed.
+FLAG:      First sprint graded by an actor that did not write the bar. run1-ledger.json + both
+           scrapers + _harness.tgz deliberately RETAINED — retire them only with evidence.
+```
+
+### Sprint 00 — file-backed sprint-pack loop (out-of-band infrastructure) ✅ CLOSED 2026-07-27 · self-executed, ungraded
+
+```
+OBJECTIVE: Replace clipboard-as-integration-layer between Claude Code and Cursor with sprints/<NN>/.
+SURFACE:   scripts/verify.mjs · tests/sprint-pack.test.ts · sprints/_template · sprints/README · AGENTS · CLAUDE §9
+FACT:      Process infrastructure. No BUSINESS_PLAN addition, no user-facing surface.
+OUT:       Playwright acceptance (needs `next dev`; deferred, run locally not CI) · deleting any log
+SHIPPED:   `npm run verify` = 4 steps that CONTINUE PAST FAILURES + a fixed summary block.
+           Guard test fails the suite on: an ungraded ACCEPTANCE id, grading without verify,
+           a tampered ACCEPTANCE.sha256, a 4th fix round, malformed ids.
+FLAG:      Planner == executor here, so the bar/grader split was untested until Sprint 75.
+           Numbered 00 deliberately: infrastructure, not a product sprint. Breaks numeric ordering.
 ```
 
 ### Sprints 67–72 — designer shell IA (agent contract)
