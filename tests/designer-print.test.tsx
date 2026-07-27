@@ -90,7 +90,8 @@ describe('designer print route', () => {
     expect(html).toContain('Hard Maple');
     expect(html).toContain('Strip 1');
     expect(html).toContain('data-label="Label"');
-    expect(html).toContain('6.17 bd ft');
+    // Strip+row stock, finished T, wasteFactor 0 → 21.475²×1.5/144 ≈ 4.81 → format 4.80
+    expect(html).toContain('4.80 bd ft');
     expect(html).toContain('12');
     expect(html).toContain('Slices');
     expect(html).not.toContain('leftover');

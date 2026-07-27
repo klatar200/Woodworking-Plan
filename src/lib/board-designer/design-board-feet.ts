@@ -28,7 +28,8 @@ export { DEFAULT_PLANE_BUFFER_IN, planeBufferIn };
 export const DESIGN_LUMBER_UNIT = 'board feet';
 
 /**
- * Board feet by species — stock dims (kerf + planeBuffer) then defects `wasteFactor`.
+ * Board feet by species — strip-stack stock width (kerf + planeBuffer), end-grain
+ * row stock length, finished thickness; then defects `wasteFactor` once.
  * Cheap path: panel geometry only — no top-face layout or closure sampling.
  */
 export function designBoardFeetBySpecies(

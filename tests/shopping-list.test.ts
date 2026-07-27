@@ -613,9 +613,9 @@ describe('Sprint 64 — board design membership', () => {
     ]);
     const after = await getShoppingList();
     const mapleAfter = after.byPlan[0]!.lines.find((l) => l.name === 'Hard Maple')!;
-    // Membership re-reads config — length change must move the figure (stock L =
-    // sourceLength + planeBuffer, so not exactly ×2).
+    // Membership re-reads config — edge stock L = sourceLengthIn (×2 here).
     expect(mapleAfter.quantity).toBeGreaterThan(mapleBefore.quantity);
+    expect(mapleAfter.quantity).toBeCloseTo(mapleBefore.quantity * 2, 10);
     const { calculateMetrics } = await import('@/lib/board-designer/metrics');
     expect(mapleAfter.quantity).toBe(
       calculateMetrics(longer).boardFeetBySpecies.find(

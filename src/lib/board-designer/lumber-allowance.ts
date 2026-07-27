@@ -43,7 +43,12 @@ export type PanelStockDims = {
 
 /**
  * Stock dims to buy for one panel (COMPETITIVE_AUDIT A1–A4 / D1).
- * planeBuffer at every glue-up stage; (n−1)×kerf across strip widths.
+ *
+ * Glue-up stages only — do not also fatten finished thickness/length on edge grain.
+ * Attempt 1 applied planeBuffer on W×L×T then ×(1+wasteFactor); on ¾″ stock that
+ * alone is +23%, and with strip plane + kerf + 15% waste landed ~70% (D1 wants
+ * ~29% / ~14% from the strip stack). Thickness stays finished; edge length stays
+ * `sourceLengthIn`; end grain keeps a second plane+kerf on the slice-row axis.
  */
 export function panelStockDims(
   config: BoardDesignConfig,
@@ -60,8 +65,8 @@ export function panelStockDims(
     config.grain === 'end'
       ? (config.sliceThicknessIn + plane) * plan.rows +
         Math.max(0, plan.rows - 1) * config.kerfIn
-      : config.sourceLengthIn + plane;
-  const stockThicknessIn = panel.thicknessIn + plane;
+      : config.sourceLengthIn;
+  const stockThicknessIn = panel.thicknessIn;
   return { stockWidthIn, stockLengthIn, stockThicknessIn, pieces };
 }
 

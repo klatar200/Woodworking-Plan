@@ -74,6 +74,7 @@ export interface BoardDesignConfig {
   kerfIn: number;
   /**
    * Defects / snipe only (Sprint 73). Kerf + planing come from geometry + `planeBuffer`.
+   * New templates default to 0 — the old 0.15 existed to cover planing/kerf.
    */
   wasteFactor: number;
   /**

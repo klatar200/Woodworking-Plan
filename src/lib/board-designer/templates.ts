@@ -44,7 +44,9 @@ function step(panelId: string, transform: RowTransform = 'none'): RowStep {
 const BASE = {
   schemaVersion: 2 as const,
   kerfIn: 0.125,
-  wasteFactor: 0.15,
+  // Defects/snipe only (Sprint 73). Kerf + planeBuffer are explicit on stock dims;
+  // keeping the historical 0.15 here double-counted planing and blew past D1's ~29%/14%.
+  wasteFactor: 0,
 };
 
 /** Alternating maple / walnut, count strips × 1.5″. */

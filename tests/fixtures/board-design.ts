@@ -45,7 +45,8 @@ export function makeV2Config(
     sourceLengthIn: 20,
     sliceThicknessIn: 1.5,
     kerfIn: 0.125,
-    wasteFactor: 0.15,
+    // Match designer templates: defects/snipe default 0 (kerf+plane are explicit).
+    wasteFactor: 0,
     rowCount: 8,
     ...overrides,
     panels,

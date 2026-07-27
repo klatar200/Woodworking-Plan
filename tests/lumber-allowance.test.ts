@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { designBoardFeetBySpecies } from '@/lib/board-designer/design-board-feet';
 import { designCutPlan } from '@/lib/board-designer/design-cut-plan';
 import {
   DEFAULT_PLANE_BUFFER_IN,
@@ -11,17 +12,124 @@ import { totalBoards } from '@/lib/cut-optimizer';
 import { formatBoardFeet } from '@/lib/format';
 import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
+/** Finished volume board feet (no kerf, no plane, no defects). */
+function finishedBf(
+  widthIn: number,
+  lengthIn: number,
+  thicknessIn: number,
+): number {
+  return (widthIn * lengthIn * thicknessIn) / 144;
+}
+
 describe('Sprint 73 lumber allowance (D1 / A1–A4)', () => {
-  it('12×1″ strips derive ~29% strip-stack overage; 5×2″ derive ~14%', () => {
-    const twelve = stripStackOverageRatio(12, 12, 0.125, DEFAULT_PLANE_BUFFER_IN);
-    const five = stripStackOverageRatio(10, 5, 0.125, DEFAULT_PLANE_BUFFER_IN);
-    expect(twelve).toBeCloseTo(0.2895833333333333, 10);
-    expect(five).toBeCloseTo(0.1375, 10);
-    // Near the D1 shop targets — derived, not a lookup table.
-    expect(twelve).toBeGreaterThan(0.28);
-    expect(twelve).toBeLessThan(0.3);
-    expect(five).toBeGreaterThan(0.13);
-    expect(five).toBeLessThan(0.15);
+  it('12×1″ strips: strip-stack ratio and total volume overage land near 29%', () => {
+    // Geometry spelled out: edge grain, 12×1″, L=18, T=¾, wasteFactor 0 (defects off).
+    // D1: 11×0.125 kerf + 12×0.175 plane = 3.475″ on 12″ → 28.96%.
+    const kerfIn = 0.125;
+    const plane = DEFAULT_PLANE_BUFFER_IN;
+    const stripW = 1;
+    const n = 12;
+    const lengthIn = 18;
+    const thicknessIn = 0.75;
+    const finishedW = n * stripW;
+
+    const stackRatio = stripStackOverageRatio(finishedW, n, kerfIn, plane);
+    expect(stackRatio).toBeCloseTo(
+      (n * plane + (n - 1) * kerfIn) / finishedW,
+      10,
+    );
+    expect(stackRatio).toBeGreaterThan(0.28);
+    expect(stackRatio).toBeLessThan(0.3);
+
+    const strips = Array.from({ length: n }, (_, i) =>
+      makeStrip(`s${i}`, i % 2 === 0 ? 'hard-maple' : 'walnut', stripW, 1),
+    );
+    const config = makeV2Config({
+      grain: 'edge',
+      sourceLengthIn: lengthIn,
+      kerfIn,
+      wasteFactor: 0,
+      planeBuffer: plane,
+      panels: [makePanel('p', 'P', thicknessIn, strips)],
+    });
+    const total = designBoardFeetBySpecies(config).reduce(
+      (sum, r) => sum + r.boardFeet,
+      0,
+    );
+    const finished = finishedBf(finishedW, lengthIn, thicknessIn);
+    const overage = total / finished - 1;
+    // Volume overage == strip-stack only (no L/T plane, no defects).
+    expect(overage).toBeCloseTo(stackRatio, 10);
+    expect(overage).toBeGreaterThan(0.28);
+    expect(overage).toBeLessThan(0.3);
+  });
+
+  it('5×2″ strips: strip-stack ratio and total volume overage land near 14%', () => {
+    const kerfIn = 0.125;
+    const plane = DEFAULT_PLANE_BUFFER_IN;
+    const stripW = 2;
+    const n = 5;
+    const lengthIn = 18;
+    const thicknessIn = 0.75;
+    const finishedW = n * stripW; // 10″
+
+    const stackRatio = stripStackOverageRatio(finishedW, n, kerfIn, plane);
+    expect(stackRatio).toBeCloseTo(
+      (n * plane + (n - 1) * kerfIn) / finishedW,
+      10,
+    );
+    expect(stackRatio).toBeGreaterThan(0.13);
+    expect(stackRatio).toBeLessThan(0.15);
+
+    const strips = Array.from({ length: n }, (_, i) =>
+      makeStrip(`s${i}`, i % 2 === 0 ? 'hard-maple' : 'walnut', stripW, 1),
+    );
+    const config = makeV2Config({
+      grain: 'edge',
+      sourceLengthIn: lengthIn,
+      kerfIn,
+      wasteFactor: 0,
+      planeBuffer: plane,
+      panels: [makePanel('p', 'P', thicknessIn, strips)],
+    });
+    const total = designBoardFeetBySpecies(config).reduce(
+      (sum, r) => sum + r.boardFeet,
+      0,
+    );
+    const finished = finishedBf(finishedW, lengthIn, thicknessIn);
+    const overage = total / finished - 1;
+    expect(overage).toBeCloseTo(stackRatio, 10);
+    expect(overage).toBeGreaterThan(0.13);
+    expect(overage).toBeLessThan(0.15);
+  });
+
+  it('edge-grain allowance stays under 50% at defaults (sanity)', () => {
+    // verify-52 shape: 7×1½″, 18″, ¾″ — was +70% when W×L×T×waste compounded.
+    const strips = Array.from({ length: 7 }, (_, i) =>
+      makeStrip(
+        `e${i}`,
+        i < 4 ? 'hard-maple' : 'walnut',
+        1.5,
+        1,
+      ),
+    );
+    const config = makeV2Config({
+      grain: 'edge',
+      sourceLengthIn: 18,
+      kerfIn: 0.125,
+      wasteFactor: 0,
+      planeBuffer: DEFAULT_PLANE_BUFFER_IN,
+      panels: [makePanel('p', 'P', 0.75, strips)],
+    });
+    const total = designBoardFeetBySpecies(config).reduce(
+      (sum, r) => sum + r.boardFeet,
+      0,
+    );
+    const finished = finishedBf(10.5, 18, 0.75);
+    const overage = total / finished - 1;
+    expect(overage).toBeLessThan(0.5);
+    expect(overage).toBeGreaterThan(0.1);
+    expect(overage).toBeLessThan(0.25); // ~18.8% strip-stack
   });
 
   it('saved v2 without planeBuffer parses and gets the default', () => {

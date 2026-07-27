@@ -313,15 +313,15 @@ describe('Sprint 57 v2 migration + geometry', () => {
       rowCount: 2,
     });
     const m = calculateMetrics(config);
-    // Sprint 73 stock dims: planeBuffer 0.175, one strip/panel, one row each.
-    // walnut: T=1.175 × W=2.175 × L=1.675 / 144
-    // maple:  T=2.175 × W=2.175 × L=1.675 / 144
+    // Strip plane on W; row plane on L (end); finished panel thickness (no T plane).
+    // walnut: T=1 × W=2.175 × L=1.675 / 144
+    // maple:  T=2 × W=2.175 × L=1.675 / 144
     expect(m.boardFeetBySpecies.find((r) => r.speciesId === 'walnut')!.boardFeet).toBeCloseTo(
-      (1.175 * 2.175 * 1.675) / 144,
+      (1 * 2.175 * 1.675) / 144,
       8,
     );
     expect(
       m.boardFeetBySpecies.find((r) => r.speciesId === 'hard-maple')!.boardFeet,
-    ).toBeCloseTo((2.175 * 2.175 * 1.675) / 144, 8);
+    ).toBeCloseTo((2 * 2.175 * 1.675) / 144, 8);
   });
 });

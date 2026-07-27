@@ -3,9 +3,47 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Shell IA audit fix pass (2026-07-26) — CLOSED 97/100** — Attempt 2. Suite: 1331 green.
+> **Latest logged: Sprint 73 Attempt 2 (2026-07-27) — CLOSED 98/100** — allowance magnitude fix. Suite: 1338 green.
 >
-> **Milestones:** … · shell 67–72 ✅ · post-close audit ✅ · audit fix pass ✅. Suite: 1331 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅. Suite: 1338 green.
+
+---
+
+## Sprint 73: Material-math rework (D1 / A1–A4)
+**Dates:** 2026-07-26 → 2026-07-27
+**Scope:** BUILD_PLAN §4 Sprint 73 — computed cut allowance; estimate path only.
+
+### Attempt 1 — self-score 98/100; Keagan prod **90/100** — FAIL magnitude
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | planeBuffer · (n−1)×kerf · waste=defects/snipe · cut-plan wasteFactor:0 held · no D3/D5/D7 |
+| Correctness & functionality (/20) | 10 | Schema/coalesce/cut-plan OK; **volume ~70–82%** on verify-52/51 (D1 wants ~29%/~~14%) — plane on W×L×T × 15% waste (−10) |
+| Automated test coverage (/15) | 12 | strip-stack unit ratio only; did not assert **volume** overage (−3) |
+| Security (/15) | 15 | planeBuffer z 0–1; no new routes/secrets |
+| Code quality (/10) | 10 | `lumber-allowance.ts`; history coalesce for planeBuffer |
+| Mobile/offline (/10) | 10 | Math surfaces on print + narrow read-only |
+| Documentation & handoff (/5) | 5 | DECISIONS schedule · BUILD_PLAN · scorecard |
+
+Tip `8b439fd`. Keagan: estimate 1.67 > cut-plan buy 1.50 on verify-52.
+
+### Attempt 2 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | Glue-up axes only (strip W + end-grain rows); no T/edge-L plane; `wasteFactor` default **0** (was covering planing); cut-plan `wasteFactor:0` held |
+| Correctness & functionality (/20) | 18 | 12×1″ / 5×2″ **volume** ~29%/~~14%; edge verify-52 ~18.8% (<50%); est 1.17 < buy 1.50; Part E still open (−2) |
+| Automated test coverage (/15) | 15 | Geometry-spelled volume assertions + edge sanity; suite **1338/1338** / 117 |
+| Security (/15) | 15 | Bounds unchanged; no new routes/secrets |
+| Code quality (/10) | 10 | Compounding rationale in `panelStockDims`; templates default documented |
+| Mobile/offline (/10) | 10 | Print + narrow read-only numbers |
+| Documentation & handoff (/5) | 5 | BUILD_PLAN · this Attempt 2 · residual flag below |
+
+**Root cause (A1):** `planeBuffer` on width **and** length **and** thickness, then `×(1+0.15)` — 0.175/0.75 alone is +23%.
+
+**Residual (presentation, not decided):** cut plan = boards-to-buy; shopping = board feet. After calibration, verify-52 (waste 0): estimate **1.17** bd ft vs buy **1.50** (2×8ft @ ¾×1½). Gap from finished-cross-section packing vs strip-stack stock width — still two answers; left alone.
+
+**Still open (Part E):** sticky/preview/dock viewport; 2D rotate/export; Save a copy E2E — not measured.
+
+Score: **98/100** — Pass.
 
 ---
 
