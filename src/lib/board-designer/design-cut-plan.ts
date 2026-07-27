@@ -8,13 +8,12 @@ import { toParts } from './to-parts';
 import type { BoardDesignConfig } from './types';
 
 /**
- * Sprint 64 / U6 — waste is applied exactly once.
+ * Sprint 64 / U6 — packing wasteFactor stays 0 (Sprint 73 unchanged).
  *
- * `calculateMetrics` already multiplies board feet by `config.wasteFactor` for the
- * estimate. Feeding that same factor into `optimize()` would double-count waste and
- * inflate the buy list. The packing is the more honest number (real part lengths +
- * real stock), so this path always passes `wasteFactor: 0` and lets offcut / yield
- * speak for themselves. Board-feet estimates stay on the metrics panel.
+ * The estimate path (`design-board-feet`) applies kerf + planeBuffer + defects
+ * `wasteFactor`. Packing already accounts for kerf per cut and `endTrimIn` on real
+ * part lengths — feeding estimate waste into `optimize()` would double-count.
+ * Board-feet estimates stay on the metrics / shopping surfaces.
  */
 export type DesignCutPlanOptions = Omit<OptimizerOptions, 'wasteFactor'>;
 

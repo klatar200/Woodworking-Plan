@@ -339,7 +339,8 @@ describe('DesignerShell static render', () => {
     expect(shell).toContain('form={SAVE_FORM_ID}');
     expect(shell).toMatch(/max-h-\[min\(55vh,32rem\)\]/);
     expect(shell).toContain('min-h-[12rem]');
-    expect(settings).toContain('Waste allowance (%)');
+    expect(settings).toContain('Defects & snipe (%)');
+    expect(settings).toContain('Plane buffer (in)');
     expect(settings).toContain('Kerf (in)');
     expect(settings).toContain('Panel length (in)');
     expect(settings).toContain('Slice thickness (in)');
@@ -362,16 +363,18 @@ describe('DesignerShell static render', () => {
     expect(html).toContain('>End</button>');
   });
 
-  it('Sprint 70: board settings explain kerf and waste allowance in-page', () => {
+  it('Sprint 70/73: board settings explain kerf, plane buffer, defects/snipe', () => {
     const settings = source('src/components/designer/board-settings.tsx');
     const html = visibleMarkup(render(goldenConfig));
 
     expect(settings).toContain('material removed by the saw cut');
-    expect(settings).toContain('mistakes/defects');
+    expect(settings).toContain('knots, splits, and snipe');
+    expect(settings).toContain('Plane buffer (in)');
     expect(html).toContain('Blade kerf is material removed by the saw cut');
-    expect(html).toContain('Extra % of board feet added for mistakes/defects');
-    expect(html).toContain('Waste allowance (%)');
-    expect(html).not.toContain('Waste allowance</span><input');
+    expect(html).toContain('knots, splits, and snipe');
+    expect(html).toContain('Defects &amp; snipe (%)');
+    expect(html).toContain('Plane buffer (in)');
+    expect(html).not.toContain('Waste allowance (%)');
   });
 });
 

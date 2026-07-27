@@ -297,6 +297,9 @@ const COALESCE_PATCH_FIELDS = new Set([
   'sourceLengthIn',
   'sliceThicknessIn',
   'wasteFactor',
+  // planeBuffer is a dragged/typed numeric like wasteFactor — coalesce or a
+  // single scrub produces dozens of history entries.
+  'planeBuffer',
   'rowCount',
 ]);
 

@@ -1,4 +1,10 @@
 import { miterWedgeFraction } from './miter-geometry';
+import {
+  DEFAULT_PLANE_BUFFER_IN,
+  panelStockBoardFeet,
+  panelStockDims,
+  planeBufferIn,
+} from './lumber-allowance';
 import { panelGeometry } from './panel-geometry';
 import { getSpecies } from './species';
 import type {
@@ -7,8 +13,10 @@ import type {
   SpeciesBoardFeet,
 } from './types';
 
+export { DEFAULT_PLANE_BUFFER_IN, planeBufferIn };
+
 /**
- * Designer → shopping-list lumber lines (Sprint 64).
+ * Designer → shopping-list lumber lines (Sprint 64; Sprint 73 stock dims).
  *
  * Seeded Kreg catalog materials use unit `"board"` for piece counts, with species
  * baked into free-text names and `species: null` always. Volume purchases here use
@@ -20,7 +28,7 @@ import type {
 export const DESIGN_LUMBER_UNIT = 'board feet';
 
 /**
- * Board feet by species — waste applied once inside `boardFeetBySpeciesFor`.
+ * Board feet by species — stock dims (kerf + planeBuffer) then defects `wasteFactor`.
  * Cheap path: panel geometry only — no top-face layout or closure sampling.
  */
 export function designBoardFeetBySpecies(
@@ -30,7 +38,7 @@ export function designBoardFeetBySpecies(
   return boardFeetBySpeciesFor(config, panelPlan);
 }
 
-/** Exported for `calculateMetrics` — same formula, waste already included. */
+/** Exported for `calculateMetrics` — same formula; callers must not multiply waste again. */
 export function boardFeetBySpeciesFor(
   config: BoardDesignConfig,
   panelPlan: PanelPlan[],
@@ -44,18 +52,34 @@ export function boardFeetBySpeciesFor(
 
   for (const panel of panels) {
     const plan = planById.get(panel.id);
-    const lengthIn = plan?.requiredLengthIn ?? 0;
-    for (const s of panel.strips) {
-      const stripBf =
-        (panel.thicknessIn * s.widthIn * lengthIn * s.repeat) / 144;
-      const wedgeFrac = s.miter
-        ? miterWedgeFraction(s.widthIn, panel.thicknessIn, s.miter)
+    if (!plan || plan.rows <= 0) continue;
+
+    const dims = panelStockDims(config, panel, plan);
+    const stockBf = panelStockBoardFeet(dims);
+    if (stockBf <= 0 || dims.pieces.length === 0) continue;
+
+    const finishedWidth = dims.pieces.reduce((sum, s) => sum + s.widthIn, 0);
+    if (finishedWidth <= 0) continue;
+
+    // Equal share of inter-strip kerf; each piece owns its width + planeBuffer.
+    const kerfShare =
+      dims.pieces.length > 1
+        ? ((dims.pieces.length - 1) * config.kerfIn) / dims.pieces.length
+        : 0;
+    const plane = planeBufferIn(config);
+
+    for (const strip of dims.pieces) {
+      const pieceStockW = strip.widthIn + plane + kerfShare;
+      const pieceBf =
+        (dims.stockThicknessIn * pieceStockW * dims.stockLengthIn) / 144;
+      const wedgeFrac = strip.miter
+        ? miterWedgeFraction(strip.widthIn, panel.thicknessIn, strip.miter)
         : 0;
       const baseFrac = 1 - wedgeFrac;
 
-      addBf(order, totals, s.speciesId, stripBf * baseFrac);
-      if (s.miter && wedgeFrac > 0) {
-        addBf(order, totals, s.miter.speciesId, stripBf * wedgeFrac);
+      addBf(order, totals, strip.speciesId, pieceBf * baseFrac);
+      if (strip.miter && wedgeFrac > 0) {
+        addBf(order, totals, strip.miter.speciesId, pieceBf * wedgeFrac);
       }
     }
   }
@@ -66,7 +90,7 @@ export function boardFeetBySpeciesFor(
     return {
       speciesId,
       name: species?.name ?? speciesId,
-      // wasteFactor applied HERE — callers must not multiply again (Sprint 64).
+      // wasteFactor = defects/snipe only (Sprint 73). Callers must not multiply again.
       boardFeet: raw * (1 + config.wasteFactor),
     };
   });

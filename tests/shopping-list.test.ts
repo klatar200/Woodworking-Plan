@@ -613,7 +613,15 @@ describe('Sprint 64 — board design membership', () => {
     ]);
     const after = await getShoppingList();
     const mapleAfter = after.byPlan[0]!.lines.find((l) => l.name === 'Hard Maple')!;
-    expect(mapleAfter.quantity).toBe(mapleBefore.quantity * 2);
+    // Membership re-reads config — length change must move the figure (stock L =
+    // sourceLength + planeBuffer, so not exactly ×2).
+    expect(mapleAfter.quantity).toBeGreaterThan(mapleBefore.quantity);
+    const { calculateMetrics } = await import('@/lib/board-designer/metrics');
+    expect(mapleAfter.quantity).toBe(
+      calculateMetrics(longer).boardFeetBySpecies.find(
+        (r) => r.speciesId === 'hard-maple',
+      )!.boardFeet,
+    );
   });
 
   it('species-only difference does not merge', async () => {

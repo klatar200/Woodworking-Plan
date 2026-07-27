@@ -1,6 +1,7 @@
+import { planeBufferIn } from '@/lib/board-designer/lumber-allowance';
+import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
 import { KERF_OPTIONS_IN } from '@/lib/cut-optimizer';
 import { btnGhost, btnPrimary, selectControl } from '@/lib/ui';
-import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
 import type { ChangeEvent, ReactNode } from 'react';
 import { FieldHint } from './field-hint';
 
@@ -93,9 +94,23 @@ export function BoardSettingsDisclosure({
           </select>
         </label>
 
+        <NumberField
+          label="Plane buffer (in)"
+          hint="Material planed off at each glue-up stage, in inches."
+          name="planeBuffer"
+          value={planeBufferIn(config)}
+          min={0}
+          max={1}
+          step={0.025}
+          onChange={(planeBuffer) => onChange({ planeBuffer })}
+          onCommitCoalesce={onCommitCoalesce}
+        />
+
         <label className="grid gap-[0.375rem]">
-          <span className="text-[0.875rem] font-bold">Waste allowance (%)</span>
-          <FieldHint>Extra % of board feet added for mistakes/defects.</FieldHint>
+          <span className="text-[0.875rem] font-bold">Defects & snipe (%)</span>
+          <FieldHint>
+            Extra % of board feet for knots, splits, and snipe — not kerf or planing.
+          </FieldHint>
           <input
             className={inputControl}
             name="wasteFactor"
@@ -146,6 +161,7 @@ function NumberField({
   value,
   min,
   max,
+  step = 0.0625,
   onChange,
   onCommitCoalesce,
 }: {
@@ -155,6 +171,7 @@ function NumberField({
   value: number;
   min: number;
   max: number;
+  step?: number;
   onChange: (value: number) => void;
   onCommitCoalesce: () => void;
 }) {
@@ -168,7 +185,7 @@ function NumberField({
         type="number"
         min={min}
         max={max}
-        step={0.0625}
+        step={step}
         value={value}
         onChange={(event) => onChange(boundedNumber(event, min, max))}
         onBlur={() => onCommitCoalesce()}

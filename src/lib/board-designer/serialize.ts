@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DEFAULT_PLANE_BUFFER_IN } from './lumber-allowance';
 import type {
   BoardDesignConfig,
   Grain,
@@ -58,6 +59,8 @@ const v2Schema = z
     sliceThicknessIn: z.number().min(0.25).max(4),
     kerfIn: z.number().min(0).max(0.5),
     wasteFactor: z.number().min(0).max(1),
+    /** Optional inches; omitted → DEFAULT_PLANE_BUFFER_IN on parse. */
+    planeBuffer: z.number().min(0).max(1).optional(),
     panels: z.array(panelSchema).min(1).max(4),
     rowPattern: z.array(rowStepSchema).min(1).max(24),
     rowCount: z.number().int().min(1).max(60),
@@ -133,7 +136,16 @@ export function parseConfig(raw: unknown): ParseConfigResult {
       error: first?.message ?? 'Invalid board design config',
     };
   }
-  return { ok: true, config: v2.data };
+  return { ok: true, config: withPlaneBufferDefault(v2.data) };
+}
+
+function withPlaneBufferDefault(
+  config: BoardDesignConfig,
+): BoardDesignConfig {
+  return {
+    ...config,
+    planeBuffer: config.planeBuffer ?? DEFAULT_PLANE_BUFFER_IN,
+  };
 }
 
 type V1Config = z.infer<typeof v1Schema>;
@@ -171,6 +183,7 @@ export function migrateV1ToV2(v1: V1Config): BoardDesignConfig {
     sliceThicknessIn: v1.sliceThicknessIn,
     kerfIn: v1.kerfIn,
     wasteFactor: v1.wasteFactor,
+    planeBuffer: DEFAULT_PLANE_BUFFER_IN,
     panels: [panel],
     rowPattern,
     rowCount,

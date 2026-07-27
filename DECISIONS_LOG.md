@@ -33,7 +33,7 @@
 - **Cutting Board Designer (2026-07-24):** promoted from FUTURE_IDEAS → BUILD_PLAN Sprint 47+. Sign-in required; hard nav; shopping-list later; product differentiator = modern 3D preview (lightweight shell OK first). **Copy settled (same day):** nav `Designer`; landing CTA `Design a board →`; h1 `Board designer`; empty library `No boards saved yet. Start from a template.`
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
 - **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs; inactive **mounted/hidden**); tab badges; Reset + shopping list; Pattern = row pattern only; grain→edge switches tab to Templates; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy = dirty config, name `Copy of {name}` → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. Agent contract in BUILD_PLAN §4. See dated entries.
-- **Designer upgrade programme (2026-07-26):** D2 **NO lumber pricing** (estimated or otherwise) — `format.test` unmodified; D1 material-math authorised but **unscheduled** (not Sprint 65); D3/D5/D7 gated on BUSINESS_PLAN + §4 — do not scaffold. See dated entry.
+- **Designer upgrade programme (2026-07-26):** D2 **NO lumber pricing** (estimated or otherwise) — `format.test` unmodified; D1 material-math → **Sprint 73** (scheduled 2026-07-26); D3/D5/D7 gated on BUSINESS_PLAN + §4 — do not scaffold. See dated entries.
 
 _(Full history below, chronological.)_
 
@@ -1924,3 +1924,8 @@ History, kept because the process matters: Keagan first answered *"offer our est
 1. **Save a copy name:** `Copy of {current name}`, trimmed to max 80.
 2. **Grain Edge while Pattern tab active:** auto-select Templates (Pattern hidden for edge).
 3. **Inactive dock tabs:** stay **mounted**, hide inactive — preserves Cut plan stock L/W local state.
+
+### 2026-07-26 — Schedule D1 material-math as Sprint 73
+**Status:** Confirmed by Keagan.
+
+**Decision.** Open **Sprint 73** for D1 / A1–A4 (computed cut allowance: `planeBuffer`, `(n−1)×kerf`, `wasteFactor` = defects/snipe only). Substance unchanged — see **Designer upgrade programme** entry D1 above. Still gated / do not touch: D3, D5, D7.

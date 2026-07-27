@@ -90,7 +90,7 @@ describe('designer print route', () => {
     expect(html).toContain('Hard Maple');
     expect(html).toContain('Strip 1');
     expect(html).toContain('data-label="Label"');
-    expect(html).toContain('4.18 bd ft');
+    expect(html).toContain('6.17 bd ft');
     expect(html).toContain('12');
     expect(html).toContain('Slices');
     expect(html).not.toContain('leftover');

@@ -54,14 +54,41 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 72 (Save a copy) | ✅ **CLOSED** 2026-07-26 — **98/100**. Dirty config → `Copy of {name}` → new id. Suite **1322/1322** / 115 files. |
 | Sprints 67–72 (Designer shell / IA) | ✅ **TRACK CLOSED** 2026-07-26. |
 | Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — Attempt 1 `c1a9867`; Attempt 2 **97/100** (strip labels · history baseline · Metrics `×` · DECISIONS_LOG D1/D2 hygiene). Suite **1331/1331** / 116 files. |
+| Sprint 73 (material-math D1 / A1–A4) | 🔄 **OPEN** 2026-07-26 — `planeBuffer` + strip kerf allowance; `wasteFactor` = defects/snipe only. Cut-plan packing unchanged. |
 
-Test suite — expected: **1331/1331** across **116 files** (shell IA audit Attempt 2). Update each sprint close.
+Test suite — expected: update at Sprint 73 close (was **1331/1331** / 116 files).
 
-**Designer:** U0–U7 ✅ · **67–72 ✅** (shell IA track closed + audit Attempts 1–2). Parked FUTURE_IDEAS 2026-07-26.
+**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 OPEN** (D1 material-math). Parked FUTURE_IDEAS 2026-07-26. D3/D5/D7 still gated.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
 Open follow-ups (Keagan): dark re-palette · Clerk prod keys · 2nd cut-list parse for 489 · credential rotation pre-go-live · Kreg G1 RESOLVED.
+
+### Sprint 73 — material-math rework (D1 / A1–A4)
+
+```
+OBJECTIVE: Fix under-buy on many-strip designs. Estimate path only.
+SURFACE:   design-board-feet · lumber-allowance · serialize · board-settings · history
+FACT:      DECISIONS_LOG 2026-07-26 D1 + schedule entry. No BUSINESS_PLAN addition.
+OUT:       D3/D5/D7 · shopping-list presentation switch to boards-to-buy · cut-plan wasteFactor:0
+```
+
+**DO**
+1. Add optional `planeBuffer` (default 0.175″) on `BoardDesignConfig`; parse fills default (v2 omit + v1 migrate).
+2. Stock dims per panel: strip stack `Σ(width+plane)+(n−1)×kerf`; length/thickness get plane (+ end-grain row kerf); then `× (1 + wasteFactor)`.
+3. Relabel waste UI to defects/snipe; expose plane buffer control.
+4. Coalesce `planeBuffer` history like `wasteFactor`.
+5. Tests: ~29% / ~14% strip-stack overage; defaults; cut-plan board-count regression; `formatBoardFeet` at render seam.
+
+**DONT**
+- Change cut-plan / `designCutPlan` `wasteFactor: 0` packing.
+- Switch shopping list from board-feet to boards-to-buy (product call — flag only).
+- Scaffold D3/D5/D7.
+
+**ACCEPT**
+- 12×1″ → ~29% strip-stack overage; 5×2″ → ~14% (derived).
+- Saved designs without `planeBuffer` still parse.
+- Cut-plan buy counts unchanged by planeBuffer / wasteFactor on the estimate path.
 
 ### Sprints 67–72 — designer shell IA (agent contract)
 
@@ -114,7 +141,7 @@ profile UOM · in-app design tabs · share links · custom species · dark re-pa
 | Top | name · grain · finished size (metrics) · Undo · Redo · Reset · Save |
 | Top if saved | Add to shopping list |
 | Top from 72 | Save a copy — enabled iff `designId!=null` |
-| Board settings ⋯ | kerfIn · wasteFactor(UI%) · sourceLengthIn(edge) · sliceThicknessIn(end) + unit suffix |
+| Board settings ⋯ | kerfIn · planeBuffer · wasteFactor/defects(UI%) · sourceLengthIn(edge) · sliceThicknessIn(end) + unit suffix |
 | Dock Templates | full TemplatePicker |
 | Dock Pattern | full RowPatternEditor · show only grain=end · default tab when end |
 | Dock Metrics | warnings · L×W×T · totalBoardFeet · panel table · end slice note · boardFeetBySpecies |

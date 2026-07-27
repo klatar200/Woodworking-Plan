@@ -87,16 +87,15 @@ describe('edge-grain fixture', () => {
 });
 
 describe('board feet', () => {
-  it('golden fixture → walnut and maple each ~2.089; total ~4.178', () => {
-    // requiredLength 19.375; 6 strips × 1.5″; (1.5 × 1.5 × 19.375) / 144 × 1.15 × 6
+  it('golden fixture → stock dims + defects waste (Sprint 73)', () => {
     const m = calculateMetrics(goldenConfig());
     const walnut = m.boardFeetBySpecies.find((r) => r.speciesId === 'walnut');
     const maple = m.boardFeetBySpecies.find(
       (r) => r.speciesId === 'hard-maple',
     );
-    expect(walnut?.boardFeet).toBeCloseTo(2.0888671875, 10);
-    expect(maple?.boardFeet).toBeCloseTo(2.0888671875, 10);
-    expect(m.totalBoardFeet).toBeCloseTo(4.177734375, 10);
+    expect(walnut?.boardFeet).toBeCloseTo(3.0845123182508676, 10);
+    expect(maple?.boardFeet).toBeCloseTo(3.0845123182508676, 10);
+    expect(m.totalBoardFeet).toBeCloseTo(6.169024636501735, 10);
   });
 });
 

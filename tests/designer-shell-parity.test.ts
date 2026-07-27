@@ -64,7 +64,7 @@ describe('Sprint 68 — designer shell PARITY_INVENTORY', () => {
     expect(html).toContain('Save a copy');
     expect(html).toContain('Board settings');
     expect(html).toContain('Kerf (in)');
-    expect(html).toContain('Waste allowance (%)');
+    expect(html).toContain('Defects &amp; snipe (%)');
     expect(html).toContain('Slice thickness (in)');
     expect(html).toContain('Templates');
     expect(html).toContain('Row pattern');

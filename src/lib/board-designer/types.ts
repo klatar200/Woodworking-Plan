@@ -72,7 +72,14 @@ export interface BoardDesignConfig {
   /** END ONLY — the finished board's thickness. */
   sliceThicknessIn: number;
   kerfIn: number;
+  /**
+   * Defects / snipe only (Sprint 73). Kerf + planing come from geometry + `planeBuffer`.
+   */
   wasteFactor: number;
+  /**
+   * Inches planed at each glue-up stage. Optional; default 0.175 (additive, no migrate).
+   */
+  planeBuffer?: number;
   panels: Panel[];
   rowPattern: RowStep[];
   rowCount: number;
