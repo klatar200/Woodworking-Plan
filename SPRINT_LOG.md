@@ -3,9 +3,38 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 73 Attempt 2 (2026-07-27) — CLOSED 98/100** — allowance magnitude fix. Suite: 1338 green.
+> **Latest logged: Sprint 74 (2026-07-27) — CLOSED 98/100** — retire stale wasteFactor / schema v3. Suite: 1344 green.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅. Suite: 1338 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅. Suite: 1344 green.
+
+---
+
+## Sprint 74: Retire stale wasteFactor (schema v3)
+**Dates:** 2026-07-27
+**Scope:** BUILD_PLAN §4 Sprint 74 — zero stored `wasteFactor===0.15` via schema bump; estimate path only.
+
+### Attempt 1 — score 98/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| Requirements fidelity (/25) | 25 | v2→v3 zeroes only `0.15`; non-default left; v1→v3; cut-plan untouched; no D3/D5/D7; DECISIONS entry |
+| Correctness & functionality (/20) | 18 | verify-52 upgraded total **1.17** (= fresh); v3 deliberate 0.15 preserved; Part C viewport still open (−2) |
+| Automated test coverage (/15) | 15 | `board-designer-schema-v3` + serialize/v2-migration updates; suite **1344/1344** / 118 |
+| Security (/15) | 15 | parse never throws; invalid rows skipped in backfill; no secrets |
+| Code quality (/10) | 10 | shared v2/v3 body schema; `STALE_DEFAULT_WASTE_FACTOR`; dry-run backfill via `parseConfig` |
+| Mobile/offline (/10) | 10 | On-read upgrade hits print + shopping + narrow; designer still desktop-only (D6) |
+| Documentation & handoff (/5) | 5 | DECISIONS + BUILD_PLAN + PowerShell dry-run for Keagan |
+
+**Reasoning (schema bump vs script):** Agreed with Keagan — on-read v2→v3 covers every load with no prod script and records the meaning change. Optional `scripts/migrate-board-design-v3.ts` is tidiness only (dry-run default; agent did **not** run against prod).
+
+**Keagan PowerShell (dry run first, then real):**
+```
+npx dotenv -e .env.local -- npx tsx scripts/migrate-board-design-v3.ts
+npx dotenv -e .env.local -- npx tsx scripts/migrate-board-design-v3.ts --yes
+```
+
+**Still open (Part C):** sticky/preview/dock viewport; 2D rotate/export; Save a copy E2E + ownership gate — not measured (designer requires auth; no layout session).
+
+Score: **98/100** — Pass.
 
 ---
 

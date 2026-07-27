@@ -201,7 +201,7 @@ describe('miter geometry — board feet area split', () => {
 describe('miter serialize bounds', () => {
   it('rejects angleDeg 0, 90, and non-numeric; accepts 22.5', () => {
     const base = {
-      schemaVersion: 2 as const,
+      schemaVersion: 3 as const,
       name: 'M',
       grain: 'end' as const,
       sourceLengthIn: 12,
@@ -283,7 +283,7 @@ describe('miter serialize bounds', () => {
 
   it('v2 config without miter round-trips with no miter key added', () => {
     const raw = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       name: 'Solid',
       grain: 'end',
       sourceLengthIn: 12,

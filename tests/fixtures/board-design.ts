@@ -39,7 +39,7 @@ export function makeV2Config(
       ]),
     ];
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     name: 'Test board',
     grain: 'end',
     sourceLengthIn: 20,
@@ -88,7 +88,7 @@ export function buildSchemaMaxConfig(): BoardDesignConfig {
   }));
 
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     name: 'X'.repeat(80),
     grain: 'end',
     sourceLengthIn: 96,

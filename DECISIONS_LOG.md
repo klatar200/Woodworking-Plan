@@ -34,6 +34,7 @@
 - **U6 shopping-list designer entries (2026-07-26):** `planId` nullable + nullable `boardDesignId` FK (`onDelete: Cascade`); exactly-one CHECK + action reject; synthesize board feet on read (cheap path); unit `"board feet"`. See dated entry.
 - **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs; inactive **mounted/hidden**); tab badges; Reset + shopping list; Pattern = row pattern only; grain→edge switches tab to Templates; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy = dirty config, name `Copy of {name}` → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. Agent contract in BUILD_PLAN §4. See dated entries.
 - **Designer upgrade programme (2026-07-26):** D2 **NO lumber pricing** (estimated or otherwise) — `format.test` unmodified; D1 material-math → **Sprint 73** (scheduled 2026-07-26); D3/D5/D7 gated on BUSINESS_PLAN + §4 — do not scaffold. See dated entries.
+- **Stale wasteFactor retirement (2026-07-26):** Sprint 74 — `schemaVersion` 2→3 zeroes stored `wasteFactor === 0.15` (old default) on read. Deliberate 0.15 indistinguishable from stale default → accepted pre-launch. Links D1.
 
 _(Full history below, chronological.)_
 
@@ -1929,3 +1930,8 @@ History, kept because the process matters: Keagan first answered *"offer our est
 **Status:** Confirmed by Keagan.
 
 **Decision.** Open **Sprint 73** for D1 / A1–A4 (computed cut allowance: `planeBuffer`, `(n−1)×kerf`, `wasteFactor` = defects/snipe only). Substance unchanged — see **Designer upgrade programme** entry D1 above. Still gated / do not touch: D3, D5, D7.
+
+### 2026-07-26 — Retire stale wasteFactor default (Sprint 74)
+**Status:** Confirmed by Keagan.
+
+**Decision.** After D1 itemised kerf + `planeBuffer`, stored `wasteFactor: 0.15` from the old combined default double-counts. Open **Sprint 74**: bump `schemaVersion` 2→3; on-read v2→v3 zeroes `wasteFactor` when exactly `0.15`. **Accepted consequence:** a design where someone deliberately chose 0.15 is indistinguishable from one carrying the old default, and will be zeroed — free with no users; would not be after launch. Links **D1** (Designer upgrade programme). Still gated / do not touch: D3, D5, D7.

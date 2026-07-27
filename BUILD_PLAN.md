@@ -55,10 +55,11 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprints 67–72 (Designer shell / IA) | ✅ **TRACK CLOSED** 2026-07-26. |
 | Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — Attempt 1 `c1a9867`; Attempt 2 **97/100** (strip labels · history baseline · Metrics `×` · DECISIONS_LOG D1/D2 hygiene). Suite **1331/1331** / 116 files. |
 | Sprint 73 (material-math D1 / A1–A4) | ✅ **CLOSED** 2026-07-27 — Attempt 2 **98/100** (Keagan A1 prod **90/100** — magnitude). Glue-up axes only; `wasteFactor` default 0; volume ~29%/~~14%. Suite **1338/1338** / 117 files. |
+| Sprint 74 (retire stale wasteFactor) | ✅ **CLOSED** 2026-07-27 — **98/100**. `schemaVersion` 2→3 zeroes stored `0.15` on read; optional dry-run backfill. Suite **1344/1344** / 118 files. |
 
-Test suite — expected: **1338/1338** across **117 files** (Sprint 73 Attempt 2). Update each sprint close.
+Test suite — expected: **1344/1344** across **118 files** (Sprint 74). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** (D1 material-math). Parked FUTURE_IDEAS 2026-07-26. D3/D5/D7 still gated.
+**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅**. Parked FUTURE_IDEAS 2026-07-26. D3/D5/D7 still gated.
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
@@ -73,6 +74,17 @@ FACT:      DECISIONS_LOG 2026-07-26 D1 + schedule entry. No BUSINESS_PLAN additi
 OUT:       D3/D5/D7 · shopping-list presentation switch to boards-to-buy · cut-plan wasteFactor:0
 SHIPPED:   planeBuffer 0.175 on glue-up axes only; wasteFactor default 0; volume tests ~29%/~~14%; suite 1338.
 FLAG:      Cut plan = boards-to-buy; shopping = board feet (product). verify-52 residual: est 1.17 vs buy 1.50 bd ft.
+```
+
+### Sprint 74 — retire stale wasteFactor (schema v3) ✅ CLOSED 2026-07-27 · 98/100
+
+```
+OBJECTIVE: Zero stored wasteFactor===0.15 left from pre-itemised meaning (D1).
+SURFACE:   serialize · types · templates · optional scripts/migrate-board-design-v3.ts
+FACT:      DECISIONS_LOG 2026-07-26 stale wasteFactor retirement. Links D1.
+OUT:       D3/D5/D7 · cut-plan packing · changing non-0.15 waste values
+SHIPPED:   schemaVersion 3; v2→v3 zeroes 0.15 only; v1→v3; dry-run backfill; suite 1344.
+FLAG:      Part C viewport/2D/Save-a-copy still open (no auth’d layout this session).
 ```
 
 ### Sprints 67–72 — designer shell IA (agent contract)

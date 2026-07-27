@@ -42,7 +42,7 @@ function step(panelId: string, transform: RowTransform = 'none'): RowStep {
 }
 
 const BASE = {
-  schemaVersion: 2 as const,
+  schemaVersion: 3 as const,
   kerfIn: 0.125,
   // Defects/snipe only (Sprint 73). Kerf + planeBuffer are explicit on stock dims;
   // keeping the historical 0.15 here double-counted planing and blew past D1's ~29%/14%.

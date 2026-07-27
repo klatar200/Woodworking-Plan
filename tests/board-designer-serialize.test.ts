@@ -39,13 +39,13 @@ function goldenV2Raw(
   };
 }
 
-describe('parseConfig — v1 migrates to v2', () => {
-  it('accepts the golden v1 fixture and returns schemaVersion 2', () => {
+describe('parseConfig — v1 migrates to v3', () => {
+  it('accepts the golden v1 fixture and returns schemaVersion 3', () => {
     const result = parseConfig(goldenV1Fixture());
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     const config: BoardDesignConfig = result.config;
-    expect(config.schemaVersion).toBe(2);
+    expect(config.schemaVersion).toBe(3);
     expect(config.name).toBe('Golden checkerboard');
     expect(config.panels).toHaveLength(1);
     expect(config.panels[0]!.strips).toHaveLength(12);
@@ -55,6 +55,7 @@ describe('parseConfig — v1 migrates to v2', () => {
       { panelId: 'panel-1', transform: 'rot180' },
     ]);
     expect(config.rowCount).toBe(12);
+    expect(config.wasteFactor).toBe(0);
     expect(config).not.toHaveProperty('strips');
     expect(config).not.toHaveProperty('stockThicknessIn');
     expect(config).not.toHaveProperty('flipEveryOtherSlice');
@@ -102,13 +103,14 @@ describe('parseConfig round-trip', () => {
     expect(result.config.panels[0]!.strips[1]).not.toHaveProperty('label');
   });
 
-  it('round-trips a golden v2 config', () => {
+  it('round-trips a golden v2 config up to v3', () => {
     const raw = goldenV2Raw();
     const result = parseConfig(raw);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     const config: BoardDesignConfig = result.config;
-    expect(config.schemaVersion).toBe(2);
+    expect(config.schemaVersion).toBe(3);
+    expect(config.wasteFactor).toBe(0);
     expect(config.name).toBe('Golden end-grain');
     expect(config.grain).toBe('end');
     expect(config.sourceLengthIn).toBe(20);
@@ -117,7 +119,7 @@ describe('parseConfig round-trip', () => {
     expect(again).toEqual(result);
   });
 
-  it('is idempotent on its own v2 output', () => {
+  it('is idempotent on its own v3 output', () => {
     const once = parseConfig(makeV2Config());
     expect(once.ok).toBe(true);
     if (!once.ok) return;
@@ -129,9 +131,9 @@ describe('parseConfig round-trip', () => {
 });
 
 describe('parseConfig bound violations — ok:false, no throw', () => {
-  it('rejects schemaVersion: 3', () => {
-    expect(() => parseConfig(goldenV2Raw({ schemaVersion: 3 }))).not.toThrow();
-    const r = parseConfig(goldenV2Raw({ schemaVersion: 3 }));
+  it('rejects schemaVersion: 4', () => {
+    expect(() => parseConfig(goldenV2Raw({ schemaVersion: 4 }))).not.toThrow();
+    const r = parseConfig(goldenV2Raw({ schemaVersion: 4 }));
     expect(r.ok).toBe(false);
   });
 

@@ -149,7 +149,7 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
       },
     }));
     const config: BoardDesignConfig = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       name: '60-web',
       grain: 'end',
       sourceLengthIn: 20,

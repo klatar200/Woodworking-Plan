@@ -52,7 +52,8 @@ describe('Sprint 57 v2 migration + geometry', () => {
     const parsed = parseConfig(goldenV1Fixture());
     expect(parsed.ok).toBe(true);
     if (!parsed.ok) return;
-    expect(parsed.config.schemaVersion).toBe(2);
+    expect(parsed.config.schemaVersion).toBe(3);
+    expect(parsed.config.wasteFactor).toBe(0);
     expect(parsed.config.rowPattern).toEqual([
       { panelId: 'panel-1', transform: 'none' },
       { panelId: 'panel-1', transform: 'rot180' },
@@ -287,7 +288,7 @@ describe('Sprint 57 v2 migration + geometry', () => {
     );
   });
 
-  it('parseConfig is idempotent on its own v2 output', () => {
+  it('parseConfig is idempotent on its own v3 output', () => {
     const once = parseConfig(getTemplate('plaid')!.config);
     expect(once.ok).toBe(true);
     if (!once.ok) return;

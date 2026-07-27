@@ -64,7 +64,7 @@ export interface RowStep {
 }
 
 export interface BoardDesignConfig {
-  schemaVersion: 2;
+  schemaVersion: 3;
   name: string;
   grain: Grain;
   /** EDGE ONLY — the board's length. Ignored in end grain (derived per panel). */
@@ -74,7 +74,7 @@ export interface BoardDesignConfig {
   kerfIn: number;
   /**
    * Defects / snipe only (Sprint 73). Kerf + planing come from geometry + `planeBuffer`.
-   * New templates default to 0 — the old 0.15 existed to cover planing/kerf.
+   * New templates default to 0. Sprint 74: v2→v3 zeroes stored `0.15` (stale combined default).
    */
   wasteFactor: number;
   /**
