@@ -3,6 +3,11 @@
 Executor: **Cursor**. Tasks are ordered; do not reorder.
 Read `GOAL.md` first — its "Out of scope" list is enforced by the `R` gates in `ACCEPTANCE.md`.
 
+**Model: `<Auto | premium>`** — <one line of why>. Advisory: no file can set Cursor's model, the
+picker is set before this file is read. Claude states the recommendation here so Keagan is
+prompted at dispatch instead of having to remember. Default is **Auto** (unlimited on Pro);
+premium only for a genuinely hard slice, and note which task needs it.
+
 ---
 
 ## T1 · <task name>

@@ -4,6 +4,9 @@ Executor: **Cursor**. Tasks are ordered; do not reorder. The binding dependency 
 T3**: T2 restructures the preview card's sizing and header, and T3 moves `Save` *into* that
 header. Doing T3 first means re-parenting Save into a container T2 then rewrites.
 
+**Model: `Auto`.** Every task here is relocation, renaming, and layout against a written bar — the
+kind of work Auto does well and the bar catches cheaply. Do not spend premium usage on this sprint.
+
 Read `GOAL.md` first. Its "Out of scope" list is enforced by the `R` gates in `ACCEPTANCE.md`.
 The designer is **desktop-only (`lg+`)**, permanently (D6). Every task below is inside that gate;
 the narrow-viewport notice path must keep working untouched.
