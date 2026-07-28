@@ -164,8 +164,60 @@ describe('designBuildSteps — end grain', () => {
       (s) => s.id === 'arrange-rows',
     )!.detail;
     expect(detail).toContain('2-step');
-    expect(detail).toContain('none');
-    expect(detail).toContain('rot180');
+    expect(detail).toContain('as designed');
+    expect(detail).toContain('turned 180°');
+    expect(detail).not.toMatch(/rot180|mirrorX|mirrorY/);
+  });
+
+  it('mill quantities key by species + thickness (F1) and count distinct widths (F2)', () => {
+    const config = makeV2Config({
+      grain: 'end',
+      sourceLengthIn: 20,
+      sliceThicknessIn: 1.5,
+      panels: [
+        makePanel('thin', 'Thin', 0.75, [
+          makeStrip('t1', 'hard-maple', 1.5),
+          makeStrip('t2', 'hard-maple', 2),
+        ]),
+        makePanel('thick', 'Thick', 1.5, [
+          makeStrip('k1', 'hard-maple', 1.5),
+        ]),
+      ],
+      rowPattern: [
+        { panelId: 'thin', transform: 'none' },
+        { panelId: 'thick', transform: 'none' },
+      ],
+      rowCount: 4,
+    });
+    const mill = designBuildSteps(config, calculateMetrics(config)).find(
+      (s) => s.id === 'mill-stock',
+    )!;
+    const maple = mill.quantities.filter((q) => q.label.includes('Hard Maple'));
+    expect(maple).toHaveLength(2);
+    expect(maple.map((q) => q.thicknessIn).sort()).toEqual([0.75, 1.5]);
+    // thin panel: two rip widths → count 2; thick panel: one width → count 1
+    expect(maple.find((q) => q.thicknessIn === 0.75)!.count).toBe(2);
+    expect(maple.find((q) => q.thicknessIn === 1.5)!.count).toBe(1);
+  });
+
+  it('dry-fit uses stripDisplayName so explicit labels appear (F4)', () => {
+    const config = makeV2Config({
+      grain: 'edge',
+      sourceLengthIn: 18,
+      panels: [
+        makePanel('panel-1', 'Panel 1', 0.75, [
+          { ...makeStrip('e1', 'hard-maple', 1.5), label: 'Accent rail' },
+          makeStrip('e2', 'walnut', 1.5, 2),
+        ]),
+      ],
+      rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+      rowCount: 1,
+    });
+    const detail = designBuildSteps(config, calculateMetrics(config)).find(
+      (s) => s.id === 'dry-fit',
+    )!.detail;
+    expect(detail).toContain('Accent rail');
+    expect(detail).toContain('Strip 2 ×2');
   });
 });
 

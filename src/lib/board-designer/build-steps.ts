@@ -10,6 +10,7 @@ import {
   planeBufferIn,
 } from '@/lib/board-designer/lumber-allowance';
 import { getSpecies } from '@/lib/board-designer/species';
+import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import type {
   BoardDesignConfig,
   BoardMetrics,
@@ -34,10 +35,10 @@ export interface BuildStep {
 }
 
 const TRANSFORM_NAME: Record<RowTransform, string> = {
-  none: 'none',
-  rot180: 'rot180',
-  mirrorX: 'mirrorX',
-  mirrorY: 'mirrorY',
+  none: 'as designed',
+  rot180: 'turned 180°',
+  mirrorX: 'mirrored left-to-right',
+  mirrorY: 'mirrored top-to-bottom',
 };
 
 function step(
@@ -95,34 +96,41 @@ function ripQuantities(panels: Panel[]): BuildStepQuantity[] {
 }
 
 function millQuantities(panels: Panel[]): BuildStepQuantity[] {
-  const bySpecies = new Map<string, { thicknessIn: number; count: number }>();
+  // One entry per species + thickness. count = distinct rip widths at that pair
+  // (boards to mill to), not strip piece count.
+  const groups = new Map<
+    string,
+    { speciesId: string; thicknessIn: number; widths: Set<number> }
+  >();
   for (const panel of panels) {
-    const pieces = expandStripPieces(panel);
-    for (const piece of pieces) {
-      const cur = bySpecies.get(piece.speciesId);
-      if (cur) cur.count += 1;
-      else {
-        bySpecies.set(piece.speciesId, {
+    for (const piece of expandStripPieces(panel)) {
+      const key = `${piece.speciesId}\0${panel.thicknessIn}`;
+      let g = groups.get(key);
+      if (!g) {
+        g = {
+          speciesId: piece.speciesId,
           thicknessIn: panel.thicknessIn,
-          count: 1,
-        });
+          widths: new Set(),
+        };
+        groups.set(key, g);
       }
+      g.widths.add(piece.widthIn);
     }
   }
-  return [...bySpecies.entries()].map(([speciesId, v]) => ({
-    label: `${speciesLabel(speciesId)} stock`,
-    count: v.count,
-    thicknessIn: v.thicknessIn,
+  return [...groups.values()].map((g) => ({
+    label: `${speciesLabel(g.speciesId)} stock`,
+    count: g.widths.size,
+    thicknessIn: g.thicknessIn,
   }));
 }
 
 function stripOrderLabels(panels: Panel[]): string {
   const names: string[] = [];
   for (const panel of panels) {
-    for (const strip of panel.strips) {
+    panel.strips.forEach((strip, index) => {
       const n = strip.repeat > 1 ? ` ×${strip.repeat}` : '';
-      names.push(`${speciesLabel(strip.speciesId)}${n}`);
-    }
+      names.push(`${stripDisplayName(strip, index)}${n}`);
+    });
   }
   return names.join(', ');
 }
