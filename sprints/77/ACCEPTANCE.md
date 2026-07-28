@@ -43,10 +43,10 @@ Baseline for every "before" comparison: the merge-base of this branch and `main`
 ## Panel header legibility (T3)
 
 - [ ] A14 | Delete's accessible name includes the panel's label (e.g. `Delete Panel 2`), not the bare string `Delete` | evidence: file:line
-- [ ] A15 | Delete's `className` is not the same string as the Collapse/Expand toggle's | evidence: file:line
-- [ ] A16 | Delete's distinction uses an existing token (e.g. `text-danger`) — no new hex literal and no new token added | evidence: file:line
+- [ ] A15 | Delete uses `btnDanger` from `src/lib/ui.ts`; its class string is not `btnGhost` and not `btnGhost` plus a colour utility | evidence: file:line
+- [ ] A16 | No new hex literal and no new token added to `src/lib/ui.ts` or `globals.css` | evidence: file:line
 - [ ] A17 | Collapse/Expand still sets `aria-expanded` from the panel's open state | evidence: file:line
-- [ ] A18 | The row-count text is no longer rendered between the Collapse and Delete controls; the two are adjacent siblings | evidence: file:line
+- [ ] A18 | Collapse and Delete render inside ONE wrapper element with no other element rendered between them, and the row count is not a child of that wrapper | evidence: file:line
 - [ ] A19 | Row count still renders and still reads `1 row` / `N rows` | evidence: verify.txt
 - [ ] A20 | Delete is still `disabled` when the design has one panel | evidence: file:line
 - [ ] A21 | Both controls keep a ≥44px target (`min-h-[2.75rem]`) | evidence: file:line
@@ -70,4 +70,4 @@ Baseline for every "before" comparison: the merge-base of this branch and `main`
 ## Manual — graded, not scored (outside the 29)
 
 - [ ] M1 | `npm run build` succeeds | evidence: manual
-- [ ] M2 | Signed-in walkthrough at `lg`, end grain: Add a panel → the new panel is visible in the preview without opening the Row pattern editor; select a strip → its editor sits above the list | evidence: manual
+- [ ] M2 | Signed-in walkthrough at `lg`, end grain, on a design with `rowCount` ≥ 4 (any end-grain template): Add a panel → the new panel is visible in the preview without opening the Row pattern editor; select a strip → its editor sits above the list; Collapse and Delete are distinguishable at a glance | evidence: manual
