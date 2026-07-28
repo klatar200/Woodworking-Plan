@@ -59,7 +59,36 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 
 Test suite — expected: **1359/1359** across **119 files** (Sprint 75). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅**. Parked FUTURE_IDEAS 2026-07-26. D3/D5/D7 still gated.
+**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
+
+### Sprint 76 — designer header/nav + layout (Keagan list 2026-07-27) 🟡 NEXT
+
+```
+OBJECTIVE: Designer header becomes a real nav bar; preview stops scrolling; panes swap L/R.
+SURFACE:   designer-shell · board-preview · board-settings · designer-narrow + 4 "Your boards" call sites
+FACT:      DECISIONS_LOG 2026-07-27 D5 partial ungate + preview sizing amendment.
+OUT:       Build Plan GENERATOR (own track) · size SOLVER · D3/D7 · panels workflow (Sprint 77)
+RESERVED:  Right action group is built to hold two buttons; Build Plan renders only when D5 track lands.
+           Ship no disabled placeholder.
+```
+
+### Sprint 77 — designer panels workflow (Keagan list 2026-07-27) ⬜ QUEUED
+
+```
+OBJECTIVE: Add Panel autofills the controller; strip editor above the strip table; collapse/delete legible.
+SURFACE:   panel-editor · strip-list · designer-dock
+OUT:       header/layout (Sprint 76) · D5 build steps · any schema change
+```
+
+### D5 build-steps track — designer build guide ⬜ QUEUED (after 76–77)
+
+```
+OBJECTIVE: Generate an ordered build guide + cut list from a saved board design.
+FACT:      BUSINESS_PLAN "Designer build guide" (2026-07-27); DECISIONS_LOG same date.
+REUSE:     existing plan step / cut-list structures; cut-optimizer (src/lib/cut-optimizer.ts).
+OUT:       dollar figures (D2 — tiers only) · safety guidance (D7, still gated) · procedural textures (D3)
+SIZE:      2–3 sprints. Scope at track open, not now.
+```
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 

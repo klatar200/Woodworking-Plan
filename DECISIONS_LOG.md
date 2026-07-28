@@ -35,6 +35,7 @@
 - **Designer shell / IA Sprints 67–72 (2026-07-26):** Canva-like top bar; preview ~1200px + height cap; sticky preview+dock with per-card scroll + dock min-height; full dock panels (no stubs; inactive **mounted/hidden**); tab badges; Reset + shopping list; Pattern = row pattern only; grain→edge switches tab to Templates; panel folders; Board settings disclosure; 3D default + view-only 2D rotate + 2D export; Save a copy = dirty config, name `Copy of {name}` → new id; desktop-only; UOM/tabs/share/custom species → FUTURE_IDEAS. Agent contract in BUILD_PLAN §4. See dated entries.
 - **Designer upgrade programme (2026-07-26):** D2 **NO lumber pricing** (estimated or otherwise) — `format.test` unmodified; D1 material-math → **Sprint 73** (scheduled 2026-07-26); D3/D5/D7 gated on BUSINESS_PLAN + §4 — do not scaffold. See dated entries.
 - **Stale wasteFactor retirement (2026-07-26):** Sprint 74 — `schemaVersion` 2→3 zeroes stored `wasteFactor === 0.15` (old default) on read. Deliberate 0.15 indistinguishable from stale default → accepted pre-launch. Links D1.
+- **D5 partially UNGATED (2026-07-27):** build steps ("Build Plan" generator) **AUTHORISED** → BUSINESS_PLAN + §4, own track after the shell sprints. Global settings authorised **as display+validate ONLY** — no solver. D3/D7 stay gated; new board styles still NOT authorised. See dated entry.
 
 _(Full history below, chronological.)_
 
@@ -316,3 +317,11 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 
 ### 2026-07-26 — Retire stale wasteFactor default (Sprint 74)
 **Binding:** Sprint 74: `schemaVersion` 2→3; on-read zero `wasteFactor` when exactly `0.15`. Deliberate-0.15 collision accepted pre-launch. Links D1. Do not touch D3/D5/D7.
+
+### 2026-07-27 — D5 partially ungated: build steps authorised, global settings display-only
+**Source:** Keagan change list for `/designer` (2026-07-27); supersedes the D5 clause of the 2026-07-26 upgrade programme.
+**Binding:** **D5 build steps AUTHORISED** — a "Build Plan" generator that turns a saved board design into a build guide (steps + cut list) is added to BUSINESS_PLAN and BUILD_PLAN §4, and runs as **its own track after the shell sprints**, not bundled into UI work. Keagan's stated rationale: this is the flagship reason the designer exists. **D5 global settings AUTHORISED IN THE NARROW FORM ONLY:** Board Settings may show the design's computed overall size and warn when it drifts from a user-entered target. It **must not** re-solve panels/strips to hit a target — a top-down solver is NOT authorised and would collide with Sprint 73 material math. **D3** (procedural textures) and **D7** (safety guidance) stay gated. **New board styles still NOT authorised.** D2 NO lumber pricing unchanged — the build guide shows cost tiers only, never dollars.
+**Consequences.** Shell work splits into Sprint 76 (header/layout) and Sprint 77 (panels workflow); the D5 build-steps track follows. Sprint 76 reserves layout space for the Build Plan control but **ships no dead button** — the control renders only when the D5 track lands.
+
+### 2026-07-27 — Preview card sizing amendment (supersedes the 67–72 height cap)
+**Binding:** The 2026-07-26 shell decision fixed preview at "~1200px + ~50–55vh" with per-card scroll. Keagan reports the render is clipped and the card scrolls internally. **The preview card must size to its render, not scroll it.** The vh cap is retired for the preview card; dock min-height ≥~12rem is unchanged. Sprint 76 owns this.
