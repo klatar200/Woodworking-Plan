@@ -3,13 +3,40 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 75 (2026-07-27) — CLOSED 27/27** — doc truth pass + repo compaction. Suite: 1359 green / 119 files.
+> **Latest logged: Sprint 76 (2026-07-28) — CLOSED 97/100** — designer header/nav + layout. Suite: 1365 green / 119 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅. Suite: 1359 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅. Suite: 1365 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 76: Designer header/nav + layout
+**Dates:** 2026-07-28
+**Scope:** BUILD_PLAN §4 Sprint 76 — header becomes a nav bar (T5), preview card sizes to its render (T2), Save moves into the preview card header (T3), degree readout removed (T4), Edge/End + overall-size display/validate into Board Settings (T6), panes swapped L/R (T7), `Your boards` → `Saved Boards` (T1).
+
+### Attempt 1 — score 97/100 — PASS
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | All seven tasks delivered. Right action group is a real container (`ml-auto flex …`) holding one child, no placeholder and no `Build Plan` string — the "reserved, not built" clause honoured exactly. Target size is display+validate only; no solver. |
+| 2 Correctness /20 | 20 | Verified live on prod at 1440×900, not from source: header order, panes at x=40/x=380, Save rightmost in the card header, `data-view-rotation="90"` with no degree readout, `max-height:none` + `overflow-y:visible` + zero inner scrollers. |
+| 3 Test coverage /15 | 13 | Four existing assertions retargeted and one new case added; the vh-cap check was *strengthened* (`toContain` → `not.toMatch`). **Gap:** `targetDriftWarning` is exported and untested, and A24's "target never patches config" rests on a source read rather than a test. |
+| 4 Security /15 | 15 | No auth/multi-tenancy surface touched. Target-size fields are local `useState`, rendered outside the save form, never serialized. Save/copy/shopping actions and their disabled logic unchanged. No new dependency. |
+| 5 Code quality /10 | 10 | `BoardGrainToggle` moved by render site, not reimplemented. The half-wrong `board-settings.tsx` comment updated rather than left to argue with the code. No `shadow-[…]` literal. |
+| 6 Mobile/offline /10 | 10 | Designer is desktop-only by decision (2026-07-25). `lg:hidden` narrow surface, byte-exact notices, and the WebGL gate all untouched. |
+| 7 Docs/handoff /5 | 4 | Pack complete and locked. **Deducted:** GOAL/PLAN shipped claiming four `Your boards` call sites when there are six across five files — caught by the pre-flight, not by the author. |
+
+**The pre-flight check paid for the whole loop.** `Check sprint 76` (new third trigger, `AGENTS.md`) found two defects before a line was written: the denominator was 35 with a 34/35 gate while M1/M2 were not Cursor's to run, making the sprint **mathematically impossible to pass**; and `tests/designer-shell.test.tsx:267` asserted `'Your boards'`, so T1 would have turned R1 red on a task whose PLAN named no test paths. Either would have cost a full round.
+
+**M2 verified against production**, signed in at 1440×900: created a board, renamed it in the header, saved, reopened — name persisted, and the header input demonstrably feeds the posted `config.name`.
+
+**Sticky preview is now conditional, by construction.** Retiring the height cap means that once the column outgrows the viewport (2525px vs 900px with Cut plan open in 2D at 90°) it stops pinning and scrolls normally. Nothing is unreachable — its `top` runs to −2107 — but the pinned-preview benefit only exists for short docks. Candidate for Sprint 77.
+
+**Not from this sprint, flagged in passing:** Clerk still on **development keys** in production, and `THREE.WebGLRenderer: Context Lost` ×2 on load without tripping the SVG fallback. Sprint 76 touched neither path.
+
+**Commits:** `e98a319` (implementation) + `f67e12b` (local-Cursor workflow change, unrelated to the bar), branch `cursor/sprint-76-designer-header`.
 
 ---
 

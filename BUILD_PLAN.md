@@ -56,23 +56,29 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Shell IA post-close audit | ✅ **CLOSED** 2026-07-26 — Attempt 1 `c1a9867`; Attempt 2 **97/100** (strip labels · history baseline · Metrics `×` · DECISIONS_LOG D1/D2 hygiene). Suite **1331/1331** / 116 files. |
 | Sprint 73 (material-math D1 / A1–A4) | ✅ **CLOSED** 2026-07-27 — Attempt 2 **98/100** (Keagan A1 prod **90/100** — magnitude). Glue-up axes only; `wasteFactor` default 0; volume ~29%/~~14%. Suite **1338/1338** / 117 files. |
 | Sprint 74 (retire stale wasteFactor) | ✅ **CLOSED** 2026-07-27 — **98/100**. `schemaVersion` 2→3 zeroes stored `0.15` on read; optional dry-run backfill. Suite **1344/1344** / 118 files. |
+| Sprint 76 (designer header/nav + layout) | ✅ **CLOSED** 2026-07-28 — **97/100**. Header is a nav bar; preview card sizes to its render; Save in the card header; panes swapped L/R; grain + overall size in Board Settings. Suite **1365/1365** / 119 files. |
 
-Test suite — expected: **1359/1359** across **119 files** (Sprint 75). Update each sprint close.
+Test suite — expected: **1365/1365** across **119 files** (Sprint 76). Update each sprint close.
 
-**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
+**Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅** · **76 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
 
-### Sprint 76 — designer header/nav + layout (Keagan list 2026-07-27) 🟡 NEXT
+### Sprint 76 — designer header/nav + layout (Keagan list 2026-07-27) ✅ CLOSED 2026-07-28 · 97/100
 
 ```
 OBJECTIVE: Designer header becomes a real nav bar; preview stops scrolling; panes swap L/R.
-SURFACE:   designer-shell · board-preview · board-settings · designer-narrow + 4 "Your boards" call sites
+SURFACE:   designer-shell · board-preview · board-settings · designer-narrow + 6 "Your boards"
+           occurrences across 5 files (designer-narrow has two) + 1 test asserting the old string
 FACT:      DECISIONS_LOG 2026-07-27 D5 partial ungate + preview sizing amendment.
 OUT:       Build Plan GENERATOR (own track) · size SOLVER · D3/D7 · panels workflow (Sprint 77)
 RESERVED:  Right action group is built to hold two buttons; Build Plan renders only when D5 track lands.
            Ship no disabled placeholder.
+SHIPPED:   All 7 tasks. Reserved slot is a real container with one child, no placeholder, no
+           "Build Plan" string. Target size is display+validate only — no solver.
+CARRY:     Sticky preview stops pinning once the column outgrows the viewport (2525px vs 900px with
+           Cut plan open in 2D at 90°). Nothing unreachable; pinning only survives short docks.
 ```
 
-### Sprint 77 — designer panels workflow (Keagan list 2026-07-27) ⬜ QUEUED
+### Sprint 77 — designer panels workflow (Keagan list 2026-07-27) 🟡 NEXT
 
 ```
 OBJECTIVE: Add Panel autofills the controller; strip editor above the strip table; collapse/delete legible.

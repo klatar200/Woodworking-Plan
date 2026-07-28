@@ -325,6 +325,7 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 
 ### 2026-07-27 — Preview card sizing amendment (supersedes the 67–72 height cap)
 **Binding:** The 2026-07-26 shell decision fixed preview at "~1200px + ~50–55vh" with per-card scroll. Keagan reports the render is clipped and the card scrolls internally. **The preview card must size to its render, not scroll it.** The vh cap is retired for the preview card; dock min-height ≥~12rem is unchanged. Sprint 76 owns this.
+**DELIVERED 2026-07-28 (Sprint 76, 97/100).** Verified on prod: `max-height:none`, `overflow-y:visible`, no inner scrollers. **Known consequence:** a sticky element with no height cap stops pinning once it outgrows the viewport (measured 2525px vs 900px with Cut plan open in 2D at 90°), so the preview scrolls away on tall docks. Nothing is unreachable. Restoring pinning without reinstating the cap is a Sprint 77+ decision, not a regression.
 
 ### 2026-07-28 — Cursor runs LOCALLY, not in Cursor Cloud (sprint-loop topology change)
 **Source:** Keagan, cost. Cursor Cloud consumes metered usage; Auto mode running locally does not. Supersedes the Cursor Cloud topology in the Sprint 00 pack protocol (CLAUDE.md §9, `AGENTS.md`, `sprints/README.md`).
