@@ -58,8 +58,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 74 (retire stale wasteFactor) | ✅ **CLOSED** 2026-07-27 — **98/100**. `schemaVersion` 2→3 zeroes stored `0.15` on read; optional dry-run backfill. Suite **1344/1344** / 118 files. |
 | Sprint 76 (designer header/nav + layout) | ✅ **CLOSED** 2026-07-28 — **97/100**. Header is a nav bar; preview card sizes to its render; Save in the card header; panes swapped L/R; grain + overall size in Board Settings. Suite **1365/1365** / 119 files. |
 | Sprint 77 (designer panels workflow) | ✅ **CLOSED** 2026-07-28 — **98/100**. `add-panel` appends a row-pattern step so a new panel paints immediately; strip editor above the list; Collapse/Delete legible. Suite **1385/1385** / 121 files. |
+| Sprint 78 (build-steps library, D5 1/3) | ✅ **CLOSED** 2026-07-28 — Attempt 2 **97/100** (Attempt 1 **93** — ACCEPTANCE passed 23/23 while §6 caught four copy/aggregation defects the bar never graded). `designBuildSteps()` pure library. Suite **1411/1411** / 122 files. |
 
-Test suite — expected: **1385/1385** across **121 files** (Sprint 77). Update each sprint close.
+Test suite — expected: **1411/1411** across **122 files** (Sprint 78). Update each sprint close.
 
 **Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅** · **76 ✅** · **77 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
 
@@ -107,18 +108,31 @@ SPLIT:     78 pure library → 79 UI surface + print → 80 polish. Logic before
            than none, and that is far cheaper to prove in a test than through a page.
 ```
 
-#### Sprint 78 — build-steps library (D5 1 of 3) 🟡 NEXT
+#### Sprint 78 — build-steps library (D5 1 of 3) ✅ CLOSED 2026-07-28 · 97/100 (Attempt 2)
 
 ```
 OBJECTIVE: designBuildSteps(config, metrics) → ordered BuildStep[]. Pure library, no UI.
-SURFACE:   NEW src/lib/board-designer/build-steps.ts · NEW tests/board-designer-build-steps.test.ts
+SURFACE:   src/lib/board-designer/build-steps.ts · tests/board-designer-build-steps.test.ts
 FACT:      Edge grain = one glue-up. End grain = panel glue-up → crosscut to slices → second glue-up.
            planeBuffer is consumed PER STAGE (Sprint 73), so once for edge and twice for end.
-OUT:       any UI (Sprint 79) · safety guidance (D7) · dollar figures (D2) · new material maths
-NOTE:      Pure-backend sprint — §6 category 6 (mobile/offline) moves its 10 pts into category 2.
+SHIPPED:   Edge 8 steps / end 12, stable slug ids. Stock from metrics.panelPlan (unused panels
+           contribute nothing). Slice count from metrics.sliceCount. Mill groups keyed by
+           species + thickness. Builder-facing transform copy ("turned 180°", not "rot180").
+LESSON:    ACCEPTANCE passed 23/23 at §6 93/100 — the bar graded structure on a feature that emits
+           PROSE. From 79 on, checks must assert what sentences SAY, not that they exist.
 ```
 
-#### Sprint 79 — build guide surface ⬜ QUEUED · #### Sprint 80 — polish ⬜ QUEUED
+#### Sprint 79 — build guide surface (D5 2 of 3) 🟡 NEXT
+
+```
+OBJECTIVE: Render designBuildSteps output. Build Plan control in the header slot Sprint 76
+           reserved; a route; print integration.
+SURFACE:   designer-shell (right action group) · NEW build-guide route + component · print sheet
+FACT:      The slot exists and is empty by design — Sprint 76 shipped no placeholder on purpose.
+OUT:       safety guidance (D7) · dollar figures (D2) · changes to build-steps.ts logic
+```
+
+#### Sprint 80 — build guide polish (D5 3 of 3) ⬜ QUEUED
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 

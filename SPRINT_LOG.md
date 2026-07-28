@@ -3,13 +3,49 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 77 (2026-07-28) — CLOSED 98/100** — designer panels workflow. Suite: 1385 green / 121 files.
+> **Latest logged: Sprint 78 (2026-07-28) — CLOSED 97/100** — build-steps library (D5 1 of 3). Suite: 1411 green / 122 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅. Suite: 1385 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅. Suite: 1411 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 78: Build-steps library (D5 track, 1 of 3)
+**Dates:** 2026-07-28
+**Scope:** BUILD_PLAN §4 Sprint 78 — `designBuildSteps(config, metrics)` derives an ordered build guide from a saved design. Pure library: new `src/lib/board-designer/build-steps.ts` + `tests/board-designer-build-steps.test.ts`, nothing rendered. Pure-backend, so §6 category 6 moved its 10 points into category 2.
+
+### Attempt 1 — score 93/100 — FAIL (ACCEPTANCE 23/23)
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | Exactly the module and its tests; no UI, no schema, no new dependency. |
+| 2 Correctness /30 | 27 | Sequences, plane-buffer stages, `metrics.sliceCount`, and `panelPlan`-based panel selection all correct. **But** `millQuantities` keyed by species alone, so a species used at two panel thicknesses silently reported one. |
+| 3 Test coverage /15 | 13 | 17 tests including real source guards — no case covered two panels of differing thickness, which is why the above survived. |
+| 4 Security /15 | 15 | Pure library, no I/O, no auth surface, no dependency. |
+| 5 Code quality /10 | 9 | `TRANSFORM_NAME` was an identity map — abstraction with no content. |
+| 7 Docs/handoff /5 | 4 | The bar graded structure and barely graded copy. |
+
+**The two instruments disagreed, and that is the point.** ACCEPTANCE passed 23/23 while the §6 rubric came in at 93. The bar catches what it was told to check; the rubric catches what nobody thought to check. Four defects it found — a raw-enum `arrange-rows` sentence (`Transforms used: none, rot180`), mill counts duplicating rip counts, the mixed-thickness bug, and `dry-fit` ignoring user strip labels — were all invisible to a bar that graded ids, counts, and ordering on a feature whose entire output is prose.
+
+### Attempt 2 — score 97/100 — PASS (two fix rounds)
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | Unchanged. |
+| 2 Correctness /30 | 29 | F1 keys mill groups by species **+ thickness**; F5 makes the mill *sentence* list every distinct thickness so prose and quantities agree. `crosscut-strips` still re-labels rip quantities — a mild modelling smell, not a defect. |
+| 3 Test coverage /15 | 15 | 17→**20** tests: mixed-thickness milling, builder-facing transform copy, and strip labels in `dry-fit`. |
+| 4 Security /15 | 15 | Unchanged. |
+| 5 Code quality /10 | 10 | `TRANSFORM_NAME` now carries real text; the F5 branch is explicit and commented. |
+| 7 Docs/handoff /5 | 3 | **Down one.** Round 1 was incomplete — it fixed the mill quantities but left the mill sentence reading `panels[0].thicknessIn`, so a mixed-thickness design briefly had prose contradicting the data directly beneath it. Caught in audit before re-scoring; a second round should not have been needed. |
+
+**Round 2 existed because a partial fix is its own defect.** After Round 1 the quantities listed two thicknesses and the sentence above them named one. A sentence reads as authoritative in a way a quantity list does not, so that state was worse than the bug it replaced.
+
+**Copy is graded from Sprint 79 onward.** The lesson generalises: for a feature that emits prose, checks must assert what sentences *say*, not that they exist.
+
+**Suite:** 1385→**1411** tests, 121→**122** files.
+
+**Commits:** `865c845` (implementation), `f96f23d` (Round 1: F1–F4), `6c5031b` (Round 2: F5), branch `cursor/sprint-78-build-steps`.
 
 ---
 
