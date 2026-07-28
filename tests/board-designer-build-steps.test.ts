@@ -200,6 +200,44 @@ describe('designBuildSteps — end grain', () => {
     expect(maple.find((q) => q.thicknessIn === 1.5)!.count).toBe(1);
   });
 
+  it('mill-stock detail lists every distinct thickness on multi-panel end grain (F5)', () => {
+    const mixed = makeV2Config({
+      grain: 'end',
+      sourceLengthIn: 20,
+      sliceThicknessIn: 1.5,
+      panels: [
+        makePanel('thin', 'Thin', 0.75, [
+          makeStrip('t1', 'hard-maple', 1.5),
+          makeStrip('t2', 'hard-maple', 2),
+        ]),
+        makePanel('thick', 'Thick', 1.5, [
+          makeStrip('k1', 'hard-maple', 1.5),
+        ]),
+      ],
+      rowPattern: [
+        { panelId: 'thin', transform: 'none' },
+        { panelId: 'thick', transform: 'none' },
+      ],
+      rowCount: 4,
+    });
+    const mixedDetail = designBuildSteps(mixed, calculateMetrics(mixed)).find(
+      (s) => s.id === 'mill-stock',
+    )!.detail;
+    expect(mixedDetail).toContain('its panel thickness');
+    expect(mixedDetail).toContain(formatInches(0.75));
+    expect(mixedDetail).toContain(formatInches(1.5));
+    expect(mixedDetail).not.toMatch(/\d+\.\d+/);
+
+    const single = endConfig();
+    const singleDetail = designBuildSteps(
+      single,
+      calculateMetrics(single),
+    ).find((s) => s.id === 'mill-stock')!.detail;
+    expect(singleDetail).toBe(
+      `Mill each species to ${formatInches(1.5)} thick.`,
+    );
+  });
+
   it('dry-fit uses stripDisplayName so explicit labels appear (F4)', () => {
     const config = makeV2Config({
       grain: 'edge',

@@ -46,3 +46,27 @@ used by `strip-list.tsx` — and keep the `×N` repeat suffix.
 **Unchanged and still graded:** every existing ACCEPTANCE id. `wasteFactor` stays absent, the
 `/\d+\.\d+/` rule still holds on every `detail` (`180°` contains no decimal), plane-buffer counts
 stay once/twice, and the id sequences do not change.
+
+## Round 2
+
+One item — the tail of F1, and my miss for not seeing it when I wrote Round 1. Round 1 fixed the
+mill **quantities** but not the mill **sentence**, so the two now contradict each other.
+
+**F5 — `mill-stock` detail asserts a single thickness in `endSteps`.**
+`build-steps.ts:219` still reads `const thickness = panels[0]?.thicknessIn ?? 0`, and the detail
+says `Mill each species to <thickness> thick.` After F1 a multi-panel end-grain design lists two
+thicknesses in `quantities` while the sentence above it names only the first — prose disagreeing
+with data in the same step, which is worse than the original bug because it reads as authoritative.
+
+In **`endSteps` only**, derive the distinct panel thicknesses from the same `used` entries the
+quantities come from:
+- exactly one distinct thickness → keep the current sentence unchanged.
+- more than one → state them all, e.g. `Mill each species to its panel thickness: 3/4", 1 1/2".`
+  Every value through `formatInches`; A15's `/\d+\.\d+/` rule still applies.
+
+**Leave `edgeSteps` alone.** `panelGeometry` emits exactly one `panelPlan` entry for edge grain
+(`src/lib/board-designer/panel-geometry.ts:48`), so `panels[0]` is the only panel there and the
+existing sentence is correct.
+
+**Test to add:** the two-panel mixed-thickness config from F1's test — assert `mill-stock` detail
+names both thicknesses, and that a single-thickness design's sentence is unchanged.

@@ -216,18 +216,28 @@ function endSteps(
 ): BuildStep[] {
   const used = usedPanelEntries(config, metrics);
   const panels = used.map((u) => u.panel);
-  const thickness = panels[0]?.thicknessIn ?? 0;
   const buffer = formatInches(planeBufferIn(config));
   const length = formatInches(config.sourceLengthIn);
   const sliceT = formatInches(config.sliceThicknessIn);
   const finished = formatInches(metrics.finishedLengthIn);
   const sliceCount = metrics.sliceCount;
 
+  // Distinct thicknesses from used panels — must match millQuantities (F5).
+  const thicknesses = [
+    ...new Set(panels.map((p) => p.thicknessIn)),
+  ].sort((a, b) => a - b);
+  const millDetail =
+    thicknesses.length <= 1
+      ? `Mill each species to ${formatInches(thicknesses[0] ?? 0)} thick.`
+      : `Mill each species to its panel thickness: ${thicknesses
+          .map((t) => formatInches(t))
+          .join(', ')}.`;
+
   return [
     step(
       'mill-stock',
       'Mill stock',
-      `Mill each species to ${formatInches(thickness)} thick.`,
+      millDetail,
       millQuantities(panels),
     ),
     step(
