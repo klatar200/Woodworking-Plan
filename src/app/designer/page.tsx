@@ -49,7 +49,7 @@ export default async function DesignerPage({ searchParams }: PageProps) {
         dismissHref="/designer"
       />
       <p className="breadcrumb no-print">
-        <Link href="/designer/library">Your boards</Link>
+        <Link href="/designer/library">Saved Boards</Link>
       </p>
       <DesignerShell
         designId={null}

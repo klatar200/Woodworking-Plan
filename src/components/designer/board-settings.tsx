@@ -1,14 +1,17 @@
+'use client';
+
+import { useState, type ChangeEvent, type ReactNode } from 'react';
 import { planeBufferIn } from '@/lib/board-designer/lumber-allowance';
-import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
+import type { BoardDesignConfig, BoardMetrics, Grain } from '@/lib/board-designer/types';
 import { KERF_OPTIONS_IN } from '@/lib/cut-optimizer';
+import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary, selectControl } from '@/lib/ui';
-import type { ChangeEvent, ReactNode } from 'react';
 import { FieldHint } from './field-hint';
 
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
 
-/** Top-bar grain toggle (Sprint 67). */
+/** Edge/End grain toggle — rendered inside Board Settings (Sprint 76). */
 export function BoardGrainToggle({
   grain,
   onChange,
@@ -30,27 +33,106 @@ export function BoardGrainToggle({
 }
 
 /**
- * Board settings disclosure for top bar (Sprint 67).
- * Kerf / waste % / panel length / slice thickness — unit suffixes on controls.
- * Name + grain live in the top bar, not here.
+ * Board Settings disclosure for the designer header (Sprint 67; Sprint 76 adds grain +
+ * overall-size display/validate). Name stays in the top bar; grain lives here.
+ * Target size is UI-only intent — it must never patch the design config.
  */
 export function BoardSettingsDisclosure({
   config,
+  metrics,
   onChange,
+  onGrainChange,
   onCommitCoalesce,
 }: {
   config: BoardDesignConfig;
+  metrics: BoardMetrics;
   onChange: (patch: Partial<BoardDesignConfig>) => void;
+  onGrainChange: (grain: Grain) => void;
   onCommitCoalesce: () => void;
 }) {
+  const [targetLength, setTargetLength] = useState('');
+  const [targetWidth, setTargetWidth] = useState('');
+  const [targetThickness, setTargetThickness] = useState('');
+
+  const overallSize = `${formatInches(metrics.finishedLengthIn)} × ${formatInches(metrics.finishedWidthIn)} × ${formatInches(metrics.finishedThicknessIn)}`;
+
+  const drift = targetDriftWarning({
+    targetLength,
+    targetWidth,
+    targetThickness,
+    lengthIn: metrics.finishedLengthIn,
+    widthIn: metrics.finishedWidthIn,
+    thicknessIn: metrics.finishedThicknessIn,
+  });
+
   return (
     <details className="relative">
       <summary
         className={`${btnGhost} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
       >
-        Board settings
+        Board Settings
       </summary>
-      <div className="absolute right-0 z-[2] mt-[0.5rem] grid w-[min(100vw-2rem,22rem)] gap-[0.875rem] rounded-[0.75rem] border border-border bg-surface p-[1rem] shadow-e2">
+      <div className="absolute left-0 z-[2] mt-[0.5rem] grid w-[min(100vw-2rem,22rem)] gap-[0.875rem] rounded-[0.75rem] border border-border bg-surface p-[1rem] shadow-e2">
+        <div className="grid gap-[0.375rem]">
+          <span className="text-[0.875rem] font-bold">Grain</span>
+          <BoardGrainToggle grain={config.grain} onChange={onGrainChange} />
+        </div>
+
+        <p className="m-0 grid gap-[0.25rem]">
+          <span className="text-[0.875rem] font-bold">Overall size</span>
+          <span className="text-[0.9375rem]" aria-label="Computed overall size">
+            {overallSize}
+          </span>
+        </p>
+
+        <fieldset className="m-0 grid gap-[0.5rem] border-none p-0">
+          <legend className="mb-[0.25rem] text-[0.875rem] font-bold">Target size</legend>
+          <FieldHint>
+            Stated intent only — changing these values does not resize the board.
+          </FieldHint>
+          <label className="grid gap-[0.25rem]">
+            <span className="text-[0.8125rem] text-muted">Length (in)</span>
+            <input
+              className={inputControl}
+              name="targetLengthIn"
+              type="text"
+              inputMode="decimal"
+              value={targetLength}
+              onChange={(event) => setTargetLength(event.currentTarget.value)}
+              aria-label="Target length in inches"
+            />
+          </label>
+          <label className="grid gap-[0.25rem]">
+            <span className="text-[0.8125rem] text-muted">Width (in)</span>
+            <input
+              className={inputControl}
+              name="targetWidthIn"
+              type="text"
+              inputMode="decimal"
+              value={targetWidth}
+              onChange={(event) => setTargetWidth(event.currentTarget.value)}
+              aria-label="Target width in inches"
+            />
+          </label>
+          <label className="grid gap-[0.25rem]">
+            <span className="text-[0.8125rem] text-muted">Thickness (in)</span>
+            <input
+              className={inputControl}
+              name="targetThicknessIn"
+              type="text"
+              inputMode="decimal"
+              value={targetThickness}
+              onChange={(event) => setTargetThickness(event.currentTarget.value)}
+              aria-label="Target thickness in inches"
+            />
+          </label>
+          {drift ? (
+            <p className="m-0 text-[0.875rem] text-danger" role="status">
+              {drift}
+            </p>
+          ) : null}
+        </fieldset>
+
         {config.grain === 'edge' && (
           <NumberField
             label="Panel length (in)"
@@ -128,6 +210,38 @@ export function BoardSettingsDisclosure({
       </div>
     </details>
   );
+}
+
+/** Compare optional target fields to computed size; empty fields are ignored. */
+export function targetDriftWarning(args: {
+  targetLength: string;
+  targetWidth: string;
+  targetThickness: string;
+  lengthIn: number;
+  widthIn: number;
+  thicknessIn: number;
+}): string | null {
+  const checks: { label: string; raw: string; computed: number }[] = [
+    { label: 'length', raw: args.targetLength, computed: args.lengthIn },
+    { label: 'width', raw: args.targetWidth, computed: args.widthIn },
+    { label: 'thickness', raw: args.targetThickness, computed: args.thicknessIn },
+  ];
+  const drifted: string[] = [];
+  for (const check of checks) {
+    const trimmed = check.raw.trim();
+    if (!trimmed) continue;
+    const parsed = Number(trimmed);
+    if (!Number.isFinite(parsed)) continue;
+    if (!sameTapeMeasure(parsed, check.computed)) {
+      drifted.push(check.label);
+    }
+  }
+  if (drifted.length === 0) return null;
+  return `Computed size differs from target (${drifted.join(', ')}).`;
+}
+
+function sameTapeMeasure(a: number, b: number): boolean {
+  return Math.round(a * 16) === Math.round(b * 16);
 }
 
 function GrainButton({

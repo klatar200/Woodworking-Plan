@@ -2,10 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { BoardPreview } from './board-preview';
-import {
-  BoardGrainToggle,
-  BoardSettingsDisclosure,
-} from './board-settings';
+import { BoardSettingsDisclosure } from './board-settings';
 import {
   DesignerDock,
   defaultDockTab,
@@ -24,7 +21,6 @@ import {
   undoRedoShortcut,
 } from '@/lib/board-designer/history';
 import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
-import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 
 const SAVE_FORM_ID = 'designer-save-form';
@@ -97,8 +93,6 @@ export function DesignerShell(props: {
     patchConfig({ grain });
   };
 
-  const sizeReadout = `${formatInches(metrics.finishedLengthIn)} × ${formatInches(metrics.finishedWidthIn)} × ${formatInches(metrics.finishedThicknessIn)}`;
-
   const shoppingListControl =
     designId && addToShoppingListAction ? (
       <form action={addToShoppingListAction}>
@@ -127,28 +121,44 @@ export function DesignerShell(props: {
       </button>
     );
 
+  const previewHeaderActions = (
+    <>
+      {saveCopyControl}
+      <button type="submit" form={SAVE_FORM_ID} className={btnPrimary}>
+        Save
+      </button>
+    </>
+  );
+
   return (
     <div className="grid gap-[1.25rem]">
       {/* Top bar outside save form so shopping/copy stay sibling forms (no nest). */}
       <div className="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-[0.75rem]">
+        <BoardSettingsDisclosure
+          config={config}
+          metrics={metrics}
+          onChange={patchConfig}
+          onGrainChange={setGrain}
+          onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
+        />
+
         <label className="grid min-w-[12rem] flex-[1_1_14rem] gap-[0.25rem]">
-          <span className="text-[0.75rem] font-bold text-muted">Name</span>
+          <span className="sr-only">Board name</span>
           <input
             className={inputControl}
             value={config.name}
             maxLength={80}
+            aria-label="Board name"
             onChange={(event) => patchConfig({ name: event.currentTarget.value })}
             onBlur={() => dispatch({ type: 'commit-coalesce' })}
           />
         </label>
 
-        <BoardGrainToggle grain={config.grain} onChange={setGrain} />
-
-        <p className="m-0 text-[0.875rem] text-muted" aria-label="Finished size">
-          {sizeReadout}
-        </p>
-
-        <div className="ml-auto flex flex-wrap items-center gap-[0.5rem]">
+        <div
+          role="group"
+          aria-label="History"
+          className="flex flex-wrap items-center gap-[0.5rem]"
+        >
           <button
             type="button"
             className={btnGhost}
@@ -172,16 +182,11 @@ export function DesignerShell(props: {
           >
             Reset
           </button>
-          <button type="submit" form={SAVE_FORM_ID} className={btnPrimary}>
-            Save
-          </button>
-          {saveCopyControl}
+        </div>
+
+        {/* Right action group: shopping only this sprint; structured for a second child later. */}
+        <div className="ml-auto flex flex-wrap items-center gap-[0.5rem]">
           {shoppingListControl}
-          <BoardSettingsDisclosure
-            config={config}
-            onChange={patchConfig}
-            onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
-          />
         </div>
       </div>
 
@@ -207,15 +212,26 @@ export function DesignerShell(props: {
         </div>
 
         {/*
-          Left sticky = preview + dock (Sprint 67). Preview width/height capped;
-          surplus WIDTH → right rail. Do not use items-start on this grid (sticky
-          containing-block trap — Sprint 53). content-start keeps natural heights.
+          Panels left, preview right (Sprint 76). Sticky preview + dock stays;
+          preview card grows with its render (no vh cap / inner scroll).
+          Do not use items-start on this grid (sticky containing-block trap — Sprint 53).
         */}
-        <div className="hidden lg:grid lg:grid-cols-[minmax(0,1200px)_minmax(20rem,1fr)] lg:gap-[1.25rem] lg:content-start">
-          <div className="flex min-w-0 flex-col gap-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1] lg:max-h-[calc(100vh-5.25rem)]">
-            <section className="max-h-[min(55vh,32rem)] shrink-0 overflow-y-auto rounded-[0.75rem] border border-border bg-surface p-[1rem]">
-              <BoardPreview config={config} metrics={metrics} />
-            </section>
+        <div className="hidden lg:grid lg:grid-cols-[minmax(20rem,1fr)_minmax(0,1200px)] lg:gap-[1.25rem] lg:content-start">
+          <div className="grid min-w-0 gap-[1rem] lg:content-start">
+            <PanelEditor
+              config={config}
+              metrics={metrics}
+              dispatch={dispatch}
+              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
+            />
+          </div>
+
+          <div className="flex min-w-0 flex-col gap-[1rem] lg:sticky lg:top-[4.5rem] lg:z-[1]">
+            <BoardPreview
+              config={config}
+              metrics={metrics}
+              headerActions={previewHeaderActions}
+            />
             <div className="flex min-h-[12rem] min-w-0 flex-1 flex-col overflow-hidden">
               <DesignerDock
                 tab={dockTab}
@@ -226,15 +242,6 @@ export function DesignerShell(props: {
                 onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
               />
             </div>
-          </div>
-
-          <div className="grid min-w-0 gap-[1rem] lg:content-start">
-            <PanelEditor
-              config={config}
-              metrics={metrics}
-              dispatch={dispatch}
-              onCommitCoalesce={() => dispatch({ type: 'commit-coalesce' })}
-            />
           </div>
         </div>
       </form>

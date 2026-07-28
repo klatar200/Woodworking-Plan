@@ -174,9 +174,9 @@ describe('DesignerShell static render', () => {
     expect(libraryPage).not.toContain('lg:max-w-none');
 
     expect(shell).toMatch(/lg:sticky/);
-    // Sprint 67: preview column capped ~1200px; surplus width → right rail.
+    // Sprint 76: panels left (1fr), preview right (≤1200px).
     expect(shell).toMatch(
-      /lg:grid-cols-\[minmax\(0,1200px\)_minmax\(20rem,1fr\)\]/,
+      /lg:grid-cols-\[minmax\(20rem,1fr\)_minmax\(0,1200px\)\]/,
     );
 
     // A sticky element only travels inside its own containing block. `items-start`
@@ -264,7 +264,7 @@ describe('DesignerShell static render', () => {
 
     const newHtml = visibleMarkup(render(goldenConfig, null));
     expect(newHtml).toContain(DESIGNER_NEW_NARROW_NOTICE);
-    expect(newHtml).toContain('Your boards');
+    expect(newHtml).toContain('Saved Boards');
     expect(newHtml).toContain('href="/designer/library"');
     expect(newHtml).not.toContain(DESIGNER_EDIT_NARROW_NOTICE);
 
@@ -333,12 +333,13 @@ describe('DesignerShell static render', () => {
     const html = visibleMarkup(render(goldenConfig));
 
     expect(shell).toContain('BoardSettingsDisclosure');
-    expect(shell).toContain('BoardGrainToggle');
     expect(shell).toContain('DesignerDock');
     expect(shell).toContain('Add to shopping list');
     expect(shell).toContain('form={SAVE_FORM_ID}');
-    expect(shell).toMatch(/max-h-\[min\(55vh,32rem\)\]/);
+    // Sprint 76: preview vh cap retired; dock min-height stays; grain lives in settings.
+    expect(shell).not.toMatch(/max-h-\[min\(55vh,32rem\)\]/);
     expect(shell).toContain('min-h-[12rem]');
+    expect(settings).toContain('BoardGrainToggle');
     expect(settings).toContain('Defects & snipe (%)');
     expect(settings).toContain('Plane buffer (in)');
     expect(settings).toContain('Kerf (in)');
@@ -358,7 +359,7 @@ describe('DesignerShell static render', () => {
     expect(html).toContain('id="designer-dock-panel-cut-plan"');
     expect(html).toContain('Row pattern');
     expect(html).toContain('Cut plan — what to buy');
-    expect(html).toContain('Board settings');
+    expect(html).toContain('Board Settings');
     expect(html).toContain('>Edge</button>');
     expect(html).toContain('>End</button>');
   });
@@ -398,13 +399,14 @@ describe('dockTabForGrain', () => {
     );
   });
 
-  it('top-bar action order is Save → Save a copy → shopping (FINAL_LAYOUT)', () => {
+  it('Save a copy then Save in preview header; shopping stays in header right group (Sprint 76)', () => {
     const shell = source('src/components/designer/designer-shell.tsx');
-    const saveIdx = shell.indexOf('form={SAVE_FORM_ID}');
-    const copyIdx = shell.indexOf('{saveCopyControl}');
-    const shopIdx = shell.indexOf('{shoppingListControl}');
-    expect(saveIdx).toBeGreaterThan(-1);
-    expect(copyIdx).toBeGreaterThan(saveIdx);
-    expect(shopIdx).toBeGreaterThan(copyIdx);
+    expect(shell).toMatch(
+      /previewHeaderActions = \(\s*<>\s*\{saveCopyControl\}[\s\S]*form=\{SAVE_FORM_ID\}/,
+    );
+    expect(shell).toMatch(
+      /ml-auto flex flex-wrap items-center gap-\[0\.5rem\]">\s*\{shoppingListControl\}/,
+    );
+    expect(shell).toContain('headerActions={previewHeaderActions}');
   });
 });

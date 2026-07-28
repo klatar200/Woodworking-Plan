@@ -51,7 +51,7 @@ export default async function SavedDesignerPage({ params, searchParams }: PagePr
         dismissHref={dismissHref}
       />
       <p className="breadcrumb no-print">
-        <Link href="/designer/library">Your boards</Link>
+        <Link href="/designer/library">Saved Boards</Link>
       </p>
       <DesignerShell
         designId={design.id}

@@ -21,7 +21,7 @@ export default async function DesignerLibraryPage() {
         <Link href="/designer">Board designer</Link>
       </p>
       <div className="flex flex-wrap items-center justify-between gap-[0.75rem] mb-[1rem]">
-        <h1 className="m-0!">Your boards</h1>
+        <h1 className="m-0!">Saved Boards</h1>
         <Link href="/designer" className={btnPrimary}>
           New board
         </Link>

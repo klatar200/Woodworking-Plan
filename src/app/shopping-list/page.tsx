@@ -133,7 +133,7 @@ export default async function ShoppingListPage({
           saving alone no longer adds anything here, so this stays the list of what
           you&rsquo;re actually building. <Link href="/browse">Browse plans</Link>
           {' · '}
-          <Link href="/designer/library">Your boards</Link>.
+          <Link href="/designer/library">Saved Boards</Link>.
         </p>
       ) : (
         <>

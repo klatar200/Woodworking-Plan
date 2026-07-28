@@ -1,7 +1,14 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { layoutTopFace } from '@/lib/board-designer/layout';
 import type { BoardDesignConfig, BoardMetrics } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
@@ -24,8 +31,10 @@ const ROTATIONS: ViewRotation[] = [0, 90, 180, 270];
 export function BoardPreview(props: {
   config: BoardDesignConfig;
   metrics: BoardMetrics;
+  /** Save / Save a copy — rendered rightmost in the card header (Sprint 76). */
+  headerActions?: ReactNode;
 }) {
-  const { config, metrics } = props;
+  const { config, metrics, headerActions } = props;
   const cells = useMemo(() => layoutTopFace(config, metrics), [config, metrics]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const svgHostRef = useRef<HTMLDivElement | null>(null);
@@ -76,7 +85,10 @@ export function BoardPreview(props: {
   }, [config.name, rotation, show2d]);
 
   return (
-    <section className="grid gap-[0.75rem]" aria-label="Board preview">
+    <section
+      className="grid gap-[0.75rem] rounded-[0.75rem] border border-border bg-surface p-[1rem]"
+      aria-label="Board preview"
+    >
       <div className="flex flex-wrap items-center justify-between gap-[0.75rem]">
         <h2 className="!m-0 text-[1.125rem]">Preview</h2>
         <div className="flex flex-wrap items-center gap-[0.5rem]">
@@ -128,9 +140,6 @@ export function BoardPreview(props: {
               >
                 Rotate right
               </button>
-              <span className="text-[0.8125rem] text-muted" aria-live="polite">
-                {rotation}°
-              </span>
             </div>
           ) : null}
           <button
@@ -141,6 +150,7 @@ export function BoardPreview(props: {
           >
             Export PNG
           </button>
+          {headerActions}
         </div>
       </div>
 

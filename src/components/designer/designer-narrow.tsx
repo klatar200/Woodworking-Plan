@@ -37,7 +37,7 @@ export function DesignerNarrowSurface({
       >
         <p className="m-0 mb-[1rem] text-[1rem] text-fg">{DESIGNER_NEW_NARROW_NOTICE}</p>
         <Link href="/designer/library" className={btnPrimary}>
-          Your boards
+          Saved Boards
         </Link>
       </section>
     );
@@ -115,7 +115,7 @@ export function DesignerNarrowSurface({
 
       <p className="m-0">
         <Link href="/designer/library" className="text-[0.9375rem] text-muted underline">
-          Your boards
+          Saved Boards
         </Link>
       </p>
     </section>
