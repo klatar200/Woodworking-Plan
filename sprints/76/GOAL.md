@@ -17,7 +17,8 @@ preview card tall enough for its own render; and a Save control in the preview c
 - `designer-shell.tsx` — header layout, grid column order, Save relocation
 - `board-preview.tsx` — card sizing, Save in card header, remove the degree readout
 - `board-settings.tsx` — Edge/End designation + overall-size **display and validation**
-- `designer-narrow.tsx` + the four `Your boards` call sites → **Saved Boards**
+- `Your boards` → **Saved Boards**: six occurrences across five files (`designer-narrow.tsx` has
+  two), plus the one test that asserts the old string
 
 ## Out of scope — do not touch
 - **The Build Plan generator.** D5 build steps are authorised but run as their own track after

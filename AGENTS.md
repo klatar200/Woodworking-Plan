@@ -25,6 +25,8 @@ Work arrives as a folder, never as a pasted prompt. Full loop + formats: `sprint
 
 **You are in a different clone.** This VM does not share a working tree with Claude Code or with Keagan's box — `origin/main` is the only transport. So: **PULL before reading a pack** (a pack Claude wrote minutes ago does not exist here until Keagan pushed it), and **PUSH when done** (your `verify.txt` and `SCORECARD.md` are invisible to the audit until you do). A pack folder that is absent or missing `FIXES.md` almost always means "not pushed yet" — say so, do not improvise around it.
 
+**If you are running locally inside Keagan's Cursor rather than in Cursor Cloud**, you share his working tree: the pack is already on disk, no pull is needed, and you must NOT push a branch — he owns every git operation (CLAUDE.md §2). Everything else is identical. Determine which you are before step 1 rather than assuming, and if a pull is blocked (read-only mode, auto-review), say so explicitly and state that pack freshness is unverified — never silently grade a stale tree.
+
 ### Triggers — the whole prompt is two words plus a number
 
 Keagan types one of these and NOTHING else. The procedure below is the prompt; do not ask him to
@@ -52,6 +54,7 @@ Hard rules (each is enforced by `tests/sprint-pack.test.ts`, which runs inside `
 - NEVER edit `ACCEPTANCE.md` or `ACCEPTANCE.sha256`. Claude authors the bar before implementation and locks it; the actor being graded does not get to move it. A bar that is genuinely wrong = re-scope = Keagan's call (CLAUDE.md §4) — say so, don't edit.
 - Grade EVERY id in `ACCEPTANCE.md` exactly once, `PASS` or `FAIL`, with concrete evidence (`verify.txt:<line>` or `<file>:<line>`). An omitted id fails the guard. A FAIL is fine — an ungraded check is not.
 - Never mark PASS without evidence. "Looks correct" is not evidence.
+- **`evidence: manual` on an ACCEPTANCE line** means the check is confirmed by doing something rather than by reading a file — cite the command you ran and its result, or what you inspected. It is never a licence to assert PASS unsupported. **`M`-prefixed ids** are excluded from the score denominator (the pack states the denominator explicitly); grade them anyway, and mark `FAIL | not run — Keagan` for any you cannot run here. That costs nothing and keeps the guard green.
 - `verify.txt` = raw unedited output of a FULL `npm run verify`. Never hand-edit it; never grade from a `--only` subset run (it self-labels and the guard rejects it).
 - Stay inside the file paths PLAN.md names. Out-of-scope edits are caught by the `R` gates in ACCEPTANCE.
 - On a fix round read `FIXES.md` ONLY — not the original PLAN. Applying more than the delta is how a passing sprint regresses.

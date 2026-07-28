@@ -1,6 +1,8 @@
 # Sprint 76 — PLAN
 
-Executor: **Cursor**. Tasks are ordered; do not reorder — T2 moves the element T3 re-parents.
+Executor: **Cursor**. Tasks are ordered; do not reorder. The binding dependency is **T2 before
+T3**: T2 restructures the preview card's sizing and header, and T3 moves `Save` *into* that
+header. Doing T3 first means re-parenting Save into a container T2 then rewrites.
 
 Read `GOAL.md` first. Its "Out of scope" list is enforced by the `R` gates in `ACCEPTANCE.md`.
 The designer is **desktop-only (`lg+`)**, permanently (D6). Every task below is inside that gate;
@@ -10,7 +12,8 @@ the narrow-viewport notice path must keep working untouched.
 
 ## T1 · Rename "Your boards" → "Saved Boards"
 
-Five call sites, all currently the string `Your boards`:
+**Six** occurrences across five files — `designer-narrow.tsx` has two, which is the one an
+eyeball misses:
 
 | File | Line | Context |
 |------|------|---------|
@@ -19,11 +22,17 @@ Five call sites, all currently the string `Your boards`:
 | `src/app/designer/[id]/page.tsx` | 54 | header link |
 | `src/app/shopping-list/page.tsx` | 136 | inline prose link |
 | `src/components/designer/designer-narrow.tsx` | 40 | narrow-viewport link |
+| `src/components/designer/designer-narrow.tsx` | 118 | second narrow-viewport link |
+
+**One test asserts the old string and will go red:** `tests/designer-shell.test.tsx:267`
+(`expect(newHtml).toContain('Your boards')`). Update it to `Saved Boards`. This is the *only*
+test change T1 authorises — see the scope note under T7.
 
 **Guardrail:** the shopping-list one sits inside a sentence — re-read that sentence after editing
-so it still parses. Designer copy is settled in DECISIONS_LOG 2026-07-24; this entry amends only
-this string, so leave `Designer`, `Design a board →`, `Board designer`, and the empty-library copy
-exactly as they are.
+so it still parses; A3 requires that line to differ from baseline by this substring and nothing
+else. Designer copy is settled in DECISIONS_LOG 2026-07-24; this entry amends only this string, so
+leave `Designer`, `Design a board →`, `Board designer`, and the empty-library copy exactly as they
+are.
 
 ---
 
@@ -87,8 +96,11 @@ Left to right:
 Right edge:
 
 4. **Add to shopping list** (existing, `designer-shell.tsx:103`–`108`)
-5. **A reserved slot for Build Plan that renders nothing this sprint.** Structure the group for
-   two controls. Do **not** ship a disabled button.
+5. **A reserved slot for Build Plan that renders nothing this sprint.** Concretely (this is what
+   A18 grades): put the right-hand actions in their **own container element** whose only rendered
+   child today is the shopping-list action, laid out so that adding a second child later needs no
+   change to the header's layout classes. No placeholder element, no empty `<div>` holding space,
+   no disabled button, and the string `Build Plan` must not appear in the header at all.
 
 **Guardrail:** data parity — the 67–72 shell decision forbids retiring fields during relayout.
 Every control currently in that header must still exist and still work afterwards. If something
@@ -100,8 +112,14 @@ has no obvious home in the new bar, say so in SCORECARD rather than dropping it.
 
 `src/components/designer/board-settings.tsx`
 
-- Surface the existing **Edge/End grain** designation here (it exists — relocate/expose, do not
-  reimplement; `grain → edge switches tab to Templates` behaviour from the shell decision stays).
+- Surface the existing **Edge/End grain** designation here. `BoardGrainToggle` is **already
+  exported from this same file** (`board-settings.tsx:12`, Sprint 67) and is currently *rendered*
+  by the top bar — so this is a render-site move inside the two files T5/T6 already touch, not a
+  new component and not a new file. Do not reimplement it. `grain → edge switches tab to
+  Templates` behaviour from the shell decision stays.
+- `board-settings.tsx:35` carries the comment `Name + grain live in the top bar, not here.` After
+  T5/T6 that is half wrong — name stays in the bar, grain moves here. Update it. A stale comment
+  that argues against the code is worse than none (CLAUDE.md §7).
 - Show the design's **computed overall size** (L × W × T).
 - Accept a **target** size the user can type, and warn when the computed size drifts from it.
 
@@ -133,6 +151,16 @@ reordering rather than assuming from the track sizes.
 `direction`) leaves the tab sequence reading right-to-left, which breaks keyboard navigation.
 
 ---
+
+## Scope note — tests
+
+PLAN's file tables name **source** paths. A test that asserts behaviour this PLAN deliberately
+changes must be updated in the same commit, and that is in scope — `npm run verify` has to be
+green for R1, and leaving it red is not an option. The limit: you may update a test **only** where
+this PLAN authorises the underlying change, and the update must track the new expected behaviour.
+Deleting a test, loosening an assertion, or skipping it to get green is an out-of-scope change and
+an `R` FAIL. Exactly one such update is known in advance (`tests/designer-shell.test.tsx:267`); if
+you find another, do the same thing and list it in SCORECARD.
 
 ## Invariants this sprint must not break
 

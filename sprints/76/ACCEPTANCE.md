@@ -3,18 +3,29 @@
 Bar author: Claude Code. Written before implementation. Grader: Cursor.
 Locked by `ACCEPTANCE.sha256`.
 
-Grade = PASS ÷ 35. Gate = **≥95%** (34/35). Any `R` FAIL voids the sprint regardless of grade.
+Grade = PASS ÷ **33** — the `A` and `R` ids only. Gate = **≥95%** (32/33). Any `R` FAIL voids the
+sprint regardless of grade.
 
-Baseline for every "before" comparison: `git show origin/main:<file>` at the commit this pack
-landed on.
+`M` ids are **excluded from the denominator**. They are graded, not scored: grade every one of them
+like any other id, and if you cannot run it here, mark it `FAIL` with evidence `not run — Keagan`.
+That costs you nothing. (`M1` is a plain `npm run build` — run it if your VM can; only `M2` needs a
+human at a browser.)
+
+Evidence format: `verify.txt:<line>` or `<file>:<line>` for every `A`/`R` id. For an id whose
+ACCEPTANCE line says `evidence: manual`, cite what you actually did — the command you ran and its
+result, or the file:line you inspected. "Manual" names how the check is confirmed, never a licence
+to assert PASS without saying what confirmed it.
+
+Baseline for every "before" comparison: the merge-base of this branch and `main` —
+`git show $(git merge-base origin/main HEAD):<file>`. Do not use `origin/main` alone; it moves.
 
 ---
 
 ## Copy (T1)
 
 - [ ] A1 | The string `Your boards` appears nowhere under `src/` | evidence: file:line
-- [ ] A2 | All five call sites now read `Saved Boards` | evidence: file:line
-- [ ] A3 | The `shopping-list/page.tsx` sentence containing the link still reads as grammatical prose | evidence: file:line
+- [ ] A2 | All **six** occurrences across five files now read `Saved Boards` (`designer-narrow.tsx` has two: ~40 and ~118) | evidence: file:line
+- [ ] A3 | The `shopping-list/page.tsx` sentence differs from baseline by the substring `Your boards`→`Saved Boards` and by nothing else | evidence: file:line
 
 ## Preview card (T2, T3, T4)
 
@@ -35,8 +46,8 @@ landed on.
 - [ ] A15 | The board-name input is bound to the same design name Save consumes — no second name field, no parallel state | evidence: file:line
 - [ ] A16 | Editing the name then saving persists the typed name | evidence: manual
 - [ ] A17 | `Add to shopping list` sits at the header's right edge | evidence: file:line
-- [ ] A18 | The right action group is structured for two controls, and **no Build Plan button renders** — not even disabled | evidence: file:line
-- [ ] A19 | Every control present in the baseline header still exists and still functions | evidence: file:line
+- [ ] A18 | The header's right-hand group is a single container element whose only rendered child is the shopping-list action, and the string `Build Plan` appears nowhere in the header subtree | evidence: file:line
+- [ ] A19 | Every control in the baseline header still exists **somewhere in the designer UI** and still functions — relocated is fine (Save's new home is the preview card header, A8), dropped is not | evidence: file:line
 
 ## Board Settings (T6)
 
@@ -63,7 +74,7 @@ landed on.
 - [ ] R5 | Desktop-only path intact: no WebGL below `lg`, unsaved draft survives resize | evidence: manual
 - [ ] R6 | No new dependency in `package.json` | evidence: file:line
 
-## Manual — Keagan's box only
+## Manual — graded, not scored (outside the 33)
 
 - [ ] M1 | `npm run build` succeeds | evidence: manual
 - [ ] M2 | Signed-in walkthrough at `lg`: create a board, rename in the header, save, reopen — name persisted | evidence: manual
