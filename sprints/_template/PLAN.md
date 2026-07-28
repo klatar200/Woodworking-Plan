@@ -42,5 +42,9 @@ a reasonable executor could plausibly violate here. A list of forty is a list of
 
 ## Verification
 
-Run `npm run verify` and redirect to `verify.txt`. Grade every `ACCEPTANCE.md` id in
-`SCORECARD.md` citing `verify.txt:<line>` or `<file>:<line>`. Do not edit `ACCEPTANCE.md`.
+```
+npm run verify -- --out sprints/NN/verify.txt
+```
+Never a shell redirect — `>` writes UTF-16LE on Windows and breaks every downstream parser.
+Grade every `ACCEPTANCE.md` id in `SCORECARD.md` citing `verify.txt:<line>` or `<file>:<line>`.
+Do not edit `ACCEPTANCE.md`. Commit to the sprint branch; do not push or merge.

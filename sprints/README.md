@@ -8,36 +8,44 @@ more than the work.
 
 ## Topology — read this before the loop
 
-The three actors do **not** share a working tree:
+**All three actors share one working tree: Keagan's local checkout.** Cursor runs locally in his
+Cursor, not in Cursor Cloud (decided 2026-07-28 — Cloud is metered, local is not). So there is no
+transport, no push, no pull, and no waiting: a file Claude writes is a file Cursor reads.
 
-- **Claude Code** edits Keagan's local checkout directly.
-- **Cursor runs in Cursor Cloud** — its own VM, its own clone (`AGENTS.md`). It sees a pack only
-  after that pack is **pushed**, and its work reaches Keagan only after Keagan **pulls**.
-- **Keagan** owns every `git` operation. Both agents are read-only with respect to git.
+What still separates the actors is **branches, not clones**:
 
-So `origin/main` is the actual transport, and the pack is the payload. Every handoff between
-Claude and Cursor costs one push and one pull. That is the price of Cursor being in the cloud —
-it is still far cheaper than re-pasting the context, which is what it replaces.
+- **Claude Code** edits the tree directly and runs no `git` at all — its sandbox mount corrupts
+  `.git` (CLAUDE.md §5). That ban is unchanged and is about the sandbox, not about trust.
+- **Cursor** owns four git verbs on its own branch: `checkout -b`, `add`, `commit`, `status`.
+  It creates `cursor/sprint-NN-<slug>` off `main` and commits there. **Never** push, merge,
+  rebase, reset, stash, or return to `main` — one tree, no remote copy, so a destructive verb
+  costs the real repo.
+- **Keagan** owns the branch boundary: cutting `changes.diff`, merging after the audit, pushing.
+
+Branch isolation is what buys the audit-before-merge property that Cursor Cloud's separate clone
+used to provide. It is the reason Cursor commits to a branch rather than straight into the tree:
+without it there is no diff to audit and no clean way to unwind a failed round.
 
 ## The loop
 
 | # | Actor | Model | Does | Writes |
 |---|-------|-------|------|--------|
 | 1 | Claude Code | **Opus** | Reads CLAUDE.md + BUILD_PLAN §4 + your change list. No repo re-audit. | `GOAL.md` `PLAN.md` `ACCEPTANCE.md` |
-| 2 | Keagan | — | Lock the bar, **commit + push the pack** so Cursor Cloud can see it. | `ACCEPTANCE.sha256` |
-| 3 | Cursor | Auto / premium | Pulls, opens the folder itself, implements PLAN.md in order, **pushes a `cursor/*` branch**. | source · `verify.txt` · `SCORECARD.md` |
-| 4 | Keagan | — | **Fetch**, then diff that branch against `main`. Merge only after the audit passes. | `changes.diff` |
+| 2 | Keagan | — | Lock the bar. Commit the pack to `main`. | `ACCEPTANCE.sha256` |
+| 3 | Cursor | Auto / premium | Branches, opens the folder itself, implements PLAN.md in order, **commits to `cursor/*`**. | source · `verify.txt` · `SCORECARD.md` |
+| 4 | Keagan | — | Diff that branch against `main`. Merge only after the audit passes. | `changes.diff` |
 | 5 | Claude Code | **Sonnet** | Audits diff + verify.txt against the bar. §7 invariants, security, architecture. | `FIXES.md` |
-| 6 | Keagan | — | **Commit + push `FIXES.md`.** | — |
-| 7 | Cursor | Auto | Pulls, reads `FIXES.md` only, re-runs verify, **pushes**. | `verify.txt` `SCORECARD.md` |
+| 6 | Cursor | Auto | Reads `FIXES.md` only, re-runs verify, commits to the same branch. | `verify.txt` `SCORECARD.md` |
 | — | | | **<95% → back to 4. Max 3 rounds, then escalate (CLAUDE.md §4).** | |
+| 7 | Keagan | — | Merge the branch, push. | — |
 | 8 | Claude Code | **Opus** | Closes out, opens the next pack. | `SPRINT_LOG.md` · `sprints/<NN+1>/` |
 
 Model routing is the point of step 5 vs 1/8: auditing a diff against a written bar is
 mechanical and belongs on Sonnet. Planning and closing need judgment and belong on Opus.
 
-**If you ever run Cursor locally instead of in the Cloud**, steps 2/4/6 collapse into a single
-commit and the loop shrinks by two git operations. Nothing else changes — the pack is the same.
+The old cloud loop had a *push* between 2 and 3, a *fetch* at 4, and a *push/pull* pair around
+the fix round. Running Cursor locally deletes all four — the pack is the same, the bar is the
+same, only the transport is gone.
 
 ## The four standing prompts
 
@@ -49,11 +57,12 @@ Plan sprint NN. Changes I want:
 Write sprints/NN/GOAL.md, PLAN.md, ACCEPTANCE.md.
 Agent-focused, not human-readable. Don't re-audit the repo.
 ```
-Then lock and publish the pack. `lock` writes a file, so it runs in your shell, never from the
-Claude sandbox (CLAUDE.md §5). **Cursor Cloud cannot see the pack until it is pushed.**
+Then lock the bar and commit the pack. `lock` writes a file, so it runs in your shell, never from
+the Claude sandbox (CLAUDE.md §5). Cursor reads the pack off disk, so no push is needed — commit
+anyway, so a context reset mid-sprint loses nothing.
 ```
 node scripts/verify.mjs lock sprints/NN
-git add -A; git commit -m "sprint NN: pack"; git push
+git add -A; git commit -m "sprint NN: pack"
 ```
 
 **2 — hand off (Cursor)**
@@ -66,11 +75,11 @@ identical from sprint to sprint. Anything *specific* to this sprint belongs in `
 guardrails, never in the chat message. If a handoff needs a sentence of explanation, the pack
 is wrong; fix the pack.
 
-Cursor Cloud pushes a `cursor/sprint-NN-*` branch, not `main`. Fetch it and diff the branch
-against `main` — substitute the real branch name, this is a template not a runnable line:
+Cursor commits to a local `cursor/sprint-NN-*` branch and stops there. Diff it against `main` —
+substitute the real branch name (it is at the top of `SCORECARD.md`); this is a template, not a
+runnable line:
 ```
-git fetch origin
-git diff "origin/main...origin/cursor/<real-branch-name>" --output=sprints/NN/changes.diff
+git diff "main...cursor/<real-branch-name>" --output=sprints/NN/changes.diff
 ```
 Three properties of that command are load-bearing, each learned the hard way in Sprint 75:
 - **`--output=`, never `>`.** PowerShell 5.1 redirection writes **UTF-16LE**, which every text
@@ -79,9 +88,13 @@ Three properties of that command are load-bearing, each learned the hard way in 
 - **Three dots.** `A...B` is "what B added since it diverged from A" — correct against a branch,
   and it does not require merging first.
 
+Without this file the audit falls back to reading `src/` directly, which costs several times more
+Claude tokens for the same conclusion. It is the cheapest step in the loop and the one that pays.
+
 Audit before merging. Once the audit passes:
 ```
-git merge --ff-only origin/cursor/<real-branch-name>
+git checkout main
+git merge --ff-only cursor/<real-branch-name>
 git push
 ```
 
@@ -89,17 +102,14 @@ git push
 ```
 Audit sprint NN
 ```
-Then publish the delta so Cursor Cloud can see it:
-```
-git add -A; git commit -m "sprint NN: fixes round N"; git push
-```
+`FIXES.md` lands on disk, which is all Cursor needs. Go straight to prompt 4.
 
 **4 — fix round (Cursor)**
 ```
 Fix sprint NN
 ```
 
-Then repeat the pull-and-diff pair from step 2 and go back to prompt 3.
+Then re-cut `changes.diff` from step 2 and go back to prompt 3.
 
 **Four prompts, and only the first one varies** — it carries your change list, which is the one
 thing no file can know in advance. The other three are a verb and a number.

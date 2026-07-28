@@ -29,8 +29,14 @@
  *
  * USAGE
  *   node scripts/verify.mjs                  full run (the only kind SCORECARD may cite)
+ *   node scripts/verify.mjs --out <path>     ALSO write the log to <path>, always UTF-8
  *   node scripts/verify.mjs --only test      subset, for fix rounds; marks itself SUBSET
  *   node scripts/verify.mjs lock sprints/47  write ACCEPTANCE.sha256 (planner only)
+ *
+ * `--out` exists so no shell redirection is involved in producing verify.txt. PowerShell 5.1
+ * `>` writes UTF-16LE, which every downstream text tool then fails to parse — and since Cursor
+ * runs locally on Keagan's Windows box, that trap is live (CLAUDE.md §5). Node writes UTF-8
+ * unconditionally, so the encoding stops depending on which shell the agent happened to pick.
  *
  * CONSTRAINTS (CLAUDE.md §5): no network, no database, no `.env.local`, no `next build`
  * (SWC SIGBUS in the Claude sandbox). Node built-ins only — no new dependency.
@@ -55,6 +61,15 @@ const STEPS = [
 const SUMMARY_OPEN = '=== VERIFY SUMMARY ===';
 const SUBSET_MARKER = '=== SUBSET RUN — NOT VALID SCORECARD EVIDENCE ===';
 
+/** Everything emitted, retained only when --out is given, so the file is byte-identical to stdout. */
+const sink = [];
+let capture = false;
+
+function emit(text) {
+  process.stdout.write(text);
+  if (capture) sink.push(text);
+}
+
 /** Prefix every line so interleaved step output stays attributable in one flat file. */
 function prefixed(id, text) {
   if (!text) return '';
@@ -66,7 +81,7 @@ function prefixed(id, text) {
 }
 
 function runStep(step) {
-  process.stdout.write(`\n[${step.id}] $ ${step.cmd}\n`);
+  emit(`\n[${step.id}] $ ${step.cmd}\n`);
 
   // shell:true is required for `npx` resolution on Windows (npx.cmd). Every command in
   // STEPS is a hardcoded constant — no interpolation of external input reaches this call.
@@ -79,13 +94,13 @@ function runStep(step) {
 
   const out = prefixed(step.id, result.stdout);
   const err = prefixed(step.id, result.stderr);
-  if (out) process.stdout.write(out + '\n');
-  if (err) process.stdout.write(err + '\n');
+  if (out) emit(out + '\n');
+  if (err) emit(err + '\n');
 
   // A step that could not be spawned at all is a FAIL, not a crash — the summary must
   // still print, or there is no evidence file to grade against.
   if (result.error) {
-    process.stdout.write(`[${step.id}] runner error: ${result.error.message}\n`);
+    emit(`[${step.id}] runner error: ${result.error.message}\n`);
     return false;
   }
   return result.status === 0;
@@ -142,6 +157,17 @@ function parseOnly(argv) {
   return ids;
 }
 
+function parseOut(argv) {
+  const i = argv.indexOf('--out');
+  if (i === -1) return null;
+  const raw = argv[i + 1];
+  if (!raw || raw.startsWith('--')) {
+    process.stderr.write('--out requires a file path\n');
+    process.exit(2);
+  }
+  return raw;
+}
+
 function main() {
   const argv = process.argv.slice(2);
 
@@ -154,6 +180,8 @@ function main() {
   }
 
   const only = parseOnly(argv);
+  const outPath = parseOut(argv);
+  capture = outPath !== null;
   const toRun = only ? STEPS.filter((s) => only.includes(s.id)) : STEPS;
 
   // Steps not selected report SKIP rather than vanishing — a summary that silently omits
@@ -167,14 +195,18 @@ function main() {
   const failed = [...results.values()].includes('FAIL');
   const exitCode = failed ? 1 : 0;
 
-  process.stdout.write('\n' + SUMMARY_OPEN + '\n');
+  emit('\n' + SUMMARY_OPEN + '\n');
   for (const step of STEPS) {
-    process.stdout.write(`${step.id}: ${results.get(step.id)}\n`);
+    emit(`${step.id}: ${results.get(step.id)}\n`);
   }
   // A subset run can exit 0 while the repo is broken. Label it loudly so it cannot be
   // pasted into a SCORECARD as if it were a full run.
-  if (only) process.stdout.write(SUBSET_MARKER + '\n');
-  process.stdout.write(`=== EXIT: ${exitCode} ===\n`);
+  if (only) emit(SUBSET_MARKER + '\n');
+  emit(`=== EXIT: ${exitCode} ===\n`);
+
+  // UTF-8, no BOM, regardless of the calling shell. Written last so a crashed step still
+  // leaves the summary block in the file rather than a truncated log with no verdict.
+  if (outPath) writeFileSync(resolve(process.cwd(), outPath), sink.join(''), 'utf8');
 
   process.exit(exitCode);
 }
