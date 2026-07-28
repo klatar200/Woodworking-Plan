@@ -25,19 +25,28 @@ Work arrives as a folder, never as a pasted prompt. Full loop + formats: `sprint
 
 **You are in a different clone.** This VM does not share a working tree with Claude Code or with Keagan's box — `origin/main` is the only transport. So: **PULL before reading a pack** (a pack Claude wrote minutes ago does not exist here until Keagan pushed it), and **PUSH when done** (your `verify.txt` and `SCORECARD.md` are invisible to the audit until you do). A pack folder that is absent or missing `FIXES.md` almost always means "not pushed yet" — say so, do not improvise around it.
 
-Standing prompt — implement:
-```
-Pull main, then read sprints/NN/. Implement PLAN.md in order.
-Then run: npm run verify > sprints/NN/verify.txt 2>&1
-Grade every ACCEPTANCE.md check in sprints/NN/SCORECARD.md,
-citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.
-Commit and push verify.txt and SCORECARD.md with the code.
-```
-Standing prompt — fix round:
-```
-Pull main, then read sprints/NN/FIXES.md. Apply only those fixes.
-Re-run verify, update verify.txt and SCORECARD.md, commit and push.
-```
+### Triggers — the whole prompt is two words plus a number
+
+Keagan types one of these and NOTHING else. The procedure below is the prompt; do not ask him to
+restate it, and do not treat a short trigger as an underspecified request.
+
+**`Run sprint NN`** — implement round:
+1. `git pull` main. If `sprints/NN/` is absent, stop and say "not pushed yet". Do not improvise.
+2. Read `sprints/NN/GOAL.md`, then `PLAN.md`, then `ACCEPTANCE.md`. GOAL's "Out of scope" list and
+   PLAN's per-task **Guardrail** lines are binding — they are the sprint-specific rules and they
+   override any general instinct about what "obviously" should also change.
+3. Implement `PLAN.md` tasks in the order written. The order is load-bearing; do not reorder.
+4. `npm run verify > sprints/NN/verify.txt 2>&1` — full run, never a `--only` subset.
+5. Write `sprints/NN/SCORECARD.md`: every id in `ACCEPTANCE.md`, exactly once, `PASS`/`FAIL`, with
+   `verify.txt:<line>` or `<file>:<line>` as evidence.
+6. Commit code + `verify.txt` + `SCORECARD.md`; push a `cursor/sprint-NN-*` branch, not `main`.
+
+**`Fix sprint NN`** — fix round:
+1. `git pull` main. Read `sprints/NN/FIXES.md` **only** — not GOAL, not PLAN, not the diff.
+2. Apply exactly the deltas in the newest `## Round N` heading. Nothing else.
+3. Re-run verify, overwrite `verify.txt`, update `SCORECARD.md`, commit and push the same branch.
+
+If either trigger arrives with no number, ask for the number — that is the one legitimate question.
 
 Hard rules (each is enforced by `tests/sprint-pack.test.ts`, which runs inside `npm run verify` — violating one turns the suite red, it is not a style note):
 - NEVER edit `ACCEPTANCE.md` or `ACCEPTANCE.sha256`. Claude authors the bar before implementation and locks it; the actor being graded does not get to move it. A bar that is genuinely wrong = re-scope = Keagan's call (CLAUDE.md §4) — say so, don't edit.

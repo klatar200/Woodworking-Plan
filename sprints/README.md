@@ -58,12 +58,13 @@ git add -A; git commit -m "sprint NN: pack"; git push
 
 **2 — hand off (Cursor)**
 ```
-Pull main, then read sprints/NN/. Implement PLAN.md in order.
-Then run: npm run verify > sprints/NN/verify.txt 2>&1
-Grade every ACCEPTANCE.md check in sprints/NN/SCORECARD.md,
-citing verify.txt or file:line as evidence. Don't edit ACCEPTANCE.md.
-Commit and push verify.txt and SCORECARD.md with the code.
+Run sprint NN
 ```
+That is the entire prompt. The six-step procedure it fires lives in `AGENTS.md` §"Triggers",
+which Cursor loads from the repo root on its own — so it never has to be typed, and it stays
+identical from sprint to sprint. Anything *specific* to this sprint belongs in `PLAN.md`
+guardrails, never in the chat message. If a handoff needs a sentence of explanation, the pack
+is wrong; fix the pack.
 
 Cursor Cloud pushes a `cursor/sprint-NN-*` branch, not `main`. Fetch it and diff the branch
 against `main` — substitute the real branch name, this is a template not a runnable line:
@@ -86,7 +87,7 @@ git push
 
 **3 — audit (Claude Code, Sonnet)**
 ```
-Audit sprints/NN. Append FIXES.md — gaps only, exact remediation.
+Audit sprint NN
 ```
 Then publish the delta so Cursor Cloud can see it:
 ```
@@ -95,11 +96,13 @@ git add -A; git commit -m "sprint NN: fixes round N"; git push
 
 **4 — fix round (Cursor)**
 ```
-Pull main, then read sprints/NN/FIXES.md. Apply only those fixes.
-Re-run verify, update verify.txt and SCORECARD.md, commit and push.
+Fix sprint NN
 ```
 
 Then repeat the pull-and-diff pair from step 2 and go back to prompt 3.
+
+**Four prompts, and only the first one varies** — it carries your change list, which is the one
+thing no file can know in advance. The other three are a verb and a number.
 
 ## Why this is enforced and not merely documented
 
