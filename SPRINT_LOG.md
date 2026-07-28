@@ -3,13 +3,40 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 76 (2026-07-28) — CLOSED 97/100** — designer header/nav + layout. Suite: 1365 green / 119 files.
+> **Latest logged: Sprint 77 (2026-07-28) — CLOSED 98/100** — designer panels workflow. Suite: 1385 green / 121 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅. Suite: 1365 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅. Suite: 1385 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 77: Designer panels workflow
+**Dates:** 2026-07-28
+**Scope:** BUILD_PLAN §4 Sprint 77 — `add-panel` appends a row-pattern step (T1), selected-strip editor moves above the strip list (T2), panel-header Collapse/Delete legibility (T3), plus the Sprint 76 carry: coverage for `targetDriftWarning` (T4).
+
+### Attempt 1 — score 98/100 — PASS (29/29 A+R after a procedural re-lock)
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | Exactly the three BUILD_PLAN objectives plus the logged 76 carry. No drift into strip-row compacting or sticky-preview, both of which GOAL named as out of scope. |
+| 2 Correctness /20 | 20 | Verified live on prod, not from source: `panels 1→2`, `rowPattern 2→3`, appended step points at the new panel with `transform:"none"`, and the board immediately splits **40 rows / 20 rows**. Editor `SECTION` precedes the strips `OL` under one parent. Delete reads `Delete Course`, carries `text-err`, and is one of exactly two children of its wrapper. |
+| 3 Test coverage /15 | 15 | 1365→**1385** tests, 119→**121** files. `designer-history` 24→28 (add-panel had zero coverage before), new `panel-editor-header.test.tsx` (3), new `board-settings-target.test.tsx` (5), `strip-drag` 5→7. The 76 coverage gap is closed. |
+| 4 Security /15 | 15 | No auth, schema, migration, or dependency change. `serialize.ts` untouched — its unknown-panel refinement (`:97`–`106`) still rejects a dangling step. |
+| 5 Code quality /10 | 10 | Used the existing `btnDanger` (`ui.ts:90`) rather than inventing a variant; no new token, no new hex. The deliberate add/delete asymmetry is documented at the reducer. |
+| 6 Mobile/offline /10 | 10 | Desktop-only (D6) path untouched — narrow surface, notices, and the WebGL gate unchanged. |
+| 7 Docs/handoff /5 | 3 | **My pack, my deductions.** It shipped a wrong cite (`serialize.ts:197` — a line number copied off the *test* file), a gameable A18 ("adjacent siblings" is satisfiable without visual grouping), and no per-task test ownership. Then I edited `ACCEPTANCE.md` *after* it was locked, which voided a round on a hash mismatch. |
+
+**The lock-order defect is the durable lesson.** I told Keagan to lock the pack and *then* run the pre-flight. The pre-flight exists to find bar defects, so locking first guarantees either its findings are stranded or the bar moves post-lock — the second happened, `tests/sprint-pack.test.ts` caught it, and the sprint was correctly voided at R1 until a deliberate re-lock. Fixed in `sprints/README.md` (Check is now step 1a, lock 1b) and `CLAUDE.md` §9. Correct order: **Plan → Check → lock → Run → diff → Audit → Fix → merge.**
+
+**The pre-flight paid again, on judgment this time.** It found that `btnDanger` already existed, making my suggested `${btnGhost} text-danger` the CLAUDE.md §8 source-order trap — `btnGhost` already carries `text-fg`, so A15 would have passed on a button that looked identical. A green check on an unchanged UI is worse than a red one.
+
+**PLAN deviation, accepted:** PLAN named one new file `tests/designer-panels.test.tsx`; Cursor instead added `panel-editor-header.test.tsx` for T3 and extended `strip-drag.test.tsx` for T2. Better organised, violates no ACCEPTANCE id — but it is a departure from an explicit instruction and is recorded as one.
+
+**M2 verified against production** at 1440×900, signed in, end grain, `rowCount 60`. Draft was reset afterwards; no saved design was modified.
+
+**Commits:** `8a420a3` (implementation) + `007540b` (re-verify after re-lock), branch `cursor/sprint-77-panels-workflow`, merged to `main` at `b71f2e8`.
 
 ---
 
