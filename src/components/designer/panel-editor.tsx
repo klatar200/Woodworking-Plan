@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { StripList } from './strip-list';
 import type { ConfigAction } from '@/lib/board-designer/history';
 import type { BoardDesignConfig, BoardMetrics, Panel } from '@/lib/board-designer/types';
-import { btnGhost, btnPrimary } from '@/lib/ui';
+import { btnDanger, btnGhost, btnPrimary } from '@/lib/ui';
 import { FieldHint } from './field-hint';
 
 const inputControl =
@@ -147,25 +147,28 @@ function PanelHeader({
   return (
     <div className="grid gap-[0.75rem] p-[0.875rem]">
       <div className="flex flex-wrap items-center justify-between gap-[0.5rem]">
-        <button
-          type="button"
-          className={btnGhost}
-          aria-expanded={open}
-          onClick={onToggle}
-        >
-          {open ? 'Collapse' : 'Expand'}
-        </button>
         <span className="text-[0.875rem] text-muted">
           {rows} {rows === 1 ? 'row' : 'rows'}
         </span>
-        <button
-          type="button"
-          className={btnGhost}
-          disabled={!canDelete}
-          onClick={onDelete}
-        >
-          Delete
-        </button>
+        <div className="flex flex-wrap items-center gap-[0.5rem]">
+          <button
+            type="button"
+            className={btnGhost}
+            aria-expanded={open}
+            onClick={onToggle}
+          >
+            {open ? 'Collapse' : 'Expand'}
+          </button>
+          <button
+            type="button"
+            className={btnDanger}
+            aria-label={`Delete ${panel.label}`}
+            disabled={!canDelete}
+            onClick={onDelete}
+          >
+            Delete
+          </button>
+        </div>
       </div>
       <div className="grid gap-[0.75rem] sm:grid-cols-2">
         <label className="grid gap-[0.375rem]">

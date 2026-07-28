@@ -195,6 +195,105 @@ export function StripList({
         </div>
       ) : (
         <>
+          {selectedStrip ? (
+            <section
+              aria-label={`Selected strip details for ${stripDisplayName(selectedStrip, selectedIndex)}`}
+              className="mt-[0.875rem] grid gap-[0.75rem] rounded-[0.5rem] border border-accent bg-surface p-[0.875rem] shadow-e1"
+            >
+              <div>
+                <h4 className="!m-0 text-[1rem]">
+                  {stripDisplayName(selectedStrip, selectedIndex)}
+                </h4>
+                <p className="m-0 text-[0.875rem] text-muted">
+                  Selected strip details
+                </p>
+              </div>
+
+              <label className="grid gap-[0.375rem]">
+                <span className="text-[0.875rem] font-bold">Species</span>
+                <div className="flex min-w-0 items-center gap-[0.5rem]">
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
+                    style={{
+                      backgroundColor:
+                        getSpecies(selectedStrip.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
+                    }}
+                  />
+                  <select
+                    className={`${inputControl} min-w-0 flex-1`}
+                    name={`strip-${selectedStrip.id}-speciesId`}
+                    value={selectedStrip.speciesId}
+                    onChange={(event) =>
+                      onUpdate(selectedStrip.id, { speciesId: event.currentTarget.value })
+                    }
+                  >
+                    {!getSpecies(selectedStrip.speciesId) && (
+                      <option value={selectedStrip.speciesId} disabled>
+                        {selectedStrip.speciesId}
+                      </option>
+                    )}
+                    {SPECIES.map((species) => (
+                      <option key={species.id} value={species.id}>
+                        {species.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </label>
+
+              <div className="grid gap-[0.75rem] sm:grid-cols-2">
+                <label className="grid gap-[0.375rem]">
+                  <span className="text-[0.875rem] font-bold">Width (in)</span>
+                  <FieldHint>Strip width in inches.</FieldHint>
+                  <input
+                    className={inputControl}
+                    name={`strip-${selectedStrip.id}-widthIn`}
+                    type="number"
+                    min={0.0625}
+                    max={24}
+                    step={0.0625}
+                    value={selectedStrip.widthIn}
+                    onChange={(event) =>
+                      onUpdate(selectedStrip.id, { widthIn: boundedNumber(event, 0.0625, 24) })
+                    }
+                    onBlur={() => {
+                      onUpdate(selectedStrip.id, { widthIn: snapToSixteenth(selectedStrip.widthIn) });
+                      onCommitCoalesce();
+                    }}
+                  />
+                </label>
+                <label className="grid gap-[0.375rem]">
+                  <span className="text-[0.875rem] font-bold">Repeat (count)</span>
+                  <FieldHint>Number of times this strip repeats.</FieldHint>
+                  <input
+                    className={inputControl}
+                    name={`strip-${selectedStrip.id}-repeat`}
+                    type="number"
+                    min={1}
+                    max={20}
+                    step={1}
+                    value={selectedStrip.repeat}
+                    onChange={(event) =>
+                      onUpdate(selectedStrip.id, {
+                        repeat: Math.round(boundedNumber(event, 1, 20)),
+                      })
+                    }
+                    onBlur={() => onCommitCoalesce()}
+                  />
+                </label>
+              </div>
+
+              <MiterControls
+                strip={selectedStrip}
+                panelThicknessIn={panelThicknessIn}
+                showClosingHint={showClosingHintById.get(selectedStrip.id) === true}
+                onUpdate={onUpdate}
+                onCommitCoalesce={onCommitCoalesce}
+              />
+            </section>
+          ) : null}
+
           <ol ref={listRef} className="m-0 grid list-none gap-[0.625rem] p-0">
             {strips.map((strip, index) => {
               const dragging = dragIndex === index;
@@ -311,105 +410,6 @@ export function StripList({
               );
             })}
           </ol>
-
-          {selectedStrip ? (
-            <section
-              aria-label={`Selected strip details for ${stripDisplayName(selectedStrip, selectedIndex)}`}
-              className="mt-[0.875rem] grid gap-[0.75rem] rounded-[0.5rem] border border-accent bg-surface p-[0.875rem] shadow-e1"
-            >
-              <div>
-                <h4 className="!m-0 text-[1rem]">
-                  {stripDisplayName(selectedStrip, selectedIndex)}
-                </h4>
-                <p className="m-0 text-[0.875rem] text-muted">
-                  Selected strip details
-                </p>
-              </div>
-
-              <label className="grid gap-[0.375rem]">
-                <span className="text-[0.875rem] font-bold">Species</span>
-                <div className="flex min-w-0 items-center gap-[0.5rem]">
-                  <span
-                    aria-hidden="true"
-                    className="inline-block h-[1.25rem] w-[1.25rem] shrink-0 rounded-[50%] border border-border"
-                    style={{
-                      backgroundColor:
-                        getSpecies(selectedStrip.speciesId)?.colorHex ?? UNKNOWN_SPECIES_COLOR,
-                    }}
-                  />
-                  <select
-                    className={`${inputControl} min-w-0 flex-1`}
-                    name={`strip-${selectedStrip.id}-speciesId`}
-                    value={selectedStrip.speciesId}
-                    onChange={(event) =>
-                      onUpdate(selectedStrip.id, { speciesId: event.currentTarget.value })
-                    }
-                  >
-                    {!getSpecies(selectedStrip.speciesId) && (
-                      <option value={selectedStrip.speciesId} disabled>
-                        {selectedStrip.speciesId}
-                      </option>
-                    )}
-                    {SPECIES.map((species) => (
-                      <option key={species.id} value={species.id}>
-                        {species.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </label>
-
-              <div className="grid gap-[0.75rem] sm:grid-cols-2">
-                <label className="grid gap-[0.375rem]">
-                  <span className="text-[0.875rem] font-bold">Width (in)</span>
-                  <FieldHint>Strip width in inches.</FieldHint>
-                  <input
-                    className={inputControl}
-                    name={`strip-${selectedStrip.id}-widthIn`}
-                    type="number"
-                    min={0.0625}
-                    max={24}
-                    step={0.0625}
-                    value={selectedStrip.widthIn}
-                    onChange={(event) =>
-                      onUpdate(selectedStrip.id, { widthIn: boundedNumber(event, 0.0625, 24) })
-                    }
-                    onBlur={() => {
-                      onUpdate(selectedStrip.id, { widthIn: snapToSixteenth(selectedStrip.widthIn) });
-                      onCommitCoalesce();
-                    }}
-                  />
-                </label>
-                <label className="grid gap-[0.375rem]">
-                  <span className="text-[0.875rem] font-bold">Repeat (count)</span>
-                  <FieldHint>Number of times this strip repeats.</FieldHint>
-                  <input
-                    className={inputControl}
-                    name={`strip-${selectedStrip.id}-repeat`}
-                    type="number"
-                    min={1}
-                    max={20}
-                    step={1}
-                    value={selectedStrip.repeat}
-                    onChange={(event) =>
-                      onUpdate(selectedStrip.id, {
-                        repeat: Math.round(boundedNumber(event, 1, 20)),
-                      })
-                    }
-                    onBlur={() => onCommitCoalesce()}
-                  />
-                </label>
-              </div>
-
-              <MiterControls
-                strip={selectedStrip}
-                panelThicknessIn={panelThicknessIn}
-                showClosingHint={showClosingHintById.get(selectedStrip.id) === true}
-                onUpdate={onUpdate}
-                onCommitCoalesce={onCommitCoalesce}
-              />
-            </section>
-          ) : null}
         </>
       )}
 

@@ -457,3 +457,79 @@ describe('undoRedoShortcut — key case is NOT stable across input sources', () 
     expect(undoRedoShortcut(ev({ key: 'ArrowLeft', ctrlKey: true }))).toBeNull();
   });
 });
+
+describe('add-panel — appends one row step (Sprint 77)', () => {
+  const endBase: BoardDesignConfig = makeV2Config({
+    name: 'End panel',
+    grain: 'end',
+    panels: [
+      makePanel('panel-1', 'Panel 1', 1.5, [makeStrip('s1', 'hard-maple')]),
+    ],
+    rowPattern: [{ panelId: 'panel-1', transform: 'none' }],
+    rowCount: 8,
+  });
+
+  it('appends exactly one RowStep for the new panel with transform none', () => {
+    let state = createHistoryState(endBase);
+    state = apply(state, { type: 'add-panel' });
+    expect(state.present.panels).toHaveLength(2);
+    const newId = state.present.panels[1]!.id;
+    expect(state.present.rowPattern).toHaveLength(2);
+    expect(state.present.rowPattern[1]).toEqual({
+      panelId: newId,
+      transform: 'none',
+    });
+    // One history entry — single dispatch, single past snapshot.
+    expect(state.past).toHaveLength(1);
+  });
+
+  it('at 24 row steps still adds the panel and appends no step', () => {
+    const fullPattern = Array.from({ length: 24 }, () => ({
+      panelId: 'panel-1' as const,
+      transform: 'none' as const,
+    }));
+    const start = createHistoryState(
+      makeV2Config({
+        ...endBase,
+        rowPattern: fullPattern,
+      }),
+    );
+    const next = historyReducer(start, { type: 'add-panel' });
+    expect(next.present.panels).toHaveLength(2);
+    expect(next.present.rowPattern).toHaveLength(24);
+    expect(next.present.rowPattern).toEqual(fullPattern);
+    expect(next.past).toHaveLength(1);
+  });
+
+  it('at 4 panels returns the config unchanged — no panel and no step', () => {
+    const four = makeV2Config({
+      panels: [
+        makePanel('p1', 'Panel 1', 1.5, [makeStrip('a', 'walnut')]),
+        makePanel('p2', 'Panel 2', 1.5, [makeStrip('b', 'walnut')]),
+        makePanel('p3', 'Panel 3', 1.5, [makeStrip('c', 'walnut')]),
+        makePanel('p4', 'Panel 4', 1.5, [makeStrip('d', 'walnut')]),
+      ],
+      rowPattern: [{ panelId: 'p1', transform: 'none' }],
+    });
+    const start = createHistoryState(four);
+    const next = historyReducer(start, { type: 'add-panel' });
+    expect(next).toBe(start);
+    expect(next.present.panels).toHaveLength(4);
+    expect(next.present.rowPattern).toHaveLength(1);
+    expect(next.past).toHaveLength(0);
+  });
+
+  it('delete-panel still leaves dangling rowPattern entries', () => {
+    let state = createHistoryState(endBase);
+    state = apply(state, { type: 'add-panel' });
+    const removedId = state.present.panels[1]!.id;
+    expect(state.present.rowPattern.some((s) => s.panelId === removedId)).toBe(
+      true,
+    );
+    state = apply(state, { type: 'delete-panel', id: removedId });
+    expect(state.present.panels).toHaveLength(1);
+    expect(state.present.rowPattern.some((s) => s.panelId === removedId)).toBe(
+      true,
+    );
+  });
+});

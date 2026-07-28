@@ -238,4 +238,24 @@ describe('StripList pointer drag → history', () => {
     fireEvent.focus(labelInputs[1]!);
     expect(screen.getByLabelText('Selected strip details for Strip 2')).toBeTruthy();
   });
+
+  it('selected strip details section precedes the strip list in the DOM', () => {
+    const { container } = render(<DragHarness initial={threeStripConfig} />);
+    const section = screen.getByLabelText('Selected strip details for Strip 1');
+    // Harness also renders an order <ol> — target the strip list's ol.
+    const list = container.querySelector('ol.m-0.grid.list-none');
+    expect(list).toBeTruthy();
+    expect(section.compareDocumentPosition(list!) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
+  it('zero strips shows empty copy and no selected-strip editor', () => {
+    const empty = makeV2Config({
+      panels: [makePanel('panel-1', 'Panel 1', 1.5, [])],
+    });
+    render(<DragHarness initial={empty} />);
+    expect(screen.getByText('Add a strip to see your board.')).toBeTruthy();
+    expect(screen.queryByLabelText(/Selected strip details for/)).toBeNull();
+  });
 });

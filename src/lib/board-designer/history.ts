@@ -242,7 +242,21 @@ export function configReducer(
           miter: s.miter ? { ...s.miter } : undefined,
         })),
       };
-      return { ...config, panels: [...config.panels, copy] };
+      const panels = [...config.panels, copy];
+      // Append one row step so end-grain preview shows the new panel. Cap at 24
+      // (same as add-row); at the cap still add the panel, append nothing.
+      // delete-panel deliberately does NOT clean dangling steps — leave that alone.
+      if (config.rowPattern.length >= 24) {
+        return { ...config, panels };
+      }
+      return {
+        ...config,
+        panels,
+        rowPattern: [
+          ...config.rowPattern,
+          { panelId: copy.id, transform: 'none' },
+        ],
+      };
     }
     case 'delete-panel': {
       if (config.panels.length <= 1) return config;
