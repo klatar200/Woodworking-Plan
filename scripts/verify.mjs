@@ -125,33 +125,42 @@ function runStep(step) {
  * for; this validator shortens that review, it does not replace it.
  */
 
+// Brackets are in the class on purpose: Next.js dynamic segments (`[id]`, `[slug]`) are part of
+// real paths, and excluding them truncated `src/app/designer/[id]/print/page.tsx:177` to the
+// fragment `/print/page.tsx:177`, which then failed to resolve for the wrong reason.
 const CITE_RE =
-  /([A-Za-z0-9_./\\-]+\.(?:ts|tsx|js|mjs|jsx|css|json|md|ps1)):(\d+)/g;
+  /([A-Za-z0-9_./\\\[\]-]+\.(?:ts|tsx|js|mjs|jsx|css|json|md|ps1)):(\d+)/g;
 const ACCEPTANCE_ID_RE = /^- \[[ xX]\] ([A-Z]{1,2})(\d+) \| /;
 const AMBIGUOUS = Symbol('ambiguous');
 const SKIP_DIRS = new Set(['node_modules', '.git', '.next', 'dist', 'coverage', '.vercel']);
 
-/** basename → [repo-relative paths]. Built once per run; the repo is small enough. */
+/** Every repo-relative file path. Built once per run; the repo is small enough to scan. */
 function indexFiles(root) {
-  const index = new Map();
+  const paths = [];
   const walk = (dir, rel) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       if (SKIP_DIRS.has(entry.name)) continue;
       const next = rel ? `${rel}/${entry.name}` : entry.name;
       if (entry.isDirectory()) walk(join(dir, entry.name), next);
-      else index.set(entry.name, [...(index.get(entry.name) ?? []), next]);
+      else paths.push(next);
     }
   };
   walk(root, '');
-  return index;
+  return paths;
 }
 
-/** A cite may be a repo-relative path or a bare basename. Ambiguous basenames are not judged. */
-function resolveCite(raw, index, root) {
-  const path = raw.replace(/\\/g, '/');
-  if (path.includes('/')) return existsSync(join(root, path)) ? path : null;
-  const hits = index.get(path);
-  if (!hits || hits.length === 0) return null;
+/**
+ * A cite may be repo-relative (`src/lib/format.ts`), a bare basename (`format.ts`), or any unique
+ * path SUFFIX (`print/page.tsx` for `src/app/designer/[id]/print/page.tsx`). Prose abbreviates
+ * once the full path has been given, and a validator that rejects that gets bypassed — which is
+ * worse than one that is slightly permissive. A suffix matching several files is NOT judged; it
+ * warns, because "which of these did you mean" is a question only a reader can answer.
+ */
+function resolveCite(raw, paths, root) {
+  const path = raw.replace(/\\/g, '/').replace(/^\.\//, '');
+  if (existsSync(join(root, path))) return path;
+  const hits = paths.filter((p) => p === path || p.endsWith(`/${path}`));
+  if (hits.length === 0) return null;
   return hits.length === 1 ? hits[0] : AMBIGUOUS;
 }
 
@@ -167,7 +176,7 @@ export function checkPack(sprintDir) {
   }
   if (problems.length) return { problems, warnings };
 
-  const index = indexFiles(root);
+  const paths = indexFiles(root);
   const lineCounts = new Map();
   const lineCount = (rel) => {
     if (!lineCounts.has(rel)) {
@@ -179,7 +188,7 @@ export function checkPack(sprintDir) {
   for (const name of required) {
     const text = readFileSync(join(dir, name), 'utf8');
     for (const [, raw, lineStr] of text.matchAll(CITE_RE)) {
-      const rel = resolveCite(raw, index, root);
+      const rel = resolveCite(raw, paths, root);
       if (rel === null) {
         problems.push(`${name}: cite \`${raw}:${lineStr}\` — no such file in the repo`);
         continue;

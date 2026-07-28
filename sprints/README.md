@@ -151,7 +151,10 @@ the same thing without sealing — when:
   of the 35 were not the grader's to run: **mathematically unpassable**)
 - the gate numerator ≠ `ceil(pct × scored)`
 - an id is duplicated, or a prefix group is not contiguous from 1
-- a `file:line` cite names a file that is not in the repo, or a line past the end of it
+- a `file:line` cite names a file that is not in the repo, or a line past the end of it — cites
+  resolve as a repo-relative path, a bare basename, or any unique path **suffix**
+  (`print/page.tsx`), because prose abbreviates once the full path has been given; a suffix
+  matching several files warns rather than failing
 
 ```
 node scripts/verify.mjs check-pack sprints/NN
