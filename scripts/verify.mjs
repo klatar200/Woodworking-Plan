@@ -31,7 +31,8 @@
  *   node scripts/verify.mjs                  full run (the only kind SCORECARD may cite)
  *   node scripts/verify.mjs --out <path>     ALSO write the log to <path>, always UTF-8
  *   node scripts/verify.mjs --only test      subset, for fix rounds; marks itself SUBSET
- *   node scripts/verify.mjs lock sprints/47  write ACCEPTANCE.sha256 (planner only)
+ *   node scripts/verify.mjs check-pack sprints/47   validate a pack without sealing it
+ *   node scripts/verify.mjs lock sprints/47  validate, then write ACCEPTANCE.sha256 (planner only)
  *
  * `--out` exists so no shell redirection is involved in producing verify.txt. PowerShell 5.1
  * `>` writes UTF-16LE, which every downstream text tool then fails to parse — and since Cursor
@@ -44,7 +45,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 /**
@@ -106,6 +107,164 @@ function runStep(step) {
   return result.status === 0;
 }
 
+/* ── Pack validator ─────────────────────────────────────────────────────────
+ * Runs before `lock` seals a pack, and standalone via `check-pack`.
+ *
+ * WHAT IT CATCHES — the mechanical defects that reached Cursor in Sprints 76/77 and cost a
+ * round each. All of these are arithmetic or existence facts, so a script settles them:
+ *   · a stated denominator that does not equal the count of A+R ids  (Sprint 76: gate was
+ *     34/35 while two of the 35 were not the grader's to run — mathematically unpassable)
+ *   · a gate numerator that is not ceil(pct × scored)
+ *   · duplicate or non-contiguous ids inside a prefix group
+ *   · a cite naming a file that does not exist, or a line past the end of that file
+ *
+ * WHAT IT DOES NOT CATCH, and must not be trusted to: whether a cite points at the RIGHT
+ * place. `serialize.ts:197` was a real Sprint 77 defect — the line number came off the test
+ * file — and that file has >197 lines, so every check here passes it. Cite accuracy needs a
+ * reader who does not already know what the author meant. That is what `Check sprint NN` is
+ * for; this validator shortens that review, it does not replace it.
+ */
+
+const CITE_RE =
+  /([A-Za-z0-9_./\\-]+\.(?:ts|tsx|js|mjs|jsx|css|json|md|ps1)):(\d+)/g;
+const ACCEPTANCE_ID_RE = /^- \[[ xX]\] ([A-Z]{1,2})(\d+) \| /;
+const AMBIGUOUS = Symbol('ambiguous');
+const SKIP_DIRS = new Set(['node_modules', '.git', '.next', 'dist', 'coverage', '.vercel']);
+
+/** basename → [repo-relative paths]. Built once per run; the repo is small enough. */
+function indexFiles(root) {
+  const index = new Map();
+  const walk = (dir, rel) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (SKIP_DIRS.has(entry.name)) continue;
+      const next = rel ? `${rel}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) walk(join(dir, entry.name), next);
+      else index.set(entry.name, [...(index.get(entry.name) ?? []), next]);
+    }
+  };
+  walk(root, '');
+  return index;
+}
+
+/** A cite may be a repo-relative path or a bare basename. Ambiguous basenames are not judged. */
+function resolveCite(raw, index, root) {
+  const path = raw.replace(/\\/g, '/');
+  if (path.includes('/')) return existsSync(join(root, path)) ? path : null;
+  const hits = index.get(path);
+  if (!hits || hits.length === 0) return null;
+  return hits.length === 1 ? hits[0] : AMBIGUOUS;
+}
+
+export function checkPack(sprintDir) {
+  const root = process.cwd();
+  const dir = resolve(root, sprintDir);
+  const problems = [];
+  const warnings = [];
+
+  const required = ['GOAL.md', 'PLAN.md', 'ACCEPTANCE.md'];
+  for (const name of required) {
+    if (!existsSync(join(dir, name))) problems.push(`missing ${name}`);
+  }
+  if (problems.length) return { problems, warnings };
+
+  const index = indexFiles(root);
+  const lineCounts = new Map();
+  const lineCount = (rel) => {
+    if (!lineCounts.has(rel)) {
+      lineCounts.set(rel, readFileSync(join(root, rel), 'utf8').split(/\r?\n/).length);
+    }
+    return lineCounts.get(rel);
+  };
+
+  for (const name of required) {
+    const text = readFileSync(join(dir, name), 'utf8');
+    for (const [, raw, lineStr] of text.matchAll(CITE_RE)) {
+      const rel = resolveCite(raw, index, root);
+      if (rel === null) {
+        problems.push(`${name}: cite \`${raw}:${lineStr}\` — no such file in the repo`);
+        continue;
+      }
+      if (rel === AMBIGUOUS) {
+        warnings.push(`${name}: cite \`${raw}:${lineStr}\` — basename is not unique; not verified`);
+        continue;
+      }
+      const total = lineCount(rel);
+      if (Number(lineStr) > total) {
+        problems.push(`${name}: cite \`${raw}:${lineStr}\` — ${rel} has only ${total} lines`);
+      }
+    }
+  }
+
+  const acceptance = readFileSync(join(dir, 'ACCEPTANCE.md'), 'utf8');
+  const groups = new Map();
+  const seen = new Set();
+  for (const line of acceptance.split(/\r?\n/)) {
+    const match = ACCEPTANCE_ID_RE.exec(line);
+    if (!match) continue;
+    const [, prefix, digits] = match;
+    const id = `${prefix}${digits}`;
+    if (seen.has(id)) problems.push(`ACCEPTANCE.md: duplicate id ${id}`);
+    seen.add(id);
+    groups.set(prefix, [...(groups.get(prefix) ?? []), Number(digits)]);
+  }
+
+  if (seen.size === 0) problems.push('ACCEPTANCE.md: no graded ids found');
+
+  for (const [prefix, numbers] of groups) {
+    const sorted = [...numbers].sort((a, b) => a - b);
+    const gap = sorted.findIndex((n, i) => n !== i + 1);
+    if (gap !== -1) {
+      problems.push(
+        `ACCEPTANCE.md: ${prefix} ids are not contiguous from 1 — got ${sorted.join(', ')}`,
+      );
+    }
+  }
+
+  // The denominator is A+R only. M ids are graded but never scored; counting them is what made
+  // Sprint 76 unpassable, so this is the check that matters most.
+  const scored = (groups.get('A')?.length ?? 0) + (groups.get('R')?.length ?? 0);
+  const denominator = acceptance.match(/÷\s*\*\*(\d+)\*\*/);
+  if (!denominator) {
+    problems.push('ACCEPTANCE.md: no denominator found (expected `÷ **N**`)');
+  } else if (Number(denominator[1]) !== scored) {
+    problems.push(
+      `ACCEPTANCE.md: denominator says ${denominator[1]} but there are ${scored} A+R ids`,
+    );
+  }
+
+  const gate = acceptance.match(/Gate\s*=\s*\*\*≥(\d+)%\*\*\s*\((\d+)\s*\/\s*(\d+)\)/);
+  if (!gate) {
+    warnings.push('ACCEPTANCE.md: gate not in `Gate = **≥95%** (N/M)` form; not verified');
+  } else {
+    const pct = Number(gate[1]);
+    const numerator = Number(gate[2]);
+    const gateDenominator = Number(gate[3]);
+    if (gateDenominator !== scored) {
+      problems.push(
+        `ACCEPTANCE.md: gate denominator ${gateDenominator} ≠ ${scored} scored ids`,
+      );
+    }
+    // Integer maths on purpose — 0.95 * 20 is not 19 in binary floating point.
+    const need = Math.ceil((pct * scored) / 100);
+    if (numerator !== need) {
+      problems.push(
+        `ACCEPTANCE.md: gate says ${numerator}/${gateDenominator} but ≥${pct}% of ${scored} is ${need}`,
+      );
+    }
+  }
+
+  return { problems, warnings };
+}
+
+function reportPack(sprintDir, { problems, warnings }) {
+  for (const warning of warnings) process.stdout.write(`  warn  ${warning}\n`);
+  for (const problem of problems) process.stderr.write(`  FAIL  ${problem}\n`);
+  if (problems.length === 0) {
+    process.stdout.write(`pack ${sprintDir}: OK${warnings.length ? ` (${warnings.length} warning(s))` : ''}\n`);
+  }
+  return problems.length === 0 ? 0 : 1;
+}
+
 /**
  * `lock` subcommand — writes sha256(ACCEPTANCE.md) next to it.
  *
@@ -121,6 +280,16 @@ function lock(sprintDir) {
     process.stderr.write(`lock: no ACCEPTANCE.md at ${acceptance}\n`);
     return 1;
   }
+  // Validate BEFORE sealing. A sealed bad bar is worse than an unsealed one: the hash makes it
+  // expensive to correct, and correcting it after the fact voids the sprint (Sprint 77).
+  const audit = checkPack(sprintDir);
+  if (audit.problems.length > 0) {
+    process.stderr.write(`lock: refusing to seal ${sprintDir} — fix these first:\n`);
+    reportPack(sprintDir, audit);
+    return 1;
+  }
+  for (const warning of audit.warnings) process.stdout.write(`  warn  ${warning}\n`);
+
   const target = join(dir, 'ACCEPTANCE.sha256');
   if (existsSync(target)) {
     process.stderr.write(
@@ -177,6 +346,14 @@ function main() {
       process.exit(2);
     }
     process.exit(lock(argv[1]));
+  }
+
+  if (argv[0] === 'check-pack') {
+    if (!argv[1]) {
+      process.stderr.write('usage: node scripts/verify.mjs check-pack <sprintDir>\n');
+      process.exit(2);
+    }
+    process.exit(reportPack(argv[1], checkPack(argv[1])));
   }
 
   const only = parseOnly(argv);

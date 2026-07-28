@@ -144,6 +144,25 @@ Order of the whole loop, since two of these are easy to swap by accident:
 - `FIXES.md` reaches a `## Round 4`
 - a sprint folder is missing `GOAL` / `PLAN` / `ACCEPTANCE`, or its ids are malformed
 
+Those fire *after* implementation. `lock` also refuses to seal a pack — and `check-pack` reports
+the same thing without sealing — when:
+
+- the stated denominator ≠ the count of `A`+`R` ids (Sprint 76 shipped a gate of 34/35 while two
+  of the 35 were not the grader's to run: **mathematically unpassable**)
+- the gate numerator ≠ `ceil(pct × scored)`
+- an id is duplicated, or a prefix group is not contiguous from 1
+- a `file:line` cite names a file that is not in the repo, or a line past the end of it
+
+```
+node scripts/verify.mjs check-pack sprints/NN
+```
+
+**What that validator cannot do, and must not be trusted to.** It checks that a cite *resolves*,
+not that it points at the right place. Sprint 77's `serialize.ts:197` was a line number copied off
+the *test* file; the source file is longer than 197 lines, so every check above passes it. Cite
+accuracy needs a reader who does not already know what the author meant — that is `Check sprint NN`.
+The validator shortens that review; it does not replace it.
+
 A comment is not a mechanism. These are.
 
 ## Files

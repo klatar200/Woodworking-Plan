@@ -94,15 +94,31 @@ CARRY:     Strip-row compacting was NOT in this objective and was not done — r
            change-list item if still wanted.
 ```
 
-### D5 build-steps track — designer build guide 🟡 NEXT (76–77 both closed)
+### D5 build-steps track — designer build guide 🟡 OPEN (scoped 2026-07-28: 3 sprints)
 
 ```
 OBJECTIVE: Generate an ordered build guide + cut list from a saved board design.
 FACT:      BUSINESS_PLAN "Designer build guide" (2026-07-27); DECISIONS_LOG same date.
-REUSE:     existing plan step / cut-list structures; cut-optimizer (src/lib/cut-optimizer.ts).
+REUSE:     designCutPlan already packs the CUT LIST (design-cut-plan.ts) — the missing half is the
+           ordered SEQUENCE. Compose Sprint 73 material maths; do not re-derive them.
 OUT:       dollar figures (D2 — tiers only) · safety guidance (D7, still gated) · procedural textures (D3)
-SIZE:      2–3 sprints. Scope at track open, not now.
+SPLIT:     78 pure library → 79 UI surface + print → 80 polish. Logic before surface, the order
+           cut-optimizer was built in: a guide that is subtly wrong about glue-up stages is worse
+           than none, and that is far cheaper to prove in a test than through a page.
 ```
+
+#### Sprint 78 — build-steps library (D5 1 of 3) 🟡 NEXT
+
+```
+OBJECTIVE: designBuildSteps(config, metrics) → ordered BuildStep[]. Pure library, no UI.
+SURFACE:   NEW src/lib/board-designer/build-steps.ts · NEW tests/board-designer-build-steps.test.ts
+FACT:      Edge grain = one glue-up. End grain = panel glue-up → crosscut to slices → second glue-up.
+           planeBuffer is consumed PER STAGE (Sprint 73), so once for edge and twice for end.
+OUT:       any UI (Sprint 79) · safety guidance (D7) · dollar figures (D2) · new material maths
+NOTE:      Pure-backend sprint — §6 category 6 (mobile/offline) moves its 10 pts into category 2.
+```
+
+#### Sprint 79 — build guide surface ⬜ QUEUED · #### Sprint 80 — polish ⬜ QUEUED
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
