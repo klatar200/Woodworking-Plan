@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth';
 import { getDesign } from '@/lib/board-designs';
+import { designBuildSteps } from '@/lib/board-designer/build-steps';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
 import { stripDisplayName } from '@/lib/board-designer/strip-display';
@@ -38,6 +39,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
 
   const { config } = design;
   const metrics = calculateMetrics(config);
+  const buildSteps = designBuildSteps(config, metrics);
   const finished = [
     metrics.finishedLengthIn,
     metrics.finishedWidthIn,
@@ -183,6 +185,52 @@ export default async function DesignerPrintPage({ params }: PageProps) {
           </table>
         </section>
       )}
+
+      <section className="print-section">
+        <h2>Build plan</h2>
+        <table className="print-table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Step</th>
+              <th scope="col">Instructions</th>
+              <th scope="col">Quantities</th>
+            </tr>
+          </thead>
+          <tbody>
+            {buildSteps.map((step, index) => (
+              <tr key={step.id}>
+                <td className="numeric" data-label="#">
+                  {index + 1}
+                </td>
+                <td data-label="Step">{step.title}</td>
+                <td data-label="Instructions">{step.detail}</td>
+                <td data-label="Quantities">
+                  {step.quantities.length === 0
+                    ? '—'
+                    : step.quantities
+                        .map((q) => {
+                          const dims: string[] = [];
+                          if (q.lengthIn !== undefined) {
+                            dims.push(formatInches(q.lengthIn));
+                          }
+                          if (q.widthIn !== undefined) {
+                            dims.push(formatInches(q.widthIn));
+                          }
+                          if (q.thicknessIn !== undefined) {
+                            dims.push(formatInches(q.thicknessIn));
+                          }
+                          const dimPart =
+                            dims.length > 0 ? ` · ${dims.join(' × ')}` : '';
+                          return `${q.count}× ${q.label}${dimPart}`;
+                        })
+                        .join('; ')}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
 
       <section className="print-section">
         <h2>Board feet by species</h2>

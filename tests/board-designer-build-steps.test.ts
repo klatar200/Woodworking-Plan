@@ -164,8 +164,8 @@ describe('designBuildSteps — end grain', () => {
       (s) => s.id === 'arrange-rows',
     )!.detail;
     expect(detail).toContain('2-step');
-    expect(detail).toContain('as designed');
-    expect(detail).toContain('turned 180°');
+    expect(detail).toContain('As cut');
+    expect(detail).toContain('Turned end-for-end');
     expect(detail).not.toMatch(/rot180|mirrorX|mirrorY/);
   });
 

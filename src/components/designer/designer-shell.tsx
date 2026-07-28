@@ -22,6 +22,7 @@ import {
 } from '@/lib/board-designer/history';
 import type { BoardDesignConfig, Grain } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+import Link from 'next/link';
 
 const SAVE_FORM_ID = 'designer-save-form';
 
@@ -184,9 +185,14 @@ export function DesignerShell(props: {
           </button>
         </div>
 
-        {/* Right action group: shopping only this sprint; structured for a second child later. */}
+        {/* Right action group: shopping list + Build Plan (when saved). */}
         <div className="ml-auto flex flex-wrap items-center gap-[0.5rem]">
           {shoppingListControl}
+          {designId ? (
+            <Link href={`/designer/${designId}/build`} className={btnGhost}>
+              Build Plan
+            </Link>
+          ) : null}
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import {
 } from '@/lib/board-designer/lumber-allowance';
 import { getSpecies } from '@/lib/board-designer/species';
 import { stripDisplayName } from '@/lib/board-designer/strip-display';
+import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
 import type {
   BoardDesignConfig,
   BoardMetrics,
@@ -33,13 +34,6 @@ export interface BuildStep {
   detail: string;
   quantities: BuildStepQuantity[];
 }
-
-const TRANSFORM_NAME: Record<RowTransform, string> = {
-  none: 'as designed',
-  rot180: 'turned 180°',
-  mirrorX: 'mirrored left-to-right',
-  mirrorY: 'mirrored top-to-bottom',
-};
 
 function step(
   id: string,
@@ -149,7 +143,7 @@ function distinctTransforms(config: BoardDesignConfig): RowTransform[] {
 function arrangeRowsDetail(config: BoardDesignConfig): string {
   const n = config.rowPattern.length;
   const transforms = distinctTransforms(config);
-  const named = transforms.map((t) => TRANSFORM_NAME[t]).join(', ');
+  const named = transforms.map((t) => ROW_TRANSFORM_LABELS[t]).join(', ');
   return `Turn slices end-up and arrange them by repeating a ${n}-step row pattern. Transforms used: ${named}.`;
 }
 
