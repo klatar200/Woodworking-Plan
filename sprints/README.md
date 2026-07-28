@@ -57,13 +57,30 @@ Plan sprint NN. Changes I want:
 Write sprints/NN/GOAL.md, PLAN.md, ACCEPTANCE.md.
 Agent-focused, not human-readable. Don't re-audit the repo.
 ```
-Then lock the bar and commit the pack. `lock` writes a file, so it runs in your shell, never from
-the Claude sandbox (CLAUDE.md §5). Cursor reads the pack off disk, so no push is needed — commit
-anyway, so a context reset mid-sprint loses nothing.
+**1a — pre-flight the pack, BEFORE locking (Cursor)**
+```
+Check sprint NN
+```
+Read-only; Cursor writes nothing. It reads the pack cold, with no memory of what Claude meant, and
+reports defects — wrong line cites, unreachable gates, checks that aren't binary, a better API that
+already exists. Findings go to Claude to fix. **Cursor never edits the pack** — it is the graded
+actor and the bar is not its to move.
+
+**The order here is load-bearing and was learned the hard way (Sprint 77).** Locking before the
+pre-flight means either its findings cannot be acted on, or the bar moves after the lock and
+`tests/sprint-pack.test.ts` voids the sprint on a hash mismatch. Pre-flight first, fix, *then* lock.
+
+**1b — lock and commit the pack (Keagan)**
+
+`lock` writes a file, so it runs in your shell, never from the Claude sandbox (CLAUDE.md §5). It
+**refuses to overwrite an existing hash** — that refusal is the tamper check, not a bug. Cursor
+reads the pack off disk, so no push is needed; commit anyway, so a context reset loses nothing.
 ```
 node scripts/verify.mjs lock sprints/NN
 git add -A; git commit -m "sprint NN: pack"
 ```
+If the bar genuinely has to change after locking, that is a **re-scope** and it is Keagan's call
+(CLAUDE.md §4) — `rm` the hash and re-lock deliberately, never as a reflex to clear a red check.
 
 **2 — hand off (Cursor)**
 ```
@@ -111,8 +128,11 @@ Fix sprint NN
 
 Then re-cut `changes.diff` from step 2 and go back to prompt 3.
 
-**Four prompts, and only the first one varies** — it carries your change list, which is the one
-thing no file can know in advance. The other three are a verb and a number.
+**Five prompts, and only the first one varies** — it carries your change list, which is the one
+thing no file can know in advance. The rest are a verb and a number.
+
+Order of the whole loop, since two of these are easy to swap by accident:
+`Plan` → `Check` → **lock** → `Run` → cut `changes.diff` → `Audit` → `Fix` → merge.
 
 ## Why this is enforced and not merely documented
 
