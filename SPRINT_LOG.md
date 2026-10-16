@@ -3,13 +3,44 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 78 (2026-07-28) — CLOSED 97/100** — build-steps library (D5 1 of 3). Suite: 1411 green / 122 files.
+> **Latest logged: Sprint 79 (2026-07-28) — CLOSED 96/100** — build guide surface (D5 2 of 3). Suite: 1426 green / 123 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅. Suite: 1411 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅. Suite: 1426 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 79: Build guide surface (D5 track, 2 of 3)
+**Dates:** 2026-07-28
+**Scope:** BUILD_PLAN §4 Sprint 79 — one transform vocabulary (T1), new private `/designer/[id]/build` route rendering `designBuildSteps` (T2), Build Plan control in the slot Sprint 76 reserved (T3), build steps on the print sheet (T4), tests (T5).
+
+### Attempt 1 — score 96/100 — PASS (ACCEPTANCE 26/26)
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | T1–T5 exactly. No `designBuildSteps` logic change — the diff to `build-steps.ts` is the label import and its use. |
+| 2 Correctness /20 | 20 | Verified live on prod, not from source: 12 steps in order with tape fractions (`3/16"`, `1 1/2"`, `7 7/8"`); print sheet carries all 12 rows with identical wording; control is the second child of the reserved group. |
+| 3 Test coverage /15 | 15 | 1411→**1426** tests, 122→**123** files, asserting rendered text rather than structure. |
+| 4 Security /15 | 15 | `requireUser()` → `getDesign(id)` → `notFound()`, copied from the print route. Both negative checks hold: no `public-routes` entry, no SW prefix added (`/designer` already covers it by prefix). `noindex, nofollow` confirmed in the live DOM. |
+| 5 Code quality /10 | 8 | **`quantityLine()` is written twice** — once in the route, once inline in the print section. The sprint whose T1 deleted a duplicated vocabulary introduced a duplicated formatter of the same kind. |
+| 6 Mobile/offline /10 | 9 | Route is plain flow content, so it reads on a phone. It is private, therefore never cached — a build guide is exactly what you want in a shop with no signal. Same gap as `/shopping-list`, same mitigation (print). |
+| 7 Docs/handoff /5 | 4 | The pack cited `print/page.tsx:NN` — ambiguous, because this repo has **two** (`plans/[slug]` and `designer/[id]`). `check-pack` caught it. |
+
+**T1 was cleanup of my own error.** Sprint 78's FIXES told Cursor to fill `TRANSFORM_NAME` without my checking whether a transform vocabulary already existed. It did: `ROW_TRANSFORM_LABELS`, shop language, rendered by the print sheet for sprints, and asserted by `designer-print.test.tsx:201`. Sprint 79 would have shipped `turned 180°` on one surface and `Turned end-for-end` on another.
+
+**The bar graded rendered text, and that was the point.** Sprint 78 passed 23/23 while scoring 93 because its bar graded ids and counts on a feature that emits prose. This bar asserted exact strings, forbade raw enum names in output, and required the two surfaces to agree — and the sprint passed both instruments.
+
+**`check-pack`'s first live run found two bugs in itself and one in the pack.** The regex excluded `[`/`]`, so Next dynamic segments truncated `src/app/designer/[id]/print/page.tsx:177` to the fragment `/print/page.tsx:177`; and cite resolution handled only full paths and bare basenames, not the partial paths prose naturally uses. Both fixed (suffix resolution, ambiguity warns rather than fails). The pack defect it caught was real: `print/page.tsx` is genuinely ambiguous here.
+
+**Carried to Sprint 80** (neither is a 79 failure — A12 required formatting and dimensions, both correct):
+- `1× Hard Maple stock` next to `9× Hard Maple strips`. My Sprint 78 F2 defined mill `count` as distinct rip widths; as data that is defensible, as a sentence it understates the material. Only visible once rendered.
+- The duplicated quantity formatter.
+
+**Process note:** the `Audit sprint 79` step was run by Cursor, the graded actor. Its conclusions matched mine, but a self-audit provides no independent read — a grader that misreads the bar misreads it identically twice. The audit belongs to Claude.
+
+**Commits:** branch `cursor/sprint-79-build-guide`, merged to `main`.
 
 ---
 

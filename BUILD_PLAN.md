@@ -59,8 +59,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 76 (designer header/nav + layout) | ✅ **CLOSED** 2026-07-28 — **97/100**. Header is a nav bar; preview card sizes to its render; Save in the card header; panes swapped L/R; grain + overall size in Board Settings. Suite **1365/1365** / 119 files. |
 | Sprint 77 (designer panels workflow) | ✅ **CLOSED** 2026-07-28 — **98/100**. `add-panel` appends a row-pattern step so a new panel paints immediately; strip editor above the list; Collapse/Delete legible. Suite **1385/1385** / 121 files. |
 | Sprint 78 (build-steps library, D5 1/3) | ✅ **CLOSED** 2026-07-28 — Attempt 2 **97/100** (Attempt 1 **93** — ACCEPTANCE passed 23/23 while §6 caught four copy/aggregation defects the bar never graded). `designBuildSteps()` pure library. Suite **1411/1411** / 122 files. |
+| Sprint 79 (build guide surface, D5 2/3) | ✅ **CLOSED** 2026-07-28 — **96/100**, ACCEPTANCE 26/26. `/designer/[id]/build` private route, Build Plan control in the Sprint 76 slot, steps on the print sheet, one transform vocabulary. Suite **1426/1426** / 123 files. |
 
-Test suite — expected: **1411/1411** across **122 files** (Sprint 78). Update each sprint close.
+Test suite — expected: **1426/1426** across **123 files** (Sprint 79). Update each sprint close.
 
 **Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅** · **76 ✅** · **77 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
 
@@ -122,17 +123,30 @@ LESSON:    ACCEPTANCE passed 23/23 at §6 93/100 — the bar graded structure on
            PROSE. From 79 on, checks must assert what sentences SAY, not that they exist.
 ```
 
-#### Sprint 79 — build guide surface (D5 2 of 3) 🟡 NEXT
+#### Sprint 79 — build guide surface (D5 2 of 3) ✅ CLOSED 2026-07-28 · 96/100
 
 ```
 OBJECTIVE: Render designBuildSteps output. Build Plan control in the header slot Sprint 76
            reserved; a route; print integration.
-SURFACE:   designer-shell (right action group) · NEW build-guide route + component · print sheet
-FACT:      The slot exists and is empty by design — Sprint 76 shipped no placeholder on purpose.
-OUT:       safety guidance (D7) · dollar figures (D2) · changes to build-steps.ts logic
+SURFACE:   designer-shell · src/app/designer/[id]/build/page.tsx · designer print sheet
+SHIPPED:   Private owner-scoped route (requireUser → getDesign → notFound, noindex, never cached).
+           Build Plan renders only when saved — no dead control on a draft. Print sheet carries the
+           same 12 steps. ONE transform vocabulary: ROW_TRANSFORM_LABELS, TRANSFORM_NAME deleted.
+LESSON:    The bar asserted exact rendered strings and forbade raw enum names in output — the
+           direct correction of Sprint 78 passing 23/23 at §6 93.
 ```
 
-#### Sprint 80 — build guide polish (D5 3 of 3) ⬜ QUEUED
+#### Sprint 80 — build guide polish (D5 3 of 3) 🟡 NEXT
+
+```
+OBJECTIVE: Fix what only became visible once the guide was rendered.
+CARRY-1:   Mill quantity reads "1× Hard Maple stock" beside "9× Hard Maple strips". Sprint 78 F2
+           defined mill count as DISTINCT RIP WIDTHS — defensible as data, misleading as a
+           sentence. Decide what a builder needs to see and say that.
+CARRY-2:   quantityLine() exists twice — build route + print sheet. One formatter, two callers.
+CARRY-3:   Optional: strip-row compacting (deferred from Sprint 77).
+OUT:       safety guidance (D7) · dollar figures (D2) · new material maths
+```
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
 
