@@ -197,17 +197,15 @@ export default async function LandingPage() {
               one copy is narrower than a wide viewport, so 2 copies leave a gap at the seam
               that "jerks" on reset. Duration is scaled with the copy count to hold speed. */}
           {Array.from({ length: MARQUEE_COPIES }, (_, set) =>
-            trustItems(count.chip).map((item, i) => (
+            trustItems(count.chip).map((text, i) => (
               <li
                 key={`${set}-${i}`}
                 inert={set !== 0}
                 aria-hidden={set !== 0 ? true : undefined}
                 className="inline-flex items-center gap-[0.55rem] text-[0.9375rem] text-muted-2 whitespace-nowrap"
               >
-                {item.icon ? (
-                  <Check size={16} className="text-ok shrink-0" aria-hidden="true" />
-                ) : null}
-                {item.strong ? <strong className="text-fg">{item.text}</strong> : item.text}
+                <Check size={16} className="text-ok shrink-0" aria-hidden="true" />
+                {text}
               </li>
             )),
           )}
@@ -626,11 +624,11 @@ const CATEGORY_ICONS: Record<string, ReactNode> = {
 // Sprint 40.2: the lead chip carries the live catalog size (see src/lib/landing-copy.ts).
 // A function, not a const, so the number cannot be re-hardcoded here by accident.
 const trustItems = (countChip: string) => [
-  { text: countChip, strong: true, icon: false },
-  { text: 'Free — no ads, no affiliate links', icon: true },
-  { text: 'Installs to your phone, works offline', icon: true },
-  { text: 'Cut lists in tape-measure fractions', icon: true },
-  { text: 'A board-buying plan on every project', icon: true },
+  countChip,
+  'Free — no ads, no affiliate links',
+  'Installs to your phone, works offline',
+  'Cut lists in tape-measure fractions',
+  'A board-buying plan on every project',
 ];
 
 const FEATURES = [
