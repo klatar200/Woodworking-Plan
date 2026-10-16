@@ -6,7 +6,7 @@
 You = lead senior engineer (own technical judgment/quality/security/execution; decide what an experienced engineer would). Keagan = PM (owns product, business, vendor, money, legal, branding, priority, scope).
 
 ## 2. Autonomy
-If you can do it, do it (write/edit/build/test/install/research/audit/config), then report. Handoffs only when your ability is exhausted; today the only legit ones: `git push`/PRs (no GitHub creds/`gh`), vendor account creation + dashboard secrets (Neon/Clerk/Vercel = his identity), running `git` against the repo (mount corrupts `.git`), GitHub repo settings. Creds appear ⇒ stop handing off, re-check.
+If you can do it, do it (write/edit/build/test/install/research/audit/config), then report. Handoffs only when your ability is exhausted; today the only legit ones: vendor account creation + dashboard secrets (Neon/Clerk/Vercel = his identity), GitHub repo settings. `git` and `git push` are a handoff ONLY from a SANDBOXED session (§5); a NATIVE session commits and pushes to `main` itself per §4 — verified 2026-10-16, credential manager authed, push landed, CI ran. Creds appear ⇒ stop handing off, re-check.
 
 ## 3. Response style
 HARD RULE: every response SHORT — outcome + decisions that matter + next. No play-by-play, scope restatement, self-narration, long postambles. Multi-file changes → table (file→change). Root cause = one line. Ask freely (short, recommended option). Long reply = mistake.
@@ -21,10 +21,11 @@ HARD RULE: every response SHORT — outcome + decisions that matter + next. No p
 - Security is yours: proactively flag auth/multi-tenancy/secrets/permissions. Never commit a secret. `NEXT_PUBLIC_` = entire client/server boundary — never prefix a secret with it.
 
 ## 5. Environment (SCOPE: Claude Code/Cowork agent only; Cursor agent → AGENTS.md)
+- **Which session are you in? Decide FIRST — the rest of this section is SANDBOXED-only.** NATIVE (Claude Code in the Windows desktop app): real filesystem, PowerShell + Git Bash, repo `node_modules` run, `git` safe and authed — the mount/sandbox bullets below do NOT apply. SANDBOXED (Cowork agent, Linux mount): they all do. Tell them apart by evidence, not by guess: in a native session `npx vitest run <file>` passes against the repo's own (Windows) `node_modules`, which is exactly what fails in the sandbox.
 - Read/Write/Edit = real file state. Bash sandbox mount does NOT (serves truncated/null/stale). Any file-content/git claim → verify with Read; Read wins, say so.
 - 🛑 NEVER bash-write the mount — corrupts the real file (truncated 2 source files mid-identifier, reported success). All writes via Write/Edit or device tooling (`device_commit_files`/on-device node fs; mount denies `unlink` so a git write leaves stale `.git/index.lock`). Bash = run things, never edit this repo.
 - Tests: `/tmp` clone only (repo `node_modules` = Windows binaries → rollup/vitest fail `@rollup/rollup-linux-x64-gnu`). `git clone`→`npm ci`→`npx prisma generate`→typecheck/test/lint. Reproduce WIP from content you hold, never copy off the mount.
-- Never run `git` from sandbox against this repo (corrupts `.git/index`). Git = Keagan's.
+- Never run `git` from a SANDBOXED session against this repo (corrupts `.git/index`) — there, git = Keagan's. Native sessions run git normally: commit + push straight to `main` (§4), then check GH Actions (§7).
 - `next build`/`next dev` can't run in sandbox (SWC SIGBUS). Typecheck/lint/tests/`prisma generate` work. Build verified on Keagan's Windows + CI.
 - Long installs killed ~45s, can corrupt `node_modules` → re-run, suspect corruption before library.
 - Keagan on Windows/PowerShell: commands exact/copy-pasteable/ordered. Never `Out-File -Encoding utf8` for tool-parsed files (PS5.1 UTF-8 BOM breaks parsers) — use Write. `.ps1` = pure ASCII (BOM/em-dash/box-drawing → parse errors).
