@@ -136,16 +136,36 @@ LESSON:    The bar asserted exact rendered strings and forbade raw enum names in
            direct correction of Sprint 78 passing 23/23 at §6 93.
 ```
 
-#### Sprint 80 — build guide polish (D5 3 of 3) 🟡 NEXT
+#### Sprint 80 — build guide correctness (D5 3 of 3) 🟡 NEXT — pack `sprints/80/`
 
 ```
-OBJECTIVE: Fix what only became visible once the guide was rendered.
-CARRY-1:   Mill quantity reads "1× Hard Maple stock" beside "9× Hard Maple strips". Sprint 78 F2
-           defined mill count as DISTINCT RIP WIDTHS — defensible as data, misleading as a
-           sentence. Decide what a builder needs to see and say that.
-CARRY-2:   quantityLine() exists twice — build route + print sheet. One formatter, two callers.
-CARRY-3:   Optional: strip-row compacting (deferred from Sprint 77).
-OUT:       safety guidance (D7) · dollar figures (D2) · new material maths
+RESCOPED:  Keagan 2026-10-16, after the designer consumer-readiness audit. Was "polish"; the
+           audit found the guide's numbers wrong, so this sprint makes them right.
+OBJECTIVE: Guide, cut plan and board-feet estimate state the SAME cut dimensions for every
+           template. Rule: cut where Sprint 73 budgets an allowance; finish to the design's size.
+FIXES:     #3 end-grain crosscut length read the hidden edge-only sourceLengthIn (Checkerboard said
+           14", needs 14 1/4"; at 20 rows said 14", needs 35 7/8"; multi-panel needs one per panel)
+           #4 mitered designs omitted the wedge species (composite method, partner strips)
+           #5 cuts at finished size then planed undersize · #7 row order + per-panel slices
+           #8 unused panels made phantom boards · #12 three lengths for one panel; cut-plan
+           default "buy each part's width" · dry-fit names species · CARRY-1 mill count ·
+           CARRY-2 one quantity formatter. CARRY-3 dropped.
+OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template totals pinned) ·
+           any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
+```
+
+#### Sprint 81 — designer save safety + controls ⬜ QUEUED (Keagan 2026-10-16)
+
+```
+OBJECTIVE: A consumer never silently loses a design, and every control does what it says.
+ITEMS:     #1 invalid-but-reachable states (empty name/label, 0 strips, >40 strips, dangling row)
+           silently reset unsaved work on Save → validate client-side, disable Save with reason,
+           prevent the states · #2 Save after a deploy crashes (server-action skew) → draft
+           persistence + failure handling · #6 number inputs clamp per keystroke (clear+type
+           2.25 → 0.0625225) · #9 delete-panel leaves a dangling row whose select lies ·
+           #10 library Delete has no confirm · #11 no unsaved-changes guard · Collapse is a dead
+           control · Mitered offered on edge grain · mobile saved view lacks Build Plan link
+OUT:       Vercel Skew Protection (plan-gated — Keagan's call if ever wanted) · D7 · D2
 ```
 
 **SSR (66):** never add route `app/**/loading.tsx` on `force-dynamic` pages that own document `<main>`. Detectors: `main-landmark` · `smoke:stream-dom`.
