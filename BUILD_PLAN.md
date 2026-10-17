@@ -155,7 +155,7 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
-#### Sprint 81 — designer save safety + controls 🟡 NEXT (Keagan 2026-10-16)
+#### Sprint 81 — designer save safety + controls 🟡 NEXT (Keagan 2026-10-16) — pack `sprints/81/`, locked
 
 ```
 OBJECTIVE: A consumer never silently loses a design, and every control does what it says.
