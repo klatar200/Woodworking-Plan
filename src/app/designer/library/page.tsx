@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { page, btnGhost, btnPrimary } from '@/lib/ui';
+import { page, btnPrimary } from '@/lib/ui';
 import { listDesigns } from '@/lib/board-designs';
 import { deleteBoardDesignAction } from '@/app/actions/board-designs';
+import { DeleteDesignButton } from '@/components/designer/delete-design-button';
 import { DesignThumbnail } from '@/components/designer/design-thumbnail';
 
 export const dynamic = 'force-dynamic';
@@ -47,13 +48,11 @@ export default async function DesignerLibraryPage() {
                   </p>
                 </div>
               </div>
-              <form action={deleteBoardDesignAction}>
-                <input type="hidden" name="designId" value={design.id} />
-                <input type="hidden" name="returnTo" value="/designer/library" />
-                <button type="submit" className={btnGhost}>
-                  Delete
-                </button>
-              </form>
+              <DeleteDesignButton
+                designId={design.id}
+                name={design.name}
+                action={deleteBoardDesignAction}
+              />
             </li>
           ))}
         </ul>

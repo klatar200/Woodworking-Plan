@@ -519,7 +519,7 @@ describe('add-panel — appends one row step (Sprint 77)', () => {
     expect(next.past).toHaveLength(0);
   });
 
-  it('delete-panel still leaves dangling rowPattern entries', () => {
+  it('delete-panel removes its rows', () => {
     let state = createHistoryState(endBase);
     state = apply(state, { type: 'add-panel' });
     const removedId = state.present.panels[1]!.id;
@@ -529,7 +529,8 @@ describe('add-panel — appends one row step (Sprint 77)', () => {
     state = apply(state, { type: 'delete-panel', id: removedId });
     expect(state.present.panels).toHaveLength(1);
     expect(state.present.rowPattern.some((s) => s.panelId === removedId)).toBe(
-      true,
+      false,
     );
+    expect(state.present.rowPattern.length).toBeGreaterThanOrEqual(1);
   });
 });

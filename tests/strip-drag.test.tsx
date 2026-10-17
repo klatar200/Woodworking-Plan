@@ -233,7 +233,7 @@ describe('StripList pointer drag → history', () => {
     expect(screen.getAllByText('Repeat (count)')).toHaveLength(1);
     expect(screen.getByText('Strip width in inches.')).toBeTruthy();
     expect(screen.getByText('Number of times this strip repeats.')).toBeTruthy();
-    expect(screen.getByText('Mitered')).toBeTruthy();
+    expect(screen.queryByText('Mitered')).toBeNull();
 
     fireEvent.focus(labelInputs[1]!);
     expect(screen.getByLabelText('Selected strip details for Strip 2')).toBeTruthy();

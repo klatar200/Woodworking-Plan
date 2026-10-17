@@ -105,9 +105,10 @@ export function calculateMetrics(config: BoardDesignConfig): BoardMetrics {
     complete,
   };
 
-  // Miter lattice closure — see applyMiterClosureWarnings / Sprint 61 notes.
+  // Miter lattice closure — see applyMiterClosureWarnings / Sprint 61 notes. End grain only: an
+  // edge-grain board has no lattice to close (Sprint 81).
   const hasMiter = panels.some((p) => p.strips.some((s) => s.miter));
-  if (hasMiter) {
+  if (hasMiter && config.grain === 'end') {
     const cells = layoutTopFace(config, metricsSoFar);
     applyMiterClosureWarnings(warnings, cells, panels);
   }

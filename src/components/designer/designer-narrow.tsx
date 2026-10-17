@@ -15,6 +15,8 @@ export const DESIGNER_EDIT_NARROW_NOTICE =
 export const PRINT_SHEET_HINT =
   'Includes the cut list, dimensions and diagram.';
 
+export const BUILD_PLAN_HINT = 'Every cut, glue-up and slice, in order.';
+
 /**
  * Below-lg surface. Always rendered beside the (CSS-hidden) authoring tree so
  * resize does not remount form state. No WebGL here — diagram is SVG only.
@@ -105,6 +107,13 @@ export function DesignerNarrowSurface({
           </ol>
         </div>
       ))}
+
+      <div className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
+        <Link href={`/designer/${designId}/build`} className={btnPrimary}>
+          Build Plan
+        </Link>
+        <p className="mt-[0.5rem] mb-0 text-[0.875rem] text-muted">{BUILD_PLAN_HINT}</p>
+      </div>
 
       <div className="rounded-[0.75rem] border border-border bg-surface p-[1rem]">
         <Link href={`/designer/${designId}/print`} className={btnPrimary}>

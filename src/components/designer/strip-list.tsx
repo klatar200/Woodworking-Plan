@@ -9,12 +9,12 @@ import { dropIndexFromClientY } from '@/lib/board-designer/strip-drag';
 import type { Grain, Miter, MiterCorner, Strip } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+import { BoundedNumberInput } from './bounded-number-input';
 import { FieldHint } from './field-hint';
 import {
   useEffect,
   useRef,
   useState,
-  type ChangeEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 
@@ -44,10 +44,13 @@ export function StripList({
   onReorder,
   onUpdate,
   onCommitCoalesce,
+  canAdd = true,
 }: {
   grain: Grain;
   strips: Strip[];
   panelThicknessIn: number;
+  /** False at the schema's strip caps (40 per panel, 80 per board) — Add and Duplicate disable. */
+  canAdd?: boolean;
   onAdd: () => void;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
@@ -175,7 +178,7 @@ export function StripList({
     <div>
       <div className="mb-[0.75rem] flex flex-wrap items-center justify-between gap-[0.75rem]">
         <h3 className="!m-0 text-[1rem]">Strips</h3>
-        <button type="button" className={btnPrimary} onClick={onAdd}>
+        <button type="button" className={btnPrimary} disabled={!canAdd} onClick={onAdd}>
           Add a strip
         </button>
       </div>
@@ -187,7 +190,7 @@ export function StripList({
       {strips.length === 0 ? (
         <div className="rounded-[0.5rem] border border-dashed border-border p-[1rem] text-[0.9375rem] text-muted">
           <p className="m-0 mb-[0.75rem]">Add a strip to see your board.</p>
-          <button type="button" className={btnGhost} onClick={onAdd}>
+          <button type="button" className={btnGhost} disabled={!canAdd} onClick={onAdd}>
             Add a strip
           </button>
         </div>
@@ -244,18 +247,16 @@ export function StripList({
                 <label className="grid gap-[0.375rem]">
                   <span className="text-[0.875rem] font-bold">Width (in)</span>
                   <FieldHint>Strip width in inches.</FieldHint>
-                  <input
+                  <BoundedNumberInput
                     className={inputControl}
                     name={`strip-${selectedStrip.id}-widthIn`}
-                    type="number"
                     min={0.0625}
                     max={24}
                     step={0.0625}
+                    formatBound={formatInches}
                     value={selectedStrip.widthIn}
-                    onChange={(event) =>
-                      onUpdate(selectedStrip.id, { widthIn: boundedNumber(event, 0.0625, 24) })
-                    }
-                    onBlur={() => {
+                    onValue={(widthIn) => onUpdate(selectedStrip.id, { widthIn })}
+                    onCommit={() => {
                       onUpdate(selectedStrip.id, { widthIn: snapToSixteenth(selectedStrip.widthIn) });
                       onCommitCoalesce();
                     }}
@@ -264,25 +265,22 @@ export function StripList({
                 <label className="grid gap-[0.375rem]">
                   <span className="text-[0.875rem] font-bold">Repeat (count)</span>
                   <FieldHint>Number of times this strip repeats.</FieldHint>
-                  <input
+                  <BoundedNumberInput
                     className={inputControl}
                     name={`strip-${selectedStrip.id}-repeat`}
-                    type="number"
                     min={1}
                     max={20}
                     step={1}
+                    integer
                     value={selectedStrip.repeat}
-                    onChange={(event) =>
-                      onUpdate(selectedStrip.id, {
-                        repeat: Math.round(boundedNumber(event, 1, 20)),
-                      })
-                    }
-                    onBlur={() => onCommitCoalesce()}
+                    onValue={(repeat) => onUpdate(selectedStrip.id, { repeat })}
+                    onCommit={onCommitCoalesce}
                   />
                 </label>
               </div>
 
               <MiterControls
+                grain={grain}
                 strip={selectedStrip}
                 panelThicknessIn={panelThicknessIn}
                 showClosingHint={showClosingHintById.get(selectedStrip.id) === true}
@@ -396,10 +394,21 @@ export function StripList({
                       >
                         {move.later}
                       </button>
-                      <button type="button" className={btnGhost} onClick={() => onDuplicate(strip.id)}>
+                      <button
+                        type="button"
+                        className={btnGhost}
+                        disabled={!canAdd}
+                        onClick={() => onDuplicate(strip.id)}
+                      >
                         Duplicate
                       </button>
-                      <button type="button" className={btnGhost} onClick={() => onDelete(strip.id)}>
+                      {/* A panel needs at least one strip — the schema rejects an empty one. */}
+                      <button
+                        type="button"
+                        className={btnGhost}
+                        disabled={strips.length <= 1}
+                        onClick={() => onDelete(strip.id)}
+                      >
                         Delete
                       </button>
                     </div>
@@ -430,12 +439,14 @@ export function StripList({
 }
 
 function MiterControls({
+  grain,
   strip,
   panelThicknessIn,
   showClosingHint,
   onUpdate,
   onCommitCoalesce,
 }: {
+  grain: Grain;
   strip: Strip;
   panelThicknessIn: number;
   showClosingHint: boolean;
@@ -448,6 +459,29 @@ function MiterControls({
     angleDeg: 30,
     corner: 'tr',
   };
+
+  // Miters build end-grain lattices (Sprint 58). Edge grain offers none; a miter left over from
+  // switching grain can only be removed (Sprint 81).
+  if (grain === 'edge') {
+    if (!enabled) return null;
+    return (
+      <div className="grid gap-[0.75rem] rounded-[0.375rem] border border-border/80 p-[0.75rem]">
+        <label className="flex min-h-[2.75rem] items-center gap-[0.625rem]">
+          <input
+            type="checkbox"
+            className="h-[1.25rem] w-[1.25rem]"
+            name={`strip-${strip.id}-mitered`}
+            checked
+            onChange={() => onUpdate(strip.id, { miter: undefined })}
+          />
+          <span className="text-[0.875rem] font-bold">Mitered</span>
+        </label>
+        <p className="m-0 text-[0.875rem] text-muted">
+          Miters only apply to end-grain boards. Uncheck Mitered to remove it.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-[0.75rem] rounded-[0.375rem] border border-border/80 p-[0.75rem]">
@@ -508,23 +542,23 @@ function MiterControls({
           <div className="grid gap-[0.75rem] sm:grid-cols-2">
             <label className="grid gap-[0.375rem]">
               <span className="text-[0.875rem] font-bold">Angle (°)</span>
-              <input
+              <BoundedNumberInput
                 className={inputControl}
                 name={`strip-${strip.id}-miter-angleDeg`}
-                type="number"
                 min={5}
                 max={85}
                 step={0.5}
+                formatBound={(n) => `${n}°`}
                 value={miter.angleDeg}
-                onChange={(event) =>
+                onValue={(angleDeg) =>
                   onUpdate(strip.id, {
                     miter: {
                       ...miter,
-                      angleDeg: boundedNumber(event, 5, 85),
+                      angleDeg,
                     },
                   })
                 }
-                onBlur={() => onCommitCoalesce()}
+                onCommit={onCommitCoalesce}
               />
             </label>
             <label className="grid gap-[0.375rem]">
@@ -560,16 +594,6 @@ function MiterControls({
       ) : null}
     </div>
   );
-}
-
-function boundedNumber(
-  event: ChangeEvent<HTMLInputElement>,
-  min: number,
-  max: number,
-): number {
-  const value = Number(event.currentTarget.value);
-  if (!Number.isFinite(value)) return min;
-  return Math.min(max, Math.max(min, value));
 }
 
 function snapToSixteenth(value: number): number {

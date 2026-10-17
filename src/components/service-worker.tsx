@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useAuth } from '@clerk/nextjs';
+import { clearAllDrafts } from '@/lib/board-designer/draft-store';
 
 /**
  * Registers the service worker — Sprint 8.
@@ -140,6 +141,10 @@ export function PrivateCacheGuard() {
 
     // Signed in a moment ago, signed out now. Wipe.
     wasSignedIn.current = false;
+
+    // Unsaved board drafts are private too (Sprint 81). Before the worker check: drafts live in
+    // sessionStorage and must go even where no worker is registered.
+    clearAllDrafts();
 
     if (!('serviceWorker' in navigator)) return;
 

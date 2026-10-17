@@ -2,7 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import { StripList } from './strip-list';
+import { BoundedNumberInput } from './bounded-number-input';
+import {
+  MAX_STRIPS_PER_PANEL,
+  MAX_STRIPS_TOTAL,
+} from '@/lib/board-designer/config-limits';
 import type { ConfigAction } from '@/lib/board-designer/history';
+import { formatInches } from '@/lib/format';
 import type { BoardDesignConfig, BoardMetrics, Panel } from '@/lib/board-designer/types';
 import { btnDanger, btnGhost, btnPrimary } from '@/lib/ui';
 import { FieldHint } from './field-hint';
@@ -21,9 +27,20 @@ export function PanelEditor({
   dispatch: (action: ConfigAction) => void;
   onCommitCoalesce: () => void;
 }) {
-  const [expandedId, setExpandedId] = useState(config.panels[0]?.id ?? '');
+  // null = the user collapsed it (Sprint 81). An id that no longer matches a panel — a template
+  // load, a restored draft, a deleted panel — falls back to the first panel, as before.
+  const [expandedId, setExpandedId] = useState<string | null>(config.panels[0]?.id ?? null);
   const expanded =
-    config.panels.find((p) => p.id === expandedId) ?? config.panels[0] ?? null;
+    expandedId === null
+      ? null
+      : (config.panels.find((p) => p.id === expandedId) ?? config.panels[0] ?? null);
+
+  const totalStrips = config.panels.reduce((sum, p) => sum + p.strips.length, 0);
+  // add-panel copies the expanded panel, or the last one when none is expanded (reducer fallback).
+  const panelToCopy = expanded ?? config.panels[config.panels.length - 1] ?? null;
+  const canAddPanel =
+    config.panels.length < 4 &&
+    totalStrips + (panelToCopy?.strips.length ?? 0) <= MAX_STRIPS_TOTAL;
 
   const rowsByPanel = useMemo(() => {
     const map = new Map<string, number>();
@@ -42,7 +59,7 @@ export function PanelEditor({
             <button
               type="button"
               className={btnPrimary}
-              disabled={config.panels.length >= 4}
+              disabled={!canAddPanel}
               onClick={() => {
                 dispatch({
                   type: 'add-panel',
@@ -68,7 +85,7 @@ export function PanelEditor({
                   open={open}
                   rows={rowsByPanel.get(panel.id) ?? 0}
                   canDelete={config.panels.length > 1}
-                  onToggle={() => setExpandedId(panel.id)}
+                  onToggle={() => setExpandedId(open ? null : panel.id)}
                   onUpdate={(patch) =>
                     dispatch({ type: 'update-panel', id: panel.id, patch })
                   }
@@ -81,6 +98,10 @@ export function PanelEditor({
                       grain={config.grain}
                       strips={panel.strips}
                       panelThicknessIn={panel.thicknessIn}
+                      canAdd={
+                        panel.strips.length < MAX_STRIPS_PER_PANEL &&
+                        totalStrips < MAX_STRIPS_TOTAL
+                      }
                       onAdd={() => dispatch({ type: 'add-strip', panelId: panel.id })}
                       onDuplicate={(id) =>
                         dispatch({ type: 'duplicate-strip', panelId: panel.id, id })
@@ -184,21 +205,15 @@ function PanelHeader({
         <label className="grid gap-[0.375rem]">
           <span className="text-[0.875rem] font-bold">Thickness (in)</span>
           <FieldHint>Panel thickness in inches.</FieldHint>
-          <input
+          <BoundedNumberInput
             className={inputControl}
-            type="number"
             min={0.125}
             max={4}
             step={0.0625}
+            formatBound={formatInches}
             value={panel.thicknessIn}
-            onChange={(event) => {
-              const value = Number(event.currentTarget.value);
-              if (!Number.isFinite(value)) return;
-              onUpdate({
-                thicknessIn: Math.min(4, Math.max(0.125, value)),
-              });
-            }}
-            onBlur={() => onCommitCoalesce()}
+            onValue={(thicknessIn) => onUpdate({ thicknessIn })}
+            onCommit={onCommitCoalesce}
           />
         </label>
       </div>

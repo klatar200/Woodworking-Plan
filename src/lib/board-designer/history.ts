@@ -1,9 +1,21 @@
+import { MAX_STRIPS_PER_PANEL, MAX_STRIPS_TOTAL } from '@/lib/board-designer/config-limits';
 import type {
   BoardDesignConfig,
   Panel,
   RowStep,
   Strip,
 } from '@/lib/board-designer/types';
+
+function totalStrips(config: BoardDesignConfig): number {
+  return config.panels.reduce((sum, panel) => sum + panel.strips.length, 0);
+}
+
+/** Room for one more strip in this panel without breaking the schema's caps (Sprint 81). */
+function canAddStrip(config: BoardDesignConfig, panelId: string): boolean {
+  const panel = config.panels.find((p) => p.id === panelId);
+  if (!panel) return false;
+  return panel.strips.length < MAX_STRIPS_PER_PANEL && totalStrips(config) < MAX_STRIPS_TOTAL;
+}
 
 /**
  * Max past snapshots kept in memory.
@@ -134,6 +146,7 @@ export function configReducer(
     case 'patch':
       return { ...config, ...action.patch };
     case 'add-strip':
+      if (!canAddStrip(config, action.panelId)) return config;
       return mapPanel(config, action.panelId, (panel) => ({
         ...panel,
         strips: [
@@ -147,6 +160,7 @@ export function configReducer(
         ],
       }));
     case 'duplicate-strip':
+      if (!canAddStrip(config, action.panelId)) return config;
       return mapPanel(config, action.panelId, (panel) => {
         const index = panel.strips.findIndex((strip) => strip.id === action.id);
         if (index < 0) return panel;
@@ -231,6 +245,8 @@ export function configReducer(
         (action.sourcePanelId
           ? config.panels.find((p) => p.id === action.sourcePanelId)
           : undefined) ?? config.panels[config.panels.length - 1]!;
+      // The copy brings the source's strips; never let it push the design past the schema cap.
+      if (totalStrips(config) + source.strips.length > MAX_STRIPS_TOTAL) return config;
       const nextIndex = config.panels.length + 1;
       const copy: Panel = {
         id: newPanelId(),
@@ -245,7 +261,7 @@ export function configReducer(
       const panels = [...config.panels, copy];
       // Append one row step so end-grain preview shows the new panel. Cap at 24
       // (same as add-row); at the cap still add the panel, append nothing.
-      // delete-panel deliberately does NOT clean dangling steps — leave that alone.
+      // delete-panel removes this step again with the panel (Sprint 81).
       if (config.rowPattern.length >= 24) {
         return { ...config, panels };
       }
@@ -261,10 +277,15 @@ export function configReducer(
     case 'delete-panel': {
       if (config.panels.length <= 1) return config;
       if (!config.panels.some((p) => p.id === action.id)) return config;
-      // Leave dangling rowPattern entries so metrics can warn.
+      // Sprint 81: the panel's rows go with it. A dangling step showed another panel's name in
+      // its select (the only option left) and made the design unsaveable.
+      const panels = config.panels.filter((p) => p.id !== action.id);
+      const kept = config.rowPattern.filter((step) => step.panelId !== action.id);
       return {
         ...config,
-        panels: config.panels.filter((p) => p.id !== action.id),
+        panels,
+        rowPattern:
+          kept.length > 0 ? kept : [{ panelId: panels[0]!.id, transform: 'none' }],
       };
     }
     case 'update-panel':

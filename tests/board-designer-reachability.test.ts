@@ -43,7 +43,8 @@ const WITNESSES: Witness[] = [
   {
     id: 'deleted-panel',
     needle: 'Row pattern uses a panel that was deleted.',
-    // Editor can hold this after deleting a panel; serialize rejects it.
+    // Data-level witness: since Sprint 81 delete-panel removes its rows, so the editor can no
+    // longer produce this — a stored or hand-built config still can; serialize rejects it.
     schemaValid: false,
     config: makeV2Config({
       panels: [makePanel('keep', 'Keep', 1.5, [makeStrip('s1', 'walnut')])],

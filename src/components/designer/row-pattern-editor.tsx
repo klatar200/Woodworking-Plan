@@ -5,6 +5,7 @@ import {
 } from '@/lib/board-designer/row-transform';
 import type { BoardDesignConfig, RowStep } from '@/lib/board-designer/types';
 import { btnGhost, btnPrimary } from '@/lib/ui';
+import { BoundedNumberInput } from './bounded-number-input';
 import { FieldHint } from './field-hint';
 
 const inputControl =
@@ -37,22 +38,15 @@ export function RowPatternEditor({
       <label className="mb-[1rem] grid max-w-[12rem] gap-[0.375rem]">
         <span className="text-[0.875rem] font-bold">Rows (count)</span>
         <FieldHint>Total row count for the board face.</FieldHint>
-        <input
+        <BoundedNumberInput
           className={inputControl}
-          type="number"
           min={1}
           max={60}
           step={1}
+          integer
           value={config.rowCount}
-          onChange={(event) => {
-            const value = Math.round(Number(event.currentTarget.value));
-            if (!Number.isFinite(value)) return;
-            dispatch({
-              type: 'patch',
-              patch: { rowCount: Math.min(60, Math.max(1, value)) },
-            });
-          }}
-          onBlur={() => onCommitCoalesce()}
+          onValue={(rowCount) => dispatch({ type: 'patch', patch: { rowCount } })}
+          onCommit={onCommitCoalesce}
         />
         <span className="text-[0.8125rem] text-muted">
           {config.rowCount} rows from a pattern of {config.rowPattern.length}

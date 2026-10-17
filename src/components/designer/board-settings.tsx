@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, type ChangeEvent, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { planeBufferIn } from '@/lib/board-designer/lumber-allowance';
 import type { BoardDesignConfig, BoardMetrics, Grain } from '@/lib/board-designer/types';
 import { KERF_OPTIONS_IN } from '@/lib/cut-optimizer';
 import { formatInches } from '@/lib/format';
 import { btnGhost, btnPrimary, selectControl } from '@/lib/ui';
+import { BoundedNumberInput } from './bounded-number-input';
 import { FieldHint } from './field-hint';
 
 const inputControl =
@@ -193,18 +194,16 @@ export function BoardSettingsDisclosure({
           <FieldHint>
             Extra % of board feet for knots, splits, and snipe — not kerf or planing.
           </FieldHint>
-          <input
+          <BoundedNumberInput
             className={inputControl}
             name="wasteFactor"
-            type="number"
             min={0}
             max={100}
             step={1}
+            integer
             value={Math.round(config.wasteFactor * 100)}
-            onChange={(event) =>
-              onChange({ wasteFactor: boundedNumber(event, 0, 100) / 100 })
-            }
-            onBlur={() => onCommitCoalesce()}
+            onValue={(percent) => onChange({ wasteFactor: percent / 100 })}
+            onCommit={onCommitCoalesce}
           />
         </label>
       </div>
@@ -293,29 +292,19 @@ function NumberField({
     <label className="grid gap-[0.375rem]">
       <span className="text-[0.875rem] font-bold">{label}</span>
       <FieldHint>{hint}</FieldHint>
-      <input
+      <BoundedNumberInput
         className={inputControl}
         name={name}
-        type="number"
         min={min}
         max={max}
         step={step}
+        formatBound={formatInches}
         value={value}
-        onChange={(event) => onChange(boundedNumber(event, min, max))}
-        onBlur={() => onCommitCoalesce()}
+        onValue={onChange}
+        onCommit={onCommitCoalesce}
       />
     </label>
   );
-}
-
-function boundedNumber(
-  event: ChangeEvent<HTMLInputElement>,
-  min: number,
-  max: number,
-): number {
-  const value = Number(event.currentTarget.value);
-  if (!Number.isFinite(value)) return min;
-  return Math.min(max, Math.max(min, value));
 }
 
 function formatKerf(value: number): string {
