@@ -41,9 +41,9 @@ describe('formatMiterAngle', () => {
 });
 
 describe('designCutPieces', () => {
-  it('Checkerboard: 12 strip pieces at 1.675 rip width and 14.275 cut length', () => {
+  it('Checkerboard: 8 strip pieces at 1.675 rip width and 14.275 cut length', () => {
     const pieces = piecesOf(template('checkerboard'));
-    expect(pieces).toHaveLength(12);
+    expect(pieces).toHaveLength(8);
     for (const piece of pieces) {
       expect(piece.role).toBe('strip');
       expect(piece.ripWidthIn).toBeCloseTo(1.675, 9);
@@ -141,7 +141,7 @@ describe('board feet are unchanged by Sprint 80 (R4)', () => {
   it('pins every template total', () => {
     expect(
       TEMPLATES.map((t) => formatBoardFeet(calculateMetrics(t.config).totalBoardFeet)),
-    ).toEqual(['1.17', '3.19', '2.27', '1.03', '1.76', '2.45', '2.70', '2.12', '2.84']);
+    ).toEqual(['1.17', '2.12', '2.27', '1.03', '1.76', '2.45', '2.70', '2.12', '2.84']);
   });
 });
 

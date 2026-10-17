@@ -102,7 +102,9 @@ export const TEMPLATES: readonly BoardTemplate[] = [
       sourceLengthIn: 14,
       sliceThicknessIn: 1.5,
       panels: [
-        panel('panel-1', 'Panel 1', 1.5, mapleWalnutAlternating(12, 'cb')),
+        // 8 × 1½″ = a 12″ panel, under a 13″ benchtop planer (Sprint 83; was 12 strips = 18″).
+        // Keep the count even: rot180 of an odd count repeats the colour order and gives stripes.
+        panel('panel-1', 'Panel 1', 1.5, mapleWalnutAlternating(8, 'cb')),
       ],
       rowPattern: [step('panel-1', 'none'), step('panel-1', 'rot180')],
       // floor((14+0.125)/(1.5+0.125)) = 8 — migrate-equivalent for the old template

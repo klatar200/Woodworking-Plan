@@ -224,12 +224,12 @@ describe('multi-panel warnings', () => {
 });
 
 describe('templates — finished dimensions + panelPlan', () => {
-  it('checkerboard → 8 slices / finished 18 × 12 × 1.5 / requiredLength 12.875', () => {
+  it('checkerboard → 8 slices / finished 12 × 12 × 1.5 / requiredLength 12.875', () => {
     const t = getTemplate('checkerboard');
     expect(t).toBeDefined();
     const m = calculateMetrics(t!.config);
     expect(m.sliceCount).toBe(8);
-    expect(m.finishedLengthIn).toBe(18);
+    expect(m.finishedLengthIn).toBe(12);
     expect(m.finishedWidthIn).toBe(12);
     expect(m.finishedThicknessIn).toBe(1.5);
     expect(m.panelPlan[0]!.requiredLengthIn).toBe(12.875);
@@ -241,7 +241,7 @@ describe('templates — finished dimensions + panelPlan', () => {
       { length: number; width: number; thickness: number }
     > = {
       'classic-stripe': { length: 18, width: 10.5, thickness: 0.75 },
-      checkerboard: { length: 18, width: 12, thickness: 1.5 },
+      checkerboard: { length: 12, width: 12, thickness: 1.5 },
       'butcher-block': { length: 20, width: 9.5, thickness: 1.5 },
       'accent-stripe': { length: 16, width: 11, thickness: 0.75 },
       plaid: { length: 9.75, width: 12, thickness: 1.5 },

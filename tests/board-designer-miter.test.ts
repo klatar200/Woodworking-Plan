@@ -14,12 +14,11 @@ import {
   polygonArea,
 } from '@/lib/board-designer/miter-geometry';
 import { parseConfig } from '@/lib/board-designer/serialize';
-import { getTemplate } from '@/lib/board-designer/templates';
 import type { BoardDesignConfig, Strip } from '@/lib/board-designer/types';
 import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
 /**
- * Frozen solid-strip Cell[] oracle for the Sprint 57 checkerboard template.
+ * Frozen solid-strip Cell[] oracle for Sprint 57's checkerboard shape (12 strips × 8 rows).
  * Hard-coded — must stay byte-identical after miter support.
  */
 const CHECKERBOARD_SOLID_ORACLE: Cell[] = (() => {
@@ -43,12 +42,30 @@ const CHECKERBOARD_SOLID_ORACLE: Cell[] = (() => {
   return cells;
 })();
 
+/** Sprint 83 shrank the template to 8 strips, so the oracle test builds the old shape itself. */
+const SPRINT57_CHECKERBOARD: BoardDesignConfig = makeV2Config({
+  name: 'Checkerboard',
+  sourceLengthIn: 14,
+  panels: [
+    makePanel(
+      'panel-1',
+      'Panel 1',
+      1.5,
+      Array.from({ length: 12 }, (_, i) =>
+        makeStrip(`cb-${i + 1}`, i % 2 === 0 ? 'hard-maple' : 'walnut', 1.5),
+      ),
+    ),
+  ],
+  rowPattern: [
+    { panelId: 'panel-1', transform: 'none' },
+    { panelId: 'panel-1', transform: 'rot180' },
+  ],
+  rowCount: 8,
+});
+
 describe('miter geometry — solid identity', () => {
   it('solid strips produce byte-identical Cell[] to the frozen oracle', () => {
-    const tpl = getTemplate('checkerboard');
-    expect(tpl).toBeTruthy();
-    const metrics = calculateMetrics(tpl!.config);
-    const cells = layoutTopFace(tpl!.config, metrics);
+    const cells = layoutTopFace(SPRINT57_CHECKERBOARD, calculateMetrics(SPRINT57_CHECKERBOARD));
     expect(cells).toEqual(CHECKERBOARD_SOLID_ORACLE);
   });
 });

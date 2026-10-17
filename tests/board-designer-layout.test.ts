@@ -6,7 +6,7 @@ import { UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
 import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 
 describe('layoutTopFace — checkerboard', () => {
-  it('returns 12 strips × 8 rows = 96 cells, and row 1 reverses via rot180', () => {
+  it('returns 8 strips × 8 rows = 64 cells, and row 1 reverses via rot180', () => {
     const t = getTemplate('checkerboard');
     expect(t).toBeDefined();
     const config = t!.config;
@@ -14,13 +14,13 @@ describe('layoutTopFace — checkerboard', () => {
     expect(metrics.sliceCount).toBe(8);
 
     const cells = layoutTopFace(config, metrics);
-    expect(cells).toHaveLength(96); // 12 × 8
+    expect(cells).toHaveLength(64); // 8 × 8
 
     const rowHeight = config.panels[0]!.thicknessIn;
     const row0 = cells.filter((c) => c.yIn === 0);
     const row1 = cells.filter((c) => c.yIn === rowHeight);
-    expect(row0).toHaveLength(12);
-    expect(row1).toHaveLength(12);
+    expect(row0).toHaveLength(8);
+    expect(row1).toHaveLength(8);
     expect(row1[0]!.speciesId).not.toBe(row0[0]!.speciesId);
   });
 });

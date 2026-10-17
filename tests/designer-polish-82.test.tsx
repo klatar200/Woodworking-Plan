@@ -43,10 +43,10 @@ describe('planer warning', () => {
     expect(PLANER_WIDTH_WARNING).toBe('Wider than a 13" benchtop planer — plan to hand-flatten.');
   });
 
-  it('fires on Checkerboard’s 18″ panel and on no other template', () => {
+  it('fires on no template', () => {
     for (const t of TEMPLATES) {
       const hits = warnings(t.config).filter((w) => w === PLANER_WIDTH_WARNING).length;
-      expect(hits, t.id).toBe(t.id === 'checkerboard' ? 1 : 0);
+      expect(hits, t.id).toBe(0);
     }
   });
 

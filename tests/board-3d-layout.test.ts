@@ -23,14 +23,14 @@ describe('board 3D layout helpers', () => {
     const cells = layoutTopFace(config, metrics);
     const groups = groupCellsBySpecies(cells);
 
-    expect(cells).toHaveLength(96);
+    expect(cells).toHaveLength(64);
     expect(groups.map((group) => group.speciesId).sort()).toEqual([
       'hard-maple',
       'walnut',
     ]);
     expect(groups.map((group) => group.cells.length).sort((a, b) => a - b)).toEqual([
-      48,
-      48,
+      32,
+      32,
     ]);
   });
 

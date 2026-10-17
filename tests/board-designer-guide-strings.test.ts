@@ -67,10 +67,10 @@ describe('Checkerboard — verbatim', () => {
     const mill = steps.find((s) => s.id === 'mill-stock')!;
     const crosscut = steps.find((s) => s.id === 'crosscut-strips')!;
     expect(formatBuildQuantity(mill.quantities[0]!)).toBe(
-      'Hard Maple stock · 1 1/2" thick — for 6 strips',
+      'Hard Maple stock · 1 1/2" thick — for 4 strips',
     );
     expect(formatBuildQuantity(crosscut.quantities[0]!)).toBe(
-      '6× Hard Maple strips · 14 1/4" long × 1 11/16" wide',
+      '4× Hard Maple strips · 14 1/4" long × 1 11/16" wide',
     );
   });
 

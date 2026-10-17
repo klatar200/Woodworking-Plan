@@ -96,9 +96,10 @@ describe('Sprint 57 v2 migration + geometry', () => {
     expect(cm.finishedWidthIn).toBe(10.5);
     expect(cm.finishedThicknessIn).toBe(0.75);
 
+    // Sprint 83: Checkerboard is 8 strips (12″). The golden-fixture test above still pins the v1 shape.
     const checker = getTemplate('checkerboard')!;
     const chm = calculateMetrics(checker.config);
-    expect(chm.finishedLengthIn).toBe(18);
+    expect(chm.finishedLengthIn).toBe(12);
     expect(chm.finishedWidthIn).toBe(12);
     expect(chm.finishedThicknessIn).toBe(1.5);
     expect(chm.sliceCount).toBe(8);

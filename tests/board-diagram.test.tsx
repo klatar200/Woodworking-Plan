@@ -15,7 +15,7 @@ function templateConfig(id: string) {
 }
 
 describe('BoardDiagram', () => {
-  it('renders 96 rects for the checkerboard template and 7 for classic-stripe', () => {
+  it('renders 64 rects for the checkerboard template and 7 for classic-stripe', () => {
     const checkerboard = templateConfig('checkerboard');
     const stripe = templateConfig('classic-stripe');
 
@@ -26,7 +26,7 @@ describe('BoardDiagram', () => {
       <BoardDiagram config={stripe} metrics={calculateMetrics(stripe)} />,
     );
 
-    expect(checkerboardHtml.match(/<rect\b/g)?.length).toBe(96);
+    expect(checkerboardHtml.match(/<rect\b/g)?.length).toBe(64);
     expect(stripeHtml.match(/<rect\b/g)?.length).toBe(7);
   });
 
@@ -40,7 +40,7 @@ describe('BoardDiagram', () => {
       <BoardDiagram config={checkerboard} metrics={calculateMetrics(checkerboard)} />,
     );
 
-    expect(html).toContain('viewBox="0 0 18 12"');
+    expect(html).toContain('viewBox="0 0 12 12"');
     expect(html).toMatch(
       /<rect[^>]*x="0"[^>]*y="0"[^>]*width="1\.5"[^>]*height="1\.5"[^>]*fill="#E7D3A9"/,
     );
