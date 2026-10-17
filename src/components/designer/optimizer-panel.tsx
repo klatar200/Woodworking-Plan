@@ -53,7 +53,12 @@ export function cutPlanGroupsForConfig(
 ): BoardGroup[] {
   return designCutPlan(config, {
     stockLengthIn: stock.stockLengthIn ?? DEFAULT_OPTIONS.stockLengthIn,
-    stockWidthIn: resolveStockWidthIn(config, stock.stockWidthIn ?? 'auto'),
+    // `undefined` means "not given" → auto. `null` is a real choice ("buy each part's width") and
+    // must survive — `??` would turn it into auto.
+    stockWidthIn: resolveStockWidthIn(
+      config,
+      stock.stockWidthIn === undefined ? 'auto' : stock.stockWidthIn,
+    ),
     kerfIn: config.kerfIn,
     endTrimIn: DEFAULT_OPTIONS.endTrimIn,
   });

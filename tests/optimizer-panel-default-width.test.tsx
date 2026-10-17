@@ -7,7 +7,10 @@
  */
 import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { OptimizerPanel } from '@/components/designer/optimizer-panel';
+import {
+  cutPlanGroupsForConfig,
+  OptimizerPanel,
+} from '@/components/designer/optimizer-panel';
 import { getTemplate } from '@/lib/board-designer/templates';
 
 afterEach(() => cleanup());
@@ -32,5 +35,16 @@ describe('OptimizerPanel default stock width', () => {
     expect((container.querySelectorAll('select')[1] as HTMLSelectElement).value).toBe(
       'rip-none',
     );
+  });
+
+  it('…and actually packs that way: null buys each part at its own width, no ripping', () => {
+    const checker = getTemplate('checkerboard')!.config;
+    const explicit = cutPlanGroupsForConfig(checker, { stockWidthIn: null });
+    for (const group of explicit) {
+      expect(group.ripsPerBoard).toBe(1);
+      expect(group.stockWidthIn).toBeCloseTo(group.widthIn, 9);
+    }
+    const auto = cutPlanGroupsForConfig(checker);
+    expect(auto.every((group) => group.stockWidthIn === 3.5)).toBe(true);
   });
 });
