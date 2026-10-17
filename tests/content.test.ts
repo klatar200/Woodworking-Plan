@@ -6,6 +6,7 @@ import {
   COST_TIER_BOUNDS,
   costTierSymbol,
 } from '@/content/plan-schema';
+import type { PlanInput } from '@/content/plan-schema';
 
 /**
  * These tests run against the REAL content in content/ — not fixtures.
@@ -127,6 +128,59 @@ describe('published plans carry a photo (Workstream C, 2026-07-23)', () => {
     // (which would still pass the check above vacuously).
     const published = catalog.plans.filter((plan) => plan.published);
     expect(published.length).toBeGreaterThan(500);
+  });
+});
+
+/**
+ * Sprint 84 / GO_LIVE_FIXES S-02 — a published cut list must be lumber, in inches.
+ *
+ * The Kreg import put millimetres into inch fields on its metric plans ("Back 19″ × 140″ × 775″",
+ * so the board plan said "Buy 0 boards") and listed whole assemblies ("Drawers", "Desk Base") as
+ * parts. 29 such plans were unpublished. Inch fields only: an assembly or a millimetre is not a
+ * piece of lumber. To fix a plan, correct its cut list or unpublish it — never loosen the bounds.
+ */
+const CUT_PART_BOUNDS = { maxThicknessIn: 4, maxWidthIn: 48, maxLengthIn: 120 };
+
+function implausibleParts(cutList: PlanInput['cutList']): PlanInput['cutList'] {
+  return cutList.filter(
+    (part) =>
+      !(part.thicknessIn > 0 && part.thicknessIn <= CUT_PART_BOUNDS.maxThicknessIn) ||
+      !(part.widthIn > 0 && part.widthIn <= CUT_PART_BOUNDS.maxWidthIn) ||
+      !(part.lengthIn > 0 && part.lengthIn <= CUT_PART_BOUNDS.maxLengthIn),
+  );
+}
+
+describe('published plans have plausible cut lists (S-02, Sprint 84)', () => {
+  it('every part of every published plan is within bounds', () => {
+    const offenders = catalog.plans
+      .filter((plan) => plan.published)
+      .flatMap((plan) => implausibleParts(plan.cutList).map((part) => `${plan.slug}: ${part.part}`));
+
+    expect(
+      offenders,
+      `${offenders.length} published cut-list part(s) outside 0<T≤4, 0<W≤48, 0<L≤120 — unpublish or correct: ${offenders.join('; ')}`,
+    ).toEqual([]);
+  });
+
+  it('no published plan is a -metric plan', () => {
+    const metric = catalog.plans
+      .filter((plan) => plan.published && plan.slug.endsWith('-metric'))
+      .map((plan) => plan.slug);
+
+    expect(metric, `the catalog is inch-only — unpublish: ${metric.join(', ')}`).toEqual([]);
+  });
+
+  it('the bounds reject millimetres and accept the limits', () => {
+    const part = (thicknessIn: number, widthIn: number, lengthIn: number) => ({
+      part: 'Test part',
+      quantity: 1,
+      thicknessIn,
+      widthIn,
+      lengthIn,
+    });
+    expect(implausibleParts([part(19, 140, 775)])).toHaveLength(1);
+    expect(implausibleParts([part(0.75, 3.5, 0)])).toHaveLength(1);
+    expect(implausibleParts([part(4, 48, 120)])).toEqual([]);
   });
 });
 
