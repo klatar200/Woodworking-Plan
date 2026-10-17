@@ -157,6 +157,16 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
+#### Sprint 83 — Checkerboard fits a 13″ planer 🟡 NEXT (Keagan 2026-10-17) — pack `sprints/83/`, locked
+
+```
+OBJECTIVE: The default new board (Checkerboard) was 12 strips × 1½″ — an 18″ panel no benchtop
+           planer takes, and since Sprint 82 it warned on every new board. Now 8 strips → 12″
+           panel → 12″ × 12″ × 1½″, no warnings. Strip count stays even (rot180 of an odd
+           alternating count gives stripes). Saved designs are stored whole — unaffected.
+OUT:       other templates · planer rule/copy · maths · schema · /designer page
+```
+
 #### Sprint 82 — designer polish (audit P2) ✅ CLOSED 2026-10-17 · 99/100 (ACCEPTANCE 31/31)
 
 ```
