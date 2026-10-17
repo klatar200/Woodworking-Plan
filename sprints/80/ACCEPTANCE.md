@@ -1,7 +1,9 @@
 # Sprint 80 — ACCEPTANCE
 
-Bar author: Claude Code. Written before implementation. Grader: Cursor.
-Locked by `ACCEPTANCE.sha256`.
+Bar author: Claude Code. Written before implementation. Grader: a fresh-context subagent
+(`AGENTS.md` `Grade sprint NN`) — never the implementing session.
+Locked by `ACCEPTANCE.sha256`. Re-locked 2026-10-16 when Keagan retired Cursor from the loop: the
+executor and grader names changed, not one check.
 
 Grade = PASS ÷ **40** — the `A` and `R` ids only (A1–A32 + R1–R8). Gate = **≥95%** (38/40). Any
 `R` FAIL voids the sprint regardless of grade.
@@ -12,8 +14,9 @@ here, mark it `FAIL` with evidence `not run — Keagan`.
 Evidence format: `verify.txt:<line>` or `<file>:<line>` for every `A`/`R` id. For `evidence: manual`,
 cite what you actually did — the command and its result, or the file:line you inspected.
 
-Baseline for every "before" comparison: the merge-base of this branch and `main` —
-`git show $(git merge-base main HEAD):<file>`. Do not use `main` alone; it moves.
+Baseline for every "before" comparison: the commit that added this pack's `ACCEPTANCE.sha256`
+(`git log --format=%H -1 -- sprints/80/ACCEPTANCE.sha256`) — `git show <lock-sha>:<file>`.
+`changes.diff` is cut against the same SHA. Do not use `main` alone; it moves.
 
 "The 9 templates" = `TEMPLATES` from `src/lib/board-designer/templates.ts`, in array order:
 classic-stripe, checkerboard, butcher-block, accent-stripe, plaid, brick, diagonal, thue-morse, harlequin.

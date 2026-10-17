@@ -6,19 +6,20 @@ Copy this directory to `sprints/<NN>/` to open a sprint. Delete this README from
 
 | File | Writer | Never written by |
 |------|--------|------------------|
-| `GOAL.md` | Claude Code | — |
-| `PLAN.md` | Claude Code | — |
-| `ACCEPTANCE.md` | Claude Code | **Cursor** |
-| `ACCEPTANCE.sha256` | Claude Code (`verify.mjs lock`) | Cursor |
-| `verify.txt` | Cursor (`npm run verify`) | hand-edited by anyone |
-| `SCORECARD.md` | Cursor | **Claude Code** |
-| `changes.diff` | Keagan (`git diff`) | — |
-| `FIXES.md` | Claude Code | Cursor |
+| `GOAL.md` | implementing session | — |
+| `PLAN.md` | implementing session | — |
+| `ACCEPTANCE.md` | implementing session, before any code | **grader subagent** |
+| `ACCEPTANCE.sha256` | implementing session (`verify.mjs lock`) | grader subagent |
+| `verify.txt` | `npm run verify -- --out` | hand-edited by anyone |
+| `SCORECARD.md` | **grader subagent** (fresh context) | **implementing session** |
+| `changes.diff` | `git diff <lock-sha> HEAD --output=` | — |
+| `FIXES.md` | implementing session | grader subagent |
 
 Two rules produce everything else:
 
-1. **The actor that writes the bar never writes the grade.** Claude authors `ACCEPTANCE.md`
-   before any code exists; Cursor grades against it. Self-grading is what the old loop allowed.
+1. **The context that writes the bar and the code never writes the grade.** The implementing
+   session authors `ACCEPTANCE.md` before any code exists; a fresh-context grader subagent grades
+   against it. Self-grading is what the original loop allowed.
 2. **The bar is locked.** `ACCEPTANCE.sha256` is written at plan time and checked by
    `tests/sprint-pack.test.ts`. Editing `ACCEPTANCE.md` afterwards turns the suite red.
 

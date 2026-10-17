@@ -56,7 +56,7 @@ of its wedge species, cut at the same size; one rip yields the strip and its mat
   template's board-feet total is unchanged (R4 pins all nine). The miter area split stays as
   documented on the print sheet.
 - **A new allowance.** No thickness allowance, no trim allowance, no change to `planeBuffer`'s
-  meaning. If the model looks wrong, report it in SCORECARD — that is a D1 decision for Keagan.
+  meaning. If the model looks wrong, report it to Keagan at close — that is a D1 decision.
 - **`PanelPlan.requiredLengthIn`** — its formula and its tests stay exactly as they are. It stops
   being *displayed*; it is not redefined.
 - **Safety or technique coaching (D7, still gated).** No PPE, no "never run end grain through a

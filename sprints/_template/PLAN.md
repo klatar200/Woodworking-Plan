@@ -1,12 +1,7 @@
 # Sprint NN — PLAN
 
-Executor: **Cursor**. Tasks are ordered; do not reorder.
+Executor: **Claude Code** (implementing session). Tasks are ordered; do not reorder.
 Read `GOAL.md` first — its "Out of scope" list is enforced by the `R` gates in `ACCEPTANCE.md`.
-
-**Model: `<Auto | premium>`** — <one line of why>. Advisory: no file can set Cursor's model, the
-picker is set before this file is read. Claude states the recommendation here so Keagan is
-prompted at dispatch instead of having to remember. Default is **Auto** (unlimited on Pro);
-premium only for a genuinely hard slice, and note which task needs it.
 
 ---
 
@@ -46,5 +41,6 @@ a reasonable executor could plausibly violate here. A list of forty is a list of
 npm run verify -- --out sprints/NN/verify.txt
 ```
 Never a shell redirect — `>` writes UTF-16LE on Windows and breaks every downstream parser.
-Grade every `ACCEPTANCE.md` id in `SCORECARD.md` citing `verify.txt:<line>` or `<file>:<line>`.
-Do not edit `ACCEPTANCE.md`. Commit to the sprint branch; do not push or merge.
+Then `git diff <lock-sha> HEAD --output=sprints/NN/changes.diff` and hand grading to a fresh-context
+subagent, which writes `SCORECARD.md` citing `verify.txt:<line>` or `<file>:<line>`. Do not edit
+`ACCEPTANCE.md`.

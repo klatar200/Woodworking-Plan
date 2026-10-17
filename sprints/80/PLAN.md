@@ -1,10 +1,8 @@
 # Sprint 80 — PLAN
 
-Executor: **Cursor**. Tasks are ordered; do not reorder. T1–T3 are foundations that T4–T7 render.
-
-**Model: `Auto`.** Every string and formula below is specified exactly, so this is careful
-transcription rather than design. If Auto stalls on T5 (the step rewrite has the most branches),
-switch that task alone to premium.
+Executor: **Claude Code** (implementing session, on `main`). Tasks are ordered; do not reorder.
+T1–T3 are foundations that T4–T7 render. Grading is done by a fresh-context subagent
+(`AGENTS.md` `Grade sprint NN`), never by the implementing session.
 
 Read `GOAL.md` first — especially **"The model this sprint makes consistent"**. Every number this
 sprint emits follows that one table. Its "Out of scope" list is enforced by the `R` gates.
@@ -201,7 +199,7 @@ Worked example — Checkerboard template, verbatim:
 
 **Guardrail — D7 is still gated.** Every new sentence above is a cut or a dimension. Add no reason,
 warning, tool advice, or technique ("use a sled", "never…", eye/ear protection). If a step seems
-to need one, it is out of scope — say so in SCORECARD.
+to need one, it is out of scope — record it for Keagan in the sprint close.
 
 **Guardrail:** `build-steps.ts` must still not mention `wasteFactor`, and still imports nothing from
 react/next/prisma/components/app (`tests/board-designer-build-steps.test.ts:318`, `:333`).
@@ -275,7 +273,7 @@ New coverage (a new `tests/board-designer-cut-pieces.test.ts` plus additions to 
 8. `tests/board-designer-reachability.test.ts` — one added `WITNESSES` entry and its id appended to the `required` array (T6). Additions only.
 9. `tests/board-designer-metrics.test.ts:115`–`116` — the golden `toParts` part's `widthIn: 1.5` and `lengthIn: 19.375` become `toBeCloseTo(1.675, 9)` and `toBeCloseTo(21.475, 9)` assertions (the fixture uses the default 0.175 buffer: 12 × 1.675 + 11 × 0.125). Every other field in that `toMatchObject` stays.
 
-Any other red test is a signal to report in SCORECARD, not to loosen. Deleting, skipping, or
+Any other red test is a signal to report, not to loosen. Deleting, skipping, or
 weakening an assertion outside this list is an `R` FAIL.
 
 ---
@@ -299,6 +297,6 @@ weakening an assertion outside this list is an `R` FAIL.
 npm run verify -- --out sprints/80/verify.txt
 ```
 Never a shell redirect — `>` writes UTF-16LE on Windows and breaks every downstream parser.
-Grade every `ACCEPTANCE.md` id in `sprints/80/SCORECARD.md`, citing `verify.txt:<line>` or
-`<file>:<line>`, and state the branch name at the top. Do not edit `ACCEPTANCE.md`. Commit to
-`cursor/sprint-80-<slug>`; do not push or merge.
+Then `git diff <lock-sha> HEAD --output=sprints/80/changes.diff`, where `<lock-sha>` is the commit
+that added `sprints/80/ACCEPTANCE.sha256`. A fresh-context grader subagent writes
+`sprints/80/SCORECARD.md` from ACCEPTANCE + verify.txt + changes.diff. Do not edit `ACCEPTANCE.md`.

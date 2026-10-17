@@ -1,6 +1,6 @@
 # Sprint NN — ACCEPTANCE
 
-Bar author: Claude Code. Written **before** implementation. Grader: Cursor.
+Bar author: Claude Code. Written **before** implementation. Grader: a fresh-context subagent.
 Locked by `ACCEPTANCE.sha256` — see `sprints/_template/README.md`.
 
 Grade = PASS ÷ <total>. Gate = **≥95%**. Any `R` FAIL voids the sprint regardless of grade.

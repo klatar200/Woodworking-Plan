@@ -1,138 +1,50 @@
 # Sprints
 
-One folder per sprint. The folder is the **only** interface between Claude Code and Cursor —
-no plan, scorecard, or fix list is ever pasted between chat windows again.
+One folder per sprint. The folder is the sprint's state — not a chat transcript. A session that
+hits its limit mid-sprint resumes from the folder.
 
 Packs are for sprints. A change touching fewer than ~3 files goes direct; the pack would cost
 more than the work.
 
-## Topology — read this before the loop
+## Who does what (Keagan 2026-10-16: Claude Code only)
 
-**All three actors share one working tree: Keagan's local checkout.** Cursor runs locally in his
-Cursor, not in Cursor Cloud (decided 2026-07-28 — Cloud is metered, local is not). So there is no
-transport, no push, no pull, and no waiting: a file Claude writes is a file Cursor reads.
+Cursor is retired from the loop. **One native Claude Code session** plans, implements, verifies,
+and closes, and runs `git` itself (native sessions are safe — CLAUDE.md §2/§5).
 
-What still separates the actors is **branches, not clones**:
+Independence — the reason the old loop had a second tool — is kept with **fresh-context
+subagents**: one reads the pack cold before it is locked, a different one grades the work after.
+Neither has seen the implementer's reasoning. Brief them with paths, never with conclusions: an
+agent handed your verdict tends to return it confirmed.
 
-- **Claude Code** edits the tree directly and runs no `git` at all — its sandbox mount corrupts
-  `.git` (CLAUDE.md §5). That ban is unchanged and is about the sandbox, not about trust.
-- **Cursor** owns four git verbs on its own branch: `checkout -b`, `add`, `commit`, `status`.
-  It creates `cursor/sprint-NN-<slug>` off `main` and commits there. **Never** push, merge,
-  rebase, reset, stash, or return to `main` — one tree, no remote copy, so a destructive verb
-  costs the real repo.
-- **Keagan** owns the branch boundary: cutting `changes.diff`, merging after the audit, pushing.
-
-Branch isolation is what buys the audit-before-merge property that Cursor Cloud's separate clone
-used to provide. It is the reason Cursor commits to a branch rather than straight into the tree:
-without it there is no diff to audit and no clean way to unwind a failed round.
+| Actor | Writes |
+|---|---|
+| Implementing session | `GOAL.md` `PLAN.md` `ACCEPTANCE.md` `ACCEPTANCE.sha256` `FIXES.md` `verify.txt` `changes.diff` · code · commits |
+| Pre-flight subagent | nothing — read-only report |
+| Grader subagent | `SCORECARD.md` only |
+| Keagan | decisions (scope, D-gates, escalations) |
 
 ## The loop
 
-| # | Actor | Model | Does | Writes |
-|---|-------|-------|------|--------|
-| 1 | Claude Code | **Opus** | Reads CLAUDE.md + BUILD_PLAN §4 + your change list. No repo re-audit. | `GOAL.md` `PLAN.md` `ACCEPTANCE.md` |
-| 2 | Keagan | — | Lock the bar. Commit the pack to `main`. | `ACCEPTANCE.sha256` |
-| 3 | Cursor | Auto / premium | Branches, opens the folder itself, implements PLAN.md in order, **commits to `cursor/*`**. | source · `verify.txt` · `SCORECARD.md` |
-| 4 | Keagan | — | Diff that branch against `main`. Merge only after the audit passes. | `changes.diff` |
-| 5 | Claude Code | **Sonnet** | Audits diff + verify.txt against the bar. §7 invariants, security, architecture. | `FIXES.md` |
-| 6 | Cursor | Auto | Reads `FIXES.md` only, re-runs verify, commits to the same branch. | `verify.txt` `SCORECARD.md` |
-| — | | | **<95% → back to 4. Max 3 rounds, then escalate (CLAUDE.md §4).** | |
-| 7 | Keagan | — | Merge the branch, push. | — |
-| 8 | Claude Code | **Opus** | Closes out, opens the next pack. | `SPRINT_LOG.md` · `sprints/<NN+1>/` |
+| # | Step | Detail |
+|---|------|--------|
+| 1 | **Plan** | Read CLAUDE.md + BUILD_PLAN §4 + the change list. No repo re-audit. Write GOAL / PLAN / ACCEPTANCE. |
+| 2 | **Check** | Fresh-context subagent, read-only, using `AGENTS.md` §"Triggers" `Check` steps as its brief. It checks the pack against the repo: cites, exact strings, tests the PLAN would turn red, non-binary checks. |
+| 3 | **Fix + lock** | Fix the findings, `node scripts/verify.mjs check-pack sprints/NN`, then `node scripts/verify.mjs lock sprints/NN`. Commit the pack. |
+| 4 | **Implement** | On `main` (trunk-based, CLAUDE.md §4), task order as PLAN states. |
+| 5 | **Verify** | `npm run verify -- --out sprints/NN/verify.txt` |
+| 6 | **Diff** | `git diff <lock-sha> HEAD --output=sprints/NN/changes.diff` |
+| 7 | **Grade** | A NEW fresh-context subagent reads ACCEPTANCE + verify.txt + changes.diff and writes SCORECARD.md. |
+| — | **< 95% or any `R` FAIL** | Append `## Round N` to FIXES.md (delta only), fix, back to 5 with another fresh grader. **Max 3 rounds, then escalate (CLAUDE.md §4).** |
+| 8 | **Close** | SPRINT_LOG + BUILD_PLAN §4, commit, push, check GitHub Actions and the deploy. |
 
-Model routing is the point of step 5 vs 1/8: auditing a diff against a written bar is
-mechanical and belongs on Sonnet. Planning and closing need judgment and belong on Opus.
+**Order is load-bearing at step 3** (learned in Sprint 77): locking before the Check means its
+findings either cannot be acted on or move the bar after the lock, which voids the sprint on a hash
+mismatch. If the bar genuinely has to change after locking, that is a re-scope and it is Keagan's
+call — delete the hash and re-lock deliberately, never as a reflex to clear a red check.
 
-The old cloud loop had a *push* between 2 and 3, a *fetch* at 4, and a *push/pull* pair around
-the fix round. Running Cursor locally deletes all four — the pack is the same, the bar is the
-same, only the transport is gone.
-
-## The four standing prompts
-
-**1 — open the sprint (Claude Code, Opus)**
-```
-Plan sprint NN. Changes I want:
-- <your list, in your own words>
-
-Write sprints/NN/GOAL.md, PLAN.md, ACCEPTANCE.md.
-Agent-focused, not human-readable. Don't re-audit the repo.
-```
-**1a — pre-flight the pack, BEFORE locking (Cursor)**
-```
-Check sprint NN
-```
-Read-only; Cursor writes nothing. It reads the pack cold, with no memory of what Claude meant, and
-reports defects — wrong line cites, unreachable gates, checks that aren't binary, a better API that
-already exists. Findings go to Claude to fix. **Cursor never edits the pack** — it is the graded
-actor and the bar is not its to move.
-
-**The order here is load-bearing and was learned the hard way (Sprint 77).** Locking before the
-pre-flight means either its findings cannot be acted on, or the bar moves after the lock and
-`tests/sprint-pack.test.ts` voids the sprint on a hash mismatch. Pre-flight first, fix, *then* lock.
-
-**1b — lock and commit the pack (Keagan)**
-
-`lock` writes a file, so it runs in your shell, never from the Claude sandbox (CLAUDE.md §5). It
-**refuses to overwrite an existing hash** — that refusal is the tamper check, not a bug. Cursor
-reads the pack off disk, so no push is needed; commit anyway, so a context reset loses nothing.
-```
-node scripts/verify.mjs lock sprints/NN
-git add -A; git commit -m "sprint NN: pack"
-```
-If the bar genuinely has to change after locking, that is a **re-scope** and it is Keagan's call
-(CLAUDE.md §4) — `rm` the hash and re-lock deliberately, never as a reflex to clear a red check.
-
-**2 — hand off (Cursor)**
-```
-Run sprint NN
-```
-That is the entire prompt. The six-step procedure it fires lives in `AGENTS.md` §"Triggers",
-which Cursor loads from the repo root on its own — so it never has to be typed, and it stays
-identical from sprint to sprint. Anything *specific* to this sprint belongs in `PLAN.md`
-guardrails, never in the chat message. If a handoff needs a sentence of explanation, the pack
-is wrong; fix the pack.
-
-Cursor commits to a local `cursor/sprint-NN-*` branch and stops there. Diff it against `main` —
-substitute the real branch name (it is at the top of `SCORECARD.md`); this is a template, not a
-runnable line:
-```
-git diff "main...cursor/<real-branch-name>" --output=sprints/NN/changes.diff
-```
-Three properties of that command are load-bearing, each learned the hard way in Sprint 75:
-- **`--output=`, never `>`.** PowerShell 5.1 redirection writes **UTF-16LE**, which every text
-  tool downstream then fails to parse. `--output=` makes git write the file as UTF-8.
-- **Quoted.** PowerShell parses a bare `@{` as a hashtable literal and eats it.
-- **Three dots.** `A...B` is "what B added since it diverged from A" — correct against a branch,
-  and it does not require merging first.
-
-Without this file the audit falls back to reading `src/` directly, which costs several times more
-Claude tokens for the same conclusion. It is the cheapest step in the loop and the one that pays.
-
-Audit before merging. Once the audit passes:
-```
-git checkout main
-git merge --ff-only cursor/<real-branch-name>
-git push
-```
-
-**3 — audit (Claude Code, Sonnet)**
-```
-Audit sprint NN
-```
-`FIXES.md` lands on disk, which is all Cursor needs. Go straight to prompt 4.
-
-**4 — fix round (Cursor)**
-```
-Fix sprint NN
-```
-
-Then re-cut `changes.diff` from step 2 and go back to prompt 3.
-
-**Five prompts, and only the first one varies** — it carries your change list, which is the one
-thing no file can know in advance. The rest are a verb and a number.
-
-Order of the whole loop, since two of these are easy to swap by accident:
-`Plan` → `Check` → **lock** → `Run` → cut `changes.diff` → `Audit` → `Fix` → merge.
+**`--output=`, never `>`**, for both verify and `git diff`: PowerShell 5.1 redirection writes
+UTF-16LE, which every downstream text tool then fails to parse (Sprint 75). Diff against the lock
+commit's SHA — never `HEAD~1`, never `HEAD@{1}`.
 
 ## Why this is enforced and not merely documented
 
@@ -163,7 +75,7 @@ node scripts/verify.mjs check-pack sprints/NN
 **What that validator cannot do, and must not be trusted to.** It checks that a cite *resolves*,
 not that it points at the right place. Sprint 77's `serialize.ts:197` was a line number copied off
 the *test* file; the source file is longer than 197 lines, so every check above passes it. Cite
-accuracy needs a reader who does not already know what the author meant — that is `Check sprint NN`.
+accuracy needs a reader who does not already know what the author meant — that is the Check step.
 The validator shortens that review; it does not replace it.
 
 A comment is not a mechanism. These are.
@@ -171,7 +83,6 @@ A comment is not a mechanism. These are.
 ## Files
 
 Everything in a pack is committed except `changes.diff` (gitignored — regenerable from git,
-and large). Committing the rest is what makes a sprint resumable after a context reset: if a
-Claude session hits its limit mid-sprint, nothing is lost.
+and large).
 
 See `_template/README.md` for the ACCEPTANCE / SCORECARD line formats.
