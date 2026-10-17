@@ -3,13 +3,43 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 83 (2026-10-17) — CLOSED 100/100** — Checkerboard fits a 13″ planer. Suite: 1556 green / 134 files.
+> **Latest logged: Sprint 84 (2026-10-17) — CLOSED 99/100** — patched dependencies + no impossible plans. Suite: 1565 green / 134 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅ · Sprint 82 ✅ · Sprint 83 ✅. Suite: 1556 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅ · Sprint 82 ✅ · Sprint 83 ✅ · Sprint 84 ✅. Suite: 1565 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 84: Patched dependencies + no impossible plans
+**Dates:** 2026-10-17
+**Scope:** GO_LIVE_FIXES S-01 (vulnerable production dependencies) + S-02 (published plans with impossible cut lists), Keagan's pick from the site-wide audit.
+
+**Process:** Claude-only loop. Before the lock, the dependency fix was trial-run on a scratch copy of the lockfile. It showed that `npm audit fix` clears everything except a Prisma-CLI chain that only a Prisma major would fix (an override to deepmerge-ts 7.1.6 was tried and is still flagged). The plan list was taken from the exact bounds the new test enforces, which caught a 29th plan (`garden-planter`, 60″-wide posts). The fresh-context pre-flight re-measured both and found no blockers; it found six minor fixes. It also surfaced in-bounds garbage rows, logged as S-18.
+
+### Attempt 1 — ACCEPTANCE 14/14 (100%), no R FAIL — §6 99/100
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | S-01: critical and all request-path highs cleared. S-02: all 29 provably wrong plans unpublished and guarded. No `src/` change (R2). |
+| 2 Correctness /20 | 20 | 14/14 graded. `npm run build` on Next 15.5.28 passes (M1). CI and deploy green. |
+| 3 Test coverage /15 | 14 | Three new content tests, including a boundary test of the bounds themselves. **−1:** the guard checks bounds only, so garbage rows inside the bounds still pass (S-18). |
+| 4 Security /15 | 15 | Next advisories (Server Actions DoS, image optimizer RCE, server-function disclosure) patched. The residual deepmerge-ts chain is CLI-only and documented as accepted. |
+| 5 Code quality /10 | 10 | Lockfile-only fix plus a one-line range floor. One-token content edits. |
+| 6 Mobile/offline /10 | 10 | No change to either surface. |
+| 7 Docs/handoff /5 | 5 | Pack, GO_LIVE_FIXES statuses, BUILD_PLAN §4, CLAUDE.md §6, DECISIONS_LOG. |
+
+**Manual (run natively after grading):** M1 `npm run build` passed (Next.js 15.5.28). M3: the live site reports `window.next.version` 15.5.28. `vercel inspect --logs` streamed without ending, so the runtime version was used as the evidence. M2: `npm run db:seed` ran against `sparkling-band` (1128 plans, search index rebuilt). Then on notchplans.com:
+- `/plans/wall-mounted-wine-rack-metric`, `/plans/tile-headboard-queen-size` and `/plans/garden-planter` → 404.
+- `/browse` → "610 plans", and a search for "metric" returns no `-metric` plans.
+- `/plans/wall-mounted-wine-rack` → 200, with its `/_next/image` requests 200.
+- Signed-in `/designer` loads.
+- The only console errors were those three deliberate 404 probes.
+
+**Note:** the seed reset every plan's `publishedAt` again (S-17, open).
+
+**Commits:** `e8d4a73` pack (locked) · `3b159e9` implementation · `5914ad2` SCORECARD.
 
 ---
 

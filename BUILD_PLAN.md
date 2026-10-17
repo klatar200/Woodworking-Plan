@@ -64,8 +64,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 81 (designer save safety + controls) | ✅ **CLOSED** 2026-10-17 — **98/100**, ACCEPTANCE 40/40. Save blocked with the reason when the server would reject; per-tab drafts restored and wiped on sign-out; beforeunload guard; designer error boundary; clearable number fields; caps; working Collapse; end-grain-only miters; phone Build Plan link; two-step library delete; no nested form (#418 gone). Suite **1515/1515** / 131 files. |
 | Sprint 82 (designer polish — audit P2) | ✅ **CLOSED** 2026-10-17 — **99/100**, ACCEPTANCE 31/31. Planer warning at 13″ on the panel that is planed; whole-board downsampled thumbnails above 500 cells; "Saved Boards" tab title; plain-English 3D fallback with a guarded "Try 3D again"; Harlequin 14 × 14 (12¼″ × 14″). Suite **1540/1540** / 133 files. |
 | Sprint 83 (Checkerboard fits a 13″ planer) | ✅ **CLOSED** 2026-10-17 — **100/100**, ACCEPTANCE 18/18. Default new board 12 → 8 strips: a 12″ panel and a 12″ × 12″ × 1½″ board with no warnings (was an 18″ panel that tripped the planer warning on every new board). Strip count kept even so rot180 still checkers. Suite **1556/1556** / 134 files. |
+| Sprint 84 (patched deps + no impossible plans) | ✅ **CLOSED** 2026-10-17 — **99/100**, ACCEPTANCE 14/14. GO_LIVE_FIXES S-01 + S-02: Next 15.5.20 → 15.5.28 (+ sharp, undici, postcss, source-map-js, nanoid) — critical cleared, deepmerge-ts (Prisma CLI) accepted until Prisma 7; 29 plans unpublished (20 metric = mm in inch fields, 9 impossible sizes), 639 → 610, prod re-seeded; content.test bounds guard. Suite **1565/1565** / 134 files. |
 
-Test suite — expected: **1556/1556** across **134 files** (Sprint 83). Update each sprint close.
+Test suite — expected: **1565/1565** across **134 files** (Sprint 84). Update each sprint close.
 
 **Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅** · **76 ✅** · **77 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
 
@@ -158,7 +159,7 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
-#### Sprint 84 — Patched dependencies + no impossible plans 🟡 NEXT (Keagan 2026-10-17) — pack `sprints/84/`, locked
+#### Sprint 84 — Patched dependencies + no impossible plans ✅ CLOSED 2026-10-17 · 99/100 (ACCEPTANCE 14/14)
 
 ```
 OBJECTIVE: GO_LIVE_FIXES S-01 + S-02. `npm audit fix` (lockfile; next 15.5.20 → 15.5.28, sharp,
