@@ -6,7 +6,11 @@ import type { BoardDesignConfig, BoardMetrics, Grain } from '@/lib/board-designe
 import { DEFAULT_OPTIONS } from '@/lib/cut-optimizer';
 import { btnGhost, btnPrimary } from '@/lib/ui';
 import { MetricsPanel } from './metrics-panel';
-import { cutPlanHasImpossible, OptimizerPanel } from './optimizer-panel';
+import {
+  cutPlanHasImpossible,
+  OptimizerPanel,
+  type StockWidthChoice,
+} from './optimizer-panel';
 import { RowPatternEditor } from './row-pattern-editor';
 import { TemplatePicker } from './template-picker';
 
@@ -48,7 +52,7 @@ export function DesignerDock({
   const metricsBadge = metrics.warnings.length > 0;
   // Stock lives here so the tab badge matches the panel (not default-only).
   const [stockLengthIn, setStockLengthIn] = useState(DEFAULT_OPTIONS.stockLengthIn);
-  const [stockWidthIn, setStockWidthIn] = useState<number | null>(null);
+  const [stockWidthIn, setStockWidthIn] = useState<StockWidthChoice>('auto');
   const cutPlanBadge = useMemo(
     () => cutPlanHasImpossible(config, { stockLengthIn, stockWidthIn }),
     [config, stockLengthIn, stockWidthIn],
@@ -136,7 +140,7 @@ export function DesignerDock({
           hidden={tab !== 'metrics'}
           data-dock-panel="metrics"
         >
-          <MetricsPanel metrics={metrics} grain={config.grain} />
+          <MetricsPanel config={config} metrics={metrics} grain={config.grain} />
         </div>
 
         <div

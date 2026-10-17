@@ -1,6 +1,7 @@
 'use client';
 
 import { closingThicknessHint } from '@/lib/board-designer/miter-geometry';
+import { MITER_CORNER_LABELS } from '@/lib/board-designer/miter-labels';
 import { SPECIES, getSpecies, UNKNOWN_SPECIES_COLOR } from '@/lib/board-designer/species';
 import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import { formatStripReorderAnnouncement, stripReorderAnnouncement } from '@/lib/board-designer/strip-reorder-announce';
@@ -20,12 +21,9 @@ import {
 const inputControl =
   'min-h-[2.75rem] w-full px-[0.75rem] py-0 text-[1rem] text-fg bg-bg border border-border rounded-[0.375rem]';
 
-const CORNER_OPTIONS: { value: MiterCorner; label: string }[] = [
-  { value: 'tl', label: 'Top left' },
-  { value: 'tr', label: 'Top right' },
-  { value: 'bl', label: 'Bottom left' },
-  { value: 'br', label: 'Bottom right' },
-];
+const CORNER_OPTIONS: { value: MiterCorner; label: string }[] = (
+  ['tl', 'tr', 'bl', 'br'] as const
+).map((value) => ({ value, label: MITER_CORNER_LABELS[value] }));
 
 /** Labels follow the top-face diagram axes (layout.ts), never the orbit camera. */
 export function stripMoveLabels(grain: Grain): { earlier: string; later: string } {

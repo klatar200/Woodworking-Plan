@@ -8,6 +8,7 @@ import {
 import { calculateMetrics } from '@/lib/board-designer/metrics';
 import { formatInches } from '@/lib/format';
 import { planeBufferIn } from '@/lib/board-designer/lumber-allowance';
+import { getTemplate } from '@/lib/board-designer/templates';
 import { makePanel, makeStrip, makeV2Config } from './fixtures/board-design';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
@@ -125,10 +126,10 @@ describe('designBuildSteps — edge grain', () => {
     expect(ids).not.toContain('arrange-rows');
   });
 
-  it('plane buffer formatted string appears only on flatten', () => {
+  it('plane buffer formatted string appears only on rip-strips', () => {
     const config = edgeConfig();
     const steps = designBuildSteps(config, calculateMetrics(config));
-    expect(detailsWithBuffer(steps, config)).toEqual(['flatten']);
+    expect(detailsWithBuffer(steps, config)).toEqual(['rip-strips']);
   });
 });
 
@@ -140,11 +141,11 @@ describe('designBuildSteps — end grain', () => {
     ]);
   });
 
-  it('plane buffer formatted string appears on flatten-panel and flatten-board', () => {
+  it('plane buffer formatted string appears on rip-strips and flatten-board', () => {
     const config = endConfig();
     const steps = designBuildSteps(config, calculateMetrics(config));
     expect(detailsWithBuffer(steps, config)).toEqual([
-      'flatten-panel',
+      'rip-strips',
       'flatten-board',
     ]);
   });
@@ -169,7 +170,7 @@ describe('designBuildSteps — end grain', () => {
     expect(detail).not.toMatch(/rot180|mirrorX|mirrorY/);
   });
 
-  it('mill quantities key by species + thickness (F1) and count distinct widths (F2)', () => {
+  it('mill quantities key by species + thickness (F1) and count strips', () => {
     const config = makeV2Config({
       grain: 'end',
       sourceLengthIn: 20,
@@ -195,7 +196,7 @@ describe('designBuildSteps — end grain', () => {
     const maple = mill.quantities.filter((q) => q.label.includes('Hard Maple'));
     expect(maple).toHaveLength(2);
     expect(maple.map((q) => q.thicknessIn).sort()).toEqual([0.75, 1.5]);
-    // thin panel: two rip widths → count 2; thick panel: one width → count 1
+    // thin panel: two strips → count 2; thick panel: one strip → count 1
     expect(maple.find((q) => q.thicknessIn === 0.75)!.count).toBe(2);
     expect(maple.find((q) => q.thicknessIn === 1.5)!.count).toBe(1);
   });
@@ -319,11 +320,17 @@ describe('designBuildSteps — source guards', () => {
     expect(source).not.toMatch(/wasteFactor/);
   });
 
-  it('uses metrics.sliceCount for slice count, not rowCount or panelPlan rows', () => {
-    expect(source).toMatch(/metrics\.sliceCount/);
-    expect(source).not.toMatch(/config\.rowCount/);
-    // Must not take slice count from panelPlan[].rows
-    expect(source).not.toMatch(/panelPlan.*\.rows|plan\.rows.*slice|slice.*plan\.rows/);
+  it('crosscut-slices lists each used panel’s rows, and they sum to metrics.sliceCount', () => {
+    const plaid = getTemplate('plaid')!.config;
+    const metrics = calculateMetrics(plaid);
+    const detail = designBuildSteps(plaid, metrics).find(
+      (s) => s.id === 'crosscut-slices',
+    )!.detail;
+    const counts = [...detail.matchAll(/(?:Wide A|Wide B|Line) (\d+)/g)].map((m) =>
+      Number(m[1]),
+    );
+    expect(counts).toEqual([3, 3, 6]);
+    expect(counts.reduce((a, b) => a + b, 0)).toBe(metrics.sliceCount);
   });
 
   it('enumerates metrics.panelPlan for stock, not config.panels directly for iteration', () => {

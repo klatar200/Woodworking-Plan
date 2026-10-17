@@ -1,23 +1,26 @@
 /**
- * Ordered build guide derived from a board design (Sprint 78 / D5).
+ * Ordered build guide derived from a board design (Sprint 78 / D5; numbers reworked in Sprint 80).
  *
- * Pure library — no React, no I/O. Sprint 79 surfaces this; do not add UI here.
- * D7 safety guidance stays gated: no PPE / technique coaching sentences.
+ * Pure library — no React, no I/O. D7 safety guidance stays gated: no PPE / technique coaching
+ * sentences.
+ *
+ * Every dimension comes from `designCutPieces`, the same source the cut plan packs, so the guide
+ * and the cut plan cannot disagree. The rule they share: cut where Sprint 73's maths budgets an
+ * allowance (rip width, end-grain slices and strip length); finish to the design's dimension.
  */
 import { formatInches } from '@/lib/format';
+import { designCutPieces, type CutPiece } from '@/lib/board-designer/cut-pieces';
+import { planeBufferIn } from '@/lib/board-designer/lumber-allowance';
 import {
-  expandStripPieces,
-  planeBufferIn,
-} from '@/lib/board-designer/lumber-allowance';
+  MITER_COMPOSITE_METHOD,
+  MITER_CORNER_LABELS,
+  formatMiterAngle,
+} from '@/lib/board-designer/miter-labels';
 import { getSpecies } from '@/lib/board-designer/species';
-import { stripDisplayName } from '@/lib/board-designer/strip-display';
 import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
 import type {
   BoardDesignConfig,
   BoardMetrics,
-  Panel,
-  PanelPlan,
-  RowTransform,
 } from '@/lib/board-designer/types';
 
 export interface BuildStepQuantity {
@@ -26,6 +29,11 @@ export interface BuildStepQuantity {
   lengthIn?: number;
   widthIn?: number;
   thicknessIn?: number;
+  /**
+   * Singular noun. When set the line reads "<label> · <dims> — for <count> <noun>s", for stock
+   * that several pieces come out of (CARRY-1: a count of boards would be a guess).
+   */
+  countNoun?: string;
 }
 
 export interface BuildStep {
@@ -33,6 +41,24 @@ export interface BuildStep {
   title: string;
   detail: string;
   quantities: BuildStepQuantity[];
+}
+
+/**
+ * The one way a quantity is written — the build route and the print sheet both call this
+ * (CARRY-2). Dimensions are labelled because "14 1/4″ × 1 11/16″" does not say which is which.
+ */
+export function formatBuildQuantity(q: BuildStepQuantity): string {
+  const dims: string[] = [];
+  if (q.lengthIn !== undefined) dims.push(`${formatInches(q.lengthIn)} long`);
+  if (q.widthIn !== undefined) dims.push(`${formatInches(q.widthIn)} wide`);
+  if (q.thicknessIn !== undefined) dims.push(`${formatInches(q.thicknessIn)} thick`);
+  const dimPart = dims.length > 0 ? ` · ${dims.join(' × ')}` : '';
+
+  if (q.countNoun) {
+    const noun = q.count === 1 ? q.countNoun : `${q.countNoun}s`;
+    return `${q.label}${dimPart} — for ${q.count} ${noun}`;
+  }
+  return `${q.count}× ${q.label}${dimPart}`;
 }
 
 function step(
@@ -44,147 +70,154 @@ function step(
   return { id, title, detail, quantities };
 }
 
-/** Panels the board actually uses — from geometry, not raw `config.panels`. */
-function usedPanelEntries(
-  config: BoardDesignConfig,
-  metrics: BoardMetrics,
-): { plan: PanelPlan; panel: Panel }[] {
-  const byId = new Map(config.panels.map((p) => [p.id, p]));
-  const out: { plan: PanelPlan; panel: Panel }[] = [];
-  for (const plan of metrics.panelPlan) {
-    // End grain lists unused panels with rows:0; they must contribute no stock.
-    if (config.grain === 'end' && plan.rows === 0) continue;
-    const panel = byId.get(plan.panelId);
-    if (!panel) continue;
-    out.push({ plan, panel });
-  }
-  return out;
-}
-
 function speciesLabel(speciesId: string): string {
   return getSpecies(speciesId)?.name ?? speciesId;
 }
 
-function ripQuantities(panels: Panel[]): BuildStepQuantity[] {
-  // Group by species + width so the guide can list rip sizes.
-  const groups = new Map<string, { speciesId: string; widthIn: number; count: number }>();
-  for (const panel of panels) {
-    for (const piece of expandStripPieces(panel)) {
-      const key = `${piece.speciesId}\0${piece.widthIn}`;
-      const cur = groups.get(key);
-      if (cur) cur.count += 1;
-      else {
-        groups.set(key, {
-          speciesId: piece.speciesId,
-          widthIn: piece.widthIn,
-          count: 1,
-        });
-      }
-    }
+/** Group pieces into quantities, first-seen order, summing counts. */
+function groupQuantities(
+  pieces: CutPiece[],
+  keyOf: (piece: CutPiece) => string,
+  make: (piece: CutPiece) => BuildStepQuantity,
+): BuildStepQuantity[] {
+  const groups = new Map<string, BuildStepQuantity>();
+  for (const piece of pieces) {
+    const key = keyOf(piece);
+    const existing = groups.get(key);
+    if (existing) existing.count += piece.count;
+    else groups.set(key, { ...make(piece), count: piece.count });
   }
-  return [...groups.values()].map((g) => ({
-    label: `${speciesLabel(g.speciesId)} strips`,
-    count: g.count,
-    widthIn: g.widthIn,
-  }));
+  return [...groups.values()];
 }
 
-function millQuantities(panels: Panel[]): BuildStepQuantity[] {
-  // One entry per species + thickness. count = distinct rip widths at that pair
-  // (boards to mill to), not strip piece count.
-  const groups = new Map<
-    string,
-    { speciesId: string; thicknessIn: number; widths: Set<number> }
-  >();
-  for (const panel of panels) {
-    for (const piece of expandStripPieces(panel)) {
-      const key = `${piece.speciesId}\0${panel.thicknessIn}`;
-      let g = groups.get(key);
-      if (!g) {
-        g = {
-          speciesId: piece.speciesId,
-          thicknessIn: panel.thicknessIn,
-          widths: new Set(),
-        };
-        groups.set(key, g);
-      }
-      g.widths.add(piece.widthIn);
-    }
+/** Used panels, in panel order, as their first cut piece (carries id, label, length, thickness). */
+function usedPanels(pieces: CutPiece[]): CutPiece[] {
+  const seen = new Map<string, CutPiece>();
+  for (const piece of pieces) {
+    if (!seen.has(piece.panelId)) seen.set(piece.panelId, piece);
   }
-  return [...groups.values()].map((g) => ({
-    label: `${speciesLabel(g.speciesId)} stock`,
-    count: g.widths.size,
-    thicknessIn: g.thicknessIn,
-  }));
+  return [...seen.values()];
 }
 
-function stripOrderLabels(panels: Panel[]): string {
-  const names: string[] = [];
-  for (const panel of panels) {
-    panel.strips.forEach((strip, index) => {
-      const n = strip.repeat > 1 ? ` ×${strip.repeat}` : '';
-      names.push(`${stripDisplayName(strip, index)}${n}`);
-    });
+/** Steps whose wording and numbers are shared by both grains. */
+function cuttingSteps(config: BoardDesignConfig, pieces: CutPiece[]): BuildStep[] {
+  const panels = usedPanels(pieces);
+  const multi = panels.length > 1;
+  const panelPrefix = (piece: CutPiece) => (multi ? `${piece.panelLabel}: ` : '');
+  const buffer = planeBufferIn(config);
+
+  const thicknesses = [...new Set(pieces.map((p) => p.thicknessIn))].sort((a, b) => a - b);
+  const millDetail =
+    thicknesses.length <= 1
+      ? `Mill each species to ${formatInches(thicknesses[0] ?? 0)} thick.`
+      : `Mill each species to its panel thickness: ${thicknesses
+          .map((t) => formatInches(t))
+          .join(', ')}.`;
+
+  const ripDetail =
+    buffer > 0
+      ? `Rip each strip ${formatInches(buffer)} over its finished width, then joint the glue edges down to finished width.`
+      : 'Rip strips to finished width.';
+
+  const crosscutDetail = multi
+    ? `Crosscut each panel's strips to its own length: ${panels
+        .map((p) => `${p.panelLabel} ${formatInches(p.lengthIn)}`)
+        .join('; ')}.`
+    : `Crosscut strips to ${formatInches(panels[0]?.lengthIn ?? 0)}.`;
+
+  const steps: BuildStep[] = [
+    step(
+      'mill-stock',
+      'Mill stock',
+      millDetail,
+      groupQuantities(
+        pieces,
+        (p) => `${p.speciesId}\0${p.thicknessIn}`,
+        (p) => ({
+          label: `${speciesLabel(p.speciesId)} stock`,
+          count: 0,
+          thicknessIn: p.thicknessIn,
+          countNoun: 'strip',
+        }),
+      ),
+    ),
+    step(
+      'rip-strips',
+      'Rip strips',
+      ripDetail,
+      groupQuantities(
+        pieces,
+        (p) => `${p.speciesId}\0${p.ripWidthIn}`,
+        (p) => ({
+          label: `${speciesLabel(p.speciesId)} strips`,
+          count: 0,
+          widthIn: p.ripWidthIn,
+        }),
+      ),
+    ),
+    step(
+      'crosscut-strips',
+      'Crosscut strips',
+      crosscutDetail,
+      groupQuantities(
+        pieces,
+        (p) => `${p.panelId}\0${p.speciesId}\0${p.ripWidthIn}`,
+        (p) => ({
+          label: `${panelPrefix(p)}${speciesLabel(p.speciesId)} strips`,
+          count: 0,
+          lengthIn: p.lengthIn,
+          widthIn: p.ripWidthIn,
+        }),
+      ),
+    ),
+  ];
+
+  const mitered = pieces.filter((p) => p.role === 'strip' && p.miter);
+  if (mitered.length > 0) {
+    steps.push(
+      step(
+        'make-composite-strips',
+        'Make composite strips',
+        `${MITER_COMPOSITE_METHOD} Pair each mitered strip with a partner strip of its wedge species, cut to the same size.`,
+        mitered.map((p) => ({
+          label: `${panelPrefix(p)}${p.stripName}: ${speciesLabel(p.speciesId)} with ${speciesLabel(p.miter!.speciesId)} wedge, ${MITER_CORNER_LABELS[p.miter!.corner]} corner at ${formatMiterAngle(p.miter!.angleDeg)}`,
+          count: p.count,
+        })),
+      ),
+    );
   }
-  return names.join(', ');
+
+  steps.push(step('dry-fit', 'Dry fit', dryFitDetail(pieces, panels)));
+  return steps;
 }
 
-function distinctTransforms(config: BoardDesignConfig): RowTransform[] {
-  const seen = new Set<RowTransform>();
-  const out: RowTransform[] = [];
-  for (const s of config.rowPattern) {
-    if (seen.has(s.transform)) continue;
-    seen.add(s.transform);
-    out.push(s.transform);
-  }
-  return out;
-}
+function dryFitDetail(pieces: CutPiece[], panels: CutPiece[]): string {
+  const entriesFor = (panelId: string): string =>
+    pieces
+      .filter((p) => p.panelId === panelId && p.role === 'strip')
+      .map((p) => {
+        const repeat = p.count > 1 ? ` ×${p.count}` : '';
+        const wedge = p.miter ? `, ${speciesLabel(p.miter.speciesId)} wedge` : '';
+        return `${p.stripName}${repeat} (${speciesLabel(p.speciesId)} ${formatInches(p.finishedWidthIn)}${wedge})`;
+      })
+      .join(', ');
 
-function arrangeRowsDetail(config: BoardDesignConfig): string {
-  const n = config.rowPattern.length;
-  const transforms = distinctTransforms(config);
-  const named = transforms.map((t) => ROW_TRANSFORM_LABELS[t]).join(', ');
-  return `Turn slices end-up and arrange them by repeating a ${n}-step row pattern. Transforms used: ${named}.`;
+  if (panels.length > 1) {
+    return `Lay each panel's strips out in order — ${panels
+      .map((p) => `${p.panelLabel}: ${entriesFor(p.panelId)}`)
+      .join('; ')}.`;
+  }
+  const only = panels[0];
+  return `Lay strips out in order: ${only ? entriesFor(only.panelId) : 'as designed'}.`;
 }
 
 function edgeSteps(
   config: BoardDesignConfig,
   metrics: BoardMetrics,
+  pieces: CutPiece[],
 ): BuildStep[] {
-  const used = usedPanelEntries(config, metrics);
-  const panels = used.map((u) => u.panel);
-  const thickness = panels[0]?.thicknessIn ?? 0;
-  const buffer = formatInches(planeBufferIn(config));
-  const length = formatInches(config.sourceLengthIn);
-  const finished = formatInches(metrics.finishedLengthIn);
-
   return [
-    step(
-      'mill-stock',
-      'Mill stock',
-      `Mill each species to ${formatInches(thickness)} thick.`,
-      millQuantities(panels),
-    ),
-    step(
-      'rip-strips',
-      'Rip strips',
-      'Rip strips to width for each species.',
-      ripQuantities(panels),
-    ),
-    step(
-      'crosscut-strips',
-      'Crosscut strips',
-      `Crosscut strips to ${length} (panel length).`,
-      ripQuantities(panels).map((q) => ({
-        ...q,
-        lengthIn: config.sourceLengthIn,
-      })),
-    ),
-    step(
-      'dry-fit',
-      'Dry fit',
-      `Lay strips out in order: ${stripOrderLabels(panels) || 'as designed'}.`,
-    ),
+    ...cuttingSteps(config, pieces),
     step(
       'glue-up-panel',
       'Glue up the panel',
@@ -193,13 +226,9 @@ function edgeSteps(
     step(
       'flatten',
       'Flatten',
-      `Plane flat, removing about ${buffer} of plane buffer.`,
+      `Flatten the board to ${formatInches(metrics.finishedThicknessIn)} thick.`,
     ),
-    step(
-      'trim-ends',
-      'Trim ends',
-      `Trim to the finished length of ${finished}.`,
-    ),
+    step('trim-ends', 'Trim ends', 'Square both ends.'),
     step('sand-finish', 'Sand and finish', 'Sand and finish the board.'),
   ];
 }
@@ -207,84 +236,64 @@ function edgeSteps(
 function endSteps(
   config: BoardDesignConfig,
   metrics: BoardMetrics,
+  pieces: CutPiece[],
 ): BuildStep[] {
-  const used = usedPanelEntries(config, metrics);
-  const panels = used.map((u) => u.panel);
-  const buffer = formatInches(planeBufferIn(config));
-  const length = formatInches(config.sourceLengthIn);
-  const sliceT = formatInches(config.sliceThicknessIn);
-  const finished = formatInches(metrics.finishedLengthIn);
-  const sliceCount = metrics.sliceCount;
+  const panels = usedPanels(pieces);
+  const multi = panels.length > 1;
+  const buffer = planeBufferIn(config);
+  const rowsById = new Map(metrics.panelPlan.map((plan) => [plan.panelId, plan.rows]));
+  const labelById = new Map(config.panels.map((panel) => [panel.id, panel.label]));
 
-  // Distinct thicknesses from used panels — must match millQuantities (F5).
-  const thicknesses = [
-    ...new Set(panels.map((p) => p.thicknessIn)),
-  ].sort((a, b) => a - b);
-  const millDetail =
-    thicknesses.length <= 1
-      ? `Mill each species to ${formatInches(thicknesses[0] ?? 0)} thick.`
-      : `Mill each species to its panel thickness: ${thicknesses
-          .map((t) => formatInches(t))
-          .join(', ')}.`;
+  const distinctThickness = new Set(panels.map((p) => p.thicknessIn));
+  const flattenPanelDetail =
+    distinctThickness.size <= 1
+      ? `Flatten the panel to ${formatInches(panels[0]?.thicknessIn ?? 0)} thick.`
+      : `Flatten each panel to its thickness: ${panels
+          .map((p) => `${p.panelLabel} ${formatInches(p.thicknessIn)}`)
+          .join('; ')}.`;
+
+  const sliceCut = formatInches(config.sliceThicknessIn + buffer);
+  const slicesDetail = multi
+    ? `Crosscut each panel into slices at ${sliceCut} thick: ${panels
+        .map((p) => `${p.panelLabel} ${rowsById.get(p.panelId) ?? 0}`)
+        .join('; ')}.`
+    : `Crosscut the panel into ${rowsById.get(panels[0]?.panelId ?? '') ?? metrics.sliceCount} slices at ${sliceCut} thick.`;
+
+  const rows = config.rowPattern
+    .map((s, i) => {
+      const placement = ROW_TRANSFORM_LABELS[s.transform];
+      if (!multi) return `row ${i + 1} ${placement}`;
+      return `row ${i + 1} ${labelById.get(s.panelId) ?? 'deleted panel'} — ${placement}`;
+    })
+    .join('; ');
+
+  const finishedThickness = formatInches(config.sliceThicknessIn);
+  const flattenBoardDetail =
+    buffer > 0
+      ? `Flatten the board to ${finishedThickness} thick, removing about ${formatInches(buffer)}.`
+      : `Flatten the board to ${finishedThickness} thick.`;
 
   return [
-    step(
-      'mill-stock',
-      'Mill stock',
-      millDetail,
-      millQuantities(panels),
-    ),
-    step(
-      'rip-strips',
-      'Rip strips',
-      'Rip strips to width for each species.',
-      ripQuantities(panels),
-    ),
-    step(
-      'crosscut-strips',
-      'Crosscut strips',
-      `Crosscut strips to ${length} (panel length).`,
-      ripQuantities(panels).map((q) => ({
-        ...q,
-        lengthIn: config.sourceLengthIn,
-      })),
-    ),
-    step(
-      'dry-fit',
-      'Dry fit',
-      `Lay strips out in order: ${stripOrderLabels(panels) || 'as designed'}.`,
-    ),
+    ...cuttingSteps(config, pieces),
     step(
       'glue-up-panel',
       'Glue up the panel',
       'Glue and clamp the strips into the panel — first glue-up.',
     ),
+    step('flatten-panel', 'Flatten the panel', flattenPanelDetail),
+    step('crosscut-slices', 'Crosscut into slices', slicesDetail),
     step(
-      'flatten-panel',
-      'Flatten the panel',
-      `Plane the panel flat, removing about ${buffer} of plane buffer.`,
+      'arrange-rows',
+      'Arrange rows',
+      `Turn slices end-up and lay them out by repeating this ${config.rowPattern.length}-step row pattern: ${rows}.`,
     ),
-    step(
-      'crosscut-slices',
-      'Crosscut into slices',
-      `Crosscut the panel into ${sliceCount} slices at ${sliceT} thick.`,
-    ),
-    step('arrange-rows', 'Arrange rows', arrangeRowsDetail(config)),
     step(
       'glue-up-board',
       'Glue up the board',
       'Glue and clamp the arranged slices into the board — second glue-up.',
     ),
-    step(
-      'flatten-board',
-      'Flatten the board',
-      `Plane the board flat, removing about ${buffer} of plane buffer.`,
-    ),
-    step(
-      'trim-ends',
-      'Trim ends',
-      `Trim to the finished length of ${finished}.`,
-    ),
+    step('flatten-board', 'Flatten the board', flattenBoardDetail),
+    step('trim-ends', 'Trim ends', 'Square both ends.'),
     step('sand-finish', 'Sand and finish', 'Sand and finish the board.'),
   ];
 }
@@ -297,7 +306,8 @@ export function designBuildSteps(
   config: BoardDesignConfig,
   metrics: BoardMetrics,
 ): BuildStep[] {
+  const pieces = designCutPieces(config, metrics.panelPlan);
   return config.grain === 'edge'
-    ? edgeSteps(config, metrics)
-    : endSteps(config, metrics);
+    ? edgeSteps(config, metrics, pieces)
+    : endSteps(config, metrics, pieces);
 }

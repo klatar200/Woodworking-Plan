@@ -83,6 +83,18 @@ const WITNESSES: Witness[] = [
     }),
   },
   {
+    id: 'unused-end-grain-panel',
+    needle: '"Unused" is not in the row pattern — it adds nothing to the board.',
+    config: makeV2Config({
+      panels: [
+        makePanel('used', 'Used', 1.5, [makeStrip('u1', 'walnut')]),
+        makePanel('unused', 'Unused', 1.5, [makeStrip('x1', 'hard-maple')]),
+      ],
+      rowPattern: [{ panelId: 'used', transform: 'none' }],
+      rowCount: 4,
+    }),
+  },
+  {
     id: 'add-a-strip',
     needle: 'Add a strip to see your board.',
     schemaValid: false,
@@ -205,6 +217,7 @@ describe('designer user-facing string reachability (Sprint 62)', () => {
       'deleted-panel',
       'unequal-panel-widths',
       'extra-panels-in-edge-grain',
+      'unused-end-grain-panel',
       'add-a-strip',
       'unknown-wood',
       'wider-than-planer',

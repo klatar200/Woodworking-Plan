@@ -1,5 +1,6 @@
 import {
   optimize,
+  STOCK_WIDTHS_IN,
   type BoardGroup,
   type OptimizerOptions,
   type Part,
@@ -8,12 +9,11 @@ import { toParts } from './to-parts';
 import type { BoardDesignConfig } from './types';
 
 /**
- * Sprint 64 / U6 — packing wasteFactor stays 0 (Sprint 73 unchanged).
- *
- * The estimate path (`design-board-feet`) applies kerf + planeBuffer + defects
- * `wasteFactor`. Packing already accounts for kerf per cut and `endTrimIn` on real
- * part lengths — feeding estimate waste into `optimize()` would double-count.
- * Board-feet estimates stay on the metrics / shopping surfaces.
+ * Sprint 80: parts carry the cut sizes — `planeBuffer` is in each part's width and in the
+ * end-grain length, because that is what the build guide tells you to cut and the board-feet
+ * estimate buys for. Packing still charges kerf per cut and takes `endTrimIn` off each stock
+ * board, and `wasteFactor` is still forced to 0 here: defects are a board-feet allowance, and
+ * feeding them into `optimize()` would double-count.
  */
 export type DesignCutPlanOptions = Omit<OptimizerOptions, 'wasteFactor'>;
 
@@ -51,4 +51,16 @@ export function designCutPlan(
       b.thicknessIn - a.thicknessIn ||
       b.widthIn - a.widthIn,
   );
+}
+
+/**
+ * Default stock width for a design's cut plan: the narrowest standard width every part can be
+ * ripped from. Cutting-board strips are always ripped, so "buy each part's width" (a 1 11/16″
+ * hardwood stick) is never the right default. `null` when nothing fits or there are no parts.
+ */
+export function defaultCutPlanStockWidthIn(config: BoardDesignConfig): number | null {
+  const parts = toParts(config);
+  if (parts.length === 0) return null;
+  const widest = Math.max(...parts.map((part) => part.widthIn));
+  return STOCK_WIDTHS_IN.find((width) => width >= widest) ?? null;
 }

@@ -34,6 +34,26 @@ export function stripStackOverageRatio(
   return allowance / finishedWidthIn;
 }
 
+/**
+ * Length to crosscut a panel's strips to — the one formula every surface reads (Sprint 80): the
+ * build guide, the cut plan, the metrics panel, the print sheet, and `panelStockDims` below.
+ *
+ * End grain: each slice is cut `planeBuffer` over the finished board thickness (the second
+ * glue-up flattens it back), plus a kerf between slices. Edge grain: `sourceLengthIn` — Sprint 73
+ * budgets no trim allowance on that axis. Differs from `PanelPlan.requiredLengthIn`, which is the
+ * net slice stack with no buffer.
+ */
+export function panelCutLengthIn(
+  config: Pick<BoardDesignConfig, 'grain' | 'sliceThicknessIn' | 'kerfIn' | 'sourceLengthIn' | 'planeBuffer'>,
+  plan: Pick<PanelPlan, 'rows'>,
+): number {
+  if (config.grain !== 'end') return config.sourceLengthIn;
+  return (
+    (config.sliceThicknessIn + planeBufferIn(config)) * plan.rows +
+    Math.max(0, plan.rows - 1) * config.kerfIn
+  );
+}
+
 export type PanelStockDims = {
   stockWidthIn: number;
   stockLengthIn: number;
@@ -61,11 +81,7 @@ export function panelStockDims(
   const stockWidthIn =
     pieces.reduce((sum, s) => sum + s.widthIn + plane, 0) +
     Math.max(0, n - 1) * config.kerfIn;
-  const stockLengthIn =
-    config.grain === 'end'
-      ? (config.sliceThicknessIn + plane) * plan.rows +
-        Math.max(0, plan.rows - 1) * config.kerfIn
-      : config.sourceLengthIn;
+  const stockLengthIn = panelCutLengthIn(config, plan);
   const stockThicknessIn = panel.thicknessIn;
   return { stockWidthIn, stockLengthIn, stockThicknessIn, pieces };
 }

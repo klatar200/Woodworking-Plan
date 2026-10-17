@@ -97,6 +97,12 @@ export function panelGeometry(config: BoardDesignConfig): PanelGeometry {
       if (!p) continue;
       rowsByPanel.set(p.id, (rowsByPanel.get(p.id) ?? 0) + 1);
     }
+    // A panel no row uses adds no wood — say so rather than let it sit in the editor looking live.
+    for (const p of panels) {
+      if (rowsByPanel.get(p.id) === 0) {
+        warnings.push(`"${p.label}" is not in the row pattern — it adds nothing to the board.`);
+      }
+    }
 
     panelPlan = panels.map((p) => {
       const rows = rowsByPanel.get(p.id) ?? 0;

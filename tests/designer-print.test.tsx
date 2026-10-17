@@ -178,7 +178,8 @@ describe('designer print route', () => {
     expect(plaid.panels).toHaveLength(3);
     const metrics = calculateMetrics(plaid);
     expect(metrics.panelPlan).toHaveLength(3);
-    const lengths = metrics.panelPlan.map((p) => p.requiredLengthIn);
+    const { panelCutLengthIn } = await import('@/lib/board-designer/lumber-allowance');
+    const lengths = metrics.panelPlan.map((p) => panelCutLengthIn(plaid, p));
     expect(new Set(lengths).size).toBeGreaterThan(1);
 
     const { getDesign } = await import('@/lib/board-designs');
@@ -199,7 +200,7 @@ describe('designer print route', () => {
     expect(html).toContain('Line');
     expect(html).toContain('Row order');
     expect(html).toContain('As cut');
-    // Three required-length cells (one per panel table) — different values.
+    // Three cut-length cells (one per panel table) — different values.
     for (const len of lengths) {
       const { formatInches } = await import('@/lib/format');
       expect(html).toContain(formatInches(len).replace(/"/g, '&quot;'));

@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { BoardBar } from '@/components/board-bar';
-import { designCutPlan } from '@/lib/board-designer/design-cut-plan';
+import {
+  defaultCutPlanStockWidthIn,
+  designCutPlan,
+} from '@/lib/board-designer/design-cut-plan';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 import { formatInches } from '@/lib/format';
 import {
@@ -22,10 +25,26 @@ function stockFtArticle(ft: number): 'a' | 'an' {
   return ft === 8 || ft === 11 || ft === 18 ? 'an' : 'a';
 }
 
+/**
+ * Stock width the user chose for the cut plan. A number = rip from that width; `null` = buy each
+ * part's width; `'auto'` = `defaultCutPlanStockWidthIn` for whatever design is on screen,
+ * recomputed every render (Sprint 80) — so loading Plaid after Checkerboard does not keep
+ * Checkerboard's 3 1/2″ and report Plaid's parts as too wide.
+ */
+export type StockWidthChoice = number | null | 'auto';
+
 export type CutPlanStock = {
   stockLengthIn: number;
-  stockWidthIn: number | null;
+  stockWidthIn: StockWidthChoice;
 };
+
+/** The concrete width a choice means for this config. */
+export function resolveStockWidthIn(
+  config: BoardDesignConfig,
+  choice: StockWidthChoice,
+): number | null {
+  return choice === 'auto' ? defaultCutPlanStockWidthIn(config) : choice;
+}
 
 /** Cut plan groups — dock badge must use the same stock as the panel. */
 export function cutPlanGroupsForConfig(
@@ -34,7 +53,7 @@ export function cutPlanGroupsForConfig(
 ): BoardGroup[] {
   return designCutPlan(config, {
     stockLengthIn: stock.stockLengthIn ?? DEFAULT_OPTIONS.stockLengthIn,
-    stockWidthIn: stock.stockWidthIn ?? null,
+    stockWidthIn: resolveStockWidthIn(config, stock.stockWidthIn ?? 'auto'),
     kerfIn: config.kerfIn,
     endTrimIn: DEFAULT_OPTIONS.endTrimIn,
   });
@@ -61,16 +80,17 @@ export function OptimizerPanel({
 }: {
   config: BoardDesignConfig;
   stockLengthIn?: number;
-  stockWidthIn?: number | null;
+  stockWidthIn?: StockWidthChoice;
   onStockLengthChange?: (lengthIn: number) => void;
-  onStockWidthChange?: (widthIn: number | null) => void;
+  onStockWidthChange?: (widthIn: StockWidthChoice) => void;
 }) {
   const [internalLength, setInternalLength] = useState(DEFAULT_OPTIONS.stockLengthIn);
-  const [internalWidth, setInternalWidth] = useState<number | null>(null);
+  const [internalWidth, setInternalWidth] = useState<StockWidthChoice>('auto');
   const stockLengthIn = stockLengthProp ?? internalLength;
-  const stockWidthIn = stockWidthProp !== undefined ? stockWidthProp : internalWidth;
+  const widthChoice = stockWidthProp !== undefined ? stockWidthProp : internalWidth;
   const setStockLengthIn = onStockLengthChange ?? setInternalLength;
   const setStockWidthIn = onStockWidthChange ?? setInternalWidth;
+  const stockWidthIn = resolveStockWidthIn(config, widthChoice);
 
   const groups = useMemo(
     () => cutPlanGroupsForConfig(config, { stockLengthIn, stockWidthIn }),

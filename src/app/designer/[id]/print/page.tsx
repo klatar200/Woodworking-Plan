@@ -3,22 +3,23 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth';
 import { getDesign } from '@/lib/board-designs';
-import { designBuildSteps } from '@/lib/board-designer/build-steps';
+import {
+  designBuildSteps,
+  formatBuildQuantity,
+} from '@/lib/board-designer/build-steps';
+import { panelCutLengthIn } from '@/lib/board-designer/lumber-allowance';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
+import {
+  MITER_COMPOSITE_METHOD,
+  MITER_CORNER_LABELS,
+  formatMiterAngle,
+} from '@/lib/board-designer/miter-labels';
 import { ROW_TRANSFORM_LABELS } from '@/lib/board-designer/row-transform';
 import { stripDisplayName } from '@/lib/board-designer/strip-display';
-import type { MiterCorner } from '@/lib/board-designer/types';
 import { BoardDiagram } from '@/components/designer/board-diagram';
 import { formatInches, formatBoardFeet } from '@/lib/format';
 import { SITE_HOST } from '@/lib/brand';
 import { btnGhost } from '@/lib/ui';
-
-const CORNER_LABELS: Record<MiterCorner, string> = {
-  tl: 'Top left',
-  tr: 'Top right',
-  bl: 'Bottom left',
-  br: 'Bottom right',
-};
 
 export const dynamic = 'force-dynamic';
 
@@ -101,7 +102,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
             <p className="muted small">
               Thickness {formatInches(panel.thicknessIn)}
               {plan
-                ? ` · width ${formatInches(plan.widthIn)} · required length ${formatInches(plan.requiredLengthIn)}`
+                ? ` · width ${formatInches(plan.widthIn)} · cut length ${formatInches(panelCutLengthIn(config, plan))}`
                 : ''}
             </p>
             <table className="print-table">
@@ -118,7 +119,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
                   </th>
                   <th scope="col">Miter</th>
                   <th scope="col" className="numeric">
-                    Required length
+                    Cut length
                   </th>
                 </tr>
               </thead>
@@ -140,11 +141,11 @@ export default async function DesignerPrintPage({ params }: PageProps) {
                     </td>
                     <td data-label="Miter">
                       {strip.miter
-                        ? `${speciesName(strip.miter.speciesId, metrics)} · ${strip.miter.angleDeg}° · ${CORNER_LABELS[strip.miter.corner]}`
+                        ? `${speciesName(strip.miter.speciesId, metrics)} · ${formatMiterAngle(strip.miter.angleDeg)} · ${MITER_CORNER_LABELS[strip.miter.corner]}`
                         : '—'}
                     </td>
-                    <td className="numeric mono" data-label="Required length">
-                      {formatInches(plan?.requiredLengthIn ?? 0)}
+                    <td className="numeric mono" data-label="Cut length">
+                      {formatInches(plan ? panelCutLengthIn(config, plan) : 0)}
                     </td>
                   </tr>
                 ))}
@@ -208,23 +209,7 @@ export default async function DesignerPrintPage({ params }: PageProps) {
                 <td data-label="Quantities">
                   {step.quantities.length === 0
                     ? '—'
-                    : step.quantities
-                        .map((q) => {
-                          const dims: string[] = [];
-                          if (q.lengthIn !== undefined) {
-                            dims.push(formatInches(q.lengthIn));
-                          }
-                          if (q.widthIn !== undefined) {
-                            dims.push(formatInches(q.widthIn));
-                          }
-                          if (q.thicknessIn !== undefined) {
-                            dims.push(formatInches(q.thicknessIn));
-                          }
-                          const dimPart =
-                            dims.length > 0 ? ` · ${dims.join(' × ')}` : '';
-                          return `${q.count}× ${q.label}${dimPart}`;
-                        })
-                        .join('; ')}
+                    : step.quantities.map(formatBuildQuantity).join('; ')}
                 </td>
               </tr>
             ))}
@@ -256,10 +241,9 @@ export default async function DesignerPrintPage({ params }: PageProps) {
         </table>
         {config.panels.some((p) => p.strips.some((s) => s.miter)) ? (
           <p className="muted small print-miter-note">
-            Mitered strips are ripped at an angle and glued to a contrasting
-            wedge. One rip yields two composite strips (A-base/B-wedge and
-            B-base/A-wedge). Board feet above count the area you keep if you use
-            both offcuts; discarding the mates means buying roughly twice this.
+            {MITER_COMPOSITE_METHOD} Board feet above count the area you keep if
+            you use both offcuts; discarding the mates means buying roughly twice
+            this.
           </p>
         ) : null}
       </section>

@@ -202,13 +202,15 @@ describe('designer build guide route', () => {
       await BuildPage({ params: Promise.resolve({ id: 'design-1' }) }),
     );
 
-    expect(html).toContain(`${q.count}×`);
-    expect(html).toContain(q.label);
-    for (const dim of [q.lengthIn, q.widthIn, q.thicknessIn]) {
-      if (dim !== undefined) {
-        expect(html).toContain(formatInches(dim).replace(/"/g, '&quot;'));
+    const asHtml = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    const { formatBuildQuantity } = await import('@/lib/board-designer/build-steps');
+    for (const s of steps) {
+      for (const quantity of s.quantities) {
+        expect(html).toContain(asHtml(formatBuildQuantity(quantity)));
       }
     }
+    expect(html).toContain(formatInches(q.thicknessIn ?? q.widthIn ?? 0).replace(/"/g, '&quot;'));
   });
 
   it('404s when getDesign returns null', async () => {

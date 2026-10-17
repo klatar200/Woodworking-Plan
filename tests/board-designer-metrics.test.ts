@@ -112,10 +112,10 @@ describe('toParts()', () => {
       label: 'Strip 1',
       quantity: 1,
       thicknessIn: 1.5,
-      widthIn: 1.5,
-      lengthIn: 19.375,
       material: 'Walnut',
     });
+    expect(parts[0]!.widthIn).toBeCloseTo(1.675, 9);
+    expect(parts[0]!.lengthIn).toBeCloseTo(21.475, 9);
     expect(parts[1]?.label).toBe('Strip 2');
 
     const groups = optimize(parts, DEFAULT_OPTIONS);

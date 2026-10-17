@@ -1,10 +1,13 @@
 import { formatInches, formatBoardFeet } from '@/lib/format';
-import type { BoardMetrics, Grain } from '@/lib/board-designer/types';
+import { panelCutLengthIn } from '@/lib/board-designer/lumber-allowance';
+import type { BoardDesignConfig, BoardMetrics, Grain } from '@/lib/board-designer/types';
 
 export function MetricsPanel({
+  config,
   metrics,
   grain,
 }: {
+  config: BoardDesignConfig;
   metrics: BoardMetrics;
   grain: Grain;
 }) {
@@ -44,7 +47,7 @@ export function MetricsPanel({
                 <th className="py-[0.375rem] pr-[0.5rem] font-medium">Panel</th>
                 <th className="py-[0.375rem] pr-[0.5rem] font-medium">Size</th>
                 <th className="py-[0.375rem] pr-[0.5rem] font-medium">Rows</th>
-                <th className="py-[0.375rem] font-medium">Required length</th>
+                <th className="py-[0.375rem] font-medium">Cut length</th>
               </tr>
             </thead>
             <tbody>
@@ -55,7 +58,7 @@ export function MetricsPanel({
                     {formatInches(plan.widthIn)} × {formatInches(plan.thicknessIn)}
                   </td>
                   <td className="py-[0.5rem] pr-[0.5rem]">{plan.rows}</td>
-                  <td className="py-[0.5rem]">{formatInches(plan.requiredLengthIn)}</td>
+                  <td className="py-[0.5rem]">{formatInches(panelCutLengthIn(config, plan))}</td>
                 </tr>
               ))}
             </tbody>

@@ -5,10 +5,9 @@ import { requireUser } from '@/lib/auth';
 import { getDesign } from '@/lib/board-designs';
 import {
   designBuildSteps,
-  type BuildStepQuantity,
+  formatBuildQuantity,
 } from '@/lib/board-designer/build-steps';
 import { calculateMetrics } from '@/lib/board-designer/metrics';
-import { formatInches } from '@/lib/format';
 import { btnGhost } from '@/lib/ui';
 
 export const dynamic = 'force-dynamic';
@@ -21,15 +20,6 @@ export const metadata: Metadata = {
 type PageProps = {
   params: Promise<{ id: string }>;
 };
-
-function quantityLine(q: BuildStepQuantity): string {
-  const dims: string[] = [];
-  if (q.lengthIn !== undefined) dims.push(formatInches(q.lengthIn));
-  if (q.widthIn !== undefined) dims.push(formatInches(q.widthIn));
-  if (q.thicknessIn !== undefined) dims.push(formatInches(q.thicknessIn));
-  const dimPart = dims.length > 0 ? ` · ${dims.join(' × ')}` : '';
-  return `${q.count}× ${q.label}${dimPart}`;
-}
 
 export default async function DesignerBuildPage({ params }: PageProps) {
   await requireUser();
@@ -67,7 +57,7 @@ export default async function DesignerBuildPage({ params }: PageProps) {
               <ul className="m-0 mt-[0.5rem] grid list-disc gap-[0.25rem] pl-[1.25rem] text-[0.875rem] text-muted">
                 {step.quantities.map((q) => (
                   <li key={`${q.label}-${q.widthIn ?? ''}-${q.thicknessIn ?? ''}-${q.lengthIn ?? ''}`}>
-                    {quantityLine(q)}
+                    {formatBuildQuantity(q)}
                   </li>
                 ))}
               </ul>

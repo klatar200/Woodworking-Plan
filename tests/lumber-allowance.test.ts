@@ -165,7 +165,7 @@ describe('Sprint 73 lumber allowance (D1 / A1–A4)', () => {
     expect(parsed.config.planeBuffer).toBe(DEFAULT_PLANE_BUFFER_IN);
   });
 
-  it('cut-plan path still forces wasteFactor: 0; board counts ignore estimate stock', () => {
+  it('cut-plan path still forces wasteFactor: 0', () => {
     const src = readFileSync('src/lib/board-designer/design-cut-plan.ts', 'utf8');
     expect(src).toContain('wasteFactor: 0');
 
