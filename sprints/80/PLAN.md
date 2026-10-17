@@ -57,7 +57,7 @@ export function panelCutLengthIn(
 - end grain → `(config.sliceThicknessIn + buffer) × plan.rows + max(0, plan.rows − 1) × config.kerfIn`
 - edge grain → `config.sourceLengthIn`
 
-`panelStockDims` uses it for `stockLengthIn`. Board feet must not move by a hair — R3 pins them.
+`panelStockDims` uses it for `stockLengthIn`. Board feet must not move by a hair — R4 pins them.
 
 **Guardrail:** `PanelPlan.requiredLengthIn` and `panel-geometry.ts`'s formula for it stay exactly as
 they are (GOAL, Out of scope).
@@ -109,8 +109,9 @@ export function designCutPieces(config: BoardDesignConfig, panelPlan: PanelPlan[
 | `thicknessIn` / `widthIn` / `lengthIn` | `thicknessIn` / `ripWidthIn` / `lengthIn` | same |
 | `material` | `Species` of `speciesId` | same |
 
-Multi-panel designs keep today's `${panelLabel}: ${label}` prefix (`to-parts.ts:30`). It no longer
-calls `calculateMetrics`.
+When the cut pieces span **more than one used panel** (the same definition T5 uses — not
+`config.panels.length`), labels keep today's `${panelLabel}: ${label}` prefix (`to-parts.ts:30`).
+It no longer calls `calculateMetrics`.
 
 **`src/lib/board-designer/design-cut-plan.ts`**
 - Rewrite the header comment (`design-cut-plan.ts:10`): parts now carry `planeBuffer` in their width
@@ -120,13 +121,25 @@ calls `calculateMetrics`.
   value of `STOCK_WIDTHS_IN` that is ≥ the widest `Part.widthIn` from `toParts(config)`; `null` when
   there are no parts or none fits.
 
-**`src/components/designer/optimizer-panel.tsx`**
-- `cutPlanGroupsForConfig` (`optimizer-panel.tsx:31`): when `stock.stockWidthIn === undefined`, use
-  `defaultCutPlanStockWidthIn(config)`. An explicit `null` still means "Buy each part's width".
-- The internal width state (`optimizer-panel.tsx:69`) initialises to `defaultCutPlanStockWidthIn(config)`.
+**The default must follow the design, not freeze at mount.** A new board opens as Checkerboard
+(`src/app/designer/page.tsx:35`, default 3 1/2"); loading Plaid afterwards needs 11 1/4". A width
+captured once at mount would report Plaid's parts as too wide. So the default is a *mode*, resolved
+on every render, until the user picks a width.
 
-**`src/components/designer/designer-dock.tsx:51`** — the controlled width state initialises with
-`() => defaultCutPlanStockWidthIn(config)`, so the tab badge and the panel agree.
+**`src/components/designer/optimizer-panel.tsx`**
+- `export type StockWidthChoice = number | null | 'auto'` — a number = rip from that width; `null` =
+  "Buy each part's width"; `'auto'` = `defaultCutPlanStockWidthIn(config)` for the config being
+  rendered, recomputed every time.
+- `CutPlanStock.stockWidthIn` and the `stockWidthIn` prop become `StockWidthChoice`.
+  `cutPlanGroupsForConfig` (`optimizer-panel.tsx:31`) treats a missing `stockWidthIn` as `'auto'` and
+  resolves `'auto'` before calling `designCutPlan`.
+- The internal width state (`optimizer-panel.tsx:69`) starts as `'auto'`. Keep the existing
+  controlled/uncontrolled rule (`stockWidthProp !== undefined`) — `'auto'` is a value, not `undefined`.
+- The width `<select>` shows the **resolved** width while `'auto'` (a number → that option; `null` →
+  `rip-none`). Choosing an option stores that explicit number or `null`; nothing returns to `'auto'`.
+
+**`src/components/designer/designer-dock.tsx:51`** — the controlled width state becomes
+`useState<StockWidthChoice>('auto')`, so the tab badge and the panel resolve the same width.
 
 **Guardrail:** `src/lib/cut-optimizer.ts` is untouched (R2). Everything here is designer-side.
 
@@ -166,8 +179,8 @@ End: `mill-stock, rip-strips, crosscut-strips, [make-composite-strips], dry-fit,
 | `mill-stock` | unchanged sentence logic, thicknesses from cut pieces | group by species + `thicknessIn`, first-seen order: `{ label: '<Species> stock', thicknessIn, count: Σ count, countNoun: 'strip' }` |
 | `rip-strips` | `Rip each strip <fi(buffer)> over its finished width, then joint the glue edges down to finished width.` — when `buffer === 0`: `Rip strips to finished width.` | group by species + `ripWidthIn`: `{ label: '<Species> strips', count, widthIn: ripWidthIn }` |
 | `crosscut-strips` | single: `Crosscut strips to <fi(len)>.` · multi: `Crosscut each panel's strips to its own length: <label> <fi(len)>; <label> <fi(len)>.` | group by panel + species + `ripWidthIn`: `{ label, count, lengthIn, widthIn: ripWidthIn }`, label `<Species> strips`, multi prefixed `<panelLabel>: ` |
-| `make-composite-strips` | `MITER_COMPOSITE_METHOD + ' Pair each mitered strip with a partner strip of its wedge species, cut to the same size.'` | one per mitered strip: `{ label: '<stripName>: <Base> with <Wedge> wedge, <Corner> corner at <formatMiterAngle>', count }`, multi prefixed `<panelLabel> ` |
-| `dry-fit` | single: `Lay strips out in order: <entries>.` · multi: `Lay each panel's strips out in order — <label>: <entries>; <label>: <entries>.` Entry = `<stripName>[ ×<repeat> when > 1] (<Species> <fi(width)>)`, joined `, ` | — |
+| `make-composite-strips` | `MITER_COMPOSITE_METHOD + ' Pair each mitered strip with a partner strip of its wedge species, cut to the same size.'` | one per mitered strip: `{ label: '<stripName>: <Base> with <Wedge> wedge, <Corner> corner at <formatMiterAngle>', count }`, multi prefixed `<panelLabel>: ` |
+| `dry-fit` | single: `Lay strips out in order: <entries>.` · multi: `Lay each panel's strips out in order — <label>: <entries>; <label>: <entries>.` Entry = `<stripName>[ ×<repeat> when > 1] (<Species> <fi(finishedWidthIn)>)`, joined `, `; a mitered strip's entry is `<stripName>[ ×<repeat>] (<Species> <fi(finishedWidthIn)>, <Wedge> wedge)`. Strip pieces only — partner pieces get no entry (they become composites) | — |
 | `glue-up-panel` | unchanged | — |
 | `flatten` (edge) | `Flatten the board to <fi(T)> thick.` | — |
 | `flatten-panel` (end) | one distinct thickness: `Flatten the panel to <fi(T)> thick.` · several: `Flatten each panel to its thickness: <label> <fi(T)>; <label> <fi(T)>.` | — |
@@ -202,8 +215,10 @@ push exactly `"<label>" is not in the row pattern — it adds nothing to the boa
 quotes around the label). It does not change `complete`. Edge grain keeps its existing
 `Extra panels are unused in edge grain.` and gets no new warning.
 
-Add one witness for it to `WITNESSES` in `tests/board-designer-reachability.test.ts` — the Sprint 62
-mechanism requires every user-facing warning to have one.
+Add one witness for it to `WITNESSES` in `tests/board-designer-reachability.test.ts`, **and add that
+witness's id to the `required` array** in the same file's "every static warnings.push literal has a
+witness id" test — the Sprint 62 mechanism requires every user-facing warning to have one, and the
+`required` list is what makes a missing witness fail.
 
 ---
 
@@ -242,17 +257,23 @@ New coverage (a new `tests/board-designer-cut-pieces.test.ts` plus additions to 
   `make-composite-strips` is present; `toParts` includes Walnut parts.
 - `formatBuildQuantity` — the three shapes (countNoun, dims, neither), singular noun at count 1.
 - `formatMiterAngle(30) === '30°'`, `formatMiterAngle(22.5) === '22½°'`.
-- The pinned values R3 and A20 name.
+- The pinned values R4 and A10 name — each needs a test, or it has no `verify.txt` evidence.
+- The stale-default case A13 names: render `OptimizerPanel` uncontrolled with Checkerboard, re-render
+  with Plaid.
+- "Visible text" in any rendered-output assertion means `html.replace(/<[^>]+>/g, ' ')` then
+  `&quot;` → `"` and `&amp;` → `&`, exactly as `tests/designer-build.test.tsx:126` does. Raw HTML
+  carries Tailwind classes such as `py-[1.5rem]` and SVG attributes with decimals.
 
-### Authorised test changes — exactly these, nothing else
+### Authorised test changes — exactly these nine, nothing else
 1. `tests/board-designer-build-steps.test.ts:128`–`132` — edge: the buffer string appears on exactly `['rip-strips']`.
 2. `tests/board-designer-build-steps.test.ts:143`–`150` — end: exactly `['rip-strips', 'flatten-board']`.
 3. `tests/board-designer-build-steps.test.ts:172` title and `:198` comment — "count distinct widths (F2)" → "count strips". The asserted values (2 and 1) do not change.
 4. `tests/board-designer-build-steps.test.ts:322`–`327` — replace that `it` with a behavioural one: on Plaid, `crosscut-slices` lists each used panel's rows and they sum to `metrics.sliceCount`.
-5. `tests/designer-build.test.tsx:205`–`211` — assert every quantity of every step renders as `formatBuildQuantity(q)` (through the file's `asHtml`).
+5. `tests/designer-build.test.tsx:205`–`211` — assert every quantity of every step renders as `formatBuildQuantity(q)`. Define the same `asHtml` helper as `designer-build.test.tsx:103` inside this `it`; the existing one is scoped to another test.
 6. `tests/designer-print.test.tsx:181` and `:202`–`206` — lengths come from `panelCutLengthIn(plaid, p)`; update the comment to say cut length.
 7. `tests/lumber-allowance.test.ts:168` — the `it` title only: drop `; board counts ignore estimate stock`. Its assertions are unchanged.
-8. `tests/board-designer-reachability.test.ts` — one added witness (T6). An addition, not a change.
+8. `tests/board-designer-reachability.test.ts` — one added `WITNESSES` entry and its id appended to the `required` array (T6). Additions only.
+9. `tests/board-designer-metrics.test.ts:115`–`116` — the golden `toParts` part's `widthIn: 1.5` and `lengthIn: 19.375` become `toBeCloseTo(1.675, 9)` and `toBeCloseTo(21.475, 9)` assertions (the fixture uses the default 0.175 buffer: 12 × 1.675 + 11 × 0.125). Every other field in that `toMatchObject` stays.
 
 Any other red test is a signal to report in SCORECARD, not to loosen. Deleting, skipping, or
 weakening an assertion outside this list is an `R` FAIL.

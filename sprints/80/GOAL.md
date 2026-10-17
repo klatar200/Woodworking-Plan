@@ -16,7 +16,10 @@ are Sprint 81. CARRY-3 (strip-row compacting) is dropped from this sprint.
 For every one of the nine templates, every length/width/thickness the guide tells you to cut is
 the same number the cut plan packs and the board-feet estimate buys for; finishing steps name
 the finished dimension they bring the board to; and a design's unused panels contribute nothing
-to any of the three.
+to any of the three. **One documented exception:** for mitered strips the board-feet estimate keeps
+its area split — it counts the wood kept when both composite mates are used, as the print note
+says — while the guide and cut plan list full partner strips. Board feet are pinned (R4); this
+sprint does not reconcile that.
 
 ## The model this sprint makes consistent — read before the PLAN
 One rule, applied everywhere: **cut where the Sprint 73 material maths budgets an allowance;
@@ -50,7 +53,7 @@ of its wedge species, cut at the same size; one rip yields the strip and its mat
 
 ## Out of scope — do not touch
 - **Board-feet maths.** `src/lib/board-designer/design-board-feet.ts` is byte-identical, and every
-  template's board-feet total is unchanged (R3 pins all nine). The miter area split stays as
+  template's board-feet total is unchanged (R4 pins all nine). The miter area split stays as
   documented on the print sheet.
 - **A new allowance.** No thickness allowance, no trim allowance, no change to `planeBuffer`'s
   meaning. If the model looks wrong, report it in SCORECARD — that is a D1 decision for Keagan.
