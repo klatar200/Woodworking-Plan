@@ -62,8 +62,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 79 (build guide surface, D5 2/3) | ✅ **CLOSED** 2026-07-28 — **96/100**, ACCEPTANCE 26/26. `/designer/[id]/build` private route, Build Plan control in the Sprint 76 slot, steps on the print sheet, one transform vocabulary. Suite **1426/1426** / 123 files. |
 | Sprint 80 (build-guide correctness, D5 3/3) | ✅ **CLOSED** 2026-10-16 — **96/100**, ACCEPTANCE 39/40 (A12 regression fixed before push). Guide, cut plan, metrics and print read one source of cut dimensions (`cut-pieces.ts`); per-panel end-grain lengths; mitered partner strips; no phantom boards. First sprint run solely in Claude Code. Suite **1467/1467** / 127 files. |
 | Sprint 81 (designer save safety + controls) | ✅ **CLOSED** 2026-10-17 — **98/100**, ACCEPTANCE 40/40. Save blocked with the reason when the server would reject; per-tab drafts restored and wiped on sign-out; beforeunload guard; designer error boundary; clearable number fields; caps; working Collapse; end-grain-only miters; phone Build Plan link; two-step library delete; no nested form (#418 gone). Suite **1515/1515** / 131 files. |
+| Sprint 82 (designer polish — audit P2) | ✅ **CLOSED** 2026-10-17 — **99/100**, ACCEPTANCE 31/31. Planer warning at 13″ on the panel that is planed; whole-board downsampled thumbnails above 500 cells; "Saved Boards" tab title; plain-English 3D fallback with a guarded "Try 3D again"; Harlequin 14 × 14 (12¼″ × 14″). Suite **1540/1540** / 133 files. |
 
-Test suite — expected: **1515/1515** across **131 files** (Sprint 81). Update each sprint close.
+Test suite — expected: **1540/1540** across **133 files** (Sprint 82). Update each sprint close.
 
 **Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅** · **76 ✅** · **77 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
 
@@ -156,7 +157,7 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
-#### Sprint 82 — designer polish (audit P2) 🟡 NEXT (Keagan 2026-10-17) — pack `sprints/82/`, locked
+#### Sprint 82 — designer polish (audit P2) ✅ CLOSED 2026-10-17 · 99/100 (ACCEPTANCE 31/31)
 
 ```
 OBJECTIVE: The audit's P2 list. Planer warning at 13″ on the panel that gets planed (was >24″ on

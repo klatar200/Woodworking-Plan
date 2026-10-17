@@ -3,13 +3,38 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 81 (2026-10-17) — CLOSED 98/100** — designer save safety + controls. Suite: 1515 green / 131 files.
+> **Latest logged: Sprint 82 (2026-10-17) — CLOSED 99/100** — designer polish (audit P2). Suite: 1540 green / 133 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅. Suite: 1515 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅ · Sprint 82 ✅. Suite: 1540 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 82: Designer polish (audit P2)
+**Dates:** 2026-10-17
+**Scope:** Keagan's pick from the designer audit's P2 list: planer-width warning, library thumbnail cap + tab title, 3D-fallback copy, Harlequin template size.
+
+**Process:** Claude-only loop. Before the lock, the 14 × 16 Harlequin first considered was measured and rejected: its walnut component count depends on sample resolution (63 vs 53), which breaks an existing invariant. 14 × 14 is stable at 56. Applying the template change alone in advance gave the exact list of tests to authorise. The fresh-context pre-flight applied the whole PLAN to a copy of the repo, recomputed every pinned number, and found no blockers — ten minor fixes (uppercase hex, gap colour, a jsdom recipe for the lost-context test, a test that passed only by accident, cite corrections, a missing §4 entry).
+
+### Attempt 1 — ACCEPTANCE 31/31 (100%), no R FAIL — §6 99/100
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | All four P2 items; no other template touched (A23); maths, schema and server untouched (R2/R3). |
+| 2 Correctness /20 | 20 | 31/31 graded; `npm run build` passes (M1). Planer rule checks the panel that is planed (edge: the board; end: each used panel), at 13″; the thumbnail always covers the whole board; "Try 3D again" re-checks WebGL so a still-lost GPU falls back instead of throwing into the error boundary. |
+| 3 Test coverage /15 | 14 | 1515 → **1540** tests, 131 → **133** files, including a jsdom lost-context round trip and the schema-max thumbnail. **−1:** the copy-gate test reads the fallback strings out of source with a regex rather than importing them. |
+| 4 Security /15 | 15 | No auth, data or route surface touched. |
+| 5 Code quality /10 | 10 | Named constants (`BENCHTOP_PLANER_WIDTH_IN`, `THUMB_GRID`); a dead `'too-complex'` branch removed; stale comments rewritten. |
+| 6 Mobile/offline /10 | 10 | The library (reachable on phones) now shows a picture for every board. |
+| 7 Docs/handoff /5 | 5 | Pack, BUILD_PLAN §4, CLAUDE.md §6. |
+
+**Consequence to know:** the default new board (Checkerboard, 18″ panel) now carries the planer warning and a Metrics badge from the first load. That is true of that board; resizing the default template was kept out of scope.
+
+**Live check (prod, `37d9f05` deployed; nothing saved):** library tab reads "Saved Boards · Notch"; "verify-65", previously "Too many pieces to preview", now shows a 72-rect downsampled picture; every board has a thumbnail; no console errors · a new board (Checkerboard) shows `Wider than a 13" benchtop planer — plan to hand-flatten.` with the Metrics badge · loading Harlequin shows 12 1/4" × 14" × 1 1/2", 2.84 bd ft, no warnings. Not exercised live: the lost-3D-context path (needs a GPU reset; covered by the jsdom round-trip test). M1 `npm run build` passed natively.
+
+**Commits:** `bf6f10b` pack (locked) · `1da2d2b` implementation · `37d9f05` SCORECARD.
 
 ---
 
