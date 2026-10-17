@@ -156,6 +156,17 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
+#### Sprint 82 — designer polish (audit P2) 🟡 NEXT (Keagan 2026-10-17) — pack `sprints/82/`, locked
+
+```
+OBJECTIVE: The audit's P2 list. Planer warning at 13″ on the panel that gets planed (was >24″ on
+           the finished width — wrong number and wrong axis for end grain); every saved board gets
+           a thumbnail (whole-board downsample above 500 cells, never partial); library tab title
+           "Saved Boards"; plain-English 3D fallback with "Try 3D again"; Harlequin 8×8 → 14×14
+           (12¼″ × 14″, still closes; 14×16 rejected — component count resolution-dependent).
+OUT:       other templates (Checkerboard's 18″ panel now warns, truthfully) · D7 · maths · schema
+```
+
 #### Sprint 81 — designer save safety + controls ✅ CLOSED 2026-10-17 · 98/100 (ACCEPTANCE 40/40)
 
 ```
