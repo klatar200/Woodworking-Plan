@@ -3,13 +3,38 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 82 (2026-10-17) — CLOSED 99/100** — designer polish (audit P2). Suite: 1540 green / 133 files.
+> **Latest logged: Sprint 83 (2026-10-17) — CLOSED 100/100** — Checkerboard fits a 13″ planer. Suite: 1556 green / 134 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅ · Sprint 82 ✅. Suite: 1540 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅ · Sprint 82 ✅ · Sprint 83 ✅. Suite: 1556 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 83: Checkerboard fits a 13″ planer
+**Dates:** 2026-10-17
+**Scope:** Keagan 2026-10-17: resize the default Checkerboard template so a new board fits a 13″ planer (8 strips × 1½″ = 12″). It was 12 strips, an 18″ panel, and since Sprint 82 it tripped the planer warning on every new board.
+
+**Process:** Claude-only loop. Before the lock, the template change was trial-applied to get the exact fallout: 12 tests in 9 files. Each was authorised line by line, and the resized board's numbers were measured. The miter frozen oracle keeps its 12-strip shape through a test-built config instead of being rewritten. The fresh-context pre-flight re-measured every pinned number and found no blockers; it found six minor cite/wording fixes.
+
+### Attempt 1 — ACCEPTANCE 18/18 (100%), no R FAIL — §6 100/100
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | 8 × 1½″ = 12″ panel, as asked; only the Checkerboard entry changed in `src/` (R2). |
+| 2 Correctness /20 | 20 | 18/18 graded; `npm run build` passes (M1). The board finishes 12 × 12 × 1½, has no warnings, and is still a true checkerboard (no matching neighbours across 112 pairs; an even count is required for rot180). |
+| 3 Test coverage /15 | 15 | 1540 → **1556** tests, 133 → **134** files. A new file pins the template, size, checker property, cut pieces, board feet, cut plan, guide quantities, save readiness and thumbnail. The other eight templates are re-pinned (R6). |
+| 4 Security /15 | 15 | No auth, data or route surface touched. Saved designs are stored whole, so none change. |
+| 5 Code quality /10 | 10 | A two-line comment states the planer reason and the even-count constraint at the point of change. |
+| 6 Mobile/offline /10 | 10 | No change to either surface. |
+| 7 Docs/handoff /5 | 5 | Pack, BUILD_PLAN §4, CLAUDE.md §6. |
+
+**Live check (prod, `9e417e2` deployed; fresh tab, nothing saved):** a new board at `/designer` shows 8 alternating strips. Metrics: Finished 12" × 12" × 1 1/2", 2.12 bd ft, Panel 1 12" × 1 1/2", cut length 14 1/4", and no planer warning. The 3D preview renders the checker, with no console errors. M1 `npm run build` passed natively.
+
+**Note:** Checkerboard now shares Thue-Morse's footprint (8 × 8 at 1½″). This is out of scope and not a defect.
+
+**Commits:** `f3aec03` pack (locked) · `0fa3981` implementation · `9e417e2` SCORECARD.
 
 ---
 
