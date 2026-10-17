@@ -3,13 +3,42 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 79 (2026-07-28) — CLOSED 96/100** — build guide surface (D5 2 of 3). Suite: 1426 green / 123 files.
+> **Latest logged: Sprint 80 (2026-10-16) — CLOSED 96/100** — build-guide correctness (D5 3 of 3), first sprint run solely in Claude Code. Suite: 1467 green / 127 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅. Suite: 1426 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅. Suite: 1467 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 80: Build-guide correctness (D5 track, 3 of 3)
+**Dates:** 2026-10-16
+**Scope:** Rescoped by Keagan from "polish" after the designer consumer-readiness audit (BUILD_PLAN §4): audit #3 end-grain crosscut length, #4 mitered designs missing the wedge species, #5 cut-at-finished-then-planed-undersize, #7 row order + per-panel slices, #8 phantom boards from unused panels, #12 three lengths for one panel + cut-plan default, dry-fit species, CARRY-1 mill wording, CARRY-2 one quantity formatter. CARRY-3 dropped.
+
+**Process:** first sprint with Cursor retired (Keagan 2026-10-16). One Claude Code session planned, implemented on `main`, and closed; a fresh-context subagent pre-flighted the pack before the lock (found one sprint-voiding blocker — an unauthorised red test — plus a stale-default design flaw) and a second, separate one graded.
+
+### Attempt 1 — ACCEPTANCE 39/40 (97.5%), no R FAIL — §6 96/100
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | Every approved audit item delivered; board-feet maths untouched (`design-board-feet.ts` byte-identical, nine template totals pinned by R4). |
+| 2 Correctness /20 | 18 | Exact strings asserted for Checkerboard/Plaid/Harlequin; guide ↔ cut pieces ↔ cut plan agreement tested for all nine templates. **−2:** the grader caught a real regression (A12) — `?? 'auto'` turned an explicit "buy each part's width" back into auto. Fixed in `265e9a6` with a test before the push. |
+| 3 Test coverage /15 | 14 | 1426 → **1467** tests, 123 → **127** files; behaviour-level (rendered text, packing results, re-render). **−1:** the A12 path had a display-only test that could not catch the packing bug. |
+| 4 Security /15 | 15 | No auth/IDOR surface touched; no `public-routes` / SW change (R2); private routes unchanged. |
+| 5 Code quality /10 | 9 | Three duplications removed (quantity formatter, corner labels, cut-length formula); one source of cut dimensions. **−1:** `PanelPlan.requiredLengthIn` is now displayed nowhere — kept because its definition is tested, but it is close to dead. |
+| 6 Mobile/offline /10 | 10 | Designer stays desktop-only (D6); `/build` and print read paths keep their structure and owner scoping. |
+| 7 Docs/handoff /5 | 5 | Pack, BUILD_PLAN §4, CLAUDE.md §9, `sprints/README.md`, `AGENTS.md` rewritten for the Claude-only loop. |
+
+**What the guide now says (Checkerboard):** `Crosscut strips to 14 1/4".` (was 14", from a hidden edge-only field; at 20 rows it now says 35 7/8", was still 14") · `Crosscut the panel into 8 slices at 1 11/16" thick.` · `Flatten the board to 1 1/2" thick, removing about 3/16".` · `Hard Maple stock · 1 1/2" thick — for 6 strips`. Plaid gives each panel its own length and slice count; Harlequin lists Walnut partner strips and a composite-strip step.
+
+**Live check (prod, after `265e9a6` deployed):** the saved board "Sprint76 M2 check" reads `Crosscut strips to 14 1/4".`, slices at 1 11/16", explicit row order and species in dry fit on `/build`; the designer shows Metrics "Cut length 14 1/4"", cut plan "Rip from 3 1/2" stock", Buy 2 boards, nothing flagged too wide. CI green on every push.
+
+**Found while checking, pre-existing, queued to 81:** React hydration error #418 on every saved-design load — the "Save a copy" `<form>` sits inside the save `<form>` (Sprint 76 preview header). Not touched by this sprint.
+
+**Open for Keagan (D1, not built):** Sprint 73's maths carries no thickness or end-trim allowance, so "mill to 1 1/2", flatten the panel to 1 1/2"" and "square both ends" still finish a hair under on those two axes.
+
+**Commits:** `0d7bd2e` pack · `e00306f` pre-flight fixes + lock · `2cb7dfc` Cursor retired, re-lock · `2d2f405` implementation · `265e9a6` A12 fix + SCORECARD.
 
 ---
 

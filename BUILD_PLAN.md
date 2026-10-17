@@ -60,8 +60,9 @@ Frontend React+Next · Backend Node/TS Next API routes · DB Postgres/Neon · Ho
 | Sprint 77 (designer panels workflow) | ✅ **CLOSED** 2026-07-28 — **98/100**. `add-panel` appends a row-pattern step so a new panel paints immediately; strip editor above the list; Collapse/Delete legible. Suite **1385/1385** / 121 files. |
 | Sprint 78 (build-steps library, D5 1/3) | ✅ **CLOSED** 2026-07-28 — Attempt 2 **97/100** (Attempt 1 **93** — ACCEPTANCE passed 23/23 while §6 caught four copy/aggregation defects the bar never graded). `designBuildSteps()` pure library. Suite **1411/1411** / 122 files. |
 | Sprint 79 (build guide surface, D5 2/3) | ✅ **CLOSED** 2026-07-28 — **96/100**, ACCEPTANCE 26/26. `/designer/[id]/build` private route, Build Plan control in the Sprint 76 slot, steps on the print sheet, one transform vocabulary. Suite **1426/1426** / 123 files. |
+| Sprint 80 (build-guide correctness, D5 3/3) | ✅ **CLOSED** 2026-10-16 — **96/100**, ACCEPTANCE 39/40 (A12 regression fixed before push). Guide, cut plan, metrics and print read one source of cut dimensions (`cut-pieces.ts`); per-panel end-grain lengths; mitered partner strips; no phantom boards. First sprint run solely in Claude Code. Suite **1467/1467** / 127 files. |
 
-Test suite — expected: **1426/1426** across **123 files** (Sprint 79). Update each sprint close.
+Test suite — expected: **1467/1467** across **127 files** (Sprint 80). Update each sprint close.
 
 **Designer:** U0–U7 ✅ · **67–72 ✅** · **73 ✅** · **74 ✅** · **76 ✅** · **77 ✅**. Parked FUTURE_IDEAS 2026-07-26. **D5 partially ungated 2026-07-27** — build steps AUTHORISED (own track, after 76–77); global settings authorised as **display+validate only**, no solver. **D3/D7 still gated.** New board styles still NOT authorised.
 
@@ -136,7 +137,7 @@ LESSON:    The bar asserted exact rendered strings and forbade raw enum names in
            direct correction of Sprint 78 passing 23/23 at §6 93.
 ```
 
-#### Sprint 80 — build guide correctness (D5 3 of 3) 🟡 NEXT — pack `sprints/80/`
+#### Sprint 80 — build guide correctness (D5 3 of 3) ✅ CLOSED 2026-10-16 · 96/100 (ACCEPTANCE 39/40) — D5 track complete
 
 ```
 RESCOPED:  Keagan 2026-10-16, after the designer consumer-readiness audit. Was "polish"; the
@@ -154,7 +155,7 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
-#### Sprint 81 — designer save safety + controls ⬜ QUEUED (Keagan 2026-10-16)
+#### Sprint 81 — designer save safety + controls 🟡 NEXT (Keagan 2026-10-16)
 
 ```
 OBJECTIVE: A consumer never silently loses a design, and every control does what it says.
@@ -164,7 +165,10 @@ ITEMS:     #1 invalid-but-reachable states (empty name/label, 0 strips, >40 stri
            persistence + failure handling · #6 number inputs clamp per keystroke (clear+type
            2.25 → 0.0625225) · #9 delete-panel leaves a dangling row whose select lies ·
            #10 library Delete has no confirm · #11 no unsaved-changes guard · Collapse is a dead
-           control · Mitered offered on edge grain · mobile saved view lacks Build Plan link
+           control · Mitered offered on edge grain · mobile saved view lacks Build Plan link ·
+           (found closing 80) "Save a copy" renders a <form> inside the save <form> (preview
+           header, since Sprint 76) → server HTML invalid → React hydration error #418 and a full
+           client re-render on every saved-design load; fix = button formAction, no nested form
 OUT:       Vercel Skew Protection (plan-gated — Keagan's call if ever wanted) · D7 · D2
 ```
 
