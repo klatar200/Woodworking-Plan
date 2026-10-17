@@ -158,6 +158,18 @@ OUT:       board-feet maths (design-board-feet.ts byte-identical, 9 template tot
            any NEW allowance (thickness/trim → D1 question for Keagan) · D7 safety · D2 dollars
 ```
 
+#### Sprint 84 — Patched dependencies + no impossible plans 🟡 NEXT (Keagan 2026-10-17) — pack `sprints/84/`, locked
+
+```
+OBJECTIVE: GO_LIVE_FIXES S-01 + S-02. `npm audit fix` (lockfile; next 15.5.20 → 15.5.28, sharp,
+           undici, postcss, source-map-js, nanoid; `next` range → ^15.5.28) — clears the critical and
+           the request-path highs; deepmerge-ts (Prisma CLI, build-time) accepted until Prisma 7.
+           Unpublish 29 plans (20 metric = mm in inch fields; 9 assemblies / impossible sizes);
+           639 → 610. content.test guard: every published part 0<T≤4, 0<W≤48, 0<L≤120; no -metric.
+           Then db:seed prod.
+OUT:       src/ · Prisma 7 / Next 16 · dev-dep advisories · re-parsing plans · S-17 publishedAt
+```
+
 #### Sprint 83 — Checkerboard fits a 13″ planer ✅ CLOSED 2026-10-17 · 100/100 (ACCEPTANCE 18/18)
 
 ```
