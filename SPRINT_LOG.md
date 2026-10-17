@@ -3,13 +3,36 @@
 
 > **Append-only sprint history — this is the record of what happened, NOT current state.** For current catalog/stack/launch reality read `CLAUDE.md` §6; for roadmap/phase status read `BUILD_PLAN.md` §4. Each sprint is one `## Sprint N` section (attempts + final score + scorecard breakdown + commit SHAs), per the §7 loop.
 >
-> **Latest logged: Sprint 80 (2026-10-16) — CLOSED 96/100** — build-guide correctness (D5 3 of 3), first sprint run solely in Claude Code. Suite: 1467 green / 127 files.
+> **Latest logged: Sprint 81 (2026-10-17) — CLOSED 98/100** — designer save safety + controls. Suite: 1515 green / 131 files.
 >
-> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅. Suite: 1467 green.
+> **Milestones:** … · shell 67–72 ✅ · Sprint 73 ✅ · Sprint 74 ✅ · Sprint 00 (sprint-pack loop) ✅ · Sprint 75 ✅ · Sprint 76 ✅ · Sprint 77 ✅ · Sprint 78 ✅ · Sprint 79 ✅ · Sprint 80 ✅ · Sprint 81 ✅. Suite: 1515 green.
 >
 > **Compaction (Sprint 75):** Sprints 65–74 retain full detail; Sprints 0–64 and non-sprint history sections are one line each.
 >
 > **Ordering: newest-FIRST by date, not by number.** Sprint 00 is out-of-band process infrastructure shipped 2026-07-27, so it sits between 75 and 74. Everything from 74 down is numerically descending.
+
+---
+
+## Sprint 81: Designer save safety + controls
+**Dates:** 2026-10-17
+**Scope:** BUILD_PLAN §4 Sprint 81 (Keagan 2026-10-16), from the designer consumer-readiness audit: #1 invalid-but-reachable states silently discarded work on Save, #2 Save after a deploy crashed the page, #6 number fields clamped per keystroke, #9 delete-panel left a lying dangling row, #10 one-click permanent library delete, #11 no unsaved-changes guard, dead Collapse, Mitered offered on edge grain, no phone Build Plan link — plus the nested-form hydration error (#418) found closing 80.
+
+**Process:** Claude-only loop. The fresh-context pre-flight found one sprint-voiding blocker (an edge-grain test harness asserting the Mitered checkbox, not on the authorised list) and three round-costing defects (`react/no-unescaped-entities` vs the exact ASCII strings, Collapse with template panel ids `wide-a`/`full`/`course`, jsdom lacking `matchMedia`) — all fixed before the lock.
+
+### Attempt 1 — ACCEPTANCE 40/40 (100%), no R FAIL — §6 98/100
+| Category | Score | Evidence |
+|---|---|---|
+| 1 Requirements fidelity /25 | 25 | All twelve PLAN tasks; server actions, `board-designs.ts`, `serialize.ts` byte-identical (R2); Sprint 80 surfaces untouched (R7). |
+| 2 Correctness /20 | 19 | 40/40 graded; `npm run build` passes (M1, run natively). Implementing exposed a latent bug the bar did not name: `dirty` compared JSON text, but the server returns the schema's key order (`planeBuffer` moves), so a just-saved board read as unsaved — with the new beforeunload guard that would have prompted on every exit. Fixed with an order-insensitive `sameDesign`, covered by the draft tests. **−1:** the grader noted `saveBlockers` interleaves per-panel B3/B4 messages rather than grouping by kind — harmless, unchecked. |
+| 3 Test coverage /15 | 15 | 1467 → **1515** tests, 127 → **131** files: exact blocker strings, reducer caps, sibling-form parse of the static markup, jsdom shell restore/discard/persist/beforeunload, number input, Collapse, edge miters, phone link, delete confirm, error boundary. |
+| 4 Security /15 | 15 | Drafts are `sessionStorage` only, stored only when savable, wiped by `PrivateCacheGuard` on sign-out before the worker check; nothing new reaches the server; no identity from the client. |
+| 5 Code quality /10 | 9 | Two clamp helpers replaced by one `BoundedNumberInput`; caps named once in `config-limits.ts`. **−1:** two `react-hooks/exhaustive-deps` disables in the shell (mount-only restore, persist effect) — commented and deliberate, still exceptions. |
+| 6 Mobile/offline /10 | 10 | Phone view of a saved board links to the Build Plan; the restore notice shows at every width. |
+| 7 Docs/handoff /5 | 5 | Pack, BUILD_PLAN §4, CLAUDE.md §6. |
+
+**Live check (prod, `4d958b0` deployed, CI green; nothing saved or deleted):** saved board loads with **no console errors** (#418 gone), no nested form, the sibling copy form present · clearing the name disables Save and Save a copy and shows `Can't save yet: Give the board a name.` · clearing Rows shows `Enter a number from 1 to 60.` with the design untouched, typing 10 applies it and writes the draft · reload restores rows 10 with the notice; `Discard them` returns to the saved 8, clears the draft, and the page reads as saved (key-order fix holding on real stored data) · Collapse → Expand, strip editor hidden · library Delete opens `Delete "Sprint76 M2 check"? This can't be undone.`, Cancel backs out, four boards intact · phone width shows Build Plan before Print sheet. Not observable through automation: the native leave-site dialog (covered by the jsdom test). M1 `npm run build` passed natively.
+
+**Commits:** `c3cec59` pack (locked) · `76ba0c3` implementation · `4d958b0` SCORECARD.
 
 ---
 
