@@ -4,6 +4,14 @@ import type {
   PanelPlan,
 } from './types';
 
+/**
+ * Widest board a common benchtop planer takes (13″ models — the 12½–13″ class). The build guide's
+ * "Flatten the panel" step is where a wider glued panel stops fitting (Sprint 82).
+ */
+export const BENCHTOP_PLANER_WIDTH_IN = 13;
+
+export const PLANER_WIDTH_WARNING = 'Wider than a 13" benchtop planer — plan to hand-flatten.';
+
 export interface PanelGeometry {
   panelWidthIn: number;
   finishedLengthIn: number;
@@ -126,8 +134,13 @@ export function panelGeometry(config: BoardDesignConfig): PanelGeometry {
     complete = false;
   }
 
-  if (finishedWidthIn > 24) {
-    warnings.push('Wider than most planers — plan to hand-flatten.');
+  // What goes through a planer is each glued PANEL, whose width is the strip stack — not the
+  // finished board's width (in end grain that is the stack of rows). Used panels only.
+  const usedPanelWidths = panelPlan
+    .filter((plan) => config.grain === 'edge' || plan.rows > 0)
+    .map((plan) => plan.widthIn);
+  if (usedPanelWidths.some((width) => width > BENCHTOP_PLANER_WIDTH_IN)) {
+    warnings.push(PLANER_WIDTH_WARNING);
   }
 
   return {

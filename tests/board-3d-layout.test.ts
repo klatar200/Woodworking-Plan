@@ -72,7 +72,7 @@ describe('board 3D layout helpers', () => {
     expect(source).toContain('dynamic(');
     expect(source).toContain('ssr: false');
     expect(source).toContain('BoardDiagram');
-    expect(source).toMatch(/too many pieces for 3D preview|WebGL/i);
+    expect(source).toMatch(/Too many pieces for the 3D preview/);
   });
 
   test('r3f sources do not include texture URLs or hotlinks', () => {

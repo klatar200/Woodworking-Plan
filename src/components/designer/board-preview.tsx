@@ -53,7 +53,7 @@ export function BoardPreview(props: {
     setCanvasReady(Boolean(canvas));
   }, []);
 
-  const fallbackReason = fallbackReasonFor({
+  const fallbackReason = previewFallbackReason({
     cellCount: cells.length,
     webglAvailable,
     contextLost,
@@ -177,7 +177,23 @@ export function BoardPreview(props: {
             </div>
           </div>
           {fallbackReason && mode === '3d' ? (
-            <p className="m-0 text-[0.9375rem] text-muted">{fallbackReason}</p>
+            <div className="flex flex-wrap items-center gap-[0.75rem]">
+              <p className="m-0 text-[0.9375rem] text-muted">{fallbackReason}</p>
+              {fallbackReason === PREVIEW_CONTEXT_LOST ? (
+                <button
+                  type="button"
+                  className={btnGhost}
+                  onClick={() => {
+                    // Re-check first: a GPU that is still gone must not remount a canvas that
+                    // could throw into the designer's error boundary (Sprint 82).
+                    if (hasWebGL()) setContextLost(false);
+                    else setWebglAvailable(false);
+                  }}
+                >
+                  Try 3D again
+                </button>
+              ) : null}
+            </div>
           ) : null}
           <p className="m-0 text-[0.8125rem] text-muted">
             Rotation is view-only — it does not change the design.
@@ -266,7 +282,16 @@ function loadImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-function fallbackReasonFor({
+const PREVIEW_TOO_MANY = 'Too many pieces for the 3D preview — showing the flat view.';
+const PREVIEW_CONTEXT_LOST = 'The 3D preview stopped — showing the flat view.';
+const PREVIEW_UNAVAILABLE = "3D preview isn't available on this device — showing the flat view.";
+
+/**
+ * Why the preview is showing the flat (2D) view instead of 3D, in plain words (Sprint 82 — the
+ * old copy named the graphics API and the image format). Precedence: too many cells, then a lost
+ * context, then no 3D support at all.
+ */
+export function previewFallbackReason({
   cellCount,
   webglAvailable,
   contextLost,
@@ -275,15 +300,9 @@ function fallbackReasonFor({
   webglAvailable: boolean | null;
   contextLost: boolean;
 }): string | null {
-  if (shouldUseSvgFallback(cellCount)) {
-    return 'too many pieces for 3D preview';
-  }
-  if (contextLost) {
-    return 'WebGL context lost; showing SVG preview.';
-  }
-  if (webglAvailable === false) {
-    return 'WebGL is unavailable; showing SVG preview.';
-  }
+  if (shouldUseSvgFallback(cellCount)) return PREVIEW_TOO_MANY;
+  if (contextLost) return PREVIEW_CONTEXT_LOST;
+  if (webglAvailable === false) return PREVIEW_UNAVAILABLE;
   return null;
 }
 

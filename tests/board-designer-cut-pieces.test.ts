@@ -54,7 +54,7 @@ describe('designCutPieces', () => {
 
   it('Harlequin: every Hard Maple strip is followed by a Walnut partner of the same size', () => {
     const pieces = piecesOf(template('harlequin'));
-    expect(pieces).toHaveLength(16);
+    expect(pieces).toHaveLength(28);
     for (let i = 0; i < pieces.length; i += 2) {
       const strip = pieces[i]!;
       const partner = pieces[i + 1]!;
@@ -113,7 +113,7 @@ describe('cut plan (toParts → designCutPlan)', () => {
     }
   });
 
-  it('default stock buys [2, 2, 2, 3, 5, 3, 4, 2, 2] boards for the templates', () => {
+  it('default stock buys [2, 2, 2, 3, 5, 3, 4, 2, 4] boards for the templates', () => {
     expect(TEMPLATES.map((t) => t.id)).toEqual([
       'classic-stripe',
       'checkerboard',
@@ -126,7 +126,7 @@ describe('cut plan (toParts → designCutPlan)', () => {
       'harlequin',
     ]);
     expect(TEMPLATES.map((t) => totalBoards(cutPlanGroupsForConfig(t.config)))).toEqual([
-      2, 2, 2, 3, 5, 3, 4, 2, 2,
+      2, 2, 2, 3, 5, 3, 4, 2, 4,
     ]);
   });
 
@@ -141,7 +141,7 @@ describe('board feet are unchanged by Sprint 80 (R4)', () => {
   it('pins every template total', () => {
     expect(
       TEMPLATES.map((t) => formatBoardFeet(calculateMetrics(t.config).totalBoardFeet)),
-    ).toEqual(['1.17', '3.19', '2.27', '1.03', '1.76', '2.45', '2.70', '2.12', '0.92']);
+    ).toEqual(['1.17', '3.19', '2.27', '1.03', '1.76', '2.45', '2.70', '2.12', '2.84']);
   });
 });
 

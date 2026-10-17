@@ -50,7 +50,7 @@ describe('library thumbnails — from config, no stored image', () => {
     expect(html.match(/<rect\b/g)?.length).toBe(7);
   });
 
-  it('over-budget designs degrade to a placeholder — never a partial board', () => {
+  it('over-budget designs render a downsampled whole board', () => {
     // 20 strips × 26 rows = 520 cells > MAX_THUMB_CELLS (500).
     const strips = Array.from({ length: 20 }, (_, i) =>
       makeStrip(`s${i}`, i % 2 === 0 ? 'hard-maple' : 'walnut', 1),
@@ -63,14 +63,24 @@ describe('library thumbnails — from config, no stored image', () => {
     });
 
     const model = thumbModelFromConfig(config);
-    expect(model).toEqual({ kind: 'placeholder', reason: 'too-complex' });
+    expect(model.kind).toBe('ok');
+    if (model.kind !== 'ok') return;
+    expect(model.approximate).toBe(true);
+    expect(model.cells.length).toBeLessThanOrEqual(1024);
+    const minX = Math.min(...model.cells.map((c) => c.xIn));
+    const minY = Math.min(...model.cells.map((c) => c.yIn));
+    const maxX = Math.max(...model.cells.map((c) => c.xIn + c.wIn));
+    const maxY = Math.max(...model.cells.map((c) => c.yIn + c.hIn));
+    expect(minX).toBe(0);
+    expect(minY).toBe(0);
+    expect(maxX).toBeCloseTo(model.widthIn, 9);
+    expect(maxY).toBeCloseTo(model.heightIn, 9);
 
     const html = renderToStaticMarkup(
       createElement(DesignThumbnail, { name: 'Dense', configJson: config }),
     );
-    expect(html).toContain('Too many pieces to preview');
-    expect(html).not.toContain('<svg');
-    expect(html).not.toMatch(/<rect\b/);
+    expect(html).toContain('<svg');
+    expect(html).not.toContain('Too many pieces to preview');
   });
 
   it('unparseable stored config → placeholder; empty strips → empty placeholder', () => {

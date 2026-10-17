@@ -13,14 +13,14 @@ import { getTemplate } from '@/lib/board-designer/templates';
 import type { BoardDesignConfig } from '@/lib/board-designer/types';
 
 describe('harlequin template — shape + closure (Sprint 59/60)', () => {
-  it('ships thicknessIn === 1; finished 7 × 8 × 1½; no warnings', () => {
+  it('ships thicknessIn === 1; finished 12¼ × 14 × 1½; no warnings', () => {
     const tpl = getTemplate('harlequin');
     expect(tpl).toBeTruthy();
     expect(getTemplate('hexagon')).toBeUndefined();
     expect(tpl!.config.panels[0]!.thicknessIn).toBe(1);
     const metrics = calculateMetrics(tpl!.config);
-    expect(metrics.finishedLengthIn).toBe(7);
-    expect(metrics.finishedWidthIn).toBe(8);
+    expect(metrics.finishedLengthIn).toBe(12.25);
+    expect(metrics.finishedWidthIn).toBe(14);
     expect(metrics.finishedThicknessIn).toBe(1.5);
     expect(metrics.warnings).toEqual([]);
     // 1″ is within 5% of ideal t = w·secθ ≈ 1.0104
@@ -35,7 +35,7 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
     const cells = layoutTopFace(tpl.config, calculateMetrics(tpl.config));
     // High SPI keeps the maple waist connected; tip-to-tip rhombi stay 4-connected-separate.
     // Shipped [none, mirrorY] leaves half-rhombi on the board's first/last edges:
-    // 12 full + 8 half = 20 walnut components (verified at spi 40 and 48).
+    // 42 full + 14 half = 56 walnut components (verified at spi 40 and 48).
     const a = speciesComponents(cells, 40);
     const b = speciesComponents(cells, 48);
     // Identical component counts across resolutions — not aliasing.
@@ -46,12 +46,12 @@ describe('harlequin template — shape + closure (Sprint 59/60)', () => {
     const walnut = a.get('walnut')!;
     const maple = a.get('hard-maple')!;
     expect(maple.count).toBe(1);
-    expect(walnut.count).toBe(20);
+    expect(walnut.count).toBe(56);
 
     const sorted = [...walnut.areas].sort((x, y) => x - y);
-    const halves = sorted.slice(0, 8);
-    const fulls = sorted.slice(8);
-    expect(fulls).toHaveLength(12);
+    const halves = sorted.slice(0, 14);
+    const fulls = sorted.slice(14);
+    expect(fulls).toHaveLength(42);
     const fullMean = fulls.reduce((s, v) => s + v, 0) / fulls.length;
     for (const area of fulls) {
       expect(Math.abs(area - fullMean) / fullMean).toBeLessThan(0.02);

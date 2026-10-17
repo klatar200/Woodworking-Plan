@@ -116,7 +116,7 @@ const WITNESSES: Witness[] = [
   },
   {
     id: 'wider-than-planer',
-    needle: 'Wider than most planers — plan to hand-flatten.',
+    needle: 'Wider than a 13" benchtop planer — plan to hand-flatten.',
     config: makeV2Config({
       grain: 'edge',
       panels: [

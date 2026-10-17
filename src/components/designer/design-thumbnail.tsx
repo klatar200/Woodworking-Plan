@@ -32,7 +32,15 @@ function ThumbSvg({ name, model }: { name: string; model: ThumbModel }) {
     );
   }
 
-  const { cells, widthIn, heightIn } = model;
+  const { cells, widthIn, heightIn, approximate } = model;
+  // A downsample's squares are not strips — outlining them would draw a grid that is not there.
+  const outline = approximate
+    ? {}
+    : {
+        stroke: 'var(--border)',
+        strokeWidth: 0.04,
+        vectorEffect: 'non-scaling-stroke' as const,
+      };
 
   return (
     <svg
@@ -50,9 +58,7 @@ function ThumbSvg({ name, model }: { name: string; model: ThumbModel }) {
             width={cell.wIn}
             height={cell.hIn}
             fill={cell.colorHex}
-            stroke="var(--border)"
-            strokeWidth={0.04}
-            vectorEffect="non-scaling-stroke"
+            {...outline}
           />
           {cell.wedge ? (
             <polygon

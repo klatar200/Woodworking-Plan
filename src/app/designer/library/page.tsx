@@ -9,7 +9,7 @@ import { DesignThumbnail } from '@/components/designer/design-thumbnail';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Board designer',
+  title: 'Saved Boards',
   robots: { index: false, follow: false },
 };
 

@@ -249,8 +249,8 @@ describe('templates — finished dimensions + panelPlan', () => {
       diagonal: { length: 10, width: 18, thickness: 1.5 },
       'thue-morse': { length: 12, width: 12, thickness: 1.5 },
       harlequin: {
-        length: 7,
-        width: 8,
+        length: 12.25,
+        width: 14,
         thickness: 1.5,
       },
     };

@@ -346,7 +346,8 @@ export const TEMPLATES: readonly BoardTemplate[] = [
      * renaming is safe for saved designs.
      *
      * Same strips/angle/corners as shipped: maple base + walnut wedge @ 30°,
-     * corners alternating tr/tl, rowPattern [none, mirrorY], 8 strips × 0.875″.
+     * corners alternating tr/tl, rowPattern [none, mirrorY], 14 strips × 0.875″
+     * (Sprint 82: was 8 × 8, a 7″ × 8″ coaster).
      *
      * Panel thickness is exactly **1″** — a deliberate ~1.03% approximation of
      * the two-row closing value t = w·secθ = 0.875/cos(π/6) ≈ 1.0104″. Inside
@@ -355,9 +356,10 @@ export const TEMPLATES: readonly BoardTemplate[] = [
      * 1″ dressed from 5/4 is standard stock; do not "fix" back to the
      * irrational ideal (that shipped 16 digits in the Thickness field).
      *
-     * Finished = 7 × 8 × 1½ (8×0.875 · 8×1 · slice 1.5).
-     * Walnut → disjoint rhombi (12 full + 8 edge-halves with shipped
-     * [none, mirrorY]); maple → one connected field.
+     * Finished = 12¼ × 14 × 1½ (14×0.875 · 14×1 · slice 1.5) — the panel stays
+     * under a 13″ planer. Walnut → disjoint rhombi (42 full + 14 edge-halves with
+     * shipped [none, mirrorY]); maple → one connected field. 14 × 16 was rejected:
+     * its walnut component count differs between 40 and 48 samples per inch.
      */
     id: 'harlequin',
     config: {
@@ -372,7 +374,7 @@ export const TEMPLATES: readonly BoardTemplate[] = [
           'Course',
           // Deliberate 1″ ≈ w·secθ (1.03% off); see comment above.
           1,
-          Array.from({ length: 8 }, (_, i) =>
+          Array.from({ length: 14 }, (_, i) =>
             miteredStrip(
               `hx-${i + 1}`,
               'hard-maple',
@@ -385,7 +387,7 @@ export const TEMPLATES: readonly BoardTemplate[] = [
         ),
       ],
       rowPattern: [step('course', 'none'), step('course', 'mirrorY')],
-      rowCount: 8,
+      rowCount: 14,
     },
   },
 ];
