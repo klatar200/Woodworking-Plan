@@ -14,9 +14,26 @@ BUILD_PLAN row. The only process files are the ones §7 defines.
 
 ## 1. Objective
 
-Decide, for each of the **610 published plans** in `content/plans/`, whether a real woodworker
-can follow it from start to finish — buy the materials, cut every part, assemble, and finish —
-**without guessing**. Every plan gets one verdict:
+Keagan's goal, in his words: **"ensure each plan makes sense and the measurements are good."**
+That is the whole scope. For each of the **610 published plans** in `content/plans/`, answer two
+questions:
+
+1. **Does it make sense?** The steps can be followed in order: every part is cut before it is
+   used, nothing is missing, nothing depends on a document we don't have, and each step says
+   what to do and how parts join.
+2. **Are the measurements good?** The cut list agrees with the steps, each part can come from the
+   material listed, the materials bought are enough, and positions/sizes the builder needs are
+   given.
+
+Everything else (tools lists, finishing, safety, time/cost estimates, style) is out of scope.
+
+**Where the plans came from:** all 610 were imported from Kreg Tool's plan library in July 2026
+(`git log` shows every file added by commit `efb0c79` "Swap catalog to Kreg import"). Kreg hosts
+plans by many authors, so some read like Ana White or blog plans (one says "This is an Ana White
+modified design"), but they all came through the same importer and get the same audit. The old
+Ana White catalog is not live and is not audited.
+
+Every plan gets one verdict:
 
 | Verdict | Meaning |
 |---|---|
@@ -24,7 +41,7 @@ can follow it from start to finish — buy the materials, cut every part, assemb
 | **Ship (unverified)** | No failures found, but at least one check came back `unknown`. Listed separately so Keagan can see how much was not verifiable. |
 | **Fix** | Followable after specific, listed corrections. |
 | **Unpublish** | Not followable, or depends on something we don't have. Should leave the catalog until corrected. |
-| **Human review** | Needs a woodworker's judgment (structural adequacy, safety of a load-bearing or children's item). You flag it; you never decide it. Can combine with another verdict (e.g. `Fix + Human review`). |
+| **Human review** | The question can only be answered with woodworking knowledge outside §9 (e.g. "is this joint/screw adequate?"). You flag it; you never decide it. Can combine with another verdict (e.g. `Fix + Human review`). |
 
 **Success** = a record for every one of the 610 plans (§7), a report Keagan can act on in about
 an hour (Stage 8), and findings that are each backed by quoted evidence. A smaller, correct audit
@@ -42,9 +59,9 @@ section at the very end (Stage 8). Fixing is separate work Keagan schedules from
 |---|---|
 | Plans by outside authors (bloggers, paid-plan sellers linked from Kreg) **stay**. Authorship and third-party links are not problems in themselves. A plan that *depends* on content we don't have is (R1). | DECISIONS_LOG 2026-10-18 |
 | Kreg is a confirmed partner; the catalog is cleared to be public. Licensing is out of scope. | DECISIONS_LOG 2026-07-24 (G1) |
-| Safety/technique coaching copy is **gated (D7)**. You never write or recommend safety text. You *flag* structural/safety concerns as **Human review**. | CLAUDE.md, DECISIONS_LOG |
+| Safety/technique coaching copy is **gated (D7)**. You never write or recommend safety text. Safety and structural adequacy are **not** part of this audit; if something looks like a genuine hazard, note it once in the report and move on. | CLAUDE.md, DECISIONS_LOG; Keagan 2026-10-18 scope |
 | The catalog is inch-only; metric plans were unpublished in Sprint 84. Audit published plans only. | DECISIONS_LOG 2026-10-17 |
-| Time, cost tier and difficulty are **formula estimates** from the import. Check the formulas once (Stage 7), never per plan. | This brief |
+| Time, cost tier and difficulty are **formula estimates** from the import. Out of scope — do not check them. | Keagan 2026-10-18 scope |
 | Content JSON is the source of truth. Never edit plan files or the DB. | CLAUDE.md §6 |
 | **Known issues — record per plan where they apply, but do not report them as new findings:** S-17 (seed resets `publishedAt`); S-18 (garbage cut-list rows inside the size bounds — score them under R3); **S-19 (the importer drops fractions — §3)**. Also known, not yet logged: the site's cut optimizer packs boards by length only and cannot lay out plywood sheets — mention it **once** in the report, never as a plan failure. | GO_LIVE_FIXES.md |
 
@@ -133,8 +150,7 @@ plausible.
    (report once). A problem the importer caused is `cause: "import"` (§3). Only a problem in
    Kreg's own content is `cause: "plan"`.
 9. **Verify before Unpublish.** No plan is marked Unpublish until an independent verifier
-   (§10) has tried to refute each Unpublish-level finding and failed. The same applies to every
-   finding on a high-risk plan.
+   (§10) has tried to refute each Unpublish-level finding and failed.
 10. **Confidence is explicit:** `confidence: "certain" | "likely"`. Only `certain`, verifier-upheld
     findings can produce Unpublish.
 11. **Script vs reader disagreement.** If a reader contradicts a sweep result, the reader must
@@ -152,7 +168,9 @@ plausible.
   performance, or `GO_LIVE_FIXES.md` items beyond §2.
 - **Do not judge style:** tone, first-person voice, brand mentions ("Kreg Jig®"), length, photo
   quality, attractiveness. Only followability.
-- **Do not grade** time, cost, or difficulty per plan.
+- **Out of scope (Keagan 2026-10-18):** tools lists, finishing, safety/structural adequacy,
+  time/cost/difficulty estimates. The audit answers only "does it make sense?" and "are the
+  measurements good?" (§1).
 - **Do not run** `scripts/run1-ledger.mjs --init` (writes a root-level file) or
   `scripts/run1-apply-patch.mjs` (writes plan files).
 - **Network:** you may fetch plan images from the R2 host in the plan JSON
@@ -182,22 +200,23 @@ thresholds (it is reported in bulk).
 | R4 | Each part's thickness and width can come from a listed material: compare with §9 nominal sizes, allowing for S-19 (a whole number that is the nominal width rounded down passes, `cause: import`). Sheet parts must fit 48″ × 96″ (in either orientation). | S | Fix |
 | R5 | Materials cover the cut list. Score it **only** when the plan uses exactly one stock type, or the steps name the stock for every part. Then: total part length + 1/8″ per cut ≤ total length bought (lengths only where the material name states them, §9). For sheets: `unknown` unless all parts are from one sheet type and their total area exceeds the area bought (that is a certain fail). If any quantity involved is 1 and Stage 2 shows it may be an import default, result is `unknown`. | S | Fix |
 | R6 | Every fastener/hardware size used in the steps appears in materials, and the plan never gives two different sizes for the same use. | S+R | Fix |
-| R7 | Every power tool or jig a step requires is in the tool list (allow for dropped tools: if Stage 2 shows the tool was in Kreg's list, `cause: import`). | S+R | Fix |
 | R8 | Build order is possible: each part/sub-assembly exists before the step that uses it; nothing is fastened in a way a later step must undo or cannot reach. | R | **Unpublish** if the build cannot proceed; else Fix |
 | R9 | Pocket-hole joints: a jig thickness setting is stated **somewhere in the plan** for every part thickness that gets pocket holes, and no setting contradicts the thickness it is used on. One statement covers all later joints of that thickness. Other joints: the method and fastener are stated. Screw length vs an outside chart is **not** judged. | R | Fix |
 | R10 | A step that places a part at a **specific measured position** ("2″ from the top", "at 12″") gives the number, or has a viewed image showing it. Relational placements — centered, flush, even spacing, "as desired", against another part — **pass** by nature. | S+R | Fix |
 | R11 | A step that says "as shown", "see diagram" or refers to a drawing has an image available: its own step image, **or** any unattached image in `images[]` that, when viewed, shows the referenced content. | S+R | Fix; **Unpublish** if the step is structural and the information exists nowhere in the plan |
-| R12 | Finishing is addressed: a sanding/finishing step, or an explicit statement that the piece is left unfinished. | S | Fix (minor) |
-| R13 | High-risk tag (§8 Stage 3): if the plan is tagged, any doubt about joint/fastener adequacy, guard rails, stability or tip-over → **Human review**. Never Ship a high-risk plan on your own judgment of strength; a tagged plan with no doubts still goes on Keagan's high-risk review list. | S tag + R | Human review |
+
+
+Ids R7 (tools list), R12 (finishing) and R13 (high-risk/safety) were removed when Keagan narrowed
+the scope on 2026-10-18 — do not score them, and do not renumber the others.
 
 **Verdict** (count only `cause: "plan"` findings):
 - **Unpublish** — any Unpublish-level failure that is `certain` and verifier-upheld; **or** ≥ 4
   Fix-level failures that are all `certain` and verifier-upheld (the plan needs a rewrite).
 - **Fix** — 1–3 Fix-level failures, or an Unpublish-level finding that is only `likely`.
 - **Ship** — every check `pass` or `n/a`.
-- **Ship (unverified)** — no failures, but one or more `unknown` on R3–R12.
+- **Ship (unverified)** — no failures, but one or more `unknown` on R3–R11.
 - An `unknown` on **R1, R2 or R8** blocks Ship → **Human review**.
-- **Human review** is added for any R13 doubt.
+- **Human review** is added when a check can only be settled with knowledge outside §9.
 - A plan whose only failures are `cause: "import"` gets the verdict its `plan`-cause checks earn,
   with `importAffected: true`.
 
@@ -224,7 +243,6 @@ continues from the first entry not `done`.
   "slug": "<slug>",
   "rubric": "R-1",
   "batch": 3,
-  "highRisk": ["sleep"],
   "importAffected": true,
   "importDiffs": [],
   "checks": {
@@ -235,7 +253,7 @@ continues from the first entry not `done`.
             "arithmetic": "<every input quoted, then the sum and comparison>" },
     "R10": { "result": "unknown", "reason": "steps[3] image not viewed" }
   },
-  "verdict": "Fix + Human review",
+  "verdict": "Fix",
   "verifier": { "ran": true, "upheld": ["R5"], "refuted": [] },
   "notes": "optional, one sentence"
 }
@@ -277,31 +295,22 @@ Each stage has an objective, outputs and a **gate**. At a gate: commit, push, re
 **Output:** `audit/plan-quality/import-fidelity.md` — each importer defect, the line in
 `import-kreg-plans.mjs` responsible, and how many plans/rows it touches.
 **Gate:** report. If Keagan declines both options: R5 is `unknown` wherever a quantity of 1 is
-involved, R4/R7 import-cause calls rely on §3 heuristics only, and say so in the report.
+involved, R4 import-cause calls rely on §3 heuristics only, and say so in the report.
 
 ### Stage 3 — Scripted sweep (all 610, no model reading)
 **Objective:** everything a script can decide is decided, with evidence, before anyone reads.
-1. Write `audit/plan-quality/scripts/sweep.mjs` for the S and S+R parts of R1–R7, R10–R12, and the
-   R13 tag. S+R checks write `flagged` candidates (with path + quote) for readers.
-2. **High-risk tag (R13).** Whole-word match on slug + title (not description):
-   - include: bed, bunk, loft, crib, cradle, daybed, hammock, swing, glider, chair, stool, bench
-     (seating only), loveseat, ladder (climbing), step stool, playhouse, play, kid, kids, child,
-     toddler, baby, nursery, toy box, toy chest, high chair, dresser, bookcase, hutch, tall;
-   - exclude: dog, pet, cat, garden, raised bed, bedside, bedroom, nightstand, blanket ladder,
-     shoe ladder, ladder shelf, growth ruler, and décor "hanging" (planters, frames, signs).
-   Write `audit/plan-quality/highrisk.md` with the tagged list and the excluded matches, so a
-   human can sanity-check it. Measured 2026-10-18: a naive match gave 63 (about 18 false
-   positives); expect a different, defensible number.
-3. Re-measure every §3 number; note any that differ.
+1. Write `audit/plan-quality/scripts/sweep.mjs` for the S and S+R parts of R1–R6, R10 and R11.
+   S+R checks write `flagged` candidates (with path + quote) for readers.
+2. Re-measure every §3 number; note any that differ.
 **Output:** updated records; `audit/plan-quality/sweep-summary.md` (counts per check, import vs
 plan cause).
 **Gate:** only if > 25% of plans already fail an Unpublish-level check with `cause: "plan"`.
 
 ### Stage 4 — Pilot read (30 plans)
 **Objective:** test the rubric and the reader prompt on real plans before spending on 610.
-1. Pick 30: 10 worst by sweep flags, 10 high-risk, 10 the sweep found clean, across categories.
-2. Read with the §10 reader template, 10 per sub-agent. Run the verifier on every Unpublish and
-   high-risk finding.
+1. Pick 30: 15 worst by sweep flags and 15 the sweep found clean, across categories.
+2. Read with the §10 reader template, 10 per sub-agent. Run the verifier on every Unpublish
+   finding.
 3. Record where checks were ambiguous, where readers disagreed with the sweep, and tokens/plan.
 **Gate:** none — feeds Stage 5.
 
@@ -311,39 +320,32 @@ plan cause).
    more beyond the pilot as needed; spread across categories; include plywood-heavy and long
    plans). For each: `https://notchplans.com/plans/<slug>`, the agent verdict, failed checks with
    quotes, and a blank "Keagan's verdict" column.
-2. Separately list **every** high-risk plan (Stage 3 tag) for his — or a trusted woodworker's —
-   full review. The agent never decides these.
-3. The measure that matters is **false Ships** (agent Ship, human Fix/Unpublish). Required:
+2. The measure that matters is **false Ships** (agent Ship, human Fix/Unpublish). Required:
    **zero** false Ships attributable to R1, R2 or R8.
-4. Change the rubric (`R-2`) only where Keagan's verdicts show a check is wrong; record why.
+3. Change the rubric (`R-2`) only where Keagan's verdicts show a check is wrong; record why.
 **Gate:** STOP until Keagan signs off the calibration file. Do not start Stage 6 without it.
 
 ### Stage 6 — Full read (remaining plans)
 **Objective:** every published plan has a verdict.
 1. Worst-first from the ledger, 10–15 plans per fresh sub-agent (§10). Commit after each batch.
 2. Open a step image only when the sweep flagged that step (R10/R11). Do not open every image.
-3. Verifier on every Unpublish and every high-risk finding.
+3. Verifier on every Unpublish finding.
 4. If the rubric changed in Stage 5, re-score the pilot plans under it first.
 **Gate:** none until done; stop early per §5.
 
-### Stage 7 — Estimate formulas (once)
-**Objective:** confirm time, cost tier and difficulty are honest *as estimates*.
-1. Read `scripts/kreg-mapping.config.mjs` (time `estimateTimeFromProcess` ≈ line 86; cost
-   `estimateCostFromMaterials` ≈ line 123) and `scripts/spread-difficulty.mjs`. Describe each in
-   plain words.
-2. Spot-check 10 plans for systematic problems only (e.g. "every plywood plan gets one tier";
-   S-19 understates lumber, so cost may skew low). No per-plan verdicts from this stage.
+### Stage 7 — (removed)
+Estimate formulas were dropped from scope on 2026-10-18. Go straight to Stage 8.
 
 ### Stage 8 — Report and triage
 **Objective:** decisions Keagan can make in about an hour.
 1. `audit/plan-quality/REPORT.md`:
    - Headline counts by verdict; top 10 failure reasons with counts; `unknown` counts per check.
    - **Decision lists:** Unpublish (slug + one-line reason); Fix (grouped by fix type, with the
-     importer-level fixes first — one importer change can fix hundreds of plans); Human review
-     (the high-risk list); Ship (unverified).
+     importer-level fixes first — one importer change can fix hundreds of plans); Human review;
+     Ship (unverified).
    - Importer defects (Stage 2) and the bulk fix each implies.
-   - Site findings, once each (e.g. optimizer can't lay out sheets).
-   - Stage 7 formula notes.
+   - Site findings, once each (e.g. optimizer can't lay out sheets), and any genuine hazard
+     noticed in passing (one line each — not audited).
    - What was **not** verified and why.
 2. Append a **C — Catalog** section to `GO_LIVE_FIXES.md` (ids `C-01`…): one row per *type* of
    problem with counts and a pointer to `REPORT.md`. Follow that file's rules (append-only).
@@ -391,14 +393,15 @@ you may apply. Questions that need it are Human review.
 > `docs/PLAN_QUALITY_AUDIT.md` §1–§6 and §9 — they bind you, especially §3 (the importer drops
 > fractions and defaults quantities; such defects are `cause: "import"`, not plan failures) and
 > §4 (evidence rules). For each slug: read `content/plans/<slug>.json` and its record
-> `audit/plan-quality/plans/<slug>.json`. Confirm or reject each `flagged` item and score R2, R3,
-> R6, R7, R8, R9, R10, R11 and R13. Open an image (fetch from the R2 URL in the JSON, scratchpad
+> `audit/plan-quality/plans/<slug>.json`. Your only questions are "does the plan make sense?" and
+> "are the measurements good?" (§1). Confirm or reject each `flagged` item and score R2, R3, R6,
+> R8, R9, R10 and R11. Open an image (fetch from the R2 URL in the JSON, scratchpad
 > only) only for steps the sweep flagged. Every failure needs path + verbatim quote (+ arithmetic
 > if numeric); otherwise `unknown`. Do not rewrite steps, invent values, or judge style. Write
 > each plan's updated record (same schema) and nothing else. Do not run git. Return only, per
 > plan: slug, proposed verdict, failed check ids.
 
-**Verifier (every Unpublish, every high-risk finding).** Spawn fresh — never a reader:
+**Verifier (every Unpublish finding).** Spawn fresh — never a reader:
 
 > Your job is to REFUTE audit findings. For each finding (slug, check id, path, quote,
 > arithmetic): open `content/plans/<slug>.json`, confirm the quote is verbatim at that path, redo
