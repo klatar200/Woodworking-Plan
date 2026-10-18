@@ -340,3 +340,6 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 `tests/content.test.ts` forbids any published cut-list part outside 0<T≤4, 0<W≤48, 0<L≤120 and any published `-metric` slug. Re-publishing one needs a corrected cut list. A metric→inch conversion would be a new decision.
 
 `npm audit` residual `deepmerge-ts <8` (via `@prisma/config` → `prisma`) is ACCEPTED until the Prisma 7 migration: it runs only in the CLI at build and migrate time, on trusted config.
+
+### 2026-10-18 — Plans by outside authors stay in the catalog
+**Binding:** Kreg-hosted plans written by outside authors (bloggers, paid-plan sellers linked from Kreg) may stay published. Authorship and third-party links are not grounds to unpublish. A plan that **depends** on content we don't have (templates, PDFs, "Extras", paid pages) to complete the build is still a quality failure (`docs/PLAN_QUALITY_AUDIT.md` R1). Keagan, while approving the plan-quality audit.
