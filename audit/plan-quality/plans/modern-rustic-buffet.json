@@ -1,6 +1,6 @@
 {
   "slug": "modern-rustic-buffet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -164,13 +164,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Step 7 'For more photos of the build visit www.MyLove2Create.com' is a credit; all sizes and positions needed are in the cut list and step images."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name sides, middle sections (= Sides/dividers), top/bottom, middle and side shelves, back, door boards (1x6, 1x4, trim, paint sticks); all map to cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used: frame steps 0, shelves 1, back 3, door rows (3.5\" boards, 5.5\" board, 1/4\" trim, securing strips) step 4."
     },
     "R4": {
       "result": "pass",
@@ -181,44 +184,71 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x6, 1x4, 0.25x36, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Attach the sides flush to each end of the bottom piece. Then attach the middle sections as directed. Next, attach the top piece. Use 3/4'' pocket holes and 1 1/4'' pocket hole screws for all joinery.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "t then attach with 3/4'' pocket holes and 1 1/4'' pocket hole screws from the underside. You can fix the side shelves to any height you desire by attaching with pocket holes, or you can use a Kreg she",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Use 3/4'' pocket holes and 1 1/4'' pocket hole screws for all joinery."
         },
         {
           "path": "steps[3].body",
-          "quote": "Attach the 1/4'' plywood back to the frame with 3/4'' screws, making sure to attach into each side, divider, shelf, and both top and bottom pieces. Always pre-drill holes first.",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Attach the 1/4'' plywood back to the frame with 3/4'' screws"
         },
         {
           "path": "steps[4].body",
-          "quote": " with a paint stick or scrap 1/4'' material with 3/4'' finish nails and glue. *Please note not all boards dimensions are accurate. After I built my doors I realized my 1x4 pieces were just short of th",
-          "why": "3/4\" nail — no material line lists a 3/4\" fastener"
+          "quote": "with 3/4'' finish nails and glue."
         }
-      ]
+      ],
+      "reason": "1 1/4\" pocket hole screws (steps 0, 1), 3/4\" screws (step 3) and 3/4\" finish nails (step 4) are used; search of materials[].name for /screw|nail|pocket/i: none match (materials[5] is shelf pins, [9] leg mounting hardware, [7] hinges)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (0), shelves (1), back (3), doors built to the measured opening (4), finish (5), legs/doors/hardware (6)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 0 and viewed image f63df09e state 'Drill 3/4\" pocket holes' for the 3/4\" plywood; step 1 repeats it."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Divider spacing 18/17/18, 23 1/2\" heights (viewed f63df09e), shelf heights 7\", 7 1/2\", 11 3/8\", 11 1/2\", 1 3/4\" inset (viewed 70ca638c), door board layout and 1/8\" door gaps (viewed 5f2d5a08, 634b4dab) are dimensioned. Hinge, catch and knob locations are not stated (builder's choice, not set by parts) and are treated as relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut prices to length and glue together."
+        }
+      ],
+      "reason": "Door boards are glued (step 4) but search of materials[].name for /glue/i finds none. Sizes agree: 5 x 3.5 + 5.5 + .25 = 23.25 door height; 18 + 17 + 18 + 4 x .75 = 56 top width; 23.5 + 2 x .75 = 25 back height."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "f63df09eb7b251d0.webp",
+      "70ca638c27d419fb.webp",
+      "5f2d5a08f984126c.webp",
+      "634b4dabc0e4a077.webp"
+    ]
+  }
 }

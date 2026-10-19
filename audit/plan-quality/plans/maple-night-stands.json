@@ -1,6 +1,6 @@
 {
   "slug": "maple-night-stands",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -175,28 +175,17 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e boards from step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "reason": "'I have attached one site' (step 2) is optional background and the step itself describes edge gluing; the dresser plan on buildsomething.com is a credit in summary/description, not a build input."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "he bit in my Kreg Router Table and set the cutting height to 3/8\". Cut the legs on the front stiles using either a band saw or a jig saw. Use Titebond I wood glue, Kreg fine 1 1/4\" pocket screws and 1",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidate rejected: '3/8\"' in step 9 is the beading bit cutting height, not a part. Parts named in steps map to cutList rows (tops, stiles, rails, sides, top support = Top Frame, bottoms, backs, guides, drawer parts)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: tops steps 2/16, sides/bottom/top frame/backs steps 3-8, stiles 9, rails 10, guides 11-12, drawer parts 13-15."
     },
     "R4": {
       "result": "unknown",
@@ -207,38 +196,66 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": " overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in place but allo",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidate rejected: '1 1/2\" at the front' (step 16) is the top overhang. Fasteners used (1 1/4\" coarse/fine Kreg pocket screws, 1 1/4\" brad nails) are in materials[5], materials[8]; knobs in materials[9]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cases cut, rabbeted, pocket-holed, assembled (3-8); stiles/rails (9-10); guides made and attached (11-12); drawers (13-15); top (16); finish and pulls (17). Guide spacing 6\" with 5 3/4\" opening is consistent with the viewed guide profile (1/4\" lip, image f812f5cb)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 7 and 11 state 'Kreg Pocket Hole Jig set to 3/4\"' for the 3/4\" parts that get pocket holes."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": "oximately 1\" overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in pl",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3810d7c539cd528.webp"
-        }
-      ]
+      "reason": "Leg openings dimensioned in viewed image 6b772efa (3\", 2 1/2\", 1 3/4\", 2\", 1 1/4\"); drawer guide position given in step 12 (6\" below the top rail, viewed image 53f833d9); top overhang 1\"/1 1/2\" given in step 16; the four 1/4\" holes in the top support are fixed by the part."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Repeat this process three more times until all drawer boxes are complete."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Cut the four drawer sides and four drawer fronts/backs from 1/2\" poplar"
+        }
+      ],
+      "arithmetic": "Step 13 and cutList[7],[8],[10] give 4 sides + 4 fronts/backs + 2 bottoms = 2 drawer boxes (one per night stand); step 14 'one box built, repeat three more times' = 4 boxes; materials[9] knobs quantity 2.",
+      "reason": "Step 14 asks for four drawer boxes but the cut list, step 13 and hardware supply two (text carried over from the dresser plan)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[16].body",
+      "quote": "four Kreg 1 1/4\" fine pocket screws that have flat washers added",
+      "what": "Flat washers are used to hold the top but are in no materials line (search of materials for /wash/i: none) and no size is given."
+    }
+  ],
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "53f833d933bc151a.webp",
+      "f812f5cbc032b642.webp",
+      "6b772efa728791cb.webp"
+    ]
+  }
 }

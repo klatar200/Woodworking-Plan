@@ -1,6 +1,6 @@
 {
   "slug": "modern-line-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name the box (top, bottom, sides), mitered front legs, back legs, 'side pieces for the base' (= cutList 'Cross pieces for legs', 4 x 14 spanning front to back: 14 + 2 x 1 = 16 = box depth), drawer parts, back. All have cutList rows; the 'side pieces for the base' wording is loose but maps by function."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used: box steps 0-1, legs 3-7, drawers 9-10, fronts 12, back 13."
     },
     "R4": {
       "result": "pass",
@@ -24,44 +26,90 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x1, sheet-0.25, 0.25x0.25, 0.75x5.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "or the mitered legs. This will give the pocket screw enough material to grab onto for a strong hold.\nUse wood glue and 1.5\" pocket screws to put the mitered legs together.\nIt helps to use clamps here!",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
+          "quote": "Use wood glue and 1.5\" pocket screws to put the mitered legs together."
         },
         {
-          "path": "steps[6].body",
-          "quote": "Drill pocket holes in the top and bottom piece, making sure they face up.\nUse wood glue and 1.5\" pocket screws attach the back legs together.",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "he bottom.\nThis allows the pocket screws to have enough hold when they screw into the mitered legs.\nUse wood glue and 1.5\" pocket screws to screw the side pieces to the mitered legs and the back legs.",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "he bottom.\nThis allows the pocket screws to have enough hold when they screw into the mitered legs.\nUse wood glue and 1.5\" pocket screws to screw the side pieces to the mitered legs and the back legs.",
-          "why": "1.5\" screw — no material line lists a 1.5\" fastener"
+          "path": "steps[10].body",
+          "quote": "Use wood glue and 1.25\" pocket screws to put the drawer together."
         }
-      ]
+      ],
+      "reason": "Steps 4, 6, 7 use 1.5\" pocket screws and step 10 uses 1.25\" pocket screws; search of materials[].name for /pocket|screw/i matches only materials[8] '1.25\" screws for drawer fronts' (step 12) and materials[13] figure 8 fasteners. No pocket-hole screw is listed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box (0-2), front and back leg frames and base (3-7), box fastened to base with figure 8s (8), drawers made (9-10), slides (11), fronts (12), back rabbet and panel (13), finish and hardware."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill pocket holes on the top and bottom piece for the mitered legs."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Drill pocket holes in just the front and back pieces of the drawers."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1\" square stock (steps 4, 6, 7) and 3/4\" drawer parts (step 9); search of all steps for /setting|jig|collar/i: no match, and viewed images 201291c6 and 2edbf876 are renderings with no setting. Recorded only (R9 does not count)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Dowel holes (1.5\" from edges, 1\" deep), slide offset .75\" and heights 1.75\", front-to-box gaps 1/16-1/8\", groove depth about 1/4\" are numeric; base flush with box, 5 grooves evenly spaced, slides centered in drawers and hardware of choice are relational. Figure 8 positions are 'two on each side of the top of the base' (relational)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "the second drawer slide should be installed 2\" up from the first drawer slide."
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Drawer front & back, 0.75 x 3.5 x 19"
+        }
+      ],
+      "arithmetic": "Step 10 says slides are 'in the center of the drawers'; each drawer box is 3.5\" tall (cutList[8],[9] width 3.5) and bottom slide is 1.75\" up, so drawer 1 spans 0-3.5\" and drawer 2 centered 2\" higher spans 2.0-5.5\" (overlap 1.5\"); the two fronts are 4.375\" each (cutList[11]) filling a 9\" opening (10.5 - 2 x .75).",
+      "reason": "'2\" up from the first slide' cannot be the centre-to-centre spacing of two 3.5\"-tall drawers; it may mean a gap above the first slide, whose height the plan does not give, so the intended slide position is unclear."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Run 1/4\" groove on the inside bottom of all the drawer pieces except for the bottom.",
+      "what": "Groove depth and height from the bottom edge are not given; cutList[10] drawer bottom 13.468 deep with 14\" sides and 3/4\" front/back (14 - 1.5 = 12.5 between) would need 0.484\" groove depth each side, which the plan never states."
+    }
+  ],
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "201291c66770cb7a.webp",
+      "2edbf876264ced60.webp"
+    ]
+  }
 }

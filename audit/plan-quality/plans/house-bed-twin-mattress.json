@@ -1,6 +1,6 @@
 {
   "slug": "house-bed-twin-mattress",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -43,33 +43,31 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "our jig to 1-1/2\" but set your drill bit collar to 3/4\" *** See attached image. ***\nThis is only for the mitered end - the \"peak short\" will get pocket holes on the square end - use your typical setti",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "1/2\" pocket hole screws, attach the peaks to each other per the attached image. Glue is recommended on all the pieces that will be screwed together.\nRepeat the above step for the other peaks for the o",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "reason": "'See attached image' in steps 4 and 5 refers to the step's own image (viewed: a4f2832992bfe0af jig/collar photo; 8ec3f2adc0daaf3a peak assembly). Step 0 'cutlist provided' is the cut list on the page and the step-0 diagram. No external document needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].image",
+          "quote": "Horizontal(s) Ends 02ea (40\" long, viewed image b13430daf6013569)"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble the ends of the house bed per attached image."
+        }
+      ],
+      "arithmetic": "cutList[1] 'Horizontals' quantity 5 x 72 (image b13430 labels 'Horizontal(s) 05ea' 72\" separately from 'Horizontal(s) Ends 02ea' 40\"); materials[1] 'Board, 2x4 72\"' quantity 7 = 5 + 2 end pieces.",
+      "reason": "The two end crosspieces (end frame bottom piece, step 1 image 49926e7d) have no cutList row; search of cutList parts for end/crosspiece/40: no match. Their 40\" length appears only in the step-0 diagram image, so the build is completable: Fix not Unpublish. Cause (importer row drop vs Kreg) cannot be told."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Verticals",
-          "why": "no step mentions it (searched steps for vertical)"
-        }
-      ]
+      "result": "pass",
+      "reason": "'Verticals' is used: step 1 builds the ends from 2 verticals each (viewed image 49926e7d) though the word 'vertical' never appears in step text."
     },
     "R4": {
       "result": "pass",
@@ -80,31 +78,72 @@
       "arithmetic": "parts: 4×61.5 + 5×72 + 2×29.8125 + 2×28.3125 + kerf 2 cuts (13 parts − 11 boards, the fewest possible)×1/8 = 722.500″; bought: 4×96 + 7×72 = 888″; 722.500 ≤ 888"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '1 1/2\" pocket hole screws' (steps 4-5) and wood plugs; materials list '1-1/2\" Kreg Screws' and 'Solid-Wood Pocket-Hole Plugs'; no conflicting size."
     },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "bedroom otherwise you'll build the ship outside the bottle.\nI'd recommend having all your pocket holes face away from the front of the bed or the door. Even though we are filling them, we can keep the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ec1f94c84947c7d.webp"
+          "quote": "Now that you have both \"house ends\" built, connect them with with your horizontals*"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill pocket holes on both ends of all the horizonatal pieces."
+        },
+        {
+          "path": "steps[5].title",
+          "quote": "Assemble Peaks"
         }
-      ]
+      ],
+      "reason": "Step 2 screws the horizontals between the ends ('Once screws are in') before step 3 drills their pocket holes, and its image (viewed 4ec1f94c) shows the ridge horizontal between peaks that are only assembled in step 5. Steps are out of order; a builder can reorder, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 3 states '1 1/2\" setting'; step 4 states jig 1-1/2 and collar 3/4 for mitered ends; all parts are 2x4 (1.5 thick)."
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Horizontal positions (bottom rails, mid rails at the verticals' tops, ridge between peaks) and the end crosspiece position are shown in viewed images 4ec1f94c and 49926e7d; verticals and peaks are fixed by the parts."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Part counts agree (4 verticals, 5 horizontals, 2+2 peaks = image labels); every part is installed (steps 1, 2, 5); finishing step reaches the bed. The unlisted end crosspiece is recorded under R2."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps / cutList / materials",
+      "quote": "Make your very own house bed for your kids’ room.",
+      "what": "Nothing in the plan makes or names a surface to support a twin mattress (search of all fields for slat|platform|ledger|box spring: no match). Cannot judge whether a mattress rests on the bottom rails alone; flagged as a possible hole in the finished piece."
+    }
+  ],
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "b13430daf6013569.webp",
+      "49926e7d927d01a7.webp",
+      "4ec1f94c84947c7d.webp",
+      "8ec3f2adc0daaf3a.webp",
+      "a4f2832992bfe0af.webp",
+      "412f7086ef372196.webp"
+    ]
+  }
 }

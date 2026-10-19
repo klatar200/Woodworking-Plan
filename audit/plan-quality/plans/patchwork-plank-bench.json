@@ -1,6 +1,6 @@
 {
   "slug": "patchwork-plank-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -175,67 +175,97 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": " for the Patchwork Plank Dining Table previously posted. This is a quick and easy build with the help of a few Kreg Jig pocket holes! You can find plans for the table build here: http://bit.ly/2ebZtfM",
-          "why": "matches \"http://\""
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Pull out your favorite Kreg Jig and follow the attached layout, it should help with the structure and no misplaced holes that butt up against each other ineffectively. The good news is that you're onl",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "reason": "The bit.ly link in the description is to the companion table plan, not needed here; 'the attached layout' (step 2) is the step's own image (viewed e1f7a829: pocket hole layout with 72\" x 11\")."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name the 1x6 planks (24/24/24 and 18/36/18), 2x4 end and side aprons, four 2x4 middle supports and two 2x6 leg supports; all map to cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used (planks step 0, end aprons 3, side aprons 4, supports 5)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 2x4, 2x6); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "reason": "The 75\" side aprons cannot be cut from the listed 72\" 2x4s, and the 1x6 and 2x4 lengths are short once kerf is counted.",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "ntioned in the table build, it's very important to make sure the face down side is flush so you're going to have to use a healthy dose of clamps (you can never have too many!) to have a smooth reveal.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e1f7a8290952a42e.webp"
+          "path": "cutList[3]",
+          "quote": "Side Apron, qty 2, 2x4, length 75"
         },
         {
-          "path": "steps[5].body",
-          "quote": "drill 1.50\" pocket holes on the ends of all 6 boards. Glue the bottoms and sides and attach with 2-1/2\" pocket screws. The 2x4's need to be spaced covering the joints of the planks for added strength.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8db88efc7839a2e1.webp"
+          "path": "materials[1].name",
+          "quote": "Board, 2x4 72\""
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 72\""
         }
-      ]
+      ],
+      "arithmetic": "Steps name the stock for every part (1x6 planks step 0, 2x4 aprons/middle supports steps 3-5, 2x6 supports step 5). 2x4: each side apron is 75\" but each bought 2x4 is 72\" long (75 > 72); total 2 x 75 + 2 x 11 + 4 x 11 = 216 + 5 cuts x 1/8 = 216.625 > 3 x 72 = 216. 1x6: 3 x 24 + 2 x 18 + 36 = 144 + 4 cuts x 1/8 = 144.5 > 2 x 72 = 144. 2x6: 2 x 11 + 1/8 = 22.125 <= 24 passes."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Steps use 1-1/4\" and 2-1/2\" pocket screws (materials[4], [5]); hairpin leg screws carry no stated size."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Planks cut and stained (0-1), holes drilled and top glued (2), end aprons (3), side aprons (4), supports (5), legs (6), finish (7); pocket holes for the aprons are pre-drilled in steps 2-3."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 2 and image e1f7a829 state 0.75\" pocket holes for 1-1/4\" screws; steps 3 and 5 state 1.50\" pocket holes for the 2x aprons and supports."
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Middle supports 'covering the joints of the planks' and 2x6 supports 'butted against the end aprons' are relational, shown in viewed image 8db88efc; apron flush with top; hairpin leg plates sit in the corners of the 2x6 supports (viewed 10241323), no dimension given."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "get to gluing and screwing your planks together."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Glue the bottoms and sides and attach with 2-1/2\" pocket screws."
+        }
+      ],
+      "reason": "Wood glue is used in steps 2, 3, 5 but search of materials[].name for /glue/i: none (materials[0-5] are lumber, legs, two pocket screw lines). Sizes agree: 2 x 5.5 = 11 top width, 72 + 2 x 1.5 = 75 length, 4 middle supports for the 4 plank joints."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "10241323c7a4790a.webp",
+      "8db88efc7839a2e1.webp",
+      "e1f7a8290952a42e.webp"
+    ]
+  }
 }

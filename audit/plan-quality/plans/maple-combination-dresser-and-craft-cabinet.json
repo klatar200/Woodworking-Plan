@@ -1,6 +1,6 @@
 {
   "slug": "maple-combination-dresser-and-craft-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -307,26 +307,17 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "uquerque Hardwoods that I cut, flatten and plane to final dimensions. Dimensional lumber will work as well it will just be more expensive. See Popular Woodworking article linked in the Extras section.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "e boards from step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "reason": "'See Popular Woodworking article linked in the Extras section' (step 0) and 'I have attached one site' (step 3) are optional background; the plan itself describes the edge-gluing and wood-selection method. No cut row, material or step needs the linked content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps match cutList rows by name and count: six poplar top-frame boards (step 8 = rows 12-14, 2+2+2), eight drawer sides/eight fronts-backs/four bottoms (step 14 = rows 18-24), eight shelf sides/fronts-backs/four bottoms (step 15 = rows 15-17), stiles/rails, doors, top, case panels."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: case panels steps 2-10, stiles/rails 11-12, doors 17, drawer fronts 18, top 19, drawer/shelf parts 14-16."
     },
     "R4": {
       "result": "pass",
@@ -337,38 +328,65 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[19].body",
-          "quote": " overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in place but allo",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidate rejected: '1 1/2\" at the front' (step 19) is the top overhang, not a fastener. Fasteners used: 1 1/4\" coarse and fine Kreg pocket screws (steps 9-11, 19) and 1 1/4\" brad nails (step 10) all in materials[5], materials[12]; hinges/knobs/pulls/slides in materials[6-9, 16]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Case panels cut, rabbeted, pocket-holed and assembled (4-10), then face frame (11-12), slides (13), boxes (14-16), doors (17), drawers (18), top (19), finish (20); no step needs a later part."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 6, 7 and 9 state 'Kreg Pocket Hole Jig set to 3/4\"' for every pocket-holed 3/4\" part; step 11 stile screws are the stated fine 1 1/4\"."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[19].body",
-          "quote": "oximately 1\" overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in pl",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e01ac66048bb0f.webp"
-        }
-      ]
+      "reason": "Top overhang given (1\" sides, 1 1/2\" front, step 19); leg openings dimensioned in viewed image 930b6dd2 (2 1/2\", 1 3/4\", 3\", 2\", 1 1/4\"); slide heights dimensioned in viewed image 1de45082 (5 1/2\", 10 1/2\", 17 1/2\", 26\"); the four 1/4\" top-frame holes are fixed by the frame; shelf slide spacing is explicitly the builder's choice."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "Cut the eight shelf sides and eight shelf fronts/backs from 1/2\" poplar"
+        },
+        {
+          "path": "steps[18].body",
+          "quote": "Attach the drawer boxes and fronts to the drawer slides."
+        }
+      ],
+      "reason": "Sliding shelf boxes are made (steps 15-16) and shelf slides mounted (step 13) but no step attaches the shelves to their slides; step 18 covers drawers only. Search of steps for shelf|shelves: steps 13, 15, 16 only. The drawers, doors and top are installed, so Fix not Unpublish."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[19].body",
+      "quote": "four Kreg 1 1/4\" fine pocket screws that have flat washers added",
+      "what": "Flat washers are used to hold the top but appear in no materials line (search of materials for /wash/i: none) and no size is given."
+    }
+  ],
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "930b6dd2da660576.webp",
+      "98e01ac66048bb0f.webp",
+      "1de450825ee1bbef.webp"
+    ]
+  }
 }

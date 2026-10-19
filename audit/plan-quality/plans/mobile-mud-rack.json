@@ -1,6 +1,6 @@
 {
   "slug": "mobile-mud-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -19,21 +19,17 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Pull the following parts: sides x 2 / ends x 2 - Using the attached drawings, layout and mark all your locations for holes. Prior to drilling your pocket holes - check your jig and your drill collar t",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "reason": "'the attached drawings' (steps 1, 2) are the steps' own images (viewed 77c3fc7f: end shape and pocket layout dimensioned)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (base, sides, ends, verticals, shelf sides, shelf base for upper and lower shelf) all map to cutList rows; end size '9\" x 22-1/2\"' matches the corrected cutList[2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows are used: Base/Sides/End steps 1-4, Vertical step 5, Shelf Sides steps 6 and 9, Shelf Base steps 7 and 9."
     },
     "R4": {
       "result": "pass",
@@ -44,40 +40,58 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "untersink bit, or a 3/8\" drill bit, open up the hole so the screw head sits flat when fully seated. Apply wood glue between the two parts and screw it in place. Repeat the same process for the other s",
-          "why": "3/8\" screw — no material line lists a 3/8\" fastener"
+          "quote": "We are attaching these with (4) 1-1/4\" drywall screws and wood glue."
         },
         {
-          "path": "steps[7].body",
-          "quote": "Using the shelf base (1/4\") plywood, wood glue and 18ga brad nails, secure it to the bottom of the 2 upper shelf sides. If you plan on using this shelf for heavier items, screws can be used in place o",
-          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "sing the shelf base (1/4\") plywood, wood glue and 18ga brad nails, secure it to the bottom of the 2 upper shelf sides. If you plan on using this shelf for heavier items, screws can be used in place of",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
+          "path": "materials[3].name",
+          "quote": "1 1/2\" drywall screws (course thread)"
         }
-      ]
+      ],
+      "reason": "Step 5 names 1-1/4\" drywall screws; materials list only 1 1/2\" drywall screws (and 1 1/4\" Kreg screws, which are pocket-hole screws). Flagged '3/8\" drill bit' and '1/4\" plywood' candidates rejected (not fasteners)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0-1), pocket holes (2), base tray (3-4), verticals (5), upper shelf (6-7), lower shelf marked and built (8-9), finish (10), casters (11), hooks (12). Step 9 'steps 7 & 8' and 'step 9' cross-references match 1-based numbering."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 2 states 'check your jig and your drill collar ... set to 3/4\"'; all pocket-holed parts are 3/4\"."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Verticals centered on the end panels, upper shelf flush with vertical tops, lower shelf 18\" down (step 8), casters 3/4\" in from each side and end (step 11), 6 hooks per shelf side evenly spaced; end shape and pocket holes dimensioned in viewed image 77c3fc7f."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "note": "5 reference(s), each in a step with its own image",
+      "reason": "All 'attached drawing' references sit in steps with their own image."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 2 ends, 2 sides, 2 verticals, 4 shelf sides (2 per shelf), 2 shelf bases; 6 hooks x 2 sides x 2 shelves = 24 + 4 optional end hangers = 28 = materials[7]; 4 casters = materials[6]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "77c3fc7f75c227cd.webp",
+      "0184cdac67d10f11.webp"
+    ]
+  }
 }

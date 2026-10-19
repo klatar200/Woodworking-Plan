@@ -1,43 +1,44 @@
 {
   "slug": "kreg-precision-router-table-upgrade",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "fail",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "description",
+          "quote": "Follow along and watch the video to see how I upgrade the precision router table!"
+        },
         {
           "path": "steps[11].body",
-          "quote": "Make sure to check out the build video on this one!\nhttps://youtu.be/UsMGt0roXhY\nI had a blast producing it and I think you'll find it helpful when tackling this project!",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage\nI'd love to know what you all think so let me know!\nThanks for reading!",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage\nI'd love to know what you all think so let me know!\nThanks for reading!",
-          "why": "matches \"https://\""
+          "quote": "Make sure to check out the build video on this one!"
         }
-      ]
+      ],
+      "reason": "The steps are narration of a video (e.g. step 1 'Building Out Router Table Base' gives no layout or fastening); the how-to the builder needs is delegated to the video and blog (steps 11-12). Step wording on its own ('check out') reads as optional, so confidence is likely, and the concrete missing content is recorded under R10/R14."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "made the handles from some left over Walnut"
+        }
+      ],
+      "reason": "Handles are a made part with no cutList row, and no material lists walnut. Search: no cutList.part or materials.name matches /handle|walnut/i."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Back",
-          "why": "no step mentions it (searched steps for back)"
-        }
-      ]
+      "result": "unknown",
+      "reason": "cutList[3] 'Back' (0.25 x 16 x 26.75) is never named in any step (search steps for /\\bback\\b/: no match). Its 16 x 26.75 size matches Side width 16 and Horizontal Divider width 26.75, but the viewed images (c1d42d7c, 5359ad04) do not settle whether a 1/4\" back is fitted."
     },
     "R4": {
       "result": "pass",
@@ -48,22 +49,115 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps searched for a fastener with a size (digit + \" before screw/nail/staple): none; materials list 1\" coarse pocket-hole screws and 1/2\" flat head screws only."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "using my BESSEY Trigger clamps to help hold everything in place during assembly"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "I drill pocket holes so that I can easily assemble the panels inside of the router table base."
+        }
+      ],
+      "reason": "The base is assembled in step 1 but the pocket holes it needs are drilled in step 3; the dust-box dividers built into the base in step 1 are notched around the cross member only in step 10."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "I drill pocket holes so that I can easily assemble the panels inside of the router table base."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "My go to method for drawer boxes is using pocket hole construction."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" ply (steps 3, 5) and no jig thickness setting appears anywhere; search of all fields for /setting|collar|jig/i: no match; viewed image 8f200872 shows a jig with no legible setting. Recorded only (R9 does not count)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I used a combination of 3/4\", 1/2\", and 1/4\" pieces to build out the appropriate amount for the push to open drawer slides to mount to."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "I built a bracket from some scrap 3/4\" plywood and used Starbond CA glue to assemble it."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "I used the 2-1/2\" expanding hose from rockler along with a port and Y fitting."
+        }
+      ],
+      "reason": "No numeric position or size for the shim build-up or slide mounting positions, the switch bracket size/location, the dust port opening, the acrylic window opening or the divider notches; viewed images 5cf7c43a, 07dc8ec1, 5359ad04, c1d42d7c are video stills with no dimensions."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "These were secured in place with tin strapping."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "used double sided tape to temporarily attach them"
+        }
+      ],
+      "reason": "Steps use tin strapping, a port and Y fitting, Starbond CA glue and double sided tape; search of materials for /strap|tape|CA glue|fitting|port/i matches none (materials[8] is only a hose kit, materials[9] hose clamps). Drawer part counts do agree with the cut list (8/8/4/4 small, 2/2/1/1 large, 5 slide sets)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "This is undoubtedly the most cumbersome step of the entire project!",
+      "what": "No text says how the Side, Horizontal Divider, Divider and Back panels are arranged or fastened in the base, or how the five drawers are laid out; the cut list sizes are the only layout information and the images are video stills."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "I used some scrap acrylic I had on hand",
+      "what": "No size is given for the acrylic window or the recess for it, and the walnut handles have no size."
+    }
+  ],
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "b350949b76a3274b.webp",
+      "c1d42d7c9dd2cebb.webp",
+      "8f20087252504092.webp",
+      "5cf7c43a3a6e6b78.webp",
+      "07dc8ec1ca44716f.webp",
+      "5359ad0440ca5a49.webp"
+    ]
+  }
 }

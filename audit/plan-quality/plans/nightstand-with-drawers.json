@@ -1,6 +1,6 @@
 {
   "slug": "nightstand-with-drawers",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -25,38 +25,17 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/diy-nightstand-with-drawers/\nFor a full video of the build - https://youtu.be/LO3aQBazBiU",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/diy-nightstand-with-drawers/\nFor a full video of the build - https://youtu.be/LO3aQBazBiU",
-          "why": "matches \"https://\""
-        }
-      ]
+      "reason": "Step 7 links (author's page and a video) say 'For more details' and 'For a full video'; they are optional credits. The cut list, panel sizes and the drawer image (607bc003: 12\", 13\", 7 1/4\", 14 1/4\") supply the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name four panels from three 1x5 boards each (= cutList 'Top and bottom planks' 6 and 'Side planks' 6 = 12 boards), leg frames with angled and straight aprons, drawers from 1x6 and drawer faces from 1x8 (7.25\" face = 1x8); all map to cutList rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Top and bottom planks",
-          "why": "no step mentions it (searched steps for plank)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Side planks",
-          "why": "no step mentions it (searched steps for plank)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidates rejected: 'planks' are the boards of steps 0-1 (2 panels x 3 = 6 top/bottom, 2 x 3 = 6 side). Drawer sides, faces and bottoms are the drawers of step 6; legs/aprons steps 2-4."
     },
     "R4": {
       "result": "unknown",
@@ -67,22 +46,87 @@
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1-1/4\" pocket hole screws, 2-1/2\" pocket hole screws and 1-1/4\" wood screws, matching materials[5], [6], [7]; slides in materials[8]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels (0), box (1), leg frames and aprons (2-4), legs screwed to the box from inside (5), then drawers and slides in the box (6)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "The pocket holes are on both ends of the 14 7/8\" panels."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the angled apron between two legs using 2-1/2\" pocket holes screws and wood glue."
+        }
+      ],
+      "reason": "Pocket holes go in 3/4\" panels (steps 0-1) and 1 1/2\" aprons (steps 2-4); search of all steps for /setting|jig|collar/i: no match, and viewed images 77eff02e, 75796664, 607bc003 are renderings with no setting. Recorded only (R9 does not count)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Build two drawers using the 1x6 boards and install drawer slides inside the nightstand frame."
+        }
+      ],
+      "reason": "No position is given for the drawer slides (height of each pair inside the 14 7/8\" opening) or for the 7 1/4\" drawer face against the 5 1/2\" drawer box; viewed image 607bc003 shows the box and face sizes only, with no slides. Legs are positioned (front flush, 1\" spacing, image 75796664) and leg cuts are 10 degrees (image 77eff02e)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "using 1-1/4\"pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the 1x8 drawer frames and your choice of hardware."
+        }
+      ],
+      "reason": "Wood glue (steps 0-4) and drawer hardware (step 6) are used but search of materials[].name for /glue|knob|pull|handle|hardware/i: no match (materials[0-8] are lumber, plywood, screws, slides).",
+      "arithmetic": "Sizes agree: 16 - 2 x .75 = 14.5 interior width, drawer face 14.25 leaves 1/8\" each side; 14 7/8 interior height vs 2 x 7.25 = 14.5 leaves 3/8\" for 3 gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Build two drawers using the 1x6 boards",
+      "what": "The drawer box joinery, how the 1/4\" bottom (cutList[8]) is attached and how the drawer face is fastened are not described; step 6 is a single sentence for the whole drawer build."
+    }
+  ],
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "607bc0036643eca3.webp",
+      "75796664d5e6cde2.webp",
+      "77eff02ea5aa41a4.webp"
+    ]
+  }
 }

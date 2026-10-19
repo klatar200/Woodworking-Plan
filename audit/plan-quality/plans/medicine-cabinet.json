@@ -1,6 +1,6 @@
 {
   "slug": "medicine-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -227,65 +227,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut all of the Case parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide",
-          "why": "cut sentence states 48\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidate rejected: '3/4\" x 48\" x 48\"' (step 0) is the half sheet in materials[0]. Case Sides, Top, Bottom, Fixed Shelves, Case Back, Door and Adjustable Shelves in steps 0-10 all map to cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: sides/top/bottom/fixed shelves/back steps 1-5, door steps 6-9, adjustable shelves step 10."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged",
+      "readerNote": "Sweep reason 'thinner than stock' is moot: cutList[6] is 0.25 acrylic and materials[7] is a 1/4\" x 18\" x 24\" Plexiglas sheet (4 x 18.5 strips fit along the 24\" side); left unknown as sweep recorded it."
     },
     "R5": {
       "result": "unknown",
       "reason": "sheet layout not judged (area fits: part area 2×5.5×36 + 1×5.5×18.5 + 1×5.5×18.5 + 2×5.5×18.5 + 1×18.5×22 + 1×19.875×23.875 + 2×4×18.5 = 1832.5 sq in; bought 1×48×48 = 2304 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" coarse-thread pocket hole screws (materials[1]), 1/4\" shelf pin holes and 'five shelf pins' per shelf (materials[8], 10 pins for 2 shelves), bar pull, hinges, mirror mastic (materials[4]) and Hangman hanger (materials[9]); no conflicting size."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Edge banding and drilling (1-3) precede assembly (4-5); door banded (6), hinged (7), removed for finish (8), mirror and pull added (9), hung (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 1 states 'Set your pocket hole jig for 3/4\"' for the 3/4\" ply parts."
     },
     "R10": {
-      "result": "flagged",
+      "result": "fail",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "edge of each Case Side. Trim and sand that edging, as well.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c0bc4238f1306c1.webp"
+          "path": "steps[7].body",
+          "quote": "Follow the manufacturer's instruction for the locations of the holes on the Door."
         }
-      ]
+      ],
+      "reason": "Hinge-cup hole positions on the door (and on the case) are deferred to the hinge/jig instructions; no number in the plan and step 7 has no image (search of images alt/steps: none). All other positions are dimensioned in viewed images: shelf pin holes (5c0bc423: 11 3/4\", 1\", 2\", 1 1/4\"), case back (90cf3ba2), 6\"/24\"/6\" layout (988df6a2), 22\" between fixed shelves (01b4fa55). Hangman position 'just under the Top Fixed Shelf' is relational."
     },
     "R11": {
-      "result": "flagged",
+      "result": "fail",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "se parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide to help keep you",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide to help keep your saw straight and o",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "as shown in the cut diagram."
         }
-      ]
+      ],
+      "reason": "Step 0 has no image and none of the 5 unattached images (2a35907a, 7ffa2f25, b5a84123, e44f7ec1, 988df6a2; all viewed) is a plywood cutting diagram (they are finished-cabinet photos and a 20 x 36 overview). Part sizes are in the cutList, so the build is not blocked: Fix."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 2 sides, Top, Bottom, 2 Fixed Shelves, Back, Door, 2 acrylic shelves with 5 pins each = 10 pins (materials[8]); every part is installed; edge banding 3/4\" x 25' covers about 245\" of edges."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "2a35907a681cd3c8.webp",
+      "7ffa2f2539323ef7.webp",
+      "b5a841234ac90482.webp",
+      "e44f7ec1945c6a6a.webp",
+      "988df6a265757b54.webp",
+      "01b4fa55b7f68f10.webp",
+      "5c0bc4238f1306c1.webp",
+      "90cf3ba25601203c.webp"
+    ]
+  }
 }

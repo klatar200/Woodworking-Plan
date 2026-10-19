@@ -1,6 +1,6 @@
 {
   "slug": "one-sheet-plywood-bookshelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,22 +119,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps 0-1 cut top, sides, bottom, divider and a 10\" shelf strip (= cutList rows 0-3, 7); steps 5-6 build the 2x2 base (four 6\" legs, two 45\" and two 8\" supports = rows 4-6)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Long Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Short Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidates rejected: 'Long/Short Frame Pieces' are the 'two 45\" long supports' and 'two 8\" short supports' of step 5 (45 + 2 x 1.5 = 48, 8 + 2 x 1.5 = 11 = bookshelf footprint). All 8 rows are used."
     },
     "R4": {
       "result": "pass",
@@ -145,34 +135,62 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "This step is also optional. If desired, cut a 1/4\" backer like shown and staple or glue and nail onto the back side of the bookshelf.",
-          "why": "1/4\" staple — no material line lists a 1/4\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "This step is also optional. If desired, cut a 1/4\" backer like shown and staple or glue and nail onto the back side of the bookshelf.",
-          "why": "4\" nail — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidates rejected: the 1/4\" and 4\" hits in step 8 are the optional 1/4\" backer, whose staples/nails have no stated size. Fasteners with sizes (1 1/4\" and 2 1/2\" pocket hole screws, 1 1/4\" and 2\" wood screws, pocket hole plugs) are all in materials[3-8]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0-1), drill (2), assemble body (3), plugs (4), base (5-6), base on body (7), optional backer (8), shelf pin holes (9), shelves (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 2 'Drill 3/4\" pocket holes' and step 5 'Drill one 1 1/2\" pocket hole' state the settings for the 3/4\" panels and 1 1/2\" 2x2 frame."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "drill shelf pin holes along the sides and middle divider of the bookshelf like shown."
+        }
+      ],
+      "reason": "Step 9's only image (5d57d69d, viewed) is a photo of the jig in use with no dimensions; the plan gives no setback from the front/back edges or height range for the shelf pin holes (search of steps for /setback|from the (front|back)|up from/i: none). Divider/bottom placement is dimensioned (22 7/8\" bays, image 19193011) and base footprint is fixed by part sizes."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Apply wood glue to top of base and attach onto bottom of bookshelf with 2\" wood screws."
+        }
+      ],
+      "reason": "Wood glue is used in steps 4-8 but search of materials[].name for /glue/i: none. Sizes agree: bays (46.5 - .75) / 2 = 22 7/8 vs shelf 22 5/8 ('1/4\" shorter'); 16 shelf pins = 4 shelves x 4."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "19193011f11db843.webp",
+      "5d57d69d460e09b6.webp",
+      "97dc1b8d62dde478.webp"
+    ]
+  }
 }

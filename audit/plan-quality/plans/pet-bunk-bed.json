@@ -1,93 +1,122 @@
 {
   "slug": "pet-bunk-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "fail",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].title",
-          "quote": "Get the FREE PDF plans",
-          "why": "matches \"PDF\""
+          "quote": "Get the FREE PDF plans"
         },
         {
           "path": "steps[3].body",
-          "quote": "Get the full FREE PDF plans for the DIY pet bunk bed at https://www.charlestoncrafted.com/diy-pet-bunk-bed/",
-          "why": "matches \"PDF\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Get the full FREE PDF plans for the DIY pet bunk bed at https://www.charlestoncrafted.com/diy-pet-bunk-bed/",
-          "why": "matches \"https://\""
+          "quote": "Get the full FREE PDF plans for the DIY pet bunk bed at https://www.charlestoncrafted.com/diy-pet-bunk-bed/"
         }
-      ]
+      ],
+      "reason": "The plan sends the builder to the author's PDF for 'the full plans'. The page has a cut list (4 legs, 2 bases, 6 sides) and two assembly images (7ac8ecce: 3 railings on a base; cc8627ac: 4 corner legs), so the frame looks buildable without the PDF; what the PDF adds (hole positions, leg/platform heights, any further detail) cannot be known, so Fix rather than Unpublish. Step 3 image 072312b5 is only the author's logo."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name platform bases, side railings (= cutList 'Sides', 3 per platform in viewed image 7ac8ecce) and four legs; all have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows are used: bases and sides step 0, legs step 1."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
-      "cause": "plan",
+      "cause": "import",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[2]",
-          "quote": "Sides — qty 6, 2.5 x 24 x 24"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Plywood, 1/2\" Thick Quarter Sheet"
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 2x2 96\""
+          "quote": "Sides, qty 6, 2.5 x 24 x 24"
         },
         {
           "path": "materials[2].name",
           "quote": "Board, 1x3 72\""
         }
       ],
-      "arithmetic": "cutList[2] 2.5×24: no listed stock has thickness 2.5 (±1/32) with width ≥ 24; stock = sheet 0.5, 1.5×1.5, 0.75×2.5",
+      "arithmetic": "6 x 24 = 144 = 2 x 72 (materials[2] quantity 2); a 1x3 is 3/4 x 2 1/2 (section 9), matching the row's 2.5 and the 24\" length.",
       "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[2]",
-          "quote": "Sides — qty 6, 2.5 x 24 x 24",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "readerNote": "The sweep fail stands as a recorded defect but the row is the 1x3 railing: the nominal-lumber path lost the 3/4\" thickness and kept a stray 24 (section 3 importer defect), so cause is import, not plan."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 2x2, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps state no fastener size ('Kreg pocket holes', 'pocket holes'); materials[3] is 'Kreg Screws' with no size. Nothing conflicts."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Two platforms are built (step 0), then joined with four legs (step 1), then cushions (step 2)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach side railings to platform bases with Kreg pocket holes."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Attached the two platforms together with four legs and pocket holes."
+        }
+      ],
+      "reason": "Pocket holes go in 1/2\" ply, 3/4\" 1x3 and 1 1/2\" 2x2 stock; search of all steps for /setting|jig|collar|thickness/i: no match; viewed images 7ac8ecce and cc8627ac show no setting. Recorded only (R9 does not count)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Railing placement (3 sides of each 24 x 24 base) and leg placement (four corners, viewed cc8627ac) are shown in viewed images; no numeric position is needed beyond the part sizes."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Add cushions or pet beds for your pets to sleep."
+        }
+      ],
+      "reason": "Step 2 uses cushions or pet beds, which appear in no materials line (search materials[].name for /cushion|bed|pad/i: none) and have no size; the frame itself is complete after step 1."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "7ac8ecce331529cc.webp",
+      "cc8627ac1e9baaf1.webp",
+      "072312b50a7c666f.webp"
+    ]
+  }
 }

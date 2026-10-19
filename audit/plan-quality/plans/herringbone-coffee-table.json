@@ -1,6 +1,6 @@
 {
   "slug": "herringbone-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name 'height frame pieces', 'length frame pieces', 'angled supports', 'table top panels', 'inlay pieces' (all in cutList) and 'table top frame pieces'/'base width frame pieces', which map to cutList 'Side frames' (21\") by size; count issue recorded under R14."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used: frames/supports/panels in steps 0-4, 'Angled inlay pieces' rows in steps 6-7. Row 12 (0.75 triangle) not described separately but shares the inlay part name."
     },
     "R4": {
       "result": "pass",
@@ -158,47 +160,72 @@
       "reason": "R5 precondition not met: 3 stock types (2x2, sheet-0.75, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "cket holes on both ends of the height frame pieces (15\"). Using wood glue and 2 1/2\" pocket hole screws, attach the height frame pieces to the length frame pieces on both ends and in the exact center.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "Using wood glue and 2 1/2\" pocket hole screws, attach the height frame pieces to the length frame pieces"
         },
         {
-          "path": "steps[4].body",
-          "quote": "Using wood glue and 2 1/2\" pocket hole screws, attach the table top frame pieces to the side length frame pieces. Then attach the panels to the side length frame pieces using 1 1/2\" pocket hole screws",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Drill 1 1/2\" pocket holes on either end of the base width frame pieces (2) and attach them between the two side frames using wood glue and 2 1/2\" pocket hole screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "path": "materials[3].name",
+          "quote": "2 1/4\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Steps 0, 4, 5 use 2 1/2\" pocket hole screws (step 4 image also labels 2 1/2\"); materials list only 2 1/4\" and 1 1/2\" pocket hole screws. Search: no materials.name contains 2 1/2."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames (0-2), top (3), top attached to sides (4), base frames (5), inlay after (6-7); no step undoes another."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "1 1/2\" pocket holes stated for 2x2 frames (steps 0,3,5); 3/4\" pocket holes stated for plywood panels (step 3); image 81ab33 also labels them."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "pieces of angled inlay pieces on each side of the table top. It is best not to cut the exact lengths for the remaining pieces that fit, until you measure and mark where they will fit. I found it easie",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/473ac91d89974edd.webp"
-        }
-      ]
+      "reason": "Inlay layout is shown in viewed image 473ac91d (14 5/8\" label, 45 degree cuts, herringbone pattern) plus dry-fit instruction; height frame 'exact center' stated; angled supports and top/base frames are fixed by the frame bays (viewed images e40c351b, 07ac091f)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3]",
+          "quote": "Side frames, qty 6, 2x2x21"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "attach them between the two side frames using wood glue and 2 1/2\" pocket hole screws"
+        }
+      ],
+      "arithmetic": "Steps/images use 3 table top frame pieces (viewed image 81ab33: 'Table top side frame' x2 + 'Table top middle frame') + 'base width frame pieces (2)' (step 5) = 5; cutList[3] quantity = 6.",
+      "reason": "Count of 21\" frame pieces the steps make (5) does not match the cut list row (6); no step uses a sixth piece. Not verified for any extra piece in image captions."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-07",
+    "imagesViewed": [
+      "473ac91d89974edd.webp",
+      "81ab33e601d9019d.webp",
+      "e40c351ba4ab639c.webp",
+      "07ac091f26664558.webp"
+    ]
+  }
 }
