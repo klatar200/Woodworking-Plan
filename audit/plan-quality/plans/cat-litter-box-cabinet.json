@@ -1,6 +1,6 @@
 {
   "slug": "cat-litter-box-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -155,32 +155,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Install the interior divider panel in a location that works for you with 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "You can also eliminate the interior divider panel."
+        }
+      ],
+      "reason": "Step 6 installs an interior divider panel that has no cut-list row and no size or listed stock. Search: no cutList.part, materials.name or other step matches /divider/i apart from step 6; the viewed step-6 image shows the panel but carries no dimensions. Panel is optional per the same step, so non-structural."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Vertical corner supports",
-          "why": "no step mentions it (searched steps for vertical/corner/support)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Horizontal side support",
-          "why": "no step mentions it (searched steps for horizontal/support)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Vertical center support",
-          "why": "no step mentions it (searched steps for vertical/support)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Horizontal front/back supports",
-          "why": "no step mentions it (searched steps for horizontal/support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Vertical corner supports (8), Horizontal side support (5), Vertical center support (1), Horizontal front/back supports (4) are the posts and rails of the four panels assembled in steps 0-3; viewed step 0 and step 3 images show them dimensioned. Steps name the panels, not the parts, but the parts are used."
     },
     "R4": {
       "result": "pass",
@@ -191,23 +184,66 @@
       "reason": "R5 precondition not met: 7 stock types (1x4, 0.5x72, 0.5x36, 0.75x48, 0.25x48, 1x8, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Pocket screws are 1 1/4\" in every step and in materials[7]. Steps 6 and 9 say 'nail gun' with no nail size, and hinge/latch screws are not sized, so no size is used that is missing from materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-0 and step-3 images dimension rail positions (3 1/2\" rails; cat opening 8\" between 3 1/2\" rails); step 5 '2\" up from the bottom'; step 8 image shows hinge positions; the top overhang is '1 1/2\"'; divider location is 'works for you' (as desired)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Four panels built (steps 0-3), joined (4), bottom installed (5), plywood/beadboard (6), doors built and hung (7-8), trim (9), top (10-11); each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut and assemble the right side panel utilizing 1 1/4\" pocket hole screws"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "cut to size to allow a 1 1/2\" overhang on the sides and front."
+        }
+      ],
+      "reason": "Every pocket-hole joint is in 0.75 stock and no text states a jig thickness setting (steps only name the screw length). Step 11 (Install the top) gives no method or fastener for attaching the top. Images viewed (steps 0, 3, 5, 6, 8) show no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts agree: 8 corner supports = 2 per each of 4 panels; 5 horizontal side supports = 2 (right) + 3 (left, middle cross piece per step 3); 4 front/back supports = 2 front + 2 rear; 4 hinges and 2 latches for 2 doors. (b) all made parts are installed. (c) hinges and latches are in materials; (d) steps reach finished cabinet. Step 11 repeats step 10's text and does not say how the top is fastened (recorded under gaps)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "e15775a9746b1015.webp",
+      "34f9386f9cbe2ad1.webp",
+      "f5ec6ad6c41a9d2a.webp",
+      "ec1dfec5ab5c8d3c.webp",
+      "620d58d23ce771c3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Choose the type of wood you would like to utilize and cut to size to allow a 1 1/2\" overhang on the sides and front.",
+      "what": "Step 11 (Install the top) repeats step 10 verbatim and says nothing about how or where the top is fastened to the frame; no step states a fastener or method for the top."
+    }
+  ]
 }

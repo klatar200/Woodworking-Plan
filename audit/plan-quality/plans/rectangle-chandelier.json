@@ -1,6 +1,6 @@
 {
   "slug": "rectangle-chandelier",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,29 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "t. Place the four frames on the fabric. Cut fabric 2 1/2'' to 3'' bigger on each side of each frame. Stretch and fold ends over and staple to inside of 1x2 frames. Start on the long side and work your",
-          "why": "cut sentence states 3\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Step 5's '2 1/2'' to 3''' is fabric margin, not a part. All parts (2x2 stiles/rails, 1x2 stiles/rails for 2 large + 2 small fabric frames) are in cutList; the 1x4 light support board (step 7) is made from the listed 'Board, 1x4 36\"' (step 7 image, viewed, shows it 31\" x 3 1/2\")."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Stiles",
-          "why": "no step mentions it (searched steps for stil)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Stiles",
-          "why": "no step mentions it (searched steps for stil)"
-        }
-      ]
+      "result": "pass",
+      "reason": "'Stiles' and 'Rails' rows are the frame members of steps 0-3: 2x2 stiles 4x34 and rails 8x8 3/4 (2 frames + 4 side rails); 1x2 stiles 4x31 + rails 4x7 1/4 (large frames) and rails 4x8 3/4 + 4x7 1/4 (small frames). Counts of 7 1/4 rails (4+4=8) match."
     },
     "R4": {
       "result": "pass",
@@ -164,38 +147,44 @@
       "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " step and glue and nail them in from the sides with 2'' finish nails. Either option will work, I ended up doing this on my build because I was out of 2 1/2'' pocket hole screws and in a remote locatio",
-          "why": "2\" nail — no material line lists a 2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Pocket screws 2 1/2'' and 1 1/4'' and 3/8'' staples are in materials. The 2'' finish nails in step 1 are an optional alternative the author used ('You can also omit the pocket holes ... nail them in'); the main path uses listed screws. Step 6 'staple or screw' gives no screw size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": " the fabric frames into the light fixture box one at a time. Make sure to push them in from the inside of the box frame. Once installed, staple or screw them to the 2x2 frame from the inside. Note: My",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/92968942f434a301.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed step-6 photo and step-7 drawing: fabric frames fit the box openings (fixed by the parts; 'push them in from the inside'); support board 31\" x 3 1/2\" flush with the bottom of the 2x2 per the drawing; light-hole positions are 'to match your light fixture' (fixture-dependent, relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "All three 'as shown' steps have their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames (0), box (1), fabric frames (2-3), finish (4), linen (5), install frames (6), support board (7, from the open top per viewed image), hang (8): every part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps state '1 1/2'' pocket holes' for the 1.5-thick 2x2 parts (steps 0, 1) and '3/4'' pocket holes' for the 0.75 1x2 parts and 1x4 (steps 2, 3, 7)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) frame geometry agrees: box window opening = 34 - 2x1.5 = 31 by 8 3/4 (corrected 2x2 rails); large fabric frame 31 x 8 3/4 in the viewed step-2 drawing; two large + two small frames match cutList counts (1x2 stiles 4 + rails 4 + 4 + 4). (b) every part installed; (c) staples, fabric, light kit listed; wood glue used in steps 0-3 is not in materials (consumable, not scored); (d) steps reach a hung, wired fixture."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "92968942f434a301.webp",
+      "f995a235e6d0da40.webp",
+      "c242c74d3590925c.webp"
+    ]
+  },
+  "gaps": []
 }

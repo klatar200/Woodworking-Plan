@@ -1,6 +1,6 @@
 {
   "slug": "small-bathroom-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -289,72 +289,104 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "For more details and picture tutorial of this project visit, http://www.mylove2create.com/2016/09/small-bathroom-vanity.html",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[10] link is an optional 'more details and picture tutorial'; steps 0-8 are a complete build without it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps build (legs, 8 side rails, top rails, bottom shelf boards, two 2x3 frames, 1x3 frame, plywood insert and insert boards) has a cutList row; frame counts 4x31 + 4x19 1/2 (two 2x3 frames) and 2x18 1/2 + 2x30 (1x3 frame) agree with steps 2-3."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Top inset pieces",
-          "why": "no step mentions it (searched steps for inset)"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Top inset pieces",
-          "why": "no step mentions it (searched steps for inset)"
-        }
-      ]
+      "result": "pass",
+      "reason": "'Top inset pieces' rows are the boards glued to the plywood in step 6 (4 x 5 1/2 wide + 2 x 2 wide = 26\", the plywood length in the viewed step-6 drawing); all 12 rows are used."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Resolved by hand: cutList[7] source '1 1/2'' x 2'' x 14 1/2'' (ripped down from a 2x3, to be 2'' wide)' comes from the listed 2x3; 1 1/2 x 2 1/2 parts from 2x3, 1 1/2 x 5 1/2 from the listed 2x6, 3/4 x 14 1/2 x 26 plywood fits a quarter sheet. (See R14 for the thickness conflict on the inset boards.)"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x3, 1x3, 2x2, 2x6, 1x6, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Stock not named per part and the 2x6 line has quantity 1 (possible import default). Corrected 1.5 x 5.5 parts: 2 x 30 + 4 x 14 1/2 = 118\" (+5 kerfs) vs 1 x 72\" listed 2x6; this overflow comes from the inset boards (R14 shows they are really 3/4\" 1x6 stock; 4 x 14 1/2 + 2 x 14 1/2 = 87\" from the listed 1x6 96\"), and with that reading 2 x 30 = 60\" fits the 72\" 2x6."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Build a 1x3 frame as shown using 45 degree bevel cuts. Attach with wood glue and 2'' finish nails.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "Using 3/4'' pocket holes and 1 1/4'' pocket hole screws attach the 1x3 frame to the 2x3 top frame as pictured.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Using 3/4'' pocket holes and 1 1/4'' pocket hole screws attach the 1x3 frame to the 2x3 top frame as pictured."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach with wood glue and 2'' finish nails."
         }
-      ]
+      ],
+      "reason": "Materials list '2 1/2'' Pocket hole screws' and '3'' screws' only. Search materials[].name for /1 1\\/4|nail/i: no match, so the 1 1/4'' pocket screws (step 4) and 2'' finish nails (steps 2, 3, 6) are not listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-0 drawing gives rail heights (3\", 7 1/8\", 5 5/8\", 5 3/4\"), 19\" x 27 1/2\" leg set; step-6 drawing gives board widths 5 1/2\"/2\" across 26\"; finished drawing gives 33\" x 31\" x 19 1/2\". The sink opening follows the sink ('according to factory directions'), relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "All six 'as shown / as pictured' steps have their own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg sections (0), joined (1), frames (2-3), frames stacked (4-5), insert built and fitted (6-7), base attached to top and sink cut (8): every part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach with pocket holes and finish nails."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Drill 2 1/2'' pocket holes into the plywood side of the insert"
+        }
+      ],
+      "reason": "Jig setting is stated for 3/4\" parts only (step 4 '3/4'' pocket holes'). For the 1.5\"-thick legs/rails/2x3 frames the text gives no thickness setting (the step-0 drawing says '2 1/2'' pocket holes and pocket hole screws', a screw size) and step 7's '2 1/2'' pocket holes' goes into 3/4\" plywood."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "attach the 3/4'' wood to the top as pictured with wood glue and finish nails"
+        },
+        {
+          "path": "cutList[6].part",
+          "quote": "Top inset pieces (corrected 1 1/2'' x 5 1/2'' x 14 1/2'', qty 4)"
+        }
+      ],
+      "reason": "Step 6 and the viewed step-6 drawing ('Use 4- 1x6 boards and rip down 2- 2\" boards', 3/4\" plywood + boards = 1 1/2\" total) describe 3/4\" boards, and materials list 'Board, 1x6 96\"' which no other cutList row uses (search: no row with 0.75 x 5.5). The cutList rows for the inset boards say 1 1/2\" thick (2x6 / 2x3 stock). Thickness differs: 3/4\" (step, drawing, 1x6 material) vs 1 1/2\" (cutList).",
+      "arithmetic": "Drawing: 4 x 5 1/2 + 2 x 2 = 26 = plywood length; 4 x 14 1/2 + 2 x 14 1/2 = 87 <= 96 (1x6 listed)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "8f75bbf70776e36a.webp",
+      "d1a37f46bcda9db0.webp",
+      "ffc7f7e4582e0a48.webp"
+    ]
+  },
+  "gaps": []
 }

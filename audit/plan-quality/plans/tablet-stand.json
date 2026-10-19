@@ -1,6 +1,6 @@
 {
   "slug": "tablet-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,17 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": " length from a 1/2\"-thick board, as shown in the cutting diagram. Note: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut another spacer about 4\" long.",
-          "why": "cut sentence states 4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Every part the steps cut (2 Outside Legs, Tall/Short Center Leg, Leg Stop cut off the leg, 2 Outside Faces, 3 Tall Inside Faces, Short Inside Face(s), Center Face) is a cutList row; the spacers are named scrap, not parts."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All seven rows are cut and assembled in steps 0-6."
     },
     "R4": {
       "result": "pass",
@@ -164,48 +159,68 @@
       "arithmetic": "parts: 2×11.5 + 1×10 + 1×1.5 + 2×11.5 + 3×8.5 + 2×2.5 + 1×1.5 + kerf 9 cuts (12 parts − 3 boards, the fewest possible)×1/8 = 90.625″; bought: 3×48 = 144″; 90.625 ≤ 144"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fasteners are used; every joint is glued (steps 1, 3, 5) and wood glue is in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give the placements: step-2 drawing leg 9 1/2\" with 3/4\" Leg Stop cut off first; step-3 drawing stop set 2\" from the end; step-6 drawing face 10 1/2\" with the lower waste cut first; overall drawing (unattached) 7 1/2\" x 10 1/2\" face, 9 1/2\" leg, 1 1/2\". Face slot/notch heights follow from the cutList parts: 11 1/2 - 8 1/2 - 2 1/2 = 1/2\" gap and 11 1/2 - 8 1/2 - 2 = 1\" notch."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "and one Short Center Leg to length from a 1/2\"-thick board, as shown in the cutting diagram.\nNote: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut a ",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " to length from a 1/2\"-thick board, as shown in the cutting diagram.\nNote: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut a short piece of scrap abo",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "ace, and one Center Face to length from a 1/2\"-thick board, as shown in the cutting diagram. Note: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut an",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
+      "result": "pass",
+      "reason": "Steps 0 and 4 say 'as shown in the cutting diagram' with no own image and no sheet-layout diagram exists in images[] (viewed unattached images 1 and 3 are a photo and the dimensioned overall drawing), but every part size is in cutList (all parts are cut extra-long per the note) and final sizes are dimensioned in the step-2, step-6 and overall drawings."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg parts cut (0), glued (1), trimmed (2), stop glued on (3); face parts cut (4), glued (5), trimmed (6); test fit and finish (7)."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": " to length from a 1/2\"-thick board, as shown in the cutting diagram. Note: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut another spacer about 4\" lo",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Outside Faces, three Tall Inside Faces, one Short Inside Face, and one Center Face"
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Short Inside Face (qty 2, source '1/2\" x 1 1/2\" x 2 1/2\"')"
         }
-      ]
+      ],
+      "reason": "Step 4 says one Short Inside Face; the cut list has two (quantity 2, not the importer default of 1). The viewed overall drawing shows a 5-strip face (5 x 1 1/2 = 7 1/2\") whose lower ledge has three pieces under the slot (Short, Center, Short), which needs two short pieces.",
+      "arithmetic": "Face height: Outside Face 11 1/2 = Tall 8 1/2 + 1/2 gap + Short 2 1/2 (one Short per column, 2 columns beside the 1 Center Face)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "c272a2c407b66bc0.webp",
+      "4699056185c25564.webp",
+      "99b01610eb8ce664.webp",
+      "576ee966766296e4.webp",
+      "0b0cefb8c660d05e.webp",
+      "c42e41e2a9b8ed46.webp",
+      "d2ed372e583d396a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[1..2]",
+      "quote": "Cut two Outside Legs, one Tall Center Leg, and one Short Center Leg to length ... a short piece of scrap about 2\" long to use as a spacer.",
+      "what": "Leg composition cannot be checked: corrected Tall Center Leg 10 + Short Center Leg 2 = 12 (plus any gap) exceeds the Outside Legs they are clamped to (11 1/2); steps[1] gives no gap size and does not say the center pieces overhang. The step-2 drawing shows only the finished 9 1/2\" leg."
+    }
+  ]
 }

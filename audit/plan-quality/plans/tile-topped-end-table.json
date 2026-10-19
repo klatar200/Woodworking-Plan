@@ -1,6 +1,6 @@
 {
   "slug": "tile-topped-end-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -91,89 +91,70 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " sides of each leg. I have linked a very good U Tube video (Extras section) that describes how to do this on a table saw using a tapering jig. The two tapers start 2 1/2\" from the top of the leg, I ad",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "the inside top edge to hold the top assembly on as shown in the attached picture. It is a good idea to mark where you are putting the holes to prevent mistakes. Use 100 then 150 grit sandpaper to smoo",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "kirts and legs. The skirts should be inset 1/4\" from the outside of the legs. See attached diagram. Keep in mind that the edge between the two tapered sides of the legs should face out at each corner.",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "to attach the leg/skirt assembly to the top. The spacing on each side should be equal...on my table it was approximately 3/4\" from the center of the skirt to the edge of the top. See attached diagram.",
-          "why": "matches \"See attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[1] mentions a YouTube tapering-jig video in an 'Extras section' and steps[0] says plans are 'also available on buildsomething.com'; the taper is fully specified in the step ('start 2 1/2\" from the top ... bottom of each leg was 1\" square'), so the video is optional. 'See attached diagram/picture' refers to the step images."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (4 legs, 4 table skirts, plywood top, 4 top framing strips) is a cutList row with the same count (step 7 'four 1/4\" top framing strips')."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows are used (steps 1, 2, 3, 7)."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Leg blanks — qty 4, 1.5 x 1.5 x 25.125 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x8 72\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Plywood, 1/2\" Thick 12 1/8\" X 12 1/8\""
-        }
-      ],
-      "arithmetic": "cutList[0] 1.5×1.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 1.5; stock = 0.75×7.25, sheet 0.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Leg blanks — qty 4, 1.5 x 1.5 x 25.125 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep's flagged 1 1/2\" x 1 1/2\" Leg blanks resolved: steps[1] says 'If you cannot locate 1 1/2\" thick wood you can use two 3/4\" boards that you glue together, like I did', and the listed 1x8 (7 1/4\" wide) rips into 1 1/2\" strips (4 x 1 1/2 + 3 x 1/8 kerf = 6 3/8\" <= 7 1/4\"). Skirts 3/4 x 2 1/2 from the 1x8; top framing 1/4 x 7/8 x 12 3/4 is a resawn strip; top is 1/2\" plywood.",
+      "readerNote": "Sweep R4 fail rejected: the step describes the 3/4\" glue-up and the 1x8 supplies it."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (1x8, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every fastener in the steps is in materials: Kreg 1 1/4\" pocket screws (step 4) = materials[2], four 1\" pocket screws (step 5) = materials[3], 5/8\" pin nails (step 7) = materials[5]; 16 screws = 4 skirts x 2 ends x 2 holes (step 2), 4 = one top hole per skirt."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-4 drawing: skirts inset 1/4\" at the leg top; viewed step-5 drawing: 3/4\" from the top edge; text: taper starts 2 1/2\" from the top, 1\" square at the bottom, 'approximately 3/4\"' top spacing, finished frame 12 1/2\" outside."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "All 'attached picture/diagram' steps (2, 4, 5) have their own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs (1), skirts (2), top (3), legs+skirts (4), top attached (5), finish (6), tile frame (7). Step 7 frames the tile after the 'Finishing' step; nothing is used before it exists."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2]: 'Kreg pocket screw jig (set to 3/4\" for all pockets on this project)'."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) frame arithmetic agrees: plywood 12 1/32 + 2 x 1/4 strip = 12.53 vs the step's finished outside 12 1/2\"; strip height 7/8 = 1/2 plywood + 3/8 tile (step 7); 16 screws = 4 x 2 x 2; 'four' legs/strips/1\" screws match cutList and materials. (b) every part installed; (c) tile, glue, pin nails listed; (d) steps reach the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "4be431bcd56bfd9f.webp",
+      "39076852a59bffbb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "12' X 12\" Tile",
+      "what": "The tile size is written with a feet mark (12') and an inches mark (12\"); steps[3] says 'My tile was exactly 12\" x 12\"', so 12\" x 12\" is meant, but the materials line as written reads 12 feet x 12 inches."
+    }
+  ]
 }

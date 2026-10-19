@@ -1,6 +1,6 @@
 {
   "slug": "modern-dollhouse-bookcase",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,66 +119,97 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "llowing: the tops of the (2) 24\" side pieces, the top of (1) 8 1/4\" divider piece, the bottom of the (2) 4\" chimney pieces, and both ends of the (2) 27\" roof pieces. The miter cuts on the ends of the ",
-          "why": "cut sentence states 8 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "ottom of the (2) 4\" chimney pieces, and both ends of the (2) 27\" roof pieces. The miter cuts on the ends of the 27\" roof pieces should be the same direction, turning the rectangle into a parallelogram",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "f the (2) 27\" roof pieces. The miter cuts on the ends of the 27\" roof pieces should be the same direction, turning the rectangle into a parallelogram.\nPolish your pieces with an orbital sander. Use fi",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Step 0 sizes (24\" sides, 8 1/4\" dividers, 4\" chimney pieces, 27\" roof pieces) are the Kreg source cut lengths of the cutList rows (importDiffs sources: 'cut to 24\"', 'cut to 8 1/4\"', 'cut to 27\"'); shelves 3, dividers 3 (2 in step 3 + 1 in step 4), sides 2, roof 2, chimney 2, trim, back plywood all appear in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All nine rows are used in steps 0-8."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable; cutList[1] Kreg text not parseable; cutList[2] Kreg text not parseable; cutList[3] Kreg text not parseable; +2 more"
+      "result": "pass",
+      "reason": "Resolved by hand from the Kreg source text in importDiffs: shelf/side/divider/roof rows are '3/4\" x 7 1/4\" (advertised as 1 x 8)' = 1x8 actual (§9); trim 1/2\" x 1 1/2\" from the 1/2x2 boards; plywood 19 1/4\" and 16 1/2\" x 40\" fit a 48 x 96 sheet; chimney 1 1/2\" x 1 1/2\" x 4\" = 2x2 actual (§9)."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (1x8, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Attach the 1/4\" plywood backing using a nail gun. Here is a photo of the bottom part of the backing attached. Then attach your 1/2\" x 1 1/2\" trim pieces around the bottom using a nail gun.",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Attach the 1/4\" plywood backing using a nail gun. Here is a photo of the bottom part of the backing attached. Then attach your 1/2\" x 1 1/2\" trim pieces around the bottom using a nail gun.",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Only fastener size stated is 1 1/4\" pocket screws, which is in materials[6]. The sweep's '1/4\" nail' and '1 1/2\" nail' hits are the plywood thickness and trim width, not nail sizes; steps say 'nail gun' without a size (nails are not in materials, no size is used)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf spacing '8 1/4\" apart', bottom shelf '3/4\" from the bottom', dividers '15\" from the left/right side'; top divider and chimney placement are shown in the viewed step-4 drawing and primary photo (not dimensioned, but shown)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both 'as illustrated/indicated/pictured' steps (2, 3, 4) have their own step image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Continue by assembling the middle and top shelving pieces, each 8 1/4\" apart as illustrated."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Place an 8 1/4\" divider piece in the bottom shelf 15\" from the left side of the unit."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Begin assembling the shelving by positioning one of the 39.5\" shelving pieces between the two 24\" side pieces."
+        }
+      ],
+      "reason": "The step that begins the assembly (bottom shelf between the two sides) is the last step (steps[8]), after the back, trim, finishing and chimney. Steps 2-3 'continue' from and add dividers to a bottom shelf that does not exist until steps[8]. Search: no earlier step attaches the bottom shelf to the sides. Whether the order came from Kreg or from the scrape is not verifiable here."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill (4) pocket holes in the ends of each 39.5\" shelving piece."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "Shelving pieces are 0.75 thick and pocket-drilled; no text states a jig thickness setting (search: setting|jig|thickness in non-image fields finds only the tools slug). The step-1 image shows drilled holes and no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 24 pocket screws = 3 shelves x 2 ends x 4 holes (step 1 and viewed image); 3 dividers = 2 (step 3) + 1 (step 4); sizes in steps match source lengths. (b) every part installed; (c) glue, paint, stain, sandpaper listed; nails unlisted but a fastener (R6); (d) steps reach finished bookcase with chimney."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "f0d161f10d767bf6.webp",
+      "9479961c90e53ad3.webp",
+      "ed67d354d5d59984.webp",
+      "eb3347cb9f635f44.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0..3]",
+      "quote": "Shelving pieces 3 0.75 7 8 | Side pieces 2 0.75 7 8 | Shelving dividers 3 0.75 7 8 | Roof pieces 2 0.75 7 8",
+      "what": "IMPORT defect: the four main 1x8 rows all show width 7 and length 8; the Kreg sources in importDiffs give 7 1/4\" wide and cut lengths 39.5\", 24\", 8 1/4\", 27\" (the steps use these lengths). No correctRow was computed by the sweep."
+    }
+  ]
 }

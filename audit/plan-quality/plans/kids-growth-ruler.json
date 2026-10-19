@@ -1,6 +1,6 @@
 {
   "slug": "kids-growth-ruler",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,32 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Take 1x6 board and cut it to 84” long. You could make this any length you want. I cut it at 84” because I wanted the board to be same elevation as the door. Than using a random orbital sander, sand th",
-          "why": "cut sentence states 84\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "t it to 84” long. You could make this any length you want. I cut it at 84” because I wanted the board to be same elevation as the door. Than using a random orbital sander, sand the board on all sides.",
-          "why": "cut sentence states 84\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": " the board on the wall above the baseboard. The baseboard is 2 ½” tall, so I had to cut off 2 ½” of the board so that when someone stands on the floor, the ruler will be elevated correctly to give the",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "baseboard. The baseboard is 2 ½” tall, so I had to cut off 2 ½” of the board so that when someone stands on the floor, the ruler will be elevated correctly to give the right reading. Attach the board ",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "The only part (the ruler board) is cut in step 0 from the listed board; the 84\" and 2 1/2\" in steps 0/5 are trims of that single board, not separate parts. (Size mismatch with the listed board is recorded under R14.)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList has one row 'Board' = the ruler board used by every step; its length is the stock length (96) not the 84\" cut length (see R14)."
     },
     "R4": {
       "result": "pass",
@@ -83,30 +63,74 @@
       "arithmetic": "parts: 1×96 + kerf 0 cuts (1 parts − 1 boards, the fewest possible)×1/8 = 96.000″; bought: 1×96 = 96″; 96.000 ≤ 96"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "n someone stands on the floor, the ruler will be elevated correctly to give the right reading. Attach the board to the wall using 2 ½” wood screws. That's all; you're done with this Kids Growth Ruler.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "Attach the board to the wall using 2 ½” wood screws."
+        },
+        {
+          "path": "materials[0..6]",
+          "quote": "Board, 1x8 96\" | Black Sharpie | 1\"Self Stick Numbers | Pre-Stain | Stain | Polyurethane | Shop Paper Towels"
         }
-      ]
+      ],
+      "reason": "Step 5 uses 2 1/2\" wood screws; search of materials[].name for /screw|fastener|nail|anchor/i finds nothing, so no wall fastener of any size is listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Mount height is fixed by the stated baseboard height ('The baseboard is 2 ½” tall ... cut off 2 ½”'); tick lengths given (2\", 1 1/2\", 1\"); number stickers sit by their foot line (viewed step-4 image, a photo, shows ticks and stickers); screw positions are 'as desired'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/sand (0), stain (1), mark (2), seal (3), stickers (4), mount (5): each step acts on a board already made; trimming 2 1/2\" in step 5 happens after marking, consistent with the stated reason."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Take 1x6 board and cut it to 84” long."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x8 96\""
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "Board"
+        }
+      ],
+      "reason": "Step 0 starts from a '1x6 board' while materials[0] and the only cut row (source 1x8x8', Kreg-corrected 0.75 x 7.25 x 96) are 1x8; the step's own title also says 'Cut 1x6 Board'. Search: no '1x6' in materials or cutList.",
+      "arithmetic": "§9: 1x6 actual width 5 1/2; cutList[0] corrected width 7 1/4; 5 1/2 != 7 1/4. Length: step 0 '84”' vs cutList[0] corrected 96 (step also says 'any length you want')."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "cb63266e8c3584e3.webp"
+    ]
+  },
+  "gaps": []
 }

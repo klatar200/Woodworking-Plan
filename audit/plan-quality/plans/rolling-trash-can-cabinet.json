@@ -1,6 +1,6 @@
 {
   "slug": "rolling-trash-can-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,85 +35,158 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Use the cut-list to break down 3/4\" plywood to the specified dimensions."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Add Two Stretchers to the Top of the cabinet along the front and back sides."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Start off by running your corner stiles through your table saw at 45 degrees."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "taking one of the rails and adding wood glue to both of the tongues. Clamp your bottom rail to both of your stiles and begin placing center panels in"
+        }
+      ],
+      "reason": "The cut list has one row (Cabinet Sides). Steps cut or assemble Top and Bottom pieces (steps[2]), two Stretchers (3), corner stiles (4), side/back rails and panels (5-7), front top/bottom rails and Center Stile (8), door rails, stiles and center panels (11) and a top (15); none is a cutList row, none is given a length/width, and no step names the stock for them. Search: cutList[].part = only 'Cabinet Sides'; no step or material gives a dimension for any of these parts apart from '16\" gap on both sides' (steps[8]). The viewed step-8 and step-13 drawings show only overall sizes (38 x 24 x 30.25) and the 16\" gaps. The carcass and the whole cedar face frame cannot be cut. Whether the rows were absent in the scraped source is not verifiable here."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only row, Cabinet Sides (2), is used in steps 1-2."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Cabinet Sides — qty 2, 0.75 x 22.5 x 28.5 (Kreg-corrected)"
+          "quote": "Cabinet Sides — qty 2, 0.75 x 22.5 x 28.5 (Kreg-corrected; source '28 1/2\" x 22 1/2\" x 3/4\"')"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Use the cut-list to break down 3/4\" plywood to the specified dimensions."
         },
         {
           "path": "materials[0].name",
           "quote": "Cedar Boards, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Cedar Planking, 1/4\" Cedar Planking 96\""
         }
       ],
-      "arithmetic": "cutList[0] 0.75×22.5: no listed stock has thickness 0.75 (±1/32) with width ≥ 22.5; stock = 0.75×5.5, 0.25×96",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Cabinet Sides — qty 2, 0.75 x 22.5 x 28.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "Step 0 says the Cabinet Sides come from 3/4\" plywood, but materials list only cedar 1x6 boards and 1/4\" cedar planking; no plywood line exists (search: materials[].name for /plywood|ply/i has no match). A 22.5\" wide 3/4\" part cannot come from a 1x6 (5 1/2\") or 1/4\" planking.",
+      "arithmetic": "§9: 1x6 actual width 5 1/2 < corrected width 22 1/2; listed 1/4\" planking thickness 0.25 != 0.75.",
+      "readerNote": "Sweep fail confirmed: the steps themselves name 3/4\" plywood, which is not in materials, so no glue-up resolves it."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (1x6, 0.25x96); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Attach the Sides to the Top and Bottom pieces uses 1 1/4\" pocket screws. Make sure the joints are square during assembly.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the Sides to the Top and Bottom pieces uses 1 1/4\" pocket screws."
         },
         {
-          "path": "steps[3].body",
-          "quote": "Add Two Stretchers to the Top of the cabinet along the front and back sides. Use 1 1/4\" Pocket Screws to secure them in place.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Attach your Top and Bottom Rails to the frame using 1 1/4\" pocket screws. Add the Center Stile to the front frame making sure you have 16\" gap on both sides.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Flip the carcass upside down and drop in the frame slowly. Once the frame is dropped in secure the carcass to the sides with a few 1 1/4\" screws where the rails are.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "path": "materials[3].name",
+          "quote": "Rev-A-Shelf - 53WC-2150SCDM-217 - Double 50 Qt"
         }
-      ]
+      ],
+      "reason": "1 1/4\" pocket screws are used in steps 2, 3, 8 and 9 and wood screws in step 15, but the four-line materials list (cedar boards, planking, casters, Rev-A-Shelf) contains no screws or other fasteners. Search: materials[].name for /screw|nail|fastener/i has no match."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Attached cabinet pulls/knobs to each door and secure the casters to the bottom of the carcass."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Use the provided instructions from Rev-A-Shelf to attach the doors to the hardware brackets."
+        }
+      ],
+      "reason": "No step or viewed drawing (steps 8, 13: overall size and 16\" gaps only) positions the door pulls/knobs, the casters, or the two Rev-A-Shelf pull-out units inside the carcass; no measurement or image gives them."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "The one 'as shown' step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "As written the order is consistent: carcass (1-3), cedar frame parts (4-8), drop-in (9-10), doors (11-12), hardware/casters (13), finish (14), top (15). Missing parts and the missing pull-out installation are recorded under R2/R14."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on each end of the Cabinet Sides. Space them out every 6\" or so."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Attach your Top and Bottom Rails to the frame using 1 1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood sides and used on frame rails; no text states a jig thickness setting (search: setting|jig|thickness finds nothing). The viewed step-0 and step-1 drawings show no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Attached cabinet pulls/knobs to each door and secure the casters to the bottom of the carcass."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Use the provided instructions from Rev-A-Shelf to attach the doors to the hardware brackets."
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "I made my cabinet with a granite top so i just drop it in place. If you are making a wood top, secure it to the carcass with some wood screws."
+        }
+      ],
+      "reason": "(c) Pulls/knobs (step 13) and wood glue (steps 4, 6, 11) are used but are not in materials (search materials[].name for /pull|knob|glue/i: no match); the top (granite or wood, step 15) is also not in materials or cutList. (d) No step installs the two Rev-A-Shelf pull-out units in the carcass (search steps for /rev-a|install|slide/i: only step 12, which attaches doors to 'the hardware brackets')."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "75ac05b3664c6ae7.webp",
+      "df9ded50eb598db0.webp",
+      "25d3ff9980d5f196.webp",
+      "01c72cae20c41301.webp",
+      "8d02708a57e25de1.webp"
+    ]
+  },
+  "gaps": []
 }

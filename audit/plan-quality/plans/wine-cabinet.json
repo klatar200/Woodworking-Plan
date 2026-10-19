@@ -1,6 +1,6 @@
 {
   "slug": "wine-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -215,10 +215,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut or assemble (Cabinet Top, Shelf, Bottom, Sides, Vertical/Horizontal Dividers, Finished Top, Back, 4 Wide + 4 Narrow Legs, Base Front/Back/Side Rails) is a cutList row; the 1x4 'spacer' in step 5 is an optional gauge."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3]",
+          "quote": "Side — qty 2, 0.75 x 14 x 35"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Side — qty 2, 0.75 x 14 x 35"
+        }
+      ],
+      "reason": "Two identical 'Side' rows (qty 2 each, no importDiff on either) total four sides, but the steps and viewed step-3 drawing build with two Sides ('Position the Top between the Sides'; drawing labels two Sides) and the back height checks with one pair: 0.75 top + 11 + 0.75 shelf + 21.75 + 0.75 bottom = 35, back 23 = 23.25 - 2 x 1/8 (viewed step-11 drawing). Search: no step mentions a second pair of sides."
     },
     "R4": {
       "result": "pass",
@@ -229,56 +244,45 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 1x3, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All sizes used are in materials: 1 1/4\" coarse and fine Kreg screws (steps 3-9, 14, 16, 18), 1 1/4\" flat-head wood screws (step 10, four), #6 x 5/8\" pan-head screws (step 12)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "ts aligned and make sure everything goes together correctly. Later, you’ll take the cabinet apart again. It requires a bit more work, but it lets you stain and finish all the parts lying flat, which m",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/815d0bb116a7c6ef.webp"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Mark the location where the Horizontal Divider will attach to the right-hand Side and draw a light pencil line across the panel using a square. You can also use a 1x4 board as a spacer to position the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cdfc4d7ababcffda.webp"
-        },
-        {
-          "path": "steps[17].body",
-          "quote": " faces. Allow the stain to properly dry, and then repeat the process to apply the clear finish. We applied two coats of wipe-on polyurethane. You can stain and finish the Base without taking it apart.",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed drawings give the positions: step 3 top-to-shelf 11\"; step 5 divider 3 1/2\" (and '1x4 board as a spacer' = 3 1/2\"); step 11 back inset 1/8\" all four edges with pilot holes 6\" and 1/4\"; step 18 base '1/8\" overhang on three sides'; Finished Top flush at the back, other sides equal (text). Wine-glass holder placement is optional/'install some'."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "et parts to finished size from a sheet of 3/4\" oak plywood, as shown in the cutting diagram. For this project, it’s more efficient to cut everything now so that you can move on to applying veneer to t",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "e from a sheet of 3/4\" oak plywood, as shown in the cutting diagram. For this project, it’s more efficient to cut everything now so that you can move on to applying veneer to the edges in Step 2. Be s",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "Step 0 says 'as shown in the cutting diagram' with no own image; every part size is in cutList (all parts are cut to finished size, step 0) and all later 'as shown' steps have their own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and edged (0-1), drilled (2, 4), dry-fit cabinet (3, 5-9), top (10), back (11-12), base (13-16), disassemble/finish (17), reassemble and attach base (18): each exists before use; step 17 leaves the base assembled and the base is only attached to the cabinet in step 18."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2]: 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; steps[13]: 'With your Kreg jig still set for 3/4\"-thick material'; all pocket-holed parts are 0.75 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) back: 17 3/4 x 23 = cabinet 18 x 23 1/4 less 1/8\" on all edges (viewed step-11 drawing); finished top 14 1/2 x 19 = 14 x 18 plus 1/2\" overhang on three sides; four 1 1/4\" flat-head screws match the four countersunk pilot holes (step 2); (b) all parts installed; (c) glass holders, edge banding, glue listed; (d) steps reach the finished cabinet."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "815d0bb116a7c6ef.webp",
+      "cdfc4d7ababcffda.webp",
+      "406393360742f28e.webp",
+      "810431cc5c2ce01b.webp"
+    ]
+  },
+  "gaps": []
 }

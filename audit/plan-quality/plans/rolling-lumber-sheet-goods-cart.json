@@ -1,6 +1,6 @@
 {
   "slug": "rolling-lumber-sheet-goods-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -779,10 +779,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (5 Base Rails, 2 Base Stiles, Bottom/Front/End Panels, trims, 3 front + 3 back support stiles, 9 support rails, backing, cap, 3 shelves, 2 support panels, back panels and dividers) has a cutList row with the same count. Step 27/28 call the part 'Shelf Back' where cutList and step 29 call it 'Shelf bottom' (recorded under gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 28 rows are cut and installed in steps 0-34."
     },
     "R4": {
       "result": "pass",
@@ -793,54 +795,80 @@
       "reason": "R5 precondition not met: 7 stock types (1x2, 1x3, 2x4, 2x6, 2x8, sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "using bolts and washers. Our casters called for 3/8\" bolts, as shown in the materials list."
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "3/8\" x 1 1/2\" lag screws"
+        }
+      ],
+      "reason": "The step says casters are fixed with 3/8\" bolts and points to the materials list, but the materials list contains 3/8\" x 1 1/2\" lag screws (24) and washers; search materials[].name for /bolt/i finds nothing. Fastener type for the same use differs between step and materials. All other sizes (2 1/2\" and 1 1/4\" coarse pocket screws, 4d finish nails) match materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed drawings give positions: step 15 notch 3 5/8\" x 3 5/8\" and pocket-hole spacing; step 19 frames 45 3/4\" apart / 24 5/16\"; step 23 caster 6 1/2\"; step 6 trim '1/4” overhang'; step 7 notch '1 1/2” x 1 1/2”'. (The two utility pulls are not placed anywhere; recorded under R14.)"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Steps 14 and 27 say 'as shown (in the cutting diagram)' with no own image. No sheet-layout cutting diagram exists in images[] (viewed unattached images 1-4 are photos/overall drawing), but every part size and its stock board/sheet is in cutList and the steps, and the back-stile notch is dimensioned in the step-15 image (viewed), so no dimension is missing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base (0-3), front (4-10), end (11-13), support frames cut/assembled/installed (14-19), backing (20), shelves (21), support panels (22-23), back assemblies (24-34); every sub-assembly exists before it is attached."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket-holed part has a stated setting: 'jig set up for 1 1/2” stock' for base rails/stiles and support frames (steps 0, 15-17), '3/4” stock' for all plywood and 1x3 parts (steps 2, 4, 7, 11, 22, 24, 28, 32)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[14].body",
-          "quote": "iles and nine Support Frame Rails to size from 2x4 boards, and then cut three Support Frame Back Stiles from 2x8 boards, as shown in the cutting diagram. Notch the top end of each back stile as shown.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "materials[13].name",
+          "quote": "6 1/2\" utility pulls"
         },
         {
-          "path": "steps[14].body",
-          "quote": "iles and nine Support Frame Rails to size from 2x4 boards, and then cut three Support Frame Back Stiles from 2x8 boards, as shown in the cutting diagram. Notch the top end of each back stile as shown.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "iles and nine Support Frame Rails to size from 2x4 boards, and then cut three Support Frame Back Stiles from 2x8 boards, as shown in the cutting diagram. Notch the top end of each back stile as shown.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[27].body",
-          "quote": " Back Panel and four Bottom Left Dividers to size from 3/4” plywood, as shown in the cutting diagram. Then cut one Shelf Panel, one Shelf Back, and four Shelf Dividers to size from the sheet, as well.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[27].body",
-          "quote": " Back Panel and four Bottom Left Dividers to size from 3/4” plywood, as shown in the cutting diagram. Then cut one Shelf Panel, one Shelf Back, and four Shelf Dividers to size from the sheet, as well.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[34].body",
+          "quote": "Attach the left back panel/divider assembly to the cart using 1 1/4” coarse-thread pocket hole screws, as shown."
         }
-      ]
+      ],
+      "reason": "Materials list two 6 1/2\" utility pulls (quantity 2), and the viewed finished-cart photos show a handle on the support-frame side, but no step installs or positions them. Search of all step titles/bodies for /pull|handle/i: no match. (a)-(c) otherwise agree: 3+3 stiles and 9 rails per step 14 = cutList 3/3/3+3+3; 6 casters, 24 lag screws, 24 washers = 6 x 4."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-05",
+    "imagesViewed": [
+      "6fa68f170d69bae3.webp",
+      "8ced7236c015e201.webp",
+      "f9c274510feb6e38.webp",
+      "f4e0b12eb492cb72.webp",
+      "8da854d540b5d784.webp",
+      "edbfbd54689019fe.webp",
+      "258f9a20b3443aab.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[27].body",
+      "quote": "Then cut one Shelf Panel, one Shelf Back, and four Shelf Dividers to size from the sheet, as well.",
+      "what": "Step 27/28 name a 'Shelf Back' but the cutList row and step 29 call the same part 'Shelf bottom' (6 1/2 x 45 3/4, corrected); no cutList row is named 'Shelf Back'."
+    }
+  ]
 }
