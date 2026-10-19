@@ -1,6 +1,6 @@
 {
   "slug": "convertible-picnic-table-and-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -344,51 +344,70 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "support pieces to the top boards (2 min screws for each board). Repeat for other bench top assembly.\nNote: it may be useful to cut 4 pieces of scrap wood ¼” wide to use as a spacer for the top boards.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "p joints are not desired, cut the table top supports down to 15 1/8\" long instead of 16 1/8\".) On the long side of the table support pieces, mark at ¼” and 7 ¾” up from the bottom. Pre-drill countersi",
-          "why": "cut sentence states 15 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 1/4\" (steps[2] scrap spacer, optional) and 15 1/8\" (steps[5] optional no-lap alternative to the 16 1/8\" cutList[4]) are stated in the step itself and are not parts. Step 'leg support A/B' = cutList 'Leg spacer A/B' (viewed image f1ba65f856d35235 labels them A and B)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 rows used: Leg/Leg spacers (steps[0]), Stretcher (steps[1]), Wide/Narrow top + Bench top support (steps[2]), Arm rest/Arm support/Riser (steps[4]), Table top support (steps[5],[6])."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "corrected rows 1.5x5.5 from 2x6 and 1.5x3.5 from 2x4 (§9)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x6, 2x4); steps not checked for per-part stock"
+      "reason": "two stock types and steps do not name stock per part. Totals for reference: 2x6 parts 8x60+8x18.125=625 + 16x1/8=627 <= 4x120+2x96=672; 2x4 parts 613.5 + 36x1/8=618 <= 3x120+3x96=648; note two 60\" parts from a 120\" board need 120.125\"."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use '2 1/2\" screws' = materials[9] '2 1/2\" exterior Kreg Pocket Hole Screws'; hinges 3\" = materials[4]; no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "leg support A 4 1/8\" up (steps[0], image), leg support B at leg tops, 3 1/2\" from ends and 1\" from sides (steps[2]), 6 3/4\" arm support (steps[4], image), 1/4\" and 7 3/4\" up (steps[5], image), 1\" from each end/top (steps[6]), 10\" from back (steps[7]); stretcher centred; hinge holes marked in place."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; each step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg sets (steps[0],[1]), bench tops (steps[2]), legs to top (steps[3]), arms (steps[4],[5]), table tops (steps[6]), hinged on (steps[7]) in a possible order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'All pocket holes for this project are for 1 1/2\" material' and every pocket-holed part is 1.5\" thick (cutList)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: 8 Wide top + 4 Narrow top = 4 assemblies of 'wide, narrow, wide' (steps[2],[6]); 4 leg sets from 8 legs and 4 each Leg spacer A/B; 4 arm assemblies from 4 Arm rest/Arm support/Riser; 4 Table top supports = 2 per table top; 16 1/8\" matches cutList[4]; hinges, glue in materials; steps end with hinged table tops (steps[7])."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[9].part",
+      "quote": "Leg spacer A",
+      "what": "Cut list names 'Leg spacer A/B' while steps[0] says 'leg support A and leg support B' (and image labels 'leg support'); names differ, parts match by 8 3/4\" and 3 1/2\" in the viewed image."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "f1ba65f856d35235.webp",
+      "bbebae8669cb0992.webp",
+      "5593618a8fd57942.webp",
+      "b69190b599c61af0.webp"
+    ]
+  }
 }

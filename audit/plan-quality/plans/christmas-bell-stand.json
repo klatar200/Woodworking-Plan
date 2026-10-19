@@ -1,6 +1,6 @@
 {
   "slug": "christmas-bell-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -19,70 +19,61 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " 12\" X 7 1/4\" boards. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2].body 'I have attached one site' is an optional how-to pointer for edge-gluing; no link exists in the plan and the build needs nothing from it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, Bottom Spacer, Small Spacers (12) and Cross Beams (6 pairs = 12) are all in cutList; steps[2] says the base is two '3/4\" X 12\" X 7 1/4\"' boards, described in the step itself; the 'top spacer' (steps[6]) is one of the 12 Small Spacers (image ec0b73e462de9c8b shows a spacer above the top beam pair)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every cutList row is used: base (steps[7]), bottom/small spacers (steps[5]), cross beams (steps[3],[4])."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Base — qty 1, 0.75 x 12 x 12"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x8 48\""
-        }
-      ],
-      "arithmetic": "cutList[0] 0.75×12: no listed stock has thickness 0.75 (±1/32) with width ≥ 12; stock = 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Base — qty 1, 0.75 x 12 x 12",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[0] Base 0.75x12x12 exceeds the 7.25 stock width, but steps[2] edge-glues two boards 'X 7 1/4\" boards' (2 x 7.25 = 14.5 >= 12) then cuts to 12x12 (steps[7]). Other rows 0.75x0.75 rip from 1x8 (0.75 x 7.25)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "parts ≤ half the 7.25″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
+      "reason": "parts are ripped from one 1x8 48\" board; lane packing with 1/8\" kerf (base takes 2 x 12\" of full width, 24\" left) could not be settled from length totals alone."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fasteners: 1/4\" threaded rod and 1/4\" locking nuts are in materials[1],[2]; steps use no other fastener."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "dado fence 1/4\" and depth 1/16\" given; holes 'exact center'; countersink 1/2\" wide x 1/2\" deep; beam order and orientation shown in viewed image ec0b73e462de9c8b (beams descend in pairs, spacer between each, longer bottom spacer)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown in the following picture' (steps[8]) has its own step image, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut (steps[1]), base glued (steps[2]), dados/drilling (steps[3]-[7]), layout (steps[8]), threaded-rod assembly (steps[9]) in a possible order."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes; the stand is assembled on a threaded rod."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "'12 cross beams' = 6 rows x qty 2; 'cut to its 12\" X 12\"' matches cutList[0]; '12 short spacers and the bottom spacer' matches cutList[1],[2]; rod (24\") and nuts in materials; steps reach the finished stand."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "ec0b73e462de9c8b.webp"
+    ]
+  }
 }

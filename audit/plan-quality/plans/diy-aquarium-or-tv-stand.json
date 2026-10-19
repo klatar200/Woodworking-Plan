@@ -1,6 +1,6 @@
 {
   "slug": "diy-aquarium-or-tv-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -224,51 +224,92 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: steps mention a YouTube video 'in the extras tab' (steps[8],[10],[14],[15]) as a demonstration only; the sizes and positions needed (1 1/2\" up, 3/4\" from front) are in the text."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all parts the steps cut exist in cutList; the scrap plywood drawer spacer block (steps[7]) is cut per the step."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 15 rows are used in steps[0]-[15]; Middle Front/Back Supports are the 2x2s of steps[4]."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "corrected rows: 1.5x3.5 from 2x4; 1.5x1.5 from 2x2; Top 1.5x9 from 2x10 (9.25) with 'Trim edges flush' (steps[15]); 0.75 and 0.25 plywood parts fit 48x96; drawer sides/fronts 0.75x3.5 rip from 3/4\" plywood."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3], materials[5]"
+      "reason": "several stock types and steps do not name stock for every part. Reference: 2x4 packs into 5 boards (41+41, 41+41, 27x3, 27+4x16, 20); 2x2 2x20=40 <= 96; 2x10 3x48 = 144 <= 192; 3/4\" plywood area ~2907 <= 9216."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "(about 3\" wide) of scrap ¾” plywood about 19-20” long and screw into the middle panel at the top of the side that's not flush as a spacer. This is so you can mount your drawer slides on a smooth, flus",
-          "why": "20\" screw — no material line lists a 20\" fastener"
-        },
-        {
-          "path": "steps[13].body",
-          "quote": "Finally, cut a piece of ¼” plywood backing to staple onto the back side like shown.",
-          "why": "1/4\" staple — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps use 2 1/2\" pocket hole screws (materials[11]), 1 1/4\" pocket hole screws (materials[13]) and 1 1/4\" wood screws (materials[12]); no conflicting sizes. Brad nails/staples carry no size (see R14)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "drawer slides 1 1/2\" below the top 2x4 and 3/4\" from the front (steps[8]); middle supports/panel centred, clean face flush (steps[4],[6]); bottom flush with top of bottom 2x4s (steps[3]); top centred (steps[15]); hinge cups shown near the door's top and bottom edges in viewed image 090e39724b69101a; pulls and door detail are 'as you wish'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'like shown' references are in steps with their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "side frames and panels (steps[0],[1]), frame (steps[2]), bottom (steps[3]), dividers (steps[4]-[6]), slides and drawers (steps[7]-[10]), door (steps[11],[12]), back, top, trim (steps[13]-[16]) in a possible order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "settings stated: 1 1/2\" pocket holes for the 2x4/2x2 parts (steps[0],[2],[4],[5],[15]) and 3/4\" for plywood and drawer parts (steps[1],[3],[6],[9])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "cut a piece of ¼” plywood backing to staple onto the back side like shown."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Cut two drawer fronts according to the cut list and brad nail in place onto the front of each drawer."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut a piece of plywood 21” x 41” according to the cut list for the bottom."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut a piece of 2x4 to 20” long to fit between the two top 2x4s."
+        }
+      ],
+      "arithmetic": "(c) staples (steps[13]) and brad nails (steps[10],[11],[16]) and wood glue (steps[11],[15]) are used; none of the 14 materials names matches /staple|brad|nail|glue/i. (a) frame depth = 16 (steps[0]) + 2 x 3.5 (2x4 verticals, §9) = 23; front and back 2x4s are 1.5 thick each (steps[2]), inner depth = 23 - 2 x 1.5 = 20, which steps[5] confirms ('20 long to fit between the two top 2x4s'); steps[3] bottom is 21 deep > 20.",
+      "reason": "c: staples, brad nails and glue are not in materials (certain). a: the 21\" bottom does not fit the 20\" inner depth the plan's own steps give (likely, depends on front/back rails sitting at the frame faces as in viewed image 0f36a6afaeceadca)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "attach in the middle between the supports from steps 5 and 6",
+      "what": "Refers to steps 5 and 6; the supports are made in steps[4] and steps[5] (steps are numbered from 1)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "e7d624ce6105b3a9.webp",
+      "0f36a6afaeceadca.webp",
+      "1672493a20f0b794.webp",
+      "090e39724b69101a.webp"
+    ]
+  }
 }

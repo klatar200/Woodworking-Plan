@@ -1,6 +1,6 @@
 {
   "slug": "dining-room-buffet-with-hutch",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -451,56 +451,90 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "center panel. If you do not have a router, I have a post on my blog with 3 ways to build cabinet doors (link in extras). Cut the buffet door rails and stiles and router a 1/4\" x 1/4\" groove in one sid",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[7] 'I have a post on my blog with 3 ways to build cabinet doors (link in extras)' is an optional alternative for readers without a router; the routed-panel door is fully described in steps[7],[8]."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every cut/assembled part in steps[0]-[21] is in cutList; optional adjustable shelves (steps[17],[18]) are cut 'out of the leftover plywood' per the steps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 26 rows are used by steps[0]-[16]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[23] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[23]",
+          "quote": "Hutch door center panel (plexiglass) - qty 2, 0.125 x 9.25 x 15.25 (Kreg-corrected: 1/8\" x 9 1/4\" x 15 1/4\")"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "18\" x 24\" 0.093 thick plexiglass"
+        }
+      ],
+      "arithmetic": "part thickness 0.125 vs stock 0.093 (difference 0.032\" > 1/32\"); the two 9.25 x 15.25 panels fit the 18 x 24 sheet (15.25 <= 18; 2 x 9.25 = 18.5 <= 24)",
+      "reason": "listed plexiglass is thinner than the cut-list part; steps[15] groove is 1/8\" wide so the 0.093 sheet would still fit, hence likely a nominal-size labelling difference. All other parts match their stock (1x3 0.75x2.5, 1x2 0.75x1.5, 1x6 0.75x5.5, 3/4 and 1/4 plywood, 1/4x3/4 trim)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (1x3, 1x2, 1x6, sheet-0.75, sheet-0.25, 0.25x0.75); steps not checked for per-part stock"
+      "reason": "six stock types and steps do not name stock for every part. Reference: 1x3 parts 4x34+4x15+4x17.75+44.5+46+4x8.75+4x19.75=471.5 + kerf ~2.8 <= 5x96=480; 1x2 parts 459 <= 576; 1x6 3x48 = 3x48 bought; trim 106 <= 144; 3/4\" plywood area 7239 <= 2x4608."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/4\" pocket hole screws (materials[7]), 1 1/4\" finish nails (materials[8]), 5/8\" brad nails (materials[9]), 5\" mending plate and 5/8\" wood screws (materials[13],[14]), 1\" corner braces (materials[15]); steps[11] says '1 1/4\" brad nails' where materials name the same size 'finish nails' (name differs, size does not)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[19].body",
-          "quote": "Install the buffet and hutch doors with hinges made for inset face-frame cabinet doors. If using concealed hinges, use the Kreg Concealed Hinge Jig to drill cup holes for the hinges with a regular dri",
-          "why": "placement with no measurement (no step image)",
-          "image": null
+          "quote": "Install the buffet and hutch doors with hinges made for inset face-frame cabinet doors. If using concealed hinges, use the Kreg Concealed Hinge Jig to drill cup holes for the hinges"
+        },
+        {
+          "path": "steps[19].body",
+          "quote": "Install the door hardware with the Kreg Cabinet Hardware Jig for accurate positioning of the hardware holes."
         }
-      ]
+      ],
+      "reason": "no distance from the door top/bottom for the 2 hinges per door (materials[12] 8 hinges) and no pull location is given in text, and steps[19] has no image (searched all steps and materials for a hinge or pull position; 'doors fit properly' is the only guide); the viewed images show no hardware positions. All other positions are given: taper 5 1/2\" x 1 1/2\" and 2 1/2\" x 1\" (steps[0]), shelf/rail flush positions (steps[2],[3], viewed 48c5f5793de9f919), hutch parts 3/4\" in from back (steps[9],[13]), door grooves 1/4\" x 1/4\" and 1/8\" x 1/4\" stopping 2 1/4\" from edges (steps[7],[15])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "the one 'as shown' (steps[10]) has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "buffet legs/sides/frame/shelves/back/top (steps[0]-[6]), doors (steps[7],[8]), hutch frame, face frame, shelves, support, back (steps[9]-[14]), hutch doors (steps[15],[16]), shelves and hardware, then hutch on buffet (steps[21]) in a possible order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'pocket holes set for 3/4\" material' stated in steps[0],[2],[3],[9],[10]; every pocket-holed part is 0.75\" thick (cutList)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts and sizes agree: 3 face-frame rails, 1 stile, 2 buffet shelves, 4 buffet door rails/stiles for 2 doors; hutch door opening = rails 8.75 + 2x1/4 groove = 9.25 and stiles 19.75-5+0.5 = 15.25 match the plexiglass 9.25 x 15.25; panel 13.125 x 15.375 = 17.75-5+0.5-1/8 and 15+0.5-1/8; 8 hinges = 4 doors x 2, 4 pulls, 2 mending plates; hutch depth 12\" less 3/4\" back = 11.25\" shelf; every made part is installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "c858fbe3c7b8a77f.webp",
+      "72484bcc8a4069b9.webp",
+      "48c5f5793de9f919.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "daybed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -236,53 +236,80 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side Panels, Back Panel, Front Panel, Front/Back Legs, Outer/Center Stretchers, Rail and Bottom Panel are all in cutList and used in steps[0]-[13]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 rows are used by steps[0],[3],[5],[6],[8],[13]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[3] no match among parsed stock; unparsed stock present (materials[1]); cutList[4] no match among parsed stock; unparsed stock present (materials[1])"
+      "reason": "legs: cutList[3],[4] 2.5 x 2.5 come from materials[1] 'Board, 3x3 36\"' but 3x3 is not in the §9 table. Others fit: 0.75x3.5 stretchers/rail from 1x4; plywood parts (largest 30.75x76 and 38.25x75.75) fit a 48x96 sheet."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "reason": "several stock types and steps[8] does not name the stock for the stretchers/rails. Reference: 1x4 parts 3x31.5+2x76=246.5 (+5 kerfs) <= 3x96=288; legs 24 and 30 each fit one 36\" 3x3 (4 boards); 3/4\" plywood area 2x24x36.75+30.75x76+11x76 = 4937 <= 4608+half sheet (size not stated)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use '1 1/4\" coarse-thread pocket hole screws' = materials[5] and '1\" flat head wood screws' = materials[6]; steps[13] '3 in each Rail, 2 in each Stretcher' = 3x2 + 2x3 = 12 matches materials[6] qty 12 (with two rails)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "side panel curve points and heights dimensioned in viewed image 30d1ba078c2af8f7; legs inset 5\" and 1 5/8\" and leg lengths 24\"/30\" shown in viewed images 86c4247db7f4e847, 95059bb1ddad8d4b; panels flush with leg inside edge (steps[7]); bottom screws 'placement isn't critical'."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "steps[6] 'as shown in the cutting diagram' (legs): no cutting-diagram image exists among the 5 unattached images (viewed: photos and overall-dimension drawing f0d12a570df80b2e), but the leg lengths 24 and 30 are in cutList[3],[4] and the viewed overall drawing; the curve diagram is on steps[0]'s image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels and legs made (steps[0]-[6]), side assemblies (steps[7]), frame (steps[8],[9]), sides to frame (steps[10]), back and front panels (steps[11],[12]), bottom (steps[13]) in a possible order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2],[4] 'pocket hole jig set up for 3/4\" material'; every pocket-holed part (plywood panels, 1x4 rails/stretchers) is 0.75\" thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[6].body",
-          "quote": "Cut two Front Legs and two Back Legs length from 3x3 boards, as shown in the cutting diagram. Sand the Legs smooth.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].body",
+          "quote": "Cut two Outer Stretchers, one Center Stretcher and two Rails to length as shown in the cutting Diagram."
         },
         {
-          "path": "steps[6].body",
-          "quote": "Cut two Front Legs and two Back Legs length from 3x3 boards, as shown in the cutting diagram. Sand the Legs smooth.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[7]",
+          "quote": "Rail - qty 1, 0.75 x 3.5 x 76"
         }
-      ]
+      ],
+      "arithmetic": "steps[8] two Rails vs cutList[7] qty 1; steps[13] screw count 3 per Rail x 2 + 2 per Stretcher x 3 = 12 = materials[6] qty 12 supports two rails; cut-row quantities are Kreg's own (import-fidelity.md: 4,938/4,938 correct).",
+      "reason": "a: cut list gives one Rail, steps and screw count need two."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "30d1ba078c2af8f7.webp",
+      "86c4247db7f4e847.webp",
+      "95059bb1ddad8d4b.webp",
+      "f0d12a570df80b2e.webp",
+      "527ec53aa17011dd.webp",
+      "6ab57476ed4b989d.webp",
+      "8d1e253d0a42dd4a.webp"
+    ]
+  }
 }

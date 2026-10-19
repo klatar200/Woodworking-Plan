@@ -1,6 +1,6 @@
 {
   "slug": "curio-box-in-the-prairie-school-design-style",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -80,52 +80,72 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits; 'You Tube videos' (steps[5],[10]) are optional pointers."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " plainer reduce the 1\" x 4\" x 36\" cherry board to a thickness of 1/2\".\nIf using finger joints cut 2 sides 3\" x 8\" and 2 ends 3\" x 5 1/2\"\nIf using butt joints cut 2 sides 3\" x 8\" and 2 ends 3\" x 4 1/2\"",
-          "why": "cut sentence states 4 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut the bottom from 1/4\" cherry plywood. I usually cut it 4 15/16\" x 7 7/16\". Use 100 - 220 grit sandpaper to smooth",
-          "why": "cut sentence states 7 7/16\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 4 1/2\" (steps[1]) is the stated butt-joint variant of the Box Ends (finger-joint 5 1/2\" = cutList[1]); 4 15/16\" x 7 7/16\" (steps[3]) is the Box Bottom (see R14). All parts in steps exist in cutList: sides/ends, bottom, legs (steps[7]), top (steps[9]), insert (steps[11])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows are used in steps[1],[3],[7],[9],[11]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "steps name the stock and the resizing: steps[1] plane 1x4 cherry to 1/2\" (3\" wide <= 3.5\"); steps[7] 2x2 sawn to 1x1; steps[9] 1x8 planed to 1/2\" and cut 7\" x 9 1/2\" (<= 7.25 x 12); plywood panels cutList[4] 4.4375x6.9375 <= 5x7 and cutList[5] 5x7.5 <= 7 1/2 x 5."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x4, 1x8, 2x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock per part. Cherry 1x4 36\": 2x8+2x5.5=27 + 4x1/8=27.5 <= 36. Maple 2x2 12\": 4x2.5=10 + 4x1/8=10.5 <= 12. Maple 1x8 12\": top 9.5 <= 12. Each plywood panel is a single part that fits its panel (5x7.5 in 5x7.5; 4.4375x6.9375 in 5x7)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[6],[14] use '1\" 23 gauge' pin nails = materials[5]; no other fastener size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "dado 1/4\" x 1/4\", 1/4\" up (steps[2]); leg rabbet 3/4\" x 3/4\" and taper mark 1/4\" (steps[7],[8]); bevel border 1 1/2\" x 1/8\", 3/16\" deep, 8 degrees (steps[10]); insert centred; leg-to-box corner placement relational with 1/4\" spacer (steps[14]); curve on the lower edges is explicitly optional ('leave the bottoms flat')."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "only references have their own step images (steps[0] 'Finger joint on the left')."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, dados before assembly, box assembled (steps[6]), legs/top made and finished, legs attached (steps[14]) then top placed (steps[15]); the 'go to step 7 Box Assembly' skip for butt joints lands on steps[6]."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes; box uses finger or butt joints with glue and 1\" pin nails (stated in steps[6])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut the bottom from 1/4\" cherry plywood. I usually cut it 4 15/16\" x 7 7/16\"."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Box Bottom Cherry Plywood - qty 1, 0.25 x 5 x 7.5 (Kreg-corrected: 1/4\" x 5\" x 7 1/2\")"
+        }
+      ],
+      "arithmetic": "step 4 15/16 x 7 7/16 vs cut list 5 x 7 1/2: each 1/16\" smaller",
+      "reason": "a: step size differs from the cut-list row by 1/16\" on both dimensions; the step words it as 'usually', so likely a fit tolerance, but the plan gives two sizes. Other counts and sizes agree (finger-joint ends 5 1/2\", top 7\" x 9 1/2\", legs 2 1/2\", insert 4 7/16\" x 6 15/16\")."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": []
+  }
 }

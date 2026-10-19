@@ -1,6 +1,6 @@
 {
   "slug": "diy-rustic-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -56,51 +56,58 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the two circles the steps cut (steps[0],[1]: 'a circle on each' of two scrap pieces) are cutList Base and Top."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Base",
-          "why": "no step mentions it (searched steps for base)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Top",
-          "why": "no step mentions it (searched steps for top)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged Base/Top are the small and large circles drawn and cut in steps[0],[1] (the steps call them 'circles'); each gets a flange in steps[4]."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Base circle 0.75 x 5.5 fits the 1x6 (0.75 x 5.5) and Top circle 0.75 x 11.25 fits the 1x12 (0.75 x 11.25) per §9; steps[0] says to draw each circle 'as close as you can to the edge'."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x12); steps not checked for per-part stock"
+      "reason": "materials[0] is a 1x6 'Scrap Piece' with no length (§9: never assume), so the 5.5\" Base cannot be checked; the Top 11.25 <= 12\" 1x12 is fine."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "'3/4\" screws' (steps[4]) = materials[4] 8 screws (2 flanges x 4); pipe and flanges match materials[2],[3]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "flange 'to the center' of each circle (steps[4]); circle size = board width (cutList); pipe length 8\" in materials[2]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no drawing references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "circles drawn, cut, sanded, finished (steps[0]-[3]), flanges attached to the centres (steps[4]) and pipe screwed in (steps[5])."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "two circles, two flanges ('one flange to each of your circles'), one 8\" pipe, 8 screws agree across steps, cut list and materials; the steps end with the finished stand (steps[5])."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": []
+  }
 }

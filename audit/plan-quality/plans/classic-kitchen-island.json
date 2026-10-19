@@ -1,6 +1,6 @@
 {
   "slug": "classic-kitchen-island",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -212,90 +212,95 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits; only purchased legs (materials[7]) which are a materials item, not missing plan content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Leg, End Rail, Side Rail, Center Support, Shelf, Shelf Long/Short Edge, Top Board, Top Long Edge all in cutList; the top end strips are made by steps[11] ('cut 1 1/2\" off each end of the Top assembly') and used in steps[12]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every row is used: Leg (steps[2]), rails/support (steps[1]-[3]), shelves/edges (steps[4],[5]), top boards (steps[10]), top long edges (steps[12])."
     },
     "R4": {
+      "result": "pass",
+      "reason": "corrected rows: Rails/Support 0.75x3.5 from 1x4 (0.75x3.5); Shelf Edges/Top Long Edge 0.75x1.5 from 1x2; Top Board 0.75x5.5 from 1x6; Shelf 0.75 plywood 22.25x38.75 fits a half sheet; Leg 3x3 is the purchased 'Narrow Concord Island Post' (materials[7], steps[0])."
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "stock is named per part in steps, lumber fits (1x4: 2x18.25+2x34.75+22.25=128.25 + 5x1/8 kerf=128.9 <= 96+48=144; 1x6: 5x47.25=236.25 + 5x1/8=236.9 <= 2x96+48=240; 1x2: 4x34.75+4x14.25+2x44=284 + 10x1/8=285.3 <= 3x96+48=336), but materials[6] 'Plywood, 3/4\" Thick Half Sheet' states no dimensions (§9: no assumed size) so the sheet cannot be scored."
+    },
+    "R6": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[0]",
-          "quote": "Leg — qty 4, 3 x 3 x 34.5 (Kreg-corrected)"
+          "path": "steps[11].body",
+          "quote": "add the Top Boards using wood glue and 1 1/4\" coarse-thread pocket hole screws"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x6 48\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 1x4 96\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Board, 1x4 48\""
-        },
-        {
-          "path": "materials[4].name",
-          "quote": "Board, 1x2 96\""
-        },
-        {
-          "path": "materials[5].name",
-          "quote": "Board, 1x2 48\""
+          "path": "materials[8].name",
+          "quote": "1 1/4\" fine-thread pocket hole screws"
         }
       ],
-      "arithmetic": "cutList[0] 3×3: no listed stock has thickness 3 (±1/32) with width ≥ 3; stock = 0.75×5.5, 0.75×5.5, 0.75×3.5, 0.75×3.5, 0.75×1.5, 0.75×1.5, sheet 0.75",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Leg — qty 4, 3 x 3 x 34.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
+      "reason": "steps[11] uses 1 1/4\" coarse-thread screws; materials list only the fine-thread 1 1/4\" screw (search: no materials name matches /coarse/i)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "Next, attach the Shelf assemblies to the same Legs using 1 1/4\" fine-thread pocket hole screws, as shown. Make sure you have the Shelves spaced properly before you drive in the screws.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aecfb82f149b52a6.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "end/side rail inset 1/4\" (steps[2],[6]); shelf corner notches 2\" x 2\" and shelf positions (4 1/2\", 18\") dimensioned in viewed images 230ce3b53d20fde0 and aecfb82f149b52a6; 1 1/2\" trim from top ends given; top placement on base is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "19 reference(s), each in a step with its own image"
+      "reason": "every 'as shown'/'cutting diagram' step has its own step image; unattached images include the shelf dimension drawing, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "rails/supports/shelves built (steps[1]-[5]), base assembled (steps[6]-[8]), top built and trimmed (steps[10]-[13]), then attached (steps[14])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1],[4],[10] state the jig set for 3/4\" material; all pocket-holed parts (rails, support, shelves, top boards) are 3/4\" (cutList)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "you can glue them to the underside of the Top assembly. Use clamps or weight the pieces down while the glue sets."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "add the Top Boards using wood glue"
+        }
+      ],
+      "reason": "c: steps[11] and [13] use wood glue; no materials name matches /glue/i (searched all 9 materials). Otherwise counts agree (5 Top Boards, 2 Shelves, 4+4 edges) and every made part is installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "you’re ready to attach it to the island base ... you’ll be able to attach the screws in tight quarters",
+      "what": "No fastener type, size or count is given for attaching the top to the base (search: steps[14] and materials have no screw size for this joint; materials[8] is the only screw and is fine-thread 1 1/4\")."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "230ce3b53d20fde0.webp",
+      "aecfb82f149b52a6.webp",
+      "1bfb0c80b00c5c15.webp"
+    ]
+  }
 }

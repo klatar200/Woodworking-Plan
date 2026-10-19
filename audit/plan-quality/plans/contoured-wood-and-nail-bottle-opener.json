@@ -1,6 +1,6 @@
 {
   "slug": "contoured-wood-and-nail-bottle-opener",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -20,69 +20,82 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the only part is Handle (cutList[0]); the nail and leather strip are materials[1],[2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Handle is cut and shaped in steps[1]."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Handle — qty 1, 0.875 x 1.375 x 5 (Kreg-corrected)"
+          "quote": "Handle - qty 1, 0.875 x 1.375 x 5 (Kreg-corrected: 7/8\" x 1 3/8\" x 5\")"
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 1x2 5\""
         }
       ],
-      "arithmetic": "cutList[0] 0.875×1.375: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.375; stock = 0.75×1.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Handle — qty 1, 0.875 x 1.375 x 5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "cutList[0] thickness 0.875 > 1x2 actual 0.75 (§9); steps[0] does not describe a laminate but accepts scrap 'at least 3/4\" thick (I recommend 7/8\")' and '1 1/2\" wide'",
+      "reason": "the listed 1x2 (3/4 x 1 1/2) cannot yield a 7/8\" thick part; steps[0] treats the stock as any suitable scrap, so likely a materials-naming mismatch."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[0] not 0.75″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "one stock (materials[0] 'Board, 1x2 5\"'); one part 5\" long <= 5\" bought, no cuts needed; quantity 1 is Kreg's own (import-fidelity.md: only 31 material lines defaulted, none here). Thickness is scored under R4."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "r nail fits. The hole should be loose enough to pry the nail out after pushing it in, but snug enough to where it will take a little effort to get it back out. I ended up using a 1/8\" bit for my nail.",
-          "why": "1/8\" nail — no material line lists a 1/8\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "nail 'a 2 1/2\" or 3\" Common Nail' (materials[1]) matches steps[12] 2 1/2\"/3\"; the 1/8\" and 5/32\" in steps[4],[5] are drill bits, not fasteners; leather strip 1/8\" fits the 5/32\" hole."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "nail hole at centre of the front face on the centre line (steps[2],[3]); straight edges at least 1 1/8\" (steps[1]); rear hole near the rear end shown in viewed image 44f9556fc93f2ab2 (5/32\" bit); nail marked at the hole as shown in viewed image aa5c6ae2c7c1a072; grip shape is freeform by design."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'see picture' references in steps[1],[8] each have their own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "shape, marks, holes, finish, then nail bent and fitted (steps[1]-[11]); steps[12] 'Choose the Nail' is advice placed last, not a dependency."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "only one part; materials cover glue, leather, nail, sandpaper, finish; steps end with the finished opener (steps[11])."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Drill down the center 90 degrees from the face.",
+      "what": "No hole depth is given for the nail hole (searched steps[3]-[6],[10],[11] and materials for a depth); steps[10] only says 'Push it all the way in'."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "44f9556fc93f2ab2.webp",
+      "aa5c6ae2c7c1a072.webp"
+    ]
+  }
 }

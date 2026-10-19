@@ -1,6 +1,6 @@
 {
   "slug": "diy-charging-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -67,55 +67,111 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[14].body",
-          "quote": " is used on a daily basis. Install over an outlet so as to hide all the cords.\nFor more details on how to make the most of this project, visit https://www.tidbits-cami.com/diy-device-charging-station/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[14] and the description point to tidbits-cami.com 'for more details' (a credit/optional link, §2); every dimension needed is in the plan."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top, Sides, Bottom and Front (steps[0],[1],[3],[5]) are the four cutList rows; nothing else is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all four rows are used."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "widths 3.5, 2.75, 2 and 5.5 are all <= the 7.25 width of the 1x8 (materials[0]), thickness 0.75."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "parts ≤ half the 7.25″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
+      "result": "pass",
+      "reason": "single stock 1x8 x 36\" ripped: front 5.5 x 10.5 takes 10.5\" of length, leaving 25.5\" x 7.25\"; lanes 3.5 + 2.75 + 2 x 1/8 kerf = 6.5 <= 7.25; lane 1 top 10.5 + bottom 9 = 19.5 + 1/8 <= 25.5; lane 2 sides 2 x 5.5 = 11 <= 25.5."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "hem with the part of the top that is not grooved. The sides will be flush with the back of the top which is the side closest to the 3/4\" groove. If you don't do this the screw will show in the groove.",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "'1 1/4\" Kreg screws' (steps[2],[12]) = materials[4]; '2 inch screw' (steps[8],[14]) = materials[6]; flagged 3/4\" is a groove width, not a screw."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "grooves 1/2\" deep, 1/2\" and 3/4\" wide, each 3/4\" from its side (steps[0]); sides flush with the back of the top (steps[1],[2]); bottom flush with the front (steps[4]); 3 evenly spaced 3/8\" holes per groove (steps[9]); mount hole centred on the underside (steps[8]); hinge/knob/catch placement is not dimensioned (relational/as desired)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "the one reference has its own step image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using 1 1/4\" Kreg screws, attach the two sides to the top piece built in step one."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Add glue to the sides before attaching them to the top piece."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Paint the charging station to your liking and then install on the wall."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "I drilled a pocket hole in the middle of the underside of the top piece. I will use this hole to attach the station to the wall"
+        }
+      ],
+      "reason": "steps[11] (glue the sides before attaching) and steps[12] (screw the bottom to the sides) come after steps[2],[4] have already attached them; steps[7] installs on the wall before steps[8] drills the wall-mount hole and steps[9] drills the cord holes. A builder following the order would have to undo work."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using the Kreg jig make a pocket hole on each board making sure to align them with the part of the top that is not grooved."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Use the kreg jig to make a pocket hole in each end."
+        }
+      ],
+      "reason": "pocket holes are drilled in 3/4\" parts (cutList[1],[2]) but no jig thickness setting is stated anywhere (searched all steps for /setting|thickness|set (up|your)/ near the jig: none)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut a board for the top piece at 10 1/2\" x 3 1/2\"x3/4\"."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Top - qty 1, 0.75 x 3.5 x 10 (Kreg-corrected: 3 1/2\" x 10\"x3/4\")"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut the front piece to 5 1/2\"x10 1/2\"x3/4\""
+        }
+      ],
+      "arithmetic": "a: step 0 top length 10 1/2 vs cut list 10; bottom 9 (cutList[2], steps[3]) + 2 sides x 3/4 = 10.5 = Front 10.5 (cutList[3]), so the cut-list 10 is the odd one. c: wood glue is used (steps[4],[11]) and adhesive (steps[14]) but none of the 7 materials names matches /glue|adhesive/i.",
+      "reason": "cut-list Top length disagrees with the step and with the other three parts; glue/adhesive are not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": []
+  }
 }

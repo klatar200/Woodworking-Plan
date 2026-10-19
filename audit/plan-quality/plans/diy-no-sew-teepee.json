@@ -1,6 +1,6 @@
 {
   "slug": "diy-no-sew-teepee",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -20,56 +20,78 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the only part, Poles (4 x 6' 2x2), is the 4 boards of materials[0]; no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the Poles row is used in every step."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "nominalRows": [
-        "cutList[0]"
-      ]
+      "reason": "cutList[0] 2 x 2 x 72 is the nominal 2x2 x 6' of materials[0] (Kreg wrote nominal size)."
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 4×72 + kerf 0 cuts (4 parts − 4 boards, the fewest possible)×1/8 = 288.000″; bought: 4×72 = 288″; 288.000 ≤ 288"
+      "reason": "4 x 72 = 288\" <= 4 x 72\" bought; no length is cut off (the 45 degree foot cut in steps[0] is an angle, not a length)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "'a screw and washer' (steps[6],[8]) = materials[1],[2] 1/2\" screws and washers; 8 = 4 poles x top and bottom (steps[8])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Next, drill a hole through each pole about 1 foot from the top. Make your hole big enough to feed your rope through. It’s a good idea to put your teepee together in the space it is going in. This way,",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c31afe11ff3ef09a.webp"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Start adding the drop cloth from the back of the teepee. Find your middle point and place a screw and washer at the top of your pole.",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "hole 'about 1 foot from the top' (steps[1]); base opening 44\" and back 22\" (steps[4]); screw 'at the top and bottom of each pole' (steps[8]) and 'your middle point' (steps[6]) are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no drawing references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "poles stained and drilled (steps[0],[1]), rope threaded and shaped (steps[2]-[5]), drop cloth added last (steps[6]-[8]) in a possible order."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Wrap the rope around the two poles once or twice, then staple it."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "To hold the shape while you work, staple some rope to each pole around the bottom."
+        }
+      ],
+      "reason": "c: staples are used (steps[3],[4]) but none of the 5 materials names matches /staple/i; counts otherwise agree (4 poles; two front poles; 8 screws and washers = 4 x 2)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[3].name",
+      "quote": "Rope of choice",
+      "what": "No rope length or diameter is given (searched all steps and materials), though steps[1] says to drill each pole's hole 'big enough to feed your rope through' and steps[5] wraps rope around the top 'several times'."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": []
+  }
 }

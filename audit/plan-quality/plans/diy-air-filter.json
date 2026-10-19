@@ -1,6 +1,6 @@
 {
   "slug": "diy-air-filter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -104,52 +104,81 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, Sides, Cleat 1 and Cleat 2 (steps[0]-[3]) are all in cutList; the optional filter spacer is leftover screen molding (materials[2])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all four rows are used: Base/Sides (steps[0]), Cleats (steps[1]-[2])."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Base and Sides 0.75x7.25 from the 1x8 (0.75x7.25); Cleats 0.75x1.5 from the 1x2."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x8, 1x2, 0.25x0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock (steps[0] 1x8, steps[1] 1x2). 1x8 96\": 22.125 + 2x20.625 = 63.375 + 2x1/8 = 63.6 <= 96. 1x2 96\": 4x20.625 = 82.5 + 3x1/8 = 82.9 <= 96."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e Cleats to the Sides using 11/4\" coarse-thread pocket-hole screws. First, one of each type of Cleat flush with the forward edge of the Side. Make sure the pocket holes are oriented as shown. To attac",
-          "why": "11/4\" screw — no material line lists a 11/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": " shown, and then driving in 11/4\" coarse-thread pocket-hole screws. Some of the hole positions are a bit tight to reach with the driver bit, but the square drive on Kreg Pocket-Hole Screws allows a bi",
-          "why": "11/4\" screw — no material line lists a 11/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2],[3] '11/4\" coarse-thread pocket-hole screws' (typo for 1 1/4\"; viewed images 198edeed6b7acec5 and b1cd875065b8e343 say 1 1/4\") = materials[3]; 3/4\" brad nails = materials[4]; caster screws #8 x 3/4\" = materials[7] (16 = 4 casters x 4)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "cleat set-back X = fan thickness + 1\" and first cleats flush with the forward edge, shown in viewed image 198edeed6b7acec5; sides on the base shown in b1cd875065b8e343; fan-dependent dimensions are explicitly 'measure your fan'; caster placement is not stated (relational, treated as pass)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "all 'as shown' references are in steps with their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut and drilled (steps[0],[1]), cleats on sides (steps[2]), sides on base (steps[3]), casters then fan and filter in place."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your Kreg Pocket-Hole Jig for 3/4\" thickness'; all pocket-holed parts (Sides, Cleats) are 0.75\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "To attach the other pair of cleats, first position the fan and filter, as shown in the photo."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "mount the casters, slide the fan and filter in place, and you’re ready to start working in cleaner air."
+        }
+      ],
+      "reason": "c: the furnace filter is used but is not in materials (searched all 8 materials names for /filter/i: no match; only the box fan, materials[5]); the description says 'a furnace filter' and no filter size is given. Counts and sizes otherwise agree: Base 22.125 = fan 20.625 + 2 x 3/4; 16 caster screws = 4 x 4."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "using 11/4\" coarse-thread pocket-hole screws",
+      "what": "Reads '11/4\"' (eleven-quarter) in steps[2] and steps[3]; the viewed images and materials[3] say 1 1/4\"."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "198edeed6b7acec5.webp",
+      "b1cd875065b8e343.webp"
+    ]
+  }
 }

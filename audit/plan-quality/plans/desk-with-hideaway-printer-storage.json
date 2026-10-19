@@ -1,57 +1,101 @@
 {
   "slug": "desk-with-hideaway-printer-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: only steps[9] 'visit JenWoodhouse.com' (a credit, §2); no content depends on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all parts the steps name (legs, plywood cabinet panels, aprons, shelf, trim, tray parts, door, drawer parts, faces, top) exist in cutList; steps[1] '1x6s and 1x2s' covers aprons and stretchers."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Long Stretcher",
-          "why": "no step mentions it (searched steps for stretcher)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Short Stretcher",
-          "why": "no step mentions it (searched steps for stretcher)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged Long/Short Stretcher (0.75x1.5 = 1x2) are the '1x2s' attached in steps[1] and shown as 1x2 stretchers in viewed image 9ba6c9a5b19f2d61; all other rows are used."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "parts match listed stock: 1.5x1.5 legs from 2x2; 0.75x5.5 from 1x6; 0.75x3.5 drawer fronts/sides from 1x4 and 0.75x3 backs ripped from 1x4 (steps[5]); 0.75x1.5 from 1x2; plywood panels incl. Desk Top 23x58.5 fit 48x96; 1/4\" bottoms from the 1/4\" quarter sheet (17.5 x 26.75 and 17.5 x 21.25)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (sheet-0.75, sheet-0.25, 2x2, 1x6, 1x4, 1x2); steps not checked for per-part stock"
+      "reason": "six stock types and steps do not name stock for every part. Reference: 2x2 6x29=174+kerf <= 192; 1x6 116.75 <= 288; 1x4 166 + kerf <= 192; 1x2 145.5 <= 192; 3/4\" plywood area 4129 <= 4608 full sheet (+ quarter sheet of unstated size); 1/4\" bottoms 468+372=840."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the 1x2 slide support to the right side of the printer cabinet carcass with 1-1/4\" brad nails and wood glue."
+        },
+        {
+          "path": "materials[11].name",
+          "quote": "3/4\" Brad Nails"
+        }
+      ],
+      "reason": "steps[3] uses 1-1/4\" brad nails (twice); the only nails in materials are 3/4\" (searched /brad|nail/: materials[11] only). Also steps[6],[8] say '1-1/4\" screws'/'1-1/4\" wood screws' while materials[10] lists only '1-1/4\" Pocket Hole Screws'."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "shelf 10 1/4\" down, 1x2 trim, tray and slide support dimensioned in viewed images e2b5df1f4d5eb170 and 68f13231b3841586; faux drawer split 7 5/8\" + 7 5/8\" in cb7b58b5eb7ca791; top 1\" overhang (steps[8]); drawer/tray slide positions by manufacturer's directions; groove sizes in viewed image 631698a899f368c8."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "carcass and legs (steps[0]-[2]), tray (steps[3]), door (steps[4]), drawers (steps[5]-[7]), top (steps[8]) in a possible order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[1],[2],[5] 'Drill 3/4\" pocket holes'; every pocket-holed part (plywood, 1x6, 1x2, 1x4) is 0.75\" thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "To hide the raw plywood edges, iron on 3/4\" veneer edge banding."
+        }
+      ],
+      "reason": "c: edge banding is used but no materials name matches /banding|veneer|edge/ (searched all 13 materials). Counts agree otherwise: 3 slides = tray + 2 drawers, 5 pulls = 2 large + 1 small + 2 on the door, 2 hinges for the door; drawer widths 27.75\"/22.25\" plus 1/2\" slides = 28.75\"/23.25\" openings."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[13]",
+      "quote": "Door - qty 1, 0.75 x 15 x 23",
+      "what": "Viewed image cb7b58b5eb7ca791 dimensions the door 23 1/4\" wide x 15 1/4\" tall; cut list gives 23 x 15 (1/4\" shorter in each direction); steps[4] gives no size."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "9ba6c9a5b19f2d61.webp",
+      "e2b5df1f4d5eb170.webp",
+      "68f13231b3841586.webp",
+      "cb7b58b5eb7ca791.webp",
+      "631698a899f368c8.webp",
+      "ede271c5e7d23948.webp",
+      "b43783d89336a234.webp"
+    ]
+  }
 }

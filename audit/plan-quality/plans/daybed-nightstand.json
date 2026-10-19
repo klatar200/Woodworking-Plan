@@ -1,6 +1,6 @@
 {
   "slug": "daybed-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -146,52 +146,113 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i: no hits."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the Top (12\" x 36\") has no cutList row but steps[5] says it is the materials[3] '1x16 glued board' ripped to 12\"; 'shelf supports' = Side Supports (32 1/2\"), 'front/top frame 1x2' = Front Frame; every other part is in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Drawer Face - qty 1, 0.75 x 5.5 x 1; Kreg source: 1\"x4 1/2\" (cut 1\" off of 1x6 width) x8 1/4\""
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Position drawer face over the drawer front so that there is 1/8\" space on all sides."
+        }
+      ],
+      "reason": "S-18 garbage row: the Drawer Face is a real part (steps[9]) but the live row 5.5 x 1 is not Kreg's 4 1/2\" x 8 1/4\"; viewed image dd94ca86bd07b9f6 shows the face 4 1/2\" tall."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[5] Kreg text not parseable; cutList[10] no match among parsed stock; unparsed stock present (materials[3])"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[10]",
+          "quote": "Drawer Bottom - qty 1, 0.25 x 7.25 x 17 (Kreg-corrected: 1/4\"x17\"x7 1/4\")"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Plywood, 1/2\" Thick Half Sheet"
+        }
+      ],
+      "arithmetic": "cutList[10] thickness 0.25; the only sheet in materials is 1/2\" thick (materials[4]); no other material has thickness 0.25 (searched all 15 materials for /1\\/4|quarter|0\\.25/ on a board or sheet: only fasteners/nails match).",
+      "reason": "steps[7] says 'Attach 1/4\" plywood drawer bottom' and steps[3] uses a '1/4\" plywood spacer' but 1/4\" plywood is not in materials."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "reason": "materials[4] half sheet states no dimensions (§9). Lumber for reference: 2x2 parts 4x27+2x32.5+2x8.5=190 + 8x1/8=191 <= 2x96=192 (packs 27+27+32.5+8.5 per board = 95.4 <= 96); 1x6 parts 2x32.5+8.5+8.25=81.75 + kerf <= 240; 1x2 8.5 <= 12; top 36 <= 48."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "ttom frames (2\" from the bottom of the legs). Clamp, glue, and attach the shelf supports to the legs using 2 1/2\" pocket hole screws. Attach the shelf to the bottom frames using 1\" pocket hole screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "Clamp, glue, and attach the shelf supports to the legs using 2 1/2\" pocket hole screws."
         },
         {
-          "path": "steps[9].body",
-          "quote": "Position drawer face over the drawer front so that there is 1/8\" space on all sides. Hold steady and nail the drawer face into the drawer sides using 1 1/4\" nails and a electric nail gun.",
-          "why": "1/8\" nail — no material line lists a 1/8\" fastener"
+          "path": "materials[8].name",
+          "quote": "2 1/4\" pocket holet screws"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "attach the bottom frame using a clamp, wood glue, and 2 1/4\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "steps[4] uses 2 1/2\" pocket hole screws for 2x2 shelf supports; materials list only 2 1/4\" (searched all materials for /2 1\\/2/: only the 1 1/4\" and 3\" screws and no 2 1/2\"); same 2x2 pocket joint uses 2 1/4\" in steps[0]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "bottom frame/shelf supports 2\" up from leg bottoms (steps[0],[4]); top frame flush with top; 1/4\" top overhang (steps[5]); 1/8\" face gaps (steps[9]); pull at 2 1/4\" high, 3\" apart (steps[10]); slide position set by the Kreg slide jig shown in viewed image 91060c47d26b1d36."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "'as pictured' references are in steps with own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "front/back frames (steps[0],[1]), side aprons (steps[2]), shelf (steps[3],[4]), top (steps[5]), drawer box (steps[6],[7]), slides (steps[8]), face (steps[9]) in a possible order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "settings stated for each pocket-holed thickness: 1 1/2\" (steps[0],[3]), 3/4\" (steps[0],[2]), 1/2\" (steps[3],[6])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "sizes agree: shelf supports/spacer 32 1/2\" = cutList[1],[3]; drawer front/back 6 3/4\" = cutList[9]; top 12x36 with 1/4\" overhang on a 11 1/2\" x 35 1/2\" frame (nominal 2x2 legs 1.5\": 1.5+8.5+1.5=11.5; 1.5+32.5+1.5=35.5); 1\" pocket screws 22 = 14 shelf + 8 drawer; 3\" screws 4 = 4 legs; every made part is installed and the pull is added."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[5].name",
+      "quote": "Side-Mount Ball-Bearing Drawer Slide",
+      "what": "No slide length is stated (searched materials, steps[8]) although the drawer is 17\" long (cutList[8]); the builder must choose it."
+    }
+  ],
+  "reader": {
+    "batch": "s6-13",
+    "imagesViewed": [
+      "91060c47d26b1d36.webp",
+      "dd94ca86bd07b9f6.webp",
+      "5b420fe9fa3e9be9.webp"
+    ]
+  }
 }
