@@ -1,6 +1,6 @@
 {
   "slug": "craftsman-style-eight-drawer-dresser",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -367,125 +367,99 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "ds labeled in step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": " to drill all of the pocket holes for the frame assemblies. The attached diagram shows the approximate location of pocket holes in the frame assemblies. Please note that the top and bottom frames have",
-          "why": "matches \"The attached\""
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Both sweep hits are not dependencies: steps[2] \"I have attached one site with good information\" is an optional pointer (\"If you are uncomfortable doing this\"), and steps[6] \"The attached diagram\" is the step image (viewed: pocket-hole layouts for the top/bottom and middle frames)."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "and grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of the inside edges of the front and rear stiles as well as in both edges of the center stile. Then use the tong",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "stile. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the center stiles. Alternatively the grooves and tongues can be cut on a table saw. Now mark the legs on the f",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "four rails. Use the groove cutter bit adjusted to cut 1/4\" X 3/8\" grooves in the center of the rails inside edges. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of th",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " in the center of the rails inside edges. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the rails. Alternatively the grooves and tongues can be cut on a table saw.",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Sweep flags are 3/8\" tongue/groove depths, not parts. Every cut part has a row: top (steps[1],[2],[19]), drawer fronts (steps[1],[18]), front/side stiles and rails (steps[7]-[10]), side panels/back/drawer bottoms (steps[3]), frame rails/stiles (steps[4],[6]), drawer guides (steps[14]), drawer box parts (steps[5],[16],[17])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 26 rows are used: counts agree with steps (five frames = 10 rails + 10 outer + 5 center stiles; 16 guides = 4 per frame x 4 frames, steps[14]; eight drawer boxes, steps[17])."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[24]",
-          "quote": "Drawer Box Sides- Poplar — qty 4, 3.4375 x 12 x 18.75 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Oak Plywood, 1/4\" Thick Full Sheet"
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "3/4\" Oak, 1x6 96\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "3/4\" Oak, 1x8 96\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "3/4\" Poplar, 1x6 96\""
-        },
-        {
-          "path": "materials[4].name",
-          "quote": "1/2\" Poplar, 1/2x10 96\""
-        },
-        {
-          "path": "materials[5].name",
-          "quote": "1/2\" Poplar, 1/2x8 96\""
+          "quote": "\"thicknessIn\": 3, \"widthIn\": 12, \"lengthIn\": 18"
         }
       ],
-      "arithmetic": "cutList[24] 3.4375×12: no listed stock has thickness 3.4375 (±1/32) with width ≥ 12; stock = sheet 0.25, 0.75×5.5, 0.75×7.25, 0.75×5.5, 1.5×9.25, 1.5×7.25, 1.5×5.5, 1.5×3.5, 0.75×3.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[24]",
-          "quote": "Drawer Box Sides- Poplar — qty 4, 3.4375 x 12 x 18.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "Kreg source string for this row (record importDiffs[cutList[24]].source) is 12\" X 18 3/4\" X 3 7/16\", i.e. thickness slot = 12\" (Kreg-corrected row [3.4375, 12, 18.75]). Listed stock: 1/2\" poplar 1/2x10, 1/2x8, 1/2x6, 1/2x4 (materials[4]-[7]); none is 3 7/16\" or 12\" thick, and no step laminates or glues up drawer sides (search steps for /glue.?up|laminat/i: only the top and 8\"/9\" fronts, steps[1]).",
+      "reason": "The only row for the four 3 7/16\" drawer sides has an impossible thickness (12\" in the Kreg source), so its size cannot be cut from any listed material. Every other drawer box row is 1/2\" thick, and the viewed steps[5] cutting diagram shows the last two poplar boards with 3 7/16\" parts at 18 3/4\" and 24 15/16\" (the 1/2x4 boards), so this is a Kreg typo in the thickness slot, not an import loss."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 8 stock types (sheet-0.25, 1x6, 1x8, 2x10, 2x8, 2x6, 2x4, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[18].body",
+          "quote": "Start two 1\" flat headed self tapping wood screws on inside of each box."
+        }
+      ],
+      "reason": "Steps[18] uses 1\" flat-head self-tapping screws (two per drawer, eight drawers) to fix the drawer fronts; materials[9]-[11] and [18] list only 1\" pin nails, 1 1/4\" brad nails, 1 1/4\" Kreg pocket screws and 4 1 1/4\" fine pocket screws with washers (search materials for /1\"|self.tapping|flat/i: only \"1\\\" pin nails\"). All other sizes used (1 1/4\" coarse/fine pocket screws, 1\" pin nails, 1 1/4\" brad nails) are listed and no use gets two sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[12].body",
-          "quote": "Prepare for assembly by very accurately measuring and marking the distance of the lower edge of the frames from the bottom feet. The bottom frame should be flush with the bottom side rail and the top ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/768cd4640dbe9c13.webp"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Flagged steps[12] is dimensioned in the viewed image: frame lower edges at 4\", 13\", 21\", 27\" and top frame at 31 1/4\" from the floor. Also dimensioned: legs 4\" / 1\" / 2 1/4\" (steps[7] image), guide setback 2 1/4\" and opening 27 1/4\" (steps[14] image) plus \"inside of the drawer guides should be 25\"\", pilot holes \"approx. 2 inches in ... half way down\", top 60\" x 21 1/4\" about 1\" from each end. Top-frame screw holes and drawer pulls are shown in viewed images (corner holes; pulls centred in finished photos)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Sweep stands; every \"diagram\" reference sits in a step with its own image (viewed steps[1], [5], [6], [7], [8], [12], [14] images carry the dimensions)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (steps[1]-[5]), frames built (steps[6]), stiles/rails prepared (steps[7]-[9]), sides assembled (steps[10]) and rabbeted (steps[11]), frames to sides (steps[12]), back (steps[13]), guides (steps[14]), front stiles (steps[15]), boxes (steps[16],[17]), fronts fitted to installed boxes (steps[18]), top (steps[19]), pulls last (steps[21]). Each part exists before use; the back and guides go on while the front is still open."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[6] states the jig thickness: \"Use a Kreg pocket hole Jig (set for 3/4\\\") to drill all of the pocket holes for the frame assemblies\"; pocket-holed parts (frame rails/stiles, center stile) are all 0.75 thick. Other joints name glue + brad/pin nails or screws."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Geometry agrees on the viewed images: opening heights from step-13 frame heights (13-4.75=8.25, 21-13.75=7.25, 27-21.75=5.25, 31.25-27.75=3.5) fit boxes 8 3/16, 7 3/16, 5 3/16, 3 7/16 (each 1/16 under); front center stile 28 = 9+8+6+5 fronts... = 28 (viewed steps[7] image 28\"); back 28 x 57 = frame height 32-4 and frame width 56.5 + 2 x 1/4\" rabbet; 16 guides, 8 boxes, 5 frames match cut list. (b) every made part is installed (frames, sides, back, guides, stiles, drawers, top, pulls). (c) pulls (materials[17]), washers (materials[18]) listed. (d) steps reach the finished dresser."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "768cd4640dbe9c13.webp",
+      "e62daa775ac8b288.webp",
+      "f445ef419b8aa800.webp",
+      "6c2bbc9086be635b.webp",
+      "cc333c262b3dc357.webp",
+      "c246d7e235887066.webp",
+      "8211252f3887bd52.webp",
+      "ea1cba5aadd3fd2d.webp",
+      "d82ea06d1884e4fe.webp",
+      "1a68f66346955c22.webp",
+      "4bf98e39c906255a.webp",
+      "f1547e1ee130a9d2.webp",
+      "75057e58b99a82bc.webp",
+      "c7c595a20759cd49.webp",
+      "250c9046d06fd30b.webp"
+    ]
+  }
 }

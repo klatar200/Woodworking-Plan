@@ -1,6 +1,6 @@
 {
   "slug": "expandable-craft-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -740,13 +740,17 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep stands; no outside content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part a step cuts or assembles has a cutList row (steps[0],[2],[4],[6],[8],[9],[12],[13],[15],[17],[21],[25],[26]); \"Wing Blocks\" (steps[24]) = \"Wing Stop Block\" row; counts agree (four Legs = back pair steps[7] + one each on the two leg assemblies steps[10],[11])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 26 rows are used by name or by renamed equivalent (Hinge Leg/Wing Leg steps[21],[23]; Wing Stop Block steps[24]; Drawer Slide Filler steps[9]-[11]; Divider Guides steps[15]); none is an assembly or placeholder."
     },
     "R4": {
       "result": "pass",
@@ -757,72 +761,129 @@
       "reason": "R5 precondition not met: 8 stock types (sheet-0.75, sheet-0.25, 0.25x0.25, 0.375x2.5, 1x2, 0.5x2.5, 1x6, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "drill pilot holes for #8 x 1 1/2\" screws."
+        },
+        {
+          "path": "materials[16].name",
+          "quote": "#8 x 1 1/4\" flathead wood screws"
+        }
+      ],
+      "reason": "steps[7] calls for #8 x 1 1/2\" screws (the viewed steps[7] image says \"Equally space five #8 x 1 1/2\\\" flathead screws\" at each leg) but the only #8 flathead screw in materials is #8 x 1 1/4\" (qty 4, which steps[28] uses for the drawer fronts). Search materials for /1 1\\/2/: only 1 1/2\" brads and the 1 1/2\" x 12\" hinge. All other sizes used (1 1/4\" coarse pocket screws, 3/4\", 1 1/4\", 1 1/2\" brads, 3\" hinges, 14\" glides) are listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are given by numbers in the viewed images: pocket-hole layouts, 3/8\" leg set-out, Outside Panel/Filler placement, Inside Panel offsets 2 1/2\" and 2 7/8\", Long Cubby 6 3/4\" and 7/8\" from the top edges, back legs 1/2\" and 1/4\", hinges 5\" from the leg ends, stretchers 1 1/2\", 11\" and 1 3/8\", drawer false front 3/8\" and 1\". The glide mount position is fixed by the Drawer Slide Filler; Wing Stop Block location is set by swinging the supports open (viewed note)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "Cut four Legs to length from 2x2 boards, as shown in the cutting diagram. Also cut one Long Cubby Back to size from 3/4\" plywood, as shown.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Cut four Legs to length from 2x2 boards, as shown in the cutting diagram. Also cut one Long Cubby Back to size from 3/4\" plywood, as shown.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Cut four Legs to length from 2x2 boards, as shown in the cutting diagram. Also cut one Long Cubby Back to size from 3/4\" plywood, as shown.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "Cut four Legs to length from 2x2 boards, as shown in the cutting diagram."
         },
         {
           "path": "steps[9].body",
-          "quote": "Cut two Drawer Slide Fillers to length from a 3/8\"-thick board, as shown in the cutting diagram. Home centers often sell these thin boards as “hobby boards” or “craft boards.”",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Cut two Drawer Slide Fillers to length from a 3/8\"-thick board, as shown in the cutting diagram. Home centers often sell these thin boards as “hobby boards” or “craft boards.”",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "Cut two Drawer Slide Fillers to length from a 3/8\"-thick board, as shown in the cutting diagram."
         },
         {
           "path": "steps[17].body",
-          "quote": "Cut one Craft Center Top and one Craft Center Wing to size from 3/4\" MDF, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[17].body",
-          "quote": "Cut one Craft Center Top and one Craft Center Wing to size from 3/4\" MDF, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "Cut one Craft Center Top and one Craft Center Wing to size from 3/4\" MDF, as shown in the cutting diagram."
         },
         {
           "path": "steps[25].body",
-          "quote": "Cut three Cubby Dividers from 1/4\" plywood, as shown. Then test fit the Dividers by sliding them in place between the Divider Guides.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "Cut three Cubby Dividers from 1/4\" plywood, as shown."
         }
-      ]
+      ],
+      "reason": "Four steps refer to \"the cutting diagram\" or \"as shown\" and have no step image. I viewed all six unattached images: four photos of the built table and two overall-size drawings (48\", 29 1/2\", 18 1/4\", 30\", 23 3/4\"); none is a cutting diagram, and none shows leg, filler or divider lengths. Part sizes are recoverable from cutList (Leg 29 1/4, Drawer Slide Filler 14 1/4, Cubby Divider 12 1/4 x 15 3/8, Top 29 1/2 x 48, Wing 18 1/4 x 48), so the build can proceed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Long cubby (steps[0]-[5]), back legs (steps[7]), side leg assemblies (steps[8]-[11]), open and divider cubbies (steps[12]-[16]), top cut (steps[17]), cubby to top (steps[18]), back legs (steps[19]), front cubbies (steps[20]), wing supports and hinges (steps[21]-[24]), dividers and drawers (steps[25]-[28]), slides last (steps[29]). Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0]: \"Set your pocket-hole jig for 3/4\\\" thick material\" covers every pocket-holed part, all 0.75\" thick (cutList rows 0-4, 6, 8-12, 18 and the MDF/ply panels); no later setting contradicts it."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[26].body",
+          "quote": "Cut four Drawer Box Sides, two Drawer Box Fronts and two Drawer Box Backs to length from 1x4 boards, as shown in the cutting diagram."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "Board, 1/2\" x 3\" (2 1/2\" actual width) 48\""
+        },
+        {
+          "path": "cutList[23]",
+          "quote": "\"part\": \"Drawer Box Front\""
+        },
+        {
+          "path": "cutList[25]",
+          "quote": "\"part\": \"Drawer Bottom\""
+        }
+      ],
+      "arithmetic": "(a) Step vs stock: steps[26] says drawer box parts come \"from 1x4 boards\" (3/4\" x 3 1/2\" per §9), but cutList[22]-[24] are 1/2\" x 2 1/2\" and materials[8] is the only matching stock (1/2\" x 3\"); no 1x4 is in materials (search materials for /1x4/: none). The viewed steps[26] image says \"Drawer Box parts are made from 1/2\\\"-thick boards\". (a) Size: the viewed steps[26] image gives Drawer Box Front 7 3/8\" with box 8 3/8\" wide and 1/2\" sides (7 3/8 + 2 x 1/2 = 8 3/8 = Drawer Bottom width, cutList[25] corrected 8.375), but the Kreg-corrected rows for Drawer Box Front/Back (cutList[23],[24]) are 8 3/8\" (source 1/2\" x 2 1/2\" x 8 3/8\"), which would make the box 8 3/8 + 2 x 1/2 = 9 3/8\" wide.",
+      "reason": "Two cut-list/step conflicts on the drawer box: stock named in the step does not match materials or cutList, and the Front/Back length in cutList disagrees with the plan's own drawing by 1\". (b) every made part is installed; (c) hinges, glides, craft board are in materials; (d) steps reach the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "f0dd61f9c145069a.webp",
+      "1fa9925a65e53d7a.webp",
+      "bef751862eca3b5c.webp",
+      "4161bbe73ed5964e.webp",
+      "4a86b0c644619411.webp",
+      "18562d362cfda1e4.webp",
+      "98b3baf15709a1df.webp",
+      "91f60b28ad8eae63.webp",
+      "b9ebbbcb05bca0fb.webp",
+      "319402f7a9df7df9.webp",
+      "f1a88847993061be.webp",
+      "7e9a15e2a25a4165.webp",
+      "cf8f2e65ea10caaa.webp",
+      "ab5fcd8e3916b6a3.webp",
+      "d3fb28d6d4a16e8e.webp",
+      "a410f8ac6971bd5e.webp",
+      "50a0ffe0847a0652.webp",
+      "7ed3567f9fdbfaf3.webp",
+      "350527a3fcdb46db.webp",
+      "5e5320e6df9c8651.webp",
+      "a1a332b025a20d3e.webp",
+      "dba11e5a219c5c06.webp",
+      "8c74eb05001d0047.webp",
+      "016f48b48893c08b.webp",
+      "02773721135512ae.webp",
+      "0c8c3dfa75f099a8.webp",
+      "fe828114bcd12747.webp",
+      "da0343d16b32437f.webp",
+      "ccdff97d57f1cb12.webp",
+      "210255349d051760.webp",
+      "77358baca5205e64.webp"
+    ]
+  }
 }

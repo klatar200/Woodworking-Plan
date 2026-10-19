@@ -1,6 +1,6 @@
 {
   "slug": "kids-pull-down-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -187,26 +187,19 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": "un teepee stencils on the front. Get creative with your finish! For more photos and tips and tricks on this build check out my blog post. http://www.mylove2create.com/2017/10/kids-pull-down-table.html",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[16].body",
-          "quote": "un teepee stencils on the front. Get creative with your finish! For more photos and tips and tricks on this build check out my blog post. http://www.mylove2create.com/2017/10/kids-pull-down-table.html",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "The flagged link in steps[16] is the author's blog (\"for more photos and tips and tricks ... check out my blog post\"), an optional credit; the build does not need it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part has a row: cabinet top/bottom, sides, dividers, shelves, back (steps[0]-[2]), face frame rails/stiles (steps[3]), three frames (steps[4]), table top (steps[9],[12]). Legs are bought hardware (materials[7] \"Legs @ 14 1/4\\\"\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 10 rows are used; counts agree: 3 frames = 6 stiles 16 1/2\" + 6 rails 11 1/4\" (11.25 + 2 x 1.5 = 14.25, matching the viewed steps[4] image 14 1/4\" x 16 1/2\"); 3 shelves for the 3 sections; face frame 43 + 2 x 2.5 = 48 (viewed steps[3] image)."
     },
     "R4": {
       "result": "pass",
@@ -217,63 +210,121 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Attach the side and dividers as shown to the top and bottom boards. Use wood glue and 3/4'' pocket holes and 1 1/4'' pocket hole screws.\nMake sure to inset the dividers back 3/4''.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Add the shelves at your desired height with 1 1/4'' pocket hole screws and wood glue. If you want your shelves adjustable use the Kreg shelf pin jig.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Use wood glue and 3/4'' pocket holes and 1 1/4'' pocket hole screws."
         },
         {
           "path": "steps[2].body",
-          "quote": "Attach the 1/4'' plywood to the back of the cabinet with 1/2'' screws, pre-drill and drill into the sides, dividers, top and bottom.",
-          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Build the front three frames as shown. Be sure to use 2 1/2'' pocket holes and screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[12].body",
-          "quote": " now you can attach the table top to the face frame. I countersunk 1 1/4'' screws through the table top into the face frame. It is helpful to use a clamp to avoid shifting. Then I filled in the holes.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "with 1/2'' screws"
         },
         {
           "path": "steps[13].body",
-          "quote": "Now you can add the middle frame to the front. Use wood glue on the back of the frame and center it between the side frames, use shims to help. Then secure with 2'' finish nails.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "Then secure with 2'' finish nails."
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" pocket screws (steps[0],[1],[12]), 1/2\" screws (steps[2]), 2 1/2\" pocket screws (steps[4]) and 2\" finish nails (steps[13]); materials[0..7] are plywood, boards, hinges, latch and legs only, with no screw or nail of any size (search /screw|nail/i: none)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[9].body",
-          "quote": "ll need to notch out the table top around the spring hinges. Measure and mark where to notch, then cut with a jigsaw. Make sure you are aware that you do not notch too high or you will go past the fac",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18791901301295c3.webp"
+          "path": "steps[7].body",
+          "quote": "Add the hinges to the outside frames, then attach them to the face frame as shown."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I added the legs to the bottom of the cabinet."
         }
-      ]
+      ],
+      "reason": "No number gives where the four regular hinges sit on the two outside frames (materials[4]), where the latch and hook go (steps[10]), or where the four legs mount on the cabinet bottom (steps[6]); the viewed steps[6]-[10] images are photos without dimensions. Positions that are stated or dimensioned and pass: dividers inset 3/4\", shelf heights (10\" / 9 1/2\" in viewed steps[1] image), frames 14 1/4\" x 16 1/2\", face frame 43\"/48\", hinge notch \"approximately 3/4\\\" through thickness\" (viewed steps[8] image). The table-top notches (steps[9],[11]) are set by the spring hinge (\"Measure and mark where to notch\") and pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Sweep stands; every \"as shown\" step has its own image, including the plywood cutting diagram (steps[14])."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Use the diagram for your plywood cuts to get all of them in one sheet."
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Make sure to read through the plans before beginning."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the side and dividers as shown to the top and bottom boards."
+        }
+      ],
+      "reason": "The \"Cut wood\" step (steps[14]) and \"Read through plans\" (steps[15]) are listed after the finishing and hinge steps, so in the order shown the plywood is assembled (steps[0]) before it is cut. The viewed steps[14] image is the 96\" x 48\" plywood cutting diagram. Plan order, not import: the importer keeps the scraped sequence (scripts/import-kreg-plans.mjs:124)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Be sure to use 2 1/2'' pocket holes and screws."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "\"part\": \"Stiles for frames\""
+        }
+      ],
+      "reason": "The three frames are built from 1 1/2\" x 1 1/2\" stock (cutList[0],[1] corrected 1.5 x 1.5), and steps[4] and the viewed image say \"2 1/2\\\" pocket holes\", which is a screw length, not a jig thickness setting; no setting for 1.5\" stock is stated anywhere (search steps for /jig|setting|thick/i: only the \"Kreg shelf pin jig\" in steps[1]). The 3/4\" setting for the plywood and face frame is stated (steps[0], viewed steps[3] image)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Sizes agree: cabinet 48\" x 21 3/4\" (viewed steps[0],[2] images) = Back 21 3/4 x 48; top and bottom 16 x 48; sides 20 1/4 + 2 x 3/4 = 21 3/4; three 15\" sections (48 - 2 x 3/4 - 2 x 3/4 = 45 = 3 x 15); table top 18 3/4 x 46 overlaps the 43 x 16 3/4 face-frame opening; frames 3 x 14 1/4 = 42 3/4 fit the 46\" top. (b) every made part is installed (steps[7],[8],[12],[13]). (c) hinges, spring hinges, latch, legs are in materials. (d) steps reach the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "5b01045e8a8dc724.webp",
+      "5bdaf44775855336.webp",
+      "5ffc2990d39a3cd3.webp",
+      "464ff77b10f5e59c.webp",
+      "e49037b5ec4b593e.webp",
+      "238997a43f2f583d.webp",
+      "657430611d192629.webp",
+      "33d2e7e461441379.webp",
+      "aa12c98982d9b4a6.webp",
+      "18791901301295c3.webp",
+      "3c695ccb1686811f.webp",
+      "895265d3e6551c79.webp",
+      "27c36c37d91bdc56.webp",
+      "ea86baa8c1190166.webp",
+      "ae5186be8ebdc1c7.webp",
+      "7ee5db475bd69d15.webp",
+      "8094364a1eec0d77.webp",
+      "ec7c0501a5572b06.webp",
+      "be5d3b8aad9eab98.webp"
+    ]
+  }
 }

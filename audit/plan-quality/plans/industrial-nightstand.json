@@ -1,6 +1,6 @@
 {
   "slug": "industrial-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -355,21 +355,19 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[22].body",
-          "quote": "Make sure and check out my website Build It Craft It Love It for more awesome, free plans!!",
-          "why": "matches \"my website\""
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "The flagged sentence (steps[22], \"check out my website ... for more awesome, free plans\") is a promotion, not a dependency; nothing in the build needs outside content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part cut or assembled has a row: back/front/side rails, legs (steps[0]-[5]), side/top/shelf boards (steps[6],[9],[12]), slide braces (steps[13]), drawer box/face/bottom (steps[15]-[18]), mitered accents (steps[19]). The faux-metal corner plates (steps[21]) are cut from \"left over 1/4\\\" plywood\", which is listed (materials[3])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 15 rows are used; counts agree (4 shelf/bottom front-and-back rails = steps[0] bottom back, steps[5] bottom front, steps[10] two shelf rails; 4 side rails steps[1],[2])."
     },
     "R4": {
       "result": "pass",
@@ -380,65 +378,124 @@
       "reason": "R5 precondition not met: 7 stock types (2x2, 1x6, 1x4, sheet-0.25, 1x3, 1x10, 1x12); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " Legs using pocket holes drilled at 1 1/2\" and using 2 1/2\" screws and wood glue to attach!! Also attach the Bottom Back Rail with the same pocket holes, screws and glue! *Black ovals indicate pocket ",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "With the back frame laying on the floor, attach the top side rails to the back frame! Again using pocket holes drilled at 1 1/2\" and using 2 1/2\" screws and wood glue!",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "nt rail...pocket hole placement is not shown in the picture but they are on the back of the legs just as the back ones were done! Still using the same 1 1/2\" pocket holes and 2 1/2\" screws to attach!!",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "using 2 1/2\" screws and wood glue to attach!!"
         },
         {
           "path": "steps[6].body",
-          "quote": "cket hole depth is changing to 3/4\" pocket holes and 1 1/4\" screws! You will still want to glue all joints as best as you can! I alternated my 1x6s and 1x4s, you can arrange them however you would lik",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Flip the nightstand upside down to attach top boards...Using pocket holes drilled at 3/4\" and 1 1/4\" screws and glue!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "Attach front and back shelf rails! Switching back to a pocket hole depth of 1 1/2\" and 2 1/2\" screws and glue to attach!",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Attach shelf boards! And switching back to a pocket hole depth of 3/4\" and using 1 1/4\" screws! Of course, don't forget the glue!! Haha!!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "3/4\" pocket holes and 1 1/4\" screws!"
         },
         {
           "path": "steps[13].body",
-          "quote": "is actually called...brain fart!!)Just and glue and screw them straight into the side with 1 1/4\" flat head screws...make sure they are completely flush with the board or slightly sunk into the board!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "screw them straight into the side with 1 1/4\" flat head screws"
         }
-      ]
+      ],
+      "reason": "Steps use 2 1/2\" pocket screws (steps[0]-[5],[10]), 1 1/4\" pocket screws (steps[6],[9],[12]) and 1 1/4\" flat-head screws (steps[13]); materials[0..9] contain no screw of any size (search /screw/i: none; only slides, pull and furniture tacks are hardware)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[8].name",
+          "quote": "Drawer pull"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Attach drawer slide braces"
+        },
+        {
+          "path": "steps[21].body",
+          "quote": "I cut the faux metal accents from the left over 1/4\" plywood I had"
+        }
+      ],
+      "reason": "No step installs or places the drawer pull (search steps for /pull|handle|knob/i: none), so its hole position is never given; the height of the drawer slide braces on the side boards is not dimensioned in text or in the viewed steps[13] image (the nearby steps[12] image gives only 3 3/4\" and 11 1/2\"); the size, count and position of the faux-metal corner plates (steps[21]) and of the mitered accents (steps[19], only \"six inches long at their longest point\") are not dimensioned, and the viewed finished photos show plates at the corners without measurements. Other positions are dimensioned in viewed images (leg 23 1/2\", rails 25\"/22\", bottom rail 5 1/4\", shelf 3 3/4\"/11 1/2\", drawer box 19\"/19 1/2\"/21\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep stands; no step refers to a diagram it lacks and every step except the last two text steps has an image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "then flip the jig out the opposite direction and set your drawer box on it and screw the slides into your drawer box!!"
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Once you have measured, build your drawer box!"
+        }
+      ],
+      "reason": "steps[14] (Step 13) has the builder set the drawer box on the slide jig and screw the slides into it, but the drawer box is first built in steps[15]-[16] (Steps 14-15), after measuring between the installed slides, and steps[17] (Step 16) then attaches the drawer to the slides again. The box is used before it exists; the slide-to-box instruction appears twice in conflicting order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings are stated and match thickness: \"pocket holes drilled at 1 1/2\\\"\" for the 1.5\" 2x2 frame (steps[0]-[5],[10]) and \"pocket hole depth is changing to 3/4\\\"\" for the 0.75\" 1x boards (steps[6],[9],[12]); the drawer box (0.75\" stock, viewed steps[15] image shows pocket holes) is covered by the 3/4\" statement."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "I usually just glue and staple it to the bottom of my drawer"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "Drawer pull"
+        }
+      ],
+      "reason": "(c) Staples (steps[16]) and brad nails (steps[18], \"brad nailed them into place\") are used but not in materials (search materials[0..9] for /staple|brad|nail/i: none). (d) The Drawer pull is in materials[8] yet no step installs it, so the steps end at a drawer with no pull. (a) Sizes agree: back frame 25\" x 23 1/2\" legs, drawer box 19\" deep, 19 1/2\" inside, 21\" outside (19.5 + 2 x 3/4 = 21; Drawer Bottom 19 x 21), drawer face 11 1/4\" x 21 3/4\". (b) every made part is installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "1d1ffb2a20276eeb.webp",
+      "d152ff47d47d4f11.webp",
+      "b94e9daeb207d810.webp",
+      "89cfe6b3e12383ce.webp",
+      "433a838fa8969208.webp",
+      "58529345f8c4d731.webp",
+      "5d13404358c64bab.webp",
+      "65c823c8fd6ebdce.webp",
+      "afb1d0a9cd73bfa5.webp",
+      "2c2533d96da41e53.webp",
+      "01dc512e8e7fa733.webp",
+      "48d8bc279a9e6d59.webp",
+      "efa346f3675ab64c.webp",
+      "ebc3d775fb8b5788.webp",
+      "76ab9367f718e1a6.webp",
+      "7748aadb09c67c54.webp",
+      "f52c5d7f303bb1c9.webp",
+      "a21704074ec31125.webp",
+      "86e994b2c5cf5b72.webp",
+      "bf6f2d97a7a0e01d.webp",
+      "b335e6a4540eaf04.webp",
+      "5c36345a7d7ee67f.webp",
+      "ed835eb4c12d1ffe.webp"
+    ]
+  }
 }

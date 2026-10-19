@@ -1,6 +1,6 @@
 {
   "slug": "industrial-media-console",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -464,25 +464,17 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep stands; no outside content needed."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "the small shelf front and back rails!\nNote: I cut two small 5 1/8\" boards to put under the boards so I didn't have to try and hold the board in place...it could just rest it on the scrap boards and it",
-          "why": "cut sentence states 5 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[16].body",
-          "quote": "Make corner decorative pieces by cutting 5\" squares out of scrap 1/4\" plywood!",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Flagged sentences are not parts: the 5 1/8\" pieces are throw-away support scraps (steps[5]); the 5\" squares are cut \"out of scrap 1/4\\\" plywood\" (steps[16]), which is listed stock (materials[6]). Every other part has a row: top/bottom/side/vertical/shelf rails, legs, bottom, shelf, vertical and top boards, drawer fronts/sides/bottoms, wheel leveling boards."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 19 rows are used. Top width check: 11 x 5 1/2 (cutList[11]) + 2 x 2 1/2 (two of cutList[6]) + 1 x 1 1/2 (one cutList[13]) = 67 = 72 - 2 x 2 1/2 (top side rails, the other two of cutList[6]); cutList[13] \"Top board and bottom side rails\" 3x = 2 bottom side rails + 1 top board."
     },
     "R4": {
       "result": "pass",
@@ -493,55 +485,138 @@
       "reason": "R5 precondition not met: 7 stock types (2x3, 1x6, 1x8, 1x10, 2x2, 1x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " actual dimension of a 2x is 1 1/2\") And 2 1/2\" pocket hole screws! The black ovals denote placement of pocket holes! Make sure and glue all joints in addition to the screws!!\nStart by joining the top",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "And 2 1/2\" pocket hole screws!"
         },
         {
           "path": "steps[12].body",
-          "quote": "mensions of 1x boards) and attached with 1 1/4\" pocket hole screws!\nI am not sure why but I forgot to place the black ovals on this picture...all boards will be pocket holed on the ends...making sure ",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "Attach the drawer faces to the drawer!! Center it and using glue and a staple gun or brad nailer, shoot staples/nails through from the inside, not using larger than 1 1/4\" staples/nails!",
-          "why": "1 1/4\" staple — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "Attach the drawer faces to the drawer!! Center it and using glue and a staple gun or brad nailer, shoot staples/nails through from the inside, not using larger than 1 1/4\" staples/nails!",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "quote": "attached with 1 1/4\" pocket hole screws!"
         },
         {
           "path": "steps[20].body",
-          "quote": "g boards! I just glued them and screwed them in with 1 1/4\" screws making sure the screws are sunk a hair! (I know the picture shows doing them after everything else is attached but it's easier to do ",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "screwed them in with 1 1/4\" screws"
         },
         {
-          "path": "steps[20].body",
-          "quote": "them and screwed them in with 1 1/4\" screws making sure the screws are sunk a hair! (I know the picture shows doing them after everything else is attached but it's easier to do them before adding draw",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "path": "materials[8].name",
+          "quote": "Pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Steps use 2 1/2\" pocket hole screws (2x3 joints), 1 1/4\" pocket hole screws (1x boards, steps[12]) and 1 1/4\" screws (leveling boards, steps[20]), plus 1 1/4\" staples/nails (steps[14]); materials[8] is \"Pocket hole screws\" qty 200 with no size and no other screw, staple or nail line exists (search materials[0..10] for /screw|nail|staple/i: only materials[8]), so two different pocket-screw sizes are never separated or counted."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[19].body",
+          "quote": "attach the wheels! Make sure and pre-drill for your large hex bolts!"
+        },
+        {
+          "path": "materials[10].name",
+          "quote": "Large Hex Bolts"
+        }
+      ],
+      "reason": "Where each 6\" wheel sits on the 5 1/2\" x 16 1/2\" leveling boards and the bolt size/hole spacing are never given (search steps for wheel|caster|bolt: only steps[19], steps[20]); the viewed steps[19] image shows wheels at the four corners without dimensions, and materials[10] gives only \"Large\". Other positions are dimensioned in viewed images: vertical rails 22 1/4\"/21 1/2\", shelf heights 12\", small shelf 18 7/8\", drawer parts 19\", 18 3/4\", 20 1/4\", 21 1/4\", corner plates 5\" and 1 1/2\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Sweep stands; every step has its own image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].title",
+          "quote": "Step 6"
+        },
+        {
+          "path": "steps[20].title",
+          "quote": "Step 14"
+        },
+        {
+          "path": "steps[20].body",
+          "quote": "it can wait until right before you attach the wheels!"
+        },
+        {
+          "path": "steps[19].body",
+          "quote": "attach the wheels!"
+        }
+      ],
+      "reason": "Steps are stored out of order: \"Step 6\" (attach the top, \"at this time to make sure I didn't have any boards in my way\") sits after Step 13, and \"Step 14\" (wheel leveling boards) sits after Step 21, where the wheels are already attached; its own text says to add them before the wheels. Read in listed order the wheels go on before the boards they mount to. Likely, not certain: the numbering lets a builder recover the order. Import keeps Kreg's order (scripts/import-kreg-plans.mjs:124 maps steps in sequence)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Stated in steps[0] (\"2x3s ... joined using 1 1/2\\\" pocket holes\") and steps[12] (\"1x boards are drilled at 3/4\\\" and 2x boards are drilled at 1 1/2\\\"\"); stock thicknesses 1.5 (2x3) and 0.75 (1x) match."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "They are spaced 22 1/2\" from each side, leaving 21 1/2\" in the middle!"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "\"part\": \"Shelf front and back rails\""
+        },
+        {
+          "path": "steps[18].body",
+          "quote": "Using upholstery tacks, hammer the corner decorative pieces onto the console"
+        }
+      ],
+      "arithmetic": "(a) Bottom rails run 69\" between the legs (cutList[1] corrected 69); the viewed steps[5] image dims 22 1/4\" + 21 1/2\" + 22 1/4\" = 66 with two 1 1/2\"-wide rails (69 - 66 = 3), and cutList[4] Shelf front and back rails are 22 1/4\" (22.25) long. The step text gives 22 1/2\" + 21 1/2\" + 22 1/2\" = 66.5, which leaves 69 - 66.5 = 2.5\" for two rails (1 1/4\" each), not 3\".",
+      "reason": "(a) Step text spacing 22 1/2\" disagrees by 1/4\" with the plan's own dimensioned image and shelf-rail length (likely: rail orientation is not stated). (c) Upholstery tacks used in steps[18] are not in materials[0..10] (search /tack/i: none). (b) every made part is installed and (d) the steps reach the finished console; drawer sizes agree (long 19 / short 18 3/4 + 2 x 3/4 = 20 1/4 wide, front 21 1/4 per viewed images)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "8859c1f96bb99954.webp",
+      "e46482e35f550fd6.webp",
+      "93f61f77b3995830.webp",
+      "bb93398371a1e1c7.webp",
+      "1de40b2701754bc0.webp",
+      "41826aa418371230.webp",
+      "b8ef52b08e19fe1f.webp",
+      "57a07bde05d905d5.webp",
+      "7404497e2c7641f1.webp",
+      "cb5cb579be6e1898.webp",
+      "cb0f385fc9c632f0.webp",
+      "2ee71e044787c207.webp",
+      "5d04dcaa44eae5f2.webp",
+      "306e460af99b2981.webp",
+      "1650f0f963709049.webp",
+      "f02b0701ca419171.webp",
+      "a02133d99e28ad3a.webp",
+      "fce3cea04cb4f3ec.webp",
+      "295c7bf7b5711579.webp",
+      "e1e136837d457b0c.webp",
+      "3156f939d8a9a1a0.webp",
+      "dcaa81ebb2cee1de.webp",
+      "08a4da95e84c3130.webp",
+      "ce90fc15e1a7c36d.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "charging-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -92,20 +92,17 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep stands; no outside content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every cut part has a row: Long Strip (steps[1],[8]), Tablet Base (steps[1]), Short Strip/Blanks (steps[3]), Filler Strip (steps[3],[4]), Phone Base (steps[5]), Tray Base = \"Tray Bottom\" strips (steps[6]), Foot (steps[9])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Foot",
-          "why": "no step mentions it (searched steps for foot)"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Sweep flag on \"Foot\" is a search miss: steps[9] says \"Cut four Feet to length\", matching cutList[6] 4x Foot. All 7 rows are used."
     },
     "R4": {
       "result": "pass",
@@ -116,80 +113,75 @@
       "reason": "R5 precondition not met: 2 stock types (0.5x1.5, 0.5x0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "search": "steps/summary/description vs /screw|nail|brad|staple|pocket|bolt/i: no match; only glue is used as fastener and \"Wood glue\" is materials[3]; felt is materials[2]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "ve a tendency to bounce around on a saw table after cutting. For that reason, on this project you’ll glue longer “blanks” together, and then cut them apart to make some of the smallest parts. That way",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "While you’re at it, cut two oversize Filler Strips, as well. These extra-long pieces will get cut apart after they’re glued up. Glue and clamp the five Blanks together to create the Short Strip Blank.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb2513fd8cedd038.webp"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Filler Strip to the Short Strip Block at the location shown. Note that one end of the Filler Strip will overhang the end of the Short Strip Block. When the glue is dry, trim the Filler Strip flush wit",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c22442948d61ffc1.webp"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Flagged placements are dimensioned in viewed images: Filler Strip Block 1\" and Short Strip Block 5\" (steps[3] image), second filler strip location with 1\" and 4\" (steps[4] image), Phone Bases 1 7/8\", 1/4\", 1/2\" setbacks (steps[5] image), Feet 1 1/2\" x 1 1/2\" at 1/4\" insets (steps[9] image). Remaining placements are against adjacent parts or \"flush\"."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "Cut three Long Strips to length from a 1/2\"x2 board, as shown in the cutting diagram. Next, cut the Tablet Base to length from a 1/2\" x 1/2\" square dowel, as shown in g the cutting diagram. These piec",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "rips to length from a 1/2\"x2 board, as shown in the cutting diagram. Next, cut the Tablet Base to length from a 1/2\" x 1/2\" square dowel, as shown in g the cutting diagram. These pieces are cut to fin",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "\"x2 board, as shown in the cutting diagram. Next, cut the Tablet Base to length from a 1/2\" x 1/2\" square dowel, as shown in g the cutting diagram. These pieces are cut to final length from the start.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "\"x2 board, as shown in the cutting diagram. Next, cut the Tablet Base to length from a 1/2\" x 1/2\" square dowel, as shown in g the cutting diagram. These pieces are cut to final length from the start.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut three Long Strips to length from a 1/2\"x2 board, as shown in the cutting diagram."
         },
         {
           "path": "steps[6].body",
-          "quote": "Cut two Tray Bottom strips to length from a 1/2\"x2 board, as shown in the cutting diagram. Glue the two long edges together making sure the top and ends are flush. Allow the glue to dry.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Cut two Tray Bottom strips to length from a 1/2\"x2 board, as shown in the cutting diagram. Glue the two long edges together making sure the top and ends are flush. Allow the glue to dry.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Tray Bottom strips to length from a 1/2\"x2 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Six steps (steps[1],[3],[5],[6],[8],[9]) refer to \"the cutting diagram\" but no image is one: I viewed all 12 images (7 step images and the 5 unattached ones: three finished-piece photos, a top-view photo, and an overall-size drawing 10\" x 5 1/2\" x 1 1/2\" with 4\" x 3\" tray); none shows how parts are laid out on the boards or gives blank lengths. The final part lengths are recoverable from cutList and the step images, so the build can proceed; Fix."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Long strips + base (steps[2]); Short Strip Block and filler (steps[3],[4]); Phone Bases on block (steps[5]); Tray Bottom (steps[6]); block, tray, filler block joined (steps[7]); final Long Strip (steps[8]); feet (steps[9]); felt (steps[10]). Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes or screws; all joints are glued and the text says to glue and clamp each one."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts match: 3 Long Strips (steps[1]) + 1 final (steps[8]) = 4x; \"five Blanks\" = 5x Short Strip; two oversize Filler Strips make 6 slices of the blank (5 blanks + 1 filler, steps[3]) + 1 (steps[4]) = 7x Filler Strip; \"two Phone Bases\" = 2x; \"two Tray Bottom strips\" = 2x Tray Base; \"four Feet\" = 4x. Sizes match the viewed images: Tablet Base 10\", Phone Base 1 7/8\", Foot 1 1/2\", Tray Base 4\" (two 1 1/2\" strips = 3\" wide, image 4\" x 3\"). (b) every made part is installed (steps[7]-[9]). (c) felt is materials[2], glue materials[3]. (d) steps reach the finished piece."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "4bc194c59df9d272.webp",
+      "c2e0ba8eb5b72e2b.webp",
+      "5008baf29749dc84.webp",
+      "7c011af65928dc50.webp",
+      "58b30c5c830b258a.webp",
+      "cb2513fd8cedd038.webp",
+      "c22442948d61ffc1.webp",
+      "11962b3e920cfa1e.webp",
+      "080ba492af8667a7.webp",
+      "0d0e72fb7a8bff74.webp",
+      "7677bb5eaf05429f.webp",
+      "aeca179ac5e61c6a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Cut five Blanks to length from 1/2\"x2 boards, as shown in the cutting diagram. While you’re at it, cut two oversize Filler Strips, as well.",
+      "what": "Length of the five Blanks and of the two \"oversize\" Filler Strips is never stated in text or in any viewed image; cutList gives only the final 5\" Short Strip and 1\" Filler Strip, which are cut after gluing (\"*cut to length after gluing*\" in the Kreg source). Viewed steps[3] image shows 5\" + 1\" slices plus waste, so the blank length is not a number."
+    }
+  ]
 }

@@ -1,53 +1,67 @@
 {
   "slug": "plywood-chair-set",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Start by breaking down the plywood using a circular saw and the rip cut and accu-cut saw guides.\nDownloadable plans and templates can be found in the \"Extras\" tab.",
-          "why": "matches \"Extras\""
+          "path": "cutList[0]",
+          "quote": "See Full Plans in \\\"Extras\\\""
         },
         {
           "path": "steps[0].body",
-          "quote": "Start by breaking down the plywood using a circular saw and the rip cut and accu-cut saw guides.\nDownloadable plans and templates can be found in the \"Extras\" tab.",
-          "why": "matches \"Download\""
+          "quote": "Downloadable plans and templates can be found in the \"Extras\" tab."
         },
         {
           "path": "steps[1].body",
-          "quote": "s used to makes the sides. The templates are provide in the plans (https://rogueengineer.com/diy-1-sheet-plywood-chair-set-plans/) and should be adhered to the appropriate boards using spray adhesive.",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "cutList[0].part",
-          "quote": "See Full Plans in \"Extras\"",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "cutList[0].part",
-          "quote": "See Full Plans in \"Extras\"",
-          "why": "matches \"Full Plans\""
+          "quote": "The templates are provide in the plans (https://rogueengineer.com/diy-1-sheet-plywood-chair-set-plans/)"
         }
-      ]
+      ],
+      "reason": "The only cut-list row is a placeholder; every part shape and size lives in downloadable plans/templates that are not here. I viewed all 17 images (11 step images, 6 unattached): all are build or finished photos with no dimension, layout or template, so the chairs and table cannot be cut from what is published."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Drill pocket holes and install the back support to the sides using 1-1/4\" pocket screws."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Set the seat in place and mark the pocket hole locations."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "I slid the back in from the top of the chair"
+        }
+      ],
+      "reason": "Same root as R1: sides, back support, seat, back, table base and table top are cut and assembled but none exists in the cut list (cutList = one placeholder row) and no step gives a size; search of all steps for a part dimension finds none. Structural parts are missing."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "cutList[0].part",
-          "quote": "See Full Plans in \"Extras\"",
-          "why": "looks like a placeholder or an assembly, not a part"
+          "path": "cutList[0]",
+          "quote": "See Full Plans in \\\"Extras\\\""
         }
-      ]
+      ],
+      "reason": "The single row is a placeholder (1x full 48 x 96 sheet named \"See Full Plans in Extras\"), not a part."
     },
     "R4": {
       "result": "pass",
@@ -58,42 +72,94 @@
       "reason": "sheet layout not judged (area fits: part area 1×48×96 = 4608.0 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[9].body",
-          "quote": "Assemble the table base using wood glue and 1-1/2\" brad nails.",
-          "why": "1-1/2\" brad — no material line lists a 1-1/2\" fastener"
+          "quote": "Assemble the table base using wood glue and 1-1/2\" brad nails."
         },
         {
-          "path": "steps[9].body",
-          "quote": "Assemble the table base using wood glue and 1-1/2\" brad nails.",
-          "why": "1-1/2\" nail — no material line lists a 1-1/2\" fastener"
+          "path": "materials[2].name",
+          "quote": "1-1/4\" Brad nails"
         }
-      ]
+      ],
+      "reason": "steps[9] uses 1-1/2\" brad nails; materials list only 1-1/4\" brad nails (materials[2]) and 1-1/4\" pocket screws (materials[1]); steps[10] uses 1-1/4\" brads. Two brad sizes are used and only one is bought."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[8].body",
-          "quote": "I slid the back in from the top of the chair and squirted some glue in the gap then clamped the back in place until the glue cured.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab0be21fc1d8a6e2.webp"
+          "path": "steps[7].body",
+          "quote": "Set the seat in place and mark the pocket hole locations."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Drill pocket holes and install the back support to the sides"
         }
-      ]
+      ],
+      "reason": "No number or viewed dimensioned image gives the seat height and angle, back-support position, or the slot the back slides into (steps[8]); the viewed step images are photos without dimensions. Positions are left to the templates in the downloadable plans."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep stands; no step refers to a diagram it lacks (templates are R1)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Break down (steps[0]), template and cut parts (steps[1],[2]), align/assemble sides (steps[3]-[5]), back support, seat, back (steps[6]-[8]), table base and table (steps[9],[10]). Each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Drill the pocket holes and install the seat using 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood parts (steps[6],[7]) but no jig thickness setting is stated: search of all steps, summary and description for /jig|setting|thick/i finds nothing; the viewed images are photos without a setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "No part counts or sizes are given to compare (see R1/R2). Every part the steps make is installed (sides, back support, seat, back, table base to top, steps[6]-[10]); fasteners and glue are in materials except the R6 size; steps reach finished chairs and table."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "4245fe336874883e.webp",
+      "429c69d94748faba.webp",
+      "646876c49dc7dde7.webp",
+      "3581a226b914d642.webp",
+      "caaa1bc27a0cee96.webp",
+      "84369d74e3b23853.webp",
+      "cf2e074fc6163eaf.webp",
+      "3a12891d3ca17e61.webp",
+      "ab0be21fc1d8a6e2.webp",
+      "6eca259f7f5dd57c.webp",
+      "22013badc18307cc.webp",
+      "7c8a3f6d3d6c553c.webp",
+      "f20c35e1844208e1.webp",
+      "5d08102d773c0f7e.webp",
+      "0b57a905af273fe6.webp",
+      "3c41e3e2e829fdd9.webp",
+      "b992b8de1596d96b.webp"
+    ]
+  }
 }

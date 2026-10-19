@@ -1,6 +1,6 @@
 {
   "slug": "diy-concrete-and-wood-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -19,68 +19,53 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Inside the downloadable plans (https://gumroad.com/l/nightstand), you’ll find a complete cut list where we’ve outlined all of the dimensions you’ll need to cut."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "All of it’s dimensions and the complete cultist are outlined in the downloadable plans"
+        },
         {
           "path": "steps[0].title",
-          "quote": "Gather Supplies and Download Plans",
-          "why": "matches \"Download\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "for the drawer (14” glides). Get a bag of Quikrete Countertop Mix and any other supplies you may still need that we’ve outlined above or in the DIY Nightstand plans (https://gumroad.com/l/nightstand).",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[1].body",
-          "quote": " use your miter saw to cut the boards to length. Inside the downloadable plans (https://gumroad.com/l/nightstand), you’ll find a complete cut list where we’ve outlined all of the dimensions you’ll nee",
-          "why": "matches \"download\""
-        },
-        {
-          "path": "steps[1].body",
-          "quote": " miter saw to cut the boards to length. Inside the downloadable plans (https://gumroad.com/l/nightstand), you’ll find a complete cut list where we’ve outlined all of the dimensions you’ll need to cut.",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "t’s dimensions and the complete cultist are outlined in the downloadable plans (https://gumroad.com/l/nightstand). This drawer box will all get Kreg screwed together after we drill the pocket holes. T",
-          "why": "matches \"download\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "he complete cultist are outlined in the downloadable plans (https://gumroad.com/l/nightstand). This drawer box will all get Kreg screwed together after we drill the pocket holes. The drawer front scre",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "laboration of wood and concrete in the nightstand make for an excellent piece of furniture! Remember to check out the downloadable plans for the DIY Nightstand here (https://gumroad.com/l/nightstand).",
-          "why": "matches \"download\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "laboration of wood and concrete in the nightstand make for an excellent piece of furniture! Remember to check out the downloadable plans for the DIY Nightstand here (https://gumroad.com/l/nightstand).",
-          "why": "matches \"https://\""
+          "quote": "Gather Supplies and Download Plans"
         }
-      ]
+      ],
+      "reason": "The only cut-list row is 4x Legs; the dimensions of every other part (side and back pieces, drawer box, drawer front, anything else) are stated to live only in the paid Gumroad plans. I viewed all 14 images: 2 render/photo covers and 12 build photos, none carries a dimension or cut list. The build cannot be completed from the plan as published."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[7].body",
-          "quote": "h 100% silicone. Then we'll cut a wire mesh support piece. The wire mesh is cut to 18″ by 18″. The mesh adds support to the concrete and helps ensure no cracking, deformities will occur during curing.",
-          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[5].body",
+          "quote": "its time to square it up with the back and side pieces."
         },
         {
-          "path": "steps[7].body",
-          "quote": "h 100% silicone. Then we'll cut a wire mesh support piece. The wire mesh is cut to 18″ by 18″. The mesh adds support to the concrete and helps ensure no cracking, deformities will occur during curing.",
-          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[6].body",
+          "quote": "The drawer box is made from the ½” plywood."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Using your Kreg Jig, screw into the smaller, 1 ½” board, and make three to four kreg holes down the length of the board."
         }
-      ]
+      ],
+      "reason": "Same root as R1. Parts the steps cut and assemble with no cutList row and no size in any step: side pieces and back piece (steps[5]), drawer box sides/front/back/bottom (steps[6]), and the 1 1/2\" leg sides (steps[3],[4]: each leg is a 1 1/2\" board plus a 2 1/2\" board, but cutList has one row, 4x Legs 0.75 x 2.5 x 29, i.e. only the 2 1/2\" boards). Search: cutList parts = [\"Legs\"] only; no step gives side/back/drawer lengths (steps[5], [6] give none). The viewed cover render also shows a lower shelf that no step or row mentions. Structural parts are missing."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "The single row (Legs) is used in steps[3]-[5]."
     },
     "R4": {
       "result": "pass",
@@ -91,43 +76,123 @@
       "reason": "R5 precondition not met: 4 stock types (1x6, 1x8, sheet-0.5, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "The smaller, 1 ½” leg sides always screw into the larger 2 ½” leg fronts. Make sure to be mindful of left front, right front, left back, etc when assembling to ensure you face and assemble the legs co",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        }
-      ]
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "get Kreg screwed together after we drill the pocket holes. The drawer front screws in from the inside of the box. The drawer slide hardware mounts inside the nightstand base as well as on the sides of",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2cbc852ddb401594.webp"
+          "path": "steps[0].body",
+          "quote": "Get hardware for the drawer (14” glides)."
         },
         {
-          "path": "steps[9].body",
-          "quote": "ill about 2/3 of the melamine form with your cement mixture. Remember the top of the concrete top will come from the bottom of this form. Work it all in, level it and vibrate it. Add the mesh toward t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7832905f5856e1a7.webp"
+          "path": "materials[5].name",
+          "quote": "Ball Bearing Drawer Glide"
         }
-      ]
+      ],
+      "reason": "Sweep flag on \"1 1/2\" leg sides\" is a board width, not a fastener (rejected). Hardware size: steps[0] calls for 14\" drawer glides; materials[5] is \"Ball Bearing Drawer Glide\" with no length. Fastener sizes used (1\" Kreg screws steps[4]; 1\" or 1 1/4\" screws steps[5]) are covered by materials[4] \"1\\\"-1 1/4\\\"Kreg Screws\" and materials[6] \"1\\\" Screws\"."
+    },
+    "R10": {
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "The drawer slide hardware mounts inside the nightstand base as well as on the sides of the drawer box."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "its time to square it up with the back and side pieces."
+        }
+      ],
+      "reason": "No number gives where the side/back pieces sit on the legs (heights), where the drawer glides mount, or where the drawer opening sits; the viewed step images (steps[5] and steps[6]) are photos without dimensions. The concrete-mesh \"toward the top of the form\" is relational and passes."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep stands; no step refers to a diagram or \"as shown\"."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs (steps[3],[4]), sides and back (steps[5]), drawer box and glides (steps[6]), concrete top made separately (steps[7]-[12]). Each exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Set up your Kreg Jig to ½” setting on the drill bit and the jig itself."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "\"thicknessIn\": 0.75"
+        }
+      ],
+      "reason": "The pocket holes are drilled in the leg boards (steps[3]), which are 0.75\" thick (cutList[0] thickness 0.75; stock is 1x6/1x8 = 3/4\" per §9), yet the jig setting stated is 1/2\". The setting contradicts the thickness it is used on. The drawer box (1/2\" plywood, steps[6]) gets pocket holes with no setting stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].title",
+          "quote": "Seal the Concrete Top and Install"
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Seal the concrete top with at least 3 coats of sealant."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Get a bag of Quikrete Countertop Mix"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Seal it around the edges with 100% silicone."
+        }
+      ],
+      "reason": "(b) The concrete top is made (steps[7]-[11]) and sealed, but no step says how it is attached to or set on the base: steps[12] is titled \"...and Install\" and its body has no installation (search steps for /attach|screw|adhesive|glue|place|set (it|the top)/i near \"top\": nothing). The top is a part the piece cannot be used without; likely, not certain, because it may simply rest on the base. (c) Items used but absent from materials[0-7]: countertop mix (steps[0],[8]), wire mesh 18\" x 18\" (steps[7]), 100% silicone (steps[7]), cement paste (steps[11]), sealant (steps[12])."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "84f720b0ee32be03.webp",
+      "2f8c44f9a04be282.webp",
+      "885679dc5ed46884.webp",
+      "f9c1851c85666d9b.webp",
+      "a633eb8f86cbae98.webp",
+      "41f3c4150df1daf0.webp",
+      "2cbc852ddb401594.webp",
+      "e2fcaedaa1e0b12a.webp",
+      "7832905f5856e1a7.webp",
+      "f7d34f4de43a60d9.webp",
+      "7ba05f2b55412d54.webp",
+      "3c9d29c1cf2f38a4.webp",
+      "b24d0a58a3a043b9.webp",
+      "6084d558ff533962.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[3].name",
+      "quote": "Melamine, 3/4\" Thick 20\"x20\"",
+      "what": "steps[7] needs a form for a 20\" x 20\" x 1\" slab (\"We need to cut the melamine to that size to build a form\"); one 20\" x 20\" melamine piece is the size of the form floor only, and no material is listed for the form walls."
+    }
+  ]
 }

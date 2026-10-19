@@ -1,6 +1,6 @@
 {
   "slug": "built-in-bookshelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -416,13 +416,30 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep stands; no dependence on outside content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Insert cabinet dividers between the bottom shelf and base of the bookshelf as shown."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top Shelf Dividers"
+        }
+      ],
+      "reason": "Step 3 installs \"cabinet dividers\" in the bottom section but no cutList row is a bottom/cabinet divider (search cutList.part for /divid/i: only \"Top Shelf Dividers\" 2x 0.75x11.25x69.25, which are the 5'9 1/4\" top dividers of step 4 per the viewed image). The viewed step-3 image shows two dividers 1' 9 1/2\" high with 1' 11\" sections, but no row gives their count or size. Dividers are a 1x12 part from listed material, so the build can proceed; recorded Fix."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every row is used: carcass sides/bottom (steps[0]), bottom shelf (steps[1]), top dividers (steps[3]), shelves (steps[6]), face frame (steps[4]), back (steps[5]), door slats/rails/panels (steps[7]-[9]). \"Top\" is not named in step text but is shown in the viewed step-1 image (6' piece across the top of the sides); see gaps."
     },
     "R4": {
       "result": "pass",
@@ -433,73 +450,99 @@
       "reason": "R5 precondition not met: 4 stock types (1x12, 1x2, 1x3, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " the outer carcass of the bookshelf. Use wood glue and 1 1/4\" pocket hole screws to attach the bottom shelf to the vertical side 1 x 12s. Place pocket holes along the bottom of the shelf to hide them.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Position the bottom shelf according to the dimensions shown and attach with wood glue and 1 1/4\" pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "e of the bookshelf as shown. Attach with 1 1/4\" pocket hole screws and wood glue on the top and bottom of each divider. Place 2 pocket holes on the top and 2 pocket holes on the bottom to ensure a sol",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "he top dividers as shown and attach with 1 1/4\" pocket hole screws and wood glue. Again, use 2 pocket holes on the top and 2 on the bottom of each divider for a strong joint.\nOnce you've added all the",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Use wood glue and 1 1/4\" pocket hole screws to attach the bottom shelf to the vertical side 1 x 12s."
         },
         {
           "path": "steps[4].body",
-          "quote": "ce frame to the bookshelf using wood glue and 1 1/2\" finish nails.\nI built the face frame before attaching it to the bookshelf to make sure it's a solid frame. To make sure everything lines up, assemb",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": " frame pieces on top of it and put them together there.\nIf you assemble the face frame prior to putting it on the carcass, attach each piece with 1 1/4\" pocket hole screws (in the back) and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the face frame to the bookshelf using wood glue and 1 1/2\" finish nails."
         },
         {
           "path": "steps[5].body",
-          "quote": "Attach the back to the bookcase with 1\" finish nails. Since the bookshelf is so large, use 2 sections of 1/4\" plywood.",
-          "why": "1\" nail — no material line lists a 1\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "d glue inside the grooves of the slats and rails to hold the panel. Attach the rails to the slats with 1 1/4\" pocket hole screws and wood glue. Place pocket holes on the back of the door to hide them.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the back to the bookcase with 1\" finish nails."
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" pocket hole screws (steps[0]-[4],[9]), 1 1/2\" finish nails (steps[4]) and 1\" finish nails (steps[5]); materials[0..6] are boards, plywood, overlay hinges, handles and shelf pins only, with no screw or nail of any size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "top and 2 on the bottom of each divider for a strong joint.\nOnce you've added all the dividers, drill shelf pins along the height of each divider where you want shelves. I used a Kreg Shelf Pin jig an",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/263360de389d9fe5.webp"
+          "path": "steps[10].body",
+          "quote": "Spacing and placement depends on your hinges."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Cabinet Handles"
         }
-      ]
+      ],
+      "reason": "Hinge placement on the six doors is explicitly left open (\"depends on your hinges\") and no number is given; Cabinet Handles (6) are in materials but no step mentions them (search steps for /handle|pull|knob/i: none), so handle location is not stated, and the viewed final image (steps[11]) shows none. Other positions are dimensioned in viewed images: bottom shelf 1' 9 1/2\", dividers 1' 11\" sections, top dividers 5' 9 1/4\", door 10 7/8\" x 1' 9 1/2\"; shelf heights are \"where you want shelves\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Sweep stands; each \"as shown\" is in a step with its own image, and the viewed images show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass (steps[0]), bottom shelf (steps[1]), bottom dividers (steps[2]), top dividers + shelf-pin holes (steps[3]), face frame (steps[4]), back (steps[5]), shelves (steps[6]), doors built (steps[7]-[9]) then hung (steps[10]). Each part exists before use; nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Place 2 pocket holes on the top and 2 pocket holes on the bottom to ensure a solid joint."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Place pocket holes on the back of the door to hide them."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 0.75\" parts (dividers, face frame, door rails) but no jig thickness setting is stated: search of all steps, summary, description for /jig|setting|thick/i finds only \"Kreg Shelf Pin jig\" (steps[3]); the five viewed step images carry no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts agree: 12 slats + 12 rails + 6 panels = 6 doors, matching 12 Overlay Hinges and 6 Cabinet Handles; door width 2x2.5 + 5 7/8 = 10 7/8 (viewed step-10 image 10 7/8\"); slat 21 1/2 = 1' 9 1/2\" image; panel 6 3/8 = 5 7/8 + 2x1/4 groove; panel length 17 = 21.5 - 2x2.5 + 2x1/4; \"total of 9 shelves\" = 9x Shelves; 3x72 horizontals and 4x67 1/2 / 4x19 3/4 verticals match the viewed face-frame image (5' 7 1/2\", 1' 7 3/4\"). (b) Every made part is installed. (c) Non-fastener items used (hinges, shelf pins, handles) are in materials; crown molding is \"If desired\" only. (d) Steps reach doors hung. Missing cabinet-divider row is recorded under R2."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "938665df7ef9c7ea.webp",
+      "ea4d3a9fbe83d017.webp",
+      "799746e3f8878021.webp",
+      "263360de389d9fe5.webp",
+      "3f6e54458c099b2f.webp",
+      "5925224db5fa2e7e.webp",
+      "42a36cc3787c4203.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Use wood glue and 1 1/4\" pocket hole screws to attach the bottom shelf to the vertical side 1 x 12s.",
+      "what": "Text never says to attach the \"Top\" (cutList[2], 72\" long) and calls the carcass base the \"bottom shelf\" while step 2 positions a second \"bottom shelf\" higher up; only the viewed step-1 image shows a 6' top piece and 5' 10 1/2\" base, so which cutList row (\"Bottom Carcass\" vs \"Bottom Shelf\") goes where is carried by the image alone."
+    }
+  ]
 }

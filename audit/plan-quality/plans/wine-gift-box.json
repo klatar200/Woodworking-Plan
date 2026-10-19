@@ -1,6 +1,6 @@
 {
   "slug": "wine-gift-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -115,43 +115,19 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "\" High Speed Cutter. Once you’ve completed your engraving, sand the Lid and box one more time and wipe away all dust.\nHead to the Extras tab for PDF copies of the graphics we used to engrave this box.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "\" High Speed Cutter. Once you’ve completed your engraving, sand the Lid and box one more time and wipe away all dust.\nHead to the Extras tab for PDF copies of the graphics we used to engrave this box.",
-          "why": "matches \"PDF\""
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "steps[9] \"Head to the Extras tab for PDF copies of the graphics we used\" is optional: the same step says to \"Print out an image you'd like to transfer onto the box\", so any image works; the box is fully built and dimensioned without the PDFs."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " by cutting a 1/2\" x 6 oak board to a rough length of about 32\". Then, create a dado (recess in the board) that the box lid will slide in later. To do that, set your Dremel 4000 Rotary Tool up in the ",
-          "why": "cut sentence states 32\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "he box, we used the Dremel Stylo+ and you can use either the 105 1/32\" Engraving Cutter or 191 1/8\" High Speed Cutter. Once you’ve completed your engraving, sand the Lid and box one more time and wipe",
-          "why": "cut sentence states 105 1/32\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "lo+ and you can use either the 105 1/32\" Engraving Cutter or 191 1/8\" High Speed Cutter. Once you’ve completed your engraving, sand the Lid and box one more time and wipe away all dust.\nHead to the Ex",
-          "why": "cut sentence states 191 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Flagged numbers are a 32\" rough board length (two 14 1/2\" sides plus waste, steps[0]) and Dremel cutter model numbers. Every part has a row: Side (steps[0],[12]), Tall End/Short End/Bottom (steps[1],[2]), Lid Bottom/Lid Top (steps[6])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 6 rows are used in steps[0]-[7] and [12]."
     },
     "R4": {
       "result": "pass",
@@ -162,56 +138,108 @@
       "reason": "R5 precondition not met: 3 stock types (0.5x48, 0.5x24, 0.25x48); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "steps[4],[5] use \"#6 x 1\\\" fine-thread Kreg Screws\" = materials[3] (1\" fine-thread Kreg pocket-hole screws); glue and stain are listed; no other fastener is used."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "ily. Place the Lid Bottom in the closed position on the box. Mark the location of the three inside edges of the box onto the top of the Lid with a pencil. This will be the position in which you will g",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/04c925af12f36c2a.webp"
-        }
-      ]
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Dimensioned in viewed images: dado 1/4\" x 1/4\" (steps[0],[1] images), pocket holes at 1 3/4\" and 4\" (steps[3] image), finger hole 2\" and 1 3/4\" from the lid corner (steps[6] image), lid-top position marked from the box (\"three inside edges ... pencil\", steps[7], relational), engraving placement \"where you would like it\"."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "sweepResult": "flagged",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Mark out the Tall End, Short End and the Bottom, as shown in the cutting diagram, and cut them to length with the Dremel Saw-Max.",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Mark out the Tall End, Short End and the Bottom, as shown in the cutting diagram, and cut them to length with the Dremel Saw-Max.",
-          "why": "\"diagram\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
+          "quote": "Mark out the Tall End, Short End and the Bottom, as shown in the cutting diagram"
         },
         {
           "path": "steps[12].body",
-          "quote": "Mark the final length of the Sides (as shown in the cutting diagram), measuring from each end of the board, so the leftover material is in the middle of the board. Secure the board to a work surface a",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Mark the final length of the Sides (as shown in the cutting diagram), measuring from each end of the board, so the leftover material is in the middle of the board. Secure the board to a work surface a",
-          "why": "\"diagram\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
+          "quote": "Mark the final length of the Sides (as shown in the cutting diagram)"
         }
-      ]
+      ],
+      "reason": "steps[2] and [12] have no step image and refer to the cutting diagram. I viewed all 10 images (7 step images and 3 unattached: two photos and an overall drawing 14 1/2\" x 4 1/2\" x 3 1/2\"); none is a cutting diagram showing the layout on the boards or the \"leftover in the middle\". Part sizes are in cutList and the step images (14 1/2\", 4 1/2\", 13 1/2\", 4\"), so the build can proceed."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].title",
+          "quote": "Cut the Sides to Length"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Position the first Side so it is flush with the Ends and Bottom as shown."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Start by cutting a 1/2\" x 6 oak board to a rough length of about 32\"."
+        }
+      ],
+      "reason": "The step that cuts the Sides to final length (14 1/2\", steps[12]) is listed last, after finishing and gifting, but the Sides are attached to the Ends and Bottom in steps[5] and the lid is fitted in steps[7]-[8]; steps[0] leaves the dadoed Side board at a rough 32\". In listed order the box cannot be assembled."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3]: \"Set your Kreg Pocket-Hole Jig up to drill in 1/2\\\" thick material\"; the only pocket-holed part (Bottom) is 0.5\" thick (cutList[3])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Clamp a 1/2\" x 4 x 48\" oak board to a work surface."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1/2\" x 4 oak 24\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "from a 1/4\" thick x 4 oak board, cut the Lid Top to length"
+        }
+      ],
+      "arithmetic": "(a) Stock named in steps vs materials: steps[1] uses a 1/2\" x 4 x 48\" board, materials[1] is 1/2\" x 4 x 24\" (the Tall End, Short End and Bottom need 4.5 + 4 + 13.5 = 22\" + 2 x 1/8\" kerf, which fits 24\" but not what the step says); steps[6] cuts the Lid Top from a \"1/4\\\" thick x 4 oak board\" but materials[2] is the only 1/4\" board and is 6\" wide (search materials for /1\\/4/: only materials[2]). Sizes otherwise agree: Side 4 1/2 x 14 1/2, box 4 1/2 wide = 3 1/2 + 2 x 1/2, Lid Bottom 4 x 14 1/4 slides in 1/4\" dados (3 1/2 + 2 x 1/4 = 4).",
+      "reason": "Stock sizes in the steps do not match the materials list (48\" vs 24\" board; a 1/4\" x 4 board that is not bought). (b),(c),(d) otherwise hold except the finger hole, noted in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-01",
+    "imagesViewed": [
+      "1acb51b2e88e16c4.webp",
+      "8ac1cfe3e2490fa5.webp",
+      "904de4287ed0c614.webp",
+      "6975e45a143dc46a.webp",
+      "02924c97bab0d5fd.webp",
+      "79ecb9233a6935b9.webp",
+      "04c925af12f36c2a.webp",
+      "72961662eeaeb1bb.webp",
+      "4578223b4da07d7d.webp",
+      "22845dfa176c8e6a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].title",
+      "quote": "Laminate the Lid and Drill the Hole",
+      "what": "The title says to drill the hole, but the step body ends after gluing the Lid Top to the Lid Bottom and never says to drill it or gives a diameter; the viewed steps[6] image shows the hole position (2\" and 1 3/4\") with no diameter."
+    }
+  ]
 }
