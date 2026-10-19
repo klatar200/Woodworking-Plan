@@ -31,7 +31,9 @@ export function computeVerdict(rec) {
   if (!base && fails.length) base = 'Fix';
   if (!base) base = unknowns.length ? 'Ship (unverified)' : 'Ship';
 
-  const human = rec.humanReview || unknowns.some((id) => BLOCKS_SHIP.has(id));
+  // An unknown on R1/R2/R8 blocks Ship (§6); it adds nothing to a Fix or Unpublish verdict.
+  const blocked = base.startsWith('Ship') && unknowns.some((id) => BLOCKS_SHIP.has(id));
+  const human = rec.humanReview || blocked;
   return human ? `${base} + Human review` : base;
 }
 

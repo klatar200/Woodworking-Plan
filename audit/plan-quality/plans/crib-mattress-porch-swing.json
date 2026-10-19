@@ -1,6 +1,6 @@
 {
   "slug": "crib-mattress-porch-swing",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -431,12 +431,44 @@
       "reason": "Pocket holes go in 1 1/2\" (2x4/2x6) and 3/4\" (1x4) parts but no jig thickness setting is stated for either. Search: no field matches /jig|setting|thick(ness)? (setting|material)/i other than \"¾” thick backrest boards\" (a part description)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "add your own hardware to hang the swing."
+        }
+      ],
+      "search": "all steps for /hang|chain|eye|hook|position|inch|\"/ ; viewed images of steps[1]-[4] and the finished photo",
+      "reason": "Where the hanging hardware attaches to the frame is not given in text or any viewed image (the viewed steps[5] image shows the finished swing with no hanging hardware). Other positions are given or shown: rails 1\" up from the leg bottoms (viewed steps[1], [2] images), backrest boards 1 1/2\" gaps and verticals 13 7/8\" from the legs (steps[2] image), seat supports, side boards and arms shown in the viewed steps[3] and steps[4] images; 'likely' because the plan leaves the hardware to the builder ('your own hardware')."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Finish! Decide if you’d like to paint or stain and then add your own hardware to hang the swing."
+        },
+        {
+          "path": "materials",
+          "quote": "Board, 2x4 96\" / Board, 2x6 96\" / Board, 1x4 96\" / 2 1/2\" pocket hole screws / 1 1/4\" pocket hole screws"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Boards - see green in cut list photo | qty 2 (Kreg: 13 1/2\" x 3 1/2\" x 3/4\")"
+        }
+      ],
+      "arithmetic": "Back section (viewed steps[2] image): red leg 19 1/2 (Kreg cutList[1]) - pink 2x6 rail 1\" up - 5 1/2 rail width (cutList[5]) = 13\" between the rail top and the leg top, where the image places the green verticals (bottom on the rail, top under the neon-green top); green verticals are 13 1/2 (cutList[8]) -> 1/2\" too long (likely: the fit is read from the drawing's layout, not a stated dimension). Widths agree: 48 1/2 rail + 2 x 3 1/2 legs = 55 1/2 = neon-green top (cutList[3]).",
+      "reason": "(c) The hanging hardware steps[5] uses is not in materials (searched materials[0..4] names for /chain|rope|hook|eye|bolt|hardware|hang/i — none). (a) The two green back verticals look 1/2\" longer than their opening (arithmetic; likely). (b) every part a step builds is installed (steps[1]-[4]). The viewed steps[5] image shows a grey seat panel in the finished swing that no step installs; that is the unused plywood row already recorded under R3 (and its missing stock under R4), so it is not re-reported here. (d) Note, not scored separately: the crib mattress the summary says is the seat cushion is in neither materials nor any step (searched steps and materials for /mattress|cushion/i — only summary/description)."
     }
   },
   "verdict": "Fix",
@@ -451,9 +483,14 @@
     "imagesViewed": [
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0904fcb9f6db2d60.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf17cc71e41acdf8.webp",
-      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e3952950a661c5.webp"
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e3952950a661c5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/09febe9cf758dac8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb78e2010a811f90.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bce0ad1c8cc83cd3.webp"
     ],
-    "imagesNote": "Opened to settle the R3 'cut list photo' flags: the only unattached image (finished photo), steps[1] and steps[4] (colour-coded models)."
+    "imagesNote": "Opened to settle the R3 'cut list photo' flags: the only unattached image (finished photo), steps[1] and steps[4] (colour-coded models).",
+    "rescore": "rescore-3"
   },
-  "notes": "R3 and R4 are the same defect (an unused, unsourced plywood row) counted twice; plus R9. Cut-list part names are colours only."
+  "notes": "R3 and R4 are the same defect (an unused, unsourced plywood row) counted twice; plus R9. Cut-list part names are colours only.",
+  "previousVerdict": "Fix"
 }

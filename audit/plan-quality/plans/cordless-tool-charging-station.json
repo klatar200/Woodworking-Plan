@@ -1,6 +1,6 @@
 {
   "slug": "cordless-tool-charging-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -184,12 +184,30 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "placements in steps[1], [4], [6], [7], [11], [12], [13]",
+      "reason": "Viewed images give each set position: three 2 1/2\" holes at 3\", 8\", 3\" from the ends and 2 1/4\" from the edge (steps[4] image); half-circle cutout centred at 8\" (steps[6] image); Middle Shelf/Top assembly 2 1/2\" from the Side's end (steps[11] image); Bottom Shelf assembly at 9\" (steps[12] image). Text: Bottom Shelf Trim 'overhangs the Bottom Shelf by 3/4\" on each end' and 'flush with the underside' (steps[7]); ends flush (steps[5], [9]); power strip on 'the backside of the Bottom Rail' and screws 'through the Top Rail and into the stud' (steps[13])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "27 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut a Bottom Shelf to length from a 1x8 board, as shown in the cutting diagram. Drill pocket holes at the locations shown. Then drill a half-circle cutout along the back edge of the Middle Shelf"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Next, attach the Middle Shelf to the Top Shelf/Rail assembly using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws."
+        }
+      ],
+      "reason": "(a) steps[6] tells the builder to cut the half-circle in the Middle Shelf, which steps[4] already drilled with three 2 1/2\" holes and steps[5] already assembled; the viewed steps[6] image draws the cutout on the 16\" x 7 1/4\" shelf with the Bottom Shelf pocket-hole pattern, and the viewed steps[12] image labels the shelf with the half-circle 'Bottom Shelf'. The step names the wrong part. Otherwise counts and sizes agree: one of each part and 2 Sides = cutList; Bottom Shelf Trim 16 + 2 x 3/4 = 17 1/2 (steps[7] overhang, Kreg-corrected cutList[6]). (b) every subassembly is installed (steps[11]-[13]). (c) the power strip (steps[13] 'you can mount a power strip') is optional; wall anchors are only the fallback when no stud is found — the stated mount, '3\" screws', is materials[6]. (d) steps[13] attaches the other side and hangs it."
     }
   },
   "verdict": "Ship",
@@ -201,7 +219,14 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0a5509a88bace3d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d55a2f698b3218e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c8e408664dbc0d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83a865ee8ed9f044.webp"
+    ],
+    "rescore": "rescore-3"
   },
-  "notes": "Clean on Kreg's dimensions; live cut list carries S-19 widths. Unused 1x3 material and an ambiguous 'Middle Shelf' cutout reference noted, not scored."
+  "notes": "Clean on Kreg's dimensions; live cut list carries S-19 widths. Unused 1x3 material and an ambiguous 'Middle Shelf' cutout reference noted, not scored.",
+  "previousVerdict": "Ship"
 }

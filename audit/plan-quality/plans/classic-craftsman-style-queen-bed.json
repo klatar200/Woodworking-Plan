@@ -1,6 +1,6 @@
 {
   "slug": "classic-craftsman-style-queen-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -257,12 +257,39 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "placements in steps[2], [3], [5], [6], [7], [8], [9], [11]",
+      "reason": "Viewed images give every set position: slat spacing 3\" / 2 1/2\" (steps[2] image), headboard Wide Rail 5\" below the slat rail and 8\" from the leg end and footboard 8\" (steps[5] image), cleat mounting holes 2\" then 6\" apart (steps[7] image), cleat 2\" from rail ends and 1 3/4\" from bottom (steps[8] image). Relational: caps 'hangs over the Legs evenly' (steps[6]); hardware '61\" between the Bed Rails' and side rails 'at the same height as the Headboard and Footboard Wide Rail' (steps[9]); slats at head/foot/center then 'evenly space' (steps[11])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "22 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut three Head/Foot Narrow Rails to final length from 1x4 boards and two Head/Foot Wide Rails from 1x8 boards"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Head/Foot Narrow Rail | qty 6 (Kreg: 3/4\" x 3 1/2\" x 58 1/2\")"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Cut 11 slats to length from #2 pine 1x4s, as shown in the cutting diagram."
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Slat | qty 12 (Kreg: 3/4\" x 3 1/2\" x 60 5/8\" #2 pine)"
+        }
+      ],
+      "arithmetic": "Narrow rails used: steps[2] headboard 'between two Narrow Rails' = 2 + steps[3] footboard 'one Narrow Rail and one Wide Rail' = 1 -> 3, = steps[0] 'three', != cutList[0] qty 6. Mattress slats: steps[10] 11 != cutList[9] qty 12. (Checked and agreeing: headboard slat layout in viewed steps[2] image 3 + 11 x 2 1/2 + 10 x 2 1/2 + 3 = 58 1/2 = rail length; 3 cross braces = cutList[10] qty 3; 6+6 legs = cutList[4..5].)",
+      "reason": "(a) Two cut-list quantities disagree with the steps: Narrow Rail 6 vs 3 cut and used; Slat 12 vs 11 cut. (b) every part is installed (steps[5], [6], [8], [11]); (c) bed rail brackets = materials[11], glue = materials[12]; the 3/4\" spacers in steps[5] are temporary; (d) steps[11] connects rails and fixes slats. steps[11] 'evenly space the remaining cleats' means the slats (only two cleats exist) — wording, not scored."
     }
   },
   "verdict": "Ship",
@@ -272,21 +299,16 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "gaps": [
-    {
-      "path": "steps[0].body",
-      "quote": "Cut three Head/Foot Narrow Rails to final length from 1x4 boards and two Head/Foot Wide Rails from 1x8 boards",
-      "what": "cutList[0] Head/Foot Narrow Rail says qty 6; steps[0] cuts three and steps[2..3] use three (2 headboard + 1 footboard). If all 1x4 rails and caps are oak (materials[1] 'Oak board, 1x4 x 72\"' × 5): 6×58 1/2 + 2×64 3/4 = 480.5 > 360 bought; with three rails, 305 ≤ 360"
-    },
-    {
-      "path": "steps[10].body",
-      "quote": "Cut 11 slats to length from #2 pine 1x4s, as shown in the cutting diagram.",
-      "what": "cutList[9] Slat says qty 12; steps[10] cuts 11"
-    }
-  ],
   "reader": {
     "batch": "calib-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b4d772cb92b142c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e3c32785604579c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94bd0166a48597da.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d65e4fa39eebc474.webp"
+    ],
+    "rescore": "rescore-3"
   },
-  "notes": "Every R-1 check passes; the two cut-list quantity disagreements are in gaps (no R-1 check covers them)."
+  "notes": "Every R-1 check passes; the two cut-list quantity disagreements are in gaps (no R-1 check covers them).",
+  "previousVerdict": "Ship"
 }
