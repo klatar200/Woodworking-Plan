@@ -1,6 +1,7 @@
 {
   "slug": "rolling-kitchen-island",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Unpublish",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -489,8 +490,27 @@
       "reason": "No jig thickness setting and no statement of which parts get pocket holes (searched all fields for /set|thickness/); \"required\" is defined by the prints (R1)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "search": "step sentences with a placement trigger and no inch measurement; all steps for any shelf/divider/rail/hole/caster/hardware position",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Using a \"T\" square, mark locations for drilling per drilling instructions in the prints."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Mark off where all the boards go using a \"T\" square and measuring out 3/8\" both ways from the drilling locations you marked out earlier."
+        },
+        {
+          "path": "steps[19].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp",
+          "viewed": true
+        }
+      ],
+      "reason": "Every shelf, divider and rail position is set from drilling locations that exist only in the prints (steps[4], [5], [10]); no shelf height, divider position or hole location is given as a number anywhere (searched all steps, cutList, materials, description), and the viewed images (see R1 evidence, reader.imagesViewed) show none. Hardware pull and towel-bar positions are also never given. Same root cause as R1 (Unpublish there); under R-2 R10 now records the missing positions themselves. Sweep flags: steps[0] is a pointer to the plans, not a placement; steps[19] \"Attach the lower rails to the bottom shelf\" is relational (viewed image: drill on plywood); steps[26] casters use \"a 1\\\" thick piece of wood as a spacer\" (stated).",
       "flagged": [
         {
           "path": "steps[0].body",
@@ -504,15 +524,7 @@
           "why": "placement with no measurement (step has an image — view to settle)",
           "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp"
         }
-      ],
-      "evidence": [
-        {
-          "path": "steps[19].image",
-          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp",
-          "viewed": true
-        }
-      ],
-      "reason": "Sweep flags rejected: steps[0] is a pointer to the plans, not a placement; steps[19] \"Attach the lower rails to the bottom shelf\" is relational (viewed image: drill on plywood). The missing measured positions are scored under R1."
+      ]
     },
     "R11": {
       "result": "fail",
@@ -532,6 +544,27 @@
         }
       ],
       "reason": "Sweep regex missed \"print\". The referenced print/cut diagram is not in any viewed step image or unattached image (see R1 evidence), and the structural positions exist nowhere else in the plan. Same root cause as R1."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[25].body",
+          "quote": "The choices for tops on this rolling island are virtually endless. We will be posting about ours sometime in the future at www.thesawdustmaker.com."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "TOP, ROLLING ISLAND | qty 1 | 2 x 24 x 46"
+        },
+        {
+          "path": "steps[24].body",
+          "quote": "Assemble drawer. We used a teflon tape on the bottom of the drawer to reduce friction."
+        }
+      ],
+      "reason": "(d) The steps never make or install the top: steps[25] (titled \"Add Butcher Block Top\") only says the choices are endless and defers to a future post; no other step attaches cutList[1] (searched all steps for /top/i: only steps[21] \"two top rails\" and steps[25]). No material line is a top/butcher block (materials searched for /butcher|block|top/i: none). The island's work surface is a part it cannot be used without -> Unpublish level. (b) The drawer assembled in steps[24] is never placed in the cabinet (searched steps for /drawer/i: steps[15], [23], [24] only). (c) steps[24] uses teflon tape; no materials line matches /teflon|tape/i. Also bought but never used in any step: materials[4] \"Hickory Hardware\" and materials[6] \"18\\\" towel bar\" (searched steps for /hickory|hardware|towel/i: none). (a) Counts that steps give agree with the rows: \"four rails for the wide shelves\" (steps[7]) = cutList[11] qty 4; \"two vertical dividers\" (steps[12]) = cutList[3] qty 2."
     }
   },
   "verdict": "Unpublish",
@@ -562,6 +595,7 @@
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48085ba8f78b1d5f.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/91890ec5c75fb7e4.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/abe500d824a5fecc.webp"
-    ]
+    ],
+    "rescore": "rescore-7"
   }
 }

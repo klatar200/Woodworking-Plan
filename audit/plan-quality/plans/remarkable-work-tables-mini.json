@@ -1,6 +1,7 @@
 {
   "slug": "remarkable-work-tables-mini",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -97,10 +98,26 @@
       "reason": "No joints of any kind."
     },
     "R10": {
-      "result": "pass",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
       "sweepResult": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured positions are given: handles/trays \"set in 3” from both of the SE and one of the LE\" (steps[3]); slits \"1 3/8” off the SE and starts 3” in from the LE\", \"6 ⅜” above\" (steps[4]); right slit \"centered\" (steps[5]); dog holes \"4” grid from the center of each edge\" (steps[6]); cup hole \"centered 12 ¾” from the left SE and 4 ¼” from the LE\" (steps[7]).",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "one is 7 ⅛”x ⅜” and comes in 1 13/8” off the SE and starts 3” in from the LE"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "The other is 4 ⅛” x ⅜” and also comes in 1 3/8” off the SE"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "This slit will be 12 1/8”x ⅜” and comes in 1 13/8” off the SE."
+        }
+      ],
+      "reason": "The slit-cut distance off the short edge is written \"1 13/8”\" twice (steps[4], steps[5]) — not a valid tape measurement — while the second slit in steps[4] says \"also comes in 1 3/8”\", implying both are meant to match. The builder cannot set the slit position unambiguously. All other positions are given: handles/trays \"set in 3” from both of the SE and one of the LE\" (steps[3]); right slit \"centered\" (steps[5]); dog holes on a \"4” grid from the center of each edge\" and \"can be left to personal preference\" (steps[6]); cup hole \"centered 12 ¾” from the left SE and 4 ¼” from the LE\" (steps[7]); optional slits placed as desired (steps[8]). Former gap on steps[4] moved here. Likely, not certain: \"1 13/8\" may be a typo for 1 3/8 but the plan does not say so.",
       "flagged": [
         {
           "path": "steps[8].body",
@@ -148,20 +165,26 @@
           "readerNote": "\"drawing a vertical line\" is the verb, not a drawing reference."
         }
       ]
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "cut your sheet of ¾” plywood into 4, 2’x4’ panels"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "TABLE TOP, 3/4\" Plywood | qty 4 | 0.75 x 2 x 4"
+        }
+      ],
+      "reason": "(a) Count agrees (4 panels = qty 4) and the Kreg-corrected row 0.75 x 24 x 48 matches the 2'x4' panels; the live row shows 2 x 4 inches because the importer read the source \"3/4\\\" x 2' x 4'\" feet as inches (importDiffs kind feet-read-as-inches) — cause import. (b) Nothing is assembled; each panel is the finished worktop. (c) No hinges/hardware/sheet items are used in any step. (d) steps[9] repeats the layout for the remaining three panels, reaching the finished worktops. The former gap on cutList[0] is this finding (its claim that importDiffs is empty was wrong: importDiffs records the feet-read-as-inches defect)."
     }
   },
-  "gaps": [
-    {
-      "path": "cutList[0]",
-      "quote": "TABLE TOP, 3/4\" Plywood | qty 4 | 0.75 x 2 x 4",
-      "what": "Panels are 2' x 4' (steps[0] \"4, 2’x4’ panels\"), but the row carries 2 x 4 with no unit, so the site shows 3/4 x 2\" x 4\". importDiffs is empty (the live row matches the source), so this is how the source states it."
-    },
-    {
-      "path": "steps[4].body",
-      "quote": "one is 7 ⅛”x ⅜” and comes in 1 13/8” off the SE",
-      "what": "Malformed distance \"1 13/8”\"; the next slit \"also comes in 1 3/8” off the SE\", and steps[5] repeats \"1 13/8”\". The intended value is not stated unambiguously."
-    }
-  ],
+  "gaps": [],
   "verdict": "Fix",
   "verifier": {
     "ran": false,
@@ -175,7 +198,8 @@
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1c5276790be091d3.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/45e33032f6a8757c.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d085cd3b52f6ee07.webp"
-    ]
+    ],
+    "rescore": "rescore-7"
   },
   "notes": "The referenced cut-list diagram is not in the plan; handle/tray sizes exist nowhere (R11 Fix)."
 }

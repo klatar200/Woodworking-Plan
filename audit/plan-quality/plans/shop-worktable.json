@@ -1,6 +1,7 @@
 {
   "slug": "shop-worktable",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -474,12 +475,47 @@
           "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/16884e07dacdfea9.webp"
         }
       ],
-      "reason": "Sweep flag rejected: steps[5] \"Attach two boards to the two ends of the table top\" is relational; the other two are placed \"10 inches on either side of the center board\"."
+      "reason": "Positions are given or relational: bottom frame \"attached at the 24 inch marks\" (steps[0]-[1]); top frame flush with leg tops/sides (steps[2]); center 2x4 \"in the center of the bottom shelf\" (steps[3]); pocket sides at the table-top ends and \"10 inches on either side of the center\" sized to the user's saw (steps[5]); slides and pulls \"per manufacturer\" specifications (steps[6], [11]); saw-shelf position sized to the user's saw (\"you can adjust accordingly\", steps[12]); casters \"on each of the legs\"; powerstrip optional \"on one end\" (steps[13])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut a sheet of 3/4\" plywood to 48\"x72\". Using the Kreg Rip-Cut saw attachment made this a cinch."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Attach two boards to the two ends of the table top with glue and staples."
+        },
+        {
+          "path": "steps[13].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22284211256ca0b4.webp",
+          "viewed": true
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut two 2x4's at 53 inches long, and two 2x4's at 32 1/2\" long."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the two 42 inch boards in the same manner as above but with the ends matching the outside edges of the 60 inch boards as pictured."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut a 1/2\" plywood to 39 1/2\"x60\". Cut a 3 1/2\" square out of each corner for the legs"
+        }
+      ],
+      "arithmetic": "Leg-to-leg outside width from the bottom frame: 32 1/2 (steps[1]) + 2 × 3 1/2 (4x4 leg, §9) = 39 1/2, matching the 39 1/2\" bottom plywood notched 3 1/2\" at each leg (steps[3]). Top frame: the 60\" boards span the legs' long side (53 + 2 × 3 1/2 = 60) and the 42\" boards end at their outside edges, so 42 = leg width + 2 × 1 1/2 (2x4 thickness, §9) → leg width 39, not 39 1/2; the 42\" boards come out 1/2\" short (39 1/2 + 3 = 42 1/2).",
+      "reason": "(b)/(d) The 48\"x72\" table top is cut (steps[4]) and built onto (steps[5]-[11]) but no step sets it on or fastens it to the base frame (searched all steps for /top/i: steps[2] frame tops, [4], [5], [7] pocket tops, [12] \"notch out the top of the table\"; none attaches it). The viewed finished photo (steps[13] image) shows the top in place on the base, so the builder can see the end state but not how it is joined. Unpublish-level (a top) but only likely, because the photo shows it installed. (a) The steps' frame sizes do not add up by 1/2\" (arithmetic) — likely, as it depends on the 60\" boards being on the legs' outer faces as steps[2] describes (\"ends matching the sides of the legs\"). The 3-legs-vs-qty-4 count is already R2's finding and not re-reported. (c) Every non-fastener item used (drawer slides, pulls, casters, powerstrip, glue, staples) is in materials."
     }
   },
   "verdict": "Fix",
@@ -491,6 +527,11 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-3",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be3d498d84cdca80.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22284211256ca0b4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0e40002dc7d97204.webp"
+    ],
+    "rescore": "rescore-7"
   }
 }

@@ -1,6 +1,7 @@
 {
   "slug": "small-printer-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -293,12 +294,31 @@
       "arithmetic": "jig setting 1 1/4\" vs part 3/4\" thick × 1 1/2\" wide: 1.25 ≠ 0.75 and 1.25 ≠ 1.5, so the setting matches neither dimension of the part it is used on. Other settings agree: steps[2],[3],[4],[7] '3/4\" material' on 3/4\" parts; steps[10] '1/2\" material' on 1/2\" drawer box parts"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "search": "step sentences with a placement trigger and no inch measurement; all steps for /slide/i",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach the drawer slides and drawer fronts. The drawer boxes are made to use with drawer slides that require 1/2\" space on either side of the drawer boxes."
+        },
+        {
+          "path": "steps[14].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49030c7de87db1f7.webp",
+          "viewed": true
+        }
+      ],
+      "reason": "Two drawers stack in the bay below the shelf (viewed steps[14] photo), but no step gives the height at which either pair of slides mounts on the side/center boards or on the drawer boxes (searched all steps for /slide/i: steps[1], [10], [14], [15] — only the 1/2\" side clearance); the photo shows the finished fronts, not slide positions. Other positions are given: grooves \"1/4\\\" back\" / \"3/4\\\" in\" / stopped \"1\\\"-1 1/4\\\"\" (steps[0]-[1]); center \"9 3/8\\\" in from each side\" (steps[3]); shelf \"9 1/2\\\" up from the bottom\" (steps[4]); top centered with 1/2\" overhang (steps[5]); base flush (steps[9]); pull holes \"in the center ... 1/2\\\" down from the top\" (steps[12]). Shelf-pin columns are set by the jig and \"further back ... to accommodate for the plexiglass door slider\" (relational; viewed steps[11] photo shows the jig in use); paper-shelf heights are adjustable."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step numbers agree with the Kreg-corrected rows: center \"9 3/8\\\" in from each side\" (steps[3]) = (19 1/2 bottom − 3/4 center) / 2 = 9 3/8; shelf row 9 3/8 wide fits that bay; top \"1/2\\\" overhang on all edges\" (steps[5]): 19 1/2 + 2 × 3/4 + 2 × 1/2 = 22 = top length, 16 + 2 × 1/2 = 17 = top width; drawer slides need \"1/2\\\" space on either side\" (steps[14]): box 7 3/8 + 2 × 1/2 = 8 3/8, + 2 × 1/2 = 9 3/8 = bay width; base flush with the cart (steps[9]): 18 center support + 2 × 1 1/2 (1x2 frames, §9) = 21 = cart width, 14 1/2 + 2 × 3/4 = 16 = cart depth. (b) Every part made is installed: base (steps[9]), back (steps[6]), drawers and fronts (steps[14]), plexiglass door (steps[14]-[15]), paper shelves (steps[16]). (c) Plexiglass, drawer slides and shelf pins are in materials (materials[9], [10], [13]); frosted vinyl is optional decoration. (d) The steps reach the finished, loaded cart (steps[16]; viewed steps[14] photo shows it complete)."
     }
   },
   "verdict": "Fix",
@@ -311,6 +331,10 @@
   "gaps": [],
   "reader": {
     "batch": "calib-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49030c7de87db1f7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8cd1282c42004714.webp"
+    ],
+    "rescore": "rescore-7"
   }
 }

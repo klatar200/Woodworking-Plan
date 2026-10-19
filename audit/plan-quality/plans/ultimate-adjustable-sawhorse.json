@@ -1,6 +1,7 @@
 {
   "slug": "ultimate-adjustable-sawhorse",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -172,23 +173,57 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement; viewed steps[0], [1], [5] drawings",
+      "evidence": [
+        {
+          "path": "steps[1].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/573394620f62b46b.webp",
+          "viewed": true
+        },
+        {
+          "path": "steps[5].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/953b740c9db7f3ab.webp",
+          "viewed": true
+        }
+      ],
+      "reason": "Positions the builder sets are numbers or relational: pipe holes \"centered between the legs and 3-3/8\\\" from either end\" (steps[1]; drawing also shows 3 1/8\" across); flanges \"Center[ed] between the sides\" and \"approximately 26-1/2\\\" center-to-center\" (steps[5]); clamps \"over the holes\" (steps[7]); Unistrut \"on top of the pipe clamp tabs\" (steps[9]); rope holes marked from the Unistrut holes (steps[10])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Drill 5/16\" holes through the top, spaced closely to the edges."
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "7/16 Drill Bit"
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "12ft - 3/8\" Nylon Rope"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Secure in place using wood glue and 2\" screws."
+        }
+      ],
+      "arithmetic": "Rope 3/8 = 0.375\" > hole 5/16 = 0.3125\", so the steps[10] hole cannot pass the listed rope that steps[11] loops through it; the only bit listed for it is 7/16 = 0.4375\".",
+      "reason": "(a) The rope-hole size in steps[10] disagrees with the listed rope and drill bit (former gap on steps[10]). (c) Glue is used in steps[3] and steps[4] (\"Secure in place using glue and 2\\\" screws\"); searched materials.name for /glue/i: none. Items for the optional inserts (PVC, hardwood dowel, pointed dowels, ball-bearing casters, steps[13]-[16]) are also not in materials, but those attachments are optional. (b) The tray is installed through the sawhorse top (steps[7]) and the sacrificial board lowered into it (steps[12]). (d) The steps reach the working adjustable sawhorse (steps[9]-[12]). Not settled: whether the steps[1] holes (\"3-3/8\\\" from either end\") line up with the flanges \"approximately 26-1/2\\\" center-to-center\" (steps[5]) depends on the bought sawhorse's top-plate length, which neither the text nor the viewed steps[0]/[1] drawings give (steps[0] drawing dimensions only 39 5/8\" at the splayed feet, 20 3/16\", 24\"); left in gaps."
     }
   },
   "gaps": [
     {
-      "path": "steps[10].body",
-      "quote": "Drill 5/16\" holes through the top, spaced closely to the edges.",
-      "what": "Rope-hole size disagrees with materials[12] \"7/16 Drill Bit\"; the rope is materials[7] \"12ft - 3/8\\\" Nylon Rope\" (3/8 > 5/16)."
-    },
-    {
       "path": "steps[1].body",
       "quote": "Drill two, 1-1/8\" holes through the top plate of the sawhorse, centered between the legs and 3-3/8\" from either end.",
-      "what": "Hole positions are measured from the ends of a bought sawhorse whose top-plate length is never stated, while the pipes they receive are fixed at \"approximately 26-1/2\\\" center-to-center\" (steps[5]). Holes and pipes align only if the top plate is 26 1/2 + 2 x 3 3/8 = 33 1/4\" long; the plan does not say so."
+      "what": "Hole positions are measured from the ends of a bought sawhorse whose top-plate length is never stated, while the pipes they receive are fixed at \"approximately 26-1/2\\\" center-to-center\" (steps[5]). Holes and pipes align only if the top plate is 26 1/2 + 2 x 3 3/8 = 33 1/4\" long; the plan does not say so (viewed steps[0]/[1] drawings do not dimension the top plate). Not a proven mismatch, so not scored as an R14 fail."
     }
   ],
   "verdict": "Fix",
@@ -200,7 +235,12 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "calib-3",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0f303cfdb6c23de5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/573394620f62b46b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/953b740c9db7f3ab.webp"
+    ],
+    "rescore": "rescore-7"
   },
   "notes": "One Fix: the optional 1x4 inserts have no listed stock. Two gaps (drill size, hole spacing vs. unspecified sawhorse length)."
 }
