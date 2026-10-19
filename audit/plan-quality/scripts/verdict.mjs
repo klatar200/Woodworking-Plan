@@ -1,10 +1,11 @@
 // verdict.mjs — compute each read record's verdict from its checks under rubric R-2
 // (docs/PLAN_QUALITY_AUDIT.md §6). Only `cause: "plan"` findings count; R9 is recorded but never
 // counted. An Unpublish that a verifier hasn't upheld is `Unpublish (pending verifier)`.
-//   node audit/plan-quality/scripts/verdict.mjs [--write] [slug ...]
+//   node audit/plan-quality/scripts/verdict.mjs [--write] [--dir <records dir>] [slug ...]
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 
-const DIR = 'audit/plan-quality/plans';
+const di = process.argv.indexOf('--dir');
+const DIR = di === -1 ? 'audit/plan-quality/plans' : process.argv[di + 1];
 const NOT_COUNTED = new Set(['R9']);
 const BLOCKS_SHIP = new Set(['R1', 'R2', 'R8']);
 
@@ -35,7 +36,7 @@ export function computeVerdict(rec) {
 }
 
 const write = process.argv.includes('--write');
-const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+const only = process.argv.slice(2).filter((a, i, all) => !a.startsWith('--') && all[i - 1] !== '--dir');
 const slugs = only.length ? only : readdirSync(DIR).map((f) => f.replace(/\.json$/, ''));
 const counts = {};
 for (const slug of slugs) {

@@ -338,7 +338,8 @@ plan cause).
 ### Stage 6 — Full read (remaining plans)
 **Objective:** every published plan has a verdict.
 1. Worst-first from the ledger, 10–15 plans per fresh sub-agent (§10). Commit after each batch.
-2. Open a step image only when the sweep flagged that step (R10/R11). Do not open every image.
+2. Open a step image only when the sweep flagged that step (R10/R11), or (R-2) when it is needed to
+   settle an R10/R14 position or count. Do not open every image.
 3. Verifier on every Unpublish finding.
 4. If the rubric changed in Stage 5, re-score the pilot plans under it first.
 **Gate:** none until done; stop early per §5.
@@ -406,7 +407,7 @@ you may apply. Questions that need it are Human review.
 > `audit/plan-quality/plans/<slug>.json`. Your only questions are "does the plan make sense?" and
 > "are the measurements good?" (§1). Confirm or reject each `flagged` item and score R1–R6 (sweep
 > results stand unless you quote evidence against them), R8, R9, R10, R11 and R14 under rubric R-2. Open an image (fetch from the R2 URL in the JSON, scratchpad
-> only) only for steps the sweep flagged. Every failure needs path + verbatim quote (+ arithmetic
+> only) only for steps the sweep flagged, or when needed to settle an R10/R14 position or count. Every failure needs path + verbatim quote (+ arithmetic
 > if numeric); otherwise `unknown`. Do not rewrite steps, invent values, or judge style. Write
 > each plan's updated record (same schema) and nothing else. Do not run git. Return only, per
 > plan: slug, proposed verdict, failed check ids.
