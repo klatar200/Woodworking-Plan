@@ -27,6 +27,9 @@ importer fix and is not part of these verdicts.
 
 ## Questions for Keagan
 
+**Answered 2026-10-19: all four recommendations accepted** (see `REPORT.md` for his words and
+`rubric-R2.md` for the resulting rubric). The per-plan verdict column below is still needed.
+
 **Q1 — R9 (pocket-hole jig setting) decides most verdicts. Keep it at Fix?**
 R9 fails in 35 of 70 plans, and is the *only* failure in at least 16 Fix plans: Kreg plans usually
 name the screw length ("1 1/4″ pocket hole screws") but not the jig thickness setting. Scored as

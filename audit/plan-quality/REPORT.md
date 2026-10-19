@@ -11,8 +11,14 @@
 | Verdicts (70 read) | Ship 8 · Ship (unverified) 10 · Fix 47 · Unpublish 5 (verifier-upheld) · Human review 7 (combined with another verdict) · not yet read 540 |
 | Updated | 2026-10-18 |
 
-**Waiting on Keagan (Stage 5):** his verdicts on the core 40 in `calibration.md`, and answers to
-Q1 (R9 at Fix?), Q2 (add R14 + widen R10 → R-2?), Q3 (R1 Fix level?), Q4 (Stage 6 cost / model).
+**Stage 5 gate — Q1–Q4 answered by Keagan 2026-10-19**, verbatim: "Q1-Q4: accept your
+recommendations (R9 reported once as a bulk item and not counted toward verdicts; add R14 and widen
+R10 as rubric R-2, then re-score the 70; R1 gets a Fix level; Stage 6 readers on Sonnet with Opus
+verifiers after a 10-plan check). My per-plan verdicts are in calibration.md." → rubric
+[`rubric-R2.md`](rubric-R2.md); re-scoring the 70 under R-2 in progress.
+**Still open:** the "Keagan's verdict" column in `calibration.md` is empty in the repo (no local or
+pushed edit found 2026-10-19). Stage 6 waits for those verdicts — the false-Ship check (§8 Stage 5)
+needs them.
 
 **Stage 2 gate — answered by Keagan 2026-10-18** (relayed by the orchestrating session),
 verbatim: "Yes to both: use the kreg-plans.json from git history, and score the measurement checks
