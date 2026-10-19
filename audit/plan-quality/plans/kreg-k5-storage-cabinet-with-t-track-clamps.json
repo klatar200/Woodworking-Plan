@@ -1,6 +1,6 @@
 {
   "slug": "kreg-k5-storage-cabinet-with-t-track-clamps",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -200,25 +200,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Only 'See extras tab for full video!' (description) which is optional; every step carries its own image and the build is complete from steps + cut list + images."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: Base (steps[0]), Base Supports (steps[5-6]), cabinet parts (steps[7], exploded image 3b7aedf9e9a77d3c shows 3 sides, spacers, top and base support), drawer parts (steps[9]); each maps to a cutList row, no step part is missing from cutList."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Sides - Dividers",
-          "why": "no step mentions it (searched steps for divider)"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Outside Spacers",
-          "why": "no step mentions it (searched steps for outside/spacer)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flagged 'Sides - Dividers' (cutList[3]) and 'Outside Spacers' (cutList[8]) as never named in text; viewed image 3b7aedf9e9a77d3c (steps[7]) shows the 8\" x 2\" sides and the 2 5/8\" and 3 1/2\" spacer blocks in the cabinet, so both are used. Rejected."
     },
     "R4": {
       "result": "pass",
@@ -229,31 +219,86 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 0.5x36); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fasteners used: glue, staples (steps[6],[7],[8]), 1\" crown staples listed, pin nails (steps[9]) listed, 'Box of 1\" Pin Nails'; pull bolts come with 'Drawer Pulls'."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "il a crown staple into the inside front of the cabinet side. Then staple the rest of the structure from the bottom. Be careful not misfire a staple into the drawer cavity, as it will be really difficu",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af262d506cdcb61b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed images dimension the base outline and cuts (29x15, 12, 12 1/2, 5 1/2, 2 1/4), the three handle/through holes (8, 4, 1 1/4, 2 3/8, 1/2 radius) and the slot (3 5/8, 2 7/8, 1 1/8); 'spaced 25\" on center' in steps[3]; drawer pull 'center of each drawer front'; supports 'centering them flush with the back' and cabinet 'flush ... with the front of the jig base support' are relational. Sweep flag on steps[8] is about staple direction, not a position."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[1] 'according to the image' - image 23325528360274a3 viewed, fully dimensioned."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base cut/shaped/drilled (steps[0-4]), supports sized and installed with K5 (steps[5-6]), cabinets assembled then installed (steps[7-8]), drawers built to measured openings last (steps[9-10])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "cabinets joined with glue and staples (steps[7]); pocket holes only as an optional alternative ('You can also use pocket holes if you choose'); no pocket-hole joint is required."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7].part",
+          "quote": "Sm. Drawer Fronts"
+        },
+        {
+          "path": "importDiffs cutList[7].source",
+          "quote": "2 15/16\" x 1 15/16\" x 1/2\""
+        },
+        {
+          "path": "importDiffs cutList[8].source",
+          "quote": "2 5/8\" x 2\" x 1/2\""
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Each part is sized 1/16” shorter than the drawer opening so the drawer can slide easier."
+        }
+      ],
+      "arithmetic": "Image 3b7aedf9e9a77d3c (steps[7]) dimensions the cabinet top 7 5/8\" and the openings 2 5/8\" and 3 1/2\" (Outside Spacers 2 5/8, Inside Spacers 3 1/2). Check: 1/2+3 1/2+1/2+2 5/8+1/2 = 7 5/8 (matches top). Steps[9]: part is 1/16\" shorter than opening -> small front should be about 2 5/8 - 1/16 = 2 9/16\", but Kreg-corrected Sm. Drawer Front width = 2 15/16\" (and Sm. Drawer Bottom 2 15/16\") which is 5/16\" over the opening. Large front 3 7/16\" vs 3 1/2\" opening is consistent. Mitigated by steps[9] 'measure each opening before cutting'.",
+      "reason": "A drawer part size in the cut list does not fit the opening the plan itself dimensions for it."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "631906391f87402c.webp",
+      "23325528360274a3.webp",
+      "3a0c2fcdfd16fb57.webp",
+      "bfd54c812df105af.webp",
+      "58361758f2b5578b.webp",
+      "f94dbbed9a9a9c12.webp",
+      "3b7aedf9e9a77d3c.webp",
+      "af262d506cdcb61b.webp",
+      "d4c4623f133e0ac6.webp",
+      "db0fb8918d086e0a.webp",
+      "b16e6b66f406f46e.webp",
+      "de2f75d56614a2f2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1] image 23325528360274a3 vs steps[2] image 3a0c2fcdfd16fb57",
+      "quote": "12 1/2\" + 12 1/2\" on a 29\" base (image 1); 2 3/8\" + 2 3/8\" across the bottom flat (image 2)",
+      "what": "The bottom flat of the base is 29 - 12.5 - 12.5 = 4\" by the first drawing but 2 3/8 + 2 3/8 = 4 3/4\" by the second; the two dimensioned drawings disagree by 3/4\"."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Then attach the K5 Jig.",
+      "what": "No fastener or method is given for attaching the K5 jig to the supports and no screws are in materials."
+    }
+  ]
 }

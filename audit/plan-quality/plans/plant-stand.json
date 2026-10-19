@@ -1,6 +1,6 @@
 {
   "slug": "plant-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -176,13 +176,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "no external content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (Long/Short Cross Braces, 'Long Legs'/'Short Legs') map to cutList rows 0-5 (Low/Tall Stand Leg, Long Cross, Short Cross)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows are used (low and tall versions)."
     },
     "R4": {
       "result": "pass",
@@ -193,44 +195,76 @@
       "arithmetic": "parts: 4×18 + 1×13 + 2×5.75 + 4×32 + 2×13 + 4×5.75 + kerf 13 cuts (17 parts − 4 boards, the fewest possible)×1/8 = 275.125″; bought: 2×72 + 2×96 = 336″; 275.125 ≤ 336"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 2 1/2\" coarse-thread Kreg screws are used and listed (materials[2],[3])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "ur plant stand by connecting the brace assembly to the Legs. Before you do this, check the height of your pots. The ones we used were almost 11\" tall. If yours are taller or shorter, you may want to a",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de8687ac100ab244.webp"
-        }
-      ]
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Cut four Long Legs or four Short Legs to length—depending on which stand you are building—from 2x2 boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "For the high stand, position the brace assemblies on one Leg as shown. For the low stand, position the brace assembly at the lower position."
         },
         {
-          "path": "steps[2].body",
-          "quote": "Cut four Long Legs or four Short Legs to length—depending on which stand you are building—from 2x2 boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[3].body",
+          "quote": "check the height of your pots. The ones we used were almost 11\" tall."
         }
-      ]
+      ],
+      "arithmetic": "Viewed step image de8687ac100ab244 and the five unattached images show the assemblies on the legs but carry no dimension (the only labels in any viewed image are 'Long Cross'); no step gives a height for the upper or lower brace assembly on the 32\" (tall) or 18\" (low) legs, and the lower assembly of the tall stand has no relation to the pot.",
+      "reason": "The height at which each brace assembly goes on the legs is not given as a number and the drawings are undimensioned."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Cut four Long Legs or four Short Legs to length—depending on which stand you are building—from 2x2 boards, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "cut two Long Cross Braces and four Short Cross Braces to length from a 2x2 pine board, as shown in the cutting diagram."
+        }
+      ],
+      "arithmetic": "steps[2] has no image. All 8 images were opened: the step images are part/assembly drawings without cut lengths, the other five are finished-stand photos and one 3D overview; none is a cutting diagram. Lengths exist in the cut list, so the build can be completed.",
+      "reason": "The cutting diagram the steps cite is not in the plan (Fix)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cross braces assembled, then attached to one leg, then remaining legs."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'set your Kreg Jig for 1 1/2\"-thick material' (all parts are 2x2)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree (tall: 2 long + 4 short crosses, low: 1 + 2; 4 legs); 5 3/4 + 1 1/2 + 5 3/4 = 13 matches the 13\" long cross and a 12\" pot; ends with finish."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "94cba4fc0d399685.webp",
+      "ab01aee59e6ba187.webp",
+      "de8687ac100ab244.webp",
+      "06cd3876abc29a00.webp",
+      "2c5903ba76143422.webp",
+      "56347dfb1cd27411.webp",
+      "72375300618d0b9f.webp",
+      "91e549bcc0264ca6.webp"
+    ]
+  }
 }

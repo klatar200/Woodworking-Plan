@@ -1,6 +1,6 @@
 {
   "slug": "modular-closet-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -248,13 +248,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "no external content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0-9] (tower sides/top/bottom/shelves/rails, cubby sides/top/bottom/shelf/rail) and steps[11] 'Ledger' all have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 rows used (Ledger in steps[11])."
     },
     "R4": {
       "result": "pass",
@@ -262,47 +264,74 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Plywood area of parts about 8,510 sq in vs 9,216 bought (2 sheets), not a certain fail; 1x4: 2x10 + 22 + 72 = 114 + kerf vs 2 x 72 = 144 passes but sheet layout in 48x96 not decidable under the sheet rule."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fasteners in steps: 1 1/4\" coarse-thread pocket-hole screws, #12 x 3\" screws, heavy-duty wall anchors, shelf pins - all listed in materials[2..7]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "and to align the holes from side to side for level shelves.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dab2e8fd6499c770.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "numbers in viewed images: shelf-pin holes (2\" setback to jig, 1 1/4\" spacing, 6 1/4\" between series; cubby 7 1/2\", 8 1/8\"), ledger top edge 12\" above floor (steps[11]), rod heights 82\", 40\", 42\" (1add442d49a72562 and a8a444ca5bc792e0); tower/cubby on ledger per image 9064b1f1a3189807. Sweep flag on steps[3] settled by viewed image dab2e8fd6499c770."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut the plywood parts to size from 3/4\" plywood, as shown in the cutting diagram. You’ll need four Tower Sides, two Tower Tops, two Tower Bottoms, and ten Tower Shelves. You’ll also need to cut two Cu",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut the plywood parts to size from 3/4\" plywood, as shown in the cutting diagram."
         },
         {
-          "path": "steps[0].body",
-          "quote": "od parts to size from 3/4\" plywood, as shown in the cutting diagram. You’ll need four Tower Sides, two Tower Tops, two Tower Bottoms, and ten Tower Shelves. You’ll also need to cut two Cubby Sides, on",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "Cut two Tower Rails and one Cubby Rail to length from a 1x4 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "arithmetic": "steps[0] has no image. All 17 images that carry content were opened (13 step images and the 5 unattached ones; steps[1] image shows rail pocket holes only): none is a sheet or board cutting diagram. Part sizes are in the cut list so the build can be completed.",
+      "reason": "Two steps point to a cutting diagram that is not in the plan (Fix)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, drilled, assembled, painted, then ledger, towers/cubby, rods."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states 'jig set up for 3/4\"-thick material'; all pocket-hole parts are 3/4\" (cut list)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step 0 counts (4 tower sides, 2 tops, 2 bottoms, 10 shelves, 2 cubby sides, 1 top, 1 bottom, 1 shelf) match cutList; overall 46 1/2 = 11 1/2 + 23 1/2 + 11 1/2 and rails 10 and 22 = tops 11 1/2 and 23 1/2 minus 1 1/2; shelf pins 44 = 10 shelves x 4 + cubby 4; anchors 6 = two per tower and cubby x 3. (b) every part installed. (c) no unlisted non-fastener items. (d) ends with rods."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "c743e7941e8bef95.webp",
+      "c25c856fe0ed778f.webp",
+      "9c78cf29756669cd.webp",
+      "9769ab4743f38f82.webp",
+      "1add442d49a72562.webp",
+      "9035f3cfd168ef2f.webp",
+      "4c701d205819c3ce.webp",
+      "bbde59aa3d2ef39f.webp",
+      "dab2e8fd6499c770.webp",
+      "48885bc2c9b73884.webp",
+      "b47a10863bdc7f2c.webp",
+      "9064b1f1a3189807.webp",
+      "886dd83f698bbc8f.webp",
+      "e8adec0691e2623e.webp",
+      "cd7cc8fd97f8754e.webp",
+      "f6f277c2dd447c35.webp",
+      "a8a444ca5bc792e0.webp"
+    ]
+  }
 }

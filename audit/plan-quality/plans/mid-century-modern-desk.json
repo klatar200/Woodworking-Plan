@@ -1,6 +1,6 @@
 {
   "slug": "mid-century-modern-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -728,13 +728,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "all references are 'as shown in the cutting diagram'; step images are the dimensioned cutting drawings; no external/paid content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[0],[2],[4],[8],[12],[14] (Top/Bottom Long & End Edging, Panels, Rail, Divider Edging/Panels, Back 1/2, Cabinet parts, Shelf, Door, Drawer parts) has a cutList row; checked against /edging|panel|rail|divider|back|shelf|door|drawer/ rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 25 rows are used by a step; none is an assembly or placeholder."
     },
     "R4": {
       "result": "pass",
@@ -742,47 +744,95 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, 1x2); steps not checked for per-part stock"
+      "reason": "Sheet goods involved: parts area (~4,400 sq in of 3/4\" ply, ~810 sq in of 1/2\") is below area bought (full+half sheet = 6,912; half sheet = 2,304) so no certain fail, but layout in 48x96 is not decidable under R-5 rule. 1x2: 6 x 96\" = 576\" vs about 470\" of parts (using drawing length 49 3/4 for Top Long Edging) passes."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fastener sizes in steps (1 1/4\" and 1\" pocket-hole screws, #8 x 2\", #8 x 1 1/2\", 1 1/4\" flathead, #12 x 5/8\" panhead) all appear in materials[4..11]; no conflicting sizes for same use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " to length from 1x2 boards, as shown in the cutting diagram. Measure and mark carefully to make sure all of the like parts are exactly the same length. Also cut the Top Panel to size from 3/4\" plywood",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c52ed9b52fff36c.webp"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "Now you can assemble the cabinet, as shown. Make sure that you align all of the pieces properly so that the cabinet top assembly is set back. This will provide space for the cabinet door when it gets ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/611dbce8160c9a9b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed drawings dimension: top-panel countersink holes (5 1/2, 9, 3/8, 2 1/2, 8 3/8) and bottom-panel holes (3, 5, 24, 15, 5 1/2, 9 7/16); rail at 5\" from ends and flush with inside of rear Long Edging; divider positions (5, 23 1/4, 1 1/2, 14 1/4, 5) and bottom (3, 14 1/4, 23 1/4, 3); cabinet top set back 3/4\"; cabinet on bottom (1 1/2, 3); shelf-pin holes (5 7/8, 1, 3/8 deep); door pull holes (5, 3 3/4, 1 1/2); drawer pull holes (5 3/16, 3 3/4, 9 11/16). Hinge/catch/strike locations are shown only pictorially in 8c80c058cb925ff4 and set by door fit ('Mark the hinge positions on the edge of the Door'); treated as relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "steps[9] 'attach the edging as shown' has no step image but viewed step images 4dfac7a1b667f7fd (edging parts) and 611dbce8160c9a9b (assembled edging at front edges) show it; other 'as shown' steps have images, viewed and dimensioned."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top and bottom assemblies, divider box, cabinet, door/shelf and drawers are each built before being attached; step 16 removes drawers/door/shelf for finishing then reassembles."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" setting stated in steps[0],[2],[4],[8],[12]; 1/2\" setting stated in steps[14] ('pocket hole jig set for ½” material'); steps[6] and [15] use screws with parts of those thicknesses."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[9].body",
-          "quote": "Use a shelf-pin jig to drill shelf-pin holes 3/8\" deep, centered top-to-bottom, in the inside faces of the Side Panels. After that, you can attach the edging as shown to all of the cabinet parts.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[0]",
+          "quote": "Top Long Edging (quantity 2, lengthIn 94, Kreg source \"3/4\" x 1 1/2\" x 94 3/4\"\")"
+        },
+        {
+          "path": "steps[0] image 2c52ed9b52fff36c",
+          "quote": "Top Long Edging 49 3/4\" (top panel 46 3/4\")"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "attaching the End Edging using glue and 1 1/4\" pocket-hole screws"
+        },
+        {
+          "path": "materials[0..17].name",
+          "quote": "(no material name matches /glue/i; the 18 names run from 'Plywood, 3/4\" Thick Full Sheet' to 'Quart oil-based or water-based clear finish')"
         }
-      ]
+      ],
+      "arithmetic": "Top Long Edging should span Top Panel 46 3/4 + End Edging 2 x 1 1/2 = 49 3/4 (matches the viewed drawing and the overview 49 3/4); cut list says 94 3/4 (digits transposed). Bottom Long Edging 45 3/4 = 42 3/4 + 3 is consistent, confirming the pattern. Glue is used in steps[1] and no glue is in materials; shims used in steps[13] ('inserting shims to center it') are not in materials either.",
+      "reason": "A cut-list length disagrees with the drawing the step points to, and glue (and shims) used by steps are missing from materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "3d95d9ca68f5ea2f.webp",
+      "42a4f18809fab1e2.webp",
+      "36fe8be946906443.webp",
+      "fbf7a2dfa57e8075.webp",
+      "265841348d4bc074.webp",
+      "2c52ed9b52fff36c.webp",
+      "a5574c7177947777.webp",
+      "b81aca68ea7b2cbe.webp",
+      "b72859ee193e2561.webp",
+      "b31bb3085a447383.webp",
+      "2eca4842ced9b5d1.webp",
+      "4dfac7a1b667f7fd.webp",
+      "611dbce8160c9a9b.webp",
+      "1b1ebec4de80c7c9.webp",
+      "6028476df6eaf8b8.webp",
+      "8c80c058cb925ff4.webp",
+      "a95f0a8f47dbe3a7.webp",
+      "32ce351214007ed2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[22] vs cutList[23] / steps[15]",
+      "quote": "Drawer Side 3 7/8 x 19 1/4 (image a95f0a8f47dbe3a7 '19 1/4\"'); Drawer 1 Bottom '14 1/2\"'; steps[15] 'clamp the Drawer sides to the Drawer Bottoms with the front ends and bottom edges flush'",
+      "what": "Side length 19 1/4 is 4 3/4 longer than the bottom's front-to-back 14 1/2 (+3/4 back = 15 1/4), so sides cannot be flush with the bottom's front end as the step says; and 19 1/4 + 3/4 front = 20 exceeds the 17 3/4 Divider Panel depth shown in b81aca68ea7b2cbe."
+    },
+    {
+      "path": "cutList[9]",
+      "quote": "Divider Panel 3/4 x 4 x 17 1/4 (Kreg source \"17 1/4\"\"); drawing b81aca68ea7b2cbe shows 'Divider Panel ... 17 3/4\"'",
+      "what": "Cut list and the step 5 drawing disagree by 1/2 on divider length (17 1/4 vs 17 3/4)."
+    }
+  ]
 }

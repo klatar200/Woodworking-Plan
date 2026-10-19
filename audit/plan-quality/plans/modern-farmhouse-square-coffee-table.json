@@ -1,6 +1,6 @@
 {
   "slug": "modern-farmhouse-square-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -248,60 +248,135 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "no external content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-5] (legs, top/bottom shelf supports, angled supports, bottom shelf, table top support, 1x8 centers, 1x4 sides) all map to cutList rows 0-7."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows are used by steps[0-5]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x8, 1x4, 2x2); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "Using glue and 1\" Kreg screws assemble the top. Start by assembling the center 1x8\"s.\nAdd the right and left 1x4\"s next.\nAdd the last two side 1x4\"s making sure you cut them to size to guarantee a snu",
-          "why": "1\" screw — no material line lists a 1\" fastener"
-        }
-      ]
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Using 2\" Kreg screws attach the angled, side supports. Supports should run from the bottom shelf support to the top support bar.\nGlue and nail in place with brad nails.\nWe recommend you cut these to f",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/708db60f997ca697.webp"
+          "path": "cutList[6]",
+          "quote": "Outer Table Top Sides, quantity 4, 3 1/2 x 35 3/4 (Kreg source '3/4\" x 3 1/2\" x 35 3/4\" with a 45 degree angle on each end')"
         },
         {
-          "path": "steps[6].body",
-          "quote": "ttach the top of the table to the base using 2\" wood screws. Screw up from the bottom of the top supports into the table top, just barely sinking the screws.\n*If you choose to make pocket holes in the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fc4c037e32a5e211.webp"
+          "path": "materials[2].name",
+          "quote": "Board, 1x4 120\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x8 120\""
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Table Top Center, quantity 4, 7 1/4 x 29"
         }
-      ]
+      ],
+      "arithmetic": "Four 1x4 sides: 4 x 35 3/4 = 143\" (long-point length of mitered ends) vs 1x4 bought 1 x 120\" = 120\" (143 > 120 before kerf). Even counting all 3/4\" top boards against both stocks: centers 4 x 29 = 116\" must be full 1x8 width (7 1/4) of the 120\" 1x8, leaving 4\" of 1x8; sides need 143\" but 1x4 120\" + 4\" = 124\" < 143\". Quantity 1 is Kreg's own value (not one of the 31 defaulted lines, import-fidelity.md). 2x2: 4x17.5 + 8x30.75 + 8x14.5 + 30.75 = 70 + 246 + 116 + 30.75 = 462.75\" + kerf vs 5 x 96 + 48 = 528\" passes.",
+      "reason": "1x4 stock bought cannot supply the four outer top sides."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Glue and nail in place with brad nails."
+        },
+        {
+          "path": "materials[0..7].name",
+          "quote": "(no material name matches /brad|nail/i; fasteners listed are 2\" Kreg screws, 1\" Kreg Scews, 2\" Wood Screws or 1 1/4\" Kreg Screws)"
+        }
+      ],
+      "reason": "A fastener the step uses (brad nails, no size given) is not in materials. Sweep flag on steps[5] '1\" Kreg screws' rejected: materials[6] 'Box 1\" Kreg Scews' covers it (typo)."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "viewed images: bottom support 3\" from floor, shelf 'even lip' (1/4\" in step text), top 'Leave 1\" of overhang on each side' (fc4c037e32a5e211); angled supports fixed by parts; shelf/top support relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "all step references have their own images, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides, then base, angled supports, shelf, top support, top, then top attached with 1\" overhang."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using 2\" Kreg screws, attach the top support flush with the top of the legs."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "*If you choose to make pocket holes in the top supports, use 1 1/4\" Kreg screws to attach the top."
+        }
+      ],
+      "reason": "Pocket-hole joints (Kreg screws; pocket holes drawn in viewed step images f2608419b5344693, 45da14051ad89d97, aaf3b7ad549ba8c3) on 1 1/2\" and 3/4\" parts, but no jig thickness setting is stated in any step or viewed image. Search: steps[0-7] for /setting|jig|1 1/2\" material|3/4\" material/ - no match. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using glue and 1\" Kreg screws assemble the top."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Glue and nail in place with brad nails."
+        },
+        {
+          "path": "materials[0..7].name",
+          "quote": "(no material name matches /glue/i)"
+        }
+      ],
+      "reason": "Glue is used in steps[2] and steps[5] but is not in materials. Counts (4 centers, 4 outer sides, 14 1/2\" angled supports) agree with the cut list."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "f2608419b5344693.webp",
+      "b855c9f9a0419781.webp",
+      "708db60f997ca697.webp",
+      "45da14051ad89d97.webp",
+      "faf0c61111c40a59.webp",
+      "aaf3b7ad549ba8c3.webp",
+      "fc4c037e32a5e211.webp",
+      "5e87ccd35971b7c3.webp",
+      "cabed1020fc4695d.webp",
+      "cdcdd3f70ab78bfc.webp",
+      "90bb1a5a19c0f165.webp"
+    ]
+  }
 }

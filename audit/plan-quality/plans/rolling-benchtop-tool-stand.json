@@ -1,6 +1,6 @@
 {
   "slug": "rolling-benchtop-tool-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -212,25 +212,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "no external content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (top shelf pieces, frame pieces, legs, supports, longer/shorter shelf pieces) all map to cutList rows 0-6."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag on Shelves (cutList[1],[2]) rejected: steps[6]-[9] use 'shelf pieces' (3 long 32\" and 2 short 29\"); the search /shelv/ missed 'shelf'."
     },
     "R4": {
       "result": "pass",
@@ -238,34 +228,72 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 5×32 + 3×32 + 2×29 + 4×29 + 4×10.5 + 4×19.75 + 4×14.5 + kerf 19 cuts (26 parts − 7 boards, the fewest possible)×1/8 = 611.375″; bought: 7×96 = 672″; 611.375 ≤ 672"
+      "reason": "all parts 2x4: 8 x 32 + 6 x 29 + 4 x 10.5 + 4 x 19.75 + 4 x 14.5 = 256 + 174 + 42 + 79 + 58 = 609\" in 7 x 96\" = 672\"; boards: 4 x [32,32,29] (93 1/4\") + [29,29,19.75,14.5], [19.75 x3,14.5 x2], [10.5 x4,14.5] fit 7 boards."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 2 1/2\" pocket hole screws used, listed; casters listed."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "Attach the longer shelf pieces in between the two legs by screwing them in from the pocket holes in the support beams and frames below. Make sure the pocket holes you used to attach the shelf are on t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/956497697362d5f9.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "'attach the frame pieces to the legs 2\" from the floor', frames flush with leg tops; viewed drawings give 32, 17 1/2, 29, 10 1/2, 19 3/4, 14 1/2; support spacing along the frame is shown pictorially (348bf00c293af6e0), accepted as shown."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "referenced images present."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top, frames to legs, supports, top attached, bottom shelf built then attached, casters last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "viewed images b348c94124f59ea8, 348bf00c293af6e0, 5b16989d9910367e label 'Kreg Pocket Hole 1 1/2\"' (all parts 2x4)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "attach the five 32\" top shelf pieces using 2 1/2\" pocket hole screws and wood glue from the bottom."
+        },
+        {
+          "path": "materials[0..2].name",
+          "quote": "(three lines only: 'Board, 2x4 96\"', '2 1/2\" Kreg Pocket Hole Screws', 'Rolling Casters'; none matches /glue/i)"
+        }
+      ],
+      "arithmetic": "Glue is used in steps[1],[2],[4],[7]-[9] (viewed drawings repeat 'wood glue'); materials[0..2] contain no glue. Counts agree: 5 top + 3 long + 2 short shelf pieces; 4 supports; 4 legs; derived sizes consistent (29 + 3 = 32; 10 1/2 + 7 = 17 1/2; 17 1/2 - 3 = 14 1/2).",
+      "reason": "Wood glue used throughout is not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "6411196f0820b14d.webp",
+      "b348c94124f59ea8.webp",
+      "b0180f408f5262ec.webp",
+      "5631e420a0e48664.webp",
+      "348bf00c293af6e0.webp",
+      "c22cf785aaecf230.webp",
+      "5b16989d9910367e.webp",
+      "956497697362d5f9.webp",
+      "d331d4a0ea84b6ce.webp",
+      "86cf22790098daf2.webp",
+      "77b0c716aed47ccb.webp",
+      "596f35f779f3d9ec.webp",
+      "ddd5f16b7fbca9f8.webp",
+      "93ab9d48d9015d1e.webp",
+      "302f19391b3820dc.webp"
+    ]
+  }
 }

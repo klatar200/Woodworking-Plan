@@ -1,6 +1,6 @@
 {
   "slug": "one-sheet-workbench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -56,13 +56,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "no external content needed (Kreg Clamp Vise/bench dogs are optional)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[1-15] (legs, front/back rails, end rails, shelf support, leg braces, tops, shelf) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 rows used."
     },
     "R4": {
       "result": "pass",
@@ -70,45 +72,88 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet size not written in material name"
+      "reason": "Single sheet: part area is below 48 x 96 (tops 2 x 23.75 x 48 = 2,280 + shelf 16.25 x 42 = 682 + 3\" parts 3 x (112+84+65+124+38.25 = 423.25) = 1,270, total about 4,230 of 4,608 sq in), so no certain fail; layout depends on the cutting diagram that is not in the plan (see R11 and gaps)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 1 1/4\" coarse-thread Kreg screws are used and listed (materials[1]); Clamp Vise is an optional extra."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numbers: lower End Rails '3\" up from the lower end of each Leg', upper flush, dog holes every 3\" with 3\" edge offsets (viewed f4a7a9567af0c506, 01377d1c1a6fe73e), pilot holes 2\" + 11\" spacing (2dde5ef23634ca72). Others relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "e parts for this project get cut from one sheet of plywood, as shown in the cutting diagram. To get the parts from one sheet, you need to cut them in a certain sequence. Double-check your measurements",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "All of the parts for this project get cut from one sheet of plywood, as shown in the cutting diagram."
         },
         {
           "path": "steps[0].body",
-          "quote": " get cut from one sheet of plywood, as shown in the cutting diagram. To get the parts from one sheet, you need to cut them in a certain sequence. Double-check your measurements, and mark each part the",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "-wide cut, and then rip a long strip for the Shelf Support, as shown. Now you can reset the Rip-Cut to 3\", and then crosscut ten 3\"-wide strips from the remainder of the sheet. Finally, cut a 16 1/4\"-",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "then rip a long strip for the Shelf Support, as shown."
         }
-      ]
+      ],
+      "arithmetic": "steps[0] has no image. Viewed: all 5 unattached images (finished-bench photos and one 3D overview) and 14 of 15 step images (each a single part with pocket holes, assembly view, or dog-hole layout); none is a sheet cutting diagram.",
+      "reason": "The one-sheet cutting diagram the step depends on is not in the plan; part sizes are in the cut list, so the build can be completed (Fix)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs and rails, end rails, shelf support, braces, then top, then shelf; steps[14] shelf cut 'if you didn't do so earlier'."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your Kreg Jig for 3/4\"-thick material'; all pocket-hole parts are 3/4\" plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree (4 legs, 2 rails, 4 end rails, 1 support, 4 braces, 2 tops, 1 shelf); steps reach the finished bench."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "1e49cb9c58092a9b.webp",
+      "3e077fd02723a627.webp",
+      "577020eaa232d707.webp",
+      "3be52d60f9196023.webp",
+      "99866f9c6eb5a082.webp",
+      "4ab5d16d1e4fe0dc.webp",
+      "bc28f4703b7128dc.webp",
+      "d5c1d14e896fd09c.webp",
+      "f47c030bbe12abcf.webp",
+      "a053e4b77ea26ef0.webp",
+      "472e33a000efc00a.webp",
+      "3c9c59ec6ab2f7d3.webp",
+      "71915fb13f379ecd.webp",
+      "2dde5ef23634ca72.webp",
+      "3262ee393b670fba.webp",
+      "f4a7a9567af0c506.webp",
+      "01377d1c1a6fe73e.webp",
+      "87d6cf4a41abebb6.webp",
+      "c3f9cbfe26f9afd3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "from one of your ten 3\"-wide strips, cut four Legs to final length",
+      "what": "Four legs of 28 are 4 x 28 = 112\" which cannot come from one strip (sheet is 96\" long); steps[8] 'your four remaining 3\"-wide strips' (10 - 4 legs - 2 rails = 4) implies one leg per strip."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "crosscut ten 3\"-wide strips from the remainder of the sheet. Finally, cut a 16 1/4\"-wide strip for the Shelf.",
+      "what": "If the strips are 48\" long (28 + 16 1/4 end rail = 44 1/4 fits; four 31\" braces and two 42\" rails each need their own strip, so 10 strips plus the Shelf Support strip = 11 x 3 = 33\"), the widths needed are 33 + 16 1/4 = 49 1/4\" (before 12 kerfs of 1/8\"), more than the 48\" left after the two 23 3/4 x 48 Tops come out; the stated sequence may not yield all parts from one sheet. Cannot be settled without the missing diagram."
+    }
+  ]
 }

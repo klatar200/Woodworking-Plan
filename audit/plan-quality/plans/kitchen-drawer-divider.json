@@ -1,6 +1,6 @@
 {
   "slug": "kitchen-drawer-divider",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -91,61 +91,63 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e height of the dividers because of the thickness of the plywood bottom. I have attached my plan with dimensions. Once you have completed your plan cut all of the dividers to size. I used 1/2\" poplar.",
-          "why": "matches \"have attached\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "0 - 180 grit sandpaper to smooth all of the dividers and the bottom. Using your design layout measure and mark the position of the dividers on the plywood bottom. See attached example from my project.",
-          "why": "matches \"See attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "'I have attached my plan with dimensions' / 'See attached example' refer to the step images; steps[2] image (55ceb2f6913af154) viewed and is a dimensioned drawing (15 3/8, 20 1/4, 10, 2 1/2, 9 3/4, 6 3/4, 8 1/8), so no external content is needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut in steps: plywood bottom (steps[1]), dividers (steps[2]); cutList has Plywood bottom, Front dividers x5, Middle divider, Back divider; steps[4] installs 'center divider', 'five front dividers', 'back divider'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 4 rows are used in steps[1], steps[2], steps[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.25, 0.5x5.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock named per part (steps[1] '1/4\" plywood bottom', steps[2] 'I used 1/2\" poplar'). Poplar 1/2\" X 5 1/2\" 48\" x1; dividers are 2 1/2 wide (Kreg-corrected) so 2 lanes can be ripped from 5 1/2 (2.5+2.5+0.125=5.125<=5.5): 2 lanes x 48 = 96\". Lane A: 4x10 + 3 kerfs 0.125 = 40.375; lane B: 10 + 15.375 + 9.75 + 2 kerfs 0.125 = 35.375. Both <=48. Bottom 15.375x20.25 from a quarter sheet.",
+      "readerNote": "sweep had unknown on precondition; steps name the stock for every part."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener used is '1\" pin nails' (steps[4]); materials lists '1\" pin nails'."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "0 - 180 grit sandpaper to smooth all of the dividers and the bottom. Using your design layout measure and mark the position of the dividers on the plywood bottom. See attached example from my project.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e91cca63184d93e8.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[3] 'measure and mark the position of the dividers' gives no inch value in text, but viewed image e91cca63184d93e8 dimensions each divider position (2 1/8, 4 3/4, 7 7/16, 10 1/8, 12 3/4 from the left edge; 6 3/4 / 8 1/8 for the back divider; 9 3/4 depth) and 55ceb2f6913af154 shows the 2 1/2 and 10 sizes."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "both references sit in steps with their own images, which were viewed and show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "bottom and dividers cut (steps[1-2]) before layout (steps[3]) and attach (steps[4]); center first, then front, then back."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "no pocket-hole joints; glue and 1\" pin nails stated (steps[4])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[1] '15 3/8\" and a depth of 20 1/4\"' = Kreg-corrected bottom 0.25x15.375x20.25; steps[4] 'five front dividers' = cutList qty 5; (b) all dividers installed in steps[4]; (c) wood filler in steps[4] is conditional ('Fill any holes or defects'), not treated as required; (d) finish step follows."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "55ceb2f6913af154.webp",
+      "e91cca63184d93e8.webp"
+    ]
+  }
 }

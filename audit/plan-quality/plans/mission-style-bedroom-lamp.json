@@ -1,6 +1,6 @@
 {
   "slug": "mission-style-bedroom-lamp",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -68,25 +68,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "No external content needed; step images carry the diagram."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (spindles, pedestal ends, 4 1/2\" top piece, 4 1/2\" and 5 1/2\" bottom boards) each map to a cutList row; lamp kit parts are materials."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Top and upper board of the bottom assembly",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Lower board bottom assembly",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flagged cutList[2] 'Top and upper board of the bottom assembly' (qty 2) and cutList[3] 'Lower board bottom assembly' as assemblies; steps[3] (4 1/2\" top piece), steps[5] (bottom boards) and viewed image 52be2e4aa7f0bfd5 show these are real single boards. Rejected."
     },
     "R4": {
       "result": "pass",
@@ -97,30 +87,77 @@
       "reason": "parts ≤ half the 5.5″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/4\" brad nails (listed), 1 1/2\" lamp pipe with washers/nuts (listed), Titebond I (listed)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images show: top hole centered (25/64\" dia, 1\" countersunk), pedestal-end notches 3/4\" and center 3/4\" square (c34ee6eb0ef52926), upper bottom board set in 3/8\" (52be2e4aa7f0bfd5), cord hole at mid-edge of lower board (dia 5/16\"). Stacking of pedestal on bases is relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "steps[10] 'cover images shown here' is a photo reference, not a build instruction; steps[1] 'following diagram' has its own image (3ac09e7f6dce6329) which was viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, rounded, drilled (steps[1-6]) before pedestal then bottom then final assembly; kit wired after finish."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "no pocket holes; joints are glue and 1 1/4\" brad nails (steps[7-9])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "lar. They are in our guest bedroom and are the cover images shown here. After finishing is complete the lamp kit can be installed and wired. If you are uncomfortable doing this please seek professiona",
-          "why": "\"shown here\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "Cut out the eleven parts."
+        },
+        {
+          "path": "cutList[0..3]",
+          "quote": "Spindles for pedestal qty 5; Pedestal ends qty 2; Top and upper board of the bottom assembly qty 2; Lower board bottom assembly qty 1"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "bore 2 1/2\" holes through the center of 4 1/2\" and 5 1/2\" bottom boards"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "the 5 inch square and the two 4 ½ inch squares need to be rounded over"
+        },
+        {
+          "path": "steps[1] image 3ac09e7f6dce6329",
+          "quote": "cutting diagram labels: 5\", 5\", 4 1/4\", 4 1/4\", 3 1/2\", 3 1/2\" squares"
+        },
+        {
+          "path": "steps[7] image 52be2e4aa7f0bfd5",
+          "quote": "bottom boards dimensioned 4 1/4\" and 5\""
         }
-      ]
+      ],
+      "arithmetic": "Count: cut list 5 + 2 + 2 + 1 = 10 parts vs step 'eleven parts'; viewed diagram shows 5 spindles + six squares (2 x 5\", 2 x 4 1/4\", 2 x 3 1/2\") = 11, cut list has only one 5\" square. Size: lower bottom board is 5\" (cutList[3], steps[2], diagram, step-8 image) but 5 1/2\" in steps[5] and its image fd24f634f555c9a1; top/upper boards are 4 1/2\" (Kreg-corrected cutList[2], steps) but 4 1/4\" in the diagram, step-3 image 07472c1a9a08b922 and step-8 image.",
+      "reason": "Part count and board sizes disagree between cut list, step text and the plan's drawings."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "3ac09e7f6dce6329.webp",
+      "c34ee6eb0ef52926.webp",
+      "fd24f634f555c9a1.webp",
+      "3477fa0328e4e84d.webp",
+      "52be2e4aa7f0bfd5.webp",
+      "63613345be01c8c5.webp",
+      "07472c1a9a08b922.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "rolling-kitchen-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -500,13 +500,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "no external content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[0-26] has a cutList row (legs, upper/middle/lower end rails, end panel, side rails, stretchers, slats, top and edging, platform and edging, divider and edging, shelf and edging)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 20 rows are used."
     },
     "R4": {
       "result": "pass",
@@ -514,47 +516,88 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x2, 1x3, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Plywood parts about 2,325 sq in of 4,608 (no certain fail; 48x96 layout not decidable). Lumber passes: 1x2 281\" in 3 x 96\" (boards [40.5,40.5,13.375], [28,28,23.5,13.375], [23.5,18.5,18.5,16.625,16.625]); 1x3 456\" in 528\"; 2x2 4 x 33.5 in 2 x 72\"."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 1 1/4\" coarse-thread pocket hole screws, glue, shelf pins and casters are used; all listed."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "shelf pins. The easiest way to do this is with a shelf pin jig (we used one made by Kreg). A shelf pin jig makes it easy to drill consistently spaced holes so your shelf will sit level and not wobble.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dda4cbd8338a764f.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed drawings dimension pocket holes, shelf-pin holes (2\", 1 1/4\", 6 3/8\"; divider 5 5/8\"), slat overhang 1 1/2\", top overhang 4\"/1\", platform 8\"/16 5/8\", overall 25 x 40 1/2 x 36."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "'as shown in the cutting diagram' steps are backed by the dimensioned part drawings in the step images (viewed); step 0 leg length is in the cut list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "ends, side assemblies, slats, base assembled, then top, platform, divider, shelf, casters."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "every pocket-hole step states 'set up for 3/4\" material' and all pocket-hole parts are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Cut four Legs to size from a 2x2 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].body",
+          "quote": "Cut two Side Rails to length from 1x3 boards, as shown in the cutting diagram. Then, with your pocket-hole jig set up for 3/4\" material, drill pocket holes in all four Side Rails"
         },
         {
-          "path": "steps[0].body",
-          "quote": "Cut four Legs to size from a 2x2 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[6]",
+          "quote": "Side Rail, quantity 4, 3/4 x 2 1/2 x 28"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Attach the Upper Stretcher to two of the Side Rails"
         }
-      ]
+      ],
+      "arithmetic": "steps[8] says cut two Side Rails yet drills 'all four'; steps[11] (Upper Stretcher + two Side Rails) and steps[12] (Lower Stretcher + the other two Side Rails) use 2 + 2 = 4, matching cutList quantity 4.",
+      "reason": "Step 8 gives the wrong count (two) for the Side Rails."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "dda4cbd8338a764f.webp",
+      "c585c27071da9132.webp",
+      "53b0f17883a7fa2c.webp",
+      "39807385bd67aa58.webp",
+      "0f160d9db010ad9d.webp",
+      "8da1fe49777a4119.webp",
+      "ff5a0eb133220305.webp",
+      "cc4a199a4e6aab06.webp",
+      "132a46772722cb6b.webp",
+      "922adafe6ad71d07.webp",
+      "e9a51db72043d418.webp",
+      "e2476784faa8a6e6.webp",
+      "f0b791289bbcf66a.webp",
+      "8cb283c75e5cb15d.webp",
+      "6eb3493f7c6f0926.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[25].body",
+      "quote": "attach it to the Position the Platform in the base assembly, as shown, and then attach it to the Platform and to the Inner Slats",
+      "what": "Sentence is garbled (a fragment of steps[23] pasted in), so what the divider assembly is attached to is stated only by the tail 'to the Platform and to the Inner Slats'."
+    },
+    {
+      "path": "steps[24].body",
+      "quote": "drill pocket holes in the End Panel, as shown",
+      "what": "The step makes the Divider but says to drill pocket holes in the End Panel (viewed image c585c27071da9132 shows the holes on the Divider)."
+    }
+  ]
 }

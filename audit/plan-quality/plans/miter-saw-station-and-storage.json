@@ -1,6 +1,6 @@
 {
   "slug": "miter-saw-station-and-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -392,13 +392,33 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Only the Precision Trak kit 'per manufacturers instructions' (steps[14]), which is a listed material; build does not depend on missing content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part a step cuts or assembles (cabinet bottom/skirt/side outside/inside/top/divider, table supports, top supports, front/back table, fence, MS shelf, MS shelf front, shelf support, bottom brace, drawer parts, doors) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[20]",
+          "quote": "Cabinet back (quantity 2, thickness 0.25, 30 5/8 x 46 1/2 per Kreg source)"
+        },
+        {
+          "path": "cutList[21]",
+          "quote": "Middle back (quantity 1, thickness 0.25, 26 x 29 1/8)"
+        },
+        {
+          "path": "cutList[13]",
+          "quote": "Shelf (quantity 4, 15 1/2 x 22 5/8)"
+        }
+      ],
+      "arithmetic": "Search of steps[0..14] (title+body): /back/i matches only steps[2] 'The back will have a 1/4\" inset.', steps[6] 'place under back of cabinet top', steps[9] 'back of the front table piece'/'back table', steps[12] 'inset 1/4\" from the back' - none attaches a back panel; /middle/i has no match; /shelf|shelves/i matches only shelf-pin holes (steps[7]), miter saw shelf/shelf support (steps[10-12]) and never says to cut or place the four adjustable Shelves. Viewed images (all 15 step images and 5 unattached) show no step installing back panels.",
+      "reason": "Three cut-list rows (the two 1/4\" back panels and the adjustable shelves) are never used by any step."
     },
     "R4": {
       "result": "pass",
@@ -406,46 +426,80 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Two sheet stocks (3 full sheets 3/4\", 1 full sheet 1/4\") - area of 3/4\" parts about 13,190 sq in vs 13,824 bought (95%); 1/4\" parts about 4,217 vs 4,608. Not a certain fail under the sheet rule and a 48x96 layout is not decidable."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fasteners in steps: 1 1/4\" pocket hole screws, 1 1/4\" (minimum) brad nails, '4 - 1 1/4\" screws' for casters; sizes appear in materials[6],[9]; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "cut a 3\" x 2 3/4\" notch from the cabinet side inside pieces. If the 'cabinet side inside' pieces are notched, then also cut the angle from the front table. You can match the swing angle of the miter s",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/13c5d3fb6c316031.webp"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Measure and mark the miter saw table + plywood height previously measured. Measure from table top and mark onto the cabinet side. Inset the shelf support 3/4\" from the cabinet front. Use wood glue and",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab629991a86180bf.webp"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "rk the miter saw table + plywood height previously measured. Measure from table top and mark onto the cabinet side. Inset the shelf support 3/4\" from the cabinet front. Use wood glue and brad nails an",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab629991a86180bf.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "numbers given: divider 22 7/8\" from side (steps[5], image), top supports 22 7/8\" and 4 1/4\" (steps[8], image), cabinet top 2 3/4\" down, shelf-pin jig 8 3/4\" from bottom, shelf support inset 3/4\", brace 1/4\" inset, notches 3/4\" x 2\" and 3\" x 2 3/4\"; shelf support height is measured from the user's saw (steps[10-11]). Notch corner, drawer-slide height and brace height are shown only pictorially in viewed images (924cacd3c6738137, 91457513315b2895, ed514dad0ebca9ff, a2216215bd483a47) and by fit; accepted as shown."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the plywood according to the cut diagram."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "cut a 3/4\" x 2\" notch from the cabinet dividers (see cut diagram)"
+        }
+      ],
+      "arithmetic": "All 20 images in the plan were viewed: steps[0] image is a photo of a track saw cutting plywood, steps[4] image is a photo of a jig saw; the other step images are assembly drawings/photos and the 5 unattached images are finished-project photos and one 122\" x 38\" x 15 3/4\" overall drawing. None is a sheet cut diagram.",
+      "reason": "Two steps refer to a cut diagram that exists nowhere in the plan; part sizes are in the cut list, so the build can still be completed (Fix)."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "build order works: skirt and bottom, side outside, top, notches, divider, inside side, drawer slides before table top, table/fence, shelf height measured from the saw, shelf supports, drawers and doors last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "every pocket-hole step states 'for 3/4\" material' (steps[1],[3],[5],[8],[12],[13]); all pocket-hole parts are 3/4\" per cut list."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "525286d63878ad2f.webp",
+      "6043523c221b9d5d.webp",
+      "70618369190d5ab3.webp",
+      "1b6385e2e104eb6a.webp",
+      "13c5d3fb6c316031.webp",
+      "924cacd3c6738137.webp",
+      "d7f7f31fb9b11003.webp",
+      "56a501fb5133522e.webp",
+      "91457513315b2895.webp",
+      "00bf28959ee6e830.webp",
+      "c05f553e576a81f8.webp",
+      "ab629991a86180bf.webp",
+      "a2216215bd483a47.webp",
+      "fc50167c0af21758.webp",
+      "90d7e1d569344687.webp",
+      "ed514dad0ebca9ff.webp",
+      "ee6c1cb1383fbb9f.webp",
+      "eaaa08fd709a24d2.webp",
+      "cc0bd0d43ddd0719.webp",
+      "aad41b1d2163d732.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Clamp a top support (2 3/4\") piece to the top of the 'cabinet side inside'",
+      "what": "Names a 'top support (2 3/4\")' but the cut list has 'Table support' 2 3/4 wide and 'Cabinet top support' 2 wide; naming does not match between step 3 ('table support (2 3/4\")'), step 6 and step 8."
+    }
+  ]
 }

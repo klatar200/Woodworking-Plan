@@ -1,19 +1,21 @@
 {
   "slug": "porch-swing-with-pergola",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[20] is a credit link to the author's site (allowed); no content depends on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-19] (seat base, back posts/rail/slats, arm posts/arms, seat slats, pergola posts/bases, top supports, middle beam, trim, angled supports, 2x2 slats) have cutList rows 0-17."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 18 rows are used by steps."
     },
     "R4": {
       "result": "pass",
@@ -40,44 +42,151 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x6, 1x3, 2x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Pressure Treated Boards, 2x4 96\" (quantity 5)"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Cut 4 pressure treated 2x4\"s at 81\" long. (Save left overs for angled base supports.) Cut 2 pressure treated 2x4\"s at 48\" long."
+        },
+        {
+          "path": "cutList[0..2]",
+          "quote": "Posts x4 at 81; Base x2 at 48; Angled Base Supports x4 at 15"
+        }
+      ],
+      "arithmetic": "PT parts: 4 x 81 + 2 x 48 + 4 x 15 = 324 + 96 + 60 = 480\" vs 5 x 96\" = 480\" bought: zero slack. Each post board needs 81 + 15 + 1/8 kerf = 96 1/8\" > 96\" (leftover 14 7/8\" < 15\"), and the two bases need 48 + 48 + 1/8 = 96 1/8\" > 96\"; total with 9 cuts = 481 1/8\" > 480\". Likely rather than certain because it fails only by kerf.",
+      "reason": "Pressure-treated 2x4 bought exactly equals the parts, so kerf makes it short."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Cut 2 2x4 pieces at 20.5\" long for the back end posts. Create two pocket holes on one end of each of your 20.5\" pieces. Screw the two 20.5\" pieces on each end of the seat base as shown in the photo.",
-          "why": "20.5\" screw — no material line lists a 20.5\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "' pieces in half. Each piece should be just under 48\" Use a nail gun to nail the first slat across the back. Place it right against the back posts. Line the front slat up with the base. Use a jigsaw t",
-          "why": "48\" nail — no material line lists a 48\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "half. Each piece should be just under 48\" Use a nail gun to nail the first slat across the back. Place it right against the back posts. Line the front slat up with the base. Use a jigsaw to cut the fr",
-          "why": "48\" nail — no material line lists a 48\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flags (20.5\" screw, 48\" nail) are lengths of parts, rejected; screws used are 2\" and 3\" (listed as 2\" pocket hole and 3\" wood screws) and 1 1/4\" brad nails."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Add your 15\" base angled 2x4\" supports to the outside of each post starting at the bottom."
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Attach the angled supports to the top using 3\" wood screws just as you did the base supports."
+        }
+      ],
+      "arithmetic": "Viewed photos 892ae7950becf07d and 5d409ecf7b0ddb50 show the angled supports but no dimension; no step gives the cut angle or the height on the post where the 15\" (base) and 20 1/2\" (top) supports attach. Numbers that are given: posts 10\" from base ends, 25\" between posts, hooks 6\", 4\", 6.5\", slats 2\" / 6.75\" apart, 4 1/2\" overhang.",
+      "reason": "Where and at what angle the eight angled supports go is not given as a number or dimensioned in a viewed image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown in the photo' steps (steps[1],[2]) have their own photos, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "swing built first, pergola frame, supports, trim, hardware, then slats; steps[12] notes the middle beam goes after the angled supports."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Make two pocket holes on each end of your 1x3\"."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Set your Kreg Jig at 1 1/2."
+        }
+      ],
+      "reason": "The only jig setting stated is 1 1/2\" (steps[0]); the 1x3 back slats (3/4\" thick) get pocket holes with no 3/4\" setting in any step or viewed image (c31098591e9a5d55, 197ae30c10d4a128 are photos). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Attach the 81\" 1X6\" trim pieces to the from and back flush with the top."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Top Trim, quantity 2, 1 x 6, length 84"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Cut 4 1x3\"x8' pieces in half. Each piece should be just under 48\""
+        },
+        {
+          "path": "cutList[16]",
+          "quote": "Swing Seat Slats, quantity 7, 1 x 3, length 48"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut 2 1x4\"s at 7.5\" long."
+        },
+        {
+          "path": "cutList[14]",
+          "quote": "Swing Arm Posts, quantity 2, 2 x 4, length 7.5"
+        }
+      ],
+      "arithmetic": "Trim: step says 81\" but cut list says 84\" (2 pieces). Seat slats: 4 boards in half = 8 slats vs cut list 7; with 8 slats plus 9 back slats at 15\" (9 x 15 = 135\" = 2 boards) steps need 4 + 2 = 6 of the 1x3 x 96\" vs 5 bought (materials[2]). Arm posts: step names 1x4 but cut list says 2x4 and no 1x4 is in materials.",
+      "reason": "Step text disagrees with the cut list on a trim length, the seat-slat count and the arm-post stock."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-11",
+    "imagesViewed": [
+      "e3d2fdfff9abef5b.webp",
+      "c31098591e9a5d55.webp",
+      "1193120208b52912.webp",
+      "c8724ee5618fdd4b.webp",
+      "197ae30c10d4a128.webp",
+      "e69825b9d4085268.webp",
+      "3fd6d095fae760c5.webp",
+      "6daeb1281afb4b57.webp",
+      "353e51c63bc081dd.webp",
+      "b0837e59df9dc443.webp",
+      "440483ed36b8810a.webp",
+      "dad2c02ff7c64b7e.webp",
+      "892ae7950becf07d.webp",
+      "5d409ecf7b0ddb50.webp",
+      "e804f66fd7550ea2.webp",
+      "2c8bb1a4280152ce.webp",
+      "fe671ccfdc974d56.webp",
+      "8af65d927d9ddaa6.webp",
+      "5a0507ca3c5e8352.webp",
+      "55a9cf4a28f10927.webp",
+      "ed2d8e9d250a127e.webp",
+      "82a536094d2cb2c7.webp",
+      "fb909162d6653ffa.webp",
+      "ba982d8bd22ef225.webp",
+      "6d17c98b8fba4725.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[7],[12],[13]; steps[16]-[17]",
+      "quote": "48\" Back chain ...; 62\" Middle chain ...; 58\" Front chain ...; steps[17] 'Set chain to desired length.'",
+      "what": "Materials list three chain lengths (back 48, middle 62, front 58, 2 each) but no step says which chain connects to which eye hook or S hook; only 'one Chain Quick Link for each eye hook'."
+    }
+  ]
 }
