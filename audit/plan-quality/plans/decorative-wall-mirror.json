@@ -1,6 +1,6 @@
 {
   "slug": "decorative-wall-mirror",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,62 +131,95 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Rail, Stile, Thin Stile, Rail End, Decorative Square, Back each have a cutList row; steps[0..6] cut nothing else (searched 'cut' in all steps)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 cutList rows are cut and used in steps[0],[1],[2],[4],[5],[6],[8]; 'End Rails'/'Rail Ends' in steps[1] = cutList 'Rail End'"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 0.25x3, sheet-0.25); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Now cut two Thin Stiles from a 1/4\"x3 oak board, as shown in the cutting diagram."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1/4\" x 3\" 24\""
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Thin Stile x2 thicknessIn 0.25 widthIn 2 lengthIn 31 (Kreg-corrected row 0.25 x 2.5 x 31.125)"
+        }
+      ],
+      "arithmetic": "materials[2] quantity 2 (not an import default) x 24\" = 48\" bought. Need 2 x 31 1/8\" = 62 1/4\" (+ 1/8\" kerf per cut) > 48\"; and each Thin Stile (31 1/8\") is longer than one 24\" board. The step names the 1/4\"x3 board as the stock for this part, so the stock is not ambiguous. Short by at least 14 1/4\".",
+      "reason": "Strict R5 precondition (stock named for every part) is not met because steps[5] does not name stock for Decorative Squares, but the Thin Stile shortfall holds regardless of the other parts."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fastener sizes in steps: '1 1/4\" fine-thread pocket hole screws' (steps[3]) = materials[4] qty 8 (2 pocket holes x 4 rail ends, steps[0] image); '#6 x 3/4\" pan-head screws' (steps[8]) = materials[5] qty 16 (16 pilot holes counted in steps[6] image); no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions are given in viewed images: rail inset 1\" and opening 30 1/8 x 24 1/8 (steps[3] image), decorative square spacing 1/2\" and 1 1/2\" with middle one centered (steps[5] image), back pilot-hole grid 1/2\", 6 1/2\", 8\" (steps[6] image); rail pocket holes are drawn at each end (steps[0] image, no offsets, shown only); hanging hardware placement is relational ('solid wood part of the frame')"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "Cut four End Rails to length from a 1x3 oak board, as shown in the cutting diagram. Sand them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stile",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
+          "quote": "Cut four End Rails to length from a 1x3 oak board, as shown in the cutting diagram."
         },
         {
           "path": "steps[1].body",
-          "quote": "ils to length from a 1x3 oak board, as shown in the cutting diagram. Sand them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stiles from a 1x3 oa",
-          "why": "\"diagram\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "and them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stiles from a 1x3 oak board, as shown in the cutting diagram. Sand the Stiles smooth, too.",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "and them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stiles from a 1x3 oak board, as shown in the cutting diagram. Sand the Stiles smooth, too.",
-          "why": "\"diagram\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
+          "quote": "Also cut two Stiles from a 1x3 oak board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[1] has no step image; the 3 unattached images (images[0..2], all viewed) are an overall-dimension drawing (37 1/8 x 31 1/8, opening 30 1/8 x 24 1/8) and two room photos - no cutting diagram. Part sizes do exist in cutList[1],[3] (Kreg-corrected), so the build is not blocked."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "rails/stiles/thin stiles cut then assembled (steps[0-3]), rail ends and squares glued (4-5), back cut (6), finished (7) then back screwed on (8) and mirror adhered to the back (9)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your pocket hole jig for 3/4\" material'; only the 3/4\" rails get pocket holes"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: 2 Rails, 2 Stiles, 2 Thin Stiles, 4 Rail Ends, 6 Decorative Squares, 1 Back; frame opening 31 1/8 - 2 x (2 1/2 + 1) = 24 1/8 matches the steps[3] image; (b) every made part is installed; (c) mirror, adhesive, glue, hanging kit are in materials; (d) steps end with the mirror hung"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "3f7097c42b261951",
+      "e761f7f710619332",
+      "668e00812059c550",
+      "b4d4c172f30d59b5",
+      "f19d0d0b64c0a42b",
+      "94c61db2a7307cb8",
+      "1b8ac02e2822ba79",
+      "34b027ab15b3b36d"
+    ]
+  }
 }

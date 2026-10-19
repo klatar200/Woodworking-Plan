@@ -1,6 +1,6 @@
 {
   "slug": "craft-paint-wall-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,34 +10,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cutout and attach 2”X2” pieces to the face of your storage. One with an 1 1/5” hole in it."
+        },
         {
           "path": "steps[7].body",
-          "quote": "Cut a 2” piece of 3/4” material in half at a 45 degree angle. Mount one piece into your storage and one piece onto the wall so that they match fit each other and the one on the wall holds the storage ",
-          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Cut a 2” piece of 3/4” material in half at a 45 degree angle."
         }
-      ]
+      ],
+      "reason": "Searched cutList (3 rows: 18x40, 2x40, 2x17, all 'Plywood') and materials (1/2\" plywood sheet, pocket screws, stain) for the 2x2 face pieces and the 3/4\" French-cleat stock: no row/material matches; no count or length is given in the steps either. The storage body itself (panel, body and shelf pieces) is fully in the cut list, so the build can proceed and the unit can be hung another way -> Fix, not Unpublish."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Plywood",
-          "why": "no step mentions it (searched steps for plywood)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Plywood",
-          "why": "no step mentions it (searched steps for plywood)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Plywood",
-          "why": "no step mentions it (searched steps for plywood)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[0..2] are all named 'Plywood' (generic) but each is used: 18x40 panel = steps[0], 2x40 = steps[3], 2x17 = steps[4]; rejecting the sweep's 'no step mentions it' flag (searched steps for '18X40', '2”X40”', '2”x17”')"
     },
     "R4": {
       "result": "pass",
@@ -48,22 +39,69 @@
       "reason": "sheet layout not judged (area fits: part area 1×18×40 + 2×2×40 + 13×2×17 = 1322.0 sq in; bought 1×60×60 = 3600 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0..9] for fastener sizes: none stated (only 'pocket hole'); materials[1] 'Box of Kreg Pocket hole screws (see tools list)' - no size conflict"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Make horizontal lines every 3”s starting 2”s from the top until you’ve made 12 lines. Then make vertical intersecting lines every 2”s."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Cutout and attach 2”X2” pieces to the face of your storage."
+        }
+      ],
+      "reason": "Vertical lines have a 2\" spacing but no start offset or count on the 18\" wide panel (horizontal lines do give 'starting 2”s from the top'), and the number/positions of the 2x2 face pieces are not given. Step images steps[1], [6] (viewed) are photos with no dimensions."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panel cut and drilled (steps[0-2]) before body/shelf pieces attached to the back (steps[3-4]), face pieces after sanding (steps[5-6]), cleat mounted then hung (steps[7-8])"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cutout and then pocket hole 2”X40” body pieces to the back of your storage."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Plywood x2 thicknessIn 0.5"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" plywood parts; searched steps[0..9] and materials for /jig|setting|thick/i - no jig thickness setting stated for 1/2\" material. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) panel 18x40, 2x40 x2, 2x17 match steps[0],[3],[4]; (b) all made parts installed in steps[3-8]; (c) no unlisted non-fastener hardware in steps; (d) steps reach the hung unit in steps[8]. Missing 2x2/cleat stock is recorded under R2."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "a172512cc845a252",
+      "a2a52f137b82d23f",
+      "6af68f4f64c6008d"
+    ]
+  }
 }

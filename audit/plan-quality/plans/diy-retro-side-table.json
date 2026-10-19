@@ -1,6 +1,6 @@
 {
   "slug": "diy-retro-side-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -247,91 +247,87 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Fill all pocket holes and sand down the table. Once sanded, stain the piece and add hardware and legs (you can find links for the products I used on my blog).",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "the flagged blog mention (steps[6]) and materials[8..9] 'link for product on blog' only point to where the author bought generic tapered legs/angled plates; leg length (16\") and positions are shown in the viewed steps[0]/[6] images, so the build does not need the blog"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part the steps make (frame top/bottom/sides, shelf, back panel, drawer sides/front/back/bottom, drawer front) has a cutList row; searched steps[0..6] for 'cut'/'attach'"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used: Top/Bottom/Side Pieces steps[1], Shelf steps[2], Back Panel steps[3], 'Drawer Sides' rows (6\" and 11 3/4\") + Drawer Bottom + Drawer Front steps[4] (viewed steps[4] image shows 6\", 11 3/4\", 4 1/2\" parts)"
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[5]",
-          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 6 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[6]",
-          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 11.75 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[7]",
-          "quote": "Drawer Bottom — qty 1, 1 x 4.5 x 11.75 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x10 72\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x6 96\""
-        }
-      ],
-      "arithmetic": "cutList[5] 1×4.5: no listed stock has thickness 1 (±1/32) with width ≥ 4.5; stock = 0.75×9.25, 0.75×5.5; cutList[6] 1×4.5: no listed stock has thickness 1 (±1/32) with width ≥ 4.5; stock = 0.75×9.25, 0.75×5.5; cutList[7] 1×4.5: no listed stock has thickness 1 (±1/32) with width ≥ 4.5; stock = 0.75×9.25, 0.75×5.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[5]",
-          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 6 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[6]",
-          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 11.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[7]",
-          "quote": "Drawer Bottom — qty 1, 1 x 4.5 x 11.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "reason": "the '1 x 4 1/2 x 6\"' source rows use the same nominal-thickness notation as '1 x 10 x 16\"' (0.75 actual), so the importer's 1\" thickness on cutList[5..7] is a notation artifact; 4 1/2\" width <= 1x6 (5 1/2\") per §9",
+      "cause": "import"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (1x10, 1x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0..6] fastener sizes: '1 1/4\" pocket hole screws' = materials[2]; brad nails (steps[2],[4]) = materials[3] '1 1/4\" Brad Nails (optional)'; '6\" long drawer slides' = materials[4]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "shelf height 5 1/2\" (steps[2] text and image), frame 16\" x 10\" x 10\" (steps[1] image), pocket hole rows drawn (steps[1] image), drawer part sizes dimensioned (steps[4] image), legs 16\" and corner placement shown (steps[0],[6] images); drawer pull/slides relational or per manufacturer"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no 'as shown'/diagram references in steps; every step has an image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame, then shelf, then back panel, drawer built and slid in on slides, finish, legs last (steps[1..6])"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "attach the top & bottom panels to the side panels using wood glue and 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Assemble the drawer by attaching the sides with pocket holes & screws."
+        }
+      ],
+      "reason": "Searched steps[0..6], materials and viewed images steps[1],[2],[4] for a jig thickness setting (/jig|setting|thickness/i): none. Parts are 1x stock. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) shelf opening 5 1/2\" matches Drawer Front 5 1/2\" x 14 1/2\" and Shelf/Back Panel 14 1/2\" = 16\" - 2 x 3/4\"; drawer box: 11 3/4\" + 2 x 3/4\" = 13 1/4\" fits 14 1/2\" opening with slides; (b) all parts installed; (c) slides, pull, legs, plates in materials; (d) steps reach finished table"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "09ed3a31c5b7cd12",
+      "5a6c9dac3458c7df",
+      "48e8ce508a38da48",
+      "df9d1849d5f08a37",
+      "0f12b2360bde74a5",
+      "4209b1948866b24e"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].image (viewed)",
+      "quote": "9 1/2\"",
+      "what": "The frame depth is dimensioned 9 1/2\" in the steps[1] image, but the top/bottom/sides come from a 1x10 (9 1/4\" actual, §9; cutList source '1 x 10 x 16\"') and the steps[0] overview shows 10\" total depth (9 1/4\" + 3/4\" back panel = 10\"). One dimension is inconsistent; cut list and overview agree."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "compact-makeup-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -227,10 +227,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every cut/assembled part (Drawer Top, Side, Divider, Back, Hinge Support, Bottom, Lid, Lid Front, Drawer Bottom/Side/Front/Back, Drawer Divider) has a cutList row; searched steps[0..17] for 'cut' verbs"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 13 cutList parts are cut and used in steps[0..16] (Drawer Divider = steps[16] square dowel lengths)"
     },
     "R4": {
       "result": "pass",
@@ -241,48 +243,70 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x2, 0.5x0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fastener sizes in steps: 1 1/4\" coarse-thread Kreg screws -> materials[5]; 1 1/2\" flat-head wood screws -> materials[6]; no conflicting sizes for same use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "leg positions are drawn in the viewed images[1] overview (legs at the front corners) and the viewed steps[7] image dimensions the Bottom's mounting holes; mirror and lights are optional ('if desired'); hinge position 'about 4\" in from each edge' is a number"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Start by cutting Two Drawer Tops to size from 3/4\" plywood, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Start by cutting Two Drawer Tops to size from 3/4\" plywood, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Start by cutting Two Drawer Tops to size from 3/4\" plywood, as shown in the cutting diagram."
         },
         {
           "path": "steps[9].body",
-          "quote": "Cut the Lid from a piece of 3/4\" thick plywood as shown in the cutting diagram. Note that the depth of the Lid slightly shorter than the depth of the area if fits in to—by about 1/16\". This is to allo",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " from a piece of 3/4\" thick plywood as shown in the cutting diagram. Note that the depth of the Lid slightly shorter than the depth of the area if fits in to—by about 1/16\". This is to allow for the t",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut the Lid from a piece of 3/4\" thick plywood as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[9] have no step image; all 5 unattached images (images[0..4]) were viewed and are hero/overview photos plus one 36x16x30 overview drawing, none a cutting diagram. The dimensions do exist in cutList[0] and cutList[6] (Kreg-corrected 8 1/8x16, 13 1/2x19 5/8), so the build is not blocked."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts are made before use in order: Tops->Sides/Dividers->Back->Hinge Support->Bottom->Lid->hinges->drawers; hinges removed for finishing then reinstalled (steps[12], [17])"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your Kreg Jig for 3/4\" thick material' and every pocket-holed part is 3/4\" thick (cutList thicknessIn 0.75)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[17].body",
+          "quote": "install the leg brackets and legs"
+        }
+      ],
+      "reason": "(c) leg brackets are used by a step but no materials[].name matches /bracket/i (materials[7] is only '28\" Ash Table Legs'). Other parts made are all installed; steps reach the finished piece."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "7c6535307eabcdc1",
+      "77f726cd74b47a0a",
+      "53bd5366e0c4803d",
+      "d77d1e52a770e5dd",
+      "c2599746e312bffb",
+      "3b1231c1c26ce590",
+      "edd895a1256f0b28",
+      "5c2cf8e27d685899"
+    ]
+  }
 }

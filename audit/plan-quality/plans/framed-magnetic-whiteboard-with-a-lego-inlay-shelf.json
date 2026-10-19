@@ -1,6 +1,6 @@
 {
   "slug": "framed-magnetic-whiteboard-with-a-lego-inlay-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -212,35 +212,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[0] 'The plans I put together ... have overly precise measurement' is an author remark, not a pointer to a download; the cut list and the viewed overview render (22 61/64\" x 25 61/64\", 5\" shelf) carry the sizes"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all cut parts (frame rails/stiles, marker tray and borders, keeper, backdrop frame, filler strips, Lego shelf and borders) have cutList rows; mounting bracket stock is materials[6]"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Marker Tray Boarder Front",
-          "why": "no step mentions it (searched steps for marker/tray/boarder)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Marker Tray Boarder Sides",
-          "why": "no step mentions it (searched steps for marker/tray/boarder)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Marker Tray",
-          "why": "no step mentions it (searched steps for marker/tray)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Marker Keeper",
-          "why": "no step mentions it (searched steps for marker/keeper)"
-        }
-      ]
+      "result": "pass",
+      "reason": "rejecting the sweep flag: Marker Tray, Marker Tray Boarder and Marker Keeper rows are the parts grouped as 'Marker Tray' in the viewed steps[2] image (Frame / Lego Shelf / Marker Tray / Mounting Bracket); that no step assembles them is recorded under R14"
     },
     "R4": {
       "result": "unknown",
@@ -251,22 +231,92 @@
       "reason": "R5 precondition not met: cutList[3], cutList[6], cutList[10], cutList[12] not 0.75″ thick, so not all parts come from the one listed stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0..9] for fastener sizes (/\\d+\\/?\\d*\\s*(\"|in|inch)\\s*(screw|nail|bolt)/i): none stated; materials[1],[2] list unsized 'Small Screws' and 'Pocket Hole Screws' that no step uses"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut the half lap joints"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut the Lego dados"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut the crazy angles for the edges"
+        }
+      ],
+      "reason": "No number gives the half-lap location/depth, the Lego dado width/depth/spacing/count, the edge angles, the aluminum bracket bend positions (only '7/8 in' and '1/2 in' appear on a photo in steps[7]), or the magnet positions (steps[9]). The viewed steps[3]-[5] images are photographs without dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step refers to a diagram or 'as shown'"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts are cut and finished before assembly (steps[2]-[8], 'easier to sand and apply stain before assembly'); no step fastens something a later step must undo"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Pocket Hole Screws"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "I set some magnets in the mounting bracket and the top 2 corners of the frame to keep it from falling over while it is hanging."
+        }
+      ],
+      "reason": "Searched steps[0..9] for /glue|screw|nail|attach|secure|pocket/i: no step states a method or fastener for any joint except the half laps (steps[3]) and epoxy for magnets; no pocket-hole jig setting anywhere. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "I set some magnets in the mounting bracket and the top 2 corners of the frame to keep it from falling over while it is hanging."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "The individual slats in the backdrop section were cut into 2 long strips, rounded with a 1/8 round over bit and the thickness was shaved down by 1/8\""
+        }
+      ],
+      "reason": "(d)/(b) Searched all 10 steps and the description for /glue|screw|nail|attach|secure|join/i: the only joint instructions are 'half lap joints' (steps[3]) and epoxy for magnets (steps[9]); no step says how the frame, marker tray, backdrop, Lego shelf, whiteboard or mounting bracket are assembled or attached, so the steps end without installing parts the piece cannot be used without. (c) magnets (steps[9]) are not in materials[0..7]. (a) steps[6] shaves the backdrop slat 1/8\" but cutList[10] 'Backdrop Filler Strips' (source 1/2\" x 1\" x 1 3/4\") is 1/4\" thinner than the 3/4\" stock."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "5680a24ce809b814",
+      "8b816be5a2e9ade0",
+      "185121bbf55bf0f6",
+      "f64094210982cf54",
+      "c3608720261c69c1",
+      "6b120cc1131c7ce5",
+      "9ee91cd3e36dd80e",
+      "465cbc99d880b770",
+      "6682b9f077297156"
+    ]
+  }
 }

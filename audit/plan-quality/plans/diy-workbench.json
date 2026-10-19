@@ -1,6 +1,6 @@
 {
   "slug": "diy-workbench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -191,10 +191,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Leg, Long/Short Leg Filler, Bottom Rail, Top Rail, Side Rail, Shelf, Sub-Top and Top all have cutList rows; steps[0..10] cut nothing else"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows are cut and used in steps[0],[1],[3],[5],[7],[8],[10]"
     },
     "R4": {
       "result": "pass",
@@ -205,48 +207,70 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0..10] fastener sizes vs materials[2..5]: '2 1/2\" flathead wood screws' (4 x 4 short fillers + 6 x 4 long fillers = 40) = materials[5] qty 40; '2 1/2\" HD Screws' (8 bottom-rail + 8 top-rail) = materials[2] qty 16; '2 1/2\" standard pocket hole screws' (steps[6]) = materials[3]; '1 1/4\" coarse-thread Kreg Pocket-Hole Screws' (steps[10]) and '1 1/4\" screws' (steps[8]) = materials[4]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "all positions are dimensioned in viewed images: bottom rail pocket holes 7\" and 1/4\" holes 1\"/2 3/4\" (steps[1] image), top rail holes and 1 3/4\" x 45° trim (steps[3] image), fillers 8\" and 20\" (steps[2] image), overhang 3 5/8\" and 5/8\" (steps[4]/[10] images), overall 47 1/4\" x 29 1/4\" x 36 1/2\" (unattached overview); track per manufacturer"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "ers, and four Long Leg Fillers to length from 2 x 4 boards, as shown in the cutting diagram. Sand the parts smooth.\nTip: Be Picky when Picking Boards The base for this bench is made from 2x4 stud lumb",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "illers to length from 2 x 4 boards, as shown in the cutting diagram. Sand the parts smooth.\nTip: Be Picky when Picking Boards The base for this bench is made from 2x4 stud lumber. These boards are ine",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Cut four Legs, and four Short Leg Fillers, and four Long Leg Fillers to length from 2 x 4 boards, as shown in the cutting diagram."
         },
         {
           "path": "steps[7].body",
-          "quote": "cut out one Top, one Sub-Top, and one Bottom Shelf to size, as shown in the cutting diagram. The dimensions shown accommodate the Kreg Universal Clamp Trak Kit we installed. If you’re not going to add",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "-Top, and one Bottom Shelf to size, as shown in the cutting diagram. The dimensions shown accommodate the Kreg Universal Clamp Trak Kit we installed. If you’re not going to add this feature, make both",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "cut out one Top, one Sub-Top, and one Bottom Shelf to size, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[7] have no step image; the 4 unattached images (images[0..3], all viewed) are three room photos and one overall-dimension drawing (47 1/4\", 29 1/4\", 36 1/2\", 31\", 22\") - no cutting diagram. The part sizes exist in cutList[0..8] (Kreg-corrected) and the viewed steps[2] image gives 20\", 8\", 38\"."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg parts and rails cut (steps[0-1],[3],[5]), leg assemblies (2), top rails (4), side rails (6), top built and track installed (7-9), top and shelf last (10)"
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "settings are stated for every thickness: 'set up for 3/4\" material' (steps[1],[3],[5]) and 'switch ... to 1 1/2\" material' (steps[5]); but steps[1],[3] apply the 3/4\" setting to 1 1/2\" thick 2x4 rails (to attach the 3/4\" top/shelf), and whether that is right depends on jig geometry outside §9. R9 is recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Spread glue on the back face of each Short Leg Filler, and then clamp them to the Legs"
+        }
+      ],
+      "reason": "(c) glue is used in steps[2],[4],[8]; searched materials[0..6] for /glue|adhesive/i: none. (a) sizes agree: Sub-Top 29 1/4\" x 47 1/4\" less Top 27\" x 45\" = 2 1/4\" track strips; shelf 31\" = 38\" - 2 x 3 1/2\"; (b)/(d) all parts installed, bench finished."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "f1c3e337dd7c10ae",
+      "5b67b16bf62efe06",
+      "0c5551d214e19dd5",
+      "2ddb27476fab8695",
+      "10661c53736b7daf",
+      "e4222cf467881504",
+      "01fd560663065b7e",
+      "4f42244f495f9f55"
+    ]
+  }
 }

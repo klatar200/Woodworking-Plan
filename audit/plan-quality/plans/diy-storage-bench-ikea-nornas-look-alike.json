@@ -1,6 +1,6 @@
 {
   "slug": "diy-storage-bench-ikea-nornas-look-alike",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -43,38 +43,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " which end you will want as the top of your bench, then attach the legs to the opposite end using 1” pocket screws.\nFor more pictures and detailed tutorial, see the link under the \"Extras\" tab. Enjoy!",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[5] 'For more pictures and detailed tutorial, see the link under the \"Extras\" tab. Enjoy!' is an optional pointer after the last build instruction; every step has its own image and the cut list/materials are complete without it"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all parts exist in cutList (Top and Bottom, Vertical Pieces and Shelf, Long/Short Frame, Feet); steps[0] cuts 1x12 into 5 x 15\" and defers the 2x2s to the cut list"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Long Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Short Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Feet",
-          "why": "no step mentions it (searched steps for feet)"
-        }
-      ]
+      "result": "pass",
+      "reason": "rejecting the sweep flag: 'Long/Short Frame Pieces' and 'Feet' are the 2x2 leg frame that steps[1]-[2] drill and assemble ('put the legs together') and the viewed steps[2] image shows a rectangular 2x2 frame with four feet; steps[5] attaches it"
     },
     "R4": {
       "result": "pass",
@@ -85,23 +63,68 @@
       "reason": "R5 precondition not met: 2 stock types (1x12, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0..5] fastener sizes: '2 1/2 inch pocket screws' (steps[2]) = materials[3]; '1” pocket screws' (steps[3],[5]) = materials[2]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "pocket-hole locations (three per end on each 15\" piece) are drawn in the viewed steps[0] image; piece arrangement of the H, the end pieces and the leg frame is drawn in the viewed steps[3-5] images (schematic, no along-the-length dimension for the H); shelf at 'the middle' is relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "5 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "pocket holes drilled on all pieces (steps[0-1]), legs frame built (2), H built (3), H and ends attached between top and bottom (4), legs attached last (5); all pocket holes are on the 15\" pieces/2x2s that get screwed to the 4' pieces"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes on the 1x12's as shown on the diagram."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the inside of all the 2x2's as shown by the arrows."
+        }
+      ],
+      "reason": "Searched steps[0..5], materials and viewed steps[0]/[2] images for a jig thickness setting: none, for either the 3/4\" (1x12) or 1 1/2\" (2x2) stock. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Use 1” pocket screws and wood glue on all of the seams."
+        }
+      ],
+      "reason": "(c) wood glue is used by the step; searched materials[0..3] for /glue/i: none (only 1x12, 2x2, 1\" and 2-1/2\" pocket screws). (a) counts agree: 5 pieces at 15\", 2 boards of 1x12 and 2x2 as in materials; (b) all parts installed; (d) steps reach the finished bench."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "3e1f257bbecdeab1",
+      "cc61e097aecfd9db",
+      "a39f358638464864",
+      "53fde74d2648a132",
+      "28dd38f97f875e06"
+    ]
+  }
 }

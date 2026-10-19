@@ -1,38 +1,51 @@
 {
   "slug": "farmhouse-platform-bed-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "description",
-          "quote": " wanted something with ample storage. We capitalized on the all too often wasted space under a bed and built in three full-width drawers. Head over to the Extras tab to grab a full set of these plans!",
-          "why": "matches \"Extras\""
+          "quote": "Head over to the Extras tab to grab a full set of these plans!"
         },
         {
-          "path": "steps[11].body",
-          "quote": "Go checkout this out to see more pictures of this project! https://woodshopmike.com/diy-farmhouse-platform-bed-with-storage/",
-          "why": "matches \"https://\""
+          "path": "steps[3].body",
+          "quote": "To assemble, position the items as shown in the plans and screw the parts together."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "I used a scrap of plywood cut to the drawer opening shown in the plans and located the stile against it."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I start by cutting the grooves in all of the parts per the plans."
         }
-      ]
+      ],
+      "reason": "Build-critical layout (where rails sit on the posts, the drawer opening size/stile spacing, groove sizes) is deferred to 'the plans' (the Extras download); searched steps[0..12], cutList notes and materials for those values: none. The viewed step images (steps[3], [5], [10]) are workshop photos with no dimensions. Likely rather than certain because 14 of 17 images were not opened."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "h sawn lumber for this build, so I bought a bit more than what I needed to account for waste and \"design opportunities.\" To start off, I crosscut the material about 1” longer than needed for my parts.",
-          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "every part the steps cut or assemble (posts, rails, panels, face-frame rails/stiles, false-front rails/stiles/panels, drawer parts, slide braces, 1x4 slats) has a cutList row; the flagged '1\" longer than needed' in steps[0] is a rough-cut allowance, not a part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[19]",
+          "quote": "Mounting Piece False Drawers x 3 (0.75 x 4 x 10)"
+        }
+      ],
+      "reason": "Searched all steps (/mount/i, /false/i), description and materials: no step uses a 'mounting piece'; steps[6]-[7] only make the false drawer fronts and steps[10] only says 'attach the drawer fronts' to drawer boxes."
     },
     "R4": {
       "result": "unknown",
@@ -43,30 +56,94 @@
       "reason": "R5 precondition not met: unparseable stock materials[4]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "rdware by Rockler. Position the \"keyed\" plates and use 3/4” screws to attach it.\nThen secure the \"hole\" plates to the posts using 1-1/4\" pocket hole screws.\nWith the rails secured, install the drawer ",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Position the \"keyed\" plates and use 3/4” screws to attach it."
         }
-      ]
+      ],
+      "reason": "Searched materials[0..10] for /screw/i: only 1-1/4\" and 2-1/2\" pocket hole screws and unsized drywall screws; no 3/4\" screw is listed. Likely rather than certain because materials[5] Rockler hardware may include its own screws (not stated)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "With the rails secured, install the drawer slide supports with 1-1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Position the \"keyed\" plates and use 3/4” screws to attach it."
+        }
+      ],
+      "reason": "No number gives the height/position of the drawer slide supports or slides, the keyed bed-rail plates on the posts, the drawer-pull holes, or the dado/groove offsets (steps[1],[6]); the viewed step images are photographs without dimensions. Likely because only 5 of 17 images were opened."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep stands: referenced steps carry their own images; the unresolved 'shown in the plans' references are recorded under R1"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts milled and assembled (steps[1-8]), painted (9), final assembly with rails, slide supports, slides, drawers, fronts, slats last (10)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Now I drill pocket holes as needed in the stiles for 1-1/4” screws."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Now I drill pocket holes (for 1-1/4” screws) on the outside of the front and back pieces."
+        }
+      ],
+      "reason": "Searched steps[0..12] and materials for a jig thickness setting (/jig|setting|3\\/4.{0,12}material/i): none for the 13/16\" stiles, 3/4\" drawer parts or the 1 1/2\" frame rails (2-1/2\" screws, steps[3]). Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I applied contact cement to the surfaces to be joined with a chip brush"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "With this construction method, only glue the stiles and rails."
+        }
+      ],
+      "reason": "(c) contact cement (steps[2]) and wood glue (steps[1],[7]) are used; searched materials[0..10] for /cement|glue|adhesive/i: none. Counts otherwise agree: 4 face-frame rails, 8 stiles, 12+12+6 false-front parts for 6 fronts, 11 slats of 38\" for a 75\" twin frame."
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "f028fe3d0db18d3c",
+      "8f05d6c1a3a7b050",
+      "c4d5cbb79ccb507f",
+      "157620a33146dc1b",
+      "66ac3e0597d0dd70"
+    ]
+  },
+  "humanReview": "R5: hardwood is bought as '10' of unit 'Board feet' (materials[4] 'Hardwood ,, Board feet'); judging it against the cut list needs the board-foot definition and rough-stock allowance, which are outside §9. Also drawer slides are 28\" (materials[9]) while Drawer Side rows are 36\" long (cutList[11]) - whether that is adequate is outside §9."
 }

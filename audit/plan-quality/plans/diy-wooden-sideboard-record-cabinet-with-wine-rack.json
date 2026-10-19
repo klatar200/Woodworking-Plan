@@ -1,6 +1,6 @@
 {
   "slug": "diy-wooden-sideboard-record-cabinet-with-wine-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -295,33 +295,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[14].body",
-          "quote": "and, stain, seal, and add then hardware! You're all set!\nVisit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "and, stain, seal, and add then hardware! You're all set!\nVisit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "two flags rejected: steps[14] 'Visit my blog ... (direct link can be found in the \"Extras\" tab)' is an optional credit after the last build step; cutList[5] '(See Plans For Exact Lengths)' - the exact lengths are in the viewed steps[7] image (larger piece 22 3/4\", the two smaller pieces 11\" each, inside angle 30 degrees) and steps[7] text (11 1/2\" x 22 3/4\")"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part made in steps[1-12] (legs, panel frames/tops/bottoms, cabinet frames, braces, middle panel sides, X pieces, back/bottom panels, top, door sides/tops/bottoms) has a cutList row; searched steps for 'cut'/'build'/'install'"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Wine Racks: \"X\" Pieces (See Plans For Exact Lengths)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "rejecting the sweep flag on cutList[5] 'Wine Racks: \"X\" Pieces (See Plans For Exact Lengths)': it is the real X wine-rack stock used by steps[7]-[8], with sizes in the steps and viewed image; all other rows used (Cabinet Panels x3 = 2 outer frames + middle panel in steps[1],[4])"
     },
     "R4": {
       "result": "pass",
@@ -332,30 +315,71 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 2x2, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fastener sizes in steps: '3/4\" brad nails' (steps[8]) = materials[13]; '1\" brad nails' (steps[10]) = materials[9]; pocket-hole screws: '1 1/4\"' in viewed steps[11] image = materials[6]; no step gives a conflicting size"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "h wood putty later.\nNext, install your smaller 11.5\" top brace to hide any imperfections and square the front of the unit. This can be installed with brad nails or pocket holes and glue from the back.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95595a562eecc27e.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged top brace (steps[8]) is relational ('square the front of the unit'); bay clearances 24\" / 11.5\" (steps[3],[5]), frame 29\" / 20\" / 6\" / 12\" (steps[1] image), door 12\" x 16\" with 1/8\" gaps (steps[11]-[12]), X angle 30 degrees (steps[7] image) are numeric; knobs shown at the door tops in the viewed overview image"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved 'as shown' references; every step has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "outer frames, joined frames, middle brace and panel, bottoms, X wine rack, back panels, top, doors built then hung, panels then finish (steps[1..14])"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach all pieces using pocket holes, screws, and wood glue."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "I recommend building your cabinet doors to the exact measurements of your opening."
+        }
+      ],
+      "reason": "Pocket holes are used in 2x2 (1 1/2\") and 1x3 (3/4\") stock; searched steps[0..14], materials and viewed images steps[1],[11] for a jig thickness setting: none. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Add them on by stapling them to the inside of the cabinet doors."
+        },
+        {
+          "path": "record.importDiffs[14].source",
+          "quote": "1/2\" x 11 1/5\" x 21 1/2\""
+        }
+      ],
+      "reason": "(c) staples are used but searched materials[0..13] for /staple/i: none. (a) cutList[7] Small Back Panel width reads 11 1/5\" (Kreg source text) while Small Bottom Panel is 11 1/2\" (cutList[9]) and the bay it backs is 11.5\" (steps[3] '11.5\" on the other'); 24\" + 1 1/2\" + 11.5\" = 37\" = Cabinet Frames - so 11 1/5\" is likely a typo (second part is likely, staples certain). Other numbers agree: 40\" = 37\" + 2 x 1 1/2\"; 29\" legs + 1/2\" top = 29 1/2\"; 20\" + 2 x 1 1/2\" + 6\" = 29\"."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-06",
+    "imagesViewed": [
+      "c0fc8260ee4b50d9",
+      "95595a562eecc27e",
+      "46665ab31a656b4a",
+      "79ade8bfc5af16b1",
+      "8fcd8c7c3c24e6d9"
+    ]
+  }
 }
