@@ -77,11 +77,72 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "t screws and wood glue. Of the fourteen shelves, six are fixed (held in place with pocket screws), two upper backs, two lower backs and four aprons also need pocket holes. Please see attached diagram.",
+          "why": "matches \"see attached\""
+        },
+        {
+          "path": "steps[4].body",
+          "quote": " edging might be slightly wider than the plywood. If that is the case you can remove the excess using a hand plane or a router with a piloted flush trim bit. (See Extras section for explanations/demo)",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "plywood is often slightly narrower than the stated size, so the attached edging might be slightly wider than the plywood. If that is the case you can remove the excess using a hand plane or a router w",
+          "why": "matches \"the attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "t. By cutting an additional plywood side and wood edging you can make two 37 7/8\" wide bookshelves. The plan can also be modified to add a third or fourth shelving unit if you have a big wall to fill.",
+          "why": "cut sentence states 37 7/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "For the 75\" wide shelving unit cut the sides, shelves, front/back aprons, lower backs and upper backs from the three 3/4\" plywood sheets. If you want to make two smaller units cut the optional side fr",
+          "why": "cut sentence states 75\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x8, 1x4); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

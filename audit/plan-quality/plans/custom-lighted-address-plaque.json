@@ -173,11 +173,154 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "n the cutting diagram. On each Vertical Cleat, cut or sand a 1/4\" chamfer the ends, as shown. Next, drill six 3/16\" holes at the locations shown. Now cut a Hanger Cleat from 1x2 cedar and drill two 3/",
+          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Cap — qty 1, 0.875 x 3.5 x 22 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Long Cap Trim — qty 1, 0.875 x 1.5 x 23.75 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Short Cap Trim — qty 2, 0.875 x 1.5 x 3.5 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Sign Back — qty 1, 0.875 x 5.5 x 23.75 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Sign Trim — qty 2, 0.875 x 1.5 x 23.75 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Vertical Cleat — qty 2, 0.875 x 1.5 x 8.5 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x2 48\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 48\""
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x6 48\""
+        }
+      ],
+      "arithmetic": "cutList[0] 0.875×3.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 3.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[1] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[2] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[3] 0.875×5.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 5.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[4] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[5] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Cap — qty 1, 0.875 x 3.5 x 22 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Long Cap Trim — qty 1, 0.875 x 1.5 x 23.75 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Short Cap Trim — qty 2, 0.875 x 1.5 x 3.5 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Sign Back — qty 1, 0.875 x 5.5 x 23.75 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Sign Trim — qty 2, 0.875 x 1.5 x 23.75 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Vertical Cleat — qty 2, 0.875 x 1.5 x 8.5 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Hanger Cleat — qty 1, 0.875 x 1.5 x 8 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Hanger Spacer — qty 1, 0.875 x 1.125 x 1.5 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (1x2, 1x4, 1x6); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "jig accordingly, and choose shorter 1 1/4\"-long pocket-hole screws and flat-head screws for assembly. Also, cedar is usually rough on one face. We used that rough face as the back or underside in all ",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "cordingly, and choose shorter 1 1/4\"-long pocket-hole screws and flat-head screws for assembly. Also, cedar is usually rough on one face. We used that rough face as the back or underside in all cases.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "/8\" thick. So, the pocket-hole jig setups and screw lengths shown here are for that 7/8\" thickness. In some stores, cedar may have an actual thickness of 3/4\". Or, if you choose another wood, know tha",
+          "why": "\"shown here\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

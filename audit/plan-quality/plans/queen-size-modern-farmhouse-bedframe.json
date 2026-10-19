@@ -17,11 +17,50 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[12].body",
+          "quote": "s optional, but suggested if you don't use a box springs. Cut plywood to size (80\" x 60\") and place on top of your support boards. This will give extra stability and prevent the mattress from sagging.",
+          "why": "cut sentence states 60\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 5 stock types (1x4, 1x3, 1x6, 1x8, 2x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

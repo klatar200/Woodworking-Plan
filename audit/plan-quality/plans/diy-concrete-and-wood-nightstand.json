@@ -17,11 +17,117 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].title",
+          "quote": "Gather Supplies and Download Plans",
+          "why": "matches \"Download\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "for the drawer (14” glides). Get a bag of Quikrete Countertop Mix and any other supplies you may still need that we’ve outlined above or in the DIY Nightstand plans (https://gumroad.com/l/nightstand).",
+          "why": "matches \"https://\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": " use your miter saw to cut the boards to length. Inside the downloadable plans (https://gumroad.com/l/nightstand), you’ll find a complete cut list where we’ve outlined all of the dimensions you’ll nee",
+          "why": "matches \"download\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": " miter saw to cut the boards to length. Inside the downloadable plans (https://gumroad.com/l/nightstand), you’ll find a complete cut list where we’ve outlined all of the dimensions you’ll need to cut.",
+          "why": "matches \"https://\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "t’s dimensions and the complete cultist are outlined in the downloadable plans (https://gumroad.com/l/nightstand). This drawer box will all get Kreg screwed together after we drill the pocket holes. T",
+          "why": "matches \"download\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "he complete cultist are outlined in the downloadable plans (https://gumroad.com/l/nightstand). This drawer box will all get Kreg screwed together after we drill the pocket holes. The drawer front scre",
+          "why": "matches \"https://\""
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "laboration of wood and concrete in the nightstand make for an excellent piece of furniture! Remember to check out the downloadable plans for the DIY Nightstand here (https://gumroad.com/l/nightstand).",
+          "why": "matches \"download\""
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "laboration of wood and concrete in the nightstand make for an excellent piece of furniture! Remember to check out the downloadable plans for the DIY Nightstand here (https://gumroad.com/l/nightstand).",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "h 100% silicone. Then we'll cut a wire mesh support piece. The wire mesh is cut to 18″ by 18″. The mesh adds support to the concrete and helps ensure no cracking, deformities will occur during curing.",
+          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "h 100% silicone. Then we'll cut a wire mesh support piece. The wire mesh is cut to 18″ by 18″. The mesh adds support to the concrete and helps ensure no cracking, deformities will occur during curing.",
+          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x6, 1x8, sheet-0.5, sheet-0.75); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "The smaller, 1 ½” leg sides always screw into the larger 2 ½” leg fronts. Make sure to be mindful of left front, right front, left back, etc when assembling to ensure you face and assemble the legs co",
+          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "get Kreg screwed together after we drill the pocket holes. The drawer front screws in from the inside of the box. The drawer slide hardware mounts inside the nightstand base as well as on the sides of",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2cbc852ddb401594.webp"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "ill about 2/3 of the melamine form with your cement mixture. Remember the top of the concrete top will come from the bottom of this form. Work it all in, level it and vibrate it. Add the mesh toward t",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7832905f5856e1a7.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

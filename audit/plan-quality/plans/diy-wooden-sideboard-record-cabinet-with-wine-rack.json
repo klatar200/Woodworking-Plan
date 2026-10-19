@@ -293,11 +293,69 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[14].body",
+          "quote": "and, stain, seal, and add then hardware! You're all set!\nVisit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "and, stain, seal, and add then hardware! You're all set!\nVisit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
+          "why": "matches \"my blog\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[5].part",
+          "quote": "Wine Racks: \"X\" Pieces (See Plans For Exact Lengths)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 2x2, 1x3); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[8].body",
+          "quote": "h wood putty later.\nNext, install your smaller 11.5\" top brace to hide any imperfections and square the front of the unit. This can be installed with brad nails or pocket holes and glue from the back.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95595a562eecc27e.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

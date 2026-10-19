@@ -29,11 +29,71 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Visit https://jaimecostiglio.com/diy-framed-mirror/ for steps and complete how-to build this frame.",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Long side interior",
+          "why": "no step mentions it (searched steps for interior)"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Short side interior",
+          "why": "no step mentions it (searched steps for interior)"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Long side exterior",
+          "why": "no step mentions it (searched steps for exterior)"
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Short side exterior",
+          "why": "no step mentions it (searched steps for exterior)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 2×18.5 + 2×16.5 + 2×20 + 2×18 + kerf 6 cuts (8 parts − 2 boards, the fewest possible)×1/8 = 146.750″; bought: 2×96 = 192″; 146.750 ≤ 192"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

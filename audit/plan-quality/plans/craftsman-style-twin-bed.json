@@ -53,11 +53,65 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "materials[11].name",
+          "quote": "Set of non-mortise brackets (see Extras)",
+          "why": "matches \"Extras\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[0] Kreg text not parseable; cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[3] Kreg text not parseable; +5 more"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3], materials[4]"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "hem look slightly less chunky and a little more finished.\n- Think about what type of reveal you want your bed rails to have. I went with ¾” and this basically means choosing how much you want to inset",
+          "why": "placement with no measurement (no step image)",
+          "image": null
+        }
+      ]
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "er again without having to keep measuring it out each time (see photo at miter saw)\n- It’s nice to cut all the parts in advance and then assemble but I would wait to cut your mattress support slats un",
+          "why": "\"see photo\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

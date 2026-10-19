@@ -245,11 +245,82 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "a table saw, this is easily and inexpensively possible! See my blog for pictures of the little trick that I did that made it so easy to do! You could also just brad nail the shelves in, it will be fin",
+          "why": "matches \"my blog\""
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "red these boards in fabric before screwing them in, head to my blog to see more of that in depth! Use 1/2\" pocket holes and 1\" screws with ample glue to attach them. NOTE: I didn't screw these in unti",
+          "why": "matches \"my blog\""
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "n have straight roof boards if you would like! If you check out my blog post you can see how I used a sliver of a pvc pipe to trace and then just sanded them along the pencil line! Wasn't hard at all!",
+          "why": "matches \"my blog\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[12].part",
+          "quote": "Top rail",
+          "why": "no step mentions it (searched steps for rail)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (sheet-0.5, 0.5x6, 0.25x6, 0.25x96); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[10].body",
+          "quote": "and brad nail! Viola! Then I cut some of the 1/4\" poplar to size and glued and brad nailed it to the bottom of them...no the 1/4\" board is not inset, it is on the bottom and shows before it's painted!",
+          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the other side board that you didn't cut dados into now. Again I inset the board by an 1/8 of an inch!",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad4b07529607d0ce.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

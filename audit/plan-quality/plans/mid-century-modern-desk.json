@@ -725,11 +725,64 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, 1x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": " to length from 1x2 boards, as shown in the cutting diagram. Measure and mark carefully to make sure all of the like parts are exactly the same length. Also cut the Top Panel to size from 3/4\" plywood",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c52ed9b52fff36c.webp"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Now you can assemble the cabinet, as shown. Make sure that you align all of the pieces properly so that the cabinet top assembly is set back. This will provide space for the cabinet door when it gets ",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/611dbce8160c9a9b.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[9].body",
+          "quote": "Use a shelf-pin jig to drill shelf-pin holes 3/8\" deep, centered top-to-bottom, in the inside faces of the Side Panels. After that, you can attach the edging as shown to all of the cabinet parts.",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

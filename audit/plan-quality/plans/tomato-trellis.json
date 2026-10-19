@@ -125,11 +125,75 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Base",
+          "why": "no step mentions it (searched steps for base)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Rails — qty 4, 2 x 2.75 x 74 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Cedar 2x4, 2x4x8"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Cedar 2x6, 2x6x8"
+        }
+      ],
+      "arithmetic": "cutList[4] 2×2.75: no listed stock has thickness 2 (±1/32) with width ≥ 2.75; stock = 1.5×3.5, 1.5×5.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[4]",
+          "quote": "Rails — qty 4, 2 x 2.75 x 74 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

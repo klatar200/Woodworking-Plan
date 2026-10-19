@@ -11,12 +11,13 @@
 | Verdicts | Ship 0 · Ship (unverified) 0 · Fix 0 · Unpublish 0 · Human review 0 · not yet scored 610 |
 | Updated | 2026-10-18 |
 
-**Open questions for Keagan (Stage 2 gate):**
-1. `kreg-plans.json` was found in git history (the exact file the import read, commit `efb0c79`);
-   it reproduces all 610 plans exactly. Using it instead of your copy or a re-scrape — OK?
-2. Score the measurement checks (R4, R5, R10) against Kreg's **corrected** dimensions from the
-   source, recording the live-site error once as `cause: "import"`? (Recommended — otherwise
-   import damage in 508 plans hides any plan-cause measurement problem.)
+**Stage 2 gate — answered by Keagan 2026-10-18** (relayed by the orchestrating session),
+verbatim: "Yes to both: use the kreg-plans.json from git history, and score the measurement checks
+against Kreg's corrected sizes, recording the live-site error once as cause: import."
+1. Source = `kreg-plans.json` at git `efb0c79` (reproduces all 610 plans exactly).
+2. Measurement checks are scored on Kreg's corrected dimensions (`importDiffs[].correctRow`); the
+   live-site error is recorded once per plan as `importAffected: true` + `importDiffs`
+   (`cause: "import"`), never as a per-check finding.
 
 ## Stage 1 — set up (done)
 

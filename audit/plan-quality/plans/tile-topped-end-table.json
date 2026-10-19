@@ -89,11 +89,91 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": " sides of each leg. I have linked a very good U Tube video (Extras section) that describes how to do this on a table saw using a tapering jig. The two tapers start 2 1/2\" from the top of the leg, I ad",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "the inside top edge to hold the top assembly on as shown in the attached picture. It is a good idea to mark where you are putting the holes to prevent mistakes. Use 100 then 150 grit sandpaper to smoo",
+          "why": "matches \"the attached\""
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "kirts and legs. The skirts should be inset 1/4\" from the outside of the legs. See attached diagram. Keep in mind that the edge between the two tapered sides of the legs should face out at each corner.",
+          "why": "matches \"See attached\""
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "to attach the leg/skirt assembly to the top. The spacing on each side should be equal...on my table it was approximately 3/4\" from the center of the skirt to the edge of the top. See attached diagram.",
+          "why": "matches \"See attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Leg blanks — qty 4, 1.5 x 1.5 x 25.125 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x8 72\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Plywood, 1/2\" Thick 12 1/8\" X 12 1/8\""
+        }
+      ],
+      "arithmetic": "cutList[0] 1.5×1.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 1.5; stock = 0.75×7.25, sheet 0.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Leg blanks — qty 4, 1.5 x 1.5 x 25.125 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1x8, sheet-0.5); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "8 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

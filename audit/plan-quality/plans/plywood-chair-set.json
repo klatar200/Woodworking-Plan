@@ -4,11 +4,96 @@
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Start by breaking down the plywood using a circular saw and the rip cut and accu-cut saw guides.\nDownloadable plans and templates can be found in the \"Extras\" tab.",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Start by breaking down the plywood using a circular saw and the rip cut and accu-cut saw guides.\nDownloadable plans and templates can be found in the \"Extras\" tab.",
+          "why": "matches \"Download\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "s used to makes the sides. The templates are provide in the plans (https://rogueengineer.com/diy-1-sheet-plywood-chair-set-plans/) and should be adhered to the appropriate boards using spray adhesive.",
+          "why": "matches \"https://\""
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "See Full Plans in \"Extras\"",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "See Full Plans in \"Extras\"",
+          "why": "matches \"Full Plans\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "See Full Plans in \"Extras\"",
+          "why": "looks like a placeholder or an assembly, not a part"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet layout not judged (area fits: part area 1×48×96 = 4608.0 sq in; bought 1×48×96 = 4608 sq in)"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[9].body",
+          "quote": "Assemble the table base using wood glue and 1-1/2\" brad nails.",
+          "why": "1-1/2\" brad — no material line lists a 1-1/2\" fastener"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Assemble the table base using wood glue and 1-1/2\" brad nails.",
+          "why": "1-1/2\" nail — no material line lists a 1-1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[8].body",
+          "quote": "I slid the back in from the top of the chair and squirted some glue in the gap then clamped the back in place until the glue cured.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab0be21fc1d8a6e2.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

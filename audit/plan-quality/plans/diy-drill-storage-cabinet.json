@@ -4,11 +4,80 @@
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[13].body",
+          "quote": "Check out my YouTube video to show more of this build! https://www.youtube.com/watch?v=8tjL8GcqcjI&t=50s",
+          "why": "matches \"https://\""
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Go checkout this out to see more pictures of this project! https://woodshopmike.com/how-to-make-diy-drill-charging-cabinet/",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "needed for this project.\nFor the french cleats, I first cut 3\" wide pieces at 24-3/4\" long. I then set the blade to 45° and ripped them into two equal halves.\nI used a table saw and miter saw for this",
+          "why": "cut sentence states 3\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "oject.\nFor the french cleats, I first cut 3\" wide pieces at 24-3/4\" long. I then set the blade to 45° and ripped them into two equal halves.\nI used a table saw and miter saw for this process, but a ci",
+          "why": "cut sentence states 24-3/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[3].part",
+          "quote": "Bottom",
+          "why": "no step mentions it (searched steps for bottom)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet layout not judged (area fits: part area 1×27.25×30 + 3×11×27.25 + 2×11.75×30 + 1×11×27.25 + 6×1.75×27.25 + 1×19×28.75 = 3553.9 sq in; bought 1×48×96 = 4608 sq in)"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "There are several options to hang this cabinet, but I opted to simply secure it directly into studs.\nWith my wife's help, we located and secured the cabinet in place with 3\" construction screws.",
+          "why": "3\" screw — no material line lists a 3\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

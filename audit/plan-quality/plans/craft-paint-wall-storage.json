@@ -4,11 +4,66 @@
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "Cut a 2” piece of 3/4” material in half at a 45 degree angle. Mount one piece into your storage and one piece onto the wall so that they match fit each other and the one on the wall holds the storage ",
+          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Plywood",
+          "why": "no step mentions it (searched steps for plywood)"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Plywood",
+          "why": "no step mentions it (searched steps for plywood)"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Plywood",
+          "why": "no step mentions it (searched steps for plywood)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet layout not judged (area fits: part area 1×18×40 + 2×2×40 + 13×2×17 = 1322.0 sq in; bought 1×60×60 = 3600 sq in)"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

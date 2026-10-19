@@ -329,11 +329,65 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[11].part",
+          "quote": "Herringbone Pieces",
+          "why": "no step mentions it (searched steps for herringbone)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 8 stock types (2x2, 1x2, sheet-0.5, sheet-0.75, 0.25x1.75, 3.5x4.5, 1x4, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach front stiles! Still using same pocket hole depth of 1 1/2\" and same screws at 2 1/2\"! Make sure and glue!",
+          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[20].body",
+          "quote": "the hinges you use will determine how you do this next step! I used an inset concealed hinge so I has to add blocks on the inside of the buffet so the hinge had a place to attach to...but there are ma",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://learn.kregtool.com/content/uploads/2021/03/Step-21-4.jpg"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

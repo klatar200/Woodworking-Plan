@@ -149,11 +149,64 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[9].body",
+          "quote": "f the table to help support these. The half X pieces are 14.5\" with one end cut at 31.6 degrees and the other 58.6 degrees. You should have 8 of these cut. Pre drill all of your holes and screw it flu",
+          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (2x6, 2x4); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[14].body",
+          "quote": " is personal preference. Finish your table any way you want. Make sure to measure down 16.5 inches to attach the 37.75 inch horizontal support. Next, measure in 8.5 inches from the horizontal support ",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp"
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "own 16.5 inches to attach the 37.75 inch horizontal support. Next, measure in 8.5 inches from the horizontal support and attach the 18 inch supports with 15 degree ends parallel to each other. All att",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "6 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

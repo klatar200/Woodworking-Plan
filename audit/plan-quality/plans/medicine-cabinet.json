@@ -221,11 +221,71 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut all of the Case parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide",
+          "why": "cut sentence states 48\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet layout not judged (area fits: part area 2×5.5×36 + 1×5.5×18.5 + 1×5.5×18.5 + 2×5.5×18.5 + 1×18.5×22 + 1×19.875×23.875 + 2×4×18.5 = 1832.5 sq in; bought 1×48×48 = 2304 sq in)"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "edge of each Case Side. Trim and sand that edging, as well.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c0bc4238f1306c1.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "se parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide to help keep you",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide to help keep your saw straight and o",
+          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -101,11 +101,65 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": " to the Back using glue and 11/4\" coarse-thread pocket-hole screws. Because of the angles, getting things lined up perfectly can be a bit of a challenge. So, it’s a good idea to apply glue to the beve",
+          "why": "11/4\" screw — no material line lists a 11/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "tes a surface you can use to clamp the dust pickup in place. If you have a workbench with dog holes, you can use the dogs to hold the dust pickup in place by drilling holes in the base, as we did, tha",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4eec696cd60a1d0e.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "it set for 3/4\" material, drill pocket holes in both Sides, as shown. Sand the faces smooth.\nNext, drill a hole that’s centered in the Back to receive your vacuum hose. You’ll need a hole saw in the s",
+          "why": "\"as shown\" with no step image; 1 unattached image(s) in images[] to view",
+          "unattachedImages": 1
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

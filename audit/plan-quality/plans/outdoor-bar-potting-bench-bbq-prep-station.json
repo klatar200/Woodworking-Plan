@@ -281,11 +281,55 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[10].body",
+          "quote": " into. Using a jig saw, cut the areas you marked to 1 5/8\" x 1 5/8\" to leave a little allowance for a good fit. If your jigsaw can adjust to 22.5 degrees, do so for the holes for the angled supports. ",
+          "why": "cut sentence states 1 5/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Cut 3 - 1x6 fence boards to 26 1/4\", but cut 1 5/8\" squares out of the front two corners of one board, and the two back corners of the board that will go in the back. The center board will not require",
+          "why": "cut sentence states 1 5/8\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged; cutList[7] thinner than stock — would need planing/resawing, not judged; cutList[8] thinner than stock — would need planing/resawing, not judged; cutList[9] thinner than stock — would need planing/resawing, not judged; +3 more"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1x6, 2x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "6 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

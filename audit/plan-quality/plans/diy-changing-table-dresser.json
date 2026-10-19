@@ -281,11 +281,82 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": " the top and two large on the bottom. For more information and details on making and installing drawers and slides, see this post: https://www.woodshopdiaries.com/theres-no-wrong-way-to-make-a-drawer/",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[11].body",
+          "quote": "Cut your top from your remaining plywood to 24” wide and 53” long. Apply edge banding if desired. Then, center your top onto the dresser side to side and bring the back side flush. Screw top in place ",
+          "why": "cut sentence states 53\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x4, 1x2, 2x2, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "er, I measured down from the top 1 ½” and screwed another screw about halfway in. Then I bent my scrap wood piece (or you could use ¼” plywood here, too) around the screws and traced. Using a jig saw,",
+          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "op 1 ½” and screwed another screw about halfway in. Then I bent my scrap wood piece (or you could use ¼” plywood here, too) around the screws and traced. Using a jig saw, I cut along the marked curve.",
+          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Finally, it’s ready to button up and finish. Cut a piece of ¼” plywood backing about 50” x 26” and staple in place on the back side.",
+          "why": "26\" staple — no material line lists a 26\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[11].body",
+          "quote": "onto the dresser side to side and bring the back side flush. Screw top in place from the back side like shown. If I had planned this through better, I would have drilled pocket holes in the sides prio",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d33f68112c53bf3.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

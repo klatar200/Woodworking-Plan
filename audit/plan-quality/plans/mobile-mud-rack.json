@@ -17,11 +17,67 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "Pull the following parts: sides x 2 / ends x 2 - Using the attached drawings, layout and mark all your locations for holes. Prior to drilling your pocket holes - check your jig and your drill collar t",
+          "why": "matches \"the attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "untersink bit, or a 3/8\" drill bit, open up the hole so the screw head sits flat when fully seated. Apply wood glue between the two parts and screw it in place. Repeat the same process for the other s",
+          "why": "3/8\" screw — no material line lists a 3/8\" fastener"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Using the shelf base (1/4\") plywood, wood glue and 18ga brad nails, secure it to the bottom of the 2 upper shelf sides. If you plan on using this shelf for heavier items, screws can be used in place o",
+          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "sing the shelf base (1/4\") plywood, wood glue and 18ga brad nails, secure it to the bottom of the 2 upper shelf sides. If you plan on using this shelf for heavier items, screws can be used in place of",
+          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "5 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

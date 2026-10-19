@@ -329,11 +329,113 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut a 2x4 at 36 1/2\" and install using pocket holes on the ends with glue and screws in the center of the bottom shelf as seen in the picture. Cut a 1/2\" plywood to 39 1/2\"x60\". Cut a 3 1/2\" square ou",
+          "why": "cut sentence states 36 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "your miter saw width, attach the other two boards. My miter saw measured 20 inches wide so I measured 10 inches on either side of the center board and checked the distance with my saw just to be sure.",
+          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "Legs — qty 4, 3.5 x 3.5 x 30 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x4 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Plywood, 1/2\" Thick Full Sheet"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Plywood, 1/2\" Thick Half Sheet"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 1x4 96\""
+        }
+      ],
+      "arithmetic": "cutList[2] 3.5×3.5: no listed stock has thickness 3.5 (±1/32) with width ≥ 3.5; stock = 1.5×3.5, sheet 0.75, sheet 0.5, sheet 0.5, 0.75×3.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[2]",
+          "quote": "Legs — qty 4, 3.5 x 3.5 x 30 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (2x4, sheet-0.75, sheet-0.5, 1x4); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "0 inches and two 2x4's at 42 inches. Using clamps, glue and screws, attach the two 60 inch boards on the long side of the table with the tops matching the tops of the legs and the ends matching the si",
+          "why": "42\" screw — no material line lists a 42\" fastener"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "/2\". Adjust the 22 1/2\" dimension if needed. Using glue and screws, attach the bottom inside of the already assembled sides and back of the two drawers. Cut 2 pieces of 1x4 pine to 26 inches long, adj",
+          "why": "22 1/2\" screw — no material line lists a 22 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "for the pocket top came to the exact height of my Miter saw. Be sure to measure your saw and adjust the height of these pieces accordingly. Attach two boards to the two ends of the table top with glue",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/16884e07dacdfea9.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

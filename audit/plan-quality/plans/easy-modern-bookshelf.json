@@ -161,11 +161,106 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/modern-diy-bookshelf/ Video tutorial at - https://youtu.be/8ijBB8Ae5-o",
+          "why": "matches \"https://\""
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/modern-diy-bookshelf/ Video tutorial at - https://youtu.be/8ijBB8Ae5-o",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Long Side — qty 1, 1.5 x 9.5 x 64 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Short Side — qty 1, 1.5 x 9.5 x 51.5 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Bottom — qty 1, 1.5 x 9.5 x 12 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x10 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 2x6 72\""
+        }
+      ],
+      "arithmetic": "cutList[0] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×9.25, 1.5×5.5; cutList[1] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×9.25, 1.5×5.5; cutList[2] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×9.25, 1.5×5.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Long Side — qty 1, 1.5 x 9.5 x 64 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Short Side — qty 1, 1.5 x 9.5 x 51.5 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Bottom — qty 1, 1.5 x 9.5 x 12 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (2x10, 2x6); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "s. However, you can also use 1x6 boards if you want the shelf closer to the wall. In that case the pocket holes will be made at the 3/4\" thickness setting and attached using 1 1/4\" pocket hole screws.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

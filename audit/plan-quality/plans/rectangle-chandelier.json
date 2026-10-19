@@ -125,11 +125,77 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "t. Place the four frames on the fabric. Cut fabric 2 1/2'' to 3'' bigger on each side of each frame. Stretch and fold ends over and staple to inside of 1x2 frames. Start on the long side and work your",
+          "why": "cut sentence states 3\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Stiles",
+          "why": "no step mentions it (searched steps for stil)"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Stiles",
+          "why": "no step mentions it (searched steps for stil)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, 1x4); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": " step and glue and nail them in from the sides with 2'' finish nails. Either option will work, I ended up doing this on my build because I was out of 2 1/2'' pocket hole screws and in a remote locatio",
+          "why": "2\" nail — no material line lists a 2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": " the fabric frames into the light fixture box one at a time. Make sure to push them in from the inside of the box frame. Once installed, staple or screw them to the 2x2 frame from the inside. Note: My",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/92968942f434a301.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "3 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

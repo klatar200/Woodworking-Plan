@@ -401,11 +401,155 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "ds labeled in step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
+          "why": "matches \"have attached\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": " to drill all of the pocket holes for the frame assemblies. The attached diagram shows the approximate location of pocket holes in the frame assemblies. Please note that the top and bottom frames have",
+          "why": "matches \"The attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[8].body",
+          "quote": "cut grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of the inside edges of the rear stiles. Alternatively the grooves can be cut on a table saw. Now mark the legs o",
+          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "cut grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of the inside edges of the side front stiles. Alternatively the grooves can be cut on a table saw. Now mark the ",
+          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "and grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of both edges of the center stiles. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both e",
+          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": " both edges of the center stiles. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the center stiles. Alternatively the grooves and tongues can be cut on a table saw.",
+          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": " six rails. Use the groove cutter bit adjusted to cut 1/4\" X 3/8\" grooves in the center of the top and bottom side rails inside edges and both edges of the side middle rails. Then use the tongue cutte",
+          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": " both edges of the side middle rails. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the six rails. Alternatively the grooves and tongues can be cut on a table saw.",
+          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "9\" Drawer Front - Oak — qty 1, 0.75 x 9 x 28"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "8\" Drawer Front - Oak — qty 1, 0.75 x 8 x 28"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Top - Oak — qty 1, 0.75 x 21.25 x 36 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "3/4\" Oak, 1x8 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "3/4\" Poplar, 1x4 96\""
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "1/2\" Poplar, 1/2\" X 10 96\""
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1/2\" Poplar, 1/2\" X 8 96\""
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1/2\" Poplar, 1/2\" X 6 96\""
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1/2\" Poplar, 1/2\" X 4 96\""
+        }
+      ],
+      "arithmetic": "cutList[1] 0.75×9: no listed stock has thickness 0.75 (±1/32) with width ≥ 9; stock = 0.75×7.25, 0.75×3.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, sheet 0.25, 0.75×3.5; cutList[2] 0.75×8: no listed stock has thickness 0.75 (±1/32) with width ≥ 8; stock = 0.75×7.25, 0.75×3.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, sheet 0.25, 0.75×3.5; cutList[6] 0.75×21.25: no listed stock has thickness 0.75 (±1/32) with width ≥ 21.25; stock = 0.75×7.25, 0.75×3.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, sheet 0.25, 0.75×3.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[1]",
+          "quote": "9\" Drawer Front - Oak — qty 1, 0.75 x 9 x 28",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "8\" Drawer Front - Oak — qty 1, 0.75 x 8 x 28",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Top - Oak — qty 1, 0.75 x 21.25 x 36 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x8, 1x4, 0.5x0.5, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[14].body",
+          "quote": "Prepare for assembly by very accurately measuring and marking the distance of the lower edge of the frames from the bottom feet. The bottom frame should be flush with the bottom side rail and the top ",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e24f9abc22ef7584.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

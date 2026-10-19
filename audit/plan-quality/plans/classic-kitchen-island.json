@@ -209,11 +209,93 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Leg — qty 4, 3 x 3 x 34.5 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x6 48\""
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x4 96\""
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x4 48\""
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 1x2 96\""
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Board, 1x2 48\""
+        }
+      ],
+      "arithmetic": "cutList[0] 3×3: no listed stock has thickness 3 (±1/32) with width ≥ 3; stock = 0.75×5.5, 0.75×5.5, 0.75×3.5, 0.75×3.5, 0.75×1.5, 0.75×1.5, sheet 0.75",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Leg — qty 4, 3 x 3 x 34.5 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "Next, attach the Shelf assemblies to the same Legs using 1 1/4\" fine-thread pocket hole screws, as shown. Make sure you have the Shelves spaced properly before you drive in the screws.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aecfb82f149b52a6.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "19 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

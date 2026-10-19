@@ -53,11 +53,55 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[9].body",
+          "quote": " visible layers, attach the wood veneer using an iron (follow instructions on package). The wood veneer comes in 3/4\" width, so you will need to trim off the excess 1/4\" using the wood veneer trimmer.",
+          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": " visible layers, attach the wood veneer using an iron (follow instructions on package). The wood veneer comes in 3/4\" width, so you will need to trim off the excess 1/4\" using the wood veneer trimmer.",
+          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet layout not judged (area fits: part area 2×15×25 + 1×15×18 + 1×14.5×17 + 3×6×15 + 3×6×15 + 6×6×14 + 3×13×15 + 3×7.5×16.75 + 1×1.5×17 = 3297.9 sq in; bought 1×48×96 = 4608 sq in)"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

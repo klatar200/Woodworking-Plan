@@ -425,11 +425,63 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "Cut the 4x4 legs and attach flush with each corner of the dresser body using wood glue and 2 1/2\" wood screws through the plywood bottom.",
+          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[20].part",
+          "quote": "Backing",
+          "why": "no step mentions it (searched steps for backing)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[8] thinner than stock — would need planing/resawing, not judged"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 9 stock types (1x6, 1x8, 1x2, 1x4, 4x4, 2x2, sheet-0.5, sheet-0.25, sheet-0.125); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "Cut the 4x4 legs and attach flush with each corner of the dresser body using wood glue and 2 1/2\" wood screws through the plywood bottom.",
+          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

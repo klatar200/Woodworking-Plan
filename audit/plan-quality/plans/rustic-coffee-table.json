@@ -4,11 +4,80 @@
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "Table Leg Width Boards — qty 9, 2.5 x 3 x 25"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x2 96\""
+        }
+      ],
+      "arithmetic": "cutList[2] 2.5×3: no listed stock has thickness 2.5 (±1/32) with width ≥ 3; stock = 0.75×2.5, 0.75×1.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[2]",
+          "quote": "Table Leg Width Boards — qty 9, 2.5 x 3 x 25",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "Place two of the 18” 1x2 boards across eight of your 48” 1x3 boards and screw in with 1 ¼” wood screws. Repeat until you have three shelf units. 1x2 boards should be placed 6” from each edge.",
+          "why": "48\" screw — no material line lists a 48\" fastener"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”. Secure with a bolt, washer, and hex nut. The holes drilled with the spade bit will be the placement of the boards. Tighten the nuts to ensure the stability of",
+          "why": "19\" bolt — no material line lists a 19\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

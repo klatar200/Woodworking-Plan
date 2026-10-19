@@ -77,11 +77,77 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (2x2, 1x2, 0.25x1.5); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[9].body",
+          "quote": "s into the wall anchors—you can use 1/4\" coarse-thread Kreg screws. The space is tight, though, so a drill won’t fit. You can use a 90° drill attachment, though, as shown below.\n\n**Tip:** Drive Right ",
+          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[9].body",
+          "quote": "o use one hole in each Cleat, but having two offers options. To secure your new dressing mirror to the wall, first mark the location of each cleat on the wall. If there’s no stud behind either cleat, ",
+          "why": "placement with no measurement (no step image)",
+          "image": null
+        }
+      ]
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Start by cutting two Legs to length from 2x2 pine, as shown in the cutting diagram. Better-grade 2x2s will have square corners that you may want to soften. You can either sand the corners, or round ov",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "g two Legs to length from 2x2 pine, as shown in the cutting diagram. Better-grade 2x2s will have square corners that you may want to soften. You can either sand the corners, or round over the edges us",
+          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "rill won’t fit. You can use a 90° drill attachment, though, as shown below.\n\n**Tip:** Drive Right When Space is Tight When space is tight, it can be difficult or impossible to position a drill and a l",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

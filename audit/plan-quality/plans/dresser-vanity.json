@@ -455,11 +455,65 @@
       "reason": "4 unit-marked lengths"
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[13].body",
+          "quote": "! There you have it!! If you would prefer two doors instead of drawers on this vanity check out my blog (link listed in extras) and also get all the direct links to the products I used on this vanity!",
+          "why": "matches \"my blog\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[10].body",
+          "quote": "ng your drawer boxes! The plan calls for 1x6s ripped down to 4 1/2\" to make your drawer boxes but you can use 1x4s if you would prefer not to rip, I just wanted the drawers as big as possible (only an",
+          "why": "cut sentence states 4 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[12] Kreg text not parseable; cutList[13] Kreg text not parseable; cutList[16] Kreg text not parseable"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 8 stock types (3.25x48, 4x4, 1x2, 2x6, 2x4, 1x6, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[11].body",
+          "quote": "cds or playing cards...whatever I have laying around that is about the size gap I'm going for!! Then just squeeze some glue on it and stick a few brad nails in from the inside of the drawer!! All set!",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eb68809267014807.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "3 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

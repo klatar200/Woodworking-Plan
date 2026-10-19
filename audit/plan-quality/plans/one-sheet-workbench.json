@@ -53,11 +53,62 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet size not written in material name"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "e parts for this project get cut from one sheet of plywood, as shown in the cutting diagram. To get the parts from one sheet, you need to cut them in a certain sequence. Double-check your measurements",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        },
+        {
+          "path": "steps[0].body",
+          "quote": " get cut from one sheet of plywood, as shown in the cutting diagram. To get the parts from one sheet, you need to cut them in a certain sequence. Double-check your measurements, and mark each part the",
+          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "-wide cut, and then rip a long strip for the Shelf Support, as shown. Now you can reset the Rip-Cut to 3\", and then crosscut ten 3\"-wide strips from the remainder of the sheet. Finally, cut a 16 1/4\"-",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

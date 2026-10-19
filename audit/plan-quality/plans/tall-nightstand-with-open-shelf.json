@@ -353,11 +353,74 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "ble saw jig with a few scraps and some clamps to make quick work of cutting leg tapers on the table saw. I will be sharing my tapered leg jig for this build on my blog https://housefulofhandmade.com/.",
+          "why": "matches \"my blog\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "ble saw jig with a few scraps and some clamps to make quick work of cutting leg tapers on the table saw. I will be sharing my tapered leg jig for this build on my blog https://housefulofhandmade.com/.",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "One of the shelf boards needs to be ripped down to 5\" wide. Then drill pocket holes set for 3/4\" thick material in both ends of the shelf boards. For the front board, make sure the pocket holes are no",
+          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 7 stock types (1x6, 1x4, 1x2, 2x2, 1x8, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[12].body",
+          "quote": "ck pieces. Make sure to drill pocket holes so they are on the opposite side of the board as the groove. Attach the side pieces to one of the front/back pieces with wood glue and 1\" pocket hole screws.",
+          "why": "1\" screw — no material line lists a 1\" fastener"
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Attach the other drawer box front/back to close up the box with 1\" pocket hole screws and wood glue. Ensure the box stays square.",
+          "why": "1\" screw — no material line lists a 1\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

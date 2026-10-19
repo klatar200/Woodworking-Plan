@@ -245,11 +245,93 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "Fill all pocket holes and sand down the table. Once sanded, stain the piece and add hardware and legs (you can find links for the products I used on my blog).",
+          "why": "matches \"my blog\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 6 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 11.75 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Drawer Bottom — qty 1, 1 x 4.5 x 11.75 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x10 72\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x6 96\""
+        }
+      ],
+      "arithmetic": "cutList[5] 1×4.5: no listed stock has thickness 1 (±1/32) with width ≥ 4.5; stock = 0.75×9.25, 0.75×5.5; cutList[6] 1×4.5: no listed stock has thickness 1 (±1/32) with width ≥ 4.5; stock = 0.75×9.25, 0.75×5.5; cutList[7] 1×4.5: no listed stock has thickness 1 (±1/32) with width ≥ 4.5; stock = 0.75×9.25, 0.75×5.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[5]",
+          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 6 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Drawer Sides — qty 2, 1 x 4.5 x 11.75 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Drawer Bottom — qty 1, 1 x 4.5 x 11.75 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1x10, 1x6); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

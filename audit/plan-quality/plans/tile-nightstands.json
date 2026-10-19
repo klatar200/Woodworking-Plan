@@ -53,11 +53,90 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "e leg and should go from 1 1/2\" to 1\" at the bottom. Please see attached diagram. Make sure to mark the tapered sides as you will need to assemble the table with the edge between the tapers facing the",
+          "why": "matches \"see attached\""
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "two pocket holes in both ends of the top stiles as shown in the attached diagram. Make sure to mark the location of the pocket holes before drilling to prevent mistakes. Use Titebond I wood glue and K",
+          "why": "matches \"the attached\""
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "2\" wide by 1/4\" deep rabbit on the inside of the top frame to hold the tile. See attached diagram. Note that you will need to use a chisel to square the corners as the router will leave round corners.",
+          "why": "matches \"See attached\""
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "the inside top edge to hold on the top assembly as shown in the attached diagram. It is a good idea to mark where you are putting the holes to prevent mistakes. Use 100 - 180 grit sandpaper to smooth ",
+          "why": "matches \"the attached\""
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "kirts and legs. The skirts should be inset 1/4\" from the outside of the legs. See attached diagram. Keep in mind that the edge between the two tapered sides of the legs should face out at each corner.",
+          "why": "matches \"See attached\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Use four Kreg 1 1/4\" pocket screws to attach the leg skirt assembly to the top. The spacing on each side should be 1 1/4\" from the center of the skirt to the edge of the top. See attached diagram.",
+          "why": "matches \"See attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "he four table skirts as described in the parts list. Using a 3/16\" beading router (I use a Freud 80-104) in a router table cut a bead along the lower edge of all four skirts. Using a Kreg pocket screw",
+          "why": "cut sentence states 3/16\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1.5x7.25, 1x8); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "oth ends of the top stiles as shown in the attached diagram. Make sure to mark the location of the pocket holes before drilling to prevent mistakes. Use Titebond I wood glue and Kreg 1 1/4\" pocket scr",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6aaf7bef693ae498.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "14 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

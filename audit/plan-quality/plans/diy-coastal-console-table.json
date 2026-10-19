@@ -4,11 +4,76 @@
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "Visit our site https://www.charlestoncrafted.com/diy-coastal-console-table/ for all the details including the specific cut list!",
+          "why": "matches \"our site\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Visit our site https://www.charlestoncrafted.com/diy-coastal-console-table/ for all the details including the specific cut list!",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Cut List on www.charlestoncrafted.com — qty 1, 1 x 1 x 1"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 54 feet"
+        }
+      ],
+      "arithmetic": "cutList[0] 1×1: no listed stock has thickness 1 (±1/32) with width ≥ 1; stock = 0.75×2.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Cut List on www.charlestoncrafted.com — qty 1, 1 x 1 x 1",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: cutList[0] not 0.75″ thick, so not all parts come from the one listed stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

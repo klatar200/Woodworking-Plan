@@ -173,11 +173,69 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "description",
+          "quote": " for the Patchwork Plank Dining Table previously posted. This is a quick and easy build with the help of a few Kreg Jig pocket holes! You can find plans for the table build here: http://bit.ly/2ebZtfM",
+          "why": "matches \"http://\""
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Pull out your favorite Kreg Jig and follow the attached layout, it should help with the structure and no misplaced holes that butt up against each other ineffectively. The good news is that you're onl",
+          "why": "matches \"the attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (1x6, 2x4, 2x6); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "ntioned in the table build, it's very important to make sure the face down side is flush so you're going to have to use a healthy dose of clamps (you can never have too many!) to have a smooth reveal.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e1f7a8290952a42e.webp"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "drill 1.50\" pocket holes on the ends of all 6 boards. Glue the bottoms and sides and attach with 2-1/2\" pocket screws. The 2x4's need to be spaced covering the joints of the planks for added strength.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8db88efc7839a2e1.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

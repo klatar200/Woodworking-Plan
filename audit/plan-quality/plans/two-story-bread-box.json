@@ -197,11 +197,59 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[8].body",
+          "quote": "Using a circular saw with the edge guide, cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and cut 1 piece for the top flap 15\" x 5\".",
+          "why": "cut sentence states 4 1/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Using a circular saw with the edge guide, cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and cut 1 piece for the top flap 15\" x 5\".",
+          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "he cutting board through a planner to smooth the top and bottom. As assembled, the cutting board will be 8 1/2\" deep. Trim the cutting board to 8 1/4\" with a table saw or circular saw with edge guide.",
+          "why": "cut sentence states 8 1/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x4, 1x6, 1x2, 1x3); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -293,11 +293,64 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x2, 0.25x0.75, 0.625x1.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "n. The easiest way to do this is with a Kreg Shelf Pin Jig.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e622e4ed2d2ba7d5.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "Cut one Top to size from 3/4\" plywood, as shown in the cutting diagram. Also cut Top Side Molding and Top Front Molding to size from a piece of base cap molding (which you can get at a home center). N",
+          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        },
+        {
+          "path": "steps[7].body",
+          "quote": " one Top to size from 3/4\" plywood, as shown in the cutting diagram. Also cut Top Side Molding and Top Front Molding to size from a piece of base cap molding (which you can get at a home center). Note",
+          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

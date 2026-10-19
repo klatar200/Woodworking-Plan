@@ -281,11 +281,94 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[12].body",
+          "quote": "Make sure and visit http://builditcraftitloveit.com for more DIY projects!",
+          "why": "matches \"http://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "ke, I placed mine in pairs to create the cutout shape, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up",
+          "why": "cut sentence states 7 1/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "reate the cutout shape, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to",
+          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
+          "why": "cut sentence states 7 1/4\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
+          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: unparseable stock materials[2]"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
+          "why": "1\" staple — no material line lists a 1\" fastener"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Attach top back supports (1- 1 1/2\" x 3 1/2\" x 59\") Countersink this on the ends and staple each decorative slat through the top back support.",
+          "why": "59\" staple — no material line lists a 59\" fastener"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach top side support (2- 1 1/2\" x 3 1/2\" x 29 3/4\") countersink screws and staple into decorative slats.",
+          "why": "29 3/4\" screw — no material line lists a 29 3/4\" fastener"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach top side support (2- 1 1/2\" x 3 1/2\" x 29 3/4\") countersink screws and staple into decorative slats.",
+          "why": "29 3/4\" staple — no material line lists a 29 3/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

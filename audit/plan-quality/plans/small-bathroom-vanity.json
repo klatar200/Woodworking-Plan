@@ -287,11 +287,74 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[10].body",
+          "quote": "For more details and picture tutorial of this project visit, http://www.mylove2create.com/2016/09/small-bathroom-vanity.html",
+          "why": "matches \"http://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[6].part",
+          "quote": "Top inset pieces",
+          "why": "no step mentions it (searched steps for inset)"
+        },
+        {
+          "path": "cutList[7].part",
+          "quote": "Top inset pieces",
+          "why": "no step mentions it (searched steps for inset)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[7] Kreg text not parseable"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 6 stock types (2x3, 1x3, 2x2, 2x6, 1x6, sheet-0.75); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "Build a 1x3 frame as shown using 45 degree bevel cuts. Attach with wood glue and 2'' finish nails.",
+          "why": "2\" nail — no material line lists a 2\" fastener"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Using 3/4'' pocket holes and 1 1/4'' pocket hole screws attach the 1x3 frame to the 2x3 top frame as pictured.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "6 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

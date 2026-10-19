@@ -185,11 +185,78 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut four 23\"-long pieces of iron-on oak-veneer edging and apply one piece to the top edge of each Side. Trim ends and edges of the edging flush using either a veneer trimmer or a sharp utility knife. ",
+          "why": "cut sentence states 23\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "four Cleats, mitering each end at 45°, and making the cleats 1/16\" shorter than the inside distance you measured. Sand the Cleats smooth, and then glue them in place on the top assembly, as shown. Cla",
+          "why": "cut sentence states 1/16\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "iece of 4\"-thick cushion foam to 22\" x 22\". Then cut a 27\" x 27\" piece of 1/2\"-thick batting, and create 2 1/2\" x 2 1/2\" notches in the corners. Select a piece of upholstery fabric you like, and cut i",
+          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "a 27\" x 27\" piece of 1/2\"-thick batting, and create 2 1/2\" x 2 1/2\" notches in the corners. Select a piece of upholstery fabric you like, and cut it to 36\" x 36\". Then lay the cushion parts out to pre",
+          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, 0.5x5.5, 2x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[10].body",
+          "quote": "Cut the Cushion Panel to size from 1/2\" plywood, as shown in the cutting diagram. On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a",
+          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
+          "unattachedImages": 6
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "on Panel to size from 1/2\" plywood, as shown in the cutting diagram. On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a piece of 4\"-",
+          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
+          "unattachedImages": 6
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

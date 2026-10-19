@@ -269,11 +269,56 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (1x2, 1x6, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram.",
+          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram.",
+          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
+          "unattachedImages": 5
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -221,11 +221,62 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "template for the top piece. You can download this from the “Extras” tab. Once you print it, you will need to tape the three pages together so the lines line up. Then, cut along the black lines.\nCut tw",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "l need to print off the template for the top piece. You can download this from the “Extras” tab. Once you print it, you will need to tape the three pages together so the lines line up. Then, cut along",
+          "why": "matches \"download\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 6 stock types (2x8, 2x6, 2x2, 2x4, 1x2, 1x4); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[12].body",
+          "quote": "used 1” wide strips. Cut 12 pieces at 16” long and glue and nail in place between the front and back arms. These pieces are supposed to go up and “wrap around” the arms. Use long brad nails—at least 2",
+          "why": "16\" nail — no material line lists a 16\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -4,11 +4,57 @@
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "f is the same width.\nFor example, my trim piece was 3\" tall, and the bottom shelf was 0.75\" thick. So, I ripped down my 2x4 supports to 2 1/4\" before attaching them.\nAttach using wood glue and screws.",
+          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[6] thinner than stock — would need planing/resawing, not judged"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x10, 1x12, 3x96, 1.5x96); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": " taller than the second to account for the trim piece.\nOnce the vertical dividers are attached, attach the first 39.5\" piece across the top of them, using pocket holes to attach it to the side pieces.",
+          "why": "\"attached\" with no step image; 1 unattached image(s) in images[] to view",
+          "unattachedImages": 1
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

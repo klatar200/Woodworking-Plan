@@ -185,11 +185,87 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[8].body",
+          "quote": "Cut 2 equal pieces of cording (I used two 80\" long pieces). Tie the center of each piece to the bottom of an S-hook. Then feed them through the eye hooks in the planter and pull back to the S-hook.\nUs",
+          "why": "cut sentence states 80\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Corner, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Front/back top, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Front/back 2nd, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Front/back 3rd, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        },
+        {
+          "path": "cutList[4].part",
+          "quote": "Front/back bottom, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        },
+        {
+          "path": "cutList[7].part",
+          "quote": "Top frame front/back, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        },
+        {
+          "path": "cutList[8].part",
+          "quote": "Top frame side, 1x2 (see Step 1 for angles)",
+          "why": "looks like a placeholder or an assembly, not a part"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 4×7.625 + 2×7.75 + 2×7 + 2×6.3125 + 2×5.625 + 8×5.5 + 2×7 + 2×10.75 + 2×10 + kerf 24 cuts (26 parts − 2 boards, the fewest possible)×1/8 = 186.375″; bought: 2×96 = 192″; 186.375 ≤ 192"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

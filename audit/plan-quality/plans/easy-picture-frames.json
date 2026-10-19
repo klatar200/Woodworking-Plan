@@ -29,11 +29,54 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "you’ll need two pieces cut at 17 ½” on the long side, and 10 ½” on the short side. The short side will have the ¼” groove that you created in step one.\n(These measurements are for an 11x14 frame. If y",
+          "why": "cut sentence states 10 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "you’ll need two pieces cut at 20 ½” on the long side, and 13 ½” on the short side. The short side will have the ¼” groove that you created in step one.\n(These measurements are for an 11x14 frame. If y",
+          "why": "cut sentence states 13 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0])"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: unparseable stock materials[0]"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

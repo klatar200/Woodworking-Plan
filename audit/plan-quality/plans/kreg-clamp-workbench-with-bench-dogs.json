@@ -209,11 +209,67 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": " 2x4's to 20.25\". Pre-drill 1.50\" pocket holes according to the attached diagram. Attach the 47.25\" 2x6 to the back of the frame (place 3/4\" scrap underneath for spacing) and attach the 47.25\" 2x4 to ",
+          "why": "matches \"the attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, sheet-0.75); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "ush through the face of the thinner material. Drive 2\" wood screws through the 2x4's into the plywood to secure the work surface. Flip the top over to check for gaps and add additional screws as neede",
+          "why": "2\" screw — no material line lists a 2\" fastener"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut (2) 2x4's to 29.25\" and (1) 2x4 to 50.25\". Attach with wood screws 12\" from the ground. The added supports will strengthen the bench and add additional weight to make the work surface more sturdy.",
+          "why": "50.25\" screw — no material line lists a 50.25\" fastener"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "terial is thicker than the 3/4\" recommended for the machine screws they include. Instead, thread insert the 2.50\" 1/4\" machine bolts hex head first into the Kreg Trak and then feed through the pre-dri",
+          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

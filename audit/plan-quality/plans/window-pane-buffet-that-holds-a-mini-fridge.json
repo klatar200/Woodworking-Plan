@@ -293,11 +293,57 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "Rip round overs off the 2x6's to a final width of 5\". Glue 5 of these pieces together for an overall width of 25\". Once top is dry trim to final length 65\" using a circular saw.",
+          "why": "cut sentence states 65\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[15] thinner than stock — would need planing/resawing, not judged"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, 2x6, 2x2, 1x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[11].body",
+          "quote": "igger than the screws you are using) in the cabinet support pieces. And then attach top using 1 1/2\" screws with a washer into top. The oversized holes in the cabinet supports allow for wood movement.",
+          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

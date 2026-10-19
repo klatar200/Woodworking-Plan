@@ -29,11 +29,81 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "miter going away from the cut side. When complete, the mitered top and leg will make a 90 degree joint. ***See attached image for illustration - you'll want to remove the RED area with your bevel cut.",
+          "why": "matches \"See attached\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "& C (see parts list) and assemble the coffee table leg, per the attached drawing.\nFor this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & ",
+          "why": "matches \"the attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "- not away. I did this on the ACS - using the stops that came with the system, I set them at 33\", adjusted the saw to 45 degrees and made the cut. You can also use a circular saw with a straight edge.",
+          "why": "cut sentence states 33\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "our alignment method you'll need to cut 2ea pieces of 2x4 at 8\" long - Then cut them in half with your miter saw at 45\". Now you'll have 4ea beveled blocks at approximately 4\" (long point). You will n",
+          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[3].part",
+          "quote": "Part C",
+          "why": "no step mentions it (searched steps for its words and label C)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (1x6, 2x3); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "drawing.\nFor this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & C - so that when fully assembled and installed they will not be seen. You",
+          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "3 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -185,11 +185,62 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "For pictures of the build, please visit https://www.anikasdiylife.com/diy-outdoor-towel-rack/ For lots more plans and projects visit www.anikasdiylife.com",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 2×55 + 2×43 + 2×29.5 + 2×33.5 + 16×20 + 4×12.375 + kerf 20 cuts (28 parts − 8 boards, the fewest possible)×1/8 = 694.000″; bought: 8×96 = 768″; 694.000 ≤ 768"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach both shelves to the 55\" long frame using pocket hole screws in the short aprons and wood glue. Make sure they are aligned with the 20\" long aprons attached in step 2.",
+          "why": "55\" screw — no material line lists a 55\" fastener"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the 33 1/2\" and 29 1/2\" frames to the shelves using pocket hole screws in the sides. The distance from each outer frame is 3\".",
+          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

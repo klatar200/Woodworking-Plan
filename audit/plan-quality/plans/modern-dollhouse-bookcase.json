@@ -113,11 +113,72 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "llowing: the tops of the (2) 24\" side pieces, the top of (1) 8 1/4\" divider piece, the bottom of the (2) 4\" chimney pieces, and both ends of the (2) 27\" roof pieces. The miter cuts on the ends of the ",
+          "why": "cut sentence states 8 1/4\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "ottom of the (2) 4\" chimney pieces, and both ends of the (2) 27\" roof pieces. The miter cuts on the ends of the 27\" roof pieces should be the same direction, turning the rectangle into a parallelogram",
+          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "f the (2) 27\" roof pieces. The miter cuts on the ends of the 27\" roof pieces should be the same direction, turning the rectangle into a parallelogram.\nPolish your pieces with an orbital sander. Use fi",
+          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "unknown",
+      "reason": "cutList[0] Kreg text not parseable; cutList[1] Kreg text not parseable; cutList[2] Kreg text not parseable; cutList[3] Kreg text not parseable; +2 more"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (1x8, 2x2, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the 1/4\" plywood backing using a nail gun. Here is a photo of the bottom part of the backing attached. Then attach your 1/2\" x 1 1/2\" trim pieces around the bottom using a nail gun.",
+          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the 1/4\" plywood backing using a nail gun. Here is a photo of the bottom part of the backing attached. Then attach your 1/2\" x 1 1/2\" trim pieces around the bottom using a nail gun.",
+          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -17,11 +17,88 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
+          "why": "matches \"PDF\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
+          "why": "matches \"printable\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "at you’ve built! I used 1/4” mdf for the template stock. It is cut to the same width as the end pieces. I start by cutting a 12” diameter circle out of the center using a circle jig and plunge router.",
+          "why": "cut sentence states 12\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "You should now have two end pieces with perfect half circles cut from the bottom. I really like the look of the cutout and how it makes the table appear to have four feet. If you don’t like the circle",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbf68aaad413d778.webp"
+        },
+        {
+          "path": "steps[21].body",
+          "quote": "Next, transfer the marks from the front of the legs to the inside of each end piece. These will be the mounting points for the full extension slides.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f9bf2c13d7db0b5.webp"
+        },
+        {
+          "path": "steps[22].body",
+          "quote": "binet portion of each slide on the inside of each end piece. Be sure to offset them from the front by the thickness of your plywood to allow room for the false front we will add later. I recommend sli",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c932d828ea35660.webp"
+        },
+        {
+          "path": "steps[29].body",
+          "quote": "Take it all back apart and sand everything up to 220 grit, then apply your finish of choice. It’s going to need some protection from those dirty little monsters! I hope your kids enjoy it as much as m",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d10f7f6222014d1.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "3 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

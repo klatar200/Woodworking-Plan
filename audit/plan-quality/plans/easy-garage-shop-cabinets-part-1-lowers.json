@@ -29,11 +29,54 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "inuous wall of cabinets.\nThe idea is you can place them in any configuration to suit your needs. In my case I'll be adding a miter saw in between two 24\" cabinets and one 18\" cabinet like the picture.",
+          "why": "cut sentence states 24\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "inuous wall of cabinets.\nThe idea is you can place them in any configuration to suit your needs. In my case I'll be adding a miter saw in between two 24\" cabinets and one 18\" cabinet like the picture.",
+          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "sheet layout not judged (area fits: part area 2×23.75×34.5 = 1638.8 sq in; bought 1×48×48 = 2304 sq in)"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

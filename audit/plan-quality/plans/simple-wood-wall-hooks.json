@@ -101,11 +101,80 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "oks. First, with your miter saw set at 90°, cut eight pieces 8 3/8\" long, as shown in the cut diagram. Next, set your miter saw to 30°. The Wall Posts and Arm Posts are the same length, so cut 16 piec",
+          "why": "cut sentence states 8 3/8\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": " final length. For the 1x1 wall hooks, set the saw back to 90°. This time cut four pieces to 8 3/4\", as shown in the cut diagram. Again, set your miter saw to 30° and cut eight pieces to final length.",
+          "why": "cut sentence states 8 3/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (2x2, 1x1); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "flagged",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "th your miter saw set at 90°, cut eight pieces 8 3/8\" long, as shown in the cut diagram. Next, set your miter saw to 30°. The Wall Posts and Arm Posts are the same length, so cut 16 pieces to final le",
+          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "t at 90°, cut eight pieces 8 3/8\" long, as shown in the cut diagram. Next, set your miter saw to 30°. The Wall Posts and Arm Posts are the same length, so cut 16 pieces to final length. For the 1x1 wa",
+          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        },
+        {
+          "path": "steps[0].body",
+          "quote": " final length. For the 1x1 wall hooks, set the saw back to 90°. This time cut four pieces to 8 3/4\", as shown in the cut diagram. Again, set your miter saw to 30° and cut eight pieces to final length.",
+          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        },
+        {
+          "path": "steps[0].body",
+          "quote": " final length. For the 1x1 wall hooks, set the saw back to 90°. This time cut four pieces to 8 3/4\", as shown in the cut diagram. Again, set your miter saw to 30° and cut eight pieces to final length.",
+          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
+          "unattachedImages": 4
+        }
+      ]
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

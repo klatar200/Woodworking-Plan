@@ -293,11 +293,120 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Come on over to our blog for the full post and more reveal pics! >> http://realitydaydream.com/2016/02/custom-diy-rolling-kitchen-island.html\nTake a look at the plans to help map your way through the ",
+          "why": "matches \"our blog\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "over to our blog for the full post and more reveal pics! >> http://realitydaydream.com/2016/02/custom-diy-rolling-kitchen-island.html\nTake a look at the plans to help map your way through the project.",
+          "why": "matches \"http://\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": ">> http://realitydaydream.com/2016/02/custom-diy-rolling-kitchen-island.html\nTake a look at the plans to help map your way through the project. You Can download a PDF of the plans in the EXTRA section",
+          "why": "matches \"download\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": ">> http://realitydaydream.com/2016/02/custom-diy-rolling-kitchen-island.html\nTake a look at the plans to help map your way through the project. You Can download a PDF of the plans in the EXTRA section",
+          "why": "matches \"PDF\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Panel A & Panel B",
+          "why": "no step mentions it (searched steps for panel/panel)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "TOP, ROLLING ISLAND — qty 1, 2 x 24.5 x 46.5 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Plywood, 1/2\" Thick Half Sheet"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Plywood, 1/4\" Thick Half Sheet"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x8 96\""
+        }
+      ],
+      "arithmetic": "cutList[1] 2×24.5: no listed stock has thickness 2 (±1/32) with width ≥ 24.5; stock = sheet 0.75, sheet 0.5, sheet 0.25, 0.75×7.25",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[1]",
+          "quote": "TOP, ROLLING ISLAND — qty 1, 2 x 24.5 x 46.5 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, sheet-0.25, 1x8); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Come on over to our blog for the full post and more reveal pics! >> http://realitydaydream.com/2016/02/custom-diy-rolling-kitchen-island.html\nTake a look at the plans to help map your way through the ",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/915005aac309ccc7.webp"
+        },
+        {
+          "path": "steps[19].body",
+          "quote": "Attach the lower rails to the bottom shelf. If either of the rails overhang you will want to trim them up on the table saw.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "3 reference(s), each in a step with its own image"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }

@@ -41,11 +41,91 @@
       ]
     }
   ],
-  "checks": {},
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Top Center Board — qty 1, 0.75 x 3 x 28.75 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top Outer Boards — qty 2, 0.75 x 3 x 30.25 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Middle Side Boards — qty 2, 0.75 x 3 x 8"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Outer Side Boards — qty 4, 0.75 x 3 x 7.25 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 72\""
+        }
+      ],
+      "arithmetic": "cutList[0] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[1] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[2] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[3] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Top Center Board — qty 1, 0.75 x 3 x 28.75 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top Outer Boards — qty 2, 0.75 x 3 x 30.25 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Middle Side Boards — qty 2, 0.75 x 3 x 8",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Outer Side Boards — qty 4, 0.75 x 3 x 7.25 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 1×28.75 + 2×30.25 + 2×8 + 4×7.25 + kerf 7 cuts (9 parts − 2 boards, the fewest possible)×1/8 = 135.125″; bought: 2×72 = 144″; 135.125 ≤ 144"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
   "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
-  }
+  },
+  "measurementsScoredOn": "kreg-corrected"
 }
