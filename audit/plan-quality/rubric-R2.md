@@ -15,6 +15,21 @@ The questions and the evidence behind them are in [`calibration.md`](calibration
 
 Ids R7, R12, R13 stay removed; R14 is new (no renumbering).
 
+**R14(c) scope (clarified 2026-10-19, during the re-score):** "items" are lumber, sheet goods,
+hardware, fasteners (incl. staples, brads) and purchased components (hinges, slides, address
+numbers, panels). **Consumables are excluded** — glue, finish, stain, sandpaper, filler, tape, wax —
+both as "used but not listed" and as "listed but never used" (finishing is out of scope, §1).
+Why: a re-scorer failed four otherwise-clean plans only for "glue not in materials"; that is the
+same catalog-wide noise R9 was, not a sense or measurement problem.
+
+**More one-defect pairs (clarified 2026-10-19):** a position or size missing *because* it is only
+in a document we don't have is scored once, under **R1** (Fix if the build can still be completed,
+else Unpublish), not again under R10/R14. **Pocket-hole locations are not R10 positions** — like
+the jig setting (R9), they follow the jig, not a plan measurement.
+
+**Human review from unknowns:** an `unknown` on R1, R2 or R8 adds "+ Human review" to any verdict
+(it blocks Ship, and on a Fix plan it leaves a possible Unpublish-level question open).
+
 **One defect, one check.** A defect is scored under the most specific check: a missing cut-list
 part → R2; an unused cut-list row → R3; a fastener size → R6; a count/size disagreement, an
 uninstalled part, an unlisted item or an unused material → R14.

@@ -1,6 +1,6 @@
 {
   "slug": "kitchen-pantry-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -221,8 +221,61 @@
       "reason": "Pocket holes go in 3/4\" parts (cutList[0..5], [7..9], [11..12]) but no jig thickness setting is stated. Searched all fields for /jig|setting/i: only 'Using a jig saw' (steps[2]) and the tool slugs."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "viewed": true,
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Insert shelves using wood glue and 1 ¼” pocket hole screws."
+        },
+        {
+          "path": "steps[11].image",
+          "quote": "door frame with two shelves; only the shelf size (15 5/8\", 7 1/4\") is dimensioned, no shelf position",
+          "viewed": true
+        }
+      ],
+      "reason": "The door shelves' positions in the door frame are given nowhere: no measurement in steps[9]-steps[14] (steps[9] gives only overall door size), and the viewed steps[11] image dimensions only the shelf. Cabinet shelves are 'as desired' (steps[4], relational); top overhangs are given (steps[5]); base trim position is shown in the viewed steps[6] image (1/4\" overhang at back)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach trim pieces using wood glue and 1” finish nails."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Cabinet hinges full wrap"
+        },
+        {
+          "path": "materials[10].name",
+          "quote": "Hardware pulls"
+        },
+        {
+          "path": "materials[11].name",
+          "quote": "Magnetic latches"
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "Shelf pins"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Base trim sides | qty 2 | 0.75 x 3.5 x 36"
+        },
+        {
+          "path": "steps[6].image",
+          "quote": "base trim side dimensioned 23 1/4\", with 1/4\" overhang at back",
+          "viewed": true
+        }
+      ],
+      "reason": "(b) Two doors are built (steps[9]-steps[14]) but no step hangs them on the cabinet; the plan ends at the door trim (steps[14]). (c) Hinges, pulls, magnetic latches and shelf pins (materials[9]-[12]) are used by no step (searched all steps for /hinge|pull|latch|pin|hang|mount/i: no hit). (a) cutList[4] Base trim sides is 36\" long; the viewed steps[6] image dimensions that part 23 1/4\" (and steps[0] gives the cabinet as 24\"d). No importDiffs entry for cutList[4], so the 36 is Kreg's. The 1 1/4\" vs 1\" finish nail size is R6, not scored here."
     },
     "R11": {
       "result": "pass",
@@ -230,24 +283,8 @@
       "reason": "Reader: steps[2] 'notch out bottom piece at sides as per sketch above' (missed by the pattern: 'sketch') is in a step with its own image, so an image is available."
     }
   },
-  "verdict": "Fix",
-  "gaps": [
-    {
-      "path": "materials[9].name",
-      "quote": "Cabinet hinges full wrap",
-      "what": "Hinges (materials[9]), hardware pulls (materials[10]), magnetic latches (materials[11]) and shelf pins (materials[12]) are never used: searched all steps for /hinge|pull|latch|pin/i, no hits. No step hangs the doors on the cabinet; steps end at steps[14] door trim."
-    },
-    {
-      "path": "cutList[4]",
-      "quote": "Base trim sides",
-      "what": "cutList[4] (quantity 2, lengthIn 36): base trim sides are 36\" long but the cabinet is 24\" deep (steps[0] 'Overall dimensions: 36\"w x 24\"d x 36\"h'); 36 > 24, so a 36\" side trim cannot fit along a side. Kreg source for this row is not in importDiffs, so the length is as imported."
-    },
-    {
-      "path": "steps[11].body",
-      "quote": "Insert shelves using wood glue and 1 ¼” pocket hole screws.",
-      "what": "No position is given for the door shelves (no measurement in steps[9]-steps[14]); steps[11] image not viewed because the sweep did not flag it."
-    }
-  ],
+  "verdict": "Unpublish (pending verifier)",
+  "gaps": [],
   "reader": {
     "batch": "calib-2",
     "imagesViewed": []
@@ -257,5 +294,17 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/712af511bd6fe66f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c5ad096acd3905ad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2e2df5c3442263c.webp"
+    ]
+  }
 }

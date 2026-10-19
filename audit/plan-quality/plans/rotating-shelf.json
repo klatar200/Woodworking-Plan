@@ -1,7 +1,20 @@
 {
   "slug": "rotating-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-3",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e501e547536c3f68.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/93ddd8d54fc3f61f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/838415c58bdbf3c0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/281134fe15995d10.webp"
+    ]
+  },
   "importAffected": true,
   "importDiffs": [
     {
@@ -244,7 +257,39 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "R-2: every position is dimensioned in a viewed step image: frame 73 1/2\" between the 48\" ends, 76 1/2\" overall (steps[0]); first shelf 13 1/2\" from the end and the divider line 21 3/4\" from the side (steps[2]); 43 1/2\" / 28 1/2\" and 13 1/2\" (steps[3]); 13 1/2\" and 21 3/4\" for the last divider (steps[5]), which the text also places 'centered on the end board'. Pocket-hole locations (steps[0]-[1]) are not R10 positions."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards."
+        },
+        {
+          "path": "cutList[0] (Kreg source, importDiffs)",
+          "quote": "1 1/2\" x 11 1/2\" x 73 1/5\""
+        },
+        {
+          "path": "steps[2].title, steps[3].title, steps[4].title, steps[5].title",
+          "quote": "1st Shelf; 2nd Shelf; 3rd Shelf; Last Divider"
+        },
+        {
+          "path": "cutList[2], cutList[3]",
+          "quote": "Dividers | qty 5; Shelves | qty 4"
+        },
+        {
+          "path": "steps[5].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/281134fe15995d10.webp — finished layout with 4 shelves (33\") and 5 dividers (13 1/2\")",
+          "viewed": true
+        }
+      ],
+      "arithmetic": "Side length: steps[0] and the steps[0] image say 73 1/2\"; Kreg's cut list says 73 1/5\" (= 73.2, Kreg-corrected). 5 dividers x 13 1/2 + 4 shelves x 1 1/2 = 67 1/2 + 6 = 73 1/2, so 73 1/2 is right and the cut-list size is the error. Shelf count: the text assembles 1st, 2nd and 3rd shelf (3 shelves, 3 dividers) plus 'the remaining divider' = 3 shelves and 4 dividers vs cutList 4 and 5.",
+      "reason": "(a) Two disagreements between steps and cut list: the Sides length (73 1/2\" in steps vs Kreg's 73 1/5\") and the shelf/divider count (the text builds 3 shelves and 4 dividers; the cut list and the viewed final image have 4 and 5). (b) The Sides-to-Ends joint is drilled but not described in text; the viewed steps[0] image (step titled 'Assemble sides') shows the assembled frame, so it is treated as installed. (c) The only fastener (2\" Kreg screws) is listed; the wood plugs of steps[6] are finishing."
     },
     "R11": {
       "result": "pass",
@@ -259,23 +304,7 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "gaps": [
-    {
-      "path": "steps[0].body",
-      "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards. Drill (3) pocket holes in the end of each side.",
-      "what": "step titled 'Assemble sides' only drills; no step joins the Sides (cutList[0]) to the Ends (cutList[1]) — searched steps for /end board|ends|48/: only steps[5] 'centered on the end board'"
-    },
-    {
-      "path": "steps[4].body",
-      "quote": "Repeat Step 4.",
-      "what": "steps[2..5] assemble three shelves (1st/2nd/3rd Shelf) and four dividers (one per shelf step + 'the remaining divider'); cutList has Shelves qty 4 and Dividers qty 5. Stack check: 5×13 1/2 + 4×1 1/2 = 73 1/2 = side length, which needs 4 shelves and 5 dividers"
-    },
-    {
-      "path": "steps[0].body",
-      "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards.",
-      "what": "cutList[0] Sides length per Kreg source is '1 1/2\" x 11 1/2\" x 73 1/5\"', disagreeing with the step's 73 1/2\"; the stack arithmetic above supports 73 1/2\""
-    }
-  ],
+  "gaps": [],
   "reader": {
     "batch": "calib-1",
     "imagesViewed": []

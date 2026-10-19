@@ -1,6 +1,14 @@
 {
   "slug": "rolling-kitchen-island",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-2",
+    "imagesViewed": []
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -398,7 +406,8 @@
           "viewed": true
         }
       ],
-      "reason": "Assembly (through-holes locating every shelf, divider and rail; notch sizes) is defined only in the \"prints\" - the PDF in Kreg's EXTRA section, which we do not have. Searched all steps, cutList, materials, description, summary: no hole location, shelf height, divider position or notch size in text (steps[10] gives only \"3/8\" both ways from the drilling locations\"). Viewed step images 0, 1, 4, 5, 12, 19 and all 5 unattached images: photos plus one undimensioned elevation (48085ba8f78b1d5f); none shows drilling or notch dimensions."
+      "reason": "Assembly (through-holes locating every shelf, divider and rail; notch sizes) is defined only in the \"prints\" - the PDF in Kreg's EXTRA section, which we do not have. Searched all steps, cutList, materials, description, summary: no hole location, shelf height, divider position or notch size in text (steps[10] gives only \"3/8\" both ways from the drilling locations\"). Viewed step images 0, 1, 4, 5, 12, 19 and all 5 unattached images: photos plus one undimensioned elevation (48085ba8f78b1d5f); none shows drilling or notch dimensions.",
+      "r2Level": "R-2: Unpublish kept — the missing prints hold the through-hole locations that position every shelf, divider and rail and the divider notch sizes (steps[4], [5], [12]); these are structural, so the build cannot be completed without them (not the Fix case of a non-structural piece)."
     },
     "R2": {
       "result": "pass",
@@ -512,7 +521,28 @@
           "viewed": true
         }
       ],
-      "reason": "Sweep flags rejected: steps[0] is a pointer to the plans, not a placement; steps[19] \"Attach the lower rails to the bottom shelf\" is relational (viewed image: drill on plywood). The missing measured positions are scored under R1."
+      "reason": "Sweep flags rejected: steps[0] is a pointer to the plans, not a placement; steps[19] \"Attach the lower rails to the bottom shelf\" is relational (viewed image: drill on plywood). R-2: the shelf, divider and rail positions are given nowhere, but that is the same defect as the R1 failure (they exist only in the missing prints) and is scored there once (one defect, one check). Positions outside the prints are given or relational: casters set with 'a 1\" thick piece of wood as a spacer' (steps[26]); board outlines '3/8\" both ways from the drilling locations' (steps[10])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[25].body",
+          "quote": "The choices for tops on this rolling island are virtually endless. We will be posting about ours sometime in the future at www.thesawdustmaker.com."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "18\" towel bar"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Hickory Hardware"
+        }
+      ],
+      "reason": "(b) The plan ends before the island is complete: no step makes or attaches the top (cutList[1] 'TOP, ROLLING ISLAND'); steps[25] defers it and steps[26] (casters) is the last step. Searched steps for /top/i: only steps[21] 'two top rails' and the steps[25] title. (c) Two materials are never used: searched steps for /towel|hardware|pull|knob|handle/i — no match for materials[6] '18\" towel bar' or materials[4] 'Hickory Hardware'. (Unlisted glue is a consumable, excluded from R14(c) by the 2026-10-19 clarification.) (a) Counts the steps give agree: 'four rails for the wide shelves' = cutList[11] qty 4; 'two vertical dividers' = cutList[3] qty 2; 'two top rails' = cutList[5] qty 2; '4 wheels' = materials[5] qty 4. The 2\" top's stock is the R4 finding and the 'Panel A & Panel B' row the R3 finding; not re-scored."
     },
     "R11": {
       "result": "fail",

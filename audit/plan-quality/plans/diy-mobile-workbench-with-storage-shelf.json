@@ -1,6 +1,17 @@
 {
   "slug": "diy-mobile-workbench-with-storage-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "The only R-1 Human-review question was R9 (1 1/2\" jig setting on 4x4 posts), which no longer adds Human review under R-2. The R14 bolt question is left unknown, not Human review."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aa0ae27358e17678.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/19bf275d4efdeb65.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -163,9 +174,22 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "reason": "steps[7] \"Check out the video in the extras tab and the blog post for more details\" and steps[12] \"You can see more details of this in the video\" are optional; steps[7] itself gives the Trak mounting procedure."
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Trim your top according to the directions on the traks based on the size you order."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Install the traks per instructions."
+        }
+      ],
+      "reason": "R-2 (re-scored under the 2026-10-19 one-defect rule: a position missing because it is only in a document we don't have is R1). Where the Clamp Traks sit - the cut-outs trimmed from the top - is given only in the Trak product directions: no number accompanies 'trak' anywhere in the plan (searched /trak/i) and the viewed steps[5] image is an undimensioned photo. Fix, not Unpublish: the directions come with the listed materials[10] 'Set Kreg Clamp Traks', so the build can be completed. R-1 note kept: steps[7] 'video in the extras tab' and steps[12] 'details of this in the video' are optional."
     },
     "R2": {
       "result": "pass",
@@ -241,15 +265,33 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "The Trak cut-out positions are only in the Trak directions, a document we don't have - scored once under R1, not here. Other positions pass: legs at the corners, casters 'on each corner and two in the middle', top-frame middle support (viewed steps[0] photo; steps[6] 'top middle support piece'), divider set by the 13\" side panels between it and the legs, cubby shelf 'however high you want'.",
+      "images": [
+        {
+          "path": "steps[0].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aa0ae27358e17678.webp",
+          "viewed": true,
+          "shows": "photo: frame with one cross piece near the middle, no dimensions"
+        },
+        {
+          "path": "steps[5].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/19bf275d4efdeb65.webp",
+          "viewed": true,
+          "shows": "photo: track-saw cut along the top, no Trak position dimensioned"
+        }
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "(a) Counts/sizes agree on Kreg-corrected rows: 2 frames x (2 long + 3 short) = cutList[0] 4 + [1] 6; 41 + 2 x 3 1/2 = 48 (4' frame); short trim 51 = 48 + 2 x 1 1/2; legs 4; casters 6 = materials[9]; divider 26 1/4 = leg length. (b) Every part is installed (steps[1]-[13]). (c) Unsettled: steps[7] uses 'bolts and nuts' to mount the Traks and no materials line lists them (searched materials[].name for /bolt|nut/i); whether they come with materials[10] 'Set Kreg Clamp Traks' needs product knowledge outside §9. Every listed material is used."
     }
   },
-  "verdict": "Fix + Human review",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],

@@ -1,6 +1,16 @@
 {
   "slug": "kreg-clamp-workbench-with-bench-dogs",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3777b88ac58eebad.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -296,21 +306,45 @@
     "R10": {
       "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured placements give numbers: leg supports '12\" from the ground' (steps[5]), '3/4\" scrap underneath for spacing' (steps[2]). Others are relational or as desired: 'evenly spaced' (steps[2], [8]), dog holes 'at desired spacing' (steps[6]), 'Pick a spot' (steps[11])."
+      "reason": "R-2: measured placements give numbers: leg supports '12\" from the ground' (steps[5]), '3/4\" scrap underneath for spacing' (steps[2]). The Trak/plywood layout of steps[1] is shown in the viewed step image (45\" and 27\" Traks against the frame, 24\" x 45\" plywood, gap at the back) - relational. Others are relational or as desired: 'evenly spaced' (steps[2], [8]), dog holes 'at desired spacing' (steps[6]), 'Pick a spot' (steps[11]).",
+      "images": [
+        {
+          "path": "steps[1].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3777b88ac58eebad.webp",
+          "viewed": true,
+          "shows": "45\" Trak along the front and 27\" Trak along one end inside the frame; plywood 24\" x 45\"; open strip at the back"
+        }
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the aprons for the frame to length: (1) 2 x 4 x 47.25\", (1) 2 x 6 x 47.25\", (2) 2 x 6 x 32.25\"."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut (1) 2x6 to 47.25\", (1) 2x4 to 47.25\" and (5) 2x4's to 20.25\"."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Side Apron | qty 1 | 2 x 4 x 47.25"
+        }
+      ],
+      "arithmetic": "2x4 x 47.25\": steps[0] 1 + steps[2] 1 = 2 cut; cut list: cutList[6] qty 1 is the only 2x4 x 47.25 row (cutList[2] 'Bottom Frame' 47.25 is 2x6). 2 != 1. (2x6 x 47.25: 1 + 1 = 2 = cutList[1] + cutList[2], agrees.)",
+      "reason": "(a) The front bottom-framework 2x4 of steps[2] has no cut-list row. (b) Every part is installed. (c) Unlisted screws are the R6 finding (not re-scored); washers/nuts and vise screws are 'provided' (steps[10], [11]); every material is used (bench clamps slide into the Trak, steps[1]; finish materials out of scope)."
     }
   },
-  "gaps": [
-    {
-      "path": "steps[2].body",
-      "quote": "Cut (1) 2x6 to 47.25\", (1) 2x4 to 47.25\" and (5) 2x4's to 20.25\".",
-      "what": "Count disagrees with the cut list: steps[0] already cuts '(1) 2 x 4 x 47.25\"' for the aprons and steps[2] cuts a second 2x4 at 47.25\", but the cut list has only one 2x4 x 47.25 row (cutList[6] 'Side Apron', qty 1); no 'Bottom Frame' 2x4 47.25 row exists."
-    }
-  ],
+  "gaps": [],
   "verdict": "Fix",
   "reader": {
     "batch": "calib-4",

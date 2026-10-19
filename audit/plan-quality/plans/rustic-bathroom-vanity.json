@@ -1,6 +1,6 @@
 {
   "slug": "rustic-bathroom-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -355,7 +355,8 @@
       "result": "pass",
       "sweepResult": "flagged",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured positions in text have numbers (dowels \"about 10\\\" apart\", slats \"overhang the front rail by 1/4\\\"\"); others are relational or flush.",
+      "reason": "Measured positions in text have numbers (dowels \"about 10\\\" apart\", slats \"overhang the front rail by 1/4\\\"\"); others are relational or flush. R-2 (rescore-4): the shelf rails 'at the locations shown' (steps[5]) are dimensioned in the steps[5] image (viewed: 3\" from the leg end, 16 1/2\" between rails); long shelf rails follow 'in the same way' (steps[6]). Upper rails flush with leg tops (steps[3]), braces aligned with the rail upper edge (steps[8]), short slats flush with the legs (steps[12]), long slats equally spaced (steps[13]), backsplash flush with the leg backs (steps[17]), glides on the leg bottoms (steps[18]) are relational. Top-support and sink/faucet cutout positions are set from the builder's chosen sink ('will depend on the size and position of the sink you choose', steps[10]; steps[14]), i.e. relational to a purchased component.",
+      "viewed": true,
       "flagged": [
         {
           "path": "steps[18].body",
@@ -398,18 +399,26 @@
           "confirmed": true
         }
       ]
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[18].body",
+          "quote": "Install a couple anchors in the wall at the height of the Long Upper Rail, and then secure the vanity to the wall with a couple of long screws to keep it from moving."
+        }
+      ],
+      "reason": "(c) Hardware a step uses is not in materials: wall anchors and 'long screws' (steps[18]); searched materials.name for /anchor|screw/i: only materials[6] pocket screws and materials[11] 1 1/2\" flat-head screws, neither 'long' wall screws. (The 1/2\" dowel spacers of steps[3] are a setup aid, not scored.) (a) Counts agree: 'four legs' (steps[1]), 'two Long Upper Rails and two Short Upper Rails' (steps[2]), 'four Long Shelf Rails and four Short Shelf Rails' (steps[4]), 'four Corner Braces' (steps[7]), 'two Top Supports' (steps[9]), 'four Short Slats' (steps[11]), '20 Long Slats' (steps[13]), one Backsplash = cutList[0]-[9]. (b) Every part is installed. Every listed material is used (sink and faucet via the cutouts, glides steps[18])."
     }
   },
   "gaps": [
     {
       "path": "steps[15].body",
       "quote": "Using the holes in the Backsplash as guides, drill pilot holes into the Top Panel",
-      "what": "No step drills holes in the Backsplash (searched all steps for /backsplash/i: only steps[15] and [17]). steps[14] drills pocket holes along the Top Panel's rear edge, which steps[15]/[17] never use."
-    },
-    {
-      "path": "steps[18].body",
-      "quote": "Install a couple anchors in the wall at the height of the Long Upper Rail, and then secure the vanity to the wall with a couple of long screws",
-      "what": "Wall anchors and long screws are used but are not in materials and have no size."
+      "what": "No step drills holes in the Backsplash (searched all steps for /backsplash/i: only steps[15] and [17]). steps[14] drills pocket holes along the Top Panel's rear edge, which steps[15]/[17] never use. Hole features, not parts, so not R14(b)."
     }
   ],
   "verdict": "Fix",
@@ -427,6 +436,16 @@
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a5d5dfb74a8afb05.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/866f2f6156ba438b.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/603267f95d45eec6.webp"
+    ]
+  },
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/452e0e204940f0a0.webp"
     ]
   },
   "notes": "Two Fix: unsized pocket screws in materials (R6) and a cutting-diagram reference with no diagram (R11). Measurements check out against the plan's own dimension drawing."

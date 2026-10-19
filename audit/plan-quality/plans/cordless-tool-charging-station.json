@@ -1,6 +1,20 @@
 {
   "slug": "cordless-tool-charging-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e55dc9dcbb09112.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0a5509a88bace3d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d55a2f698b3218e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c8e408664dbc0d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83a865ee8ed9f044.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -184,15 +198,60 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions the text leaves to 'as shown' are dimensioned in the viewed step images: drill-holes (steps[4]), half-circle cutout at 8\" on the Bottom Shelf (steps[6]), Middle Shelf assembly 2 1/2\" from the Side end (steps[11]), Bottom Shelf 9\" from the Side end (steps[12]). Top Shelf meets the Top Rail edge flush (viewed steps[3]); trim overhang '3/4\" on each end' and flush ends are in text.",
+      "images": [
+        {
+          "path": "steps[3].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e55dc9dcbb09112.webp",
+          "viewed": true,
+          "shows": "Top Shelf flush along the Top Rail's top edge"
+        },
+        {
+          "path": "steps[4].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0a5509a88bace3d.webp",
+          "viewed": true,
+          "shows": "hole centres 3\" from each end, 8\" centre, 2 1/4\" from edge"
+        },
+        {
+          "path": "steps[6].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d55a2f698b3218e8.webp",
+          "viewed": true,
+          "shows": "2 1/2\" half-circle centred at 8\" on the Bottom Shelf back edge; trim 17 1/2\" with 3/8\" chamfers"
+        },
+        {
+          "path": "steps[11].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c8e408664dbc0d8.webp",
+          "viewed": true,
+          "shows": "assembly 2 1/2\" from the Side end"
+        },
+        {
+          "path": "steps[12].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83a865ee8ed9f044.webp",
+          "viewed": true,
+          "shows": "Bottom Shelf 9\" from the Side end"
+        }
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "27 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Pine board, 1x3 x 48\""
+        }
+      ],
+      "reason": "(c) A listed material is never used. Search: '1x3' occurs only in materials[1]; every step names its stock as 1x2, 1x4, 1x6 or 1x8 (steps[0],[1],[2],[4],[6],[8],[10]) and no Kreg cut row is 2 1/2\" wide (widths 3 1/2, 1 1/2, 5 1/2, 7 1/4). (a) Counts/sizes agree (each part qty 1 except Sides 2 = steps[10] 'two Sides'). (b) Every part is installed (steps[3],[5],[9],[11]-[13]). Power strip and wall anchors are optional/conditional in steps[13], not counted."
     }
   },
-  "verdict": "Ship",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -203,5 +262,5 @@
     "batch": "pilot-1",
     "imagesViewed": []
   },
-  "notes": "Clean on Kreg's dimensions; live cut list carries S-19 widths. Unused 1x3 material and an ambiguous 'Middle Shelf' cutout reference noted, not scored."
+  "notes": "Clean on Kreg's dimensions; live cut list carries S-19 widths. Unused 1x3 material scored under R14 in R-2; the 'Middle Shelf' cutout wording in steps[6] refers to the Bottom Shelf (viewed steps[12] image shows the half-circle on the part labelled Bottom Shelf), not scored."
 }

@@ -23,7 +23,8 @@ export function verdictR2(rec) {
   else v = 'Ship';
   const unresolved = checks.filter(([, c]) => ['flagged', 'to-read'].includes(c.result)).map(([id]) => id);
   if (unresolved.length) return { verdict: null, unresolved };
-  if (rec.humanReview?.value && v !== 'Human review') v += ' + Human review';
+  const openStructural = checks.some(([id, c]) => ['R1', 'R2', 'R8'].includes(id) && c.result === 'unknown');
+  if ((rec.humanReview?.value || openStructural) && v !== 'Human review') v += ' + Human review';
   return { verdict: v };
 }
 

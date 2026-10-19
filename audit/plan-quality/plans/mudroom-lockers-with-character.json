@@ -1,6 +1,16 @@
 {
   "slug": "mudroom-lockers-with-character",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/442c6490411587a7.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -533,32 +543,59 @@
       "reason": "Pocket holes go in 3/4\" poplar rails and arches (cutList[5], [7], [8]) but no jig thickness setting is stated. Searched all fields for /jig|setting/i: only the tool slug 'pocket-hole-jig'. Other joints state method and fastener (dado + glue, glue + clamp, counterbored screws, glue + nails)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Layout and cut the dado's and grooves. we use a dado stack on the upper carcasses and a router on the bench carcasses."
+        }
+      ],
+      "reason": "The shelf/divider dado positions the builder must lay out (12 + 3 upper shelves, 8 + 2 bench shelves, cutList[21],[22],[29],[30]) are given nowhere: no step, summary or description gives a shelf height or dado location (steps contain no inch figures at all), and the viewed steps[1] image is four workshop photos (dado cuts on the table saw, a routed panel) with no dimensions.",
+      "images": [
+        {
+          "path": "steps[1].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/442c6490411587a7.webp",
+          "viewed": true,
+          "shows": "photo collage of dado cuts; a ruler is visible but no dado/shelf position is stated"
+        }
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "reason": "Reader: steps[14] refers to '1:1 prints' (missed by the pattern); the step has its own image, and the prints are offered as an option ('or you can draw them out')."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "We prepped the edges for the bench seat and then, biscuit, glued and clamped the bench seats."
+        },
+        {
+          "path": "steps[20].body",
+          "quote": "You're ready for prime an paint!"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "shim and screw using cabinet screws."
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "We glues and nailed the trim to the face frames."
+        }
+      ],
+      "reason": "(b) The bench seats are glued up (steps[4]) but no step installs them and the plan ends at steps[20] 'All done!': searched the whole plan for /seat/i - only cutList[0],[1] part names and steps[4]. A seat made but never installed with no step finishing the piece is the R-2 Unpublish case. (c) Items used but not in materials: biscuits (steps[4]), nails/brad nails (steps[8] tip, [16], [17], [19]), shims and cabinet screws (steps[13]); materials list only lumber, ply, crown and 1 1/4 pocket screws (searched materials[].name for /biscuit|nail|shim|screw/i: only the two pocket-screw lines)."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Unpublish (pending verifier)",
   "gaps": [
-    {
-      "path": "steps[4].body",
-      "quote": "We prepped the edges for the bench seat and then, biscuit, glued and clamped the bench seats.",
-      "what": "The bench seats are glued up but never installed: searched all steps for /seat/i, only steps[4]. Biscuits are used here but not in materials (searched materials for /biscuit/i, no hit)."
-    },
-    {
-      "path": "steps[16].body",
-      "quote": "We glues and nailed the trim to the face frames.",
-      "what": "Nails (steps[16], steps[17], steps[19], steps[8] tip 'brad nails') and 'cabinet screws' (steps[13]) are used but not in materials and have no size (materials list only 1 1/4 pocket screws)."
-    },
-    {
-      "path": "steps[1].body",
-      "quote": "Layout and cut the dado's and grooves.",
-      "what": "No shelf/divider dado positions are given in any step; steps[1] image not viewed because the sweep did not flag it."
-    },
     {
       "path": "cutList[0].part",
       "quote": "(6/4 Red Oak, Bench Seat) Seat long [Glue Up Panel] note: glue up is oversized",

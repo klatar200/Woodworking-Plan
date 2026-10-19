@@ -1,6 +1,18 @@
 {
   "slug": "5-in-1-kids-art-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "All findings are settled from the plan text and viewed images; nothing needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/93a52cebfa78df1e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57a2250bd202e4bc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/25a99e230decd9e5.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -86,12 +98,52 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions to set in steps[0] (roll-holder hole height, apron heights on the legs) are dimensioned in the viewed step image. Other placements are relational: second frame side and short aprons match the front/back frames, plywood shelf sits on the shelf aprons, roll edge 'in front of the top long apron', 1x4 art shelf sits at the middle apron under the dry-erase board (viewed steps[7] image).",
+      "images": [
+        {
+          "path": "steps[0].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/93a52cebfa78df1e.webp",
+          "viewed": true,
+          "shows": "hole 4\" from leg top; shelf apron 3\" up, middle apron 12\" above it; frame 19\" x 48\""
+        },
+        {
+          "path": "steps[7].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/25a99e230decd9e5.webp",
+          "viewed": true,
+          "shows": "roll edge and art shelf 22\"; a rod through the leg holes; art shelf at the middle apron"
+        }
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Long aprons | qty 4 | 0.75 x 3.5 x 19"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Build the two front and back frames by attaching the long aprons and long shelf supports as shown"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cover these up by gluing and nailing 1 x4 aprons to the three visible sides."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Drill 7/8\" holes through the two of the legs for the art paper roll holder."
+        }
+      ],
+      "arithmetic": "Long aprons: viewed steps[0] image shows 2 x 1x4 aprons per frame x 2 frames = 4 = cutList[1] qty 4, all used in steps[0]. steps[5] adds 1x4 aprons on 3 sides of a rectangular top (>= 1 long side; viewed steps[5] image labels a new 19\" piece) -> needs >= 5 long 1x4 aprons vs 4 listed. Short aprons: 4 listed, all consumed by steps[1] + 'the remaining short aprons' in steps[2].",
+      "reason": "(a) The three cover aprons of steps[5] are not counted in the cut list (4 long + 4 short 1x4 aprons, all used by steps[0]-[2]). (c) The paper-roll rod that goes through the 7/8\" holes (shown in viewed steps[7] image) is in neither materials nor cutList: search /dowel|rod/ over the whole plan = no match. Chalkboard, dry-erase board, chicken wire and pegboard are left to the R-1 R2 finding (one defect, one check). Glue (consumable) not counted. Every listed material is used."
     }
   },
   "verdict": "Fix",
@@ -101,7 +153,7 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "notes": "steps[0] drills 7/8\" holes for the paper roll holder; no rod/dowel appears anywhere (searched /dowel|rod/) - not scored, the holder part is never named.",
+  "notes": "steps[0] drills 7/8\" holes for the paper roll holder; no rod/dowel appears anywhere (searched /dowel|rod/) - scored under R14 in R-2 (rod seen in viewed steps[7] image).",
   "reader": {
     "batch": "pilot-3",
     "imagesViewed": []

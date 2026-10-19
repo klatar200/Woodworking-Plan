@@ -1,6 +1,14 @@
 {
   "slug": "four-poster-canopy-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9; R9 alone no longer adds Human review."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": []
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -269,11 +277,45 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Every position is given in text or relational: rails '6\" from the bottom' (steps[3]-[5]) with side-rail offsets 1 1/4\" / 3/4\" (steps[5]); headboards stacked above the Back Rail, Footboard Rail 'directly above'; beams '1\" down from the top' (steps[6]); inner supports '1\" down from the top' (steps[7]); legs and center supports 'evenly spaced'; slats start flush at the Back Rail with a 3 1/2\" spacer (steps[8])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Slats (1x4 pine board cuts) | qty 13 | 0.75 x 3 x 76 (Kreg source 3/4\" x 3 1/2\" x 76\")"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Using a 3 1/2\" spacer, continue until all Slats are in place."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "attach one Side Rail between a front and back Post, 6\" from the bottom"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Side Rails (1x6 board cuts) | qty 4 | 0.75 x 5 x 80"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Using wood glue and screws, attach the Side Inner Supports to the Side Rails 1\" down from the top."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Starting flush along the Back Rail, use screws to attach a Slat to the Side Inner Supports."
+        }
+      ],
+      "arithmetic": "13 slats x 3 1/2\" + 12 gaps x 3 1/2\" = 45 1/2 + 42 = 87 1/2\" needed; the slats lie between the Back and Front Rails, inside the 80\" Side Rails that fit between the posts -> opening <= 80\". 87 1/2 > 80.",
+      "reason": "(a) Slat count and the stated 3 1/2\" spacing do not fit the opening. (c) The plain 'screws' of steps[7] (inner supports) and steps[8] (slats) have no size and no materials line: materials[4],[5] list only pocket hole screws (searched materials[].name for /screw/i). (b) Every part is installed. Wood stain (materials[7]) is never applied in a step - finishing is out of scope, not counted."
     }
   },
   "verdict": "Fix",
@@ -283,18 +325,7 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "gaps": [
-    {
-      "path": "steps[8].body",
-      "quote": "Using a 3 1/2\" spacer, continue until all Slats are in place.",
-      "what": "13 slats (cutList[6]) 3 1/2\" wide with 3 1/2\" gaps need 13×3.5 + 12×3.5 = 87.5\" but the opening between Back and Front Rails is 80\" (Side Rails 80\" fit 'between a front and back Post', steps[5]); slat count and spacing disagree"
-    },
-    {
-      "path": "steps[7].body",
-      "quote": "Using wood glue and screws, attach the Side Inner Supports to the Side Rails 1\" down from the top.",
-      "what": "plain screws used here and in steps[8] ('use screws to attach a Slat') have no size and are not in materials (materials[4],[5] list pocket hole screws only)"
-    }
-  ],
+  "gaps": [],
   "reader": {
     "batch": "calib-1",
     "imagesViewed": []

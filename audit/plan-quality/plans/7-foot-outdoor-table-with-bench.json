@@ -1,6 +1,19 @@
 {
   "slug": "7-foot-outdoor-table-with-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-2",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f810dfabc5d025b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4c27e997f26b0f88.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/06a4efb249c98460.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b94c2c32d9e7cc4f.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -79,9 +92,26 @@
       "reason": "The 2x6 top boards are joined with pocket holes (steps[1] 'using pocket holes every 8 inches on the under side of the table top'); no jig thickness setting in any text field (searched all fields for /jig|set to|setting|thickness/i: no hit). steps[1] image not viewed (not sweep-flagged), so absence across the plan is not established. Other joints name method and fastener generically ('Screw through' steps[4], [5])."
     },
     "R10": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Screw through the stretchers and into both the cross supports and table top.\nScrew steel legs to the underside of the table top."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Screw through the cross supports and into the table top."
+        }
+      ],
+      "viewed": true,
+      "reason": "Where the steel legs go along the table, how far apart the two stretchers sit across the top, and where the support layer sits on the top are given nowhere. Searched all step text for an inch figure tied to legs/stretchers/cross supports: only 'pocket holes every 8 inches' and the 1/8\"-1/4\" gaps (steps[1]). Viewed images of steps[3], [4], [5]: undimensioned drawings. steps[2] image (viewed) does give the notch positions (6\" from each end, middle centered on 80\"), so the cross supports' positions along the stretchers pass."
+    },
+    "R14": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured spacings give numbers: 'pocket holes every 8 inches' and gaps 'about 1/8\" to 1/4\" wide' (steps[1]). Stretcher notch placement is referred to the step's own diagram (steps[2] 'See diagram on this step for placement')."
+      "reason": "(a) Counts agree: 'Cut 6 pieces of 2x6 at a length of 7'' = cutList[0] qty 6 x 84 (corrected); '2 stretchers' = cutList[1] qty 2, 80\" on the steps[2] drawing = 80; '3 cross supports' = cutList[2] qty 3. (b) Top, stretchers, cross supports and legs are all installed (steps[4], [5]). (c) Items the steps use — 2x6, pocket screws (materials[4]), bolts as spacers (materials[5]), legs (materials[6]) — are listed. Unused materials are only finishing items (sandpaper, oil, materials[2], [3], [7]), out of scope (§5). Bench boards missing from the cut list are the R2 finding, not re-scored here."
     },
     "R11": {
       "result": "pass",
@@ -94,11 +124,6 @@
       "path": "cutList[0]",
       "quote": "Table top boards | qty 6 | 2 x 6 x 7",
       "what": "Cut list length is 7 (inches) but steps[1] says 'Cut 6 pieces of 2x6 at a length of 7'.' (84\"); all three rows also give nominal 2 x 6 rather than 1 1/2 x 5 1/2. Looks like import damage (foot unit dropped, nominal taken as actual), but it is not in importDiffs and importAffected is false — needs a Stage 2 re-check."
-    },
-    {
-      "path": "steps[4].body",
-      "quote": "Screw through the cross supports and into the table top.",
-      "what": "No positions in text for the 3 cross supports along the 7' top, or for the steel legs (steps[5]); step images not viewed, so whether the drawings give them is not known."
     }
   ],
   "verdict": "Fix",

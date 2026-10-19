@@ -1,6 +1,6 @@
 {
   "slug": "built-to-last-potting-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -368,7 +368,26 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "viewed": true,
+      "reason": "Positions not in text are dimensioned in the step's own image (viewed): steps[2] bottom end rails 5 1/2\" up the legs, top end rails flush at the leg tops; steps[6] rail/stretcher assemblies flush to the end rails (relational); steps[11] shelves 9\" and 9\" above the top slats and risers centred with 21 1/4\" each side. Top and bottom slats are placed by alignment and equal overhang (steps[8]-[9], relational)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[6].name",
+          "quote": "1 1/4\" Kreg Blue-Kote™ Pocket-Hole Screws"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Attach the first Shelf to the Back Legs using 1 1/2\" Blue-Kote™ pocket-hole screws."
+        }
+      ],
+      "reason": "(c) A material is never used: searched the whole plan for /1 1\\/4|1-1\\/4|1¼/ — the only hit is materials[6]; every step names 2 1/2\" or 1 1/2\" screws. (a) Counts and sizes agree: legs 2+2, end rails 4, side rails 4, stretchers 2+2, top slats 3+1+1, shelves 2, risers 2 match cutList; viewed steps[11] image (9\" risers, 21 1/4\" + 1 1/2\" + 21 1/4\" = 44\" shelf span) matches cutList[10] 9\" and cutList[11] 44\". (b) Every part made is installed."
     },
     "R11": {
       "result": "pass",
@@ -380,15 +399,10 @@
     {
       "path": "steps[9].body",
       "quote": "Cut three Long Bottom Slats, and one Short Bottom Slat to size from 5/4 (1\"-thick) deck boards, as shown in the cutting diagram.",
-      "what": "Bottom slats are in no cut-list row and their lengths are stated nowhere in text (searched cutList.part and all steps for /bottom slat/i). Only the steps[9] image (not flagged, not opened) could hold them."
-    },
-    {
-      "path": "materials[6].name",
-      "quote": "1 1/4\" Kreg Blue-Kote™ Pocket-Hole Screws",
-      "what": "Material never used: no step mentions 1 1/4\" screws (steps use only 2 1/2\" and 1 1/2\"). The 3/4\" shelves (steps[10] jig \"set up for 3/4\\\"-thick material\") are attached with \"1 1/2\\\" Blue-Kote™ pocket-hole screws\" (steps[11])."
+      "what": "Bottom slats are in no cut-list row and their lengths are stated nowhere in text (searched cutList.part and all steps for /bottom slat/i). The steps[9] image (viewed in rescore-4) labels the Long and Short Bottom Slats but gives no lengths. R2 passes (cut from listed material) and R14(a) has no cut-list row to disagree with, so this fits no R-2 check as scored."
     }
   ],
-  "verdict": "Fix + Human review",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -398,6 +412,19 @@
   "reader": {
     "batch": "calib-3",
     "imagesViewed": []
+  },
+  "humanReview": {
+    "value": false,
+    "reason": "The only open question (a 1\" jig setting on 1 1/2\" parts) is R9, which alone is not Human review under R-2."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cd2ef1633859b619.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d63455c36c14ad3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/033578778e5f5d5d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99bc7c7c93a26904.webp"
+    ]
   },
   "notes": "R9 likely-Fix on a 1\" jig setting used on 1 1/2\" parts (may be intentional — human review). Bottom slats have no sizes in text."
 }

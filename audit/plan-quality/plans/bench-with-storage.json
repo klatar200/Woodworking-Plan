@@ -1,6 +1,6 @@
 {
   "slug": "bench-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -176,10 +176,41 @@
       "reason": "steps[4] is titled as the leg assembly, but its body repeats steps[3] word for word, so how the legs are assembled and attached to the top is never stated. steps[5] also gives no method or fastener for the back support. The jig is told to be set 'correctly' for each screw size, but no thickness setting is stated."
     },
     "R10": {
-      "result": "unknown",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
       "search": "step sentences with a placement trigger and no inch measurement",
       "sweepResult": "pass",
-      "reason": "steps[10] 'drill two holes to provided dimensions' (handle holes) gives no numbers in text, and the steps[10] image was not viewed because the sweep did not flag it. steps[9] gives no position for the box-support 2x4s. steps[5] does give its number ('2” from the ground')."
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Both boxes will sit on two 2x4s that are 11\" long. Attach these 2x4 using 1 5/8\" Wood Screws."
+        }
+      ],
+      "viewed": true,
+      "reason": "Where the two 11\" 2x4 supports go under each box is a position the builder must set. Searched all steps and the description: no number. The steps[9] image (viewed) labels only '2x4 11\" LONG' and shows the supports inset from the box ends with no dimension. Other positions are given: steps[5] '2” from the ground'; steps[6] 'exactly in the middle' (relational); steps[10] handle hole dimensioned in its image (viewed: 4\" x 2\" slot, 14\" to the board end on a 28\" board); steps[4] image (viewed) shows the leg panels flush at the ends of the top (relational)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Now we’ll work on the two boxes that go under the bench. Cut ½” plywood for the bottom, back and sides as shown on the picture. Since there are two boxes, cut two of each board."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Take 1x8 and cut two pieces to 28\" in length. One of the boards will be trimmed to 6 1/4\" in width."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Now attach the front boards to the box using Wood Glue and Nail Gun."
+        }
+      ],
+      "reason": "Count disagreement between steps: two boxes are built (steps[7] doubles every panel), but steps[10] makes one front (two 28\" 1x8 pieces joined) and steps[11] attaches it to 'the box'. No step says to make a second front. materials[3] 'Board, 1x8 72\"' x 2 (144\") would cover four 28\" pieces, so two fronts are probably intended; likely, not certain. The cut list (one stock row) is already failed under R3 and is not re-scored here. (c) passes: every material is used (plywood boxes, 2x4, 1x12, 1x8, both pocket-screw sizes, 1 5/8\" screws steps[9], glue, brad nails steps[8])."
     },
     "R11": {
       "result": "pass",
@@ -197,5 +228,17 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/29ba37b6e80462fd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def5daf79cd6d569.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b9a558541d6a582.webp"
+    ]
+  }
 }

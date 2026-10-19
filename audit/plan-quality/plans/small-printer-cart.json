@@ -1,6 +1,17 @@
 {
   "slug": "small-printer-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9; the R9 jig-setting contradiction no longer adds Human review."
+  },
+  "rescore": {
+    "batch": "rescore-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8cd1282c42004714.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49030c7de87db1f7.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -293,12 +304,43 @@
       "arithmetic": "jig setting 1 1/4\" vs part 3/4\" thick × 1 1/2\" wide: 1.25 ≠ 0.75 and 1.25 ≠ 1.5, so the setting matches neither dimension of the part it is used on. Other settings agree: steps[2],[3],[4],[7] '3/4\" material' on 3/4\" parts; steps[10] '1/2\" material' on 1/2\" drawer box parts"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach the drawer slides and drawer fronts. The drawer boxes are made to use with drawer slides that require 1/2\" space on either side of the drawer boxes."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Make sure the shelf pin holes are set further back on the side board to accommodate for the plexiglass door slider."
+        }
+      ],
+      "reason": "Positions the builder must set but given nowhere: the height of each pair of drawer slides in the opening (and the drawer-front placement) in steps[14], and how far back the shelf-pin holes go in steps[11] ('further back', no number). Searched all steps for a slide or pin-hole position: only the 1/2\" side clearance. The viewed steps[14] image is a photo of the finished cart and the viewed steps[11] image is a photo of the jig clamped to the side; neither is dimensioned. Other positions are given: grooves 1/4\" and 3/4\" in (steps[0],[1]), center 9 3/8\" (steps[3]), shelf 9 1/2\" up (steps[4]), top 1/2\" overhang (steps[5]), base flush (steps[9]), pull holes 1/2\" down and centered (steps[12]).",
+      "images": [
+        {
+          "path": "steps[11].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8cd1282c42004714.webp",
+          "viewed": true,
+          "shows": "photo: shelf-pin jig clamped to the side panel, no dimensions"
+        },
+        {
+          "path": "steps[14].image",
+          "url": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49030c7de87db1f7.webp",
+          "viewed": true,
+          "shows": "photo of the finished cart with two drawers; no slide positions"
+        }
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts agree: 2 drawers -> drawer fronts 2, box sides 4, box front/back 4, bottoms 2, slides materials[10] qty 2 (pairs); base 2 sides x (2 top/bottom + 2 front/back) = 4 + 4, center supports 2; 9 paper shelves need 36 pins <= materials[13] 40. Kreg-corrected sizes agree (see R3). (b) Every part is installed (cabinet steps[2]-[6], base steps[7]-[9], drawers steps[10],[14], door steps[14]-[15], paper shelves steps[16]). (c) Every item a step uses is listed (pocket screws [5],[6], finish nails [7], wood screws [11], brads [12], plexiglass [9], slides [10], shelf pins [13]); every material is used (1x2 -> base, 1/2\" ply -> drawer boxes, 1/4\" ply -> bottoms/back, 1/4\" MDF -> paper shelves). Frosted vinyl is an optional decoration."
     }
   },
   "verdict": "Fix",

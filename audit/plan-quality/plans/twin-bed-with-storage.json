@@ -1,6 +1,6 @@
 {
   "slug": "twin-bed-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -108,7 +108,31 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "viewed": true,
+      "reason": "R-2: every position is given. 1x4s 'at the positions shown' are dimensioned in their images (viewed): headboard steps[1] 1' 6 1/2\"; footboard steps[7] 9 1/2\" and 1' 8 1/2\". 2x4 supports: images steps[9] and steps[14] (viewed) give 3\" and 1' 1\" from the post bottoms. Text: storage areas 'set 3\" above the floor' (steps[6]); caps 'overhang 1\" on all sides' (steps[11], [16]); openings 24\" (steps[17]); slides '1\" from the front' (steps[19]), and the steps[19] image (viewed) shows them at the bottom of the compartment (relational); faces '1/8\" gap' (steps[20]); knobs 'center of each drawer' (steps[22]); plywood 'directly behind' the 1x4s (relational)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[17].body",
+          "quote": "Attach so that the left and right openings are both 24.\" The middle opening will be 24-1/6\" if your storage area dividers are true 3/4\" plywood"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Bed Storage Area Top/Bottom | qty 4 | 0.75 x 15 x 75"
+        },
+        {
+          "path": "steps[20].body",
+          "quote": "Attach drawer faces to drawers using screws from inside the drawer box."
+        }
+      ],
+      "arithmetic": "Sides/dividers (cutList[8], 13.5\" tall) sit between top and bottom, inside the 75\" length (cutList[7]). Per storage area: 75 - 2 sides x 3/4 - 2 dividers x 3/4 - 24 - 24 = 75 - 3 - 48 = 24\" middle opening, not the 24-1/6\" steps[17] states for true 3/4\" plywood.",
+      "reason": "(a) Size disagreement between a step and the cut list: steps[17]'s middle opening (24-1/6\") does not follow from the cut-list sizes (24\"); the drawer box (cutList[13] 21 1/2\" + 2 x 3/4 = 23\") and face (23 3/4\") fit a 24\" opening, so the text value is the outlier. (c) Fastener used but not listed: the drawer-face screws (steps[20]) have no size and no material line (materials list pocket screws, 3\" wood screws, 3\" and 2\" lag screws, 1\" nails only). Counts agree elsewhere: 1x4s 2 (headboard image) + 3 (footboard image) = cutList[15] 5; supports 2 + 2 = cutList[4] 4; sides/dividers 2 areas x 4 = cutList[8] 8; drawer parts 6 boxes x (2 sides, 2 front/back, 1 bottom) = cutList[12]-[14]. (b) Every part is installed (final assembly steps[6], slides/drawers steps[19], faces steps[20], knobs steps[22])."
     },
     "R11": {
       "result": "pass",
@@ -116,18 +140,7 @@
       "note": "2 reference(s), each in a step with its own image"
     }
   },
-  "gaps": [
-    {
-      "path": "steps[17].body",
-      "quote": "The middle opening will be 24-1/6\" if your storage area dividers are true 3/4\" plywood",
-      "what": "Disagrees with the cut list. Corrected top/bottom 75\" - 2 sides x 3/4 = 73 1/2; - 2 dividers x 3/4 = 72; - 24 - 24 = 24\", not 24-1/6\". Drawer box (23\") and face (23 3/4\") sizes fit a 24\" opening."
-    },
-    {
-      "path": "steps[20].body",
-      "quote": "Attach drawer faces to drawers using screws from inside the drawer box.",
-      "what": "Screws used with no size given; no material line lists a screw for this (materials list only 3\" wood screws and lag screws besides pocket screws)."
-    }
-  ],
+  "gaps": [],
   "verdict": "Fix",
   "verifier": {
     "ran": false,
@@ -138,6 +151,20 @@
   "reader": {
     "batch": "calib-3",
     "imagesViewed": []
+  },
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a81626bca005b5e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c6fc4985a95e207.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c02b5700c82aa280.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7239655d6fd7786.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bd423a99c4f97158.webp"
+    ]
   },
   "notes": "Steps are out of order (final assembly at steps[6]); measurements consistent on Kreg's dimensions."
 }

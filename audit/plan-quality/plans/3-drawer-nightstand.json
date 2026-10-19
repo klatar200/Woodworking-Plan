@@ -1,6 +1,6 @@
 {
   "slug": "3-drawer-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -345,17 +345,42 @@
       "reason": "Pocket holes go in 3/4\" parts (side panels, top, drawer sides) and 1 1/2\" parts (cross supports cutList[3], corrected), but no jig thickness setting is stated. Searched all fields for /jig|setting/i: the only hit is 'tapering jig' (steps[0])."
     },
     "R10": {
-      "result": "unknown",
-      "search": "step sentences with a placement trigger and no inch measurement",
+      "result": "pass",
+      "viewed": true,
       "sweepResult": "pass",
-      "reason": "steps[9] 'attach supports to interior side panels' gives no height for the drawer glide supports, and no other field gives one. The steps[9] image was not viewed because the sweep did not flag that step. The '¾” overhang' in steps[4] does give its number."
+      "reason": "R-2: cross-support heights are given in the viewed steps[2] image (6\" from leg bottom, 7 1/2\" spacings, 5\", 1' 1 1/4\", 1' 10 1/4\"). The viewed steps[9] image shows each drawer glide support level with a front cross support (relational). steps[4] gives the 3/4\" top overhang. Leg taper is 'If desired'."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach long sides to short sides using wood glue and 1 ¼” pocket hole screws."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Attach backing to cross supports using wood glue and ¾” brad nails."
+        },
+        {
+          "path": "materials[14].name",
+          "quote": "Sets of 16\" soft close side mount drawer glides"
+        },
+        {
+          "path": "materials[15].name",
+          "quote": "Drawer pulls"
+        }
+      ],
+      "reason": "(b) Three drawer boxes are built (steps[5]-steps[8]) but no step installs them; the plan ends at the backing (steps[10]). (c) The glides (materials[14]) and pulls (materials[15]) are never used: searched all steps for /glide/i (only steps[9] 'Before installing drawer glides attach supports') and /pull|knob|handle/i (no hit). Unused drawer fronts are scored under R3, not here."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Unpublish (pending verifier)",
   "reader": {
     "batch": "pilot-2",
     "imagesViewed": []
@@ -365,5 +390,16 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4689fc860d563ae4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/86843168f6c46001.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "craftsman-style-storage-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -490,9 +490,22 @@
       "reason": "steps[5] 'Using a Kreg Pocket Hole Jig, set to 3/4\" for this project' covers every pocket-holed part (all 3/4\" stiles, rails and plywood bottom). Other joints state method and fastener: tongue-and-groove with glue, glue + 1 1/4\" brads, self-tapping screws with washers."
     },
     "R10": {
-      "result": "pass",
-      "sweepResult": "flagged",
-      "reason": "All four flags settled: the steps[17] and steps[19] images give the measurements; steps[21] and steps[22] place parts from the fitted doors and the hinge hardware (relational).",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[21].body",
+          "quote": "On the inside of each door mark the spots where each hinge will be positioned."
+        },
+        {
+          "path": "steps[26].body",
+          "quote": "After the finish dries add the door pulls."
+        }
+      ],
+      "viewed": true,
+      "reason": "R-2 widening: where the hinge cups go along each door edge is a position the builder must set. Searched all steps for /hinge/i: steps[21] says only to 'mark the spots' and defers the bore to 'the dimensions recommended by the manufacturer of the hinges'; steps[22] places the mounting plates from the cups. The steps[21] image (viewed in rescore-4) shows four cups near the door tops and bottoms with no dimension. Door-pull positions (steps[26]) are likewise given nowhere; the steps[26] image (viewed) is an undimensioned render. Leg, rail, bottom and top-support positions are dimensioned in viewed images (steps[5]: 4\", 3 1/4\", 2\", 3/4\"; steps[9]/[12]: 2\" x 1\" and 2\" x 3/4\" leg cuts; steps[17] and steps[19] per the R-1 reader).",
       "search": "step sentences with a placement trigger and no inch measurement",
       "flagged": [
         {
@@ -537,16 +550,14 @@
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "6 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Per-assembly counts in the steps match the cut list: doors 'two door rails, two outer door stiles, two inner door stiles and three door panels' x 2 (steps[8]) = cutList[9] 4, [7] 4, [8] 4, [0] 6; sides 'a side rear stile, a side center stile, a side front stile, two side rails and two side panels' x 2 (steps[11]) = cutList[11] 2, [13] 2, [12] 2, [14]+[15] 4, [1] 4; back 2 stiles, 2 rails, 1 panel (steps[14]) = cutList[16]-[18], [2]. Sizes agree on Kreg-corrected values: top '46 1/2\" X 15 1/4\"' (steps[23]) = cutList[3] source; viewed steps[9] image stile widths 2 1/2\", 1 1/2\", 1 3/4\" = cutList[11], [13], [12] sources. (b) Every part is installed (doors hung steps[22], top steps[24], front edge steps[25], pulls steps[26]). (c) Every material is used and every fastener/hardware a step names is listed; hinge-cup and mounting-plate screws are not listed separately (treated as part of the listed hinges, materials[14]); wood putty (steps[26]) is finishing, out of scope."
     }
   },
-  "verdict": "Ship (unverified)",
-  "gaps": [
-    {
-      "path": "steps[21].body",
-      "quote": "On the inside of each door mark the spots where each hinge will be positioned.",
-      "what": "No distance is given for the hinge cups along the door edge; the viewed steps[21] image shows them near top and bottom without dimensions (cup-to-edge distance is deferred to the hinge manufacturer)."
-    }
-  ],
+  "verdict": "Fix",
+  "gaps": [],
   "reader": {
     "batch": "calib-2",
     "imagesViewed": [
@@ -561,5 +572,19 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/467332ab0c9c646a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/975beb6aa70349f7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e276cdd2c20d94a5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/417ad4c848e7b2a2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/edf2821933c84168.webp"
+    ]
+  }
 }

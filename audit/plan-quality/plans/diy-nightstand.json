@@ -1,6 +1,6 @@
 {
   "slug": "diy-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -26,6 +26,7 @@
         }
       ],
       "reason": "The drawer (a stated feature; materials[8] Drawer Pull and materials[9] Drawer Slides are bought for it) is built only from an external tutorial. Search: no cutList row and no step other than steps[11] mentions the drawer; no drawer dimension, part count or slide placement appears anywhere in the plan. Build cannot be completed as described without the external page. Needs verifier.",
+      "r2Level": "Unpublish kept under R-2: the missing content is a whole sub-assembly (drawer box, face, slide installation) for a feature the description names and the materials buy hardware for (materials[8] pull, materials[9] slides); without it the drawer opening is left empty and the build is not complete. This is not a single non-structural piece like a dial face, so the Fix level does not apply.",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
@@ -170,7 +171,22 @@
     "R10": {
       "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "readerNote": "Measured positions given (2x4s \"4\\\" from the bottom of the legs\"; rebar \"3-5/8\\\" center-to-center\"). Not scored but a gap: rebar hole depth/diameter is never stated (no field matches /deep|depth/i), and that depth sets the height of the lower 2x2 over the 2x4 (steps[5])."
+      "readerNote": "Measured positions given (2x4s \"4\\\" from the bottom of the legs\"; rebar \"3-5/8\\\" center-to-center\"). Not scored but a gap: rebar hole depth/diameter is never stated (no field matches /deep|depth/i), and that depth sets the height of the lower 2x2 over the 2x4 (steps[5]).",
+      "viewed": true,
+      "reason": "R-2: every position is given. Text: 2x2s 'flush with the top of the legs', 2x4s '4\" from the bottom of the legs' (steps[1]); middle 2x4 'flush with the 1x12 back' (steps[2]). The steps[3] and steps[4] images (viewed) dimension the rebar holes from the piece end and between holes (3 5/8\" each). The steps[5] image (viewed) shows the lower 2x2s directly under the side 1x12 panels (relational), so the rebar hole depth is a hole size, not an unset position."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[6].name",
+          "quote": "Square Dowel, 1/2\" Thick 36\""
+        }
+      ],
+      "reason": "(c) A material is never used: searched all fields for /dowel/i — only materials[6]. Wood glue (steps[8]-[10]) is unlisted but consumables are excluded from R14 (rubric-R2.md clarification). Unlisted pocket screws are already R6 and the drawer's 1/4\" plywood base is already R2/R1 (one defect, one check). (a) Counts agree: 'four 1x6s' = cutList[5] qty 4; 'two 1x8s' = cutList[4] qty 2; two lower 2x2s with 'three pieces of rebar' each = materials[7] 6 rebar; 2x2 rows cutList[3] qty 4 = 2 at the top + 2 lower. (b) Every cut-list part is installed; the drawer is scored under R1."
     },
     "R11": {
       "result": "pass",
@@ -194,6 +210,18 @@
   "reader": {
     "batch": "pilot-1",
     "imagesViewed": []
+  },
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f63a749f31f257a3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/10c7996ceab71198.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e01cac0796303341.webp"
+    ]
   },
   "notes": "Drawer exists only in an external tutorial (R1, Unpublish-level, needs verifier); also no screws listed and conflicting cross-piece screw sizes (R6), drawer parts missing (R2), no jig settings (R9). Cut list matches Kreg exactly."
 }

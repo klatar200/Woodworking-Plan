@@ -1,6 +1,6 @@
 {
   "slug": "diy-kitchen-island",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -56,6 +56,7 @@
           "viewed": true
         }
       ],
+      "r2Level": "R-2 (rescore-5): stays Unpublish. Without the plans' part key the base (steps[1] names no part), drawer boxes and false fronts cannot be matched to the 33 unnamed rows, so the structural build cannot be completed from this plan; not a non-structural piece. Confidence stays likely (step images mostly unviewed).",
       "reason": "Steps defer to 'my plans' for the part key and spacer lengths. The cut list numbers parts 1-33 without names, and steps name only pieces 6, 7, 8, 10, 14, 15 and 16. None of the 4 unattached images is a drawing. Confidence is likely, not certain: 17 of the 21 step images were not viewed. Flagged items rejected: steps[17] 'my site' is paint advice (finishing, optional), and steps[19]/steps[20] 'Link in Extras Tab' are optional photos/video."
     },
     "R2": {
@@ -204,22 +205,9 @@
     "R10": {
       "search": "step sentences with a placement trigger and no inch measurement",
       "sweepResult": "pass",
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[12].body",
-          "quote": "I cut two strips of plywood (lengths specified in plans) to set the height where the drawer slide spacers need to be installed."
-        },
-        {
-          "path": "steps[12].image",
-          "quote": "photo of installed spacers, no dimensions",
-          "viewed": true
-        }
-      ],
-      "reason": "The drawer-slide spacer heights come from strip lengths the plan never gives. Search: steps, cutList and description contain no spacer or strip length. The viewed step image shows no measurement."
+      "result": "pass",
+      "r1Superseded": "R-1 scored this Fix/certain (verifier-upheld) on steps[12] 'lengths specified in plans' (viewed image: no dimensions). Under the 2026-10-19 one-defect rule that position is missing only because it is in the plans we don't have, so it is scored once under R1 (already cited there), not here.",
+      "reason": "R-2 (rescore-5): pass; the spacer heights are scored under R1. Other placements are relational (face frame and countertop centered, slides flush with spacer and face frame, false fronts on spacer blocks, pulls 'approximate area'). The drawer-slide spacer heights come from strip lengths the plan never gives. Search: steps, cutList and description contain no spacer or strip length. The viewed step image shows no measurement."
     },
     "R11": {
       "result": "pass",
@@ -233,6 +221,27 @@
         }
       ],
       "reason": "Each 'as shown' reference is in a step with its own image. steps[7] 'as shown on the plans' was viewed and shows the pocket-hole locations."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "I then place space balls in the grooves and slide the center panel in place."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Then I measured the hole spacing of my pulls and adjusted my Kreg Cabinet Hardware Jig accordingly."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "1\" Wood Screws"
+        }
+      ],
+      "reason": "(c) Space balls and drawer pulls are used but not in materials (searched materials.name for /space|ball|pull|knob|handle/i: no hit). 1\" Wood Screws (materials[7], qty 16) are used by no step (searched steps for /1\" (wood )?screw|wood screw/i: no hit; slides use 'the screws that are included'). The 2\" vs 1-1/2\" brad size is R6, not scored here. (a) Counts the steps state agree (pieces 14 & 15 x2, piece 16 x8, 2 stretchers x 3 holes = 6 2\" pocket screws); the unnamed rows are R3. (b) Every sub-assembly is installed."
     }
   },
   "verdict": "Fix + Human review",
@@ -260,5 +269,13 @@
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5fe10f0e4637413c.webp"
     ]
   },
-  "notes": "4 certain Fix-level plan failures (R3, R6, R9, R10) mean Unpublish per §6 once a verifier upholds them. R1 (Unpublish-level, confidence likely) also needs the verifier. R2 is unknown, so Human review is added."
+  "notes": "4 certain Fix-level plan failures (R3, R6, R9, R10) mean Unpublish per §6 once a verifier upholds them. R1 (Unpublish-level, confidence likely) also needs the verifier. R2 is unknown, so Human review is added.",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9; the R2 unknown is a missing-document question, not a woodworking-knowledge one."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": []
+  }
 }

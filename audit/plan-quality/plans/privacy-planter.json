@@ -1,6 +1,6 @@
 {
   "slug": "privacy-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -132,21 +132,29 @@
     "R10": {
       "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "The only measured placement in text gives a number: steps[3] 'Space boards approximately 3/4” apart'. Side-board and box-board positions are in the viewed images ('1/4\" from bottom', '1/4\" spacing', 'Flush to top', 'inset 1\"')."
+      "reason": "The only measured placement in text gives a number: steps[3] 'Space boards approximately 3/4” apart'. Side-board and box-board positions are in the viewed images ('1/4\" from bottom', '1/4\" spacing', 'Flush to top', 'inset 1\"'). R-2 (rescore-4): support height (steps[2]) is in its image (viewed): 'Flush with bottom of 3rd 5/4 board' (relational). Base boards rest on the supports (steps[3] image, viewed). The cap sits on the box with an even overhang (steps[5] image, viewed; relational).",
+      "viewed": true
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Staple plastic to the sides, then overlap weed barrier and staple it to the bottom to retain the soil but allow for drainage."
+        }
+      ],
+      "reason": "(c) Items a step uses are not in materials: plastic sheet, weed barrier and staples (searched materials.name for /plastic|barrier|fabric|staple/i: no hit; materials are cedar boards, 2x4, 4x4 and four screw types). (a) Counts and sizes agree: viewed images give Side '(7 places)' x 2 = cutList[2] 14, Front/Back '(14 places)' = cutList[1] 14, base '5/4\" x 6 x 14\" (8 places)' = cutList[3] 8, supports '2 x 4 x 46-1/2\"' = cutList[6], cap '5/4 x 6 x 57\" (2 places)' and '5/4 x 6 x 22\" (2 places)' = cutList[0], [4]. (b) Every part is installed (steps[0]-[5]). Every listed material is used."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "gaps": [
-    {
-      "path": "steps[3].body",
-      "quote": "Staple plastic to the sides, then overlap weed barrier and staple it to the bottom to retain the soil but allow for drainage.",
-      "what": "Plastic, weed barrier and staples are used but not in materials (searched materials.name for /plastic|barrier|fabric|staple/i: no hit)."
-    }
-  ],
-  "verdict": "Ship (unverified)",
+  "gaps": [],
+  "verdict": "Fix",
   "reader": {
     "batch": "calib-4",
     "imagesViewed": [
@@ -159,5 +167,18 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1574049c97fc2b50.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c020d7de34c135ad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1cdec30cb22d14e7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1d4f2d2882303ba8.webp"
+    ]
+  }
 }

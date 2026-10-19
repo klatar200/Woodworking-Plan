@@ -1,6 +1,6 @@
 {
   "slug": "adirondack-counter-height-side-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -85,8 +85,34 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "steps[1] \"Keep apron inset 3/8”\" gives its number; no step names another measured position (lower apron height is not stated in text)."
+      "viewed": true,
+      "reason": "R-2: steps[1] gives \"Keep apron inset 3/8”\"; the viewed steps[1] image gives the second apron's position (6\" from the leg end, legs 35 1/4\"). The viewed steps[3] image shows the top boards parallel with 1/8\" gaps (relational); bottom shelf slats sit on the aprons (relational)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Keep 1/8” spacing between boards. Use a jig saw to trim boards to 22” diameter circle."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Table top middle | qty 2 | 0.75 x 3.5 x 22"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Table top sides | qty 2 | 0.75 x 2.5 x 21"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Table top outer edge | qty 2 | 0.75 x 2.5 x 20"
+        }
+      ],
+      "arithmetic": "Top boards laid parallel (viewed steps[3] image): 2 x 3.5 + 2 x 2.5 + 2 x 2.5 = 17\"; 6 boards -> 5 gaps x 1/8\" = 5/8\"; total width 17 5/8\" < 22\" diameter the step trims to.",
+      "reason": "(a) The cut list's top boards cannot make the 22\" circle steps[3] calls for; either the board count/widths or the diameter is wrong. The plan does not say which. (b) Every part is installed. (c) Every non-consumable item is listed and used (glue is a consumable, excluded)."
     },
     "R11": {
       "result": "pass",
@@ -104,5 +130,16 @@
   "reader": {
     "batch": "pilot-3",
     "imagesViewed": []
+  },
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/afdaa697dfe52b41.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7afa6f98c4b8b41.webp"
+    ]
   }
 }

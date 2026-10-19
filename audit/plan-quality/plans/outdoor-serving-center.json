@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-serving-center",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -696,22 +696,38 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "viewed": true,
+      "reason": "R-2: every position 'where shown' is dimensioned in a viewed step image. steps[3]: legs 18 1/2\" above the rail, Support Post 17 1/4\" from the Back Leg; steps[5]: Axle Leg/Block 9\" and 9\", Axle Supports 5 1/2\"; steps[7]: braces 15\", 4\" and 20 1/2\"; steps[10]: slats with consistent ~1/4\" gaps, shelf on the rails (relational); steps[13]: slats on the frame faces (relational); steps[17]: Slat Supports 12\" spacing, 3/4\" down; steps[18]: Top Track Support 1 1/2\" down. steps[12] and steps[19] give the 1/8\" and 1/16\" track gaps. Handles are placed by part only ('to the top and to the leg-end', steps[21]), treated as builder's choice."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "29 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Cut Narrow and Wide versions of the Long Side Slats, Medium Side Slats, and Short Side Slats from 1x2 and 1x4 cedar material"
+        },
+        {
+          "path": "cutList[9].part",
+          "quote": "Wide Long Top Slat"
+        },
+        {
+          "path": "steps[20].body",
+          "quote": "Cut Narrow Top Slats and Wide Top Slats to length from 1x2 and 1x4 cedar"
+        }
+      ],
+      "reason": "(a) The part steps[13] cuts as the wide Long Side Slat is listed only as cutList[9] 'Wide Long Top Slat' (52 1/2\", the Narrow Long Side Slat's length), while steps[20]'s top slats are cutList[24]/[25] (51 1/2\"). Searched cutList.part for /wide long side/i: no hit. The row name points the builder at the top. (b) Every part is installed; the viewed steps[13] image labels the Lower Side Slats installed at the shelf end. (c) Every non-consumable material is used (threaded rod steps[9], wheels steps[9], aluminum angle steps[11]/[19], both sheet-metal screw sizes, brads, bar pulls as the steps[21] handles); the cooler is the payload, not a build item."
     }
   },
-  "gaps": [
-    {
-      "path": "cutList[9].part",
-      "quote": "Wide Long Top Slat",
-      "what": "steps[13] cuts \"Narrow and Wide versions of the Long Side Slats\"; no row is named Wide Long Side Slat. cutList[9] (52 1/2\", same length as cutList[8] \"Narrow Long Side Slat\") is named a Top slat, while the top slats are cutList[24]/[25] (51 1/2\"). Likely a mislabel; the builder must match by length."
-    }
-  ],
-  "verdict": "Ship (unverified)",
+  "gaps": [],
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -722,5 +738,21 @@
     "batch": "calib-3",
     "imagesViewed": []
   },
-  "notes": "Only open question is whether the Lower Side Slats are installed in steps[13] (R3 unknown); measurements check out on Kreg's dimensions."
+  "notes": "Only open question is whether the Lower Side Slats are installed in steps[13] (R3 unknown); measurements check out on Kreg's dimensions. Re-score (rescore-5): the viewed steps[13] image labels 'Lower Side Slats' installed, which would settle the R3 unknown; R3 left as scored for the orchestrator.",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d741d7152522a0ea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/496c63e211eaee2b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4cea9536a48dd07c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f59d9334b60fe8c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d37ad904a79c80e4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1a7aa44eac53dc7c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c690424c3a76e9eb.webp"
+    ]
+  }
 }

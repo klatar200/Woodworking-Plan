@@ -1,7 +1,18 @@
 {
   "slug": "built-in-dresser-with-cubbies",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-3",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2db27092fe04327.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eee3c10f547fec40.webp"
+    ]
+  },
   "importAffected": true,
   "importDiffs": [
     {
@@ -496,8 +507,58 @@
       "reason": "pocket holes go into 1 1/2\" parts (cutList[17] Base Middle Supports) and 3/4\" parts (cutList[8],[9],[1],[4],[11],[13],[14],[15]); searched description, steps, materials and tools for /set (your )?(jig|kreg)|set for|setting|thick material/ — no jig thickness setting stated anywhere (materials[5] says only 'see tools list', and no tool has a note)"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Using wood glue and pocket hole screws, attach two Cubby Dividers to the Side Cubby Insides and Cubby Outsides with 13\" in between."
+        },
+        {
+          "path": "cutList[14]",
+          "quote": "Side Cubby Insides | qty 2 | 0.75 x 15 x 33 (Kreg source 33\" x 15 1/2\" x 3/4\")"
+        },
+        {
+          "path": "steps[7].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2db27092fe04327.webp — shows the two side-cubby dividers on each side with no dimension",
+          "viewed": true
+        }
+      ],
+      "arithmetic": "Side cubby height 33\" (cutList[14]) - 2 dividers x 3/4\" = 31 1/2\" of openings; '13\" in between' fixes one opening, leaving 18 1/2\" to split above and below with no number for either.",
+      "reason": "The height of the side-cubby dividers is a position the builder must set; the text gives only the 13\" gap between them, and the viewed step image carries no dimension. 'likely' because '13\" in between' could be read as 13\" openings measured from the Upper Cubby Bottom. Other positions pass: drawer faces by the 1/4\" gaps (steps[5]; image viewed, faces 4 1/4 + 4 x 6 1/4 + 6 x 1/4 = 30 3/4 = side height), upper dividers '13\" from each Cubby Outside' (steps[6]), side insides '13\" from the Cubby Outsides' (steps[7]); the rest is flush/centered/evenly spaced."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Using wood glue and clamps, attach a Skinny Drawer Face to the front of the drawer box, flush along the bottom and centered on the drawer.\nRepeat for seven more drawers."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Skinny Drawer Faces | qty 2"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Drawer Faces | qty 8"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Ensure the unit is attach to the studs in the wall for safety purposes, using brackets."
+        },
+        {
+          "path": "materials[7]",
+          "quote": "Drawer pulls of choice | 10 each"
+        }
+      ],
+      "arithmetic": "Skinny Drawer Faces: steps[3] uses 2 (two skinny drawers) + steps[4] uses 8 (eight drawers) = 10 vs cutList[2] qty 2; cutList[5] 'Drawer Faces' qty 8 is named in no step.",
+      "reason": "(a) steps[4] puts a 'Skinny Drawer Face' on each of the 8 regular drawers, disagreeing with the cut list (2 skinny faces; the 8 regular faces are cutList[5]). (c) The wall brackets used in steps[8] are not in materials (no materials.name matches /bracket|anchor/i). (c) materials[7] drawer pulls are used by no step (searched all steps for /pull|knob|handle/i: none). Other counts agree: drawer sides/fronts 16 = 8 x 2, skinny 4 = 2 x 2, bottoms 10, cubby dividers 7 = 3 (steps[6]) + 2 x 2 (steps[7])."
     },
     "R11": {
       "result": "pass",
@@ -511,23 +572,7 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "gaps": [
-    {
-      "path": "steps[4].body",
-      "quote": "attach a Skinny Drawer Face to the front of the drawer box, flush along the bottom and centered on the drawer.\nRepeat for seven more drawers.",
-      "what": "the 8 regular drawers are told to use a 'Skinny Drawer Face' (cutList[2], qty 2); cutList[5] 'Drawer Faces' (qty 8) is named in no step"
-    },
-    {
-      "path": "steps[7].body",
-      "quote": "attach two Cubby Dividers to the Side Cubby Insides and Cubby Outsides with 13\" in between.",
-      "what": "only the spacing between the two side-cubby dividers is given; their position within the 33\" Side Cubby Insides (cutList[14]) is not stated (step has an image, not viewed — sweep did not flag it)"
-    },
-    {
-      "path": "steps[8].body",
-      "quote": "Ensure the unit is attach to the studs in the wall for safety purposes, using brackets.",
-      "what": "brackets are used but are not in materials and have no size or type"
-    }
-  ],
+  "gaps": [],
   "reader": {
     "batch": "calib-1",
     "imagesViewed": []

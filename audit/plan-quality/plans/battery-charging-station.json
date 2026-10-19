@@ -1,6 +1,17 @@
 {
   "slug": "battery-charging-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-2",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a03c6f5ae1644f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ad5ce09cbb3b58e.webp"
+    ]
+  },
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -139,7 +150,26 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "viewed": true,
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Mark out all the pocket holes on all the pieces per the plans. Also, mark the shelf for the 5 holes that will be drilled for the power cords to be fed through."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "The shelf gets 1-1/2” holes and the bottom gets a 2” hole."
+        }
+      ],
+      "reason": "R-2 re-score (rubric-R2.md one-defect clarification): the positions of the 5 shelf cord holes and the bottom through-hole are given nowhere in the plan (searched every step: steps[7] gives only diameters) and live only in the Extras drawings — the steps[5] image (viewed) shows the printed drawing book open at a 'SHELF DETAIL FROM BOTTOM' page with the holes drawn, not legible. Cord holes are non-structural, so the build can be completed without that document: Fix, not Unpublish. Pocket-hole locations, also deferred to the Extras, are not positions under R-2 and are not counted. The flags below were R-1's pass reasoning.",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "sweepResult": "flagged",
       "flagged": [
@@ -204,6 +234,7 @@
     },
     "R10": {
       "result": "pass",
+      "viewed": true,
       "search": "step sentences with a placement trigger and no inch measurement",
       "sweepResult": "flagged",
       "flagged": [
@@ -216,7 +247,11 @@
           "reason": "The same step gives the measurement: 'They are 32” apart and should line up perfectly with the wall studs.'"
         }
       ],
-      "reason": "Measured placements give numbers: shelf raised 3/4” (steps[8]), 3” gap chase front to back (steps[9]), 3 holes 16” apart (steps[12]), side angle marks 1-1/2” and 4-1/2” (steps[2])."
+      "reason": "R-2 (with the 2026-10-19 one-defect clarification): the cord-hole positions are given nowhere in the plan but live in the Extras drawings (steps[5] image, viewed, shows the drawing book's 'SHELF DETAIL FROM BOTTOM' page with the holes; steps[7] image, viewed, is a drilling photo with no dimensions), so they are scored once under R1, not here. Pocket-hole locations are not R10 positions. Other placements give numbers: 3/4” spacers (steps[8]), 3” chase gap (steps[9]), 16” and 32” wall holes (steps[12], [13]), side marks 1-1/2” and 4-1/2” (steps[2])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Strips 'a 10” strip, two 3-3/4” strips, a 3” strip, and a 1-1/2” strip' (steps[0]) cut to 36” (steps[1]) = corrected shelf 10, back 3 3/4, bottom 3 3/4, chase front 3, front trim 1 1/2, qty 1 each; sides 'two pieces that are 11-1/2” by 4-1/2”' (steps[2]) = cutList[5] qty 2. (b) Every part is installed (steps[8]-[11]). (c) Items used — quarter sheet, 1-1/4” pocket screws, #8 x 1-1/4” and #8 x 2-1/2” screws — are materials[0]-[3]; each material is used."
     },
     "R11": {
       "result": "pass",
@@ -224,19 +259,8 @@
       "note": "7 reference(s), each in a step with its own image"
     }
   },
-  "gaps": [
-    {
-      "path": "steps[5].body",
-      "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part.",
-      "what": "Pocket-hole locations are only in the Extras PDF, which the plan does not include (step text gives none; steps[5] image and the 4 unattached images viewed: none shows them legibly)."
-    },
-    {
-      "path": "steps[5].body",
-      "quote": "Also, mark the shelf for the 5 holes that will be drilled for the power cords to be fed through. The bottom also gets marked for a through hole.",
-      "what": "Positions of the 5 shelf cord holes and the bottom hole are not given (steps[7] gives only diameters 1-1/2” and 2”); searched all steps for a hole position: none."
-    }
-  ],
-  "verdict": "Ship (unverified)",
+  "gaps": [],
+  "verdict": "Fix",
   "reader": {
     "batch": "calib-4",
     "imagesViewed": [

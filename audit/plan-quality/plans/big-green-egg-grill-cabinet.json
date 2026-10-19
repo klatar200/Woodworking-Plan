@@ -1,6 +1,6 @@
 {
   "slug": "big-green-egg-grill-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -739,7 +739,11 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "r2Level": "R-2 (rescore-5): per the 2026-10-19 one-defect rule, a position missing because it is only in a document we don't have is scored once under R1. steps[12] puts the bottom and center rail locations only in the Extras 3D sketches (no step states them; the viewed steps[12] image and unattached images show none). Fix, not Unpublish: the build can still be completed, since the positions can be worked out from the leg-groove numbers in steps[4]-[5] (R-1 reason below). Moved here from R10.",
       "sweepResult": "flagged",
       "evidence": [
         {
@@ -903,16 +907,17 @@
       "cause": "plan",
       "evidence": [
         {
-          "path": "steps[12].body",
-          "quote": "Mark the location of the bottom and center rails on each leg per the 3D sketches in the Extras section."
+          "path": "steps[17].body",
+          "quote": "Cut a few spacers to rest this rail on while screwing it in place to be sure it is level."
         },
         {
-          "path": "steps[12].image",
-          "quote": "photo of a clamped end sub-assembly; no dimensions",
+          "path": "steps[17].image",
+          "quote": "photo of the drawer cavity with both mounting rails installed; no dimensions",
           "viewed": true
         }
       ],
-      "reason": "The bottom and center rail positions are not stated in the step, and the viewed image shows none. They can be worked out only by arithmetic from the optional leg-groove steps: bottom rail top = 4-1/4 + 3/4 = 5\" from the bottom; center rail bottom = 4-1/4 + 10 − 3/4 = 13-1/2\". A builder who skips the optional grooves (steps[3] '(Optional)') has no stated position. Sweep flags rejected: steps[4] gives its numbers ('starts 4-1/4” from the bottom and ends 2-3/4 from the top'); steps[29] is fit-to-opening trimming ('until it fits with a nice reveal'), which is relational; steps[45] is disassembly for finishing, not a placement. steps[17] (drawer mounting rail height, set on 'a few spacers' of unstated height) was not viewed and is not scored.",
+      "viewed": true,
+      "reason": "R-2 re-score (rescore-5): fail stands on steps[17] only. The drawer mounting rail height (steps[17]) is set on spacers whose height is given nowhere (searched all fields for /spacer/i: steps[12] 1/8\" rail spacers, steps[17] unsized; steps[17] does not refer to the Extras), and the viewed steps[17] image is a photo with no dimensions. The steps[12] rail locations (in the Extras sketches) moved to R1 under the one-defect rule; R-1 text about them follows for reference. The bottom and center rail positions are not stated in the step, and the viewed image shows none. They can be worked out only by arithmetic from the optional leg-groove steps: bottom rail top = 4-1/4 + 3/4 = 5\" from the bottom; center rail bottom = 4-1/4 + 10 − 3/4 = 13-1/2\". A builder who skips the optional grooves (steps[3] '(Optional)') has no stated position. Sweep flags rejected: steps[4] gives its numbers ('starts 4-1/4” from the bottom and ends 2-3/4 from the top'); steps[29] is fit-to-opening trimming ('until it fits with a nice reveal'), which is relational; steps[45] is disassembly for finishing, not a placement. steps[17] (drawer mounting rail height, set on 'a few spacers' of unstated height) was not viewed and is not scored.",
       "sweepResult": "flagged",
       "search": "step sentences with a placement trigger and no inch measurement",
       "flagged": [
@@ -946,6 +951,10 @@
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step counts match the cut list: 6 legs at 30-1/2\", 14 short rails, 4 long rails (steps[0]); 3 short + 2 long cleats (steps[15]); 4 platform + 6 floor boards (steps[18]); 2 drawer mounting rails ('both sides', steps[17]); top 58\" x 27\" from 6 boards 5\" wide (steps[35], cutList[14]). (b) Every sub-assembly is installed: drawer box (steps[30]), drawer front (steps[32]), doors (steps[27]-[28]), top (steps[44]). (c) Every material is used (hooks steps[33], catches steps[34], top hardware 8 + 2 = 10 in steps[44], Nest steps[45], every screw size per R6); no step uses an unlisted item other than temporary aids (spacers, playing cards, tape)."
     }
   },
   "verdict": "Fix",
@@ -965,5 +974,15 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d0e35aae6419b2b7.webp"
+    ]
+  }
 }

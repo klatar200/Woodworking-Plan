@@ -1,7 +1,18 @@
 {
   "slug": "a-frame-birdhouse",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
+  "humanReview": {
+    "value": false,
+    "reason": "The only open question was whether the 1/2\" jig setting on the bevel is deliberate (R9); under R-2 an R9 question alone is not Human review."
+  },
+  "rescore": {
+    "batch": "rescore-3",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1bb58b50ec2e7e1c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/26c4d41ccdbfdc6b.webp"
+    ]
+  },
   "importAffected": true,
   "importDiffs": [
     {
@@ -198,14 +209,37 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "R-2: the one measured position is given ('with 3/4\" from the front edge', steps[3]); the steps[3] image (viewed) shows the Front set back between the Sides with the open gap above it as the entrance, so no entrance-hole position is needed. Back flush (steps[2]), Bottom between Front and Back (steps[4]) and the hanging screws matched to the keyhole hangers (steps[6]) are relational."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "- Attach screws onto the Back of the birdhouse. - Attach keyhole hangers to a post, wall or tree."
+        },
+        {
+          "path": "materials[1]",
+          "quote": "1 1/4\" Kreg Pocket Hole Screws | 14 each"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "(1) Right Side- 2 on 45 degree bevel (set bit for 1/2\" wood) (2) Front/Back- 2 on each mitered side (1) Bottom- 2 on each beveled edge"
+        }
+      ],
+      "arithmetic": "Pocket holes in steps[0]: Right Side 2 + Front/Back 2 pieces x 2 mitered sides x 2 = 8 + Bottom 2 beveled edges x 2 = 4 -> 2 + 8 + 4 = 14 = materials[1] quantity 14. No screw is left for the hanging screws on the Back or for fixing the keyhole hangers to the post.",
+      "reason": "(c) The hanging screws (and the screws that fix the keyhole hangers to a post) are used in steps[6] but no materials line covers them; every listed pocket screw is consumed by the pocket holes. 'likely' because the keyhole hangers (materials[2]) may come with screws, which the plan does not say. (a) Counts agree (1 Left, 1 Right, Front/Back qty 2, 1 Bottom). (b) Every part is installed."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": "Fix + Human review",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],

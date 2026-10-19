@@ -1,6 +1,6 @@
 {
   "slug": "ultimate-adjustable-sawhorse",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -172,19 +172,36 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "R-2: every position is given or relational: top-plate holes 'centered between the legs and 3-3/8\" from either end' (steps[1]); flanges centered, 'approximately 26-1/2\" center-to-center' (steps[5]); clamps over the holes (steps[7]); Unistrut on the clamp tabs (steps[9]); rope holes marked from the Unistrut openings (steps[10])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Drill 5/16\" holes through the top, spaced closely to the edges."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "12ft - 3/8\" Nylon Rope"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Loop a length of nylon rope through underside of sawhorse top plate and through two, widespread openings in the Unistrut."
+        }
+      ],
+      "arithmetic": "Rope 3/8\" = 6/16\" > hole 5/16\": the listed rope does not pass through the holes steps[10] drills for it (materials also list a '7/16 Drill Bit', materials[12], which no step uses).",
+      "reason": "(c) The step's hole size disagrees with the listed rope it must take. (a) Counts agree: 2 trays from 2 bases, 4 sides, 4 ends (one per sawhorse); 4 pipes, flanges, caps and clamps; 2 Unistruts. (b) Every part is installed; the inserts (cutList[3]) serve the optional attachments. Items in the Optional steps (dowels, PVC, ball-bearing casters) are not scored."
     }
   },
   "gaps": [
-    {
-      "path": "steps[10].body",
-      "quote": "Drill 5/16\" holes through the top, spaced closely to the edges.",
-      "what": "Rope-hole size disagrees with materials[12] \"7/16 Drill Bit\"; the rope is materials[7] \"12ft - 3/8\\\" Nylon Rope\" (3/8 > 5/16)."
-    },
     {
       "path": "steps[1].body",
       "quote": "Drill two, 1-1/8\" holes through the top plate of the sawhorse, centered between the legs and 3-3/8\" from either end.",
@@ -202,5 +219,13 @@
     "batch": "calib-3",
     "imagesViewed": []
   },
-  "notes": "One Fix: the optional 1x4 inserts have no listed stock. Two gaps (drill size, hole spacing vs. unspecified sawhorse length)."
+  "notes": "One Fix: the optional 1x4 inserts have no listed stock. Two gaps (drill size, hole spacing vs. unspecified sawhorse length). Re-score (rescore-5): the drill-size gap is now R14; the hole-spacing gap stays (conditional on a bought sawhorse's length, and the pipe spacing is 'approximately', so no check can settle it).",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needs knowledge outside §9."
+  },
+  "rescore": {
+    "batch": "rescore-5",
+    "imagesViewed": []
+  }
 }
