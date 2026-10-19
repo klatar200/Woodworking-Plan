@@ -154,7 +154,7 @@ const summary = {
   plansAffected: 0, plansGross: [], rowsAffected: 0, examples: {},
 };
 const bump = (o, k, n = 1) => { o[k] = (o[k] || 0) + n; };
-const example = (kind, ex) => { (summary.examples[kind] ||= []).length < 6 && summary.examples[kind].push(ex); };
+const example = (kind, ex) => { if ((summary.examples[kind] ||= []).length < 6) summary.examples[kind].push(ex); };
 
 for (const f of readdirSync(PLANS).filter((n) => n.endsWith('.json')).sort()) {
   const plan = JSON.parse(readFileSync(join(PLANS, f), 'utf8'));
