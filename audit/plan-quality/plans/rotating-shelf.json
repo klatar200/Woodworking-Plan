@@ -127,34 +127,40 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "reader: 'have attached' is an assembly instruction, not a reference to outside content; no field points to external or missing material",
       "flagged": [
         {
           "path": "steps[3].body",
           "quote": "Repeat Step 3. Once you have attached the second \"divider\" to the second \"shelf\" you will then insert and attach the other end of the \"divider\" to the first \"shelf\". Again, always make sure you align,",
-          "why": "matches \"have attached\""
+          "why": "matches \"have attached\"",
+          "confirmed": false
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..5]: '73 1/2\" boards' = Sides, '13 1/2\" board'/'divider' = Dividers, '33\" boards'/'shelf' = Shelves, 'end board' = Ends — all cutList rows; wood plugs in steps[6] are finishing (out of scope)"
     },
     "R3": {
-      "result": "flagged",
+      "result": "pass",
+      "reason": "reader rejects the flag: steps use the singular — steps[2] 'Attach the first \"shelf\" (33\") to the \"divider\" (13 1/2\")', steps[1] 'the 33\" boards'. Every row is named by a step (Sides steps[0], Dividers steps[1..5], Shelves steps[1..5], Ends steps[5]); missing assembly/count issues recorded in gaps",
       "flagged": [
         {
           "path": "cutList[3].part",
           "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
+          "why": "no step mentions it (searched steps for shelv)",
+          "confirmed": false
         }
       ]
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
+      "reason": "reader confirms: no glue-up or lamination — the only glue in steps[0..7] is 'a small dab of wood glue' for plugs (steps[6]). Every part 11 1/2\" wide (Kreg source '1 1/2\" x 11 1/2\" x 48\"') vs 2x12 = 1 1/2 × 11 1/4 (§9): 11.5 > 11.25",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
@@ -184,22 +190,26 @@
         {
           "path": "cutList[0]",
           "quote": "Sides — qty 2, 1.5 x 11.5 x 73.2 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         },
         {
           "path": "cutList[1]",
           "quote": "Ends — qty 2, 1.5 x 11.5 x 48 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         },
         {
           "path": "cutList[2]",
           "quote": "Dividers — qty 5, 1.5 x 11.5 x 13.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         },
         {
           "path": "cutList[3]",
           "quote": "Shelves — qty 4, 1.5 x 11.5 x 33 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         }
       ]
     },
@@ -208,7 +218,23 @@
       "arithmetic": "parts: 2×73.2 + 2×48 + 5×13.5 + 4×33 + kerf 8 cuts (13 parts − 5 boards, the fewest possible)×1/8 = 442.900″; bought: 5×96 = 480″; 442.900 ≤ 480"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "only fastener size in steps: '2\" Kreg Pocket Screws' (steps[2]) = materials[3] '2\" Kreg Screws'"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "pocket holes drilled (steps[0..1]) before shelf/divider assembly (steps[2..5]); each shelf/divider exists before the step that joins it. The never-instructed Sides-to-Ends joint is recorded in gaps"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards." },
+        { "path": "steps[1].body", "quote": "Drill pocket holes on the end of each 13 1/2\" board. You will need (3) Kreg pocket holes in each end." }
+      ],
+      "reason": "all parts are 1 1/2\" thick (Kreg source); searched description, steps, materials and tools for /set (your )?(jig|kreg)|set for|setting|thick material|1 1\\/2\"? material/ — no jig thickness setting stated anywhere"
     },
     "R10": {
       "result": "pass",
@@ -220,11 +246,29 @@
       "note": "1 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards. Drill (3) pocket holes in the end of each side.",
+      "what": "step titled 'Assemble sides' only drills; no step joins the Sides (cutList[0]) to the Ends (cutList[1]) — searched steps for /end board|ends|48/: only steps[5] 'centered on the end board'"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Repeat Step 4.",
+      "what": "steps[2..5] assemble three shelves (1st/2nd/3rd Shelf) and four dividers (one per shelf step + 'the remaining divider'); cutList has Shelves qty 4 and Dividers qty 5. Stack check: 5×13 1/2 + 4×1 1/2 = 73 1/2 = side length, which needs 4 shelves and 5 dividers"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Drill Kreg Pocket holes on the inside ends of the 73 1/2\" boards.",
+      "what": "cutList[0] Sides length per Kreg source is '1 1/2\" x 11 1/2\" x 73 1/5\"', disagreeing with the step's 73 1/2\"; the stack arithmetic above supports 73 1/2\""
+    }
+  ],
+  "reader": { "batch": "calib-1", "imagesViewed": [] }
 }

@@ -44,13 +44,18 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "The search pattern matches steps[0] \"Trace the included templates onto the board, or draw them yourself.\" but the sweep returned pass without flagging it. The templates are optional (\"or draw them yourself\"); the house blanks are fully sized in the cut list, so the build does not depend on them."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only parts: 6 houses (cutList[1]-[3], qty 4+1+1) and 6 bases (cutList[0]); steps[0] \"The plans call for 6 houses and 6 bases per board.\""
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All rows are real parts used in steps[1]-[3] (houses cut out in steps[1], bases attached in steps[3])."
     },
     "R4": {
       "result": "pass",
@@ -67,22 +72,46 @@
       "arithmetic": "parts: 6×6 + 4×10.5 + 1×6.5 + 1×8.5 + kerf 11 cuts (12 parts − 1 boards, the fewest possible)×1/8 = 94.375″; bought: 1×96 = 96″; 94.375 ≤ 96"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "steps[3] \"1 ¼” pocket hole screws\" = materials[1]; steps[4] \"2” horseshoe nail\" = materials[2] \"2” nails or screws\". One size per use."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Trace and cut houses, drill pilot hole (steps[0]-[1]); pocket holes in bases (steps[2]); attach base (steps[3]); drive hanger nail (steps[4]). Each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[2].body", "quote": "Drill pocket holes in the 6” bases." },
+        { "path": "materials[0].name", "quote": "1 x 6 board, 96” x 1\" x 6\"" }
+      ],
+      "reason": "Pocket holes are drilled in the bases but no jig thickness setting is stated anywhere. Searched all steps, materials, description and summary for /set|thick|3\\/4|¾/: no match (the only thickness given is the material's 1\")."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Nail position is \"where I wanted my nail to be\" (steps[1]) — as desired."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No drawing reference except the optional templates (see R1)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": []
+  },
+  "notes": "Only finding: no pocket-hole jig setting (R9)."
 }

@@ -43,46 +43,62 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Visit http://thatsmyletter.blogspot.com/2015/05/r-is-for-rolling-console.html for steps and complete how-to build this console." },
+        { "path": "images[2]", "quote": "dimensioned 3-D drawing: 23\", 63\", 36\", 58 1/2\", 16 1/2\", 12 1/4\", 12 1/2\", 6\" — no joinery, fasteners or assembly order", "viewed": true }
+      ],
+      "reason": "the plan's only step sends the builder off-site 'for steps and complete how-to'; no text gives any assembly, joinery or fastener use. All 6 images opened: 4 photos of the finished console, 1 blog logo, 1 overall-dimension drawing — the build sequence exists nowhere in the plan",
       "flagged": [
         {
           "path": "steps[0].body",
           "quote": "Visit http://thatsmyletter.blogspot.com/2015/05/r-is-for-rolling-console.html for steps and complete how-to build this console.",
-          "why": "matches \"http://\""
+          "why": "matches \"http://\"",
+          "confirmed": true
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "n/a",
+      "reason": "the plan has no build steps (steps[0] is only the off-site link); scored once under R1"
     },
     "R3": {
-      "result": "flagged",
+      "result": "n/a",
+      "reason": "the flags are true — no step names any cut-list row — but only because the steps are off-site; one defect, scored once under R1",
       "flagged": [
         {
           "path": "cutList[0].part",
           "quote": "Top slats",
-          "why": "no step mentions it (searched steps for slat)"
+          "why": "no step mentions it (searched steps for slat)",
+          "confirmed": true
         },
         {
           "path": "cutList[1].part",
           "quote": "Shelf slats",
-          "why": "no step mentions it (searched steps for shelf/slat)"
+          "why": "no step mentions it (searched steps for shelf/slat)",
+          "confirmed": true
         },
         {
           "path": "cutList[2].part",
           "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
+          "why": "no step mentions it (searched steps for leg)",
+          "confirmed": true
         },
         {
           "path": "cutList[3].part",
           "quote": "Frame front & back",
-          "why": "no step mentions it (searched steps for frame)"
+          "why": "no step mentions it (searched steps for frame)",
+          "confirmed": true
         },
         {
           "path": "cutList[4].part",
           "quote": "Frame sides",
-          "why": "no step mentions it (searched steps for frame)"
+          "why": "no step mentions it (searched steps for frame)",
+          "confirmed": true
         }
       ]
     },
@@ -95,7 +111,16 @@
       "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 2x3, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "n/a",
+      "reason": "no step uses any fastener (only step is the off-site link); scored once under R1"
+    },
+    "R8": {
+      "result": "n/a",
+      "reason": "no build steps to order; scored once under R1"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no step describes any joint; scored once under R1"
     },
     "R10": {
       "result": "pass",
@@ -106,11 +131,23 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "calib-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5cfe931fbfb81214.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbe7b0bc4f53826b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d2c61770ef1582bc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d00b0f047d8dc78.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/380ba53da9ac70c5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e4792b817968dc17.webp"
+    ]
+  }
 }

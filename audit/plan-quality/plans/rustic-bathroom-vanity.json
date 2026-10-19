@@ -227,100 +227,179 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part a step cuts or assembles has a row: legs, long/short upper rails, long/short shelf rails, corner braces, top supports, short slats (4), long slats (20), top panel, backsplash. The dowel spacers of steps[3] are a jig aid, not a project part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 11 rows used (steps[1]-[15]). Corrected sizes agree with the plan's overall-dimension drawing (unattached image, viewed): base 39 + 2 x 3 1/2 = 46 under a 48\" top; depth 16 1/4 + 2 x 3 1/2 = 23 1/4; top 23 1/4 + 3/4 backsplash = 24; height 33 1/2 leg + 3 1/2 backsplash = 37."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: unparseable stock materials[3]",
+      "reason": "Steps name the stock for every part: legs \"from 4x4 boards\" (steps[1]); upper rails, corner braces, top supports, short and long slats, backsplash \"from 1x4\" (steps[2],[7],[9],[11],[13],[15]); shelf rails \"from 1x2 boards\" (steps[4]); top = the edge-glued panel (steps[14]). materials[3] \"Board, 1x2x96\\\"\" has an explicit inch unit. Material quantities have no import diff.",
+      "evidence": [
+        { "path": "materials[0]", "quote": "Board, 4x4 96\" | 2 board" },
+        { "path": "materials[1]", "quote": "Board, 1x4 96\" | 7 board" },
+        { "path": "materials[2]", "quote": "Board, 1x4 x 72\" | 2 board" },
+        { "path": "materials[3]", "quote": "Board, 1x2x96\" | 2 board" },
+        { "path": "materials[4]", "quote": "Board, 1x2 x 72\" | 1 board" },
+        { "path": "materials[5]", "quote": "Edge-glued panel, 3/4\" x 24\" x 48\" | 1 board" }
+      ],
+      "arithmetic": "4x4: 4 x 33 1/2 = 134 + 4 x 1/8 = 134 1/2 <= 2 x 96 = 192 (2 legs per board: 67 1/4 <= 96). 1x4: 2x16 1/4 + 2x39 + 4x8 + 2x20 3/4 + 4x16 1/8 + 20x22 1/2 + 48 = 746 1/2 + 35 cuts x 1/8 = 750 7/8 <= 7 x 96 + 2 x 72 = 816. 1x2: 4x16 1/4 + 4x39 = 221 + 8 x 1/8 = 222 <= 2 x 96 + 72 = 264. Panel: 23 1/4 x 48 fits 24 x 48. Pass."
     },
     "R6": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "flagged",
+      "evidence": [
+        { "path": "steps[3].body", "quote": "secure the Short Rail to the Legs using 1 1/4\" coarse-thread Pocket-Hole Screws." },
+        { "path": "materials[6].name", "quote": "Coarse-thread Kreg Pocket-Hole Screws" }
+      ],
+      "reason": "The 1 1/4\" pocket-screw size used in steps[3],[5],[6],[10],[12],[17] does not appear in materials: materials[6] lists the screws with no length. Searched materials.name for /1 1\\/4/: none. Two flagged items rejected (see flagged[].readerNote).",
       "flagged": [
         {
           "path": "steps[3].body",
           "quote": " two legs together so the top of the Legs and the top of the Short Upper Rail are ?ush. Clamp the assembly together and secure the Short Rail to the Legs using 1 1/4\" coarse-thread Pocket-Hole Screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[5].body",
           "quote": "ils in place at the locations shown. Clamp them in place. Secure the rails to the Legs using 1 1/4\" coarse-thread Pocket-Hole Screws. Repeat the previous two steps to complete the other side assembly.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[6].body",
           "quote": "acers, and attach it using 1 1/4\" coarse-thread Pocket-Hole Screws. Then position and attach the two Long Shelf Rails in the same way. Carefully tip the assembly over, and then repeat this process for",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[10].body",
           "quote": "ll the Top Supports to the Long Upper Rails with 1 1/4\" coarse-thread Pocket-Hole Screws. The location of the Top Supports will depend on the size and position of the sink you choose for this project.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[12].body",
           "quote": "lats to the Legs using two 1 1/4\" coarse-thread Pocket-Hole Screws. Then nail the Short Slats to the Short Shelf Rails using four 1 1/2\" brad nails in each Slat. A brad nailer works best for this if y",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[12].body",
           "quote": "egs using two 1 1/4\" coarse-thread Pocket-Hole Screws. Then nail the Short Slats to the Short Shelf Rails using four 1 1/2\" brad nails in each Slat. A brad nailer works best for this if you have acces",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
+          "why": "1/4\" nail — no material line lists a 1/4\" fastener",
+          "confirmed": false,
+          "readerNote": "Parse of \"1 1/2\\\" brad nails\", which is materials[7]."
         },
         {
           "path": "steps[17].body",
           "quote": "the Legs. Then you can secure the Top. If your panel is 3/4\"-thick or thicker, use 1 1/4\" coarse-thread pocket-hole screws. If the top is less than 3/4\" thick, switch instead to 1\" pocket-hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[17].body",
           "quote": "the Legs. Then you can secure the Top. If your panel is 3/4\"-thick or thicker, use 1 1/4\" coarse-thread pocket-hole screws. If the top is less than 3/4\" thick, switch instead to 1\" pocket-hole screws.",
-          "why": "1\" screw — no material line lists a 1\" fastener"
+          "why": "1\" screw — no material line lists a 1\" fastener",
+          "confirmed": false,
+          "readerNote": "Conditional alternative: \"If the top is less than 3/4\\\" thick, switch instead to 1\\\" pocket-hole screws.\""
         }
       ]
     },
+    "R8": {
+      "result": "pass",
+      "reason": "Side assemblies (steps[3]-[5]) before long rails join them (steps[6]); braces, supports and slats added to the finished base (steps[7]-[13]); top panel and backsplash made (steps[14]-[15]) and set on the base last (steps[17]). Each part exists before use. The backsplash holes referenced in steps[15] are recorded in gaps."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Set your Kreg Pocket-Hole Jig for 3/4\\\"-thick material\" covers every pocket-holed part (rails, supports, slats, top panel, all 3/4\"); steps[14]/[17] handle a thinner panel. Other joints state method and fastener: braces 1 1/2\" flat-head screws in pilot holes (steps[7]-[8]); short slats four 1 1/2\" brad nails (steps[12]); long slats \"two nails ... at each end\" (steps[13]); backsplash glue and 1 1/2\" flat-head screws (steps[15])."
+    },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
       "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Measured positions in text have numbers (dowels \"about 10\\\" apart\", slats \"overhang the front rail by 1/4\\\"\"); others are relational or flush.",
       "flagged": [
         {
           "path": "steps[18].body",
           "quote": " bottom of each Leg to protect them from water on the floor. Install a couple anchors in the wall at the height of the Long Upper Rail, and then secure the vanity to the wall with a couple of long scr",
           "why": "placement with no measurement (no step image)",
-          "image": null
+          "image": null,
+          "confirmed": false,
+          "readerNote": "Relational: anchors go \"at the height of the Long Upper Rail\". The unsized anchors and screws are recorded in gaps."
         }
       ]
     },
     "R11": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "flagged",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "evidence": [
+        { "path": "steps[1].body", "quote": "Cut four legs to length from 4x4 boards, as shown in the cutting diagram.", "viewed": true }
+      ],
+      "reason": "steps[1] has no image, and none of the 5 unattached images (all viewed) is a cutting diagram: four are photos of the finished vanity, one is an overall-dimension drawing (48\", 24\", 37\", 39\", 23 1/4\", 11 1/4\" shelf spacing) that does not show the leg cut. Fix level: the leg length itself is in the cut list (Kreg 33 1/2\").",
       "flagged": [
         {
           "path": "steps[1].body",
           "quote": "Cut four legs to length from 4x4 boards, as shown in the cutting diagram. Sand each Leg smooth and set them aside for now.",
           "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "unattachedImages": 5,
+          "confirmed": true
         },
         {
           "path": "steps[1].body",
           "quote": "Cut four legs to length from 4x4 boards, as shown in the cutting diagram. Sand each Leg smooth and set them aside for now.",
           "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "unattachedImages": 5,
+          "confirmed": true
         }
       ]
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[15].body",
+      "quote": "Using the holes in the Backsplash as guides, drill pilot holes into the Top Panel",
+      "what": "No step drills holes in the Backsplash (searched all steps for /backsplash/i: only steps[15] and [17]). steps[14] drills pocket holes along the Top Panel's rear edge, which steps[15]/[17] never use."
+    },
+    {
+      "path": "steps[18].body",
+      "quote": "Install a couple anchors in the wall at the height of the Long Upper Rail, and then secure the vanity to the wall with a couple of long screws",
+      "what": "Wall anchors and long screws are used but are not in materials and have no size."
+    }
+  ],
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0ffc40dd68566fa1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8dfb72f58d103efe.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a5d5dfb74a8afb05.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/866f2f6156ba438b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/603267f95d45eec6.webp"
+    ]
+  },
+  "notes": "Two Fix: unsized pocket screws in materials (R6) and a cutting-diagram reference with no diagram (R11). Measurements check out against the plan's own dimension drawing."
 }

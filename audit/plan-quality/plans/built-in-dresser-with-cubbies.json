@@ -455,21 +455,39 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0..8] (Base Middle Supports, Front and Back Bases, Dresser Bottom/Sides/Dividers/Top, Skinny Drawer parts, Drawer parts, Drawer Bottoms, Cubby Outsides/Top/Upper Bottom/Dividers, Side Cubby Insides) is a cutList row; baseboard = materials[4]; brackets recorded in gaps"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0..17] each used by a step; Kreg-corrected sizes agree with steps (drawer box 27 1/8 + 2×3/4 = 28 5/8 = bay (62 1/4 − 4×3/4)/2 − 1; faces 4 1/4 + 4×6 1/4 + 6×1/4 gaps (steps[5]) = 30 3/4 = side height; cubby spacing (60 3/4 − 2×13 − 3×3/4)/2 = 16 1/4 = steps[6]). cutList[5] naming mismatch with steps[4] is recorded in gaps"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[10] no match among parsed stock; unparsed stock present (materials[3], materials[4])"
+      "result": "pass",
+      "reason": "reader: cutList[10] Dresser Top 1 1/2 × 16 1/2 × 62 1/4 (Kreg source) — steps[2] 'glue two pieces of 3/4\" plywood together with the dimensions listed in the cut list' gives 2 × 3/4 = 1 1/2 thick from materials[0] 'Plywood, 4' x 8' x 3/4\"' or materials[3] '(or 1 additional sheet of plywood)'; 16 1/2 ≤ 48 and 62 1/4 ≤ 96. materials[4] baseboard is not a cut-list part"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[3], materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "the only sized fasteners in steps are '1\" brad nails' (steps[3],[4]) = materials[8]; pocket hole screws unsized in steps, one size in materials[5]; 14\" slides materials[6]"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "base (steps[0]) → bottom, sides, dividers (steps[1]) → top (steps[2]) → drawers built (steps[3..4]) and inserted (steps[5]) → cubbies built (steps[6..7]) and attached to top (steps[8]); each part exists before use, top pocket holes drilled in steps[1]"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Drill two pocket holes on each 3 1/2\" end of the Base Middle Supports." },
+        { "path": "steps[1].body", "quote": "Drill two pocket holes on each 15 1/2\" side of the Dresser Sides and Dresser Dividers." }
+      ],
+      "reason": "pocket holes go into 1 1/2\" parts (cutList[17] Base Middle Supports) and 3/4\" parts (cutList[8],[9],[1],[4],[11],[13],[14],[15]); searched description, steps, materials and tools for /set (your )?(jig|kreg)|set for|setting|thick material/ — no jig thickness setting stated anywhere (materials[5] says only 'see tools list', and no tool has a note)"
     },
     "R10": {
       "result": "pass",
@@ -480,11 +498,29 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "attach a Skinny Drawer Face to the front of the drawer box, flush along the bottom and centered on the drawer.\nRepeat for seven more drawers.",
+      "what": "the 8 regular drawers are told to use a 'Skinny Drawer Face' (cutList[2], qty 2); cutList[5] 'Drawer Faces' (qty 8) is named in no step"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "attach two Cubby Dividers to the Side Cubby Insides and Cubby Outsides with 13\" in between.",
+      "what": "only the spacing between the two side-cubby dividers is given; their position within the 33\" Side Cubby Insides (cutList[14]) is not stated (step has an image, not viewed — sweep did not flag it)"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Ensure the unit is attach to the studs in the wall for safety purposes, using brackets.",
+      "what": "brackets are used but are not in materials and have no size or type"
+    }
+  ],
+  "reader": { "batch": "calib-1", "imagesViewed": [] }
 }

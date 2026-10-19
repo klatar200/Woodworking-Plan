@@ -227,10 +227,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..9] (Posts, Side Rails, Front/Back/Footboard Rails incl. Back/Front/Footboard Rail, Headboards, Upper Side and Front/Back Beams, Side and Front/Back Inner Supports, Legs, Center Supports, Slats) all match cutList[0..10]; 3 1/2\" spacer in steps[8] is temporary"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cutList row used by a step; lamination counts agree (12 posts / 3 = 4, 4 side rails / 2 = 2, 6 rails / 2 = 3); Kreg-corrected sizes agree: side rail offsets 1 1/4 + 1 1/2 + 3/4 = 3 1/2 post width (steps[5]); 73 1/2 + 2×1 1/4 = 76 slat length; 80 − 2×1 1/2 = 77 center supports"
     },
     "R4": {
       "result": "pass",
@@ -241,7 +243,23 @@
       "reason": "R5 precondition not met: 3 stock types (0.75x3.5, 0.75x5.5, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "no step states a fastener size (pocket hole screws unsized; materials[4] 1 1/4\" and materials[5] 2 1/2\"), so no stated size is missing from materials and no use is given two sizes; unsized plain 'screws' recorded in gaps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "laminations (steps[0..2]) → headboard (steps[3]) and footboard (steps[4]) → side rails (steps[5]) → upper beams (steps[6]) → supports/legs (steps[7]) → slats (steps[8]); each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[3].body", "quote": "Drill two pocket holes on each end of the Back Rails.\nDrill two pocket hole screws on each end of each Headboard piece and three holes along one long side of each." },
+        { "path": "steps[7].body", "quote": "Drill two pocket holes in one end of each Leg and both ends of each Center Support." }
+      ],
+      "reason": "pocket holes go into 3/4\" parts (Headboards, Upper Beams) and 1 1/2\" parts (laminated rails, Legs, Center Supports); searched description, steps, materials and tools for /set (your )?(jig|kreg)|set for|setting|thick material/ — no jig thickness setting stated anywhere (materials[4],[5] say only 'See tools list'; no tool has a note)"
     },
     "R10": {
       "result": "pass",
@@ -252,11 +270,24 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Using a 3 1/2\" spacer, continue until all Slats are in place.",
+      "what": "13 slats (cutList[6]) 3 1/2\" wide with 3 1/2\" gaps need 13×3.5 + 12×3.5 = 87.5\" but the opening between Back and Front Rails is 80\" (Side Rails 80\" fit 'between a front and back Post', steps[5]); slat count and spacing disagree"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Using wood glue and screws, attach the Side Inner Supports to the Side Rails 1\" down from the top.",
+      "what": "plain screws used here and in steps[8] ('use screws to attach a Slat') have no size and are not in materials (materials[4],[5] list pocket hole screws only)"
+    }
+  ],
+  "reader": { "batch": "calib-1", "imagesViewed": [] }
 }

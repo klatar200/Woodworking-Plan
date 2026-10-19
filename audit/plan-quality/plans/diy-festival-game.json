@@ -31,21 +31,26 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[4].body",
           "quote": "Paint the boards to your heart’s content and seal the surface with your favorite top coat. Check out the link in the \"Extras\" tab for more photos and happy building!",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": false,
+          "reason": "The Extras link is 'for more photos', after the build is complete; optional."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side frames, puck goal and back frame are cutList[0..2]. The 'plywood base' (steps[0]-[2]) is not a cut row and no step cuts it; it is the listed materials[2] 'Plywood, 1/2\" Thick Quarter Sheet' used as bought. Its size is never stated (see gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side frame (steps[0]), Goal (steps[1]) and Back frame (steps[2]) are all used."
     },
     "R4": {
       "result": "pass",
@@ -53,53 +58,89 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x3, sheet-0.5); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 3 stock types (1x4, 1x3, sheet-0.5); steps not checked for per-part stock. Reader: the steps name no stock for any part."
     },
     "R6": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "flagged",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Attach the side frames to the plywood base with wood glue and 1 1/4\" Brad nails." },
+        { "path": "steps[1].body", "quote": "Attach the puck goal 4\" from the edge of the plywood base with wood glue and 1 1/4\" Brad nails." },
+        { "path": "steps[2].body", "quote": "Attach the back frame to the plywood base and frame sides with wood glue and 1 1/4\" Brad nails." }
+      ],
+      "reason": "1 1/4\" brad nails are the only fastener in the build and are not in materials (searched materials for /nail|brad|screw/i: no hit; materials are boards, plywood, spray paint, sealer, glue). The six sweep items are the same omission, one brad and one nail match per step.",
       "flagged": [
         {
           "path": "steps[0].body",
           "quote": "Attach the side frames to the plywood base with wood glue and 1 1/4\" Brad nails.",
-          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[0].body",
           "quote": "Attach the side frames to the plywood base with wood glue and 1 1/4\" Brad nails.",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[1].body",
           "quote": "Attach the puck goal 4\" from the edge of the plywood base with wood glue and 1 1/4\" Brad nails.",
-          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[1].body",
           "quote": "Attach the puck goal 4\" from the edge of the plywood base with wood glue and 1 1/4\" Brad nails.",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[2].body",
           "quote": "Attach the back frame to the plywood base and frame sides with wood glue and 1 1/4\" Brad nails.",
-          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[2].body",
           "quote": "Attach the back frame to the plywood base and frame sides with wood glue and 1 1/4\" Brad nails.",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener",
+          "confirmed": true
         }
       ]
     },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, goal, back frame onto the base, then sand and paint. Each part exists before use and nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Every joint states method and fastener: 'wood glue and 1 1/4\" Brad nails' (steps[0]-[2])."
+    },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "The one measured position gives its number: goal '4\" from the edge' (steps[1])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "Plywood, 1/2\" Thick Quarter Sheet",
+      "what": "The plywood base size is stated nowhere (searched all fields for /base|plywood/i: steps[0]-[3] and materials[2], no dimension), and 'Quarter Sheet' gives no dimensions in the name."
+    }
+  ],
+  "reader": {
+    "batch": "calib-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

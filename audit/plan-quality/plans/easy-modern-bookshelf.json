@@ -163,32 +163,38 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "reader: both links are offered 'For more details' after the build is complete in steps[0..3] (cut list, jig setting, assembly, fasteners all in the plan); optional, not required to finish the build",
       "flagged": [
         {
           "path": "steps[4].body",
           "quote": "For more details on this project, please see - https://www.anikasdiylife.com/modern-diy-bookshelf/ Video tutorial at - https://youtu.be/8ijBB8Ae5-o",
-          "why": "matches \"https://\""
+          "why": "matches \"https://\"",
+          "confirmed": false
         },
         {
           "path": "steps[4].body",
           "quote": "For more details on this project, please see - https://www.anikasdiylife.com/modern-diy-bookshelf/ Video tutorial at - https://youtu.be/8ijBB8Ae5-o",
-          "why": "matches \"https://\""
+          "why": "matches \"https://\"",
+          "confirmed": false
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..3] (bottom, shelves, long side, side 1/second side = Short Side, back boards) all match cutList[0..4]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cutList row used: Short Side + Bottom + Shelves steps[1], Long Side steps[2], Backs steps[3]"
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
+      "reason": "reader confirms: no glue-up or lamination resolves it — searched steps[0..4] for /glue/: only 'pocket hole screws and wood glue' at joints (steps[1],[2],[3]); steps[3] names only 2x6 (or 1x6) for the Backs. Parts 9 1/2\" wide (Kreg source '1 1/2\" x 9 1/2\" x 64\"') vs 2x10 = 1 1/2 × 9 1/4 (§9): 9.5 > 9.25",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
@@ -218,17 +224,20 @@
         {
           "path": "cutList[0]",
           "quote": "Long Side — qty 1, 1.5 x 9.5 x 64 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         },
         {
           "path": "cutList[1]",
           "quote": "Short Side — qty 1, 1.5 x 9.5 x 51.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         },
         {
           "path": "cutList[2]",
           "quote": "Bottom — qty 1, 1.5 x 9.5 x 12 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         }
       ]
     },
@@ -237,14 +246,24 @@
       "reason": "R5 precondition not met: 2 stock types (2x10, 2x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
+      "result": "pass",
+      "reason": "reader: the 1 1/4\" screws belong only to the optional 1x6 variant ('you can also use 1x6 boards if you want'); the build as written uses 2x6 backs and '2 1/2\" pocket hole screws' (steps[1],[2],[3]) = materials[2]",
       "flagged": [
         {
           "path": "steps[3].body",
           "quote": "s. However, you can also use 1x6 boards if you want the shelf closer to the wall. In that case the pocket holes will be made at the 3/4\" thickness setting and attached using 1 1/4\" pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "confirmed": false
         }
       ]
+    },
+    "R8": {
+      "result": "pass",
+      "search": "pocket holes drilled first (steps[0]); side 1 with bottom and shelves (steps[1]) → shelves on long side (steps[2]) → backs join both, then bottom to second side (steps[3]); each part exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "search": "steps[0] 'Make pocket holes with Kreg Jig setup for 1 1/2\" thick material' covers the pocket-holed parts (shelves and bottom, 1 1/2\" Kreg-corrected); optional 1x6 variant states '3/4\" thickness setting'"
     },
     "R10": {
       "result": "pass",
@@ -256,11 +275,14 @@
       "note": "4 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": { "batch": "calib-1", "imagesViewed": [] },
+  "notes": "Shelf positions are given only 'as shown in the drawing' (steps[1],[2]); each such step has its own image, so R11 passes without viewing."
 }

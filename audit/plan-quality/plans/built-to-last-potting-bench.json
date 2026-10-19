@@ -311,21 +311,48 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Legs, end rails, side rails, stretchers, top slats, risers and shelves all have rows. The bottom slats have no row, but steps[9] says to cut them from listed material (\"Cut three Long Bottom Slats, and one Short Bottom Slat to size from 5/4 (1\\\"-thick) deck boards\"; materials[3] \"Cedar board, 5/4x6 x 96\\\"\"). Their missing lengths are recorded in gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 12 rows are used: legs (steps[0]), end rails (steps[1]-[2], \"Cut four End Rails\" = 2 + 2), side rails/stretchers (steps[3]-[6], \"four Side Rails, two Top Stretchers, and two Bottom Stretchers\"), top slats (steps[7]-[8], 3 long + 1 short + 1 front), risers and shelves (steps[10]-[11])."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[7] no match among parsed stock; unparsed stock present (materials[3]); cutList[8] no match among parsed stock; unparsed stock present (materials[3]); cutList[9] no match among parsed stock; unparsed stock present (materials[3])"
+      "sweepResult": "unknown",
+      "reason": "Rows 0-6, 10, 11 match 2x4, 2x6 and 1x10 (§9). The slats (cutList[7]-[9], corrected 1 x 5 1/2) come from materials[3] \"5/4x6\"; steps[7] gives the thickness (\"5/4 (1\\\"-thick deck boards\") but §9 has no actual width for 5/4x6, so the 5 1/2\" width cannot be checked."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: unparseable stock materials[3]",
+      "reason": "Steps name the stock for every part (2x4 front legs/rails/stretchers, 2x6 back legs and risers, 5/4 slats, 1x10 shelves), so R5 is scorable, but the bottom slats' lengths are stated nowhere, so 5/4 usage cannot be totalled. Other stock passes.",
+      "arithmetic": "2x4: 2x34 1/2 + 4x16 1/2 + 4x44 + 2x22 1/2 + 2x17 1/2 = 391 + 14 cuts x 1/8 = 392 3/4 <= 5 x 96 = 480. 2x6: 2x60 + 2x9 = 138 + 4 x 1/8 = 138 1/2 <= 2 x 96 = 192 (one 60\" leg per board; 60 + 9 + 9 + 3/8 <= 96). 1x10: 2x44 + 2 x 1/8 = 88 1/4 <= 96. 5/4x6: top slats 3x48 + 44 + 48 = 236 of 5 x 96 = 480; bottom slats unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Sizes in steps are listed: 2 1/2\" pocket screws (steps[2],[4]-[6]; materials[4]) and 1 1/2\" pocket screws (steps[8],[9],[11]; materials[5]). One size per use. materials[6] 1 1/4\" screws are never used (gaps)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg assemblies (steps[0]-[2]) and rail/stretcher assemblies (steps[3]-[5]) exist before they are joined (steps[6]); slats after the base (steps[7]-[9]); risers and shelves last (steps[10]-[11]), each attached to parts already in place."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[3].body", "quote": "Now change your jig and bit setup to 1\" material. Then drill holes along the edge of all the pieces, as shown." },
+        { "path": "steps[10].body", "quote": "Cut Two Shelf Risers to length from a 2x6 board, as shown in the cutting diagram. With your pocket hole jig set up for 1\" material, drill pocket holes in the Risers" },
+        { "path": "cutList[4]", "quote": "Top/Bottom Side Rails — Kreg source \"1 1/2\\\" x 3 1/2\\\" x 44\\\"\"" },
+        { "path": "cutList[10]", "quote": "Riser — Kreg source \"1 1/2\\\" x 5 1/2\\\" x 9\\\"\"" }
+      ],
+      "reason": "A 1\" setting is used on 1 1/2\"-thick parts (side rails, stretchers and end rails in steps[1]/[3]; risers in steps[10]). It matches the 1\" slats they fasten to, consistently, so it may be intentional; whether that is correct needs knowledge outside §9. Other settings agree: 1 1/2\" for 2x4 ends, 3/4\" for the 1x10 shelves."
     },
     "R10": {
       "result": "pass",
@@ -337,11 +364,28 @@
       "note": "22 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Cut three Long Bottom Slats, and one Short Bottom Slat to size from 5/4 (1\"-thick) deck boards, as shown in the cutting diagram.",
+      "what": "Bottom slats are in no cut-list row and their lengths are stated nowhere in text (searched cutList.part and all steps for /bottom slat/i). Only the steps[9] image (not flagged, not opened) could hold them."
+    },
+    {
+      "path": "materials[6].name",
+      "quote": "1 1/4\" Kreg Blue-Kote™ Pocket-Hole Screws",
+      "what": "Material never used: no step mentions 1 1/4\" screws (steps use only 2 1/2\" and 1 1/2\"). The 3/4\" shelves (steps[10] jig \"set up for 3/4\\\"-thick material\") are attached with \"1 1/2\\\" Blue-Kote™ pocket-hole screws\" (steps[11])."
+    }
+  ],
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": []
+  },
+  "notes": "R9 likely-Fix on a 1\" jig setting used on 1 1/2\" parts (may be intentional — human review). Bottom slats have no sizes in text."
 }

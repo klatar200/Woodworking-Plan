@@ -6,32 +6,44 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "The link is an optional extra in the closing step (\"You can see the full visual tutorial\"); steps[0]-[6] give every cut, position and joint, so the build does not depend on it.",
       "flagged": [
         {
           "path": "steps[7].body",
           "quote": "eautiful plant stand tower. You can stain it or paint it in your favorite finish. You can see the full visual tutorial for this project on my website - https://www.girljustdiy.com/diy-2x4-plant-stand/",
-          "why": "matches \"my website\""
+          "why": "matches \"my website\"",
+          "confirmed": false,
+          "readerNote": "Optional link after \"That's it and you're finished\"."
         },
         {
           "path": "steps[7].body",
           "quote": "eautiful plant stand tower. You can stain it or paint it in your favorite finish. You can see the full visual tutorial for this project on my website - https://www.girljustdiy.com/diy-2x4-plant-stand/",
-          "why": "matches \"https://\""
+          "why": "matches \"https://\"",
+          "confirmed": false,
+          "readerNote": "Same optional link."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Parts: 4 legs (2 front in steps[1], 2 back in steps[6]; cutList[0] qty 4) and 5 shelves (bottom in steps[4], then one + \"the next two\" + the top shelf in steps[5]; cutList[1] qty 5). The 13\" spacer is scrap (steps[1] \"a 13\\\" piece of scrap\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Both rows used. Sizes agree with the steps: shelf 20 = 2 legs x 1 1/2 + 13 spacer + 2 x 2 overhang; leg 57 1/2 = 5 shelves x 1 1/2 + 4 gaps x 12 1/2 (steps[5] \"measure and mark 12.5\\\"\"), so the top shelf lands flush with the leg tops as steps[5] says."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
+      "sweepResult": "fail",
+      "sweepConfidence": "likely",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
@@ -39,53 +51,86 @@
           "quote": "Shelves — qty 5, 1.5 x 9.5 x 20"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 2x2 72\""
-        },
-        {
           "path": "materials[1].name",
           "quote": "Board, 2x10 120\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Just as 2\"x10\" are 1.5\" x 9.5\""
         }
       ],
-      "arithmetic": "cutList[1] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×1.5, 1.5×9.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "arithmetic": "§9: 2x10 actual = 1 1/2 x 9 1/4. cutList[1] width 9 1/2 > 9 1/4 by 1/4. No other listed stock is wide enough (2x2 = 1 1/2 x 1 1/2).",
+      "reason": "Confirmed: no glue-up or lamination in any step (glue is used only at leg joints, steps[4]-[6]). The plan's own statement of 2x10 actual size (9.5\") is the source of the cut-list width. importDiffs is empty, so this is Kreg's figure.",
       "flagged": [
         {
           "path": "cutList[1]",
           "quote": "Shelves — qty 5, 1.5 x 9.5 x 20",
-          "why": "no listed material gives this thickness and width"
+          "why": "no listed material gives this thickness and width",
+          "confirmed": true
         }
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 2x10); steps not checked for per-part stock"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: 2 stock types (2x2, 2x10); steps not checked for per-part stock",
+      "reason": "steps[0] names the stock for both parts — \"A 2x2 board is actually 1.5\\\" x 1.5\\\". Just as 2\\\"x10\\\" are 1.5\\\" x 9.5\\\"\" and \"Cut your legs and shelves according to the cut list\": legs are 1.5 x 1.5 (2x2), shelves 1.5 x 9.5 (2x10). Quantities have no import diff.",
+      "evidence": [
+        { "path": "materials[0]", "quote": "Board, 2x2 72\" | 4 board" },
+        { "path": "materials[1]", "quote": "Board, 2x10 120\" | 1 board" }
+      ],
+      "arithmetic": "2x2: 4 x 57 1/2 = 230 + 4 cuts x 1/8 = 230 1/2 <= 4 x 72 = 288 (one leg per board, 57 5/8 <= 72). 2x10: 5 x 20 = 100 + 5 x 1/8 = 100 5/8 <= 120. Pass."
     },
     "R6": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Steps name \"pocket hole screws\" without a size; materials[2] \"2-1/2\\\" Pocket Hole Screws (Soft Wood)\" is the only fastener. No conflicting size.",
       "flagged": [
         {
           "path": "steps[5].body",
           "quote": "at the overhang is 2\" on each side. Attach with pocket hole screws as in step 6.\nFollow this step for the next two shelves.\nWhen attaching the top shelf follow the same steps, except align the top of ",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "why": "2\" screw — no material line lists a 2\" fastener",
+          "confirmed": false,
+          "readerNote": "2\" is the shelf overhang (\"the overhang is 2\\\" on each side\"), not a screw size."
         }
       ]
     },
+    "R8": {
+      "result": "pass",
+      "reason": "Front legs laid out and spaced (steps[1]), pocket holes in shelves (steps[2]-[3]), shelves attached to front legs bottom to top (steps[4]-[5]), back legs screwed on from underneath (steps[6]); steps[4] pre-starts the screws and steps[6] notes a right-angle adapter for the limited space, so the joints are reachable. Sanding listed after completion is finishing (out of scope); the misplaced cross-reference is recorded in gaps."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[3].body", "quote": "Drill pocket holes on the underside of each shelf as illustrated." },
+        { "path": "cutList[1]", "quote": "Shelves — qty 5, 1.5 x 9.5 x 20" }
+      ],
+      "reason": "Pocket holes are drilled in the 1 1/2\" shelves but no jig thickness setting is stated anywhere. Searched all steps, materials, description and summary for /set|jig/: no setting (steps[0]'s \"1.5\\\" x 1.5\\\"\" is a board size, not a jig setting)."
+    },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
       "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Both flagged placements give numbers in text; no image needed.",
       "flagged": [
         {
           "path": "steps[4].body",
           "quote": "ensure you have 2\" overhang on each side.\nInsert one pocket hole screw on the left side. Check overhang and insert one pocket hole on the right side. Finish by adding the other two pocket hole screws.",
           "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c170bed928b62ba0.webp"
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c170bed928b62ba0.webp",
+          "confirmed": false,
+          "readerNote": "Shelf placed \"flush with the bottom of the legs\" with \"2\\\" overhang on each side\"; screw order is not a position."
         },
         {
           "path": "steps[5].body",
           "quote": "From the bottom shelf measure and mark 12.5\" on each leg. Apply a little wood glue to the legs. Place the shelf and check that the overhang is 2\" on each side. Attach with pocket hole screws as in ste",
           "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca9c8eae553d8415.webp"
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca9c8eae553d8415.webp",
+          "confirmed": false,
+          "readerNote": "Gives 12.5\" spacing and 2\" overhang."
         }
       ]
     },
@@ -95,11 +140,23 @@
       "note": "2 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Attach with pocket hole screws as in step 6.",
+      "what": "The 6th step is steps[5] itself; the attachment method is in steps[4] (step 5). steps[8] \"Sand individual pieces: Take the time before assembly\" sits after the final step, consistent with the numbering having shifted."
+    }
+  ],
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": []
+  },
+  "notes": "Two Fix: shelf width 9.5\" exceeds a 2x10's 9 1/4\" (R4), and no pocket-hole jig setting (R9)."
 }

@@ -32,13 +32,32 @@
   "checks": {
     "R1": {
       "result": "pass",
+      "note": "reader: steps[18] 'You can get more details on how we installed ours in the post above!' is optional extra detail (the step itself says to install the drawers with slides); description 'Free plans by www.shanty-2-chic.com' is a credit. No step says to use outside content to complete the build — the missing part sizes are scored under R2/R3.",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Cut the side pieces to size and drill 1 1/2\" pocket holes into the two side boards. Attach the side pieces to the top pieces with 2 1/2\" pocket hole screws and wood glue." },
+        { "path": "steps[9].body", "quote": "Cut the bottom panel to size and drill 3/4\" pocket holes around all edges." },
+        { "path": "steps[21].body", "quote": "To attach the top, use 1 3/4\" wood screws from the top supports and into the plywood top." },
+        { "path": "cutList[0]", "quote": "Boards | qty 8 | 2x4x8 (Kreg source; the only cut-list row)" }
+      ],
+      "reason": "structural parts the steps cut 'to size' — side/top pieces, legs, top and bottom aprons, vertical and horizontal dividers, bottom supports, bottom panel, top supports, center dividers, door pieces, drawer and bowl-drawer pieces, drawer bottoms, top panel, trim — are not in the cut list and no step gives a size or names the stock. Searched cutList[*].part (only 'Boards'), all steps, description and materials: no dimension for any part; no materials.name matches /plywood|panel|sheet/ although steps[21] uses a 'plywood top'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "cutList[0]", "quote": "Boards | qty 8 | 2x4x8 (Kreg source)" },
+        { "path": "materials[0].name", "quote": "Board, 2x4 96\" | 8 board" }
+      ],
+      "reason": "the only cut-list row is the purchased stock (8 × 2x4 8-ft boards, same as materials[0]), not a part any step uses; nominal→actual conversion is already recorded as import damage"
     },
     "R4": {
       "result": "pass",
@@ -49,7 +68,25 @@
       "reason": "R5 precondition not met: 3 stock types (2x4, 2x2, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[17].body", "quote": "Attach the top inside the frame and use 1 1/4\" brad nails and wood glue to attach." },
+        { "path": "steps[19].body", "quote": "attach them to the front of the drawrs with 1 1/4\" wood screws, from the inside of the drawer and into the back of the drawer face." },
+        { "path": "materials[6].name", "quote": "1\" pin nails" },
+        { "path": "materials[7].name", "quote": "1 3/4\" wood screws" }
+      ],
+      "reason": "searched materials[0..12].name: no brad nails of any size and no 1 1/4\" wood screws (only 1 1/4\" pocket hole screws, 1\" pin nails, 1 3/4\" wood screws). Other step sizes are listed: 2 1/2\" and 1 1/4\" pocket hole screws, 3/4\" staples, 1\" pin nails, 1 3/4\" wood screws"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "frames (steps[0..5]) built before they are joined (steps[6..7]); supports and panels after the carcass; drawers built (steps[14..17]) before install (steps[18]); top built (steps[20..21]) last. The missing front-frame and door attachment steps are recorded in gaps, not here"
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "every pocket-hole step states a setting ('1 1/2\" pocket holes' steps[0],[2],[3],[10],[12]; '3/4\" pocket holes' steps[4],[8],[9],[11],[14],[16]), but no part has a thickness anywhere in the plan (cut list holds only stock), so whether each setting matches its part cannot be checked"
     },
     "R10": {
       "result": "pass",
@@ -60,11 +97,24 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body / steps[7].body",
+      "quote": "Attach the side assemblies to the back frame with 2 1/2\" pocket hole screws and wood glue.",
+      "what": "steps[6] and steps[7] are word-for-word identical; steps[2] builds two frames (front and back) but no step attaches the front frame (searched steps for /front frame/: none)"
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "Cut the door pieces to size and drill 1 1/2\" pocket holes into the side boards. Attach them to the top and bottom pieces",
+      "what": "doors are built (steps[12..13]) but no step hangs them; materials[10] 'Hinges' and materials[11] 'Latches' appear in no step (only steps[22] 'add a finish, hardware')"
+    }
+  ],
+  "reader": { "batch": "calib-1", "imagesViewed": [] }
 }

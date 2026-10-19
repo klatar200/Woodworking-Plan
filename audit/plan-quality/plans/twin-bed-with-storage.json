@@ -59,10 +59,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part a step uses has a row: posts, footboard/headboard 1x4s (cutList[15]), plywood panels, 2x4 supports, 2x4 and 2x6 caps, storage top/bottom, sides/dividers (8 = 2 areas x (2 sides + 2 dividers)), drawer box sides/front-back/bottoms, drawer faces and face panels."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 16 rows are used in steps. Corrected sizes agree with the steps: drawer box 21 1/2 + 2 x 3/4 = 23 = 24\" opening - 1 (steps[3] \"one inch less than the width of the opening\"); drawer bottom 22 15/16 x 14 matches the 23\" box and 14\" slides; drawer face 23 3/4 = 24 - 2 x 1/8 and 13 1/4 = 13 1/2 - 2 x 1/8 (steps[20] \"1/8\\\" gap between the drawer face and all sides\")."
     },
     "R4": {
       "result": "pass",
@@ -70,10 +74,28 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (4x4, 1x4, 2x4, 2x6, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 6 stock types (4x4, 1x4, 2x4, 2x6, sheet-0.75, sheet-0.25); steps do not name the stock for the posts (no step says 4x4), so per-part stock is not stated for every part."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Sizes in steps all listed: 1-1/4\" pocket screws (materials[9]), 2-1/2\" pocket screws (materials[8]), 3\" wood screws (materials[13]), 18 gauge 1\" nails (materials[10]), 3\" and 2\" lag screws (materials[14],[15]), 14\" drawer slides (materials[6]). The unsized drawer-face screws are recorded in gaps."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[6].body", "quote": "Remove the drawers from the bed storage area compartments. Bring all bed pieces (footboard, headboard, six drawers and two bed storage areas) to the room where the bed will be." },
+        { "path": "steps[19].body", "quote": "Next, attach slides to drawers, then add drawers to the bed storage area." },
+        { "path": "steps[7].title", "quote": "Join Footboard 1x4s to Posts" }
+      ],
+      "reason": "The final-assembly step sits at steps[6], before the footboard is assembled (steps[7]-[12]), the headboard is finished (steps[13]-[16]), the dividers are added (steps[17]) and the drawers are installed (steps[19]-[20]). As written, steps[6] cannot be done in order; the build can proceed only if the reader moves it to the end (the importer does not reorder steps, §3)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" parts: \"pocket holes (set for 3/4\\\" thick material)\" (steps[0],[1],[2],[3],[8],[13],[17]); 2x4 supports: \"set for 1-1/2\\\" thick material\" (steps[9],[14]). Other joints state method and fastener: caps with 3\" wood screws in pre-drilled countersunk holes, face panels glue and clamps, bottoms 18 gauge 1\" nails, storage areas lag screws."
     },
     "R10": {
       "result": "pass",
@@ -85,11 +107,28 @@
       "note": "2 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[17].body",
+      "quote": "The middle opening will be 24-1/6\" if your storage area dividers are true 3/4\" plywood",
+      "what": "Disagrees with the cut list. Corrected top/bottom 75\" - 2 sides x 3/4 = 73 1/2; - 2 dividers x 3/4 = 72; - 24 - 24 = 24\", not 24-1/6\". Drawer box (23\") and face (23 3/4\") sizes fit a 24\" opening."
+    },
+    {
+      "path": "steps[20].body",
+      "quote": "Attach drawer faces to drawers using screws from inside the drawer box.",
+      "what": "Screws used with no size given; no material line lists a screw for this (materials list only 3\" wood screws and lag screws besides pocket screws)."
+    }
+  ],
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": []
+  },
+  "notes": "Steps are out of order (final assembly at steps[6]); measurements consistent on Kreg's dimensions."
 }

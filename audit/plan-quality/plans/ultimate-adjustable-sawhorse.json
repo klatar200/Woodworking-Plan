@@ -107,21 +107,53 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Tray base (steps[2]), 1x3 sides (steps[3]) and 1x3 x 5\" ends (steps[4]) have rows; sawhorses are bought or built per steps[0] (materials[8] \"24\\\" Tall Pre-Built Sawhorses\"); pipe, flanges, clamps, caps, Unistrut and rope are materials. The sacrificial board is not a cut row but steps[12] gives its stock and size (\"2 x 4 x 28-1/2\\\" sacrificial board\"; 2x4 = materials[0]). Optional inserts use cutList[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "cutList[0]-[2] used in steps[2]-[4] (qty 2/4/4 = one tray per sawhorse: 2 sawhorses, 4 pipes, 4 flanges, 2 Unistruts). cutList[3] \"Tray Inserts\" (1 x 4 x 28-1/2\") are the optional 3-1/2\" x 28-1/2\" inserts of steps[15]-[16]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "unknown",
+      "sweepReason": "cutList[3] thinner than stock — would need planing/resawing, not judged",
+      "evidence": [
+        { "path": "cutList[3]", "quote": "Tray Inserts — qty 2, Kreg source \"1 x 4 x 28-1/2\\\"\" (corrected 0.75 x 3.5 x 28.5)" },
+        { "path": "materials[0].name", "quote": "Board, 2x4 96\"" },
+        { "path": "materials[1].name", "quote": "Board, 1x3 96\"" }
+      ],
+      "arithmetic": "cutList[3] needs 3/4 x 3 1/2 (1x4, §9). Listed stock: 2x4 = 1 1/2 x 3 1/2 (twice the thickness) and 1x3 = 3/4 x 2 1/2 (1\" too narrow). Search materials for /1\\s*x\\s*4/: none. No listed material gives this part without resawing or gluing; no step describes either.",
+      "reason": "The part belongs to the Optional inserts (steps[15]-[16]), so the main build is unaffected, but the cut list calls for stock the materials list does not include."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: 2 stock types (2x4, 1x3); steps not checked for per-part stock",
+      "reason": "Steps name the stock for every part with listed stock: tray base \"from a 2 x 4\" (steps[2]), \"1 x 3 side boards\" (steps[3]), \"1 x 3 x 5\\\" end boards\" (steps[4]). The 1x4 insert has no listed stock; that defect is scored once under R4.",
+      "evidence": [
+        { "path": "materials[0]", "quote": "Board, 2x4 96\" | 4 board" },
+        { "path": "materials[1]", "quote": "Board, 1x3 96\" | 2 board" }
+      ],
+      "arithmetic": "2x4: 2 x 28 1/2 = 57 + 2 cuts x 1/8 = 57 1/4 <= 4 x 96 = 384 (ample room for the steps[12] sacrificial board, whose count is not stated). 1x3: 4 x 28 1/2 + 4 x 5 = 134 + 8 x 1/8 = 135 <= 2 x 96 = 192. Pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Fastener sizes in steps are listed: 2\" screws (steps[3],[4]; materials[9] \"2\\\" - #8 Wood Screws\"), 1-1/4\" screws (steps[5]; materials[10]). Hardware: 3/4\" x 18\" pipe, flanges, caps, clamps, 24\" Unistrut, nylon rope all listed. The rope-hole drill size conflict is not a fastener size; recorded in gaps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Holes in sawhorse top (steps[1]) before pipes pass through (steps[7]); tray built (steps[2]-[4]) before flanges and pipes (steps[5]-[6]); caps after pipes pass through the clamps (steps[8]); Unistrut and rope last (steps[9]-[11]). Nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Other joints state method and fastener: sides and ends \"glue and 2\\\" screws driven through pre-drilled holes\" (steps[3],[4]); flanges \"Secure in place using 1-1/4\\\" screws\" (steps[5]); pipes threaded into flanges (steps[6])."
     },
     "R10": {
       "result": "pass",
@@ -132,11 +164,28 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Drill 5/16\" holes through the top, spaced closely to the edges.",
+      "what": "Rope-hole size disagrees with materials[12] \"7/16 Drill Bit\"; the rope is materials[7] \"12ft - 3/8\\\" Nylon Rope\" (3/8 > 5/16)."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Drill two, 1-1/8\" holes through the top plate of the sawhorse, centered between the legs and 3-3/8\" from either end.",
+      "what": "Hole positions are measured from the ends of a bought sawhorse whose top-plate length is never stated, while the pipes they receive are fixed at \"approximately 26-1/2\\\" center-to-center\" (steps[5]). Holes and pipes align only if the top plate is 26 1/2 + 2 x 3 3/8 = 33 1/4\" long; the plan does not say so."
+    }
+  ],
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": []
+  },
+  "notes": "One Fix: the optional 1x4 inserts have no listed stock. Two gaps (drill size, hole spacing vs. unspecified sawhorse length)."
 }

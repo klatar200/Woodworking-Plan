@@ -647,21 +647,43 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part a step cuts or assembles has a cut row (legs, rails, support posts, axle block/leg/supports, 8 braces, end/shelf/side slats, top ends/sides, 4 slat supports, 2 top track supports, top slats). Axle: steps[9] \"Cut an axle 19\\\" long from threaded rod\" (materials[7] \"1/2\\\" x 24\\\" threaded rod\"). Tracks: steps[11]/[19] cut 51\\\" pieces of aluminum (materials[5] \"1/16\\\" x 3/4\\\" x 72\\\" aluminum angle\" x4). Name mismatch for the wide long side slat recorded in gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "unknown",
+      "sweepResult": "to-read",
+      "reason": "cutList[16] \"Narrow Lower Side Slat\" (qty 4) and cutList[17] \"Wide Lower Side Slat\" (qty 2) are named in no step (search steps for /lower/i: none). steps[13] \"Add Side Slats\" lists only \"Long Side Slats, Medium Side Slats, and Short Side Slats\". Whether the lower slats are installed in steps[13] needs its image, which the sweep did not flag (not opened). All other rows are used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x4, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: 3 stock types (1x2, 1x4, 2x4); steps not checked for per-part stock",
+      "reason": "Steps name the stock for every part: 2x4 for legs/rail (steps[0]), support posts (steps[2]), axle parts (steps[4]), braces (steps[6]); \"From 1x4 and 1x2\" for narrow/wide slats (steps[10], [13], [20]); 1x4 top ends/sides (steps[14]) and slat supports (steps[16]); 1x2 top track supports (steps[18]). Narrow (1 1/2\\\" wide) rows = 1x2, wide (3 1/2\\\") rows = 1x4. Quantities 19/18/5 are Kreg's own (no qty diff).",
+      "evidence": [
+        { "path": "materials[0]", "quote": "Board, 1x2 96\" | 19 board" },
+        { "path": "materials[1]", "quote": "Board, 1x4 96\" | 18 board" },
+        { "path": "materials[2]", "quote": "Board, 2x4 96\" | 5 board" }
+      ],
+      "arithmetic": "2x4 (correctRows): 2x31 3/4 + 2x29 + 2x48 + 2x18 1/2 + 8x12 1/2 + 2x9 + 2x9 + 4x5 1/2 = 412 1/2; + 24 cuts x 1/8 = 3 -> 415 1/2 <= 5 x 96 = 480. 1x2: 6x52 1/2 + 2x33 + 12x19 1/2 + 4x18 1/2 + 4x13 1/2 + 2x2 1/4 + 2x51 + 3x51 1/2 = 1004; + 35 x 1/8 = 4 3/8 -> 1008 3/8 <= 19 x 96 = 1824. 1x4: 7x52 1/2 + 3x33 + 12x19 1/2 + 3x18 1/2 + 2x13 1/2 + 3x2 1/4 + 2x52 1/2 + 2x19 1/2 + 4x19 1/2 + 4x51 1/2 = 1217 3/4; + 42 x 1/8 = 5 1/4 -> 1223 <= 18 x 96 = 1728. Pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Sizes in steps all listed, one size per use: 2 1/2\" pocket screws (steps[1]-[8]; materials[4]), 1 1/4\" pocket screws (steps[15],[17]; materials[3]), 1 1/2\" sheet-metal screws (steps[12]; materials[13] \"#8 x 1 1/2\\\" sheet-metal/lath screws\"), 5/8\" sheet metal screws (steps[19]; materials[6]), brad nails (materials[8]), 8\" wheels (materials[9]), threaded rod (materials[7])."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (steps[0]-[8]) before axle/wheels (steps[9]), slats (steps[10],[13]) and bottom track (steps[11]-[12]); top frame, supports, top tracks and top slats built separately (steps[14]-[20]) and slid on last (steps[21]). Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "2x4 parts: steps[0] \"with your pocket hole jig set for 1 1/2\\\" material\" (repeated steps[2],[4]; covers braces in steps[6]). 1x4 parts: steps[14] \"jig set for 3/4\\\" material\" (and steps[16]). Slats and track supports: \"glue and brad nails\" (steps[10],[13],[18],[20]); tracks: sheet-metal screws (steps[12],[19])."
     },
     "R10": {
       "result": "pass",
@@ -673,11 +695,23 @@
       "note": "29 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "cutList[9].part",
+      "quote": "Wide Long Top Slat",
+      "what": "steps[13] cuts \"Narrow and Wide versions of the Long Side Slats\"; no row is named Wide Long Side Slat. cutList[9] (52 1/2\", same length as cutList[8] \"Narrow Long Side Slat\") is named a Top slat, while the top slats are cutList[24]/[25] (51 1/2\"). Likely a mislabel; the builder must match by length."
+    }
+  ],
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "calib-3",
+    "imagesViewed": []
+  },
+  "notes": "Only open question is whether the Lower Side Slats are installed in steps[13] (R3 unknown); measurements check out on Kreg's dimensions."
 }

@@ -6,33 +6,44 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[10].body",
           "quote": "Take your sled base and cut 3/4\" grooves based on the attached image. Make sure the groves are a little over 3/8\" deep. You can make these cuts with a Router or dado stack on your table saw. These gro",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "'the attached image' is the step's own image (steps[10] has one), not outside content; the step is also marked optional."
         }
-      ]
+      ],
+      "reason": "Reader also checked steps[19] 'a simple google search will help you achieve this' (five cut method) and steps[0] 'I didn't not include the steps for the zero clearance inserts.' The fence is squared with a framing square in steps[18] and the inserts are an add-on, so the build can be completed without either."
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[5].body",
           "quote": "Take your front fences and cut them to 2 1/4\" width on the Table saw. Make sure to use the jointed edge. This is the height the Kreg Swing Stops need to function properly.",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
+          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)",
+          "confirmed": false,
+          "reason": "The step itself rips the glued-up front fences (from cutList[1] 'Fence parts') to 2 1/4\"; the part exists."
         },
         {
           "path": "steps[21].body",
           "quote": "tape to the Trak and dial in the saw, you should have about 13\" of cut capacity to the left of the blade and about 11\" to the right. The extension fence can be attached to either side giving you a lot",
-          "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)"
+          "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)",
+          "confirmed": false,
+          "reason": "13\" is cut capacity, not a part."
         }
-      ]
+      ],
+      "reason": "Sled base (cutList[0]); three fences glued from six fence parts (cutList[1], steps[2]); the extension fence is the second front fence; Top Trak, T-track, miter bars and fixture bar are materials[1..6]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sled base (steps[10], [14]) and Fence parts qty 6 = 3 fences × 2 (steps[2]) are both used."
     },
     "R4": {
       "result": "pass",
@@ -43,38 +54,73 @@
       "reason": "sheet layout not judged (area fits: part area 1×24×30 + 6×3×24 = 1152.0 sq in; bought 1×48×48 = 2304 sq in)"
     },
     "R6": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "flagged",
+      "evidence": [
+        { "path": "steps[15].body", "quote": "Attach the back fence to the sled with 6 1-1/2\" drywall screws." },
+        { "path": "steps[20].body", "quote": "Attach the Fixture bar to the second front fence with some #6-1/2\" screws." }
+      ],
+      "reason": "Searched materials for /screw|drywall|#6/i: no hit (materials are plywood, Kreg/Rockler hardware, epoxy, CA glue). Both sized screws are missing. 'provided screws' (steps[8], [14]) come with listed hardware.",
       "flagged": [
         {
           "path": "steps[15].body",
           "quote": "Attach the back fence to the sled with 6 1-1/2\" drywall screws. Make sure to clamp the fence down and pre-drill with a chamfer bit so that the screw sits slightly shy of the sled base so that it doesn",
-          "why": "1-1/2\" screw — no material line lists a 1-1/2\" fastener"
+          "why": "1-1/2\" screw — no material line lists a 1-1/2\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[20].body",
           "quote": "the Fixture bar to the second front fence with some #6-1/2\" screws. Slide the extension fence onto the other fence and make sure the traks are touching correctly. Attach the Fixture bar to the front f",
-          "why": "6-1/2\" screw — no material line lists a 6-1/2\" fastener"
+          "why": "6-1/2\" screw — no material line lists a 6-1/2\" fastener",
+          "confirmed": true,
+          "reason": "The size is written '#6-1/2\"' (likely #6 x 1/2\"); either way no screw line exists in materials."
         }
       ]
     },
+    "R8": {
+      "result": "pass",
+      "reason": "Fences glued, jointed, grooved, ripped, notched, rabbeted, Top Trak attached, trimmed; base grooved and T-track set; miter bars glued and screwed; back fence; kerf cut; front fence squared; extension fence. Each part exists before use and nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Joints state method and fastener: fence glue-up with glue and clamps (steps[2]), Top Trak with provided screws (steps[8]), T-track with epoxy (steps[11]), miter bars with CA glue and provided screws (steps[14]), back fence with 1-1/2\" drywall screws (steps[15]), front fence with screws (steps[18]), fixture bar with #6-1/2\" screws (steps[20])."
+    },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Measured positions give numbers: groove 3/8\" from the edge (steps[4]), cut 1 1/2\" from the edge (steps[6]), rabbet at 5/8\" (steps[7]), fence at 11\" (steps[14]), track about 24\" (steps[11])."
     },
     "R11": {
-      "result": "flagged",
+      "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[21].body",
           "quote": "e saw, you should have about 13\" of cut capacity to the left of the blade and about 11\" to the right. The extension fence can be attached to either side giving you a lot of versatility with your cuts.",
           "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "unattachedImages": 5,
+          "confirmed": false,
+          "reason": "'can be attached to either side' means fastened; it does not refer to a drawing. No image needed."
         }
       ]
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "steps[18].body",
+      "quote": "Attach one screw to the right side of sled base to secure the fence in place and act as pivot.",
+      "what": "The front-fence screws have no size and are not in materials (searched materials for /screw/i: no hit)."
+    }
+  ],
+  "reader": {
+    "batch": "calib-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

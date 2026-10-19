@@ -155,10 +155,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[2..14] (leg 2x4 + 2x6 boards, long/short 2x6 side boards, 2x4 cap frame, 2x4 middle supports) all match cutList[0..5]; chicken wire in steps[16] is optional ('if needed')"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cutList row used: [0] legs + steps[12] middle supports (6 = 4 legs + 2 supports), [1] legs, [2] steps[5], [3] steps[7], [4]/[5] steps[10]; side height 4 rows × 5 1/2 = 22 = leg length 22 (Kreg-corrected)"
     },
     "R4": {
       "result": "pass",
@@ -169,7 +171,23 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: '2 1/2 inch Kreg screws' (materials[2]), '2 1/2 inch wood screws' (materials[3]), steps[12] '2 1/2 inch screws'; no other sizes, no use given two sizes"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "legs (steps[2..3]) exist before side boards attach (steps[5..9]); cap frame built (steps[10..11]) before it is attached (steps[14]); nothing fastened that a later step must undo"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[2].body", "quote": "Use a pocket hole jig to attach the two boards that form each leg. Drill pocket holes into the 2x4 board. I'd recommend creating 4 pocket holes for each leg." },
+        { "path": "steps[11].body", "quote": "Drill pocket holes to enable the top caps to be connected from the underside using 2 1/2 inch Kreg screws." }
+      ],
+      "reason": "pocket holes go into 1 1/2\"-thick 2x4 parts (cutList[0], [4], [5]); searched description, steps, materials and tools for /set (your )?(jig|kreg)|set for|setting|thick material|1 1\\/2\"? material/ — no jig thickness setting stated anywhere"
     },
     "R10": {
       "result": "pass",
@@ -181,11 +199,14 @@
       "note": "1 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": { "batch": "calib-1", "imagesViewed": [] },
+  "notes": "R5 left unknown: steps name 2x4/2x6 for every part except cutList[1] 'Leg' (2x6), which steps[2] only implies."
 }

@@ -239,10 +239,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0..16] (bottom, top, sides, center, shelf, back panel, base top/bottom, base front/back, base center support, drawer box sides/front/back/bottom, drawer fronts, paper shelves) matched to cutList[0..13]; plexiglass = materials[9]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "each cutList[0..13].part is used by a step (cutList[13] Paper shelves → steps[16] 'I used 1/4\" MDF to cut lots of shelves'); Kreg-corrected sizes agree with step positions (e.g. bottom 19 1/2 + 2×3/4 sides = 21; top 22 = 21 + 2×1/2 overhang; center 9 3/8 = (19 1/2 − 3/4)/2)"
     },
     "R4": {
       "result": "pass",
@@ -253,7 +255,30 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, sheet-0.25, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fastener sizes 1 1/4\" pocket hole screws (materials[5]), 1\" pocket hole screws / '1\" screws' (materials[6]), 1 1/4\" finishing nails (materials[7]), 1 1/4\" wood screws (materials[11]), 5/8\" brad nails (materials[12]), 14\" drawer slides (materials[10]), shelf pins (materials[13]); no use given two sizes"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[14].body", "quote": "The upper groove for the plexiglass is deeper so you can slide the sliding door into the upper groove then drop it into the lower groove." },
+        { "path": "steps[15].body", "quote": "Cut the plexiglass to fit into the grooves. Drill 1\" holes in two corners of the plexiglass to use as a handle to slide." }
+      ],
+      "reason": "steps[14] installs the sliding door before steps[15] cuts it to fit; build can proceed if read out of order, so Fix not Unpublish; likely because steps[14] may be read as explanation"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[8].body", "quote": "Drill pocket holes set for 1 1/4\" material on each side of the center base support pieces." },
+        { "path": "cutList[8]", "quote": "Base center support | qty 2 | 3/4\" x 1 1/2\" x 18\" (Kreg source)" }
+      ],
+      "arithmetic": "jig setting 1 1/4\" vs part 3/4\" thick × 1 1/2\" wide: 1.25 ≠ 0.75 and 1.25 ≠ 1.5, so the setting matches neither dimension of the part it is used on. Other settings agree: steps[2],[3],[4],[7] '3/4\" material' on 3/4\" parts; steps[10] '1/2\" material' on 1/2\" drawer box parts"
     },
     "R10": {
       "result": "pass",
@@ -264,11 +289,13 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": { "batch": "calib-1", "imagesViewed": [] }
 }

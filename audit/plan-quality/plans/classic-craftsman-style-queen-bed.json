@@ -227,21 +227,33 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..11] (Narrow/Wide Rails, Headboard/Footboard Slats, Legs, Caps, Side Rails, Cleats, Slats, Cross Braces) all match cutList[0..10]; 3/4\" spacers in steps[5] are temporary; hardware = materials[11]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cutList row is used by a step; slat 60 5/8 fits the 61\" between rails (steps[9]); count disagreements recorded in gaps"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x3, 1x4, 1x8, 1x2, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "reader: steps name the stock for every part — steps[0] rails 'from 1x4 boards' / 'from 1x8 boards', steps[1] slats 'from 1x3 boards', steps[4] legs 'from 1x3 boards', steps[6] caps 'From 1x4 boards', steps[7] side rails 'from 1x8 boards', cleats 'from 2x2 pine boards', steps[10] slats 'from #2 pine 1x4s', braces 'from 1x2 boards' — so R5 is scored per stock type (cut-list quantities, Kreg-corrected lengths, 1/8\" per cut, cuts = parts − boards)",
+      "arithmetic": "1x3: 6×45 + 6×24 3/4 (steps[4] 'about 1\" extra-long') + 11×16 3/4 + 11×5 = 657.75 + 26 cuts×1/8 = 661.0 ≤ 8×96 = 768. 1x4 (oak + #2 pine): 6×58 1/2 + 2×64 3/4 + 12×60 5/8 = 1208 + 3×1/8 = 1208.375 ≤ 5×72 + 12×72 = 1224. 1x8: 2×58 1/2 + 2×80 = 277 ≤ 2×72 + 2×96 = 336. 2x2: 2×76 = 152 ≤ 2×96 = 192. 1x2: 3×57 = 171 ≤ 3×72 = 216. All pass"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: 1 1/4\" Kreg Pocket-Hole Screws (materials[7]), 2\" flat-head wood screws (materials[9]), 1 1/2\" flat-head wood screws (materials[10]), plugs (materials[8]), bed rail brackets (materials[11]); steps[2] coarse-thread alternative is optional; no use given two sizes"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "rails/slats (steps[0..3]) and legs (steps[4]) exist before headboard/footboard assembly (steps[5]); caps after (steps[6]); side rails + cleats (steps[7..8]) before hardware (steps[9]); slats/braces (steps[10]) before final assembly (steps[11])"
+    },
+    "R9": {
+      "result": "pass",
+      "search": "steps[0] 'Set your Kreg® Pocket-Hole Jig for 3/4\"-thick material' covers every pocket-holed part (rails, slats, caps — all 3/4\"); cleats and braces use glue + 2\" flat-head wood screws, slats to cleats 1 1/2\" flat-head wood screws"
     },
     "R10": {
       "result": "pass",
@@ -253,11 +265,25 @@
       "note": "22 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Cut three Head/Foot Narrow Rails to final length from 1x4 boards and two Head/Foot Wide Rails from 1x8 boards",
+      "what": "cutList[0] Head/Foot Narrow Rail says qty 6; steps[0] cuts three and steps[2..3] use three (2 headboard + 1 footboard). If all 1x4 rails and caps are oak (materials[1] 'Oak board, 1x4 x 72\"' × 5): 6×58 1/2 + 2×64 3/4 = 480.5 > 360 bought; with three rails, 305 ≤ 360"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Cut 11 slats to length from #2 pine 1x4s, as shown in the cutting diagram.",
+      "what": "cutList[9] Slat says qty 12; steps[10] cuts 11"
+    }
+  ],
+  "reader": { "batch": "calib-1", "imagesViewed": [] },
+  "notes": "Every R-1 check passes; the two cut-list quantity disagreements are in gaps (no R-1 check covers them)."
 }

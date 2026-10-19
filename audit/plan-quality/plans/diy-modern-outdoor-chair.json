@@ -95,10 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "unknown",
+      "reason": "steps[2] 'Attach the seat facing to the arms as shown' assembles a 'seat facing', but no cutList.part matches /facing/i (searched cutList, materials, steps, description: only steps[2]). cutList[6] 'Side Supports' (2x4, 22 3/4\", qty 2) is the only row no step names and may be the same part, but the name and the quantity (2 vs 'the seat facing') do not settle it. steps[2] image not viewed because the sweep did not flag it. The steps[3] 'side rail supports (1 1/2\" x 1 3/4\" x 22 3/4\")' match cutList[5] by size."
     },
     "R3": {
-      "result": "to-read"
+      "result": "unknown",
+      "reason": "cutList[6] 'Side Supports' is not named by any step (searched steps for /side support/i: none; steps[3] 'side rail supports' matches cutList[5] by size). Same open question as R2; not counted twice."
     },
     "R4": {
       "result": "pass",
@@ -117,7 +119,23 @@
       "arithmetic": "parts: 4×24 + 4×24 + 2×25.75 + 4×24.25 + 2×22.75 + 2×22.75 + 2×22.75 + kerf 16 cuts (20 parts − 4 boards, the fewest possible)×1/8 = 479.000″; bought: 4×144 = 576″; 479.000 ≤ 576"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in the steps: 2 1/2\" outdoor wood screws (steps[3], steps[4] '2 1/2\" wood screws') = materials[2] 'Box 2 1/2\" Outdoor Wood Screws'. Kreg HD screws (steps[0]-[2]) are unsized in both steps and materials[1]. No conflicting size."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Arms, back supports to arms, seat facing, side rails, seat supports screwed onto the side rails. Each part exists before use and nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Drill Kreg HD Pocket Holes and assemble the pieces as shown using Kreg HD Screws." },
+        { "path": "steps[1].body", "quote": "Attach the back supports to the two arms as shown in the diagram using Kreg HD Pocket Holes and Kreg HD Pocket Hole Screws." }
+      ],
+      "reason": "Pocket holes go in 2x4 parts (Kreg source 2\"x4\", i.e. 1 1/2\" stock) but no jig thickness setting is stated; searched all fields for /jig|setting/i: only the tool slug. 'likely' because 'Kreg HD' may itself imply a fixed 1 1/2\" setting, which is outside §9. Screw joints (steps[3]-[4]) state method and fastener."
     },
     "R10": {
       "result": "pass",
@@ -129,7 +147,12 @@
       "note": "6 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
+  "gaps": [],
+  "reader": {
+    "batch": "calib-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

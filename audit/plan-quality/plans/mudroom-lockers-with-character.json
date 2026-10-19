@@ -488,13 +488,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Reader: steps[14] 'We provided 1:1 prints if printed on a Size C Sheet, you can use these as a template to cut out the upper arches, or you can draw them out and then use that as a template.' The prints are not in the plan, but the step offers drawing the arches yourself, so the build does not depend on them."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps assemble has a cutList.part: carcass sides, dividers, shelves and backs (cutList[21..32]), bench seat glue-up (cutList[0..1]), bench and top face-frame stiles/rails (cutList[2..12]), arch glue-up and arches (cutList[7], [14..15]), columns (cutList[16..17]), column crown (cutList[18]), crown moulding (cutList[20]), shelf bullnose (cutList[19]). The 'square brackets' in the steps[12] tip are a clamping aid, not a part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut row is used by a step. cutList[20] 'Crown Moulding' is covered only by the steps[17] title 'Add crown moulding' (the body describes the column crown, cutList[18]); cutList[13] 'Cap Stone' is covered by 'trim' in steps[16]."
     },
     "R4": {
       "result": "unknown",
@@ -505,7 +508,23 @@
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size is given in any step (searched steps for /\\d[^ ]*\" ?(screw|nail|brad)|screw|nail/i: 'screw together face frame', 'screwed them to the carcass', 'cabinet screws', 'brad nails', 'nailed' — none sized), so nothing conflicts with the 1 1/4 pocket screws in materials[5..6]. Unsized fasteners missing from materials are recorded under gaps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sheet goods, dados, carcasses, seat glue-up, face frames, face frames glued to carcasses, lowers installed, uppers installed, fluting (steps[15]) before trim is nailed on (steps[16]), crown, bullnose. Each part exists before it is used and nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[6].body", "quote": "Drill pocket holes in the rails of the face frames." },
+        { "path": "steps[10].body", "quote": "Pocket hole arches and rails for upper lockers." }
+      ],
+      "reason": "Pocket holes go in 3/4\" poplar rails and arches (cutList[5], [7], [8]) but no jig thickness setting is stated. Searched all fields for /jig|setting/i: only the tool slug 'pocket-hole-jig'. Other joints state method and fastener (dado + glue, glue + clamp, counterbored screws, glue + nails)."
     },
     "R10": {
       "result": "pass",
@@ -513,10 +532,37 @@
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "Reader: steps[14] refers to '1:1 prints' (missed by the pattern); the step has its own image, and the prints are offered as an option ('or you can draw them out')."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "We prepped the edges for the bench seat and then, biscuit, glued and clamped the bench seats.",
+      "what": "The bench seats are glued up but never installed: searched all steps for /seat/i, only steps[4]. Biscuits are used here but not in materials (searched materials for /biscuit/i, no hit)."
+    },
+    {
+      "path": "steps[16].body",
+      "quote": "We glues and nailed the trim to the face frames.",
+      "what": "Nails (steps[16], steps[17], steps[19], steps[8] tip 'brad nails') and 'cabinet screws' (steps[13]) are used but not in materials and have no size (materials list only 1 1/4 pocket screws)."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Layout and cut the dado's and grooves.",
+      "what": "No shelf/divider dado positions are given in any step; steps[1] image not viewed because the sweep did not flag it."
+    },
+    {
+      "path": "cutList[0].part",
+      "quote": "(6/4 Red Oak, Bench Seat) Seat long [Glue Up Panel] note: glue up is oversized",
+      "what": "Cut list says 6/4 red oak but materials[0] is 'Red Oak, 23 Bd ft 5/4'; the stock thickness disagrees between the two fields."
+    }
+  ],
+  "reader": {
+    "batch": "calib-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

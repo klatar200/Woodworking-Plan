@@ -167,10 +167,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps assemble has a cutList.part: sides, undertop, bottom, shelves (cutList[1..3]), top (cutList[0]), base trim sides/front (cutList[4..5]), backing (cutList[6]); door sides, top/bottom/shelves, shelf trim, backing, trim sides and trim top & bottom (cutList[7..12])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut row is used: cabinet rows in steps[1]-steps[8]; door rows in steps[10]-steps[14] ('trim pieces' in steps[14] = cutList[11..12])."
     },
     "R4": {
       "result": "pass",
@@ -181,7 +183,30 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, 1x4, 1x8, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[12].body", "quote": "Attach shelf trim flush to front using wood glue and 1 ¼” pocket hole screws at sides and secure to shelf at underside using 1 ¼” finish nails." },
+        { "path": "materials[8].name", "quote": "1\" finish nails" }
+      ],
+      "reason": "1 1/4\" finish nails are used in steps[12] but the only nail line in materials is 1\" finish nails (searched materials for /nail/i: materials[8] only). Other sizes match: 1 1/4\" pocket screws (materials[5]), 1 1/4\" wood screws (materials[6]), 3/4\" wood screws (materials[7]), 1\" finish nails (materials[8], steps[14])."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides to undertop, bottom, shelves, top (screwed up through the undertop), base trim, backing; doors built separately. Each part exists before it is used and nothing must be undone. The missing door-hanging step is recorded under gaps."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[1].body", "quote": "Attach sides to undertop using wood glue and 1 ¼” pocket hole screws." },
+        { "path": "steps[10].body", "quote": "Make door frame by attaching top and bottom to sides using wood glue and 1 ¼” pocket hole screws." }
+      ],
+      "reason": "Pocket holes go in 3/4\" parts (cutList[0..5], [7..9], [11..12]) but no jig thickness setting is stated. Searched all fields for /jig|setting/i: only 'Using a jig saw' (steps[2]) and the tool slugs."
     },
     "R10": {
       "result": "pass",
@@ -189,10 +214,32 @@
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "Reader: steps[2] 'notch out bottom piece at sides as per sketch above' (missed by the pattern: 'sketch') is in a step with its own image, so an image is available."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "materials[9].name",
+      "quote": "Cabinet hinges full wrap",
+      "what": "Hinges (materials[9]), hardware pulls (materials[10]), magnetic latches (materials[11]) and shelf pins (materials[12]) are never used: searched all steps for /hinge|pull|latch|pin/i, no hits. No step hangs the doors on the cabinet; steps end at steps[14] door trim."
+    },
+    {
+      "path": "cutList[4]",
+      "quote": "Base trim sides",
+      "what": "cutList[4] (quantity 2, lengthIn 36): base trim sides are 36\" long but the cabinet is 24\" deep (steps[0] 'Overall dimensions: 36\"w x 24\"d x 36\"h'); 36 > 24, so a 36\" side trim cannot fit along a side. Kreg source for this row is not in importDiffs, so the length is as imported."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Insert shelves using wood glue and 1 ¼” pocket hole screws.",
+      "what": "No position is given for the door shelves (no measurement in steps[9]-steps[14]); steps[11] image not viewed because the sweep did not flag it."
+    }
+  ],
+  "reader": {
+    "batch": "calib-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],
