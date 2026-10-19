@@ -1,6 +1,6 @@
 {
   "slug": "kitchen-pantry-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -221,41 +221,73 @@
       "reason": "Pocket holes go in 3/4\" parts (cutList[0..5], [7..9], [11..12]) but no jig thickness setting is stated. Searched all fields for /jig|setting/i: only 'Using a jig saw' (steps[2]) and the tool slugs."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Insert shelves using wood glue and 1 ¼” pocket hole screws."
+        }
+      ],
+      "reason": "no height is given for the door shelves: no measurement in steps[9]-[14]; viewed image a2e2df5c3442263c (steps[11]) dimensions only the shelf (15 5/8\" x 7 1/4\"), not its position; viewed image fc7a94da1e255b7c (steps[9]) gives only overall door size. Hinge, pull and latch positions are also never given (the doors are never hung; recorded under R14). Cabinet shelves 'Attach shelves as desired' (steps[4]) and top overhangs (steps[5] '¼” overhang at back and ¾” overhang on both sides') pass."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "reason": "Reader: steps[2] 'notch out bottom piece at sides as per sketch above' (missed by the pattern: 'sketch') is in a step with its own image, so an image is available."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach trim pieces using wood glue and 1” finish nails."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Cabinet hinges full wrap"
+        },
+        {
+          "path": "materials[10].name",
+          "quote": "Hardware pulls"
+        },
+        {
+          "path": "materials[11].name",
+          "quote": "Magnetic latches"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "2 Base trim sides 0.75 x 3.5 x 36"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Attach base trim sides to carcass sides using wood glue and countersunk 1 ¼” wood screws."
+        }
+      ],
+      "arithmetic": "base trim: cutList[4] length 36 vs carcass side depth cutList[2] 14 7/8 (Kreg-corrected 3/4 x 14 7/8 x 35 1/4) and overall depth 24 (steps[0] 'Overall dimensions: 36\"w x 24\"d x 36\"h'); 36 > 24 > 14 7/8",
+      "reason": "(b)/(d) the two shelf doors are built (steps[9]-[14]) but no step hangs them: the steps end at steps[14] door trim; searched all steps for /hinge|hang|pull|latch|pin|install|mount/i — no hits, so hinges, pulls, magnetic latches and shelf pins (materials[9]-[12]) are bought and never used. Doors are a part the cabinet cannot be used without, so Unpublish. import-fidelity.json emptyStepsDropped = 0, so no source step was lost (cause plan). (a) also: the 36\" base trim sides cannot fit along carcass sides 14 7/8\" deep (Fix-level on its own; cutList[4] is not in importDiffs, so the length is as imported)."
     }
   },
   "verdict": "Fix",
-  "gaps": [
-    {
-      "path": "materials[9].name",
-      "quote": "Cabinet hinges full wrap",
-      "what": "Hinges (materials[9]), hardware pulls (materials[10]), magnetic latches (materials[11]) and shelf pins (materials[12]) are never used: searched all steps for /hinge|pull|latch|pin/i, no hits. No step hangs the doors on the cabinet; steps end at steps[14] door trim."
-    },
-    {
-      "path": "cutList[4]",
-      "quote": "Base trim sides",
-      "what": "cutList[4] (quantity 2, lengthIn 36): base trim sides are 36\" long but the cabinet is 24\" deep (steps[0] 'Overall dimensions: 36\"w x 24\"d x 36\"h'); 36 > 24, so a 36\" side trim cannot fit along a side. Kreg source for this row is not in importDiffs, so the length is as imported."
-    },
-    {
-      "path": "steps[11].body",
-      "quote": "Insert shelves using wood glue and 1 ¼” pocket hole screws.",
-      "what": "No position is given for the door shelves (no measurement in steps[9]-steps[14]); steps[11] image not viewed because the sweep did not flag it."
-    }
-  ],
+  "gaps": [],
   "reader": {
     "batch": "calib-2",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2e2df5c3442263c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fc7a94da1e255b7c.webp"
+    ],
+    "rescore": "rescore-5"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Fix"
 }

@@ -1,6 +1,6 @@
 {
   "slug": "garage-mud-room-storage-and-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -336,14 +336,47 @@
       "reason": "Pocket holes are used throughout on 3/4\" plywood and 1x2, but no jig thickness setting is stated anywhere. Searched all fields for /jig|setting|set (to|for|the)/i: no matches."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Placements are relational: nailers 'at the top and bottom of the box' and 'one near the middle' (steps[2]), face frames to boxes, boxes joined to each other. No step names a measured position without a number."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I drilled shelf pin holes down each side of the sides of the plywood box so that we could have adjustable shelves."
+        }
+      ],
+      "reason": "shelf-pin hole spacing, setback and range are not given anywhere (searched all fields for /pin|hole|spac/i: only this sentence and materials[11] 'Adjustable shelf pins'); the viewed steps[6] image 8717beebed4e0c84 shows only the overall '5' 1\"' height, no hole positions. Door hinge positions are never stated (hinges themselves recorded under R14). Other placements are relational: nailers 'top and bottom ... one near the middle' (steps[2]), blocking 'at the bottom'/'at the top' of each box (steps[5]), boxes stacked/joined to each other and the base. Coat-hook position 'above the seat' (steps[24]) treated as as-desired. Images for steps[15],[17],[20] ('as shown') not opened."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "14 reference(s), each in a step with its own image. Per R11 this passes; whether the images actually carry the dimensions was not verified (not viewed)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I drilled shelf pin holes down each side of the sides of the plywood box so that we could have adjustable shelves."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "brad nail and glue the face frame to the closet box"
+        },
+        {
+          "path": "steps[24].body",
+          "quote": "Install coat hangers on the rear area above the seat."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "I purchased an old three panel door that was 3/4\" x 6'-8\" from a recycling store. I had to trim it slightly to fit the height."
+        }
+      ],
+      "reason": "(b)/(d) the adjustable shelves are never cut or installed: /shel/i appears only in description, steps[6] ('shelf pin holes', 'adjustable shelves', 'shelf box') and cutList[4] 'Shelf framing' (a plywood allotment); the viewed steps[6] image 8717beebed4e0c84 draws five shelves but no step text makes them; shelf pins (materials[11]) are bought for them. The rest of the unit is usable without them, so Fix. (c) non-fastener items used but not in materials: wood glue (steps[3],[5],[11],[16],[20],[22]; no materials[].name matches /glue|adhesive/i); coat hangers (steps[24]; no match for /hanger|hook/i); door hinges: the viewed steps[4] image 4ffbb2662e07094a shows the door swung open on the closet face frame, but no step names hinges and no material matches /hinge/i (likely). Carpet squares (steps[23]) are an optional 'I also lined' extra, not counted. (a) step counts are all 'as shown' in images; steps[7] 'Cut four side pieces and 4 front/back pieces' agrees with 2 drawers x 2 + 2 x 2."
     }
   },
   "verdict": "Fix",
@@ -362,7 +395,12 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-2",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8717beebed4e0c84.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ffbb2662e07094a.webp"
+    ],
+    "rescore": "rescore-5"
   },
-  "notes": "≥4 certain Fix-level plan failures (R2, R3, R6, R9) → Unpublish per §6 once verifier-upheld."
+  "notes": "≥4 certain Fix-level plan failures (R2, R3, R6, R9) → Unpublish per §6 once verifier-upheld.",
+  "previousVerdict": "Fix"
 }

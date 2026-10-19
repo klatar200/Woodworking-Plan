@@ -1,6 +1,6 @@
 {
   "slug": "gaming-computer-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -459,28 +459,33 @@
     },
     "R10": {
       "result": "pass",
-      "sweepResult": "flagged",
-      "flagResolution": [
-        {
-          "path": "steps[6].body",
-          "decision": "rejected",
-          "reason": "Relational placement (bottom fits the dado; pieces flush). The dado position is given in the same step: \"route a dado groove 1/4\\\" deep and 1/4\\\" up from the bottom edge\". Image not needed."
-        }
-      ],
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "e the drawer boxes using wood glue and 1 1/4\" pocket screws. The inset drawer bottom will fit inside the dado groove when the drawer box is being assembled. Ensure all pieces are flush and square.\nIf ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3cf40bf525b4d986.webp"
-        }
-      ]
+      "reason": "hairpin legs 1\" inset (steps[5]); riser 4\" in and flush back (steps[8]); dado 1/4\" up (steps[6]); face gaps 1/8\" and bottom face flush (steps[11]); drawer slide heights not in text but shown in viewed image bd71dae42d984888 (steps[10]): 'Drawer Bottom height at 3 5/8\"', 'Drawer bottom height at 12 3/4\"', bottom slides 'flush against bottom of cabinet'; cabinet flush with desktop end, legs flush with corners are relational. Drawer-pull position on the faces is not given; treated as cosmetic (any position gives a working drawer)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the boards together with wood glue and 1 1/4\" pocket screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Apply a bead of wood glue to each of the rabbeted grooves on the side panels"
+        },
+        {
+          "path": "materials",
+          "quote": "materials[0..13]: boards, plywood, 4x4, drawer slide sets, hairpin legs, drawer pulls, stain, finish, sandpaper discs, sanding belt, sanding block"
+        }
+      ],
+      "reason": "(c) wood glue is used in steps[0],[1],[2],[3],[4],[6],[7],[8] but no materials[].name matches /glue|adhesive/i (importer has no material filter, so cause plan). (a) counts/sizes agree on Kreg-corrected rows: top 5 x 5 1/2 = 27 1/2 (steps[1]); faces 4 + (5 1/2 + 3 1/2) + (5 1/2 + 5 1/8) = 23 5/8 + 3 x 1/8 gaps = 24 = side-panel height (steps[11]); legs 4\" (steps[4]) = cutList[5]; inset bottom 17 x 10 and surface bottom 18 x 11 = cutList[9],[10]; 41 1/2 shelf = cutList[3]. Riser-width and drawer-face-piece contradictions already recorded under R2, not re-reported. (b) every part made is installed (cabinet, legs, top, drawers steps[10], faces and pulls steps[11], riser steps[8]). (d) steps reach the finished desk; the LED lighting in description is not built by any step and is not part of the piece's use."
     }
   },
   "verdict": "Fix",
@@ -492,7 +497,12 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bd71dae42d984888.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1efad371277425a1.webp"
+    ],
+    "rescore": "rescore-5"
   },
-  "notes": "Three plan-cause Fix findings (R2 step/cut-list contradictions, R6 no fasteners listed, R9 hairpin fastener unstated); 23 import-damaged dimensions."
+  "notes": "Three plan-cause Fix findings (R2 step/cut-list contradictions, R6 no fasteners listed, R9 hairpin fastener unstated); 23 import-damaged dimensions.",
+  "previousVerdict": "Fix"
 }

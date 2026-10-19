@@ -1,6 +1,6 @@
 {
   "slug": "four-poster-canopy-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -269,11 +269,37 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "every position given: rails 6\" from bottom (steps[3],[4],[5]), side rail 1 1/4\"/3/4\" offsets (steps[5]), beams 1\" down (steps[6]), inner supports 1\" down (steps[7]), slat 3 1/2\" spacer (steps[8]); headboards stacked above the Back Rail, footboard rail 'directly above', legs and center supports 'evenly spaced' are relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Using a 3 1/2\" spacer, continue until all Slats are in place."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "13 Slats (1x4 pine board cuts) 0.75 x 3 x 76 (Kreg-corrected width 3 1/2)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "attach one Side Rail between a front and back Post"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "4 Side Rails (1x6 board cuts) 0.75 x 5 x 80"
+        }
+      ],
+      "arithmetic": "13 slats x 3 1/2\" + 12 gaps x 3 1/2\" = 45.5 + 42 = 87.5\"; the slats run between the front and back Posts, whose clear distance is the 80\" Side Rail length; 87.5 > 80",
+      "reason": "(a) slat count and spacer width disagree with the opening. Other counts agree: 12 Posts / 3 = 4 posts, 4 Side Rails / 2 = 2, 6 rails / 2 = 3 (front, back, footboard), 5 Headboards (1 + 'remaining four'), 6 Legs = 3 per Center Support x 2. (b) every part made is installed (posts/rails steps[3..5], beams steps[6], supports/legs steps[7], slats steps[8]). (c) non-fastener items used: wood glue (materials[6]); the spacer is a temporary aid and the mattress (steps[9]) is the item the bed holds, not a build material. (d) steps reach the finished bed (steps[9])."
     }
   },
   "verdict": "Fix",
@@ -285,11 +311,6 @@
   "measurementsScoredOn": "kreg-corrected",
   "gaps": [
     {
-      "path": "steps[8].body",
-      "quote": "Using a 3 1/2\" spacer, continue until all Slats are in place.",
-      "what": "13 slats (cutList[6]) 3 1/2\" wide with 3 1/2\" gaps need 13×3.5 + 12×3.5 = 87.5\" but the opening between Back and Front Rails is 80\" (Side Rails 80\" fit 'between a front and back Post', steps[5]); slat count and spacing disagree"
-    },
-    {
       "path": "steps[7].body",
       "quote": "Using wood glue and screws, attach the Side Inner Supports to the Side Rails 1\" down from the top.",
       "what": "plain screws used here and in steps[8] ('use screws to attach a Slat') have no size and are not in materials (materials[4],[5] list pocket hole screws only)"
@@ -297,6 +318,8 @@
   ],
   "reader": {
     "batch": "calib-1",
-    "imagesViewed": []
-  }
+    "imagesViewed": [],
+    "rescore": "rescore-5"
+  },
+  "previousVerdict": "Fix"
 }

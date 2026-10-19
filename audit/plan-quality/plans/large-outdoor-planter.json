@@ -1,6 +1,6 @@
 {
   "slug": "large-outdoor-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -388,9 +388,21 @@
       "reason": "Pocket holes go in the 1 1/2\" frame pieces, but no jig thickness setting is stated. Searched all fields for /setting|set (to|for|the)|thick/i: none tied to the jig. Other joints state method and fastener (adhesive and screws, glue and nails)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Positions that are stated carry numbers ('5 1/4\" spacing from the top', steps[10]; 'approx. 3/4\" gap', steps[15]). The bracing layout is deferred to the drawings, which is scored under R1/R11."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "All the bracing can be built in the frame assembly at this stage (see drawings for clarification)."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "secure the bottom plywood to the middle frame supports (Parts \"H\")"
+        }
+      ],
+      "reason": "the positions of the bracing and of the middle frame supports that set the bottom height are not given as numbers anywhere (searched all steps for a measurement near /brac|support|Parts \"H\"|bottom/i: none); viewed images e6da46cb75f50968 (steps[1]) and 17eb84432c630cfe (steps[8]) are shop photos with no dimensions. Same root cause as the R1 dependency on the PDF drawings. Stated positions pass: faux lines '5 1/4\" spacing from the top' (steps[10]), liner 'approx. 3/4\" gap' (steps[15])."
     },
     "R11": {
       "result": "fail",
@@ -421,6 +433,23 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "7 reference(s), each in a step with its own image",
       "sweepResult": "pass"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "I filled the holes with 1/2\" wood plugs and used chalking to fill the gap/seams/holes/imperfections."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "counter sunk the hole with a 1/2\" drill bit in order to be able to cap the hole with a 1/2\" dia. plug latter on."
+        }
+      ],
+      "reason": "(c) the 1/2\" wood plugs are used but not in materials: no materials[].name matches /plug|dowel/i (materials[0..6]: plywood, 2x4, plastic liner, Screws, Nails, outdoor construction adhesive, outdoor chalking). Liner (materials[2]), adhesive (materials[5]) and caulk (materials[6]) are listed. (a) step-given sizes cannot be checked against the letter-only cut rows because the part key is in the missing PDF (already R1); no step count contradicts a row. (b) frame, plywood, top frame (steps[16]), bottom (steps[8]), base (steps[14]) and liner (steps[15]) are all installed. (d) steps reach the finished planter."
     }
   },
   "verdict": "Unpublish",
@@ -431,8 +460,10 @@
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6fc59bc44d20d883.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/78541378948463d3.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0aee123e667ac5b6.webp",
-      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e6da46cb75f50968.webp"
-    ]
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e6da46cb75f50968.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/17eb84432c630cfe.webp"
+    ],
+    "rescore": "rescore-5"
   },
   "verifier": {
     "ran": true,
@@ -445,5 +476,6 @@
     ],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Unpublish"
 }

@@ -1,6 +1,6 @@
 {
   "slug": "kreg-clamp-workbench-with-bench-dogs",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -295,31 +295,50 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured placements give numbers: leg supports '12\" from the ground' (steps[5]), '3/4\" scrap underneath for spacing' (steps[2]). Others are relational or as desired: 'evenly spaced' (steps[2], [8]), dog holes 'at desired spacing' (steps[6]), 'Pick a spot' (steps[11])."
+      "reason": "leg supports '12\" from the ground' (steps[5]); 3/4\" spacing scrap (steps[2]); Trak layout not in text but shown in viewed image 3777b88ac58eebad (steps[1]): 45\" Trak along the front and 27\" Trak at one end beside the 24\" x 45\" plywood, gap at the back; 20.25\" 2x4s and Trak pilot holes 'evenly spaced' (steps[2],[8]); dog holes 'at desired spacing' (steps[6]); vise 'Pick a spot' (steps[11]) — relational/as desired."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the aprons for the frame to length: (1) 2 x 4 x 47.25\", (1) 2 x 6 x 47.25\", (2) 2 x 6 x 32.25\"."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut (1) 2x6 to 47.25\", (1) 2x4 to 47.25\" and (5) 2x4's to 20.25\"."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "1 Side Apron 2 x 4 x 47.25"
+        }
+      ],
+      "arithmetic": "2x4 x 47.25\" pieces cut by steps: 1 (steps[0]) + 1 (steps[2]) = 2; cut list 2x4 x 47.25 rows: cutList[6] qty 1 only (cutList[2] 'Bottom Frame' 47.25 is the 2x6); 2 != 1",
+      "reason": "(a) count disagreement above. Other counts agree: bolts 5 pairs + 4 pairs = 18 = materials[8] qty 18 (steps[8]); 5 x 20.25 = cutList[7] qty 5; 4 legs = cutList[3]; leg supports 2 + 1 = cutList[4],[5]. (b) every part made is installed (frame, top, bottom framework, legs, supports, Traks steps[9]-[10], vise steps[11]). (c) non-fastener items: Traks, bench clamps, clamp vise in materials[3]-[7]; washers/nuts 'provided by Kreg' with the Trak (steps[10]). (d) steps reach the finished bench."
     }
   },
-  "gaps": [
-    {
-      "path": "steps[2].body",
-      "quote": "Cut (1) 2x6 to 47.25\", (1) 2x4 to 47.25\" and (5) 2x4's to 20.25\".",
-      "what": "Count disagrees with the cut list: steps[0] already cuts '(1) 2 x 4 x 47.25\"' for the aprons and steps[2] cuts a second 2x4 at 47.25\", but the cut list has only one 2x4 x 47.25 row (cutList[6] 'Side Apron', qty 1); no 'Bottom Frame' 2x4 47.25 row exists."
-    }
-  ],
+  "gaps": [],
   "verdict": "Fix",
   "reader": {
     "batch": "calib-4",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3777b88ac58eebad.webp"
+    ],
+    "rescore": "rescore-5"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Fix"
 }

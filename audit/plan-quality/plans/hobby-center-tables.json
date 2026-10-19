@@ -1,6 +1,6 @@
 {
   "slug": "hobby-center-tables",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -139,24 +139,49 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "The only measured placement, the top overhang, gives a number: steps[10] 'about 1\" of overlap on each side'."
+      "reason": "leg taper cut positions not in text (steps[5] 'Mark the lower leg cuts') but shown in viewed image 7888af8488e5a8a9: 3\" taper at the foot to 2\" (3\" leg) and 1 1/4\" (2 1/4\" leg) on 29 1/4\" legs; skirt-to-leg layout shown in viewed steps[9] image 373d3185ae97993f; top overhang 'about 1\" of overlap on each side' (steps[10]); pocket-hole locations on skirts are drill positions not fit-critical ('as shown', steps[4])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "17 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Using Titebond I wood glue and 1 1/4\" brad nails assemble eleven sets of regular legs"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach the appropriate table skirts to their leg assemblies using wood glue and 1 1/4\" Kreg fine pocket screws"
+        },
+        {
+          "path": "materials",
+          "quote": "materials[0..7]: Oak Plywood, 3/4\" Oak 1x8, pocket hole screws, brad nails, sandpaper, edge banding, Tung Oil, Stain"
+        }
+      ],
+      "reason": "(c) wood glue is used in steps[7],[8],[9] but no materials[].name matches /glue|titebond|adhesive/i (cause plan; the importer keeps every material line). (a) counts agree: 'fifteen 3\" legs' = cutList[2] 13 + cutList[3] 2; 11 + 2 leg assemblies use 13 regular 3\" + 11 x 2 1/4\" + 2 center pieces; 'thirteen table skirt pieces' = 6 + 1 + 6; viewed steps[9] image 373d3185ae97993f shows each side table with 2 x 40\" + 2 x 16\" skirts and the center table with 2 x 40\" + 2 x 16\" + 28\" (= 6 long, 6 short, 1 center). (b) leg assemblies and skirts become bases (steps[9]); tops attached (steps[10]). (d) steps reach the finished tables."
     }
   },
   "verdict": "Fix",
   "reader": {
     "batch": "calib-4",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7888af8488e5a8a9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/373d3185ae97993f.webp"
+    ],
+    "rescore": "rescore-5"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Fix"
 }
