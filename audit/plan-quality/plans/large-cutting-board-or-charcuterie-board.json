@@ -35,7 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "flagResolution": [
+        { "path": "steps[2].body", "decision": "rejected", "reason": "The 3\" cut is made from the listed Main Boards (cutList[0], 19 1/2\" 1x6): steps[2] says \"cut your 1x6 boards at 3 inches\"; the viewed step image shows the 19 1/2\" boards cut into 3\" + 16 1/2\" (3 + 16 1/2 = 19 1/2). A recut of a listed part, not a missing part.", "viewed": true },
+        { "path": "steps[6].body", "decision": "rejected", "reason": "Optional border; the step itself names the cut and stock: \"Cut 2- 24\\\" 1x2's, and 2- 18\\\" 1x2's\" and says \"This lumber is not included in the supply and cut lists\". Non-structural, optional." }
+      ],
       "flagged": [
         {
           "path": "steps[2].body",
@@ -50,18 +55,46 @@
       ]
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Both rows are used: Main Boards cut in steps[0] (\"Cut 3- 19 1/2\\\" 1x6 boards.\"), Accent Boards cut in steps[1] (\"Cut 3- 1x2 boards at 16 1/2\\\".\")."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock",
+      "reason": "Precondition met on reading: the steps name the stock for every part (steps[0] \"1x6 boards\" for Main Boards; steps[1] \"1x2 boards\" for Accent Boards). Quantities are Kreg's own \"1\" (no importDiffs on materials).",
+      "evidence": [
+        { "path": "materials[0].name", "quote": "Board, 1x6 72\"" },
+        { "path": "materials[1].name", "quote": "Board, 1x2 36\"" },
+        { "path": "materials[2].name", "quote": "Board, 1x2 24\"" }
+      ],
+      "arithmetic": "1x6: 3 x 19 1/2 (importDiffs correctRow) + 3 x 1/8 kerf = 58 7/8 <= 72. 1x2: 3 x 16 1/2 + 3 x 1/8 = 49 7/8 <= 36 + 24 = 60; per board, 36\" holds 2 x 16 1/2 + 2 x 1/8 = 33 1/4 and 24\" holds 1 x 16 1/2. Pass. (Optional border is excluded by the plan itself: steps[6] \"This lumber is not included in the supply and cut lists\".)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "No sized fastener in any step. Only fastener mention is optional and unsized: steps[6] \"You can also use brad nails or pin nails if desired.\" Description: \"This is a glue-up plan, with no hardware.\""
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[7].body", "quote": "use a router and a 1/4\" roundover bit to round the edges of the cutting board." },
+        { "path": "steps[8].body", "quote": "Then wipe clean with a tack cloth, and finish with a food safe cutting board oil." },
+        { "path": "steps[10].body", "quote": "Using a jointer or a table saw with a fine tooth blade, square up your board." }
+      ],
+      "reason": "Squaring the board (trimming its edges) is the last step, after the edges are rounded over (steps[7]) and the board is finished (steps[8]); trimming the edges then removes the routed profile and finish. Same order in Kreg's source (step 11 of 11), so cause is plan. Build can still proceed, so Fix not Unpublish."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Joints are edge glue-ups with method stated: steps[1] \"Glue the boards together, using a good amount of quality wood glue, and Kreg clamps\"; steps[4] and steps[5] glue + clamps; steps[6] border \"Using wood glue and clamps\"."
     },
     "R10": {
       "result": "pass",
@@ -72,11 +105,20 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/91b3e6cfa073b95d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cf6954bfa9b40d0c.webp"
+    ],
+    "imagesNote": "cf6954bfa9b40d0c (steps[1]) was opened for context; no finding relies on it."
+  },
+  "notes": "One plan-cause Fix (R8: squaring is ordered after routing/finishing); cut list wrong on the live site only by import (importDiffs)."
 }

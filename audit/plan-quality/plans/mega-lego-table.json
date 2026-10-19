@@ -31,7 +31,13 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "unknown",
+      "sweepResult": "flagged",
+      "reason": "The shapes of the Leg (cutList 'End') and False Drawer Front cutouts are given only in the PDF: steps[1] \"The relevant dimensions are included in the PDF.\"; steps[3] \"Using the templates, mark the pieces for the Legs and Drawer Fronts.\" Search: no step, summary or description gives any cutout dimension. Viewed: steps[0] image (cut parts, no drawing), steps[1] image (the PDF lies open in the photo, dimensions unreadable), all 4 non-primary unattached images (finished-table photos, no dimensions). The cut list and every joint/position are otherwise in the plan, so the table can be assembled; whether an undimensioned arched-leg and pull cutout means the build 'cannot be completed' is a judgment the rubric does not settle (R1 has no Fix level). Other flags are optional links (steps[0] 'for reference', steps[32] roundover bit and Duplo plate links) = pass.",
+      "evidence": [
+        { "path": "steps[1].body", "quote": "The relevant dimensions are included in the PDF.", "viewed": true },
+        { "path": "steps[0].body", "quote": "There is a set of measured drawings in PDF form in the Extras section. Print this for reference while building.", "viewed": true }
+      ],
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
@@ -62,7 +68,12 @@
       ]
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "flagResolution": [
+        { "path": "steps[29].body", "decision": "rejected", "reason": "\"trim 1/16” to 1/8” off each end\" is a fitting trim of the listed False Drawer Front (cutList[5]), not a new part." }
+      ],
+      "reason": "Every part the steps use has a row, though under different names: steps' \"Legs\" = cutList[1] \"End\" (qty 2; no step uses \"End\", no row is named Leg except Leg Brace); steps' \"Center Divider\" = cutList[4] \"Center Support\" (the only remaining 3/4\" row, 30.25 long = the span between the Ends). Templates (optional) and spacers are cut by the steps themselves from listed MDF / scrap. Naming mismatch noted, not scored.",
       "flagged": [
         {
           "path": "steps[29].body",
@@ -77,7 +88,12 @@
       ]
     },
     "R3": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "flagResolution": [
+        { "path": "cutList[4].part", "decision": "rejected", "reason": "Center Support is the part the steps call \"Center Divider\": steps[7] \"drilling pocket holes in the bottom of the Top, the Center Divider, and the Leg Braces\"; steps[13] \"The Center Divider gets installed next ... centered between the Legs\". Used." }
+      ],
+      "reason": "All 9 rows are used (Top, End=Legs, Top Trim, Leg Brace, Center Support=Center Divider, False Drawer Front, drawer sides/front-back/bottoms).",
       "flagged": [
         {
           "path": "cutList[4].part",
@@ -95,7 +111,12 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "flagResolution": [
+        { "path": "steps[11].body", "decision": "rejected", "reason": "\"1-1/4” coarse thread Kreg Screws\" is listed as materials[4] \"1-1/4 Pocket Screws - Box\" (no inch mark, so the sweep missed it)." }
+      ],
+      "reason": "All fasteners listed: 1-1/4 pocket screws (materials[4]); drawer boxes in 1/2\" ply with Kreg Micro (materials[6] \"3/4\\\" Pocket Screws for Micro - Box\"); false fronts steps[28] \"#8 x 1” washer head screws\" (materials[10]); drawer bottoms steps[23] \"a few countersunk screws\" (materials[11] \"#6 x 1” Screws - For Drawer Bottoms\"). No use given two sizes.",
       "flagged": [
         {
           "path": "steps[11].body",
@@ -104,8 +125,31 @@
         }
       ]
     },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is possible: parts cut and shaped (steps[0]-[6]), pocket holes (steps[7]-[10]), base assembled Top+Trim, Legs, divider, braces (steps[11]-[14]); drawer front/back cut long then trimmed (steps[17],[20]); grooves before the back through-cut (steps[18]-[19]) so bottoms slide in after assembly (steps[23]); slides with the table on its side (steps[25]); false fronts fitted last (steps[28]-[31])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[7].body", "quote": "The joinery construction for the base is all pocket holes. You will need to drill pocket holes in the bottom of the Top, the Center Divider, and the Leg Braces." },
+        { "path": "steps[21].body", "quote": "Drill pocket holes on either end of each Drawer Front/Back, being sure to stay clear of the grooves we cut earlier." }
+      ],
+      "reason": "Pocket holes in 3/4\" parts (Top, divider, braces) and 1/2\" drawer parts, but no jig thickness setting is stated for either. Search: no field matches /jig for|set (the|your) (jig|pocket)|setting/i; steps[21] only says \"I absolutely prefer the Kreg Micro when working with 1/2” plywood\" (a tool choice, not a setting). Other joints: false fronts and bottoms state method and screw."
+    },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "flagResolution": [
+        { "path": "steps[15].body", "decision": "rejected", "reason": "\"Here is a view from the bottom.\" places nothing." },
+        { "path": "steps[23].body", "decision": "rejected", "reason": "Cut-to-fit measured from the assembled box (relational)." },
+        { "path": "steps[24].body", "decision": "rejected", "reason": "Numbers given: \"The spacer should be 3” long\"; front offset = \"thickness of the False Drawer Front, so just use a scrap of the 3/4” plywood\"; slides centered on the drawer side." },
+        { "path": "steps[29].body", "decision": "rejected", "reason": "Number given: \"trim 1/16” to 1/8” off each end\"." },
+        { "path": "steps[32].body", "decision": "rejected", "reason": "Optional roundover; places nothing." }
+      ],
       "search": "step sentences with a placement trigger and no inch measurement",
       "flagged": [
         {
@@ -152,11 +196,23 @@
       "note": "3 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e3038072cf18750.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ba04be74dab35b5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d752b5ec0415964f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4db33cccf564702.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/91c032e8262bbddd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f1e602c247c46308.webp"
+    ]
+  },
+  "notes": "Human review because R1 is unknown: leg and pull cutout profiles exist only in the Extras PDF. Plan-cause Fix: R9 (no jig settings). Cut-list names differ from step names (End=Legs, Center Support=Center Divider)."
 }

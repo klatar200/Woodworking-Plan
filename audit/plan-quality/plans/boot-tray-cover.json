@@ -10,21 +10,63 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] 1x3 sides @ 32\" and @ 16\" = cutList[0], [1]; steps[1] \"13 1x2 slats\" @ 16\" = cutList[2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used (steps[0], [1], [3])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "reason": "Script precondition overridden: steps[0] names 1x3 for every side and steps[1] names 1x2 for the slats. Quantity 1 is Kreg's own (record has no import diffs).",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 72\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the two 1x3 sides @ 32\" to the two 1x3 sides @ 16\" using 1 1/4\" Kreg screws."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Sides - qty 2, 0.75 x 2.5 x 32"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Sides - qty 2, 0.75 x 2.5 x 16"
+        }
+      ],
+      "arithmetic": "1x3 parts: 2x32 + 2x16 = 96\" before kerf; 1x3 bought: materials[0] qty 1 x 72\" = 72\"; 96 > 72 (short by at least 24\"). (1x2: 13x16 = 208 + 12 x 1/8 = 209.5 <= 2x96 + 72 = 264, passes.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] \"1 1/4\" Kreg screws\" and steps[3] \"1 1/4\" pocket screws\" = materials[3] \"Pack of 50- 1 1/4\" pocket screws\"."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (steps[0]), slats prepared (steps[1]) then attached (steps[3]); order possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut all 13 1x2 slats down to 16\" and add 2 pocket holes on each end."
+        }
+      ],
+      "reason": "Pocket holes into 3/4\" 1x2 slats (and Kreg-screwed 1x3 sides); searched all fields for a jig thickness setting (/set|thickness|3\\/4/): none."
     },
     "R10": {
       "result": "pass",
@@ -35,11 +77,15 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-3",
+    "imagesViewed": []
+  }
 }

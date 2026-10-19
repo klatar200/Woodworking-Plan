@@ -283,7 +283,7 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
@@ -291,10 +291,11 @@
           "quote": "Make sure and visit http://builditcraftitloveit.com for more DIY projects!",
           "why": "matches \"http://\""
         }
-      ]
+      ],
+      "reason": "steps[12] \"Make sure and visit http://builditcraftitloveit.com for more DIY projects!\" is a credit/promotion; the build does not depend on it."
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
       "flagged": [
         {
           "path": "steps[7].body",
@@ -316,21 +317,24 @@
           "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
           "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
         }
-      ]
+      ],
+      "reason": "Sweep flags rejected: 7 1/8\", 7 1/4\" and 1\" in steps[7] are slat spacings, not cut sizes. Each step quotes its part size and count, all matching cutList (Kreg-corrected): side frame 2 + mattress supports 6 = cutList[1] qty 8; every other step matches its row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used (steps[0]-[10])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2]"
+      "result": "pass",
+      "reason": "Script precondition (\"unparseable stock materials[2]\" = the finial, not stock) overridden: every step quotes its part's actual size, which section 9 maps to the only two board lines (2x6, 2x4).",
+      "arithmetic": "2x6 (steps quote 1 1/2\" x 5 1/2\"): 2x56 + 8x28.25 + 4x15.5 + 4x21 = 112 + 226 + 62 + 84 = 484\" + kerf (18 parts - 6 boards = 12 x 1/8 = 1.5) = 485.5 <= 6 x 96 = 576. 2x4 (1 1/2\" x 3 1/2\"): 2x21.25 + 53 + 10x14 + 2x29.75 + 59 + 2x70 = 42.5 + 53 + 140 + 59.5 + 59 + 140 = 494\" + kerf (18 - 6 = 12 x 1/8 = 1.5) = 495.5 <= 576."
     },
     "R6": {
-      "result": "flagged",
+      "result": "pass",
       "flagged": [
         {
           "path": "steps[7].body",
@@ -352,7 +356,22 @@
           "quote": "Attach top side support (2- 1 1/2\" x 3 1/2\" x 29 3/4\") countersink screws and staple into decorative slats.",
           "why": "29 3/4\" staple — no material line lists a 29 3/4\" fastener"
         }
-      ]
+      ],
+      "reason": "Sweep flags rejected: \"1\"\", \"59\"\" and \"29 3/4\"\" are a gap and board lengths, not fasteners. Sized fasteners: 2 1/2\" screws = materials[3]. Staples are used (steps[7]-[10]) with no size and are not in materials - R6 scores sizes only; noted."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, supports, rails, slats, top supports, hangers in an order where each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "using 1 1/2\" pocket holes 2 1/2\" Kreg blue kote screws"
+        }
+      ],
+      "reason": "All pocket-holed parts are 1 1/2\"; countersunk joints (steps[4], [6], [8]-[10]) state method and 2 1/2\" screws; slats stapled (steps[7])."
     },
     "R10": {
       "result": "pass",
@@ -364,11 +383,16 @@
       "note": "2 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "notes": "Staples (steps[7]-[10]) and hanging rope/chain are not in materials; no rubric check covers an unsized consumable.",
+  "reader": {
+    "batch": "pilot-3",
+    "imagesViewed": []
+  }
 }

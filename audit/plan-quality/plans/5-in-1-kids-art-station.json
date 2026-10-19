@@ -35,10 +35,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Then attach a magnetic chalkboard and the dry erase board on the front and back frames using a staple gun."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the chicken wire to the chicken wire frame using a staple gun. On the opposite end attach the pegboard organizer."
+        }
+      ],
+      "reason": "Searched cutList[].part and materials[].name for /chalk|erase|chicken|wire|peg/: no match - four panel parts the steps assemble are neither cut-list rows nor listed material, and no size is given anywhere. Also unresolved: steps[5] adds \"1 x4 aprons to the three visible sides\"; whether these exceed the 8 apron rows cannot be settled without images (not flagged, not viewed)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row used: legs, long/short aprons, shelf aprons (\"shelf supports\" in steps[0], [2]), chicken-wire supports (steps[1]), roll edge, art shelf and lip (steps[7]), plywood bottom shelf (steps[6])."
     },
     "R4": {
       "result": "pass",
@@ -49,7 +64,25 @@
       "reason": "R5 precondition not met: 4 stock types (2x2, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use pocket screws, finish nails and staples, all listed (1 1/4\", 1 1/4\", 3/8\"); no conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames, chicken-wire frame, overall frame, then boards, wire, covers, shelves; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Build the two front and back frames by attaching the long aprons and long shelf supports as shown using pocket holes and wood glue."
+        }
+      ],
+      "reason": "Pocket holes into 3/4\" aprons, 1x2s and the 1x4 shelf (steps[0], [1], [7]); searched all fields for a jig thickness setting: none."
     },
     "R10": {
       "result": "pass",
@@ -61,11 +94,16 @@
       "note": "2 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "notes": "steps[0] drills 7/8\" holes for the paper roll holder; no rod/dowel appears anywhere (searched /dowel|rod/) - not scored, the holder part is never named.",
+  "reader": {
+    "batch": "pilot-3",
+    "imagesViewed": []
+  }
 }

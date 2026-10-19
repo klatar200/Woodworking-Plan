@@ -90,21 +90,43 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part has a row and each step names its cut: back 48\" and divider 47 1/4\" (steps[0]), bottom 18\" (steps[1]), 5 shelves 8 1/2\" (steps[2]), all \"of 1x8\"."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 4 rows are cut and assembled in steps[0]-[3]. Corrected lengths agree with the steps: divider 47 1/4 = back 48 - bottom 3/4 (steps[0] \"The divider will be 3/4\\\" shorter than the back at the bottom\")."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0])",
+      "reason": "materials[0] \"1x8x8\" is 1x8 stock (§9 actual 3/4 x 7 1/4); steps name it (\"Cut one piece of 1x8\"). Every corrected row is 0.75 x 7.25. Pass."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: unparseable stock materials[0]",
+      "reason": "One stock type (1x8). Length assumption per §9: \"1x8x8\" has no unit and L = 8 <= 16, so read as 8 ft = 96\". Quantity 2 is Kreg's own (only materials[2] glue was import-defaulted).",
+      "evidence": [
+        { "path": "materials[0]", "quote": "1x8x8 | 2 board" }
+      ],
+      "arithmetic": "Parts (correctRows): 48 + 47 1/4 + 18 + 5 x 8 1/2 = 155 3/4; + 8 cuts x 1/8 = 156 3/4 <= 2 x 96 = 192. Per board: 48 + 47 1/4 + 2 x 1/8 = 95 1/2 <= 96; 18 + 5 x 8 1/2 + 6 x 1/8 = 61 1/4 <= 96. Pass (assumes 8 ft)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only fastener: \"1 1/4\\\" pocket hole screws\" in steps[0]-[3]; listed as materials[1]. One size throughout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back + divider (steps[0]), bottom (steps[1]), shelves pocket-screwed to the divider (steps[2]), then screwed through the back from behind (steps[3]). Each part exists before use; all screw positions reachable."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Shelves: steps[2] \"Drill 3/4\\\" pocket holes into ONE end of each piece\" (parts are 3/4\"). Back/divider/bottom joints: method and fastener stated (\"Use a Kreg Quick Flip bit to predrill and countersink ... using 1 1/4\\\" pocket hole screws\")."
     },
     "R10": {
       "result": "pass",
@@ -116,11 +138,16 @@
       "note": "2 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": []
+  },
+  "notes": "Clean on Kreg's dimensions; live cut list shows 7\" widths and 47/8\" lengths from S-19 (import)."
 }

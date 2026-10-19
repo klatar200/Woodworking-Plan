@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps assemble has a cutList row: arms, front and back legs, foot rest side rails, back stretcher, foot rest front apron, seat side supports, back middle support, arm rests, foot rest, seat slats, back slats, and back bottom and top supports."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 rows are named parts the steps use. The import-damaged lengths (e.g. Arms '1 x 3 @ 20 1/2\"' → 2\") are recorded in importDiffs and scored on Kreg's corrected values."
     },
     "R4": {
       "result": "pass",
@@ -121,18 +123,40 @@
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every size in the steps is in materials: 2” countersunk wood screws (materials[7]), 1 ¼” pocket hole screws (materials[8]), 1 ¼” countersunk wood screws (materials[9]), 2” pocket hole screw (materials[10]). No use gets two sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "No quoted evidence of an impossible order. Slats are curved 'before assembly' (steps[9]), and back slats are fixed to the bottom support (steps[10]) before that support goes onto the seat rails (steps[11]). Reachability of the steps[11] pocket screws after the seat slats are installed (steps[8]) cannot be judged from the text."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[2].body", "quote": "Attach foot rest side rails to back stretcher using 1 ¼” pocket hole screws." },
+        { "path": "steps[11].body", "quote": "Attach back bottom support to seat side support rails using 2” pocket hole screw." }
+      ],
+      "reason": "Pocket holes go in 3/4\" parts (foot rest rails, apron, back middle support) and the 1 1/2\" bottom back support (cutList[6], corrected 1.5 x 3.5 x 17.75), but no jig thickness setting is stated. Searched all fields for /jig|setting/i: the only hit is 'jigsaw' (steps[9]). Every other joint states method and fastener."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "sweepResult": "pass",
+      "reason": "No step text gives the heights of the arms (steps[1]), lower stretcher (steps[3]) or seat side supports (steps[5]) on the 30\" legs, nor the back-slat curve (steps[9]). Every step has its own image, possibly a dimensioned drawing, but none was viewed because the sweep flagged none. Literal R10 wording would pass this, since no step states a measured position."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "reader": {
+    "batch": "pilot-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

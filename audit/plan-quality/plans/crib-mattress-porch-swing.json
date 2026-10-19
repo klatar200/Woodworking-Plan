@@ -287,10 +287,24 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Parts the steps use (2x4s, \"the cut to size 2x6\", \"¾” thick backrest boards\", \"seat support board\", \"arm rests\", \"decorative side boards\") all exist as cut-list rows; the rows are named only by colour, and the viewed step images use the same colours (pink 2x6 rails/legs, red and neon-green back frame, blue backrest, yellow seat supports, white arms, mint side boards), so each part can be matched.",
+      "evidence": [
+        { "path": "steps[4].image", "quote": "colour-coded model: pink, red, neon green, green, blue, yellow, white, mint parts; no orange part", "viewed": true }
+      ]
     },
     "R3": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "cutList[0].part", "quote": "Sheet of Plywood - see orange in cut list photo" },
+        { "path": "steps[4].image", "quote": "finished assembly model shows no orange part", "viewed": true }
+      ],
+      "reason": "cutList[0] (2 x 3/4\" x 27 1/2\" x 52\" plywood, Kreg source) is used by no step. Search: no steps[].body or title matches /plywood|sheet|orange|seat (deck|board|panel)/i; the final-assembly step image has no orange part. The \"cut list photo\" the rows refer to is in neither images[] nor Kreg's source image list (only a thumbnail), but the step images carry the same colours, so rows 1-9 are real, used parts (those flags rejected).",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "cutList[0].part",
@@ -356,15 +370,42 @@
       "flagsOmitted": 8
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "unknown",
+      "sweepReason": "cutList[0] thinner than stock — would need planing/resawing, not judged",
+      "evidence": [
+        { "path": "cutList[0]", "quote": "Sheet of Plywood - see orange in cut list photo | qty 2 (Kreg: 3/4\"x27 1/2\"x 52\")" },
+        { "path": "materials[0..2].name", "quote": "Board, 2x4 96\" / Board, 2x6 96\" / Board, 1x4 96\"" }
+      ],
+      "arithmetic": "Part width 27 1/2 > widest listed stock (2x6 actual 5 1/2, §9). No sheet material listed: no materials[].name matches /plywood|sheet/i (Kreg's wood_products are the same three boards), so the part cannot come from any listed material.",
+      "reason": "Script compared to the wrong stock; the part is a plywood panel with no plywood in materials."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (2x4, 2x6, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Sizes used: 2 1/2\" pocket hole screws (steps[1]-[4]; materials[3]) and 1 1/4\" pocket hole screws (steps[2],[4]; materials[4]). Hanging hardware is unsized (steps[5] \"add your own hardware to hang the swing\"), so no size to list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Front section (steps[1]), back section + backrest (steps[2]), seat supports to front with pocket holes inside the frame (steps[3]), join sections, arms, side boards (steps[4]). Each sub-assembly exists before it is joined; nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "1. Cut all your stock to final dimensions and add pocket holes where needed." },
+        { "path": "steps[1].body", "quote": "Attach the 2x4s to the cut to size 2x6 with 2 ½” pocket hole screws and wood glue." }
+      ],
+      "reason": "Pocket holes go in 1 1/2\" (2x4/2x6) and 3/4\" (1x4) parts but no jig thickness setting is stated for either. Search: no field matches /jig|setting|thick(ness)? (setting|material)/i other than \"¾” thick backrest boards\" (a part description)."
     },
     "R10": {
       "result": "pass",
@@ -375,11 +416,21 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0904fcb9f6db2d60.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf17cc71e41acdf8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e3952950a661c5.webp"
+    ],
+    "imagesNote": "Opened to settle the R3 'cut list photo' flags: the only unattached image (finished photo), steps[1] and steps[4] (colour-coded models)."
+  },
+  "notes": "R3 and R4 are the same defect (an unused, unsourced plywood row) counted twice; plus R9. Cut-list part names are colours only."
 }

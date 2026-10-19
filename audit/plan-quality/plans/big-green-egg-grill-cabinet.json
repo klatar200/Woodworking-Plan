@@ -739,7 +739,14 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "evidence": [
+        { "path": "steps[12].body", "quote": "Mark the location of the bottom and center rails on each leg per the 3D sketches in the Extras section." },
+        { "path": "steps[12].image", "quote": "photo of a clamped end sub-assembly; no dimensions", "viewed": true },
+        { "path": "images (unattached: 3a346e85b5c8d77f, 608fd8aecca670fa, 6675d6992e2213b2, d671d2ba0b98b71d, d7c41c57b0fa9039)", "quote": "finished-table photos; none is a 3D sketch", "viewed": true }
+      ],
+      "reason": "All 11 flags rejected. Nine are optional links (videos, finish info, tutorials) or 'more detail/clearer' pointers whose step text already gives the numbers (steps[3], [6] state 5/8\" inset, 3/4\" depth and the groove start/end points). steps[12] defers rail locations to the Extras sketches, but the plan still contains enough to place them: steps[4]-[5] give the leg-groove ends ('starts 4-1/4” from the bottom', 'starts 2-3/4” from the top and is 11-1/2” long', lower groove 'is 10” long'), steps[1] gives the rail groove depth ('The depth of cut is set at 3/4”'), and steps[7] says groove ends are 'hidden by the rails'. So the build does not depend on the Extras. The rail-location wording gap is scored under R10.",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
@@ -800,7 +807,9 @@
       ]
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
+      "reason": "Both flags rejected. steps[37] '58” … ripping it to 27”' is the final trim of the glued-up top from Top Boards cutList[14] (6 × 5\" = 30\" ≥ 27\"; 58\" matches). steps[39] '1/8”' is router-bit depth left uncut, not a part. Every assembled part (legs, rails, panels, cleats, platform and floor boards, center grill support, drawer mounting rails, door and drawer stiles, rails and panels, door mounting strips, drawer box) has a cutList row.",
       "flagged": [
         {
           "path": "steps[37].body",
@@ -815,7 +824,8 @@
       ]
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 26 rows are named parts the steps use. Quantities agree with the steps: short rails 8+1+5 = 14 and long rails 2+2 = 4 (steps[1]); short cleats 1+2 = 3 and long cleats 2 (steps[15]); 4 platform and 6 floor boards (steps[18])."
     },
     "R4": {
       "result": "pass",
@@ -826,10 +836,45 @@
       "reason": "R5 precondition not met: 5 stock types (4x4, 2x4, 1x6, 2x6, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every fastener size in the steps is in materials: Kreg HD screws [6], 3/4” Micro pocket screws [7], #6 x 1” [21], 2-1/2” deck [24], 1-1/4” deck [23], 8-32 x 2” [13], 8-32 x 3/4” [14], #8 washers [15], #8 x 1” washer head [22], #8 x 1” [17], #8 x 3/4” stainless pan head [18], 3-1/2” hinges [9]. No use gets two different sizes."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[13].title", "quote": "Combine the Base Sub-Assemblies - 2" },
+        { "path": "steps[13].body", "quote": "Go ahead and complete the base frame by combining the assembly from the last step and the right end sub-assembly with the long rails and panel." },
+        { "path": "steps[14].body", "quote": "Using the same techniques from the last step, connect the left side assembly and center divider assembly with the front and back short rails per the diagrams." },
+        { "path": "steps[46].title", "quote": "Base Sub-Assemblies - 2" },
+        { "path": "steps[46].body", "quote": "When you are done building the three separate sub-assemblies, you should be left with something looking like this. Next, we will connect these assemblies" }
+      ],
+      "reason": "Steps are out of order. steps[13] uses 'the assembly from the last step' (left plus center), but that assembly is made in steps[14]. steps[46] ('Base Sub-Assemblies - 2') belongs between steps[12] and the combine steps, yet it sits after the finish step. The build can proceed if the reader reorders by the '- 1'/'- 2' titles, so this is Fix. §3 does not list step reordering as an importer defect, so the cause is recorded as plan."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[2].body", "quote": "The Kreg HD is the perfect tool for the joinery on this project." },
+        { "path": "steps[19].body", "quote": "On each end of the front and back boards, drill pocket holes. I prefer the Kreg Micro for 1/2” ply." }
+      ],
+      "reason": "Pocket holes go in the 1 1/2\" rails, center grill support and drawer mounting rails, and in the 1/2\" plywood drawer box. No jig thickness setting is stated for either thickness. Searched all fields for /setting|set (to|for)/i: every hit is a table-saw or router setting. Other joints state method and fastener."
     },
     "R10": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[12].body", "quote": "Mark the location of the bottom and center rails on each leg per the 3D sketches in the Extras section." },
+        { "path": "steps[12].image", "quote": "photo of a clamped end sub-assembly; no dimensions", "viewed": true }
+      ],
+      "reason": "The bottom and center rail positions are not stated in the step, and the viewed image shows none. They can be worked out only by arithmetic from the optional leg-groove steps: bottom rail top = 4-1/4 + 3/4 = 5\" from the bottom; center rail bottom = 4-1/4 + 10 − 3/4 = 13-1/2\". A builder who skips the optional grooves (steps[3] '(Optional)') has no stated position. Sweep flags rejected: steps[4] gives its numbers ('starts 4-1/4” from the bottom and ends 2-3/4 from the top'); steps[29] is fit-to-opening trimming ('until it fits with a nice reveal'), which is relational; steps[45] is disassembly for finishing, not a placement. steps[17] (drawer mounting rail height, set on 'a few spacers' of unstated height) was not viewed and is not scored.",
+      "sweepResult": "flagged",
       "search": "step sentences with a placement trigger and no inch measurement",
       "flagged": [
         {
@@ -864,7 +909,18 @@
       "note": "3 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "reader": {
+    "batch": "pilot-2",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b1b382d8843a6122.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a346e85b5c8d77f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/608fd8aecca670fa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6675d6992e2213b2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d671d2ba0b98b71d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d7c41c57b0fa9039.webp"
+    ]
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

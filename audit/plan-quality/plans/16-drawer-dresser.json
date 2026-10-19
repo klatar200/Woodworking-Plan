@@ -95,10 +95,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part named in the steps has a row: top and bottom (Top & base), Top, drawer dividers, drawer side supports (Drawer supports), base molding (front + sides), drawer box sides/front & back, drawer bottom, drawer faces (Drawer fronts), backing."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 12 rows are real parts used in steps[1]-[12]; no assembly or placeholder rows. Fit check on corrected rows: drawer box 19 1/4 + 2 x 3/4 = 20 3/4 in a 21\" opening (Top & base length) = 1/8\" per side, matching steps[10] \"There should be an 1/8\\\" clearance on each side.\""
     },
     "R4": {
       "result": "pass",
@@ -109,7 +113,24 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, 1x2, 1x4, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every size used is listed: 1 1/4\" pocket hole screws (steps[1],[3]; materials[5]); 1 1/4\" countersunk screws (steps[2]; materials[6] \"1 1/4\\\" wood screws\"); 2\" finish nails (steps[5]; materials[7]); 1 1/4\" finish nails (steps[7],[8],[11]; materials[8]); 3/4\" finish nails (steps[9],[12]; materials[9]). No use gets two sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass (steps[1]-[2]), dividers top-down (steps[3]), supports (steps[5]), molding (steps[7]), drawer boxes (steps[8]-[9]), drawers in (steps[10]), faces (steps[11]) while the back is still open (\"push against drawer body from back\"), backing last (steps[12]). Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[1].body", "quote": "Attach top and bottom to sides using wood glue and 1 1/4\" pocket hole screws." },
+        { "path": "steps[3].body", "quote": "Create drawer dividers by attaching to sides of carcass using wood glue and 1 1/4\" pocket hole screws." }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts (Top & base 0.75 thick; Drawer dividers 0.75 thick) but no jig thickness setting is stated anywhere. Search: no step, summary or description matches /jig|setting|thick/i (only tools[].slug \"pocket-hole-jig\"); Kreg source steps have empty tips. Other joints state method and fastener."
     },
     "R10": {
       "result": "pass",
@@ -120,11 +141,16 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": []
+  },
+  "notes": "Only plan-cause finding is the missing jig setting (R9); live cut list is import-damaged (4 lengths read as denominators, e.g. supports 2\" for 15 1/2\")."
 }

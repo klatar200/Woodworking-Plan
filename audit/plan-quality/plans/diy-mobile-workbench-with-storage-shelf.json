@@ -164,24 +164,80 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "steps[7] \"Check out the video in the extras tab and the blog post for more details\" and steps[12] \"You can see more details of this in the video\" are optional; steps[7] itself gives the Trak mounting procedure."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut or assemble maps to a row: frames cutList[0],[1]; bottom shelf [2]; legs [3]; top [4]; trim [5],[6]; divider [7]; side panels [8]; cubby shelf [9]. steps[11] cubby dividers are optional (\"You can finish out your cubby however you want\") from scrap."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are used by steps[0]-[13]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 4x4, 2x4); steps not checked for per-part stock"
+      "result": "fail",
+      "reason": "Script precondition (3 stock types) overridden: 1 1/2\" x 3 1/2\" is only the 2x4 line under section 9 (the other stock is 4x4 and 3/4\" plywood). steps[8] names 2x4 for the trim; frame stock is inferred from its dimensions, so likely. Quantity 9 is Kreg's own (no material import default in this record).",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 2x4 96\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Frame Long Sides - qty 4 (Kreg source 1 1/2\" x 3 1/2\" x 96\")"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Frame Short Pieces - qty 6 (Kreg source 1 1/2\" x 3 1/2\" x 41\")"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Workbench Top Long Trim Supports - qty 2 (Kreg source 1 1/2\" x 3 1/2\" x 96\")"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Workbench Top Short Trim Supports - qty 2 (Kreg source 1 1/2\" x 3 1/2\" x 51\")"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "cut 2x4 boards to fit around the top"
+        }
+      ],
+      "arithmetic": "1.5x3.5 rows (Kreg-corrected): 4x96 + 6x41 + 2x96 + 2x51 = 384 + 246 + 192 + 102 = 924\" before kerf; 2x4 bought: materials[2] qty 9 x 96\" = 864\"; 924 > 864 (short by at least 60\")."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2 1/2\" pocket screws (materials[3]), 1 1/4\" wood screws ([4]), 3\" wood screws ([5]), 2 1/2\" wood screws ([6]), 2\" wood screws ([7]), 1 1/4\" pocket screws ([8]) - all listed. steps[2] offers 2 1/2\" pocket screws or 3\" wood screws as two methods for the legs, not two sizes for one method. steps[7] Trak bolts/nuts carry no size."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames, bottom shelf, legs, casters, top frame, top, Traks, trim, cubby in an order where each part exists before use; steps[7] drilling is from the frame underside, reachable."
+    },
+    "R9": {
+      "result": "unknown",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "assemble two frames using 1 1/2\" pocket holes and 2 1/2\" pocket hole screws"
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Then drill 3/4\" pocket holes into the ends of your shelf"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "drilling 1 1/2\" pocket holes into the 4x4 posts"
+        }
+      ],
+      "reason": "The 1 1/2\" frames and 3/4\" plywood parts have settings stated. steps[2] (the recommended option) applies a 1 1/2\" setting to 3 1/2\" posts; whether that is a contradiction or correct practice for over-thick stock needs knowledge outside section 9 -> Human review."
     },
     "R10": {
       "result": "pass",
@@ -193,11 +249,15 @@
       "note": "4 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-3",
+    "imagesViewed": []
+  }
 }

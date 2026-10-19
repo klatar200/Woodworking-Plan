@@ -295,7 +295,7 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "fail",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
@@ -318,25 +318,92 @@
           "quote": ">> http://realitydaydream.com/2016/02/custom-diy-rolling-kitchen-island.html\nTake a look at the plans to help map your way through the project. You Can download a PDF of the plans in the EXTRA section",
           "why": "matches \"PDF\""
         }
-      ]
+      ],
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Take a look at the plans to help map your way through the project. You Can download a PDF of the plans in the EXTRA section"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Using a \"T\" square, mark locations for drilling per drilling instructions in the prints."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Drill the through holes and counterbores per prints."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Cut notches per the print out of the two vertical dividers."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "you will notice on the print that we capped most things with a 1/2\" of poplar."
+        },
+        {
+          "path": "steps[0].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/915005aac309ccc7.webp",
+          "viewed": true
+        },
+        {
+          "path": "steps[1].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b752016d65599299.webp",
+          "viewed": true
+        },
+        {
+          "path": "steps[4].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2ace421b3894729d.webp",
+          "viewed": true
+        },
+        {
+          "path": "steps[5].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/76189d75c86a8738.webp",
+          "viewed": true
+        },
+        {
+          "path": "steps[12].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/efa5a287216a90c5.webp",
+          "viewed": true
+        },
+        {
+          "path": "images[] (unattached)",
+          "quote": "082f3be0de8b98d8, 1af09cd3ba2560ab, 48085ba8f78b1d5f, 91890ec5c75fb7e4, abe500d824a5fecc",
+          "viewed": true
+        }
+      ],
+      "reason": "Assembly (through-holes locating every shelf, divider and rail; notch sizes) is defined only in the \"prints\" - the PDF in Kreg's EXTRA section, which we do not have. Searched all steps, cutList, materials, description, summary: no hole location, shelf height, divider position or notch size in text (steps[10] gives only \"3/8\" both ways from the drilling locations\"). Viewed step images 0, 1, 4, 5, 12, 19 and all 5 unattached images: photos plus one undimensioned elevation (48085ba8f78b1d5f); none shows drilling or notch dimensions."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps name map to rows (sides, dividers, bottom, rails, narrow/wide shelves, drawer stiles/rails/panels, drawer sides/bottom). steps[2] poplar caps are cut in-step (\"Cut 1/2\" Stripes of Poplar\"); the only board line, materials[3] \"Board, 1x8 96\"\", is also the source of steps[13] \"Cut the stiles and rails out of poplar\". The top is a purchased choice (R4)."
     },
     "R3": {
-      "result": "flagged",
+      "result": "fail",
       "flagged": [
         {
           "path": "cutList[0].part",
           "quote": "Panel A & Panel B",
           "why": "no step mentions it (searched steps for panel/panel)"
         }
-      ]
+      ],
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Panel A & Panel B"
+        }
+      ],
+      "reason": "Sweep flag confirmed: searched all steps for /panel a|panel b/i - no match. The row is 0.75 x 4 x 8 (feet), i.e. the 3/4\" full sheets of materials[0], not a part."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
@@ -369,17 +436,36 @@
           "quote": "TOP, ROLLING ISLAND — qty 1, 2 x 24.5 x 46.5 (Kreg-corrected)",
           "why": "no listed material gives this thickness and width"
         }
-      ]
+      ],
+      "reason": "Confirmed: steps[25] \"The choices for tops on this rolling island are virtually endless.\" - the 2\" top is a purchased top, not glued up from listed stock; searched materials[].name for /butcher|block|top/: none. Confidence raised to certain."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, sheet-0.25, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No step states a fastener size; materials list 1 1/4\" and 1 1/2\" screws; no conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order possible: parts cut, drilled and painted before assembly (steps[1]-[18]); rails cut (steps[18]) before attached (steps[19]); drawer fronts glued (steps[15]) before drawer assembly (steps[24]). Missing positions are the R1 finding, not an order problem."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "We uses a Kreg Foreman to drill the required pocket holes."
+        }
+      ],
+      "reason": "No jig thickness setting and no statement of which parts get pocket holes (searched all fields for /set|thickness/); \"required\" is defined by the prints (R1)."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
       "flagged": [
         {
@@ -394,19 +480,57 @@
           "why": "placement with no measurement (step has an image — view to settle)",
           "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp"
         }
-      ]
+      ],
+      "evidence": [
+        {
+          "path": "steps[19].image",
+          "quote": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp",
+          "viewed": true
+        }
+      ],
+      "reason": "Sweep flags rejected: steps[0] is a pointer to the plans, not a placement; steps[19] \"Attach the lower rails to the bottom shelf\" is relational (viewed image: drill on plywood). The missing measured positions are scored under R1."
     },
     "R11": {
-      "result": "pass",
+      "result": "fail",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "note": "3 reference(s), each in a step with its own image",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "If you don't want to do this it is fine but you will need to make some adjustments to the cut diagram."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Cut notches per the print out of the two vertical dividers."
+        }
+      ],
+      "reason": "Sweep regex missed \"print\". The referenced print/cut diagram is not in any viewed step image or unattached image (see R1 evidence), and the structural positions exist nowhere else in the plan. Same root cause as R1."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-3",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/915005aac309ccc7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b752016d65599299.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2ace421b3894729d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/76189d75c86a8738.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/efa5a287216a90c5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b5c65b40af349c7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/082f3be0de8b98d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1af09cd3ba2560ab.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48085ba8f78b1d5f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/91890ec5c75fb7e4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/abe500d824a5fecc.webp"
+    ]
+  }
 }

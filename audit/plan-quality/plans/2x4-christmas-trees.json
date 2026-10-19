@@ -335,21 +335,42 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The steps use 4x4 center posts (cutList[0], [1]), tree tops (cutList[2]), branches 1-7 (cutList[3..9], each halved on a 45° line per steps[0]) and dowels (materials[7] '3/8\" X 2\" dowels'). All are listed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used. Branch counts agree with the steps: each piece is halved (steps[0]) and each tree gets 4 branches per size on 4 sides (steps[2], [3]), so sizes 1-6: qty 4 → 8 halves = 2 trees × 4, and size 7: qty 2 → 4 halves = the large tree only ('7 for the larger tree')."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: 2 stock types (2x4, 4x4); steps not checked for per-part stock",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "Cut all the 2x4s as noted in the cut list." },
+        { "path": "steps[2].body", "quote": "Measure down 1\" from the top on one side of the 4x4 center post." },
+        { "path": "steps[4].body", "quote": "cut the 7\" pieces of 4x4" }
+      ],
+      "arithmetic": "Steps name the stock for every part (precondition met). 2x4 (materials[0] 'Board, 2x4 96\"' × 4 = 384\"): 4×4.5 + 4×7.5 + 4×10.5 + 4×13.5 + 4×16.5 + 4×19.5 + 2×22.5 = 333\"; kerf 26 crosscuts + 26 halving cuts = 52 × 1/8 = 6.5\"; 339.5 ≤ 384. 4x4 (materials[1] 'Board, 4x4 120\"' × 1 = 120\"): 48 + 44 + 2×7 = 106\" + 4 cuts × 1/8 = 106.5 ≤ 120. Pass (Kreg-corrected lengths)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "'2 1/2\" pocket hole screws' (steps[3]) matches materials[2]. The 3/8\" holes and dowel (steps[4], [5]) match materials[7] '3/8\" X 2\" dowels'. Quantity is consistent: 26 branch pieces × 2 halves × 2 holes = 104 = materials[2]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and halve branches, drill, mark the post, attach branches, cut the top, dowel and glue the top, set in concrete, finish, add lights. Each part exists before it is used."
+    },
+    "R9": {
+      "result": "unknown",
+      "evidence": [
+        { "path": "steps[1].body", "quote": "Set your Kreg jig for 1 1/2\" thick material. Drill 2 pocket holes on the bottom of each angled branch piece. For the top 2 sizes of branches, move the pocket hole jig for 1 1/4\" and 1 \" thick material." }
+      ],
+      "reason": "A jig setting is stated. But the two smallest branch sizes are 1 1/2\" thick (cutList[3], [4], corrected) and are drilled at 1 1/4\" and 1\" settings, which literally contradicts the thickness they are used on. The step gives a deliberate reason ('so they do not cut into the edge of the branch'). Whether that works needs knowledge outside §9, so this is Human review."
     },
     "R10": {
       "result": "pass",
@@ -360,7 +381,11 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified) + Human review",
+  "reader": {
+    "batch": "pilot-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

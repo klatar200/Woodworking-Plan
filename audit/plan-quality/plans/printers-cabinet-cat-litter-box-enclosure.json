@@ -152,13 +152,66 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "\"See extra's\" in steps[12] (pivot hinges), steps[13] (pivot door hardware), steps[14] (source of handles), steps[15] (pre-stain) are sourcing/finishing pointers; no step needs them to complete the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Install the 1x3 and 2x3 slide supports as shown."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Install the (4) plywood supports on the 2x4 base."
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Base supports"
+        },
+        {
+          "path": "cutList[4].part",
+          "quote": "Cabinet framing"
+        }
+      ],
+      "reason": "Searched the whole plan for /2x3|2 x 3/: only steps[6]; no materials[].name or cutList row is 2x3. steps[1] calls the supports plywood; the only supports row, cutList[1] \"Base supports\", comes from Kreg source \"1x3x8'\". More broadly every cut row is a stock board or sheet (sources \"2x4x8'\", \"1x3x8'\", \"1 1/2\\\" x 1 1/2\\\" x 6'\", \"3/4\\\" x 15 3/4\\\" x 4'\"...) and no step text gives any part size, so no structural part (base, frame, sides, top) has a cut size in text. Step images were not viewed (sweep did not flag them) and may carry dimensions, hence likely, not certain."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7].part",
+          "quote": "Drawer boxes"
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Plywood"
+        },
+        {
+          "path": "cutList[4].part",
+          "quote": "Cabinet framing"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 2x2 72\""
+        },
+        {
+          "path": "cutList[8].part",
+          "quote": "Drawer/door panels"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "Board, 1x3 48\""
+        }
+      ],
+      "reason": "Rows are stock purchases or assemblies, not parts: \"Drawer boxes\" is an assembly (steps[7] \"Construct the drawer boxes\"); \"Plywood\" (cutList[5], [6]) names the stock; \"Cabinet framing\" qty 9 at Kreg source \"1 1/2\\\" x 1 1/2\\\" x 6'\" equals materials[4] 2x2 72\" qty 9; \"Drawer/door panels\" qty 11 at \"3/4\\\" x 2 1/2\\\" x 4'\" equals materials[8] 1x3 48\" qty 11 - the boards bought."
     },
     "R4": {
       "result": "pass",
@@ -169,7 +222,7 @@
       "reason": "R5 precondition not met: 8 stock types (2x4, 1x3, 1x4, sheet-0.75, 2x2, sheet-0.25, 1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
+      "result": "fail",
       "flagged": [
         {
           "path": "steps[0].body",
@@ -232,7 +285,54 @@
           "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
         }
       ],
-      "flagsOmitted": 6
+      "flagsOmitted": 6,
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Join the base pieces with 2 1/2\" pocket hole screws"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Glue and attach with 1 1/2\" nails with your nail gun."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attache the frame to the base assembly with 3 1/2\" screws."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Install the side plywood utilizing 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Utilize your nail gun and 3/4\" nails."
+        }
+      ],
+      "reason": "Sweep flags confirmed (duplicates collapsed). Searched materials[].name for /screw|nail/: no match - materials list only slides, hinges and handles; none of the 2 1/2\", 3 1/2\", 1 1/4\" screws or 1 1/2\", 3/4\" nails is listed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base (steps[0]-[3]) then frame on base (steps[4]), sides, slide supports, drawers, top, back, doors, faces; each part exists before use; steps[9] removes the drawers before the top is screwed; nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Join the base pieces with 2 1/2\" pocket hole screws"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Install the side plywood utilizing 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes go into the 2x4 base (steps[0]), 2x2 frame (steps[4]) and 3/4\" plywood/1x boards (steps[5]-[7], [9], [11], [13]). Searched all steps, description and materials for a jig/thickness setting (/set|jig|thickness/): none stated."
     },
     "R10": {
       "result": "pass",
@@ -244,11 +344,16 @@
       "note": "5 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "notes": "Cut list is a stock list and no step gives a part size; measurements depend on step images not viewed in this batch - a verifier should view steps[0]-[6] images before settling R2.",
+  "reader": {
+    "batch": "pilot-3",
+    "imagesViewed": []
+  }
 }

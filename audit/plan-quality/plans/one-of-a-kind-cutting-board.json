@@ -47,21 +47,42 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part the steps cut or assemble is a cut-list row: Sides (steps[0] \"Cut four Sides to length from 1x6 maple\"), Handle and Bottom Center (steps[1] \"Cut one Handle and one Bottom Center to length from 1x3 maple\"). Panels in steps[2]/[4] are assemblies of those rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 3 rows (Side x4, Handle, Bottom Center) are cut in steps[0]-[1] and used in steps[2] (two Sides + Bottom Center) and steps[4] (Handle + two remaining Sides)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "R5 precondition not met: 2 stock types (1x6, 1x3); steps not checked for per-part stock",
+      "reason": "Precondition met on reading: steps name the stock for every part (steps[0] Sides \"from 1x6 maple\"; steps[1] Handle and Bottom Center \"from 1x3 maple\"). Quantities are Kreg's own (no material importDiffs).",
+      "evidence": [
+        { "path": "materials[0].name", "quote": "Board, 1x6 72\"" },
+        { "path": "materials[1].name", "quote": "Board, 1x3 36\"" }
+      ],
+      "arithmetic": "1x6: 4 x 14 (correctRow) + 4 x 1/8 = 56 1/2 <= 72. 1x3: 20 + 12 (correctRows) + 2 x 1/8 = 32 1/4 <= 36. Pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only fastener used: steps[2] and steps[4] \"1 1/4\\\" fine-thread pocket-hole screws\"; listed as materials[2] \"1 1/4\\\" fine-thread pocket-hole screws\". One size throughout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is possible: parts cut (steps[0]-[1]) before panels are assembled (steps[2], [4]); recess cut in the assembled bottom panel (steps[3]) with pocket holes deliberately offset (steps[0] \"This ensures that the pocket holes are out of the way of the plate cutout\"); panels glued face to face last (steps[5])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "All parts are 3/4\" (correctRows) and steps[0] states \"Set your pocket-hole jig for 3/4\\\"-thick material\". Final lamination: method stated, steps[5] \"Apply waterproof glue ... secure them with clamps\"."
     },
     "R10": {
       "result": "pass",
@@ -73,11 +94,16 @@
       "note": "6 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": []
+  },
+  "notes": "Handle shape/hole (steps[1] \"Lay out the pattern and the hole\") and plate recess (steps[3] \"as shown\") rely on their step images, which R11 accepts unviewed; only import damage (widths) on the live cut list."
 }

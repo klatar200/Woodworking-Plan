@@ -143,21 +143,49 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Every part the steps use (Left Side, Right Side, Front, Back, Bottom) is a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 4 rows are used in steps[0]-[4]; no assembly or placeholder rows."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "sweepResult": "unknown",
+      "sweepReason": "stock length not written (§9)",
+      "reason": "Length IS written with an explicit unit (8' = 96\"); one stock type, so R5 is scorable.",
+      "evidence": [
+        { "path": "materials[0]", "quote": "Cedar board, 3/4\" x 5 1/2\" x 8' | 1 board" }
+      ],
+      "arithmetic": "Parts (correctRows): 12 + 11 3/4 + 2 x 7 1/4 + 7 1/4 = 45 1/2; + 5 cuts x 1/8 = 46 1/8 <= 96. Widths 5 1/2 (= stock) and 3 1/4 (rip from 5 1/2). Pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only sized fastener: pocket hole screws (steps[1]-[4], unsized in steps) = materials[1] \"1 1/4\\\" Kreg Pocket Hole Screws\". Hanging screws are unsized (steps[6] \"Attach screws onto the Back of the birdhouse.\"), so no size to list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes first (steps[0]), sides joined (steps[1]), back, then front using the already-cut Bottom as a spacer (steps[3]), bottom screwed in without glue (steps[4]), finish, hang. Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[0].body", "quote": "(1) Right Side- 2 on 45 degree bevel (set bit for 1/2\" wood)" },
+        { "path": "cutList[1]", "quote": "Right Side (Kreg: 5 1/2\" x 11 3/4\" x 3/4\" with opposing 22.5 and 45 degree bevels)" }
+      ],
+      "arithmetic": "Stated setting 1/2\" vs part thickness 3/4\" (correctRow; materials[0] \"3/4\\\" x 5 1/2\\\"\"): 1/2 != 3/4.",
+      "reason": "The only jig setting contradicts the thickness it is used on, and no setting is given for the Front/Back and Bottom pocket holes (also 3/4\"). 'likely' + Human review: the 1/2\" setting may be deliberate for drilling into a 45-degree bevel, which only woodworking knowledge outside §9 can confirm."
     },
     "R10": {
       "result": "pass",
@@ -168,11 +196,16 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "pilot-1",
+    "imagesViewed": []
+  },
+  "notes": "Import also dropped the cut angles: Kreg's rows say \"with opposing 22.5 degree miters\" (Front/Back) and \"opposing 22.5 degree bevels\" (Bottom); the live plan has no angle for those parts (steps only give 45 and 22.5 for the Sides). Cause import; no rubric check fits it, not scored."
 }

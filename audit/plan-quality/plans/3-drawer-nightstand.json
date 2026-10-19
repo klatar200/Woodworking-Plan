@@ -287,10 +287,20 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps assemble (legs, side panels, cross supports, top, large/small drawer long and short sides, drawer bottoms, glide supports, backing) has a matching cutList.part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "cutList[5].part", "quote": "Large drawer fronts" },
+        { "path": "cutList[6].part", "quote": "Small drawer front" },
+        { "path": "steps[10].body", "quote": "Attach backing to cross supports using wood glue and ¾” brad nails." }
+      ],
+      "reason": "The drawer fronts are never used. Searched every step for /front/i: the only hits are 'Keep ¾” overhang at front and sides' and 'Secure front and back cross supports' (steps[4]). The steps end at the backing (steps[10]). Installing the drawer glides, drawers, fronts and pulls (materials[14], [15]) is also absent."
     },
     "R4": {
       "result": "unknown",
@@ -301,18 +311,40 @@
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3], materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every size in the steps is in materials: 1 ¼” pocket screws (materials[8]), 2” countersunk wood screws (materials[9] '#8 x 2\"'), ¾” wood screws (materials[10]), 1 ¼” wood screws (materials[11]), ¾” brad nails (materials[12]). steps[2] 'corresponding pocket hole screws' for the 1 1/2\" cross supports has materials[7] '2 1/2\" pocket-hole screws'. No size conflict."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs to sides, cross supports, second side, top, drawer boxes, glide supports (installed from the open front), backing. Each part exists before it is used, and nothing must be undone. The missing drawer installation is scored under R3."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        { "path": "steps[1].body", "quote": "Attach legs to side panels using 1 ¼” pocket hole screws." },
+        { "path": "steps[2].body", "quote": "Use wood glue and corresponding pocket hole screws." }
+      ],
+      "reason": "Pocket holes go in 3/4\" parts (side panels, top, drawer sides) and 1 1/2\" parts (cross supports cutList[3], corrected), but no jig thickness setting is stated. Searched all fields for /jig|setting/i: the only hit is 'tapering jig' (steps[0])."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "sweepResult": "pass",
+      "reason": "steps[9] 'attach supports to interior side panels' gives no height for the drawer glide supports, and no other field gives one. The steps[9] image was not viewed because the sweep did not flag that step. The '¾” overhang' in steps[4] does give its number."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "reader": {
+    "batch": "pilot-2",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],
