@@ -1,6 +1,6 @@
 {
   "slug": "easy-modern-outdoor-sofa",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,17 +71,27 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Evenly space the four 3/4\" x 6\" x 72\" wooden seat slats atop your seat frame, and nail down to the seating frame."
+        }
+      ],
+      "reason": "The four seat slats are made and installed in step 6 but have no cutList row; searched cutList parts for /slat/: only 'Decorative Slats (Armrest)' and '(backrest)'. Same omission in the Kreg source. Count, size and stock (1x6, materials[2]) are all in the step text, hence Fix/likely."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Row 0 '3 Seat Frame Boards & 4 Armrest Boards' (qty 7) is real boards used in steps 1-2 (3 + 4); rows 1-6 used in steps 0, 2, 5, 7."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[1]",
@@ -92,65 +102,79 @@
           "quote": "Seating Frame, cont. — qty 2, 1.5 x 6 x 22.5 (Kreg-corrected)"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 2x4 96\""
-        },
-        {
           "path": "materials[1].name",
           "quote": "Board, 2x6 96\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Board, 1x8 96\""
         }
       ],
-      "arithmetic": "cutList[1] 1.5×6: no listed stock has thickness 1.5 (±1/32) with width ≥ 6; stock = 1.5×3.5, 1.5×5.5, 0.75×5.5, 0.75×7.25; cutList[2] 1.5×6: no listed stock has thickness 1.5 (±1/32) with width ≥ 6; stock = 1.5×3.5, 1.5×5.5, 0.75×5.5, 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[1]",
-          "quote": "Seating Frame — qty 2, 1.5 x 6 x 72 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Seating Frame, cont. — qty 2, 1.5 x 6 x 22.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "§9: 2x6 = 1 1/2 x 5 1/2; cut-list width 6 > 5 1/2 (Kreg source text is '1 1/2\" x 6\" x 72\"', so not an importer error).",
+      "reason": "Width 6\" cannot come from the 2x6 listed.",
+      "readerNote": "Same nominal-width pattern in rows the sweep passed: 4 for a 2x4 (3 1/2), 8 for a 1x8 (7 1/4); steps[8] says 'I will reference the actual rather than nominal sizes' yet widths are nominal. Boards are used at full width, so no cut is affected."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 2x6, 1x6, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps[8] names 2x4 for armrests/backrest and 2x6 for the seat frame; slats by size. 2x4: 7x22.5 + 4x32 + 72 = 157.5 + 128 + 72 = 357.5\" + 12 cuts x 1/8 = 359\" <= 4x96 = 384\" (packs: 72+22.5; 2 x (32+32+22.5); 4x22.5). 2x6: 2x72 + 2x22.5 = 189\" + 0.5 kerf <= 2x96 = 192\" (72+22.5 per board). 1x6: 4x72 = 288\" from 4 boards (one 72 each). 1x8: 6x25.5 + 79 = 232\" <= 3x96 = 288\" (3 per board; 79 alone)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "cket holes at both ends of four 1 1/2\" x 4\" x 22.5\" boards. Screw one 22.5\" armrest boards between the two 1 1/2\" x 4\" x 32\" armrest boards, flush to the top. Mark 12\" from the bottom of either arm/le",
-          "why": "22.5\" screw — no material line lists a 22.5\" fastener"
+          "path": "steps[6].body",
+          "quote": "and nail down to the seating frame."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Optionally nail evenly spaced 3/4\" x 8\" x 25.5\" decorative slats"
         }
-      ]
+      ],
+      "reason": "Sweep flag '22.5\" screw' is a false positive (a board length). But steps 6-7 fasten slats with nails and materials[0-5] list no nails; searched materials for /nail|brad/i: none; no nail size anywhere. Pocket-hole screw '2\" Kreg Outdoor Pocket Hole Screws' (materials[4]) is the only fastener line."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-2 image gives 'Measure 12\" from the bottom' (text step 2 too), 22.5/32 sizes; step-4/5 images show the seat frame low between the armrest legs and the backrest at the top rear; slat spacing 'evenly' and 'flush' are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; diagram-based steps carry step images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Seat frame (0-1), armrest frames (2), backrest prepared (3), armrests then backrest attached (4-5), slats last (6-7); viewed step-4/5 images match."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using a Kreg Jig place pocket holes in either side of two 1 1/2\" x 6\" x 22.5\" seat frame pieces"
+        }
+      ],
+      "reason": "All pocket holes are in 1 1/2\" stock; searched all steps for a jig setting: none; viewed step-0, step-2 images show hole locations only. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree with cut list: 3 + 4 boards of 22.5 (steps 1-2), 2 x 72 + 2 x 22.5 seat frame, 4 armrest boards 32, one 72 backrest, 4 seat slats, 6 + 1 decorative slats; 79 = 72 + 2 x 3 1/2 matches the step-7 back slat. Every part is installed; steps end with a sanded, stained sofa."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/4c65ee0c1b78b318.webp",
+      "plans/6499ce9496b0913a.webp",
+      "plans/d24fc8b4b000c5f0.webp",
+      "plans/3a0ad9cd9cace6c3.webp"
+    ]
+  }
 }

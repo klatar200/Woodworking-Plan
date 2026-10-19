@@ -1,6 +1,6 @@
 {
   "slug": "herringbone-door-buffet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -335,17 +335,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made in steps 1-23 (top/bottom frames, legs, stiles, plywood panels, support rails, door frames, door plywood, herringbone boards, stop blocks, back) map to cutList rows 0-13; trimmed herringbone boards are 'cut to size based on the space your door has' (steps[18]) from the lattice stock."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[11].part",
-          "quote": "Herringbone Pieces",
-          "why": "no step mentions it (searched steps for herringbone)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag on row 11 rejected: the herringbone boards are made in steps[13]-[18] ('cut 14 boards for each door ... 56 = 4 x 14'). All 14 rows used (stops: steps[21] 'stop block')."
     },
     "R4": {
       "result": "pass",
@@ -353,41 +348,84 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 8 stock types (2x2, 1x2, sheet-0.5, sheet-0.75, 0.25x1.75, 3.5x4.5, 1x4, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Lumber fits: 2x2 = 144 + 138 + 108 + 102 + 63 = 555\" + ~2\" kerf <= 7x96 = 672\"; 1x2 = 8x15.875 + 8x22.25 = 305\" <= 4x96 = 384\"; 1x4 = 6x15.75 = 94.5\" + 0.75\" kerf = 95.25\" <= 96\". Sheet goods: 4 door panels 4 x 12.875 x 22.25 = 1146 sq in vs materials[2] '1/2\" Thick Quarter Sheet' (no dimensions stated, §9); lattice strips have no stated length."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "Attach front stiles! Still using same pocket hole depth of 1 1/2\" and same screws at 2 1/2\"! Make sure and glue!",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "path": "steps[22].body",
+          "quote": "staple the 1/4\" (27 1/2\" x 71\") plywood to the back of your buffet, I used 1 1/4\" brad nails"
         }
-      ]
+      ],
+      "reason": "Sweep flag '1 1/2\" screw' is a false positive (it is the pocket-hole depth; screws are 2 1/2\", 1 1/4\", 1\" and all listed in materials[10]-[12]). But 1 1/4\" brad nails are used and materials[0-12] list no nails; searched materials for /nail|brad/i: no match."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[20].body",
-          "quote": "the hinges you use will determine how you do this next step! I used an inset concealed hinge so I has to add blocks on the inside of the buffet so the hinge had a place to attach to...but there are ma",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://learn.kregtool.com/content/uploads/2021/03/Step-21-4.jpg"
-        }
-      ]
+      "result": "unknown",
+      "reason": "Sweep flag (steps[20] hinges): hinge positions on doors/cabinet and the size/position of the hinge blocks ('add blocks on the inside of the buffet') are not given in the text; the step image is hosted at learn.kregtool.com (not the R2 host, not fetched per §5), so it cannot be settled. Other positions are given numerically or by viewed images (door middle mark 6 7/16, miter 9 7/8, support rails and pocket holes in the step-8 image, 15 3/4 x 72 frame, 12 7/8 x 22 1/4 door opening)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top frame, legs, bottom rails, stiles, side/top/bottom plywood, support rails, feet, then doors (frames, plywood, herringbone), finish, hang, stops, back panel: each part exists before the step that uses it; viewed step images agree."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket-hole thickness is stated: steps[0] 'pocket holes drilled at 1 1/2\"' (2x2), steps[6] 3/4\" plywood ('adjust your jig'), steps[11] '3/4\" pocket holes', steps[12] 'pocket holes at 1/2\"' (door plywood)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[18].body",
+          "quote": "I started gluing and stapling as I went after that!"
+        },
+        {
+          "path": "steps[21].body",
+          "quote": "I just used a small scrap piece of wood and glue and stapled it in the bottom of the buffet!"
+        }
+      ],
+      "reason": "Staples are used in steps 18, 21 and 22 but materials[0-12] list none (searched /stapl/i: no match). Numbers checked and agree with the viewed images: door opening 12 7/8 x 22 1/4 = door plywood (rows 12), door frame top 15 7/8 = 12 7/8 + 2 x 1 1/2, 15 3/4 frame depth = side rails, 14 herringbone boards x 4 doors = 56, back 27 1/2 x 71."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/ab08ea1a59f1bba9.webp",
+      "plans/3c46123437788728.webp",
+      "plans/9cd84abbe7355ba9.webp",
+      "plans/bf1e8aa2e716f8f1.webp",
+      "plans/0359c645ada2ef82.webp",
+      "plans/b130a2396f6e70e4.webp",
+      "plans/8536a9cd7c20feb9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[9].name",
+      "quote": "Drawer pulls (quantity 4)",
+      "what": "Four pulls are in materials but no step installs them or gives a position; searched all steps for /pull|handle|knob/i: none. Step 22 offers 'magnetic clasps or a stop block' only."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "I started all my doors out with this one board, it is mitered at 45 degrees off square on both ends and not parallel!",
+      "what": "Each door needs this first center board plus 14 identical boards (steps[14]) plus trimmed boards (steps[18]); cutList[11] 'Herringbone Pieces' counts only 56 (14 x 4) so the first boards and the trimmed boards have no count or size in the cut list."
+    }
+  ]
 }

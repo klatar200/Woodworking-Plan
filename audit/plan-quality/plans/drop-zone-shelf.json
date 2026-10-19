@@ -1,6 +1,6 @@
 {
   "slug": "drop-zone-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only two parts are cut (steps[0] 'Cut one Back ... and one shelf'); both are cutList[0] and [1]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Back (steps 0-1, 3) and Shelf (steps 0, 2-3) are both used."
     },
     "R4": {
       "result": "pass",
@@ -49,48 +51,71 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x10, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps[0] names the stock for both parts: Back 23.5\" (1x10 24\", materials[0]) 23.5 + 1/8 kerf = 23.625 <= 24; Shelf 23.5\" (1x6 24\", materials[1]) 23.625 <= 24."
     },
     "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "ern shown here, first paint the entire shelf assembly white. Once that coat dries, measure over from the square end of the Back, and then draw a line (at approximately a 55° angle). Mask along the lin",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/feb644e0b6ed1616.webp"
-        }
-      ]
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Back to length from a 1x10 and one shelf to length from 1x6, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[5].body",
+          "quote": "Add 1\" cup hooks below the shelf for hanging keys, etc."
         },
         {
-          "path": "steps[0].body",
-          "quote": "Cut one Back to length from a 1x10 and one shelf to length from 1x6, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "materials[3].name",
+          "quote": "7/8\" nickel-plated cup hooks"
         }
-      ]
+      ],
+      "reason": "Two different sizes for the same hook: 1\" in the step, 7/8\" in materials (searched materials for other hooks: none). The 1 1/4\" coarse-thread pocket-hole screws match steps[3]."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Flag settled by viewed images: step-3 image gives shelf location 3 1/2\" up the Back; step-4 image gives the paint-line dimensions (9 5/16, 12 3/4, 13 1/4, 15 21/32); step-5 image gives hook spacing 3 1/2, 7, 10 1/2, 14 and 1\" from the bottom edge."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "steps[0] 'as shown in the cutting diagram': the viewed unattached diagram (4e6097c1972e755c) shows Back 23 1/2\" x 9 1/4\" and the Shelf; the cut list gives the lengths (corrected 23 1/2)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), shape (1-2), attach shelf (3), paint (4), hooks (5) is a workable order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'set up for 3/4\" material and drill four pocket holes along the back edge of the shelf' (the only pocket-hole joint)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[4].name",
+          "quote": "Sawtooth picture hangers"
+        }
+      ],
+      "reason": "The steps never attach or position the sawtooth hangers or say how the shelf is hung on the wall: searched steps and description for /hanger|sawtooth|mount|wall|stud|screw it/i: only 'Hang the Hooks' (cup hooks) in steps[5]. Steps stop at the cup hooks, so the finished wall shelf has no mounting hardware installed and no position given; the viewed step images show none. Counts agree otherwise (4 pocket holes/4 screws, 4 hooks in step-5 image)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/4e6097c1972e755c.webp",
+      "plans/4ac1156165c37bc5.webp",
+      "plans/feb644e0b6ed1616.webp",
+      "plans/482ae5d7ab81f1da.webp",
+      "plans/4471448b4803d33a.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "diy-modern-cedar-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,17 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make (long sides, short sides, bottom piece, corner supports) is a cut-list row; steps[1] 'Cut Your Pieces' defers sizes to the cut list."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Bottom Panels",
-          "why": "no step mentions it (searched steps for panel)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[2] 'Bottom Panels' is the stock for steps[4] 'Build the bottom piece with pocket holes and wood glue'; the viewed step-4 image shows the bottom as two boards joined (11\" x 34 1/2\"). All 4 rows used."
     },
     "R4": {
       "result": "pass",
@@ -92,34 +87,64 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 1x36); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "upports to the inside corners. Attach them from the outside of the planter by shooting 1\" brad nails into each support. This will help keep the beveled corners tight. Add wood glue for extra strength.",
-          "why": "1\" brad — no material line lists a 1\" fastener"
+          "quote": "Attach them from the outside of the planter by shooting 1\" brad nails into each support."
         },
         {
-          "path": "steps[6].body",
-          "quote": "upports to the inside corners. Attach them from the outside of the planter by shooting 1\" brad nails into each support. This will help keep the beveled corners tight. Add wood glue for extra strength.",
-          "why": "1\" nail — no material line lists a 1\" fastener"
+          "path": "materials[2].name",
+          "quote": "1 1/4\" Brad Nails"
         }
-      ]
+      ],
+      "reason": "Step gives 1\" brad nails for the corner supports; the only brad nail in materials is 1 1/4\" (two different sizes for the same use)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Overall size (11\" high, 36\", 12 1/2\") shown in viewed step-0 image; bottom/supports placement is relational (all four sides, inside corners). Drainage holes are optional ('You may want to')."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides assembled in pairs (steps 2-3), bottom built (4) then attached (5), supports added last (6)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the large side pieces in sets of two with wood glue, pocket holes, and screws."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" stock; searched all steps/materials for a jig setting (none) and viewed step-0 and step-4 images (no setting shown). Recorded only; not counted."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 4 long sides = two pairs, 4 short sides, 2 bottom panels, 4 supports. Inner size check from viewed images: 36 - 2x3/4 = 34 1/2 matches bottom length; 12 1/2 - 1 1/2 = 11 matches bottom width. Every made part is installed; steps end with a finished planter. Wood glue/filler are consumables not listed in materials, not scored."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/7161b1a2e0ea1eb3.webp",
+      "plans/4b95115ab4920cec.webp"
+    ]
+  }
 }

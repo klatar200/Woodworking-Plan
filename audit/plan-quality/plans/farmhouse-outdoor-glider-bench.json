@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-outdoor-glider-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make maps to a cutList row: arm frames (rows 3-6), seat frame/slats/braces (0-1), backrest (2, 7-9), base sides and inside frame (10-13); 'cut to fit' X pieces are rows 8-9."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[8].part",
-          "quote": "X",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[9].part",
-          "quote": "X",
-          "why": "no step mentions it (searched steps for its words)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag on rows 8-9 'X' rejected: steps[6] 'X pieces are cut on a 45 degree angle... long 18\" pieces ... two smaller pieces'. All 14 rows used (Base rows in steps 8-9)."
     },
     "R4": {
       "result": "pass",
@@ -36,31 +26,80 @@
       "arithmetic": "parts: 5×20 + 7×60 + 2×60 + 6×16 + 2×35 + 2×24 + 2×20.5 + 7×10 + 2×18 + 4×8 + 2×54 + 2×16 + 4×12 + 4×20 + kerf 37 cuts (51 parts − 14 boards, the fewest possible)×1/8 = 1305.625″; bought: 14×96 = 1344″; 1305.625 ≤ 1344"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used in steps: 2 1/2\" pocket hole screws, 2\" wood screws (steps 0, 10), 1/4\" bit and '1/4\" 2 1/2\" long carriage bolts and 1/4\" nylock nut' (steps 11-12) all match materials[1], [5], [3], [4]; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Assemble the base inside frame. Attach each piece with 2 1/2\" Pocket Hole Screws. Spaced approx. 11 5/8\" apart.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1545dc152cde345f.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Positions are given as numbers or in viewed images: arm-frame stretcher spacing 6 1/2\" and 7\" (step-0 image), 10 1/2\" seat rail height, brace spacing 10 5/8\", slat gap 5/8\", backrest layout 60\" x 17\" with 15 1/4\" X sections and 1 1/4\" gaps, base 6\", 2 1/2\", 11 5/8\" spacing, bracket holes 1 3/4\"/1 1/4\"/5/8\"/3/4\"/5 5/8\". Backrest tilt is fixed by the stated constraints (top flush with back legs, bottom flush to front of back leg, 1/2\" inset)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "8 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Arm frames (0), seat frame, slats, braces (1-3), backrest built (4-6) then attached (7), base sides and inside frame (8-9) then joined (10), brackets last (11-12). Viewed images agree."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the 16\" pieces."
+        }
+      ],
+      "reason": "All pocket holes are in 1 1/2\" 2x4 stock; searched all steps for a jig thickness setting: none; viewed step images show hole locations only. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[13]",
+          "quote": "Base - quantity 4, 1.5 x 3.5 x 20"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Assemble the base inside frame. Attach each piece with 2 1/2\" Pocket Hole Screws. Spaced approx. 11 5/8\" apart."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Add the seat bracing. (5) 20\" boards."
+        }
+      ],
+      "arithmetic": "Viewed step-9 diagram: 54\" frame with 4 gaps labelled '11 5/8\"' => 5 inner 20\" pieces (5 x 1 1/2 + 4 x 11 5/8 = 7.5 + 46.5 = 54). cutList has only 4 x 20\" 'Base' pieces (row 13) besides the 5 x 20\" 'Bench Brace' (row 0, steps[3]); the 4-piece layout would be 4 x 1 1/2 + 3 x 11 5/8 = 40.875\" not 54\".",
+      "reason": "Cut list is one 20\" piece short for the base inside frame. Other numbers checked and agree: arm frame 3.5 + 7 + 3.5 + 6.5 + 3.5 = 24 (front leg); backrest 7 x 3.5 + 2 x 15 1/4 + 4 x 1 1/4 = 24.5 + 30.5 + 5 = 60; 3.5 + 10 + 3.5 = 17; base side 16 + 2 x 12 matches rows 11-12; all parts installed, steps end with a finished glider."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/519576a3f193338c.webp",
+      "plans/f54c564cd2573f14.webp",
+      "plans/444d84eef6957656.webp",
+      "plans/3352f093f950c516.webp",
+      "plans/8b6391deec693c50.webp",
+      "plans/51857147a99c86cd.webp",
+      "plans/b26a9408d57e6d03.webp",
+      "plans/2c3f221f716e45ad.webp",
+      "plans/7bb3f36bc17a5614.webp",
+      "plans/1545dc152cde345f.webp",
+      "plans/b116032af121647d.webp",
+      "plans/c75ed33a58a62746.webp"
+    ]
+  }
 }

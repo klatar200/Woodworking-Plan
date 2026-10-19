@@ -1,6 +1,6 @@
 {
   "slug": "fluted-bathroom-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -53,53 +53,121 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "After routing the fluted trim and cutting it to size, use CA glue and glue the trim onto the backboard."
+        }
+      ],
+      "reason": "The step makes a fluted trim and glues it to a 'backboard' (viewed step-5 image: a plain board in the face-frame opening, fluted strip held over it). cutList has one related row ('Fluting detail' 3/4 x 3 3/4 x 25 1/2); searched cutList parts for /back/: only 'Baseboard'; searched steps for the backboard's size: none. The backboard and the fluted trim stock are not separately sized. Non-structural."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "cutList[4].part",
-          "quote": "Fluting detail",
-          "why": "no step mentions it (searched steps for fluting/detail)"
+          "path": "cutList[6]",
+          "quote": "Baseboard front — qty 1, 3/4 x 4 1/2 x 29 1/4"
         },
         {
-          "path": "cutList[6].part",
-          "quote": "Baseboard front",
-          "why": "no step mentions it (searched steps for baseboard)"
+          "path": "cutList[7]",
+          "quote": "Baseboard Sides — qty 2, 3/4 x 4 1/2 x 21 1/2"
         },
         {
-          "path": "cutList[7].part",
-          "quote": "Baseboard Sides",
-          "why": "no step mentions it (searched steps for baseboard)"
+          "path": "cutList[8]",
+          "quote": "Door Trim — qty 8, 0.25 x 0.25 x 0.25 (Kreg source '.25\"x.25\"x.25\"')"
         }
-      ]
+      ],
+      "reason": "Searched all steps for /baseboard|base|toe|kick|plinth/i: no step makes or installs the baseboard pieces (steps[2] only says the bottom is '3.5\" inches off the floor'). Row 8 is a real part (steps[7] 'Add trim to the door fronts') but its three dimensions are all 1/4\" (garbage row, S-18)."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0]); +7 more"
+      "reason": "materials[0] is '3/4\" thick wood, Board feet' with no board width; thickness 3/4 parts match, widths cannot be checked against a stated stock; the 1/4\" trim rows would need milling (not judged)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "reason": "Stock is in board feet (qty 60) and §9 gives no board-foot rule; the glue-ups of steps 0 and 3 make part-by-part stock unknowable."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1 1/4\" pocket hole screws (steps 0, 2, 3) and 1 1/2\" brad nails (step 4) are in materials[1]/[2]; CA glue in materials[6]; no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut the doors to size and using the Kreg Hinge Jig drill the cup holes for the hinges."
+        }
+      ],
+      "reason": "Hinge positions along the door height and from the door edge are not given as numbers (materials[9] 'Inset door hinges' qty 4) and no viewed image shows them (viewed final photo shows closed doors only); searched steps for /hinge|inch|from the (top|bottom)/. Other placements are numeric or relational (bottom 3.5\" off the floor, even reveal)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; no step refers to a missing drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side panels (0-1), bottom (2), face frame built then nailed on (3-4), fluted trim (5), doors cut, hung and trimmed (6-8), underside trim (9), finish (10). The baseboard is never installed (R3)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut and attach the side panels together using wood glue and 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock (steps 0, 2, 3); searched all steps for a jig setting: none; viewed step-0 image (drilling an edge-joint panel) shows no setting. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "Face frame center — qty 3, 3/4 x 1 1/2 x 25 1/2"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Doors — qty 2, 3/4 x 12 7/8 x 24"
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Inset door hinges"
+        }
+      ],
+      "arithmetic": "Face-frame rails 25 1/2\" run between the 1 1/2\" stiles (cutList[3] 'Face frame sides'), so the opening is 25 1/2\" wide; two inset doors = 2 x 12 7/8 = 25 3/4\" > 25 1/2\" before any reveal (steps[8] 'even reveal on all sides').",
+      "reason": "Door width does not fit the opening it hangs in by at least 1/4\" plus reveals (opening width inferred from rail length; viewed final photo shows inset doors). Other counts agree: 2 sides + 3 face-frame centers + 2 face-frame sides, 4 hinges for 2 doors."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/acdf0a9885da3f49.webp",
+      "plans/7f7c4b9ca0d984d2.webp",
+      "plans/597dabcb9543b34b.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "diy-rustic-x-bench-with-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -151,63 +151,106 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "ail and glue them to the frame. You may want to sand all of these parts during this step, rather than later.\nFor a visual aid to help get those X's right, please visit my blog (link in the extras tab)",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|template|http|blog/i",
+      "readerNote": "steps[3] 'For a visual aid to help get those X's right, please visit my blog (link in the extras tab)' is an optional aid: step text gives 30 and 21 degree angles and the viewed step-1 cut diagram gives every X piece length."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Start by cutting four larger pieces first with 30 degree angles on each end (cut the angle on the 2\" side), and then cut the smaller pieces down to size."
+        }
+      ],
+      "reason": "Step cuts 'the smaller pieces' of each X but cutList has only one X row (cutList[5] 'Large X-Legs'); searched cutList parts for /small|X/i. The small pieces (4, 7 7/8 and 6 5/8) appear only in the viewed step-1 cut diagram, no step/row gives count or size in text. Non-structural (X bracing)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Large X-Legs (make all angled cuts on the 2\" side - see cut list and plans for details)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[5] part name carries an importer-merged note but is a real part cut in steps[3]; rows 0-4 used in steps 7, 4, 2, 2, 6."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Parts split by stock via dimensions and steps: 2x4 parts 5x54+8x20+6x18+6x11+4x16 = 270+160+108+66+64 = 668\" (+ ~29\" small X pieces from viewed diagram + ~4\" kerf = ~701\") <= 8x96 = 768\"; 2x2 braces 4x20 = 80\" + 0.4\" <= 1x96 = 96\". Viewed step-1 diagram shows '(8) 2 x 4 x 96\"' and '(1) 2 x 2 x 96\"' so quantity 1 is not an import default."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 2 1/2\" pocket hole screws (steps 2, 5, 6; materials[2]), 2\" brad nails (step 3; materials[3]), screws from bottom of braces (steps[8], materials[4] 2\" wood screws). No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Attach the seat to the rest of the bench by screwing it in from the bottom of the braces. You can cover these holes and your pocket holes with wood filler later.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18753ab2da7e353c.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Step 8 flagged item settled by viewed image: 'Attach top to bench by countersinking screws on underside of 2x2's'; frame spacing is fixed by 20\" shelves/braces (viewed step-6 image '20\"'); shelf and brace levels are shown by the viewed images; overall 54 x 17 1/2 x 19 1/2 in viewed step-0 image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Steps 1 ('Follow the cut diagram') and 3 ('Make sure to refer to the diagram describing the cuts') have step images; viewed step-1 image is the cut diagram, viewed step-3 image is the X leg diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames (2), X's (3), shelves built (4) then attached to frames (5), braces (6), top built (7) and screwed down from braces (8) — viewed step 5/6/8 images confirm the sequence."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach them using 2 1/2\" pocket hole screws and wood glue."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1 1/2\" (2x4) stock; searched all steps/materials for a jig thickness setting: none; viewed images (steps 1, 3, 4-6, 8) show none. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Start by cutting four larger pieces first with 30 degree angles on each end"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Large X-Legs ... quantity 4, 2 x 4 x 16"
+        },
+        {
+          "path": "images step[1] cut diagram (viewed)",
+          "quote": "LRG. X LEG (two pieces, 16\") ; label 'Inside angles cut @ 21 degrees' ; '@ 30 degrees'"
+        },
+        {
+          "path": "images step[3] X diagram (viewed)",
+          "quote": "Outside Angles Cut @ 35 Degrees"
+        }
+      ],
+      "reason": "Count: step text and cutList say 4 large X legs, the viewed cut diagram lays out 2 'LRG. X LEG' cuts plus 4 small cuts (3 pieces per X in the step-3 image, 2 frames show an X). Angle: step text and cut diagram say 30 degrees, the step-3 diagram labels the outside angle 35 degrees."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/a20725e02c28937b.webp",
+      "plans/8e9be45764f5df07.webp",
+      "plans/dfff169d06dcb358.webp",
+      "plans/18753ab2da7e353c.webp",
+      "plans/685f04c79a86ea1a.webp",
+      "plans/0a37f2d354875e53.webp"
+    ]
+  }
 }

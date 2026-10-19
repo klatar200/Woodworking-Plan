@@ -1,6 +1,6 @@
 {
   "slug": "floating-display-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps 0-2 (Filler Strips, Hanger Cleat, Back Panel, Shelf Tops and Bottoms) are cutList rows 3, 4, 0, 1, 2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: fillers and cleat (steps 0, 3), back (1), top/bottom shelves (2, 5, 6)."
     },
     "R4": {
       "result": "pass",
@@ -118,47 +120,65 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 0.5x1.5); steps not checked for per-part stock"
+      "reason": "Sheet goods: back 28x72 + 10 shelves 9.75x16 + 6 strips 1.5x48 = 2016 + 1560 + 432 = 4008 sq in < 48x96 = 4608 sq in bought, so no certain fail; layout not judged per R-2. Cleat 22\" <= 36\" board (materials[1])."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" brad nails (step 3, materials[5] '17-gauge 1 1/4\" wire nails'), 1\" flathead wood screws (step 3, materials[4]), 1 1/4\" coarse-thread pocket hole screws (step 5, materials[2]). No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "ply iron-on edge banding to cover the exposed plywood edges. The banding is wider than the thickness of the Back assembly, so you can let it overhang, and then trim it using a veneer trimmer and/or a ",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "Step-4 flag is edge-banding trimming, not a position. Shelf heights 10 3/4, 23, 35 1/4, 47 1/2, 59 3/4 and cleat 4 1/2\" / 1 1/2\" are in viewed step-5/step-3 images; shelf left/right overhang is shown graphically in the viewed overview (only '1 1/2\"' on the top shelf is numeric); hanger 'parallel to the top edge'."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "g six Filler Strips off the end of a sheet of 3/4\" plywood, as shown in the cutting diagram. Use an edge guide to ensure that you get straight cuts with smooth edges. Later, you’ll cut these strips to",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Start by cutting six Filler Strips off the end of a sheet of 3/4\" plywood, as shown in the cutting diagram."
         },
         {
-          "path": "steps[0].body",
-          "quote": "the end of a sheet of 3/4\" plywood, as shown in the cutting diagram. Use an edge guide to ensure that you get straight cuts with smooth edges. Later, you’ll cut these strips to final length and apply ",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "Now cut the Back Panel to size from a sheet of 3/4\" plywood, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Steps 0-2 refer to a sheet cutting diagram; steps 0 has no image and all 10 images were viewed (3 photos, 28 x 72 back, 16 x 9 3/4 shelves, assembly, shelf-position diagrams): none is a sheet layout. Part sizes are in the cut list, so building is not blocked."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0-2), back assembly built and banded (3-4), shelves attached then banded (5-6), finish and hang (7)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'pocket hole jig set up for 3/4\" material' (all pocket holes are in the 3/4\" Top Shelves)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 6 filler strips (step 0, row 3), 5 top + 5 bottom shelves (step 2, rows 1-2), 1 cleat; shelf spacing 12 1/4\" (10 3/4, 23, 35 1/4, 47 1/2, 59 3/4); banding (materials[3]) and Hangman hanger (materials[7]) are listed; steps end with the shelf hung."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/c430ae3a4d041ead.webp",
+      "plans/d1d494ebe214a455.webp",
+      "plans/d14ffb88cad7097c.webp",
+      "plans/91ee9b102ad7ae3d.webp",
+      "plans/62646c85225e22a9.webp",
+      "plans/142dbe4ce2532afb.webp",
+      "plans/d9f30f75bb2efeb2.webp",
+      "plans/5a7fa1557e8e3cb1.webp",
+      "plans/2f363b94b355712c.webp"
+    ]
+  }
 }

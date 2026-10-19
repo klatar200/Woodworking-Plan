@@ -1,6 +1,6 @@
 {
   "slug": "diy-outdoor-lutyens-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -223,60 +223,105 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "template for the top piece. You can download this from the “Extras” tab. Once you print it, you will need to tape the three pages together so the lines line up. Then, cut along the black lines.\nCut tw",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "l need to print off the template for the top piece. You can download this from the “Extras” tab. Once you print it, you will need to tape the three pages together so the lines line up. Then, cut along",
-          "why": "matches \"download\""
+          "quote": "First, you will need to print off the template for the top piece. You can download this from the “Extras” tab."
         }
-      ]
+      ],
+      "reason": "The arched crest outline exists only in the downloadable template; viewed step-0 and step-4 images show a traced paper shape and the finished curve but no dimensions. The blank size (1 1/2 x 7 1/4 x 32 cutList[0]) and leg size are given, so a bench can still be built with a self-drawn curve; the vertical/slat lengths are 'cut to fit' the curve. Judged non-blocking (Fix); verifier may judge the crest structural."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps (top pieces, legs, 2x2 verticals, 2x4 seat supports, 1x2 slats, 1x4 seat slats, arm slats) all map to cutList rows 0-9; searched steps for 'cut' sentences."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 cut rows used: rows 0-1 steps 0/3, rows 2/4 step 6, rows 3/7 steps 5/9/10, rows 5/6 steps 7-8, row 8 step 11, row 9 step 12."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x8, 2x6, 2x2, 2x4, 1x2, 1x4); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[4]",
+          "quote": "Board, 1x2 96\""
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Cut pieces of 1x2 to fit."
+        },
         {
           "path": "steps[12].body",
-          "quote": "used 1” wide strips. Cut 12 pieces at 16” long and glue and nail in place between the front and back arms. These pieces are supposed to go up and “wrap around” the arms. Use long brad nails—at least 2",
-          "why": "16\" nail — no material line lists a 16\" fastener"
+          "quote": "You can use 1x2s for this if you don’t have a table saw."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Horizontal Back Slats (middle) qty 12, 9\""
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Horizontal Back Slats (outside) qty 8, 14 3/4\" (corrected)"
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Arm Slats qty 12, 16\""
         }
-      ]
+      ],
+      "arithmetic": "Every part has its stock named in steps. 1x2 need = 12x9 + 8x14.75 + 12x16 = 108 + 118 + 192 = 418\" (+ kerf 1/8\" x ~32 cuts = 4\") vs bought 4 boards x 96\" = 384\" (materials[4] quantity 4). Short by ~38\". Other stocks fit: 2x8 2x32+29.5=93.5 <=96; 2x6 3x29.5=88.5<=96; 2x2 15.5+15.5+19=50<=96; 2x4 2x52+4x16=168<=192; 1x4 4x55=220<=240.",
+      "reason": "1x2 stock bought is less than the 1x2 parts require; arm slats need 192\" and only 384-226=158\" remain after back slats; 1x4 leftovers are ~9\" pieces."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Sweep flag '16\" nail' is a false positive: step 12 says 'Use long brad nails—at least 2” long', materials[9] '2\" or longer brad nails'. 2 1/2\", 1 1/4\" pocket screws and 1 1/4\" exterior screws (materials[8]) all listed; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Back/front support height 16 1/4\" from leg bottoms (steps[5], steps[9]); slat gap 'about 1 7/8”' (steps[7]); vertical 2x2 and slat positions shown in viewed step-6/7 images; seat slats 'evenly' and arm slats 'line up' are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Steps that say 'as the picture shows'/'shown' (4, 6, 9, 10) each carry their own step image; step-3 image viewed shows 3\"/5\"/29 1/2\" call-outs."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Crest cut/joined (0-2), legs cut (3), crest attached to back legs (4), back support (5), verticals (6), slats (7-8), then seat supports and slats (9-11), arm slats last (12)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Thickness stated for both stocks: steps[1] 'Drill 1 ½” pocket holes' (2x stock) and steps[8] 'drill ¾” pocket holes' (1x slats)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree with cut list: 2 outside verticals + middle (steps[6]); 6+6+4+4 back slats = 12 middle + 8 outside (steps[7]); 2x52 + 4x16 2x4 supports (steps 5, 9, 10); 4 seat slats at 55 (step 11); 12 arm slats at 16 (step 12). Every part is installed and the steps end at a finished bench. Step 6 outer verticals '15 1/2' match corrected cutList[2]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/ce64cf4e1bd176d2.webp",
+      "plans/da139f6eed442549.webp",
+      "plans/f32775e4a4ce1030.webp",
+      "plans/89aaeb18299d0f9a.webp",
+      "plans/84e5d23823b8389f.webp",
+      "plans/f7384bb95d90d9f6.webp"
+    ]
+  }
 }

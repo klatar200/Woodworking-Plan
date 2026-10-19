@@ -1,6 +1,6 @@
 {
   "slug": "diy-spice-drawer-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -67,21 +67,17 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "materials[3].name",
-          "quote": "Multiple glass spice jars - we used these: https://amzn.to/3wZlkLn",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|template|https?:|blog/i",
+      "readerNote": "Only link is materials[3] 'Multiple glass spice jars - we used these: https://amzn.to/3wZlkLn' (a product suggestion; any glass jars work); not needed to build the organizer."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only two parts are made (Shelf Backs, Shelf Risers); both are cutList rows 0-1. Searched steps for other cut parts: none (a 'bracket' is optional)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: 3 Shelf Backs (steps 0-3) and 3 Shelf Risers (steps 0, 2, 3: 'all three Shelf Risers', 'the final Shelf Riser')."
     },
     "R4": {
       "result": "pass",
@@ -92,36 +88,62 @@
       "reason": "sheet layout not judged (area fits: part area 3×4.25×21.75 + 3×1.5×21.75 = 375.2 sq in; bought 1×24×48 = 1152 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener size, only 'pocket screws'; materials[2] lists '1\" pocket-hole screws'. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "t holes in all three Shelf Risers on the long straight edge. - Using pocket screws, attach a Shelf Back to a Shelf Riser with the angled edge of the Shelf Riser angled away from the Back. - Repeat for",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c73328a64a77da7e.webp"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "nd change the 21 3/4\" length to fit your drawer exactly. Also, this is based on a 3 1/2\" tall drawer. If your drawer interior differs in height, you may need to adjust the height of your Shelf Risers.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c73328a64a77da7e.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags settled with viewed step-0 image: riser stands flush on the long edge of the back with its angled edge facing out; steps[1] 'Attach flush on the edges'. Pocket-hole spacing is only 'three pocket holes' (not a build position)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Two tiers built (step 0), third back added (1), back tier attached (2), final riser (3); viewed step-0/1/3 images show the stacking sequence."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill three pocket holes in two of the Shelf Backs."
+        }
+      ],
+      "reason": "Pocket holes in 1/2\" plywood; searched all text for a jig thickness setting: none (materials[2] gives only a 1\" screw size); viewed step 0/1/3 images show no setting. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 3 backs (2 with pocket holes + 1 without, steps 0-1) and 3 risers (2 in step 0, 1 in step 3) match cutList quantities 3 and 3; length 21 3/4 matches corrected rows and step-0 tip. Organizer is complete at step 3. The stated '3 1/2\" tall drawer' cannot be checked: no step gives tier heights (see gaps)."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/c73328a64a77da7e.webp",
+      "plans/3d33b8a8c562018f.webp",
+      "plans/073e7402f64860bc.webp",
+      "plans/28ec505acbea3da6.webp",
+      "plans/32bada2ef9fb6bc0.webp",
+      "plans/44672963b39638f6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "with the angled edge of the Shelf Riser angled away from the Back",
+      "what": "The riser has an 'angled edge' but no bevel angle, or which edge(s) to bevel, is given in any step, cut-list row or note; searched all text for /degree|angle|bevel|miter/ (only this sentence) and the viewed step-0/1/3 images show the bevel without a number. The riser row (corrected 1/2 x 1 1/2 x 21 3/4) therefore cannot be cut from the plan alone."
+    }
+  ]
 }

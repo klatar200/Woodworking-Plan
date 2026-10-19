@@ -1,6 +1,6 @@
 {
   "slug": "grasscloth-console-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Cut two pieces of grasscloth wallpaper to 53\" x 21\". Center the shelf upside down on one of the pieces of grasscloth and trace the outer edges, including the notched corners. Use a ruler to draw a str",
-          "why": "cut sentence states 21\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[13].body",
-          "quote": " side down and cut two of the pieces so there is a 4.5\" x 1.5\" notch cut out of the left side and a 1.5\" x 1.5\" notch out of the right side, and the other two pieces with opposite notches (1.5x1.5 on ",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags are wallpaper sizes (53\" x 21\", 7.5\" x 34\", notches 4.5\" x 1.5\"), not wood parts. Wood parts made (plywood top/shelf, legs, 1x2 frames of 48, 14.5, 13, 45) are all in cutList rows 0-5."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: plywood (steps 1-2, 6), legs (5), 1x2 48 and 14.5 (3), 1x2 13 and 45 (0, 2)."
     },
     "R4": {
       "result": "pass",
@@ -40,34 +30,78 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x2, 2x2); steps not checked for per-part stock"
+      "reason": "Lumber fits: 1x2 = 2x48 + 2x14.5 + 2x13 + 2x45 = 96 + 29 + 26 + 90 = 241\" + 8 cuts x 1/8 = 242\" <= 3x96 = 288\"; 2x2 legs 4x32 from 4x48\". Sheet goods: 2 x 14.5 x 46.5 = 1349 sq in vs a half sheet; layout not judged per R-2."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1\" pocket hole screws (steps 2, 3, 6, 20), 3\" cabinet screws (5), 3/32 and 5/16 drill bits (4): all in materials[3]-[6]. Staples are scored under R14. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[15].body",
-          "quote": "final side of the paper will cover the initial stapled side. If the paper is pulling apart at the seam, use painters tape to hold it in place. You may need to smooth the sides several times to get the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cce8905dd8b5c6e7.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Shelf top 11\" below the tabletop (steps[20]); frame flush with leg edges (steps[5]); pocket-hole counts and sides given (steps 0-1); wallpaper sizes given. Step-15 flag is smoothing/taping technique, not a position."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Steps that point at the photo ('looks like the photo', step 18) have their own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames and plywood built (0-6), sanded (7), shelf papered (8-12), legs papered (13-16), top papered (17-19), shelf attached to papered legs last (20): workable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the following 1x2s from the cut list: - 14.5\" – two pocket holes in each end"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" 1x2 and 3/4\" plywood; searched all steps for a jig thickness setting: none; viewed step-0 image shows the jig in use with no setting readable. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Use a staple gun to attach the paper to the undersides of the shelf."
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "crease and fold the paper over the bottom edges and staple in place."
+        }
+      ],
+      "reason": "Staples are used in steps 11, 12, 14, 16 and 19 but materials[0-17] list none (searched materials for /stapl/i: no match; the list has wallpaper paste, tape and a razor blade). Other numbers agree: 48 - 2 x 1 1/2 = 45 and 16 - 3 = 13 frame 1x2s; frame 14.5 + 2 x 3/4 = 16; leg paper 4 x 1 1/2 + 1 1/2 = 7 1/2; steps end with a finished, polyed table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/981a11409cfaeed8.webp",
+      "plans/4afb199ef72660cd.webp",
+      "plans/d62ab26257324a31.webp",
+      "plans/c88c84307d609f0c.webp",
+      "plans/3d68828052da4daf.webp",
+      "plans/e0a27c3ccfa54239.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "attaching the 13\" and 45\" 1x2s to the notched plywood",
+      "what": "The shelf plywood is called 'notched' (also steps[8] 'including the notched corners') but no step cuts the notches and no notch size is given in text, cut list or the viewed step-1/2 images; searched all steps for /notch/ (paper notches only in steps 13-14). The cut list row is a plain 14 1/2 x 46 1/2 rectangle."
+    }
+  ]
 }

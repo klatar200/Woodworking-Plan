@@ -1,6 +1,6 @@
 {
   "slug": "diy-pie-carrier-display-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -68,59 +68,76 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|video/i",
+      "readerNote": "steps[7] '(See video in extras tab for details)' and steps[13] 'Check out details and the video tutorial in the extras tab' point to an optional video; sizes, dado widths/depths and method are all in the text and diagrams, so the build does not depend on it."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " and repeated the cut until it was just a little deeper than ¼”.\nAfter I had my blade depth set right, I adjusted my AccuCut over just to the edge of the cut and cut again. This would give me a dado t",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": " least) 12\" long edges and cut dadoes along the lines about 3/16\" wide and a little over 1/4\" deep--just like the previous dadoes. (See video in extras tab for details) Then, mark 3/4\" from the edges ",
-          "why": "cut sentence states 3/16\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags are dado dimensions, not parts: steps[2] 'a little deeper than ¼”' and steps[7] 'dadoes ... about 3/16” wide'. Parts cut (bottom, back, two sides, handles, plexiglass front/top) all have cutList rows 0-5."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: rows 0-2 steps[0]/[9], handles steps[7], plexiglass steps[8]/[10]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged; cutList[5] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Plywood parts 12 x 12 and 11 1/4 x 12 come from a 24 x 48 quarter sheet (3/4\"); plexiglass rows are 1/8\" per steps[8] 'two pieces of 1/8\" thick plexiglass' and materials[3] 'Plexiglass panels'; handles 3/4 x 3/4 from plywood scrap per steps[7]."
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×12×12 + 2×12×12 + 1×11.25×12 + 2×0.75×11.875 + 1×11×12.5 + 1×10.25×12.5 = 850.4 sq in; bought 1×24×48 = 1152 sq in)"
+      "reason": "Sheet goods: area of plywood parts 3x144 + 11.25x12 + 2x0.75x11.875 = 567 + 17.8 sq in < 1152 sq in bought (24x48), so no certain fail; layout not judged per R-2."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "les. VERY CAREFULLY predrill holes for some small 5/8” wood screws.\nI tried to get as close to the edge as I could so the screw would still hold. Honestly, I think the clear Gorilla Glue would have he",
-          "why": "5/8\" screw — no material line lists a 5/8\" fastener"
+          "quote": "VERY CAREFULLY predrill holes for some small 5/8” wood screws."
+        },
+        {
+          "path": "materials",
+          "quote": "1 1/4\" pocket hole screws | 1 1/4\" brad nails (no 5/8\" screw listed)"
         }
-      ]
+      ],
+      "reason": "Searched all materials for '5/8' and 'wood screw': none. Step presents the screws as optional ('So those are optional'), hence likely."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dado positions given ('1/2\" from the front edge', '1/2\" from the top'), depth 'SLIGHTLY over 1/4\"', width ~3/16\"; viewed step-9 image gives 12 x 12 x 11 1/4 box with pocket-hole and back-panel locations; handles 'equal overhang' relational; optional screws not required."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "reason": "Diagram steps (3-6, 11-12) each have their own image; step-11/12 images viewed give plexi 12 1/2 x 10 1/4 and 12 1/2 x 11 with 11 7/8 handle."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels cut and dadoed (0-2), handles and plexiglass cut (7-8) before assembly (9) and plexi-to-handle gluing (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[9] 'I chose to use 3/4\" pocket holes and 1 1/4\" pocket hole screws on the bottom panel' (3/4\" ply is the only pocket-hole thickness)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Steps/diagrams agree with corrected cut list: handle 11 7/8 (steps[7] 'about 11 7/8\"' vs row 3), front plexi 12 1/2 x 11 and top 12 1/2 x 10 1/4 in viewed images vs rows 4-5, back 11 1/4 in viewed step-9 image vs row 2 (12 - 3/4 bottom = 11 1/4). All parts installed; plexiglass listed in materials; steps end with a finished box."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/03c13d2e41380362.webp",
+      "plans/38e9ac993fa4bd70.webp",
+      "plans/881779eb4aad3d8c.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "dog-bed-frame",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Cut the bed floor board 32 7/8\" by 21 7/8\" and cut an 1/2\" by 1/2\" notch from each corner. This will allow the floor board to rest completely supported within the bed frame boards.",
-          "why": "cut sentence states 32 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Cut the bed floor board 32 7/8\" by 21 7/8\" and cut an 1/2\" by 1/2\" notch from each corner. This will allow the floor board to rest completely supported within the bed frame boards.",
-          "why": "cut sentence states 21 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "The floor board step 11 cuts exists as cutList[0] 'Plywood floor board' (size conflict is recorded under R14); all other cut parts have rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used: floor (step 11), head/foot boards (steps 4-5), legs (5), front/rear and side frame boards (5-6), side boards ('rail boards', 6), triangle braces (7), center board (step 10 'center brace')."
     },
     "R4": {
       "result": "pass",
@@ -41,33 +31,106 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x4, 2x2, 1x3); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 2x2 72\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 72\""
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x3 36\""
+        },
+        {
+          "path": "cutList[2..4]",
+          "quote": "Legs 2 x 2 x 12 (qty 4); Front/Rear- frame boards 2 x 2 x 32 (qty 2); Side- frame boards 2 x 2 x 21 (qty 2)"
+        }
+      ],
+      "arithmetic": "Quantity-1 is genuine (record has no qty-default diff). 2x2 parts (only listed material with a 1 1/2\" x 1 1/2\" section): 4x12 + 2x32 + 2x21 = 48 + 64 + 42 = 154\" (+ ~1\" kerf) vs 1 x 72\" bought: short ~83\". 1x4 parts: 2x32 + 2x21 = 64 + 42 = 106\" vs 72\" bought. 1x3 parts: 8x6 + 21 = 69\" vs 36\"; even with 1x3 parts cut from 1x4, 175\" needed vs 72 + 36 = 108\" bought.",
+      "reason": "Steps do not name stock, but each part's section matches only one listed board, and every lumber line is short."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "line them up to your 4 inch line. Side clamp each joint and screw in your pocket hole screws. Repeat this process with the headboard and foot board. Note* Position the bed frame boards flush with the ",
-          "why": "4\" screw — no material line lists a 4\" fastener"
+          "quote": "Side clamp each joint and screw in your pocket hole screws."
         }
-      ]
+      ],
+      "reason": "Sweep flag '4\" screw' is a false positive (the '4 inch line' is a leg mark). But steps 1/5/6 assemble with pocket hole screws and glue ('Apply glue to the ends of the frame boards') while materials[0-4] list no screw or glue line and no screw size appears anywhere; searched materials and steps for /screw|nail/ sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give: 4\" leg mark (step 5), front opening 24\" wide x 2\" deep on a 32\" board (step 4), 6\" triangle braces, 12\" legs, 35\" outer width (step 8), center board position and pocket holes (step 10); handles 'in the center' is relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Boards cut, drilled, routed, shaped (0-4) before assembly (5-7); floor cut after the frame exists (11); pocket-hole placement diagrams (8-10) come after the assemblies that need them, but are all available before fastening is complete (note only)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "drill the pocket holes for every board in the plan specifications."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" and 1 1/2\" stock; no jig thickness setting in any step or material; viewed images (steps 4, 5, 8, 10) show hole placement but no setting. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Plywood floor board 3/4 x 23 x 34 (quantity 1)"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Cut the bed floor board 32 7/8\" by 21 7/8\" and cut an 1/2\" by 1/2\" notch from each corner."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 3/4\" Thick 34\" x 22\""
+        }
+      ],
+      "arithmetic": "Step 11 and the viewed step-10 diagram give 32 7/8 x 21 7/8; cutList[0] gives 23 x 34 (23 vs 21 7/8 = +1 1/8\"; 34 vs 32 7/8 = +1 1/8\"). The plywood bought is 34 x 22, so a 23\"-wide floor cannot come from it.",
+      "reason": "Floor size disagrees between cut list and step/diagram; not an S-19 fraction drop (no importDiffs, values are not truncations of the step values)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/67f1c55bc509e449.webp",
+      "plans/d240a6876bf58cef.webp",
+      "plans/b275adf5ba361afd.webp",
+      "plans/1b052753b047c3e7.webp"
+    ]
+  }
 }

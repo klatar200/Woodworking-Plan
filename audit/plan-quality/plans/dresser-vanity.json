@@ -1,6 +1,6 @@
 {
   "slug": "dresser-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -457,63 +457,100 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[13].body",
-          "quote": "! There you have it!! If you would prefer two doors instead of drawers on this vanity check out my blog (link listed in extras) and also get all the direct links to the products I used on this vanity!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|template|http|blog/i",
+      "readerNote": "steps[13] 'If you would prefer two doors instead of drawers on this vanity check out my blog (link listed in extras)' is an optional alternative design and product links; the drawer build is complete without it. 'Cut the template for the sink' refers to the builder's own sink."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "ng your drawer boxes! The plan calls for 1x6s ripped down to 4 1/2\" to make your drawer boxes but you can use 1x4s if you would prefer not to rip, I just wanted the drawers as big as possible (only an",
-          "why": "cut sentence states 4 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag is steps[10] 'ripped down to 4 1/2\"' which is the width of cutList[12]/[13] (Kreg source '3/4\" x 4 1/2\" x ...'), not a missing part. Every part made in the steps has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 rows are used: legs (step 1), rails (2, 3, 6, 7), face frame (4-5), side panels (8), dividers (9), slide rails (10), drawer boxes/bottoms/fronts (11-13, 'Step 12'), top (14-15)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[12] Kreg text not parseable; cutList[13] Kreg text not parseable; cutList[16] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Unchecked rows resolved from Kreg text: cutList[12]/[13] '3/4\" x 4 1/2\"' ripped from 1x6 (materials[5]); cutList[16] '1 1/2\" x 4 13/16\"' ripped from 2x6 (materials[3], steps[12]). All other rows match a listed board, newel post, 4x4 or plywood.",
+      "readerNote": "Live rows cutList[12], [13], [16] show lengths 4, 4 and 2 (Kreg: 15 3/4, 33, 44) and width 5.5 for the ripped parts: importer defect (kind 'unchecked'), cause import, not a plan failure."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 8 stock types (3.25x48, 4x4, 1x2, 2x6, 2x4, 1x6, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Lumber fits: 2x6 = 32.5 + 35 + 35.5 + 5x44 = 323\" <= 4x96 = 384\"; 2x4 = 2x16.25 + 35 + 35.5 + 2x27.5 + 6x14.75 = 246.5\" <= 3x96 = 288\"; 1x6 = 3x35.375 + 6x15.75 + 6x33 = 398.6\" <= 4x120 = 480\"; 1x2 2x35.5 = 71\" <= 96\"; 4x4 2x31.5 = 63\" <= 96\"; newel posts 31.5\" <= 48\". But materials[7] '1/4\" Thick Half Sheet' has no stated dimensions (§9), so the 3 drawer bottoms (15.75 x 34.5) cannot be checked."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1 1/2\" pocket holes with 2 1/2\" screws (steps 2, 3, 7, 10, 14) and 3/4\" pocket holes with 1 1/4\" screws (steps 8, 9, 11); both screws are in materials[9]/[10]; no conflicting size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "After attaching the drawer slides...which was a PAIN IN THE BUTT because I could not use my Kreg Drawer Slide jig"
+        },
         {
           "path": "steps[11].body",
-          "quote": "cds or playing cards...whatever I have laying around that is about the size gap I'm going for!! Then just squeeze some glue on it and stick a few brad nails in from the inside of the drawer!! All set!",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eb68809267014807.webp"
+          "quote": "I prop the drawer front up on the bottom and sides with cds or playing cards...whatever I have laying around that is about the size gap I'm going for!!"
         }
-      ]
+      ],
+      "reason": "Positions given elsewhere are covered (notch 5 1/2 / 3 1/2, divider spacing 5 3/4 / 5 5/8 in viewed step images; rail set-backs 2 1/4\", 1/8\", 1/4\"). But the drawer slide position (height on the slide rail/box, setback from the front) is never given as a number or shown in a viewed image (step-9 and step-10 images show slide rails and a drawer box, no slides), and the drawer-front gap is not stated. Searched steps for /slide|gap|reveal/."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Step 9 'just as the picture shows' and step 11 'as in the pic' have step images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "By the step numbers the order is possible (legs, rails, face frame, panels, dividers, slide rails, drawers, bottoms, top). The array stores 'Step 12' (drawer bottoms) last, after the top and finishing; same order in the Kreg source.",
+      "readerNote": "Display order differs from step numbering (see gaps)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Both thicknesses stated: steps[1] 'drilled 1 1/2\" pocket holes' (2x stock) and steps[7] 'Pocket holes are drilled at 3/4\"' (plywood/1x stock)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Glue and staple the 1/4\" plywood to the bottom of your drawer boxes!!"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "stick a few brad nails in from the inside of the drawer!! All set!"
+        }
+      ],
+      "reason": "Staples and brad nails are used but materials[0-10] list none; searched materials for /staple|brad|nail/i: no match. Other agreements checked: 5 x 4 13/16 = 24 1/16\" matches steps[12] 'slightly larger than 24\" by 1/16\"'; box 33 + 2 x 3/4 = 34 1/2 = bottom width; 48\" post trimmed to 31 1/2 matches rows 0-1; every made part is installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-10",
+    "imagesViewed": [
+      "plans/a9b96cd4fbac0886.webp",
+      "plans/dd7cc846388572b6.webp",
+      "plans/eb3e70df699d83b7.webp",
+      "plans/55ef5dbc3c806c27.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[14].title",
+      "quote": "Step 12",
+      "what": "The step stored last (index 14) is titled 'Step 12' (glue/staple drawer bottoms), after 'Step 15' (top installed, 'It is done!! Hook up all the plumbing'); the Kreg source has the same order, so the site shows drawer bottoms after finishing. Numbering resolves it, display order does not."
+    }
+  ]
 }
