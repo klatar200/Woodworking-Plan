@@ -165,17 +165,21 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[7].body",
-          "quote": "Apply wood glue to top of base and attach onto bottom of bookshelf with 2\" wood screws."
-        }
-      ],
-      "reason": "Wood glue is used in steps 4-8 but search of materials[].name for /glue/i: none. Sizes agree: bays (46.5 - .75) / 2 = 22 7/8 vs shelf 22 5/8 ('1/4\" shorter'); 16 shelf pins = 4 shelves x 4."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[7].body",
+            "quote": "Apply wood glue to top of base and attach onto bottom of bookshelf with 2\" wood screws."
+          }
+        ],
+        "reason": "Wood glue is used in steps 4-8 but search of materials[].name for /glue/i: none. Sizes agree: bays (46.5 - .75) / 2 = 22 7/8 vs shelf 22 5/8 ('1/4\" shorter'); 16 shelf pins = 4 shelves x 4."
+      }
     }
   },
   "verdict": "Fix",
@@ -192,5 +196,14 @@
       "5d57d69d460e09b6.webp",
       "97dc1b8d62dde478.webp"
     ]
-  }
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Apply wood glue to top of base and attach onto bottom of bookshelf with 2\" wood screws.",
+      "what": "Wood glue used in steps[4]-[8]; searched materials[].name for /glue/i: none."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

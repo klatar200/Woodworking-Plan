@@ -31,30 +31,34 @@
       ]
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 2x2 72\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x4 72\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Board, 1x3 36\""
-        },
-        {
-          "path": "cutList[2..4]",
-          "quote": "Legs 2 x 2 x 12 (qty 4); Front/Rear- frame boards 2 x 2 x 32 (qty 2); Side- frame boards 2 x 2 x 21 (qty 2)"
-        }
-      ],
-      "arithmetic": "Quantity-1 is genuine (record has no qty-default diff). 2x2 parts (only listed material with a 1 1/2\" x 1 1/2\" section): 4x12 + 2x32 + 2x21 = 48 + 64 + 42 = 154\" (+ ~1\" kerf) vs 1 x 72\" bought: short ~83\". 1x4 parts: 2x32 + 2x21 = 64 + 42 = 106\" vs 72\" bought. 1x3 parts: 8x6 + 21 = 69\" vs 36\"; even with 1x3 parts cut from 1x4, 175\" needed vs 72 + 36 = 108\" bought.",
-      "reason": "Steps do not name stock, but each part's section matches only one listed board, and every lumber line is short."
+      "result": "unknown",
+      "reason": "R5 precondition not met (plan uses four stock types - plywood, 1x4, 2x2, 1x3 in materials[0..3] - and no step names the stock for any part; steps[0] only says 'Measure and cut all boards to plan lengths'; the reader matched parts to boards by section, which §6 does not allow)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[2].name",
+            "quote": "Board, 2x2 72\""
+          },
+          {
+            "path": "materials[1].name",
+            "quote": "Board, 1x4 72\""
+          },
+          {
+            "path": "materials[3].name",
+            "quote": "Board, 1x3 36\""
+          },
+          {
+            "path": "cutList[2..4]",
+            "quote": "Legs 2 x 2 x 12 (qty 4); Front/Rear- frame boards 2 x 2 x 32 (qty 2); Side- frame boards 2 x 2 x 21 (qty 2)"
+          }
+        ],
+        "arithmetic": "Quantity-1 is genuine (record has no qty-default diff). 2x2 parts (only listed material with a 1 1/2\" x 1 1/2\" section): 4x12 + 2x32 + 2x21 = 48 + 64 + 42 = 154\" (+ ~1\" kerf) vs 1 x 72\" bought: short ~83\". 1x4 parts: 2x32 + 2x21 = 64 + 42 = 106\" vs 72\" bought. 1x3 parts: 8x6 + 21 = 69\" vs 36\"; even with 1x3 parts cut from 1x4, 175\" needed vs 72 + 36 = 108\" bought.",
+        "reason": "Steps do not name stock, but each part's section matches only one listed board, and every lumber line is short."
+      }
     },
     "R6": {
       "result": "fail",

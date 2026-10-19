@@ -72,26 +72,30 @@
       "reason": "The only row is 3/4\" x 4' x 8' plywood (fits 48 x 96); image parts are all 3/4\" plywood."
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Cabinet — qty 2, 0.75 x 48 x 96 (Kreg-corrected; source '3/4″ x 4′ x 8′ Plywood')"
-        },
-        {
-          "path": "materials[0]",
-          "quote": "Plywood, 3/4\" Thick Full Sheet — qty 1"
-        },
-        {
-          "path": "materials[1]",
-          "quote": "Plywood, 3/4\" Thick Half Sheet — qty 1"
-        }
-      ],
-      "arithmetic": "Cut list calls for 2 x (48 x 96) = 9216 sq in (and the viewed step-0 image draws two 3/4\" x 4' x 8' sheet layouts, the 2nd needing a 72\" x 20\" top); materials give 1 full + 1 half = 4608 + 2304 = 6912 sq in (same area for a 48x48 or 24x96 half sheet). 9216 > 6912.",
-      "reason": "Plywood bought is 1 1/2 sheets; the plan's own layouts and cut list need 2 full sheets. Sum of drawn parts (about 6860 sq in) leaves no room for layout on 6912."
+      "result": "unknown",
+      "reason": "R5 precondition not met (no step names the stock for the parts - steps[0] 'break down the plywood using the cut list below' - and steps[5] names a second stock, 'a walnut plywood for the doors', besides the birch plywood of the case; also the sheet rule needs total part area to exceed area bought, and the reader's own part sum (about 6860 sq in) is below the 6912 sq in bought)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "cutList[0]",
+            "quote": "Cabinet — qty 2, 0.75 x 48 x 96 (Kreg-corrected; source '3/4″ x 4′ x 8′ Plywood')"
+          },
+          {
+            "path": "materials[0]",
+            "quote": "Plywood, 3/4\" Thick Full Sheet — qty 1"
+          },
+          {
+            "path": "materials[1]",
+            "quote": "Plywood, 3/4\" Thick Half Sheet — qty 1"
+          }
+        ],
+        "arithmetic": "Cut list calls for 2 x (48 x 96) = 9216 sq in (and the viewed step-0 image draws two 3/4\" x 4' x 8' sheet layouts, the 2nd needing a 72\" x 20\" top); materials give 1 full + 1 half = 4608 + 2304 = 6912 sq in (same area for a 48x48 or 24x96 half sheet). 9216 > 6912.",
+        "reason": "Plywood bought is 1 1/2 sheets; the plan's own layouts and cut list need 2 full sheets. Sum of drawn parts (about 6860 sq in) leaves no room for layout on 6912."
+      }
     },
     "R6": {
       "result": "fail",

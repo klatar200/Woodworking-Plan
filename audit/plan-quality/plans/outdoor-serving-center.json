@@ -706,17 +706,9 @@
     "R14": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "certain",
+      "confidence": "likely",
       "cause": "plan",
       "evidence": [
-        {
-          "path": "steps[10].body",
-          "quote": "Then secure the End Slats and Shelf Slats to the frame with glue and brad nails."
-        },
-        {
-          "path": "steps[21].body",
-          "quote": "Rub some wax on the aluminum tracks for smooth sliding, and then slide the top on."
-        },
         {
           "path": "steps[13].body",
           "quote": "Cut Narrow and Wide versions of the Long Side Slats, Medium Side Slats, and Short Side Slats from 1x2 and 1x4 cedar material"
@@ -726,10 +718,23 @@
           "quote": "Wide Long Top Slat"
         }
       ],
-      "reason": "(c) Glue is used in steps[10], [13], [18], [20] and wax in steps[21]; searched materials[].name for /glue|adhesive|wax/i: no hit (materials list lumber, screws, aluminum angle, threaded rod, nails, wheels, cooler, pulls only). (a) steps[13] cuts 'Wide versions of the Long Side Slats' but no cut row is named so; searched cutList.part for /long side/i: only cutList[8] 'Narrow Long Side Slat'. cutList[9] 'Wide Long Top Slat' (52 1/2\", qty 7) has the long-side-slat length, while the top slats are cutList[24]/[25] (51 1/2\"), so the builder must match the row by length (confidence on this part: likely a mislabel). (b) every sub-assembly is installed (frame steps[0]-[8], axle steps[9], tracks steps[12]/[19], top slid on steps[21]). (d) steps reach the finished cart with top on (steps[21])."
+      "reason": "(a) steps[13] cuts 'Wide versions of the Long Side Slats' but no cut row is named so; searched cutList.part for /long side/i: only cutList[8] 'Narrow Long Side Slat'. cutList[9] 'Wide Long Top Slat' (52 1/2\", qty 7) has the long-side-slat length, while the top slats are cutList[24]/[25] (51 1/2\"), so the builder must match the row by length (likely a mislabel). (b) every sub-assembly is installed (frame steps[0]-[8], axle steps[9], tracks steps[12]/[19], top slid on steps[21]). (d) steps reach the finished cart with top on (steps[21]). Glue (steps[10],[13],[18],[20]) and wax (steps[21]) moved to gaps as consumables (2026-10-19 ruling)."
     }
   },
-  "gaps": [],
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Then secure the End Slats and Shelf Slats to the frame with glue and brad nails.",
+      "what": "Glue used in steps[10],[13],[18],[20]; searched materials[].name for /glue|adhesive/i: no hit."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[21].body",
+      "quote": "Rub some wax on the aluminum tracks for smooth sliding, and then slide the top on.",
+      "what": "Wax used in steps[21]; searched materials[].name for /wax/i: no hit."
+    }
+  ],
   "verdict": "Fix",
   "verifier": {
     "ran": false,
@@ -752,5 +757,7 @@
     "rescore": "rescore-6"
   },
   "notes": "Only open question is whether the Lower Side Slats are installed in steps[13] (R3 unknown); measurements check out on Kreg's dimensions.",
-  "previousVerdict": "Ship (unverified)"
+  "previousVerdict": "Ship (unverified)",
+  "rescoreNote": "2026-10-19 consumable cleanup: confidence certain->likely. 'certain' rested on the glue/wax part of (c), now in gaps; the remaining (a) mislabel finding was recorded by the reader as likely.",
+  "consumableCleanup": "2026-10-19"
 }

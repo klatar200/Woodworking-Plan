@@ -132,22 +132,26 @@
       "note": "2 reference(s), each in a step with its own image"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "Apply a little wood glue to the bottom of each leg where the bottom shelf will be attached."
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Apply wood glue on the edge of one side of each shelf over where the pocket holes were drilled."
-        }
-      ],
-      "arithmetic": "(a) holds: shelf 20 = 2 legs x 1 1/2 + 13 spacer (steps[1]) + 2 x 2 overhang (steps[4]) = 3 + 13 + 4 = 20; leg 57 1/2 = 5 shelves x 1 1/2 + 4 x 12 1/2 (steps[5]) = 7 1/2 + 50 = 57 1/2.",
-      "reason": "(c) Wood glue is used in steps[4], [5], [6]; searched materials[].name for /glue|adhesive/i: no hit (materials are 2x2, 2x10 and pocket screws only). (a) counts and sizes agree (4 legs, 5 shelves = bottom + one + 'the next two' + top, steps[4]-[5]). (b) all shelves and legs are installed. (d) steps reach the finished stand (steps[7])."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[4].body",
+            "quote": "Apply a little wood glue to the bottom of each leg where the bottom shelf will be attached."
+          },
+          {
+            "path": "steps[6].body",
+            "quote": "Apply wood glue on the edge of one side of each shelf over where the pocket holes were drilled."
+          }
+        ],
+        "arithmetic": "(a) holds: shelf 20 = 2 legs x 1 1/2 + 13 spacer (steps[1]) + 2 x 2 overhang (steps[4]) = 3 + 13 + 4 = 20; leg 57 1/2 = 5 shelves x 1 1/2 + 4 x 12 1/2 (steps[5]) = 7 1/2 + 50 = 57 1/2.",
+        "reason": "(c) Wood glue is used in steps[4], [5], [6]; searched materials[].name for /glue|adhesive/i: no hit (materials are 2x2, 2x10 and pocket screws only). (a) counts and sizes agree (4 legs, 5 shelves = bottom + one + 'the next two' + top, steps[4]-[5]). (b) all shelves and legs are installed. (d) steps reach the finished stand (steps[7])."
+      }
     }
   },
   "gaps": [
@@ -155,6 +159,12 @@
       "path": "steps[5].body",
       "quote": "Attach with pocket hole screws as in step 6.",
       "what": "The 6th step is steps[5] itself; the attachment method is in steps[4] (step 5). steps[8] \"Sand individual pieces: Take the time before assembly\" sits after the final step, consistent with the numbering having shifted."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Apply a little wood glue to the bottom of each leg where the bottom shelf will be attached.",
+      "what": "Wood glue used in steps[4],[5],[6]; searched materials[].name for /glue|adhesive/i: no hit."
     }
   ],
   "verdict": "Fix",
@@ -170,5 +180,6 @@
     "rescore": "rescore-6"
   },
   "notes": "Two Fix: shelf width 9.5\" exceeds a 2x10's 9 1/4\" (R4), and no pocket-hole jig setting (R9).",
-  "previousVerdict": "Fix"
+  "previousVerdict": "Fix",
+  "consumableCleanup": "2026-10-19"
 }

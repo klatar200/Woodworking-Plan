@@ -377,21 +377,25 @@
       "reason": "steps[0] 'pocket-hole jig set up for 3/4\" material' states the setting; every pocket-holed part is 3/4\" (cutList thicknessIn 0.75)"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[8].body",
-          "quote": "Attach the Rail Cleats to the Side Rails where shown using glue and 2\" flat-head wood screws."
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Glue and clamp the Foot Rail to the two leg assemblies"
-        }
-      ],
-      "reason": "(c) glue is used in steps[3], [8], [13]; searched materials[*].name for /glue/i: no match (materials are boards, screws, bolts, nuts). (a)/(b)/(d) check out: 8 legs = 4 pocket-holed + 2 blank + 2 back legs = 4 assemblies; 4 holes x 4 joints = 16 bolts and nuts; Rail Cleat 6 1/8 + 75 1/2 + 6 1/8 = 87.75 = Side Rail; End Cleat 29 3/4 + 10 + 29 3/4 = 69.5 = Head/Foot Rail; headboard 5 1/2 + 60 + 5 1/2 = 71 = Cap; 2\" screws 2 x 10 + 2 x 3 = 26 = materials[6]"
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[8].body",
+            "quote": "Attach the Rail Cleats to the Side Rails where shown using glue and 2\" flat-head wood screws."
+          },
+          {
+            "path": "steps[3].body",
+            "quote": "Glue and clamp the Foot Rail to the two leg assemblies"
+          }
+        ],
+        "reason": "(c) glue is used in steps[3], [8], [13]; searched materials[*].name for /glue/i: no match (materials are boards, screws, bolts, nuts). (a)/(b)/(d) check out: 8 legs = 4 pocket-holed + 2 blank + 2 back legs = 4 assemblies; 4 holes x 4 joints = 16 bolts and nuts; Rail Cleat 6 1/8 + 75 1/2 + 6 1/8 = 87.75 = Side Rail; End Cleat 29 3/4 + 10 + 29 3/4 = 69.5 = Head/Foot Rail; headboard 5 1/2 + 60 + 5 1/2 = 71 = Cap; 2\" screws 2 x 10 + 2 x 3 = 26 = materials[6]"
+      }
     }
   },
   "verifier": {
@@ -417,5 +421,14 @@
       "52183474d356e25a.webp"
     ]
   },
-  "verdict": "Fix"
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Attach the Rail Cleats to the Side Rails where shown using glue and 2\" flat-head wood screws.",
+      "what": "Glue used in steps[3],[8],[13]; searched materials[*].name for /glue/i: no match."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

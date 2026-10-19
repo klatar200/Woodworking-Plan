@@ -468,21 +468,25 @@
       "reason": "steps[0] 'Drill 1 1/2\" pocket holes sideways into the boards' and steps[17]/[18] '1 1/2\" pocket holes' on 1 1/2\" stock (2x10 top boards, 2x4 attachers, stretchers); setting equals the thickness; no contradicting setting"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[0].body",
-          "quote": "attach with lots of wood glue and 2 1/2\" pocket hole screws!"
-        },
-        {
-          "path": "materials[6]",
-          "quote": "Box of Kreg 2 1/2\" pocket hole screws"
-        }
-      ],
-      "reason": "Wood glue is used in steps[0],[1],[4]-[9],[17],[18],[19] but no materials line matches /glue/i (materials[0..8] are boards, screws, brad nails, sandpaper). Other sub-checks pass: (a) 4 x 9.25 (cutList[0] corrected) = 37\" top width and the viewed steps[1] image gives 11 + 3 1/2 + 8 + 3 1/2 + 11 = 37 with cutList[1] width 3.5; step counts match cutList; (b) all parts installed; (d) steps reach the finished table"
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[0].body",
+            "quote": "attach with lots of wood glue and 2 1/2\" pocket hole screws!"
+          },
+          {
+            "path": "materials[6]",
+            "quote": "Box of Kreg 2 1/2\" pocket hole screws"
+          }
+        ],
+        "reason": "Wood glue is used in steps[0],[1],[4]-[9],[17],[18],[19] but no materials line matches /glue/i (materials[0..8] are boards, screws, brad nails, sandpaper). Other sub-checks pass: (a) 4 x 9.25 (cutList[0] corrected) = 37\" top width and the viewed steps[1] image gives 11 + 3 1/2 + 8 + 3 1/2 + 11 = 37 with cutList[1] width 3.5; step counts match cutList; (b) all parts installed; (d) steps reach the finished table"
+      }
     }
   },
   "verdict": "Fix",
@@ -511,6 +515,13 @@
       "path": "steps[17].body",
       "quote": "mine is just resting on the legs...it can't really go anywhere with the runners sitting in the notches",
       "what": "No step tells the builder to set the top (with its braces) onto the leg assemblies; it is only described in passing in the attacher step; the optional upward pocket-hole attachment is likewise optional"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "attach with lots of wood glue and 2 1/2\" pocket hole screws!",
+      "what": "Wood glue used in steps[0],[1],[4]-[9],[17]-[19]; no materials line matches /glue/i."
     }
-  ]
+  ],
+  "consumableCleanup": "2026-10-19"
 }
