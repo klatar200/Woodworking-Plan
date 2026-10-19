@@ -352,3 +352,7 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 - **Q3 R1** gains a Fix level: Fix when the build can be completed without the missing content; Unpublish only when it can't.
 - **Q4** Stage 6 readers run on **Sonnet**; every Unpublish finding still goes to a fresh **Opus** verifier. A 10-plan Sonnet-vs-Opus comparison runs first.
 - **Core 40:** agent verdicts accepted as Keagan's. Known consequence: the brief's "zero false Ships from R1/R2/R8" measure is not human-checked.
+
+### 2026-10-19 — Plan-quality audit: consumables don't fail R14
+**Source:** Keagan, Stage 6 (R14(c) proved ambiguous: 70 of 136 R14 fails cited glue).
+**Binding:** Glue and other consumables (glue, tape, sandpaper, wood filler, finish) used in steps but missing from materials do **not** fail R14(c). Each is recorded as a `gaps` entry with `kind: "consumable"` and reported once as a catalog-wide item in Stage 8. R14(c) fails only on hardware and components. Earlier records are cleaned up to match.
