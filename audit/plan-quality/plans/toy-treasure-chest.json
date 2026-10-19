@@ -1,6 +1,6 @@
 {
   "slug": "toy-treasure-chest",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -31,48 +31,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[12].body",
-          "quote": "arched online to find ones we liked, but you can also visit our blog, www.tidbits-cami.com for links to the exact hardware and handles we used.\nIMPORTANT: Remember to take precautions to ensure childr",
-          "why": "matches \"our blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[12] 'you can also visit our blog ... for links to the exact hardware' is an optional pointer; hardware is listed generically in materials[5..10] and the build does not require the blog. Not a PDF/template/paid-plan dependency."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "ng a mark on the ends of the two boards cut 20\" x 2 3/8\" at 1 3/8\". Using a piece of 1/4\" trim at least 22\" long, anchor them at the 1 3/8\" mark and bend the board up to the top of the board. This wil",
-          "why": "cut sentence states 1 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": " 20\" x 2 3/8\" at 1 3/8\". Using a piece of 1/4\" trim at least 22\" long, anchor them at the 1 3/8\" mark and bend the board up to the top of the board. This will create an arc you can trace and cut to fo",
-          "why": "cut sentence states 22\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "1 3/8\". Using a piece of 1/4\" trim at least 22\" long, anchor them at the 1 3/8\" mark and bend the board up to the top of the board. This will create an arc you can trace and cut to form the round top.",
-          "why": "cut sentence states 1 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "enter supports the same way as the lid ends, just make them 1/2\" shorter to allow for the trim pieces. The mark on the end of the pieces will be at 1\" where you will anchor your trim pieces for scribi",
-          "why": "cut sentence states 1/2\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Build the 4 center supports the same way as the lid ends, just make them 1/2\" shorter to allow for the trim pieces."
         },
         {
-          "path": "steps[10].body",
-          "quote": " up over the center supports. Once these are in you can install the curved small lid trim pieces again with glue and nails where you can. The spacing between the small lid trim pieces is about 5 5/8\".",
-          "why": "cut sentence states 5 5/8\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[7].body",
+          "quote": "Take the 4 center supports and using clamps, force them into place thus bending the lid top"
         }
-      ]
+      ],
+      "reason": "The 4 center supports are cut by steps[7-8] but have no cut-list row (searched cutList[0..13] parts for support|center: only 'Lid center trim' and 'Lid end', no supports) and step 8 names no stock; size comes only from 'same way as the lid ends' and the viewed step-8 image (18.50\" long, 1 7/8\" crown, 7/8\" ends). The optional tray (steps[11]) is explicitly optional and sized 'to your own personal preferences', so not scored."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 rows are used: box (steps[0]), corner trim (1), small end/side trim (2), vertical trim (3), lid ends/sides/long trim/top (4-7), lid end/center/small trim (9-10)."
     },
     "R4": {
       "result": "pass",
@@ -83,22 +64,103 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 0.25x2.5, sheet-0.25, 1x4, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name no fastener sizes (only 'staples or nails', 'pocket hole jig'); materials[8] '5/8\" staples or nails' and materials[9] '1 1/4\" staples or nails' cover them. Pocket-hole screws are not listed anywhere (searched materials and steps for 'pocket'/'screw': only steps[0] 'pocket hole jig'); see gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers/images given: trim at 6 1/4\" mark (steps[2]); vertical trim spacing ~5 1/2\" (3); lid end arc 20\" x 2.4\" crown / 1.28\" ends and supports 18.50\" x 1 7/8\"/7/8\" (viewed images); small lid trim spacing ~5 5/8\" (10); tray rest strips 2 1/2\" down (11). Top/bottom trim bands are shown in the viewed step-3/4 images; hinge, hasp and handle placement is shown only in photos (not dimensioned)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'as seen in the picture' (steps[5]) and other references each have their own image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Take the 4 center supports and using clamps, force them into place thus bending the lid top in roughly the same curve as the ends of the lid."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Build the 4 center supports the same way as the lid ends"
+        }
+      ],
+      "reason": "steps[7] installs the 4 center supports; they are not built until steps[8]. Build can proceed by reading ahead and doing step 8 first."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Use the Kreg pocket hole jig to attach the bottom to the sides."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood Bottom; searched all steps, materials and the viewed step-1 image: no jig thickness setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Use glue and staples to connect the rest."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "For these smaller trim pieces I ripped down the 2 1/2\" trim pieces in half."
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Small end trim 6 x 0.25 x 1.5 x 14.5"
+        }
+      ],
+      "reason": "(c) Glue is used in steps[0],[1],[3],[5]-[7],[10]; searched materials[0..10]: no glue. (a) steps[2] rips the 2 1/2\" trim in half = 1 1/4\" but cut-list small trim rows (cutList[4],[5],[6]) are 1.5\" wide. Counts agree otherwise: 8 corner, 6+6 small trim, 8 vertical, 2+4+1 lid trim, box 24 - 1 1/2 = 22 1/2 = Bottom length, lid top 20 - 2 x 3/4 = 18.5."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/e4309ca270f484ca.webp",
+      "plans/ed1a0d36bf91c725.webp",
+      "plans/e0ca11466d8ba3b9.webp",
+      "plans/28b3391a84850648.webp",
+      "plans/a377d9f20c1bd48e.webp",
+      "plans/930efa50bf47c7b0.webp",
+      "plans/e0232486f3f8abab.webp",
+      "plans/7cc962e309f3fcc2.webp",
+      "plans/b7e68d5226347e6e.webp",
+      "plans/042a8d6183e8b555.webp",
+      "plans/7e961f14cbc2ef99.webp",
+      "plans/206df3b705217ac0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[10]",
+      "quote": "8 each | Corner protectors",
+      "what": "Materials list 8 corner protectors (and materials[7] a hasp with lock) but searched steps[0..12] for corner|protector: no step installs them; steps[12] only says 'Attach hardware and handles' and gives no positions for hinges, hasp or corner protectors."
+    },
+    {
+      "path": "materials",
+      "quote": "Box of 5/8\" staples or nails / Box of 1 1/4\" staples or nails",
+      "what": "Steps[0] uses pocket-hole joints to attach the Bottom but no pocket-hole screws are listed in materials (searched materials[0..10] for screw)."
+    }
+  ]
 }

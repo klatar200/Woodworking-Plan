@@ -1,6 +1,6 @@
 {
   "slug": "full-length-floor-mirror",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -80,13 +80,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "'The video below shows how' (steps[0]) refers to optional edge-softening ('may want to soften'); no PDF/Extras/paid dependency for any part or dimension."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs (steps[0]), Braces (1), Mirror Ledge (3), Cleats (5) are all cut-list rows; counts match 2, 4, 1, 4 blanks (viewed step-5 image: two glued pairs = 2 cleats)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used by steps[0],[1],[3],[5]."
     },
     "R4": {
       "result": "pass",
@@ -97,57 +99,90 @@
       "reason": "R5 precondition not met: 3 stock types (2x2, 1x2, 0.25x1.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[9].body",
-          "quote": "s into the wall anchors—you can use 1/4\" coarse-thread Kreg screws. The space is tight, though, so a drill won’t fit. You can use a 90° drill attachment, though, as shown below.\n\n**Tip:** Drive Right ",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+          "quote": "you can use 1/4\" coarse-thread Kreg screws."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1 1/4\" coarse-thread Kreg pocket-hole screws"
         }
-      ]
+      ],
+      "reason": "steps[9] names a 1/4\" screw; searched materials[0..8]: only 1 1/4\" coarse-thread pocket screws (26) and #8 x 1\" flat-head screws (2); no 1/4\" fastener. Likely a '1 1/4\"' typo, but as written the size is not in materials."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "o use one hole in each Cleat, but having two offers options. To secure your new dressing mirror to the wall, first mark the location of each cleat on the wall. If there’s no stud behind either cleat, ",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give brace positions (4 1/2\", 17 1/2\", 17 1/2\", 6\"), ledge flush at back with pilot holes 3\" in and 3/8\" from back edge, cleat 6\" long, 4\" from leg end, centered on leg, 10\" angle. Wall anchor positions are relational (at each cleat); garment hooks are optional ('If desired')."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Start by cutting two Legs to length from 2x2 pine, as shown in the cutting diagram. Better-grade 2x2s will have square corners that you may want to soften. You can either sand the corners, or round ov",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[9].body",
+          "quote": "You can use a 90° drill attachment, though, as shown below."
+        }
+      ],
+      "reason": "steps[9] has no image; searched the 5 unattached images (viewed): 4 lifestyle photos and one overall render, none shows a right-angle drill attachment. Steps 1, 3, 5 'cutting diagram' references have their own images; step 0's leg length is shown in the viewed render (68\"). Referenced content is a tool picture, so not structural."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs and braces cut (0-1), braces onto legs (2), ledge made and attached (3-4), cleats made and attached (5-6), finish, then mirror and hooks, then wall."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your Kreg Jig for 3/4\"-thick material' covers the braces; cleats are 0.75 thick (two 1 1/2\" x 7\" blanks edge-glued per viewed step-5 image) so the same setting applies."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut four Braces to rough length (7\") from 1x2 pine, as shown in the cutting diagram."
         },
         {
-          "path": "steps[0].body",
-          "quote": "g two Legs to length from 2x2 pine, as shown in the cutting diagram. Better-grade 2x2s will have square corners that you may want to soften. You can either sand the corners, or round over the edges us",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[1]",
+          "quote": "Brace 4 x 0.75 x 1 x 16 (corrected row [0.75, 1.5, 16.125])"
         },
         {
           "path": "steps[9].body",
-          "quote": "rill won’t fit. You can use a 90° drill attachment, though, as shown below.\n\n**Tip:** Drive Right When Space is Tight When space is tight, it can be difficult or impossible to position a drill and a l",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "If there’s no stud behind either cleat, install a wall anchor at each location."
         }
-      ]
+      ],
+      "reason": "(a) Step text cuts Braces to 7\" but cut list row (corrected) and the viewed step-1 image say 16 1/8\"; 7\" is the Cleat blank length (steps[5]). 4 x 16 1/8 + 4 x 7 = 92.5\" + kerf fits one 96\" 1x2. (c) Wall anchors used in steps[9]; searched materials[0..8]: none listed. Other counts agree (2 legs, 4 cleat blanks, 1 ledge, 26 pocket screws, 2 hooks)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/1805a921ffab9e6b.webp",
+      "plans/322d8d0bd98ab376.webp",
+      "plans/675a7eaf198251c6.webp",
+      "plans/2bfb52b20bbcf386.webp",
+      "plans/094643475c767566.webp",
+      "plans/1be1e9e096995b15.webp",
+      "plans/72ccf05780e2cd3d.webp",
+      "plans/a2aca0894cf9c876.webp",
+      "plans/eeddeb8b5e480bf6.webp",
+      "plans/826125dad892e995.webp",
+      "plans/c5141f3891acebcc.webp"
+    ]
+  }
 }

@@ -1,26 +1,21 @@
 {
   "slug": "ultimate-folding-tailgate-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "www.LazyGuyDIY.com is named only for 'optional epoxy filled field lines' (steps[0]) and an 'optional peg support' bonus step (steps[5]); the build is complete without either."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "On only one of the table halves, cut a 2\" x 4\" to 23\". Attach inset 3/4\" from end opposite of condiment bin. (optional peg support shown, visit www.LazyGuyDIY.com for bonus step).\nCut (2) 2\" x 2\" to 2",
-          "why": "cut sentence states 23\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Parts cut by steps are in the cut list or the step names the stock: the 2x4 'base' (steps[5] 'cut a 2\" x 4\" to 23\"') has no cut-list row but is cut from listed 2x4 (materials[4]); main legs, secondary legs, bins, tops, ends and sides are all cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used by steps[0]-[9]; Food Bin Cut Out = the bin bottom/lid piece of steps[2],[8]."
     },
     "R4": {
       "result": "pass",
@@ -40,57 +35,126 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 7 stock types (sheet-0.75, 1x6, 1x2, 1x3, 2x4, 2x2, 1x4); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut two sheets of 3/4\" plywood to 24\" x 36\" Pre-drill 3/4\" pocket holes to attach sides with 1-1/4\" pocket screws in step 2.\nFor optional epoxy filled field lines, visit www.LazyGuyDIY.com",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "For each half of the table, cut (2) 1\" x 6\" x 25.50\" & (2) 1\" x 6\" x 36\". Pre-drill 3/4\" pocket holes for 1-1/4\" pocket screws. Attach to 24\" x 36\" plywood top for both tables.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": " half, cut a 1\" x 4\" to 17\" (bottom of condiment bin). Cut (2) 1\" x 3\" to 17\" (sides) and (2) 1\" x 3\" x 5\" (ends). Assemble condiment bin and attach to corresponding cut out with 1-1/4\" pocket screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "For each half of the table, cut (2) 1\" x 6\" x 25.50\" & (2) 1\" x 6\" x 36\"."
         },
         {
           "path": "steps[4].body",
-          "quote": "ach on end with condiment bin). Attach legs using 1/2\" x 4\" bolt with fasting nut and washer.\nCut piece of 1\" x 6\" x 24\" and attach to pair of legs 1\" from the bottom. Optional cutout for hand hold wi",
-          "why": "4\" bolt — no material line lists a 4\" fastener"
+          "quote": "Cut piece of 1\" x 6\" x 24\" and attach to pair of legs 1\" from the bottom."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x6 96\""
         }
-      ]
+      ],
+      "arithmetic": "Every part names its stock in the steps. 1x6: 4 x 25.5 + 4 x 36 + 2 x 24 = 102 + 144 + 48 = 294\" (before kerf); bought 3 x 96 = 288\" (materials[1] qty 3); 294 > 288. 1x2 (steps[8], [5]): 4 x 19 + 4 x 11.75 + 1 x 21 = 76 + 47 + 21 = 144\" plus at least 9 parts - 2 boards = 7 cuts x 1/8 = 0.875\"; bought 2 x 72 = 144\" (materials[3] qty 2); 144.875 > 144.",
+      "reason": "Total part length for 1x6 exceeds the length bought even with zero kerf; 1x2 is short once kerf is added."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach legs using 1/2\" x 4\" bolt with fasting nut and washer."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "1/2\" x 4' Bolt"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Pre-drill 3/4\" pocket holes for 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Steps use a 1/2\" x 4\" bolt, materials[8] lists a 1/2\" x 4' (48\") bolt. Steps also use 1-1/4\" pocket screws (steps[0],[1],[3]) and wood screws for the piano hinge (steps[6]); searched materials[0..12]: no pocket screws and no wood screws."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "3.50\" from sides. Hole will be 17\" x 3.50\". Discard cut out. Food storage is inset 11.75\" from opposite plywood edge and 3.25\" from sides. Cut out will be 17.50\" x 11.75\". Save cut out to use as lid. ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/323581a72e4baa40.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Cut-out positions are given in steps[2] and the viewed image (3/4\", 3 1/2\", 17\", 3 1/4\", 17 1/2\"); secondary-leg base inset 3/4\", cross brace 1\" from bottom, leg hole 2.50\" from end (steps[4],[5],[9]). Pivot-bolt hole position on the side, bottle opener and hinge placement are shown only in the viewed photos/render (not dimensioned)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "'shown' references each have their own step image (viewed 2, 4, 5)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach legs using 1/2\" x 4\" bolt with fasting nut and washer."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "For each table half, cut (2) 2\" x 4\" to 29.50\". Pre-drill a 1/2\" hole centered 2.50\" from end of rounded over end."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "On the inside of the food storage bin (lined up with the magnets attached on the bottom of the lid) attach a scrap piece of 1\" x 2\" with an inset 3/4\" magnet."
+        }
+      ],
+      "reason": "Main legs are attached in steps[4] but cut, rounded and drilled in steps[9]; the food storage bin used in steps[7] is not built until steps[8]. Build can proceed by reading ahead."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and steps[1] state 'Pre-drill 3/4\" pocket holes' for the 3/4\" plywood and 1x stock; condiment bin joints (steps[3]) use the same 3/4\" stock."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Food storage is inset 11.75\" from opposite plywood edge and 3.25\" from sides."
+        },
+        {
+          "path": "steps[2].image",
+          "quote": "11 1/4\" and 11 3/4\" and 23\" (labels in viewed image)"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "using a 3/4\" forstner bit drill down to a depth to allow 3/4\" magnet to be inserted and attached with adhesive."
+        }
+      ],
+      "reason": "(a) Text puts the food cut-out 11.75\" from the opposite edge; viewed step-2 image labels that offset 11 1/4\" and the cut-out length 11 3/4\" (11 1/4 + 11 3/4 = 23). (c) 3/4\" magnets and adhesive are used in steps[7]; searched materials[0..12]: neither listed. Other counts agree: 4+4 ends/sides, 4 main legs (steps[9]), 2 secondary legs, 1 cross brace, 4+4 food bin pieces."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/323581a72e4baa40.webp",
+      "plans/59f6917610a147de.webp",
+      "plans/d4e86dd88778808a.webp",
+      "plans/65d61dab6bfd6420.webp",
+      "plans/cc1ec3bfd27ed369.webp",
+      "plans/9fdf5b66944861d0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[12].name",
+      "quote": "Piano Hinge",
+      "what": "No piano hinge length is given in materials or steps[6] ('Attach both halves using piano hinge and wood screws'); searched materials and steps for hinge length/inch value: none. Magnet quantity (steps[7]) is also not stated."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "bookcase-with-toy-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,37 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only Sides and Mid Panel have a cut step (steps[0]); the other cut-list parts (Top, Front, Bottom, Support, Shelf, Shelf Front, Back) are all in the cut list and are labeled with their sizes in the viewed step images 2-4 (e.g. '10-1/2\" x 40-1/2\"', '2-3/4\" x 16-1/2\"', '2\" x 40-1/2\"')."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Top",
-          "why": "no step mentions it (searched steps for top)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Front",
-          "why": "no step mentions it (searched steps for front)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Bottom",
-          "why": "no step mentions it (searched steps for bottom)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Support",
-          "why": "no step mentions it (searched steps for support)"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Back",
-          "why": "no step mentions it (searched steps for back)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Top/Front/Bottom/Support/Back are not named in step text but each appears with its cut-list size as a callout in the viewed step images (Top labeled in step-3 image; 16-1/2 x 40-1/2 Bottom, 10-1/2 x 40-1/2 Front, 2-3/4 x 16-1/2 Support, 19-7/8 x 34-1/2 Back panel)."
     },
     "R4": {
       "result": "pass",
@@ -51,23 +26,55 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 3.25x48, 0.75x48); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps mention only 1-1/4\" pocket screws and 1-1/4\" brad nails; both are in materials[3], materials[4]; no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are drawn in the viewed assembly images; steps[4] image gives the 13\" shelf dimension; remaining placements are relational (flush/against panels). Trim positions are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "Every 'as shown' step has its own step image (all viewed); step 1 image carries the side/mid-panel profile diagram with dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides and mid panel cut (steps[0]), carcass assembled (steps[1-2]), shelf assembled then installed with trim last (steps[3-4])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes and begin assembly as shown using 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" plywood; searched all steps, description, materials, notes and the 4 viewed assembly images for a jig thickness setting: none stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Shelf qty 2 (9.5x19.875) and Shelf Front 2x40.5 match the step-4 image callouts '9-1/2\" x 19-7/8\"' and '2\" x 40-1/2\"'; shelf is installed in steps[4]; trim installed in steps[4]; materials list baseboard trim, moulding, pocket screws, brad nails. Steps end with the finished cabinet."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/a0583fad7a2d64fa.webp",
+      "plans/d34b259230364438.webp",
+      "plans/6ca8d4eb3cdffeac.webp",
+      "plans/686ddc978ed62a2d.webp",
+      "plans/efb73390cee3e4a4.webp",
+      "plans/4b4cd10cc64171a0.webp"
+    ]
+  }
 }

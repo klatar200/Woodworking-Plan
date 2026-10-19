@@ -1,6 +1,6 @@
 {
   "slug": "flexible-shelving-for-your-home-office-or-library",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -79,43 +79,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "t screws and wood glue. Of the fourteen shelves, six are fixed (held in place with pocket screws), two upper backs, two lower backs and four aprons also need pocket holes. Please see attached diagram.",
-          "why": "matches \"see attached\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": " edging might be slightly wider than the plywood. If that is the case you can remove the excess using a hand plane or a router with a piloted flush trim bit. (See Extras section for explanations/demo)",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "plywood is often slightly narrower than the stated size, so the attached edging might be slightly wider than the plywood. If that is the case you can remove the excess using a hand plane or a router w",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "'see attached diagram' (steps[3]) is the step's own image (viewed). The one 'Extras section' mention (steps[4]) is an optional demo of trimming excess edging; the text already says to use a hand plane or piloted flush trim bit. No PDF or paid page."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "t. By cutting an additional plywood side and wood edging you can make two 37 7/8\" wide bookshelves. The plan can also be modified to add a third or fourth shelving unit if you have a big wall to fill.",
-          "why": "cut sentence states 37 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "For the 75\" wide shelving unit cut the sides, shelves, front/back aprons, lower backs and upper backs from the three 3/4\" plywood sheets. If you want to make two smaller units cut the optional side fr",
-          "why": "cut sentence states 75\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '37 7/8\"' and '75\"' are overall widths, not cut parts; every part cut in steps[1]-[2] (sides, shelves, aprons, upper/lower backs, shelf and side edging) is a cut-list row, with the viewed step-1 layout giving 90\", 10\", 36 3/8\", 2 1/4\", 6\", 14\"."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: plywood parts (steps[1]), edging (steps[2],[4]), optional side and optional side edging (steps[0],[1],[2]); counts 14 shelves = 6 fixed + 8 adjustable (steps[3],[8])."
     },
     "R4": {
       "result": "pass",
@@ -126,23 +99,60 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x8, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name '1 1/4\" coarse pocket screws' (steps[6]) and '1 1/4\" brad nails' (steps[4]); materials[3] 'Kreg 1 1/1/4\" coarse pocket screws' and materials[6] '1 1/4\" brad nails'. No second size for the same use. Garbled size in materials[3] recorded under gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Fixed-shelf, apron and back positions are fixed by the part sizes (upper back 6\", lower back 14\", apron 2 1/4\") and shown in the viewed step-6 assembly image; shelf-pin hole columns are shown on the viewed step-5 image and adjustable shelf spacing is 'adjust their spacing to your needs'; radius is 3/4\" (steps[7])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "'see attached diagram' (steps[3]) and other references each have their own image (viewed 1, 3, 5, 6)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Plywood and edging cut (1-2), pocket holes and edging (3-4), shelf pin holes (5), assembly (6), radius on side edging after assembly (7), adjustable shelves (8), finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "The shelving unit(s) are held together with pocket screws and wood glue."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood (steps[3], [6]); searched all steps, materials and the viewed step-3 and step-6 images: no jig thickness setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Widths agree: 3 x 3/4 + 2 x 36 3/8 = 75\" and 36 3/8 + 2 x 3/4 = 37 7/8\" (steps[0]); 14 shelves = 6 fixed + 8 adjustable, 8 x 4 = 32 shelf pins (materials[5]); 14 shelf edgings and 3 side edgings match steps[2]; glue and brad nails are in materials; steps end with adjustable shelves and finish."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/c2fc29d495469660.webp",
+      "plans/e4a3da5cbf7c77c0.webp",
+      "plans/f921ed250c6b704b.webp",
+      "plans/f3ed47cb8f48582e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[3].name",
+      "quote": "Kreg 1 1/1/4\" coarse pocket screws",
+      "what": "Screw length is garbled ('1 1/1/4\"'); steps[6] says '1 1/4\" coarse pocket screws'."
+    }
+  ]
 }

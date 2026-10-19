@@ -1,6 +1,6 @@
 {
   "slug": "storage-ottoman",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -191,32 +191,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Cut four 23\"-long pieces of iron-on oak-veneer edging and apply one piece to the top edge of each Side. Trim ends and edges of the edging flush using either a veneer trimmer or a sharp utility knife. ",
-          "why": "cut sentence states 23\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "four Cleats, mitering each end at 45°, and making the cleats 1/16\" shorter than the inside distance you measured. Sand the Cleats smooth, and then glue them in place on the top assembly, as shown. Cla",
-          "why": "cut sentence states 1/16\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "iece of 4\"-thick cushion foam to 22\" x 22\". Then cut a 27\" x 27\" piece of 1/2\"-thick batting, and create 2 1/2\" x 2 1/2\" notches in the corners. Select a piece of upholstery fabric you like, and cut i",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "a 27\" x 27\" piece of 1/2\"-thick batting, and create 2 1/2\" x 2 1/2\" notches in the corners. Select a piece of upholstery fabric you like, and cut it to 36\" x 36\". Then lay the cushion parts out to pre",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '23\"' edging, 1/16\" cleat trim and cushion sizes are materials (veneer roll, batting, foam, fabric) or the Cleat row (cutList[6] 21 15/16 = 22 - 1/16); every cut part (Side, Trim Rail, Bottom, Leg, Top, Cushion Rail, Cleat, Cushion Panel) is a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used: Side/Trim Rail (steps[0-1]), Bottom (2), Leg (4), Top (6), Cushion Rail (7), Cleat (8), Cushion Panel (10)."
     },
     "R4": {
       "result": "pass",
@@ -227,36 +207,67 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, 0.5x5.5, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" coarse/fine pocket-hole screws (steps[3],[5],[7]; materials[4],[5]), #8 x 1 1/4\" brass flathead screws (steps[12]; materials[6]) and 5/16\" staples (steps[11]; materials[13]); no unlisted size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give pocket-hole layout on sides/bottom/top, legs flush at top with 2\" below the sides (12 3/4 - 10 3/4), trim rail flush with lower edge, cleats along the Top edges as shown, pilot holes near corners; cushion lines '3\" in from the edges' (steps[10])."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "Cut the Cushion Panel to size from 1/2\" plywood, as shown in the cutting diagram. On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "on Panel to size from 1/2\" plywood, as shown in the cutting diagram. On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a piece of 4\"-",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "Cut the Cushion Panel to size from 1/2\" plywood, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[10] has no image; the 6 unattached images (viewed) are 4 photos, an overall 25\" x 25\" x 18\" render and an exploded view: none is a cutting diagram. Cushion Panel size is in cutList[7] (21.875 x 21.875) so the build is not blocked. Other 'cutting diagram' steps (0, 2, 4, 6, 7) have their own dimensioned images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides dressed (0-1), bottom (2), assembled (3), legs made and attached (4-5), top and rails and cleats (6-8), finish (9), cushion made then attached (10-12)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'pocket-hole jig set for 3/4\" material'; all pocket-hole parts (Sides, Bottom, Top) are 3/4\" plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts/sizes agree: 4 Sides 22 x 10 3/4 (viewed), legs 12 3/4 vs sides 10 3/4 = 2\" below (viewed step-5 image), cushion rails 25\" long-point - 3 = 22\" = Top 22 x 22, cleat 22 - 1/16 = 21 15/16, 4 x 23\" edging = 92\" <= 8' roll; glue, staples, brass screws, foam, batting, fabric, edging are all in materials; the steps end with the cushion attached and the lid placed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/1f6e153c7ea3d77e.webp",
+      "plans/e0ff8a31fb949818.webp",
+      "plans/7a0a9c5388312749.webp",
+      "plans/427dbc5623df4254.webp",
+      "plans/50c1b13c68b49157.webp",
+      "plans/4ea7c66d7f26dbed.webp",
+      "plans/307843b30a1d9176.webp",
+      "plans/656084092d97430b.webp",
+      "plans/e961795fbbb8751c.webp",
+      "plans/506cf73e07ada705.webp",
+      "plans/7be460b565f4f4f5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a piece of 4\"-thick cushion foam to 22\" x 22\".",
+      "what": "Sentence is garbled: 'These will be' is cut off and runs into the foam-cutting sentence, so what the drawn lines are for is not stated (they are later used as the fabric staple line, steps[11])."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "wall-mounted-wine-bar",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Cut 2 pieces of 1x8 to 3-7/8\" and rip to 5-5/8\". Measure in 2-13/16\" and make a mark. Temporarily clamp a piece of scrap wood and use a 1-1/2\" diameter Forstner bit to drill a hole. On the bottom meas",
-          "why": "cut sentence states 3-7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Cut 2 pieces of 1x5 to 9-3/8\" and rip to 3-7/8\". Drill pocket holes in each end. Clamp the front to the sides and attach using 1-1/4\" pocket screws. Repeat for the other bottle/glass holder assembly.",
-          "why": "cut sentence states 3-7/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '3-7/8\"' cuts (steps[6],[7]) are the Bottle/Glass Holder Side and Front rows (cutList[5],[6]); every cut part is a cut-list row. The size disagreement is scored under R14."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used: Back (steps[0]), Middle Upright (1), Bottle Holder Front/Side/Bottom (2,3,5), Bottle/Glass Holder Side/Front (6,7), Glass Holder (9,10). Counts agree: 3 + 2 fronts, 4 + 2 sides, 5 bottoms (2+2+1), 4 glass holders."
     },
     "R4": {
       "result": "pass",
@@ -36,48 +26,97 @@
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1-1/4\" pocket screws (steps[0],[4],[5],[7],[8],[12],[13]; materials[4]), 1-1/4\" wood screws (steps[11],[14]; materials[5]) and 2-1/2\" wood screws (steps[9],[10]; materials[6]); no unlisted size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "e the sides and middle uprights onto the back with a pencil. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a78cc82638a3a11.webp"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": " pencil. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes into the assemblies. Attach the assemblies using 1-1",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a78cc82638a3a11.webp"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "bottom. Lightly trace the sides with a pencil onto the back. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24d0b6d09e9c999a.webp"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "o the back. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes into the holder. Attach using 1-1/4\" wood screws.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24d0b6d09e9c999a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give hole positions (2 13/16\" in, 1 1/2\" dia; 7/8\" up and 1 1/4\" in, 1\" dia), back layout (21\" x 22 3/4\"), middle holder 8\" up (step-14 image), bottom assembly flush with bottom, top assembly's right side 1/2\" down from top (steps[10],[11]); left/right placement of the assemblies on the back is shown in the viewed finished-project photos but not dimensioned."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Every step has its own image (viewed 1-16) and no 'as shown' references point elsewhere."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back made (0), holder parts cut and assembled (1-8), glass holders attached to back before the assemblies (9-10), assemblies then middle holder attached (11-14), hanger, finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes, apply glue to the edges, clamp and attach using 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock throughout (steps[0],[2],[5],[7],[8],[12],[13]); searched all steps, materials and the viewed step images: no jig thickness setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut 2 pieces of 1x8 to 3-7/8\" and rip to 5-5/8\"."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Cut 2 pieces of 1x5 to 9-3/8\" and rip to 3-7/8\"."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Bottle/Glass Holder Side 2 x 0.75 x 3.75 x 5.625"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Lightly trace the sides and middle uprights onto the back with a pencil."
+        }
+      ],
+      "reason": "(a) Steps and the viewed step-6 image give the bottle/glass holder side and front as 3 7/8\" (3.875) but cut-list rows 5 and 6 say 3.75\" (no importer diff recorded). (b) The 2 Middle Uprights are cut in steps[1] and only mentioned again as 'trace the sides and middle uprights' in steps[11]; searched steps[0..16] for 'upright': no step says to attach them or where they go (likely)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/d51a42aeec20a3b3.webp",
+      "plans/a4b4dff3e65a5cb1.webp",
+      "plans/23bc6caee0bee525.webp",
+      "plans/4cc5aff88ab52ae0.webp",
+      "plans/878cf54f97ad5174.webp",
+      "plans/52fffd4278eb9f45.webp",
+      "plans/d499a0c11c4523e3.webp",
+      "plans/155d26a23618833b.webp",
+      "plans/cab9a5c82148cf94.webp",
+      "plans/be23b412025cac86.webp",
+      "plans/d7d346660d070883.webp",
+      "plans/3a78cc82638a3a11.webp",
+      "plans/ae103678c0d93a69.webp",
+      "plans/1d128213ed264024.webp",
+      "plans/24d0b6d09e9c999a.webp",
+      "plans/52ff79dde1e052c7.webp",
+      "plans/6cf9576b91358e2c.webp",
+      "plans/9d59e6731bcd660d.webp",
+      "plans/5d16cb4eb513f538.webp",
+      "plans/9dce49de35dc707e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4]",
+      "quote": "40 each | 1-1/4\" pocket screws",
+      "what": "Viewed images show pocket holes: back 5 joints x 5 holes = 25 (step-1 image), 3 bottle-holder fronts x 4 = 12 ('Make 3', 2 per end), 5 bottoms x 4 = 20 (step-5 image); 25 + 12 + 20 = 57 holes before the glass-holder fronts and sides, against 40 pocket screws listed."
+    }
+  ]
 }

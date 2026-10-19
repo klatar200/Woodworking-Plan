@@ -1,6 +1,6 @@
 {
   "slug": "hanging-storage-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -167,17 +167,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut or assembled has a cut-list row: sides (steps[0]), back pieces (1), top/bottom shelves (3, 5), dividers (4), bin sides/bottom/back (6-7), face frames (8)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Shelves' (cutList[3], 2 x 9.25 x 29.25) are the 'top shelf' (steps[3]) and 'bottom shelf' (steps[5]); viewed images label 29 1/4\" top shelf. All other rows used."
     },
     "R4": {
       "result": "pass",
@@ -185,51 +180,81 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x12, 1x6, 1x10, 1x2, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Stock named per part only partly (steps[0],[1],[8] name 1x12/1x6/1x2; shelves/dividers stock unnamed) and materials[3] 'Board, 1x2 72\"' has quantity 1 which may be an import default. For reference: face-frame rows cutList[7],[8] = 6 x 6.875 + 6 x 6 = 77.25\" (+ 12 cuts x 1/8 = 1.5\") vs 72\" bought; not scored."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "th boards to 29 1/4'' long. Rip your 1x6 board so that it is 4 3/4'' wide. Then using glue and pocket hole screws attach your 1x12 and ripped 1x6 board together to create the 29 1/4''x16'' back piece.",
-          "why": "4 3/4\" screw — no material line lists a 4 3/4\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "plywood for my storage bins, because I needed to use it up. You can use 3/4''or 1/2'' plywood or any scrap wood to build these bins. Using glue and 2'' finish nails attach the two sides to the bottom.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "Using glue and 2'' finish nails attach the two sides to the bottom."
         },
         {
           "path": "steps[8].body",
-          "quote": "Using 1x2's and 3/4'' pocket holes and 1 1/4'' pocket hole screws and glue, create a face frame for the open front of the bin. Attach hardware cloth to the back of the frame with staples. Then glue an",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "1 1/4'' pocket hole screws and glue, create a face frame for the open front of the bin. Attach hardware cloth to the back of the frame with staples."
+        },
+        {
+          "path": "steps[1].image",
+          "quote": "3/4\" pocket holes and 1 1/2\" pocket hole screws (text in viewed image)"
         }
-      ]
+      ],
+      "reason": "Steps/images use 2\" finish nails, 1 1/4\" finish nails (step-5 image), 1 1/4\" pocket hole screws and 1 1/2\" pocket hole screws (back piece, step-2 image) and staples; searched materials[0..8] (boards, plywood, knobs, hooks, hardware cloth, French cleat): no screws, nails or staples at all. The back-piece image gives 1 1/2\" pocket screws where steps and other images give 1 1/4\" for 3/4\" stock."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "the two boards to 10''. This will give you two 10''x16'' boards. Referring to the photo, measure and mark on your boards where the semi circles start by using the dimensions given. Using a circular ob",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ac8ca83645f46a62.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give semicircle layout (2 1/2\", 2 1/2\", 4\", 4 1/2\", 5 1/2\"), divider spacing 9 1/4\" and height 7\", bottom shelf offsets 3 3/4\"/4\"; hooks are shown evenly under the bins (viewed step-9 image) and knobs are on bin fronts; French cleat is a purchased hanger ('studs and anchors' relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'Referring to the photo' / 'Pictured' steps have their own images (viewed steps 0, 7)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides and back made (0-1), joined (2), top shelf (3), dividers upside down (4), bottom shelf (5), bins built then framed and fronted (6-8), finish and hang (9)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Pocket-hole thickness stated: steps[8] '3/4'' pocket holes' and viewed step-2, step-4, step-5 image text '3/4\" pocket holes' for all pocket-hole joints (all 3/4\" stock)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Attach hardware cloth to the back of the frame with staples."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Using glue and pocket hole screws attach the back to the two side pieces."
+        }
+      ],
+      "reason": "(c) Staples (steps[8]) and glue (steps[1]-[8]) are used; searched materials[0..8]: neither listed. Counts agree: 3 bins x (2 sides + back + bottom + 2+2 frame pieces); back 11 1/4 + 4 3/4 = 16\" (viewed step-2 image); 3 x 9 1/4 + 2 x 3/4 = 29 1/4\" between sides."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/ac8ca83645f46a62.webp",
+      "plans/5be365e6e520baee.webp",
+      "plans/eef6cff7966a5faf.webp",
+      "plans/10ecc231b357bced.webp",
+      "plans/aec74168bce5a0bb.webp",
+      "plans/b444aae2b29e7a6a.webp",
+      "plans/3cbbd480a1174b11.webp",
+      "plans/58e4cc2fa7a7c62b.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "built-in-closet-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -295,26 +295,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Drill pocket holes in the parts on the attached diagram in the approximate locations shown.",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Drill pocket holes in the parts on the attached diagram in the approximate locations shown.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "'the attached diagram' in steps[0] and steps[1] is the step's own image (both viewed: pocket-hole layouts with dimensions); no PDF/Extras/external dependency. Search: no match for extras|pdf|full plans|http in any field."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No step cuts a part that is missing from the cut list: parts named in steps (top/bottom/shelves, sides, wall braces, drawer parts, face frame horizontals/verticals, slide mounts) are all cutList rows; Face Frame Bottom (cutList[9]) is labeled in the viewed step-0 diagram. Optional shelf steps[11-13] are explicitly flagged 'not included in Parts/Cut List' and closet-size dependent (description: 'each closet vary in size')."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 15 cut rows are used: carcass (steps[2]), braces (steps[3]), face frame (steps[4]), slide mounts (steps[6]), drawer parts (steps[7-8]), fronts (steps[10]); counts match (4 top/bott/shelves, 2 braces, 8 mounts = 4 drawers x 2, 3 LG + 1 SM fronts/bottoms)."
     },
     "R4": {
       "result": "pass",
@@ -325,40 +315,88 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "ond shelf with 4 x 1 1/4\" pocket hole screws. Attach to the wall into at least one stud using 2 1/2\" construction screws (you can do this step later if you are not ready to install into position yet).",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "using 2 1/2\" construction screws"
         },
         {
           "path": "steps[10].body",
-          "quote": " drawers is to put double-sided tape on the drawer box and place it into position. Then open it and use 2 1 1/2\" pocket hole screws to screw through the inside of the drawer and into the drawer front.",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "quote": "use 2 1 1/2\" pocket hole screws to screw through the inside of the drawer and into the drawer front."
         },
         {
-          "path": "steps[10].body",
-          "quote": " drawers is to put double-sided tape on the drawer box and place it into position. Then open it and use 2 1 1/2\" pocket hole screws to screw through the inside of the drawer and into the drawer front.",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "path": "materials[6].name",
+          "quote": "1 1/4\" Kreg Pocket Hole Screws"
         }
-      ]
+      ],
+      "reason": "Searched materials[0..13]: no 2 1/2\" construction screws; the only pocket-hole screw listed is 1 1/4\", but steps[10] uses 1 1/2\" pocket hole screws for the same pocket-hole use that steps[2-7] do with 1 1/4\"."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give shelf spacing (13, 13, 34, 2 3/4), brace positions (3 1/2\" bands, top and under 2nd shelf), face-frame rail spacing (13, 12 1/4, 4 3/4, 8, 8, 8), slide-mount heights (3 1/4, 6 1/2, 6 1/2, 4) and drawer-front sizes with centered knobs."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "All 'as shown'/'attached diagram' steps have their own image, viewed for steps 0, 1, 2, 3, 4, 6, 10."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled (0-1), carcass (2), braces (3), face frame built then attached (4-5), slide mounts after face frame (6), drawers built/bottomed (7-8), slides (9), fronts (10); optional shelves last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the parts on the attached diagram in the approximate locations shown."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood and 3/4\" 1x2 face-frame parts; searched all steps, materials and the viewed step-0/1/2 images: no jig thickness setting stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "A trick I use to get accurate spacing around my drawers is to put double-sided tape on the drawer box and place it into position."
+        }
+      ],
+      "reason": "(c) double-sided tape used in steps[10]; searched materials[0..13]: not listed. Otherwise sizes agree: carcass 23 3/4 + 2 x 3/4 = 25 1/4 = face-frame 22 1/4 + 2 x 1 1/2; box 65 3/4 vs frame 66 1/2 (3/4\" overhang stated in steps[5]); rail openings in viewed step-4 image sum 13+12 1/4+4 3/4+8+8+8 = 54, + 6 x 1 1/2 + 3 1/2 = 66 1/2."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/6dbd67e282243cc1.webp",
+      "plans/1f2a5e78998ad217.webp",
+      "plans/88fa00f80b1207aa.webp",
+      "plans/6bf5a5cc9e373ad7.webp",
+      "plans/314a08f33789fe36.webp",
+      "plans/799e300c1fa1b6e7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[12]",
+      "quote": "3 each | 1 1/4\" Hardwood Dowels",
+      "what": "Materials list 3 hardwood dowels and 3 '1 5/16-inch Heavy Duty Closet Pole Sockets' (materials[13]); searched steps, description and cut list for /pole|socket|dowel|rod/i: no step builds or installs a closet pole and no cut-list part is a dowel."
+    }
+  ]
 }

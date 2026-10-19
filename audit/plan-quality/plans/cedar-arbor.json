@@ -1,6 +1,6 @@
 {
   "slug": "cedar-arbor",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut/assemble is a cut-list row: Posts and Filler Posts (steps[0]), Narrow/Wide Side Slats (steps[1]), Post Beams/Top Beams (steps[5]), Top Slats (steps[9]); counts match (4+2, 14, 16, 4, 6, 8)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 cut rows are used by steps[0], [1], [5], [8], [9]."
     },
     "R4": {
       "result": "pass",
@@ -193,56 +195,89 @@
       "reason": "R5 precondition not met: 4 stock types (4x4, 2x2, 1x4, 2x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use '2 1/2\" exterior trim-head screws' (materials[5] '#8 x 2 1/2\" exterior trim-head woodscrews') and '1/4\" x 3\" exterior construction lag screws' (materials[6]); no other fastener size in steps."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e posts are aligned so you’ll end up with a square assembly. A great way to check is to measure from the top corner of one post to the bottom corner of the other. Then take the same measurement at the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/999da319a35ed372.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give: post spacing 23\", first slat 11\" down, slat pitch pattern (3 1/2, 1 1/2), hole layout 45 1/2\" x 26 1/2\" with 8-10\" dia x 18-24\" deep, beam overhangs 9 1/2\" / 10 1/4\", top-slat inset 1 1/2\" and 5\" pitch, filler post 10 1/4\" from beam end."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut four Posts to length from cedar 4x4s, as shown in the cutting diagram. Also cut two Filler Posts. The Filler Posts will be used later so set them aside for now.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut four Posts to length from cedar 4x4s, as shown in the cutting diagram. Also cut two Filler Posts. The Filler Posts will be used later so set them aside for now.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Posts to length from cedar 4x4s, as shown in the cutting diagram."
         },
         {
           "path": "steps[1].body",
-          "quote": "Cut 14 Narrow Side Slats to length from 2x2 cedar boards, and cut 16 Wide Side Slats to length from 1x4 cedar boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "cut 16 Wide Side Slats to length from 1x4 cedar boards, as shown in the cutting diagram."
         },
         {
-          "path": "steps[1].body",
-          "quote": "Cut 14 Narrow Side Slats to length from 2x2 cedar boards, and cut 16 Wide Side Slats to length from 1x4 cedar boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[9].body",
+          "quote": "Cut eight Top Slats from 2 x 2 boards, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Steps 0, 1, 5, 9 cite a 'cutting diagram'. Steps 0-1 have no image; step 5/9 images (viewed) are the beam layout and top-slat layout, not a cutting diagram. All 5 unattached images viewed (4 photos + 1 overall-dimension render): none is a cutting diagram. Part lengths are in the cut list, so the build is not blocked."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Posts/slats cut (0-1), panels built flat (2-3), set in holes (4), beams cut and attached post beams then top beams then middle assembly then top slats (5-9), stain last."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; screws and lags with pilot holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Place a few inches of pea gravel or rock in the bottom of each hole for drainage"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "then backfill the post holes with rock, or with concrete for a more permanent anchor."
+        }
+      ],
+      "reason": "(c) Gravel/rock (and optional concrete) used in steps[4] and steps[6]; searched materials[0..8] (4x4, 2x2, 1x4, 2x6, trim screws, lags, bit set, stain): none listed. Other items agree: lengths from viewed images (beam 68 = 49 + 2 x 9 1/2; top beam 50 1/2 = 30 + 2 x 10 1/4; filler 11 = 2 x 5 1/2), counts 7 narrow + 8 wide per panel match viewed step-3 image."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-04",
+    "imagesViewed": [
+      "plans/999da319a35ed372.webp",
+      "plans/403bcb3d158a2095.webp",
+      "plans/30c685a98f4ef5a0.webp",
+      "plans/3ddf1ea11a463585.webp",
+      "plans/15b089996579c48a.webp",
+      "plans/923a050271f832c7.webp",
+      "plans/85f1cce8666b13aa.webp",
+      "plans/725eb23acf0388b5.webp",
+      "plans/9c4cbf933e47adc2.webp",
+      "plans/520bcddda63996a2.webp",
+      "plans/aafe2428fbbfad36.webp",
+      "plans/60c12c47c55f41d6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[6]",
+      "quote": "71 each | 1/4\" x 3\" exterior construction lag screw",
+      "what": "Lag screws used: steps[6] 'eight ... lag screws' x 4 Post Beams ('Set the other three Post Beams the same way') = 32; steps[8] '16 - 1/4\" x 3\"' + '16 - 1/4\" x 3\"' = 32; steps[7] 'Drill four pilot holes for each Post' on each of 4 outer Top Beams = at least 4 x 4 = 16. Total >= 80 against 71 bought."
+    }
+  ]
 }
