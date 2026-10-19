@@ -1,6 +1,6 @@
 {
   "slug": "coffee-table-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -287,10 +287,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0-9] (legs, 22\" stretchers, side panels, shelf 1x6 ripped to 5\", bottom aprons, 1x2 upright supports, plywood divider, table top, drawer box pieces, drawer fronts) matched to a cutList row; the only unmatched direction is cutList[11] (see R3)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[11]",
+          "quote": "2 x Back Panel 0.75 x 7 x 24 (Kreg source: 3/4\" x 24 7/8\" x 7 1/4\")"
+        }
+      ],
+      "reason": "No step uses a 'Back Panel'. Search of all steps, description, summary, materials for /back panel|back/i finds only steps[8] 'front and back drawer box pieces' (those are cutList[12]). Row 11 size 24 7/8 x 7 1/4 equals the drawer bay opening ((50 1/2 - 3/4)/2 = 24 7/8; divider 7 1/4), so it is a real part the steps never place."
     },
     "R4": {
       "result": "pass",
@@ -301,30 +312,43 @@
       "reason": "R5 precondition not met: 8 stock types (2x2, 1x4, 1x6, 1x2, 2x6, 1x8, sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "tom of the drawer box and cut 1/4\" plywood to fit. Glue and nail into place with 3/4\" brad nails or use a narrow crown stapler and 3/4\" staples.\nInstall the drawers with the 18\" drawer slides and the ",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1/4\" nail' is a false positive from '1/4\" plywood'. Sizes used in steps (2 1/2\" and 1 1/4\" pocket screws, 1 1/4\" wood screws, 3/4\" brad nails) are all in materials[8,9,10,11]; no size conflict for the same use. '3/4\" staples' appears only as an or-alternative to the listed brad nails."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf height 'Mark 7 1/4\" down from the top' (steps[2]), apron height '1 1/2\" up from the bottom of the legs' (steps[3]); divider/top centered; drawer pulls shown centered on the fronts in viewed image 994758c6a86e0b83; fastener count 3 per end given, drawer slide placement is by the named Kreg jig."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (steps[0-1]) -> shelf (steps[2]) -> aprons (steps[3]) -> divider onto supports/shelf (steps[4]) -> top (steps[5-7]) -> drawers (steps[8-9]); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 1 1/2\" pocket holes for the 1 1/2\" stretchers; 3/4\" pocket holes stated for all 3/4\" parts (steps[1],[2],[3],[4],[8]); no contradicting setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Side panel width 2x3 1/2 + 3x5 = 22 = stretcher length 22 (cutList[1-3]); drawer box 22 3/8 + 2x3/4 = 23 7/8 = drawer bottom 23 7/8 (cutList[12,14]); shelf 5 boards x 5 = 25 = 1 1/2+22+1 1/2 side depth. (b) all built parts installed except the Back Panel (recorded under R3). (c) slides, pulls, desktop fasteners, glue, sandpaper all listed. (d) steps[10] finishes."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "plans/994758c6a86e0b83.webp",
+      "plans/3b1aaa5c51a4e041.webp"
+    ]
+  }
 }

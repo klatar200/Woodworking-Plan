@@ -1,6 +1,6 @@
 {
   "slug": "led-floating-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -55,21 +55,19 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "materials[3].name",
-          "quote": "LED Light kit (linked in \"Extras\")",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "materials[3] \"LED Light kit (linked in \\\"Extras\\\")\" is a purchased component named generically; the build can be completed with any LED kit. The one drawing-dependent detail (controller hole position) is recorded under R10/R11, not here.",
+      "sweepResult": "flagged"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps cut/assemble: sides, top, bottom, back (steps[0]) = cutList rows Sides, Top, Bottom, Back; acrylic lens (steps[2],[15]) = materials[2]; LED strip (steps[5]) = materials[3].",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows (Bottom, Top, Sides x2, Back) are used in steps[0],[8],[10],[11]. No assembly/placeholder rows.",
+      "sweepResult": "to-read"
     },
     "R4": {
       "result": "pass",
@@ -80,30 +78,129 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 0.125x1); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size is used anywhere in the steps (search: no step matches /\\d+\\s*(1\\/\\d)?\\\"\\s*(screw|nail)/i). Missing screws/plugs-by-size recorded in gaps.",
+      "sweepResult": "to-read"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "route a 1/2\" channel as noted on the plans 3/8\" deep on the top piece"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "The channel can be the entire heigth of the sides. For the top and bottom leave about 1/8\" at the ends of the channel"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "you can add key holes to the back. Note the orientation of the pieces"
+        },
         {
           "path": "steps[9].body",
-          "quote": "If your LED's have a controller and switch. Add a hole to the back (noted in drawings for the linked LED kit) to allow the remote to active and control the LED lightning.",
-          "why": "\"drawings\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Add a hole to the back (noted in drawings for the linked LED kit)"
         }
-      ]
+      ],
+      "reason": "Positions the builder must set are not given as numbers and no viewed image dimensions them: (1) offset of the 1/2\" / 3/4\" LED and lens channels across the top's 7\" width (steps[1],[2]); (2) offset and depth of the back grooves in sides/top/bottom (steps[3]); (3) keyhole locations (steps[4]); (4) controller hole location and size on the back (steps[9]). Viewed step images 53bcc73f0cee5fce, 80b7225bea9a3e92, e1ffbb52d66a979e, f2bb8e2f48df486b show routed parts with no dimensions. Search: no step contains a distance from an edge for any of these."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "noted in drawings for the linked LED kit"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "route a 3/4\" channel as noted on the plans 1/8\" deep"
+        }
+      ],
+      "reason": "steps[1]-[3],[9] refer to drawings/plans that are not in the plan. steps[9] has no image. Viewed the 4 unattached images (54a26202266cd54a, 375cdb87a611f1f6, bed2b5e6eb98dc54, abdced00db2b5808): finished-shelf and remote photos only, no drawing. Non-structural info, so Fix.",
+      "sweepResult": "flagged"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Channels and grooves routed (steps[1]-[3]) and pocket holes drilled (steps[3],[7]) before assembly; LED strip fitted (steps[6]) before sides go on (steps[8]); controller hole (steps[9]) before back slides in (steps[10]); bottom last (steps[11]); acrylic after finish (steps[15]). Nothing must be undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Add four pocket holes to each side"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Add the bottom to the shelf and glue and screw into place with the pocket holes"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts (Sides, cutList[2] thicknessIn 0.75) but no jig thickness setting is stated. Search: no step/summary/description matches /jig|setting/i; steps[2] 'thickness' refers to the acrylic. Viewed steps[7] image (736e0e91e24c3da3) shows the jig with no setting visible."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[7] 'four pocket holes to each side' x 2 sides = 8 = steps[13] 'fill the 8 pocket holes'; acrylic lens depth 1/8\" (steps[2]) matches materials[2] 1/8\" thickness. (b) sides, top, bottom, back, acrylic, LED strip/controller all installed (steps[8],[10],[11],[15],[16]). (c) LED kit, acrylic, plywood, plugs are in materials; consumables in gaps. (d) steps reach the finished, hang-ready shelf (keyholes steps[4])."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "Clear Acrylic, 20\" x 1\" 1/8\"",
+      "what": "Acrylic is 1\" wide but steps[2] says the lens channel is \"3/4\" channel\" (1\" - 3/4\" = 1/4\" wider); steps[15] says to bend it and insert \"the ends under the shelf's sides\". How a 1\"-wide lens seats is not stated; builder cannot tell if 1\" or 3/4\" is right. Unresolved, not scored."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Glue and screw the two sides to the top of the shelve.",
+      "what": "Screws are used (steps[8],[11]) but no screw type or size and no screws appear in materials (materials[0-4]: plywood, plywood, acrylic, LED kit, Kreg wood plugs). Search: no material or step names a screw size."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "To easily and securely hand this on the wall you can add key holes to the back.",
+      "what": "Wall-hanging hardware (the screws the keyholes hang on) is not in materials and no size is given; hang is optional per same step."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Glue and screw the two sides to the top of the shelve.",
+      "what": "Wood glue is used (steps[8],[10],[11]) but not in materials."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "Add and secure the Acrylic lens in place using silicone or glue.",
+      "what": "Silicone or glue / hot glue for the lens, painter's tape (steps[6]) and double-sided tape (steps[6]) are not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "375cdb87a611f1f6",
+      "bed2b5e6eb98dc54",
+      "abdced00db2b5808",
+      "54a26202266cd54a",
+      "0d85e8b1921f0cb5",
+      "53bcc73f0cee5fce",
+      "80b7225bea9a3e92",
+      "e1ffbb52d66a979e",
+      "f2bb8e2f48df486b",
+      "736e0e91e24c3da3",
+      "3fcc1f0ac49bdd22"
+    ]
+  }
 }

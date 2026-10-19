@@ -1,6 +1,6 @@
 {
   "slug": "closet-organizer-with-drawers",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps 0-13 (cabinet sides/bottom/shelf, back supports, face frame, drawer box parts, bottoms, fronts) all in cutList rows 0-11; optional shelf (step 11) is cut from scrap"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 12 cutList rows used by steps 0-8"
     },
     "R4": {
       "result": "pass",
@@ -157,31 +159,87 @@
       "reason": "R5 precondition not met: 4 stock types (1x2, sheet-0.75, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" and 1\" pocket screws, 1 1/4\" finish nails ('finish nails' step 3), 2 1/2\" cabinet screws; all in materials[4],[10],[6],[11]; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "side. Clamp the drawer fronts onto the front of the drawers. Secure the drawer front with screws or finish nails in from the inside. Then use the cabinet hardware jig to add drawer pulls Make sure the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c2157477f834083.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric: bottom 1 1/2\", shelf 28 1/2\"; viewed step-0 image 44/28 1/2/1 1/2; face-frame rail spacing 6, 6, 4 1/2, 4 1/2, 14 in viewed step-2 drawing; groove 1/4\"; slides/pulls placed with Kreg jigs; fronts positioned to the face-frame openings (relational). Flagged step 10 image shows the pull/slide jig use."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "'according to the drawing' in step 2, which has its own image (viewed with dimensions)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cabinet (0), back supports (1), face frame (2-3), drawer boxes (4-7), fronts (8), pocket holes in cabinet top (9), slides/drawers (10), install (13); bottoms slid into grooves before the box back is attached (6-7)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Set the pocket hole jig for 1/2\" thick material. Drill 2 pocket holes on the end of each of the drawer box front/back pieces (both large and small)."
+        },
+        {
+          "path": "cutList[10]",
+          "quote": "Small drawer box front/back x4 (Kreg 3/4\" x 3 1/2\" x 16 1/2\")"
+        }
+      ],
+      "reason": "The 1/2\" setting is given for all drawer box front/back pieces but the small ones are listed 3/4\" thick (large F/B and all sides are 1/2\"). Recorded only (R-2)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[11]",
+          "quote": "Drawer box bottoms x4 (Kreg 1/4\" x 17\" x 13 1/2\")"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Large drawer box sides x4 0.5x5x13"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Large drawer box front/back x4 (Kreg 1/2\" x 5\" x 16 1/2\")"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Secure two drawer box side boards to the ends of each drawer box front with wood glue and 1\" pocket hole screws."
+        }
+      ],
+      "arithmetic": "Box outer size from F/B 16.5 and sides 13 (1/2\" stock): F/B between sides = (16.5 + 2 x 0.5) x 13 = 17.5 x 13; sides between F/B = 16.5 x (13 + 2 x 0.5) = 16.5 x 14. Bottom 17 x 13.5 is larger than the box in one direction either way (13.5 > 13 in the first; 17 > 16.5 in the second); inside the grooves it would need ~17 x 12.5 (first). Same bottom listed for the small boxes (F/B 3/4 thick: even less depth).",
+      "reason": "Drawer bottom size does not fit the drawer box built from the listed sides and front/back pieces."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "plans/5f33a031960a561e.webp",
+      "plans/d46ff69b67db4a5d.webp",
+      "plans/2f3d2fced170352c.webp",
+      "plans/7c2157477f834083.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "optional-hardware",
+      "path": "steps[10].body",
+      "quote": "You will need to use drawer slide clips for face frame cabinets or add a piece of scrap 3/4\" thick wood",
+      "what": "slide clips (or 3/4\" scrap) and shims for leveling are not in materials; clips are an alternative to scrap"
+    }
+  ]
 }

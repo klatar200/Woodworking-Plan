@@ -1,6 +1,6 @@
 {
   "slug": "balcony-bar",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -65,44 +65,106 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps 0-6 parts (back legs, corbels, end rails, top fillers, slats, foot-rest braces, back slats/braces/rails, front leg) all in cutList rows 0-8 or materials[3-5]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 9 cutList rows used by steps 0-5"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable; cutList[1] Kreg text not parseable; cutList[2] Kreg text not parseable; cutList[3] Kreg text not parseable; +5 more"
+      "result": "pass",
+      "reason": "Kreg sources: '34 1/2\" x 1 1/2\" x 1 1/2\" - 2x2 lumber', '10 5/8\" x 2 1/2\" x 3/4\" 1x3 lumber', '6 5/8\" x 1 1/2\" x 3/4\" - 1x2', etc. all match nominal 2x2 (1.5x1.5), 1x3 (3/4x2 1/2), 1x2 (3/4x1 1/2) per §9. Live lengths 2, 8, 8, 8 for rows 0,1,4,5 are importer losses (fractions/reorder) - import."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x2, 1x3, 1x2, 1.25x7, 1.25x5, 0.75x3); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1]",
+          "quote": "Wood lumber, 1\" x 3\" - 6'"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Slat x7 (Kreg: 48\" x 2 1/2\" x 3/4\" - 1x3 lumber)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top filler x2 (Kreg: 10 5/8\" x 2 1/2\" x 3/4\" 1x3 lumber)"
+        }
+      ],
+      "arithmetic": "1x3 bought = 4 x 72\" = 288\". Needed = 7 x 48 + 2 x 10.625 = 336 + 21.25 = 357.25\" (+ kerf). 357.25 > 288; slats alone 336 > 288 (a 72\" board yields one 48\" slat, so 4 boards give 4 slats, not 7). Other stocks pass: 2x2 8' 2 boards 192\" >= 2x34.5 + 2x48 + 11 = 176 (+0.5 kerf); 1x2 8' 3 boards 288\" >= 4x6.625 + 2x4.125 + 2x45 + 2x48 = 220.75.",
+      "reason": "1x3 stock bought is too short for the listed slats and fillers (steps 1 and 2 use the 1x3 slats)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps give no fastener sizes ('exterior pocket screws', 'screws', 'pocket screws'); materials list #8 x 1-1/4\", #8 x 1\", 1 1/4\" pocket screws, L brackets, U-bolts; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Now assemble the balcony bar from the top down, starting by screwing the bar top in place. It should be flush with the two legs. Add metal corner braces under the bar top for additional support given ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5a4d3afe2c35e318.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged step 4: viewed image shows L brackets joining top to corbel/leg, top flush with legs; corbel heights (flush top, 11\" from bottom), slat gap 3/16, end braces 1 1/16\", rail spacing 3/8\" given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no 'as shown'/diagram references; sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back legs+corbels (0), top (1), foot rest (2), back (3), top onto legs (4), foot rest (5), back (6); each assembly exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach using pocket screws to the 2 back braces."
+        }
+      ],
+      "reason": "Pocket-hole joints in 3/4 and 1 1/2 stock (steps 0, 3) with no jig thickness setting stated anywhere in text; viewed step-1/3/5 images show none. Recorded only (R-2)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Slats 7 = 4 on top (4 x 2.5 + 3 x 3/16 = 10.5625 vs 10 5/8 filler span) + 3 on foot rest; front leg 11\" matches the 11\" foot-rest corbel height; L brackets and U-bolts in materials; all assemblies installed. Wood glue (step 6) see gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "plans/5a4d3afe2c35e318.webp",
+      "plans/a2a12925a06500f4.webp",
+      "plans/7072fd90c000ac83.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "import",
+      "path": "cutList[0].lengthIn",
+      "quote": "34 1/2\" x 1 1/2\" x 1 1/2\" - 2x2 lumber",
+      "what": "live lengths wrong: Back leg 2 (src 34 1/2), Top filler 8 (src 10 5/8), Brace 8 (src 6 5/8), Back brace 8 (src 4 1/8)"
+    },
+    {
+      "kind": "omission",
+      "path": "materials[5]",
+      "quote": "Wood corbel, 3 in. x 5 in. x 3/4 in.",
+      "what": "3x5 corbels (qty 2) are never mentioned in any step text; only the viewed step-6 image labels '3\" x 5\" CORBEL' at the back; placement not given in text"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Attach the back of the bar top using wood glue and screws.",
+      "what": "wood glue used but not in materials (consumable)"
+    }
+  ]
 }

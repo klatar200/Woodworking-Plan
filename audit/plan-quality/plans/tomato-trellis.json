@@ -1,6 +1,6 @@
 {
   "slug": "tomato-trellis",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,69 +131,108 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Top/Base ('tops and bottoms' steps[0],[1],[4]), Sides (steps[3]), Middle Brace ('middle bracing' steps[5]), Rails ('braces to connect the two halves' steps[7]) all map to cutList rows; no other part is cut"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Base",
-          "why": "no step mentions it (searched steps for base)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Base rejected: cutList[0] Base = the 'bottoms' of steps[0] ('Cut tops and bottoms to length'), steps[1] 'round the bottoms', steps[4] 'attach the top and bottom to the sides'. Rails (cutList[4]) = the 'braces' ripped from a 2x6 in steps[7]; same part, different name."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "cause": "import",
       "evidence": [
         {
           "path": "cutList[4]",
-          "quote": "Rails — qty 4, 2 x 2.75 x 74 (Kreg-corrected)"
+          "quote": "Rails qty 4, 2 x 2.75 x 74 (Kreg-corrected)"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Cedar 2x4, 2x4x8"
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Cedar 2x6, 2x6x8"
+          "path": "steps[7].body",
+          "quote": "We ripped a 2x6 in half for the braces to connect the two halves."
         }
       ],
-      "arithmetic": "cutList[4] 2×2.75: no listed stock has thickness 2 (±1/32) with width ≥ 2.75; stock = 1.5×3.5, 1.5×5.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[4]",
-          "quote": "Rails — qty 4, 2 x 2.75 x 74 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "width: 2x6 actual 5 1/2 (§9) / 2 = 2 3/4 = 2.75, matches. Thickness 2 vs 2x6 actual 1 1/2 does not match; every other row in this plan is corrected from nominal 2 to 1 1/2.",
+      "reason": "Width is explained by the rip in steps[7]; only the thickness is the nominal '2'. Looks like the nominal-taken-as-actual pattern, not a missing material."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock follows from the cut-list widths (3.5 = 2x4; Rails 2.75 = half a 2x6 per steps[7]). 2x4 parts: 2x44 + 2x28.75 + 2x36 + 4x87 = 88 + 57.5 + 72 + 348 = 565.5, plus 10 cuts x 1/8 = 1.25 -> 566.75 <= 7 x 96 = 672 (materials[0] '2x4x8' qty 7); sides 87 in need 4 boards and the other 6 parts fit the remaining 3 (44+44, 36+36, 28.75+28.75). Rails: 4 x 74 = 296 + 3 cuts x 1/8 <= 2 boards x 2 rips x 96 = 384 (materials[1] '2x6x8' qty 2)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Assemble the sides using 2 1/2 Blue-Kote screws"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Blue-Kote™ Pocket-Hole Screws (50 ct)"
+        }
+      ],
+      "reason": "Step names a 2 1/2 inch size; the materials line gives no screw length (searched materials[].name for /2 1\\/2|2.5/: no match). Deck screws are given as 3\" in materials[5]; steps[7] says 'deck screws' with no size, which is consistent."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Side lean and offsets are numeric in steps[3] (5 deg, 3 in, 6 in); middle brace 18 in in steps[5]. Rail positions are not given in text but the viewed photo 740a4ff7075f3bba.webp shows two rails across the top and two at bed height; rollerhook spots are free (builder's choice, steps[8])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no step says as shown/see diagram; sweep search stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and shaped, side frames assembled, braced, fenced, then joined with rails, then hooks/clips"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill pocket holes to attach the top and bottom to the sides"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2 inch stock (steps[4], steps[5]) but no jig setting is stated anywhere (searched the plan for /jig|setting|thickness/: only the tool slug and 'Jig saw' match). Viewed 244c187028ee96f5.webp shows the jig but the dial setting is not legible."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "steps[5] '(28 3/4\")' matches Kreg-corrected Middle Brace length 28.75; steps[3] 5 deg matches cutList names; counts: 2 frames x 2 sides = 4 Sides, 2 Tops, 2 Bases, 2 Middle Braces; 2x6 ripped in half x2 boards = 4 Rails. Every part is installed (steps[4]-[7]); fencing, staples, clips, rollerhooks are in materials; steps end with the working trellis."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "2bc8ee5971831f41.webp",
+      "244c187028ee96f5.webp",
+      "740a4ff7075f3bba.webp",
+      "a4f6b08c0b1f99d7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "then measure the middle bracing 18\" from the bottom of the side-bottom. mark (28 3/4\"), cut, pocket hole and install.",
+      "what": "Sentence is ambiguous: it is unclear whether 18 in is a position on the sides (where the brace sits) while 28 3/4 is the brace length, or the reverse; the Kreg-corrected cut row gives 28.75 as the brace length, so 18 in is read as the position, but the sentence does not say that."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "We ripped a 2x6 in half for the braces to connect the two halves. We used deck screws to assemble the 2 sides to the rails.",
+      "what": "Rail count (4), rail positions and the spacing between the two frames are not stated in any step; step says 'a 2x6' (singular) while cutList[4] needs four 74 in rails (two 2x6 boards, materials[1] qty 2)."
+    }
+  ]
 }

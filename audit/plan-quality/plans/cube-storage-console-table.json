@@ -1,6 +1,6 @@
 {
   "slug": "cube-storage-console-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -251,10 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts named in steps[0-9] (Top, Bottom, Sides, Shelf, Big/Small Dividers, Back, Legs, Top/Low Braces) each match a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used: Top steps[6], Bottom steps[2], Sides[2], Shelf[4], dividers[3,5], Back[7], Legs/braces[8-9]."
     },
     "R4": {
       "result": "pass",
@@ -262,32 +264,80 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
+      "reason": "Steps[0] groups parts under 'Plywood' and 'Boards', so stock is named. Boards: 4 x 22 + 2 x 6 + 2 x 11 = 122 + 8 cuts x 1/8 = 123 <= 2 x 96 = 192 (passes). Plywood: area 2x22x55.75 + 2x19.75x22 + 21.25x54.5 + 3x13x21.25 + 3x6x21.25 + 19.75x54.5 = 6767.8 sq in < 2 sheets (9216), so a shortfall cannot be certified; the material line '3/4\" plywood, 4'x8'x8'' is also ambiguous."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " Sides and hang down 5\" below the Bottom. Using pocket hole screws through the holes on the Bottom, screw into the Legs. - Using a 1\" drill bit, drill a hole in each of the four individual Legs about ",
-          "why": "5\" screw — no material line lists a 5\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '5\" screw' is the 5\" leg overhang, not a fastener. Only 1 1/4\" pocket-hole screws are used (materials[4]); 1\" dowel pieces, edge banding and glue are in materials[2,3,5]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Flagged/placement sentences all carry numbers: pocket holes '2 on each short edge, 5\" in from the long edges', dividers 'equal 13\" spacing', legs 'hang down 5\" below the Bottom', dowel holes 'about 17\" up from the bottom'; legs 'centered on the Sides' and 'aligned with the front edge' are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram reference in the steps (sweep matched none)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides on Bottom (2) -> big dividers (3) -> shelf (4) -> small dividers (5) -> top (6) -> back slid in from the rear (7) -> leg frames (8) -> legs on sides (9)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "After making all the cuts in the cut list, drill the following pocket holes:"
+        }
+      ],
+      "reason": "All pocket-holed parts are 3/4\" plywood or 3/4\" boards, but no jig thickness setting is stated anywhere (searched all steps, materials, description for /jig|setting|set to|depth/i: no match). Recorded only; R9 does not count toward the verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "1 x Shelf 21 1/4 x 54 1/2 (Kreg corrected 0.75 x 21.25 x 54.5)"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "2 x Top/Bottom 22 x 55 3/4 (Kreg corrected 0.75 x 22 x 55.75)"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "attach the two Sides into the Bottom on the far ends with pocket holes on the inside."
+        }
+      ],
+      "arithmetic": "Opening between the Sides = Bottom 55.75 - 2 x 0.75 (Sides, cutList[1] thickness 0.75) = 54.25. Shelf (cutList[2]) and Back (cutList[5]) are both 54.5, 1/4\" wider than the 54.25 opening they must slide 'between the Sides' (steps[4], steps[7]). The 'equal 13\" spacing' (steps[3]) gives 4 x 13 + 3 x 0.75 = 54.25, agreeing with the Bottom, not with the Shelf/Back.",
+      "reason": "Shelf and Back widths in the cut list do not agree with the carcass width the steps produce (1/4\" too wide). Heights agree: 13 + 0.75 + 6 = 19.75 = Sides/Back; depth 21.25 + 0.75 = 22."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "cause": "import",
+      "path": "importDiffs[14]",
+      "quote": "22\" x 3 1/2\" x 3/4“ with parallel 10 degree miters",
+      "what": "Kreg's source rows say the Legs have parallel 10 degree miters and the Top/Low Braces opposing 10 degree miters (importDiffs[14,16,18].source), but the imported cutList rows and steps contain no angle (searched content JSON for /miter|degree|angle|10°/i: only the tool 'miter-saw'). The viewed images (df7ad60f, 42f49fbb) show splayed A-frame legs with no angle dimension, so the live plan does not tell the builder the cut angle."
+    }
+  ],
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "df7ad60fdc3c18a1.webp",
+      "42f49fbbf687a925.webp"
+    ]
+  }
 }

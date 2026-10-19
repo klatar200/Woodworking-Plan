@@ -1,7 +1,7 @@
 {
   "slug": "diy-light-up-christmas-art",
-  "rubric": "R-1",
-  "batch": null,
+  "rubric": "R-2",
+  "batch": "s6-20",
   "importAffected": true,
   "importDiffs": [
     {
@@ -91,49 +91,100 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I’ve provided a template for exactly what I did in the extras tab if you want to do trees like mine. Or, feel free to freehand your own design as desired."
+        },
+        {
+          "path": "description",
+          "quote": "The plan provides a template for this particular tree design"
+        }
+      ],
+      "reason": "The tree-scene cutout shapes (the decorative pieces) depend on an Extras-tab template not in the plan; the plan itself allows freehand, so the build can be completed without it (non-structural) -> Fix. Search: steps/description for template|extras|video; steps[6] and steps[12] also say 'video in the extras tab' but only as optional detail."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (backdrop, back/middle scene, front scene, top/bottom/side 1x4 frame pieces) all match cutList rows 0-4"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 5 cutList rows used by steps 1-7"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "1x4 only for frame: 2x16.5+2x15.5=64 + 4 cuts x1/8=0.5 -> 64.5 <= 96 (material 1x4 96\"). Plywood parts 14x16.5 + 12x16.5 + 10x16.5 = 231+198+165=594 sq in from a 3/4 plywood quarter sheet; 1x4 stock and plywood are named per part in steps. No fail."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size used is 1 1/4\" pocket hole screws (steps 5,6,7,10), in materials. 3/4\" pocket holes are jig settings. Staples/sawtooth hanger are hardware, covered under R14."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Using a drill bit SLIGHTLY larger than your battery lights, drill \"stars\" into the back drop and place the lights through the holes from the back side. Secure wires in place with staples OR painters t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2b4ac0525bb97889.webp"
-        }
-      ]
+      "result": "pass",
+      "search": "star hole locations and battery cubby position are freehand/relational ('hidden behind the big tree', 'large enough for your battery packs'); scene piece set-back given as about 1/2\"; image of step 11 viewed: shows decorative scattered star holes, no required numeric positions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "single 'like shown' reference is in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame bottom+sides (5), scene pieces onto frame bottom (6), top (7), cubby cut in backdrop (8) before backdrop install (10), stars after (11)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4],[6],[10]: 3/4\" pocket holes stated for all 3/4\" stock (1x4 and 3/4\" plywood)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "This piece can be hung on the wall with a sawtooth hanger like shown, or can simply set on a console table, or shelf."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Secure wires in place with staples OR painters tape."
+        }
+      ],
+      "reason": "Step 12 is titled 'Add Hanging Hardware' and shows a sawtooth hanger, and step 11 offers staples; neither appears in materials (search: materials[].name has only 1x4 board, 3/4 plywood quarter sheet, 20 light battery light pack, 1 1/4 pocket hole screws). Both are optional alternatives, so confidence is likely. Painters tape (steps 9, 11) is a consumable -> gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2b4ac0525bb97889.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Using some painters tape, line the scene with one battery powered light set.",
+      "what": "Painters tape not in materials (consumable)."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Make sure you cut a hole large enough for your particular battery packs.",
+      "what": "Cubby size left to the builder (depends on their own battery pack); relational, not failed."
+    }
+  ]
 }

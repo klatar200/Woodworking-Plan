@@ -1,6 +1,6 @@
 {
   "slug": "modular-miter-station-phase-3-assembly-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -199,21 +199,26 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "wer into drawer front. Then remove screw from hardware hole and install hardware. If you need more detailed information on how to do this, I put a link in the Extras section to a detailed description.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep candidate steps[6] ('I put a link in the Extras section to a detailed description') is an optional how-to for fitting drawer fronts; steps[6] itself gives the method (spacers, screw through the hardware hole, four screws from inside). steps[11] 'Visit www.theAwesomeOrange.com' is a credit."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Depending on your clamps, make wooden clamp hooks to add clamps. A triangle with with a flat top and pocket holes into the cart were plenty strong enough to hold all my clamps."
+        }
+      ],
+      "search": "cutList[].part vs /hook|clamp/i: only 'Clamp End Uprights' (a cart panel); no materials[] names hook stock",
+      "reason": "steps[10] makes clamp hooks (a part the viewed 441f2a6a3e48cf0d photo shows in use) with no cut-list row, no size and no stock named. Optional accessory, so Fix. All other parts have rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 rows are used: Top & Bottom (steps[0],[3]), Clamp End / Shelf End / Drawer Side / Middle Section Uprights (steps[1],[2]), Shelves (steps[2]), Second Top (steps[7]), Middle Section Shelf and Shelf Cleat (steps[8]), Drawer Box Sides/Fronts/Bottoms/Slides (steps[4]-[6]), Sliding Doors (steps[9])."
     },
     "R4": {
       "result": "pass",
@@ -224,31 +229,90 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse pocket hole screws (steps[1]-[4]) = materials[3]; 1 1/4\" wood screws (steps[2],[7]) = materials[4]; 1 1/4\" 18 ga brad nails (steps[4],[5]) = materials[8]; 1\" lag screws and washers (steps[10]) = materials[5],[6] (4 casters x 4 = 16). Drawer-front screws in steps[6] are unsized ('four screw'); recorded in gaps, not a second size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Install wooden drawer slides starting from the bottom. Put 2 3/4\" spacer blocks on the bottom and then install wooden drawer slide on top using wood glue and 1 1/4\" 18 ga brad nails. Then after first ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5554a0192e5ceb56.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numbers or viewed dimensions: tracks start 10 3/4\", end 41\", 1/2\" and 1\" from edge, depth 1/8\" and 1/4\" (steps[0], viewed 72e454cdeed70b40); shelf spacer 4 1/2\" and drawer spacers 2 3/4\" and 5 1/8\" (steps[2],[5], viewed 5554a0192e5ceb56); finger holes 2\" down, 2\" from side (viewed c84e648f8aba6813); second top 28 1/4 x 53 3/4 (viewed b039a0ef96fea1b8); drawer dados 2\" from top (viewed a4a1d6d6de43fe39). Cleat height, hardware holes, caster corners, clamp-hook sizes are 'desired'/relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'see picture' (steps[0]) and the other reference are in steps with their own dimensioned images (viewed 72e454cdeed70b40 etc.)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Tracks routed in loose top/bottom (steps[0]) -> clamp section and shelf section onto the base (steps[1],[2]) -> top (steps[3]) -> drawer boxes, slides, drawers, fronts reachable from the open front (steps[4]-[6]) -> second top and track (steps[7]) -> middle shelf (steps[8]) -> doors into upper then lower track (steps[9], door height 29 3/4 = 29 1/2 opening + 1/4 top groove, fits) -> casters last (steps[10])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1]-[4] state \"3/4\" pocket holes\" for every pocket-holed part (all cutList thicknessIn 0.75)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[10]",
+          "quote": "\"part\": \"Sliding Doors\", \"quantity\": 4, \"thicknessIn\": 0.25, \"widthIn\": 16, \"lengthIn\": 29"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "There needs to be two tracks, first one starting 1/2\" from edge and second one 1\" from edge."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Drill hole(s) for desired drawer hardware."
+        }
+      ],
+      "search": "materials[].name and cutList[].part vs /pull|knob|handle|hardware/i: no match; steps[6] is the only mention",
+      "reason": "(a) Doors: cutList[10] says 4 doors, but the plan routes two tracks, and the viewed finished photos (35d82352e916b546, e663b4b0ccac7955) show two doors; four doors cannot run in two tracks. Arithmetic: opening 41 - 10 3/4 = 30 1/4 (steps[0] track span; cutList[7] Middle Section Shelf corrected length 30.25); 2 doors x 16 = 32 overlaps it by 1 3/4\"; 4 x 16 = 64 does not fit. (c) Drawer pulls/knobs: steps[6] drills for and installs 'hardware' on 5 drawer fronts (knobs visible in viewed d48041b541513728) but none is in materials. Checks that agree on Kreg-corrected rows: drawer box 11 + 2 x 3/4 = 12 1/2 (viewed a4a1d6d6de43fe39) = Drawer Bottom 12.5; drawer slide pitch 5 1/8 + 3/4 = 5 7/8 = front 5 3/4 + 1/8 gap; door 29 3/4 <= 29 1/2 + 1/4 + 1/8. (b) every part made is installed; (d) steps reach the finished cart."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "NOTE: Slides should be slightly less than 3/4\" so that drawer glide freely.",
+      "what": "cutList[12] Drawer Slides are 3/4\" x 3/4\" x 11\" (thicknessIn 0.75, widthIn 0.75) and the drawer dado is 3/4\" wide (viewed a4a1d6d6de43fe39); the note asks for slides slightly under 3/4\" but gives no size."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Once that is secure pull out drawer and attached four screw from inside drawer into drawer front.",
+      "what": "Screw size for attaching the drawer fronts is not stated (materials[4] 1 1/4\" wood screws is the only plausible match). Not scored."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Assemble drawers sides using 1 1/4\" coarse pocket holes screws and wood glue.",
+      "what": "Wood glue (steps[4],[5],[8]), wax for the drawer slides and door tracks (steps[5],[9]), and playing/business cards as spacers (steps[6]) are used but not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "59bc5aaca5b7b0f0",
+      "441f2a6a3e48cf0d",
+      "d48041b541513728",
+      "35d82352e916b546",
+      "e663b4b0ccac7955",
+      "72e454cdeed70b40",
+      "1f83800cb26e3079",
+      "a62c2efae2e7d98d",
+      "eeec7a8633d0aa4a",
+      "a4a1d6d6de43fe39",
+      "5554a0192e5ceb56",
+      "b039a0ef96fea1b8",
+      "e916585f39e01cd9",
+      "c84e648f8aba6813"
+    ]
+  }
 }

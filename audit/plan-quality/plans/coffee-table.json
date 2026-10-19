@@ -1,6 +1,6 @@
 {
   "slug": "coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts the steps make: Top (cutList[0]), Shelf (cutList[2]), Shelf Ends (cutList[1], listed as 'Shelf Sides'), legs+brackets (materials[4]). No other part named in steps[0-8]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three cut rows are used: Top steps[0-1], Shelf steps[2], Shelf Sides = the 'Shelf Ends' of steps[3] (name differs, same part)."
     },
     "R4": {
       "result": "pass",
@@ -49,30 +51,55 @@
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use only 1 1/4\" coarse-thread pocket screws and 1 1/4\" flat-head wood screws, both in materials[2,3]; leg-bracket screws are 'supplied'. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numbered in viewed images: Top ends 20\" with 1 3/4\" curve depth (08f876dc); Shelf ends 17\", pilot holes 1 1/2\" then 3 1/2\" spacing (85febde7); Shelf End pocket holes 3 5/8\" and 9 5/8\" (ef624f85); Shelf Ends 6\" from Top ends, overhang 'equal on both sides' (2a127c19); leg brackets at corners at 45\" to the straight edge (6a684a1a). Shelf/leg placement otherwise relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "remove the shelf from the Shelf Ends. You can keep the legs attached. Complete any final sanding, clean all the parts thoroughly, and then apply the finish of your choice. We used a black Gel Stain. O",
-          "why": "\"attached\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        }
-      ]
+      "result": "pass",
+      "reason": "The 'as shown'/'cutting diagram' references (steps[0,2,3,5,6]) all sit in steps with their own image; steps[8] 'attached' is not a drawing reference."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top and Shelf cut/curved (steps[0-2]), Ends cut (steps[3]), edge-banded (steps[4]), Ends fixed to Top (steps[5]), Shelf screwed on (steps[6]), legs (steps[7]), shelf removed for finish (steps[8])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3]: 'set your Kreg Pocket-Hole Jig for 3/4\"-thick material' for the 3/4\" Shelf Ends; only pocket holes in the plan."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) plywood total width 23 1/2 (Top) + 20 (Shelf) + 2 1/2 (Shelf Sides) = 46 <= 48 in; no step count conflicts with cut rows. (b) Top, Shelf Ends, Shelf, legs all installed (steps[5-7]). (c) legs-with-brackets, edge banding, screws listed; only wood glue missing -> gap (consumable). (d) steps[8] finishes."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Secure the Side to the Top with glue and 1 1/4\" coarse-thread Kreg Pocket-Hole Screws.",
+      "what": "Wood glue is used but no glue line in materials[] (searched materials for /glue/i)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "08f876dc4c83f523.webp",
+      "6a0ec99e2890bc7f.webp",
+      "85febde74945c685.webp",
+      "ef624f85cc27fd62.webp",
+      "2a127c19fe022ca3.webp",
+      "6a684a1a86b2c10e.webp",
+      "f582a466d9a5aece.webp"
+    ]
+  }
 }

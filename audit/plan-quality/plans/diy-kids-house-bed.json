@@ -1,7 +1,7 @@
 {
   "slug": "diy-kids-house-bed",
-  "rubric": "R-1",
-  "batch": null,
+  "rubric": "R-2",
+  "batch": "s6-20",
   "importAffected": true,
   "importDiffs": [
     {
@@ -455,43 +455,65 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every step part (posts, 2x6 top/bottom, slat panels, roof tops, front/back frame pieces, 73\" supports, runners, bed slats, 2x4 blocks) matched to cutList rows 0-17"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 18 cutList rows are used by steps 0-14"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x6, 2x4, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "parts identifiable by thickness x width and steps name stock. 1x4: 6x40+6x20.5+3x66+9x40+2x10.5+10.5=952.5 +27 cuts x1/8=3.4 -> 955.9 <= 8x120=960. 2x6: 4x40+73+2x24+2x73=427 (+kerf 1.1) <= 4x120=480. 2x4: 4x54+4x30.375+2x10.5+2x10.5+2x73+2x75+9x3.5=707 <= 12x96=1152. 2x2: 73 <= 96."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[13].body",
-          "quote": "Cut two more 2x4s at about 75” long and screw into the bottom of the front and back panel using 2 ½” wood screws. These give somewhere to place the bed slats onto.",
-          "why": "75\" screw — no material line lists a 75\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[13] '75\"' is runner board length, not a fastener. Fasteners used (2 1/2 and 1 1/4 pocket hole screws, 2 1/2 and 1 1/4 wood screws) are all in materials; 'brad nails or 1 1/4 screws' is an offered alternative; '1 1/2\" pocket holes' are jig settings."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "10 1/2\" gap given (steps[1]); bevel angles given; roof supports 'placement isn't crucial'; runners 'bottom of the front and back panel' (relational, image step 13 viewed); slats evenly spaced (relational)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "every step has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels and frames built (steps 0-9) before assembly (10-11), supports/runners/slats after (12-15)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] drill 3/4 pocket holes in 1x4 (0.75), steps[1]/[5] 1 1/2 pocket holes for 2x material; no contradiction."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 6 side slats = 2 panels x 3, 6 front slats = 2 panels x 3, 9 slats/9 blocks match; 10.5 gap = 3 x 3.5 slat panel height. (b) every made part installed by steps 2-15. (c) no non-fastener hardware used; glue only. (d) ends with mattress."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/74a687c4636b07e5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "optional",
+      "path": "steps[3].body",
+      "quote": "You can see this in the video in the extras tab.",
+      "what": "Optional reference to a Kreg extras-tab video; build is described in text and image, so not R1."
+    }
+  ]
 }

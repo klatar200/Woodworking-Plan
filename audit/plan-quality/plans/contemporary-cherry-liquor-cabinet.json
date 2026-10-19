@@ -1,6 +1,6 @@
 {
   "slug": "contemporary-cherry-liquor-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,45 +143,103 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts in steps[1-20] (top, legs, 3/4\" ply sides/back/bottom, front rail, door stiles/rails/panels, tray front/back/sides/bottom, 'tray holders' = Tray Supports) each match a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used by a step (e.g. Door Panels steps[3,12], Tray Supports = 'tray holders' steps[20])."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[5] no match among parsed stock; unparsed stock present (materials[2]); cutList[6] no match among parsed stock; unparsed stock present (materials[2]); cutList[10] no match among parsed stock; unparsed stock present (materials[2]); cutList[11] no match among parsed stock; unparsed stock present (materials[2]); +1 more"
+      "reason": "Cherry solid parts come from 'Board, Board Feet Cherry' (materials[2], no sizes), so thickness/width cannot be matched; plywood rows fit the named sheets by area (3/4\": 2x11x26 1/4 + 25x26 1/4 + 12 1/2x26 = 1558.75 sq in <= half sheet 2304; 1/4\": 2x9x21 + 10 1/2x25 1/2 = 645.75 <= quarter sheet) but 'Half Sheet' dimensions are not written."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[2]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1 1/4\" fine pocket screws (steps[8]) = materials[3]; 2\" hinges and screws (steps[9]) = materials[8]; 1\" brad nails (steps[20]) = materials[14]; wood screws for corks (steps[17]) = materials[9]; Euro hinges materials[13]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[14].body",
-          "quote": "On the inside of the cabinet mark the position of the hinge mounting plates. Depending on the type of hinge you use you may have to add a spacer board to the side panel to maintain proper hinge spacin",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18d97e75f4f7e097.webp"
+          "path": "steps[13].body",
+          "quote": "use a drill press with a 1 3/8\" forstner bit to drill the 4 hinge holes with the dimensions recommended by the manufacturer of the hinges."
         }
-      ]
+      ],
+      "reason": "Positions the builder must set are not given as numbers and not shown in a viewed image: Euro hinge-cup location on each door (distance from door top/bottom and from the edge; steps[13] has no image, steps[14] image 18d97e75 is a hinge section with no dimensions), the two 2\" hinge locations on the rear edge of the top (steps[9], image 4c48ae44 shows no spacing), and the wine-cork pull location on the doors (steps[17]; only the finished photo e71d193c shows it). Taper start 27\", tray holders 4\" from top (image fc768b63), notches 1/2\" x 3/4\" (fa8e4867) are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both references ('as shown' steps[5], 'See diagram' steps[6]) are in steps with their own images; viewed images 17f0bce0 and fa8e4867 show the pocket holes and corner notches."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (1-4,10-11,15), drilled (5), carcass (8), top (9), doors (10-12), hinged (13-14), tray (15-16); each exists before the step that uses it."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[5]: 'Kreg pocket jig (set to 3/4\" for all holes in this design)'."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3]",
+          "quote": "2 x Door Panels Cherry Plywood 0.25 x 9 x 21"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "4 x Door Stiles Cherry 0.75 x 2 x 24 (Kreg: 3/4\" X 24 1/4\" X 2\")"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "The bits are adjusted to cut 1/4\" X 1/4\" grooves and 1/4\" X 1/4\" tongues."
+        }
+      ],
+      "arithmetic": "Door height = stile length 24 1/4 (cutList[7]). Panel seat height = 24 1/4 - 2 rails x 2 wide (cutList[8] width 2) + 2 grooves x 1/4 (steps[10]) = 20 3/4. cutList[3] panel length is 21, 1/4\" too tall (assembled door would be 21 + 4 - 1/2 = 24 1/2 vs 24 1/4 stiles). Width checks out: rails 9 - 2 x 1/4 + 2 x 2 = 12 1/2 = 25/2 opening, panel 9 = 8 1/2 + 1/2.",
+      "reason": "Door panel length in the cut list does not agree with the stile/rail sizes and the groove depth given in the steps. Other parts agree: sides 26 1/4 - front rail 2 = 24 1/4 door height; back 25 = 28 top - 2 x 1 1/2 legs."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Smooth with 100 - 150 grit sandpaper.",
+      "what": "Sandpaper (100-150 and 220 grit, steps[1,2,3,10,11,17,18]) is used but no sandpaper line exists in materials[] (searched materials.name for /sand/i)."
+    },
+    {
+      "path": "steps[14].body",
+      "quote": "Depending on the type of hinge you use you may have to add a spacer board to the side panel to maintain proper hinge spacing.",
+      "what": "A possible spacer board has no size, material or cut-list row, and the plan does not say whether the listed hinge (materials[13]) needs it."
+    }
+  ],
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "17f0bce059c33f82.webp",
+      "bd1030bad7eb0dc9.webp",
+      "fc768b6333b0b0e1.webp",
+      "18d97e75f4f7e097.webp",
+      "4c48ae442dfc23ac.webp",
+      "e71d193c2b2f4642.webp",
+      "fa8e4867c1edb45a.webp"
+    ]
+  }
 }

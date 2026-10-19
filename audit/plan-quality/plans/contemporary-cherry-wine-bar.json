@@ -1,6 +1,6 @@
 {
   "slug": "contemporary-cherry-wine-bar",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -383,45 +383,95 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts named in steps[1-13] (legs long/short, top, 3 shelves, 3 sides, 2 backs, six poplar frame boards, oak drawer guides, drawer sides/backs/bottoms, cherry drawer fronts) each match a cutList row (Drawer Front Large/Small = 'cherry drawer fronts' of steps[11-12])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 19 rows used: Sides/Backs steps[4,7]; frames steps[2,6,7]; guides steps[9-10]; drawer parts steps[11-12]; Top step[13]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1]); +3 more"
+      "reason": "Cherry and poplar parts come from 'Board, Board Feet' lines with no sizes (materials[0,1]), so thickness/width cannot be matched. Oak guides 3/4 x 1 3/8 and 3/4 x 1 fit a 1x6 (4 guides: 2 x 1 3/8 + 2 x 1 + 3 kerfs <= 5 1/2); 1/4\" bottoms 8x21 1/4 + 16x21 1/4 = 510 sq in <= quarter sheet 1152."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws (steps[7,8,13]) = materials[4] 'coarse & fine' (coarse/fine use stated in steps[7]); washers materials[6]; 1\" brad nails (steps[10]) = materials[12]; wood screws for corks (steps[14]) = materials[10]. 'pin nails' (steps[12]) is only an or-alternative to clamping."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[13].body",
-          "quote": "oximately 1\" overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in pl",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b961a77c97f4982.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[13] top overhang is numbered in the text ('approximately 1\" overhang on both sides and 1 1/2\" at the front'). Shelf heights 3 1/2\", 17 1/8\", 30 3/4\" (d123c246), glass slots 8 1/2\" x 3/4\" at 4 3/8\"/6\" (c76620f9), leg/frame layout (a2ed6aff, c04063d6) and cork pulls centered (b2b36b30) are shown in viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both references are in steps with their own image; viewed the step images (steps[1,2,3,7,8,9,10,11,12,13,14])."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (1-6,9,11) -> carcass (7) -> shelves (8) -> guides cut and attached (9-10) -> drawers (11-12) -> top (13) -> finish and pulls (14)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4,5,6]: 'Kreg pocket jig (set to 3/4\" for all holes in this design)'; the top is screwed through 1/4\" holes, not pocket holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[12]",
+          "quote": "4 x Drawer Sides Poplar 0.5 x 1 x 20 (Kreg: 1/2\" X 20 1/4\" X 1 15/16\")"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Please note that my sizes are approximate and will vary depending on how you construct the box corners."
+        }
+      ],
+      "arithmetic": "Viewed image 241e43e3 (steps[11]) dimensions the drawer side as 20 3/4 and the bottoms as 21 1/4 (cutList[17,18] = 21.25); cutList[12] gives the side as 20 1/4, 1/2\" shorter than the same part in the diagram; 21 1/4 - 20 3/4 = 1/2 in the diagram but 21 1/4 - 20 1/4 = 1 in the cut list. The step text calls the sizes 'approximate' without saying which is right.",
+      "reason": "Drawer side length in the cut list disagrees with the dimension in the step image for the same part. All other checked sizes agree: top depth 24 1/2 - (20 sides + 2 x 1 1/2 legs) = 1 1/2 = stated front overhang; shelf 23 = 20 + 3; frames 9 5/8/17 5/8/15 match image ba62a9ae."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Sand the rabbets and apply paste wax to help the drawers slide easily.",
+      "what": "Paste wax and sandpaper (100/150/220 grit, steps[1,2,3,11,12,13,14]) are used but not in materials[] (searched materials.name for /wax|sand/i)."
+    },
+    {
+      "path": "description",
+      "quote": "Cherry wine bar designed to surround and beautify our wine frig.",
+      "what": "The piece is built around a wine refrigerator, but no fridge width, height or depth appears anywhere in the plan (searched all fields for /frig|refriger|cooler/i); the builder cannot check that their fridge fits the opening the cut list produces."
+    }
+  ],
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "a1809323f8fb214f.webp",
+      "ba62a9ae54d070f7.webp",
+      "c76620f913963381.webp",
+      "a2ed6aff8ec26ae3.webp",
+      "d123c246070e4f1b.webp",
+      "ae566a8f7e8b615d.webp",
+      "c04063d6a5c1010a.webp",
+      "241e43e3af019f7b.webp",
+      "fe88f94599a38c66.webp",
+      "4b961a77c97f4982.webp",
+      "b2b36b30aef88c2b.webp",
+      "b7409d1d2bb79e7c.webp"
+    ]
+  }
 }

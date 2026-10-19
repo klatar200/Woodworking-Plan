@@ -1,6 +1,6 @@
 {
   "slug": "stylish-serving-tray",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,51 +71,78 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0]-[3] cut Short Sides, Long Sides, Feet, Bottom; all four are cutList rows"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Foot",
-          "why": "no step mentions it (searched steps for foot)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Foot rejected: steps[0].body says 'four Feet' and steps[3].title/body 'Add the Feet' (sweep searched 'foot', which misses the plural 'Feet')"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.25x2.5, sheet-0.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part (steps[0] '1/4\"-thick boards', steps[1] '1/2\"-thick plywood'). Board parts (Kreg-corrected): 2x18 + 2x18.5 + 4x2.5 = 36 + 37 + 10 = 83 in, plus 8 cuts x 1/8 = 1 in, total 84 in <= 2 x 48 = 96 in bought (materials[0] 'Board ... 48\"' qty 2). Bottom 18x18 fits one 24x24 plywood (materials[1])."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fasteners; joints are glue and masking tape only (steps[2], steps[3]); materials list wood glue and masking tape"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "glue them in place on the underside of the Bottom"
+        }
+      ],
+      "reason": "Four Feet are cut (cutList[3] Foot qty 4, 2 1/2 x 2 1/2) but no step gives where on the underside they go. The viewed diagrams (0cea1b3a68826464, 6d2458b725044fda) and photos (d337eef43a0ead89, fc160c1d1601d73e, ec26b84d11d8112d) show no foot positions (the feet are not visible in the photos). Searched steps for /foot|feet|corner|inset|from the edge/: only steps[0] and steps[3]. Arch positions pass: the cutting diagram dimensions them."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "off any glue squeeze-out, and then you can paint, stain, or clear finish the serving tray to suit your taste. We painted ours, and then cut a square of colorful wallpaper and attached it as an accent.",
-          "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] and steps[1] 'as shown in the cutting diagram' have step images; viewed images show the side/foot diagram (18, 18 1/2, 2 1/2, 6 1/4, 1 in arches) and the bottom diagram (18 x 18, 6 3/8, 5 1/4, 1 in). The flagged 'attached' in steps[4] is about gluing wallpaper, not a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides/feet/bottom cut, then sides glued to bottom, then feet, then finish; every part exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; glue joints with method stated"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match: steps[0] 'two Short Sides, two Long Sides and four Feet' = cutList qty 2/2/4. Long side corrected 18 1/2 = 18 bottom + 2 x 1/4 side thickness, so the long sides lap the short sides consistently. Every cut part is installed (steps[2], steps[3]); steps reach a finished tray. Glue, tape, filler are in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "0cea1b3a68826464.webp",
+      "6d2458b725044fda.webp",
+      "ec26b84d11d8112d.webp",
+      "d337eef43a0ead89.webp",
+      "fc160c1d1601d73e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "cut a square of colorful wallpaper and attached it as an accent",
+      "what": "Wallpaper accent (optional) and paint/sandpaper are not in materials."
+    }
+  ]
 }

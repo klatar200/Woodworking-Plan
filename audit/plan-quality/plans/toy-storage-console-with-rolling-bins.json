@@ -1,6 +1,6 @@
 {
   "slug": "toy-storage-console-with-rolling-bins",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -371,22 +371,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Cut the top of the front legs so the front of each leg is 25 1/2\" tall and the back is 24 7/8\" tall (a 22.5 degree angle).",
-          "why": "cut sentence states 24 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut the side frame top so the top is 7\" long and the bottom is 6 13/32\" long (a 22.5 degree angle). Attach it to the back leg with pocket holes so it is flush with the top.",
-          "why": "cut sentence states 6 13/32\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Both flagged candidates rejected: they are miter-end dimensions of parts already in the cut list, not new parts. steps[1] '24 7/8\"' = Front legs 25.5 (Kreg-corrected) - 1.5 x tan(22.5 deg) = 25.5 - 0.62 = 24.88; viewed 3de0174b53b3c05a.webp shows the 24 7/8 short edge. steps[3] '6 13/32\"' = Side frame top 7 less the 22.5 deg end (7 - 1.5 x tan 22.5 = 6.38, step says 6.406). Every part cut in steps[1]-[17] is a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 rows used: Leg braces 6 = 'leg supports' (4 in steps[2] two per side x2 sides, 2 in steps[9]); Front/back frame 4 = steps[7] (3 boards) + steps[11] ('last front frame board'); Bin supports 8, side/front slats 16 each, Bin bottoms 2 in steps[15]-[17]"
     },
     "R4": {
       "result": "pass",
@@ -394,25 +384,78 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x2, 1x3, 1x4, 1x10, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Plywood size is only 'Plywood, 1/2\" Thick Half Sheet' (materials[4]), no dimensions written, so the sheet parts cannot be scored (their total area is 9.25x48 + 12.5x48 + 2x9.25x12.5 + 2x10.75x12.5 + 2x14x20.5 = 444 + 600 + 231.25 + 268.75 + 574 = 2118 sq in; fits a 48x48 half sheet by area only if that is what 'half sheet' means). Board lengths pass: 2x2 parts 51+64.5+40+75+14+20+192+120 = 576.5 in + 28 cuts x 1/8 = 3.5 -> 580 <= 7 x 96 = 672; 1x4 slats 16x14 + 16x22 = 576 + 32 cuts x 1/8 = 4 -> 580 <= 7 x 96 = 672 (fits board by board: 4 x 22 per board x4 boards, 6 x 14 per board needs 3); 1x10 52 <= 72; 1x3 48 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach the top of the console with wood glue and finishing nails so the top is flush with the back"
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "Attach the side slats to the support boards and bottom with wood glue and finishing nails."
+        }
+      ],
+      "reason": "Finishing nails are used in steps[13], [14], [16], [17] with no size and no materials line (searched materials[].name for /nail|brad|finish/i: no match). Pocket-hole screw sizes 2 1/2\" and 1 1/4\" are listed (materials[5], [6])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numeric or flush/centered: 20 in up (steps[2],[7]), 1/2 in below (steps[9]), 15 1/2 in from each side (steps[13]), 1/2 in overhang (steps[14]), 1/2 in slat gaps (steps[16]). Front frame height is shown in viewed 5dd17df9ed4e28fb.webp / d71e06832f479098.webp (flush with the front leg tops). Four slats per bin side: 4 x 3 1/2 + 3 x 1/2 = 15.5 = 15 support + 1/2 plywood, shown in viewed d71e06832f479098.webp."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no step says as shown/see diagram; sweep search stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides built (steps[1]-[6]), joined (steps[7]), back, center leg, bottom, front frame, center panels, top; bins built separately. Panels are fastened from the back/bottom before the top goes on."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Connect the front and back legs to the leg supports with pocket holes."
+        }
+      ],
+      "reason": "Pocket holes are used in 1 1/2\", 3/4\" and 1/2\" parts but no jig thickness setting is stated anywhere (searched the plan for /jig|setting|thickness setting/: only the pocket-hole-jig tool slug). Viewed images show the pocket holes but no jig dial."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree with Kreg-corrected rows: steps[1] front leg 25 1/2 = cutList[0] 25.5; steps[3] side top 7 = cutList[4]; steps[5] '10\" 2x2' = cutList[5]; steps[9] '20\" center legs' = cutList[2]. Overall height: back leg 32.25 + top 0.75 = 33 = steps[0] '33\" tall'; depth: 12.5 bottom panel + 2 x 1.5 = 15.5 = steps[0]. Bin: slats 14 side + 2 x 3/4 = 15.5 and bottom 20.5 + 2 x 3/4 = 22 = front/back slat 22. Every part is installed; castors in materials (8 = 4 per bin); steps end at finished unit and bins."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "d71e06832f479098.webp",
+      "3de0174b53b3c05a.webp",
+      "cf8035552b55ac64.webp",
+      "5dd17df9ed4e28fb.webp",
+      "e165c83c33ae6704.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "Attach the center panels to the unit 15 1/2\" in from each side using wood glue and finishing nails",
+      "what": "Wood glue is used in steps[13], [14], [16], [17] but is not in materials (searched materials[].name for /glue/i: no match); paint and stain (steps[14], [18]) are also unlisted."
+    }
+  ]
 }

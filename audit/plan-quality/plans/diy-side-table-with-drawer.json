@@ -1,7 +1,7 @@
 {
   "slug": "diy-side-table-with-drawer",
-  "rubric": "R-1",
-  "batch": null,
+  "rubric": "R-2",
+  "batch": "s6-20",
   "importAffected": true,
   "importDiffs": [
     {
@@ -275,44 +275,73 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "legs, top/bottom frame pieces, side panel boards, 1x2 stretchers, shelf boards, rear panel boards, tabletop boards, drawer front, drawer box sides/front/back, drawer bottom all in cutList rows 0-13"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 14 cutList rows used by steps 0-7"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 7 stock types (2x2, 1x2, 1x6, 1x8, 2x6, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock assigned by thickness x width (§9). 2x2 (2x96=192): 4x21 + 4x17.5 = 154 + 7 cuts x1/8 = 154.9 OK. 2x6 (96): 4x22 = 88 + 0.5 OK. 1x2 (48): 2x17.5 = 35 OK. 1x6 (3x96=288): 8x16.5 + 3x17.5 + 2x17.5 + 2x17.25 = 254.0 + ~15 cuts x1/8 = 255.9 OK. 1x8 (24): 1x17.5 OK. 3/4 ply drawer box 2x18 + 2x15 = 66 of 7\" strips from a quarter sheet OK. 1/4 ply 16.5x18 from 24x24 OK."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "rawer box dimensions and cut 1/4\" plywood to size. Glue and nail the plywood in place to the bottom of the drawer box.\nAttach the drawer slides to the center of the drawer box as well as the center of",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[7] '1/4\"' is plywood thickness. Fastener sizes used (1 1/4 and 2 1/2 pocket screws, 1 1/4 wood screws) are all in materials. 'nail' in steps[7] has no size (gap).",
+      "search": "steps for screw/nail sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "frame position on legs shown in viewed image step 0 (bottom frame 1 1/2\" up, top flush); stretchers 1 1/2\" up; shelf at 9\"; panel board widths shown in viewed image step 1; slide and fastener positions relational (centre, 3 each side, equal overhang)",
+      "reason": "Consistency: panel 17.5 = 3x4.5+4 = frame length 17.5; panel height 16.5 = 21-1.5-1.5-1.5."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'per the diagram' (steps[1]) and 'diagram as a reference' (steps[7]) steps have their own images; steps[1] viewed and shows board widths"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames (0), panels (1), stretchers (2), shelf (3), rear panel (4), top (5), drawer front (6), drawer box + slides (7), table top (8), drawer front fit (9)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and steps[5] 1 1/2\" pocket holes for 1.5\" stock; steps[1]-[4],[6],[7] 3/4\" for 3/4\" stock."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) drawer box width: inside width 17.5 (stretchers) - 1 = 16.5 = 2x0.75 + 15 (rows 11/12); drawer bottom 16.5x18 = box outer; 3 desktop fasteners per side = 6 = materials[10]; 4.5+4.5+4.5+4 = 17.5; table top 4x5.5 = 22 vs base 20.5. (b) every part installed. (c) drawer slides, desktop fasteners, pull in materials. (d) reaches finish."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/06c2c60066350595.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/13e86646bab64aa5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Glue and nail the plywood in place to the bottom of the drawer box.",
+      "what": "Nails (type/size) used but not in materials; no size stated."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Attach to the legs with 2 1/2\" pocket screws and wood glue.",
+      "what": "Wood glue used throughout, not in materials (consumable)."
+    }
+  ]
 }

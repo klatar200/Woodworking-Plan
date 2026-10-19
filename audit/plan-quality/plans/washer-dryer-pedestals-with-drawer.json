@@ -1,6 +1,6 @@
 {
   "slug": "washer-dryer-pedestals-with-drawer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[1]-[13] (side/back pieces, supports, drawer back/sides/front/bottom, top boards) each have a cutList row; no other part is cut"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used in steps[1]-[13] (rows are labelled 'Per each pedestal', and steps[14] builds the second pedestal)"
     },
     "R4": {
       "result": "pass",
@@ -190,39 +192,95 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x8, 2x12, 1x3, 1x4, 1x6, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Precondition not met: steps do not name the stock for the drawer parts ('Cut drawer pieces according to the cut list', steps[6]) or the supports ('scrap plywood strips, or 1x3 material', steps[5]). Plywood is 'Half Sheet' with no dimensions. Reader note recorded in gaps: the 2x12 boards fit with no kerf."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" pocket hole screws (steps[3],[12]), 1 1/4\" pocket hole screws (steps[5],[6]) and 1 1/4\" wood screws (steps[13]) are all in materials[6]-[8]; no conflicting sizes. Staples in steps[6] are an optional alternative (see gaps)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "Cut drawer front according to the cut list and attach onto front of drawer boxes using the pocket holes from the end of step 7.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dda4d86820fdb595.webp"
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Using 2 1/2\" pocket hole screws, screw the top together like shown. This in addition to the glue will help keep the top from coming apart over time at the seams.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/07bf973128941ff2.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric: slide front 3/4 in back (steps[4]); frame, drawer and top sizes in the cut list. Supports at top back, top front, bottom front (steps[5]) and slides low on the sides are shown in viewed photo feee8aa1d2549791.webp; drawer front is an inset front (relational). Foot-hole location is the builder's (optional, steps[15])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no step says 'as shown'/diagram without its own image; 'like shown' steps (steps[3],[4],[9],[12]) all have step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame built, slides and supports installed, drawer built and fronted, top made, frame screwed to the top, then second pedestal and optional foot holes"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated for each thickness: steps[2] '1 1/2\" pocket holes' (1 1/2 in back piece), steps[5] and steps[6] '3/4\" pocket holes' (3/4 in supports and drawer), steps[9] '1 1/2\" pocket holes' (2x12 top)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "So I made my pedestals 28\" x 29\" overall."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Back Side of Frame qty 1, 1 1/2 x 7 1/4 x 26 1/2 (importDiffs source 1 1/2\" x 7 1/4\" x 26 1/2\")"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Sides of frame qty 2, 1 1/2 x 7 1/4 x 29 (importDiffs source 1 1/2\" x 7 1/4\" x 29\")"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "trim down the top to the desired size. In my case, it was 28\" x 29\"."
+        }
+      ],
+      "arithmetic": "Frame width = back 26.5 + 2 sides x 1.5 thick = 29.5 in (steps[3]: 'attach the back piece between the side pieces'); frame depth = side length 29. Steps[0] and steps[11] give a 28 x 29 pedestal and top. 29.5 - 28 = 1.5 in wider than the stated overall width. The 26.5 in back is consistent with the drawer: box 25 1/2 wide (steps[6]) and Drawer Front 26.25 (cutList[5]) in a 26.5 in opening.",
+      "reason": "Stated overall width (28) does not agree with the cut-list frame width (29.5); the top as trimmed would be 1.5 in narrower than the frame it sits on. Other numbers agree: drawer box 24 + 2 x 3/4 = 25.5 = Drawer Bottom 25.5; slide pair 22 in = drawer length 22; height 7.25 + 1.5 = 8.75 = steps[0]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "89022ea70903a4f5.webp",
+      "16ff694fec7b9f76.webp",
+      "feee8aa1d2549791.webp",
+      "6d5706c428c3fcce.webp",
+      "dda4d86820fdb595.webp",
+      "015d581f7134621d.webp",
+      "ebc52fcb96c58bc0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Cut three pieces of 2x12 board to 32\" long and drill 1 1/2\" pocket holes along the edges of two of them like shown.",
+      "what": "Two pedestals need 6 x 32 = 192 in of 2x12 and materials[1] is 2 x 96 = 192 in, so there is no room for the 1/8 in kerf (4 cuts x 1/8 = 0.5 in; 192.5 > 192). Reader note only; R5 not scoreable here."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "OR, you could staple 1/4\" plywood onto the bottom if you don't want to cut dadoes.",
+      "what": "Staples are an optional alternative and are not in materials; the main path (dadoes) uses no staples. Drawer pulls/knobs (steps[14]) are optional and unlisted."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Flip the top upside down and place the pedestal frame and drawer upside down on top of it.",
+      "what": "Position of the 29.5 x 29 in frame on the 28 x 29 in top is not given (centered, flush to one side?); depends on the R14 width discrepancy."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Glue and clamp these pieces together making sure the pocket holes on the bottom side are all where they can be screwed together.",
+      "what": "Wood glue and finish are not in materials."
+    }
+  ]
 }

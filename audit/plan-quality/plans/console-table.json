@@ -1,6 +1,6 @@
 {
   "slug": "console-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,45 +95,69 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts in steps[0-10] (Leg Blanks/Legs, Short and Long Aprons, Bottom Shelf, Top Boards) each match a cutList row; no other part is cut or installed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Leg Blank steps[0], Long/Short Apron steps[2-4], Bottom Shelf steps[5,7], Top Board steps[8-9]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x2, 1x4, 1x6, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (steps[0] 1x2, [2] 1x4, [5] 1x8, [8] 1x6). 1x2: 8 x 33 = 264 + 1/8 per cut <= 4 x 72 = 288; 1x4: 2x33 + 2x6.5 = 79 + 3/8 <= 96; 1x6: 2 x 42 = 84 + 1/8 <= 96; 1x8: 35.5 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only size used is 1 1/4\" pocket-hole screws (steps[3,4,7,9,10]); materials[4] lists it (qty 41 = 10 short apron + 18 long apron + 4 shelf + 9 top boards holes in the viewed images). Thread-type inconsistency recorded as a gap."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " tapers will go. Then lay them out, as shown, and cut the tapers using a jigsaw. It’s easiest to start the cuts from the end of the leg. After you cut, sand the tapers—and the rest of each leg—smooth.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/58051f230add45f3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] taper layout is numbered in viewed image 58051f23 (6\" long, 1\" at the end, 32\" leg); apron holes 2 1/2\"/9 1/2\"/16 1/2\" (080729be); shelf notches 1 1/4\" x 3/8\" and pocket holes (cd0133fe); shelf height 6 1/4\" (183ab554); top pocket holes 5\"/9\"/13\"/17\"/21\" (2fac58d9); aprons 'inset 1/8\"' in text."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "All 12 'as shown'/diagram references are in steps with their own image; viewed those for steps[0,1,2,5,7,8]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs -> tapers -> aprons drilled -> end assemblies (steps[3]) -> long aprons (steps[4]) -> shelf made then attached to the base (steps[7]) -> top made (8-9) -> top screwed to base (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2]: 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material' covers all 3/4\" parts (aprons, shelf, top boards)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 8 Leg Blanks glue into 4 legs of 32\" (33\" blank + 'actually 1\" longer', image 09e6c475); long apron 33 + 2 x 1 1/2 legs = 36 vs top 42; shelf 35 1/2 - 2 x 1 1/4 notches = 33 = long apron. (b) all parts installed. (c) glue and round-over bit in materials. (d) steps[11] finishes."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "secure it to the Legs with 1 1/4\" coarse-thread Kreg Pocket-Hole Screws.",
+      "what": "Thread type contradicts materials[4] ('1 1/4\" fine-thread Kreg Pocket-Hole Screws') and steps[3] (fine-thread because the table is hardwood); no coarse-thread screws are listed. Size is the same, so not an R6 size failure."
+    }
+  ],
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "09e6c47501c656bc.webp",
+      "58051f230add45f3.webp",
+      "080729be6df05308.webp",
+      "cd0133fe3050151c.webp",
+      "183ab554c1102685.webp",
+      "2fac58d96e033205.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "string-art-wall-decor",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name Face boards (3 1x4 cut in half = 6) and 1x2 backers; both exist in cutList; no other part is cut or assembled"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0] Face boards and cutList[1] Backer boards are both used in steps[0] and steps[2]"
     },
     "R4": {
       "result": "pass",
@@ -73,37 +75,87 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "being careful to not punch it out the backside of your workpiece. I used 3/4 inch wire nails, if I were to go back and do it again I would've used 1 inch nails for my wife's sanity in the next step...",
-          "why": "3/4\" nail — no material line lists a 3/4\" fastener"
+          "quote": "I used 3/4 inch wire nails, if I were to go back and do it again I would've used 1 inch nails for my wife's sanity in the next step..."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Boxes of 1\" wire nails"
         }
-      ]
+      ],
+      "reason": "Step gives two sizes for the same use (3/4 inch used, 1 inch recommended); only the 1\" size is in materials. Author's recommendation matches materials, so likely rather than certain."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "hing, there's a lot of ways to get lettering onto the piece. My wife printed her saying, cut apart the words, then colored the back of the paper with a pencil. She taped the words where she wanted the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b52f55d50d5b6a3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Backer positions are shown in viewed image 10c40ee9879c764a.webp (left, middle, right of the face boards). Nail and lettering positions come from the builder's own design (steps[5], steps[9]); viewed 7b52f55d50d5b6a3.webp shows a personal design, so there is no fixed position to give."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no step says as shown/see diagram; sweep search stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, sand, assemble, finish, mark, drill, nail, weave, paint in a workable order"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; joints are glue + 1.25\" brad nails (steps[2]) and wire nails (steps[7])"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "then cut three lengths of 1x2 at 20.75\" to mount our face boards onto"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Backer boards qty 3, 1x2x20.5\" (importDiffs source 1x2x20.5\")"
+        }
+      ],
+      "arithmetic": "step length 20.75 vs Kreg cut-list length 20.5 = 0.25 in difference",
+      "reason": "Step and cut list give different backer lengths."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "10c40ee9879c764a.webp",
+      "7b52f55d50d5b6a3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials",
+      "quote": "steps[8] Weave the design: \"go across one diagonal, back across the other diagonal\"",
+      "what": "The piece is string art but no string, thread or twine is in materials (searched materials[].name for /string|twine|thread|yarn|floss/i: no match; the only hits in the plan are the title and the step text). The step never names what is woven."
+    },
+    {
+      "path": "materials[5].name",
+      "quote": "Hanging hardware",
+      "what": "Listed in materials but no step installs it (searched steps for /hang|mount|wall|bracket|hook/: only steps[0] 'mount our face boards onto' the backers matches). Hanging method and position are not given."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "carefully traced the words to transfer the faint graphite outline to paint in",
+      "what": "Paint for the lettering is not in materials (optional step)."
+    }
+  ]
 }

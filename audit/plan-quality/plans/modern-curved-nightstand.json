@@ -1,6 +1,6 @@
 {
   "slug": "modern-curved-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,22 +23,22 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[1].body",
-          "quote": "Make 8 kerf cuts that are 3/4\" apart. Start making the cuts 1/2\" into your drawer front on both sides. Make sure to only leave 1/8\" of material left when making your kerf cuts. Using wood glue and a s",
-          "why": "cut sentence states 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "nto your drawer front on both sides. Make sure to only leave 1/8\" of material left when making your kerf cuts. Using wood glue and a strap clamp bend the drawer front until all the kerfs are closed up",
-          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[4].body",
+          "quote": "Attach the back with a brad nailer and 1 1/4\" brad nails"
         }
-      ]
+      ],
+      "search": "cutList[].part names vs /back/i: no match (parts are Top and Bottom, Sides, Drawer Front, Slide Supports, Drawer Box Front/Sides/Bottom); no step cuts a back; materials[1] 1/4\" x 2' x 4' plywood is used by no cutList row",
+      "reason": "steps[4] installs a back that has no cut-list row and no cut instruction. Its size (18 x 19.75) appears only as dimensions in viewed image af2461100bb63994. Non-structural panel, so Fix."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: Top and Bottom (steps[2],[3]), Sides (steps[2]), Drawer Front (steps[1],[9]), Drawer Slide Supports (steps[5]), Drawer Box Front/Sides/Bottom (steps[7])."
     },
     "R4": {
       "result": "pass",
@@ -49,23 +49,100 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the back with a brad nailer and 1 1/4\" brad nails"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "attach the drawer bottom using wood glue and 1 1/4\" brad nails."
+        }
+      ],
+      "search": "materials[0-7] names vs /brad|nail/i: no match",
+      "reason": "1 1/4\" brad nails are used in steps[4] and steps[7] but no material line lists brad nails. Other sizes are listed: 1 1/4\" pocket screws (materials[6]) for steps[5],[7]; steps[9] '1 1/4\" screws' matches that size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numbered or dimensioned: kerf cuts (8, 3/4\" apart, start 1/2\" in, leave 1/8\", steps[1]); supports 5 3/4\" x 15\" with 10 1/8\" clear between them (viewed d439ba343b3f4b2e); slide \"1/2\" up\" (steps[6]); front \"under the top ... about 1/8\" gap\" (steps[9]); sides flush with back (steps[2],[3]); drawer box 9 1/8 x 12 x 4 (viewed 071a17308c44a8e4). Curve radius is traced from the bent front (steps[8]), so fixed by the part."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "All 12 'as shown/diagram' references sit in steps with their own image; viewed images d439ba343b3f4b2e, 071a17308c44a8e4, af2461100bb63994 carry the dimensions, 3bc5437c5beeb855 shows the slides. Unattached images not needed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Drawer front kerfed and glued to dry (steps[1]); carcass (steps[2],[3]); back (steps[4]); supports then slides (steps[5],[6]); drawer box (steps[7]); curve traced on the assembled case top/bottom and flush-trimmed (steps[8]); front attached last (steps[9]); banding and finish (steps[10]). Nothing is fastened in a way a later step must undo."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Using your foreman drill the pocket holes at 3/4\"\", steps[3] and steps[7] \"Drill 3/4\" pocket holes\" cover every pocket-holed part (all cutList thicknessIn 0.75)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "The drawer slides should sit 1/2\" up from the bottom of the drawer sides as shown in the diagram."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "attach the drawer front from the inside of the drawer box."
+        }
+      ],
+      "search": "steps[] vs /insert|slide.*(drawer|box)|mount the drawer|install the drawer/i: only steps[6] and steps[9] mention drawer and slides together",
+      "reason": "(b)/(d) steps[7] builds the drawer box but no step attaches the slide halves to the box or puts the box on the slides; steps[9] assumes the box is already in the case. (a) otherwise agrees: box width 7 5/8 (Kreg-corrected cutList[4]) + 2 x 3/4 = 9 1/8 = cutList[6] widthIn 9.125; clear gap 10 1/8 = 9 1/8 + 2 x 1/2 for slides (viewed d439ba343b3f4b2e); sides 18.25 + 2 x 3/4 = 19.75 = back height (viewed af2461100bb63994)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[3].name",
+      "quote": "Furniture Feet",
+      "what": "Furniture feet are bought but no step installs, sizes or positions them. Search: steps[] vs /feet|foot|leg/i: no match."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Repeat each of the steps to build two nightstands. Cut list provides measurements for one nightstand.",
+      "what": "Two nightstands each need a pair of 12\" slides (steps[6]) but materials[4] is \"12\\\" Drawer Slides\" quantity 2; whether that is 2 pairs or 2 slides is not stated. One 3/4\" sheet (materials[0] qty 1) covers two sets by area only: 2 x 1512 = 3025 sq in <= 4608 (area of one set: 2 x 15 x 18 + 2 x 10.75 x 18.25 + 6 x 23.5 + 2 x 5.75 x 15 + 2 x 4 x 7.625 + 2 x 4 x 12 + 9.125 x 12, Kreg-corrected)."
+    },
+    {
+      "path": "materials[1].name",
+      "quote": "Plywood, 1/4\"x2'x4'",
+      "what": "1/4\" plywood is bought but every cut-list row is 0.75 thick, including cutList[6] Drawer Box Bottom (0.75). The back (steps[4]) and drawer bottom (steps[7]) are the only plausible uses; the plan does not say which stock they come from. Not scored."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Using double sided tape, position the drawer front so it sits just under the top of the nightstand",
+      "what": "Double-sided tape and sandpaper 120/220 (steps[10]) are not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "cd8bb093e807c171",
+      "62628c0087989b42",
+      "9a1365dad2d8011b",
+      "af2461100bb63994",
+      "d439ba343b3f4b2e",
+      "3bc5437c5beeb855",
+      "071a17308c44a8e4",
+      "57dcf1c53113f38a",
+      "0db7a05a4a7bb6d9"
+    ]
+  }
 }

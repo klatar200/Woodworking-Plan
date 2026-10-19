@@ -1,6 +1,6 @@
 {
   "slug": "twin-size-board-and-batten-headboard",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,17 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (horizontal rails/1x4, 1x2 vertical boards, 45 1/2 2x4 legs, plywood backing, top 1x2) each have a cutList row (Horizontal rails, Vertical slats, Bed posts, Plywood backing, Top rail)"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Bed posts",
-          "why": "no step mentions it (searched steps for bed/post)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Bed posts rejected: cutList[1] Bed posts (Kreg-corrected 1.5 x 3.5 x 45.5) are the '45 1/2\" 2x4 legs' of steps[3] (sweep searched bed/post and missed 'legs')"
     },
     "R4": {
       "result": "pass",
@@ -65,33 +60,85 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x4, 1x2, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Plywood is 'Plywood, 1/4\" Thick Half Sheet' (materials[3]) with no dimensions written, so the sheet cannot be scored (backing 30.5 x 32 fits a 48 x 48 half sheet; would not fit a 24 x 96 one). Boards pass with steps naming each stock: 2x4 posts 2 x 45.5 = 91 + 1/8 = 91.125 <= 96; 1x4 rails 2 x 32 = 64 + 1/8 <= 72; 1x2 slats 4 x 23.5 + top 39 = 133 + 5 cuts x 1/8 <= 2 x 96 = 192."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "To finish the headboard off, attach a 60\" long 1x2 to the top of the headboard with brad nails.",
-          "why": "0\" brad — no material line lists a 0\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the '0\" brad' hit is the sweep reading '60\" long 1x2' in steps[6] (the 0\" is part of 60\"), not a nail size. Pocket-hole screws '1\"' in steps[2],[3] match materials[4]; nails are named without a size in steps[5] ('finishing nails') and steps[6] ('brad nails'); materials[5] lists 'Finish nails'. No two sizes are given for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat gaps 8 3/4, 8 1/2, 8 3/4 shown in viewed 6aa44d40b69b95bb.webp; 1/2 in reveal in steps[3] and viewed 9356fef5b344f69a.webp; viewed a423835c71bdd209.webp shows the frame sits 15 in above the leg bottoms (30.5 + 15 = 45.5) and the 39 in overall width."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[3] '(see plans)' has its own step image (viewed 9356fef5b344f69a.webp shows the 1/2 in offsets), so the referenced content is present"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rails and slats cut and drilled (steps[0],[1]), frame built (steps[2]), legs attached (steps[3]), then backing and top board"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using a Kreg Jig, drill pocket holes in both ends of boards."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" 1x4 and 1x2 boards (steps[0],[1]) but no jig thickness setting is stated (searched the plan for /setting|thickness|3\\/4/ in steps: none). Viewed images 6aa44d40b69b95bb, 9356fef5b344f69a, a423835c71bdd209 show the holes but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut 5- 1x2 boards 23 1/2\" long. Drill pocket holes in each end of all 5 boards."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Vertical slats qty 4, 0.75 x 1.5 x 23.5 (Kreg-corrected)"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "attach a 60\" long 1x2 to the top of the headboard with brad nails."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Top rail qty 1, 0.75 x 1.5 x 39"
+        }
+      ],
+      "arithmetic": "Slats: steps[2] spacing '8 1/2\" and 8 3/4\"' with the viewed diagram (3 gaps 8 3/4 + 8 1/2 + 8 3/4 = 26) and 32 - 4 x 1.5 = 26 fits 4 slats; 5 slats would leave 32 - 5 x 1.5 = 24.5 for 4 gaps (6.125 each). Top: frame 32 + 2 x 3.5 legs = 39 (viewed diagram shows 39\"), cut list 39 vs step 60.",
+      "reason": "Step says 5 vertical boards, cut list and the diagram have 4; step says a 60 in top board, cut list and overall width say 39 in."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "6aa44d40b69b95bb.webp",
+      "9356fef5b344f69a.webp",
+      "a423835c71bdd209.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Fill any holes and edges with wood filler. Sand, and paint or stain the headboard.",
+      "what": "Wood glue (steps[2],[3]) and wood filler (steps[7]) are not in materials (searched materials[].name for /glue|filler/i: no match)."
+    }
+  ]
 }

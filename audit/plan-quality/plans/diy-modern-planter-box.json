@@ -1,7 +1,7 @@
 {
   "slug": "diy-modern-planter-box",
-  "rubric": "R-1",
-  "batch": null,
+  "rubric": "R-2",
+  "batch": "s6-20",
   "importAffected": true,
   "importDiffs": [
     {
@@ -116,13 +116,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Only reference is steps[11] 'YouTube video ... links in the extras tab' = optional extra; build is fully described.",
+      "search": "all steps/description for extras|video|template|pdf"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "posts, frame pieces, panels, base frame (long/short), legs, bottom slats all match cutList rows 0-6; legs/slats/base named as 1x3 or scrap in steps 7-9"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 7 cutList rows used by steps 0,3,7,8,9"
     },
     "R4": {
       "result": "pass",
@@ -130,32 +133,63 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x2, 1x3); steps not checked for per-part stock"
+      "reason": "2x2: 4x15+8x12=156 +12 cuts x1/8=1.5 -> 157.5 <= 2x96=192 OK. Plywood panels 4x(12x12)=576 sq in vs quarter sheet OK. 1x3 parts (base 2x15+2x10=50, legs 4x6=24, slats 2x11.75=23.5 = 97.5, +8 cuts x1/8=1.0 -> 98.5) exceed the single 96\" 1x3 by 2.5\", but steps allow '1x3s or scrap plywood' for these parts and the 1x3 quantity of 1 may be an importer default, so not certain."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": " degree cut parallel to the other so the legs will tilt out for a retro look. You can make these as long or short as you wish. Mine were roughly 6” long. Then screw in place in each corner like shown.",
-          "why": "6\" screw — no material line lists a 6\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[8] '6\"' is leg length, not a fastener. Sizes used (2 1/2 pocket screws, 1 1/4 pocket screws, 2\" wood screws) are all in materials. Leg fastener size is not stated (gap).",
+      "search": "steps for screw/nail size patterns"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "frame pieces flush at post ends (posts = panel height + 3, frame pieces 12); base 'same size as the bottom of the box'; legs 'in each corner like shown' (image step 8 viewed: no numeric taper); relational placements",
+      "reason": "Corner posts 15 = 12 panel + 2x1.5 frame piece; base long 15 = 12+2x1.5 box outer; short 10 = 15-2x2.5 - all consistent."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "every 'like shown' step has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame (2), panels (3-4), panels into frame (6), base (7), legs (8), slats (9), base to box (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 1 1/2\" pocket holes for 2x2 (1.5\"), steps[4] and steps[7] 3/4\" pocket holes for 3/4\" plywood and 1x3."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 posts + 8 frame pieces (steps[0]) = cutList; 4 legs, 2 slats; 11.75 slat fits the 12 opening. (b) every made part installed (steps 6,8,9,10). (c) no non-fastener hardware used. (d) ends with plants in box."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5a0d11bb5805ca44.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Cut a taper in the end of a 1x3 or scrap plywood ripped to 2 ½” wide to make the legs",
+      "what": "Taper size not given in text or the viewed image (decorative leg shape); builder chooses."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Then screw in place in each corner like shown.",
+      "what": "Leg fastener type/size not stated; materials list 8x 1 1/4\" wood screws that no step names."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "to fit inside the openings in the frame from step 3",
+      "what": "Cross-reference should be step 2 (frame assembly); trivial."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "assembly-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps 0-7 parts (table top plywood, 4x4 legs, 2x4 aprons front/back/sides, base deck) all in cutList rows 0-4; casters in materials[5]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 5 cutList rows used by steps 0-5,7"
     },
     "R4": {
       "result": "pass",
@@ -38,34 +40,61 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 4x4, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "2x4 96\": 4x47 + 4x20 = 268\" + 7 cuts x 1/8 = 268.875 <= 4x96 = 384. 4x4 96\": 4 x 29.5 = 118 + 0.5 <= 2x96 = 192. Sheet: 2 x (24x48) + 23x47 = 2304 + 1081 = 3385 sq in <= 48x96 = 4608; tops fill a 48x48 block, deck (23x47) fits the other 48x48. Steps name stock per part (4x4, 2x4, plywood)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps give no fastener sizes ('glue and screws', 'Predrill and countersink the screws'); no conflicting sizes. Which of materials[3] 3\" / [4] 1 5/8\" screws goes where is not stated, but no size used in a step is missing."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "slide the base deck in from the side at and angle, then rotate into place.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/112a69ce18f66f7b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged step 5 placement: deck rests on the bottom aprons (viewed step-5 image); aprons are flush with leg ends in viewed images 3-4; top centered (relational); casters at each corner."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no 'as shown'/diagram references; sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top (0), legs cut (1), aprons (2), frames+legs (3), deck (4), deck set in (5), casters (6), top (7); viewed images show deck set after legs and aprons assembled."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket-hole joints"
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "Base deck 23 x 47 equals the outer size of the apron frame (47 front/back; 20 + 2 x 1.5 = 23) but legs sit inside the frame corners (viewed step-3 image), so how a 23 x 47 deck sits/slides between legs ('slide ... in from the side at and angle') cannot be settled from the text or images (see gaps). Parts counts (4 legs, 2 frames of 2+2 aprons, 2-ply top) and casters (materials[5]) otherwise agree."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "plans/ad0b3d276b52bc68.webp",
+      "plans/a24c44421a850284.webp",
+      "plans/112a69ce18f66f7b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "measurement",
+      "path": "cutList[4]",
+      "quote": "Base Deck x1 0.75x23x47 / steps[4]: Cut the base deck to fit on the bottom aprons",
+      "what": "23 x 47 is the OUTER size of the apron frame (47 x (20+3)); legs (3.5 sq) occupy the inside corners per viewed image, so the deck as listed cannot sit around/between them without corner notches or being smaller; no notch or true deck size is given"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "The legs and aprons are put together with glue and screws",
+      "what": "wood glue used in steps 0 and 3 but not in materials (consumable)"
+    }
+  ]
 }

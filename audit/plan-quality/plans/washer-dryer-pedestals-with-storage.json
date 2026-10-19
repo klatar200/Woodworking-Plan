@@ -1,6 +1,6 @@
 {
   "slug": "washer-dryer-pedestals-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -427,21 +427,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[29].body",
-          "quote": "al side mount drawer glides. Find the Amazon link under the Extras tab To size the drawer for standard side mount drawer glides, use the following: Drawer Front & Back - 3/4\" x 14 3/4\" x XXX Drawer Bo",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected as a build dependency: steps[29] 'Find the Amazon link under the Extras tab' is a shopping link for slides; the main build uses the 21\" under-mount slides listed in materials[7] and all parts are in the cut list. The side-mount alternative's 'XXX' lengths are recorded in gaps."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[1]-[27] (Side Rails/Stiles, Legs, Side Panels, Front Rails, Back Rails/Stiles, Back Panel, Top Stretcher, Top, Top Trim, Bottom, Drawer Front/Back/Sides/Bottom, Drawer Rails/Stiles) each map to one of the 20 cutList rows; counts match 'for each pedestal' x 2 (12 side stiles = 3 x 2 sides x 2 pedestals, 8 legs, 6 drawer stiles = 'three Drawer Front Stiles' x 2)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 20 rows are used in steps[1]-[27]"
     },
     "R4": {
       "result": "pass",
@@ -449,33 +444,92 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x2, 2x2); steps not checked for per-part stock"
+      "reason": "Precondition not met: steps[15] does not name the stock for the Top Trim ('Also cut Long Top Trim and Short Top Trim, as shown in the cutting diagram'), and steps[25] names a 1x2 for the Drawer Front Bottom Rail while cutList[15] gives all four Drawer rails 2.5 in wide. By plain sums (pair): 1x3 parts 814.5 in + about 40 cuts x 1/8 = 5 -> 819.5 <= 9 x 96 = 864; 2x2 Legs 8 x 19.5 = 156 + 8 x 1/8 <= 2 x 96; plywood 11,134.5 sq in <= 3 full + 1 half sheet; 1x2 trims/rails 365 in <= 192 + 288. The 1x3 board-by-board packing is recorded in gaps."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every step that names a screw uses '1 1/4\" pocket hole screws', which is materials[6]; no other fastener size is given"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric or flush positions: panels 1 1/2 in from leg bottoms (steps[5]); front rails flush outer/inner leg faces (steps[7]); back frame flush with leg faces (steps[11]); drawer frame 1/4 in above and 1 in below the front (steps[27]); drawer stile spacing 10 in shown in viewed 278e0d3a923098d1.webp; bar pull centered on the drawer top rail in viewed d809779c69f8962f.webp; overall 32 1/2 x 32 1/2 x 20 1/4 (31 + 1 1/2; legs 19 1/2 + top 3/4) shown in the same image. Slides per manufacturer (steps[28])."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flag rejected: steps[0] 'cutting diagrams' is a general note; every later 'as shown in the cutting diagram' step has its own step image, and the unattached images are the hero photo and the 32 1/2 x 32 1/2 x 20 1/4 overview"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, legs, panels, front rails, back frame, stretcher, top, bottom, then the drawer box, bottom, frame, slides; the bottom is screwed in after the top, from below, into the 1 1/2 in recess left by steps[5]"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket-holed part is 3/4 in and steps[1],[4],[6],[8],[10],[13],[15],[18],[20],[21],[23],[25] each say 'pocket hole jig set for 3/4\" stock'; Legs 'don't need pocket holes'"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "k over the project before you begin, just so you’re familiar with all the parts. You’ll also want to note that the materials list and cutting diagrams show everything for building a pair of pedestals.",
-          "why": "\"diagrams\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "path": "steps[27].body",
+          "quote": "Be sure to note that the drawer frame protrudes 1/4\" above the Drawer Front at the top, and 1\" below at the bottom."
+        },
+        {
+          "path": "cutList[14]",
+          "quote": "Drawer stile qty 6, 0.75 x 2.5 x 13 (importDiffs source 3/4\" x 2 1/2\" x 13\")"
+        },
+        {
+          "path": "cutList[15]",
+          "quote": "Drawer rail qty 4, 0.75 x 2.5 x 27.5 (importDiffs source 3/4\" x 2 1/2\" x 27 1/2\")"
+        },
+        {
+          "path": "steps[25].body",
+          "quote": "cutting the Drawer Front Top Rail to length from a 1x3 board, and the Drawer Front Bottom Rail from a 1x2 board"
+        },
+        {
+          "path": "cutList[16]",
+          "quote": "Drawer front qty 2, 0.75 x 14.75 x 26 (importDiffs source 3/4\" ply x 14 3/4\" x 26\")"
         }
-      ]
+      ],
+      "arithmetic": "Frame height needed = Drawer Front 14.75 + 1/4 above + 1 below = 16.0 in. Frame as built from the parts (stiles sit between the rails, viewed 278e0d3a923098d1.webp): stile 13 + top rail 2.5 (1x3) + bottom rail 1.5 (1x2 per steps[25]) = 17.0 in; using the cut list's four 2.5 in rails: 13 + 2.5 + 2.5 = 18.0 in. Either is 1 to 2 in more than 16.0. Also steps[25] makes the bottom rail from a 1x2 (1 1/2 in wide, per section 9) but cutList[15] lists all four Drawer rails 2 1/2 in wide.",
+      "reason": "Drawer frame parts do not add up to the overlay the step describes, and the Bottom Drawer Rail width differs between step and cut list. Also (d): the 10\" bar pulls (materials[8] qty 2) are never installed by any step (searched steps for /pull|handle|bar/i: no match) though the viewed overview d809779c69f8962f.webp shows them on the finished drawers."
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "34e57202349cfbba.webp",
+      "d809779c69f8962f.webp",
+      "02b5647be8638144.webp",
+      "278e0d3a923098d1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[29].body",
+      "quote": "To size the drawer for standard side mount drawer glides, use the following: Drawer Front & Back - 3/4\" x 14 3/4\" x XXX Drawer Bottom - 3/4\" x 14 3/4\" x XXX",
+      "what": "The side-mount alternative has placeholder lengths ('XXX') so that path cannot be followed; the main under-mount path is complete. steps[29] is also headed 'Under-mount Drawer Glides' but describes side-mount sizing."
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "Board, 1x3 96\" (quantity 9)",
+      "what": "Packing check for the 1x3 parts that steps name as 1x3 (steps[1],[6],[8],[13],[25]): 18 long pieces of 27.5 to 28.75 in (8 side rails + 4 back rails + 2 top front rails + 2 stretchers 28.75 + 2 drawer top rails 27.5) and 22 short pieces of 13 to 14.5 in (16 stiles 14.5 + 6 drawer stiles 13). A 96 in board holds at most 3 long pieces (4 x 27.5 + kerf > 96), or 2 long + 2 short, or 1 long + 4 short, or 6 to 7 short. With 9 boards and 18 long pieces every board must be the 2 long + 2 short pattern (9 x 2 = 18 long), which yields only 18 short pieces, 4 fewer than the 22 needed; so 9 boards are not enough (a search over all patterns gives 10). Reader calculation; assumes Drawer Front Bottom Rails come from the 1x2 as steps[25] says (otherwise worse)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Spread glue along the edges of the outer Stiles.",
+      "what": "Wood glue is in materials[9]; paint (steps[28]) is not."
+    }
+  ],
+  "humanReview": "drawer vs slide length: steps[28] 'The drawers are designed for 21\" slides that mount underneath' and materials[7] 'Pair of 21\" heavy-duty under-mount drawer slides' vs Drawer Side 26.25 in (cutList[18], Kreg-corrected) and Drawer Bottom 25.5 x 26; whether a 21 in slide suits a drawer this deep needs under-mount slide knowledge not in section 9"
 }

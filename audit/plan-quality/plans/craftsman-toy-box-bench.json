@@ -1,6 +1,6 @@
 {
   "slug": "craftsman-toy-box-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -287,10 +287,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts named in steps[0-13] (box front/back/bottom/top/sides, long slats, legs, side rails, arm rests, front/side/arm trim, wide/thin back slats) each match a cutList row; quantities agree (3 side rails per side = 6; 2 long slats on the front + 2 in the back rail = 4)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 15 rows are used by a step."
     },
     "R4": {
       "result": "pass",
@@ -301,30 +303,76 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "t up against the side rail at 17 1/4\", secure with glue and screws. Inset a side rail 1/8\" at the bottom of the leg and attach with glue and screws. Repeat for front leg, and use wood glue and 1 1/4\" ",
-          "why": "17 1/4\" screw — no material line lists a 17 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '17 1/4\" screw' is a position ('at 17 1/4\"'), not a fastener. Sizes used (1 1/4\" pocket-hole screws, 1 1/4\" brad nails) are in materials[4,10]; hinges materials[5]; putty materials[11]."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "Use a concealed hinge template or jig to install 2 full overlay euro hinges for frameless cabintes into the underside of the toy box top."
+        }
+      ],
+      "reason": "The builder must place two hinges (and their cups) along the 46 1/8\" lid and the matching mounting plates on the box back, but no distance from the lid ends or from the lid's back edge is given in steps[12-13] (steps[13] gives only the screw centre-line '1 1/2\" from the top of the box back plywood'); viewed images 693053ff and 2440e251 show the hinge with no dimensions. Leg marks (17 1/4\", 23 1/4\"), back-rail marks, trim spacing 13 3/4\" and back rail 1/2\" down are numbered."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "readerNote": "Sweep passed because both steps carry an image, but the images are photos, not diagrams.",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut down the plywood according to the plywood cut list and diagram."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut the boards according to the board cut list and diagram."
+        }
+      ],
+      "reason": "Step images are a track-saw photo (a3a5f942) and a miter-saw photo (8bc991c8); the five unattached images (bf7541a8, d1f17b12, b83b32f2, 7dfbca6c finished-piece photos; 23fee23e overall dimensions 51 1/4 x 34 1/2 x 17 1/2) show no cutting diagram. The cut list still gives every part size, so the build can proceed (Fix, not Unpublish)."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Plywood/boards cut and drilled (0-3) -> side assemblies (4) -> side plywood (5) -> trim (6) -> box front/back (7) -> bottom (8) -> front trim (9) -> back rail (10-11) -> lid and hinges (12-13) -> finish (14)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] and steps[3] state 'pocket holes for 3/4\" material' for every pocketed part (all parts are 3/4\")."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) front: 3 openings x 13 3/4 + 2 trims x 2 1/2 = 46 1/4 = Long Slat 46 1/4 (steps[9], cutList[5,7]); back rail slat marks 2 1/8 + 3 thin (1 1/2 at 3\" pitch) + 2 1/8 gap + 5 1/2 wide ... end at 46 1/4; overall width 46 1/4 + 2 x 2 1/2 legs = 51 1/4 (image 23fee23e); lid 46 1/8 vs 46 1/4 opening = 'little gap'; bottom 14 1/2 = 16 - 2 x 3/4. (b) all parts installed. (c) hinges, putty, edge banding in materials. (d) steps[14] finishes."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "a3a5f9426abcecab.webp",
+      "8bc991c8382e1cc8.webp",
+      "aaa81c28cde8cbef.webp",
+      "723ad59a81f95ee9.webp",
+      "35edc9ce4f1f55e8.webp",
+      "4852375965db5836.webp",
+      "693053ff5c9f3a34.webp",
+      "2440e251294f5886.webp",
+      "bf7541a8a866b46f.webp",
+      "d1f17b12fe9b55df.webp",
+      "b83b32f2db7d6818.webp",
+      "7dfbca6c524fbbba.webp",
+      "23fee23efaa3287d.webp"
+    ]
+  }
 }

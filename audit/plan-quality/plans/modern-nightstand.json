@@ -1,6 +1,6 @@
 {
   "slug": "modern-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,22 +59,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " visible layers, attach the wood veneer using an iron (follow instructions on package). The wood veneer comes in 3/4\" width, so you will need to trim off the excess 1/4\" using the wood veneer trimmer.",
-          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " visible layers, attach the wood veneer using an iron (follow instructions on package). The wood veneer comes in 3/4\" width, so you will need to trim off the excess 1/4\" using the wood veneer trimmer.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep candidate rejected: steps[9] '3/4\"' and '1/4\"' are the veneer roll width and trim, a material (materials[1]) not a cut part. Every part the steps make has a cutList row (Sides, Top, Bottom, Apron, Drawer front/back/side/bottom, Drawer face).",
+      "sweepResult": "flagged"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used (steps[0],[1],[3],[4],[5],[8]); quantities match three drawers (3 fronts, 3 backs, 6 sides, 3 bottoms, 3 faces).",
+      "sweepResult": "to-read"
     },
     "R4": {
       "result": "pass",
@@ -85,23 +77,64 @@
       "reason": "sheet layout not judged (area fits: part area 2×15×25 + 1×15×18 + 1×14.5×17 + 3×6×15 + 3×6×15 + 6×6×14 + 3×13×15 + 3×7.5×16.75 + 1×1.5×17 = 3297.9 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1\" pocket hole screws (steps[1],[4],[5]) = materials[3]; 2\" nails (steps[0],[3]) = materials[4]; 1\" nails (steps[8]) = materials[5]; slide screws are 'the supplied screws' (steps[2]).",
+      "sweepResult": "to-read"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given: bottom \"1\" from the bottom and 1/2\" inset\" (steps[1]); slides \"4\", 11\", 18\" down from the top\" and 1/2\" from the front (steps[2]); drawers 1/2\" in (steps[7]); apron flush with bottom (steps[3]). Pull position is centered on each face in the viewed drawing 5d9d30fcfb1502e3; slide height on the drawer box is set by dry-fit (relational, steps[6])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both 'attached' hits are not drawing references; viewed step images 3a70489d7ebeae5c, 44398505bf2de83e, 955b01eefdb1b2ce, 89d3f43ded1d0465, ecb15b1f10dd0b26, 5d9d30fcfb1502e3 carry the called-out content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top/bottom on sides (steps[0],[1]), slides on the carcass sides before the apron (steps[2],[3]), drawer boxes (steps[4],[5]), slides on boxes and boxes into carcass (steps[6],[7]), faces last on the back-laid case (steps[8]), veneer, finish, pulls (steps[9],[10]). Nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket-hole step states the size: steps[1] \"Drill 1/2\" pocket holes\", steps[4] \"2- 1/2\" pocket holes\", steps[5] \"3- 1/2\" pocket holes\" (all parts 0.5 thick)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) On Kreg-corrected rows: Top 18 - 2 x 1/2 = 17 interior = Bottom length 17; drawer box 15 + 2 x 1/2 = 16 wide, plus 2 x 1/2 slide clearance = 17; drawer bottom 13 x 15 = box interior (14 - 2 x 1/2 = 13 deep, 15 wide); face 16.75 < 17; sides 25 + Top 1/2 = 25 1/2 (description); Apron 1.5 = 1\" + Bottom 1/2\"; 3 x 3 nails = 9 <= materials[5] 10. (b) all parts installed; (c) slides, pulls, veneer + trimmer, glue, filler, paint, sandpaper in materials; (d) steps reach the finished nightstand. The step-1 '15\" sides' wording is in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Drill 1/2\" pocket holes on both of the 15\" sides of the bottom board.",
+      "what": "Kreg-corrected cutList[2] Bottom is 14.5 x 17 (source \"1/2\\\" x 17\\\" x 14 1/2\\\"\"), so no side of the bottom is 15\"; the step presumably means the 14 1/2\" edges that meet the sides (1/2\" inset on one side, same step). Wording mismatch of 1/2\"."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "either stain or paint the drawer faces",
+      "what": "Stain and a veneer iron (steps[9] 'using an iron') are used but not in materials; paint, sandpaper, glue, filler are listed."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "20e52c68c751134f",
+      "2f9e949a2ee68da5",
+      "8917be2d5e2cfc51",
+      "8d9dbdc52f1fc011",
+      "3a70489d7ebeae5c",
+      "44398505bf2de83e",
+      "955b01eefdb1b2ce",
+      "89d3f43ded1d0465",
+      "ecb15b1f10dd0b26",
+      "5d9d30fcfb1502e3"
+    ]
+  }
 }

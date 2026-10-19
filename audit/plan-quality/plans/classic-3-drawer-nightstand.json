@@ -1,6 +1,6 @@
 {
   "slug": "classic-3-drawer-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -371,10 +371,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps 0-11 (legs, side/front bottom/front/back rails, side panels, bottom, drawer bottoms/b-f/sides/front stiles/rails/plywood, top, top front/sides, dowel trim) is in cutList or materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[15]",
+          "quote": "Back x1, 1/4\" x 19 1/2\" x 24\" (Kreg-corrected row [0.25, 19.5, 24])"
+        },
+        {
+          "path": "materials[2]",
+          "quote": "Plywood, 1/4\" Thick Quarter Sheet"
+        }
+      ],
+      "reason": "Search: no step body mentions a back panel or 1/4\" plywood being cut or installed (matches for 'back' are only back rails, drawer back/front, 'flush with the back legs'); steps 3 and 10 install back rails and top only. The 1/4\" plywood sheet exists in materials solely for this unused row."
     },
     "R4": {
       "result": "pass",
@@ -385,31 +400,44 @@
       "reason": "R5 precondition not met: 6 stock types (sheet-0.75, sheet-0.5, sheet-0.25, 2x2, 1x2, 0.375x0.375); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 2 1/2\", 1 1/4\", 1\" pocket screws and 1\" brad nails; all in materials[8],[9],[15],[14]; step 9 '1\" screws' = materials[15]; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "nd front (3/4\" for the drawer front and 1/4\" inset drawers). If needed add scrap wood (shims) to fill the gap from the side panel inset and legs to mount the drawer runners. Also if your plywood isn't",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9ab2811ede1a770b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric: side rail/panels 23 1/4\", 1/4\" insets, front rails 8 1/4\"/15 3/4\"/23 1/4\" (viewed step-2 image), runners start 1\" from front, trim 1 1/2\" from top; drawer front positioned to the opening with 1/16\" gap (relational); pulls 'as desired'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "'as shown' in step 2 (own image, viewed); sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs/side panels (0-1), front and back rails (2-3), bottom (4), drawer boxes (5-6), fronts (7), runners (8), fronts on (9), top (10), trim (11); runners installed before drawers placed."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated per thickness: 1 1/2\" (steps 0, 2), 3/4\" (steps 1-5, 7, 10), 1/2\" (step 7 drawer-front plywood)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Case width 19.5 + 2 x 1.5 legs = 22.5 = Top 21 + 2 x 0.75 trim; drawer front 19.375 = 19.5 - 1/16 x 2; front plywood 16.375 = 19.375 - 2 x 1.5 (viewed step-7 image: 19 3/8, 16 3/8, 3 5/8, 6 5/8); drawer sides 16 = bottom 14.5 + 2 x 0.75; 16\" runners; 3 pulls/3 runners listed. Unused Back row is under R3."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "plans/fd35e0b479bfa285.webp",
+      "plans/9ab2811ede1a770b.webp",
+      "plans/ddd3cfe88212c5c7.webp"
+    ]
+  },
+  "gaps": []
 }

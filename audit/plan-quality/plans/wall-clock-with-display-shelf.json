@@ -1,6 +1,6 @@
 {
   "slug": "wall-clock-with-display-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -275,10 +275,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0],[4],[6],[7],[8] (Upper/Lower Sides, Top, Bottom, Center Divider, Rails, Stiles, Lower Trim, Back Fillers, Cleat, Cleat Fillers, Clock Face, Backer) has a cutList row with matching counts"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 rows are cut and installed in steps[0]-[10]"
     },
     "R4": {
       "result": "pass",
@@ -286,39 +288,75 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x6, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Hardboard is 'Quarter Sheet' (materials[3]) with no dimensions written, so the two 18 x 18 face pieces cannot be scored against it. Boards pass (steps name stock for every part): 1x6 parts 2x20 + 18.5 + 2x17.5 + 17 + 17 = 127.5 in + 7 cuts x 1/8 = 0.875 -> 128.4 <= 96 + 48 = 144 (loads: 96 board 20+20+17.5+17.5+18.5 = 93.5 + 5 cuts x 1/8 = 94.1 <= 96; 48 board 17+17 = 34); 1x2 parts 2x17 + 2x20 + 15.5 + 2x15.5 + 2x6.25 + 20 + 2x20 + 17 + 2x3 + 17 = 233 in + 15 cuts x 1/8 = 1.9 -> 234.9 <= 3 x 96 = 288."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "drive three #8 x 1 1/4\" flathead screws through the lower sides into the upper sides."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1 1/4\" fine-thread pocket-hole screws"
+        }
+      ],
+      "reason": "The #8 x 1 1/4\" flathead screws are not in materials (searched materials[].name for /flat|#8|wood screw/i: no match; only pocket-hole screws qty 26, which equals the 26 pocket holes in the viewed diagram f790943b149f3fbe.webp: 6 + 6 + 6 + 4 + 4)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed f790943b149f3fbe.webp (pocket-hole and pilot-hole positions, 1/2 in, 1 1/4 in, 1 1/2 in), db5f8af8ff784af3.webp (hour-hole grid 1 1/4 in, 5 in, 9 in; 3/4 in and 1/2 in holes; center hole), d5d9d750e261269a.webp (notch 2 in x 3/4 in; pocket holes), 646b76efded27866.webp (overall 20 x 35 1/2, 14 in opening, 15 1/2 in inside width). Overlap 2 in, 3/4 in offsets and cleat set 1/4 in are numeric in steps[2],[3],[10]."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[4] 'as shown in the cutting diagram' has no own image and none of the 5 unattached images is a rail/stile cutting diagram (viewed: four photos/renders and the 20 x 35 1/2 overview), but all rail/stile lengths and counts are in cutList[5]-[8] and steps[4], and steps[5]'s image 198e0c1a702e6d12.webp labels every rail and stile. Other 'as shown' steps have their own viewed images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Case built, joined, rails/stiles/trim glued on, face made and glued in from behind, fillers and cleat last, then finish, hanger and movement"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'set your pocket hole jig for 3/4\"-thick material' and steps[7] 'pocket-hole jig set up for 3/4\" material'; every pocket-holed part is 3/4 in (cutList rows 0.75)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match cut list: steps[0] 2/2/1/1/1, steps[4] 2/2/1/2, steps[6] 2/1, steps[7] 2/1/1/2. Sizes agree: upper 20 in = Upper Side 20 = Top 18.5 + 2 x 3/4 = 20; Upper Rail 17 = 20 - 2 x 1 1/2; Lower Rail 15.5 = Bottom 17 + 1 1/2 - 3 - ... lower box 17 + 1.5 = 18.5 - 3 = 15.5; face 18 fits inside case 18.5 and behind opening 17; overall 20 + 14 + 1 1/2 = 35 1/2 matches the viewed overview. Every part installed; hanger, movement, hands in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "f790943b149f3fbe.webp",
+      "db5f8af8ff784af3.webp",
+      "d5d9d750e261269a.webp",
+      "198e0c1a702e6d12.webp",
+      "ad3058c811cd36e3.webp",
+      "adc946919477dade.webp",
+      "48e2b0b9c8c1593a.webp",
+      "eb5df6f9cf5b643f.webp",
+      "c639661f96977a0a.webp",
+      "646b76efded27866.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "We simply glued them in place, and clamped them until the glue dried.",
+      "what": "Wood glue (steps[5],[6],[8],[9]), paint (steps[8] white and black), and stain/finish (steps[10]) are not in materials (searched materials[].name for /glue|paint|stain|finish/i: no match)."
+    }
+  ],
+  "humanReview": "clock movement shaft: materials[6] 'High-torque clock movement, 7/16\"-long shaft' vs the dial stack Clock Face 1/4 + Backer 1/4 = 1/2 in (cutList[13],[14] Kreg-corrected, steps[8]); whether a 7/16 in shaft suits this stack needs clock-hardware knowledge not in section 9"
 }

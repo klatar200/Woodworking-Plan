@@ -1,6 +1,6 @@
 {
   "slug": "no-sew-upholstered-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,17 +47,15 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made: base rails (1x3, steps[0],[1], cutList[0]), plywood top (steps[2], cutList[1]); legs, foam, batting, fabric, buttons are bought items (materials[2],[11],[12],[7]). Foam 'cut to the correct size' (steps[3]) is relational to the top.",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "1x3\"",
-          "why": "no step mentions it (searched steps for its words)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep flagged cutList[0].part '1x3\"' as not mentioned in steps; it is: steps[0] 'each end of your 1x3\"s' and steps[1] 'attach them to the table legs'. Quantity 4 = the four base rails (4 sides of the square base, steps[1]).",
+      "search": "steps[] vs /1x3/ matches steps[0],[1]",
+      "sweepResult": "flagged"
     },
     "R4": {
       "result": "pass",
@@ -65,33 +63,92 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, sheet-0.75, 14x15.5); steps not checked for per-part stock"
+      "readerNote": "1x3 part scored: 4 x 31.25 (Kreg-corrected cutList[0]) + 3 cuts x 1/8 = 125.375 <= 2 x 72 = 144 (materials[0]) and two 31.25 pieces fit one 72\" board (62.5 + 1/8). The plywood top row is unusable (see R14), and for a sheet R-2 gives unknown unless area exceeds the sheet.",
+      "reason": "Sheet part cannot be scored: live Plywood Top is 3 x 3 in and the intended size is not given in the plan."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/2\" pocket hole screws (steps[1]) = materials[9]; 1\" pocket hole screws (steps[2]) = materials[3]; staples (steps[7],[8]) = materials[4]; #6 x 3/4\" wood screws and washers (steps[5]) = materials[5],[6]. No use gets two sizes. Quantities (8 screws for 16 holes) are in gaps.",
+      "sweepResult": "to-read"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "ure you have enough to staple on the underside of the table. Start pulling the fabric unto the button hole but make sure to pull from the coffee table side and not from the edge side. Screw your washe",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d1ae2597c6725d99.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numbers given: pocket holes two per end and 4-5 along one side (steps[0]); screws \"a 1/2\" from the outside of the leg\" (steps[1]); button pattern 5-4-5-4-5 = 23 (matches materials[7]/[5]/[6] = 23) at \"about 6.5\" to 7\" apart\" (steps[4]). Top aligned corner to corner and foam/fabric cut to size are relational (viewed 107ac7b5c76dad04, a5044ee8ea13fc36).",
+      "sweepResult": "flagged"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|see (the )?(diagram|drawing)|diagram|pictured/i: no reference"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled and sanded (steps[0]) -> base with legs (steps[1]) -> top screwed on (steps[2]) -> foam glued to top (steps[3]) -> button marks, fabric, tufting, staples (steps[4]-[8]) -> base finish (steps[9]). Every step is physically possible in this order (viewed 107ac7b5c76dad04 shows the fabric tucked at the top edge of the finished base); see gaps for the finish ordering note."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"using the Kreg Jig at the 3/4\" setting\" covers every pocket-holed part (1x3 rails, 0.75 thick after correction)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "\"part\": \"Plywood Top\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 3, \"lengthIn\": 3"
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "9 sq. ft. of 2\" foam"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Each button hole is about 6.5\" to 7\" apart from each other."
+        }
+      ],
+      "search": "materials[].name and steps[] vs /batt|batting|batten/i: only steps[5] 'Add your batten over the foam'; no material",
+      "arithmetic": "(a) Top size: cutList[1] says 3 x 3 in. Steps[4] puts 5 buttons in a row 6.5\"-7\" apart: 4 gaps x 6.5 = 26\" (to 4 x 7 = 28\") > 3\"; materials[12] 9 sq. ft. of foam = 1296 sq in = 36 x 36 in (viewed a5044ee8ea13fc36 shows foam covering the whole top). The cut-list row is wrong; the correct size is not stated anywhere in the plan. The sweep recorded no import diff for this row, so the cause cannot be shown to be the importer. (c) Batting: steps[5] uses 'batten' (batting) over the foam; it is not in materials (fabric and foam are).",
+      "reason": "Two measurement/material gaps: unusable Plywood Top row and missing batting. Other numbers agree: 5 + 4 + 5 + 4 + 5 = 23 buttons = materials 23 buttons/washers/screws; (b) every part made is installed; (d) steps reach the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[9].name",
+      "quote": "1 1/2\" Pocket Hole Screws",
+      "what": "Quantity 8 but steps[1] drills 'two pocket holes in each end' of 4 rails = 4 x 2 x 2 = 16 holes into the legs (quantity is not flagged as an import default). Fastener count, not size, so not scored under R6."
+    },
+    {
+      "path": "cutList[0].part",
+      "quote": "1x3\"",
+      "what": "Rail length 31 1/4 (Kreg-corrected) is stated in the source as 'or to a lengh that equals 3' once legs are installed', i.e. it depends on the leg width, but the live row has no note and no leg dimension is in the plan (materials[2] 'Table Legs of Choice 14\"-15.5\" tall'). Not scored."
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Once your base is together and it a square, stain or paint to finish.",
+      "what": "Base finishing is the last step, after the fabric is stapled to the top (steps[7],[8]); the plan does not say to finish the base earlier. Ordering observation, not scored."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "use spray adhesive to adhere the foam to the plywood",
+      "what": "Spray adhesive is used (steps[3]) but materials[10] is 'Bottle Fabric Adhesive'; stain/paint (steps[9]) and sandpaper (steps[0]) are also not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "0044377651b7e970",
+      "107ac7b5c76dad04",
+      "a5044ee8ea13fc36",
+      "d1ae2597c6725d99"
+    ]
+  }
 }

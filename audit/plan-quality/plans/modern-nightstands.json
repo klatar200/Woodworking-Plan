@@ -1,6 +1,6 @@
 {
   "slug": "modern-nightstands",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,51 +10,96 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps name has a cutList row: legs, horizontal side spans, horizontal front/back spans, lower sides, shelf/tops, back, drawer box front/backs and sides, drawer bottom, drawer front (steps[1]-[8]). Counts for two nightstands: 6 side spans + 6 front/back spans per piece = 12 each (viewed 32237ec81219bac5, 4f6540aa24ee3051 show 3 spans per frame).",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are used in steps[1]-[8]; none is an assembly or placeholder.",
+      "sweepResult": "to-read"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "readerNote": "Sweep said unknown (unit marks in materials[0] \"Boards, 2”x2”x8’\" not parsed). Legs and spans 1.5 x 1.5 = §9 actual of 2x2; plywood parts are 0.75 and 0.25 thick from materials[1],[2]; all sheet parts fit 48 x 96 / 24 x 48.",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Three stock types (2x2, 3/4\" sheet, 1/4\" sheet) and the steps never name the stock per part, so the R-2 precondition is not met. Reader sanity check, not scored: 2x2 total 8 x 27 + 12 x 13.5 + 12 x 20 = 618\" (+ kerf) <= 7 x 96 = 672\"; 3/4\" parts area 2937 sq in <= 4608; 1/4\" parts area 931 sq in <= 24 x 48 = 1152."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2-1/2\" pocket hole screws (steps[1],[3]) = materials[4]; 1-1/4\" pocket hole screws (steps[2],[4],[6],[8]) = materials[5]; 1-1/4\" brad nails (steps[5],[6]) = materials[6]. No use gets two sizes.",
+      "sweepResult": "to-read"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "at they sit back 1.25” from the face edge of the nightstand. This will give a recessed inset panel look to the drawer. Drill two holes in the front of the drawer box about 6” from each side, centered ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7d68c18efb891df6.webp"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "ea to have some double-sided tape and playing cards on hand. You can space the drawer appropriately in the opening using the playing cards, and the double-sided tape will hold it in place until your r",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb679f76c0ea9309.webp"
+          "quote": "Install the drawer slides so that they sit back 1.25” from the face edge of the nightstand."
         }
-      ]
+      ],
+      "reason": "The setback is numbered (1.25\"), but the height at which the slides go on the Lower Sides is neither stated nor dimensioned. The opening is 10 1/2\" tall (viewed 4359c01024291bcb, 32237ec81219bac5) and the drawer box is 7 1/2\" tall (cutList[5]), leaving 3\" of vertical freedom; viewed 7d68c18efb891df6 shows the box in the opening with no height dimension. Search: no step gives a slide height. Other positions pass: spans 4\" / 10.5\" / 8\" (32237ec81219bac5), top recessed 1/2\", shelf flush, face spaced with playing cards (relational), face screw holes 6\" from each side.",
+      "sweepResult": "flagged"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "reason": "All 9 diagram references are in steps with their own dimensioned images (viewed 32237ec81219bac5, 4359c01024291bcb, d4f5899e5f533ae9, 0b7f3b19f9e62a90, b3cb19199b1d6cce, 7d68c18efb891df6)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames (steps[1]) -> lower sides (steps[2]) -> front/back spans (steps[3]) -> shelf and top (steps[4]) -> back (steps[5]) -> drawer box (steps[6]) -> slides and box from the open front (steps[7]) -> face last (steps[8]) -> finish (steps[9]). Nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings are stated where used: steps[1] and steps[3] \"1-1/2” jig setting\" for the 1 1/2\" parts; steps[2] and steps[4] \"3/4\" jig setting\" for the 3/4\" parts (drawer box in steps[6] is 3/4\" as well)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) On the cut list: drawer box 17.5 + 2 x 3/4 = 19, + 2 x 1/2 slide clearance (materials[3]) = 20 = span length / opening; box side 12 = 12\" slides; face 10.25 + 2 x 1/8 = 10 1/2 = lower opening (viewed 4359c01024291bcb); face 19.75 + 1/4 = 20; slide setback 1.25 - face 0.75 = 0.5 recess (viewed 7d68c18efb891df6); box bottom 18.875 x 11.875 is 1/8\" under the 19 x 12 box (viewed b3cb19199b1d6cce); 2-1/2\" screws 12 + 12 spans x 2 ends x 2 = 96 = materials[4]. (b) all parts installed; (c) slides, screws, nails, glue, sandpaper in materials; (d) steps reach a finished nightstand."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Install the drawer slides so that they sit back 1.25” from the face edge of the nightstand.",
+      "what": "materials[3] \"12\\\" drawer slides\" quantity 2 for two drawers: whether that is 2 pairs (needed) or 2 single slides (one pair short) is not stated."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "use 1-1/4” pocket-hole screws to attach from the inside of the drawer into the drawer face.",
+      "what": "No drawer pull or handle is in materials or any step although viewed image 7d68c18efb891df6 shows one on the face and the description mentions \"unique drawer pulls\". Search: materials[] and steps[] vs /pull|handle|knob/i: no match."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "it is a great idea to have some double-sided tape and playing cards on hand",
+      "what": "Double-sided tape and playing cards (spacers) are used but not in materials; stain/paint (steps[9]) also not listed."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "32237ec81219bac5",
+      "4359c01024291bcb",
+      "4f6540aa24ee3051",
+      "d4f5899e5f533ae9",
+      "0b7f3b19f9e62a90",
+      "b3cb19199b1d6cce",
+      "7d68c18efb891df6",
+      "fb679f76c0ea9309"
+    ]
+  }
 }

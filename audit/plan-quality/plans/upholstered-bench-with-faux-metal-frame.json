@@ -1,6 +1,6 @@
 {
   "slug": "upholstered-bench-with-faux-metal-frame",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -55,28 +55,55 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "he frame to the seat using 2\" wood screws as shown by the arrows. Tip: Visit the link under the \"Extras\" tab for more details, including video instructions for upholstering the seat.\nEnjoy your bench!",
-          "why": "matches \"Extras\""
+          "quote": "Tip: Visit the link under the \"Extras\" tab for more details, including video instructions for upholstering the seat."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "I also upholstered the seat."
         }
-      ]
+      ],
+      "reason": "Seat upholstery (foam, faux fur, how to attach) is described only by pointing to the Extras tab; the plan gives no upholstery steps or materials (searched whole plan for /foam|fabric|fur|batting|staple|upholster/i: description 'faux fur upholstered seat', steps[2] 'upholstered', cutList[1] 'Seat- To be upholstered'). Fix level: the frame and 1x12 seat can be built and screwed together without it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the 2x2 pieces as shown on the cut list. Drill pocket holes on the 8-1/2\" pieces"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the 14\" inch vertical pieces"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Frame-See Diagram qty 4, 2 x 2 x 8 (Kreg-corrected 1.5 x 1.5 x 8)"
+        }
+      ],
+      "reason": "The 2x2 frame pieces the steps cut and assemble (8 1/2 in crosspieces, 14 in verticals, and the long rails) are not in the cut list: cutList[0] is a single placeholder row. Searched cutList[].part and steps for any 55 in rail: '55' appears only in viewed diagram adb4f2fd7504e420.webp. The viewed diagrams show the counts (4 long rails 55 in, 6 crosspieces 8.5 in, 6 verticals 14 in), so the build can still be completed: Fix, not Unpublish."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[0].part",
-          "quote": "Frame-See Diagram",
-          "why": "looks like a placeholder or an assembly, not a part"
+          "quote": "Frame-See Diagram"
         }
-      ]
+      ],
+      "reason": "Flag confirmed: placeholder row, quantity 4 and length 8 match no piece in the steps or diagrams. Same underlying defect as the R2 finding."
     },
     "R4": {
       "result": "pass",
@@ -84,26 +111,81 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x12); steps not checked for per-part stock"
+      "reason": "The cut list has no real rows for the frame (placeholder), so lengths come only from the viewed diagrams. From them: 4 x 55 + 6 x 8.5 + 6 x 14 = 220 + 51 + 84 = 355 in + 16 cuts x 1/8 = 2 -> 357 <= 4 x 96 = 384 (materials[0]), and seat 54 <= 72 (materials[1]); left unknown because the counts are not in text or cut list."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0],[1] use 2-1/2\" pocket screws (materials[2]); steps[2] uses 2\" wood screws (materials[3]); viewed 98e45560af8158b0.webp shows 8 screw arrows, materials[3] quantity 8"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed adb4f2fd7504e420.webp gives 55 in length, 8.5 in width and the crosspiece positions (ends and middle); 29639d3cfe456c55.webp gives the 14 in verticals at six marked points; 98e45560af8158b0.webp shows the frame seated on the seat with eight screw arrows. Frame-on-seat placement is centered (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "All four 'as shown'/'diagram' references are in steps with their own images, which were viewed (steps[0] image adb4f2fd7504e420, steps[1] 29639d3cfe456c55, steps[2] 98e45560af8158b0)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top and bottom frames built, joined with verticals, finished, then screwed to the seat"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes on the 8-1/2\" pieces, where the blue arrows point."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2 in 2x2 stock but no jig thickness setting is stated (searched steps for /setting|thickness|jig/: none; viewed diagrams adb4f2fd7504e420 and 29639d3cfe456c55 show only arrows)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I also upholstered the seat."
+        },
+        {
+          "path": "description",
+          "quote": "The faux fur upholstered seat is soft and comfortable."
+        }
+      ],
+      "reason": "The seat is upholstered but materials list no foam, fabric/faux fur, batting or staples (searched materials[].name for /foam|fabric|fur|batting|staple/i: no match; materials[0]-[3] are 2x2, 1x12, pocket screws, wood screws). Counts in text match the viewed diagrams (8 1/2 in, 14 in, 8 screws)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-17",
+    "imagesViewed": [
+      "adb4f2fd7504e420.webp",
+      "29639d3cfe456c55.webp",
+      "98e45560af8158b0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[1]",
+      "quote": "Seat- To be upholstered qty 1, 0.75 x 11.25 x 54 (Kreg-corrected)",
+      "what": "Frame outer size from the viewed diagrams is 55 in long (adb4f2fd7504e420.webp '55 in') and 8.5 + 2 x 1.5 = 11.5 in wide, while the seat is 54 x 11.25. The frame would overhang the seat by 1 in x 1/4 in; the plan never says whether that is intended or where the frame sits on the seat."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "I used a metallic silver spray paint to give the wood the appearance of metal.",
+      "what": "Spray paint (steps[2]) is not in materials."
+    }
+  ]
 }

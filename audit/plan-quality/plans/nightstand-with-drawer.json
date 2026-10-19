@@ -1,6 +1,6 @@
 {
   "slug": "nightstand-with-drawer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,50 +119,144 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut has a cutList row: Legs (steps[0],[8]), Side/Back Rails (steps[1]), Drawer Front (steps[2]), Top Boards (steps[5]), Drawer Slide Spacers (steps[9]), Drawer Box Front/Back/Sides (steps[10]), Drawer Bottom (steps[11]). Slides, tape, dowel spacers are in materials.",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used in steps[0]-[14]; none is an assembly or placeholder. (Back Rail quantity is scored under R14.)",
+      "sweepResult": "to-read"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (0.5x4, 0.5x3, 1x6, 1x2, sheet-0.75, 0.25x0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "readerNote": "Sweep said unknown (per-part stock not checked); the steps name the stock for every part.",
+      "arithmetic": "1x2 cherry (materials[3] 2 x 96\" = 192\"; steps[0]): 8 Legs x 20 = 160 + 7 cuts x 1/8 = 160.875 <= 192. 1x6 (materials[2] 2 x 72\" = 144\"; steps[1],[2],[5]): 2 Side Rail x 13 + 2 Back Rail x 13 (cutList[2] quantity 2) + Drawer Front 12.75 + 3 Top Board x 17 = 26 + 26 + 12.75 + 51 = 115.75 + 8 cuts x 1/8 = 116.75 <= 144. 1/2\" x 4\" (materials[0] 2 x 24\" = 48\"; steps[10]): 2 x 11 + 2 x 12 = 46 + 3 x 1/8 = 46.375 <= 48 (per board 12 + 11 + 1/8 = 23.125 <= 24). 1/2\" x 3\" (materials[1] 36\"; steps[9]): 2 x 13 = 26 + 1/8 <= 36. 3/4\" plywood 24 x 24 (steps[11]): 11 x 11 fits. No quantity involved is an import default (importDiffs lists none for materials)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine-thread pocket-hole screws (steps[3],[4],[6],[7]) = materials[6] qty 27 (3 rails x 7 holes + 2 outer top boards x 3 = 27, viewed ce8c927d4ea3059c, 23464603f78a867b); 1\" coarse-thread pocket-hole screws (step[12]) = materials[7] qty 8 (4 corners x 2, viewed 923feb2ec65bfbd5); 1\" brad nails (steps[9],[10]) = materials[8]; 1\" flat-head wood screws (steps[14]) = materials[9].",
+      "sweepResult": "to-read"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers or viewed dimensions: arch rise 1\" and pocket-hole spacing 2 1/4\", 1 1/2\" (ce8c927d4ea3059c); handle holes 4 3/8\", 4 7/8\", 1\" down, 1/2\" (1ef55c03f65ed623); 1/4\" dowel spacers (4e8dbecbbd1f6787); top 1/2\" overhang and rear flush (79fcb3ea3edcb36e); slide spacer 1/4\" below arch centre, 2 1/2\" tall (a03e2c311fc0efab); front 1/8\" gaps (efb0421e457a2a2d); top-board pocket holes 1 1/2\", 8 1/2\" (23464603f78a867b). Slide mounting is 'per the manufacturer' (gaps)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut the eight Legs to rough length from 1x2 Cherry boards, as shown in the cutting diagram. Note that these pieces are initially cut extra-long. They’ll get glued together in pairs to form four thicke",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut the eight Legs to rough length from 1x2 Cherry boards, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "steps[0] refers to a cutting diagram and has no image; the 5 unattached images (f3d073a7b2d0f4f2 overall-size drawing; e07a23be8346a6e5, 7bc8d39692706af8, fa89e9d65cd86aad, 6a74b81b31001db5 photos) were viewed and none is a cutting diagram. The only information it would carry (the 'rough length' of the legs) is nowhere in the plan (search: no step or cutList row gives a rough leg length; cutList[0] 20 is the final length, 14 1/2 + 5 1/2 = 20 in viewed f3d073a7b2d0f4f2). Other 'cutting diagram' references (steps[1],[2],[5],[9],[10],[11]) have their own dimensioned images.",
+      "sweepResult": "flagged"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Lay two leg assemblies on a flat surface with the glue joint facing up."
         },
         {
-          "path": "steps[0].body",
-          "quote": "ough length from 1x2 Cherry boards, as shown in the cutting diagram. Note that these pieces are initially cut extra-long. They’ll get glued together in pairs to form four thicker leg assemblies, and t",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].body",
+          "quote": "Apply glue to the faces of two Leg pieces and attach them face to face making sure the edges are flush with one another."
         }
-      ]
+      ],
+      "reason": "The leg assemblies are used in steps[3]/[4] (and steps[7]) but are not made until steps[8] ('Create the Leg Assemblies'). Order is recoverable (steps[0] says the legs are glued in pairs then cut to final length) so the build can be completed by reordering; Fix. Everything else is in order (base, top, then slide spacers, drawer box, slides, front last)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Cut a Drawer Bottom to size from 3/4\" plywood as shown in the cutting diagram. Set your pocket-hole jig and bit for 1/2\"-thick material"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "\"part\": \"Drawer Bottom\", \"quantity\": 1, \"thicknessIn\": 0.75"
+        }
+      ],
+      "reason": "The Drawer Bottom is 3/4\" thick (steps[11] and cutList[8] thicknessIn 0.75) but the pocket-hole jig is set for 1/2\" (steps[11], viewed 923feb2ec65bfbd5 'Set pocket-hole jig for 1/2\"-thick material'): the setting contradicts the thickness it is used on. Rails and top boards state 3/4\" correctly (steps[1]). Possibly deliberate, but R9 as written fails it."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut two Sides Rails and one Back Rail to length from a 1x6 cherry board"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "\"part\": \"Back Rail\", \"quantity\": 2, \"thicknessIn\": 0.75, \"widthIn\": 5, \"lengthIn\": 13"
+        }
+      ],
+      "arithmetic": "steps[1] cuts 1 Back Rail and steps[4] installs 'the Back Rail' (viewed c076ebbd96303529 shows one); cutList[2] quantity is 2 (a parsed value, not an import default: importDiffs lists no quantity change for cutList). 3 rails total vs 4 on the cut list.",
+      "reason": "(a) Back Rail count disagrees (steps 1 vs cut list 2). Other numbers add up on Kreg-corrected rows: 3 Top Boards x 5 1/2 = 16 1/2 (viewed 16 1/2\" and 17\"); legs 14 1/2 + rail 5 1/2 = 20 + top 3/4 = 20 3/4 (viewed f3d073a7b2d0f4f2); drawer front 12 3/4 + 2 x 1/8 = 13 = Back Rail length; box 11 + 2 x 1/2 = 12 (viewed 1e182feaa992bc03) with bottom 11 x 11. (b) all parts installed; (c) slides, tape, dowel spacers, Forstner bit in materials; (d) steps reach a finished nightstand."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Lay out the arch on the bottom of each Rail and then cut it out using a jig saw.",
+      "what": "Step 'Create the Drawer Front' says 'each Rail' where the drawer front is meant (viewed 1ef55c03f65ed623 shows the arch on the Drawer Front); wrong part name."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Attach the Drawer Slides to the Slide Supports and to the drawer box following the slide manufacturer’s instructions.",
+      "what": "'Slide Supports' is not a part name in the cut list (Drawer Slide Spacer); alias unstated. The slide's front-to-back start position and the height on the 3 1/2\" drawer box side are not given; setback needed for the 3/4\" front (viewed efb0421e457a2a2d, front shown translucent with no dimension) is left to the slide instructions. Not scored."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "Sand the table as needed to prepare for a final finish, then wipe away all dust.",
+      "what": "Sandpaper (steps[1],[8],[15]) and masking tape (steps[8] alternative to clamps) are used but not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "f3d073a7b2d0f4f2",
+      "e07a23be8346a6e5",
+      "7bc8d39692706af8",
+      "fa89e9d65cd86aad",
+      "6a74b81b31001db5",
+      "ce8c927d4ea3059c",
+      "1ef55c03f65ed623",
+      "4e8dbecbbd1f6787",
+      "c076ebbd96303529",
+      "23464603f78a867b",
+      "79fcb3ea3edcb36e",
+      "a03e2c311fc0efab",
+      "1e182feaa992bc03",
+      "923feb2ec65bfbd5",
+      "7aa9b8e92ba3623e",
+      "efb0421e457a2a2d"
+    ]
+  }
 }

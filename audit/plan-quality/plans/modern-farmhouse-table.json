@@ -1,6 +1,6 @@
 {
   "slug": "modern-farmhouse-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -164,54 +164,111 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[1] and steps[4] point to a how-to video for stop-block and screw-choice advice; both are optional technique notes, and every dimension is in the plan/images. Sweep regex found nothing else."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make has a cutList row: Legs, Short Rails, End Stretchers, Long Rails, Center Rail, Center Stretchers, Angle Stretchers, Top; the second-layer 'extra' pieces are the doubled quantities (8 legs, 4 short rails, 4 end stretchers, 2 center stretchers, 4 angle stretchers). steps[10],[13] call the Center Stretcher a 'Long Stretcher' (alias, see gaps).",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are cut and installed (steps[1]-[16]); quantities match the 'Cut EIGHT/FOUR/TWO/ONE/FIVE' labels in viewed drawings a151ebee934e0055, 4ac04d2154289453, f85d21da9d234ec1, ceaeddfdfc91068e, c6c701949c659c9d, db5b14468e82b21c.",
+      "sweepResult": "to-read"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x3, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "readerNote": "Sweep said unknown (steps not checked); the steps name the stock for every part (1x4 for legs, rails, stretchers; 1x3 for angle stretchers; 1x8 for top).",
+      "arithmetic": "1x4 (materials[0] 9 x 72\" + materials[1] 2 x 96\" = 840\"): parts 8 x 29.625 + 4 x 23.75 + 4 x 27.625 + 2 x 52 + 28.625 + 2 x 52 = 679.125\"; kerf 21 pieces x 1/8\" = 2.625\"; 681.75\" <= 840\". 1x3 (2 x 72\" = 144\"): 4 x 31.1875 = 124.75\" + 4 x 1/8\" <= 144\". 1x8 (5 x 96\" = 480\"): 5 x 76 = 380\" + 5 x 1/8\" <= 480\". Lengths are Kreg-corrected; no materials quantity is an import default.",
+      "reason": "Totals cover every stock; board-by-board packing of the 1x4 is tight but not scored."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "ng glue and 1 1/4\" pocket-hole screws. We chose fine-thread screws for our alder hardwood. You can find more about choosing screws in the how-to video below. Clamp the pieces during assembly to keep t",
-          "why": "4\" screw — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "1 1/4\" pocket-hole screws (steps[4]) = materials[4] \"100 count box of 1 1/4\" Kreg Screws\"; no other size is stated (brad nails in steps[13] are optional and unsized).",
+      "sweepResult": "flagged"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are dimensioned in viewed images: 5° ends (a151ebee934e0055), pocket holes 4\" / 11 9/16\" (9b5bfefc4ff7c994) and 10\" / 20\" (f85d21da9d234ec1), center rail 25 5/8\" each side (cdfac9cbb4302f69), center stretcher offset 12 3/4\" (3cdfa1ea55275891), angle stretcher 13 9/16\" (ee64c62f280a1bad/f393ebe2ed680e3c), top overhang 10 1/2\" and 3\" (c6023d36f0878ad1) and 'equal overhang' in steps[16]; end-stretcher 'X' is relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Sweep candidate steps[0] 'cutting diagrams': the diagrams are the step images of steps[1]-[14] (viewed a151ebee934e0055, 9b5bfefc4ff7c994, 4ac04d2154289453, f85d21da9d234ec1, ceaeddfdfc91068e, c6c701949c659c9d, ee64c62f280a1bad, db5b14468e82b21c); the 5 unattached images viewed are overall photos and the overall-size drawing.",
+      "sweepResult": "flagged"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "End assemblies (steps[4]) -> long rails (steps[6]) -> center rail (steps[8]) -> center stretcher (steps[10]) -> angle stretchers (steps[12]) -> second layer covers the pocket holes (steps[13]) -> top (steps[14],[15]) -> base screwed to top with pocket holes through the rails, no glue (steps[16]). Every pocket hole is reachable when used."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"set your Kreg Jig for 3/4\"-thick material (the setting you’ll use throughout this project\" covers all 0.75 parts."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "look at the procedures, the materials list, and the cutting diagrams. You’ll see that most parts of the base are double thickness. This makes the table stronger, and helps with the traditional farmhou",
-          "why": "\"diagrams\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[11].body",
+          "quote": "Cut four Angle Stretchers to length from 1x3 boards so that the ends have opposing 45° angles"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x3 72\""
         }
-      ]
+      ],
+      "arithmetic": "Angle Stretcher width: Kreg-corrected cutList[6] widthIn = 3.5 (source \"3/4\\\" x 3 1/2\\\" x 31 3/16\\\"\"), but steps[11] and materials[2] say 1x3 (actual 2 1/2\", §9) and the viewed drawing ee64c62f280a1bad labels the part width \"2 1/2\\\"\" x \"31 3/16\\\"\". 3.5 - 2.5 = 1\" too wide for the stock the steps name.",
+      "reason": "(a) cut-list width for the Angle Stretchers contradicts the step, the stock and the drawing. Everything else adds up on corrected rows: top 5 x 7 1/4 = 36 1/4 (viewed 36 1/4\"); long rails 52 = 2 x 25 5/8 + 3/4 (viewed cdfac9cbb4302f69); base 52 + 2 x 1 1/2 = 55, top 76 - 55 = 21 = 2 x 10 1/2 (viewed c6023d36f0878ad1). (b) all parts installed; (c) only glue and screws used, both in materials; (d) steps reach the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Note that this Long Stretcher isn’t centered on the length of the End Stretchers.",
+      "what": "steps[10] and steps[13] call the part a 'Long Stretcher'; the cut list and steps[9] name it 'Center Stretcher'. Alias is not stated."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[17].body",
+      "quote": "We used a “Java” colored gel stain, followed by two coats of satin wipe-on urethane.",
+      "what": "Stain/finish and sandpaper (steps[4],[5],[15]) are used but not in materials; brads (steps[13], optional) are unsized."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "4f2d4583a6ec667d",
+      "eac43756ebb84122",
+      "af4e28ae80975059",
+      "b0ea4f39281cc26b",
+      "f2b69860c7a56fa3",
+      "a151ebee934e0055",
+      "9b5bfefc4ff7c994",
+      "4ac04d2154289453",
+      "5f7e848e07e7f652",
+      "f85d21da9d234ec1",
+      "2af2e9e5bd8eb169",
+      "ceaeddfdfc91068e",
+      "cdfac9cbb4302f69",
+      "c6c701949c659c9d",
+      "3cdfa1ea55275891",
+      "ee64c62f280a1bad",
+      "f393ebe2ed680e3c",
+      "db5b14468e82b21c",
+      "c6023d36f0878ad1"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "mobile-workbench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,48 +47,117 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made/assembled in the steps (legs, small and large supports, table top, shelf, table-top framing 1x2s) each have a cutList row; casters are in materials[5].",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: Legs/Small/Large Supports (steps[1],[2]), Table Top (steps[3]), Shelf (steps[4]), both Table Top Framing rows (steps[6]; 2 x 62 + 2 x 24 = the 62 x 24 top).",
+      "sweepResult": "to-read"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); cutList[1] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); cutList[2] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); cutList[5] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); +1 more"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "\"part\": \"Legs\", \"quantity\": 4, \"thicknessIn\": 4, \"widthIn\": 4"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "\"part\": \"Small Side Supports\", \"quantity\": 4, \"thicknessIn\": 2, \"widthIn\": 4"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "\"thicknessIn\": 1, \"widthIn\": 2, \"lengthIn\": 62"
+        }
+      ],
+      "arithmetic": "The cut list gives nominal lumber names as sizes (import source for legs: 4\" x 4\" x 29 1/4\"). Materials are 4x4, 2x4, 1x2 (materials[1]-[3]); §9 actuals: 4x4 = 3 1/2 x 3 1/2 (row says 4 x 4, 4 > 3 1/2), 2x4 = 1 1/2 x 3 1/2 (row says 2 x 4, 2 > 1 1/2 and 4 > 3 1/2), 1x2 = 3/4 x 1 1/2 (row says 1 x 2, 1 > 3/4 and 2 > 1 1/2). Same for cutList[1] (2 x 4 x 53). Only the Table Top and Shelf rows (0.75 plywood, corrected) are true sizes.",
+      "reason": "Seven rows list nominal sizes, which no listed material can actually yield; the steps name the stock (\"2x4x15”\") so the intent is clear, hence likely/Fix. The site's optimizer and dimension display read these as real inches."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1], materials[2], materials[3]"
+      "reason": "Steps name stock for the small supports (2x4x15”), table top (plywood) and framing (1x2) only, not for legs, large supports or shelf; stock lengths are NxMxL with no unit (materials[1]-[3], read as feet since L <= 16). Reader sanity check, not scored: 2x4: 4 x 53 + 4 x 15 + kerf <= 4 x 96; 4x4: 4 legs x 29.25 from 2 x 96; 1x2: 2 x 62 + 2 x 24 = 172 <= 192; plywood area 24 x 62 + 18 x 55 = 2478 <= 4608."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "finished look. Attach your 1x2’s using wood glue and 1 1⁄4” brad nails. **Make sure your 1x2’s line up exactly with your tabletop - this will make a completely flat surface. Conceal your nail holes us",
-          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach your 1x2’s using wood glue and 1 1⁄4” brad nails."
         },
         {
-          "path": "steps[6].body",
-          "quote": "hed look. Attach your 1x2’s using wood glue and 1 1⁄4” brad nails. **Make sure your 1x2’s line up exactly with your tabletop - this will make a completely flat surface. Conceal your nail holes using p",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "path": "steps[5].body",
+          "quote": "attach them to the bottom of your legs using 2.5” screws and washers!"
         }
-      ]
+      ],
+      "search": "materials[].name vs /brad|nail|washer/i: no match in any of materials[0-12]",
+      "reason": "1 1/4\" brad nails (steps[6]) and washers (steps[5]) are used but are in no material line.",
+      "sweepResult": "flagged"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Given as numbers: supports at the very top and \"4” up from the bottom of the legs\" (steps[1],[2]); shelf notches \"1.5” in from the side and 1.5” in from the bottom\" (steps[4]). Overhang of the 24 x 62 top over the frame, framing flush with the top and wheel placement on leg bottoms are relational/fixed by the parts (viewed 53dc64179c8b8b10, 37ee54e3559dbe15)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|see (the )?(diagram|drawing)|diagram|pictured/i: no reference; sweep also passed"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled and sanded (steps[0]); side frames (steps[1]); front/back supports join them (steps[2]); top (steps[3]) and shelf (steps[4]) go on the frame; wheels (steps[5]); table-top framing (steps[6]); paint last (steps[7]). Nothing must be undone; the shelf passes between the legs under the top as the viewed result photo 37ee54e3559dbe15 shows."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes on each side of all your small and large supports."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Use clamps, wood glue, and 2.5” Kreg Jig pocket hole screws to secure them together."
+        }
+      ],
+      "reason": "Pocket holes go in 2x4 supports (cutList[1],[2], 1 1/2\" actual, §9) but no jig thickness setting is stated. Search: no step/summary/description matches /setting|thickness|jig setting/i; viewed steps[1] image (721c49e2c7cc9f86) shows the drilled supports only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step 3 \"3⁄4” x 24” x 62”\" = corrected cutList[3] 0.75 x 24 x 62; \"2x4x15”\" = small supports 15; framing 2 x 62 + 2 x 24 matches the top outer size; frame outer = 3.5 + 15 + 3.5 = 22 wide and 3.5 + 53 + 3.5 = 60 long, so the 24 x 62 top overhangs 1\" each side. (b) every part made is installed (steps[1]-[6]). (c) casters, glue, filler, plastic wood, sandpaper, polyurethane are in materials (washers: R6). (d) steps reach the finished bench."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Used 123 Primer and Behr Cabinet and Trim in Semi-Gloss in Polar Bear.",
+      "what": "Primer is used in the optional paint step but not in materials (materials[8] is only \"Paint or Stain (Optional)\")."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "d553f4cec9efc687",
+      "4618ae2911117d3c",
+      "53dc64179c8b8b10",
+      "721c49e2c7cc9f86",
+      "37ee54e3559dbe15"
+    ]
+  }
 }

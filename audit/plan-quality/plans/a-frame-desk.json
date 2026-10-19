@@ -1,6 +1,6 @@
 {
   "slug": "a-frame-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -259,21 +259,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Fill all exposed holes and sand smooth. Paint/stain and seal as desired! Enjoy your new desk!\nBe sure to visit my blog for a full picture tutorial of the build!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged text is an optional blog link ('visit my blog for a full picture tutorial'); build is completable from the plan's steps and images. §2 credit/optional link."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps 1-6 (a-frame legs/top/middle/bottom rail, 4 shelf supports, top frame rails/stiles, back bottom support, desk top, shelves) matches a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 11 cutList rows are used by steps 1-6"
     },
     "R4": {
       "result": "pass",
@@ -284,23 +279,62 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x3, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 2 1/2'' and 1 1/4'' pocket hole screws only; both in materials[3],[4]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give shelf support heights (6\", 12 3/4\", 4\"), back support 3 7/8\" up, rail positions 4\"/12 3/4\"/3 1/2\", frame 59x15 on 60x16 top; step 6 gives 1/2'' overhang."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "all 'as shown' steps have own step image (viewed 1,2,3,4,6); images show the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides built (1), supports added to two sides (2), top frame (3), last side + back support (4), frame on base (5), top+shelves (6)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill 2 1/2'' pocket holes into the rails."
+        }
+      ],
+      "reason": "Step 3 states 3/4'' pocket holes for the 3/4 top frame, but no jig thickness setting is stated for the 1 1/2 thick rails/shelf supports/back support (text only gives screw length; viewed images also only say '2 1/2'' pocket holes'). Recorded only (R-2)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Parts all installed; top frame 10+2x2.5=15 x 59 on 16x60 top = 1/2\" overhang as stated (image 0c8ab). Glue consumable only (see gaps)."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "plans/942043cae670232a.webp",
+      "plans/5e3161038902ec52.webp",
+      "plans/7feea034a7bc2f8b.webp",
+      "plans/0c8ab750979691a4.webp",
+      "plans/a786562b0375b187.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Use wood glue and clamps to secure your sides as you drill.",
+      "what": "wood glue used in steps 1-4 but not in materials (consumable)"
+    }
+  ]
 }

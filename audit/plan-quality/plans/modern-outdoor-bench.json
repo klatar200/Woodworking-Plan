@@ -1,6 +1,6 @@
 {
   "slug": "modern-outdoor-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -319,21 +319,19 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": " our friends from Kreg Tool and Build Something for the design of this Modern Outdoor Storage Bench. Match it exactly or put your own spin on it! Build along with us https://www.builderschallenge.com/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The only link, in description (\"Build along with us https://www.builderschallenge.com/\"), is a credit/optional invitation; every dimension and step is in the plan (viewed cut diagrams 8c73f1c5d8f59e19, 0a18a8d7979304ae).",
+      "sweepResult": "flagged"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part made has a cutList row (Box Parts A-D, Long/Short Slats, Legs, Blocks, Fillers). The 'temporary spacer' (steps[9]) and 5-gallon bucket (steps[7]) are jigs, not parts (see gaps). 7 slats (5 short + 2 long) = 7 legs; 6 gaps between them = 6 fillers + 6 blocks.",
+      "sweepResult": "to-read"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used in steps[0]-[13]; none is an assembly or placeholder. Box Part C x6 = layers 1 and 3 (4) + steps[9],[10] (2).",
+      "sweepResult": "to-read"
     },
     "R4": {
       "result": "pass",
@@ -344,31 +342,78 @@
       "arithmetic": "parts: 4×19.5 + 4×18.75 + 6×16.5 + 7×15.75 + 2×67.5 + 5×48 + 7×16.1875 + 6×8.75 + 6×4.375 + kerf 37 cuts (47 parts − 10 boards, the fewest possible)×1/8 = 933.938″; bought: 10×96 = 960″; 933.938 ≤ 960"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" Kreg Blue-Kote screws (steps[1]-[4],[6],[9]-[13]) = materials[2]; 2 1/2\" exterior flat head wood screws (steps[8]-[10]) = materials[3]. No use gets two sizes.",
+      "sweepResult": "to-read"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Box Layer 2, second from the bottom, is the shelf layer. It's made from 2 - Part B, and 5 Part D. Space each Part D equally, about 2 3/4\" apart, and secure them to each Part B with 2 1/2\" Kreg Blue- K",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f465c9f7a387a99.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Given as numbers or viewed dimensions: Part D spacing \"about 2 3/4\" apart\" (5 x 1.5 + 4 x 2.75 = 18.5 vs 18 3/4 B length, viewed 314f6555383881d6), layer inset 3/8\" (steps[11]), Part C 16 1/2\" and 1\" pocket-hole offsets (c14b226c9577be2e, 8c73f1c5d8f59e19, 0a18a8d7979304ae), curve tangent to a bucket (a65e636c0b1fd0d1). Spacing of the slats is fixed by the fillers and blocks.",
+      "sweepResult": "flagged"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "19 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box layers built and set aside (steps[1]-[4]); slat/leg assemblies, curves, fillers, blocks (steps[5]-[10]); layers 4,3,2,1 added in that order on the upside-down seat (steps[11]-[13]); sand/finish last (steps[14]). Nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"Set your pocket hole jig for 1 1/2\" thick material\" covers all rows (every part 1.5 thick, Kreg-corrected)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Box Layer 1 (made from 2 - Box Part B, 2 - Box Part D) to match the orientation of Box Layer 3"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble 2 - Part A, and 2 Part C as shown in the illustration."
+        }
+      ],
+      "arithmetic": "steps[1] makes Box Layer 1 from 2 Part A + 2 Part C; steps[13] says Layer 1 is 2 Part B + 2 Part D. Counts: Part B (cutList[1] qty 4) = Layer 2 (2, steps[2]) + Layer 4 (2, steps[4]) = 4, so Layer 1 as B would need 6 > 4; Part D (cutList[3] qty 7) = Layer 2 (5) + Layer 4 (2) = 7, so Layer 1 as D would need 9 > 7. Layer 1 'matches Layer 3' (2 A + 2 C, steps[3]).",
+      "reason": "(a) steps[13] misnames the parts of Layer 1; the intended recipe is recoverable from steps[1] but the two steps contradict. Other numbers agree on corrected rows: 19.5 = 16.5 + 2 x 1.5 and 18.75 = 15.75 + 2 x 1.5, so alternating layers differ by 3/4\" = 2 x 3/8\" inset (steps[11]). (b) all parts installed; (c) pot, screws, glue in materials; (d) steps reach the finished bench with planter."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Lay a temporary spacer on the Long Slat where shown.",
+      "what": "The temporary spacer has no size or material given; viewed image c14b226c9577be2e shows it crossing the Long Slat with no dimension. The 5-gallon bucket template (steps[7]) is also not in materials."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[14].body",
+      "quote": "apply your favorite exterior stain or oil",
+      "what": "Exterior stain/oil and sandpaper (steps[7],[14]) are used but not in materials; glue is listed (materials[4])."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "4bf37a56e4b1b6aa",
+      "ec7d58eabcf05841",
+      "8c73f1c5d8f59e19",
+      "0a18a8d7979304ae",
+      "c14b226c9577be2e",
+      "a65e636c0b1fd0d1",
+      "4bbf9bd1dcbd7b77",
+      "314f6555383881d6"
+    ]
+  }
 }

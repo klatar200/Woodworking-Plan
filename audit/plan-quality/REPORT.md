@@ -5,10 +5,33 @@
 | | |
 |---|---|
 | Rubric | **R-2** (2026-10-19; DECISIONS_LOG) |
-| Current stage | **Stage 6 — full read** (Sonnet readers, Opus verifier) |
-| Last batch | 70 read plans re-scored under R-2 (rescore-1..7, Opus); Stage 6 batches `s6-01..36` assigned in the ledger (15 each, worst-first) |
-| Ledger | 610: 70 read under R-2, 540 swept (Stage 6 in progress) |
+| Current stage | **Stage 6 — PAUSED by Keagan 2026-10-19** (Sonnet readers, Opus verifier) |
+| Last batch | s6-01..14 and s6-16 complete; s6-15, 17–20 partly read (finished records kept, partial ones reverted); s6-21..36 not started |
+| Ledger | 610: 342 read (321 read + 21 verified), 268 swept |
+| Verdicts (342 read) | Fix 255 · Fix + Human review 4 · Ship 20 · Ship (unverified) 40 (+2 Human review) · Unpublish 18 · Unpublish (pending verifier) 3 |
 | Updated | 2026-10-19 |
+
+**To resume Stage 6:** prompts are in `prompts/` (reader, verifier, consumable cleanup; replace the
+scratchpad paths in them with the new session's scratchpad). For each batch with `swept` entries in
+the ledger (`ledger.json` `batch`), run a Sonnet reader on its swept slugs only, then
+`prompts/commit-batch.sh <batch> <slugs>` (it runs `verdict.mjs --write` + `tally.mjs --write`,
+commits, pushes). Run the Opus verifier on every `Unpublish (pending verifier)` record (now:
+shelving-unit-with-storage-and-tilt-out-laundry, side-table-with-wireless-charger,
+spare-table-that-doubles-as-wall-art), save its JSON to `verifier/<run>.json`, apply with
+`scripts/apply-verifier.mjs`, then `verdict.mjs --write`.
+
+**Before Stage 8:**
+- Run the consumable cleanup (`prompts/cleanup-prompt.md`) on batches s6-11..s6-14. Their readers
+  started before the 2026-10-19 consumables ruling.
+- Stage 8 items noted so far:
+  - Importer drops cut-row detail notes (angles, miters, bevels): kids-stepping-stool "Cut at 22.3
+    Degree Angle", simple-mirror-frame, a-frame-birdhouse.
+  - Many steps cite "the cutting diagram" where no layout image exists, though the cut list has the
+    sizes (R11 Fix/likely). Report this once.
+  - R9 (jig setting) and consumables are catalog-wide items.
+  - Single-row Kreg cut lists match the source (not import drops): rolling-trash-can-cabinet,
+    easy-router-table-storage, diy-concrete-and-wood-nightstand, plywood-chair-set,
+    diy-coastal-console-table, easy-garage-shop-cabinets-part-1-lowers.
 
 **Stage 5 gate — signed off by Keagan 2026-10-19:** Q1–Q4 all as recommended; core-40 agent
 verdicts accepted without per-plan review. Rubric R-2 in `docs/PLAN_QUALITY_AUDIT.md` §6; verdicts

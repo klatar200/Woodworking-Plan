@@ -1,6 +1,6 @@
 {
   "slug": "message-center",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -164,53 +164,144 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; the 'Cutting Diagram' references are in-plan drawings, not external content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (frame top rail, stiles, bottom rail; top/bottom shelf; long/short dividers, long edge; box front/outside/inside/center/divider) has a cutList row (Frame Stiles, Frame Top Rail, Frame Bottom Rail, Top Shelf, Bottom Shelf, Shelf Long Divider, Shelf Short Dividers, Shelf Edge, Pencil Box Front/Sides/Center/Divider); metal panel and cork are cut per steps[11] from materials[5],[6] with sizes in viewed image 6800e88a7733a2bd (36 x 24, cork 12 x 11)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 12 rows are real parts used in steps[0],[3],[4],[6]; none is an assembly or placeholder."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x2, 1x6, 1x8, 0.5x6, 0.5x36); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Using Cutting Diagram 1 as a guide, cut one Frame Top Rail and two Frame Stiles to length from a 1x2 board. Also cut one Frame Bottom Rail to length from a 1x8 board.",
-          "why": "\"Diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "cut one Frame Top Rail and two Frame Stiles to length from a 1x2 board."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x2 96\""
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part (steps[0] 1x2, 1x8; steps[3] 1x6; steps[4] 1/2\" square dowel; steps[6] 1x6). 1x2 parts: 2 Frame Stiles x 34 (cutList[0] lengthIn 34) + Frame Top Rail 30.75 (Kreg-corrected cutList[1], source \"30 3/4\"\") = 98.75\" > 96\" bought, before kerf (2 cuts x 1/8\" = 0.25\" -> 99.0\"). materials[0].quantity is 1 and is not an import-defaulted quantity (importDiffs lists none for materials[0]). Other stocks fit: 1x6 96\": Top Shelf 31.5 + Bottom Shelf 37 + 22.5 for box parts + kerf <= 96; square dowel 2 x 36\": 31.5 + 15.5 + 3 x 5 + kerf = 62.5 <= 72.",
+      "reason": "One 1x2 x 96\" cannot yield the frame's two stiles and top rail."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "1 1/4\" pocket-hole screws (steps[2],[8]) = materials[7]; 5/8\" pan head screws (steps[12]) = materials[8]; no use gets two sizes. Screw count recorded in gaps."
+    },
+    "R10": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "add a pair of D-ring picture hangers to the back of the frame, and it's ready to hang on your wall."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Finally, use spray adhesive to attach the cork panels."
+        }
+      ],
+      "reason": "D-ring positions on the frame back are given by no number and step[13] has no image (search: no step or material gives a distance for the D-rings). Where the two cork boards (12 x 11 each, viewed 6800e88a7733a2bd) sit on the 24 x 36 panel is not stated or shown: viewed step image 6044858d01bc3c72 shows only the bare panel on the frame. Positions that ARE given and pass: pocket holes (viewed d89fca5ff29e2e25, 042ea628b41f6641), divider spacing 13\" / 15 1/2\" / 2 1/4\" (568e48911a522c54), pencil box (b11a02914958225f), shelf spacing 5 1/4\" (1eec288dc957f2e0)."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using Cutting Diagram 1 as a guide, cut one Frame Top Rail and two Frame Stiles to length from a 1x2 board."
         },
         {
           "path": "steps[4].body",
-          "quote": "Using Cutting Diagram 2 as a guide, cut one Long Divider, three Short Dividers, and one Long Edge to length from a 1/2\" square dowel.",
-          "why": "\"Diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Using Cutting Diagram 2 as a guide, cut one Long Divider, three Short Dividers, and one Long Edge to length from a 1/2\" square dowel."
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[4] have no image and the 4 unattached images (c211d70c86320653, 74cf6244a9df1e54, a881e9b8fa9a38da, 1fbebcd90b4a17df, all viewed) are finished-piece photos, not cutting diagrams. Lengths for these parts exist in cutList, so non-structural (Fix)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame built (steps[2]) and shelves screwed to it (steps[8]) before the pencil box is glued on (steps[9]); painting (steps[10]) before metal panel and cork (steps[12]); hangers last on the back (steps[13]). Nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"Set your pocket-hole jig and drill bit for 3/4\"-thick materials.\" covers every 3/4\" part drilled (frame rails cutList[1],[2]; shelves cutList[3],[4], all 0.75)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "\"part\": \"Frame Top Rail\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 1, \"lengthIn\": 30"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "\"part\": \"Frame Bottom Rail\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 7, \"lengthIn\": 34"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Box Divider to size from a 1x6 board to create the pieces shown."
+        }
+      ],
+      "arithmetic": "(a) Frame: step image 8095e9f9dfbdcb45 and d89fca5ff29e2e25 show both rails between the stiles at the same length, but Kreg-corrected top rail = 30.75 (source \"30 3/4\"\") and bottom rail = 34: 3.25\" apart. Bottom rail 34 + 2 x 1.5 (stile width, cutList[0] corrected 1.5) = 37 = Bottom Shelf cutList[4] lengthIn 37 and fits the 36\" metal panel (materials[5]) behind it; top rail 30.75 + 3 = 33.75 does not (36 > 33.75). So one of the two rail lengths is wrong in the plan; which one is not stated. (a) steps[6] says the box parts come \"from a 1x6 board\" (3/4\" thick, §9) but cutList[5]-[8] thicknessIn is 0.5 and materials[3] is \"Board, 1/2\\\" x 6\\\" 48\\\"\".",
+      "reason": "Cut list and steps disagree on the frame rails and on the pencil-box stock. (b) all parts made are installed (steps[4]-[9],[12],[13]); (c) sheet metal, cork, D-rings, paints, adhesives are in materials; (d) steps reach the hang-ready piece."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[7].name",
+      "quote": "1 1/4\" coarse-thread pocket-hole screws",
+      "what": "Quantity 17 vs holes drawn in viewed images: frame 4 (top rail, image d89fca5ff29e2e25) + 4 (bottom rail) + shelves 5 + 5 (042ea628b41f6641) = 18 pocket holes. 17 is one short; quantity is not an import default."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Rather than using clamps, try masking tape to hold these pieces in place as the glue sets.",
+      "what": "Masking tape (steps[5],[7]), denatured alcohol and a rag (steps[11] tip) and sandpaper (steps[2],[5],[11] tip) are used but not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-15",
+    "imagesViewed": [
+      "c211d70c86320653",
+      "74cf6244a9df1e54",
+      "a881e9b8fa9a38da",
+      "1fbebcd90b4a17df",
+      "d89fca5ff29e2e25",
+      "042ea628b41f6641",
+      "568e48911a522c54",
+      "2cddafae1373832f",
+      "b11a02914958225f",
+      "1eec288dc957f2e0",
+      "a46db33c09e473fe",
+      "6800e88a7733a2bd",
+      "6044858d01bc3c72",
+      "8095e9f9dfbdcb45"
+    ]
+  }
 }
