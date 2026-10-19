@@ -12,6 +12,8 @@ for (const [slug, d] of Object.entries(run.plans)) {
     const prev = rec.checks[id];
     rec.checks[id] = { ...(d.refutedTo?.[id] || { result: 'unknown', reason: 'verifier refuted; not settled' }), refutedFinding: prev };
   }
+  // A check the reader mis-set (e.g. n/a where it could be scored), re-scored from the verifier's evidence.
+  for (const [id, c] of Object.entries(d.rescore || {})) rec.checks[id] = { ...c, previous: rec.checks[id] };
   for (const [id, conf] of Object.entries(d.confidence || {})) rec.checks[id].confidence = conf;
   for (const [id, note] of Object.entries(d.notes || {})) rec.checks[id].verifierNote = note;
   rec.verifier = { ran: true, run: run.run, upheld: d.upheld, refuted: d.refuted };
