@@ -41,18 +41,35 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "flagged": [
-        { "path": "steps[4].body", "quote": "had to trim it slightly to fit the height. If you cannot find a door you can construct one to fit the face frame opening that is 13\" wide x 78 1/2\" with 1x8's joined together and cut to correct width.", "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)", "readerDecision": "rejected — step says to build from listed 1x8" },
-        { "path": "steps[4].body", "quote": "had to trim it slightly to fit the height. If you cannot find a door you can construct one to fit the face frame opening that is 13\" wide x 78 1/2\" with 1x8's joined together and cut to correct width.", "why": "cut sentence states 78 1/2\" — no cut-list dimension or material size matches (corrected values)", "readerDecision": "rejected — step says to build from listed 1x8" }
-      ],
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        { "path": "steps[5].body", "quote": "Add 3/4\" x 3/4\" blocking at the bottom of each box by glueing and nailing. These are the guides for the drawer. Add 3/4\" x 1/2\" blocking at the top of each box" }
-      ],
-      "reason": "The drawer-guide blocking (3/4\" x 3/4\" and 3/4\" x 1/2\") is assembled in steps[5], but no cutList.part matches /block|guide/i, the step does not say which listed material it comes from, and no length is given. Sweep flags rejected: steps[4] '13\" wide x 78 1/2\"' is an optional alternative door that the step itself says to build 'with 1x8's', which are listed (materials[5], materials[8])."
+      "result": "pass",
+      "reason": "Verifier refuted: blocking comes from cutList[3] \"Drawer sub-framing | qty 2 | 1 x 6 x 12\" (a stock line, like every row here); the steps[5] image draws the guide blocking.",
+      "refutedFinding": {
+        "flagged": [
+          {
+            "path": "steps[4].body",
+            "quote": "had to trim it slightly to fit the height. If you cannot find a door you can construct one to fit the face frame opening that is 13\" wide x 78 1/2\" with 1x8's joined together and cut to correct width.",
+            "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)",
+            "readerDecision": "rejected — step says to build from listed 1x8"
+          },
+          {
+            "path": "steps[4].body",
+            "quote": "had to trim it slightly to fit the height. If you cannot find a door you can construct one to fit the face frame opening that is 13\" wide x 78 1/2\" with 1x8's joined together and cut to correct width.",
+            "why": "cut sentence states 78 1/2\" — no cut-list dimension or material size matches (corrected values)",
+            "readerDecision": "rejected — step says to build from listed 1x8"
+          }
+        ],
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[5].body",
+            "quote": "Add 3/4\" x 3/4\" blocking at the bottom of each box by glueing and nailing. These are the guides for the drawer. Add 3/4\" x 1/2\" blocking at the top of each box"
+          }
+        ],
+        "reason": "The drawer-guide blocking (3/4\" x 3/4\" and 3/4\" x 1/2\") is assembled in steps[5], but no cutList.part matches /block|guide/i, the step does not say which listed material it comes from, and no length is given. Sweep flags rejected: steps[4] '13\" wide x 78 1/2\"' is an optional alternative door that the step itself says to build 'with 1x8's', which are listed (materials[5], materials[8])."
+      }
     },
     "R3": {
       "result": "fail",
@@ -60,10 +77,22 @@
       "confidence": "certain",
       "cause": "plan",
       "evidence": [
-        { "path": "cutList[1]", "quote": "Closet framing | qty 2 | 24\"x96\"x3/4\" plywood (Kreg source)" },
-        { "path": "cutList[9]", "quote": "Shoe boxes | qty 4 | 0.75 x 16 x 30" },
-        { "path": "cutList[11]", "quote": "Upper Boxes | qty 4 | 0.75 x 12 x 30" },
-        { "path": "cutList[0]", "quote": "Base framing | qty 2 | 2 x 4 x 8" }
+        {
+          "path": "cutList[1]",
+          "quote": "Closet framing | qty 2 | 24\"x96\"x3/4\" plywood (Kreg source)"
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Shoe boxes | qty 4 | 0.75 x 16 x 30"
+        },
+        {
+          "path": "cutList[11]",
+          "quote": "Upper Boxes | qty 4 | 0.75 x 12 x 30"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Base framing | qty 2 | 2 x 4 x 8"
+        }
       ],
       "reason": "Rows are stock allotments or assemblies ('Closet framing', 'Shelf framing', 'Drawer constrution', 'Shoe boxes', 'Upper Boxes', 'Closet/Shelf face frames'), not cut parts. The base is '(3) 2x4's 8' long cut as shown' (steps[0]). Part sizes appear only as 'dimensions as shown' in step images (steps[1], [5], [6], [7], [10], [17])."
     },
@@ -77,18 +106,78 @@
     },
     "R6": {
       "flagged": [
-        { "path": "steps[1].body", "quote": "et with dimensions as shown. Use pocket holes and 1 1/4\" pocket hole screws to attached the top and bottom the the side panels. Locate the pocket holes on the top and bottom so that they are concealed", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[3].body", "quote": "Construct a face frame from 1x2's as shown. Join the frame with pocket holes and 1 1/4\" pocket hole screws and brad nail and glue the face frame to the closet box", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[3].body", "quote": "Construct a face frame from 1x2's as shown. Join the frame with pocket holes and 1 1/4\" pocket hole screws and brad nail and glue the face frame to the closet box", "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener", "readerDecision": "rejected — size belongs to the screws" },
-        { "path": "steps[3].body", "quote": "Construct a face frame from 1x2's as shown. Join the frame with pocket holes and 1 1/4\" pocket hole screws and brad nail and glue the face frame to the closet box", "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener", "readerDecision": "rejected — size belongs to the screws" },
-        { "path": "steps[5].body", "quote": "ng and nailing. These are the guides to keep the drawers level as they are pulled out. Screw the boxes together. I used (3) 1 1/4\" pocket hole screws front and back of the bottom box into the top box.", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[6].body", "quote": "ons as shown. Join with pocket holes and 1 1/4\" pocket hole screws in the top and bottom pieces. I drilled shelf pin holes down each side of the sides of the plywood box so that we could have adjustab", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[6].body", "quote": " plywood box so that we could have adjustable shelves. Screw the shelf box to the drawer box with (3) 1 1/4\" pocket hole screws front and back from the top drawer box into the bottom of the shelf box.", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[9].body", "quote": "Install the other side and back/front to the drawer box. Assemble all with pocket holes and 1 1/4\" pocket hole screws. Locate the screws so they are not visible when the drawers are completed.", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[9].body", "quote": "Install the other side and back/front to the drawer box. Assemble all with pocket holes and 1 1/4\" pocket hole screws. Locate the screws so they are not visible when the drawers are completed.", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[11].body", "quote": "Construct face frame for shelves and drawers as shown using 1x2 material. Join the face frame with pocket holes and 1 1/4\" pocket hole screws and glue and nail to boxes", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" },
-        { "path": "steps[11].body", "quote": "Construct face frame for shelves and drawers as shown using 1x2 material. Join the face frame with pocket holes and 1 1/4\" pocket hole screws and glue and nail to boxes", "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener", "readerDecision": "rejected — size belongs to the screws" },
-        { "path": "steps[14].body", "quote": "Construct the shoe storage box as shown. Join with pocket holes and 1 1/4\" pocket hole screws. Install the screws so that they will not be visible.", "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener", "readerDecision": "confirmed" }
+        {
+          "path": "steps[1].body",
+          "quote": "et with dimensions as shown. Use pocket holes and 1 1/4\" pocket hole screws to attached the top and bottom the the side panels. Locate the pocket holes on the top and bottom so that they are concealed",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Construct a face frame from 1x2's as shown. Join the frame with pocket holes and 1 1/4\" pocket hole screws and brad nail and glue the face frame to the closet box",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Construct a face frame from 1x2's as shown. Join the frame with pocket holes and 1 1/4\" pocket hole screws and brad nail and glue the face frame to the closet box",
+          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "rejected — size belongs to the screws"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Construct a face frame from 1x2's as shown. Join the frame with pocket holes and 1 1/4\" pocket hole screws and brad nail and glue the face frame to the closet box",
+          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "rejected — size belongs to the screws"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "ng and nailing. These are the guides to keep the drawers level as they are pulled out. Screw the boxes together. I used (3) 1 1/4\" pocket hole screws front and back of the bottom box into the top box.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "ons as shown. Join with pocket holes and 1 1/4\" pocket hole screws in the top and bottom pieces. I drilled shelf pin holes down each side of the sides of the plywood box so that we could have adjustab",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": " plywood box so that we could have adjustable shelves. Screw the shelf box to the drawer box with (3) 1 1/4\" pocket hole screws front and back from the top drawer box into the bottom of the shelf box.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Install the other side and back/front to the drawer box. Assemble all with pocket holes and 1 1/4\" pocket hole screws. Locate the screws so they are not visible when the drawers are completed.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Install the other side and back/front to the drawer box. Assemble all with pocket holes and 1 1/4\" pocket hole screws. Locate the screws so they are not visible when the drawers are completed.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Construct face frame for shelves and drawers as shown using 1x2 material. Join the face frame with pocket holes and 1 1/4\" pocket hole screws and glue and nail to boxes",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Construct face frame for shelves and drawers as shown using 1x2 material. Join the face frame with pocket holes and 1 1/4\" pocket hole screws and glue and nail to boxes",
+          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "rejected — size belongs to the screws"
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Construct the shoe storage box as shown. Join with pocket holes and 1 1/4\" pocket hole screws. Install the screws so that they will not be visible.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener",
+          "readerDecision": "confirmed"
+        }
       ],
       "flagsOmitted": 7,
       "result": "fail",
@@ -96,36 +185,65 @@
       "confidence": "certain",
       "cause": "plan",
       "evidence": [
-        { "path": "steps[1].body", "quote": "Use pocket holes and 1 1/4\" pocket hole screws to attached the top and bottom the the side panels." },
-        { "path": "steps[12].body", "quote": "Install the closet box to the base with cabinet screws utilizing the top bottom and middle nailer." },
-        { "path": "materials[0..11].name", "quote": "Board, 2x4 96\" … Drawer pulls … Adjustable shelf pins" }
+        {
+          "path": "steps[1].body",
+          "quote": "Use pocket holes and 1 1/4\" pocket hole screws to attached the top and bottom the the side panels."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Install the closet box to the base with cabinet screws utilizing the top bottom and middle nailer."
+        },
+        {
+          "path": "materials[0..11].name",
+          "quote": "Board, 2x4 96\" … Drawer pulls … Adjustable shelf pins"
+        }
       ],
       "reason": "Materials contain no fastener of any kind (no materials.name matches /screw|nail|brad/i). The steps use 1 1/4\" pocket hole screws (steps[1], [3], [5], [6], [9], [11], [14], [15], [16], [21], [22]), cabinet screws (steps[12], [13], [22]), 1 1/4\" screws (steps[16]) and brad nails/nails (steps[3], [5], [11], [16], [20], [22]). Sweep flags confirmed for the screws. The '1 1/4\" brad/nail' flags on steps[3] and steps[11] are rejected: the 1 1/4\" there belongs to the screws, and no nail size is given."
     },
-    "R8": { "result": "pass", "reason": "Base, closet box, nailers, face frame, door; drawer and shelf boxes, drawers, face frame; install on base; shoe boxes, bench, upper boxes. Each assembly exists before the step that installs it." },
+    "R8": {
+      "result": "pass",
+      "reason": "Base, closet box, nailers, face frame, door; drawer and shelf boxes, drawers, face frame; install on base; shoe boxes, bench, upper boxes. Each assembly exists before the step that installs it."
+    },
     "R9": {
       "result": "fail",
       "level": "Fix",
       "confidence": "certain",
       "cause": "plan",
       "evidence": [
-        { "path": "steps[1].body", "quote": "Use pocket holes and 1 1/4\" pocket hole screws to attached the top and bottom the the side panels." },
-        { "path": "steps[19].body", "quote": "Join the two boxes. Use screws similar to the bottom boxes." }
+        {
+          "path": "steps[1].body",
+          "quote": "Use pocket holes and 1 1/4\" pocket hole screws to attached the top and bottom the the side panels."
+        },
+        {
+          "path": "steps[19].body",
+          "quote": "Join the two boxes. Use screws similar to the bottom boxes."
+        }
       ],
       "reason": "Pocket holes are used throughout on 3/4\" plywood and 1x2, but no jig thickness setting is stated anywhere. Searched all fields for /jig|setting|set (to|for|the)/i: no matches."
     },
-    "R10": { "result": "pass", "search": "step sentences with a placement trigger and no inch measurement", "reason": "Placements are relational: nailers 'at the top and bottom of the box' and 'one near the middle' (steps[2]), face frames to boxes, boxes joined to each other. No step names a measured position without a number." },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Placements are relational: nailers 'at the top and bottom of the box' and 'one near the middle' (steps[2]), face frames to boxes, boxes joined to each other. No step names a measured position without a number."
+    },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "14 reference(s), each in a step with its own image. Per R11 this passes; whether the images actually carry the dimensions was not verified (not viewed)."
     }
   },
-  "verdict": "Unpublish (pending verifier)",
+  "verdict": "Fix",
   "verifier": {
-    "ran": false,
-    "upheld": [],
-    "refuted": []
+    "ran": true,
+    "run": "pilot verifier, 2026-10-18 (fresh agent, not a reader)",
+    "upheld": [
+      "R3",
+      "R6",
+      "R9"
+    ],
+    "refuted": [
+      "R2"
+    ]
   },
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
