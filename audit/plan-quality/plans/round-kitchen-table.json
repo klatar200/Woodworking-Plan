@@ -1,6 +1,6 @@
 {
   "slug": "round-kitchen-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -42,58 +42,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "er without any gaps.\nFor our table, we cut the wood down to 15/16” thick and used 5 pieces to make up the tabletop. We wanted the table to be 45 1/2” wide, so we cut each piece to 48” long and then us",
-          "why": "cut sentence states 15/16\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " 5 pieces to make up the tabletop. We wanted the table to be 45 1/2” wide, so we cut each piece to 48” long and then used 5 pieces of wood to make up the width of about 48”. This gave us a nice square",
-          "why": "cut sentence states 45 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "ating a smooth finish on all sides. The table legs we created were cut down to 2 7/8” wide on all sides and 29” long.\nLastly, head on over to your lathe and turn the wood to the design of your liking.",
-          "why": "cut sentence states 2 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "ating a smooth finish on all sides. The table legs we created were cut down to 2 7/8” wide on all sides and 29” long.\nLastly, head on over to your lathe and turn the wood to the design of your liking.",
-          "why": "cut sentence states 29\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 15/16\", 45 1/2\", 2 7/8\", 29\" are the author's finished/planed sizes for their build, not unlisted parts; every part cut (tabletop pieces, leg pieces, aprons) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "5 tabletop pieces (rows 0-2 = 2+2+1) in steps[0]-[2]; 12 leg pieces in steps[3]; 4 aprons in steps[4]; no unused or placeholder rows"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); +1 more"
+      "result": "pass",
+      "reason": "Thickness and width only (stock lengths in materials[0..4] have no unit, so left unknown by §9): tabletop widths 11, 9, 9... vs stock widths materials[4] 1x11, materials[3] 1x9, materials[0] 1x7.5 (7 <= 7.5); legs 3 and aprons 2.75 wide are ripped from 7.5-11 wide stock; all thickness 1 = stock thickness 1"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3], materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes in steps: Kreg 1 1/4\" pocket hole screws (steps[7]) = materials[5]; hanger bolts and kerf mount corner brackets in materials[8],[6] with counts matching 4 legs; no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "circle radius 22 3/4\" (steps[2]), base centered on top (steps[7]), apron-on-leg height 'right in the middle' / to your liking (relational); pocket-hole count approximate; viewed step 5/7 photos show bracket and hole placement"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top glued (1), circle cut (2), legs (3), aprons cut (4), brackets/hanger bolts fitted and base assembled (5), sanded/finished (6), base attached to top (7); each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "add approx. 5 pocket holes to the inside of each piece using your Kreg Pocket-Hole Jig 720PRO."
+        }
+      ],
+      "reason": "Aprons are 1\" thick (cutList[4]); searched all steps/materials for a jig setting (/setting|set for|material/): none; viewed final-step image shows no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: '12 pieces ... 4 table legs' = rows[3] 12x; '4 pieces ... table apron' = 4x; 5 tabletop pieces = 2+2+1; step 4 '23 1/8 long, 2 3/4 wide, 1 thick' = corrected cutList[4]; circle radius 22 3/4 = 45 1/2 / 2; tabletop widths 11+11+9+9+7 = 47 >= 45 1/2 (b) all parts installed (c) brackets, hanger bolts, glue in materials (d) ends at finished table"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "8287f56d187d6ddc.webp",
+      "bc84ed19ed576dc8.webp",
+      "81314e7fdf736894.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "we cut the wood down to 15/16” thick and used 5 pieces to make up the tabletop",
+      "what": "Step gives 15/16 thick for the tabletop pieces while cutList[0..2] give thickness 1; 1/16\" difference, step presents it as the author's example build"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "turn the wood to the design of your liking.",
+      "what": "No leg profile or turned dimensions are given anywhere (searched steps, cutList, description); the turned design is left entirely to the builder"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "simple-arbor",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -55,21 +55,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "do this and you can find some links to great resources here http://www.iamahomemaker.com/simple-diy-arbor/ ‎. Before you start digging any holes or using any post anchors, you must call your local uti",
-          "why": "matches \"http://\""
+          "quote": "There are a couple of ways to do this and you can find some links to great resources here http://www.iamahomemaker.com/simple-diy-arbor/"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "A structure as big as an arbor should be secured in the ground."
         }
-      ]
+      ],
+      "reason": "The method for securing the posts in the ground is delegated to an external page; no step or material gives it (searched steps/materials for /anchor|concrete|bury|hole depth/i: only the mention 'digging any holes or using any post anchors' in steps[0]). The frame itself can still be built, so Fix, and it is only likely because the link is offered as 'resources'."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[5],[6],[8],[9],[11],[12] (lower/top/middle 2x4 horizontals = 6x, verticals 4x, posts, beams, runners) all match cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used: horizontals 2+2+2 = 6x (steps[5],[6],[8]); verticals 2 per side = 4x (steps[11]); beams steps[9]; runners steps[12]; posts steps[2]"
     },
     "R4": {
       "result": "pass",
@@ -80,43 +88,92 @@
       "reason": "R5 precondition not met: 4 stock types (1x6, 4x4, 2x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes stated in steps: 2\" nails (materials[7]) and 1\" brad nails (materials[6]); other screw steps give no size; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[6].body",
-          "quote": "rom the 16\" mark and transpose on all 4 posts using a level. Next, measure down 5.5\", mark and transpose. These will serve as guides for the final height of the arbor and the top horizontal support he",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0dfba1ee295509ff.webp"
+          "path": "steps[5].body",
+          "quote": "attach 16\" high on either side of the arbor using pocket holes."
         },
         {
           "path": "steps[6].body",
-          "quote": " using a level. Next, measure down 5.5\", mark and transpose. These will serve as guides for the final height of the arbor and the top horizontal support height.\nAttach the top horizontal support at th",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0dfba1ee295509ff.webp"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "These will serve as guides for the final height of the arbor and the top horizontal support height.\nAttach the top horizontal support at the height of the lower mark you just made, using pocket holes.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0dfba1ee295509ff.webp"
+          "quote": "Attach the top horizontal support at the height of the lower mark you just made, using pocket holes."
         }
-      ]
+      ],
+      "reason": "Flagged step-6 measurements are given (74\", 5.5\"). But which edge of the 3.5\" 2x4 sits at the 16\" mark and at the lower mark (84.5\" = 16 + 74 - 5.5) is not stated, and viewed images [d8d602a2,0dfba1ee,29e3547e] carry no dimensions. The verticals cannot settle it: cutList[1] '4x Vertical side pieces' 71.5 must run 'even on the top and bottom with the horizontal supports' (steps[11]); with 3.5\" horizontals the spans are 16 to 84.5 = 68.5, 12.5 to 84.5 = 72, 16 to 88 = 72, 12.5 to 88 = 75.5, none = 71.5."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "posts erected and braced (2-3), supports and beams on marks (4-9), braces removed (10) after the frame is tied together, verticals (11), runners (12), posts cut last (13)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "attach 16\" high on either side of the arbor using pocket holes."
+        }
+      ],
+      "reason": "Pocket holes into 1 1/2\" 2x4s (steps[5],[6],[8]); searched all steps/materials for a jig setting: none; viewed steps[5] image shows holes but no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Before you start digging any holes or using any post anchors, you must call your local utility marking company."
+        },
+        {
+          "path": "materials[7]",
+          "quote": "2\" Finish Nails for Nail Gun"
+        }
+      ],
+      "reason": "The viewed steps[11] image shows metal post anchors at the base of the posts, and steps[0] names post anchors and holes, but no materials line matches /anchor|concrete|gravel|bracket/i (materials[0..7] are boards, screws, nails). (a) passes: beam 71 = 67 + 2 x 2\" overhang (steps[9]) and 39.5 + 2 x 3.5 = 46.5 = description depth; counts match; (b),(d) pass."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "0dfba1ee295509ff.webp",
+      "d8d602a2d0437d93.webp",
+      "29e3547ec34253f1.webp",
+      "4d4dc489853f2b41.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[2]",
+      "quote": "4x Posts 4 4 8",
+      "what": "Source text '4x4x8' is 8 feet; the cut-list length reads 8 (inches) — importer unit loss (cause import); materials[1] 4x4 96\" x4 matches 8 ft"
+    },
+    {
+      "path": "cutList[4]",
+      "quote": "10x Runners 0.75 1.5 48",
+      "what": "Ten 48\" runners from materials[3] 'Board, 1x2 96\"' qty 5: two 48\" pieces from one 96\" board need 96 + 1/8 kerf = 96 1/8\", so each board yields one full 48\" piece plus 47 7/8\"; steps[12] lets the builder choose runner length"
+    }
+  ]
 }

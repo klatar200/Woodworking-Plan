@@ -1,6 +1,6 @@
 {
   "slug": "simplified-split-top-roubo-workbench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,29 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "st bring all parts down to their final dimensions and ensure the legs are square.\nCut a ¾\" x ¾\" rabbit on the top inside edge of the lower rails if you want to build the lower cabinet at a later time.",
-          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 3/4\" is the optional rabbet in the lower rails ('if you want to build the lower cabinet at a later time'), not a part; legs, rails and top sections all have cutList rows"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Long Aprons",
-          "why": "no step mentions it (searched steps for apron)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Short Aprons",
-          "why": "no step mentions it (searched steps for apron)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Long/Short Aprons are the 'front and back long rails' and the side rails of steps[7] (viewed steps[3]/[7] images label (C)/(D) Short Rails and (E) Long Rails, 31\" long); counts 4 + 2 = 6 rails = 12 joints, matching 24 Dominos (2 per joint) and 12 HD screws (1 per joint)"
     },
     "R4": {
       "result": "pass",
@@ -43,29 +26,85 @@
       "arithmetic": "parts: 8×30 + 2×31 + 4×18 + 16×60 + kerf 10 cuts (30 parts − 20 boards, the fewest possible)×1/8 = 1335.250″; bought: 20×96 = 1920″; 1335.250 ≤ 1920"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "ket hole because it is supplementing the tenons. If you do not have the HD jig then use the two 2 ¼\" coarse thread screws.\n(I forgot to drill the pocket holes so I did this after they were assembled).",
-          "why": "2 1/4\" screw — no material line lists a 2 1/4\" fastener"
+          "path": "steps[6].body",
+          "quote": "drill the counter sunk holes for the 5\" lag screws now"
+        },
+        {
+          "path": "materials[7]",
+          "quote": "5\" Spax Lag Screws"
+        },
+        {
+          "path": "images[step 6 diagram d6ef8f13]",
+          "quote": "4” lag screws to connect the base to the top."
         }
-      ]
+      ],
+      "reason": "Text and materials give 5\" lag screws for attaching the top; the viewed step-6 and step-7 diagrams label the same connection '4” lag screws' / '4” lag bolts'. Also steps[5] offers '2 ¼\" coarse thread screws' as an alternative for those without the HD jig; that size is not in materials."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "keep each section flush with the front and back rails as this will create your 2\" section between the top pieces."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I use 2 screws per top section for a total of 4 screw per side."
+        }
+      ],
+      "reason": "Final width of each glued top section is never given (steps[2] says '8 pieces', cutList[3] 16x 1.5 thick, so 8 x 1.5 = 12 per section). Viewed steps[6] diagram gives leg 3\" deep and short rail 18\", so base depth = 18 + 2 x 3 = 24; two 12\" sections flush to the rails leave 24 - 24 = 0 gap, not 2\" (a 2\" gap needs 11\" sections). Lag-screw hole positions along the 18\" upper rails are also not given in text or the viewed diagram. Top offset along the length (8\" / 13\") is shown in the viewed steps[8] image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "laminate legs and top sections (1-2), size parts (3-4), joinery and lag holes drilled before assembly (5-6), sides then long rails (7), top attached (8), dog holes (9), finish (10)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "I opted to use one pocket hole because it is supplementing the tenons. If you do not have the HD jig then use the two 2 ¼\" coarse thread screws."
+        }
+      ],
+      "reason": "Pocket holes into 1 1/2\" rails; searched all steps/materials for a jig thickness setting: none; viewed steps[5] image shows the jig clamped with no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) '2 pieces laminated ... 4 legs' = 8x Legs; 'Each section is made up of 8 pieces' x 2 = 16x Top; 24 Dominos = 12 joints x 2, matching 2 loose tenons per end; 8 lag screws = 4 per side x 2 (b) all parts installed (c) Dominos, glue, lag screws, finish in materials (d) steps end at finished bench"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "d6ef8f1384eebd84.webp",
+      "61b7378b45068c2b.webp",
+      "58eebf77e5aedbe6.webp",
+      "7379b8476c4d7860.webp",
+      "046f19e8cbb74383.webp",
+      "1e0cdabb82f9ea43.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "two-large-outdoor-farmhouse-x-style-planters",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -151,33 +151,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " wood and set your miter saw according to the marks rather than measuring the angles. Here's a link to a video of this trick that may help: https://www.instagram.com/p/BblPbYCD5S6/?taken-by=thediyhubs",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[9] link is an optional video ('a link to a video of this trick that may help'); the same step gives the tape method in text and photo"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0]-[14] (legs, top span, 18\" boards, plywood sides, X pieces, interior supports, bottoms) all have cutList rows"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Top Cross Boards",
-          "why": "no step mentions it (searched steps for cros)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Upper & Lower Cross Boards",
-          "why": "no step mentions it (searched steps for cros)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Top/Upper & Lower Cross Boards are the '1 1/2\" x 1 1/2\" x 21\" top span' (steps[0]) and '1 1/2\" x 1 1/2\" x 18\"' pieces (steps[3],[4],[6]); counts agree: 4 panels x 1 top span = 4, 12 x 18\" = 2 planters x 6, 8 plywood = 2 planters x 4 sides"
     },
     "R4": {
       "result": "pass",
@@ -188,31 +171,77 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 2x2, 2x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fastener sizes in steps (2 1/2\" and 1 1/4\" pocket-hole screws, 1 1/4\" brad nails, 1 1/4\" screws) appear in materials[5]-[7]; no conflicting size for the same use"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[13].body",
-          "quote": "planter. Take the height of your plastic planter and add 2\". Measure that distance from the top of the wood planter and mark it on two sides of the interior of the planter. Attach a 3/4\" x 2 3/4\" x 18",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9e6694b38c4b9f85.webp"
+          "path": "steps[14].body",
+          "quote": "you will add the 3/4\" x 1 1/2\" x 18\" pieces on each side as in Option #1 above, but then add a full piece of 3/4\" x 18\" x 18\" plywood"
         }
-      ]
+      ],
+      "reason": "Option 1 sets the support height from the plastic planter ('Take the height of your plastic planter and add 2\"'), which does not apply to Option 2; no step or viewed image (steps[14] image shows a drilled bottom, no height) gives the height of the built-in bottom. Other placements are numeric or shown: 36 degree X angles and 27 11/16\" shown in viewed steps[8] image; plywood 22 1/2 x 18 hole positions in viewed steps[1] image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "6 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels (0-3), three-sided box (4-6), fourth side (7), X pieces (8-10), fill/sand (11), paint (12), then options 1/2 add interior supports (13-14)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes into each into each of the 3/4\" x 18\" x 22 1/2\" plywood boards as shown in the diagram above."
+        }
+      ],
+      "reason": "Pocket holes into 3/4\" plywood and 1 1/2\" 2x2s; searched all steps/materials for a jig setting: none; viewed steps[1] diagram shows hole positions only. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Attach a 3/4\" x 2 3/4\" x 18\" piece of wood to each side using wood glue and 1 1/4\" screws."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Line with 3.0 mil plastic sheeting by stapling 1 1/2\" from the top of the planter."
+        }
+      ],
+      "reason": "(a) steps[14] says to add the 3/4 x 1 1/2 x 18 pieces 'as in Option #1', but Option 1 and cutList[7] 'Plywood Interior Supports' are 3/4 x 2 3/4 x 18 (width 1 1/2 vs 2 3/4). (c) steps[14] uses plastic sheeting, staples, landscape fabric and gravel; searched materials[0..10] for /plastic|staple|fabric|gravel|stone|soil/i: none. Geometry otherwise agrees: 36 degrees = atan(18 / (26.5 - 1.5)) = 35.75 and counts match."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "7afc09cb6e631a90.webp",
+      "d930e5e2fc2a3c57.webp",
+      "9e6694b38c4b9f85.webp",
+      "00f559a9e1f15bbb.webp",
+      "60d0220fe1c1c584.webp"
+    ]
+  }
 }

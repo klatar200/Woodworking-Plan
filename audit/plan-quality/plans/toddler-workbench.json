@@ -1,6 +1,6 @@
 {
   "slug": "toddler-workbench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -115,67 +115,100 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Visit https://www.charlestoncrafted.com/diy-toddler-workbench-plans/ for more photos and the behind the scenes of the build! You can also get lots of other plans for great kid projects on our site!",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Visit https://www.charlestoncrafted.com/diy-toddler-workbench-plans/ for more photos and the behind the scenes of the build! You can also get lots of other plans for great kid projects on our site!",
-          "why": "matches \"our site\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[11] is a credit/more-photos link ('for more photos and the behind the scenes'); the build does not depend on it (all dimensions are in cutList and steps)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[1]-[9] parts (Front/Back Legs, Horizontal Beams, Side Beams, Side/Back/Bottom Plywood, Doors, Top, Pegboard) all match cutList[0..9]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 rows used; counts agree: 2 front beams + 3 back beams = 5 Horizontal Beams, 2 side beams per side = 4, 2 Doors = 'two Doors'"
     },
     "R4": {
-      "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[9]",
+          "quote": "Pegboard 0.5 11 25"
+        },
+        {
+          "path": "materials[2]",
+          "quote": "Pegboard, 1/4\" Thick Quarter Sheet"
+        }
+      ],
+      "reason": "readerNote: sweep passed R4 by matching the 1/2\" plywood, but the part is a pegboard and the only pegboard listed is 1/4\" thick; a 0.5\" thick pegboard part cannot come from materials[2]. importDiffs has no entry for cutList[9], so the 0.5 is Kreg's own value."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (1x4, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[9].body",
-          "quote": "Attach the pegboard piece to the back of the kid workbench using 1/2\" or 3/4\" screws.",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Attach the pegboard piece to the back of the kid workbench using 1/2\" or 3/4\" screws."
+        },
+        {
+          "path": "materials[6]",
+          "quote": "1\" Kreg Screws"
         }
-      ]
+      ],
+      "reason": "steps[9] names 1/2\" or 3/4\" screws; materials[5],[6] are only 1 1/4\" and 1\" Kreg screws (searched materials for 1/2 or 3/4 screws: none), and the step offers two sizes for the same use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " Legs. Connect one beam flush with the top of the Back Legs. The other two Horizontal Beams should be lined up with the beams from the front section. One should be 2\" up from the bottom and one should",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a628cd116ef59ad9.webp"
-        }
-      ]
+      "result": "pass",
+      "search": "leg-beam heights given (flush top, 2\" up, 18\" up, lined up with the front beams); knob '1\" in from the edge'; hinge placement shown in viewed steps[7] image; pegboard placed on the back opening (viewed steps[9] image); overhang of the top relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "front (1) and back (2) frames, joined by side beams (3), stained before plywood (4), plywood sides/back (5), bottom (6), doors (7), top last (8), pegboard (9)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes in the ends of the Horizontal Beams and the Side Beams. Add pocket holes around the edges of all plywood pieces except for the Top and Doors."
+        }
+      ],
+      "reason": "Pocket holes on 3/4\" beams and 1/2\" plywood; searched all steps/materials for a jig setting: none; viewed step images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 9\" openings: front/back beam gaps 18 - 3.5 - (2 + 3.5) = 9 matches Back Plywood/Side Plywood/Doors height 9; 2 doors x 12 = 24 = Horizontal Beam length; 4 hinges and 2 knobs match materials[3],[4] (b) all parts installed (c) hinges, knobs, glue in materials (d) steps end at finished workbench"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "8f7083d6a63ba379.webp",
+      "a628cd116ef59ad9.webp",
+      "3d1b07315478bd2c.webp",
+      "e7c65166872a52b7.webp",
+      "24317e21b32fda7e.webp"
+    ]
+  }
 }

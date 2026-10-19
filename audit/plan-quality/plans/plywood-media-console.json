@@ -1,6 +1,6 @@
 {
   "slug": "plywood-media-console",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -191,32 +191,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (case, base, supports, shelves, back panel) each map to a cutList row (Sides, Top/Bottom Shelf, Middle Shelf, Supports, Base Supports, Back)"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Purple Back",
-          "why": "no step mentions it (searched steps for purple)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Gold Middle Shelf",
-          "why": "no step mentions it (searched steps for gold/shelf)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Red Top/Bottom Shelf",
-          "why": "no step mentions it (searched steps for red/shelf)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Blue Sides",
-          "why": "no step mentions it (searched steps for blue)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged colour-prefixed rows are rejected: steps use the functional names (steps[1] 'outer structure of the case', steps[3] 'the rest of the supports and shelves', steps[4] 'back panel'); every row is a plausible used part"
     },
     "R4": {
       "result": "pass",
@@ -227,22 +207,97 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: pocket holes, glue, brad nails (no size given), dowel jig (optional); only size-bearing fastener is materials[2] 1 1/4\" pocket-hole screws; no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "insert the rest of the supports and shelves."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Gold Middle Shelf"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Green Supports"
+        }
+      ],
+      "reason": "The middle shelf height and the locations of the two Green Supports (vertical dividers) are not fixed by the parts and no step gives a number; searched all steps/description for inch measurements. Viewed finished and assembly photos (c2fdf718..., 02e056be...) show the layout but no dimensions. Which of the three support types (Supports / Base Supports / Back Supports) goes where is also unstated."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "steps[0] cut, [1] case, [2] base, [3] base attached and shelves/supports inserted, [4] back, [5] finish; viewed step-3 image shows middle shelf and dividers installed before the top is clamped"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using pocket holes, assemble the base structure."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Pocket holes are a great option here"
+        }
+      ],
+      "reason": "Pocket holes used on 3/4\" plywood; searched all steps, materials, description for a jig/thickness setting (none); viewed step-2 image shows no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble the outer structure of the case using glue and a joinery method"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "throwing in a few brad nails helps hold the panel in place"
+        }
+      ],
+      "reason": "Glue is used in steps[1], [2] ('I would recommend also using glue here') and [4]; materials[0..2] are two plywood sheets and pocket-hole screws only (searched materials for /glue|dowel|nail/i: no match). Other sub-checks (a),(b),(d) pass: assemblies are all installed and steps end at the finished console."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "ba7077f9a6d8c7c6.webp",
+      "a3d84cd53bc242c7.webp",
+      "7e6207957996bd5d.webp",
+      "c2fdf7185af1c6e4.webp",
+      "d2cc9d20c7617406.webp",
+      "02e056be625378f0.webp",
+      "1489d4b517b639dd.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[5..8].part",
+      "quote": "Purple Base Supports / Yellow Back Supports / White Base Supports / White Checkered Back Supports",
+      "what": "Rows are distinguished only by colour names that refer to a cutting diagram not present in the plan; no step says where the Back Supports or Green Supports are placed"
+    }
+  ]
 }

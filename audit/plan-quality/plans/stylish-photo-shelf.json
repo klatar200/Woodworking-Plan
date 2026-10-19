@@ -1,6 +1,6 @@
 {
   "slug": "stylish-photo-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (Shelf, Back, Front Molding, End Molding) all in cutList[0..3]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all four rows are cut and installed in steps[0],[4],[5]"
     },
     "R4": {
       "result": "pass",
@@ -97,48 +99,71 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 0.75x96); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size in steps is 1 1/4\" coarse-thread pocket-hole screws = materials[2] (8, matching the 8 holes drawn in the viewed steps[1] image); hangers in materials[3]"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Then add hangers, and hang the shelf on the wall."
+        }
+      ],
+      "reason": "Where the two hanging systems (materials[3] '6\" hangman picture hanging systems') go on the shelf is not given as a number in any step, and none of the 9 images viewed shows it (searched steps/description for hanger/hanging location: only steps[6]). Curve radii (2 3/8\", 2 3/4\"), 4 5/16\" and 1 1/2\" offsets and the 8 pocket-hole positions are shown in the viewed steps[1]/[2] images."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut one Shelf and one Back to length from a 1x4 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Shelf and one Back to length from a 1x4 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut one Shelf and one Back to length from a 1x4 board, as shown in the cutting diagram."
         },
         {
           "path": "steps[4].body",
-          "quote": "Cut one piece of Front Molding to length, as shown in the cutting diagram. Note that each end gets mitered at 45° to allow the molding to wrap around the Shelf. Also cut two pieces of End Molding, mit",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "e piece of Front Molding to length, as shown in the cutting diagram. Note that each end gets mitered at 45° to allow the molding to wrap around the Shelf. Also cut two pieces of End Molding, mitering ",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut one piece of Front Molding to length, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[4] (no step image) refer to a cutting diagram; viewed all 5 unattached images (4 finished-shelf photos and the dimensioned overview) and the step images: none is a cutting diagram. The part lengths are in cutList[0..3] and the viewed steps[5] image dimensions (49 1/4\", 4 1/4\"), so impact is low."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "pocket holes (1) and curves (2) on the Back before joining (3), molding cut (4) then glued (5), finish and hangers (6)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'With your jig set up for 3/4\" stock' for the 3/4\" Back"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 49 1/4 = 47 3/4 (cutList[0] corrected) + 2 x 3/4 miter wrap; 4 1/4 = 3 1/2 + 3/4; counts match (1 Shelf, 1 Back, 1 Front Molding, 2 End Molding) (b) all installed (c) glue, hangers, screws in materials (d) steps end at hung shelf"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "d2c3a1766e8092ca.webp",
+      "263d751fa47dcc0b.webp",
+      "f0f44657a02342e2.webp",
+      "1d24ec5d4291a1a5.webp",
+      "b7d196c0131bb134.webp",
+      "b29e4cd820572721.webp",
+      "2c15a27bf5d6ce2b.webp",
+      "835f12d58a74bc4e.webp",
+      "a65745a6756d2536.webp"
+    ]
+  }
 }

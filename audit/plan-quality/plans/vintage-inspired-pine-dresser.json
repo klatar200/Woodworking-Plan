@@ -1,6 +1,6 @@
 {
   "slug": "vintage-inspired-pine-dresser",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,10 +263,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Install the two 3/4\" x 8\" x 17 1/2\" boards in the center to line up with the vertical piece between the top two drawer holes."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "The top is 33\" x 19 1/2\", centered and secured to with pocket 1 1/4\" pocket hole screws from inside the base."
+        }
+      ],
+      "reason": "The cut list (cutList[0..12]) has no row for the top (33 x 19 1/2), the two center supports (3/4 x 8 x 17 1/2), the side panels (16 x 21 plywood x2), the 1/4\" back (19 1/2 x 30 1/2) or the 1/4\" drawer bottoms (13 x 15 x2, 28 x 15 x2). Sizes are given in the steps, but only the side panels ('plywood panel'), back and bottoms (1/4\" thickness) can be tied to a listed sheet; the steps never name the stock for the top or the center supports. Searched cutList parts for /top\\b|support|panel|bottom|back/i: only 'Back Spans', 'Vertical Back' and drawer 'Bottom' wording in other rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used (legs, spans, drawer faces, back spans, drawer box parts in steps[0]-[9]); rows 9 and 10 are both labelled 'Large Drawer Sides' (3.25 and 3.75 high) but match the small and large drawer boxes by size"
     },
     "R4": {
       "result": "pass",
@@ -277,45 +292,70 @@
       "reason": "R5 precondition not met: unparseable stock materials[7]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach 1/4\" x 19 1/2\" x 30 1/2\" back with finishing nails using a brad nailer or finishing nails and hammer.",
-          "why": "30 1/2\" nail — no material line lists a 30 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Attach 1/4\" x 19 1/2\" x 30 1/2\" back with finishing nails using a brad nailer or finishing nails and hammer.",
-          "why": "30 1/2\" brad — no material line lists a 30 1/2\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Attach 1/4\" x 13\" x 15\" to the bottoms with wood glue and a brad nailer.\nCut the drawer faces to 14 3/4\" x 5\" and route the edges if you wish. Again, we used the same bit as the top - Royal Ogee. Do n",
-          "why": "15\" brad — no material line lists a 15\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Attach 1/4\" x 28\" x 15\" to the bottoms with wood glue and a brad nailer.\nCut the drawer faces to 30\" x 5 1/2\" and route the edges if you wish. Again, we used the same bit as the top - Royal Ogee. Do n",
-          "why": "15\" brad — no material line lists a 15\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '30 1/2\"' and '15\"' are panel sizes, not fasteners; step sizes 1 1/4\" and 2 1/2\" pocket-hole screws are in materials[8],[9]; finishing nails and brads are given no size"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "attach bottom-mounted metal slides (or your choice of drawer slide) to the bottom of each drawer box and the corresponding side of each drawer opening."
+        }
+      ],
+      "reason": "Height and front-to-back setback of the slides on the cabinet sides (which fix where each drawer sits in its 4\" / 4 1/2\" opening) and the vertical position of the 8\" center supports (steps[3]) are not given as numbers in the steps or in the viewed images [580770fc, 97db8997]; only 'line up with the vertical piece' and 'centered' are stated. Span positions (2 1/2, 4, 1 1/2, 4 1/2), knob offset 7 3/8\" (= 14 3/4 / 2) and leg dimensions are shown in viewed images."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "16 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides (0), front spans (1), back spans (2), center supports (3), back (4), top (5), drawer boxes (6-9) built separately, slides then drawers and faces last (10), finish (11); viewed images give the span positions"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the corresponding boards as shown in the diagram."
+        }
+      ],
+      "reason": "Pocket holes into 3/4\" and 1 1/2\" parts (steps[0]-[3],[6],[8]); searched all steps/materials for a jig setting: none; viewed step images show hole positions only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) front stack 2 1/2 + 4 + 1 1/2 + 4 1/2 + 1 1/2 + 4 1/2 + 2 1/2 = 21 = side panel height (viewed steps[1] image); back 3 1/2 + 14 + 3 1/2 = 21; 21 + 5\" bun = 26 = back leg; drawer box 11 1/2 + 2 x 3/4 = 13 and 26 1/2 + 2 x 3/4 = 28 match the bottoms; 6 knobs = 1+1+2+2; 4 slide pairs = 4 drawers; 17 1/2 = 19 - 2 x 3/4 (b) all installed (c) slides, knobs, bun legs, glue, finish in materials (d) steps end at finished dresser"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "402955197f4646a2.webp",
+      "fd00b7c1d8ed426e.webp",
+      "580770fc4b308ab1.webp",
+      "97db899759b690ec.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[9]",
+      "quote": "4x Large Drawer Sides 3 3 15",
+      "what": "Rows 9 and 10 share the name 'Large Drawer Sides'; row 9 (3 1/4\" high) matches the small drawer boxes (cutList[11] 3 1/4\" high, 11 1/2\")"
+    }
+  ]
 }

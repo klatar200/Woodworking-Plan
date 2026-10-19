@@ -1,6 +1,6 @@
 {
   "slug": "printmakers-coffee-table-rh-inspired",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,32 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step parts (front/back frames, 16.5\" end pieces, bottom boards, side panels, back panels, front boards, spans between faux drawers, top) each match a cutList row"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Horizontal End Boards",
-          "why": "no step mentions it (searched steps for horizontal)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Top Span Boards",
-          "why": "no step mentions it (searched steps for span)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Bottom Span Boards",
-          "why": "no step mentions it (searched steps for span)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Legs/Horizontal End Boards/Top Span/Bottom Span rejected: viewed steps[0] image shows legs, the 46\" top span and 43\" bottom span; steps[1] quotes '1 1/2\" x 1 1/2\" x 16.5\" pieces' (Horizontal End Boards)"
     },
     "R4": {
       "result": "pass",
@@ -215,23 +195,59 @@
       "reason": "R5 precondition not met: 4 stock types (2x2, 1x4, 1x6, 0.75x20); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step sizes: 2 1/2\" pocket hole screws, 1 1/4\" pocket hole screws, 5/8\" handle holes; materials[9]/[10] list both screw sizes; no conflicting size for the same use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "hinge placement shown in viewed steps[6] image; handle offset '14\"' given; faux-drawer insets 1/8\" and reveals 2\"/1 1/4\"/3 1/2\" shown in viewed steps[5] image; bottom leg offset 2 1/4\" shown in steps[0] image; other placements relational (flush, centered)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames (0) -> joined by end pieces (1) -> bottom (2) -> side/back panels (3,4) -> front boards (5) -> top/hinges (6) -> handles (7); each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Secure with wood glue and 2 1/2\" pocket hole screws where indicated."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes in the locations indicated on the diagram."
+        }
+      ],
+      "reason": "Pocket holes on 1 1/2\" and 3/4\" stock; searched all steps/materials/description for a jig setting (none); viewed images (steps 0,2,4,5) show hole locations but no jig setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts match cutList: '3/4\" x 5\" x 16.5\" boards (2 on each side)' = 4x Side Panels; three bottom boards = 3x Inside Bottom; 3 x 5.5 = 16.5 equals the 16.5\" Horizontal End Board length; 6 handles = 2 per 3 fronts (b) all parts installed (c) hinges, handles, glue, screws all in materials (d) steps end at finished table"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "38144117eeb3eb9c.webp",
+      "55d41bbf1112d898.webp",
+      "e0a2e9b00db5adaa.webp",
+      "abbb2fcc4e85b03e.webp",
+      "e6d2e83622ef511d.webp"
+    ]
+  }
 }

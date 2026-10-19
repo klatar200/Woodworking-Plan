@@ -1,6 +1,6 @@
 {
   "slug": "restoration-hardware-inspired-dining-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -419,10 +419,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part the steps cut or stack (top boards, braces, feet, leg pieces, 4x4 miters, beveled pieces, tiny piece, attachers, stretchers, foot bottoms) has a cutList row; no step part lacks one"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 16 rows are used: e.g. 1x8 Leg Pieces 4x = steps[4] + steps[15] (1 per leg x 2 legs x 2 steps); 2x6 Leg Pieces 6x = steps[5],[6],[7] x 2 legs; Beveled 2x8/2x6/1x8 4x each = steps[10..12] + steps[14] x 2 legs; Foot Bottoms 4x = front and back of 2 feet (steps[19])"
     },
     "R4": {
       "result": "pass",
@@ -433,44 +435,82 @@
       "reason": "R5 precondition not met: 6 stock types (2x10, 2x8, 2x6, 2x4, 4x4, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "eg pieces at 45 degrees off square at 7 1/8\" long! Glue and brad nail the mitered corners together before gluing to the leg! Brad nails aren't long enough so I just used a ton of glue and a heavy pain",
-          "why": "7 1/8\" brad — no material line lists a 7 1/8\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "eces at 45 degrees off square at 7 1/8\" long! Glue and brad nail the mitered corners together before gluing to the leg! Brad nails aren't long enough so I just used a ton of glue and a heavy paint can",
-          "why": "7 1/8\" nail — no material line lists a 7 1/8\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "ces, bevel all sides at 15 degrees off square with the longest edges to the dimensions stated! (6\" x 5 3/4\") Glue and brad nail these to the previous 1x8 small leg piece and repeat for your other leg!",
-          "why": "5 3/4\" brad — no material line lists a 5 3/4\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "ces, bevel all sides at 15 degrees off square with the longest edges to the dimensions stated! (6\" x 5 3/4\") Glue and brad nail these to the previous 1x8 small leg piece and repeat for your other leg!",
-          "why": "5 3/4\" nail — no material line lists a 5 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '7 1/8\"' and '5 3/4\"' are part dimensions, not fastener sizes. Steps give fastener sizes 2 1/2\" pocket-hole screws (materials[6]) and brad nails (materials[7] 2\") without conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "I just clamped all my boards together and laid them on top of the long table runners to mark exactly where they would need to go"
+        },
+        {
+          "path": "steps[17].body",
+          "quote": "I placed my pocket holes to the inside of the attacher!"
+        }
+      ],
+      "reason": "Brace spacing (7\", 8\", 11\"), notch sizes (3 1/2\", 8\") are shown in viewed images [1afba1b1,ffc2cfe6]. Not given by text or any viewed image: where along the 63\" long braces/84\" top the two leg assemblies sit, and the gap between the two attachers fastened to each leg. Viewed finished photos [2e65aa79, d2811b2e] show the legs inset from the ends but carry no dimension. Searched steps/description for inch measurements of leg location: none."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top/braces (0-1), feet (2-3), leg stack bottom to top (4-15), attachers notched and fastened to leg (16-17), stretchers (18), foot bottoms (19), finish (20); each part exists before use; the top rests in the attacher notches per steps[17]"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Drill 1 1/2\" pocket holes sideways into the boards' and steps[17]/[18] '1 1/2\" pocket holes' on 1 1/2\" stock (2x10 top boards, 2x4 attachers, stretchers); setting equals the thickness; no contradicting setting"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "attach with lots of wood glue and 2 1/2\" pocket hole screws!"
+        },
+        {
+          "path": "materials[6]",
+          "quote": "Box of Kreg 2 1/2\" pocket hole screws"
+        }
+      ],
+      "reason": "Wood glue is used in steps[0],[1],[4]-[9],[17],[18],[19] but no materials line matches /glue/i (materials[0..8] are boards, screws, brad nails, sandpaper). Other sub-checks pass: (a) 4 x 9.25 (cutList[0] corrected) = 37\" top width and the viewed steps[1] image gives 11 + 3 1/2 + 8 + 3 1/2 + 11 = 37 with cutList[1] width 3.5; step counts match cutList; (b) all parts installed; (d) steps reach the finished table"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "1afba1b1f7c361a9.webp",
+      "026c84294a6ebe6c.webp",
+      "ffc2cfe677322a6f.webp",
+      "44f107742207a5f5.webp",
+      "0fe740ed802869a5.webp",
+      "8f39754da13b8e3f.webp",
+      "2e65aa792786ed7b.webp",
+      "d2811b2ee1d90075.webp",
+      "2d65d0863cc6903a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[17].body",
+      "quote": "mine is just resting on the legs...it can't really go anywhere with the runners sitting in the notches",
+      "what": "No step tells the builder to set the top (with its braces) onto the leg assemblies; it is only described in passing in the attacher step; the optional upward pocket-hole attachment is likewise optional"
+    }
+  ]
 }

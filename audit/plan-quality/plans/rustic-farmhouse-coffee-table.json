@@ -1,6 +1,6 @@
 {
   "slug": "rustic-farmhouse-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,22 +10,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
-    },
-    "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "cutList[1].part",
-          "quote": "Top and Bottom Supports",
-          "why": "no step mentions it (searched steps for support)"
+          "path": "steps[2].body",
+          "quote": "These are diagonals are mainly for decoration so they do not need to be super secure – we used a single screw and some glue!"
         },
         {
-          "path": "cutList[2].part",
-          "quote": "Cross Pieces",
-          "why": "no step mentions it (searched steps for cros)"
+          "path": "steps[2].body",
+          "quote": "It gave us the angle and the length in one go!!"
         }
-      ]
+      ],
+      "reason": "The diagonal braces are cut and installed in steps[2] (viewed steps[2] image shows an X of diagonals on a side) but cutList[0..3] (Legs, Top and Bottom Supports, Cross Pieces, Top) has no diagonal row and no step gives their count or says which stock they come from; searched cutList/materials/steps for /diagonal|brace/i: only steps[2]. Non-structural per the step, so Fix."
+    },
+    "R3": {
+      "result": "pass",
+      "reason": "Flagged rows are used: steps[0] '4 table legs and the 4 length pieces' and steps[1] 'Once you have these 4 pieces cut' account for the 8 rails = cutList[1] 4x + cutList[2] 4x; the step names differ from the row names but every row has a use"
     },
     "R4": {
       "result": "pass",
@@ -36,34 +39,95 @@
       "reason": "R5 precondition not met: 2 stock types (2x2, 1x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "es created you can begin to attach and secure them using 2″ screws and some more of that DAP glue. I actually think the glue is stronger than the screws but we used both to be safe. This DAP stuff is ",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "attach and secure them using 2″ screws and some more of that DAP glue"
         },
         {
           "path": "steps[6].body",
-          "quote": "gth of wood and secure to the frame with a couple of 1 1/2″ nails in each end that go into the base. Measure to make sure you have the same over hang on all sides – mine was 1 1/2″ all around.\nIt woul",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+          "quote": "secure to the frame with a couple of 1 1/2″ nails in each end that go into the base"
+        },
+        {
+          "path": "materials[2]",
+          "quote": "Pocket Hole Screws"
         }
-      ]
+      ],
+      "reason": "Steps name 2\" screws and 1 1/2\" nails; materials[2] 'Pocket Hole Screws' and materials[3] 'Finishing Nails' give no size (searched materials for any inch size: none)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "top overhang '1 1/2\" all around' given as a number (steps[6]); diagonals placed by marking against the frame (steps[2]) and shown in viewed images; other placements relational (line up, flush)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames (0), other sides (1), diagonals (2), fill/sand (3), stain/paint base (4), top prepared (5), top attached last (6)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Use your Kreg Jig to create 2 pocket holes on the inside"
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" (2x2) rails; searched all steps/materials for a jig setting: none; viewed steps[1] image shows none. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "attach and secure them using 2″ screws and some more of that DAP glue."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Secure with 2 pocket hole screws and some glue."
+        }
+      ],
+      "reason": "Glue is used in steps[0]-[2] but no materials line matches /glue/i (materials[0..3] = 2x2, 1x6, pocket hole screws, finishing nails). (a),(b),(d) pass: 4 legs, 4+4 rails and the top are all counted and installed; steps end at the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-08",
+    "imagesViewed": [
+      "a944f33b01c1a770.webp",
+      "92bfacbce1b5b6ef.webp",
+      "8ab0c4eef969ff0f.webp",
+      "3fb7d24cf6e6e6af.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Measure to make sure you have the same over hang on all sides – mine was 1 1/2″ all around.",
+      "what": "Top is 6 x 5.5 = 33 by 30 (cutList[3]); with 2x2 rails 27 and 32 (cutList[1],[2]) fitted between 1 1/2 legs (viewed steps[1] image shows rails between legs) the base is 30 x 35, so a 1 1/2 overhang on all sides cannot result; which rail row is which side is not stated"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "my car wouldn’t fit the 9′ long boards",
+      "what": "Step refers to 9' boards while materials[1] is 'Board, 1x6 96\"' (8')"
+    }
+  ]
 }
