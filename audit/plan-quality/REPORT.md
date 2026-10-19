@@ -5,11 +5,14 @@
 | | |
 |---|---|
 | Rubric | R-1 |
-| Current stage | **Stage 2 gate — waiting for Keagan** |
-| Last batch | — (no reading yet) |
-| Ledger | 610 published slugs, all `pending` |
-| Verdicts | Ship 0 · Ship (unverified) 0 · Fix 0 · Unpublish 0 · Human review 0 · not yet scored 610 |
+| Current stage | **Stage 5 gate — waiting for Keagan to sign off [`calibration.md`](calibration.md)** |
+| Last batch | calib-4 (pilot-1..3, calib-1..4 read; pilot + calib Unpublish findings verified) |
+| Ledger | 610: 70 read/verified, 540 swept |
+| Verdicts (70 read) | Ship 8 · Ship (unverified) 10 · Fix 47 · Unpublish 5 (verifier-upheld) · Human review 7 (combined with another verdict) · not yet read 540 |
 | Updated | 2026-10-18 |
+
+**Waiting on Keagan (Stage 5):** his verdicts on the core 40 in `calibration.md`, and answers to
+Q1 (R9 at Fix?), Q2 (add R14 + widen R10 → R-2?), Q3 (R1 Fix level?), Q4 (Stage 6 cost / model).
 
 **Stage 2 gate — answered by Keagan 2026-10-18** (relayed by the orchestrating session),
 verbatim: "Yes to both: use the kreg-plans.json from git history, and score the measurement checks
@@ -50,9 +53,30 @@ against Kreg's corrected sizes, recording the live-site error once as cause: imp
 7. **Nominal sizes outside §9.** `craftsman-style-twin-bed` posts are `3x3 (or 4x4)` in Kreg's
    text; 3x3 is not in §9, so R4 is `unknown` for those rows even after correction.
 
-## Stage 2 — import fidelity (done, at gate)
+## Stage 2 — import fidelity (done)
 
-See [`import-fidelity.md`](import-fidelity.md). In short: 508 of 610 plans (3,593 of 4,938
-cut-list rows) carry import-damaged dimensions; 141 plans have gross errors (3/4″ → 3,
-36 1/8″ → 8, 1×12 → 1 × 12), well beyond S-19 as logged. Material quantities of 1 are real
-except 31 defaulted lines in 8 plans.
+See [`import-fidelity.md`](import-fidelity.md). In short: 518 of 610 plans (3,617 of 4,938
+cut-list rows) carry import-damaged dimensions; 153 plans have gross errors (3/4″ → 3,
+36 1/8″ → 8, 1×12 → 1 × 12, 7′ → 7), well beyond S-19 as logged. Material quantities of 1 are
+real except 31 defaulted lines in 8 plans. (Revised in Stage 5 for feet values; see that file.)
+
+## Stage 3 — scripted sweep (done)
+
+See [`sweep-summary.md`](sweep-summary.md). All 610 swept on Kreg-corrected sizes; no plan failed
+an Unpublish-level check by script (gate not triggered); 173 plans had no flag. §3 ground truth
+re-measured: unchanged.
+
+## Stage 4 — pilot read (done)
+
+30 plans (15 worst by sweep flags, 15 clean, across categories), 3 fresh readers of 10, verifier
+on all 5 proposed Unpublish plans (22 findings: 21 upheld, 1 refuted → 3 Unpublish, 2 became Fix).
+About 25k tokens per plan read. Where readers found the rubric ambiguous, and where they disagreed
+with the sweep, is folded into `calibration.md` Q1–Q3; the sweep's misses (sizes with no inch mark,
+"prints"/"sketch" not in the R11 pattern) were passed to later readers.
+
+## Stage 5 — calibration (at gate)
+
+40 more plans read (20 sweep-clean incl. long/sheet-heavy, 20 with R1/R11 flags); 2 more Unpublish
+proposals verified (4/4 upheld). [`calibration.md`](calibration.md) holds the core 40 for Keagan's
+verdicts (all 18 Ship, all 5 Unpublish, 17 Fix) plus 30 more Fix in an appendix, and the four
+questions. No rubric change is made until he answers (R-1 still in force).

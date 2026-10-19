@@ -211,21 +211,27 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[2].body",
           "quote": " 2x4's to 20.25\". Pre-drill 1.50\" pocket holes according to the attached diagram. Attach the 47.25\" 2x6 to the back of the frame (place 3/4\" scrap underneath for spacing) and attach the 47.25\" 2x4 to ",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "The diagram is the step's own image (steps[2] has one), not outside content."
         }
-      ]
+      ],
+      "reason": "Reader also checked description 'For more info check out www.LazyGuyDIY.com!' (credit) and steps[1] 'Following the provided image' (the step's own image)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps match the cut list (aprons steps[0] = cutList[6], [1], [0]; bench top steps[1] = cutList[8]; legs steps[4] = cutList[3]; leg supports steps[5] = cutList[4], [5]; bottom framework 2x6 and 5 x 2x4 steps[2] = cutList[2], [7]). The one extra piece, a second 2x4 at 47.25\" in steps[2], is cut in the step itself from listed 2x4 stock (materials[1]), which R2 allows; the count disagreement is recorded in gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used: End Apron, Side Apron (2x6 and 2x4) steps[0]; Bench Top steps[1]; Bottom Frame 2x6 and 2x4 steps[2]; Table Leg steps[4]; Outside and Inside Leg Support steps[5]."
     },
     "R4": {
       "result": "pass",
@@ -236,28 +242,61 @@
       "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[2].body",
           "quote": "ush through the face of the thinner material. Drive 2\" wood screws through the 2x4's into the plywood to secure the work surface. Flip the top over to check for gaps and add additional screws as neede",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "why": "2\" screw — no material line lists a 2\" fastener",
+          "confirmed": true
         },
         {
           "path": "steps[5].body",
           "quote": "Cut (2) 2x4's to 29.25\" and (1) 2x4 to 50.25\". Attach with wood screws 12\" from the ground. The added supports will strengthen the bench and add additional weight to make the work surface more sturdy.",
-          "why": "50.25\" screw — no material line lists a 50.25\" fastener"
+          "why": "50.25\" screw — no material line lists a 50.25\" fastener",
+          "confirmed": false,
+          "reason": "50.25\" is a part length, not a screw size. (The 'wood screws' here have no size and are also not in materials; see reason.)"
         },
         {
           "path": "steps[9].body",
           "quote": "terial is thicker than the 3/4\" recommended for the machine screws they include. Instead, thread insert the 2.50\" 1/4\" machine bolts hex head first into the Kreg Trak and then feed through the pre-dri",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "why": "3/4\" screw — no material line lists a 3/4\" fastener",
+          "confirmed": false,
+          "reason": "3/4\" is the material thickness Kreg's included screws suit; the plan replaces them with the listed 1/4\" x 2.50\" bolts (materials[8])."
         }
-      ]
+      ],
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drive 2\" wood screws through the 2x4's into the plywood to secure the work surface."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the aprons with 1.50 pocket holes and 2.50\" pocket screws."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "attached with 1.50\" pocket holes and 2.50\" pocket screws."
+        }
+      ],
+      "reason": "Searched materials.name for /screw/i: no hit (materials are boards, plywood, Kreg Trak, bench clamps, clamp vise and '1/4\" hex head machine bolts at 2.50\"'). Missing sizes: 2\" wood screws (steps[2]) and 2.50\" pocket screws (steps[0], [2], [4]; the sweep missed these, likely matching the 2.50\" bolts). steps[5] 'wood screws' are unsized and also absent. Bolt count agrees: steps[8] 5 pairs + 4 pairs = 18 = materials[8] qty 18."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, plywood dry fit, bottom framework with plywood screwed down, slot, legs, leg supports, dog holes, Trak template and pilot holes, Trak bolted (nuts reached from underneath), clamp vise. Trak is held back until after drilling (steps[2] 'DO NOT ATTACH THE TRAK YET'). Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Jig setting stated for the 1 1/2\" lumber: '1.50 pocket holes' (steps[0]), '1.50\" pocket holes' (steps[2], [4]). Every pocket-holed part is 2x4 or 2x6 (1 1/2\"). Other joints: plywood with 2\" wood screws (steps[2]), leg supports with wood screws (steps[5]), Trak with 1/4\" bolts, washers and nuts (steps[9], [10]), clamp vise with provided screws (steps[11])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Measured placements give numbers: leg supports '12\" from the ground' (steps[5]), '3/4\" scrap underneath for spacing' (steps[2]). Others are relational or as desired: 'evenly spaced' (steps[2], [8]), dog holes 'at desired spacing' (steps[6]), 'Pick a spot' (steps[11])."
     },
     "R11": {
       "result": "pass",
@@ -265,7 +304,18 @@
       "note": "4 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Cut (1) 2x6 to 47.25\", (1) 2x4 to 47.25\" and (5) 2x4's to 20.25\".",
+      "what": "Count disagrees with the cut list: steps[0] already cuts '(1) 2 x 4 x 47.25\"' for the aprons and steps[2] cuts a second 2x4 at 47.25\", but the cut list has only one 2x4 x 47.25 row (cutList[6] 'Side Apron', qty 1); no 'Bottom Frame' 2x4 47.25 row exists."
+    }
+  ],
+  "verdict": "Fix",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

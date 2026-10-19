@@ -2,45 +2,86 @@
   "slug": "7-foot-outdoor-table-with-bench",
   "rubric": "R-1",
   "batch": null,
-  "importAffected": false,
-  "importDiffs": [],
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].lengthIn",
+      "source": "2\"x6\"x7'",
+      "kind": "feet-read-as-inches",
+      "imported": 7,
+      "correct": 84,
+      "correctRow": [
+        2,
+        6,
+        84
+      ]
+    }
+  ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[3].body",
           "quote": "CROSS SUPPORTS: Cut 3 cross supports with the ends cut at a 30 degree angle.\nSTEEL LEGS: The legs are heavy-duty powder-coated steel legs from Semi-Exact and are 28\" tall (see Extras tab for link).",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": false,
+          "reason": "A purchase link only; the legs are named with maker and height ('from Semi-Exact and are 28\" tall') and listed in materials[6], so the build does not depend on the link."
         },
         {
           "path": "materials[6].name",
           "quote": "Powder-coated legs from Semi Exact (link in Extras tab), more if you choose to build the bench",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": false,
+          "reason": "Same purchase link; the material is identified by name."
         }
-      ]
+      ],
+      "reason": "Reader also checked steps[0] 'Check out the corresponding YouTube video for this project.' (optional) and steps[6] 'the legs used are in the extras tab' (optional bench, purchase link)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Choose a length for your bench boards that are either the same length as your table (7 feet) or slightly shorter. Cut two per bench, and attach to the metal legs."
+        }
+      ],
+      "reason": "The bench boards are cut in steps[6] but are not in the cut list and the step names no stock to cut them from (searched cutList.part and materials.name for /bench/i: only materials[6] '...more if you choose to build the bench', which is legs). The bench is optional, so not structural to the table: Fix. Table parts are all present: Table top boards, Stretchers, Cross supports (cutList[0..2]); legs and bolt spacers are materials[6], [5]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows are used: Table top boards (steps[1]), Stretchers (steps[2], [5]), Cross supports (steps[3], [4]); quantities match the steps ('6 pieces', '2 stretchers', '3 cross supports'). The rows' dimensions look import-damaged (see gaps)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Changed from the script's unknown ('stock length not written'): the names do state lengths with a unit — materials[0] 'Treated lumber boards, 2\"x6\"x8'' qty 8 and materials[1] 'Treated lumber board, 2\"x6\"x10'' qty 1. One stock type (2x6) is used for every part. Top-board length taken from steps[1] 'Cut 6 pieces of 2x6 at a length of 7'.' because cutList[0] length 7 is import-damaged (see gaps).",
+      "arithmetic": "Parts: 6 x 84 (7') + 2 x 80 + 3 x 30 = 504 + 160 + 90 = 754; + 11 cuts x 1/8 = 755 3/8. Bought: 8 x 96 + 1 x 120 = 888. 755 3/8 ≤ 888."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The steps give no fastener sizes ('pocket screws' steps[1]; 'Screw through' steps[4], [5]; 'Screw steel legs' steps[5]), so no size is missing from materials and none conflicts. materials[4] 'Box of 2\" Kreg Blue-Kote screws'."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top assembled, stretchers and cross supports cut, cross supports then stretchers screwed to the top, legs screwed to the top underside. Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "The 2x6 top boards are joined with pocket holes (steps[1] 'using pocket holes every 8 inches on the under side of the table top'); no jig thickness setting in any text field (searched all fields for /jig|set to|setting|thickness/i: no hit). steps[1] image not viewed (not sweep-flagged), so absence across the plan is not established. Other joints name method and fastener generically ('Screw through' steps[4], [5])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Measured spacings give numbers: 'pocket holes every 8 inches' and gaps 'about 1/8\" to 1/4\" wide' (steps[1]). Stretcher notch placement is referred to the step's own diagram (steps[2] 'See diagram on this step for placement')."
     },
     "R11": {
       "result": "pass",
@@ -48,7 +89,23 @@
       "note": "1 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "cutList[0]",
+      "quote": "Table top boards | qty 6 | 2 x 6 x 7",
+      "what": "Cut list length is 7 (inches) but steps[1] says 'Cut 6 pieces of 2x6 at a length of 7'.' (84\"); all three rows also give nominal 2 x 6 rather than 1 1/2 x 5 1/2. Looks like import damage (foot unit dropped, nominal taken as actual), but it is not in importDiffs and importAffected is false — needs a Stage 2 re-check."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Screw through the cross supports and into the table top.",
+      "what": "No positions in text for the 3 cross supports along the 7' top, or for the steel legs (steps[5]); step images not viewed, so whether the drawings give them is not known."
+    }
+  ],
+  "verdict": "Fix",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

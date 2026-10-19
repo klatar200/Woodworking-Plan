@@ -127,51 +127,89 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "description",
           "quote": "y simple to build from off-the-shelf 1/2\" and 3/4\" boards, and an inexpensive clock movement. To make the project even easier, we've included a free printable dial (see Extras at the end of the plan).",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": true,
+          "reason": "Announces the dial as an Extras download; the plan has no dial (see steps[8])."
         },
         {
           "path": "description",
           "quote": "y simple to build from off-the-shelf 1/2\" and 3/4\" boards, and an inexpensive clock movement. To make the project even easier, we've included a free printable dial (see Extras at the end of the plan).",
-          "why": "matches \"printable\""
+          "why": "matches \"printable\"",
+          "confirmed": true,
+          "reason": "Same sentence as above."
         },
         {
           "path": "steps[8].body",
           "quote": "Click on the “Extras” tab (below the main project photo) to find the pdf clock dial we’ve provided. Print the dial on a heavy art paper. Then cut out the dial. Cut a Clock Backer to size from 1/4\" har",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": true,
+          "viewed": true,
+          "reason": "The step requires printing the PDF dial. No dial exists in the plan: steps[8] image (viewed) is the backer layout (8\" x 8\", pilot holes, center hole); the 5 unattached images (viewed) are finished-clock photos and a dimensioned overview, none a printable dial."
         },
         {
           "path": "steps[8].body",
           "quote": "the “Extras” tab (below the main project photo) to find the pdf clock dial we’ve provided. Print the dial on a heavy art paper. Then cut out the dial. Cut a Clock Backer to size from 1/4\" hardboard or",
-          "why": "matches \"pdf\""
+          "why": "matches \"pdf\"",
+          "confirmed": true,
+          "reason": "Same step as above."
         }
-      ]
+      ],
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Click on the “Extras” tab (below the main project photo) to find the pdf clock dial we’ve provided. Print the dial on a heavy art paper."
+        },
+        {
+          "path": "description",
+          "quote": "we've included a free printable dial (see Extras at the end of the plan)."
+        }
+      ],
+      "reason": "The dial face, a required part of the finished clock (steps[8] adheres it to the Backer; steps[10] 'Make sure that the dial is right side up!'), is only in the Extras PDF we do not have. 'likely', not 'certain': the woodwork can be finished and a builder could source a dial elsewhere, so whether the build 'cannot be completed' is a judgment for the verifier."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part a step cuts is in the cut list: Legs, Top Rails, Bottom Rails (steps[0]), Sides (steps[2]), Braces (steps[3]), Top (steps[6]), Clock Backer (steps[8]). The dial is printed on materials[16] art paper (R1). The 1/2\" spacers in steps[7] are a temporary setup aid."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used (see R2). Corrected sizes agree with each other and the viewed overview image: frame 6 1/2 + 2 x 1 1/2 = 9 1/2 (image '9 1/2\"'); body 8 + 2 x 1/2 = 9, giving equal 1/4\" overhangs (steps[5] 'equal overhangs'); depth 3 1/2 + 2 x 1/2 = 4 1/2 (image '4 1/2\"'); Top 12 1/2 x 5 1/2 (image)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs material names",
+      "reason": "Changed from the script's unknown: the script parsed '1/2 x 2' etc. as 2x2 lumber. The names state the actual sizes: materials[0..1] 'Board, 1/2 x 2 (1 1/2\" actual width)' for Legs and Top Rails (1/2 x 1 1/2); materials[2] '1/2 x 3 (2 1/2\" actual width)' for Bottom Rails (1/2 x 2 1/2); materials[3] '1/2 x 4 (3 1/2\" actual width)' for Sides (1/2 x 3 1/2); materials[5] 'Board, 1x4 24\"' for Braces (3/4 x 3 1/2, §9); materials[4] '1/2 x 6 (5 1/2\" actual width)' for Top (1/2 x 5 1/2); materials[6] 'Plywood, 1/4\" Thick 12\" x 12\"' for Clock Backer (1/4 x 8 x 8). Every part matches with no planing."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x2, 2x3, 2x4, 2x6, 1x4, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Changed from the script's unknown: the steps name the stock for every part (steps[0] 'from 1/2\" x 2 oak' and 'from 1/2\" x 3 oak'; steps[2] 'from a 1/2\" x 4 oak'; steps[3] 'from 1x4 oak'; steps[6] 'from 1/2\" x 6 oak'; steps[8] 'from 1/4\" hardboard or plywood').",
+      "arithmetic": "1/2x2: Legs 4 x 11 + Top Rails 2 x 6 1/2 = 57 + 6 cuts x 1/8 = 57 3/4 ≤ 48 + 24 = 72 (materials[0], [1]). 1/2x3: 2 x 6 1/2 + 2/8 = 13 1/4 ≤ 24. 1/2x4: 2 x 10 1/2 + 2/8 = 21 1/4 ≤ 24. 1x4: 2 x 8 + 2/8 = 16 1/4 ≤ 24. 1/2x6: 12 1/2 + 1/8 ≤ 24. Plywood: 8 x 8 within 12 x 12. Every material quantity is 1; a pass needs only one board of each, so an import-defaulted quantity cannot turn it into a fail."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: '1\" fine-thread pan-head pocket-hole screws' (steps[1], [4], [5]) = materials[8]; 'two 1\" flat-head wood screws' (steps[7]) = materials[9] qty 2; 'four 1/2\" pan-head wood screws' (steps[10]) = materials[10] '1/2\" pan-head screws' qty 4. No conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rails and legs, two frames, sides, braces, body, body to front frame, top, top to brace, backer and dial, finish, backer screwed in through the still-open back, back frame glued on, movement installed. Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "steps[0] and steps[2] 'With the jig set up for 1/2\"-thick material' cover the 1/2\" Rails and Sides. The Braces are 3/4\" (cutList[4], 'from 1x4 oak') and get pocket holes in steps[3] 'Drill pocket holes at the locations shown'; no 3/4\" setting in any text field (searched all fields for /set up for|set for|setting|thick/i: only the two 1/2\" hits). steps[3] image not viewed (not sweep-flagged), so absence across the plan is not established."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Measured placements give numbers or are relational: 'flush with the upper end of the frame' and 'equal overhangs' (steps[5]), '1/2\" spacers' and 'center it' (steps[7]); backer pilot holes are dimensioned in the steps[8] image (viewed: 1/2\" and 3/8\" from the edges)."
     },
     "R11": {
       "result": "pass",
@@ -179,7 +217,19 @@
       "note": "17 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/17c3912d14d2c2d6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7a70c6e410bb6958.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a1adf11ec17663fe.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d6a2f139061d7f00.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b02f1ebcad8eb39.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/06bd24edb2bb64bc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f81faf9a7ba4e0cf.webp"
+    ]
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

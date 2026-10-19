@@ -13,17 +13,22 @@ detail is in each record's `importDiffs` (path, kind, Kreg's source text, import
 value); totals in `import-fidelity.json`. List one class with
 `node audit/plan-quality/scripts/list-diffs.mjs <kind>`.
 
+**Revised during Stage 5:** a calibration reader found `2"x6"x7'` imported as 7 and the checker
+not flagging it; the checker now reads a single `'` as feet (whole numbers ≤ 16 only). That added
+`feet-read-as-inches` rows (1 → 40) and moved the totals below (508 → 518 plans). No read record's
+finding depended on the changed values.
+
 ## Headline
 
 | | Count |
 |---|---|
 | Published plans | 610 |
-| Plans with at least one wrong measurement from the import (`importAffected: true`) | **508** (83%) |
-| …of which the number is a *different* number, not a trimmed fraction ("gross") | **141** |
+| Plans with at least one wrong measurement from the import (`importAffected: true`) | **518** (85%) |
+| …of which the number is a *different* number, not a trimmed fraction ("gross") | **153** |
 | Cut-list rows | 4,938 |
-| Rows exactly as Kreg wrote them | 1,318 (27%) |
-| Rows with at least one wrong dimension | **3,593** (73%) |
-| Rows the checker could not parse (Kreg's text is ambiguous/garbled; listed, not judged) | 27 in 12 plans |
+| Rows exactly as Kreg wrote them | 1,290 (26%) |
+| Rows with at least one wrong dimension | **3,617** (73%) |
+| Rows the checker could not parse (Kreg's text is ambiguous/garbled; listed, not judged) | 31 in 16 plans |
 | Cut-row quantities | 4,938 / 4,938 correct |
 | Material quantities | 5,016 / 5,047 correct; **31 defaulted to 1** (8 plans) |
 | Steps | 6,809; none dropped, none added |
@@ -36,21 +41,21 @@ only recognises `N-N/N`, `N/N` or a bare number with nothing after it; anything 
 
 | Kind (`importDiffs.kind`) | What happens | Example (Kreg → imported) | Line | Rows | Plans |
 |---|---|---|---|---|---|
-| `fraction-dropped` — **S-19** | Mixed number with a space (`5 1/2`), or any fraction followed by a curly inch mark (`5-1/2”`) or a word, loses its fraction | `2-board-plant-shelf` `3/4" x 7 1/4" x 48"` → width **7** | `:19-26` (`:24`) | 3,215 | 445 |
+| `fraction-dropped` — **S-19** | Mixed number with a space (`5 1/2`), or any fraction followed by a curly inch mark (`5-1/2”`) or a word, loses its fraction | `2-board-plant-shelf` `3/4" x 7 1/4" x 48"` → width **7** | `:19-26` (`:24`) | 3,213 | 445 |
 | `numerator-kept` | A simple fraction followed by a curly `”` or a word (`3/4" ply`, `3/4”`) becomes its **numerator** | `apothecary-cabinet` `3/4" ply x 17" x 21"` → thickness **3** | `:19-26` (`:24`) | 283 | 70 |
-| `nominal-size-taken-as-actual` | `1 x 12 x 94"` / `2x4x8'` split into three numbers, so the nominal size is used as inches | `built-in-bookshelf` `1 x 12 x 94"` → **1 × 12** (should be 3/4 × 11 1/4) | `:33-37` | 220 | 47 |
+| `nominal-size-taken-as-actual` | `1 x 12 x 94"` / `2x4x8'` split into three numbers, so the nominal size is used as inches | `built-in-bookshelf` `1 x 12 x 94"` → **1 × 12** (should be 3/4 × 11 1/4) | `:33-37` | 219 | 47 |
 | `denominator-as-length` | Nominal path: the length regex matches the *denominator* of `36 1/8"` | `craftsman-style-twin-bed` `1x4 @ 36 1/8"` → length **8**; `16-drawer-dresser` `1x2 @ 15 1/2"` → **2** | `:45` | 66 | 23 |
 | `feet-inches-misread` | `2' 8"` / `1'-1 5/16"` → the feet number | `laundry-sink-cabinet-folding-counter` `4' 8" x 3 1/2" x 3/4"` → **4** | `:19-26` | 31 | 7 |
-| `feet-read-as-inches` | Nominal path accepts `'` as a unit but never multiplies by 12 | `diy-storage-bench-ikea-nornas-look-alike` `Cut 1x12 board into two 4' pieces` → length **4** | `:45` | 1 | 1 |
+| `feet-read-as-inches` | `'` is stripped (`:20`) or accepted as a unit (`:45`) but never multiplied by 12 | `7-foot-outdoor-table-with-bench` `2"x6"x7'` → length **7**; `garage-mud-room-storage-and-organizer` `2"x4"x8' stud` → **8** | `:20`, `:45` | 40 | 22 |
 | `stray-number-as-length` | Nominal path, no straight-quote unit found, falls back to any 2-digit number | `storage-mirror` `1x3 @ 5”, one end 45 miter` → length **45** | `:45` | 1 | 1 |
 | `qty-unreadable-defaulted` | Material quantity `--` becomes **1** | `fluted-bathroom-vanity` materials[3–8] | `:109-110` | 31 lines | 8 |
-| reordered (info) | `:36` sorts T≤W≤L, so the order Kreg wrote (which edge is width/grain) is lost | `16-drawer-dresser` `3/4" x 52 1/4" x 17"` | `:36` | 1,089 | 221 |
+| reordered (info) | `:36` sorts T≤W≤L, so the order Kreg wrote (which edge is width/grain) is lost | `16-drawer-dresser` `3/4" x 52 1/4" x 17"` | `:36` | 1,081 | 218 |
 
 A row can carry more than one kind; row counts are per kind.
 
 **S-19 understates the problem.** GO_LIVE_FIXES S-19 says ~1,400 rows / 299 plans and "up to 7/8″
-per dimension". Against the source it is 3,215 rows / 445 plans for the trimmed fractions alone,
-and a further **141 plans** carry gross errors: thickness 3 for 3/4″, length 8 for 36 1/8″, 1 × 12
+per dimension". Against the source it is 3,213 rows / 445 plans for the trimmed fractions alone,
+and **153 plans** carry gross errors: thickness 3 for 3/4″, length 8 for 36 1/8″, 1 × 12
 for a 1×12 board. Those are not small. (S-19 is not edited here; Stage 8 adds the C- section.)
 
 **The quantity-1 worry is resolved.** §3 counted 2,540 material lines with `quantity: 1`. Only 31
@@ -64,7 +69,7 @@ that reads mixed numbers with a space or hyphen, unicode fractions, curly inch/f
 feet-and-inches, and trailing notes; convert a leading nominal size (`1 x 12`, `2x4`) to actual;
 take the length as the whole measurement after `@`. Then re-import from this same dump (it is in
 git at `efb0c79`) and re-seed. `audit/plan-quality/scripts/import-fidelity.mjs`
-`goodParseCutDetail()` is a tested starting point (it classifies 4,911 of 4,938 rows; the other 27
+`goodParseCutDetail()` is a tested starting point (it classifies 4,907 of 4,938 rows; the other 31
 need a human — e.g. `bistro-table` `1-/12"`, `art-frames` `1/3/4"`).
 
 ## What this means for the rest of the audit

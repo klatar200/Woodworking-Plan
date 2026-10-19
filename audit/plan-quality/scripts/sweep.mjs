@@ -132,6 +132,8 @@ for (const f of files) {
   const recPath = join(RECORDS, `${plan.slug}.json`);
   const rec = JSON.parse(readFileSync(recPath, 'utf8'));
   const M = S.measure;
+  // A record a reader has scored is never re-swept (it would overwrite the reader's results).
+  const keep = !!rec.reader && !process.argv.includes('--force');
 
   // §3 re-measure.
   M.published++; M.steps += plan.steps.length; M.cutRows += plan.cutList.length; M.materials += plan.materials.length;
@@ -348,6 +350,8 @@ for (const f of files) {
   if (checks.R11.flagged) checks.R11.result = 'flagged';
   else if (r11pass) checks.R11.note = `${r11pass} reference(s), each in a step with its own image`;
 
+  if (keep) { S.keptRead = (S.keptRead || 0) + 1; continue; }
+
   // Record + ledger.
   rec.rubric = 'R-1';
   rec.measurementsScoredOn = 'kreg-corrected';
@@ -371,5 +375,6 @@ for (const f of files) {
 writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
 const m = S.measure;
 S.measure.avg = { steps: +(m.steps / m.published).toFixed(1), cutRows: +(m.cutRows / m.published).toFixed(1), materials: +(m.materials / m.published).toFixed(1), tools: +(m.tools / m.published).toFixed(1), images: +(m.images / m.published).toFixed(1) };
-writeFileSync('audit/plan-quality/sweep-summary.json', JSON.stringify(S, null, 2) + '\n');
+// The Stage 3 summary describes a sweep of all 610; a partial re-run (read records kept) only prints.
+if (!S.keptRead) writeFileSync('audit/plan-quality/sweep-summary.json', JSON.stringify(S, null, 2) + '\n');
 console.log(JSON.stringify(S, null, 1));

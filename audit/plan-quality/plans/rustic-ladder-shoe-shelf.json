@@ -2,8 +2,33 @@
   "slug": "rustic-ladder-shoe-shelf",
   "rubric": "R-1",
   "batch": null,
-  "importAffected": false,
-  "importDiffs": [],
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].thicknessIn",
+      "source": "2'x6'x48\"",
+      "kind": "feet-read-as-inches",
+      "imported": 2,
+      "correct": 24,
+      "correctRow": [
+        24,
+        48,
+        72
+      ]
+    },
+    {
+      "path": "cutList[0].widthIn",
+      "source": "2'x6'x48\"",
+      "kind": "feet-read-as-inches",
+      "imported": 6,
+      "correct": 72,
+      "correctRow": [
+        24,
+        48,
+        72
+      ]
+    }
+  ],
   "checks": {
     "R1": {
       "result": "pass",
@@ -16,8 +41,34 @@
       "result": "to-read"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Shelf Legs — qty 2, 24 x 48 x 72 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x6 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x8 72\""
+        }
+      ],
+      "arithmetic": "cutList[0] 24×48: no listed stock has thickness 24 (±1/32) with width ≥ 48; stock = 1.5×5.5, 0.75×7.25",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Shelf Legs — qty 2, 24 x 48 x 72 (Kreg-corrected)",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
     },
     "R5": {
       "result": "unknown",

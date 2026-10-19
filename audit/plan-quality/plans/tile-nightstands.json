@@ -55,53 +55,72 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[1].body",
           "quote": "e leg and should go from 1 1/2\" to 1\" at the bottom. Please see attached diagram. Make sure to mark the tapered sides as you will need to assemble the table with the edge between the tapers facing the",
-          "why": "matches \"see attached\""
+          "why": "matches \"see attached\"",
+          "confirmed": false,
+          "reason": "'attached diagram' is the step's own image (steps[1] has one); the taper is also given in text (3 1/2\" from top, 1 1/2\" to 1\")."
         },
         {
           "path": "steps[2].body",
           "quote": "two pocket holes in both ends of the top stiles as shown in the attached diagram. Make sure to mark the location of the pocket holes before drilling to prevent mistakes. Use Titebond I wood glue and K",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[2] has one), not outside content."
         },
         {
           "path": "steps[3].body",
           "quote": "2\" wide by 1/4\" deep rabbit on the inside of the top frame to hold the tile. See attached diagram. Note that you will need to use a chisel to square the corners as the router will leave round corners.",
-          "why": "matches \"See attached\""
+          "why": "matches \"See attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[3] has one); rabbet size is in the text."
         },
         {
           "path": "steps[4].body",
           "quote": "the inside top edge to hold on the top assembly as shown in the attached diagram. It is a good idea to mark where you are putting the holes to prevent mistakes. Use 100 - 180 grit sandpaper to smooth ",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[4] has one)."
         },
         {
           "path": "steps[5].body",
           "quote": "kirts and legs. The skirts should be inset 1/4\" from the outside of the legs. See attached diagram. Keep in mind that the edge between the two tapered sides of the legs should face out at each corner.",
-          "why": "matches \"See attached\""
+          "why": "matches \"See attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[5] has one); the 1/4\" inset is in the text."
         },
         {
           "path": "steps[6].body",
           "quote": "Use four Kreg 1 1/4\" pocket screws to attach the leg skirt assembly to the top. The spacing on each side should be 1 1/4\" from the center of the skirt to the edge of the top. See attached diagram.",
-          "why": "matches \"See attached\""
+          "why": "matches \"See attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[6] has one); the 1 1/4\" spacing is in the text."
         }
-      ]
+      ],
+      "reason": "Reader also checked steps[1] 'I have linked a very good U Tube video (Extra section) that describes how to do this on a table saw using a tapering jig.' The video is optional technique help; the taper sizes are stated in the same step, so the build can be completed without it."
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[4].body",
           "quote": "he four table skirts as described in the parts list. Using a 3/16\" beading router (I use a Freud 80-104) in a router table cut a bead along the lower edge of all four skirts. Using a Kreg pocket screw",
-          "why": "cut sentence states 3/16\" — no cut-list dimension or material size matches (corrected values)"
+          "why": "cut sentence states 3/16\" — no cut-list dimension or material size matches (corrected values)",
+          "confirmed": false,
+          "reason": "3/16\" is the beading bit size, not a part."
         }
-      ]
+      ],
+      "reason": "Parts used: legs (cutList[0], steps[1]), top stiles and rails (cutList[2..3], steps[2]), skirts (cutList[1], steps[4]), 12\" X 12\" tile (materials[2], steps[7]). All exist."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows are used: Legs steps[1], Top Stiles/Top Rails steps[2], Table Skirts steps[4]. Frame check: rails 11 between stiles 3 wide gives an 11 x 11 opening; the 1/2\" rabbet (steps[3]) makes it 12 x 12, matching the 12\" X 12\" tile."
     },
     "R4": {
       "result": "pass",
@@ -112,19 +131,32 @@
       "reason": "R5 precondition not met: 2 stock types (1.5x7.25, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is 'Kreg 1 1/4\" pocket screws' (steps[2], [5], [6]) = materials[3] 'Kreg 1 1/4\" coarse pocket screws' qty 36. Count agrees: 2 holes x 2 ends x 2 stiles (8) + 3 x 2 ends x 4 skirts (24) + 1 top-edge hole x 4 skirts (4) = 36."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs cut and tapered, top frame assembled and rabbeted, skirts beaded and drilled (incl. top-edge holes), base assembled, top attached, tile set. Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] and steps[4]: 'Kreg pocket screw jig (set to 3/4\" for all pockets on this project)'. Every pocket-holed part (top stiles, skirts) is 3/4\" thick. Tile joint method stated: Liquid Nails silicone (steps[7])."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[2].body",
           "quote": "oth ends of the top stiles as shown in the attached diagram. Make sure to mark the location of the pocket holes before drilling to prevent mistakes. Use Titebond I wood glue and Kreg 1 1/4\" pocket scr",
           "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6aaf7bef693ae498.webp"
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6aaf7bef693ae498.webp",
+          "confirmed": false,
+          "reason": "Marking pocket-hole locations is not placing a part at a measured position; the count ('two pocket holes in both ends') is given."
         }
-      ]
+      ],
+      "reason": "Measured positions give numbers: taper starts 3 1/2\" from top (steps[1]), skirts inset 1/4\" (steps[5]), 1 1/4\" from skirt to top edge (steps[6])."
     },
     "R11": {
       "result": "pass",
@@ -132,7 +164,11 @@
       "note": "14 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

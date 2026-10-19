@@ -55,41 +55,54 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[2].body",
           "quote": "Cut the three tops from the 3/4\" plywood sheet as shown in the attached diagram.Use 100 - 150 grit sandpaper to smooth the parts.",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "The diagram is the step's own image (steps[2] has one); top sizes are also in cutList[0..1]."
         },
         {
           "path": "steps[4].body",
           "quote": "ill pocket holes in both ends and the top edges as shown in the attached diagram. It is a good idea to mark where you are putting the holes to prevent mistakes. I also added a bead detail to the botto",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[4] has one)."
         },
         {
           "path": "steps[7].body",
           "quote": "Using Titebond I wood glue and 1 1/4\" brad nails assemble eleven sets of regular legs using one 3\" and one 2 1/4\" leg piece per assembly. See attached diagram.",
-          "why": "matches \"See attached\""
+          "why": "matches \"See attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[7] has one)."
         },
         {
           "path": "steps[8].body",
           "quote": "g one regular 3\" leg piece and one 3\" center front table leg piece. See attached diagram. Note that there is a left and a right side (mirror images) so be careful that you assemble the legs correctly.",
-          "why": "matches \"See attached\""
+          "why": "matches \"See attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[8] has one)."
         },
         {
           "path": "steps[9].body",
           "quote": "Attach the appropriate table skirts to their leg assemblies using wood glue and 1 1/4\" Kreg fine pocket screws as shown in the attached diagram.",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "reason": "Refers to the step's own image (steps[9] has one)."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts used: tops (cutList[0..1], steps[0], [2], [10]), 3\" and 2 1/4\" legs (cutList[2..4], steps[5..8]), center front legs (cutList[3], steps[6]), skirts (cutList[5..7], steps[4], [9]), edge banding (materials[5]). Counts agree: steps[5] 'fifteen 3\" legs' = 13 + 2; steps[7] eleven sets use 11 x 3\" + 11 x 2 1/4\"; steps[8] two sets use 2 x 3\" + 2 center pieces (13 regular 3\" total); steps[4] 'thirteen table skirt pieces' = 6 + 1 + 6."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used (see R2). Skirt lengths agree with tops: 40 + 3 + 3 = 46 = 48 - 2 x 1\" overlap (steps[10] 'about 1\" of overlap'); 16 + 3 + 3 = 22 = 24 - 2."
     },
     "R4": {
       "result": "pass",
@@ -100,11 +113,34 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners used: 1 1/4\" brad nails (steps[7], [8]) = materials[3]; 1 1/4\" Kreg fine pocket screws (steps[9]) and 1 1/4\" Kreg coarse pocket screws (steps[10]) = materials[2] 'Kreg 1 1/4\" coarse and fine pocket hole screws'. No conflicting sizes."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach wood veneer edge banding to the edges of the three tops."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut the three tops from the 3/4\" plywood sheet as shown in the attached diagram."
+        }
+      ],
+      "reason": "The tops are edge-banded in steps[0] but not cut until steps[2] (steps[1] is the Introduction). The builder can still proceed by cutting first, so Fix, not Unpublish. The importer does not reorder steps (§3), so cause is plan."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] 'Use a Kreg Pocket Hole Jig (set to 3/4\")' — all pocket holes are in the 3/4\" skirts (steps[4], [9], [10]). Leg assemblies: glue and 1 1/4\" brad nails (steps[7], [8]). Edge banding: heat-activated glue with an iron (steps[0])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "The only measured placement, the top overhang, gives a number: steps[10] 'about 1\" of overlap on each side'."
     },
     "R11": {
       "result": "pass",
@@ -112,7 +148,11 @@
       "note": "17 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": []
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

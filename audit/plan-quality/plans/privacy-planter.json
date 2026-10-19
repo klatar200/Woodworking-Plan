@@ -55,43 +55,59 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[0].body",
           "quote": "g 2-1/2\" pocket screws. Drill extra pocket holes at the top for 1-1/2\" long pocket screws. These will be used to attach the cap.\nNote: You can download a printable PDF of the plans in the \"extras\" tab",
-          "why": "matches \"download\""
+          "why": "matches \"download\"",
+          "confirmed": false,
+          "reason": "An optional note ('You can download'); no step needs the PDF to proceed — every part is in the cut list and each step has its own diagram."
         },
         {
           "path": "steps[0].body",
           "quote": "g 2-1/2\" pocket screws. Drill extra pocket holes at the top for 1-1/2\" long pocket screws. These will be used to attach the cap.\nNote: You can download a printable PDF of the plans in the \"extras\" tab",
-          "why": "matches \"printable\""
+          "why": "matches \"printable\"",
+          "confirmed": false,
+          "reason": "Same note as above."
         },
         {
           "path": "steps[0].body",
           "quote": "g 2-1/2\" pocket screws. Drill extra pocket holes at the top for 1-1/2\" long pocket screws. These will be used to attach the cap.\nNote: You can download a printable PDF of the plans in the \"extras\" tab",
-          "why": "matches \"PDF\""
+          "why": "matches \"PDF\"",
+          "confirmed": false,
+          "reason": "Same note as above."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts assembled: sides (Side boards + Posts, cutList[2], [5]; steps[0] image viewed), box (Front/Back, cutList[1]; steps[1] image viewed), supports (cutList[6], steps[2]), planter base (cutList[3], steps[3]), cap (Cap + Cap Sides, cutList[0], [4], steps[4]). All exist. Plastic/weed barrier are not cut parts (see gaps)."
     },
     "R3": {
-      "result": "flagged",
+      "result": "pass",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "cutList[1].part",
           "quote": "Front/Back",
-          "why": "no step mentions it (searched steps for front/back)"
+          "why": "no step mentions it (searched steps for front/back)",
+          "confirmed": false,
+          "viewed": true,
+          "reason": "steps[1] image (viewed) labels '5/4 x 6 x 46-1/2\" (14 places)' on the box front and back — the 14 Front/Back boards are used in 'Assemble Box'."
         },
         {
           "path": "cutList[5].part",
           "quote": "Posts",
-          "why": "no step mentions it (searched steps for post)"
+          "why": "no step mentions it (searched steps for post)",
+          "confirmed": false,
+          "viewed": true,
+          "reason": "steps[0] image (viewed) labels '4 x 4 x 40-1/4\"' posts on each side assembly — Posts are used in 'Assemble Sides'."
         }
-      ]
+      ],
+      "reason": "Side qty 14 = '(7 places)' x two sides (steps[0] image, viewed); Front/Back qty 14 = '(14 places)' (steps[1] image, viewed). Supports, base, cap, cap sides are used in steps[2..4]."
     },
     "R4": {
       "result": "unknown",
@@ -102,18 +118,42 @@
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 2-1/2\" pocket screws (steps[0..2]) = materials[4]; 1-1/2\" pocket screws (steps[0], [1], [4], [5]) = materials[5]; 2\" exterior wood screws (steps[2]) = materials[7]; 1-5/8\" exterior wood screws (steps[3]) = materials[6]. No conflicting sizes. Staples (steps[3]) have no size; see gaps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, box, supports, base, cap, attach cap. Cap-attachment pocket holes are drilled in steps[0]/[1] before assembly and used in steps[5]; nothing must be undone."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "No jig setting in any text field (searched all fields for /jig|set to|setting|thickness/i: only the tools slug 'pocket-hole-jig'). Viewed images steps[0] and steps[1] state '1\" thickness & 2-1/2\" pocket screws' and '1\" thickness & 1-1/2\" pocket screws', covering the 5/4 boards. The 2x4 Supports (1 1/2\" thick) get pocket holes in steps[2]; that step's image was not viewed (not sweep-flagged), so whether a setting is given for them is not known."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "The only measured placement in text gives a number: steps[3] 'Space boards approximately 3/4” apart'. Side-board and box-board positions are in the viewed images ('1/4\" from bottom', '1/4\" spacing', 'Flush to top', 'inset 1\"')."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Staple plastic to the sides, then overlap weed barrier and staple it to the bottom to retain the soil but allow for drainage.",
+      "what": "Plastic, weed barrier and staples are used but not in materials (searched materials.name for /plastic|barrier|fabric|staple/i: no hit)."
+    }
+  ],
+  "verdict": "Ship (unverified)",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1cf91bc041ce1550.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7634039e5bf7c8e.webp"
+    ]
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

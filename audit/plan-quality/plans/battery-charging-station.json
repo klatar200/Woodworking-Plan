@@ -139,36 +139,48 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[0].body",
           "quote": "d in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood into manageable str",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": false,
+          "reason": "Optional ('There is also'); the strip widths and lengths are given in steps[0..2] and agree with the corrected cut list."
         },
         {
           "path": "steps[0].body",
           "quote": " and diagram provided in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood",
-          "why": "matches \"PDF\""
+          "why": "matches \"PDF\"",
+          "confirmed": false,
+          "reason": "Same optional note."
         },
         {
           "path": "steps[0].body",
           "quote": " diagram provided in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood int",
-          "why": "matches \"download\""
+          "why": "matches \"download\"",
+          "confirmed": false,
+          "reason": "Same optional note."
         },
         {
           "path": "steps[5].body",
           "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part. Layout these locations with a pencil and square to aid in lining up the jig when drilling. Mark ",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": false,
+          "viewed": true,
+          "reason": "Pocket-hole locations exist only in the Extras drawings (steps[5] image, viewed, shows the printed drawing book, unreadable; the 4 unattached images, viewed, are photos of the finished shelf). But steps[8..11] say which parts join with pocket screws and which way the holes face, and steps[13] gives the wall holes '32” apart', so the build can be completed without the PDF. Recorded as a gap, not an R1 failure."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Strips in steps[0] ('a 10” strip, two 3-3/4” strips, a 3” strip, and a 1-1/2” strip') and steps[1] ('final length of 36”') match corrected cutList[0..4]; sides 'two pieces that are 11-1/2” by 4-1/2”' (steps[2]) match corrected cutList[5]. Fits the quarter sheet: 10 + 3.75 + 3.75 + 3 + 1.5 = 22 + 4 kerfs x 1/8 = 22.5 ≤ 24; 36 + 11.5 + 2 kerfs = 47.75 ≤ 48."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: Shelf, Front Trim, Back (steps[8]); Chase Front (steps[9]); Bottom (steps[10]); Side x2 (steps[11])."
     },
     "R4": {
       "result": "pass",
@@ -179,19 +191,32 @@
       "reason": "sheet layout not judged (area fits: part area 1×10×36 + 1×3.75×36 + 1×3.75×36 + 1×3×36 + 1×1.5×36 + 2×4.5×11.5 = 895.5 sq in; bought 1×24×48 = 1152 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1-1/4” pocket screws (steps[8], [13]) = materials[3]; #8 x 1-1/4” screws (steps[10]) = materials[2]; #8 x 2-1/2” screws (steps[12], 3 holes) = materials[1] qty 3. No conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rip, crosscut, sides cut and shaped, pocket holes and cord holes drilled before assembly; shelf + front trim + back, chase front, bottom, sides; then hung. Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "No jig thickness setting in any text field (steps[6] 'Setup your jig and drill all of the pocket holes in each part.'; searched all fields for /set to|setting|thickness/i: no hit). All parts are 3/4\". steps[6] image not viewed (not sweep-flagged), so absence across the plan is not established."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[13].body",
           "quote": "ws, attach the shelf to the outer studs through these holes. The screws in the last step are more than enough to support the weight of the chargers and batteries, but these screws will add stability a",
           "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7bbd83c79365f8a.webp"
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7bbd83c79365f8a.webp",
+          "confirmed": false,
+          "reason": "The same step gives the measurement: 'They are 32” apart and should line up perfectly with the wall studs.'"
         }
-      ]
+      ],
+      "reason": "Measured placements give numbers: shelf raised 3/4” (steps[8]), 3” gap chase front to back (steps[9]), 3 holes 16” apart (steps[12]), side angle marks 1-1/2” and 4-1/2” (steps[2])."
     },
     "R11": {
       "result": "pass",
@@ -199,7 +224,29 @@
       "note": "7 reference(s), each in a step with its own image"
     }
   },
-  "verdict": null,
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part.",
+      "what": "Pocket-hole locations are only in the Extras PDF, which the plan does not include (step text gives none; steps[5] image and the 4 unattached images viewed: none shows them legibly)."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Also, mark the shelf for the 5 holes that will be drilled for the power cords to be fed through. The bottom also gets marked for a through hole.",
+      "what": "Positions of the 5 shelf cord holes and the bottom hole are not given (steps[7] gives only diameters 1-1/2” and 2”); searched all steps for a hole position: none."
+    }
+  ],
+  "verdict": "Ship (unverified)",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a03c6f5ae1644f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e65a60ca603fba2f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ed1c8633e5636eb4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b66d34cb53dab4d6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/36a6c8f4aadd78dd.webp"
+    ]
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

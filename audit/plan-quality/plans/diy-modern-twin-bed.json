@@ -6,26 +6,33 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[5].body",
           "quote": "Hardware has a left and right side, so be sure to install proper bracket on each side using screws provided. Link to brackets I used in the Extras tab.",
-          "why": "matches \"Extras\""
+          "why": "matches \"Extras\"",
+          "confirmed": false,
+          "reason": "Optional product link; the brackets are named in materials[5] 'Set of 4 - No Mortise Bed Frame Brackets', so the build does not depend on the Extras tab."
         },
         {
           "path": "steps[8].body",
           "quote": "Visit my website www.theAwesomeOrange.com to get more details and photos of this build and other awesome DIY projects!",
-          "why": "matches \"my website\""
+          "why": "matches \"my website\"",
+          "confirmed": false,
+          "reason": "Credit/optional link after the build is complete."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts used: 39\" 2x2 headboard rails/stiles and footboard bottom (cutList[0]), 39\" 2x4 rails incl. 'middle 2x4 support' (cutList[1]), footboard stiles (cutList[2]), slat supports (cutList[3], steps[4]), side rails (cutList[4], steps[4], [6]); bed slats and brackets are materials[2], [5]. Counts agree: steps[1] drills '(7 of the 9) 39\" L 2x2 boards' = cutList[0] qty 9."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: cutList[0] (steps[1..3]), cutList[1] (steps[1..3]), cutList[2] (footboard, steps[2]), cutList[3] (steps[4]), cutList[4] (steps[4], [6]). cutList[0] combines several parts of identical size; each is a real part."
     },
     "R4": {
       "result": "pass",
@@ -36,26 +43,46 @@
       "reason": "R5 precondition not met: 3 stock types (2x4, 2x2, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 2 1/2\" pocket holes/screws (steps[1]) = materials[3]; 2\" spax screws (steps[4]) = materials[4]; 1 1/4\" spax wood screws (steps[7]) = materials[6]; bracket screws 'provided' (steps[5]). Counts agree: 9 boards x 2 ends x 2 = 36 pocket screws; 7 per side (steps[4] image) x 2 = 14; 16 slats x 2 = 32."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, footboard, headboard (lined up to footboard), slat supports on side rails, brackets, assemble, slats. Each part exists before use; nothing must be undone."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "No jig thickness setting in any text field (steps[1] 'Drill two (2) 2 1/2\" pocket holes ... using your Kreg pocket hole jig'; searched all fields for /set to|setting|thickness/i: no hit). The pocket-holed parts are 1 1/2\" thick; steps[1] has an image that was not viewed (not sweep-flagged), so absence across the plan is not established. Other joints state method and fastener (steps[4], [5], [7])."
     },
     "R10": {
-      "result": "flagged",
+      "result": "pass",
       "search": "step sentences with a placement trigger and no inch measurement",
+      "sweepResult": "flagged",
       "flagged": [
         {
           "path": "steps[4].body",
           "quote": "Attach slat supports to side rails using the 2\" spax screws. I used a couple of bed slats to create the correct amount of spacing from the top.",
           "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18272ae6fe98dac3.webp"
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18272ae6fe98dac3.webp",
+          "confirmed": false,
+          "viewed": true,
+          "reason": "The step image (viewed) dimensions the offset as 3/4\" from the top and says 'Use bed slats as spacers to easily line up'."
         }
-      ]
+      ],
+      "reason": "steps[3] 'each additional rail 1.5\" apart from top' gives a number; 'mark where middle 2x4 support should line up' is relational (to the footboard)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
+  "reader": {
+    "batch": "calib-4",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18272ae6fe98dac3.webp"
+    ]
+  },
   "verifier": {
     "ran": false,
     "upheld": [],

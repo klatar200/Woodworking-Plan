@@ -93,8 +93,13 @@ function goodParseCutDetail(detail) {
       // "oak", "(45 deg miter)") are allowed after a unit mark or a space.
       if (!t.length || t[0].index !== 0) return { ambiguous: `part "${p}" does not start with a number` };
       const tail = p.slice(t[0].end);
-      if (t.length > 1 && !/^\s*("|''|in\b|\s)/i.test(tail)) return { ambiguous: `part "${p}" has ${t.length} numbers` };
-      vals.push(t[0].v);
+      if (t.length > 1 && !/^\s*("|''|in\b|\s|'(?!'))/i.test(tail)) return { ambiguous: `part "${p}" has ${t.length} numbers` };
+      // A single ' (not '') after the number is feet: 2"x6"x7' is 84". Only a whole number ≤ 16
+      // (§9's rule for unmarked lengths) — 3/4' or 63.5' is a typo for inches, not checkable.
+      if (/^\s*'(?!')/.test(tail)) {
+        if (!Number.isInteger(t[0].v) || t[0].v > 16) return { ambiguous: `part "${p}": ${t[0].text}' is not a plausible feet value` };
+        vals.push(t[0].v * 12);
+      } else vals.push(t[0].v);
     }
     // "1x4x36" style: the first two are a nominal lumber size, not actual inches.
     const nomKey = `${parts[0]}x${parts[1]}`.replace(/\s/g, '').toLowerCase();
@@ -207,7 +212,7 @@ for (const f of readdirSync(PLANS).filter((n) => n.endsWith('.json')).sort()) {
         if (good.nominalAsActual) kind = 'nominal-size-taken-as-actual';
         else if (hasFraction(want) && want > 1 && Math.abs(v - Math.trunc(want)) < EPS) kind = 'fraction-dropped';
         else if (want < 1 && Number.isInteger(v) && Math.abs(want * fracDen(want) - v) < EPS) kind = 'numerator-kept';
-        else if (got.branch === 'nominal' && good.feet && Math.abs(v * 12 - want) < EPS) kind = 'feet-read-as-inches';
+        else if (Math.abs(v * 12 - want) < EPS) kind = 'feet-read-as-inches';
         else if (got.branch === 'nominal' && k === 2 && /\/\s*(\d+)/.test(good.lengthText || '') && Math.abs(v - +good.lengthText.match(/\/\s*(\d+)/)[1]) < EPS) kind = 'denominator-as-length';
         else if (/\d\s*'/.test(normalize(r.detail))) kind = 'feet-inches-misread';
         else if (got.branch === 'nominal') kind = 'stray-number-as-length';
