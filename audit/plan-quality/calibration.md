@@ -1,5 +1,8 @@
 # Calibration — Stage 5 (rubric R-1, 2026-10-18)
 
+**SIGNED OFF 2026-10-19 (Keagan): Q1–Q4 = recommended options; core 40 = agent verdicts accepted
+without per-plan review (DECISIONS_LOG 2026-10-19). Rubric is now R-2; verdicts below are R-1.**
+
 **Keagan: this is the Stage 5 gate. Nothing past this point runs until you sign off.**
 Two things are needed:
 1. **Your verdict for each plan in the core 40 below** (last column: Ship / Fix / Unpublish, and a

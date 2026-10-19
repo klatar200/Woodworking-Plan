@@ -185,7 +185,12 @@ plausible.
 
 ---
 
-## 6. The rubric (version R-1)
+## 6. The rubric (version R-2)
+
+R-2 (2026-10-19, Stage 5, DECISIONS_LOG): R1 gains a Fix level; R9 no longer counts toward the
+verdict; R10 widened to every position the builder must set; R14 added. Reason: calibration showed
+R9 alone decided ~half of all Fix verdicts, and 33 of 70 read plans had real sense/measurement
+problems (`gaps`) no R-1 check caught.
 
 Each check returns `pass | fail | unknown | n/a`. **S** = script, **R** = reading, **S+R** = script
 flags, reading confirms. Apply the §3 import rule first: a failure caused by S-19 or another
@@ -194,29 +199,34 @@ thresholds (it is reported in bulk).
 
 | Id | Check | How | Fail level |
 |---|---|---|---|
-| R1 | The plan does not depend on content we don't have: a step, cut row or material that says to use full plans, Extras, a PDF, a downloadable template, or an external/paid page **in order to complete the build**. A credit or optional link is fine (§2). | S+R | **Unpublish** |
+| R1 | The plan does not depend on content we don't have: a step, cut row or material that says to use full plans, Extras, a PDF, a downloadable template, or an external/paid page **in order to complete the build**. A credit or optional link is fine (§2). | S+R | **Unpublish** when the build cannot be completed without the missing content; **Fix** when it can (only a non-structural piece is missing, e.g. a printable dial or a decorative cutout shape) |
 | R2 | Every part a step cuts or assembles exists in the cut list, or the step itself says to cut it from listed material. | S+R | Missing **structural** part → Unpublish; other → Fix |
 | R3 | Every cut-list row is a real part the steps use — not an assembly ("Drawers"), a placeholder ("See Full Plans"), or unused. | S+R | Fix |
 | R4 | Each part's thickness and width can come from a listed material: compare with §9 nominal sizes, allowing for S-19 (a whole number that is the nominal width rounded down passes, `cause: import`). Sheet parts must fit 48″ × 96″ (in either orientation). | S | Fix |
 | R5 | Materials cover the cut list. Score it **only** when the plan uses exactly one stock type, or the steps name the stock for every part. Then: total part length + 1/8″ per cut ≤ total length bought (lengths only where the material name states them, §9). For sheets: `unknown` unless all parts are from one sheet type and their total area exceeds the area bought (that is a certain fail). If any quantity involved is 1 and Stage 2 shows it may be an import default, result is `unknown`. | S | Fix |
 | R6 | Every fastener/hardware size used in the steps appears in materials, and the plan never gives two different sizes for the same use. | S+R | Fix |
 | R8 | Build order is possible: each part/sub-assembly exists before the step that uses it; nothing is fastened in a way a later step must undo or cannot reach. | R | **Unpublish** if the build cannot proceed; else Fix |
-| R9 | Pocket-hole joints: a jig thickness setting is stated **somewhere in the plan** for every part thickness that gets pocket holes, and no setting contradicts the thickness it is used on. One statement covers all later joints of that thickness. Other joints: the method and fastener are stated. Screw length vs an outside chart is **not** judged. | R | Fix |
-| R10 | A step that places a part at a **specific measured position** ("2″ from the top", "at 12″") gives the number, or has a viewed image showing it. Relational placements — centered, flush, even spacing, "as desired", against another part — **pass** by nature. | S+R | Fix |
+| R9 | Pocket-hole joints: a jig thickness setting is stated **somewhere in the plan** for every part thickness that gets pocket holes, and no setting contradicts the thickness it is used on. One statement covers all later joints of that thickness. Other joints: the method and fastener are stated. Screw length vs an outside chart is **not** judged. A setting shown in a viewed image counts as stated. | R | Fix — **recorded only; does not count toward the verdict** (catalog-wide bulk fix, reported once in Stage 8) |
+| R10 | Every position the builder must set to complete the build — where a part, piece of hardware or hole goes, when the parts themselves don't fix it — is given as a number, or shown in a viewed image. This includes positions the text never mentions (a shelf height, cord-hole location, hinge-cup distance). Relational placements — centered, flush, even spacing, "as desired", against another part — and positions fixed by the parts (a panel captured in a frame) **pass**. | S+R | Fix |
 | R11 | A step that says "as shown", "see diagram" or refers to a drawing has an image available: its own step image, **or** any unattached image in `images[]` that, when viewed, shows the referenced content. | S+R | Fix; **Unpublish** if the step is structural and the information exists nowhere in the plan |
+| R14 | Steps, cut list and materials agree: (a) a count or size a step gives for a part matches its cut-list row (Kreg-corrected; S-19 is `cause: import`), and numbers a step gives add up (e.g. slat count × width + gaps vs the opening, quoted inputs); (b) every part or sub-assembly the steps make is installed by a later step; (c) every non-fastener item a step uses (hinges, glides, brackets, staples, anchors, sheet plastic) is in materials (fastener sizes stay R6, parts stay R2, unused cut rows stay R3); (d) the steps reach the finished piece. | R | **Unpublish** when the steps end without making or installing a part the piece cannot be used without (drawers, doors, top, seat); else **Fix** |
 
 
 Ids R7 (tools list), R12 (finishing) and R13 (high-risk/safety) were removed when Keagan narrowed
 the scope on 2026-10-18 — do not score them, and do not renumber the others.
 
 **Verdict** (count only `cause: "plan"` findings):
+- **R9 is excluded** from everything below (its fails and unknowns are recorded, not counted).
 - **Unpublish** — any Unpublish-level failure that is `certain` and verifier-upheld; **or** ≥ 4
   Fix-level failures that are all `certain` and verifier-upheld (the plan needs a rewrite).
 - **Fix** — 1–3 Fix-level failures, or an Unpublish-level finding that is only `likely`.
 - **Ship** — every check `pass` or `n/a`.
-- **Ship (unverified)** — no failures, but one or more `unknown` on R3–R11.
+- **Ship (unverified)** — no failures, but one or more `unknown` on R3–R14 (R9 excluded).
 - An `unknown` on **R1, R2 or R8** blocks Ship → **Human review**.
-- **Human review** is added when a check can only be settled with knowledge outside §9.
+- **Human review** is added when a check can only be settled with knowledge outside §9; the
+  record carries `humanReview: "<reason>"`.
+- The verdict is computed from the checks by `audit/plan-quality/scripts/verdict.mjs` (R-2); a
+  verdict that needs a verifier that hasn't run is `Unpublish (pending verifier)`.
 - A plan whose only failures are `cause: "import"` gets the verdict its `plan`-cause checks earn,
   with `importAffected: true`.
 
@@ -394,8 +404,8 @@ you may apply. Questions that need it are Human review.
 > fractions and defaults quantities; such defects are `cause: "import"`, not plan failures) and
 > §4 (evidence rules). For each slug: read `content/plans/<slug>.json` and its record
 > `audit/plan-quality/plans/<slug>.json`. Your only questions are "does the plan make sense?" and
-> "are the measurements good?" (§1). Confirm or reject each `flagged` item and score R2, R3, R6,
-> R8, R9, R10 and R11. Open an image (fetch from the R2 URL in the JSON, scratchpad
+> "are the measurements good?" (§1). Confirm or reject each `flagged` item and score R1–R6 (sweep
+> results stand unless you quote evidence against them), R8, R9, R10, R11 and R14 under rubric R-2. Open an image (fetch from the R2 URL in the JSON, scratchpad
 > only) only for steps the sweep flagged. Every failure needs path + verbatim quote (+ arithmetic
 > if numeric); otherwise `unknown`. Do not rewrite steps, invent values, or judge style. Write
 > each plan's updated record (same schema) and nothing else. Do not run git. Return only, per

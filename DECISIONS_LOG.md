@@ -343,3 +343,12 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 
 ### 2026-10-18 — Plans by outside authors stay in the catalog
 **Binding:** Kreg-hosted plans written by outside authors (bloggers, paid-plan sellers linked from Kreg) may stay published. Authorship and third-party links are not grounds to unpublish. A plan that **depends** on content we don't have (templates, PDFs, "Extras", paid pages) to complete the build is still a quality failure (`docs/PLAN_QUALITY_AUDIT.md` R1). Keagan, while approving the plan-quality audit.
+
+### 2026-10-19 — Plan-quality audit: Stage 5 signed off; rubric R-2; Stage 6 on Sonnet
+**Source:** Keagan, answering `audit/plan-quality/calibration.md` Q1–Q4 and the core-40 sign-off (all recommended options; core 40 = agent verdicts accepted without per-plan review).
+**Binding:**
+- **Q1 R9** (pocket-hole jig setting) is still recorded per plan but **does not count toward a plan's verdict**; it is reported once as a catalog-wide bulk fix. A setting shown in a viewed image counts as stated.
+- **Q2** Rubric **R-2**: add **R14** "steps, cut list and materials agree" (Fix; Unpublish when the plan stops before the build is complete) and widen **R10** to every position the builder must set. The 70 read plans are re-scored under R-2 before Stage 6.
+- **Q3 R1** gains a Fix level: Fix when the build can be completed without the missing content; Unpublish only when it can't.
+- **Q4** Stage 6 readers run on **Sonnet**; every Unpublish finding still goes to a fresh **Opus** verifier. A 10-plan Sonnet-vs-Opus comparison runs first.
+- **Core 40:** agent verdicts accepted as Keagan's. Known consequence: the brief's "zero false Ships from R1/R2/R8" measure is not human-checked.
