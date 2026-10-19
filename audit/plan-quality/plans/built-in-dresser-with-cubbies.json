@@ -1,6 +1,7 @@
 {
   "slug": "built-in-dresser-with-cubbies",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -497,11 +498,40 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbered: cubby dividers '13\" from each Cubby Outside' and '16 1/4\" between each' (steps[6]); side cubby insides '13\" from the Cubby Outsides' (steps[7]); drawer gaps '1/4\" gap at the top and bottom of each side and between each drawer' (steps[5]). Relational: base supports 'flush with the edges' / 'spread evenly' (steps[0]); dividers 'at the center point' (steps[1]); cubby unit 'flush on the outside and back of the Dresser Top' (steps[8]). The side-cubby divider heights the text leaves open (steps[7] gives only '13\" in between') are shown in the viewed steps[7] image: two shelves in each side cubby splitting the opening below the upper cubby bottom into three.",
+      "viewed": [
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2db27092fe04327.webp"
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Using wood glue and clamps, attach a Skinny Drawer Face to the front of the drawer box, flush along the bottom and centered on the drawer.\nRepeat for seven more drawers."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Skinny Drawer Faces | qty 2 | 3/4 × 4 1/4 × 29 1/4 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Drawer Faces | qty 8 | 3/4 × 6 1/4 × 29 1/4 (Kreg-corrected)"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Ensure the unit is attach to the studs in the wall for safety purposes, using brackets."
+        }
+      ],
+      "arithmetic": "(a) steps[3] uses both Skinny Drawer Faces (2 skinny drawers × 1 = 2 = cutList[2] qty); steps[4] then calls for 8 more Skinny Drawer Faces (1 + 'seven more' = 8) while cutList[2] has none left; the 8 'Drawer Faces' of cutList[5] are named in no step (searched steps for /Drawer Faces?/ outside 'Skinny Drawer Face': none).",
+      "reason": "(a) steps[4] gives the wrong part for the 8 regular drawer faces (Skinny, 4 1/4\" wide, instead of cutList[5] Drawer Faces, 6 1/4\" wide). (c) steps[8] uses brackets to fix the unit to the studs, but no material line names a bracket (searched materials[].name for /bracket/i: none; no type or size given). (b) every other part is installed; (d) steps[8..9] reach the finished piece."
     }
   },
   "verdict": "Fix",
@@ -511,25 +541,12 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "gaps": [
-    {
-      "path": "steps[4].body",
-      "quote": "attach a Skinny Drawer Face to the front of the drawer box, flush along the bottom and centered on the drawer.\nRepeat for seven more drawers.",
-      "what": "the 8 regular drawers are told to use a 'Skinny Drawer Face' (cutList[2], qty 2); cutList[5] 'Drawer Faces' (qty 8) is named in no step"
-    },
-    {
-      "path": "steps[7].body",
-      "quote": "attach two Cubby Dividers to the Side Cubby Insides and Cubby Outsides with 13\" in between.",
-      "what": "only the spacing between the two side-cubby dividers is given; their position within the 33\" Side Cubby Insides (cutList[14]) is not stated (step has an image, not viewed — sweep did not flag it)"
-    },
-    {
-      "path": "steps[8].body",
-      "quote": "Ensure the unit is attach to the studs in the wall for safety purposes, using brackets.",
-      "what": "brackets are used but are not in materials and have no size or type"
-    }
-  ],
+  "gaps": [],
   "reader": {
     "batch": "calib-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2db27092fe04327.webp"
+    ],
+    "rescore": "rescore-2"
   }
 }

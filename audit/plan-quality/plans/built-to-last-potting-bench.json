@@ -1,6 +1,7 @@
 {
   "slug": "built-to-last-potting-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix + Human review",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -368,19 +369,29 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions the text leaves to 'the proper positions' (steps[2]) or 'as shown' are dimensioned in viewed images: steps[2] image — bottom end rails 5 1/2\" up from the leg bottoms, top end rails at the top; steps[4] image — top stretchers 13 1/2\" in from each end of the top side rails; steps[5] image — bottom stretchers 13 1/2\" in from each end; steps[11] image — risers centered with 21 1/4\" each side (21 1/4 + 1 1/2 + 21 1/4 = 44 = shelf length), shelves 9\" apart (= riser 9\", cutList[10]). Text: short top slat 'aligning ... with the Rear Top Side Rail', long slats 'overhang equally on each end' (steps[8]) — relational. Side rails fix to the end rails already placed.",
+      "viewed": [
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cd2ef1633859b619.webp",
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/406aa9ab472795f7.webp",
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e6796f9c4b570dc.webp",
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99bc7c7c93a26904.webp"
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "22 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "search": "(a) counts match: 'Cut four End Rails' = 2 top + 2 bottom (cutList[2],[3]); 'four Side Rails, two Top Stretchers, and two Bottom Stretchers' (steps[3]) = cutList[4..6]; 'three Long Top Slats, one Short Top Slat, and one Front Top Slat' (steps[7]) = cutList[7..9]; 'Two Shelves', 'Two Shelf Risers' (steps[10]) = cutList[10],[11]. Sizes add up (Kreg-corrected): end depth 16 1/2 rail + 3 1/2 front leg + 5 1/2 back leg = 25 1/2 = top stretcher 22 1/2 + 2 × 1 1/2 side rails; top length 44 side rails + 2 × 1 1/2 legs = 47 ≤ 48 long slats ('overhang equally'); top stretchers 2 × 13 1/2 + 2 × 1 1/2 = 30 ≤ 44 (steps[4] image). (b) leg ends, rail/stretcher frames, slats, risers and shelves are all installed (steps[6],[8],[9],[11]). (c) no non-fastener purchased item is used (stain/paint is finishing, out of scope). (d) steps[11] ends with the top shelf attached and finishing. Bottom-slat lengths (absent) stay in gaps; unused 1 1/4\" screws stay in gaps (fastener)."
     }
   },
   "gaps": [
     {
       "path": "steps[9].body",
       "quote": "Cut three Long Bottom Slats, and one Short Bottom Slat to size from 5/4 (1\"-thick) deck boards, as shown in the cutting diagram.",
-      "what": "Bottom slats are in no cut-list row and their lengths are stated nowhere in text (searched cutList.part and all steps for /bottom slat/i). Only the steps[9] image (not flagged, not opened) could hold them."
+      "what": "Bottom slats are in no cut-list row and their lengths are stated nowhere in text (searched cutList.part and all steps for /bottom slat/i). rescore-2 opened the steps[9] image: it labels 'Long Bottom Slat' and 'Short Bottom Slat' but gives no lengths. Fits no R14/R10 check (no size is given to compare; R2 passes because steps[9] cuts them from listed 5/4 stock)."
     },
     {
       "path": "materials[6].name",
@@ -397,7 +408,15 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "calib-3",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cd2ef1633859b619.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/406aa9ab472795f7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e6796f9c4b570dc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/033578778e5f5d5d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99bc7c7c93a26904.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/72d426a5975a5aff.webp"
+    ],
+    "rescore": "rescore-2"
   },
   "notes": "R9 likely-Fix on a 1\" jig setting used on 1 1/2\" parts (may be intentional — human review). Bottom slats have no sizes in text."
 }

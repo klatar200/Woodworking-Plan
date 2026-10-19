@@ -1,6 +1,7 @@
 {
   "slug": "bench-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -176,26 +177,62 @@
       "reason": "steps[4] is titled as the leg assembly, but its body repeats steps[3] word for word, so how the legs are assembled and attached to the top is never stated. steps[5] also gives no method or fastener for the back support. The jig is told to be set 'correctly' for each screw size, but no thickness setting is stated."
     },
     "R10": {
-      "result": "unknown",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "sweepResult": "pass",
-      "reason": "steps[10] 'drill two holes to provided dimensions' (handle holes) gives no numbers in text, and the steps[10] image was not viewed because the sweep did not flag it. steps[9] gives no position for the box-support 2x4s. steps[5] does give its number ('2” from the ground')."
+      "result": "pass",
+      "reason": "Back support '2” from the ground' (steps[5]); middle support 'exactly in the middle of the bench' (steps[6], relational). Positions the text omits are shown in viewed images: steps[9] image shows the two '2×4 11″ LONG' supports under each box, one near each end; steps[10] image dimensions the handle slot (4″ × 2″) on the 7 1/4″ × 28″ board at the 14″ (center) mark, near the top edge. Legs sit under each end of the top (steps[4] image).",
+      "viewed": [
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def5daf79cd6d569.webp",
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b9a558541d6a582.webp",
+        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/29ba37b6e80462fd.webp"
+      ]
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "7 reference(s), each in a step with its own image. Passes per R11 wording. Not viewed: the middle-support (steps[6]) and box-panel (steps[7]) sizes exist only in these images."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Now we’ll work on the two boxes that go under the bench."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Take 1x8 and cut two pieces to 28\" in length. One of the boards will be trimmed to 6 1/4\" in width."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Connect both boards together using 1 1/4\" Pocket hole screws."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x8 72\""
+        }
+      ],
+      "arithmetic": "2 boxes (steps[7]) × 2 front boards each (one 7 1/4\" + one 6 1/4\", steps[10] image, viewed) = 4 pieces of 28\" needed; steps[10] says to cut 2 and joins them into one front. Materials agree with 4: 2 boards × 72\" holds 2 × (2 × 28 + 1/8) = 112.25\" of fronts, vs 2 × 28 = 56\" for the stated count.",
+      "reason": "(a) The front-board count in steps[10] (two pieces, joined into one front) covers one box, while the plan builds two boxes (steps[7]; steps[11] image, viewed, shows two two-board fronts). steps[7] says 'Since there are two boxes, cut two of each board' for the plywood, but steps[10] has no such note. (b) the leg sub-assembly is installed per the steps[4] title 'Assemble and Attach Legs to' and its image (viewed: 1x12 panel between two 2x4s under each end of the top); the missing joint method is R9. (c) no non-fastener purchased item missing. (d) steps[12] reaches the finished bench."
     }
   },
   "verdict": "Fix",
   "reader": {
     "batch": "pilot-2",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/29ba37b6e80462fd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def5daf79cd6d569.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b9a558541d6a582.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b273474d143111c.webp"
+    ],
+    "rescore": "rescore-2"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": []
 }
