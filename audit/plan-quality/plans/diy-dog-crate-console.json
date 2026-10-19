@@ -1,6 +1,7 @@
 {
   "slug": "diy-dog-crate-console",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Unpublish",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,12 +120,54 @@
       "reason": "every pocket-hole step states a setting ('1 1/2\" pocket holes' steps[0],[2],[3],[10],[12]; '3/4\" pocket holes' steps[4],[8],[9],[11],[14],[16]), but no part has a thickness anywhere in the plan (cut list holds only stock), so whether each setting matches its part cannot be checked"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[18].body",
+          "quote": "Install the drawers inside the cabinet with drawer slides. You can get more details on how we installed ours in the post above!"
+        },
+        {
+          "path": "steps[17].body",
+          "quote": "Cut the top piece of the dog bowl to size and use a jigsaw to cut the circles for the bowls."
+        }
+      ],
+      "reason": "Drawer-slide positions and the bowl-hole diameter/locations are not given as numbers anywhere in the plan (searched all steps, description and materials for a slide height or hole size: none), and the viewed step images 8beb26646f34a596 (drawers installed) and 42b7b353dbbf0464 (bowl top with two circles) carry no dimensions. Door hinge and latch positions are likewise not given (no step installs them). Positions that are given: vertical dividers 16\" (image a946e8388d56b1cb), horizontal dividers 7 1/16\" / 16\" / 7 13/16\" (image 41d6875bd331b832), bottom panel 'flush with the top of the bottom aprons' (steps[9]), bowl top 'flush with the top of the frame' (steps[17])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Cut the front and back frame pieces to size and drill 1 1/2\" pocket holes into the ends of the top and bottom apron pieces. Attach the apron pieces to the legs with 2 1/2\" pocket holes and wood glue. Build two frames."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the side assemblies to the back frame with 2 1/2\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Attach the side assemblies to the back frame with 2 1/2\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Cut the door pieces to size and drill 1 1/2\" pocket holes into the side boards. Attach them to the top and bottom pieces with 2 1/2\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[22].body",
+          "quote": "Now, just add a finish, hardware and dog bowls and you're done!"
+        }
+      ],
+      "reason": "(b) Two sub-assemblies are made but never installed. Front frame: steps[2] builds front and back frames; steps[6] and steps[7] are word-for-word identical and both attach the sides to the back frame, and their images (c5732f34336534ce, bb8068e2553ad7bd, viewed) are the same picture of the back frame with the sides; searched all steps for /front frame/: none. The front frame carries the dividers and drawer openings (steps[3]-[4]), so the carcass cannot be completed. Doors: built in steps[12]-[13] but no step hangs them; materials[10] 'Hinges' and materials[11] 'Latches' appear in no step (searched steps for /hinge|latch|door/: only steps[12]-[13] build the frames and mesh); the only later mention is 'add a finish, hardware'. (a) counts agree: 6 slides (materials[9]) for 3 drawers (two in steps[14] + bowl drawer steps[16]); 4 hinges / 2 latches for two door frames. (c) plywood is already recorded under R2; mesh, slides, hinges, latches and bowls are in materials. (d) the steps end at 'add a finish, hardware' without the front frame or doors installed."
     }
   },
   "verdict": "Unpublish",
@@ -139,20 +182,18 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "gaps": [
-    {
-      "path": "steps[6].body / steps[7].body",
-      "quote": "Attach the side assemblies to the back frame with 2 1/2\" pocket hole screws and wood glue.",
-      "what": "steps[6] and steps[7] are word-for-word identical; steps[2] builds two frames (front and back) but no step attaches the front frame (searched steps for /front frame/: none)"
-    },
-    {
-      "path": "steps[12].body",
-      "quote": "Cut the door pieces to size and drill 1 1/2\" pocket holes into the side boards. Attach them to the top and bottom pieces",
-      "what": "doors are built (steps[12..13]) but no step hangs them; materials[10] 'Hinges' and materials[11] 'Latches' appear in no step (only steps[22] 'add a finish, hardware')"
-    }
-  ],
+  "gaps": [],
   "reader": {
     "batch": "calib-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c5732f34336534ce.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb8068e2553ad7bd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a946e8388d56b1cb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/71197790bef5e9f8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/41d6875bd331b832.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8beb26646f34a596.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/42b7b353dbbf0464.webp"
+    ],
+    "rescore": "rescore-4"
   }
 }

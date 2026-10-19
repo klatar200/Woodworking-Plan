@@ -1,6 +1,7 @@
 {
   "slug": "diy-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Unpublish",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -169,13 +170,34 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "readerNote": "Measured positions given (2x4s \"4\\\" from the bottom of the legs\"; rebar \"3-5/8\\\" center-to-center\"). Not scored but a gap: rebar hole depth/diameter is never stated (no field matches /deep|depth/i), and that depth sets the height of the lower 2x2 over the 2x4 (steps[5])."
+      "search": "every position the steps set in steps[0]-[10]",
+      "reason": "2x2s 'flush with the top of the legs' and 2x4s '4\" from the bottom of the legs' (steps[1], image 5053ec66001c0793); middle 2x4 'flush with the 1x12 back' (steps[2]); rebar holes '3-5/8\" center-to-center' (steps[3]-[4]) with the end offset 3 5/8\" dimensioned in viewed images f63a749f31f257a3 and 10c7996ceab71198; the rebar 2x2s sit against the bottom edge of the side panels (image e01cac0796303341, fixed by the parts). Drawer and slide positions have no steps at all; that is recorded under R1 and R14, not repeated here."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "To add the drawer to this nightstand, I used a tutorial from Build-Basic.com. You can find the tutorial at http://build-basic.com/build-a-basic-diy-drawer/#.WUAyeevythE."
+        },
+        {
+          "path": "description",
+          "quote": "This nightstand has a large drawer and bookshelf for maximum storage capacity."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Drawer Slides"
+        }
+      ],
+      "reason": "(b)/(d) The steps end without making or installing the drawer: steps[11] (the last step) only names stock for it and points to an external tutorial; no step builds the box, mounts materials[9] 'Drawer Slides' or fits materials[8] 'Drawer Pull' (searched all steps for /slide|pull|drawer/i: steps[11] only). Same root cause as R1 (external dependency); recorded here because the plan's own steps never reach a finished nightstand with its drawer. (a) counts that are given agree: four 1x6 top-shelf boards (steps[9]) = cutList[5] q4; two 1x8 bottom-shelf boards (steps[10]) = cutList[4] q2; 'three pieces of rebar sticking out of each of your 2x2s' (steps[5]) x 2 = materials[7] qty 6. (c) rebar, pull and slides are in materials; drawer plywood is recorded under R2."
     }
   },
   "verdict": "Unpublish",
@@ -193,7 +215,13 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5053ec66001c0793.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f63a749f31f257a3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/10c7996ceab71198.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e01cac0796303341.webp"
+    ],
+    "rescore": "rescore-4"
   },
   "notes": "Drawer exists only in an external tutorial (R1, Unpublish-level, needs verifier); also no screws listed and conflicting cross-piece screw sizes (R6), drawer parts missing (R2), no jig settings (R9). Cut list matches Kreg exactly."
 }

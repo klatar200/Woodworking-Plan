@@ -1,6 +1,7 @@
 {
   "slug": "crosscut-sled",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -96,8 +97,8 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured positions give numbers: groove 3/8\" from the edge (steps[4]), cut 1 1/2\" from the edge (steps[6]), rabbet at 5/8\" (steps[7]), fence at 11\" (steps[14]), track about 24\" (steps[11])."
+      "search": "every position set in steps[4]-[20] (grooves, cuts, rabbet, bars, fences)",
+      "reason": "Numbers given: groove 3/8\" from jointed edge (steps[4]), notch 1 1/2\" from edge (steps[6]), rabbet at 5/8\" (steps[7]), saw fence at 11\" for the miter bars (steps[14]). Fence positions on the base are shown in viewed images: steps[15] image 1ea24dffc8af2972 shows the back fence along one edge of the base; steps[18] image a6d7ea40809f5c8e shows the front fence along the opposite edge with the back fence at the far edge (flush-with-edge placements). Base T-track grooves (steps[10]) are optional per the step title."
     },
     "R11": {
       "result": "pass",
@@ -113,6 +114,11 @@
           "reason": "'can be attached to either side' means fastened; it does not refer to a drawing. No image needed."
         }
       ]
+    },
+    "R14": {
+      "result": "pass",
+      "search": "steps vs cutList counts/sizes; steps for every made part's install; steps for /washer|tape|glue|hinge|bracket|staple/i vs materials.name",
+      "reason": "(a) cutList[1] 'Fence parts' qty 6 glued in pairs = 'You should have 3 fences' (steps[2]); fronts cut to 24\" (steps[9]) = cutList[1] length 24; ripped 3\" fences to 2 1/4\" (steps[5]). (b) back fence installed steps[15], front fence steps[18], second front fence as extension steps[20]; Top Trak steps[8], T-track steps[11], miter bars steps[14], fixture bar steps[20]. (c) epoxy (materials[7]) and CA glue (materials[8]) listed; washers in steps[14] are temporary shims under the bars, not part of the sled; 'the tape' (steps[21]) is applied to the Trak from the listed Precision Trak and Stops Kit (materials[6]) — not separately judged. (d) steps end with a squared sled, extension fence and tape applied. Zero-clearance inserts are excluded by steps[0] as an add-on."
     }
   },
   "verdict": "Fix",
@@ -125,7 +131,11 @@
   ],
   "reader": {
     "batch": "calib-2",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ea24dffc8af2972.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a6d7ea40809f5c8e.webp"
+    ],
+    "rescore": "rescore-4"
   },
   "verifier": {
     "ran": false,

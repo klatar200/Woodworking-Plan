@@ -1,6 +1,7 @@
 {
   "slug": "diy-festival-game",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -130,12 +131,29 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "The one measured position gives its number: goal '4\" from the edge' (steps[1])."
+      "search": "positions in steps[0]-[2]",
+      "reason": "Goal '4\" from the edge' (steps[1], also dimensioned in image e50801dc2e445065, opening centred); side frames along the base edges and back frame across the end shown in viewed images e50801dc2e445065 and 4405d8f985bb4c95 (flush placements)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the puck goal 4\" from the edge of the plywood base with wood glue and 1 1/4\" Brad nails."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Goal | qty 1 | 0.75 x 2.5 x 24"
+        }
+      ],
+      "reason": "(a)/(d) The viewed steps[1] image e50801dc2e445065 shows the Goal with a 4\" wide opening cut in its lower edge (the slot the puck passes through), but no step cuts it and the cut-list row has no note: searched all steps, cutList and description for /notch|slot|opening|hole|cut/i — only 'Attach' steps and sanding. The opening's depth is not dimensioned in the image. (a) other sizes agree (Kreg-corrected): Back frame 25 1/2 − 2 × 3/4 side frames = 24 = Goal length; back frame 3 1/2 tall in image 4405d8f985bb4c95 = cutList[2] width. (b) side frames, goal and back frame are all attached. (c) paint, sealer and glue are in materials."
     }
   },
   "verdict": "Fix",
@@ -148,7 +166,11 @@
   ],
   "reader": {
     "batch": "calib-2",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e50801dc2e445065.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4405d8f985bb4c95.webp"
+    ],
+    "rescore": "rescore-4"
   },
   "verifier": {
     "ran": false,

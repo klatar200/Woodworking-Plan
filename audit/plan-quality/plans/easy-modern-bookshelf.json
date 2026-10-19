@@ -1,6 +1,7 @@
 {
   "slug": "easy-modern-bookshelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
+  "previousVerdict": "Fix",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -267,12 +268,18 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "shelf and back positions in steps[1]-[3]",
+      "reason": "Shelf positions 'as shown in the drawing' are dimensioned in viewed images 306f587b8da1d40b and fab26372e81dede0 (23 1/2\" spacings, 12 1/2\" top). Backs: 'align the shelves to them' (steps[3]); viewed photo 79f86112ae839598 shows one back from the bottom to a short-side shelf and one from a long-side shelf to the top, ends flush with those parts (fixed by the parts)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "search": "viewed-image dimensions vs Kreg-corrected cutList; installs of every part; non-fastener items vs materials",
+      "reason": "(a) Kreg-corrected sizes add up with the viewed drawings: Short Side 51 1/2 = 1 1/2 + 23 1/2 + 1 1/2 + 23 1/2 + 1 1/2 (image 306f587b8da1d40b, Bottom 12\" at the end plus two 8 3/4\" shelves); Long Side 64 = 1 1/2 + 23 1/2 + 1 1/2 + 23 1/2 + 1 1/2 + 12 1/2 (image fab26372e81dede0, three shelves); 2 + 3 = 5 shelves = cutList[3] q5, 8 3/4\" = cutList[3] corrected; overall width 15 = 12 Bottom + 2 x 1 1/2 (image ad5317a00ff0580a); Backs 26 1/2 = 1 1/2 + 23 1/2 + 1 1/2 (end to shelf). (b) bottom, shelves, both sides and both backs are joined by steps[1]-[3]. (c) no hardware other than screws. (d) steps[3] 'to complete the shelf'."
     }
   },
   "verdict": "Fix",
@@ -285,7 +292,14 @@
   "gaps": [],
   "reader": {
     "batch": "calib-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/306f587b8da1d40b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fab26372e81dede0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/498dcfb6369c3a03.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/79f86112ae839598.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad5317a00ff0580a.webp"
+    ],
+    "rescore": "rescore-4"
   },
   "notes": "Shelf positions are given only 'as shown in the drawing' (steps[1],[2]); each such step has its own image, so R11 passes without viewing."
 }
