@@ -1,6 +1,6 @@
 {
   "slug": "rolling-vertical-scrap-wood-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,51 +119,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut/attached in steps[0..4] (Base, Plywood Edge, Cubby Back, Cubby Sides, Vertical Posts, Horizontal Post, Racks) vs cutList[0..6]; all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "each cutList row 0-6 is used in steps[1],[2],[3],[4]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "readerNote": "sweep unknown used uncorrected 1x3-ish values; on Kreg-corrected rows [1.5,3.5,60],[1.5,3.5,72],[1.5,3.5,12] match 2x4 actual 1 1/2 x 3 1/2 (§9, materials[1] 'Boards, 8' x 2\" x 4\"'); plywood parts 3/4in fit a 48x96 sheet"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 2x4); steps not checked for per-part stock"
+      "reason": "two stock types and steps do not name stock per part (§6 R5). Totals for reference: 2x4 length 5x60+72+20x12 = 612 + 26 cuts x 1/8 = 615.25 <= 7 x 96 = 672; plywood area 24x72+3x72+9.5x72+4x(9.5x11.25) = 3055.5 <= 4608. Per-board packing is in gaps."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "\nUsing wood glue and pocket screws, attach the five Vertical Posts to the Base flush along the back of the Cubby Back.\nInsert a 2\" screw through Cubby Back into each Vertical Post for added stability.",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Insert a 2\" screw through Cubby Back into each Vertical Post for added stability."
+        },
+        {
+          "path": "materials[3..4].name",
+          "quote": "Box of 1 1/4\" Kreg pocket hole screws (see tools list) / Box of 2 1/2\" Kreg pocket hole screws (see tools list)"
         }
-      ]
+      ],
+      "reason": "Search of materials[0..5] names/notes for /2\"|2 in|screw/ finds only the 1 1/4\" and 2 1/2\" pocket-hole screws; no 2\" screw is listed."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "oles on one 9 1/2\" and one 11 1/4\" side of each Cubby Side.\nUsing wood glue and pocket screws, attach two of the Cubby Sides on the far edges of the Base and the other two Cubby Sides spaced out depen",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c9a464da1279be4.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Cubby Back at 11 1/4\" from the edge (steps[2]); cubby sides 'spaced out depending on your needs' and posts 'spaced evenly' are relational; casters at the four base corners shown in viewed step-0 image; rack spacing set by 'Using a Rack as a spacer' (viewed step-4 image shows 4 racks per post)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "casters, edge, cubbies, posts, racks in a buildable order"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "On each of the Vertical Posts, drill two 3/4\" pocket holes on one end and two 1 1/2\" pocket holes on the other end."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill five pocket holes along one long side of the Plywood Edge."
+        }
+      ],
+      "reason": "The only jig sizes stated are '3/4\"' and '1 1/2\"' on the Vertical Posts (cutList[2] thickness 1.5 corrected), so a 3/4\" setting is given on 1 1/2in-thick stock; no setting is stated for the 3/4in plywood Plywood Edge, Cubby Back or Cubby Sides or the 1 1/2in Racks (steps[1],[2],[4]). Recorded only, R9 does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "sizes agree: cubby sides 9 1/2\" x 11 1/4\" (steps[2]) = cutList[6] corrected [0.75,9.5,11.25]; Cubby Back placed 11 1/4\" from the edge matches side length; 5 posts and 20 racks match cutList[2],[4] (viewed step-4 image shows 4 racks on each of 5 posts = 20); every part installed; steps reach finished unit"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/777149541db72e58.webp",
+      "plans/7c9a464da1279be4.webp",
+      "plans/35dba7e2151e6e74.webp",
+      "plans/b462c28f5717bf6e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1]",
+      "quote": "Boards, 8' x 2\" x 4\" (quantity 7); cutList[4] Racks quantity 20 x 12; cutList[2] Vertical Posts quantity 5 x 60",
+      "what": "Per-board packing with 1/8in kerf (§9): each 60in post leaves 96 - 60 = 36 -> after one kerf 35.875, which fits 2 racks (2x12 + 1/8 = 24.125) not 3 (36.25); the 72in Horizontal Post board leaves 24 -> 1 rack (2 racks = 24.125 > 23.875); the 7th board gives 7 racks (7x12 + 6 x 1/8 = 84.75; 8 = 96.875 > 96). Total 5x2 + 1 + 7 = 18 racks < 20 required, so 7 boards appear one short once kerf is counted (totals-only R5 arithmetic passes)."
+    }
+  ]
 }

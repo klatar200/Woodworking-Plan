@@ -1,6 +1,6 @@
 {
   "slug": "stocking-post",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,77 +23,102 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut in steps[0..8] (plywood strips, 2x10 base/top, 1x3 and 1x2 trim) vs cutList[0..5]; all present"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Base & Top",
-          "why": "no step mentions it (searched steps for base)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "sweep flagged cutList[1] 'Base & Top' for no 'base' in steps; steps[4..6] cut and place '(2) 2\" x 10\" boards to 9-1/4\" in length' on the bottom and top of the post, which is that part; all other rows used in steps[0],[7..8]"
     },
     "R4": {
+      "result": "pass",
+      "readerNote": "sweep fail likely (no stock thickness 2) rejected: cutList[1] '2 x 9.25 x 10' is the nominal 2x10 board (steps[4]: 'Cut (2) 2\" x 10\" boards to 9-1/4\" in length') whose 9 1/4in actual width (§9) matches materials[1] 'Board, 2x10 48\"'; thickness 2 and 10 are nominal names (importer reorder, cause import). 1x3/1x2 trims fit materials[2],[3]; plywood strips 6 x 36 fit the 1/2in sheet."
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "plywood 'Half Sheet' size is not written in the name or §9 and sheets are not scoreable unless area is exceeded (§6 R5). Lumber (stock named per part in steps) passes: 2x10 2 x 9.25 = 18.5 + 2 cuts x 1/8 = 18.75 <= 48; 1x3 4x8 + 4x6.5 = 58 + 8 x 1/8 = 59 <= 96; 1x2 4x10.875 + 4x9.25 = 80.5 + 8 x 1/8 = 81.5 <= 96. Plywood 4 x 6 x 36 = 864 sq in is below any half-sheet reading."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "fasteners used in steps (1\" Kreg screws, 1\" brad nails) are in materials[5],[6]"
+    },
+    "R10": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[1]",
-          "quote": "Base & Top — qty 2, 2 x 9.25 x 10"
+          "path": "steps[9].body",
+          "quote": "Paint or stain then add your hooks."
         },
         {
-          "path": "materials[0].name",
-          "quote": "Plywood, 1/2\" Thick Half Sheet"
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 2x10 48\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 1x3 96\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Board, 1x2 96\""
+          "path": "materials[4].name",
+          "quote": "Hooks - Hobby Lobby (quantity 4)"
         }
       ],
-      "arithmetic": "cutList[1] 2×9.25: no listed stock has thickness 2 (±1/32) with width ≥ 9.25; stock = sheet 0.5, 1.5×9.25, 0.75×2.5, 0.75×1.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[1]",
-          "quote": "Base & Top — qty 2, 2 x 9.25 x 10",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.5, 2x10, 1x3, 1x2); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Position of the 4 hooks (which faces and what height on the post) is not given in the text; the viewed step-10 image and the finished photo show hooks on one face but no dimension. Other positions are relational/centered ('centered', 'flush at the top and bottom')."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "strips, pocket holes, two corners, box, base/top, trim, finish, hooks in order"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states the Kreg Jig set to 1/2\" for the 1/2in plywood; no other pocket-hole thickness"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Base & Top quantity 2, 2 x 9.25 x 10"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut (2) 2\" x 10\" boards to 9-1/4\" in length"
+        }
+      ],
+      "arithmetic": "step gives length 9 1/4 (steps[4], steps[5] '2\" x 10\" x 9-1/4\"'); the cut-list row gives length 10 and width 9.25 (importer reordering the nominal 2 x 10 x 9 1/4 smallest to largest, §3). Numbers that add up: plywood boxes 6 + 1/2 = 6 1/2 = 1x3 short trim 6.5; 6.5 + 2 x 3/4 = 8 = 1x3 long trim 8.",
+      "reason": "cut-list size disagrees with the step because of the importer's dimension reorder (cause import, not counted)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/48c9f92c292f67b6.webp",
+      "plans/3aba16d4e91078f2.webp",
+      "plans/6831bcaa62f3ef1c.webp",
+      "plans/ba9a254d4ef9953b.webp",
+      "plans/ed24be4c6b4e0a09.webp",
+      "plans/2a4d161ea5164ed0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "cut your 1\" x 2\" trim into (4) boards at 10-7/8\" in length and (4) boards at 9-1/4\" in length",
+      "what": "Short 1x2 trim 9 1/4 (= base width) plus two 3/4in trim thicknesses = 9.25 + 1.5 = 10.75, but the long trim is 10 7/8: 1/8in more than the plan's own geometry gives (the same arithmetic for the 1x3 trim, 6.5 + 1.5 = 8, matches exactly)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "fill all nail holes and any gaps using wood filler and sand once dry",
+      "what": "Wood filler, paint/stain, sandpaper not in materials (consumable)."
+    }
+  ]
 }

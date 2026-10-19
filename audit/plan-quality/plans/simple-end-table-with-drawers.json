@@ -1,6 +1,6 @@
 {
   "slug": "simple-end-table-with-drawers",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -221,17 +221,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut/assembled in steps[0..9] (side/back panels, legs, front framing 2x2s and 1x2, drawer boxes, bottoms, fronts, top, side trim) vs cutList[0..10]; all present"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Top/Bottom Front Frame (2x2)",
-          "why": "no step mentions it (searched steps for frame)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "sweep flagged cutList[3] 'Top/Bottom Front Frame (2x2)' for no 'frame' in steps; steps[3] 'Cut (2) 2x2 pieces ... for the front framing' is that part (16in, matches cutList[3] corrected [1.5,1.5,16]); every other row used in steps[0..9]"
     },
     "R4": {
       "result": "pass",
@@ -239,33 +234,80 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 1.5x1.5, 0.75x1.5); steps not checked for per-part stock"
+      "reason": "sheet area does not exceed the sheets bought, so sheets are unscoreable (§6 R5); lumber scored from steps naming stock: 2x2 4x29.25 + 2x16 = 149 + 6 cuts x 1/8 = 149.75 <= 2 x 96 = 192 pass; 1x2 16 + 9x16 = 160 + 10 x 1/8 = 161.25 <= 2 x 96 = 192 pass; 3/4in plywood area 3x(16x27.5)+8x(4.5x16)+8x(4.5x13.5)+4x(5.75x15.75)+21x21 = 1320+576+486+362.25+441 = 3185.25 <= 4608; 1/4in 4x(14x15) = 840 <= 4x4 sheet 2304"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "s that allows you to separate the two sections. Use 2\" wood screws through the top front 2x2 and 1 1/4\" pocket hole screws through the pocket holes in the side and back panels to secure. NOTE: Make su",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Use 2\" wood screws through the top front 2x2 and 1 1/4\" pocket hole screws through the pocket holes in the side and back panels to secure."
+        },
+        {
+          "path": "materials[4..10].name",
+          "quote": "1 1/4\" pocket hole screws / 2 1/2\" pocket hole screws / 1 1/4\" brad nails / 5/8\" wood screws (to install slides)"
         }
-      ]
+      ],
+      "reason": "Search of materials[0..10] for 2\" fasteners finds none (only 1 1/4\" and 2 1/2\" pocket screws, 1 1/4\" brads, 5/8\" wood screws). steps[7] also calls for '1 1/4\" wood screws from the inside' for the drawer fronts, which are not listed as wood screws (only pocket-hole screws of that size)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions given: top 2x2 flush top, 24 1/2\" between 2x2s, divider 6\" below top 2x2, slides 3/4\" inset and at 6\" / 11 7/8\" (viewed step-4 image), drawer boxes 3/4\" inset, 1/4\" up and 1 1/2\" between, fronts 1/8\" gaps, top 1\" overhang; side trim 'as desired'"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides, back, front framing, slides, drawer boxes, boxes in, fronts, top (removing top drawers), trim, finish"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" jig setting stated in steps[0] and steps[3]/[5]; 1 1/2\" setting stated for the 2x2 ends in steps[3]"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Paint and/or stain and finish as desired and add knobs or drawer pulls."
+        }
+      ],
+      "reason": "R14(c): knobs/drawer pulls are hardware used by steps[10]; search of materials[0..10] for /knob|pull|handle/i: no match. Other agreements checked and consistent: carcass 16 + 2 x 1 1/2 = 19, top 21 = 19 + 2 x 1\" overhang; legs 29.25 vs 1 1/2 + 24 1/2 + 1 1/2 = 27.5 panel height; drawer box 13 1/2 + 2 x 3/4 = 15, plus 1/2\" slide clearance each side = 16 opening; 4 slide pairs = 4 drawers."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/33a79cc0ccdbd961.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "leave 1 1/2\" space between the bottom three drawers.",
+      "what": "Box pitch = 4 1/2 box height + 1 1/2 = 6.0 (steps[6], cutList[5] corrected 4.5), but fronts are 5 3/4 high (cutList[8] corrected) and steps[7] wants 1/8\" gaps => front pitch 5.875; the viewed step-4 image shows slides 6\" and then 11 7/8\" from the bottom (second pitch 5 7/8). The 1/8\" per drawer difference is not reconciled in the plan."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Paint and/or stain and finish as desired",
+      "what": "Finish and sandpaper not in materials (consumable)."
+    }
+  ]
 }

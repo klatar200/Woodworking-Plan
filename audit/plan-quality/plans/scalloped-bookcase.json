@@ -1,6 +1,6 @@
 {
   "slug": "scalloped-bookcase",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,22 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "g wood glue and pocket hole screws, attach the Short Faces between the two Long Faces. - These should line up with the 6\" edges of the Short Faces attaching flush with the 6\" cut in on the Long Faces.",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "g wood glue and pocket hole screws, attach the Short Faces between the two Long Faces. - These should line up with the 6\" edges of the Short Faces attaching flush with the 6\" cut in on the Long Faces.",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 6\" is a layout mark on the Long/Short Face (steps[1], steps[4]), not a part; all parts cut or assembled (Sides, Top, Bottom, Shelves, Long/Short Faces, Back) are in cutList[0..5]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "each cutList row 0-5 is drilled/cut/assembled in steps[0..6]"
     },
     "R4": {
       "result": "pass",
@@ -118,25 +108,82 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2]"
+      "reason": "two sheet types, steps do not name stock per part; totals do not exceed either sheet: 3/4in area (corrected) 2x10.5x72 + 2x10.5x34.5 + 5x10.5x34.5 + 2x8x72 + 2x8x24 = 1512+724.5+1811.25+1152+384 = 5583.75 <= 2 x 4608 = 9216; 1/4in back 35.5x71.5 = 2538.25 <= 4608"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name only 'pocket hole screws', 'pin nails' and shelf pins; materials[3] 1 1/4\" pocket screws, materials[5] 1\" nails, materials[8] shelf pins; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "pocket-hole positions (4\" and 30\" from each end) and scallop marks (6\" x 6\" corners, wave endpoints) are given; fixed shelf 'at the center', shelf-pin holes by jig, shelf heights 'at the points you want' are relational/as desired"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "pocket holes drilled, scallops cut, box, shelf-pin holes, face, face attached, back, edge banding, finish, shelves in order"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the following locations on these boards: Top- 2 on each end Bottom- 2 on each end (1) Shelf- 2 on each end"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Drill two pocket holes on each short edge of the Short Faces."
+        }
+      ],
+      "reason": "Search of all steps/materials/description for /setting|jig|thick|3\\/4\"/ finds no pocket-hole jig thickness setting for the 3/4in plywood parts; the viewed step images (steps 1, 2, 4, 5) show no setting. Recorded only, R9 does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3..4]",
+          "quote": "Long Face quantity 2 x 8 wide; Short Face quantity 2 x 24 long (steps[4]: 'attach the Short Faces between the two Long Faces')"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top/Bottom 0.75 x 10.5 x 34.5 (Kreg-corrected); steps[2] 'attach the Top and Bottom between the two Sides flush at the ends'"
+        }
+      ],
+      "arithmetic": "face width = Long Face 8 + Short Face 24 + Long Face 8 = 40 in; box width = Top/Bottom 34.5 + 2 sides x 3/4 = 36 in (back 35.5 wide agrees with 36). 40 - 36 = 4in more than the box it is glued to (steps[5]: 'attach the face to the front of the bookcase'); the viewed step-5 image shows the face flush with the box. The corner notch geometry in steps[1] ('6\" x 6\" from opposing corners') could reduce this but no step states an overlap.",
+      "reason": "The face pieces' widths do not add up to the case width they are attached to."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/596efa2a9aa9c1a2.webp",
+      "plans/515f5846f03c9033.webp",
+      "plans/2e606c837a74c194.webp",
+      "plans/5eddf50291f31a62.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "apply edge banding to a long edge of each Shelf and the curves of the waves",
+      "what": "Edge banding is in materials[2] (quantity 1 'board', no length); sandpaper not listed (consumable)."
+    }
+  ]
 }

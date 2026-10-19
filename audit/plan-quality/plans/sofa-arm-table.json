@@ -1,6 +1,6 @@
 {
   "slug": "sofa-arm-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Back, Top, Front in steps[0..3] vs cutList[0..2]; no other part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0..2] each cut in steps[0] and attached in steps[2..3]"
     },
     "R4": {
       "result": "pass",
@@ -61,36 +63,57 @@
       "arithmetic": "parts: 1×12 + 1×18 + 1×10 + kerf 2 cuts (3 parts − 1 boards, the fewest possible)×1/8 = 40.250″; bought: 1×48 = 48″; 40.250 ≤ 48"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is 1 1/4\" pocket-hole screws (steps[2],[3]), listed materials[1] quantity 4 = 2 holes in Back + 2 in Front (viewed step 1-3 images)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "radius 2 1/2\" given; pocket-hole and Back placement shown in viewed step 1-3 images; Front position set by the sofa arm ('subtract 1/2\" or so' of the arm width, X in the step-3 image) is relational"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut one Back, one Top, and one Front to length from a 1x8 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Back, one Top, and one Front to length from a 1x8 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut one Back, one Top, and one Front to length from a 1x8 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] has no image; all 5 unattached images[] viewed: 4 photos and 1 dimensioned overview drawing (18\", 7 1/4\", 10\", 12 3/4\"); none is a cutting diagram. The part sizes are in cutList[0..2] and in the viewed step-1 part drawing (10\", 12\", 18\" x 7 1/4\"), so nothing is blocked."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, shape and drill, attach back, attach front, finish"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states jig set for 3/4\" material; all parts 3/4in thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "sizes agree: Back 12 + 3/4 top = 12 3/4 (viewed overview drawing), Front 10, Top 18 x 7 1/4 (viewed step-1 drawing) match cutList corrected; 4 screws = 2 + 2 holes; finish listed in materials[2]"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/75ce1d18796a59c6.webp",
+      "plans/3c5a34e8a94699dd.webp",
+      "plans/39cbe0c8c3699609.webp",
+      "plans/de6b01889c42bc57.webp",
+      "plans/3c5bc14392a662bd.webp",
+      "plans/5af0f6028b0d14b2.webp",
+      "plans/11535601ba28cdc2.webp",
+      "plans/ade04d53d61835c9.webp"
+    ]
+  }
 }

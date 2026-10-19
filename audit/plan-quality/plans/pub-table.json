@@ -1,6 +1,6 @@
 {
   "slug": "pub-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,50 +95,74 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (Foot Rails, Legs, Aprons, Corner Blocks, Top Boards) vs cutList[0..4]; all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0..4] each cut/used in steps[0],[1],[2],[5],[7]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, 1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "readerNote": "sweep unknown on precondition; steps name stock for every part (2x2: foot rails, legs; 1x4: aprons, corner blocks; 1x6: top boards)",
+      "arithmetic": "2x2: materials[0] 2x96 + materials[1] 2x72 = 336in; need 4x29 + 4x42 = 116+168 = 284 + 8 cuts x 1/8 = 285 <= 336. 1x4: materials[2] 2x72 = 144; need 4x29 + 4x4 = 116+16 = 132 + 8 x 1/8 = 133 <= 144. 1x6: materials[3] 3x72 = 216; need 6x33 = 198 + 6 x 1/8 = 198.75 <= 216"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fastener sizes in steps (2 1/2\" and 1 1/4\" pocket screws, 1 1/2\" flathead) all in materials[4..6]; no conflicting size for the same use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give numbers: foot-rail height 9 1/2\" and apron setback 1/2\" (774adb4fa6f83b04), corner block pilot holes 3/4\" from edges (8c06236e9ba491e5), top-board pocket-hole spacing 1 1/2\"/5\" (d8d0977f26384a51); top overhang is relational"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "Cut four Legs to size from a 2 x 2 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Cut four Legs to size from a 2 x 2 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Legs to size from a 2 x 2 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[1] has no image; all 5 unattached images[] viewed (4 lifestyle photos, 1 assembled-table dimension drawing) and none is a cutting diagram. The leg length (42) is in cutList[1] so the build is not blocked."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg/rail/apron assemblies, then base, corner blocks, top, attach top"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 1 1/2\" setting for foot rails (1 1/2in); steps[2] and steps[7] state 3/4\" for aprons and top boards"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts match cutList (4 foot rails, 4 legs, 4 aprons, 4 corner blocks, 6 top boards); numbers add up: 6 x 5 1/2 = 33 (top width in viewed drawing 33\"), apron 29 + 2 x 1 1/2 legs = 32 (viewed drawing 32\"), legs 42 + 3/4 top = 42 3/4 (viewed drawing); 16 flathead screws = 4 blocks x 4 holes; every part installed; finish step present; glue in materials[7]"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/774adb4fa6f83b04.webp",
+      "plans/4080c94e3d32ab9c.webp",
+      "plans/774f803edeea5ef9.webp",
+      "plans/d64e6c18c4f832eb.webp",
+      "plans/7d5881d406e32f99.webp",
+      "plans/0b708324d0f86968.webp",
+      "plans/8c06236e9ba491e5.webp",
+      "plans/d8d0977f26384a51.webp"
+    ]
+  }
 }

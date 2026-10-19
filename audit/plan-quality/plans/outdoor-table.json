@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -19,52 +19,83 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "le.\n\n**Tip:** Note - as seen in the video, you can choose to use the powder coated legs (linked in the Extras tab) instead of building your own. Skip this step if you are using the powder-coated legs.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "materials[7].name",
-          "quote": "Powder-coated legs from Semi-Exact (link in Extras tab)",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Powder-coated legs from the Extras tab are an optional alternative; steps[1].body says 'you can choose to use the powder coated legs ... instead of building your own', and legs are in cutList[1] so the build completes without it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut in steps (top boards, legs, support pieces) vs cutList[0..2]; all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0..2] each used in steps[0], steps[1]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "readerNote": "sweep said unknown (length not written) but material names state lengths (2\"x6\"x8', 10', 6'); one stock type (2x6)",
+      "arithmetic": "bought: 5 x 8' (materials[0] qty 5) + 1 x 10' (materials[1]) + 2 x 6' (materials[2] qty 2) = 480+120+144 = 744in. needed: top 5x72 + legs 4x28 + supports 6x20 = 360+112+120 = 592in + 14 cuts x 1/8 = 1.75 => 593.75 <= 744"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is 2\" screws (materials[5]); washers in materials[6]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "leg-frame support positions (top and lower) are shown in the viewed step-1 image; leg placement is relational ('symmetrically so that they supported multiple boards'); pocket spacing given as 8 inches"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top, then leg frames, then legs attached to top"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Connect the pieces to make the top using pocket holes every 8 inches on the under side of the table top."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Use pocket holes to connect the pieces."
+        }
+      ],
+      "reason": "Search of all steps/materials/description for /setting|jig|1[- ]?1\\/2|depth|thickness/ finds no jig thickness setting for the 2x6 (1 1/2in) pocket holes; viewed images (step 0 image, step 1 image) show hole layout arrows only, no setting. Recorded only, R9 does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "parts counts agree (5 top boards, 4 legs, 6 supports) between steps and cutList; every part installed; steps reach finished table. Image/count discrepancy recorded in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/bcb81f27b48aec05.webp",
+      "plans/23995cefe276ccea.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].image",
+      "quote": "Cut 4 legs 28\" long and 6 support pieces 20\" long.",
+      "what": "The viewed step image (plans/bcb81f27b48aec05.webp) shows two leg frames each with 2 cross supports (4 total), vs 6 stated in steps[1].body and cutList[2]; arrangement of the other 2 supports is not shown or described."
+    }
+  ]
 }

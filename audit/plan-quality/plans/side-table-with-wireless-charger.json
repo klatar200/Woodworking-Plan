@@ -1,6 +1,6 @@
 {
   "slug": "side-table-with-wireless-charger",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,48 +71,101 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut the top boards about 2” longer than you need. Set your Pocket hole jig to 3/4” and the stop collar on the drill bit to 3/4”. Drill pocket holes on the backside of the boards, then glue and join th",
-          "why": "cut sentence states 2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Cut the legs about 2” longer than you need. Pocket hole and glue them together like you did the top.",
-          "why": "cut sentence states 2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged '2\"' is the extra length cut before trimming (steps[0], steps[2]), trimmed in steps[1], steps[3]; parts Top, Legs, Top Support, middle support are in cutList[0..3]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0] Top steps[0..1], [1] Legs steps[2..3], [2] Top Support steps[10], [3] Center Support steps[11]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "readerNote": "sweep unknown (stock unparsed). materials[0] 'Boards, 3/4” x 1' x 6'' = 3/4in x 12in x 72in; corrected rows [0.75,10,24],[0.75,7,21],[0.75,1.5,15],[0.75,0.75,15] all 3/4in thick and <= 12in wide (supports need ripping)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "readerNote": "sweep unknown (stock unparsed); one stock type",
+      "arithmetic": "parts (cutList corrected, one board type): 24 + 2x21 + 15 + 15 = 96in + 4 cuts x 1/8 = 96.5; with the 2in over-length of steps[0],[2] (+2 + 2x2 = 6) = 102.5 <= bought 4 x 72 = 288 (materials[0] quantity 4, '6'' = 72in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is 1 1/4\" pocket screws (steps[0]), listed materials[1]"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Trace the shape of the wireless charger on the underside of the table top."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Attach the top support between the two oval shapes you made for the legs using pocket holes and screws."
+        }
+      ],
+      "reason": "Not given as a number or in any viewed image (step 7, 10, 11 and 12 images are photos with no dimensions): where on the 10 x 24 top the charger recess goes, the height of the Top Support on the legs, and where the leg assembly sits under the top. Given: center support 'about 10\" up from the bottom of the legs'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts built, shaped, charger recess, supports between legs in order (the missing top-to-base step is in R14)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states jig set to 3/4\" (and 3/4\" stop collar); all parts 3/4in thick"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Attach the top support between the two oval shapes you made for the legs using pocket holes and screws."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Sand, stain and you have a brand new table!"
+        }
+      ],
+      "reason": "R14(b)/(d): the Top (cutList[0], with the charger recess made in steps[7..9]) is never fastened to the legs/supports. Search of steps[0..12] for /attach|fasten|screw|glue/ finds only: top boards joined to each other (steps[0]), legs glued together (steps[2]), top support and middle support attached between the legs (steps[10], [11]); no step installs the Top on the leg assembly, and the steps end at sanding/staining."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/9ffb8e53d0bb3b82.webp",
+      "plans/d7f8d81f50ca8448.webp",
+      "plans/ce8c88a77c4bc990.webp",
+      "plans/49dede6eff08c943.webp",
+      "plans/cd0e5257d232a96d.webp",
+      "plans/94df4c08ce632b72.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[0].name",
+      "quote": "Boards, 3/4” x 1' x 6'",
+      "what": "Boards are listed 1' (12in) wide, but steps[0] and steps[2] glue several boards edge to edge to make the 10in-wide Top and 7in-wide Legs, which a 12in board would not need; the stock width the steps assume is not stated."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Mark 1/2\" depth on the forstner bit using tape.",
+      "what": "Forstner bit diameter not stated and no Forstner or router bit in materials; recess size comes from the charger traced."
+    }
+  ]
 }

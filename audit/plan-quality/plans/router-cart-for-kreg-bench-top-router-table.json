@@ -1,6 +1,6 @@
 {
   "slug": "router-cart-for-kreg-bench-top-router-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -251,17 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " length of your crank rod. Using the table saw, cut a 1/4\" x 1/4\" notch out of one corner of it (adjust as needed to snuggly hold your crank). Attach under the ledge of one of the side tops to create ",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "the flagged 1/4\" notch is on an optional crank-slot scrap that steps[5] says to cut from a 1\" plywood scrap ('cut a 1\" scrap of plywood ... Using the table saw, cut a 1/4\" x 1/4\" notch'), so it is cut from listed material; every other part cut/assembled in steps[0..10] is in cutList[0..13]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "each cutList row 0-13 used: legs/supports/back steps[0], side parts steps[1..2], side tops steps[5], table top steps[6], drawer box parts steps[8..9], fronts steps[10]"
     },
     "R4": {
       "result": "pass",
@@ -269,33 +264,96 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
+      "reason": "two sheet stock types and steps do not name stock per part (§6 R5); totals do not exceed either sheet: 3/4in area (corrected rows) 8x3.5x28 + 2x3.5x19 + 2x19x27.25 + 2x4.5x22 + 6x1.5x28.5 + 21x28.5 + 22x28.5 + 6.375x28.375 + 11.4375x28.375 = 784+133+1035.5+198+256.5+598.5+627+180.9+324.5 = 4137.9 <= 4608"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "chose to use a simple 1/2\" plywood box built with pneumatic nails. You can build your drawer boxes however you wish. For these simple to assemble boxes, attach the drawer box front/back boards to the ",
-          "why": "1/2\" nail — no material line lists a 1/2\" fastener"
+          "quote": "Secure with wood glue and 1\" long nails into the plywood bottom."
+        },
+        {
+          "path": "materials[4..5].name",
+          "quote": "1 1/4\" finish nails / 1\" staples"
         }
-      ]
+      ],
+      "reason": "Search of materials[0..10] for nails finds only '1 1/4\" finish nails'; steps[8] and steps[9] call for '1\" nails' (pneumatic), no 1\" nails listed. '1\" staples' (materials[5]) is listed but the word 'staple' appears in no step (searched all steps), so the listed item and the used item do not match."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Install the drawer boxes into the router cart with drawer slides that need 1/2\" clearance on either side."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Use the cabinet hardware jig to drill holes for the drawer pulls."
+        }
+      ],
+      "reason": "Positions given as numbers or in viewed images: back 7\" down and 21\" tall, supports (step 3 image), side tops 4 1/2\" x 22\", fronts 6 3/8\" / 11 7/16\" with 1/16\" gaps, drawer box 19 1/2\" x 5\" / 10 1/2\", casters at bottom corners. Not given anywhere in text or viewed images (step 9 and step 10 images): the vertical mounting position of the drawer slides on the cart sides and boxes, and the location of the drawer-pull holes on the fronts (not stated as centered). Searched steps and images for slide height/pull location: none."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "2x parts laminated, sides built, back/supports between sides, side tops, table top, casters, drawer boxes, slides, fronts; nothing needs undoing"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states 3/4\" setting; steps[3] states 'switch the pocket hole for 1 1/2\" thick material' for the 1 1/2in supports"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Attach casters to the bottom corners of the cart. Make sure to use locking casters so you can lock the table when routing to prevent it from moving."
+        }
+      ],
+      "reason": "R14(c): casters are hardware used by a step; materials[0..10] searched for /caster|wheel/i: no match, so casters (and a quantity) are missing from materials. Other agreements checked: legs 8 x 3/4 glued in pairs = 4 (steps[0]); 4+2 supports = 6 (cutList[4]); side top 3 1/2 + 1 overhang = 4 1/2 (steps[5] and image); drawer box 27 1/2 + 2 x 1/2 clearance = 28 1/2 = table top length."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/d2ac86a3c723d7d7.webp",
+      "plans/ec2252fe73643dfe.webp",
+      "plans/851b23247b9968fa.webp",
+      "plans/e3569bd454795d76.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[9].name",
+      "quote": "Large cup hooks",
+      "what": "Five cup hooks are listed (quantity 5) but no step uses or places them (searched all steps for /hook/i: none); step 11 only says to make shelves and cubbies 'as I did'."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "You can apply a finish to the router table if you want.",
+      "what": "Finish and sandpaper are not in materials (consumable)."
+    }
+  ]
 }

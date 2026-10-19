@@ -1,6 +1,6 @@
 {
   "slug": "spare-table-that-doubles-as-wall-art",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -151,54 +151,141 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "pick hanging hardware that you are comfortable with, I went with a cleat that holds 200 lbs! I have all the paint/stain colors I used on my blog!! Make sure and visit to see more great building plans!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 'my blog' (steps[8]) is a credit/optional colour reference; the front art is free-form ('make the front look like any kind of art work you want') and needs no outside content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Add the small mitered 2x4s to the corners for extra support! Attach using 1 1/2\" pocket holes and 2 1/2\" pocket hole screws and glue...of course!"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Slide the dowel rods in to act like pins to hold the legs in!"
+        }
+      ],
+      "reason": "Search of cutList[0..7] part names for /corner|block|miter|brace|dowel|pin/i: no match, and neither step gives a size or says how to cut the corner pieces (viewed step-4 image labels them '2x4 cut 45 degrees off square, ends not parallel' with no dimensions) or the dowel pins (materials[2] is a 48in dowel rod, no pin length). Both are not in the cut list; the corner pieces are 'extra support' so scored Fix."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0..7] each used: underlayment steps[0], frame sides steps[1..2], stiles/rails steps[4], supports steps[5], leg locks steps[6]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "corrected rows fit listed stock: frame 0.75 x 3.5 from 1x4, stiles/bottom rails 1.5 x 3.5 from 2x4, top rail 1.5 x 1.5 from 2x2, lock 0.75 x 2.5 from 1x4, underlayment 32 x 48 from the 1/2in sheet"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.5, 1x4, 0.5x48, 2x4, 2x2); steps not checked for per-part stock"
+      "reason": "5 stock types and steps do not name stock for the 2x4/2x2 parts (§6 R5)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "from the bottom of it. Attach this along the leg somewhere with 3/4\" pocket holes and 1 1/4\" screws with some glue! You can use two or four of them depending on how tight you did your top leg support!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach this along the leg somewhere with 3/4\" pocket holes and 1 1/4\" screws with some glue!"
+        },
+        {
+          "path": "materials[7..9].name",
+          "quote": "1\" Kreg Screws / 5/8\" brad nails / 2 1/2\" Kreg Screws"
         }
-      ]
+      ],
+      "reason": "Search of materials[0..10] for 1 1/4\": none; only 1\" and 2 1/2\" screws and 5/8\" brad nails are listed. (The listed 5/8\" brad nails are also never used: no step mentions nails.)"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach this along the leg somewhere with 3/4\" pocket holes and 1 1/4\" screws with some glue! You can use two or four of them depending on how tight you did your top leg support!"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "you can pick hanging hardware that you are comfortable with, I went with a cleat that holds 200 lbs!"
+        }
+      ],
+      "reason": "Given: lip 1/2\", bottom rail 10 1/4\" up (viewed step-5 image), pin hole 1 1/2\" up from lock bottom, lock 2 1/2\" x 3 1/2\" (viewed step-7 image). Not given anywhere (text or viewed step 5-8 images): where along the leg the lock goes ('somewhere'), and where the hanging hardware/handles go on the table. Hinge position is covered under R14."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame, corner pieces, legs, leg support, lock, pins, front art in that order; the missing hinge step is scored under R14"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "settings stated per thickness: 1/2\" (steps[0]), 1 1/2\" (steps[3],[4],[5]), 3/4\" (steps[6])"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Build the legs! Using the leg rails and stiles, form an A shape with the top rail flush with the top of the leg stiles."
+        },
+        {
+          "path": "materials[5..6].name",
+          "quote": "Utility handles / Sets of 2 1/2\" utility hinges"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "It is a 32\" x 47 1/2\" rectangle."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Table Underlayment quantity 1, 0.5 x 32 x 48"
+        }
+      ],
+      "arithmetic": "R14(b)/(d): the A-frame legs are built in steps[4] and braced in steps[5..7], but no step attaches them to the table (searched steps[0..8] for /hinge|handle|attach.*leg|mount/i: only 'hinge' hits none, 'handle' hits none); the 3 hinge sets and 2 handles in materials[5..6] are never used, so the legs (a part the table cannot be used without) are never installed and the steps never reach a folding table. R14(a): steps[0] says the plywood is 47 1/2 long (also 49 - 2 x 3/4 miter = 47.5 per cutList[1]) but cutList[0] gives 48; steps[5] says '2x4 ripped down to 2 1/2\"' for the leg support but cutList[6] row is 1.5 x 1.5 x 10; steps[6] says '1x4 cut at 2 1/2\"' (viewed step-7 image: 2 1/2\" x 3 1/2\") but cutList[7] is 0.75 x 2.5 x 3.",
+      "reason": "Legs never installed (Unpublish-level), plus three step-vs-cut-list size disagreements."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/8fa023f783409328.webp",
+      "plans/070abf4cecf0adbc.webp",
+      "plans/5ee8e11e90524a8c.webp",
+      "plans/adaef4de0694576c.webp",
+      "plans/fe161b21f1d3e9f5.webp",
+      "plans/e6b8c86bbdcdae09.webp",
+      "plans/5d93fffbf48d0581.webp",
+      "plans/e3d9f55464eaa56e.webp",
+      "plans/4cd1bb56f1827c9d.webp",
+      "plans/cb51c356eb40ddf4.webp",
+      "plans/8a01aa30a498f0f2.webp",
+      "plans/4026f77a9b9f2642.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0..3].body",
+      "quote": "making sure to use glue and 1\" pocket hole screws",
+      "what": "Glue, paint/stain and sandpaper are used but not in materials (consumable)."
+    }
+  ]
 }

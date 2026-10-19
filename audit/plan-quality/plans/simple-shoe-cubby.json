@@ -1,6 +1,6 @@
 {
   "slug": "simple-shoe-cubby",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,51 +10,96 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "f is the same width.\nFor example, my trim piece was 3\" tall, and the bottom shelf was 0.75\" thick. So, I ripped down my 2x4 supports to 2 1/4\" before attaching them.\nAttach using wood glue and screws.",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged '2 1/4\"' is a rip width given as an example for the 2x4 supports (steps[6]); every part cut/assembled in steps[0..8] (top, sides, both divider rows, horizontal dividers, bottom shelf, bottom supports) is in cutList[0..6]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0] steps[0], [1] steps[1], [2] steps[2], [3] steps[4], [4] steps[2],[4], [5] steps[5], [6] steps[6]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Bottom supports quantity 2, 2 x 4 x 41 (steps[6]: 'Cut two pieces of 2x4 wood to fit the length of the bottom')"
+        },
+        {
+          "path": "materials[0..3].name",
+          "quote": "Board, 1x10 96\" / Board, 1x12 48\" / Baseboard, 3\" 96\" / Decorative trim, 1.5\" 96\""
+        }
+      ],
+      "arithmetic": "2x4 actual 1 1/2 x 3 1/2 (§9); searched materials[0..7] for /2x4|2 x 4|2\"x4\"/: no 2x4 listed, and no listed 3/4in board has 1 1/2 thickness (1x10 3/4, 1x12 3/4, trim 3\"/1.5\" tall)",
+      "reason": "The Bottom supports cannot come from any listed material. Other rows read as nominal board names (1 x 10, 1 x 12, divider rows with width/length reordered by the importer) and are not failed."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x10, 1x12, 3x96, 1.5x96); steps not checked for per-part stock"
+      "reason": "steps do not name the stock for every part and 4 stock types are listed (§6 R5). For reference, all 1x parts from the 1x10: sides 2x22.25 + dividers 5x8.25 + 5x7 + horizontal 2x39.5 + bottom shelf 41 = 44.5+41.25+35+79+41 = 240.75 + 15 cuts x 1/8 = 242.6 <= 3 x 96 = 288; top 42 + 1/8 <= 1 x 48"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name no fastener sizes ('pocket holes', 'screws', 'pin nails'); materials[4..6] list pocket-hole screws, screws, pin nails"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions given: sides flush to back and 0.5\" in each side, dividers 'spaced 6\" apart', rows sized by the 8 1/4\" and 7\" dividers; bottom shelf, supports and trim are relational (viewed step-5 and finished photos)"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "readerNote": "sweep flagged the word 'attached' in steps[2]; it is not a reference to a drawing, so no image is required"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top and sides, dividers and shelves row by row, bottom shelf, supports, trim, finish"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": " taller than the second to account for the trim piece.\nOnce the vertical dividers are attached, attach the first 39.5\" piece across the top of them, using pocket holes to attach it to the side pieces.",
-          "why": "\"attached\" with no step image; 1 unattached image(s) in images[] to view",
-          "unattachedImages": 1
+          "path": "steps[1].body",
+          "quote": "Use pocket holes and wood glue to attach the two 22 1/4\" pieces to the top piece."
         }
-      ]
+      ],
+      "reason": "Search of all steps/materials/description for /setting|jig|thick|3\\/4/ finds no jig thickness setting for the 3/4in boards (steps[6] mentions 0.75in only as the shelf thickness); viewed images show no setting. Recorded only, R9 does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "numbers add up: top 42 - 2 x 0.5 inset = 41 = bottom shelf 41; 41 - 2 x 3/4 sides = 39.5 = horizontal dividers; 39.5 - 5 x 3/4 = 35.75 / 6 bays = 5.96 ~ 6\" spacing; counts match (5 + 5 dividers, 2 horizontal, 2 sides); every part installed; finish step present"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-16",
+    "imagesViewed": [
+      "plans/fb50786800811c21.webp",
+      "plans/6c61daf1ec015354.webp",
+      "plans/5aa44def85802989.webp",
+      "plans/8ea0b9d101765819.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0]",
+      "quote": "Top 1 x 12 x 42; Sides 1 x 10 x 22.25",
+      "what": "Cut-list thickness 1 and widths 10/12 are nominal board names; steps[6] gives the real board thickness as '0.75\"' and §9 actual widths are 9 1/4 and 11 1/4."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Use pocket holes and wood glue",
+      "what": "Wood glue is used in steps[1..7] but not in materials (consumable)."
+    }
+  ]
 }
