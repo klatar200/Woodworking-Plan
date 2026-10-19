@@ -65,7 +65,8 @@
           "quote": "cutList has one row only: Sides, 2, 0.75 x 23 x 34 (Kreg-corrected 23 3/4 x 34 1/2)"
         }
       ],
-      "reason": "Structural parts used but not in cutList and not sized in any step or viewed image: Bottom Shelf, front Stretcher, back Stretcher, two face-frame stiles, three rails, toe kick. Search: cutList.part has only 'Sides'; materials[0..1] are one half sheet and pocket screws; no step gives a length/width for these parts (steps[10] and its image give only the 5.00\" rail spacing; step images show only the 3x4 toe-kick notch, 3 x 0.75 stretcher notch, 24 x 24 x 34 1/2 overall). steps[1] says 'Use the cut-list to break down 3/4\" plywood to the specified dimensions' and its image is a track-saw photo, not a list."
+      "reason": "Structural parts used but not in cutList and not sized in any step or viewed image: Bottom Shelf, front Stretcher, back Stretcher, two face-frame stiles, three rails, toe kick. Search: cutList.part has only 'Sides'; materials[0..1] are one half sheet and pocket screws; no step gives a length/width for these parts (steps[10] and its image give only the 5.00\" rail spacing; step images show only the 3x4 toe-kick notch, 3 x 0.75 stretcher notch, 24 x 24 x 34 1/2 overall). steps[1] says 'Use the cut-list to break down 3/4\" plywood to the specified dimensions' and its image is a track-saw photo, not a list.",
+      "verifierNote": "Kreg cut_list has only Sides; all 16 images viewed incl. unattached Dimensions 2f67ddeb0e438338 (overall 24x24x34 1/2 only) - no part sizes for shelf, stretchers, stiles/rails, toe kick"
     },
     "R3": {
       "result": "pass",
@@ -130,28 +131,40 @@
       "reason": "Pocket holes drilled in 3/4\" parts (steps[5],[9]) but no jig thickness setting stated anywhere (searched all steps for /setting|jig|3\\/4\" stock/ - none) and viewed steps[9] image shows holes with no setting. Recorded only; does not count toward verdict."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[11].body",
-          "quote": "add a bead of glue to the Sides, Shelf and Front Stretcher and drop the Face Frame onto the cabinet."
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "using 1 1/4\" pocket hole screws and a dab of glue"
-        }
-      ],
-      "reason": "(c) glue used in steps[9],[11] but no materials line matches /glue/ (only 2 materials). Face-frame/stretcher/shelf stock not in materials is recorded under R2. Plan scopes itself as Part 1 (steps[13] 'I will be covering the drawers, drawer front and doors in subsequent plans!'): carcass + face frame + toe kick is what it builds, so (d) not scored as a failure."
+      "result": "pass",
+      "reason": "Glue is a consumable and never fails R14; reader already scored (d) as not failing since the plan is scoped as Part 1",
+      "refutedFinding": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[11].body",
+            "quote": "add a bead of glue to the Sides, Shelf and Front Stretcher and drop the Face Frame onto the cabinet."
+          },
+          {
+            "path": "steps[9].body",
+            "quote": "using 1 1/4\" pocket hole screws and a dab of glue"
+          }
+        ],
+        "reason": "(c) glue used in steps[9],[11] but no materials line matches /glue/ (only 2 materials). Face-frame/stretcher/shelf stock not in materials is recorded under R2. Plan scopes itself as Part 1 (steps[13] 'I will be covering the drawers, drawer front and doors in subsequent plans!'): carcass + face frame + toe kick is what it builds, so (d) not scored as a failure."
+      },
+      "verifierNote": "Only failing item is wood glue, a consumable (2026-10-19 ruling)"
     }
   },
-  "verdict": "Unpublish (pending verifier)",
+  "verdict": "Unpublish",
   "verifier": {
-    "ran": false,
-    "upheld": [],
-    "refuted": []
+    "ran": true,
+    "runs": [
+      "Stage 6 verifier v2, 2026-10-19 (fresh agent, not a reader)"
+    ],
+    "upheld": [
+      "R2"
+    ],
+    "refuted": [
+      "R14"
+    ]
   },
   "measurementsScoredOn": "kreg-corrected",
   "reader": {

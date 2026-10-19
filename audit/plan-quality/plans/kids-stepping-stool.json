@@ -199,29 +199,34 @@
   ],
   "checks": {
     "R1": {
-      "result": "fail",
-      "level": "Unpublish",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut wood according to the visual cut list in the woodworking plans PDF with a table saw and miter saw."
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut the lengths of the pine boards with a miter saw and be sure to cut angles properly."
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Drill pocket holes as shown in the woodworking plans."
-        },
-        {
-          "path": "description",
-          "quote": "Follow along with the woodworking plans to build your own."
-        }
-      ],
-      "reason": "The leg angle cuts, the box-frame/pocket-hole layout and the visual cut list live only in a 'woodworking plans PDF' that this plan does not contain. Search: no angle value anywhere in steps, cutList, materials, description (/°|degree|angle/ finds only 'cut angles properly' and the 90-degree driver); viewed all 14 images (9 listed): hero/lifestyle photos, miter-saw/table-saw photo, Kreg jig photo, nailing photo - none gives an angle, hole position or cut layout. The splayed legs cannot be cut without the angle."
+      "result": "pass",
+      "reason": "Build is completable from the Kreg-corrected cut list (sizes and 22.3 deg angle; the angle drop is cause import) plus the steps[2] pocket-hole diagram",
+      "refutedFinding": {
+        "result": "fail",
+        "level": "Unpublish",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[0].body",
+            "quote": "Cut wood according to the visual cut list in the woodworking plans PDF with a table saw and miter saw."
+          },
+          {
+            "path": "steps[0].body",
+            "quote": "Cut the lengths of the pine boards with a miter saw and be sure to cut angles properly."
+          },
+          {
+            "path": "steps[1].body",
+            "quote": "Drill pocket holes as shown in the woodworking plans."
+          },
+          {
+            "path": "description",
+            "quote": "Follow along with the woodworking plans to build your own."
+          }
+        ],
+        "reason": "The leg angle cuts, the box-frame/pocket-hole layout and the visual cut list live only in a 'woodworking plans PDF' that this plan does not contain. Search: no angle value anywhere in steps, cutList, materials, description (/°|degree|angle/ finds only 'cut angles properly' and the 90-degree driver); viewed all 14 images (9 listed): hero/lifestyle photos, miter-saw/table-saw photo, Kreg jig photo, nailing photo - none gives an angle, hole position or cut layout. The splayed legs cannot be cut without the angle."
+      },
+      "verifierNote": "Angle is in Kreg cut_list[1].detail '(Cut at 22.3 Degree Angle at both ends)', dropped by the importer; Kreg text cut list sizes all 7 parts; pocket-hole layout shown in steps[2].image fcf98c375132f132"
     },
     "R2": {
       "result": "pass",
@@ -271,7 +276,8 @@
           "quote": "Drill pocket holes as shown in the woodworking plans."
         }
       ],
-      "reason": "The step's own image (viewed) is a photo of the jig with a board and shows no hole positions, and no other image shows them. Same missing content as R1, listed because the reference needs an image."
+      "reason": "The step's own image (viewed) is a photo of the jig with a board and shows no hole positions, and no other image shows them. Same missing content as R1, listed because the reference needs an image.",
+      "verifierNote": "steps[1] image 52bc81de664b9a5c is a jig photo; layout appears only in steps[2].image fcf98c375132f132, which is attached to another step, so R11 still fails by its letter (reader's 'no other image' is wrong)"
     },
     "R8": {
       "result": "pass",
@@ -295,11 +301,18 @@
       "reason": "(a) two different-size box frames match the cut rows (long 9, short 7 13/16, supports 5 1/2); (b) every part installed; (c) glue, nails, screws in materials; (d) reaches finished stool"
     }
   },
-  "verdict": "Unpublish (pending verifier)",
+  "verdict": "Fix",
   "verifier": {
-    "ran": false,
-    "upheld": [],
-    "refuted": []
+    "ran": true,
+    "runs": [
+      "Stage 6 verifier v2, 2026-10-19 (fresh agent, not a reader)"
+    ],
+    "upheld": [
+      "R11"
+    ],
+    "refuted": [
+      "R1"
+    ]
   },
   "measurementsScoredOn": "kreg-corrected",
   "reader": {

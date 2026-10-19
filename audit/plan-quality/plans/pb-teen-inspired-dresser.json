@@ -450,7 +450,8 @@
         }
       ],
       "arithmetic": "Search of steps[0..12] (title+body) for /back|hardboard|1\\/8|panel/i: matches only 'fronts and backs' of drawers (steps[8]) and '1/8\" down ... 1/8\" apart' (steps[11]); no step cuts or attaches a dresser back. Viewed images show an open back/frame (4769d842bf4f2a8a, d8c2628e38f25868).",
-      "reason": "The Backing row (and the hardboard sheet bought for it) is never used by any step."
+      "reason": "The Backing row (and the hardboard sheet bought for it) is never used by any step.",
+      "verifierNote": "No step mentions back/hardboard (only drawer 'fronts and backs' in steps[8]); viewed carcass images 4769d842bf4f2a8a, d8c2628e38f25868, 9cab6cce09821ef5 show an open back"
     },
     "R4": {
       "result": "fail",
@@ -472,7 +473,8 @@
         }
       ],
       "arithmetic": "The only sheets listed are 1/2\", 1/4\" and 1/8\"; the lumber (1x6/1x8 etc.) is at most 7 1/4\" wide, so a 3/4\" x 20\" x 46 1/2\" part cannot come from any listed material (sweep unknown 'thinner than stock' resolved).",
-      "reason": "No 3/4\" plywood is in materials for the plywood bottom."
+      "reason": "No 3/4\" plywood is in materials for the plywood bottom.",
+      "verifierNote": "3/4 x 20 x 46 1/2 plywood bottom; materials (same as Kreg) have only 1/2, 1/4 and 1/8 sheets, widest lumber 7 1/4 (1x8)"
     },
     "R5": {
       "result": "unknown",
@@ -490,7 +492,8 @@
         }
       ],
       "arithmetic": "materials[12..16] fasteners are 1 1/4\" and 1\" pocket screws and 5/8\", 2\", 1\" brad nails; no material line matches /2 1\\/2/ (search /screw/i: only the two pocket-screw lines).",
-      "reason": "The 2 1/2\" wood screws that attach the legs are not in materials."
+      "reason": "The 2 1/2\" wood screws that attach the legs are not in materials.",
+      "verifierNote": "steps[5] '2 1/2\" wood screws'; only screws in materials (same as Kreg) are 1 1/4 and 1 pocket screws"
     },
     "R10": {
       "result": "pass",
@@ -509,29 +512,43 @@
       "reason": "3/4\" setting stated in steps[1],[2],[3],[4],[7]; 1/2\" in steps[8] for the 1/2\" drawer parts."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[1].body",
-          "quote": "Join together with wood glue and 1 1/4\" pocket screws."
-        },
-        {
-          "path": "materials[0..19].name",
-          "quote": "(no material name matches /glue/i)"
-        }
-      ],
-      "arithmetic": "Glue is used in steps[1],[2],[5],[6],[9],[11]; the 20 material names run from 'Board, 1x6 120\"' to 'Polyurethane or polycrylic' and none is glue. Counts agree: 7 drawers (4 + 2 + 1) = 7 slide sets; 4 vertical frame pieces (2 + 1 + 1 per viewed layout); face widths 15 7/8, 23 15/16, 32 follow opening + 1 1/2 frame.",
-      "reason": "Glue used throughout is missing from materials."
+      "result": "pass",
+      "reason": "Glue is a consumable and never fails R14; reader's count checks (7 drawers = 7 slide sets, frame pieces, face widths) agree",
+      "refutedFinding": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[1].body",
+            "quote": "Join together with wood glue and 1 1/4\" pocket screws."
+          },
+          {
+            "path": "materials[0..19].name",
+            "quote": "(no material name matches /glue/i)"
+          }
+        ],
+        "arithmetic": "Glue is used in steps[1],[2],[5],[6],[9],[11]; the 20 material names run from 'Board, 1x6 120\"' to 'Polyurethane or polycrylic' and none is glue. Counts agree: 7 drawers (4 + 2 + 1) = 7 slide sets; 4 vertical frame pieces (2 + 1 + 1 per viewed layout); face widths 15 7/8, 23 15/16, 32 follow opening + 1 1/2 frame.",
+        "reason": "Glue used throughout is missing from materials."
+      },
+      "verifierNote": "Only failing item is glue, a consumable (2026-10-19 ruling)"
     }
   },
-  "verdict": "Unpublish (pending verifier)",
+  "verdict": "Fix",
   "verifier": {
-    "ran": false,
-    "upheld": [],
-    "refuted": []
+    "ran": true,
+    "runs": [
+      "Stage 6 verifier v2, 2026-10-19 (fresh agent, not a reader)"
+    ],
+    "upheld": [
+      "R3",
+      "R4",
+      "R6"
+    ],
+    "refuted": [
+      "R14"
+    ]
   },
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
