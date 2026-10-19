@@ -1,67 +1,120 @@
 {
   "slug": "box-framed-rustic-wood-flag",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "d add some cardboard over the board. Take the stencil back off before spraying the blue paint. Spray the blue paint and let it dry for an hour.\n\n**Tip:** See Extras tab for a link to the star stencil.",
-          "why": "matches \"Extras\""
+          "quote": "**Tip:** See Extras tab for a link to the star stencil."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Wipe clean and add the star stencil on the upper left corner."
         }
-      ]
+      ],
+      "reason": "The star stencil is required for steps[7] and [9] but is only available through an Extras-tab link we do not have; searched materials (no stencil line), cutList, description, summary and all steps for star size/pattern: none. Decorative, not structural, so the rest of the flag can be built -> Fix."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Strips, 18\" brackets and 1x3 frame pieces (steps[0],[4],[11]) all map to cutList[0]-[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 cut rows are used: 13 strips (steps[0]-[2]), 2 brackets (steps[4]-[5]), 4 frame pieces (steps[11]-[12])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1])"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "36\" pieces (1x2 wood) qty 13, thickness 1, width 2, length 36"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "36” pieces (1x3 wood, 45 degree angle) qty 2, thickness 1, width 3, length 36"
+        }
+      ],
+      "arithmetic": "§9: 1x2 actual 3/4 x 1 1/2, 1x3 actual 3/4 x 2 1/2. Cut list records nominal 1 x 2 and 1 x 3, which neither material can supply. The plan itself needs the actual width: steps[0] 13 strips x 1 1/2\" = 19 1/2\" = cutList[3] \"19.5” pieces\" (frame side, steps[11]); at width 2 it would be 13 x 2 = 26\".",
+      "reason": "Sweep unknown (unparsed \"1x2x10\") resolved by reading: part names state 1x2/1x3 stock but the numeric rows are nominal, not actual. Rows carry no source dimensions (importDiffs empty), so this is the importer's nominal-lumber path, not Kreg text."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Add nails to the 18” brackets (1 nail in each strip, 13 total).",
-          "why": "18\" nail — no material line lists a 18\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: \"18” brackets\" in steps[5] is the part length, not a nail size. Fasteners used: 1\" nails (materials[3]), 1 1/4\" screws (materials[4]), 1/2\" screws with washers (materials[5])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[11].body",
-          "quote": "Take your 1x3 wood and cut 2 pieces at 36” and 2 at 19.5”. These will be cut at 45 degree angles on each side. Measure from the heel/short part of the angle.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a160dda3c3a3082b.webp"
+          "path": "steps[7].body",
+          "quote": "Wipe clean and add the star stencil on the upper left corner."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Cut the cord to desired size and secure it to the flag using 1/2” screws with washers."
         }
-      ]
+      ],
+      "reason": "Searched steps/description for the blue-field (union) size, which strips are red vs white, and cord/screw location: none given as numbers. Viewed images for steps[3],[7],[8],[11],[12],[14]: photos with no dimensions. The union extent is left to the (unavailable) stencil and the hanging-cord screw positions are unspecified. Frame sizes (36\", 19.5\") and \"heel/short\" measuring are given; pocket holes \"spaced out evenly\" is relational and passes."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram or \"as shown\"; sweep result stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Strips cut, glued, pocket holes drilled, brackets glued/nailed, sanded, painted/burned, then frame cut and screwed on from the back, then cord, then finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Take your pocket-hole jig and add 4 pocket holes on the top and bottom and 3 on each side."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" strips but no jig thickness setting appears in any step; searched steps/description for setting|thick|3/4. Viewed steps[3] image (3e11383b5a17cf3a): drilling photo, no setting shown. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 13 strips x 1 1/2\" (§9 actual) = 19.5\" = frame side piece (cutList[3]); 36\" frame pieces equal 36\" strips, measured \"from the heel/short part\", so the frame surrounds the flag. (b)(d) every cut part is installed (steps[4],[12]). (c) star stencil is the only unlisted item (reported under R1)."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e11383b5a17cf3a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be9169f62de02f00.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d49993805fb1f5a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a160dda3c3a3082b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77cc3e4a71f8704d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5fbde24f54c0fb12.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

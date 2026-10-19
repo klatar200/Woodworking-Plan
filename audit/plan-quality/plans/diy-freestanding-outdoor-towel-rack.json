@@ -1,6 +1,6 @@
 {
   "slug": "diy-freestanding-outdoor-towel-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -187,21 +187,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "For pictures of the build, please visit https://www.anikasdiylife.com/diy-outdoor-towel-rack/ For lots more plans and projects visit www.anikasdiylife.com",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "search": "steps[7] \"For pictures of the build, please visit https://www.anikasdiylife.com/...\" is an optional credit/photos link; steps[0]-[6] and the dimensioned step images carry the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frames (55\", 43\", 33 1/2\", 29 1/2\" sides with 20\" aprons), shelves (4 x 20\" slats + two 12 3/8\" short aprons) all map to cutList[0]-[5]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used. Counts reconcile: 16 long aprons = 3 (55\" frame: top, 6\", 17 1/2\") + 3 (43\" frame) + 1 + 1 (inner frames, top only, steps[2] image) + 8 slats (4 per shelf x 2); 4 short aprons = 2 per shelf."
     },
     "R4": {
       "result": "pass",
@@ -212,35 +207,46 @@
       "arithmetic": "parts: 2×55 + 2×43 + 2×29.5 + 2×33.5 + 16×20 + 4×12.375 + kerf 20 cuts (28 parts − 8 boards, the fewest possible)×1/8 = 694.000″; bought: 8×96 = 768″; 694.000 ≤ 768"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach both shelves to the 55\" long frame using pocket hole screws in the short aprons and wood glue. Make sure they are aligned with the 20\" long aprons attached in step 2.",
-          "why": "55\" screw — no material line lists a 55\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Attach the 33 1/2\" and 29 1/2\" frames to the shelves using pocket hole screws in the sides. The distance from each outer frame is 3\".",
-          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags rejected: \"55\\\" long frame\" and \"33 1/2\\\"\" are part lengths, not screw sizes. The only fastener is 2\" coarse pocket hole screws (materials[1]); 48 holes (steps[0]) <= 75 screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf aprons \"at 6\\\" and 17 1/2\\\" from the bottom\" (steps[1]), slat spacing 1 3/8\" with 4 slats (steps[3]), middle frames \"3\\\"\" from each outer frame (steps[6]); shown in viewed images. Tops differ by the 55/43/33 1/2/29 1/2 lengths."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames and shelves built, shelves into the 55\" frame, outer 43\" frame, then the middle frames at 3\"."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0]: \"Redwood is typically 1 3/8\\\" x 1 3/8\\\". Be sure to use that setting on the Kreg Jig and the drill bit.\""
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 slats x 1 3/8\" + 5 gaps x 1 3/8\" = 12 3/8\" = short apron length (cutList[5]); 8 aprons across frames + 8 slats = 16; sizes match the cut list. (b)(c)(d) all parts installed; wood glue is used (steps[4]) but is consumable, not scored."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/980f629292b76057.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2a44b0de8195007b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/41388a8381dcd31e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/db67d8a82604c593.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0d9b0d69f1b71051.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/698d3b41025417d1.webp"
+    ]
+  },
+  "verdict": "Ship"
 }

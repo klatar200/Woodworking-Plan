@@ -1,6 +1,6 @@
 {
   "slug": "curvy-corner-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -91,59 +91,116 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Download and familiarize yourself with the plans.",
-          "why": "matches \"Download\""
-        },
-        {
-          "path": "steps[13].body",
-          "quote": "Check out our blog www.RealityDaydream.com for more tutorials and fun project inspiration!",
-          "why": "matches \"our blog\""
+          "quote": "Download and familiarize yourself with the plans."
         }
-      ]
+      ],
+      "reason": "Step 0 sends the builder to a downloadable plan set we do not hold. Searched all steps/materials/cutList for shelf locations and the assembly layout: the cut list, the front-profile drawing in the steps[2] image (61\", 13 3/16\", 16 5/16\", R16 9/16, R16 5/16, 36 7/8\", 12 1/16\") and the photo of the printed plans in the steps[0] image (14\" wide, 61\" tall, one 11 3/8\" shelf spacing) cover most of the build; only the location of the shelves around the curve is missing, so the build can be completed with a guess -> Fix. The \"Check out our blog\" link (steps[13]) is a credit and passes."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Cut 1/4\" Template and sand smooth.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: \"Cut 1/4\\\" Template\" (steps[3]) is a shop jig from scrap 1/4\" plywood (steps[2]), not a cabinet part. Every part cut (backs, six shelves, fronts, caps) is a cut row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used: Back/Narrow Back (steps[1],[9],[10]), Fronts (steps[4]-[5]), Shelf and Radius Shelf (steps[7],[11]), Caps (steps[6],[7])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1]); +4 more"
+      "result": "pass",
+      "reason": "Kreg-corrected rows: 3/4\" parts from the 3/4\" plywood (all within 48 x 96; widths 13 5/16 + 12 5/8 + 16 5/16 = 42 1/4\" across a 61\" run); 1/8\" x 3/4\" caps are ripped from the 1x4 pine on a table saw per steps[6]."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Screw the Narrow back to the other back."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "line up and screw the shelves into position."
+        }
+      ],
+      "reason": "Steps drive screws (and pocket-hole screws, steps[9]) and glue but materials list only the pine board, the plywood and gripper feet (searched materials[0]-[2] for screw|glue|pocket: none); no fastener size is given anywhere. Gripper Feet are listed but no step installs them (not a scored check)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Layout the location for the shelves and drill a 1/8\" pilot hole through both backs."
+        }
+      ],
+      "reason": "Only one shelf spacing (11 3/8\") is visible, in the photographed printed plans (steps[0] image); the heights of the shelves in the curved section, including the two Radius Shelves, are not given as numbers in any step or in the 16 viewed images (the steps[2] drawing dimensions the front profile only)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram; the steps[2] image provides the front pattern drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Break down, template, fronts cut/routed/capped, shelves capped, backs drilled and joined, shelves installed, fronts glued on last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes on one edge of the Narrow Back."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood but no jig thickness setting is stated in any step (searched steps/description for setting|3/4); steps[9] image is a drilling photo with no setting visible. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4+2 shelves = \"six shelves\" (steps[1]); Fronts one board for two fronts (steps[1]); caps 2 x 65 / 4 x 12 5/8 / 2 x 24 match steps[6]-[7]; front drawing 16 5/16\" = cutList[2] width. (b)(d) all parts installed; (c) no unlisted hardware besides what R6 records."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0a9756d17baa645d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32c53ff9dcde38e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e652907b2aa4e5a7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/863f83076f13793c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d0dbced9b11f2ea6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b8058bc984e3579.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6766acb4932730e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d9cd2a49617403b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bcd84391e0829265.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1af8965dd31f8084.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de520294d7a12d0c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e58ccb3306f82d3b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e81177df4f092a5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/684cc34128b23aaa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d1c8d92f0443cb78.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e91466383662fca4.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

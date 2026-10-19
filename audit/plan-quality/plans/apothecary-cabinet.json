@@ -1,6 +1,6 @@
 {
   "slug": "apothecary-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -515,17 +515,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut/assembled in steps 0-19 maps to a cut row (Shelves->\"Shelf\", Lower Sides->\"Side\", Backs->Lower/Upper back, Lower Door Panel->\"Door panel\", glass stops, door stiles/rails)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Shelf",
-          "why": "no step mentions it (searched steps for shelf)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag on \"Shelf\" rejected: steps[18] is \"Make the Shelves\" (\"Cut two Shelves to size from 1/2\" plywood\") - sweep searched \"shelf\" and missed the plural."
     },
     "R4": {
       "result": "pass",
@@ -536,36 +531,95 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.5, 1x2, 1x3, 0.25x48); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" coarse and 1\" coarse pocket hole screws appear in steps; both are in materials[5]/[6]; hinges \"no-mortise\" listed in materials[9]; no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "Divider, and Top to size from 3/4\" plywood (we used birch), as shown in the cutting diagram. Then, add iron-on edging to all edges of these pieces to cover up the exposed plywood.\n\n**Tip:** Iron On a ",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[19].body",
+          "quote": "After that, the shelves can go in and get attached with 1\" coarse-thread pocket hole screws."
         },
         {
-          "path": "steps[2].body",
-          "quote": " from 3/4\" plywood (we used birch), as shown in the cutting diagram. Then, add iron-on edging to all edges of these pieces to cover up the exposed plywood.\n\n**Tip:** Iron On a Finished Edge Plywood is",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[18].body",
+          "quote": "Then, with your jig set for 1/2\" stock, drill pocket holes in the Shelves, as shown."
         }
-      ]
+      ],
+      "reason": "Fixed (pocket-screwed) shelves have no height or spacing given. Searched all steps, description and summary for shelf height/spacing/\"evenly\" (none). Viewed step[19] image and the overall dimension image (9ebd9fa3e030df27): they show two shelves but label no shelf heights (only 61\", 38\", 23\" overall). Hinge spacing (3\"/2\") shown in steps[20] image; pull \"centered on stile\" is relational and passes."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Cut a Bottom, Divider, and Top to size from 3/4\" plywood (we used birch), as shown in the cutting diagram."
+        }
+      ],
+      "reason": "steps[2] has no image. Viewed all 5 unattached images (5750a56f5251ff5a, fef7ba8e032eabc6, 77172f555bde5889, 0bb689c80c12e94d, 9ebd9fa3e030df27): 4 room/closeup photos and one overall-dimension drawing; none is a cutting diagram. Part sizes themselves are in the cut list, so only the layout is missing (Fix, not Unpublish)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base, bottom, lower sides/backs, divider, lower cabinet, then upper frames, top, doors, shelves in order; nothing used before made."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" jig setting stated in steps[0],[4],[6],[8],[9],[13],[16]; 1/2\" setting stated for Door Panel (steps[16]) and Shelves (steps[18])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].image",
+          "quote": "(image label) Lower Door Stile 15 7/8\"; Door Panel 13 7/8\" x 12 7/8\""
+        },
+        {
+          "path": "cutList[17]",
+          "quote": "Lower door stile qty 2, 3/4 x 1 1/2 x 15 1/8 (Kreg source: 3/4\" x 1 1/2\" x 15 1/8\")"
+        }
+      ],
+      "arithmetic": "Panel height 12 7/8\" (steps[16] image, cutList[23] source \"1/2\" ply x 13 7/8\" x 12 7/8\"\") + 2 lower door rails x 1 1/2\" (cutList[18] width) = 15 7/8\"; cut list says stile 15 1/8\" (0.75\" short). Lower cabinet opening is 16\" (cutList[11] Lower front stile 16, cutList[5] Side 16), consistent with a 15 7/8\" door.",
+      "reason": "Lower Door Stile length in the cut list (15 1/8\") disagrees with the plan's own step image and panel arithmetic (15 7/8\"); the Kreg source row itself says 15 1/8\", so this is a plan typo, not the importer. (b)(c)(d) otherwise pass: every made part is installed in steps 19-20; hinges, pulls, glass listed."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5750a56f5251ff5a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fef7ba8e032eabc6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77172f555bde5889.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0bb689c80c12e94d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9ebd9fa3e030df27.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8c17f3ad47eeae7e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ea6dd05231094cb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb189d3b1b417144.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/47b90835691b51e3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/68207b76f6f09581.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a010e739ee9a45c7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e63c087b8fea810.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[6]",
+      "quote": "Shelf qty 2, 1/2 x 12 7/8 x 13 7/8 (Kreg source: 1/2\" ply x 13 7/8\" x 12 7/8\", identical to cutList[23] Door panel)",
+      "what": "Shelf size looks copied from the lower Door panel and cannot span the upper cabinet: cutList[4] Upper back is 18 1/2\" wide and sits between the 3/4\" side frames (cutList[2] Top 21\" - 2x1/2\" overhang - 2x3/4\" = 18 1/2\"), so a shelf needs ~18 1/2\" of width but the row gives 12 7/8\" x 13 7/8\". Shelf size not usable as given."
+    }
+  ],
+  "verdict": "Fix"
 }

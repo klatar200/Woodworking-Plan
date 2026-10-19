@@ -1,6 +1,6 @@
 {
   "slug": "benchtop-dust-pickup",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps make Sides, Back, Cap, Base; all four are cut rows (cutList[0]-[3])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 cut rows are used in steps[0]-[4]."
     },
     "R4": {
       "result": "pass",
@@ -121,45 +123,51 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " to the Back using glue and 11/4\" coarse-thread pocket-hole screws. Because of the angles, getting things lined up perfectly can be a bit of a challenge. So, it’s a good idea to apply glue to the beve",
-          "why": "11/4\" screw — no material line lists a 11/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: \"11/4\\\" coarse-thread pocket-hole screws\" in steps[2] is the scraped text of 1 1/4\" (space lost) and matches materials[2] \"1 1/4\\\" coarse-thread Kreg Pocket-Hole Screws\"; 4 screws = 2 per side x 2 sides (steps[0] image); brads 3/4\" match materials[3]. See gaps for the garbled text."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "tes a surface you can use to clamp the dust pickup in place. If you have a workbench with dog holes, you can use the dogs to hold the dust pickup in place by drilling holes in the base, as we did, tha",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4eec696cd60a1d0e.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag settled by steps[3] image (4eec696cd60a1d0e): Base lip 2\", bench-dog holes 3/4\" dia, 3 15/16\" apart, 2\" from the front edge, shown as numbers. Vacuum hole is \"centered in the Back\" with diameter = hose OD (relational); pocket holes shown in steps[0]/[2] images; Cap/Base are traced."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "it set for 3/4\" material, drill pocket holes in both Sides, as shown. Sand the faces smooth.\nNext, drill a hole that’s centered in the Back to receive your vacuum hose. You’ll need a hole saw in the s",
-          "why": "\"as shown\" with no step image; 1 unattached image(s) in images[] to view",
-          "unattachedImages": 1
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[1] \"drill pocket holes in both Sides, as shown\" has no own image and the one unattached image (bf9de37df0889032) is a finished-use photo, but the referenced pocket-hole layout is shown in the steps[0] \"parts view\" image (67142fb69012ddcc) and steps[2] image (8c1bd565de6c4129), both viewed, so the information is in the plan."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/bevel and drill (0-1), assemble sides to back (2), trace cap/base from the assembly (3), attach (4)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states the jig setting: \"set your Pocket-Hole Jig to the 11/8\\\" setting\" (1 1/8\", garbled text) with the bit set for 3/4\" material; the only pocket-holed thickness is 3/4\" Sides."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Cap 5 3/16\" and Base 7 3/16\" differ by 2\", matching steps[3] \"add a 2\\\" lip\"; screws 4 = 2 per joint x 2 joints; (b)(c)(d) every made part is attached in steps[4]; wood glue, brads, hardboard in materials."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/67142fb69012ddcc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8c1bd565de6c4129.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4eec696cd60a1d0e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf9de37df0889032.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Instead, set your Pocket-Hole Jig to the 11/8\" setting.",
+      "what": "(cause: import) Scraped text lost the space in mixed numbers: \"11/8\\\"\" (1 1/8\"), \"21/4\\\" or 21/2\\\"\" hose diameters in steps[1] and \"11/4\\\"\" screws in steps[2]; read literally \"11/8\" is 1.375\" and \"21/4\" is 21/4. The values are recoverable from the materials list and image but the step text misstates them."
+    }
+  ],
+  "verdict": "Ship (unverified)"
 }

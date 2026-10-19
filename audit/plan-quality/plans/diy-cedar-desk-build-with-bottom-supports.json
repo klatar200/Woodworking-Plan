@@ -1,6 +1,6 @@
 {
   "slug": "diy-cedar-desk-build-with-bottom-supports",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -155,58 +155,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "f the table to help support these. The half X pieces are 14.5\" with one end cut at 31.6 degrees and the other 58.6 degrees. You should have 8 of these cut. Pre drill all of your holes and screw it flu",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: \"5\\\"\" came from \"14.5\\\"\" in steps[9]; the Half X pieces are cutList[3]. Every part in steps[1]-[14] is a cut row (top boards, center 2x4s, top/foot, half X, horizontal and vertical supports, feet blocks)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: top (steps[1]-[4]), center 2x4 (steps[7]-[8]), top/foot (steps[6],[9]), half X (steps[9]), horizontal and vertical supports (steps[14]), feet blocks (steps[11])."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "reason": "Rows 0-5 (2x6/2x4 stock) match section 9 actuals (1 1/2 x 5 1/2, 1 1/2 x 3 1/2). cutList[6] Feet Blocks are 1\" thick x 3 1/2 x 3 1/2 but the only listed stock is 1 1/2\" 2x4; steps[11] says \"cut a small 3.5 x 3.5 x 1 inch square block\" without saying how 1\" thickness is made (planing/resawing not judged)."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (2x6, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only \"2 inch pocket hole screws\" (materials[2]) and L brackets (materials[3], optional) appear in steps; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[14].body",
-          "quote": " is personal preference. Finish your table any way you want. Make sure to measure down 16.5 inches to attach the 37.75 inch horizontal support. Next, measure in 8.5 inches from the horizontal support ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "own 16.5 inches to attach the 37.75 inch horizontal support. Next, measure in 8.5 inches from the horizontal support and attach the 18 inch supports with 15 degree ends parallel to each other. All att",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag settled by text: \"measure down 16.5 inches to attach the 37.75 inch horizontal support\" and \"measure in 8.5 inches from the horizontal support\" (steps[14]); base offset \"1.5 inch line from the outside of the table\" (steps[6]); center \"in the center\" is relational; half X flush to center piece."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands (references have step images)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top glued and trimmed, base parts cut after the top, pocket holes, center attached, foot then half X, brackets, feet, optional supports last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Drill 2 holes at the end of each of your 25 inch 2x4s."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" 2x4/2x6 stock but no jig thickness setting appears in any step (searched steps/description for setting|thick|jig); steps[7] image shows the jig close up with no setting readable. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "The half X pieces are 14.5\" with one end cut at 31.6 degrees and the other 58.6 degrees."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Half X Supports quantity 8, 1.5 x 3.5 x 15 (Kreg source: 2x4x15 (31.6 degrees one end, 58.4 degrees the other))"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "attach 2 of the 20 inch boards with 31.6 degree ends opposite each other."
+        }
+      ],
+      "arithmetic": "Half X length: step says 14.5\", cut list says 15\" (0.5\" apart); other end angle 58.6 (step) vs 58.4 (source), and 31.6 + 58.6 = 90.2 vs 31.6 + 58.4 = 90. The 20\" top/foot boards: step says 31.6 degree ends, source cut-list row says \"(15 degrees each end)\" (importDiffs[2].source).",
+      "reason": "(a) Sizes/angles a step gives for the half-X and 20\" boards disagree with the cut list. Likely rather than certain because the 14.5\"/15\" difference may be a short-point/long-point convention that the plan does not state. (b)(c)(d) otherwise pass: all parts installed, brackets in materials. Step 1 counts agree: 4 x 5 1/2\" = 22\" top, 2 bases x 4 diagonals = 8."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5165a4eb6373cdd7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d96228d8612453d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9641693b19bd6250.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d60b194947d00e2f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eb8e1471c933ed2e.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

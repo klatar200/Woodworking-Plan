@@ -1,6 +1,6 @@
 {
   "slug": "craftsman-style-queen-sized-headboard",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,27 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "rooves in the two rails. The bits are adjusted to cut 1/4\" X 3/8\" grooves in the center of the board edges. Alternatively the grooves can also be cut on a table saw. Finish sand with 150 grit sandpape",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "ves in the center stile. The bits are adjusted to cut 1/4\" X 3/8\" grooves in the center of both sides and 1/4\" X 3/8\" tongues on the top and bottom of the central stile. Alternatively the tongues and ",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "t 1/4\" X 3/8\" grooves in the center of both sides and 1/4\" X 3/8\" tongues on the top and bottom of the central stile. Alternatively the tongues and groves can be cut on a table saw. Finish sand with 1",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags rejected: the \"3/8\\\"\" in steps[3]/[4] is a groove/tongue depth, not a part dimension. Every part the steps cut (stiles, rails, center stile, slats, top, two panels) is a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 cut rows are used by steps[1]-[10]."
     },
     "R4": {
       "result": "pass",
@@ -66,23 +51,62 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine Kreg pocket screws (steps[8],[9]) = materials[3]; 1 1/4\" brad nails (steps[10]) = materials[4]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Panel grooves 15 1/2\" to 26 1/2\" from top (steps[2]); slats set with a 4\" spacer (steps[9]); top overhang 1/2\" front/ends (steps[10]); rail layout shown in viewed images 57ad2de9dce994df and 53277e39c1ba7a5e (top rail flush with stile tops, 8\" slat window, panel window). Center stile is centered between stiles."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "The three \"following diagram\" references (steps[1],[2],[4]) each have their own step image; viewed steps[1] (cutting diagram) and steps[2] (groove detail)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pieces cut and grooved (1-7), frame assembled with panels captured (8), slats added (9), top added (10), finish (11)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[7]: \"Kreg pocket screw jig (set to 3/4\\\" for all pockets on this project)\"; all pocket-holed parts are 3/4\" oak."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "cut out the two outer stiles, the three rails, the one center stile, the eight slats and finally the top piece."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Slats - 3/4\" Red Oak, quantity 6, 0.75 x 4 x 8"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "drill two pocket holes in both ends of the six 3/4\" oak slats cut in step one."
+        }
+      ],
+      "arithmetic": "steps[1] says eight slats; cutList[3], steps[6] (\"six\") and steps[9] (\"Repeat the process five more times\" = 6) say six; the steps[1] cutting diagram (viewed, 551db07b9b95811f) shows 3 + 3 = 6 slats of 8\"; and 6 slats x 4\" + 7 gaps x 4\" = 52\" = rail length (cutList[1]).",
+      "reason": "(a) Slat count in the cut instruction contradicts the cut list, diagram and later steps; a builder following steps[1] cuts two extra slats. (b)(c)(d) pass: all parts installed, glue/brads/screws in materials."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/551db07b9b95811f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b19784fe1637a45.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57ad2de9dce994df.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/53277e39c1ba7a5e.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

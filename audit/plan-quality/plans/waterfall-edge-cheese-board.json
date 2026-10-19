@@ -1,6 +1,6 @@
 {
   "slug": "waterfall-edge-cheese-board",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,85 +47,105 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top Center/Outer boards, Middle and Outer Side boards (steps[2],[3]) are cutList[0]-[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: top boards (steps[2]), side boards (steps[3])."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Top Center Board — qty 1, 0.75 x 3 x 28.75 (Kreg-corrected)"
+          "quote": "Top Center Board, quantity 1, 0.75 x 3 x 28.75 (Kreg source 28 3/4\"x3\"x3/4\")"
         },
         {
-          "path": "cutList[1]",
-          "quote": "Top Outer Boards — qty 2, 0.75 x 3 x 30.25 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Middle Side Boards — qty 2, 0.75 x 3 x 8"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Outer Side Boards — qty 4, 0.75 x 3 x 7.25 (Kreg-corrected)"
+          "path": "steps[0].body",
+          "quote": "trimmed them down to exactly 3\" wide each. You can use standard off-the-shelf 1x3 boards as well."
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 1x3 72\""
         }
       ],
-      "arithmetic": "cutList[0] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[1] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[2] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[3] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top Center Board — qty 1, 0.75 x 3 x 28.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Top Outer Boards — qty 2, 0.75 x 3 x 30.25 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Middle Side Boards — qty 2, 0.75 x 3 x 8",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Outer Side Boards — qty 4, 0.75 x 3 x 7.25 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "All four rows are 3\" wide; section 9 gives a 1x3 as 3/4 x 2 1/2, so 2 1/2\" < 3\" and no purchased 1x3 can supply them.",
+      "reason": "Sweep fail confirmed with a readerNote: no glue-up or lamination in the steps resolves it (steps[0]-[3]); the only source of 3\" width is the author's own wide cherry/poplar boards trimmed to 3\", while the materials list and the \"standard 1x3\" remark point to stock that is 2 1/2\" wide.",
+      "readerNote": "Sweep fail confirmed; sweep note about a glue-up resolving it is rejected (no glue-up in steps)."
     },
     "R5": {
       "result": "pass",
       "arithmetic": "parts: 1×28.75 + 2×30.25 + 2×8 + 4×7.25 + kerf 7 cuts (9 parts − 2 boards, the fewest possible)×1/8 = 135.125″; bought: 2×72 = 144″; 135.125 ≤ 144"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener in steps is Kreg 1 1/4\" screws (steps[2]) = materials[1]; magnetic strips = materials[2] \"Roll of magnetic tape\"."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Use a router to carve out a strip on one of the sides and attach magnetic strips to hold knives or other metal items."
+        }
+      ],
+      "reason": "No width, depth, height or position is given for the routed magnet recess or the magnetic tape size (searched steps and materials for inches: only the 3/4\" gap in steps[2] and 3\" boards in steps[0]); viewed steps[5] image (5bfe7ba8ebd35bce) and 5 unattached photos: they show a dark strip on the side but no dimensions. The 3/4\" end gap, 3-hole pocket pattern \"evenly spaced\" and side lengths (8\" / 7 1/4\" = 7 1/4\" + 3/4\" top) are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, build top, attach waterfall sides, round edges, route and fit the magnet strip, oil."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in the necessary boards."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" stock but no jig thickness setting is stated anywhere (searched steps/description for setting|thick|jig); viewed steps[1] image (60d056d75e41c3a3): boards with holes, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Middle top 28 3/4\" + 2 x 3/4\" gaps = 30 1/4\" outer boards (cutList[0]-[1], steps[2]); middle side 8\" = outer side 7 1/4\" + 3/4\" top thickness; 2 middle + 4 outer sides match steps[3]. (b)(c)(d) all parts installed; magnetic tape listed."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af9eb0d7680849fa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/60d056d75e41c3a3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7eb54019a032623.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aea53dde70d58281.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7a6144588e2f9fd2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5bfe7ba8ebd35bce.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/447ad19287b51489.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2750a40af402259b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ee3948d6870713a0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/729da21c5e4d2585.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f0191256ac22f9c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d79e6b8392c7e099.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

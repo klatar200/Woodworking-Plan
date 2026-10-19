@@ -1,36 +1,21 @@
 {
   "slug": "barn-doors",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Make sure to check out the build video on this one! (linked in the extras tab) https://youtu.be/XBCUHfva6G8 I had a blast producing it and I think you'll find it helpful when tackling this project!",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Make sure to check out additional info over on my blog: (also linked in the extras tab) https://woodshopmike.com/not-your-average-barn-door/ I'd love to know what you all think so let me know! Thanks ",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " check out additional info over on my blog: (also linked in the extras tab) https://woodshopmike.com/not-your-average-barn-door/ I'd love to know what you all think so let me know! Thanks for reading!",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "search": "Flagged steps[8]/[9] are a build-video link and the author's blog, both \"linked in the extras tab\" and introduced as \"check out\"; steps[0]-[7] are complete prose for the build and no step, cut row or material says the build needs the video/blog. step[7] defers track/roller install to \"MFG guidelines\" (hardware instructions), not a plan document - noted, not an R1 fail."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts used: center panel (cutList[2]), frame top/bottom rails (cutList[0]) and side rails (cutList[1], \"vertical frame pieces\"); no other part is cut or assembled."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 cut rows (Top & Bottom Rail, Side Rail, Center Panel) are used by steps[0]-[3]."
     },
     "R4": {
       "result": "pass",
@@ -41,22 +26,79 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 2x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is 2-1/2\" pocket hole screws (steps[3]); materials[2] \"2-1/2\" pocket hole screws\"; 3 per joint x 4 joints = 12 per door = 24 for two doors; roller bolt/bracket come with materials[3] rollers."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I cut the boards to final length and width and then added the dados as needed."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "These rollers attach to the door with a bolt and bracket that I cut a pocket for in the back side of the door using my router and a few templates."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "I installed the handles using painter's tape to protect the finished door and to mark the hole locations on."
+        }
+      ],
+      "reason": "Builder must set: dado width/depth/position in the frame (not stated; only implied by cut list), roller-bracket pocket size and location on the door back (no numbers), handle hole locations (no numbers). Searched steps[0]-[7], description, summary for inch values: only screw sizes and an 1/8\" roundover radius. Viewed images for steps[1],[2],[3],[4],[7]: all photos with no dimensions. The faux tongue-and-groove line spacing (steps[1]) also has no number."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing/diagram; the sweep result stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panel and frame parts made (steps 0-2), assembled (3), roller pockets routed after assembly (4), then finish (5-6), then hang (7)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "I went with pocket hole joinery. I used (3) 2-1/2\" pocket hole screws per joint."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" (2x6) frame parts but no jig thickness setting appears in any step, description or summary (searched /setting|stock|jig|thick/); viewed steps[3] image (d937c56350ca025c): photo of drilled holes, no setting shown. Recorded only; R9 does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[3] \"12 2-1/2\" pocket hole screws\" per door vs materials[2] 24 for two doors; panel 29.5 = rail 28.5 + 1 and side rail 84.5 - 2x5 + 1 = 75.5 = panel length, so frame and panel agree. (b)(c)(d) every made part is installed; hardware, putty, primer, paint, top coat are in materials."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e41314726482718.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/50023544509080f8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/44b992be2bb3c24f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb725938cfb30b7a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b446c99937d40f66.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d937c56350ca025c.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[2]",
+      "quote": "Center Panel qty 1; Top & Bottom Rail qty 2; Side Rail qty 2 (materials[0] \"MDF, 1/2\" Thick Full Sheet\" 2; materials[2] 24 screws = 12 x 2 doors)",
+      "what": "The plan builds two doors (title \"Barn Doors\"; viewed unattached image b446c99937d40f66 shows a double door; materials buy 2 MDF sheets, 4 rollers, 24 screws) but the cut list gives quantities for one door only (1 panel, 2 top/bottom rails, 2 side rails), so a builder cutting from it makes half the parts."
+    }
+  ],
+  "verdict": "Fix"
 }

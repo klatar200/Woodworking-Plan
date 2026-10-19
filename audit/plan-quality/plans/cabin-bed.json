@@ -1,6 +1,6 @@
 {
   "slug": "cabin-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -487,62 +487,123 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "ig kid bed! The bed is designed like a house and is perfect for a kid's bedroom! The build incorporates pocket hole joinery to assemble. Measurements / plans can be found under the \"Extras\" tab below.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "search": "description says \"Measurements / plans can be found under the \\\"Extras\\\" tab below\" and steps[0] says \"attach as shown in plans\", but the plans are in the step images: viewed steps[0] (2affd2f5abb801e5: side panel 39 1/2 x 53 9/16, peak 64, trim cut detail, window 18x18), [1] (back panel 73 1/2), [2] (2x4 supports), [3] (roof panels 25 1/8 x 80 1/2), [6] (ledger and slat detail) - dimensioned drawings. No cut row, material or step needs a download; the Extras sentence is a pointer to material already present."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps[0]-[6] maps to a cut row; the mattress-platform plywood of steps[6] (\"cut a piece of 3/4 plywood down to size\") is cut from listed material (materials[2]) per the R2 text, but see gaps: no size is given."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[18].part",
-          "quote": "Support beams for assembling bed and attaching panels",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag on cutList[18] rejected: it is 3 x 2x4 x 73 1/2, used by steps[5] (\"Connect the two side panels with 3 total 2x4 supports\"); the platform's \"3 total 2x4 supports\" (steps[6]) are cutList[15] slats 3 x 39 1/4 (slat detail image: \"2x4 ... (3 TOTAL)\"). The long name is a label, not an assembly. All 19 rows map to steps[0]-[6]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[12] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Kreg-corrected rows vs §9: 1x2 parts 3/4 x 1 1/2, 1x4 trim 3/4 x 3 1/2, 2x4 parts 1 1/2 x 3 1/2, ply 3/4 x 39 1/2 x 53 9/16 and 8 x 73 1/2 fit 48 x 96. Sweep unknown on cutList[12] (5/8\" x 5 1/2\" pickets) resolved: the steps[3] roof drawing labels the part \"5 1/2 x 5/8 cedar fence pickets\", matching the row, so no resawing is implied."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 6 stock types (2x4, 1x2, sheet-0.75, 1x3, 1x4, 1x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "ld roof panels out of cedar fence pickets stacked horizontally with 4 1/4 inch reveals. Attach together with nails. Once built, spray clear sealant on to seal the wood since these will not be painted.",
-          "why": "4 1/4\" nail — no material line lists a 4 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: \"4 1/4 inch reveals\" (steps[3]) is a spacing, not a nail size. Steps name no fastener size; materials list 1 1/4\" and 1\" finish nails and 1 1/2\" and 2 1/2\" pocket screws."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].title",
+          "quote": "Assemble side & back panels"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Connect the two side panels with 3 total 2x4 supports on each corner edges of the roof and front bottom corners of the panels with pocket hole joinery."
+        }
+      ],
+      "reason": "The 73 1/2\" x 15\" back panel (steps[1]) is never given a position: searched all steps and the 16 viewed images (drawings for steps[0],[1],[2],[3],[6]; photos for steps[4],[5],[7]) for a height/offset of the back panel between the side panels: none. Window position is shown by the steps[0] drawing (13 1/2\", 17 1/4\", 14 3/4\") and ledger at panel bottom (10\" shown in steps[2] drawing), so they pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "steps[0] and steps[3] references (\"as shown in plans\") each have their own dimensioned drawing, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side panels, back panel, supports, roof panels/V, connecting beams, ledger and platform in a possible order; nothing needs undoing. Installation gaps are recorded under R14."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "attach 2x4 to top and bottom with pocket hole joinery."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Add 2x4 supports to edges of side panels with pocket hole joinery."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" 2x4 and 3/4\" plywood/1x stock but no jig setting in any step, description or summary; viewed drawings for steps[1],[2],[6] show hole locations only, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Build roof panels out of cedar fence pickets stacked horizontally with 4 1/4 inch reveals. Attach together with nails."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "This will be added to the middle of the bed under the roof pickets for support."
+        }
+      ],
+      "reason": "(b) The roof panels (steps[3]) and the V roof support (steps[4]) are made but no step attaches them to the frame: searched steps[5]-[9] for roof/picket/V/support/attach - steps[5] connects side panels with 2x4s only, steps[6] is the platform, steps[7]-[9] plugs/paint/sand. Back panel (steps[1]) is likewise never installed (see R10). Bed platform is installed, so the bed is usable without roof and back panel -> Fix, not Unpublish. (a)(c) counts agree: 12 pickets = roof \"2 TOTAL\" x 6 lapped pickets (2 1/2\" + 4 x 4 1/4\" + 5 1/2\" = 25\"), 3 beams, 3 slats, 4 edge supports."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a4bb3634ab19e390.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/37fab5fd4266732a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9e949e45445f0727.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f006799131fbcc6d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e8c0c19afee447d2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3cca666493dfe78.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca0bb3ee33df0f6d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c62447d2ab6266d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2affd2f5abb801e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad10dc30831798e1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d2827def36664d9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9fdf0cdd288a6abd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ec6f1bb324fcc7d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24c8593c74387002.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/960bb13a9826a129.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/699c6326a3759a69.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Lastly cut a piece of 3/4 plywood down to size and lay on top of ledger boards and 2x4 supports to create platform for mattress.",
+      "what": "The platform plywood has no size: no cutList row (cutList[16] is the back panel 8 x 73 1/2), no dimension in steps[6] or in the viewed ledger/slat drawing (ledger 69 1/2 x 36 1/2, slats 39 1/4 only). Builder must guess the size."
+    }
+  ],
+  "humanReview": "Summary says \"twin sized\" and the plan gives no mattress size; the back panel/ledger frame is 73 1/2 x 36 1/2 (cutList[16], cutList[13]-[14]). Whether a twin mattress fits needs mattress dimensions outside section 9.",
+  "verdict": "Fix + Human review"
 }

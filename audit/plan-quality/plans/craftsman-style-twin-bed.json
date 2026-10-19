@@ -1,6 +1,6 @@
 {
   "slug": "craftsman-style-twin-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -55,63 +55,113 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "materials[11].name",
-          "quote": "Set of non-mortise brackets (see Extras)",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "search": "materials[11] \"Set of non-mortise brackets (see Extras)\" duplicates materials[7] \"Set of non-mortise brackets\"; the item is identified without the Extras link and the build text (steps[7]-[8]) is complete for it. No step, cut row or other material points to a PDF, plan or template. Searched all fields for extras|pdf|download|template|http."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts A-I (cutList[0]-[8]) cover everything the steps cut: posts, headboard rails/stiles/cap, footboard rail, bed rails, slat supports, slats."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used by steps[1]-[10]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable; cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3], materials[4]); cutList[3] Kreg text not parseable; +5 more"
+      "reason": "Kreg-corrected rows B/C/E/F/G/H/I come from 1x4/1x3/1x6/1x2 and match section 9 actuals (3/4 x 3 1/2, 2 1/2, 5 1/2, 1 1/2); rows A/D are 3 x 3 posts from \"3x3x6\" but 3x3 is not in section 9, so its actual size cannot be checked."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3], materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "I used an 18g brad nail, 1 in each bed post, to pin it in place while I applied clamps"
+        }
+      ],
+      "reason": "An 18g brad nail is used to pin the headboard cap, but no brad nail appears in materials (searched materials[0]-[11] for brad|nail|18g: none; only 1 1/4\" and 1 1/2\"-2\" pocket hole screws and brackets). It is described as optional pinning, hence likely rather than certain. Slat-support screws (steps[9]) name no size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "hem look slightly less chunky and a little more finished.\n- Think about what type of reveal you want your bed rails to have. I went with ¾” and this basically means choosing how much you want to inset",
-          "why": "placement with no measurement (no step image)",
-          "image": null
+          "path": "steps[4].body",
+          "quote": "utilizing clamps to hold your posts (A) in place so that they do not push away when you begin to fasten your rails (B) to them."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Repeat the same process as above, except use 4 pocket holes on each end of the footboard rail (E)."
         }
-      ]
+      ],
+      "reason": "Heights at which the two headboard rails (B) and the footboard rail (E) sit on their posts, and the cap (H) overhang, are not given as numbers: searched steps[0]-[11] for inch positions - only the 18\" bracket height (steps[8]), the 3/4\" reveal, 1/8\" offset (steps[7]) and 38 7/8\" slats appear. Viewed 12 images (steps[1]-[10] photos and the 4 unattached photos): none carries dimensions. Stile spacing (\"scrap of 1x2 as a spacer\", steps[2]) and bracket position (flush with post top) are given and pass."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Sweep flag settled: \"see photo at miter saw\" (steps[0]) - steps[1] image 1d8557bf12050951 (viewed) is a photo at the miter saw; the reveal \"photos\" are the bed photos among images[] (viewed). The reference is a tip, not build content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, test fit, drill, headboard, footboard, brackets on posts, slat supports on bed rails, assemble, then fit slats last to the measured width."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] tip: \"stop collar set at the 3/4\\\" mark\"; every pocket-holed part (rails, stiles) is 3/4\" stock."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "import",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "er again without having to keep measuring it out each time (see photo at miter saw)\n- It’s nice to cut all the parts in advance and then assemble but I would wait to cut your mattress support slats un",
-          "why": "\"see photo\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "path": "cutList[3]",
+          "quote": "D. Footboard posts, quantity 2, 3 x 3 x 4 (importDiffs[2].source: 3x3 (or 4x4) @ 18\")"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "to correspond with your 18” foot posts"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "A. Headboard posts, quantity 2, 3 x 3 x 4 (importDiffs[0].source: 3x3 (or 4x4) @ 42\")"
         }
-      ]
+      ],
+      "reason": "(a) Post lengths are 4\" in the live cut list but Kreg's source rows are 42\" (headboard) and 18\" (footboard, matching steps[8]); the importer could not parse \"3x3 (or 4x4) @ 42\\\"\" so no corrected row exists. Beam/rail/slat lengths (B/E/I) are import-damaged too and are corrected via importDiffs (36 1/8, 36 1/8, 38 7/8). Cause is import, not counted. (b)(c)(d) pass; arithmetic checks: 9 stiles x 2 1/2\" + 8 spacers x 1 1/2\" = 34 1/2\" <= 36 1/8\" rail; 2 1/2\" 1x3 spacer - 3/4\" slat = 1 3/4\" matching steps[9]."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb4110ef62fa6dd0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/03c0ca6de9d2dce6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3dd923e6042f204.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e8ac2aa76d672e7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1d8557bf12050951.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c147030233d9ad06.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d93cc38f5150239.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2ae43d07996475a4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0befa9e6460bca36.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a93868dc0a365091.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/68cd4a9df5a06de3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5116cfeeb2509bff.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c3f5218cfc9687c9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d5cf9f3be56ae90c.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

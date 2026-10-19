@@ -1,6 +1,6 @@
 {
   "slug": "compact-bookcase",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -299,10 +299,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps[0]-[11] has a cut row: Back, Left/Right Side, Rails, Stretchers, Bottom (+Edging), Top and the two moldings, Shelf, Front/Side Edging. (steps[10] misnames the Shelf as Left/Right Side - recorded under R14.)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 rows are used: Shelf (cutList[10]) by steps[10] (\"attach the Shelf Edging to each Shelf\"), Shelf Edging (cutList[11]) by steps[10]; the rest by name."
     },
     "R4": {
       "result": "pass",
@@ -313,44 +315,68 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x2, 0.25x0.75, 0.625x1.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" coarse pocket hole screws (materials[4]), #18 x 3/4\" brads (materials[5]) and #18 x 1 1/4\" brads (materials[6]); shelf pins (materials[7]) = 4 per shelf x 2 shelves; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "n. The easiest way to do this is with a Kreg Shelf Pin Jig.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e622e4ed2d2ba7d5.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag settled by steps[1] image (e622e4ed2d2ba7d5): shelf-pin rows 2\" from each edge, first hole 7\" from the top, pocket holes 3\" + 4 x 7 1/2\" + 3\" = 36\" and 2\" from edges, all dimensioned. Rails/stretchers/top/bottom positions are fixed by the parts (images steps[4]/[5] show them flush); molding \"flush with the upper face\"."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "Cut one Top to size from 3/4\" plywood, as shown in the cutting diagram. Also cut Top Side Molding and Top Front Molding to size from a piece of base cap molding (which you can get at a home center). N",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Cut one Top to size from 3/4\" plywood, as shown in the cutting diagram. Also cut Top Side Molding and Top Front Molding to size from a piece of base cap molding"
+        }
+      ],
+      "reason": "steps[7] has no image. Viewed all 4 unattached images (96854b79c81820c3, 4f5b71c098d733d6, 32812bcc7cffa4f2: room/detail photos; 321efa919c35f732: overall-dimension drawing 12 5/8\" x 25 1/4\" x 36 3/4\"): none is a cutting diagram or shows the miter layout. Top and molding sizes are in cutList[6]-[8], so only the diagram is missing (Fix, not Unpublish)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back/sides assembled, rails and stretchers installed with pocket holes oriented for the later Top/Bottom, then Top/Bottom installed, shelves and edging last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"set up for 3/4\\\" material\" stated in steps[0],[1],[3]; every pocket-holed part is 3/4\" (ply Back/Sides, 1x2 rails/stretchers)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Cut one Left Side and one Right Side to size from 3/4\" plywood, as shown in the cutting diagram. Also cut Shelf Edging to length from a piece of screen molding."
         },
         {
-          "path": "steps[7].body",
-          "quote": " one Top to size from 3/4\" plywood, as shown in the cutting diagram. Also cut Top Side Molding and Top Front Molding to size from a piece of base cap molding (which you can get at a home center). Note",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "path": "cutList[10]",
+          "quote": "Shelf qty 2, 3/4 x 11 1/4 x 22 3/8 (source \"3/4\\\" ply x 11 1/4\\\" x 22 3/8\\\"\")"
         }
-      ]
+      ],
+      "reason": "(a) The step titled \"Make a Pair of Shelves\" tells the builder to cut a Left Side and a Right Side (cutList[1]-[2] are 11 1/4 x 36), not the two Shelves (cutList[10], 22 3/8\" long); searched all steps for \"Shelf\": only the Edging and \"each Shelf\" mention them, none says to cut two Shelves. (b)(c)(d) otherwise pass: Top, Bottom, rails, edging all installed; cap molding, screen molding, brads in materials."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/96854b79c81820c3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f5b71c098d733d6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32812bcc7cffa4f2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/321efa919c35f732.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e622e4ed2d2ba7d5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb34f3ce5eaa3b8f.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

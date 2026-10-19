@@ -1,79 +1,136 @@
 {
   "slug": "diy-coastal-console-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[1].body",
-          "quote": "Visit our site https://www.charlestoncrafted.com/diy-coastal-console-table/ for all the details including the specific cut list!",
-          "why": "matches \"our site\""
+          "path": "cutList[0].part",
+          "quote": "Cut List on www.charlestoncrafted.com"
         },
         {
           "path": "steps[1].body",
-          "quote": "Visit our site https://www.charlestoncrafted.com/diy-coastal-console-table/ for all the details including the specific cut list!",
-          "why": "matches \"https://\""
+          "quote": "Visit our site https://www.charlestoncrafted.com/diy-coastal-console-table/ for all the details including the specific cut list!"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Make cuts according to the cut list."
         }
-      ]
+      ],
+      "reason": "The only cut-list row is a pointer to the author's site and the steps send the builder there for the cut list; no part has any dimension anywhere (searched cutList, steps[0]-[7], materials, description, summary). The build cannot be completed without the missing content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "attaching the Top Leg Supports to the top of the Legs, then connecting the Bottom Leg Supports to the Legs where they fit flush."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the two leg frames using the Side Braces."
+        }
+      ],
+      "reason": "Structural parts the steps assemble (Legs, Top Leg Supports, Bottom Leg Supports, Side Braces, Top pieces, slats) are not in the cut list and no step says how to cut them from the listed stock (searched cutList and materials for leg|support|brace|slat|top: only the placeholder row and \"Board, 1x3 54 feet\")."
     },
     "R3": {
-      "result": "to-read"
-    },
-    "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Cut List on www.charlestoncrafted.com — qty 1, 1 x 1 x 1"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x3 54 feet"
+          "quote": "Cut List on www.charlestoncrafted.com, quantity 1, 1 x 1 x 1"
         }
       ],
-      "arithmetic": "cutList[0] 1×1: no listed stock has thickness 1 (±1/32) with width ≥ 1; stock = 0.75×2.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Cut List on www.charlestoncrafted.com — qty 1, 1 x 1 x 1",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "The single row is a placeholder, not a part; its 1 x 1 x 1 numbers are invented by the importer."
+    },
+    "R4": {
+      "result": "n/a",
+      "readerNote": "Sweep fail rejected: cutList[0] is the placeholder row recorded under R3, not a part, so there is no real thickness/width to compare with stock; materials[0] \"Board, 1x3 54 feet\" is a total length, not a board."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: cutList[0] not 0.75″ thick, so not all parts come from the one listed stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Use a nail gun to attach the slats along the Bottom Leg Supports."
+        }
+      ],
+      "reason": "Slats are nailed but no nail (type or size) appears in materials (materials[0]-[3]: 1x3 board, 1 1/4\" Kreg screws, glue, stain); searched steps for the nail size: none."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Use a nail gun to attach the slats along the Bottom Leg Supports."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "connecting the Bottom Leg Supports to the Legs where they fit flush."
+        }
+      ],
+      "reason": "No slat count, width or spacing and no height of the lower shelf frame is given as a number (searched all steps and materials); the one unattached image (3105faef2a212064, viewed) is a finished-piece photo showing a slatted lower shelf with no dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes, top, leg frames, braces joining frames, top attached last; no step depends on a later one (sizes aside)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill two pocket holes in the ends of the Top Leg Supports, Bottom Leg Supports, and Side Braces."
+        }
+      ],
+      "reason": "Pocket holes are drilled with no jig thickness setting stated anywhere in the plan; no step has an image. Recorded only."
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "No part counts or sizes exist (R1/R2/R3) to compare with the steps, so (a) cannot be tested; parts are installed in order and stain/paint is the end (d)."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3105faef2a212064.webp"
+    ]
+  },
+  "verdict": "Unpublish (pending verifier)"
 }

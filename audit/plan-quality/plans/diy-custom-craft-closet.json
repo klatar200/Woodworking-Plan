@@ -1,6 +1,6 @@
 {
   "slug": "diy-custom-craft-closet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -223,21 +223,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Check out more details and pictures of the process at - https://www.anikasdiylife.com/diy-craft-closet-organizer-plans/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "search": "steps[9] \"Check out more details and pictures of the process at - https://www.anikasdiylife.com/...\" is an optional credit/extra-photos link; every step (0-8) has the build instructions and the step images carry dimensioned drawings. No step, cut row or material requires a download."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part is a cut row or is cut from listed stock named in the step: 1x3 back supports and toe kick (steps[3],[5], materials[2]), 3/4\" square dowel trim (steps[5], materials[6]), 1/4\" plywood drawer bottoms (steps[1], materials[1]). Lengths for these are not in the cut list - see gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: Sides/Base supports/Top (steps[0],[4]), Shelves (steps[6]), drawer fronts and sides (steps[1],[6]); the step 0 figure shows 13 1/2, 13 1/2 and 12 3/4 openings matching the three base-support rows."
     },
     "R4": {
       "result": "pass",
@@ -248,35 +243,92 @@
       "reason": "R5 precondition not met: unparseable stock materials[4]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "Attach the organizer to the wall using 1x3 back supports. These supports are attached using 1 1/4\" pocket hole screws to the sides. Use 3\" screws to attach the back supports to the studs in the wall.",
-          "why": "3\" screw — no material line lists a 3\" fastener"
+          "quote": "Use 3\" screws to attach the back supports to the studs in the wall."
         },
         {
-          "path": "steps[7].body",
-          "quote": "If you would like to add a pegboard, mark the studs and attach 1x3 boards using 3\" screws into the studs. Attach pegboard to the 1x3 boards using 1 1/4\" screws.",
-          "why": "3\" screw — no material line lists a 3\" fastener"
+          "path": "steps[5].body",
+          "quote": "attach 3/4\" square dowels as trim along the sides and the top to cover the plywood edges using wood glue and 1-1/4\" finish nails."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "1 1/4\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "3\" wall screws (steps[3],[7]) and 1 1/4\" finish nails (steps[4],[5]) are used but not in materials; the only fastener listed is materials[7] 1 1/4\" pocket hole screws (searched materials[0]-[10] for screw|nail: only that line). Pegboard screws \"1 1/4\\\" screws\" (steps[7]) are optional."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "make shelf pin holes using the Shelf Pin Jig. Also, attach the drawer slides and test the drawers for fit."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Add drawer pulls or knobs using the cabinet hardware jig."
+        }
+      ],
+      "reason": "No number gives the shelf-pin hole rows or heights, the drawer-slide mounting height/setback, or the knob positions (searched steps and viewed 9 images: the figures dimension the base supports 1 3/4\", openings 13 1/2/13 1/2/12 3/4, overall 42 3/4 x 32, toe kick 41 1/4 and drawer front stack 4 1/2 x3 + 7 1/2 x2, but none of these three). Drawer gap is stated (1/8\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "The \"as shown in the figure\"/\"as shown\" references (steps[0],[1]) each have their own dimensioned image, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, drawers, shelf-pin holes and slides before wall mounting (steps[2] explains why), back supports, top, trim, drawer fronts and shelves, finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Build 5 drawers using pocket hole screws and wood glue"
+        }
+      ],
+      "reason": "Pocket holes are used in 3/4\" stock (base supports, drawer boxes) but no pocket-hole jig thickness setting is stated; searched steps/description for setting|jig|thick - only Shelf Pin, Drawer Slide and Cabinet Hardware jigs appear. Viewed figures (steps[0],[1],[3]) show hole locations, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 + 2 drawers = qty 6/6 and 4/4 side pieces; drawer front stack 3 x 4 1/2 + 2 x 7 1/2 matches cutList[4]-[5]; base-support lengths 13 1/2 + 13 1/2 + 12 3/4 + 4 sides x 3/4 = 42 3/4 = Top length. (b)(c)(d) installed and listed (slides, pins, knobs); optional pegboard is not in materials (optional step, not scored)."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/26ff9857288bd16d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94e338db0aa00487.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/06f8a26ed94c0f93.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/74f78f4629dc236b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/79ae70f9ea8916d0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a14825ee48323f45.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "The base is 1/4\" plywood.",
+      "what": "No size or cut-list row for the five 1/4\" plywood drawer bottoms (searched cutList and steps for the bottom dimensions: none); likewise the 1x3 back supports (3 needed, lengths only visible as opening widths in the steps[3] image) and the 1x3 toe kick (41 1/4\" only in the steps[5] image) have no cut-list rows."
+    }
+  ],
+  "verdict": "Fix"
 }

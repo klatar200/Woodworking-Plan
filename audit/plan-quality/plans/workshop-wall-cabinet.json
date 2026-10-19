@@ -1,6 +1,6 @@
 {
   "slug": "workshop-wall-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, Top/Bottom/Divider, Adjustable Shelf, Door, Cleats, Back (steps[0]-[6]) are cutList[0]-[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used in steps[0]-[6]."
     },
     "R4": {
       "result": "pass",
@@ -157,50 +159,58 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse pocket-hole screws (steps[4],[5]) = materials[3]; 3/4\" brads (steps[6]) = materials[7]; 3\" screws (steps[8]) = materials[8]; hinges, pull, shelf pins listed."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "n. The easiest way to do this is with a Kreg® Shelf Pin Jig. The jig makes it easy to keep the holes consistently spaced and aligned.\nNOTE: The setback spacing (distance from the edge to the shelf-pin",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc979604cfebb93d.webp"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " it easy to keep the holes consistently spaced and aligned.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc979604cfebb93d.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag settled by steps[0] image (bc979604cfebb93d): shelf-pin rows 2\" from the edge, 1 1/4\" spacing, first hole 14 3/4\" from the bottom; steps[4] image: divider 5\" above the bottom; hinges 2\" from top and bottom of the door (steps[8] image); pull location shown in the unattached drawing (11e89e9904741186); top/bottom/divider inset 1/4\" at the rear (steps[4]); cleat rear flush (steps[5])."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Cut one Adjustable Shelf to size from 3/4\" plywood, as shown in the cutting diagram. Note that the Shelf is slightly shorter and narrower than the Top, Bottom and Divider. That makes it easy to fit th",
-          "why": "\"as shown\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "le Shelf to size from 3/4\" plywood, as shown in the cutting diagram. Note that the Shelf is slightly shorter and narrower than the Top, Bottom and Divider. That makes it easy to fit the Shelf into the",
-          "why": "\"diagram\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "quote": "Cut one Adjustable Shelf to size from 3/4\" plywood, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[2] has no image. Viewed both unattached images (781795139ae022a9: finished-cabinet photo; 11e89e9904741186: overall 30\" x 12\" x 18\" drawing): neither is a cutting diagram. Shelf and Door sizes are in cutList[6]-[7], so only the diagram is missing (Fix, not Unpublish)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides drilled, top/bottom/divider, cleats, back, paint, then door and wall mounting."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1]: \"Kreg Pocket-Hole Jig set up for 3/4\\\"-thick material\"; the 1x4 cleats are also 3/4\" stock."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Door 17 x 23 1/4 = opening 16 1/2 x 22 3/4 plus 1/4\" overlap on each side (steps[2]); 30\" - 3 x 3/4\" panels - 22 3/4\" opening = 5\" open space (steps[4] image); Top/Bottom/Divider 11 3/4\" = Side 12\" - 1/4\". (b)(c)(d) all parts installed; hinges, pull, pins, screws in materials."
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-09",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc979604cfebb93d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d45a6909c220d39.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6c2ca750e2e9e167.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5339f8fa4d5661c6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf0e783ff1013bc1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c54c77a1b4b14a6b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/781795139ae022a9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/11e89e9904741186.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/04b2553825824547.webp"
+    ]
+  },
+  "verdict": "Fix"
 }
