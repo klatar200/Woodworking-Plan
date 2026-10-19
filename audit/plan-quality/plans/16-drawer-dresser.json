@@ -1,6 +1,6 @@
 {
   "slug": "16-drawer-dresser",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -140,11 +140,29 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Divider spacing \"2 1/4\\\"\" is dimensioned in the viewed steps[3] image (627c2d33e5758e79) and support spacing \"2 1/4\\\"\" with \"15 1/2\\\"\" length in the viewed steps[5] image (f5582310021c028d); steps[4]/[6] add a spacer for \"even spacing\" (relational). Drawer faces are stacked edge to edge (viewed steps[11] image f31dedeed15734aa) — placement against adjacent parts. Base molding, top, backing are flush/fixed by the parts (backing 22 1/2 x 52 1/4 dimensioned in viewed steps[12] image)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Try to place nails where they will be hidden by hardware."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "16 drawer dresser measures 53\"h x 24\"w x 18\"d."
+        }
+      ],
+      "search": "no materials[].name, cutList[].part or step matches /pull|knob|handle/i; /hardware/i matches only steps[11].body",
+      "reason": "(c)/(d): the steps refer to drawer hardware but no step installs pulls/knobs and materials list none, so the 16 drawer faces (stacked edge to edge, viewed f31dedeed15734aa) are left without anything to open them by. (a) adds up on Kreg-corrected rows: sides 52 1/4 + top 3/4 = 53 (\"53\\\"h\"); backing 22 1/2 = 21 + 2 x 3/4; interior 52 1/4 - 3 1/2 (base molding height, base raised) - 3/4 - 3/4 = 47 1/4 = 15 dividers x 3/4 + 16 x 2 1/4 (viewed spacing) = 11 1/4 + 36. (b) every part made is installed."
     }
   },
   "verdict": "Fix",
@@ -156,7 +174,15 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-1",
-    "imagesViewed": []
+    "imagesViewed": [
+      "627c2d33e5758e79.webp",
+      "f5582310021c028d.webp",
+      "d1694c372019949c.webp",
+      "f31dedeed15734aa.webp",
+      "58f9b4529d4d5ce9.webp"
+    ],
+    "rescore": "rescore-1"
   },
-  "notes": "Only plan-cause finding is the missing jig setting (R9); live cut list is import-damaged (4 lengths read as denominators, e.g. supports 2\" for 15 1/2\")."
+  "notes": "Only plan-cause finding is the missing jig setting (R9); live cut list is import-damaged (4 lengths read as denominators, e.g. supports 2\" for 15 1/2\").",
+  "previousVerdict": "Fix"
 }

@@ -1,6 +1,6 @@
 {
   "slug": "7-foot-outdoor-table-with-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -80,36 +80,34 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured spacings give numbers: 'pocket holes every 8 inches' and gaps 'about 1/8\" to 1/4\" wide' (steps[1]). Stretcher notch placement is referred to the step's own diagram (steps[2] 'See diagram on this step for placement')."
+      "reason": "Cross-support positions are fixed by the stretcher notches, which the viewed steps[2] diagram 4f810dfabc5d025b dimensions (\"6\\\"\" from each end, \"Center the middle notche\", \"5-1/2\\\" by 1-1/2\\\" notches\", \"80\\\"\"). The steel legs sit against the inside of the end cross supports and the stretchers under the centre top boards, as drawn in viewed images 4c27e997f26b0f88 (steps[3]), 06a4efb249c98460 (steps[4]) and b94c2c32d9e7cc4f (steps[5]). Pocket holes \"every 8 inches\" and gaps \"about 1/8\\\" to 1/4\\\" wide\" (steps[1]) are numbers. Former gap (no text positions for cross supports/legs) resolved by these images."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts match the rows: \"Cut 6 pieces of 2x6\" = cutList[0] qty 6, \"Cut 2 stretchers\" = cutList[1] qty 2, \"Cut 3 cross supports\" = cutList[2] qty 3 = the 3 notches per stretcher (viewed 4f810dfabc5d025b). The top-board length (steps[1] \"7'.\" vs cutList[0] 7) is the importer's feet-read-as-inches defect already in importDiffs (cause import, former gap). (b) top, cross supports, stretchers and legs are all installed (steps[4], [5]). (c) non-fastener items used — bolts as spacers (materials[5]), steel legs (materials[6]) — are listed. (d) steps[5] completes the table; the bench (steps[6]) is optional and its boards are R2."
     }
   },
-  "gaps": [
-    {
-      "path": "cutList[0]",
-      "quote": "Table top boards | qty 6 | 2 x 6 x 7",
-      "what": "Cut list length is 7 (inches) but steps[1] says 'Cut 6 pieces of 2x6 at a length of 7'.' (84\"); all three rows also give nominal 2 x 6 rather than 1 1/2 x 5 1/2. Looks like import damage (foot unit dropped, nominal taken as actual), but it is not in importDiffs and importAffected is false — needs a Stage 2 re-check."
-    },
-    {
-      "path": "steps[4].body",
-      "quote": "Screw through the cross supports and into the table top.",
-      "what": "No positions in text for the 3 cross supports along the 7' top, or for the steel legs (steps[5]); step images not viewed, so whether the drawings give them is not known."
-    }
-  ],
   "verdict": "Fix",
   "reader": {
     "batch": "calib-4",
-    "imagesViewed": []
+    "imagesViewed": [
+      "4f810dfabc5d025b.webp",
+      "4c27e997f26b0f88.webp",
+      "06a4efb249c98460.webp",
+      "b94c2c32d9e7cc4f.webp"
+    ],
+    "rescore": "rescore-1"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Fix"
 }

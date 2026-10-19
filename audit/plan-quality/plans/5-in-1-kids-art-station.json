@@ -1,6 +1,6 @@
 {
   "slug": "5-in-1-kids-art-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -86,12 +86,39 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Apron heights are dimensioned in the viewed steps[0] image 93a52cebfa78df1e (\"4\\\"\" top, \"12\\\"\" middle, \"3\\\"\" shelf apron) and steps[2] image 3cb810326632759f; the 7/8\" roll-holder holes are shown near the top of the two legs in 93a52cebfa78df1e; the chicken-wire frame is dimensioned \"29\\\"\" x \"13\\\"\" (viewed 421b5435d2b0e3b8). The art shelf sits on the middle apron and the roll edge goes \"in front of the top long apron\" (steps[7], viewed 25a99e230decd9e5) — placements against other parts; plywood shelf is fixed by its 1 1/2\" corner notches at the legs (steps[6])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill 7/8\" holes through the two of the legs for the art paper roll holder."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cover these up by gluing and nailing 1 x4 aprons to the three visible sides."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Long aprons | 4 | 0.75 x 3.5 x 19"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Short Aprons | 4 | 0.75 x 3.5 x 13"
+        }
+      ],
+      "search": "no materials[].name or cutList[].part matches /dowel|rod|pipe|roll/i; steps vs /rod|dowel/i: none",
+      "arithmetic": "Long aprons: 2 frames x 2 (top + middle, viewed 93a52cebfa78df1e) = 4 = cutList[1] qty 4. Short aprons: 2 in the chicken-wire frame (viewed 421b5435d2b0e3b8) + 2 remaining (steps[2], viewed 3cb810326632759f) = 4 = cutList[2] qty 4. steps[5] then needs 3 more 1x4 aprons (19\" and 13\" pieces visible in viewed 57a2250bd202e4bc): 4 + 4 + 3 = 11 > 8 cut.",
+      "reason": "(c) the paper-roll rod that passes through the 7/8\" leg holes is drawn in the viewed steps[7] image 25a99e230decd9e5 but no step installs it and it is in neither materials nor the cut list, so the \"art paper roll holder\" is never completed. (a) the three cover aprons of steps[5] are not covered by the apron counts. (Chalkboard, dry-erase board, chicken wire and pegboard are R2.) (b) every frame, shelf and edge made is installed; (d) otherwise reaches the finished station (optional casters/felt pads in steps[8])."
     }
   },
   "verdict": "Fix",
@@ -104,6 +131,14 @@
   "notes": "steps[0] drills 7/8\" holes for the paper roll holder; no rod/dowel appears anywhere (searched /dowel|rod/) - not scored, the holder part is never named.",
   "reader": {
     "batch": "pilot-3",
-    "imagesViewed": []
-  }
+    "imagesViewed": [
+      "93a52cebfa78df1e.webp",
+      "421b5435d2b0e3b8.webp",
+      "3cb810326632759f.webp",
+      "57a2250bd202e4bc.webp",
+      "25a99e230decd9e5.webp"
+    ],
+    "rescore": "rescore-1"
+  },
+  "previousVerdict": "Fix"
 }

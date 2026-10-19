@@ -1,6 +1,6 @@
 {
   "slug": "2x4-garage-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -74,14 +74,30 @@
       "reason": "steps[4] states neither the method nor the fastener for joining the vertical supports to the brackets or the brackets to the wall. Only steps[3] (bracket assembly) says 'driving screws'. Pocket holes are optional in steps[3], with no jig setting stated."
     },
     "R10": {
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "sweepResult": "pass",
-      "result": "unknown",
-      "reason": "steps[4] attaches the vertical supports to the shelf brackets but gives no shelf spacing along the 68 1/2\" supports. Searched all steps: no inch value. The steps[4] image was not viewed because the sweep did not flag that step, so whether a photo shows the spacing is unknown."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach vertical supports to the shelf brackets, and attach shelf brackets to the wall."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Gather your cut 2x4 pieces and lined them up to create your shelf brackets. There will be 2 short shelves and 2 long shelves"
+        }
+      ],
+      "search": "no step, summary or description contains an inch value or /height|apart|spacing|on center|o\\.c\\./i; viewed steps[2] image 5496ec3282f6e99a and steps[4] image 86ac020404ac67d1 are photos with no dimensions",
+      "reason": "The height of each of the 4 shelf brackets on the 68 1/2\" vertical supports/wall, and where the 16 interior 13\" boards go along each bracket (and how many per bracket), are positions the builder must set; neither the text nor the viewed images give them, and \"even spacing\" is not stated either."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) \"2 short shelves and 2 long shelves\" (steps[2]) x 2 outer boards = cutList[0] 4 x 48 and cutList[1] 4 x 96; bracket depth 13 + 2 x 1 1/2 = 16 = OSB panel width (cutList[4], [5] 16\"); OSB 2 x 96 + 2 x 48 matches the 2 long + 2 short shelves. (b) brackets, vertical supports and panels are all installed (steps[4], [5]). (c) no non-fastener item is used. (d) steps[6] \"the project is done\"."
     }
   },
   "verdict": "Fix",
@@ -93,6 +109,11 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "pilot-2",
-    "imagesViewed": []
-  }
+    "imagesViewed": [
+      "86ac020404ac67d1.webp",
+      "5496ec3282f6e99a.webp"
+    ],
+    "rescore": "rescore-1"
+  },
+  "previousVerdict": "Fix"
 }

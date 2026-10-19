@@ -1,6 +1,6 @@
 {
   "slug": "adirondack-counter-height-side-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -85,12 +85,41 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "steps[1] \"Keep apron inset 3/8”\" gives its number; no step names another measured position (lower apron height is not stated in text)."
+      "reason": "Upper aprons \"6\\\"\" down from the leg tops and \"inset 3/8\\\"\" are dimensioned in viewed steps[1]/[2] images afdaa697dfe52b41 and d2c3c679babf8262 (lower aprons at the leg bottoms in the same drawings); top boards \"1/8\\\" spacing between boards\" (steps[3], viewed a7afa6f98c4b8b41); shelf slats \"1/2\\\" spacing between boards\" with corner notches \"3/4\\\"\" and \"1 1/2\\\"\" (steps[4], viewed 0de8193081ae1428)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Keep 1/8” spacing between boards. Use a jig saw to trim boards to 22” diameter circle."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Table top middle | 2 | 0.75 x 3.5 x 22"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Table top sides | 2 | 0.75 x 2.5 x 21"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Table top outer edge | 2 | 0.75 x 2.5 x 20"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "22\"diameter top x 36\"h"
+        }
+      ],
+      "arithmetic": "Top boards laid side by side (parallel, viewed steps[3] image a7afa6f98c4b8b41): 2 x 3 1/2 + 2 x 2 1/2 + 2 x 2 1/2 = 17; + 5 gaps x 1/8 = 5/8; total 17 5/8\" across < 22\" diameter the step trims to. (cutList[3]-[5] widths are not in importDiffs, so they are Kreg's own.)",
+      "reason": "(a) the top boards the cut list gives are 4 3/8\" too narrow to yield the \"22” diameter circle\" of steps[0]/[3]. Heights add up: legs 35 1/4 (corrected) + 3/4 top = 36 = \"36\\\"h\". (b) every part is installed; (c) no non-fastener item used beyond glue/nails/screws; (d) steps[4] completes the table."
     }
   },
   "verdict": "Fix",
@@ -103,6 +132,13 @@
   "notes": "Top boards: 2x3.5 + 4x2.5 = 17\" + 5 gaps x 1/8 = 17.625\" across vs steps[3] \"22” diameter circle\" - consistent only if the boards are not all parallel; layout not checked (images not flagged).",
   "reader": {
     "batch": "pilot-3",
-    "imagesViewed": []
-  }
+    "imagesViewed": [
+      "afdaa697dfe52b41.webp",
+      "d2c3c679babf8262.webp",
+      "a7afa6f98c4b8b41.webp",
+      "0de8193081ae1428.webp"
+    ],
+    "rescore": "rescore-1"
+  },
+  "previousVerdict": "Fix"
 }
