@@ -1,6 +1,6 @@
 {
   "slug": "diy-changing-table-dresser",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -283,28 +283,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": " the top and two large on the bottom. For more information and details on making and installing drawers and slides, see this post: https://www.woodshopdiaries.com/theres-no-wrong-way-to-make-a-drawer/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[7] https link is a 'for more information' post (optional); steps[15] tray with L brackets 'like shown in the video in the extras tab' is an optional add-on, the dresser completes without it"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Cut your top from your remaining plywood to 24” wide and 53” long. Apply edge banding if desired. Then, center your top onto the dresser side to side and bring the back side flush. Screw top in place ",
-          "why": "cut sentence states 53\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "top (steps[11] 'Cut your top from your remaining plywood to 24\" wide and 53\" long') and bottom brace (steps[12] 'a piece of 1x4 at 21 1/2\" long') are not in cutList but the steps cut them from listed plywood/1x4; all other parts match cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 19 cutList rows map to steps[0],[4],[6],[8],[10],[13]; Small/Large Drawer Fronts (rows 16-17) are steps[10]"
     },
     "R4": {
       "result": "pass",
@@ -315,48 +303,56 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x4, 1x2, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "er, I measured down from the top 1 ½” and screwed another screw about halfway in. Then I bent my scrap wood piece (or you could use ¼” plywood here, too) around the screws and traced. Using a jig saw,",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "op 1 ½” and screwed another screw about halfway in. Then I bent my scrap wood piece (or you could use ¼” plywood here, too) around the screws and traced. Using a jig saw, I cut along the marked curve.",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
-        },
-        {
-          "path": "steps[13].body",
-          "quote": "Finally, it’s ready to button up and finish. Cut a piece of ¼” plywood backing about 50” x 26” and staple in place on the back side.",
-          "why": "26\" staple — no material line lists a 26\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flags are false positives (steps[1] '1 1/2\"' is a layout measurement, '1/4\"' is plywood, '26\"' is backing width). Fasteners used: 1 1/4\" pocket hole screws, 1 1/4\", 2 1/2\" and 2\" wood screws, all in materials[5-8]; staples are R14"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "onto the dresser side to side and bring the back side flush. Screw top in place from the back side like shown. If I had planned this through better, I would have drilled pocket holes in the sides prio",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d33f68112c53bf3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[11] flagged placement is 'center your top ... bring the back side flush' (relational). Drawer frame '6” from the bottom of the top frame piece' and bottom rail '23 ¾”' are numeric; slide and pull positions shown in viewed images eab7e8d0ef7126f8 (slides on side panels) and 0d1ad703f219a06f (6 pulls, matching materials[10])"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; no step relies on an undepicted drawing, every step has an image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "side frames and panels (2-3), front/back frames (4-5), drawer framing (6), slides (7), drawers (8-9), fronts (10), top (11), brace (12), backing (13); no step needs an earlier one undone"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Drill ¾” pocket holes\" and steps[6],[8] state the 3/4\" setting; all pocket-holed parts are 3/4\" stock"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Cut a piece of ¼” plywood backing about 50” x 26” and staple in place on the back side."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "OR, if you prefer, you can glue and staple them onto the bottom instead."
+        }
+      ],
+      "reason": "Staples are used to fix the required backing but no materials line names staples. Search of materials[0-10] names for /staple|glue|brad|bracket/i: no match (also step 11 'applying some glue' and optional step 15 'small L brackets' / 'brad nail')."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "eab7e8d0ef7126f8.webp",
+      "0d1ad703f219a06f.webp",
+      "2d33f68112c53bf3.webp"
+    ]
+  }
 }

@@ -1,33 +1,22 @@
 {
   "slug": "shiplap-advent-calendar",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " family members write notes to the girls of what they love most about them.\nYou can find more detailed photos of the build process and completed photos of this project on our blog: www.SimplyCiani.com",
-          "why": "matches \"our blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[9] 'our blog' is for extra photos, optional"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0],[7] (4 boards 47-1/16\", 2 trim 48-9/16\", 2 trim 21-7/8\") match cutList[0]-[2]"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Shiplap Boards",
-          "why": "no step mentions it (searched steps for shiplap)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep flag is naming: cutList[0] 'Shiplap Boards' = steps[0] 'cut your 1\" x 6\" ... boards ... 4 separate boards'.",
+      "reason": "all 3 rows used"
     },
     "R4": {
       "result": "pass",
@@ -43,47 +32,61 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "your pre-cut trim pieces and stain them in your desired stain color first before attaching to the main boards. After they are dry, take your brad nailer loaded with 2\" brad nails and nail in your trim",
-          "why": "2\" brad — no material line lists a 2\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "your pre-cut trim pieces and stain them in your desired stain color first before attaching to the main boards. After they are dry, take your brad nailer loaded with 2\" brad nails and nail in your trim",
-          "why": "2\" nail — no material line lists a 2\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "your pre-cut trim pieces and stain them in your desired stain color first before attaching to the main boards. After they are dry, take your brad nailer loaded with 2\" brad nails and nail in your trim",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "take your brad nailer loaded with 2\" brad nails and nail in your trim"
         }
-      ]
+      ],
+      "reason": "Searched materials[0-6] for /brad|nail/i: no match; materials list only pocket-hole screws, D-ring hanger and cup hooks as fasteners."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": " on the next, having 26 hooks in total. You may ask, why 26? Well, the perfectionist in me just wasn't okay with how an odd number looked spaced out, and secondly that 26th hook actually comes in hand",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c10c880083d69d91.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "hook rows given numerically in steps[8]: 1\" down from the top, 6\" apart, first hook 6\" in from the trim, alternate row at the middle distance; pocket holes 'one every 12\"' (steps[1]); trim placement relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, pocket holes, sand, clamp and screw boards, paint, stain trim then nail, hooks"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'For this project we have set it at 3/4\"' and boards are 1x6 (3/4\")"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2]",
+          "quote": "OOK 20 Lb. D Ring Hanger"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "The last step is to add the HOOKS to hang your daily advent cards/ bags."
+        }
+      ],
+      "reason": "Searched all 11 steps for /D.?ring|hanger|hang (it|the)|wall/i: only the hooks sentence matches; no step installs the D-ring hanger or says how the calendar is hung. Counts agree: 7+6+7+6 = 26 hooks over 4 boards; 2 x 47 1/16 + kerf 94.25\" <= 96\" board; 48 9/16 + 21 7/8 + kerf 70.56\" <= 72\" trim board."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": []
+  }
 }

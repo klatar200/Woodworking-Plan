@@ -1,6 +1,6 @@
 {
   "slug": "rustic-industrial-tv-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -347,22 +347,13 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[0]-[15] (inner/top-bottom/outer side boards, horizontal shelf boards+plywood, large/small dividers, toe kick, drawer fronts/box parts, back, concrete form pieces cut from the listed melamine) has a cutList row or is cut from listed stock in the step"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[9].part",
-          "quote": "Toekick",
-          "why": "no step mentions it (searched steps for toekick)"
-        },
-        {
-          "path": "cutList[10].part",
-          "quote": "Toekick Center",
-          "why": "no step mentions it (searched steps for toekick)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep flag is spelling: cutList[9]-[10] 'Toekick' = steps[8] 'toe kick and toe kick center boards'.",
+      "reason": "all 16 rows used"
     },
     "R4": {
       "result": "pass",
@@ -373,51 +364,83 @@
       "reason": "R5 precondition not met: unparseable stock materials[5]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": " (if you do not want to add a back to the TV stand. Cut the plywood boards 10\" deep instead of 9 3/4\"). Make sure the pocket hole screws are facing up (they will be covered by the concrete top later).",
-          "why": "9 3/4\" screw — no material line lists a 9 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep '9 3/4\" screw' is the 9 3/4\" plywood depth. Fasteners used: 1 1/4\" pocket hole screws (materials[6]), 3/4\" finishing nails (materials[10]), finish nails (materials[7] 1 1/4\"); no conflict"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[13].body",
-          "quote": "tered. I like to use 1 1/4\" pocket hole screws for this as well because they are self tapping. Drive the screws in from the inside of the drawer box into the back of the drawer front in all 4 corners.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b61156586dac34db.webp"
-        },
-        {
-          "path": "steps[20].body",
-          "quote": "orm while the concrete cured. Let the concrete cure for a couple days. Remove the melamine form by carefully pulling the pieces apart (which should be easy because it was held together with hot glue).",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/60b74f2adb833b38.webp"
+          "path": "steps[21].body",
+          "quote": "Install the drawers with 10\" ball bearing drawer slides that require 1/2\" clearance on either side of the drawer."
         }
-      ]
+      ],
+      "reason": "Slide position (height in the bay, setback) is not given in text or in the viewed images (76cf3826924a2edb shows drawers only). All other positions are numeric in viewed diagrams: dividers 17\"/17 1/8\"/35\" and 7 3/4\", 13 1/2\" heights (bc7bf22ceab38ade, e2f402003d7c7d5d, 69ed2e142019cfa1), toe kick 1\" back and 12 1/2\" center (a7227266e68760fa), drawer front centered (relational)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "sweep flag 'attached' is not a drawing reference"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides, top shelf, dividers, center and bottom shelf, toe kick, drawers, finish, back, concrete top, then drawers installed; pocket holes in steps 1/3 are drilled before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'pocket hole set for 3/4\" wood', steps[3], steps[8] state the setting; drawer pocket holes 3/4\" deep (steps[11])"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[14].body",
-          "quote": ". I felt it was easier to apply the finish without the back attached. After it is dry, attach the back inside the sides. Make sure to measure out where the horizontal shelf boards are and secure the b",
-          "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[21].body",
+          "quote": "Install the drawers with 10\" ball bearing drawer slides"
+        },
+        {
+          "path": "steps[17].body",
+          "quote": "Using silicone caulk, caulk all the corners of the concrete form"
         }
-      ]
+      ],
+      "reason": "Searched materials[0-10] for /slide|caulk|glue gun|cement board/i: only 'Wood glue' matches nothing relevant; drawer slides (2 drawers), silicone caulk, and the optional cement board (steps[19]) are not listed. Counts agree: 3 inner x 2 sides, 70 1/2 + 2 x 3/4 = 72\" = concrete form length, 12 1/2\" side depth = form width; 17 + 17 1/8 + 17 1/8 + 17 + 3 x 3/4 = 70.5\"."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "391eed0d28803b61.webp",
+      "e57a29899a81eda9.webp",
+      "e88870faa2640836.webp",
+      "4b807bbacbb65089.webp",
+      "55825e03c839e022.webp",
+      "1e46c2666a137f6d.webp",
+      "d23e8b85f68707c1.webp",
+      "b938c6261d9074e2.webp",
+      "1b190856a879440f.webp",
+      "bc7bf22ceab38ade.webp",
+      "e2f402003d7c7d5d.webp",
+      "69ed2e142019cfa1.webp",
+      "2f3342981f7cfaf3.webp",
+      "63f83489dd9f60de.webp",
+      "a7227266e68760fa.webp",
+      "caf232df2c710f3c.webp",
+      "18c1d54f841d9618.webp",
+      "5ddd7db75262c276.webp",
+      "b61156586dac34db.webp",
+      "76cf3826924a2edb.webp",
+      "37263c47c533db67.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "simple-wood-wall-hooks",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,22 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "oks. First, with your miter saw set at 90°, cut eight pieces 8 3/8\" long, as shown in the cut diagram. Next, set your miter saw to 30°. The Wall Posts and Arm Posts are the same length, so cut 16 piec",
-          "why": "cut sentence states 8 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " final length. For the 1x1 wall hooks, set the saw back to 90°. This time cut four pieces to 8 3/4\", as shown in the cut diagram. Again, set your miter saw to 30° and cut eight pieces to final length.",
-          "why": "cut sentence states 8 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flags (8 3/8\", 8 3/4\") are the blanks that each yield two 4 1/2\" cut-list posts (8 + 8 2x2 posts, 4 + 4 1x1 posts); every part has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 4 rows used in steps[0]-[2]"
     },
     "R4": {
       "result": "pass",
@@ -133,48 +123,69 @@
       "reason": "R5 precondition not met: 2 stock types (2x2, 1x1); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" and 1 1/2\" coarse-thread pocket screws (steps[2]) and 2 1/2\"/2\" pan-head wall screws are in materials[2],[3],[5],[6]; steps[3] 'long pan-head wood screws' gives no size; wall anchors are scored under R14"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "single centered pocket hole (steps[1]); wall pilot holes 1 1/2\" from each end shown in viewed 8b8d33fae255aac3; hook spacing on the wall is a free choice"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "th your miter saw set at 90°, cut eight pieces 8 3/8\" long, as shown in the cut diagram. Next, set your miter saw to 30°. The Wall Posts and Arm Posts are the same length, so cut 16 pieces to final le",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "cut eight pieces 8 3/8\" long, as shown in the cut diagram."
         },
         {
           "path": "steps[0].body",
-          "quote": "t at 90°, cut eight pieces 8 3/8\" long, as shown in the cut diagram. Next, set your miter saw to 30°. The Wall Posts and Arm Posts are the same length, so cut 16 pieces to final length. For the 1x1 wa",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " final length. For the 1x1 wall hooks, set the saw back to 90°. This time cut four pieces to 8 3/4\", as shown in the cut diagram. Again, set your miter saw to 30° and cut eight pieces to final length.",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " final length. For the 1x1 wall hooks, set the saw back to 90°. This time cut four pieces to 8 3/4\", as shown in the cut diagram. Again, set your miter saw to 30° and cut eight pieces to final length.",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "cut four pieces to 8 3/4\", as shown in the cut diagram."
         }
-      ]
+      ],
+      "reason": "No cut diagram exists among the 7 images (4 unattached viewed: 3 photos/renders and a hook dimension drawing 20596e90fe71c276; 3 step images are part drawings). Blank and final lengths (4 1/2\", 30\") are in text, cutList and image a5323376bf8c54a3, so the build can proceed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, drill wall posts, glue/tape then screw, sand/finish, mount"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states 1 1/2\"-thick setting for 2x2 posts and 1\"-thick for 1x1 posts, consistent with the stock thicknesses"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "In places that we couldn’t hit a stud, we used medium-duty wall anchors."
+        }
+      ],
+      "reason": "Searched materials[0-7] for /anchor/i: no match (materials list only the pan-head screws). Counts agree: 8 2x2 hooks x 2 = 16 screws (materials[5]), 4 1x1 hooks x 2 = 8 (materials[6]); 8 blanks x 8 3/8 = 67\" <= 72\" 2x2."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "01dfa1c52decf46b.webp",
+      "ad6570547599f2ed.webp",
+      "24e1b97f45c432d1.webp",
+      "20596e90fe71c276.webp",
+      "a5323376bf8c54a3.webp",
+      "87a1b7fa278a0132.webp",
+      "8b8d33fae255aac3.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "dollhouse-jewelry-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -247,38 +247,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "a table saw, this is easily and inexpensively possible! See my blog for pictures of the little trick that I did that made it so easy to do! You could also just brad nail the shelves in, it will be fin",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "red these boards in fabric before screwing them in, head to my blog to see more of that in depth! Use 1/2\" pocket holes and 1\" screws with ample glue to attach them. NOTE: I didn't screw these in unti",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "n have straight roof boards if you would like! If you check out my blog post you can see how I used a sliver of a pvc pipe to trace and then just sanded them along the pencil line! Wasn't hard at all!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "'my blog' mentions (steps[1],[7],[8]) point to optional extra photos of a technique; dado, miter and box dimensions are in the step images and the plan can be built without the blog"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "I added trim to the doors, using proper placement of the trim you are able to disguise the fact that there are two doors on the front"
+        }
+      ],
+      "reason": "Door trim is a part the step makes but it is not a cutList row and the step gives no length, count or stock (searched cutList for /trim|molding/: only rows 10-11 'Bottom molding'/'Bottom front molding'; viewed d855424a8c84e7fd labels only 'molding 1/2\" wide x 1/4\" thick'). Non-structural. Boxes (steps[10],[11]) and top rail are covered by viewed images 6c2d6deb5a9e7714 and 603da810856add04."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[12].part",
-          "quote": "Top rail",
-          "why": "no step mentions it (searched steps for rail)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[12] 'Top rail' is the 'small trim piece' of steps[9]; viewed 603da810856add04 shows a 3/4\" x 15 1/4\" rail under the roof"
     },
     "R4": {
       "result": "pass",
@@ -289,38 +276,97 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.5, 0.5x6, 0.25x6, 0.25x96); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "and brad nail! Viola! Then I cut some of the 1/4\" poplar to size and glued and brad nailed it to the bottom of them...no the 1/4\" board is not inset, it is on the bottom and shows before it's painted!",
-          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep '1/4\" brad' flag is the 1/4\" poplar bottom (steps[10]), not a fastener. Fasteners used: 1\" screws (materials[4]), 3/4\" brad nails (materials[6]), small utility hinges (materials[5],[13])"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "Attach the other side board that you didn't cut dados into now. Again I inset the board by an 1/8 of an inch!",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad4b07529607d0ce.webp"
+          "path": "steps[14].body",
+          "quote": "I just used small utility style hinges to attach them!"
         }
-      ]
+      ],
+      "reason": "Hinge positions on the doors and cabinet are not given in text or in viewed images (327ddf8bfc73b062, d855424a8c84e7fd show doors with no hinge dimensions). Dado positions, side inset, bay widths, box sizes and door sizes are numeric in viewed diagrams; peg rows and window/door placement are shown only in diagrams/photos."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; every step has an image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides/divider/dados (steps 1-3), bottom assembly (4-5), roof supports (6), shelves into dados (7), backs (8), roof, rail, boxes, molding, doors, trim; nothing needs undoing"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Pocket holes ... at a depth of 1/2\"' and steps[7] 'Use 1/2\" pocket holes' state the setting for all 1/2\" stock"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "you will use wood glue and 1\" screws to attach!"
+        },
+        {
+          "path": "cutList[12]",
+          "quote": "Top rail quantity 1 thicknessIn 0.5 widthIn 0.75 lengthIn 15 (Kreg-corrected row [0.5, 0.75, 15.5])"
+        }
+      ],
+      "arithmetic": "Glue is used in steps[3],[5],[6],[9],[10] but materials[0-13] match no /glue/i. Viewed 603da810856add04 labels the top rail '15 1/4\"' vs cutList 15.5; cabinet width = Bottom 15.5 - 2 x 1/8 inset = 15.25 = Left door 5 + Right door 10.25, so 15.5 is 1/4\" long.",
+      "reason": "Wood glue missing from materials; top rail length disagrees with the plan's own diagram."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "297401dea3e692b7.webp",
+      "13aac657ff734ca7.webp",
+      "db832fc27c0cc18a.webp",
+      "ab74e30a054fce21.webp",
+      "ad4b07529607d0ce.webp",
+      "a633facedf03cb14.webp",
+      "1321e7ca4e0d5f30.webp",
+      "d98300d92dc229fd.webp",
+      "6cd5b69ded3f8bc2.webp",
+      "603da810856add04.webp",
+      "6c2d6deb5a9e7714.webp",
+      "f2d619348049d505.webp",
+      "eceb987c431558e4.webp",
+      "3cc64924b8a6cad5.webp",
+      "327ddf8bfc73b062.webp",
+      "d855424a8c84e7fd.webp",
+      "ecdc5540d40c64bf.webp",
+      "be9c66ec29f9d1c2.webp",
+      "fdfb1de106401b59.webp",
+      "0a31e6dc9ee0ed1f.webp",
+      "14037a510a55992d.webp",
+      "1c399c327dd4e271.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[9],[11],[12],[8]",
+      "quote": "Wooden pegs pre-made; Door knobs pre-made; Magnet and nail to keep door closed; Dollhouse door pre-made",
+      "what": "Steps drill peg holes (steps[7]) but no step inserts pegs, and no step fits the knobs, the magnet/nail catch or the pre-made door; peg count 8 vs 3 pegs drawn in viewed 6c2d6deb5a9e7714."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "The shelves are not 4\" deep, they will be 4 1/4\" deep, the cut list is correct, the picture here just isn't!",
+      "what": "Step image 1321e7ca4e0d5f30 still shows 4\"; text and cutList (4.25) agree, image is stale (plan acknowledges it)."
+    }
+  ]
 }

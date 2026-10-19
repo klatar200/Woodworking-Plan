@@ -1,6 +1,6 @@
 {
   "slug": "easy-router-table-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -31,21 +31,33 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[15].body",
-          "quote": "Check out this link for more info: http://bit.ly/RouterTableIG",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[15] bit.ly link is phrased 'more info' (optional); the missing-dimensions defect is recorded once under R2"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Use the cut-list to break down 3/4\" plywood to the specified dimensions."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Bottom Piece quantity 1 thicknessIn 0.75 widthIn 19 lengthIn 27 (Kreg-corrected 0.75 x 19 5/8 x 27 5/8)"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the Back Piece to the Bottom Piece using 1 1/4\" pocket screws."
+        }
+      ],
+      "reason": "The cut list has one row (the importer emits a cut list only when every Kreg row parsed, so Kreg's list had 1 row). Steps use Back Piece, Dividers, Right Top and Center Dividers (steps[3]), Top Right Piece, Left Front and Top Pieces (steps[4]), Door (steps[6]), and drawer Front/Back/Sides/Bottom (steps[11]-[13]). Searched cutList, materials, description and all 16 steps for any size of these parts: none. Viewed 17 images (3D renders and video stills) show only offsets 7\", 1', 5 5/8\" and 6\" and a 1/4\" dado, no part sizes. The carcass cannot be cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the only cutList row, Bottom Piece, is used in steps[2]-[3]"
     },
     "R4": {
       "result": "pass",
@@ -56,52 +68,126 @@
       "reason": "sheet layout not judged (area fits: part area 1×19.625×27.625 = 542.1 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Attach the Back Piece to the Bottom Piece using 1 1/4\" pocket screws. Make sure the joints are square during assembly.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Attach the Dividers to the bottom & back pieces using using the Right Top and Center Dividers as spacers and using 1 1/4\" pocket screws. Make sure the joints are square during assembly.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Add the Top Right Piece, Left Front and Top Pieces to the carcass using 1 1/4\" pocket screws. Make sure the joints are square during assembly.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the Back Piece to the Bottom Piece using 1 1/4\" pocket screws."
         },
         {
           "path": "steps[12].body",
-          "quote": "Attach your drawer Front and Back to your Sides using 1 1/4\" pocket screws making sure the drawer is square.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach your drawer Front and Back to your Sides using 1 1/4\" pocket screws making sure the drawer is square."
         }
-      ]
+      ],
+      "reason": "materials has two lines (3/4\" plywood sheet, 18\" drawer slides); no screws of any size. Also steps[6] 'Attach your Drawer front using screws from the back' and steps[13] 'a couple screws' give no size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "Attach your Door using 1/2\" overlay hinges. Attach your Drawer front using screws from the back of the drawer.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8211e58e2e379a62.webp"
+          "quote": "Attach your Door using 1/2\" overlay hinges."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Attach your drawer slide to the drawer and to the sides of the opening where it will be installed."
         }
-      ]
+      ],
+      "reason": "No hinge position, door size or slide height is given in text or in the viewed images (e1e5bb4e528bed41 render shows slide, no dimensions). Dust port 'slightly above the Center Divider' is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands; no drawing references"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach your Drawer front using screws from the back of the drawer."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Start by making a 1/4\" dado starting from 1/2\" from the bottom of your two sides and front."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Attach your top and you are ready to go!"
+        }
+      ],
+      "reason": "The drawer front is attached in step 7 and the build is declared done in step 11, but the drawer is only made in steps 12-14. Order is recoverable by reading ahead, so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes where ever necessary, this will help speed up the assembly."
+        }
+      ],
+      "reason": "Recorded only. Searched all steps for /setting|3\\/4\" (thick|setting)|jig/: no jig thickness setting; viewed images are renders with no jig."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach your Door using 1/2\" overlay hinges."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Add a 2 1/2\" dust port to the back piece close slightly above the Center Divider."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Secure your wall control panels to the sides of the router table"
+        }
+      ],
+      "reason": "Hinges, dust port, Wall Control pegboard panels and the 1/4\" dado'd drawer bottom (steps[11]-[13]) are used but materials[0-1] list only 3/4\" plywood and drawer slides (search /hinge|port|panel|pegboard|1\\/4/i: no match)."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "8295aa10be798222.webp",
+      "885a583924511641.webp",
+      "7189f631cb257937.webp",
+      "5e87aac6a00902cd.webp",
+      "c6ac3d1dad7c42f4.webp",
+      "7dc193440a04720f.webp",
+      "16de5a2bc1b8c5b7.webp",
+      "20ebc5108cab3381.webp",
+      "8211e58e2e379a62.webp",
+      "a2c1f82396fd05bf.webp",
+      "dd7590e9c07e27f5.webp",
+      "1939566cffefecf3.webp",
+      "4b795c25663ca1d1.webp",
+      "1b8eac3ca90ca122.webp",
+      "ce8d00cd17bd12e7.webp",
+      "e1e5bb4e528bed41.webp",
+      "0860b2d014002ffd.webp"
+    ]
+  }
 }

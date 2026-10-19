@@ -1,6 +1,6 @@
 {
   "slug": "mission-style-open-shelf-bathroom-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -331,43 +331,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[17].body",
-          "quote": ". Add knobs or pulls and you are all done! To see how I finish off our vanity and master bathroom remodel, visit my blog (in extras) where I share all my remodel updates and budget friendly home DIYs.",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[17] 'visit my blog (in extras)' is for remodel updates, not needed to build"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " bathroom in one piece, cut the bottom shelf in two pieces that are 17\" x 42 3/4\" each. You will be able to take the vanity apart at the side of the center legs to get it into the bathroom once built.",
-          "why": "cut sentence states 42 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "e board and cut the drawer box backs so they will be around 4 3/4\" instead of 5 1/2\" tall.=. Assemble the drawers using pocket holes on the outside of the drawer boxes (the front pocket holes will be ",
-          "why": "cut sentence states 4 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Cut 2 pieces of 1/4\" plywood 13\" x 15 1/5\" for the drawer bottoms. Slide the plywood under the back of the drawer box and into the groove on the bottom of the sides and front of the drawer box. Carefu",
-          "why": "cut sentence states 15 1/5\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[18].body",
-          "quote": "e cabinet falling through this small opening, you can use a scrap of 1/2\" plywood to fill it (this is what I did) or cut your bottom panel 27\" long and notch out the 3/4\" x 1\" section around the legs.",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flags are an optional double-vanity shelf (42 3/4\"), the drawer back trimmed to 4 3/4\" from the cut-list 1x6, a typo (15 1/5\") and an alternative bottom (27\"); every part the steps cut has a cutList row; optional center legs are labelled 'not included in the cut list'"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 21 rows used: 6 1x2s = rows 1+5 (steps[0]), rows 3,4,6 (steps[3]), row 4 back edge (steps[4]), rows 7-8 (steps[4],[6]), rows 11-16 (steps[10]-[16]), rows 18-20 (steps[7]-[9]), rows 9-10 (steps[18],[19])"
     },
     "R4": {
       "result": "pass",
@@ -378,31 +351,115 @@
       "reason": "R5 precondition not met: 7 stock types (2x4, 1x6, 1x2, 1x3, 1x4, sheet-0.25, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "no step gives a fastener size ('pocket holes', 'brad nails', 'screws'); materials list 1 1/4\" and 1\" pocket screws; brad nails missing from materials is recorded in gaps"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach them so the bottom of the drawer glide supports are 8\" below the drawer opening and flush with the bottom of the drawer opening."
+        },
         {
           "path": "steps[17].body",
-          "quote": "ive coating. Install the drawer boxes and attach the fronts. Attach the doors with hinges made for full inset cabinets. Add knobs or pulls and you are all done! To see how I finish off our vanity and ",
-          "why": "placement with no measurement (no step image)",
-          "image": null
+          "quote": "Attach the doors with hinges made for full inset cabinets. Add knobs or pulls and you are all done!"
         }
-      ]
+      ],
+      "reason": "The glide-support height is stated two incompatible ways (8\" below the opening and flush with its bottom) and viewed 0c2f63c50f7ff07a shows no dimension; hinge and pull positions are not given in text or in the viewed images (no step image for steps[17]). All other positions (slat 16\", 2\" shelf edges, 12\", 15\", 16\" opening, 1/8\" reveal) are numeric."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[17].body",
+          "quote": "Install the drawer boxes and attach the fronts. Attach the doors with hinges made for full inset cabinets. Add knobs or pulls and you are all done!"
+        },
+        {
+          "path": "steps[18].body",
+          "quote": "Cut a piece of 1/2\" plywood to 26\" x 18 1/2\". Using pocket holes on the bottom of plywood, attach the cabinet bottom flush with the bottom of the frame."
+        }
+      ],
+      "reason": "The cabinet bottom and cabinet side panel (the divider that the door section needs) are added in steps 19-20, after the Finish step says the build is done and doors/drawers are installed; the 'Dimensions' step also sits mid-sequence. Reading ahead recovers it, so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Assemble the front frame of the vanity by attaching one 41\" front frame between the two legs flush with the top and front of the vanity using pocket holes on the inside of the face frame."
+        }
+      ],
+      "reason": "Recorded only. Searched all 20 steps for /setting|jig|thick/: no jig thickness setting for the 3/4\" and 1/2\" parts with pocket holes; viewed step images are drawings with no jig."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Cut 2 pieces of 1/4\" plywood 13\" x 15 1/5\" for the drawer bottoms."
+        },
+        {
+          "path": "cutList[20]",
+          "quote": "Drawer box bottom quantity 2 thicknessIn 0.25 widthIn 13 lengthIn 15 (Kreg-corrected [0.25, 13, 15.5])"
+        }
+      ],
+      "arithmetic": "Step says 15 1/5\" (= 15.2) vs corrected cut list 15.5; groove geometry: sides 16 - 2 x 3/4 front/back + 1/4 groove + 3/4 back = 15.5. Other sums agree: drawer front 9 3/4 + 2 x 2 1/2 = 14 3/4 (viewed 0c2f63c50f7ff07a '14 3/4\"'), opening 15; door 7 + 2 x 2 1/2 = 12, 2 x 12 + 3 x 1/8 = 24.375 vs opening 24 1/2; 15 + 1 1/2 + 24 1/2 = 41 = front frame."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "4c0fd4094d98c20c.webp",
+      "86b0ca585d0e3449.webp",
+      "9cb912aa80f57405.webp",
+      "24a788e46e8f681c.webp",
+      "41a688ceb5ff0a24.webp",
+      "46fd4da69847193e.webp",
+      "0c2f63c50f7ff07a.webp",
+      "cecf27ceba10d69a.webp",
+      "072f3f3ba3778e22.webp",
+      "50ed52e0df86e8aa.webp",
+      "08518a7d232a3c05.webp",
+      "e0f839b453f687fd.webp",
+      "7ed7cb3ad0f8eedc.webp",
+      "66b8ad1a89ccd6f9.webp",
+      "137d8671f843a533.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body / steps[9].body",
+      "quote": "brad nails to secure the top and bottom to the back of the side slats",
+      "what": "Brad nails (steps[1], steps[9] 'screws or brad nails') are not in materials[0-14]."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Attach the 16\" front frame between the 41\" front frames 15\" in from the left legs of the vanity",
+      "what": "Viewed 24a788e46e8f681c draws the 15\" dimension from the stile toward the right side (the side with the panel), text says from the left legs; unclear which side the 15\" drawer opening is on."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "pottery-barn-inspired-tv-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -29,73 +29,120 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to ",
-          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to ",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to ",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "wo 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to the b",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Glue and nail 2 - 1x3\" to the back of the planked boards to hold your door together."
         }
-      ]
+      ],
+      "reason": "The door battens (4 pieces, 2 per door) are parts the step uses but have no cutList row and no length (searched cutList and all 13 steps for a batten/cleat length: none; viewed 6854ca8e55eb04c9 shows two vertical battens, no dimension). Other flagged sizes (8\", 6\", 5\") are the 1x8/1x6/1x2 door boards, which map to cutList[5]-[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 11 rows are used: sides/shelves/top (steps[0]-[3]), doors and spacers (steps[4]), inserts (steps[6]), trim (steps[7]), small shelves and braces (steps[10])"
     },
     "R4": {
       "result": "unknown",
       "reason": "cutList[7] Kreg text not parseable"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x4, sheet-0.25); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "readerNote": "Sweep had unknown (4 stock types). Steps name 1x3 for every 1x3 part (steps[0] '1x3/bottom support', steps[10] 'Cut 1x3\" boards', steps[4] '2 - 1x3\"'), so the 1x3 sub-total can be scored on its own.",
+      "arithmetic": "Bottom support 1 x 48 (cutList[8]) + Shelf braces 6 x 13 (cutList[10]) = 48 + 78 = 126\", plus 7 cuts x 1/8\" = 0.875\" -> 126.9\" vs materials[1] 'Board, 1x3 96\"' quantity 1 = 96\" (short 30.9\"; door battens would add more).",
+      "reason": "One 96\" 1x3 cannot supply the 1x3 parts."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "Cut 1x3\" boards and nail to the sides of each cubby. We placed ours directly in the middle. The height is personal preference. Your shelf will then lay on top of the 1x3's. Your shelf should sit back ",
-          "why": "3\" nail — no material line lists a 3\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep '3\" nail' flag is '1x3\" boards'; fasteners used: 1 1/4\" pocket hole screws (materials[7]) and 'finishing nails' (materials[10] 2\"); no conflicting sizes (nails for the backer, step 12, have no size)"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "the middle. The height is personal preference. Your shelf will then lay on top of the 1x3's. Your shelf should sit back an inch from the front.\nRepeat this step for the inside of the cabinets as well.",
-          "why": "placement with no measurement (no step image)",
-          "image": null
+          "path": "steps[5].body",
+          "quote": "Attach the cabinet doors to the sides using euro hinges. Make sure to leave an even gap around the sides of the doors."
         }
-      ]
+      ],
+      "reason": "Euro hinge positions on the door and cabinet are not given in text, and viewed 7fe090c2f035d9ae is a close-up with no dimensions. Cleat height 'personal preference' and pulls centered on each faux drawer are relational/choice and pass; shelf spacing 23 3/8\" and 1\" setback are numeric."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach both of your sides to the 1x3/bottom support using 1 1/4\" pocket holes screws."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Using the 3/4\" setting on your Kreg Jig, make 4-5 pocket holes in the top of your sides as well as 4-5 pocket holes in the bottom and top shelves."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Add your pulls or knobs to your doors and you're done!"
+        }
+      ],
+      "reason": "Pocket holes are made in step 12 after steps 1-7 already assemble with pocket screws, and the shelf cleats (step 11) and back (step 13) come after the 'you're done' step. Recoverable by reading ahead, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[11] 'Using the 3/4\" setting on your Kreg Jig' covers all 3/4\" parts (stated late; ordering is under R8)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "The back should be flush. The sides and the front should over hang 3/4\"."
+        }
+      ],
+      "arithmetic": "(1) Door boards are 1x8, 1x6 and 1x2 but materials[0-11] list only 1x3 and 1x4 boards (search /1x8|1x6|1x2/: no match). (2) Overhang: cutList[1] shelf 48 + 2 x 3/4 side = 49.5 outer width vs Top 50 (cutList[2]) = 1/4\" each side, not 3/4\"; depth Sides 15.5 vs Top 16 = 1/2\" front, not 3/4\".",
+      "reason": "Door stock missing from materials; Top size disagrees with the stated overhang."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "424fba0d56a16a33.webp",
+      "50ca1b0df4020776.webp",
+      "cc8c69237d314a29.webp",
+      "e1c2babae768a2d2.webp",
+      "0c902f79b032be03.webp",
+      "edb08aeb8fe23d6c.webp",
+      "6854ca8e55eb04c9.webp",
+      "b44908928c33b657.webp",
+      "7fe090c2f035d9ae.webp",
+      "4e62fb12ff74b684.webp"
+    ]
+  }
 }

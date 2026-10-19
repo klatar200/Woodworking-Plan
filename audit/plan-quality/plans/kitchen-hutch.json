@@ -1,6 +1,6 @@
 {
   "slug": "kitchen-hutch",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,10 +263,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0]-[22] (Side/Top/Bottom Panel, Upper/Lower Shelf, Lower Divider, Back Panel, Legs, Long/Short Rail, Corner Brace, Door, Long/Short Door Track) has a cutList row of the same name"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 14 cutList rows are cut/used in steps[0],[2],[10],[12],[13],[15],[18],[19],[21],[22]"
     },
     "R4": {
       "result": "unknown",
@@ -277,60 +279,105 @@
       "reason": "R5 precondition not met: unparseable stock materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fasteners used: 1 1/4\" coarse and fine pocket-hole screws (materials[5],[6]), 1\" brads (materials[11]), '1 1/2\" flat-head wood screws' (materials[7] '#8 x 1 1/2\" flat head wood screws'), furniture glides (materials[8]); no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed diagrams give: pocket hole offsets, side profile 9\" radius (cf82edc5d97bc32d); 1/4\" setback, 3/4\"/1/4\" top panel, 10 1/2\" shelf (8e8e12463af9ecff, efdbaa639d6a7a4f); upper shelf spacing 13 3/8\" and 1/4\" down (002db0d0c9149add); base 1/8\", 1/2\", 1/4\" setbacks (02140f5d3bc871ad, 758b74f3b7fda052); door finger hole 1 1/4\" dia at 2\" / 10 3/4\" (97cb1834e73b50ec); track spacing 1/4\" (199d6f94ec490198, 4b700c4733fa30e6)"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "From 1/4\" oak plywood, cut the Back Panel to size, as shown in the cutting Diagram. Sand as needed, wipe down the Panel, and then apply stain and finish. Here, we applied a “whitewash” stain, and then",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "lywood, cut the Back Panel to size, as shown in the cutting Diagram. Sand as needed, wipe down the Panel, and then apply stain and finish. Here, we applied a “whitewash” stain, and then wiping varnish",
-          "why": "\"Diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Cut four legs to length from a 3x3 oak board, as shown in the cutting diagram. Set them aside for now.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Cut four legs to length from a 3x3 oak board, as shown in the cutting diagram. Set them aside for now.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "From 1/4\" oak plywood, cut the Back Panel to size, as shown in the cutting Diagram."
         },
         {
           "path": "steps[22].body",
-          "quote": "face of the Bottom Panel and Top Panel. To start, cut six Short Door Tracks to 22 3/4\" long, and cut and twelve Long Door Tracks to 23 1/8\" long from 36\" square dowel, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[22].body",
-          "quote": "face of the Bottom Panel and Top Panel. To start, cut six Short Door Tracks to 22 3/4\" long, and cut and twelve Long Door Tracks to 23 1/8\" long from 36\" square dowel, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "cut and twelve Long Door Tracks to 23 1/8\" from 36\" square dowel, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "No cutting-layout diagram exists among the 21 viewed images (part drawings with dimensions on steps 0,2,11,13-19,21; 5 unattached are photos and the overall-size drawing d766d8ff768c07a8). The part sizes the steps need are all in cutList/step text, so the build can proceed."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[20].body",
+          "quote": "slide it up into into the innermost upper track until it stops."
+        },
+        {
+          "path": "steps[21].body",
+          "quote": "Now you can add the upper door tracks."
+        },
+        {
+          "path": "steps[22].body",
+          "quote": "Now you can begin to create the sets of tracks that the Doors ride in."
+        }
+      ],
+      "reason": "The doors are installed in the upper track (step 21) before the upper tracks are built (step 22), and the tracks are cut to length last (step 23) though steps 20 and 22 already glue and install them. Recoverable by reading ahead, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'Set your pocket-hole jig for 3/4\"-thick material' and steps[13] 'jig still set for 3/4\" think material' cover all pocket-holed 3/4\" parts"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "apply glue the ends of one Corner Brace, set it in one corner, and lightly clamp it in place."
+        },
+        {
+          "path": "cutList[13]",
+          "quote": "Door quantity 2 thicknessIn 0.25 widthIn 21 lengthIn 23 (Kreg-corrected row [0.25, 21.5, 23.75])"
+        }
+      ],
+      "arithmetic": "Glue is used in steps[16], [19] and [21] but materials[0-13] match no /glue/i. Viewed door drawing 97cb1834e73b50ec labels the Door '21 1/2\"' x '23 1/4\"' vs corrected cut-list 21.5 x 23.75 (0.5\" wider in the list).",
+      "reason": "Wood glue absent from materials; door width in the step diagram (23 1/4\") disagrees with the cut list (23 3/4\"). Counts otherwise agree: 24 #8 screws = 4 braces x 6 pilot holes (6c13fa3bf3366200); 18 dowels = 12 long + 6 short tracks cut one per 36\" dowel (22 3/4\" x 2 > 36\")."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "cf82edc5d97bc32d.webp",
+      "8e8e12463af9ecff.webp",
+      "efdbaa639d6a7a4f.webp",
+      "002db0d0c9149add.webp",
+      "8c1cf09357cce6c3.webp",
+      "310347a0b670e000.webp",
+      "1f69e088ac0ccdb3.webp",
+      "b99851f8bf4f9821.webp",
+      "ee5c9ae266bab600.webp",
+      "02140f5d3bc871ad.webp",
+      "6c13fa3bf3366200.webp",
+      "186afb0ad16d177e.webp",
+      "758b74f3b7fda052.webp",
+      "97cb1834e73b50ec.webp",
+      "199d6f94ec490198.webp",
+      "4b700c4733fa30e6.webp",
+      "e688a626b3ec5dd8.webp",
+      "88029b3c07f239ed.webp",
+      "9a4c36389f780242.webp",
+      "c4c0349def88b857.webp",
+      "d766d8ff768c07a8.webp"
+    ]
+  }
 }

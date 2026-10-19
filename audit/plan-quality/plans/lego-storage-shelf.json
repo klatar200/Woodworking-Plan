@@ -1,6 +1,6 @@
 {
   "slug": "lego-storage-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -79,43 +79,30 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].title",
-          "quote": "Download plans",
-          "why": "matches \"Download\""
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Download the plans for this shelf for a few more detailed instructions while you build.",
-          "why": "matches \"Download\""
+          "quote": "Download the plans for this shelf for a few more detailed instructions while you build."
         },
         {
-          "path": "materials[6].name",
-          "quote": "Lego Bins (https://amzn.to/3sl4V64)",
-          "why": "matches \"https://\""
+          "path": "steps[2].body",
+          "quote": "drill all the pocket holes as shown in the plans."
         }
-      ]
+      ],
+      "reason": "Pocket-hole locations and shelf layout are deferred to downloadable plans we do not have (searched cutList, materials, 7 steps and all 15 images: photos only, no drawings). The cabinet parts are fully listed in cutList, so the carcass can still be built; the shelf-position gap is scored under R10."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[1]-[5] parts (Back, Top, Sides, Shelves, Toe Kick) all have cutList rows (Top = 'Top of Cabinet')"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Top of Cabinet",
-          "why": "no step mentions it (searched steps for cabinet)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep flags are spelling/naming only: steps[5] 'Back and Top pieces', 'Sides', 'the Shelfs', 'Toe Kick' and steps[3] 'selves, sides, and top' map to cutList[0]-[4].",
+      "reason": "all 5 rows are used by steps[3] and steps[5]"
     },
     "R4": {
       "result": "pass",
@@ -126,31 +113,68 @@
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "no step names a screw size ('glued and screwed together'); materials[2] 1 1/4\" and materials[3] 2\" screws exist, no conflict"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "e Back and Top pieces, start assembling the shelf together.\nThan add Sides, and than the Shelfs, working from the top to the bottom.\nFinally install the Toe Kick.\nAll pieces were glued and screwed tog",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/062ac892dd2b9b09.webp"
+          "quote": "Than add Sides, and than the Shelfs, working from the top to the bottom."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "We also pre-drilled holes in the back for the shelfs at the same time as drilling the pocket holes"
         }
-      ]
+      ],
+      "reason": "The vertical position of the 5 shelves (and the pre-drilled back holes) is never given. Searched cutList, steps, description and materials for a shelf height/spacing: none; materials[6] bins are an Amazon link with no size; all 15 viewed images are photos with no dimensions (e.g. 73e1451470589eeb, aba87c109965e4c2 show the empty shelf only)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; 'as shown in the plans' references are scored under R1"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut (1), pocket holes (2), edge band (3), sand (4), assemble back/top then sides then shelves top to bottom then toe kick (5), finish (6)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'set depths to 3/4\"' states the setting for all 3/4\" plywood parts; other joints 'glued and screwed'"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "parts 1 top + 5 shelves + 2 sides + back + toe kick match steps; area 36.5x13.75 + 5x35x13 + 2x36.75x13.75 + 35x36.75 = 5,073 sq in <= 2 sheets (9,216); edge banding, finish, plugs, filler, glue, screws all in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "74aa0a6852dc2fdd.webp",
+      "677864ce0498d471.webp",
+      "59f97da88a71d8ab.webp",
+      "ae56ff816d4aaac1.webp",
+      "977bb62c5ca46fc3.webp",
+      "411acc3115cf283a.webp",
+      "c06d3b325b4031fb.webp",
+      "aba87c109965e4c2.webp",
+      "73e1451470589eeb.webp",
+      "77a1c8f852ade648.webp",
+      "b3352b57e93eeb5d.webp",
+      "791031e13942dfbc.webp",
+      "3b033c5a0fcaddc0.webp",
+      "062ac892dd2b9b09.webp",
+      "7a94094ffbffc706.webp"
+    ]
+  }
 }

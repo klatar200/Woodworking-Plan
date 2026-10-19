@@ -1,6 +1,6 @@
 {
   "slug": "bathroom-storage-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,10 +119,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps (Long/Short Leg, Shelf Filler, Top Filler, Brace, Shelf) matches a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 6 cutList parts are used in steps[0],[2],[4],[7]"
     },
     "R4": {
       "result": "pass",
@@ -133,60 +135,58 @@
       "reason": "R5 precondition not met: 2 stock types (1x2, 1x10); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name 1 1/4\" Kreg pocket-hole screws (materials[3]) and 2\" wood screws (materials[6]); no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "unattached image 543209adf0690f98 (viewed) dimensions shelf pitch 9 1/4\", 36\" short leg, 4\" and 12\" brace positions, 23 1/2\" shelf; fillers set by scrap spacer, shelves centered (relational)"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut two Long Legs to length from 1x2 x 96\" pine boards, as shown in the cutting diagram. Now, cut two Short Legs to length from two 1x2 x 72\" boards.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut two Long Legs to length from 1x2 x 96\" pine boards, as shown in the cutting diagram. Now, cut two Short Legs to length from two 1x2 x 72\" boards.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Long Legs to length from 1x2 x 96\" pine boards, as shown in the cutting diagram."
         },
         {
           "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length"
         }
-      ]
+      ],
+      "reason": "Viewed all 5 unattached images: 4 are room photos, 1 (543209adf0690f98) is an assembled-shelf dimension drawing; none is a cutting diagram. The part sizes and source boards are stated in text and cutList, so the build can proceed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs cut/glued (steps 0-1), fillers cut and attached (2-3), braces made then attached (4-6), shelves cut and installed in notches (7-8), wall mount last (10)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4].body 'set up your Kreg Pocket-Hole Jig for 3/4\"-thick material' covers all 3/4\" parts (braces, shelves)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "3 fillers + top filler per leg x2 = 6 + 2 (cutList); 8 braces = 4 pairs (2 per leg); 4 shelves for 4 notches; all assemblies installed; pads, anchors, screws in materials. Height check from cutList: 36 + 3x(9.25+0.75)... top shelf at 66.75 + Top Filler 5.25 = 72 = Long Leg"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-03",
+    "imagesViewed": [
+      "a3f8a698db426b2c.webp",
+      "e7fecde629c46ae5.webp",
+      "115c7dbf9dc5f5d6.webp",
+      "d627fb906b4ab842.webp",
+      "543209adf0690f98.webp"
+    ]
+  }
 }
