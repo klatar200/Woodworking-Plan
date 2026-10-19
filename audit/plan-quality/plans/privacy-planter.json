@@ -1,6 +1,6 @@
 {
   "slug": "privacy-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,33 +131,52 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "The only measured placement in text gives a number: steps[3] 'Space boards approximately 3/4” apart'. Side-board and box-board positions are in the viewed images ('1/4\" from bottom', '1/4\" spacing', 'Flush to top', 'inset 1\"')."
+      "reason": "Positions are given as numbers or relational placements in text and viewed images: base boards 'approximately 3/4\" apart' (steps[3]); box boards '1/4\" spacing', 'Flush', 'inset 1\"' (steps[1] image f7634039e5bf7c8e.webp); side boards positions in steps[0] image (viewed by calib-4); supports 'Flush with bottom of 3rd 5/4 board' (steps[2] image 1574049c97fc2b50.webp); cap attaches through pre-drilled pocket holes at the top (steps[5])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Staple plastic to the sides, then overlap weed barrier and staple it to the bottom to retain the soil but allow for drainage."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Space boards approximately 3/4” apart. (Spacing is just to allow for drainage and not crucial)"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Planter Base, qty 8, 1.25 x 6 x 14"
+        }
+      ],
+      "arithmetic": "(a) not counted: 8 base boards x 6 (cutList[3] width) + 7 gaps x 3/4 = 48 + 5 1/4 = 53 1/4 > 46 1/2 (cutList[6] support / cutList[1] front-back length, the span the base boards sit in, steps[3] image c020d7de34c135ad.webp). The '6' is the nominal size of '5/4 x 6' decking; its actual width is not in §9, so whether the boards fit is not settled here.",
+      "reason": "(c) Plastic, weed barrier and staples are used in steps[3]; searched materials[].name for /plastic|barrier|fabric|staple/i: no hit (staples and sheet plastic are named in the R14 list). (b) every assembly is installed (sides, box, supports, base, cap). (d) steps end with the cap attached (steps[5]). Step and image counts match the cut list: Side '(7 places)' x 2 = 14, Front/Back '(14 places)' = 14, base '(8 places)' = 8 (viewed images)."
     }
   },
-  "gaps": [
-    {
-      "path": "steps[3].body",
-      "quote": "Staple plastic to the sides, then overlap weed barrier and staple it to the bottom to retain the soil but allow for drainage.",
-      "what": "Plastic, weed barrier and staples are used but not in materials (searched materials.name for /plastic|barrier|fabric|staple/i: no hit)."
-    }
-  ],
+  "gaps": [],
   "verdict": "Ship (unverified)",
   "reader": {
     "batch": "calib-4",
     "imagesViewed": [
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1cf91bc041ce1550.webp",
-      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7634039e5bf7c8e.webp"
-    ]
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7634039e5bf7c8e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c020d7de34c135ad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1574049c97fc2b50.webp"
+    ],
+    "rescore": "rescore-6"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Ship (unverified)"
 }

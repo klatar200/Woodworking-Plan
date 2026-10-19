@@ -1,6 +1,6 @@
 {
   "slug": "printers-cabinet-cat-litter-box-enclosure",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -479,13 +479,47 @@
       "reason": "Pocket holes go into the 2x4 base (steps[0]), 2x2 frame (steps[4]) and 3/4\" plywood/1x boards (steps[5]-[7], [9], [11], [13]). Searched all steps, description and materials for a jig/thickness setting (/set|jig|thickness/): none stated."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Install the 1x3 and 2x3 slide supports as shown. Utilize 1 1/4\" pocket hole screws on each end of the boards"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "You can eliminate the interior plywood divider if you are not going to use this as a litter box."
+        }
+      ],
+      "reason": "Two positions the builder must set have no number in text or viewed image: the drawer-slide supports (steps[6]; viewed image 8cff47f5a49a9b81.webp shows the supports in the frame with no dimensions) and the interior plywood divider (steps[5]; viewed image 0b08984ef2913d66.webp shows it standing in the left bay, off-centre, no dimensions). Searched all steps for a number near /support|divider/i: none. The frame itself is dimensioned in viewed steps[4] image 92c356c6b62dbc97.webp (4', 1' 9 3/4\", 1' 6 3/4\", 6 3/4\", 1' 10 1/2\", 7\", 3 3/8\", 6\"); hinges and slides are 'per mfg. installation instructions' with a stated 3/4\" inset (steps[8]) and 1/8\" face gap (steps[14])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "5 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Use double sided tape to position and 1 1/4\" screws to attach thru drawer boxes. See extra's for source of handles."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Glue and attach with 1 1/2\" nails with your nail gun."
+        },
+        {
+          "path": "materials[11].name",
+          "quote": "Cup style handles"
+        }
+      ],
+      "reason": "(c) Glue (steps[1], [2], [3]) and double-sided tape (steps[14]) are used; searched materials[].name for /glue|adhesive|tape/i: no hit. (b) materials[11] lists 16 'Cup style handles' but no step installs them: searched all steps for /handle|pull|knob/i, only steps[14] 'See extra's for source of handles'. Drawers (steps[8]), doors (steps[12]) and drawer faces (steps[14]) are installed, so (d) the steps reach a usable cabinet. Cut-list count disagreements (e.g. steps[1] '(4) plywood supports' vs cutList[1] 'Base supports' qty 1) are already R2/R3 (cut list is a stock list) and not re-reported."
     }
   },
   "verdict": "Fix",
@@ -498,6 +532,12 @@
   "notes": "Cut list is a stock list and no step gives a part size; measurements depend on step images not viewed in this batch - a verifier should view steps[0]-[6] images before settling R2.",
   "reader": {
     "batch": "pilot-3",
-    "imagesViewed": []
-  }
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/92c356c6b62dbc97.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8cff47f5a49a9b81.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b08984ef2913d66.webp"
+    ],
+    "rescore": "rescore-6"
+  },
+  "previousVerdict": "Fix"
 }

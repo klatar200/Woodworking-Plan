@@ -1,6 +1,6 @@
 {
   "slug": "mudroom-lockers-with-character",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -533,31 +533,55 @@
       "reason": "Pocket holes go in 3/4\" poplar rails and arches (cutList[5], [7], [8]) but no jig thickness setting is stated. Searched all fields for /jig|setting/i: only the tool slug 'pocket-hole-jig'. Other joints state method and fastener (dado + glue, glue + clamp, counterbored screws, glue + nails)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Layout and cut the dado's and grooves. we use a dado stack on the upper carcasses and a router on the bench carcasses."
+        },
+        {
+          "path": "cutList[29].part",
+          "quote": "(3/4 Ply, Top Carcass) Shelves"
+        }
+      ],
+      "reason": "Shelves (cutList[21],[22],[29],[30]) sit in dados whose positions (shelf heights) the builder must set, but no position is given. Searched all steps for a number with an inch mark or /height|from the (top|bottom)|on center/i: the only measurement in any step is steps[18] '7/8\" board'. Viewed steps[1] image (442c6490411587a7.webp): photos of a dado stack, a miter gauge and a dadoed panel, no dimensions."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "reason": "Reader: steps[14] refers to '1:1 prints' (missed by the pattern); the step has its own image, and the prints are offered as an option ('or you can draw them out')."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "We prepped the edges for the bench seat and then, biscuit, glued and clamped the bench seats."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "This is very similar to installing cabinets. Making sure the are level vertically and horizontally, shim and screw using cabinet screws."
+        },
+        {
+          "path": "materials",
+          "quote": "Red Oak, 23 Bd ft 5/4"
+        }
+      ],
+      "reason": "(b)/(d) The bench seats (cutList[0..1]) are glued up in steps[4] but no later step installs them: searched all steps, description and summary for /seat|bench/i, the only step hit is steps[4] (steps[13] installs the lower carcasses, no seat). Unpublish level because a seat is named in the R14 fail level; 'likely' because the bench carcass has its own plywood shelves (cutList[21..22]), so whether the piece is unusable without the oak seat is a judgment. (c) steps[4] uses biscuits; searched materials for /biscuit/i: no hit."
     }
   },
   "verdict": "Fix",
   "gaps": [
     {
-      "path": "steps[4].body",
-      "quote": "We prepped the edges for the bench seat and then, biscuit, glued and clamped the bench seats.",
-      "what": "The bench seats are glued up but never installed: searched all steps for /seat/i, only steps[4]. Biscuits are used here but not in materials (searched materials for /biscuit/i, no hit)."
-    },
-    {
       "path": "steps[16].body",
       "quote": "We glues and nailed the trim to the face frames.",
       "what": "Nails (steps[16], steps[17], steps[19], steps[8] tip 'brad nails') and 'cabinet screws' (steps[13]) are used but not in materials and have no size (materials list only 1 1/4 pocket screws)."
-    },
-    {
-      "path": "steps[1].body",
-      "quote": "Layout and cut the dado's and grooves.",
-      "what": "No shelf/divider dado positions are given in any step; steps[1] image not viewed because the sweep did not flag it."
     },
     {
       "path": "cutList[0].part",
@@ -567,12 +591,16 @@
   ],
   "reader": {
     "batch": "calib-2",
-    "imagesViewed": []
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/442c6490411587a7.webp"
+    ],
+    "rescore": "rescore-6"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Fix"
 }

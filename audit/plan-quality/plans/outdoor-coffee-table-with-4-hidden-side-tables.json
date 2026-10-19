@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-coffee-table-with-4-hidden-side-tables",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -79,24 +79,48 @@
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Measured positions give numbers (stretchers 2-1/2\" down / 2\" up, steps[8]-[9]; bottom rail 2\" up, steps[19], [23]; 1/2\" spacing, steps[4], [16]); others are centered or flush."
+      "search": "step sentences with a placement trigger and no inch measurement; every assembly step read for a position the builder must set",
+      "reason": "Measured positions give numbers (stretchers 2-1/2\" down / 2\" up, steps[8]-[9]; bottom rail 2\" up, steps[19], [23]; 1/2\" spacing, steps[4], [16]); the rest are relational: 'center the middle' (steps[2]), 'center on the side/long middle' (steps[3]), 'center on the long stetcher' (steps[11]), 'center the legs on the top' (steps[12]), 'In the center of each top rail' (steps[20]), 'At the location of each rail' (steps[24]), 'center a leg assembly' (steps[26]), top rail 'flush with the tops of the legs' (steps[19], [23])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "Cut 8 pieces of 1x3 to 6-1/4\" and drill pocket holes in each end."
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Side Table Middle Top Pieces, quantity 24"
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "Then apply glue to 2 short top pieces and 2 middle pieces and place between the long top pieces. The spacing between the short top pieces and the middle pieces is 1/2\""
+        }
+      ],
+      "arithmetic": "Steps: 2 middle pieces per side table x 4 tables = 8 = steps[15] '8 pieces'; cutList[9] says 24. The step count adds up: per top, 2 short x 3.5 + 2 middle x 2.5 + 3 gaps x 1/2 = 7 + 5 + 1.5 = 13.5 = cutList[7] long top piece 13.5. With 24 (6 per top): 7 + 15 + 7 x 1/2 = 25.5 > 13.5.",
+      "reason": "(a) The cut-list count for the side-table middle top pieces (24) disagrees with the step (8); the step's own numbers add up, so the cut-list row is wrong. The same row also causes the R5 1x3 shortfall. Other counts and sizes match: e.g. coffee-table top 3 x 2.5 + 4 x 1/2 = 9.5 = quadrant opening and quadrant piece length (steps[4]); 3 x 3.5 + 2 x 9.5 = 29.5 = cutList[0] long side. (b) every assembly is joined in a later step (top steps[2]-[4], base steps[8]-[12], side tables steps[16]-[26]). (c) only non-fastener item is exterior glue, in materials[4]. (d) steps end with the finished coffee table and side tables (steps[27])."
     }
   },
   "verdict": "Fix",
   "gaps": [],
   "reader": {
     "batch": "calib-2",
-    "imagesViewed": []
+    "imagesViewed": [],
+    "rescore": "rescore-6"
   },
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "previousVerdict": "Fix"
 }

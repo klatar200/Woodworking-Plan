@@ -1,6 +1,6 @@
 {
   "slug": "plant-stand-tower",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -124,32 +124,30 @@
     },
     "R10": {
       "result": "pass",
-      "sweepResult": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "reason": "Both flagged placements give numbers in text; no image needed.",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "ensure you have 2\" overhang on each side.\nInsert one pocket hole screw on the left side. Check overhang and insert one pocket hole on the right side. Finish by adding the other two pocket hole screws.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c170bed928b62ba0.webp",
-          "confirmed": false,
-          "readerNote": "Shelf placed \"flush with the bottom of the legs\" with \"2\\\" overhang on each side\"; screw order is not a position."
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "From the bottom shelf measure and mark 12.5\" on each leg. Apply a little wood glue to the legs. Place the shelf and check that the overhang is 2\" on each side. Attach with pocket hole screws as in ste",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca9c8eae553d8415.webp",
-          "confirmed": false,
-          "readerNote": "Gives 12.5\" spacing and 2\" overhang."
-        }
-      ]
+      "reason": "Every position the builder sets is a number in text: leg spacing 'a 13\" piece of scrap' (steps[1]); pocket-hole guide lines '2\" in from the short edge' and 'another mark at 3.5\"' (steps[2]); shelf overhang '2\" on each side' (steps[4]-[6]); shelf spacing 'measure and mark 12.5\" on each leg' (steps[5]); bottom and top shelves flush with the leg ends (steps[4], [5]); back legs aligned with the bottom shelf (steps[6])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Apply a little wood glue to the bottom of each leg where the bottom shelf will be attached."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Apply wood glue on the edge of one side of each shelf over where the pocket holes were drilled."
+        }
+      ],
+      "arithmetic": "(a) holds: shelf 20 = 2 legs x 1 1/2 + 13 spacer (steps[1]) + 2 x 2 overhang (steps[4]) = 3 + 13 + 4 = 20; leg 57 1/2 = 5 shelves x 1 1/2 + 4 x 12 1/2 (steps[5]) = 7 1/2 + 50 = 57 1/2.",
+      "reason": "(c) Wood glue is used in steps[4], [5], [6]; searched materials[].name for /glue|adhesive/i: no hit (materials are 2x2, 2x10 and pocket screws only). (a) counts and sizes agree (4 legs, 5 shelves = bottom + one + 'the next two' + top, steps[4]-[5]). (b) all shelves and legs are installed. (d) steps reach the finished stand (steps[7])."
     }
   },
   "gaps": [
@@ -168,7 +166,9 @@
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
     "batch": "calib-3",
-    "imagesViewed": []
+    "imagesViewed": [],
+    "rescore": "rescore-6"
   },
-  "notes": "Two Fix: shelf width 9.5\" exceeds a 2x10's 9 1/4\" (R4), and no pocket-hole jig setting (R9)."
+  "notes": "Two Fix: shelf width 9.5\" exceeds a 2x10's 9 1/4\" (R4), and no pocket-hole jig setting (R9).",
+  "previousVerdict": "Fix"
 }

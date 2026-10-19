@@ -1,6 +1,6 @@
 {
   "slug": "porch-bed-swing",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -374,13 +374,44 @@
       "reason": "All pocket-holed parts are 1 1/2\"; countersunk joints (steps[4], [6], [8]-[10]) state method and 2 1/2\" screws; slats stapled (steps[7])."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Predrill holes for your u-bolts in the bottom rope hangers (2- 1 1/2\" x 3 1/2\" x 70\")."
+        }
+      ],
+      "reason": "The U-bolt hole locations along the 70\" rope hangers are positions the builder must set and are not given. Searched all steps for /u-?bolt|hole/i near a number: steps[10] gives only the hanger overhang ('5 1/2\" hanging over on each side') and front/back placement ('roughly in 1 1/2\"'). Viewed steps[10] image (49118c97257edc60.webp): the hangers on the base, no holes or dimensions. Other positions are given: mattress supports '2 3/4\" from the top' and '4\" gap' (steps[1], confirmed in viewed image bb48cc90c5b204b6.webp), side-rail 2\" overhang (steps[3]-[4]), slat spacing 7 1/8\" / 7 1/4\" / 1\" (steps[7], viewed image 52c4421fae54d5e5.webp shows the pairs), support flush positions (steps[5]-[6])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Staple up through the bottom supports to hold them in place."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Predrill holes for your u-bolts in the bottom rope hangers"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Pick the perfect exterior finish and hang that baby up on your front porch!"
+        }
+      ],
+      "arithmetic": "(a) holds: mattress supports lie flat between the side frames (viewed image bb48cc90c5b204b6.webp): 6 x 5 1/2 + 5 gaps x 4 = 33 + 20 = 53 = 56 front frame - 2 x 1 1/2 side frames = cutList[5] bottom back support 53. Slats: viewed image 52c4421fae54d5e5.webp shows 3 pairs on the back + 1 pair per side = 10 = cutList[6] qty 10.",
+      "reason": "(c) Staples are used in steps[7], [8], [9]; searched materials[].name for /staple/i: no hit. (b) U-bolt holes are drilled (steps[10]) and materials[4] lists 'Ubolts', but no step installs them: searched steps for /u-?bolt/i, only steps[10]'s predrill. (d) The swing is hung in steps[11] but nothing to hang it with is listed or described: searched all fields for /rope|chain|cable/i, only the part name 'Bottom rope hangers' (cutList[9], steps[10]). Counts and sizes otherwise match the cut list (every step quotes its part size)."
     }
   },
   "verdict": "Ship",
@@ -393,6 +424,12 @@
   "notes": "Staples (steps[7]-[10]) and hanging rope/chain are not in materials; no rubric check covers an unsized consumable.",
   "reader": {
     "batch": "pilot-3",
-    "imagesViewed": []
-  }
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb48cc90c5b204b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/52c4421fae54d5e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49118c97257edc60.webp"
+    ],
+    "rescore": "rescore-6"
+  },
+  "previousVerdict": "Ship"
 }
