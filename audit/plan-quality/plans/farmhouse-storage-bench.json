@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-storage-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,51 +203,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps (legs, stretchers, lower 2x4 stretcher, 1x4 aprons, plywood bottom, 1x8 seat boards, 1x4 board, breadboard ends) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used in steps[0]-[4]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x4, 1x8, sheet-0.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock named per part (2x4 stretchers/legs, 1x4 aprons/breadboards/seat board, 1x8, 1/2\" ply). 2x4 (2 x 96 = 192): 4 x 17 1/4 + 4 x 9 + 43 1/2 = 69+36+43.5 = 148.5 + 9 x 1/8 = 149 5/8. 1x4 (192): 2 x 43 1/2 + 2 x 16 3/4 + 41 = 87+33.5+41 = 161.5 + 5 x 1/8 = 162 1/8. 1x8 (2 x 72): 2 x 41 = 82 <= 144, one 41 per board. Ply 14 1/2 x 43 1/2 fits a 24 x 48 quarter sheet"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "Drill 1/2\" pocket holes into the 1/2 plywood that will make up the storage compartment bottom. Attach flush with the bottom edge of the 1x4 and 2x4 frame pieces with 1\" pocket screws.",
-          "why": "1\" screw — no material line lists a 1\" fastener"
+          "quote": "Attach flush with the bottom edge of the 1x4 and 2x4 frame pieces with 1\" pocket screws."
+        },
+        {
+          "path": "materials[4..5].name",
+          "quote": "2 1/2\" pocket screws / 1 1/4\" pocket screws"
         }
-      ]
+      ],
+      "reason": "1\" pocket screws are used in steps[3] but no materials line has them (searched all 10 materials: only 2 1/2\" qty 20 and 1 1/4\" qty 30 pocket screws)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "ing 2 1/2\" middle hinges, attach the bench seat to the base. Mark the location of the hinges and trace the outside edges with a pencil into the top of the base. Using a chisel and mallet, make a morti",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d5dc16d3521a2a9e.webp"
+          "quote": "Mark the location of the hinges and trace the outside edges with a pencil into the top of the base."
         }
-      ]
+      ],
+      "reason": "No hinge position (distance from ends, count placement) is given in steps[6] or materials[6]; viewed steps[6] image only labels 'Attach bench seat to base with 2 1/2\" hinges' with no dimensions. Other positions are given (lower stretcher 2\" up, stretchers flush top, 43 1/2\" and 14 1/2\" spans in viewed images)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg/stretcher sides, lower stretcher, aprons, plywood bottom, seat, finish, then hinges; each part exists first"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "settings stated for each thickness: 1 1/2\" (2x4, steps[0],[1]), 3/4\" (1x4, steps[2],[4]), 1/2\" (plywood, steps[3])"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 x 6 5/8 + 3 1/2 = 16 3/4 matches Breadboard ends 16 3/4 and the viewed seat drawing; rip to 6 5/8 matches cutList 6 5/8; (b) all parts installed; (c) hinges materials[6], glue materials[7], ply materials[3]; (d) reaches finished bench"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/d5dc16d3521a2a9e.webp",
+      "plans/43b4eb4fefb41f49.webp",
+      "plans/1d4bc4b6ddf16bb2.webp",
+      "plans/205132c41b217466.webp",
+      "plans/9dfbe1c700fb37dc.webp",
+      "plans/c263f37399c8652c.webp"
+    ]
+  }
 }

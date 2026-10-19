@@ -1,6 +1,6 @@
 {
   "slug": "double-decker-shoe-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,50 +47,73 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (Ends, Shelves, Rails) all have cutList rows; no other part is cut"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Ends x2, Shelves x2, Rails x4 each used in steps[0],[2],[3]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps[0] names stock per part (quarter sheet for Ends/Shelves, 1x2 for Rails). 1x2: 4 x 23 3/4 = 95 in + 3 cuts x 1/8 = 95 3/8 <= 96 (materials[1] 'Board, 1x2 96\"'). Sheet: 2x(12x12)+2x(10x23 3/4)=288+475=763 sq in <= 24x48=1152 and a layout exists (shelves side by side 20 1/8 x 23 3/4, ends stacked 12+1/8+12 in the 24 1/8 remainder)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is '1 1/4\" coarse-thread pocket-hole screws' (steps[2],[3]) = materials[2]; qty 24 matches the 12 holes per shelf x 2 in the viewed step[1] image"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed steps[3] image gives shelf positions on the End (1/2\", 6 1/2\", 2\", 1\", 1 1/2\"); steps[2] image gives rail offsets 1/4\"; steps[1] image gives hole positions"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut two Ends and two Shelves to size from a quarter sheet of 3/4\" plywood, as shown in the cutting diagram. Also cut four Rails to length from a 1x2 board.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut two Ends and two Shelves to size from a quarter sheet of 3/4\" plywood, as shown in the cutting diagram. Also cut four Rails to length from a 1x2 board.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "as shown in the cutting diagram"
         }
-      ]
+      ],
+      "reason": "steps[0] has no image. Viewed all 8 images[] (5 unattached + 3 step images): hero, a 12\"/25 1/4\" assembly drawing, 3 photos, hole-layout, rail-offset and end-position drawings; none is a cutting diagram. Cut sizes themselves are in cutList, so this is non-structural."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, holes drilled, rails to shelves, shelf assemblies to ends: each exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'With your jig set up for 3/4\" stock' for the only pocket-hole thickness (3/4)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) quantities match steps[0]; 2 x 3/4 + 23 3/4 = 25 1/4 matches the viewed 25 1/4\" overall drawing; (b) all parts installed; (c) no non-fastener items used except paint (out of scope); (d) steps reach finished organizer"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/ad0799a385fd4ee4.webp",
+      "plans/d709a2404fd64d27.webp",
+      "plans/1b5099b46386d318.webp",
+      "plans/5ffff141ca8e5be1.webp",
+      "plans/9b288e356a02267d.webp",
+      "plans/c104750137341cdf.webp",
+      "plans/1a795f286d57f6c8.webp",
+      "plans/993a18c7373c50e7.webp"
+    ]
+  }
 }

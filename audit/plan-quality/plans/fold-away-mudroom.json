@@ -1,6 +1,6 @@
 {
   "slug": "fold-away-mudroom",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -215,51 +215,96 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps (back legs, shelf backs 2x2, front legs 1x3, back supports small/large, shelf fronts, front leg supports, slats) has a cutList row; hooks/bolts are hardware"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used: steps[0],[2],[5],[6],[7]; top/bottom shelf slats in the step 0 drawings"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x2, 1x3, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock identified by unique cross-sections and steps[0],[1] (2x2, 1x3). 2x2 (2 x 96): board 1 = 52 + 30 = 82 1/8, board 2 the same. 1x3 (2 x 96): 54 1/4 + 30 1/8 = 84 3/8 each. 1x6 (72): 2 x 30 1/8 = 60 1/4 + 1/8 <= 72. 1x2 (4 x 96) total 60 + 66 1/4 + 9 x 13 7/8 + 9 x 6 1/2 = 309 5/8 + kerf <= 384, and packs (33 1/8 x2 + 2 slats = 94 1/2; 30 x2 + 2 slats + 1 top slat = 95 3/8; 5 + 3 slats = 89 7/8; 5 top slats)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "mark where to add the hooks so that the shelf will be able to fold down over them. Secure with screws."
+        }
+      ],
+      "reason": "steps[9] uses 'screws' with no size and no materials line for them (searched all 10 materials: only 1 1/4\" Kreg pocket hole screws, 1/4\" hex bolts/washers/nuts, 5mm shelf pins). Sizes used elsewhere (1 1/4\" pocket screws, 2 1/2\" x 1/4\" bolts, 5mm pins) are all listed."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "k legs together so the holes you just drilled are facing up. Mark the boards for the back supports and shelves by measuring from the top of the legs down according to the diagram. Then draw a line acr",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def29126c2ac8ae2.webp"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "rom the top 10 5/8\" and attach the support top at that line. For the bottom support, measure up from the bottom front (the longest part of the leg) 4 5/8 and attach the support top at that line. Attac",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5814e82996965e8.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "numbers given: marks 2/9/11/28/46 3/4/49\" in the viewed steps[3] diagram, 1 1/2\" X marks, front-leg supports 10 5/8\" down and 4 5/8\" up (viewed steps[7] drawing), slat spacing 2\"/2 1/8\" in viewed steps[0] drawing; hook placement is relational (shelf must fold over them)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "steps[0] 'according to the photo' and steps[3] 'according to the diagram' both have their own viewed dimensioned images"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Make sure to take note what side of the front leg is the back because of the angle at the bottom of the leg."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut the front legs to size. Then cut the bottom of each leg at a 15 degree angle."
+        }
+      ],
+      "reason": "steps[1] clamps the front legs to the back legs and drills through both, relying on the 15 degree bottom angle, but the angle is only cut in steps[2]; the build can still be completed by cutting the legs first."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'Set your Kreg pocket hole jig for 3/4\" thick material' (steps[0]) and 'jig set for 3/4\" material' (steps[5]); all pocket-hole parts are 3/4\" (cutList rows 2-9), none contradicted"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].title",
+          "quote": "Attach hooks"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "mark where to add the hooks so that the shelf will be able to fold down over them."
+        }
+      ],
+      "reason": "(c) hooks are installed in steps[9] (viewed image shows two coat hooks) but no materials line matches /hook/ (searched all 10 materials). Other agreements hold: front leg 54 1/4 = cutList 54.25; 33 1/8 supports = 30 1/8 + 2 x 1 1/2; 4 shelf pins = 2 per shelf x 2; 2 bolts/washers/nuts for two pivots."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/def29126c2ac8ae2.webp",
+      "plans/b5814e82996965e8.webp",
+      "plans/4c5064557c9faa6c.webp",
+      "plans/7d404784d37bddea.webp",
+      "plans/0fd723eb9976e9a4.webp"
+    ]
+  }
 }

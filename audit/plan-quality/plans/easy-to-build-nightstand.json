@@ -1,6 +1,6 @@
 {
   "slug": "easy-to-build-nightstand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,50 +83,88 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (Legs, Rails, Shelf, Top Slats, Top) all in cutList; the assembled Top is made of the Top Slats (steps[8])"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs x4, Rails x4, Top Slats x4, Shelf x1 each used in steps[0]-[9]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x6, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock for every part (steps[0],[1] 1x4; [5] 3/4\" plywood; [7] 1x6). 1x4: legs 4 x 19 1/4 = 77 + rails 4 x 16 1/4 = 65 = 142 + 8 cuts x 1/8 = 143 <= 96 + 72 = 168 (materials[0],[1]), packs (96: 4 legs + 1 rail = 93 5/8; 72: 3 rails = 48 3/4). 1x6: 4 x 22 = 88 + 4 x 1/8 = 88 1/2 <= 96 (materials[2]). Shelf 19 x 19 fits one 24 x 48 quarter sheet"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is '1 1/4\" fine-thread pocket-hole screws' (steps[3],[4],[6],[8],[9]) = materials[4]; qty 47 = 24 rail holes (4 x 6) + 8 shelf + 15 slat holes counted in viewed step images"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give rail/leg offset 1/4\", shelf 3 1/2\" from leg end, shelf corner clips 2 1/8\", hole positions on rails (5 1/2\" in) and slats; top overhang is 'equal overhangs' (relational; overall 22 and 20 3/8 shown)"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut four Legs to length from a 1x4 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Legs to length from a 1x4 board, as shown in the cutting diagram."
         },
         {
-          "path": "steps[0].body",
-          "quote": "Cut four Legs to length from a 1x4 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[7].body",
+          "quote": "Cut four Top Slats to length from a 1x6 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] has no image. Viewed all 14 images: none is a cutting diagram for the legs (hero/beauty photos, 22/20 3/8/20 overall drawing, rail bevel drawing, hole layouts, shelf drawing); steps[7]'s image shows only slat pocket holes, no lengths. Lengths themselves are in cutList (non-structural)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "rails cut and drilled, two leg/rail assemblies, other legs added, shelf, slats, top mounted last; each part exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "jig thickness stated 3/4\" for every 3/4\" part (steps[1],[2],[5],[7]); steps[2] explains the mitred-end holes use jig 3/4\" with drill bit collar at 1/2\" - stated, not a contradiction of the thickness"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts and sizes match cutList (rail 16 1/4 in viewed image; slats 4 x 5 1/2 = 22 = the 22\" top drawing; legs 19 1/4 + 3/4 top = 20\" overall drawing); (b) every part installed; (c) iron-on edge banding is materials[5]; no other non-fastener items; (d) reaches finished nightstand"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/21d2e7be8ac5faad.webp",
+      "plans/048f6f2995786efe.webp",
+      "plans/c01833fe3205f02b.webp",
+      "plans/fbb3e6281486c67f.webp",
+      "plans/b90709ac370194ab.webp",
+      "plans/972547c718ab64b7.webp",
+      "plans/01dbabacdadd58bf.webp",
+      "plans/e35edceaebf317d9.webp",
+      "plans/0b1b47c39f616d9a.webp",
+      "plans/46e92d553b2b1a63.webp",
+      "plans/9936d1aae78b54c5.webp",
+      "plans/36fd1f288ed98f19.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "drill pocket holes in the back face of the Top Rail, as shown",
+      "what": "no part called 'Top Rail' exists (cutList has Rails x4 only); steps[2] then drills holes in every rail, so steps[1] is redundant/ambiguous"
+    }
+  ]
 }

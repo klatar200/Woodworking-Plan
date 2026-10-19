@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-scallop-end-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (top boards 1x4/1x3, legs, scalloped aprons, shelf supports, side aprons, bottom shelf boards) all have cutList rows; 'apron board' in steps[8] = Front & Back Scallop Aprons"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used (steps[0],[1],[2],[4],[6]); Bottom Shelf Boards rows split by 1x3/1x4"
     },
     "R4": {
       "result": "pass",
@@ -43,40 +45,115 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x4, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock identified by the nominal cut rows (1x2/1x3/1x4, §3 nominal path) and steps[0] (five 1x4, two 1x3). 1x2: legs 4 x 23 = 92 (+3 cuts x 1/8 = 92 3/8 <= 96) and supports 2 x 13 = 26 <= 48. 1x3: 2 x 13 + 2 x 15 + 2 x 17 1/2 = 26+30+35 = 91 + 6 x 1/8 = 91 3/4 <= 96. 1x4: 2 x 10 + 2 x 15 + 5 x 13 = 20+30+65 = 115 + 9 x 1/8 = 116 1/8 <= 96 + 48 = 144"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the bottom shelf boards with brad nails."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Attach both scalloped aprons to the legs."
+        }
+      ],
+      "reason": "Brad nails (steps[6]) have no size and no materials line (searched all 7 materials: only 'Box 1\" Kreg Screws', 'Box Box 1 1/4\" Kreg Screws'); steps[1] names no fastener at all. Screw sizes 1\" and 1 1/4\" used in steps[0],[2]-[5] are both in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numbers given for shelf supports ('7\" from the bottom of the leg and centered'), top overhang (1 1/2\" / 2 1/2\"), shelf gap 1/4\", scallop layout; apron height on legs (flush with leg tops) shown in viewed steps[1]/[4] photos; apron end angle 7 degrees fixes leg splay"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "flagged steps[3] 'as shown in the photo above' refers to the preceding steps[2] photo (viewed: front/back frames joined by the shelf supports); the 5 unattached images are beauty photos"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "Attach the front side and back to one another by the shelf supports using 1\" Kreg screws as shown in the photo above.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].title",
+          "quote": "Attaching the Scalloped Apron"
         },
         {
-          "path": "steps[3].body",
-          "quote": "Attach the front side and back to one another by the shelf supports using 1\" Kreg screws as shown in the photo above.",
-          "why": "\"photo above\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].body",
+          "quote": "Cut a 7 degree angle into each end of the apron board. The angles should be cut to the left and to the right, moving away from each other."
+        },
+        {
+          "path": "steps[7].title",
+          "quote": "Apply Your Finish"
         }
-      ]
+      ],
+      "reason": "The scalloped apron (7 degree end cuts, layout and jigsaw scallops) is only explained in steps[8], after steps[1] attaches it and after steps[7] finishes the table; a builder following the order attaches an uncut apron. Content is present, order is wrong; build can still be completed by reading ahead."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using 1 1/4 Kreg screws and glue, screw together the top as shown."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Attach both scalloped aprons to the legs."
+        }
+      ],
+      "reason": "Viewed step photos show pocket holes in the top boards, but no step says to drill pocket holes or states a jig thickness setting (searched all steps for /pocket|jig|setting/: no match); steps[1] gives no fastener or method for the aprons. Recorded only; does not count toward verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using 1 1/4 Kreg screws and glue, screw together the top as shown."
+        }
+      ],
+      "reason": "(c) wood glue is used in steps[0] but no materials line matches /glue/ (searched all 7 materials). Other checks: counts/sizes agree (top 13 + 2 x 2 1/2 = 18 and 5 x 3 1/2 = 17 1/2; overhang 2 1/2 each side leaves 13 = 10 apron + 2 x 1 1/2 leg width), every part installed, steps reach finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/e5d974bf88117ecc.webp",
+      "plans/900c4c062f24e25a.webp",
+      "plans/cc6d858a461667ed.webp",
+      "plans/f80d6e270ad95013.webp",
+      "plans/f0ad82e7cdb9e131.webp",
+      "plans/674a87bfc558f0d4.webp",
+      "plans/8396a9ce86cdd90e.webp",
+      "plans/75b2ab782fa0f734.webp",
+      "plans/08e7bb0165c3ed92.webp",
+      "plans/a0f4f9d70f6f09b7.webp",
+      "plans/6f2c470e6eb0ef44.webp",
+      "plans/e45e7e2c44ebf63f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Legs should be angled outward.",
+      "what": "no angle given for the leg splay or the leg top/bottom end cuts (cutList Legs 4 x 23 has none); only steps[8] gives a 7 degree cut for the apron ends, and viewed photos show the feet cut flat to the floor"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "easy-picture-frames",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,48 +35,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "you’ll need two pieces cut at 17 ½” on the long side, and 10 ½” on the short side. The short side will have the ¼” groove that you created in step one.\n(These measurements are for an 11x14 frame. If y",
-          "why": "cut sentence states 10 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "you’ll need two pieces cut at 20 ½” on the long side, and 13 ½” on the short side. The short side will have the ¼” groove that you created in step one.\n(These measurements are for an 11x14 frame. If y",
-          "why": "cut sentence states 13 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 10 1/2\" and 13 1/2\" (steps[3],[4]) are the short (groove-side) edge of the same Short/Long side pieces, not separate parts; viewed steps[4] image shows 20 1/2\" long edge, 14\" groove line, 13 1/2\" short edge on one piece. Every part is in cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Long sides x2 and Short sides x2 used in steps[3],[4]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "reason": "0.75 x 3.5 parts come from 1x4 (3/4 x 3 1/2, §9); materials[0] 'Board, 1x4x96\"' states 96\" with unit, so 20 1/2 and 17 1/2 fit"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "reason": "single stock (steps/description: 'It uses just one 1x4 board'): 2 x 20 1/2 + 2 x 17 1/2 = 41 + 35 = 76 in; + 4 cuts x 1/8 = 76 1/2 <= 96 (materials[0]); quantity 1 is the minimum and still suffices"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[6] '1 ¼” pocket hole screws' = materials[1] (8 = 4 corners x 2 holes in viewed frame image); only fastener size used"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "keyhole slots: viewed steps[7] image shows them centred on two sides; pocket holes 2 per long-side end shown in viewed image; groove 1/4 x 1/4 given; mitre positions fixed by the cut list"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "groove routed, edge profiled, pieces mitred, holes drilled, frame assembled, keyhole slots routed last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using the Kreg 720 pro pocket hole jig, drill pocket holes in both sides of your long boards."
+        }
+      ],
+      "reason": "3/4\" stock is drilled but no jig thickness setting is stated in any step/material (searched for /setting|3\\/4|thick/ near jig); viewed steps[5] photo shows the jig but no legible setting. Recorded only; does not count toward verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "If you wanted an 8x10 frame, these pieces would be 17 ½” on the long side and 9 ½” on the short side."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "If you wanted an 8x10 frame, these pieces would be 14 ½” on the long side and 7 ½” on the short side."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Fill holes with wood putty, let dry, then sand."
+        }
+      ],
+      "arithmetic": "(a) The plan's own pairs differ long-minus-short edge by 7 in (2 x 3 1/2 board width): 11x14 short sides 17 1/2 - 10 1/2 = 7; 11x14 long sides 20 1/2 - 13 1/2 = 7; 8x10 short sides 14 1/2 - 7 1/2 = 7; but 8x10 long sides 17 1/2 - 9 1/2 = 8 (breaks the pattern; 16 1/2 would give 7). (c) wood putty is used but materials[0..4] contain no putty (searched /putty|filler/).",
+      "reason": "The optional 8x10 long-side figure does not add up with the plan's other pairs, and wood putty is not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/91da8bc3d638f438.webp",
+      "plans/04c8d36c5ec287d5.webp",
+      "plans/83336a43fb9a61ff.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "the groove on the back side of your frame that your picture will sit inside",
+      "what": "no step or material provides anything to hold the picture (glass, backing, retainer) in the 1/4\" groove (searched all fields for /glass|backing|retain|clip|point/)"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "grilling-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -167,50 +167,115 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps (20 Slats, Vertical Rails, Front/Back Rails, Top Frame, Top Panel, Top Sheet, Caster Blocks) has a cutList row. steps[2] 'Top Side Rail' and 'Side Rail' have no row of that name but are the Top Side Slat/Side Slat of steps[1] and the viewed steps[2] drawing (see gaps)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used (steps[0]-[7],[11],[12])"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Kreg-corrected rows: slats 0.75 x 5.5 from 1x6; rails/frame 0.75 x 1.5 from 1x2; Back Rail 0.75 x 3.5 and Caster Block 0.75 x 3.5 from 1x4; Top Panel 24 x 24 from materials[3] 'Plywood, 3/4\" Thick 24\"'; Top Sheet 24 x 24 = materials[8]"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
+      "reason": "steps[12] says 'Cut three Front Rails to length from a 1x4 board, and cut three Back Rails to length from a 1x4 board' and steps[11] four Caster Blocks 'from a 1x4 board', but cutList[2] Front Rail width is 1.5 (viewed drawing 1 1/2\"); if all from 1x4: 6 x 21.25 + 4 x 3.5 = 127.5 + 14 = 141.5 in + 12 cuts x 1/8 = 143 > 96 (materials[1] 'Board, 1x4 96\"', quantity 1 = possible import default), so not scoreable. 1x6: 20 x 23.5 = 470 + 15 x 1/8 fits 5 x 96 (4 slats per board 94 3/8). 1x2: 134.5 + 108 + 63.75 = 306.25 <= 384"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all sizes used are listed: steps '1 1/4\" Blue-Kote pocket-hole screws' and '1 1/4\" exterior-rated pocket-hole screws' are the one size materials[6] lists (same size, two names, not two sizes); lag screws 1/4\" x 1 1/2\" x16 = 4 casters x 4 (materials[5])"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions given or relational: slats flush with rail ends and equal gaps, middle shelf aligned with lower edge of the third Side Slat (steps[8]), bottom shelf flush with the base of the Vertical Rails, shelf rail offsets 3/4\" in viewed steps[5] drawing, top overhang equal / sheet centered, 4 caster blocks one per corner in viewed steps[11] drawing; drawings give 14 5/8\" and 14 1/2\" openings, 37 1/2\" height"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "cut twenty Slats to length from 1x6 boards, as shown in the cutting diagram. Some of these Slats will be used to make the sides of the grilling station, and others will be used to make the shelves, bu",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "cut twenty Slats to length from 1x6 boards, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "steps[0] has no image. Viewed all 5 unattached images (4 lifestyle photos, 1 dimensioned overall drawing 27/27/37 1/2/14 5/8/14 1/2) and the step 6/12 drawings: none is a cutting diagram. All lengths are in cutList, so non-structural."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Assemble two shelves by joining four Slats to a Front Rail and a Back Rail using 1 1/4\" exterior-rated pocket-hole screws."
         },
         {
-          "path": "steps[0].body",
-          "quote": "ty Slats to length from 1x6 boards, as shown in the cutting diagram. Some of these Slats will be used to make the sides of the grilling station, and others will be used to make the shelves, but they a",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[12].body",
+          "quote": "Cut three Front Rails to length from a 1x4 board, and cut three Back Rails to length from a 1x4 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "The Front and Back Rails are first cut and drilled in steps[12], the last step, but steps[5] already joins slats to them; a builder following the order has no rails. Build can be completed by reading ahead."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'Kreg Jig set up for 3/4\"-thick material' in steps[1],[4],[12]; all pocket-hole parts (slats, rails, top panel) are 3/4\""
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Assemble two shelves by joining four Slats to a Front Rail and a Back Rail"
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Cut three Front Rails to length from a 1x4 board, and cut three Back Rails to length from a 1x4 board"
+        }
+      ],
+      "arithmetic": "(a)/(b) Two shelves use 2 Front + 2 Back Rails (steps[5]); cutList[2] and [3] each have quantity 3, steps[12] cuts 3 + 3. The third Front and Back Rail are made but no step installs them (searched steps[8]-[11] for /rail/: only 'Vertical Rails'); the viewed steps[8] image shows one loose Front Rail and one loose Back Rail beside the shelves.",
+      "reason": "One Front Rail and one Back Rail are cut and never installed. Counts otherwise agree: 20 slats = 12 + 8, 4 vertical rails, 4 top frame, 4 caster blocks; top frame 27 - 2 x 1 1/2 = 24 = Top Panel."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/de373cbbafea7d8b.webp",
+      "plans/9d449c2db60ceff1.webp",
+      "plans/4790d617fa56b6c6.webp",
+      "plans/2fdf9fd660628a68.webp",
+      "plans/3e72e9a681452491.webp",
+      "plans/28b1b740d3d9ea2d.webp",
+      "plans/9cba905c3fcf2721.webp",
+      "plans/3c114e748ffcca68.webp",
+      "plans/a4ff93a10fd4673a.webp",
+      "plans/4187820274252d6c.webp",
+      "plans/f0cdbb45eee5a7e5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Position one Top Side Rail and one Side Rail between each pair of Vertical Rails",
+      "what": "'Top Side Rail' and 'Side Rail' are not parts in cutList or steps[1] (which names Top Side Slats and Side Slats); naming mismatch for the same pieces"
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "Cut three Front Rails to length from a 1x4 board",
+      "what": "cutList[2] Front Rail is 1 1/2 wide (viewed drawing 1 1/2\"); a 1x4 is 3 1/2 wide and no step says to rip it, so the stock for the Front Rails is unclear"
+    }
+  ]
 }

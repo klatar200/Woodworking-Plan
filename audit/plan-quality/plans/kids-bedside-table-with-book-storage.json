@@ -1,6 +1,6 @@
 {
   "slug": "kids-bedside-table-with-book-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,78 +10,88 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (shelves, sides, 1x2 bar, 1/4\" back, 1x8 top) all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used in steps[0]-[4]"
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[4]",
-          "quote": "Table top — qty 1, 0.75 x 7.5 x 25.5"
+          "quote": "Table top, 1, 0.75 x 7.5 x 25.5"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x2 24\""
+          "path": "steps[4].body",
+          "quote": "Attach 1 x 8 cut at 25.5\" as the table top using the pocket hole screws. Leave an inch over hang on all four sides."
         },
         {
           "path": "materials[2].name",
           "quote": "Board, 1x8 36\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Plywood, 1/4\" Thick Quarter Sheet"
         }
       ],
-      "arithmetic": "cutList[4] 0.75×7.5: no listed stock has thickness 0.75 (±1/32) with width ≥ 7.5; stock = 0.75×5.5, 0.75×1.5, 0.75×7.25, sheet 0.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[4]",
-          "quote": "Table top — qty 1, 0.75 x 7.5 x 25.5",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "§9: 1x8 actual width 7 1/4 in. The Table top row needs width 7.5 > 7.25, and the stated 1 in overhang on all four sides needs 5 1/2 (shelf/side width, cutList[0],[1]) + 2 x 1 = 7.5 in, but the only wide stock (materials[2] 1x8) gives 7.25 (overhang 7.25 - 5.5 = 1.75, 7/8 in per side). Not an S-19 case (7.5 is not a rounded-down nominal).",
+      "reason": "No listed material gives the 0.75 x 7.5 table top; steps name 1x8 for it."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x2, 1x8, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock for every part: 1x6 (steps[0]): 2 x 22 + 2 x 20 = 84 + 3 cuts x 1/8 = 84 3/8 <= 96; 1x2 bar 22 <= 24; 1x8 top 25 1/2 <= 36; 1/4\" back 23 1/2 x 18 fits a 24 x 48 quarter sheet"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach 1 x 8 cut at 25.5\" as the table top using the pocket hole screws. Leave an inch over hang on all four sides.",
-          "why": "25.5\" screw — no material line lists a 25.5\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[4] '25.5\"' is the top length, not a screw. Fasteners used: pocket hole screws and finish nails, both in materials (1 1/4\" Kreg screws, 1/2\" finish nails)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numbers given: shelves 2\" from bottom and 5.5\" from top, bar leaves 3/4\" gap at the bottom, 1\" top overhang; back covers the sides' 18\" (20 - 2); pocket-hole layout shown in viewed steps[0] photo"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "only 'as shown in picture' (steps[0]) has its own viewed image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, shelves joined to sides, book bar, back, top, finish; each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Make pocket holes as shown in picture"
+        }
+      ],
+      "reason": "All parts are 3/4\" and get pocket holes but no jig thickness setting is stated (searched all steps/materials for /setting|thick|3\\/4\" (stock|material)/: none); viewed steps[0] photo labels only 22\"/20\"/'kreg holes to connect top'. Recorded only; does not count toward verdict."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) book bar 22\" = cutList; back 23 1/2 = 22 + 2 x 3/4 and 18 = 20 - 2 per steps[1]; top 25 1/2 = 23 1/2 + 2 x 1 (width issue recorded under R4); (b) all parts installed; (c) glue, putty, finish nails, primer, paint in materials; (d) reaches finished table"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/a28acba07452fed1.webp",
+      "plans/c7a76767c1fc0fc2.webp",
+      "plans/3eb2b5a3c4be3dd9.webp",
+      "plans/c6da1781d3410904.webp",
+      "plans/e57c8ed25420d608.webp"
+    ]
+  }
 }

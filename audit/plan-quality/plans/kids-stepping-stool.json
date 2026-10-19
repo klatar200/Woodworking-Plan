@@ -1,6 +1,6 @@
 {
   "slug": "kids-stepping-stool",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -199,56 +199,121 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "d according to the visual cut list in the woodworking plans PDF with a table saw and miter saw. Cut the lengths of the pine boards with a miter saw and be sure to cut angles properly. Then you’ll want",
-          "why": "matches \"PDF\""
+          "quote": "Cut wood according to the visual cut list in the woodworking plans PDF with a table saw and miter saw."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the lengths of the pine boards with a miter saw and be sure to cut angles properly."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans."
+        },
+        {
+          "path": "description",
+          "quote": "Follow along with the woodworking plans to build your own."
         }
-      ]
+      ],
+      "reason": "The leg angle cuts, the box-frame/pocket-hole layout and the visual cut list live only in a 'woodworking plans PDF' that this plan does not contain. Search: no angle value anywhere in steps, cutList, materials, description (/°|degree|angle/ finds only 'cut angles properly' and the 90-degree driver); viewed all 14 images (9 listed): hero/lifestyle photos, miter-saw/table-saw photo, Kreg jig photo, nailing photo - none gives an angle, hole position or cut layout. The splayed legs cannot be cut without the angle."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (legs, box frame long/short sides and supports, top and bottom stair-tread steps) all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 rows used (steps[0]-[5]); two box frames: 4 long sides + 2 short + 2 supports"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "reason": "Kreg-corrected rows: legs/frames 0.75 x 1.5 ripped from 1x3 (0.75 x 2.5, §9); steps 1 x 8 and 1 x 9 ripped from the 1 x 11 1/4 stair tread (materials[1])"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x11.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "1x3 (2 x 96 = 192): 2 x 12.25 + 2 x 13.125 + 4 x 9 + 2 x 7.8125 + 2 x 5.5 = 24.5+26.25+36+15.625+11 = 113.375 + 10 cuts x 1/8 = 114 5/8 <= 192. Tread 1 x 11 1/4 x 48: steps 11 1/2 + 12 = 23 1/2 + 1/8 <= 48, widths 8 and 9 rip from 11 1/4"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fastener sizes used (1 1/4\" Kreg screws, 2 1/4\" and 2\" finish nails) are all in materials[2]-[4]; no conflicts"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "t Pine boards to the correct width according to the plans.\n\n**Tip:** Note: The bottom step has an area of overhang on the front edge. If you are using engineered stair treads for steps, like we were, ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95d45e2b4d1d5fb2.webp"
+          "path": "steps[3].body",
+          "quote": "Using clamps and a tape measure line up the box frames on the bottom of the stair treads."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Start adding the legs to the box frame on the top step with the finish nailer using at least four 2 ¼” finish nails in each corner."
         }
-      ]
+      ],
+      "reason": "No setback/overhang of the box frames on the treads (the bottom step 'has an area of overhang on the front edge', steps[0], amount not given) and no leg position/angle on the frame corners are given in text or in the viewed photos (steps[3] and steps[4] photos carry no dimensions). Bottom step height (6 3/4\" up from the floor, steps[5]) is given."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans."
+        }
+      ],
+      "reason": "The step's own image (viewed) is a photo of the jig with a board and shows no hole positions, and no other image shows them. Same missing content as R1, listed because the reference needs an image."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "cut, drill, box frames, frames to treads, legs to top step, bottom step to legs, finish"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans. We used the Kreg 720 Pro."
+        }
+      ],
+      "reason": "All frame parts are 3/4\" and get pocket holes, but no jig thickness setting is stated in any step (searched steps/materials); viewed steps[1] photo shows the jig without a legible setting. Recorded only; does not count toward verdict."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) two different-size box frames match the cut rows (long 9, short 7 13/16, supports 5 1/2); (b) every part installed; (c) glue, nails, screws in materials; (d) reaches finished stool"
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/95d45e2b4d1d5fb2.webp",
+      "plans/52bc81de664b9a5c.webp",
+      "plans/0508762b65ad7b2b.webp",
+      "plans/f4395cc6a2bcb5b1.webp",
+      "plans/ebd8769e1a0a3715.webp",
+      "plans/9b246f126890edc4.webp",
+      "plans/2ec0267b9e725bad.webp",
+      "plans/23b47bd43e443bdd.webp",
+      "plans/c96cd123a9e1f204.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "easy-garage-shop-cabinets-part-1-lowers",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,22 +35,41 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "inuous wall of cabinets.\nThe idea is you can place them in any configuration to suit your needs. In my case I'll be adding a miter saw in between two 24\" cabinets and one 18\" cabinet like the picture.",
-          "why": "cut sentence states 24\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[4].body",
+          "quote": "Start assembly of the cabinet by sliding the Bottom Shelf into the grove on your Sides."
         },
         {
-          "path": "steps[0].body",
-          "quote": "inuous wall of cabinets.\nThe idea is you can place them in any configuration to suit your needs. In my case I'll be adding a miter saw in between two 24\" cabinets and one 18\" cabinet like the picture.",
-          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[5].body",
+          "quote": "Attach the front Stretcher with either 1 1/4\" pocket screws or from the outside with drywall screws."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Attach the back stretcher to the sides using drywall screws."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "I want one drawer and a door so I need have to stiles (vertical pieces) and three rails (short pieces)."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Add the toe kick to the front of the cabinet."
+        },
+        {
+          "path": "cutList",
+          "quote": "cutList has one row only: Sides, 2, 0.75 x 23 x 34 (Kreg-corrected 23 3/4 x 34 1/2)"
         }
-      ]
+      ],
+      "reason": "Structural parts used but not in cutList and not sized in any step or viewed image: Bottom Shelf, front Stretcher, back Stretcher, two face-frame stiles, three rails, toe kick. Search: cutList.part has only 'Sides'; materials[0..1] are one half sheet and pocket screws; no step gives a length/width for these parts (steps[10] and its image give only the 5.00\" rail spacing; step images show only the 3x4 toe-kick notch, 3 x 0.75 stretcher notch, 24 x 24 x 34 1/2 overall). steps[1] says 'Use the cut-list to break down 3/4\" plywood to the specified dimensions' and its image is a track-saw photo, not a list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the only row, Sides x2, is used in steps[2]-[4]"
     },
     "R4": {
       "result": "pass",
@@ -58,25 +77,97 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 2×23.75×34.5 = 1638.8 sq in; bought 1×48×48 = 2304 sq in)"
+      "reason": "cutList lists only the Sides; the sizes of the other parts cut from the half sheet (and the face-frame stock, which is not in materials) are unknown, so sufficiency cannot be judged. Sides alone: 2 x 23 3/4 x 34 1/2 = 1638.75 sq in <= 48x48 = 2304"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "countersinking 3-4 drywall screws on the outside of the sides"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "You can use a few pin nails to secure it in place."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "1 1/4\" pocket screws"
+        }
+      ],
+      "reason": "Drywall screws (steps[4],[5],[7]) and pin nails (steps[11]) are used with no size and no materials line; searched all materials (2 lines): only '1 1/4\" pocket screws' (quantity 1, may be an import default). Pocket screws are listed with no pocket-hole screw count tied to steps[5],[9]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "groove '4 3/4\" up from the base' (steps[3]); toe-kick notch 4 x 3 and stretcher notch 3 x 0.75 in viewed images; rail spacing 5.00\" in viewed steps[10] image; stretcher/face-frame/toe-kick placements are relational (flush) in viewed images"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides cut, toe kick and groove cut, shelf slid in, stretchers, face frame, then face frame to cabinet and toe kick; each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Attach your rails to your stiles using 1 1/4\" pocket hole screws and a dab of glue."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the front Stretcher with either 1 1/4\" pocket screws"
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" parts (steps[5],[9]) but no jig thickness setting stated anywhere (searched all steps for /setting|jig|3\\/4\" stock/ - none) and viewed steps[9] image shows holes with no setting. Recorded only; does not count toward verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "add a bead of glue to the Sides, Shelf and Front Stretcher and drop the Face Frame onto the cabinet."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "using 1 1/4\" pocket hole screws and a dab of glue"
+        }
+      ],
+      "reason": "(c) glue used in steps[9],[11] but no materials line matches /glue/ (only 2 materials). Face-frame/stretcher/shelf stock not in materials is recorded under R2. Plan scopes itself as Part 1 (steps[13] 'I will be covering the drawers, drawer front and doors in subsequent plans!'): carcass + face frame + toe kick is what it builds, so (d) not scored as a failure."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/25ed8d0f8594ad90.webp",
+      "plans/1732ad5ab567cdcb.webp",
+      "plans/bfb6ebf7c1dff17c.webp",
+      "plans/86350856dfc7ec9c.webp",
+      "plans/c3fc14a102650af3.webp",
+      "plans/6f9bdd745dbf9648.webp",
+      "plans/2f67ddeb0e438338.webp",
+      "plans/7dbb51be563afa0b.webp",
+      "plans/fae8d4054a4d5c25.webp",
+      "plans/b83d9e25096acf58.webp"
+    ]
+  },
+  "notes": "Only Sides are sized; shelf, stretchers, face frame, toe kick have no dimensions anywhere."
 }

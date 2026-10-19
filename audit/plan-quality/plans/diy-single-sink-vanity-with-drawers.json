@@ -1,6 +1,6 @@
 {
   "slug": "diy-single-sink-vanity-with-drawers",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -206,52 +206,122 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all steps/materials/description vs /full plans|extras|pdf|download|template|http/; only 'extras tab'/'See video' hits (steps[8],[13],[14]) are supplementary: steps[8] has its own labelled image and every piece is in cutList"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[0],[2],[3],[4],[7],[8],[10],[11] maps to a cutList row (frames, side panels, dividers, drawer boxes incl. image labels 8\", 11 1/2\", 11 1/4\", 28 1/2\", 16\", faux backer, fronts, bottoms, top)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 16 rows used: 'two 16” and two 28 ½” pieces' (steps[7]) = Drawer Box Sides x2 + Fronts x2; Drawer Box Back x1 is the middle drawer '28 1/2\" front piece' (steps[8] image); remaining sides x2 + 8/11 1/2/11 1/4 pieces are the middle drawer"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] Kreg text not parseable"
+      "result": "pass",
+      "reason": "cutList[7] Kreg text '3/4'\"' is a typo for 3/4\" (sibling cutList[6] is 3/4\" x 7\" x 28 1/2\"); 3/4 x 7 ply part fits a 48x96 sheet at 28-28.5 long. Other rows: 1.5x1.5 from 2x2, 0.75x1.5 from 1x2, 1.5x10 ripped from 2x12 (11 1/4 wide), 0.75 ply, 0.25 ply all match §9/listed sheets"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[5]"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[12].body",
-          "quote": "ers leaving about 1/8” gap around all sides. For the top, screw the front in place through the piece you added in step 11. It’s helpful to have an extra set of hands to hold the front in place while y",
-          "why": "1/8\" screw — no material line lists a 1/8\" fastener"
+          "path": "materials[0].name",
+          "quote": "Board, 2x2 96\""
         },
         {
-          "path": "steps[15].body",
-          "quote": "net into them through the back frame pieces using 2 ½”-3” screws. Then, install and hook up the supply lines to the faucet and the drain lines to the sink. Once everything is hooked up, make sure the ",
-          "why": "3\" screw — no material line lists a 3\" fastener"
+          "path": "materials[0].quantity",
+          "quote": "3"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "cut down 2x2 pieces to assemble the frame according to the cut list"
+        },
+        {
+          "path": "cutList[0..2]",
+          "quote": "Legs 4 x 29; Side Frames 4 x 16; Front and Back Frames 4 x 31 (Kreg-corrected 1 1/2 x 1 1/2)"
         }
-      ]
+      ],
+      "arithmetic": "Frame parts (all 1 1/2 x 1 1/2 = 2x2): 4x29 + 4x16 + 4x31 = 116 + 64 + 124 = 304 in. Bought: 3 x 96 = 288 in (materials[0] quantity 3, not an import default of 1). 304 > 288 before any kerf (12 pieces from 3 boards = at least 9 cuts x 1/8 = 1 1/8 in more).",
+      "reason": "Three 8' 2x2s are 16 in short of the frame cut list."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "flagged steps[12] '1/8” gap' is a gap, not a screw (rejected). steps[15] '2 ½”-3” screws' is a range that includes listed '2 1/2\" wood screws' (materials[9]); not a conflicting size. All others (2 1/2 PH, 1 1/4 PH, 1 1/4 wood, 2 1/2 wood) are in materials; no two sizes for one use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "you will need to install only two pair of 16” drawer slides into the cabinet."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "install drawer hardware. See video for more details on how I installed the hardware."
+        }
+      ],
+      "reason": "Search: steps[5], [7], [8], [12] and materials[11] give no height/setback for where the drawer slides mount inside the openings (only the opening sizes in steps[1],[4]); viewed steps[5] image shows slides being screwed in, with no dimension. Pull location also never given (viewed steps[13] image has no measurement)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "only reference is steps[8] 'according to the image below', which has its own viewed image with every piece labelled"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame, side panels, dividers, slides, drawers, top, faux backer, fronts in an order each can reach; top attached steps[9] after drawers installed, faux backer installed from below/front steps[10]"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] '1 ½” pocket holes' for the 2x2 (1 1/2\" stock), steps[2]/[4]/[7]/[10] '¾” pocket holes' for the 3/4\" parts; no contradiction"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Glue and staple this onto the bottom of the drawer and install into the vanity frame."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "so that the top opening is 5 ½” and the bottom openings are about 8” using wood glue"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "so that there is a 23” opening between the top and bottom frame pieces."
+        }
+      ],
+      "arithmetic": "(c) Staples (steps[7],[8]) and wood glue (steps[3],[4],[11]) are used but no materials[].name matches /staple|glue/ (searched all 12 materials). (a) Opening 23 in (steps[1]); dividers = Drawer Dividers qty 2 x 1 1/2 wide (Kreg-corrected cutList[3] 3/4 x 1 1/2 x 31); openings stated 5 1/2 + about 8 + about 8; 5.5 + 8 + 8 + 1.5 + 1.5 = 24.5 in vs 23 in, 1 1/2 in over (about 8 leaves slack, hence likely).",
+      "reason": "Staples and glue missing from materials; stacked opening sizes exceed the 23 in opening by 1 1/2 in."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/bbe4592eb9eb703b.webp",
+      "plans/bcec20a3b14053d7.webp",
+      "plans/8b8a3c7bde8a9b9a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[11]",
+      "quote": "16\" drawer slides",
+      "what": "quantity 2 unit 'each' but steps[5] says 'install only two pair of 16” drawer slides' (4 slides); unclear whether 2 means pairs"
+    }
+  ]
 }

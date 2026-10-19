@@ -1,6 +1,6 @@
 {
   "slug": "garage-storage-cabinets",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -79,55 +79,127 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "inet Hardware Jig, install preferred handles.\nIf you would like to see more details on how we built and organized inside the cabinet, please visit https://www.tidbits-cami.com/garage-storage-cabinets/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "search": "https://www.tidbits-cami.com/garage-storage-cabinets/ (steps[9]: 'If you would like to see more details') and 'go to the blog tidbits-cami.com for the details on the inside shelving and organizing compartments' (steps[7]) are credits/optional extras; the carcass, shelves, doors and hardware are fully described, hangers/compartments are the author's optional accessories"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "ers 5 inches apart so that they had some extra room to slide in and out easily. I cut two 5 inch pieces of board and with a level installed them using the board as a spacer. Use a staple gun and glue.",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 5\" (steps[6]) is a spacer and the holder spacing, not a part. Hangers (steps[7]) are cut from the listed 1x3 (materials[2]) per the step itself; all other parts in cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 12 rows used in steps[1]-[8]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, 1x3); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0]",
+          "quote": "Plywood, 3/4\" Thick Full Sheet (quantity 4)"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Doors and sides, 4, 0.75 x 24 x 96"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Back, 1, 0.75 x 48 x 96"
+        },
+        {
+          "path": "cutList[2..8]",
+          "quote": "base braces 2 x 4 x 46.5 and 4 x 4 x 22.5; Top 24.75 x 48; Bottom 24 x 46.5; Center shelf brace 10 x 57.5; Middle shelf 12 x 46.5; Top shelf 24 x 46.5 (Kreg-corrected)"
+        }
+      ],
+      "arithmetic": "All 0.75\" plywood parts (no other listed stock is 3/4\" x 4\"+ wide). Areas: doors/sides 4 x 24 x 96 = 9216; Back 48 x 96 = 4608; Top 24.75 x 48 = 1188; Bottom 24 x 46.5 = 1116; Top shelf 24 x 46.5 = 1116; Middle shelf 12 x 46.5 = 558; Center shelf brace 10 x 57.5 = 575; front/back base braces 2 x 4 x 46.5 = 372; center base braces 4 x 4 x 22.5 = 360. Total 9216+4608+1188+1116+1116+558+575+372+360 = 19109 sq in. Bought 4 x 48 x 96 = 18432 sq in. 19109 > 18432 (short 677 sq in) before kerf; with the live whole-number values the total is still 19034 > 18432.",
+      "reason": "Four full 3/4\" sheets cannot supply the 3/4\" plywood parts."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name no fastener size; staples (1\" and 1 1/2\"), 1 1/4\" pocket screws and glue are all in materials; no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "At least four per door is recommended. I used two and will be adding two more since the doors aren't as strong as I would like."
+        }
+      ],
+      "reason": "Hinge positions along the two 96\" doors (and door-to-cabinet overlay/gap) are never given in steps[9] and the hinge type is left to 'preferred hinges'; no image viewed (steps[9]) shows hinge placement. Other positions are given (center braces 16\" from ends, center shelf brace 15 1/2\" from right wall, top shelf 20\" from top, holder spacing 5\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "the three 'as pictured/seen in the picture' references each have their own step image; no diagram referenced"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base, sides, back/top/bottom, shelves, holders, hangers, trim, then doors hung last; each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "I used the Kreg Pocket Hole Jig to make sure I had screws that were out of the way and firmly in place."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "The top shelf is again installed with glue and pocket hole joinery."
+        }
+      ],
+      "reason": "3/4\" plywood parts get pocket holes (steps[0],[4],[5]) but no jig thickness setting is stated in any step (searched steps/materials for /setting|thick|3\\/4/ near jig: none); viewed steps[1] photo shows holes, no setting. Recorded only; does not count toward verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[7].name",
+          "quote": "Flush mount cabinet hinges"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "I built several cabinets that were meant to butt up against each other so I used surface mount cabinet hinges."
+        }
+      ],
+      "reason": "(c) hinge type differs between materials (flush mount, qty 8) and steps[9] (surface mount used; piano hinges recommended and not in materials); searched materials for /piano|surface/: none. Agreements hold: 8 hinges = 4 per door x 2, 2 handles for 2 doors, trim 2 x 96 and 4 x 18 match steps[8]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-14",
+    "imagesViewed": [
+      "plans/302bee6993466941.webp",
+      "plans/5ae7834d4ddaf682.webp",
+      "plans/d58886c428eabae4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "I built the hangers by taking a 1\"x3\"x8' pine board, set my table saw at a 45 degree angle with the fence 1 inch from the blade and cut the boards in two pieces.",
+      "what": "hanger length, count and where they are fixed inside the cabinet are not given (no cutList row; 'See pictures' only); optional accessory, so non-structural"
+    }
+  ]
 }
