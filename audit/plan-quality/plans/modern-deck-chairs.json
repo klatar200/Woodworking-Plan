@@ -57,21 +57,25 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[0].body",
-          "quote": "*NOTE: Use wood glue that is rated for outside."
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "*Note - be sure wood glue is rated for the outdoors."
-        }
-      ],
-      "reason": "Steps 0, 2, 7 glue parts but search of materials for /glue/i finds none (materials[0-6] are lumber, bolts, washers, glides, screws). Arithmetic otherwise agrees: 5 x 3.5 + 4 x .625 = 20 (seat and back height); 17 + 2 x 1.5 = 20 (back width); 5 + 5 + 2.75 = 12.75."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[0].body",
+            "quote": "*NOTE: Use wood glue that is rated for outside."
+          },
+          {
+            "path": "steps[7].body",
+            "quote": "*Note - be sure wood glue is rated for the outdoors."
+          }
+        ],
+        "reason": "Steps 0, 2, 7 glue parts but search of materials for /glue/i finds none (materials[0-6] are lumber, bolts, washers, glides, screws). Arithmetic otherwise agrees: 5 x 3.5 + 4 x .625 = 20 (seat and back height); 17 + 2 x 1.5 = 20 (back width); 5 + 5 + 2.75 = 12.75."
+      }
     }
   },
   "verdict": "Fix",
@@ -86,6 +90,18 @@
       "path": "steps[5].body",
       "quote": "measure in 5\" from edge of side pieces on the back on the inside and out. And then again at 5.75\" and 6.5\"",
       "what": "Three measurements from the edge and two from the top give six intersections, but only two lag-bolt holes per side are drilled (4 lag bolts in materials[3]); the text does not say which face each measurement belongs to or which intersection is drilled."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "*NOTE: Use wood glue that is rated for outside.",
+      "what": "Outdoor-rated wood glue used in steps[0],[2],[7]; materials[0-6] match no /glue/i."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "*Note - be sure wood glue is rated for the outdoors.",
+      "what": "Outdoor-rated wood glue used in steps[7]; not in materials."
     }
   ],
   "reader": {
@@ -94,5 +110,6 @@
       "81a95f771582565a.webp",
       "5e4689fb719d74fe.webp"
     ]
-  }
+  },
+  "consumableCleanup": "2026-10-19"
 }

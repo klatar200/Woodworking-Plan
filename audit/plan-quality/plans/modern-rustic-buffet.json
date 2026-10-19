@@ -222,17 +222,21 @@
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "Cut prices to length and glue together."
-        }
-      ],
-      "reason": "Door boards are glued (step 4) but search of materials[].name for /glue/i finds none. Sizes agree: 5 x 3.5 + 5.5 + .25 = 23.25 door height; 18 + 17 + 18 + 4 x .75 = 56 top width; 23.5 + 2 x .75 = 25 back height."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[4].body",
+            "quote": "Cut prices to length and glue together."
+          }
+        ],
+        "reason": "Door boards are glued (step 4) but search of materials[].name for /glue/i finds none. Sizes agree: 5 x 3.5 + 5.5 + .25 = 23.25 door height; 18 + 17 + 18 + 4 x .75 = 56 top width; 23.5 + 2 x .75 = 25 back height."
+      }
     }
   },
   "verdict": "Fix",
@@ -250,5 +254,14 @@
       "5f2d5a08f984126c.webp",
       "634b4dabc0e4a077.webp"
     ]
-  }
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Cut prices to length and glue together.",
+      "what": "Wood glue used for door boards in steps[4]; materials[].name match no /glue/i."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

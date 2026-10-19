@@ -147,25 +147,29 @@
       "note": "17 reference(s), each in a step with its own image"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[7].body",
-          "quote": "Using Titebond I wood glue and 1 1/4\" brad nails assemble eleven sets of regular legs"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Attach the appropriate table skirts to their leg assemblies using wood glue and 1 1/4\" Kreg fine pocket screws"
-        },
-        {
-          "path": "materials",
-          "quote": "materials[0..7]: Oak Plywood, 3/4\" Oak 1x8, pocket hole screws, brad nails, sandpaper, edge banding, Tung Oil, Stain"
-        }
-      ],
-      "reason": "(c) wood glue is used in steps[7],[8],[9] but no materials[].name matches /glue|titebond|adhesive/i (cause plan; the importer keeps every material line). (a) counts agree: 'fifteen 3\" legs' = cutList[2] 13 + cutList[3] 2; 11 + 2 leg assemblies use 13 regular 3\" + 11 x 2 1/4\" + 2 center pieces; 'thirteen table skirt pieces' = 6 + 1 + 6; viewed steps[9] image 373d3185ae97993f shows each side table with 2 x 40\" + 2 x 16\" skirts and the center table with 2 x 40\" + 2 x 16\" + 28\" (= 6 long, 6 short, 1 center). (b) leg assemblies and skirts become bases (steps[9]); tops attached (steps[10]). (d) steps reach the finished tables."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[7].body",
+            "quote": "Using Titebond I wood glue and 1 1/4\" brad nails assemble eleven sets of regular legs"
+          },
+          {
+            "path": "steps[9].body",
+            "quote": "Attach the appropriate table skirts to their leg assemblies using wood glue and 1 1/4\" Kreg fine pocket screws"
+          },
+          {
+            "path": "materials",
+            "quote": "materials[0..7]: Oak Plywood, 3/4\" Oak 1x8, pocket hole screws, brad nails, sandpaper, edge banding, Tung Oil, Stain"
+          }
+        ],
+        "reason": "(c) wood glue is used in steps[7],[8],[9] but no materials[].name matches /glue|titebond|adhesive/i (cause plan; the importer keeps every material line). (a) counts agree: 'fifteen 3\" legs' = cutList[2] 13 + cutList[3] 2; 11 + 2 leg assemblies use 13 regular 3\" + 11 x 2 1/4\" + 2 center pieces; 'thirteen table skirt pieces' = 6 + 1 + 6; viewed steps[9] image 373d3185ae97993f shows each side table with 2 x 40\" + 2 x 16\" skirts and the center table with 2 x 40\" + 2 x 16\" + 28\" (= 6 long, 6 short, 1 center). (b) leg assemblies and skirts become bases (steps[9]); tops attached (steps[10]). (d) steps reach the finished tables."
+      }
     }
   },
   "verdict": "Fix",
@@ -183,5 +187,20 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "previousVerdict": "Fix"
+  "previousVerdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Using Titebond I wood glue and 1 1/4\" brad nails assemble eleven sets of regular legs",
+      "what": "Wood glue (Titebond) used in steps[7]; no materials[].name matches /glue|titebond|adhesive/i."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Attach the appropriate table skirts to their leg assemblies using wood glue and 1 1/4\" Kreg fine pocket screws",
+      "what": "Wood glue used in steps[9]; not in materials."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

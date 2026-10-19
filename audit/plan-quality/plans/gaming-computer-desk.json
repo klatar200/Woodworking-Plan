@@ -467,25 +467,29 @@
       "note": "2 reference(s), each in a step with its own image"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[1].body",
-          "quote": "Attach the boards together with wood glue and 1 1/4\" pocket screws."
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Apply a bead of wood glue to each of the rabbeted grooves on the side panels"
-        },
-        {
-          "path": "materials",
-          "quote": "materials[0..13]: boards, plywood, 4x4, drawer slide sets, hairpin legs, drawer pulls, stain, finish, sandpaper discs, sanding belt, sanding block"
-        }
-      ],
-      "reason": "(c) wood glue is used in steps[0],[1],[2],[3],[4],[6],[7],[8] but no materials[].name matches /glue|adhesive/i (importer has no material filter, so cause plan). (a) counts/sizes agree on Kreg-corrected rows: top 5 x 5 1/2 = 27 1/2 (steps[1]); faces 4 + (5 1/2 + 3 1/2) + (5 1/2 + 5 1/8) = 23 5/8 + 3 x 1/8 gaps = 24 = side-panel height (steps[11]); legs 4\" (steps[4]) = cutList[5]; inset bottom 17 x 10 and surface bottom 18 x 11 = cutList[9],[10]; 41 1/2 shelf = cutList[3]. Riser-width and drawer-face-piece contradictions already recorded under R2, not re-reported. (b) every part made is installed (cabinet, legs, top, drawers steps[10], faces and pulls steps[11], riser steps[8]). (d) steps reach the finished desk; the LED lighting in description is not built by any step and is not part of the piece's use."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[1].body",
+            "quote": "Attach the boards together with wood glue and 1 1/4\" pocket screws."
+          },
+          {
+            "path": "steps[3].body",
+            "quote": "Apply a bead of wood glue to each of the rabbeted grooves on the side panels"
+          },
+          {
+            "path": "materials",
+            "quote": "materials[0..13]: boards, plywood, 4x4, drawer slide sets, hairpin legs, drawer pulls, stain, finish, sandpaper discs, sanding belt, sanding block"
+          }
+        ],
+        "reason": "(c) wood glue is used in steps[0],[1],[2],[3],[4],[6],[7],[8] but no materials[].name matches /glue|adhesive/i (importer has no material filter, so cause plan). (a) counts/sizes agree on Kreg-corrected rows: top 5 x 5 1/2 = 27 1/2 (steps[1]); faces 4 + (5 1/2 + 3 1/2) + (5 1/2 + 5 1/8) = 23 5/8 + 3 x 1/8 gaps = 24 = side-panel height (steps[11]); legs 4\" (steps[4]) = cutList[5]; inset bottom 17 x 10 and surface bottom 18 x 11 = cutList[9],[10]; 41 1/2 shelf = cutList[3]. Riser-width and drawer-face-piece contradictions already recorded under R2, not re-reported. (b) every part made is installed (cabinet, legs, top, drawers steps[10], faces and pulls steps[11], riser steps[8]). (d) steps reach the finished desk; the LED lighting in description is not built by any step and is not part of the piece's use."
+      }
     }
   },
   "verdict": "Fix",
@@ -504,5 +508,20 @@
     "rescore": "rescore-5"
   },
   "notes": "Three plan-cause Fix findings (R2 step/cut-list contradictions, R6 no fasteners listed, R9 hairpin fastener unstated); 23 import-damaged dimensions.",
-  "previousVerdict": "Fix"
+  "previousVerdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Attach the boards together with wood glue and 1 1/4\" pocket screws.",
+      "what": "Wood glue used in steps[0],[1],[2],[3],[4],[6],[7],[8]; no materials[].name matches /glue|adhesive/i."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Apply a bead of wood glue to each of the rabbeted grooves on the side panels",
+      "what": "Wood glue (rabbeted grooves) used in steps[3]; not in materials."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }
