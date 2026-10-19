@@ -355,7 +355,8 @@
           "quote": "Board, 1x3 48\""
         }
       ],
-      "reason": "Rows are stock purchases or assemblies, not parts: \"Drawer boxes\" is an assembly (steps[7] \"Construct the drawer boxes\"); \"Plywood\" (cutList[5], [6]) names the stock; \"Cabinet framing\" qty 9 at Kreg source \"1 1/2\\\" x 1 1/2\\\" x 6'\" equals materials[4] 2x2 72\" qty 9; \"Drawer/door panels\" qty 11 at \"3/4\\\" x 2 1/2\\\" x 4'\" equals materials[8] 1x3 48\" qty 11 - the boards bought."
+      "reason": "Rows are stock purchases or assemblies, not parts: \"Drawer boxes\" is an assembly (steps[7] \"Construct the drawer boxes\"); \"Plywood\" (cutList[5], [6]) names the stock; \"Cabinet framing\" qty 9 at Kreg source \"1 1/2\\\" x 1 1/2\\\" x 6'\" equals materials[4] 2x2 72\" qty 9; \"Drawer/door panels\" qty 11 at \"3/4\\\" x 2 1/2\\\" x 4'\" equals materials[8] 1x3 48\" qty 11 - the boards bought.",
+      "verifierNote": "cutList[4] x9 = materials[4] 2x2 72\" x9 and cutList[8] x11 = materials[8] 1x3 48\" x11 (stock, not parts); 'Drawer boxes' is an assembly."
     },
     "R4": {
       "result": "pass",
@@ -455,7 +456,8 @@
           "quote": "Utilize your nail gun and 3/4\" nails."
         }
       ],
-      "reason": "Sweep flags confirmed (duplicates collapsed). Searched materials[].name for /screw|nail/: no match - materials list only slides, hinges and handles; none of the 2 1/2\", 3 1/2\", 1 1/4\" screws or 1 1/2\", 3/4\" nails is listed."
+      "reason": "Sweep flags confirmed (duplicates collapsed). Searched materials[].name for /screw|nail/: no match - materials list only slides, hinges and handles; none of the 2 1/2\", 3 1/2\", 1 1/4\" screws or 1 1/2\", 3/4\" nails is listed.",
+      "verifierNote": "No materials line matches /screw|nail/i; steps use 2 1/2\", 3 1/2\", 1 1/4\" screws and 1 1/2\", 3/4\" nails."
     },
     "R8": {
       "result": "pass",
@@ -493,7 +495,8 @@
           "quote": "You can eliminate the interior plywood divider if you are not going to use this as a litter box."
         }
       ],
-      "reason": "Two positions the builder must set have no number in text or viewed image: the drawer-slide supports (steps[6]; viewed image 8cff47f5a49a9b81.webp shows the supports in the frame with no dimensions) and the interior plywood divider (steps[5]; viewed image 0b08984ef2913d66.webp shows it standing in the left bay, off-centre, no dimensions). Searched all steps for a number near /support|divider/i: none. The frame itself is dimensioned in viewed steps[4] image 92c356c6b62dbc97.webp (4', 1' 9 3/4\", 1' 6 3/4\", 6 3/4\", 1' 10 1/2\", 7\", 3 3/8\", 6\"); hinges and slides are 'per mfg. installation instructions' with a stated 3/4\" inset (steps[8]) and 1/8\" face gap (steps[14])."
+      "reason": "Two positions the builder must set have no number in text or viewed image: the drawer-slide supports (steps[6]; viewed image 8cff47f5a49a9b81.webp shows the supports in the frame with no dimensions) and the interior plywood divider (steps[5]; viewed image 0b08984ef2913d66.webp shows it standing in the left bay, off-centre, no dimensions). Searched all steps for a number near /support|divider/i: none. The frame itself is dimensioned in viewed steps[4] image 92c356c6b62dbc97.webp (4', 1' 9 3/4\", 1' 6 3/4\", 6 3/4\", 1' 10 1/2\", 7\", 3 3/8\", 6\"); hinges and slides are 'per mfg. installation instructions' with a stated 3/4\" inset (steps[8]) and 1/8\" face gap (steps[14]).",
+      "verifierNote": "Interior divider off-centre, undimensioned in viewed 0b08984ef2913d66/8cff47f5a49a9b81 (slide supports arguably relational to the dimensioned rail; divider alone sustains the fail)."
     },
     "R11": {
       "result": "pass",
@@ -519,13 +522,22 @@
           "quote": "Cup style handles"
         }
       ],
-      "reason": "(c) Glue (steps[1], [2], [3]) and double-sided tape (steps[14]) are used; searched materials[].name for /glue|adhesive|tape/i: no hit. (b) materials[11] lists 16 'Cup style handles' but no step installs them: searched all steps for /handle|pull|knob/i, only steps[14] 'See extra's for source of handles'. Drawers (steps[8]), doors (steps[12]) and drawer faces (steps[14]) are installed, so (d) the steps reach a usable cabinet. Cut-list count disagreements (e.g. steps[1] '(4) plywood supports' vs cutList[1] 'Base supports' qty 1) are already R2/R3 (cut list is a stock list) and not re-reported."
+      "reason": "(c) Glue (steps[1], [2], [3]) and double-sided tape (steps[14]) are used; searched materials[].name for /glue|adhesive|tape/i: no hit. (b) materials[11] lists 16 'Cup style handles' but no step installs them: searched all steps for /handle|pull|knob/i, only steps[14] 'See extra's for source of handles'. Drawers (steps[8]), doors (steps[12]) and drawer faces (steps[14]) are installed, so (d) the steps reach a usable cabinet. Cut-list count disagreements (e.g. steps[1] '(4) plywood supports' vs cutList[1] 'Base supports' qty 1) are already R2/R3 (cut list is a stock list) and not re-reported.",
+      "verifierNote": "16 cup handles never installed (only 'See extra's for source of handles'); glue and double-sided tape not in materials."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Unpublish",
   "verifier": {
-    "ran": false,
-    "upheld": [],
+    "ran": true,
+    "runs": [
+      "R-2 rescore verifier, 2026-10-19 (fresh agent, not a reader)"
+    ],
+    "upheld": [
+      "R3",
+      "R6",
+      "R10",
+      "R14"
+    ],
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
