@@ -1,6 +1,6 @@
 {
   "slug": "rolling-storage-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,10 +71,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "Sides, Top, Bottom, drawer sides/front/back/bottoms and drawer fronts are all cutList rows; corrected sizes agree with the viewed images (27\" x 16\" sides, 18 1/2\" between sides, drawer bottom 14\" x 16 1/2\", sides 15\", front/back 16\", front 5 9/32\" x 20\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Back | qty 1 | 0.25 x 19 x 26"
+        }
+      ],
+      "reason": "The 1/4\" cabinet Back (corrected 19 x 26.75) is never cut or attached. Search of all 10 steps for /back/i: only 'front & back pieces of the drawer box' (steps[5]) and 'face out and back' (steps[6]), both drawer parts; the viewed steps[2] and steps[3] images show an open-back cabinet and steps[9] shows no back panel."
     },
     "R4": {
       "result": "pass",
@@ -82,25 +93,96 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock. Reader note: area fits (3/4\": 864 + 335 + 296 + 450 + 480 + 528 = 2953 sq in of 4608; 1/4\": 1155 + 508 = 1663 of 2304)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all text for screw sizes",
+      "note": "Only size used is 1 1/4\" (pocket screws steps[2], [3], [6]; drawer-front screws steps[8]); no conflicting size. The pocket screws themselves are not listed as such (scored under R14)."
+    },
+    "R8": {
+      "result": "pass",
+      "note": "Carcass (sides, top, bottom), then drawer boxes, slides, boxes on slides, fronts screwed from inside, finish and casters last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Drill pocket holes only on the front side of the front & back pieces of the drawer box pieces."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood (steps[2], [3], [5]) but no jig thickness setting is stated in any text and the viewed step images (diagrams) show none. Not counted toward verdict (R-2)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "note": "Top overhang 3/4\", groove 1/4\" x 1/4\" starting 1/2\" up, bottom slide 1\" up, bottom drawer about .4\" up, fronts spaced evenly with the last flush with the cabinet bottom are all given (text and viewed images); casters shown at the corners in the viewed final image. The slide-pitch value is scored under R14."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached|per the print|sketch above/i",
+      "note": "'dimensions in the image' (steps[7]) has its own image (viewed)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "All the other drawer slides should be 3.656\" from the bottom of one slide to the bottom of the next slide."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Drawer fronts | qty 5 | 0.75 x 5 x 20"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Using 1 1/4\" pocket screws and wood glue, attach the top through the pocket holes"
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/4\" screws to attach drawer fronts"
+        }
+      ],
+      "arithmetic": "Slide pitch: text gives 3.656\" bottom-to-bottom, but the five drawer fronts are 5 9/32\" = 5.2813\" tall each (corrected cutList[5], viewed steps[8] image) and are screwed to the boxes (steps[8]), so a 3.656\" pitch would overlap each front by 5.2813 - 3.656 = 1.625\". The viewed steps[7] image labels 3 21/32\" between slides and 2 27/64\" between the 3\"-tall boxes (cutList[3] sides 3\" wide): box pitch 3 + 2.422 = 5.42\", which matches the fronts. The 3 21/32\" figure is a gap, not a bottom-to-bottom pitch.",
+      "reason": "(a) Slide spacing in steps[7] disagrees with the drawer front height in the cut list (arithmetic above). (c) Pocket screws are used in steps[2], [3], [6] but materials[5] is only 10 '1 1/4\" screws to attach drawer fronts' (5 fronts x 2); no pocket-hole screws are listed (search of materials[].name for /pocket/: no match)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing knowledge outside section 9."
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "1/4\" rabbeting bit",
+      "what": "A tool (and 'Optional: jigsaw', materials[9]) listed under materials; no step uses a rabbet. Tools are out of scope; noted because the unused Back panel (R3) would be the only thing needing a rabbet."
+    }
+  ],
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fe8ffc82fd13c436.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5bd4fcc4f2a46b6b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/81bddebb677278af.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/045ecf639da7ef29.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/235ded7f8f64b673.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/70d3990941715ad5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1df10a7f769d540f.webp"
+    ]
+  }
 }

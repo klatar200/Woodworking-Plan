@@ -1,6 +1,6 @@
 {
   "slug": "lego-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -19,33 +19,40 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
           "path": "steps[0].body",
           "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
-          "why": "matches \"PDF\""
+          "why": "matches \"PDF\"",
+          "confirmed": false,
+          "note": "The PDF is an optional extra: the plan already carries the cut list, materials and every step dimension (drawer sizes are computed in steps[14] and steps[17]); nothing needed to complete the build is stated to exist only in the PDF."
         },
         {
           "path": "steps[0].body",
           "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
-          "why": "matches \"printable\""
+          "why": "matches \"printable\"",
+          "confirmed": false,
+          "note": "Same sentence as above."
         }
       ]
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
       "flagged": [
         {
           "path": "steps[1].body",
           "quote": "at you’ve built! I used 1/4” mdf for the template stock. It is cut to the same width as the end pieces. I start by cutting a 12” diameter circle out of the center using a circle jig and plunge router.",
-          "why": "cut sentence states 12\" — no cut-list dimension or material size matches (corrected values)"
+          "why": "cut sentence states 12\" — no cut-list dimension or material size matches (corrected values)",
+          "confirmed": false,
+          "note": "This is the optional router template (a jig, 'this step is optional'), not a table part; the 12\" is the cutout diameter, not a part size. Every table part cut in steps[0], steps[14], steps[17], steps[25] is in the cutList."
         }
       ]
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "All 8 rows are used: End/Leg, Top, Back Trim, Front Trim in steps 7-12; Drawer rows in steps 14-18; False Drawer Front in steps 25-26. cutList[6] 27.8125 equals steps[14] '27-13/16'' and cutList[7] equals steps[17] '28-9/16'' x 13-3/8''."
     },
     "R4": {
       "result": "pass",
@@ -56,49 +63,128 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all text for screw/fastener sizes",
+      "note": "Only stated size is 1-1/4\" Kreg screws (materials[2]). Slide screws ('at least 3 screws per slide') and false-front screws ('several screws') carry no size, so there is no mismatch. 1/8\" is a router bit."
+    },
+    "R8": {
+      "result": "pass",
+      "note": "Parts cut, template and end cutouts, pocket holes, base assembled, drawer front/back cut to final length after slide thickness known (steps[14]), bottom measured from the assembled parts (steps[17]), then slides, false front. No step needs an undo."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "any Kreg Jig will work. I definitely recommend hooking up a shop vac."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood (steps[7], steps[16]) but no jig thickness setting is stated in any step text; viewed image steps[7] shows the jig but no readable setting. Not counted toward verdict (R-2)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Using scraps as spacers, lay the Top face down on your bench. The Front Trim goes along one long edge and The Back Trim, pocket holes facing in, along the other.",
+          "viewed": true
+        }
+      ],
+      "reason": "The height the Top sits below the trim/end tops is set by the thickness of the scrap spacers; no thickness is given in the text and the viewed step-10 image shows spacers but no dimension. The finished-table photos show the plates sitting in this recess.",
+      "search": "steps[0..13] for a spacer thickness or recess depth: none",
       "flagged": [
         {
           "path": "steps[6].body",
-          "quote": "You should now have two end pieces with perfect half circles cut from the bottom. I really like the look of the cutout and how it makes the table appear to have four feet. If you don’t like the circle",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbf68aaad413d778.webp"
+          "quote": "You should now have two end pieces with perfect half circles cut from the bottom.",
+          "confirmed": false,
+          "note": "Cutout is defined by the template (12\" circle halved, width of the end piece, steps[1], steps[2]); no free position."
         },
         {
           "path": "steps[21].body",
-          "quote": "Next, transfer the marks from the front of the legs to the inside of each end piece. These will be the mounting points for the full extension slides.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f9bf2c13d7db0b5.webp"
+          "quote": "Next, transfer the marks from the front of the legs to the inside of each end piece.",
+          "confirmed": false,
+          "note": "Relational: marks come from the drawer centerline (steps[19]-[20])."
         },
         {
           "path": "steps[22].body",
-          "quote": "binet portion of each slide on the inside of each end piece. Be sure to offset them from the front by the thickness of your plywood to allow room for the false front we will add later. I recommend sli",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c932d828ea35660.webp"
+          "quote": "Be sure to offset them from the front by the thickness of your plywood",
+          "confirmed": false,
+          "note": "Relational; offset is stated as plywood thickness."
         },
         {
           "path": "steps[29].body",
-          "quote": "Take it all back apart and sand everything up to 220 grit, then apply your finish of choice. It’s going to need some protection from those dirty little monsters! I hope your kids enjoy it as much as m",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d10f7f6222014d1.webp"
+          "quote": "Take it all back apart and sand everything up to 220 grit",
+          "confirmed": false,
+          "note": "Not a placement."
         }
       ]
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using the cut list and diagram, cut all of the parts for the table base to size.",
+          "viewed": true
+        }
+      ],
+      "reason": "steps[0] image (viewed) is a photo of cut parts, not a diagram; the 5 unattached images (all viewed) are finished-table photos; no cutting diagram exists in images[]. The diagram is only in the PDF (steps[0]). The cut list itself gives every part size, so the missing content is non-structural.",
+      "search": "steps vs /as shown|diagram|drawing|pictured|attached/i: only steps[0] refers to a diagram"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[4].name",
+          "quote": "15” Duplo Lego Build Plate"
+        },
+        {
+          "path": "steps[27].body",
+          "quote": "If you need to make any small adjustments, you can use the elongated holes in the drawer slides to get everything aligned perfectly. The construction phase is now complete!"
+        }
+      ],
+      "reason": "Two Duplo build plates (quantity 2) are listed but no step installs or places them. Search of all 30 steps for /duplo|build plate|baseplate/i: no match; the only hits for 'Duplo' are description and materials[4] ('plate' otherwise matches only the word 'template'). The table is otherwise complete, so Fix, not Unpublish.",
+      "note": "Other counts agree: 5 pocket screws each front/back (steps[7], steps[11]); 3+3 per end (steps[7], steps[12]); 14\" sides = 14\" slides. Optional 1/4\" MDF router-template stock (steps[1]) is not in materials; treated as a shop jig, not counted."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing knowledge outside section 9."
+  },
+  "gaps": [],
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/03c1c66b36b6d88c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77e3c56c0f0fa586.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a3262081ac7645c4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f79615529c7de58.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d10f7f6222014d1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0986cea20b849cd6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c0590d5ae6c4ad1c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eed9578f0c1f2d72.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/798df6bfc75222cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83e0404241f14fc7.webp"
+    ]
+  }
 }

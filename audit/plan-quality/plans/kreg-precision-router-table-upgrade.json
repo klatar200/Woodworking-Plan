@@ -1,43 +1,54 @@
 {
   "slug": "kreg-precision-router-table-upgrade",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
           "path": "steps[11].body",
           "quote": "Make sure to check out the build video on this one!\nhttps://youtu.be/UsMGt0roXhY\nI had a blast producing it and I think you'll find it helpful when tackling this project!",
-          "why": "matches \"https://\""
+          "why": "matches \"https://\"",
+          "confirmed": false,
+          "note": "Worded as an invitation, not as 'needed to complete the build'. The missing assembly positions are scored once under R10."
         },
         {
           "path": "steps[12].body",
           "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage\nI'd love to know what you all think so let me know!\nThanks for reading!",
-          "why": "matches \"my blog\""
+          "why": "matches \"my blog\"",
+          "confirmed": false,
+          "note": "'additional info' = optional credit/link."
         },
         {
           "path": "steps[12].body",
-          "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage\nI'd love to know what you all think so let me know!\nThanks for reading!",
-          "why": "matches \"https://\""
+          "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage",
+          "why": "matches \"https://\"",
+          "confirmed": false,
+          "note": "Same as above."
         }
-      ]
+      ],
+      "note": "description says 'Follow along and watch the video to see how I upgrade the precision router table!' - the video may carry the assembly details that the text lacks; not verifiable (video not available)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "I used some scrap acrylic I had on hand and made the handles from some left over Walnut."
+        }
+      ],
+      "reason": "The window handles are parts a step makes from walnut, but no cutList row and no material is walnut or a handle. Search: no cutList[].part or materials[].name matches /walnut|handle/i ('walnut' appears only in steps[4]); no handle size is given anywhere."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Back",
-          "why": "no step mentions it (searched steps for back)"
-        }
-      ]
+      "result": "unknown",
+      "reason": "cutList[3] 'Back' (0.25 x 16 x 26.75) is never named or placed by any step (search of steps for /back/i: no match). steps[0] says all cut parts 'frame out the base', and the viewed step images do not settle where a Back panel goes."
     },
     "R4": {
       "result": "pass",
@@ -48,22 +59,123 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps for fastener sizes",
+      "note": "No step states a fastener size, so there is nothing to contradict materials[6] or [7]. (Unlisted tin strapping is scored under R14.)"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "With all of the panels cut, I drill pocket holes so that I can easily assemble the panels inside of the router table base."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "I extended the dust box dividers all the way to the underside of the router table top. To do this, I notched around the C-channel cross member on the router table."
+        }
+      ],
+      "reason": "Order is inverted: the base is 'built out' in steps[1] before the pocket holes that join its panels are drilled in steps[3], and the dividers are notched in steps[10] after steps[9] ('With everything built out') and after the base, drawers and window are in. A builder must reorder to proceed, so Fix not Unpublish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "My go to method for drawer boxes is using pocket hole construction. The boxes are built from 1/2\" ply with 1/4\" ply for the bottom."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" plywood (steps[3], [5]) and no jig thickness setting appears in any text; the viewed step images are video stills with no readable setting. Not counted toward verdict (R-2)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I used a combination of 3/4\", 1/2\", and 1/4\" pieces to build out the appropriate amount for the push to open drawer slides to mount to.",
+          "viewed": true
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "This is undoubtedly the most cumbersome step of the entire project! But don't worry, it's not all that bad.",
+          "viewed": true
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "To do this, I notched around the C-channel cross member on the router table.",
+          "viewed": true
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "I used the 2-1/2\" expanding hose from rockler along with a port and Y fitting. These were secured in place with tin strapping.",
+          "viewed": true
+        }
+      ],
+      "reason": "Positions and sizes the builder must set are given nowhere: where the Horizontal Divider and the two Dividers sit in the base (steps[1], image shows a tape measure but no figure), shim stack heights (steps[6], 'appropriate amount'), notch size and position (steps[10], image shows penciled lines, no figure), dust port location and size (steps[8]), switch-bracket size (steps[2]), window opening size and recess depth (steps[4]). Viewed images (steps 1, 2, 4, 6, 8, 10) are video stills with no dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached|per the print|sketch above/i",
+      "note": "No step refers to a drawing."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "along with a port and Y fitting. These were secured in place with tin strapping."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "2-1/2\" Hose Clamps"
+        }
+      ],
+      "reason": "Items used but not in materials: a dust port, a Y fitting (materials[8] is only the hose kit) and tin strapping; search of materials[].name for /strap|port|fitting|Y/i: no match. Listed but never used: materials[9] hose clamps x4 (steps[8] secures with strapping; the only 'clamps' in steps are woodworking clamps, steps[1])."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing knowledge outside section 9."
+  },
+  "gaps": [
+    {
+      "path": "cutList[9].part",
+      "quote": "Large Drawer Box Front & BackLarge Drawer Box Front & Back",
+      "what": "Row name is duplicated/garbled by the importer; sizes agree with the large-drawer bottom (22 + 3/8\" groove allowance = 22.375)."
+    }
+  ],
+  "notes": "Narrative build log: no assembly sequence, divider positions or cutout sizes in the text or in the video-still images; description points to the video ('Follow along and watch the video'), which may carry them (R1 not provable).",
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b350949b76a3274b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c1d42d7c9dd2cebb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/07dc8ec1ca44716f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f20087252504092.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/167389d655d886a6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5cf7c43a3a6e6b78.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5359ad0440ca5a49.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23d6807864660bf3.webp"
+    ]
+  }
 }

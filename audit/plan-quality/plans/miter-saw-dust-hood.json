@@ -1,6 +1,6 @@
 {
   "slug": "miter-saw-dust-hood",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -68,20 +68,24 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "note": "steps[1] says the optional Trak & Stop side wings 'were built using instructions that come with that kit'; wings are not part of this hood (not in cutList) and the hood is completable without them."
     },
     "R2": {
-      "result": "flagged",
+      "result": "pass",
       "flagged": [
         {
           "path": "steps[0].body",
-          "quote": "This dust hood was built to fit a 10\" sliding compound miter saw. The dimensions are generous, and should fit a lot of saws out there, but before you start cutting parts, you’ll want to double check t",
-          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "This dust hood was built to fit a 10\" sliding compound miter saw.",
+          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)",
+          "confirmed": false,
+          "note": "10\" is the saw size, not a part; every part cut in steps[2], [3], [4], [7], [9] is a cutList row."
         }
       ]
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "All 5 rows used: Side x2 (steps[2], [6], [11]), Back, Lower Back, Top, Bottom."
     },
     "R4": {
       "result": "pass",
@@ -89,33 +93,105 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 2×23.75×26.25 + 1×6.5×31 + 1×22.5×31 + 1×31×31 + 1×13.5×31 = 3525.4 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "sheet layout not judged (area fits: part area 2x23.75x26.25 + 1x6.5x31 + 1x22.5x31 + 1x31x31 + 1x13.5x31 = 3525.4 sq in; bought 1x48x96 = 4608 sq in). Reader note: a layout exists (a 48 x 31 band holds Back 22.5 + Lower Back 13.5 + Top 6.5 = 42.5 wide; Bottom 31 x 31; two Sides 2 x 23.75 = 47.5 wide x 26.25 long; lengths 31 + 31 + 26.25 = 88.25 <= 96)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all text for fastener sizes",
+      "note": "'1 1/4\" coarse-thread pocket-hole screws' (steps[5], [6], [8], [10], [11]) = materials[1]; '#8 x 3/4\" pan-head wood screws' (steps[12]) = materials[3]. Saw-mounting bolts have no size anywhere (scored under R14)."
+    },
+    "R8": {
+      "result": "pass",
+      "note": "Parts cut and drilled, backs joined (steps[5]), attached to one Side, Top and Bottom added, second Side last (steps[11]), then finish and hoods (steps[12]); hoods are fitted from outside after assembly."
+    },
+    "R9": {
+      "result": "pass",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Set your pocket-hole jig for 3/4\"-thick material"
+        }
+      ]
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "note": "Viewed images: steps[3] Back dust port 12 1/2\" from left, 3\" from top, 6\" x 6\"; steps[4] Lower Back port 12 1/2\", 2\", 6\" x 6\"; steps[6]/[8]/[10] parts placed 'flush at front corner' / 'inside edges of plywood should meet' (relational). Pocket-hole locations excluded."
     },
     "R11": {
-      "result": "flagged",
+      "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "flagged": [
         {
           "path": "steps[1].body",
-          "quote": "oodworking dust collector that has 4\"-diameter hose. So, we attached dust hoods of that size. If you’re using a shop vacuum instead, you can get ports that work with 2 1/4\" or 2 1/2\" hose. You’ll want",
+          "quote": "So, we attached dust hoods of that size.",
           "why": "\"attached\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "unattachedImages": 6,
+          "confirmed": false,
+          "note": "Not a reference to a drawing; ordinary use of 'attached'."
         }
-      ]
+      ],
+      "note": "Every 'cutting diagram'/'as shown' step (steps[2]-[11]) has its own image; viewed images show the per-part dimensions (Side 23 3/4\" x 26 1/4\", Back 22 1/2\" x 31\", Lower Back 13 1/2\" x 31\", Top 6 1/2\" x 31\", Bottom 31\" x 31\")."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[5].name",
+          "quote": "Dust-collection hose"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Dust-collection hose clamps"
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "Dust-collection “Y” fitting"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Then you can bolt your saw down."
+        }
+      ],
+      "reason": "Hose (1), hose clamps (5) and the Y fitting (1) are listed but no step installs or connects them. Search of all 14 steps for /hose|clamp|fitting|\\bY\\b/i: only steps[1] (hose diameter when buying hoods) and steps[5] ('clamp' = woodworking clamp, not hose clamp); steps[12] installs only the two plastic hoods. Conversely steps[13] uses saw-mounting bolts that are not in materials (no size either).",
+      "note": "Counts otherwise agree: pocket holes counted in viewed images = Back 15 + Lower Back 8 + Top 6 + Bottom 8 = 37 = materials[1] quantity 37; #8 screws 8 = 2 hoods x 4. Hoods and Sides installed. The optional Trak & Stop kit (materials[8]) is context only (steps[1]) and not counted."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing knowledge outside section 9."
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Position the Bottom in place on the Side as shown. Apply glue to the edge and secure the Top to the Side with 1 1/4\" coarse-thread pocket-hole screws.",
+      "what": "Step 'Attach the Bottom' says to secure 'the Top'; wrong part name in one sentence (title, first sentence and image all show the Bottom). Does not change what is built."
+    }
+  ],
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0eab753147cc8e4b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d84b876a9fe0a7fd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/97307a5b8bba8246.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/11fa9dfecc6c477d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/09dbe029658afd6e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3b30ad62ece3c542.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/14f7e3a246d9e0e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7ea3d59f722d9e3b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/398834320f1192de.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/843bc22ec8e58055.webp"
+    ]
+  }
 }

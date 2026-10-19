@@ -169,3 +169,80 @@ built. Today that is `unknown`/`likely` and goes to Human review.
 | [mudroom-lockers-with-character](https://notchplans.com/plans/mudroom-lockers-with-character) | storage · 21 steps | Fix | **R9** Fix/certain: `steps[6].body` "Drill pocket holes in the rails of the face frames."<br>unknown: R4, R5<br>gap: The bench seats are glued up but never installed: searched all steps for /seat/i, only steps[4]. Bis<br>gap: Nails (steps[16], steps[17], steps[19], steps[8] tip 'brad nails') and 'cabinet screws' (steps[13]) <br>gap: No shelf/divider dado positions are given in any step; steps[1] image not viewed because the sweep d<br>gap: Cut list says 6/4 red oak but materials[0] is 'Red Oak, 23 Bd ft 5/4'; the stock thickness disagrees<br>import-damaged (S-19 family, fixed in bulk) | |
 | [raised-garden-bed](https://notchplans.com/plans/raised-garden-bed) | shop-projects · 18 steps | Fix | **R9** Fix/certain: `steps[2].body` "Use a pocket hole jig to attach the two boards that form each leg. Drill pocket holes into the 2x4 board. I'd recommend creating 4 pocket ho"<br>unknown: R5<br>import-damaged (S-19 family, fixed in bulk) | |
 | [tiered-charcuterie-serving-board](https://notchplans.com/plans/tiered-charcuterie-serving-board) | cutting-boards · 7 steps | Fix | **R9** Fix/certain: `steps[0].body` "Cut boards to the sizes indicated and drill pocket holes in locations shown."<br>import-damaged (S-19 family, fixed in bulk) | |
+
+## R-2 verdicts for the same 70 plans (2026-10-19)
+
+After Keagan's Q1–Q4 answers the 70 read plans were re-scored under [rubric R-2](rubric-R2.md) (R9 no longer counts; R1 Fix level; R10 widened; new R14) and every new Unpublish-level finding was verified (4 checked: 2 upheld at Unpublish, 2 upheld at Fix only). Verdicts are computed by `scripts/verdict.mjs`. Totals for the 70: Ship 7 · Ship (unverified) 9 · Fix 46 (1 + Human review) · Human review 1 · Unpublish 7 (1 + Human review). **Keagan: judge each plan on its own; your verdict is compared with the R-2 column.**
+
+| Plan | R-1 agent verdict | R-2 agent verdict (◀ = changed) | Counted failures (R9 excluded; (U) = Unpublish-level) | Rubric |
+|---|---|---|---|---|
+| 2-board-plant-shelf | Ship | Ship | — | R-2 |
+| 2x4-christmas-trees | Ship (unverified) + Human review | Ship ◀ | — | R-2 |
+| angled-cedar-planter | Ship (unverified) | Ship (unverified) | — | R-2 |
+| battery-charging-station | Ship (unverified) | Fix ◀ | R1 | R-2 |
+| beginner-friendly-sofa-table | Ship | Ship | — | R-2 |
+| childrens-table-and-chairs | Ship (unverified) | Ship (unverified) | — | R-2 |
+| classic-craftsman-style-queen-bed | Ship | Fix ◀ | R14 | R-2 |
+| contemporary-display-shelf | Ship | Ship | — | R-2 |
+| cordless-tool-charging-station | Ship | Fix ◀ | R14 | R-2 |
+| corner-shelves | Ship (unverified) | Ship (unverified) | — | R-2 |
+| craftsman-style-storage-bench | Ship (unverified) | Fix ◀ | R10 | R-2 |
+| custom-lighted-address-plaque | Ship | Fix ◀ | R14 | R-2 |
+| diy-modern-twin-bed | Ship (unverified) | Ship (unverified) | — | R-2 |
+| one-of-a-kind-cutting-board | Ship | Ship | — | R-2 |
+| outdoor-serving-center | Ship (unverified) | Fix ◀ | R14 | R-2 |
+| porch-bed-swing | Ship | Fix ◀ | R10, R14 | R-2 |
+| privacy-planter | Ship (unverified) | Fix ◀ | R14 | R-2 |
+| tile-nightstands | Ship (unverified) | Ship (unverified) | — | R-2 |
+| diy-kitchen-island | Fix + Human review | Fix + Human review | R1(U), R3, R6, R14 | R-2 |
+| printers-cabinet-cat-litter-box-enclosure | Fix | Fix | R2(U), R3, R6, R10 | R-2 |
+| big-green-egg-grill-cabinet | Fix | Fix | R1, R8, R10 | R-2 |
+| crib-mattress-porch-swing | Fix | Fix | R3, R10, R14 | R-2 |
+| gaming-computer-desk | Fix | Fix | R2, R6 | R-2 |
+| garage-mud-room-storage-and-organizer | Fix | Fix | R3, R6, R14 | R-2 |
+| shop-worktable | Fix | Fix | R2, R4 | R-2 |
+| 3-drawer-nightstand | Fix | Unpublish ◀ | R3, R14(U) | R-2 |
+| 5-in-1-kids-art-station | Fix | Fix | R2, R14 | R-2 |
+| bench-with-storage | Fix | Fix | R3, R10, R14 | R-2 |
+| boot-tray-cover | Fix | Fix | R5 | R-2 |
+| craftsman-style-chest-of-drawers | Fix | Fix | R2, R6 | R-2 |
+| kitchen-pantry-cabinet | Fix | Unpublish ◀ | R6, R10, R14(U) | R-2 |
+| outdoor-coffee-table-with-4-hidden-side-tables | Fix | Fix | R5 | R-2 |
+| plant-stand-tower | Fix | Fix | R4 | R-2 |
+| rotating-shelf | Fix | Fix | R4, R14 | R-2 |
+| rustic-bathroom-vanity | Fix | Fix | R6, R11, R14 | R-2 |
+| diy-dog-crate-console | Unpublish | Unpublish | R2(U), R3, R6, R10, R14(U) | R-2 |
+| diy-nightstand | Unpublish | Unpublish | R1(U), R2, R6, R14 | R-2 |
+| large-outdoor-planter | Unpublish | Unpublish | R1(U), R8, R11(U) | R-2 |
+| outdoor-rolling-console | Unpublish | Unpublish + Human review ◀ | R1(U) | R-2 |
+| rolling-kitchen-island | Unpublish | Unpublish | R1(U), R3, R4, R14, R11(U) | R-2 |
+| small-printer-cart | Fix | Fix | R8, R10 | R-2 |
+| 7-foot-outdoor-table-with-bench | Fix | Fix | R2, R10 | R-2 |
+| coffee-bar-or-kitchen-island-shelf | Fix | Fix | R3 | R-2 |
+| crosscut-sled | Fix | Fix | R6, R14 | R-2 |
+| diy-festival-game | Fix | Fix | R6 | R-2 |
+| diy-mobile-workbench-with-storage-shelf | Fix + Human review | Fix ◀ | R1, R5 | R-2 |
+| easy-modern-bookshelf | Fix | Fix | R4 | R-2 |
+| hobby-center-tables | Fix | Fix | R8 | R-2 |
+| kreg-clamp-workbench-with-bench-dogs | Fix | Fix | R6, R14 | R-2 |
+| large-cutting-board-or-charcuterie-board | Fix | Fix | R8 | R-2 |
+| mantel-clock-with-free-printable-dial | Fix | Fix | R1 | R-2 |
+| remarkable-work-tables-mini | Fix | Fix | R11, R14 | R-2 |
+| twin-bed-with-storage | Fix | Fix | R8, R14 | R-2 |
+| ultimate-adjustable-sawhorse | Fix | Fix | R4, R14 | R-2 |
+| 16-drawer-dresser | Fix | Ship (unverified) ◀ | — | R-2 |
+| 2x4-garage-shelves | Fix | Fix | R10 | R-2 |
+| a-frame-birdhouse | Fix + Human review | Fix ◀ | R14 | R-2 |
+| adirondack-counter-height-chair | Fix | Ship (unverified) ◀ | — | R-2 |
+| adirondack-counter-height-side-table | Fix | Fix | R14 | R-2 |
+| budget-friendly-storage-unit | Fix | Fix | R14 | R-2 |
+| built-in-dresser-with-cubbies | Fix | Fix | R10, R14 | R-2 |
+| built-to-last-potting-bench | Fix + Human review | Fix ◀ | R14 | R-2 |
+| cedar-patio-table | Fix | Ship (unverified) ◀ | — | R-2 |
+| christmas-village-stocking-hangers | Fix | Ship ◀ | — | R-2 |
+| diy-modern-outdoor-chair | Fix + Human review | Human review ◀ | — | R-2 |
+| four-poster-canopy-bed | Fix | Fix | R14 | R-2 |
+| mega-lego-table | Fix + Human review | Fix ◀ | R1, R14 | R-2 |
+| mudroom-lockers-with-character | Fix | Fix | R10, R14 | R-2 |
+| raised-garden-bed | Fix | Ship (unverified) ◀ | — | R-2 |
+| tiered-charcuterie-serving-board | Fix | Ship ◀ | — | R-2 |

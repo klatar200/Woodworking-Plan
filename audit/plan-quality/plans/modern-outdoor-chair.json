@@ -1,6 +1,6 @@
 {
   "slug": "modern-outdoor-chair",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -56,13 +56,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "note": "'See plans.' (steps[0], steps[4]) points to the per-step diagrams, which are the step images (viewed: all dimensions present). steps[8]'s www.TheCreativeMom.com link is an optional pointer to the cushions used."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "Every board cut in steps[0]-[4] matches a corrected cutList row: 24 x4, 27 1/2 x2, 30 1/2 x2, 27 5/8 x2, 25 x7 (3 + 4), 22 x4, 29 1/2 x2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "All 7 rows (all named 'Boards') are used: cutList[0] 7 x 25 = 3 (steps[2]) + 4 (steps[3]); the rest match steps[0], [1], [4]."
     },
     "R4": {
       "result": "pass",
@@ -70,26 +73,95 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 7×25 + 4×24 + 2×30.5 + 2×27.5 + 2×27.625 + 4×22 + 2×29.5 + kerf 15 cuts (23 parts − 8 boards, the fewest possible)×1/8 = 591.125″; bought: 8×96 = 768″; 591.125 ≤ 768"
+      "arithmetic": "parts: 7×25 + 4×24 + 2×30.5 + 2×27.5 + 2×27.625 + 4×22 + 2×29.5 + kerf 15 cuts (23 parts − 8 boards, the fewest possible)×1/8 = 591.125″; bought: 8×96 = 768″; 591.125 ≤ 768",
+      "note": "Reader check of a layout: 7 boards suffice (30.5+30.5+29.5; 29.5+27.625+27.625; 27.5+27.5+25; 25x3; 24x3+22; 24+22x3; 25x3)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all text for screw sizes",
+      "note": "'2 1/2\" pocket hole screws' (steps[0]-[4]) = materials[1]; '2 1/2\" wood screws' (steps[5], 2 per backrest side in the viewed image = 4) = materials[2]."
+    },
+    "R8": {
+      "result": "pass",
+      "note": "Sides (steps[0]-[1]), horizontals (steps[2]), seat supports (steps[3]), backrest built separately (steps[4]) then attached (steps[5]-[6]), then fill, finish and cushions."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in one end."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x2 (1 1/2\") stock, but no jig thickness setting appears in any text and the viewed step images (diagrams) show none. Not counted toward verdict (R-2)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the 27 1/2\" board to the 24\" boards, 10\" from the bottom, using wood glue and 2 1/2\" pocket hole screws.",
+          "viewed": true
+        }
+      ],
+      "reason": "Text says the 27 1/2\" side rail is 10\" from the bottom; the viewed steps[0] image dimensions it 5\" from the leg bottom to the rail (5 + 1 1/2 rail + 17 1/2 above = 24), and the viewed steps[1] image shows that rail lower than the 10\" diagonal end. Two different positions for the same rail; all other positions (diagonal 10\" / 12 1/4\", seat supports 10\" / 12 1/4\", 5\" spacing, 3 1/2\", 7 1/4\") are given and agree."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached|per the print|sketch above/i",
+      "note": "'See plans.' steps each have their own diagram image (viewed)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "This chair frame is designed to use a deep seat cushion for both the backrest and the seat. These seat cushions are 24\" x 24\", and 4\" thick."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut 2- 24\" 2x2's. Drill pocket holes in one end. Cut 2- 27 1/2\" 2x2's. Drill pocket holes in both ends. Cut 2- 30 1/2\" 2x2's."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Boards | qty 4 | 1.5 x 1.5 x 24"
+        }
+      ],
+      "reason": "(c) Two 24\" x 24\" x 4\" cushions are used in steps[8] but are not in materials (search of materials[].name for /cushion/: no match). (a) steps[0] counts disagree with the cut list under either reading: 'Cut 2- 24\"' matches cutList[1] qty 4 only per side (2 x 2 sides), but then 'Cut 2- 27 1/2\"' and 'Cut 2- 30 1/2\"' would be 4 total versus cutList qty 2 (one of each per side is attached, per the same step)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing knowledge outside section 9."
+  },
+  "gaps": [],
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f41120b406308ae2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a0fab96c2b8729c8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4febbea047b24522.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c61a6b56fe5d2560.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dd33386bd5e91848.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/52e11a4e20145729.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d05fa3edb9b057f9.webp"
+    ]
+  }
 }

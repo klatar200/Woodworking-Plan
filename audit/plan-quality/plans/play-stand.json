@@ -1,6 +1,6 @@
 {
   "slug": "play-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "Every cut part (Top Sign, Side Poles, Counter Top, Long/Short Trim) is a cutList row; step 1 sizes agree with the corrected rows (26-5/16\", 25\", 9-1/4\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "All 5 rows used (steps[0], [3], [4], [8])."
     },
     "R4": {
       "result": "pass",
@@ -25,26 +27,116 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (9.5x12.5, 1x4, 1x10, 0.25x72, 1x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 96\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "(2) Side Poles - 1\" x 4\" board cut to 4' length"
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part (1x10 for Top Sign, 1x4 for Side Poles, 1x6 for Counter Top, lattice for trim). 1x4: 2 poles x 48\" (4' per steps[0]; cutList[1] shows 4 inches, which is Kreg's own error, scored under R14) = 96\" + 2 cuts x 1/8\" = 96.25\" > 96\" bought (short by 1/4\"; 1/8\" counting one kerf between the two). Other stocks fit: 1x10 48\": 26.3125 + 1/8 <= 48; 1x6 72\": 2 x 25 = 50 + 2 x 1/8 = 50.25 <= 72; lattice 72\": 2 x 26.3125 + 2 x 9.25 = 71.125 + 4 x 1/8 = 71.625 <= 72.",
+      "reason": "Computed on the steps' 48\" (steps[0] '4' length'), not the cut list's 4\": the cut-list value is the R14 defect and cannot be a real pole length (it is also the nominal 1x4 width). Fails only by kerf (1/8\"-1/4\")."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "using (6) 5/8\" wood screws to secure them together into the center boards"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Wood Screws - 3/4\""
+        }
+      ],
+      "reason": "Step 2 uses 5/8\" wood screws; materials list wood screws only at 3/4\" (materials[6]) and 1-1/4\" (materials[7]), plus 5/8\" brad nails (materials[8]) which are not screws. Search of materials[].name for /5\\/8/: only the brad nails."
+    },
+    "R8": {
+      "result": "pass",
+      "note": "Cut, join crates, drill poles, attach poles, attach sign, paint/stain, then trim, chalkboard and counter top last; chalkboard painted after the stand paint dries."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill your pocket holes using your Kreg Jig R3 into the side poles of the play stand"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1x4 poles but no thickness setting is stated in any text; the viewed steps[2] image shows the jig's thickness scale without a setting. Not counted toward verdict (R-2)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach them to the sides of your wooden crates using (4) 3/4\" wood screws",
+          "viewed": true
+        }
+      ],
+      "reason": "Where each 48\" pole sits on the crate side (distance from front/back edge, how far it extends below or above the crate) is given in no text. steps[3] has no image; the step-10 final photo (viewed) shows the finished stand but no figure. Pocket-hole locations (2\" and 8-1/2\" from the top end) and 'sign flush at the top of your poles' are given/relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached|per the print|sketch above/i",
+      "note": "No step refers to a drawing."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Side Poles | qty 2 | 1 x 4 x 4"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "(2) Side Poles - 1\" x 4\" board cut to 4' length"
+        }
+      ],
+      "arithmetic": "Cut list length 4 (inches; Kreg's own source row reads 1\" x 4\" x 4\") vs steps[0] 4' = 48\": 48 - 4 = 44\" disagreement for the same part.",
+      "reason": "(a) The Side Pole length differs between steps and cut list. Other counts and sizes agree: 2 crates; 2 counter boards of 25\" = 25\" across the 2 crates side by side; trim 26-5/16\" and 9-1/4\" match the cut list; 4 trim rows frame the sign. Every listed fastener and board is used; paint, stain, wax are consumables. The 5/8\" screw size is scored under R6."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing knowledge outside section 9."
+  },
+  "gaps": [],
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7267fa5e14188aaf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/169a828500e04b65.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e65927ab961fa5f2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ef98477240ba7c1a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d6ad3d29c078748b.webp"
+    ]
+  }
 }

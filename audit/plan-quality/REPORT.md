@@ -4,21 +4,24 @@
 
 | | |
 |---|---|
-| Rubric | R-1 |
-| Current stage | **Stage 5 gate — waiting for Keagan to sign off [`calibration.md`](calibration.md)** |
-| Last batch | calib-4 (pilot-1..3, calib-1..4 read; pilot + calib Unpublish findings verified) |
-| Ledger | 610: 70 read/verified, 540 swept |
-| Verdicts (70 read) | Ship 8 · Ship (unverified) 10 · Fix 47 · Unpublish 5 (verifier-upheld) · Human review 7 (combined with another verdict) · not yet read 540 |
-| Updated | 2026-10-18 |
+| Rubric | **R-2** ([`rubric-R2.md`](rubric-R2.md)); all 80 read records re-scored/scored under it |
+| Current stage | **Stage 5 gate — waiting for Keagan's per-plan verdicts in [`calibration.md`](calibration.md)** (Q1–Q4 answered) |
+| Last batch | modelcheck (pilot-1..3, calib-1..4, R-2 re-score of the 70, 10-plan Sonnet/Opus check) |
+| Ledger | 610: 80 read (all Unpublish findings verified), 530 swept |
+| Verdicts (80 read, R-2) | Ship 9 · Ship (unverified) 11 · Fix 52 (1 + Human review) · Human review 1 · Unpublish 7 (1 + Human review) · not yet read 530 |
+| Updated | 2026-10-19 |
 
 **Stage 5 gate — Q1–Q4 answered by Keagan 2026-10-19**, verbatim: "Q1-Q4: accept your
 recommendations (R9 reported once as a bulk item and not counted toward verdicts; add R14 and widen
 R10 as rubric R-2, then re-score the 70; R1 gets a Fix level; Stage 6 readers on Sonnet with Opus
 verifiers after a 10-plan check). My per-plan verdicts are in calibration.md." → rubric
-[`rubric-R2.md`](rubric-R2.md); re-scoring the 70 under R-2 in progress.
+[`rubric-R2.md`](rubric-R2.md) (plus three clarifications found while re-scoring: consumables are
+not R14 items; a position missing only because it is in a missing document is R1; pocket-hole
+locations are not R10). The 70 are re-scored under R-2 (R-1 → R-2 verdicts side by side at the end
+of `calibration.md`), and the 10-plan Sonnet/Opus check passed ([`model-check.md`](model-check.md)).
 **Still open:** the "Keagan's verdict" column in `calibration.md` is empty in the repo (no local or
-pushed edit found 2026-10-19). Stage 6 waits for those verdicts — the false-Ship check (§8 Stage 5)
-needs them.
+pushed edit found 2026-10-19). Stage 6 (530 plans, Sonnet readers + Opus verifier) waits for those
+verdicts — the false-Ship check (§8 Stage 5) needs them.
 
 **Stage 2 gate — answered by Keagan 2026-10-18** (relayed by the orchestrating session),
 verbatim: "Yes to both: use the kreg-plans.json from git history, and score the measurement checks

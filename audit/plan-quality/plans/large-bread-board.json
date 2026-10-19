@@ -1,6 +1,6 @@
 {
   "slug": "large-bread-board",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -43,21 +43,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
+      "result": "pass",
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
       "flagged": [
         {
           "path": "steps[1].body",
           "quote": "Drill pocket holes as per the attached diagram and measurements provided. After you drill the pocket holes in each piece, place it back in order.",
-          "why": "matches \"the attached\""
+          "why": "matches \"the attached\"",
+          "confirmed": false,
+          "note": "The attached diagram is steps[1].image (viewed): it shows every pocket-hole position with dimensions. Nothing external is needed. description's www.nickandalicia.com is a credit."
         }
       ]
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "Steps cut maple and walnut pieces; cutList has Maple Board x8 + x1 and Walnut Boards x2, which match the step-0 layout image (viewed: 3 rows x 3 maple pieces, centre top piece 9\", two walnut strips 21 3/4\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "note": "All 3 cut rows are used (maple pieces and walnut strips in steps 0, 2, 3)."
     },
     "R4": {
       "result": "pass",
@@ -68,23 +72,60 @@
       "reason": "R5 precondition not met: 2 stock types (1x8, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all text for fastener sizes",
+      "note": "Only fastener is '1 1/4\" Kreg hardwood pocket hole screws' (steps[2], steps[3]); matches materials[2]. 3/16\" and 3/4\" are drill bits, not fasteners."
+    },
+    "R8": {
+      "result": "pass",
+      "note": "Order is cut, drill, join rows (step 2), join rows to walnut (step 3), plug, sand, then cut circle/handle from the assembled board."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as per the attached diagram and measurements provided."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" stock but no jig thickness setting appears in any text; the viewed steps[1] image shows hole positions only. 5 unattached images not viewed. Not counted toward verdict (R-2)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "note": "Viewed images: step 0 gives all layout dimensions, step 1 all pocket-hole positions, step 6 the 2 1/2\" handle inset and 9 1/2\" radius (text also states them). Handle hole position is 'higher up ... or closer to the center' (as desired)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "6 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "note": "Counts agree: 8+1 maple, 2 walnut match the viewed layout; 24 plugs = 24 screws = 24 pocket holes counted in the viewed hole-layout image (steps[1]). Maple 8x7 + 9 = 65 plus kerf <= 72; walnut 2x21.75 = 43.5 <= 48. Every material is used."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "humanReview": {
+    "value": false,
+    "reason": "No question needing outside knowledge."
+  },
+  "reader": {
+    "batch": "modelcheck",
+    "model": "sonnet",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d4cf8e5406fcf6be.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/930cfbbfb3c69b76.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22299171dd3cc6e7.webp"
+    ]
+  }
 }
