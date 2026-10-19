@@ -1,6 +1,6 @@
 {
   "slug": "bistro-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -13,55 +13,92 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": ". We will be doing this with the face down.\nStart with (1)ea table top end (part 2) and (1) of the table top main.\nSee the attached image / Note all table top assembly steps are assembled upside down.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"See the attached image\" (steps[1]) refers to the step's own image; \"Part 1 - Parts/Cut List\" is the plan's own cut list. No external content needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts numbered in steps (Part 1 mains, 2 ends, 3 legs, 4 supports x3, 5 supports x4) match the cutList row order; counts in steps (6 mains, 2 ends, 2+2 legs/supports per frame, 3 connecting supports) match rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used by steps[0]-[6]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable"
+      "reason": "cutList[0] thickness unreadable in Kreg source (1-/12\" x 3-1/2\" x 19-1/2\"); width 3 1/2 and length fit a 2x4 but thickness cannot be confirmed from the plan.",
+      "readerNote": "source text \"1-/12\" looks like a typo of 1-1/2\"; not asserted (§4 rule 6)."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (2x4, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": " the top through the upper supports on the base. *Please note you will want to drill a 1/4\" clearance through those supports only. This will allow for wood movement. Attach using a #8 x 2\" wood screw.",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Attach using a #8 x 2\" wood screw."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2-1/2\" Kreg pocket screw"
         }
-      ]
+      ],
+      "arithmetic": "Materials fasteners: materials[2] 2-1/2\" Kreg pocket screw (52) only; search of materials for /#8|wood screw|2\"/ finds none.",
+      "reason": "The #8 x 2\" wood screws used to attach the top (steps[7]) are not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give numbers: bottom supports 8\" from leg bottom (step 5 image), 1/4\" gaps (step 3 text/image), main length 19 1/2 and end 22 1/4 (step 1 image); upper supports at the top and bottom support centred per step 6 image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top prepped and assembled upside down (0-4), base frames (5), connected (6), top attached last (7)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "*Make sure the setting on your Kreg pocket hole jig is set for the right thickness, as well as the collar on the drill bit."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" parts (cutList rows 1-4) but no setting value is stated in any step; step images 0, 5, 6 (viewed) show hole positions only, no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Top width 6 x 3 1/2 + 5 x 1/4 = 22.25 = Table Top Ends length; top 22 1/4 x (19 1/2 + 2 x 3 1/2 = 26 1/2) overhangs the base 18 1/4 x 22 1/2 by 2\" each side; all parts installed; glue in materials; 1/4\" spacers are scrap."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/0d070f908c60a70b.webp",
+      "plans/42468721f3923653.webp",
+      "plans/159cad10e521e64b.webp",
+      "plans/1dce2b67fbf6462e.webp",
+      "plans/08c824c8bc084dee.webp",
+      "plans/ca3d8584b1e641e0.webp"
+    ]
+  },
+  "gaps": []
 }

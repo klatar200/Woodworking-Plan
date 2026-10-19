@@ -1,6 +1,6 @@
 {
   "slug": "bathroom-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,51 +10,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Step images (viewed) label each part: sides 1x12 (16 3/4 high), back 1x6 + 1x12 (21 1/2), shelf and top board 20\", divider 8 1/4\" high, top 1x12 22 1/2 + 1x2 trim; all have cutList rows (Back x2, Shelf and Top x2, Divider, Top, Top Trim, Sides)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Top Trim",
-          "why": "no step mentions it (searched steps for trim)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged Top Trim is the \"1x2 board\" of steps[5] (image step 6 labels 1x2, 22 1/2\"); all 7 rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x12, 1x6, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Step images name stock for every part (1x12 sides/shelf/top/divider, 1x6+1x12 back, 1x2 trim); quantity 1 lines are Kreg's own values per import-fidelity (not defaulted).",
+      "arithmetic": "1x12 (2 x 72\" = 144\"): 16.75+16.75+21.5+20+20+22.5+11.25 (divider grain length) = 128.75 plus 6 cuts x 1/8 = 129.5 <= 144; packs as board 22.5+16.75+16.75+11.25 = 67.25 and board 21.5+20+20 = 61.5. 1x6 24\": 21.5 <= 24. 1x2 24\": 22.5 <= 24."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "s as shown. Fill pocket holes with wood filler or pocket hole plugs, sand, and finish as desired. To hang the shelf on the wall, drive 2-1/2\" wood screws from the inside the shelf into the wall studs.",
-          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
+          "quote": "To hang the shelf on the wall, drive 2-1/2\" wood screws from the inside the shelf into the wall studs."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1-1/4\" Wood Screws"
         }
-      ]
+      ],
+      "arithmetic": "Fasteners in materials: materials[3] 1-1/4\" pocket hole screws, materials[5] 1-1/4\" wood screws; search of materials for /2-1\\/2|2 1\\/2/ finds none.",
+      "reason": "The 2-1/2\" wall-mounting screws used in steps[6] are not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give curve dimensions (10\", 6 3/4\", 6 1/4\", 5\"), shelf 9\" from top, divider 8 1/4\" with 9 5/8\" each side, top 22 1/2 with slight overhang, three hooks evenly spaced on the lower back board; hanging into wall studs is relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (0), back (1), shelf (2), divider (3), 20\" top board (4), top + trim (5), hooks and hanging (6); each part exists before use per viewed step images."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"3/4\\\" pocket holes\" stated in steps[0]-[5]; all pocket-holed parts are 3/4\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Back 5 1/2 + 11 1/4 = 16 3/4 = side height; back 21 1/2 = 20 + 2 x 3/4; divider 8 1/4 = 9\" - 3/4\"; interior (20 - 3/4)/2 = 9 5/8 each side matches step 4 image; top 22 1/2 = 21 1/2 + 1. Hooks in materials; all parts installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/e66d6363aade4721.webp",
+      "plans/24f01635ff740e55.webp",
+      "plans/c3a14c664fa7e112.webp",
+      "plans/b501d14c1fef15fd.webp",
+      "plans/bc10ad58a05d63e0.webp",
+      "plans/2f25560089e63821.webp",
+      "plans/b5d36680d8cb5061.webp"
+    ]
+  },
+  "gaps": []
 }

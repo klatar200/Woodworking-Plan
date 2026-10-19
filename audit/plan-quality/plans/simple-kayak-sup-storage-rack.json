@@ -1,6 +1,6 @@
 {
   "slug": "simple-kayak-sup-storage-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,27 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps cut \"wood to sizes specified\" (steps[0]) without naming parts; no part is cut or assembled that is absent from the cut list (end rails x4, side rails x4, legs x4 form the 2-level rectangular frame shown in step 2 image)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "End rails",
-          "why": "no step mentions it (searched steps for rail)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Side rails",
-          "why": "no step mentions it (searched steps for rail)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged rows are not named in step text, but steps[0] \"Cut wood to sizes specified\" and steps[2] \"building a frame of a rectangle box\" use exactly these 12 pieces (4+4+4); no other parts exist in the plan."
     },
     "R4": {
       "result": "pass",
@@ -46,22 +31,54 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, 4x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only size in steps is 2-1/2\" pocket screws (steps[2]); materials[2] \"2-1/2\\\" Kreg pocket screws\". Hooks (materials[4]) carry no size in steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Step 2/3 images (viewed photos) show a bottom rectangle at the leg bottoms and a top rectangle at the leg tops (flush, relational); hook placement is free (\"Add hooks to the rack\"). No numeric positions are needed beyond the cut sizes."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), drill (1), assemble (2), load/add hooks (3); no part depends on a later step."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using a Kreg Jig drill pocket holes into ends of each cut 2\" x 4\" piece"
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" 2x4 stock with no jig thickness setting stated anywhere in the plan; step 1 image (viewed) is a photo of the jig, no legible setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Steps give no counts to contradict; cut rows total 12 pieces for the frame shown; hooks are in materials; steps reach the finished rack."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/621a57e0c8be8297.webp",
+      "plans/77b3ec5620dc63bd.webp",
+      "plans/539ec7e99acc4a67.webp",
+      "plans/3d994bbc3b49d177.webp"
+    ]
+  },
+  "gaps": []
 }

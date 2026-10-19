@@ -1,6 +1,6 @@
 {
   "slug": "cabinet-shelf-risers",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,67 +35,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] cuts \"top shelf\" (= Top Plate, 28\") and \"two legs\" 8\" (= Legs x2); both rows exist."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used (steps[0]-[4])."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Top Plate — qty 1, 0.75 x 7.75 x 28 (Kreg-corrected)"
+          "quote": "Top Plate: Kreg source 3/4\"x7 3/4\"x28\"d (corrected 0.75 x 7.75 x 28)"
         },
         {
           "path": "cutList[1]",
-          "quote": "Legs — qty 2, 0.75 x 7.75 x 8 (Kreg-corrected)"
+          "quote": "Legs: Kreg source 3/4\"x7 3/4\"x8\" (corrected 0.75 x 7.75 x 8)"
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 1x8 96\""
-        }
-      ],
-      "arithmetic": "cutList[0] 0.75×7.75: no listed stock has thickness 0.75 (±1/32) with width ≥ 7.75; stock = 0.75×7.25; cutList[1] 0.75×7.75: no listed stock has thickness 0.75 (±1/32) with width ≥ 7.75; stock = 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top Plate — qty 1, 0.75 x 7.75 x 28 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
         },
         {
-          "path": "cutList[1]",
-          "quote": "Legs — qty 2, 0.75 x 7.75 x 8 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
+          "path": "steps[0].body",
+          "quote": "Cut top shelf to 28 inches long and the two legs to 8 inches long"
         }
-      ]
+      ],
+      "arithmetic": "Part width 7 3/4 (= 7.75) vs 1x8 actual 7 1/4 (= 7.25) per §9: 7.75 > 7.25. materials list only the 1x8; steps[0]-[6] contain no glue-up or lamination (search /glue.*(board|panel|edge)|lamin|wider/ finds only gluing leg ends in steps[3]).",
+      "reason": "Corrected part width exceeds the only listed board by 1/2\"."
     },
     "R5": {
       "result": "pass",
       "arithmetic": "parts: 1×28 + 2×8 + kerf 2 cuts (3 parts − 1 boards, the fewest possible)×1/8 = 44.250″; bought: 1×96 = 96″; 44.250 ≤ 96"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name no fastener size; Kreg jig screws x4 and plugs x4 are in materials (2 holes per leg x 2 legs = 4)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Legs go on the ends of one face of the top plate (steps[3]), holes \"towards the center\" (steps[4]); step 4 image (viewed) shows the leg at the plate end; pocket holes \"evenly spaced\". Relational placements."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), drill (1-2), glue (3), attach (4), plug and sand (5), finish (6)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using the Kreg jig pocket-hole jig, drill two holes on one of the legs, evenly spaced apart."
+        }
+      ],
+      "reason": "Pocket holes go in 3/4\" parts (cutList thicknessIn 0.75) and no jig thickness setting is stated; steps[1] image (viewed) is a photo of the jig with no legible setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 1 plate + 2 legs; 2 holes x 2 legs = 4 screws = 4 plugs in materials; every part installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/1ed0ac8b0085bee9.webp",
+      "plans/a74ee58d8684861f.webp",
+      "plans/0e71c986419111d2.webp",
+      "plans/9e5998ee6df0a043.webp"
+    ]
+  },
+  "gaps": []
 }

@@ -1,6 +1,6 @@
 {
   "slug": "18-drawer-apothecary-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -32,20 +32,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep pass stands; the only external mention is the credit \"visit www.tidbits-cami.com\" in description, optional per §2."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": " tall and 22\" long, you will need two. Cut the back piece 9\" tall and 13\" long. Take the two sides and the back piece and cut a notch 3/8\" tall and 1/4\" wide along one of the long sides of the pieces.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1/4\" is the width of a notch cut in drawer pieces (steps[6]), not a part. Parts cut in steps[6] (drawer front 15 1/4 x 11 1/4, sides 9 x 22, back 9 x 13) match cutList rows 5-7; top pieces 8 7/8 x 96 match cutList[2] (corrected); all other parts named in steps have rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: back/sides (steps[0]), front long/short (steps[1]), corner (steps[2]), top brackets (steps[3]), top pieces (steps[4]), drawer pieces (steps[6-12])."
     },
     "R4": {
       "result": "pass",
@@ -56,29 +51,80 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x12, sheet-0.375, 1x8, 1x10); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " flush and 1 1/8\" overhang on front and sides. Use glue and screws to secure the top in place. This is where the top brackets will come in handy, use them to secure the top in the back. Pre drill hole",
-          "why": "8\" screw — no material line lists a 8\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 8\" screw is the tail of \"1 1/8\\\" overhang\" in steps[5], a dimension not a fastener. No step states a fastener size; materials list 1\" Kreg screws, 1\" wood screws, 1\" brads, 3/8\" T-nuts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Step 3 image viewed shows the top brackets flush with the top across the rear of the end bays and a middle bay; other placements are relational (flush, 14 3/4\" spacing, 1 1/8\" overhang, corner pieces at 4 corners). Handle and slide positions are \"per manufacturer instructions\" (steps[14])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass (0-3), top (4-5), drawers (6-12), legs (13), slides (14) each exist before use; slides go in through open drawer bays after top is on (22\" slide in 24\" deep sides)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Using the Kreg Pocket Jig, drill two pocket holes in each end of the back piece opposite the side with the notch."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/8\" plywood parts (cutList rows 6-8 thickness 0.375) and no jig thickness setting appears in any step text; search: steps/materials/description vs /setting|collar|depth|thickness/ finds none for the jig. step[7] image viewed shows the jig in use but no legible setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "The piece should be flush on both ends and on the top or bottom depending on where you started."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Each piece should have 14 3/4\" space between them."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Front long pieces: lengthIn 96 (qty 4)"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Back Piece: lengthIn 93.75"
+        }
+      ],
+      "arithmetic": "Cabinet width = 7 sides x 3/4 (cutList[1] thicknessIn 0.75) + 6 gaps x 14 3/4 = 5.25 + 88.5 = 93.75, equal to Back Piece lengthIn 93.75. A rail that must be \"flush on both ends\" is 93.75, but cutList[3] lengthIn is 96 and no step trims it (search steps for /trim|cut.*long front|93/ finds only the top pieces trimmed in steps[4]).",
+      "reason": "Front long piece length in the cut list (96) does not match the cabinet width the step requires (93.75)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/91c5e7fcf99867f2.webp",
+      "plans/6aeb1bd3acc2c2da.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Take the cabinet top you built in step one and align it on the top of the cabinet",
+      "what": "Wrong cross-reference: the top is built in the \"Build top\" step (steps[4], fifth step), not step one."
+    }
+  ]
 }

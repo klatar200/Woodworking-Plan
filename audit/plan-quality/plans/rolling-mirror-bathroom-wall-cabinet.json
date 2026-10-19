@@ -1,6 +1,6 @@
 {
   "slug": "rolling-mirror-bathroom-wall-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,54 +10,100 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "oards, 30 degrees off of square, the longest side measuring 10-1/2\".\nFor each frame: Align 6 trapezoids in a hexagon shape. Measure the exact length between two parallel pieces and cut a scrap piece o",
-          "why": "cut sentence states 10-1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using a router and circle jig, bandsaw, or jigsaw, cut a 3/4\" wide ring with an outer diameter of 17\" and an inner diameter of 15-1/2\".",
-          "why": "cut sentence states 17\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using a router and circle jig, bandsaw, or jigsaw, cut a 3/4\" wide ring with an outer diameter of 17\" and an inner diameter of 15-1/2\".",
-          "why": "cut sentence states 15-1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 10-1/2\", 17\", 15-1/2\" are the mirror-frame trapezoids and ring (steps[1]-[2]), which the steps cut themselves \"from 1 x 4 boards\" (materials[2] 1x4 x2). Box parts (steps[0]) match cutList rows 0-2; panel (steps[5]) = row 3; rails (steps[10]) = row 4; face frames (steps[12]) = row 5."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used (\"Fame Frame\" = face frames, steps[12]); mirror-frame parts are cut inside steps[1]-[2]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x12, 1x6, 1x4, sheet-0.25, 0.75x0.75); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "Add 1 x 2 x 28\" face frames, flush to the front edges of top and bottom boards."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Fame Frame x2: 0.75 x 1.5 x 28"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x4 72\""
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part (1x12 and 1x6 in steps[0], 1x4 in steps[1], 1/4\" plywood in steps[5], 3/4\" square dowel in steps[10], 1x2 in steps[12]); materials[0]-[8] contain no 1x2 (search /1x2|1 x 2/ over materials: none). Needed 2 x 28 = 56\" of 1x2, bought 0\". If instead cut from the 1x4s: 12 trapezoids x 10 1/2 (longest side, steps[1]) = 126 + 2 x 28 = 56 -> 182 plus kerf > 144 (2 x 72\").",
+      "reason": "The 1x2 face-frame stock the steps call for is not in materials."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1-1/4\" screws (materials[6] 1-1/4\" pocket hole screws), 1-1/4\" brad nails (materials[7] 1-1/4\" 18 gauge). No conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given: grooves 3-1/4\" from front edge, stop 1/4\" from ends (step 0 + image), shelf 8-1/4\" from bottom (step 8), circle centres 1-1/4\" / 1\" margins (step 5 image), rails 1-1/2\" from front edge (step 10 + image), face frames flush."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box pieces grooved (0), mirror rings made (1-4), panel cut and slid into grooves before top/bottom are joined (5-7), shelf (8), first mirror, rails, second mirror, then face frames (9-12) as step images show."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[7],[8]: \"1-1/4\\\" screws though 3/4\\\" pocket holes\"; all pocket-holed box parts are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "place a 16\" diameter, 1/8\" thick mirror within the rabbet. Secure in place using hot glue around edges."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "Wood glue"
+        }
+      ],
+      "arithmetic": "Search of materials[0]-[8] for /hot|glue gun|silicone|adhesive/i: only \"Wood glue\" matches /glue/.",
+      "reason": "A non-fastener item used by a step (hot glue to secure the mirrors) is not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/b1a6d27db6f07f31.webp",
+      "plans/d27f4c111b777ad7.webp",
+      "plans/3f64a261e4fc4f9e.webp",
+      "plans/4ffe9f9d7c663626.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "description",
+      "quote": "Elevate a simple wall cabinet into something amazing by swapping traditional doors for rolling round mirrors.",
+      "what": "Described as a wall cabinet, but no step or material covers mounting it to a wall (search steps/materials for /wall|hang|cleat|mount|anchor/i: none); steps end at the face frames (steps[12])."
+    }
+  ]
 }

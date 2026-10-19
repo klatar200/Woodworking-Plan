@@ -1,6 +1,6 @@
 {
   "slug": "two-story-bread-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,27 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Using a circular saw with the edge guide, cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and cut 1 piece for the top flap 15\" x 5\".",
-          "why": "cut sentence states 4 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Using a circular saw with the edge guide, cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and cut 1 piece for the top flap 15\" x 5\".",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "he cutting board through a planner to smooth the top and bottom. As assembled, the cutting board will be 8 1/2\" deep. Trim the cutting board to 8 1/4\" with a table saw or circular saw with edge guide.",
-          "why": "cut sentence states 8 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged plexiglass sizes (11 3/8 x 4 1/8 door, 15 x 5 flap) are cut inside steps[8] from the listed 15\" x 10\" plexiglass (materials[6]); 8 1/4\" is the trim of the assembled cutting board (steps[9], rows 8-9). All other parts have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used: sides (0), back/bottom (2-4), top (5), door parts (6-7), cutting board (9)."
     },
     "R4": {
       "result": "pass",
@@ -234,22 +219,57 @@
       "reason": "R5 precondition not met: 4 stock types (1x4, 1x6, 1x2, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Secure with a few finishing nails."
+        }
+      ],
+      "arithmetic": "Search of materials[0]-[11] for /nail|brad/i finds nothing; fasteners listed are 1 1/4\" pocket hole screws (materials[4]) and 1/2\" screws with bolts (materials[8]).",
+      "reason": "A fastener the steps use (finishing nails, steps[5]) is not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step images give 11 3/4\" back / 8 1/4\" front height, shelf groove 7 1/2\" up and 3/4\" wide (step 1), groove stops 3/4\" from back, door gap 1/8\", latch 3/4\" in from front, top overhang 1/4\"; hinge screw holes on the flap are marked from the hinge (relational)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides grooved (0-1), bottom/back assembled and attached (2-4), top (5), door (6-8), cutting board (9), flap and door hung (10-11), shelf slid in last (12)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2]: \"pocket holes set for 3/4\\\" material\"; all pocket-holed parts are 3/4\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Numbers agree: cutting board 2 1/2 + 4 x 1 1/2 = 8 1/2 deep (step 9) and trims to 8 1/4; length 14 1/2 = 14 + 2 x 1/4 groove; door plexiglass 11 3/8 = 10 7/8 + 2 x 1/4, 4 1/8 = 6 5/8 - 2 x 1 1/2 + 2 x 1/4; top 16 = 14 + 2 x 3/4 + 2 x 1/4; flap 5\" = 3 1/2\" slope run x 1.414. All parts installed; hinges, latch, knob, plexiglass in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/4e07d70bf5bdeba8.webp",
+      "plans/bda9156b09c98adc.webp",
+      "plans/0f9aeabb034ae4d1.webp",
+      "plans/2dbf50d30aa9b9fb.webp",
+      "plans/b1c41c97dfe97374.webp",
+      "plans/94f8839b14a69fe2.webp"
+    ]
+  },
+  "gaps": []
 }

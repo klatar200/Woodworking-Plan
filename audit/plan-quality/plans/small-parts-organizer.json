@@ -1,6 +1,6 @@
 {
   "slug": "small-parts-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,30 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The parts (sides, top, bottom, shelves, dividers, back) are not in cutList data but step 0 says \"Break down the plywood using the cut list provided below\" and its image (viewed) is a dimensioned cut diagram for the listed 1/4\" and 3/4\" half sheets (sides 42 x 12, top/bottom 12 x 18, back 39-1/4 x 18-1/2, shelves 11 x 18, dividers 4 @ 6-1/2). The data-row defect is scored in R3."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Dividers, shelves, back"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Top, Sides, Bottom"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Break down the plywood using the cut list provided below."
+        }
+      ],
+      "arithmetic": "Both rows are whole 4 x 4 ft sheets (Kreg source \"1/4″ x 4′ x 4′ Plywood\", \"3/4″ x 4′ x 4′ Plywood\"; corrected 0.25 x 48 x 48 and 0.75 x 48 x 48), i.e. the stock in materials[0]-[1], not parts; the real parts appear only in the step 0 image.",
+      "reason": "Cut-list rows are assemblies/stock placeholders, not real parts the steps use."
     },
     "R4": {
       "result": "pass",
@@ -97,40 +117,81 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Per the diagram below, drill the pocket holes and attach the top and shelves to the side, as shown, with 1-1/4″ pocket hole screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Per the diagram below, use the pocket holes drilled in the last step to attach the other side with 1-1/4″ pocket hole screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "attach the top and shelves to the side, as shown, with 1-1/4″ pocket hole screws."
         },
         {
           "path": "steps[4].body",
-          "quote": "trim a little off the back. Once you have a a good fit, drill pocket holes in the bottom and attach with 1-1/4\" pocket screws. Then run a bead of wood glue around the back panel and let dry overnight.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "drill pocket holes in the bottom and attach with 1-1/4\" pocket screws."
         }
-      ]
+      ],
+      "arithmetic": "materials[0]-[3] are 1/4\" plywood, 3/4\" plywood, Husky Small Parts Organizers, Stackable Storage Bins; search of materials for /screw/i finds none.",
+      "reason": "The 1-1/4\" pocket hole screws the steps use are not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give numbers: dado positions 4-3/4, 9, 13-1/4, 17-1/2, 21-3/4 and 3/4\" from back edge (step 1), shelf spacing 4\"/6\"/6\" and flush-with-front (steps 2-3), pocket hole locations marked. Casters/french cleat are optional."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "6 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Dados cut (1), top/shelves on first side (2), second side (3), back slid in before the bottom (4), dividers last (5), as the step images show."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Per the diagram below, drill the pocket holes and attach the top and shelves to the side"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood (cutList[1] thicknessIn 0.75) and no jig thickness setting is stated; step 2 and 4 images (viewed) show hole positions and \"1-1/4\\\" pocket screws\" but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Then run a bead of wood glue around the back panel and let dry overnight."
+        }
+      ],
+      "arithmetic": "Search of materials[0]-[3] for /glue/i: none. Step 4 uses wood glue.",
+      "reason": "A non-fastener item used by a step (wood glue) is not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/f5b5b756ff7333d5.webp",
+      "plans/98ff3e3591033990.webp",
+      "plans/7bdc02e1cf08c549.webp",
+      "plans/c601023919684491.webp",
+      "plans/58a46f7f255d1b01.webp",
+      "plans/ae63bcd2f9f5fd16.webp"
+    ]
+  },
+  "gaps": []
 }

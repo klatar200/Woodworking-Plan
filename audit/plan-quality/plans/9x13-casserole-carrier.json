@@ -1,6 +1,6 @@
 {
   "slug": "9x13-casserole-carrier",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,17 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps cut only the front/back angles (steps[0], cutList[0]) and use \"4 center pieces\" (steps[1]) = cutList[1] qty 4 (corrected 3/4 x 1 1/2 x 9 1/2, matches the 9 1/2\" in the step 1 image)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Center supports, 1x2",
-          "why": "no step mentions it (searched steps for support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Center supports, 1x2\" is the \"4 center pieces\" of steps[1] (qty 4); both rows used."
     },
     "R4": {
       "result": "pass",
@@ -68,31 +63,54 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is 1 1/4\" pocket hole screws (steps[1], steps[3]); materials[2] \"1 1/4\\\" pocket hole screws\" qty 16 = 4 pieces x 2 holes x 2 ends."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "nside the opening with the handles outside and adjust as needed.\nOn the front and back pieces, measure and mark out the angles according to the diagram below. Cut the angles out with the circular saw.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cbd585477d369c92.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Step 0 diagram image viewed gives the angle cuts numerically (1 1/2\", 1/2\", 2 1/4\", 2 1/2\", 3/4\", 17\"); step 1 gives 1/2\" below top, flush ends/bottom; step 1 image shows 9 1/2\" length. Remaining placements relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Angles cut (0), center pieces onto one front/back (1), second front/back (3), plugs (4)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1]: \"With your pocket hole jig set for 3/4\\\" thick material\" covers the 3/4\" center pieces."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "To hide your pocket holes, glue pocket hole plugs into them, then sand till they are flush with the board."
+        }
+      ],
+      "arithmetic": "Search of materials[0..3] (1x4 board, 1x2 board, 1 1/4\" pocket hole screws, wood glue) for /plug/i finds nothing; steps[4] says to glue pocket hole plugs.",
+      "reason": "A non-fastener item used by a step (pocket hole plugs) is not in materials (steps[4] offers making plugs with a plug cutter, but that tool/option is not required by the step)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/cbd585477d369c92.webp",
+      "plans/9cdca9676b9acd0d.webp"
+    ]
+  },
+  "gaps": []
 }

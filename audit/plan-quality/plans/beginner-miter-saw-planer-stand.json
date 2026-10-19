@@ -1,6 +1,6 @@
 {
   "slug": "beginner-miter-saw-planer-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,17 +119,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": " to keep them level if you use a scrap piece of wood cut to 16 3/4\" and set the shelf supports on top before you screw them in.\nUse wood glue and 2 1/2\" pocket screws to attach them to the front and b",
-          "why": "cut sentence states 16 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 16 3/4\" is a scrap spacer block (\"a scrap piece of wood cut to 16 3/4\\\"\"), not a part. Parts used (legs, front/side/shelf supports, top, notched bottom shelf, middle shelf) all have cutList rows; viewed step images show 34 1/4, 29, 17, 29, 32 x 24 with 1 1/2 x 3 1/2 notches."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used. Front Supports (29\", step 1 image) is only identifiable from the image because steps[1] and steps[2] both say \"side supports\" (see gaps)."
     },
     "R4": {
       "result": "pass",
@@ -140,31 +135,65 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fastener in steps is 2 1/2\" pocket screws (steps[1]-[3]), materials[2] \"2 1/2\\\" pocket screws\". steps[5]-[6] say \"screws\" with no size. Optional casters (steps[7]) are not in materials but the step is marked \"Optional\"."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Attach the bottom shelf to the bottom of the stand using screws in from the top into the base.\nDo the same with the top.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f70750ceadf3250.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Shelf support height 16 3/4\" given (steps[3], image), notch size 1 1/2 x 3 1/2 and sheet 32 x 24 shown in step 4 image; top/bottom/middle shelves are placed flush on supports (step 5-6 images). Flagged \"attach bottom shelf ... screws in from the top\" is relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs (0), supports (1-3), notches (4), bottom shelf/top/middle shelf (5-6), optional casters (7); the middle shelf rests on shelf supports installed in step 3."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the side supports to the legs using wood glue and 2 1/2\" pocket screws."
+        }
+      ],
+      "reason": "Pocket screws go into 1 1/2\" thick parts (cutList rows 0-3 thicknessIn 1.5) and no jig thickness setting appears; search of all steps/materials/description for /setting|jig|thick/ finds no setting; step images 1-3 (viewed) show pocket holes but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Frame width 29 + 2 x 1 1/2 legs = 32 = Top/Bottom Shelf length; depth 17 + 2 x 3 1/2 = 24 = shelf width; Center Shelf 29 = front support spacing. Four legs, 4 front + 4 side supports, 2 shelf supports shown in images. Optional casters are the only unlisted hardware."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/e833274516de5483.webp",
+      "plans/a6e784789ddd83e3.webp",
+      "plans/20ad528eef720fbe.webp",
+      "plans/16c1c2e7776a7b9c.webp",
+      "plans/42d4f13a5357fe9f.webp",
+      "plans/8f70750ceadf3250.webp",
+      "plans/47d298ce5b8a692f.webp",
+      "plans/9ad0daff17f0e31d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Attach the side supports to the legs using wood glue and 2 1/2\" pocket screws.",
+      "what": "steps[1] and steps[2] both say \"side supports\" (identical wording); the step 1 image shows the 29\" parts (cutList \"Front Supports\"), step 2 image the 17\" Side Supports. \"Front Supports\" is never named in any step text (search /front support/i in steps: none)."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "rustic-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,74 +10,115 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (48\" 1x3 shelf boards, 18\" 1x2 joiners, 19\" and 25\" 1x3 leg boards) all have cutList rows 0-3."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used in steps[0],[3],[4]."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "cause": "import",
       "evidence": [
         {
           "path": "cutList[2]",
-          "quote": "Table Leg Width Boards — qty 9, 2.5 x 3 x 25"
+          "quote": "Table Leg Width Boards: live 2.5 x 3 x 25 (Kreg source detail 3/\"x2.5\"x25\")"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x3 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x2 96\""
-        }
-      ],
-      "arithmetic": "cutList[2] 2.5×3: no listed stock has thickness 2.5 (±1/32) with width ≥ 3; stock = 0.75×2.5, 0.75×1.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[2]",
-          "quote": "Table Leg Width Boards — qty 9, 2.5 x 3 x 25",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Place two of the 18” 1x2 boards across eight of your 48” 1x3 boards and screw in with 1 ¼” wood screws. Repeat until you have three shelf units. 1x2 boards should be placed 6” from each edge.",
-          "why": "48\" screw — no material line lists a 48\" fastener"
+          "path": "cutList[1]",
+          "quote": "Table Leg Height Boards: 0.75 x 2.5 x 19"
         },
         {
           "path": "steps[4].body",
-          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”. Secure with a bolt, washer, and hex nut. The holes drilled with the spade bit will be the placement of the boards. Tighten the nuts to ensure the stability of",
-          "why": "19\" bolt — no material line lists a 19\" fastener"
+          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”."
         }
-      ]
+      ],
+      "arithmetic": "Kreg source reads 3/\" x 2.5\" x 25\" (truncated 3/4\"); the importer reordered it to 2.5 x 3 x 25. Steps call these boards \"1x3 @ 25\" (1x3 = 0.75 x 2.5, §9), so the live thickness 2.5 / width 3 are importer artifacts, not a plan failure.",
+      "reason": "Live cutList[2] (2.5 thick x 3 wide) cannot come from any listed board; cause is the importer misreading the truncated source text."
+    },
+    "R5": {
+      "result": "pass",
+      "reason": "Steps name stock for every part (1x3 boards, 1x2 joiners). Sum test: 1x3 = 24 x 48 + 12 x 19 + 9 x 25 = 1152 + 228 + 225 = 1605, plus 45 cuts x 1/8 = 5.6 -> 1610.6 <= 18 x 96 = 1728; 1x2 = 6 x 18 = 108 + 6 x 1/8 <= 2 x 96 = 192.",
+      "readerNote": "Per-board packing is tight: two 48\" shelf boards from one 96\" board need 96 1/8\", so each such piece comes out 1/8\" short; not scored as a fail under the sum test."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Flagged 48\" and 19\" are board lengths, not fasteners. Fasteners: 1 1/4\" wood screws (materials[6], 48 = 3 units x 2 joiners x 8 boards), 1 1/4\" pocket screws (materials[2], 18 = 9 rails x 2), 3/8-16 x 3\" bolts/nuts/washers (materials[3-5], 18 = 6 per leg unit x 3)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step 0 image gives spade-bit hole positions (1.25\" from side/top/bottom; 2.25\", 9\", 15.75\" from bottom); step 1: pocket holes 6\" from each end; step 3: joiners 6\" from each edge. End leg units at the ends and a middle unit are relational per the step 5 and final images."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/drill (0-1), finish boards before assembly (2), shelf units (3), leg units (4), join (5)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in the 25” boards. They should be 6” from the edge of each side."
+        }
+      ],
+      "reason": "Pocket holes go in 3/4\" boards (cutList[2] source 3/4 thick) and no jig thickness setting is stated; step 1 image (viewed) is a hole-position drawing with no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”. Secure with a bolt, washer, and hex nut."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Make three of these."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Drill holes with a 3/8\" spade bit in the (12) 19\" boards and the (9) 25\" boards."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Table Leg Height Boards x 12: 0.75 x 2.5 x 19"
+        }
+      ],
+      "arithmetic": "Step 4: 3 boards @ 19\" per leg unit x 3 units = 9; step 0 and cutList[1] say 12 (4 per unit x 3). 12 x 19\" boards x... bolts: 18 = 6 per unit x 3 units matches 4 uprights per unit (2 per rail end), not 3.",
+      "reason": "The leg-unit count of 19\" boards in step 4 (3 per unit, 9 total) contradicts step 0 and the cut list (12); the viewed step 4/final images show a pair of 19\" uprights at each end."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/77011c130439fc50.webp",
+      "plans/5edafc1153e9891c.webp",
+      "plans/ca7b0c9fbeb45159.webp",
+      "plans/0c5e22f66d152076.webp",
+      "plans/70510543a80907e6.webp",
+      "plans/3d1b8c4212452c06.webp",
+      "plans/e375e93692f1e7c1.webp",
+      "plans/37cbac3bc426098d.webp"
+    ]
+  },
+  "gaps": []
 }

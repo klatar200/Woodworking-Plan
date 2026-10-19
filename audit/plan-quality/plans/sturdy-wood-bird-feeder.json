@@ -1,6 +1,6 @@
 {
   "slug": "sturdy-wood-bird-feeder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,17 +10,26 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "1. Rip three strips to two and a quarter inches wide by 24 inches long. 2. To laminate strips together, spread glue evenly across each piece, and use clamps to hold the setup in place while the glue c",
-          "why": "cut sentence states 24\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 24\" is the mounting post strips; steps cut every part themselves from the listed 1x6 with sizes (2.25\" strips, 8\" octagon sides at 22.5 degrees per step 1 image, 3 post strips 2.25 x 24, brackets 5-1/4 to 5-1/2\" square); cross/lateral braces are \"cut to fit\" the built octagon. The row issue is scored in R3."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Pressure Treated Southern Yellow Pine Boards"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 72\""
+        }
+      ],
+      "arithmetic": "The only cut-list row is qty 2, 1 x 6 x 72 = the two stock boards in materials[0], not a part; search steps[0]-[14] for 72\" or a 1x6x72 part: none (steps cut strips, sides, post, brackets).",
+      "reason": "The single cut-list row is the stock itself (placeholder), not a part the steps use."
     },
     "R4": {
       "result": "pass",
@@ -30,40 +39,72 @@
       ]
     },
     "R5": {
-      "result": "pass",
-      "arithmetic": "parts: 2×72 + kerf 0 cuts (2 parts − 2 boards, the fewest possible)×1/8 = 144.000″; bought: 2×72 = 144″; 144.000 ≤ 144"
+      "result": "unknown",
+      "reason": "Sweep pass used the stock row as if it were parts (2 x 72 <= 144). The real parts are not in the cut list and the cross brace, lateral braces (\"to fit\") and octagon strip lengths are not given, so board length cannot be totalled.",
+      "readerNote": "sweep R5 pass came from cutList[0] being the stock row (see R3)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in plan: 18 gauge nails 1-1/4\" and 3/4\" (materials[2]), 1/2\" staples (materials[3]), #8 1-1/2\" exterior screws (materials[8]); steps say \"nails\", \"staples\", \"exterior grade screws\" with no conflicting size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "oard 2. Each side will need to be bevel cut to 22.5 degrees. To do that: Measure and mark eight inches on the strip you just cut. Next, align the saw blade to the mark and set up a stop to keep each p",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7c5ee1f46c478af.webp"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "ur safety glasses. Always use caution and don’t force the tool. Let it cut at its own speed. We found it easier to route the inside edge of the feeder from the top, and the outside edge from the side.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f09537ecbdedef8a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps: step 1 gives \"eight inches\" and 22.5 degrees (image shows 8\", 2 1/4\", 3/4\"); step 7 routing sides are technique, not a position. Brace placement is centre/relational per step 4-5 images; post 24\" with 45 degree miters; bracket pilot holes \"about an inch from each corner\"; step 13 final image gives overall 1'7 5/16\" octagon (8\" x (1+sqrt2) match)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Strips/sides cut (1-2), octagon and braces (3-5), mesh (8) after finishing, post built and mitered (9-11), brackets attached (12), post attached to feeder (13), mounted (14)."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes in this plan."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "making two pieces – one at around 4.5 feet long and the other around 5.5′ feet long."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 72\""
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "Pressure Treated Southern Yellow Pine Boards"
+        }
+      ],
+      "arithmetic": "Step 0 cuts \"your board\" into 4.5 ft + 5.5 ft = 10 ft = 120\"; materials[0] lists 1x6 boards of 72\" (6 ft) qty 2 (144\" total), so a single board cannot give the two sections, and the step names no way to split them between the two boards.",
+      "reason": "The board length in step 0 (10 ft total from one board) does not match the 72\" boards in materials/cut list."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-12",
+    "imagesViewed": [
+      "plans/a7c5ee1f46c478af.webp",
+      "plans/235dbb92e57ebe57.webp",
+      "plans/0523bc32f88474ef.webp",
+      "plans/36ab00bf14ccb3de.webp",
+      "plans/d12c29fbf32e6441.webp",
+      "plans/be086eb35bbcfe4a.webp",
+      "plans/f31df1e961a884d9.webp",
+      "plans/1a810e825667c56d.webp"
+    ]
+  },
+  "gaps": []
 }
