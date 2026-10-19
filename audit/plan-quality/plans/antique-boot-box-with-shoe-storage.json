@@ -1,6 +1,6 @@
 {
   "slug": "antique-boot-box-with-shoe-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -80,30 +80,32 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "sweep pass; steps[0] 'Use the cut diagram to get cut dimensions.' points at the step's own image (viewed: a full cutting diagram), not external content"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the door using 3/4\" overlay hinges."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "cut 1/4\" grooves in the front of my front door (I)"
+        },
         {
           "path": "steps[1].body",
-          "quote": "ike, you can replace these pieced together cutoffs using a 1x4\" standard board (2) @ 28 1/4\". However you can use the remnant boards (F) to serve this purpose, you will just need to joint them togethe",
-          "why": "cut sentence states 4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "the exposed edges of plywood. I also used a table saw to cut 1/4\" grooves in the front of my front door (I) to give it the appearance of planks.\nI also used the 1 1/2\" wide cutoffs to create a lip on ",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "ges of plywood. I also used a table saw to cut 1/4\" grooves in the front of my front door (I) to give it the appearance of planks.\nI also used the 1 1/2\" wide cutoffs to create a lip on the top shelf.",
-          "why": "cut sentence states 1 1/2\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "you can use the remnant boards (F) to serve this purpose"
         }
-      ]
+      ],
+      "reason": "The door (I) and back strips (F) are used by the steps but have no cut-list row. Searched cutList[].part for /door|\\(I\\)|\\(F\\)|front|back/i: only 'Top Partial Back (B)' matches. Door size appears only as an unlabelled 21 x 29 3/4 piece in the viewed cutting diagram (steps[0] image); F sizes appear only in the steps[3] image. Missing part is not made from a listed size, so Fix not Unpublish"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All six rows are used: A/B/C/E placed in steps[2-4], D in steps[5], 'Sides (G) and (H)' marked in steps[3] and shown labelled H,G in its image"
     },
     "R4": {
       "result": "pass",
@@ -114,48 +116,103 @@
       "reason": "sheet layout not judged (area fits: part area 1×18×28.25 + 1×19.75×28.25 + 1×18×28.25 + 1×9×29.75 + 1×9×28.25 + 2×18×36 = 3392.9 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": " from Step 5. install shelves (A) w/attached back (E) w/attached partial back and (C) w/attached partial back.\nAttach all shelves using the pre-drilled pocket holes (Step 3.) Using 1-1/4\" Kreg Screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "Using 1-1/4\" Kreg Screws."
         },
         {
           "path": "steps[5].body",
-          "quote": "Using the holes on the top backside of (B) attach the top (D) using 1 1/4\" Kreg Screws and wood glue around the perimeter. I then reinforced the remaining edges with 2\" 18g. finishing nails.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "1 1/4\" Kreg Screws and wood glue around the perimeter. I then reinforced the remaining edges with 2\" 18g. finishing nails."
         },
         {
-          "path": "steps[5].body",
-          "quote": "Using the holes on the top backside of (B) attach the top (D) using 1 1/4\" Kreg Screws and wood glue around the perimeter. I then reinforced the remaining edges with 2\" 18g. finishing nails.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "path": "materials[1].name",
+          "quote": "3/4\" overlay hinges"
         }
-      ]
+      ],
+      "reason": "Materials are only plywood, hinges, magnetic catch, veneer banding; searched materials[*].name for /screw|nail|brad|glue/i: no match, so the 1-1/4\" Kreg screws and 2\" finishing nails used in steps[4]/[5] are not listed"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "Mark placement of the shelves (A) w/attached back (E) w/attached partial back and (C) w/attached partial back.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c86b4177853638dd.webp"
+          "path": "steps[6].body",
+          "quote": "Attach the door using 3/4\" overlay hinges."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "3/4\" overlay hinges"
         }
-      ]
+      ],
+      "reason": "Door (I) is hinged with 2 hinges; no step, note or viewed image (steps[6] image is an unscaled isometric) gives hinge distance from the door ends. Shelf positions are settled: viewed steps[3] image dimensions 5\", 8\", 6\", 2\", 6 3/4\", 1 1/2\", 19 3/4\"; magnet 'centered' is relational. Optional 1/4\" door grooves have no spacing (optional character step, not scored)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "all referenced diagrams are in steps with their own images; steps[0] image viewed is the cutting diagram"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "backs attached to shelves (2), shelves marked and fixed between sides (3-4), top (5), door (6); each part exists before its step"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes on the underside boards, on both the short sides, and one of the long sides of boards (C) and (E)."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" plywood (cutList thicknessIn 0.75); searched steps for a jig/thickness setting (/setting|jig.*3\\/4|thickness/i): only 'Kreg Pocket Hole Jig' named, no setting; step images viewed (cut diagram, shelf-position drawing, assembly drawing, grooved ply) show no setting"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "attach the top (D) using 1 1/4\" Kreg Screws and wood glue around the perimeter."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Using the marks from Step 5. install shelves"
+        }
+      ],
+      "reason": "(c) wood glue is used in steps[5] but absent from materials (searched /glue/i: no match). (a) Part sizes otherwise agree with viewed images: shelf stack 36\" side = 19 3/4\" (B) + 16 1/4\" below A; F 6\" + 2\" + 6 3/4\" in image. Door (I) is installed (steps[6]) but never given a size - recorded under R2, not repeated. Steps[4] cites 'Step 5' for the marks, which are made in the previous step (steps[3]); not scored further"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "3e63a8689c4e804a.webp",
+      "c86b4177853638dd.webp",
+      "8f3cc8685d0154e4.webp",
+      "614d8d8d0a9f7543.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Mark placement of the shelves (A) w/attached back (E) w/attached partial back and (C) w/attached partial back.",
+      "what": "Part letters are inconsistent: 'Bottom Shelf (E)' and the F back strips are described as 'attached back' of A/C, while cutList has E as a 9 x 28 1/4 shelf; F strips have no row (see R2)."
+    }
+  ],
+  "verdict": "Fix"
 }

@@ -1,6 +1,6 @@
 {
   "slug": "recycling-sorting-bin",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -332,77 +332,119 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras|pdf|download|template|http|attached/i: no match"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all parts the steps cut have cutList rows; steps[8] 'Lid End Rails' = cutList[12] 'Lid Side Rail' (name differs, 2 x 26\"; viewed steps[8] drawing labels it 'Lid End Rail', 26\")"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 13 rows used: rows 0-3 steps[0]-[3], 4 steps[4], 5-8 steps[5]-[7], 9-12 steps[8]-[10]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x6, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock inferred by width where a step does not name it (steps[5] slats are 5 1/2\" wide so only 1x6 fits). 1x6 x9: 6x25.75 + 6x25.75 + 4x27.25 + 4x40.25 + 6x41.75 = 829.5, 26 pieces x 1/8 = 3.3, 832.8 <= 9 x 96 = 864 (packs as 4 x [41.75, 27.25, 25.75] + 2 x [41.75, 25.75, 25.75] + 2 x [40.25, 25.75, 25.75] + 1 x [40.25, 40.25] = 9 boards); 1x4: 2x42 + 4x20.5 + 2x42 + 2x26 = 302 + 1.3 <= 3 x 96 + 48 = 336; 2x2 x5: 4x33.25 + 4x37.25 + 4x22.75 + 2x22.75 = 418.5 + 1.8 <= 480"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "irs are larger. Attach the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end. You can use a hammer and nails for this, but a brad nailer works best. If you don’t have one, yo",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "re larger. Attach the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end. You can use a hammer and nails for this, but a brad nailer works best. If you don’t have one, you hav",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end. You can use a hammer and nails for this, but a brad nailer works best. If you don’t have one, you have a couple choices",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
+          "quote": "Attach the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end."
         },
         {
           "path": "steps[5].body",
-          "quote": " ends are flush with the outsides of the Legs. Next, using wood glue and 1 1/2\" brad nails attach the first two Short Side Slats to the Frame Legs—we used four nails at each end to attach these Slats.",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
+          "quote": "using wood glue and 1 1/2\" brad nails attach the first two Short Side Slats to the Frame Legs"
         },
         {
-          "path": "steps[5].body",
-          "quote": " ends are flush with the outsides of the Legs. Next, using wood glue and 1 1/2\" brad nails attach the first two Short Side Slats to the Frame Legs—we used four nails at each end to attach these Slats.",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "s, set the first Long Front/Back Slats in position so that the ends are flush with the Short Side Slats. Secure these Long Front/Back Slats to the Legs using wood glue and 1 1/2\" brad nails, as shown.",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "s, set the first Long Front/Back Slats in position so that the ends are flush with the Short Side Slats. Secure these Long Front/Back Slats to the Legs using wood glue and 1 1/2\" brad nails, as shown.",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+          "path": "materials[7].name",
+          "quote": "1-1/4\" brad nails"
         }
-      ]
+      ],
+      "reason": "Steps[4]-[6] call for 1 1/2\" brad nails; the only nail in materials is 1-1/4\" (searched materials[*].name for /1 1\\/2|brad|nail/i). Pocket screws match (2 1/2\" materials[5], 1 1/4\" materials[6])"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "steps[1] '1 1/4\" up'; steps[5]-[7] 2x2 spacers and 1/4\" spacers (viewed steps[7] image); base slat gaps 1/2\", 1 3/8\" and 'tight against leg' in viewed steps[4] image; lid short rails 9 3/8\" in viewed steps[9] image; divider rails 'spaced evenly' is relational; pocket-hole locations in viewed images"
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut six Base Slats to length from 1x6 pine boards, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "as shown in the cutting diagram. Using scrap 2x2 pieces as spacers"
+        }
+      ],
+      "reason": "Steps[4], [5] (and [0], [8]) refer to a cutting diagram. Steps[0] and [8] images (viewed) are dimensioned part drawings; steps[4]/[5] show assemblies; the 5 unattached images (viewed: 4 photos, 1 overall-dimension view) include no cutting diagram. Not Unpublish: cutList gives all slat sizes"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "16 reference(s), each in a step with its own image"
+      "reason": "frames (1), connected (2), dividers (3), base slats (4), side and front/back slats (5-7), lid (8-10), finish (11)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your pocket-hole jig for 1 1/2\" material' (2x2 parts) and steps[8] 'Set your pocket-hole jig for 3/4\"-thick material' (lid rails); no setting contradicts a thickness"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Leg — qty 4, 1 x 1 x 33 (Kreg source: 1 1/2\" x 1 1/2\" x 33 1/4\")"
+        },
+        {
+          "path": "steps[0] image (viewed)",
+          "quote": "Leg 33 3/4\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "the lower Long Frame Rail is positioned 1 1/4\" up from the lower ends of the Legs"
+        }
+      ],
+      "arithmetic": "Kreg-corrected Leg = 33.25 but the viewed steps[0] drawing dimensions the Leg 33 3/4\" (the other drawn parts, Long Frame Rail 37 1/4\" and Short/Divider 22 3/4\", match the cut list). The overall drawing (viewed 2c72...) gives 34 1/2\" height: 33 3/4 + 3/4 lid = 34 1/2, whereas 33 1/4 + 3/4 = 34. Stack check from the steps: 2x2 spacer 1.5 + 5 slats x 5.5 + 4 x 1/4 gaps = 30.0; leg above slats = 33.25 - 30 = 3.25 (or 33.75 - 30 = 3.75) against a 3 1/2\" lid skirt (steps[8] Lid rails 3 1/2\" wide): 3.25 < 3.5 so the lid would not seat with 33 1/4, 3.75 > 3.5 does",
+      "reason": "Cut-list leg length disagrees with the drawing (1/2\"); which is right is not stated, but the drawing and overall height support 33 3/4\". Other counts agree: 6 + 4 + 4 + 6 slats and 4 + 4 + 2 rails as in steps[4]-[5], [0]; lid 42 x 27 1/2 vs base 40 1/4 x 25 3/4 leaves 1/4\" clearance"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "e5aaab1530661301.webp",
+      "eb25bc93b45d7384.webp",
+      "b4c708f75ce8f79c.webp",
+      "dbc591a1f2567e07.webp",
+      "7c90b735b6d8e63b.webp",
+      "96d24b9708bdf5e3.webp",
+      "bfe8ba8b804f3e24.webp",
+      "f10b3923bfd9a8ac.webp",
+      "0ac1162fa197520f.webp",
+      "4823b7c267c4385a.webp",
+      "2c72b77eb49df693.webp",
+      "96a44bc49607a383.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

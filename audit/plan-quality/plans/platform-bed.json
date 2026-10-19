@@ -1,6 +1,6 @@
 {
   "slug": "platform-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -320,84 +320,102 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras|pdf|download|template|http|attached/i: no match"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part the steps cut (legs, rails, caps, supports, slats, top, side rails/caps, center post/support, cleats, slats) has a cutList row; steps[2] 'one Head Rail and one Foot Rail' = cutList[3] 'Head/Foot Rail' qty 2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 15 rows used: rows 0-1 steps[0]-[1], 2 steps[4], 3 steps[2], 4 steps[10], 5-6 steps[11], 7 steps[5], 8 steps[6], 9-11 steps[14], 12 steps[7], 13 steps[13], 14 steps[17]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x3, 1x6, 1x8, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock for every part (1x8 legs, 1x6 rails/caps/supports/slats/posts/center support, 1x3 headboard top, 2x2 cleats, lower-grade 1x6 slats). Lengths + 1/8\" per cut (Kreg-corrected): 1x8 legs 8 x 11.5 = 92 + 7 x 0.125 = 92.9 <= 1 x 96; 1x3 top 60 <= 72; 1x6 (13 boards) 2x71 + 2x69.5 + 3x21.875 + 4x60 + 2x87.75 + 2x80 + 2x8.25 + 2x7.5 + 88 = 1041.6, 20 pieces x 0.125 = 2.5, 1044.1 <= 13 x 96 = 1248; #2 1x6 slats 8 x 67.5 = 540 + 1 <= 8 x 96 = 768; 2x2 cleats 2 x 75.5 + 2 x 10 = 171 + 0.5 <= 2 x 96 = 192"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "ugh each Leg and Rail using a 1/4\" drill bit. The connector bolts will pass through these holes. Unclamp the assemblies. Next, you need to enlarge the holes in the Rails to 3/8\" to accept the connecto",
-          "why": "1/4\" bolt — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "sweep flag not upheld",
+      "reason": "the 1/4\" in steps[9] is the drill-bit/hole diameter ('drill the holes ... using a 1/4\" drill bit'; viewed steps[9] image '1/4\"-diameter hole through Leg and Rail'), not a fastener size; fastener sizes used (1 1/4\" coarse pocket, 1 1/4\" and 2\" flat-head, connector bolts/nuts x16) all appear in materials[5]-[9]; 4 holes x 4 joints = 16 bolts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "positions are numeric in viewed images: leg cut 4 1/2\" x 4 1/2\", pocket holes 1 1/4\"/3 1/4\" (steps[0]); bolt holes 2\", 5 1/4\", 1 1/2\", 4 1/2\" (steps[9]); support pocket holes (steps[10]); headboard 5 1/2\" from each end, End Cleat 29 3/4\" + 10\" + 29 3/4\" (steps[13]); Rail Cleat 6 1/8\" from each end, 3/4\" (steps[8]); center post 41 1/4\" (steps[15]); slat gaps 1/4\" (steps[12]); slat spacing 'evenly' is relational"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "Cut two Rail Cleats from a 2x2 board, as shown in the cutting diagram. Then Drill 10 evenly spaced pilot holes for #8 flathead screws that will be used to attach the Rail Cleats to the Side Rails.",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Cut two Rail Cleats from a 2x2 board, as shown in the cutting diagram. Then Drill 10 evenly spaced pilot holes for #8 flathead screws that will be used to attach the Rail Cleats to the Side Rails.",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Cut two Rail Cleats from a 2x2 board, as shown in the cutting diagram."
         },
         {
           "path": "steps[11].body",
-          "quote": "Cut four Headboard Slats from 1x6 boards, as shown in the cutting diagram. Then cut one Headboard Top to length from a 1x3 board.",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Cut four Headboard Slats from 1x6 boards, as shown in the cutting diagram. Then cut one Headboard Top to length from a 1x3 board.",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Cut four Headboard Slats from 1x6 boards, as shown in the cutting diagram."
         },
         {
           "path": "steps[14].body",
-          "quote": "Cut one Center Support, two Center Post Sides, and two Center Post Ends from 1x6 boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "Cut one Center Support, two Center Post Sides, and two Center Post Ends from 1x6 boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Cut one Center Support, two Center Post Sides, and two Center Post Ends from 1x6 boards, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Ten steps (0,2,4,5,6,7,10,11,14,17) refer to a cutting diagram; steps[7], [11], [14] have no image. Viewed all 4 unattached images (two beauty photos, a headboard close-up, an overall-dimension view): none is a cutting diagram, and the viewed step images show part shapes, not board layouts. Not Unpublish: cutList gives every part size and the images give shapes/positions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs (0-1), leg assemblies (1), rails and legs joined (2-3), caps (4), side rails/caps/cleats (5-8), bolt holes drilled with assemblies clamped (9), headboard built and mounted (10-13), center support (14-15), bed bolted together (16), slats last (17)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'pocket-hole jig set up for 3/4\" material' states the setting; every pocket-holed part is 3/4\" (cutList thicknessIn 0.75)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Attach the Rail Cleats to the Side Rails where shown using glue and 2\" flat-head wood screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Glue and clamp the Foot Rail to the two leg assemblies"
+        }
+      ],
+      "reason": "(c) glue is used in steps[3], [8], [13]; searched materials[*].name for /glue/i: no match (materials are boards, screws, bolts, nuts). (a)/(b)/(d) check out: 8 legs = 4 pocket-holed + 2 blank + 2 back legs = 4 assemblies; 4 holes x 4 joints = 16 bolts and nuts; Rail Cleat 6 1/8 + 75 1/2 + 6 1/8 = 87.75 = Side Rail; End Cleat 29 3/4 + 10 + 29 3/4 = 69.5 = Head/Foot Rail; headboard 5 1/2 + 60 + 5 1/2 = 71 = Cap; 2\" screws 2 x 10 + 2 x 3 = 26 = materials[6]"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "7ec2f8d147202432.webp",
+      "4d2111e6ff29b731.webp",
+      "3bb91e734ef7abb2.webp",
+      "4cefa6e47dc5c35e.webp",
+      "dce8cb0059b83d0e.webp",
+      "3001bce1b65be953.webp",
+      "9c7845166c392ed2.webp",
+      "922dabf560ade625.webp",
+      "c798a4fcca6a387d.webp",
+      "67e7c32279cdb2ac.webp",
+      "b750105058dd112f.webp",
+      "52183474d356e25a.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

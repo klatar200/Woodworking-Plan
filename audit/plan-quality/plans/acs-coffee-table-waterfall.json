@@ -1,6 +1,6 @@
 {
   "slug": "acs-coffee-table-waterfall",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -31,45 +31,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "miter going away from the cut side. When complete, the mitered top and leg will make a 90 degree joint. ***See attached image for illustration - you'll want to remove the RED area with your bevel cut.",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "& C (see parts list) and assemble the coffee table leg, per the attached drawing.\nFor this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & ",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "'attached image'/'attached drawing' refer to the step's own images (steps[4], steps[6] both have images); no external or paid content needed"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "- not away. I did this on the ACS - using the stops that came with the system, I set them at 33\", adjusted the saw to 45 degrees and made the cut. You can also use a circular saw with a straight edge.",
-          "why": "cut sentence states 33\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "our alignment method you'll need to cut 2ea pieces of 2x4 at 8\" long - Then cut them in half with your miter saw at 45\". Now you'll have 4ea beveled blocks at approximately 4\" (long point). You will n",
-          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[3] 33\" and steps[4] 17\" are cuts of the glued 22\" x 50\" panel (cutList[0] 'Table Top/Waterfall Leg' x4 at 50\"); steps[5] 8\" blocks are clamp aids, scored under R14(c)"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Part C",
-          "why": "no step mentions it (searched steps for its words and label C)"
-        }
-      ]
+      "result": "pass",
+      "reason": "'Part C' is used: steps[6] 'Take parts A, B & C (see parts list) and assemble the coffee table leg'; the viewed steps[6] image labels A, B, C"
     },
     "R4": {
       "result": "pass",
@@ -80,30 +51,74 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 2x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "drawing.\nFor this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & C - so that when fully assembled and installed they will not be seen. You",
-          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[6] '2-1/2\" Kreg pocket hole screws' matches materials[2] 'Kreg SML-C150-500 Pocket Hole Screws 2-1/2-Inch'; steps[9] '2ea 2\" wood screws' matches materials[4] '2\" long wood screws'"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "leg attach position stated (steps[9] '3\" offset from the edge of the table and centered on the width'); leg part layout shown in viewed steps[6] image; panel cut position given (33\"). Taper angle gap recorded under gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "steps[4] and steps[6] have their own images; the steps[6] image was viewed and shows the A/B/C leg frame"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panel glued (2), cut to top and leg (3-4), mitre joined (5), leg parts A/B/C assembled (6), finish, then leg attached to table underside (9)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Place pocket holes facing up, and facing down on parts B & C - so that when fully assembled and installed they will not be seen."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Part A"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1-1/2\" parts A/B/C (cutList thicknessIn 1.5); searched all steps, description and materials for a jig/thickness setting (/setting|jig|1-1\\/2.*thick/i): none stated"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "you'll need to cut 2ea pieces of 2x4 at 8\" long - Then cut them in half with your miter saw at 45\"."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 2x3 72\""
+        }
+      ],
+      "reason": "Step 5 uses 2x4 clamping blocks (also biscuits/dowels, pin nailer nails); materials list only 1x6 and 2x3 boards. Searched materials for /2x4|biscuit|dowel|brad|pin/i: no match. Parts (a),(b),(d) otherwise agree: 4 x 5.5\" = 22\" panel width (steps[2]), 33\" + 17\" = 50\" (steps[3-4])"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "2ec253cd314af7ae.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[1].part",
+      "quote": "Part A",
+      "what": "Taper angle for parts A and C is not in the live plan. Kreg source (importDiffs[0]/[2]) says '10.5 degree tapered cuts on both ends (parrellel)' and '10.5 degree miters tapered in on the bottom'; no step or cut-list field carries 10.5. Dropped by the importer (cause: import)."
+    }
+  ],
+  "verdict": "Fix"
 }

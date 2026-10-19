@@ -1,6 +1,6 @@
 {
   "slug": "lego-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -19,33 +19,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
-          "why": "matches \"PDF\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
-          "why": "matches \"printable\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] 'There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.' is a pointer to a duplicate of what the plan already carries (cutList has all 8 parts with sizes; steps give all positions); the build can be completed without the PDF"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "at you’ve built! I used 1/4” mdf for the template stock. It is cut to the same width as the end pieces. I start by cutting a 12” diameter circle out of the center using a circle jig and plunge router.",
-          "why": "cut sentence states 12\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "all parts the steps make (ends, top, back/front trim, false front, drawer sides, front/back, bottom) have cutList rows; the 12\" circle in steps[1] is a router template cut for the optional step, not a part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used: End/Leg steps[3]-[6],[12]; Top/Back Trim/Front Trim steps[7],[10]-[11]; drawer rows steps[14]-[18]; False Drawer Front steps[25]-[26]"
     },
     "R4": {
       "result": "pass",
@@ -56,49 +39,82 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size stated is 1-1/4\" Kreg screws (steps[11]-[12] 'pocket screws'; drawer assembly) and materials[2] lists 'Box of 1-1/4” Kreg Screws'; no conflicting sizes (searched steps for /\\d\\\"? ?(screw|nail|brad)/)"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "You should now have two end pieces with perfect half circles cut from the bottom. I really like the look of the cutout and how it makes the table appear to have four feet. If you don’t like the circle",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbf68aaad413d778.webp"
-        },
-        {
-          "path": "steps[21].body",
-          "quote": "Next, transfer the marks from the front of the legs to the inside of each end piece. These will be the mounting points for the full extension slides.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f9bf2c13d7db0b5.webp"
-        },
-        {
-          "path": "steps[22].body",
-          "quote": "binet portion of each slide on the inside of each end piece. Be sure to offset them from the front by the thickness of your plywood to allow room for the false front we will add later. I recommend sli",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c932d828ea35660.webp"
-        },
-        {
-          "path": "steps[29].body",
-          "quote": "Take it all back apart and sand everything up to 220 grit, then apply your finish of choice. It’s going to need some protection from those dirty little monsters! I hope your kids enjoy it as much as m",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d10f7f6222014d1.webp"
-        }
-      ]
+      "result": "pass",
+      "search": "pocket-hole positions steps[7] (5 per long edge, 3 per short edge; back trim '2” from the top edge ... 1” from the bottom edge ... halfway'); steps[19] drawer raised '1/4”' above front trim; steps[22] slides offset 'by the thickness of your plywood'; slide centerline marks are relational; half-circle cutout 12\" centered (optional)"
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using the cut list and diagram, cut all of the parts for the table base to size."
+        }
+      ],
+      "reason": "steps[0] refers to a diagram; its own image (viewed) is a photo of cut parts, and the five unattached images in images[] (viewed) are finished-table photos; no cutting diagram exists in the plan. Not Unpublish: cutList gives every part size, so the build can proceed"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "ends shaped (1-6), joinery drilled (7-9), base assembled Top/Front/Back then ends (10-13), drawer built from measured opening (14-18), slides on ends then drawer (19-24), false front (25-26), roundovers/finish last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "All parts are joined with pocket holes."
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "The drawer front and back get pocket holes on both ends of their outside faces."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood (cutList thicknessIn 0.75); searched all steps for a jig/thickness setting (/setting|jig.*(3\\/4|thick)|depth stop/i): steps[8] says only 'any Kreg Jig will work'. Viewed steps[7] image shows a jig on the Top with no legible setting"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[25].body",
+          "quote": "temporarily attach it to the front of the drawer box with several pieces of carpet tape"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "I used 1/4” mdf for the template stock."
+        }
+      ],
+      "reason": "(c) carpet tape (steps[5], steps[25]) and 1/4\" MDF template stock (optional steps[1]) are used but not in materials; searched materials[*].name for /tape|mdf/i: no match. (a) Numbers add up: 30-1/4 - 11/16 - 11/16 - 1/2 - 1/2 = 27-7/8, less 1/16 = 27-13/16 = cutList[6] 27.8125; drawer bottom 27 13/16 + 2 x 3/8 = 28 9/16 and 14 - 2 x 11/16 + 2 x 3/8 = 13 3/8 = cutList[7]; Top 15 1/4 + 3/4 = 16 = End width"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "03c1c66b36b6d88c.webp",
+      "77e3c56c0f0fa586.webp",
+      "0986cea20b849cd6.webp",
+      "c0590d5ae6c4ad1c.webp",
+      "eed9578f0c1f2d72.webp",
+      "798df6bfc75222cc.webp",
+      "83e0404241f14fc7.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

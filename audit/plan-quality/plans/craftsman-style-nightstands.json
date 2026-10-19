@@ -1,6 +1,6 @@
 {
   "slug": "craftsman-style-nightstands",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -259,84 +259,94 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "ds labeled in step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        },
-        {
-          "path": "steps[7].body",
-          "quote": " to drill all of the pocket holes for the frame assemblies. The attached diagram shows the approximate location of pocket holes in the frame assemblies. Once all pocket holes are drilled, assemble the",
-          "why": "matches \"The attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2] 'I have attached one site with good information on the process' is an optional how-to link; steps[7] 'The attached diagram' is the step's own image (viewed, pocket-hole layout). Nothing external is needed to build"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "cut grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of the inside edges of the front and rear stiles. Alternatively the grooves can be cut on a table saw. Now mark ",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "four rails. Use the groove cutter bit adjusted to cut 1/4\" X 3/8\" grooves in the center of the rails inside edges. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of th",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": " in the center of the rails inside edges. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the rails. Alternatively the grooves and tongues can be cut on a table saw.",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 3/8\" items in steps[9]/[10] are groove/tongue sizes, not parts; every part named in steps[1]-[19] maps to a cutList row (viewed 3/4\" oak cut diagram labels Side Rear Stile, Front Stile, Side Rail, Side Front Stiles, Front Rail, Drawer Guides, Drawer Front, Top x3)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 16 rows used: stiles/rails steps[8]-[11], guides steps[12], bottom steps[13], back steps[16], drawer box steps[17]-[18], frames steps[7]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[14] thinner than stock — would need planing/resawing, not judged; cutList[15] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "cutList[14]/[15] 1/2\" x 5 11/16 parts match materials[6] '1/2\" Poplar, 1x8 72\"' (width 5 11/16 <= 7 1/4); other rows fit listed oak/poplar/ply (viewed oak cut diagram: top is three 7 1/4 x 23 pieces = 21 3/4 >= 21 1/2)"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 4 stock types (sheet-0.25, sheet-0.75, 1x6, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[12].body",
-          "quote": "Accurately measure and mark the drawer guide placement on the top of one of the frames (pocket holes are on the bottom side). The distance between the inside of the drawer guides should be 15\". Using ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4a4470f23ae0307.webp"
+          "path": "steps[19].body",
+          "quote": "Start two 1\" flat headed self tapping wood screws on inside of the box."
         },
         {
-          "path": "steps[14].body",
-          "quote": "Prepare for assembly by very accurately measuring and marking the distance of the upper edge of the frames from the bottom feet. The top frame should be flush with the top of the sides. I assemble on ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3d7280f0af8729ec.webp"
+          "path": "materials[7].name",
+          "quote": "Kreg 1 1/4\" coarse and fine pocket screws"
         }
-      ]
+      ],
+      "reason": "Searched materials[*].name for /1\"|self.tapping|flat.head|wood screw/i: only 1 1/4\" Kreg pocket screws, 1 1/4\" brads, 1\" pin nails; no 1\" flat-head wood screws listed. All other sizes (1 1/4\" brad, 1\" pin, 1 1/4\" fine/coarse pocket, washers) match materials[7]-[9],[16]"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "steps[12] guide placement: step says inside distance '15\"' and viewed steps[12] image dimensions 1 3/4\" from edge and 19\" long; steps[14] frame heights: viewed image gives 20 1/4\", 26 3/4\", 3 3/4\"; steps[7]/[13] pocket-hole layout and frame sizes (3\", 13\", 18 1/2\", 19\") shown in viewed images; leg cuts steps[8]/[9] (2 1/2\", 1 1/2\", 1 1/4\", 3/8\" x 1/4\" grooves) shown in viewed images; top-frame screw holes in steps[20] viewed image sit mid-rail; drawer pull shown centered; drawer pilot holes 'approx. 2 inches in ... half way down' numeric"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "all 'diagram'/'pictured' references are in steps with images; steps[1] 'following diagram' image viewed = 3/4\" oak cut diagram"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides built (11), guides on lower frame (12), bottom drilled (13), frames+bottom between sides (14), front assembly (15), back (16), drawer (17-19), top last (20); marks/positions come before assembly"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[7] 'Kreg pocket hole Jig (set for 3/4\")' covers every pocket-holed part: 3/4\" poplar frames, 3/4\" oak front rail, 3/4\" ply bottom (cutList thicknessIn 0.75); no pocket holes in the 1/2\" or 1/4\" parts"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[21].body",
+          "quote": "fill all nail holes and other imperfections with wood putty, let it dry."
+        },
+        {
+          "path": "materials[14].name",
+          "quote": "Titebond I wood glue"
+        }
+      ],
+      "reason": "(c) wood putty is used in the last step; searched materials[*].name for /putty|filler/i: no match (glue, sandpaper, finishes are listed). (a)/(b)/(d) check out: top 'final dimensions (22 X 21 1/2\")' = cutList[1] 21.5 x 22; frame 18 1/2 x 19 = rails 18.5 + 2 x 3\" stiles 13 + ... (13 + 3 + 3 = 19); front assembly 15 + 2 x 2 1/2 = 20 = 18 1/2 + 2 x 3/4; drawer, guides, top all installed"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "002d870b239e973a.webp",
+      "8e91943b913fb7ac.webp",
+      "372d97dd75586b29.webp",
+      "995a0c963612c6c4.webp",
+      "c4a4470f23ae0307.webp",
+      "5b098046c894df8f.webp",
+      "3d7280f0af8729ec.webp",
+      "eaa214411a2677df.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

@@ -1,6 +1,6 @@
 {
   "slug": "small-space-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -20,82 +20,142 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras|pdf|download|template|http|attached/i: no match; 'as shown in the diagram below' (steps[6]) is the step's own image"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part named in steps[0]-[9] has a cutList row (sides, back, front dividers = 'Desk Front' 3 1/2 x 7 x2, top dividers, top, bottom, bottom supports, drawer parts). steps[9] 'the front divider' most likely = 'Desk Front Rail' (naming recorded under gaps)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 13 rows used: legs/sides/back steps[0]-[1], Desk Front steps[2], Top Dividers steps[3], Top steps[4], Bottom steps[5], drawer rows steps[6]-[7], Bottom Supports steps[8], Desk Front Rail steps[9] (as 'front divider')"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +6 more"
+      "result": "pass",
+      "readerNote": "sweep unknown resolved",
+      "reason": "2x2 legs/supports 1.5 x 1.5 (materials[0]); 3/4\" parts from materials[1] 'Edge glued pine board, 1\"x24\"x6 ft' read as nominal 1x = 3/4\" actual per section 9 (same convention as 1x boards; widest part 19\" or 16.75\" <= 24\", longest 29\" <= 72\"); 1/4\" drawer bottom 11 x 14 from materials[2] 2 ft x 4 ft ply. Kreg-corrected Desk Bottom is 3/4\" x 16.75 x 26 (importDiffs), not 3\" thick"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (2x2, 1x24, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Attach the sides to the legs with 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Attach back to the legs using 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Attach front dividers using 1 1/4\" pocket screws and wood glue. A clamp really helps here.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Attach the top dividers to the front dividers you just attached in step 3. Using 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Notch out the bottom of the desk with a jigsaw, then attach using 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "er slides and then build the drawer box using 1 1/4\" pocket screws and wood glue. The pocket holes should be facing front as shown in the diagram below. This will hide the pocket holes when you attach",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "nt. Using double sided tape, push the drawer front against the front of the drawer box. Pull the drawer out and using 1 1/4\" screws, drill from the inside of the drawer box to attach the drawer front.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the sides to the legs with 1 1/4\" pocket screws and wood glue."
         },
         {
           "path": "steps[8].body",
-          "quote": "Attach the bottom supports between the legs using 2\" pocket screws and wood glue. Make sure the bottom of the supports sits 7\" up from the bottom of the desk legs.",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Attach the bottom supports between the legs using 2\" pocket screws and wood glue."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "using 1 1/4\" screws, drill from the inside of the drawer box to attach the drawer front."
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" pocket screws (steps[0]-[3],[5],[6]), 2\" pocket screws (steps[8]) and 1 1/4\" screws (steps[7]). Searched materials[*].name for /screw|pocket/i: only 'Figure 8 fasteners' (materials[6]) and '1\" brad nails'; no pocket or wood screws of any size are listed"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach drawer slides and then build the drawer box using 1 1/4\" pocket screws and wood glue."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Notch out the bottom of the desk with a jigsaw, then attach using 1 1/4\" pocket screws and wood glue."
+        }
+      ],
+      "reason": "Position of the drawer slides (height on the 3 1/2\" dividers) and the height at which the notched Desk Bottom panel is attached are not given as numbers or relations; viewed steps[5] image (underside, 26\" x 16\") and steps[6] drawer image (9 1/2\", 14\", 3\") show no slide or panel height; notch size/location for legs is also not dimensioned. Settled by text/images: bottom supports '7\" up', front pieces 7\" + 12\" + 7\" = 26\", apron 4 1/2\", 3 1/2\", back 26\""
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "search": "steps vs /as shown|diagram|drawing/i: only steps[6] 'as shown in the diagram below', which has its own image (viewed, 14\" x 9 1/2\" x 3\" drawer box)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg/side assemblies (0), back (1), front and top dividers (2-3), top (4), bottom (5), drawer slides, box and front (6-7), bottom supports (8), front rail (9), finish (10); each part exists before use and the drawer is reachable from the open front"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the sides to the legs with 1 1/4\" pocket screws and wood glue."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Attach the bottom supports between the legs using 2\" pocket screws and wood glue."
+        }
+      ],
+      "reason": "Pocket holes are used in 3/4\" aprons/dividers (cutList thicknessIn 0.75) and 1 1/2\" supports; searched all steps and materials for /setting|jig|thick/i: no jig setting stated; viewed step images show pocket holes but no setting"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Desk Top - qty 1, 0.75 x 16 x 29"
+        },
+        {
+          "path": "steps[4] image (viewed)",
+          "quote": "29\" ... 19\""
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Using double sided tape, push the drawer front against the front of the drawer box."
+        }
+      ],
+      "arithmetic": "(a) The Top is 16\" x 29\" in the cut list but the viewed steps[4] drawing dimensions the top 29\" x 19\". The frame confirms 19\": side apron 16\" (cutList[2]; viewed steps[0]/[5] images '16') between legs + 2 x 1.5\" legs = 19\"; length: Back 26 + 2 x 1.5 = 29. A 16\" deep top leaves 3\" of frame uncovered. (c) double-sided tape (steps[7]) is not in materials (searched materials[*].name for /tape/i: no match). Other sums agree: Desk Front 7 + 12 (drawer front) + 7 = 26 = Back; drawer box 9 1/2 + 2 x 3/4 = 11 + 2 x 1/2 slide = 12 opening",
+      "reason": "Cut-list Top depth disagrees with the drawing and with the frame dimensions; adhesive tape used but unlisted"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "a40e1a856f580de4.webp",
+      "94ad9b42610630f5.webp",
+      "c9ae1d6e0a2dfb44.webp",
+      "c50884d513b57321.webp",
+      "f776c991fefbe8a3.webp",
+      "7e5a43962a866190.webp",
+      "d703e557777f3c70.webp",
+      "28d5bb144c46919c.webp",
+      "9e5827312adeb869.webp",
+      "51d0904452981330.webp",
+      "47a82cb0584bbecc.webp",
+      "29c010b69ee725d8.webp",
+      "93bfb1afcab3fb84.webp",
+      "5d684e7e4eb64102.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Attach the front divider using just wood glue and clamps. Let dry for an hour.",
+      "what": "Steps[2] already attaches the 'front dividers' (cutList 'Desk Front', 7\" x 3 1/2\" x2) and steps[9] attaches 'the front divider' with glue only; the cut list has a separate 'Desk Front Rail' (3/4\" x 1\" x 26\") that the viewed steps[8] image shows under the front apron. Names are inconsistent; the part is inferred."
+    }
+  ]
 }

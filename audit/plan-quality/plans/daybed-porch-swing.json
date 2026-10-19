@@ -1,6 +1,6 @@
 {
   "slug": "daybed-porch-swing",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -104,81 +104,105 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all steps/materials for external or paid references (/full plans|pdf|download|template|http|attached/i): none; steps are self-contained"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "or the other 3 boards. Cut to a finish size of 2 1/4\" x 5\" x 87\" ] [ SIDE BEAMS... glue up 3 of the 3/4\" x 5 1/2\" x 24\" boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/\" x 5\"",
-          "why": "cut sentence states 87\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "for the other 3 boards. Cut to a finish size of 2 1/\" x 5\" x 35 3/4\" ] [ FRONT VERTICALS... glue up 3 of the 3/4\" x 2 3/4\" x 24\" boards and repeat the for the other 3 boards. Cut to a finish size of 2",
-          "why": "cut sentence states 35 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "the for the other 3 boards. Cut to a finish size of 2 1/4\" x 2 1/4\"\" x 17\" ] [ REAR VERTICALS... glue up 3 of the 3/4\" x 2 3/4\" x 14\" boards and repeat the for the other 3 boards. Cut to a finish size",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "e other 3 boards. Cut to a finish size of 2 1/4\" x 2 1/4\"\" x 17\" ] [ REAR VERTICALS... glue up 3 of the 3/4\" x 2 3/4\" x 14\" boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/4\"",
-          "why": "cut sentence states 17\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/4\" x 2 1/4\"\" x 12\" ] [ BACK SUPPORT... glue up the 2 @ 3/4\" x 3 1/2\" x 80\" boards. Cut to a finish size of 1 1/2\" x 3\" x 77\" ]",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 87\"/35 3/4\"/17\"/12\" in steps[0] are finish sizes of the glue-ups of cutList rows 0-3 and 7 ('will glue up'); every part named in steps[1]-[10] (beams, verticals, back support, pickets, armrests, slat supports, spacers, slats) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 12 rows are used: rows 0-3 and 7 in steps[0]-[4], rear pickets steps[6], side pickets steps[5], armrests steps[7], slat supports steps[8], spacers steps[9], slats steps[10]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "parts ≤ half the 5.5″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
+      "result": "pass",
+      "reason": "one stock type (materials[0] 'Board, 1x6 96\"' x23). Part lengths x qty: 6x96 + 6x38 + 6x24 + 6x14 + 9x22 + 10x12 + 2x42.5 + 2x80 + 2x77 + 2x36.5 + 10x9.25 + 6x38 = 576+228+144+84+198+120+85+160+154+73+92.5+228 = 2142.5; 67 pieces x 1/8 kerf = 8.4; total 2150.9 <= 23 x 96 = 2208. Length test only (not a bin-pack)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": " front vertical support. You can glue these up or use pocket holes on the side facing the inside of the bed. A later step will require 7\" screws going through these which will make them even stronger.",
-          "why": "7\" screw — no material line lists a 7\" fastener"
+          "quote": "A later step will require 7\" screws going through these which will make them even stronger."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "use 6\" Timberlok screws (2 per side) to attach the front beam to the vertical and side supports."
         }
-      ]
+      ],
+      "reason": "Same joint (screws through the front vertical/side supports) is given as 7\" in steps[1] and 6\" in steps[2]; materials[2] lists only 'Timberlok 6\" Screws' (qty 4); no 7\" fastener anywhere (searched all fields for /7\"/)"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "that is 1 13/16\" wide to set my spacing between each picket. I start from the front and work towards the back so if the last space is not perfect, it will not be as noticeable. You will attach the bot",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d1839a3ce524883.webp"
-        }
-      ]
+      "result": "pass",
+      "search": "steps[5] picket gap '1 13/16\" space', steps[6] '3 3/16\"', both shown in viewed images (5\" pickets, 1' and 1' 10\" heights); steps[4] '3/4\" space'; steps[11] '1\" from the sides ... 3/4\" hole'; armrests/slat supports 'flush'/'center' are relational; slat/spacer positions fixed by 6 x 5\" slats + 5 x 9 1/4\" spacers"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|diagram|drawing|pictured/i: no step refers to a missing drawing"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "side supports + front verticals (1), beams (2), rear verticals (3), back support (4), pickets (5-6), armrests over the pickets (7), slat supports/spacers/slats (8-10), rope holes (11)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "You will need to put 2 pocket holes in the top and bottom of each picket."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "make 3 Kreg HD pocket holes on the inside of the side supports"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" pickets (cutList thicknessIn 0.75) and Kreg HD holes in glued-up 2 1/4\" members; searched all steps/materials for /setting|jig|depth|thick/i: no jig setting stated; viewed step images (steps[5], [6], final) show none"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "SIDE BEAMS... glue up 3 of the 3/4\" x 5 1/2\" x 24\" boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/\" x 5\" x 35 3/4\""
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Side Support Beams (will glue up)"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "I hang mine with rope and use these holes to run the rope through and attach them. You can also use eye bolts and use chain."
+        }
+      ],
+      "reason": "(a) Step says 24\" boards are cut to a finish length of 35 3/4\": 24 < 35.75, impossible; Kreg source for cutList[1] is '3/4\" x 5 1/2\" x 38\"' (record importDiffs), so the step's 24\" disagrees with the cut list's 38\". (c) Hanging rope/eye bolts/chain used in steps[11] is not in materials (searched materials[*].name for /rope|chain|eye|bolt|hook/i: no match). Other sums agree: 6 slats x 5 + 5 gaps x 9 1/4 = 76.25 <= 77 slat support; 5 side pickets x 5 + 4 x 1 13/16 = 32.25 <= 35 3/4"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "4d1839a3ce524883.webp",
+      "c049263540184b99.webp",
+      "88bf1db5fc0d9e5f.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

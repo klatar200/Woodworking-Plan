@@ -1,6 +1,6 @@
 {
   "slug": "tapered-hanging-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -188,57 +188,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras|pdf|download|template|http|attached/i: only the closing credit 'Then visit me at Houseful of Handmade' (steps[9]), an optional link"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Cut 2 equal pieces of cording (I used two 80\" long pieces). Tie the center of each piece to the bottom of an S-hook. Then feed them through the eye hooks in the planter and pull back to the S-hook.\nUs",
-          "why": "cut sentence states 80\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "every wooden part has a cutList row; the flagged 80\" in steps[8] is cord (2 x 80 + a 10-12\" wrap = about 172\" <= materials[5] '16' long cord' = 192\"); the two fabric strips of steps[7] are cut from materials[4]"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Corner, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Front/back top, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Front/back 2nd, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Front/back 3rd, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Front/back bottom, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Top frame front/back, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Top frame side, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "sweep placeholder flags not upheld",
+      "reason": "the '(see Step 1 for angles)' suffix is part of real part names; each row maps to a step part (steps[0] cuts them; viewed steps[0] diagram shows 7 5/8\", 7 3/4\", 7\", 6 5/16\", 5 5/8\", 10\", 10 3/4\"), assembled in steps[1]-[5]"
     },
     "R4": {
       "result": "pass",
@@ -246,26 +205,60 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 4×7.625 + 2×7.75 + 2×7 + 2×6.3125 + 2×5.625 + 8×5.5 + 2×7 + 2×10.75 + 2×10 + kerf 24 cuts (26 parts − 2 boards, the fewest possible)×1/8 = 186.375″; bought: 2×96 = 192″; 186.375 ≤ 192"
+      "reason": "one stock type (materials[0] 'Board, 1x2 ... 8' long' x2 = 192\"). Kreg-corrected lengths: 4 x 7.625 + 2 x 7.75 + 2 x 7 + 2 x 6.3125 + 2 x 5.625 + 8 x 5.5 + 2 x 7 + 2 x 10.75 + 2 x 10 = 183.4; 26 pieces x 1/8 kerf = 3.3; 186.6 <= 192 (length test only; miter ends not modelled)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket-hole screws (steps[1]-[5]) = materials[1]; 1 1/2\" screw eyes = materials[3] (steps[6]); S-hook, cord, super glue and outdoor glue listed; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "front/back slat spacing and side spacing '~1/2\"' in viewed steps[2] image (1/2\", 5 1/2\"); slat lengths and 10 degree/45 degree angles in steps[0] and its diagram; 'flush with the front and top/bottom', 'spaced evenly', 'center the assembled planter' and screw eyes 'into each corner' are relational; pocket-hole counts given per step"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "steps vs /as shown|diagram|drawing/i: cutList 'see Step 1 for angles' is answered by steps[0] text (10 and 45 degrees) and its image; no other drawing references"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "angled parts cut (0), front/back panels (1), sides (2), top frame (3), frame on planter (4), bottom slats (5), screw eyes and finish (6), fabric (7), cord (8)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your pocket hole jig for 3/4\" thick material' and steps[2]-[5] 'pocket hole set for 3/4\" thick material'; all parts are 3/4\" thick (cutList thicknessIn 0.75)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Staple the fabric to the inside of the top frame to secure."
+        }
+      ],
+      "reason": "(c) staples are used in steps[7] but are not in materials; searched materials[*].name for /staple/i: no match (materials: 1x2 boards, screws, glue, screw eyes, fabric, cord, S-hook, super glue). (a)/(b)/(d) agree: 4 corners, 2 x 4 front/back pieces, 8 sides (4 x 1 1/2\" + 3 x 1/2\" = 7 1/2\" = corner height 7.625 x cos 10), taper 2 x 2\" x sin 10 = 0.69 = 7.75 - 7 and 7 - 6.3125 steps; frame 10.75 x 10 overhangs the 9 1/4 x 8 1/2 planter top by 3/4\" per side; cord 2 x 80\" fits the 16' cord"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "4dfec2abf02e1365.webp",
+      "b8196243a7a94193.webp",
+      "b9ca4d18c1b894e1.webp",
+      "16194d7551744ba4.webp",
+      "255c3bc722bb6cf2.webp",
+      "7b6a74d00c888bac.webp",
+      "30dca779d5017cd1.webp",
+      "3eda5116c3d15a2f.webp"
+    ]
+  }
 }

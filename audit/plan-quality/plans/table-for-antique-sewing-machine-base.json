@@ -1,6 +1,6 @@
 {
   "slug": "table-for-antique-sewing-machine-base",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -32,25 +32,28 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras|pdf|download|template|http|attached/i: no match; steps[6] names Rockler hardware that is also listed in materials[1]-[2]"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "h the base from the antique sewing machine, cut 2 boards to 14 inches long. Center your sewing machine base, which is (in this case) 23 inches wide and 12 inches deep) onto the underside of your table",
-          "why": "cut sentence states 14\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "cut 2 boards to 14 inches long."
         },
         {
-          "path": "steps[8].body",
-          "quote": " onto the underside of your table top.\nSecure the newly cut 14 inch boards to the table top with 2.5 inch screws, be sure to pre-drill so you do not affect the perfection of your table top!\nOnce the 1",
-          "why": "cut sentence states 14\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "cutList[2].part",
+          "quote": "Flip-Up Leaves"
         }
-      ]
+      ],
+      "reason": "The two 14\" mounting boards in steps[8] have no cutList row and the step names no stock, thickness or width (searched cutList[].part for /14|mount|base|cleat/i: no match; searched steps for the stock: 'boards' only). Not structural to the tabletop itself, so Fix. The Flip-Up Leaves row (36\" x 7.25\" x1.5\" x2) exists but no step cuts or attaches them beyond steps[6] 'If you would like to add leaves' (see R10)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all three rows used: Main Table Top Boards steps[1]/[3], End Caps steps[4] (36 3/16\" = Kreg-corrected 36.1875), Flip-Up Leaves steps[6]"
     },
     "R4": {
       "result": "pass",
@@ -58,57 +61,93 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 5×39 + 2×36.1875 + 2×36.1875 + kerf 0 cuts (9 parts − 9 boards, the fewest possible)×1/8 = 339.750″; bought: 9×96 = 864″; 339.750 ≤ 864"
+      "reason": "one stock type (materials[0] 'Board, 2x8 96\"' x9). Kreg-corrected parts: 5 x 39 + 2 x 36.1875 + 2 x 36 = 339.4, plus the two 14\" boards of steps[8] = 28, total 367.4; 10 + 2 cuts x 1/8 = 1.5; 368.9 <= 9 x 96 = 864"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "the newly cut 14 inch boards to the table top with 2.5 inch screws, be sure to pre-drill so you do not affect the perfection of your table top!\nOnce the 14 inch boards are secured, use bolts through t",
-          "why": "2.5\" screw — no material line lists a 2.5\" fastener"
+          "quote": "Secure the newly cut 14 inch boards to the table top with 2.5 inch screws, be sure to pre-drill"
         },
         {
-          "path": "steps[8].body",
-          "quote": " the perfection of your table top!\nOnce the 14 inch boards are secured, use bolts through the holes of the sewing machine base to attach it to the 14 inch boards. We added a pipe clamp for extra help.",
-          "why": "14\" bolt — no material line lists a 14\" fastener"
+          "path": "steps[3].body",
+          "quote": "Rubbing your screws with a block of soap helps to make the screws go in easily."
         }
-      ]
+      ],
+      "reason": "Steps use 2.5 inch screws (steps[8]), pocket-hole screws (steps[3]-[4], no size given) and bolts (steps[8], no size). Searched materials[*].name for /screw|bolt|pocket/i: no match; materials are only 2x8 boards, hinges and leaf supports. (The sweep's '14\" bolt' flag is a false positive from '14 inch boards')"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "If you would like to add leaves that hang down and flip up when needed, use Rockler metal leaf table supports and straight edge hinges from Rockler."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Center your sewing machine base, which is (in this case) 23 inches wide and 12 inches deep) onto the underside of your table top."
+        }
+      ],
+      "reason": "The leaf hardware step gives no placement for the 4 hinges and 4 supports and does not say which table edges take the 36\" leaves (searched steps for /hinge|support|leaf|leaves/i: only steps[6]); steps[6] has no image and the viewed photos do not show hardware. The orientation and position of the two 14\" boards relative to the base's bolt holes is also not stated (the base is the builder's own). Settled: pocket holes '5 equally spaced'/'2 equally spaced' (relational) and the viewed steps[3] layout diagram"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "search": "steps vs /as shown|diagram|drawing|see |pictured/i: flagged 'attached' in steps[4] means 'screwed together', not a drawing reference"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "main boards cut, edged and pocket-screwed (1-3), end caps measured from the assembled top (4), finish (5), hardware (6), base boards (8). Step 7 says weathering is 'After sanding, and before staining' although it is listed after the finishing step; recorded under gaps"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "Once your 5 main boards are attached, you can measure the length for your end caps. The end cap length will depend on how closely your boards are attached in step 4. The end caps for this table were 3",
-          "why": "\"attached\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "e end cap length will depend on how closely your boards are attached in step 4. The end caps for this table were 36 and 3/16ths during this build.\nMeasure & cut the end caps, then sand & stain the edg",
-          "why": "\"attached\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "fore assembling.\nClamp your 5 main boards which are already attached to each other, and clamp your end cap securely. Soap your screws, set your drill/driver 8 or 10 and attach. If the board moves or t",
-          "why": "\"attached\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "path": "steps[3].body",
+          "quote": "mark 5 equally spaced pocketholes and arrows. On the ends of these boards, mark 2 equally spaced pocketholes for attaching to the end caps."
         }
-      ]
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" 2x8 stock (cutList thicknessIn 1.5); searched all steps for a jig setting (/setting|jig|thick|depth/i): none ('Set your drill/driver to 8 or 10' is the driver clutch); the viewed steps[3] diagram shows arrows only"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[4] '36 and 3/16ths' = cutList[1] 36.1875 (Kreg-corrected); 5 x 7.25 = 36.25 board width vs 36 3/16\" end cap, and the step says the cap length depends on the glued-up width; 5 main boards and 2 end caps match steps[1]; (b) the leaves are optional and handled under R10; (c) hinges and supports listed (materials[1]-[2], qty 4 each for 2 leaves); (d) steps reach a finished tabletop and base mount"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "a056d8ca1b625d1f.webp",
+      "84e4d95f204ab90a.webp",
+      "410be9d81be465fa.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "After sanding, and before staining, beat the boards up with chains, hammers, screws, nails, anything you can find to make the boards look weathered.",
+      "what": "Step 7 is listed after the staining and finishing steps (steps[2], steps[5]) but says it must happen before staining; a reader following the steps in order reaches it after the finish is on."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "The end cap length will depend on how closely your boards are attached in step 4.",
+      "what": "Cross-reference points at step 4 (end caps) for the main-board assembly, which is step 3 (steps[3]); also the Flip-Up Leaves row (36\" long) has no stated edge or hinge side."
+    }
+  ]
 }

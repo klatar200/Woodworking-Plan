@@ -1,19 +1,21 @@
 {
   "slug": "fold-out-coffee-table-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[14] 'Head to PneumaticAddict.com or YouTube.com/pneumaticaddict for more plans, tips and DIY tricks.' is a credit/optional link; the build is complete without it"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[1]/[2] cut faces, sides and random-width veneer from listed MDF (materials[0]-[2]); steps[7] cuts five 8-1/4\" legs from the laminated cutList[3] boards; step 8/9 stretchers = cutList[4]; every part has a row or a stated source"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all five rows used: cutList[0] steps[0]/[3]/[5], [1] steps[3]/[5], [2] steps[4]/[6], [3] steps[7] ('three, 1 x 3 boards'), [4] steps[8]/[9] ('8, 3/4\" x 3/4 x 39\" dowels')"
     },
     "R4": {
       "result": "pass",
@@ -21,62 +23,85 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, sheet-0.5, 1x3, 0.75x48); steps not checked for per-part stock"
+      "reason": "5 stock types; steps name stock by group but the only length-bounded stock is 1x3: cutList[3] 3 x 48 = 144 + 1/8 kerf vs materials[3]/[4] 'Board, 1x3 96\"' + 'Board, 1x3 48\"' = 144, a 1/8\" shortfall only on the 48\" row length; steps[7] needs only five 8-1/4\" legs (41.75\") per laminated board and quantities of 1 may be import defaults, so not scored"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Align the lower box face on the top of the bottom panel. Allow a 1-1/4\" set-back from all edges. Secure in place using glue and 1-1/4\" screws through pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Align the lower sides flush to the ends of the lower face. Allow a 1-1/4\" set-back from both sides. Secure in place using glue and 1-1/4\" screws through pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Align the upper face on the underside of the Top. Allow a 1-1/4\" set-back from all edges. Secure in place using glue and 1-1/4\" screws through pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "-back from top edges. Secure in place using glue and 1-1/4\" screws through pocket holes, as well as 2-1/2\" screws driven from the face. The sides will be set in 13/16\" from the ends of the face board.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "as well as 2-1/2\" screws driven from the face."
         },
         {
-          "path": "steps[6].body",
-          "quote": "-back from top edges. Secure in place using glue and 1-1/4\" screws through pocket holes, as well as 2-1/2\" screws driven from the face. The sides will be set in 13/16\" from the ends of the face board.",
-          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
+          "path": "materials[6].name",
+          "quote": "1/14\" pocket hole screws"
         },
         {
-          "path": "steps[8].body",
-          "quote": "the dowels as double, side-by-side stretchers. Create a 1/2\" space between stretchers. Align the bottom face of stretchers 3\" from the bottom of each leg. Secure in place using glue and 1-1/4\" screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Connect leg pairs together with remaining stretchers. Secure in place from the underside using glue and 1-1/4\" screws through 3/4\" pocket holes",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "path": "materials[7].name",
+          "quote": "3\", #8 wood screws"
         }
-      ]
+      ],
+      "reason": "Steps use 1-1/4\" screws (steps[3]-[6],[8],[9]) and 2-1/2\" screws (steps[6]). Materials list '1/14\" pocket hole screws' (not a size the steps use) and '3\", #8 wood screws'; searched materials[*].name for /2-1\\/2|1-1\\/4/: no match, so 2-1/2\" screws are missing and the 1-1/4\" size appears only as the typo '1/14\"'"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "steps[3]-[6] set-backs 1-1/4\", 2-1/8\", 13/16\"; steps[8] '1/2\" space between stretchers ... 3\" from the bottom of each leg'; steps[10] '1/2\" from outer edges'; steps[11] '8\" from the open side'; steps[9] stretcher level shown in viewed steps[9] image (same plane as step 8, 39\" spans)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|diagram|drawing|pictured|see /i: no step refers to a drawing it lacks"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "lower box (3-4), upper box (5-6), legs laminated then cut (7), stretchers (8-9), base on lower box (10), center leg (11), veneer after boxes are stacked (12)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[8] 'Drill 3/4\" pocket holes' and steps[9] 'through 3/4\" pocket holes' (viewed steps[8] image text repeats it) state the setting for 3/4\" parts; steps[3]-[6] pocket-hole parts are 3/4\" MDF (cutList thicknessIn 0.75); no pocket holes in other thicknesses"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Allow a 2-1/8\" set-back from top edges."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "The sides will be set in 13/16\" from the ends of the face board."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Allow a 1-1/4\" set-back from all edges."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Secure in place using glue and 1-1/4\" screws through pocket holes."
+        }
+      ],
+      "arithmetic": "(a) Upper face is set back 1-1/4\" (steps[5]); sides sit 13/16\" in from the face ends (steps[6]) so 1 1/4 + 13/16 = 2 1/16\" from the top edge, but the same step says 2-1/8\" (1/16\" apart). Viewed steps[6] image shows 39 3/8\" between the sides: 45 - 2 x (2 1/16 + 3/4) = 39 3/8 matches 2 1/16\"; 45 - 2 x (2 1/8 + 3/4) = 39 1/4 does not. (c) glue is used in steps[3]-[6],[8],[9],[12]; searched materials[*].name for /glue/i: no match",
+      "reason": "Two inconsistent set-back values for the upper box sides (1/16\" apart) and wood glue used throughout but not in materials. Other checks agree: 5 legs x 8 1/4 + 4 kerfs = 41.75 <= 48 (cutList[3]); legs 2 x 2 1/2 + 39\" stretcher span = 44 = 45 - 2 x 1/2 (viewed images); all parts installed; steps reach the finished piece"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "d9028fa9e43bb1b5.webp",
+      "845f60f2b9e94b25.webp",
+      "1dc1c49579d385e8.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

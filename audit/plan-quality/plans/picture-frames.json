@@ -1,6 +1,6 @@
 {
   "slug": "picture-frames",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -200,83 +200,96 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras|pdf|download|template|http/i: only 'Even the Decorative overlapping ends' and 'cutting diagrams' wording; nothing external is needed (cutList gives every part)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part the steps cut or glue (End Fillers, Front/Back Stiles and Rails for each frame, Photo Backer in steps[8]) has a cutList row; glass is purchased (materials[6]/[7])"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 12 rows used: 5x7 rows 0-4 and 8x10 rows 5-9 per steps[2]-[7] ('each cutting diagram and parts list is for one frame of that size'), backer rows 10-11 per steps[8]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.25x2.5, sheet-0.125); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "frame parts all come from the 1/4\" x 2 1/2\" hobby board (steps[2] 'a full-length 1/4\" x 3 board'). Per frame, lengths + 1/8\" per cut: 5x7 = 2x13 + 2x9 + 2x7 + 2x15 + 8x0.5 = 92, 16 pieces x 1/8 = 2, 94 <= 4 x 36 = 144 (materials[0]); 8x10 = 2x16 + 2x12 + 2x10 + 2x18 + 8x0.5 = 116, +2 = 118 <= 6 x 36 = 216 (materials[1]). Backers (Kreg-corrected) 10.375 x 12.375 + 7.375 x 9.375 = 128.4 + 69.1 = 197.5 sq in <= 24 x 24 = 576 (materials[2])"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use no screw/nail sizes; glue, turn buttons and hanger are listed (materials[3]-[5])"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Then install four photo-frame turn buttons to hold everything in place. Add a hanger to your frame, and you’re done."
+        }
+      ],
+      "reason": "Positions of the four turn buttons and of the sawtooth hanger are neither given as numbers, nor as a relation (centered/flush), nor shown: steps[9] has no image and the viewed assembly drawings (029c..., b7d7...) show no hardware. All other positions are settled by viewed images: notch 2 3/4\", 9 1/2\", 1/4\" (steps[3] image), 1/4\" narrower stiles, 1/2\" filler overlap, 13\" x 15\" and 16\" x 18\" layouts"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "begin, take a look at the materials, parts, and the cutting diagrams, as well as the steps, so that you’ll be familiar with the procedures. You’ll see that many of the parts only have to be cut to len",
-          "why": "\"diagrams\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[1].body",
-          "quote": " cut to length. For both frame sizes, though, the Back Stiles have to be notched, and the Back Rails trimmed narrower. Also note that each cutting diagram and parts list is for one frame of that size.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "rame, first make sure you’re looking at the correct cutting diagram and parts list. The part names are the same, but the lengths are different for each frame size. In either case, cut eight End Filler",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "ers to length from the end of a full-length 1/4\" x 3 board, as shown in the cutting diagram. These pieces are short, so cutting them first ensures that you’re working with a long piece that keeps your",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "nd of a full-length 1/4\" x 3 board, as shown in the cutting diagram. These pieces are short, so cutting them first ensures that you’re working with a long piece that keeps your hand away from the mite",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "cut eight End Fillers to length from the end of a full-length 1/4\" x 3 board, as shown in the cutting diagram."
         },
         {
           "path": "steps[8].body",
-          "quote": "ood idea to subtract 1/8\" from your height and width measurements, and have the glass cut to that size. You can also cut a Photo Backer to the same size as your glass, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "ood idea to subtract 1/8\" from your height and width measurements, and have the glass cut to that size. You can also cut a Photo Backer to the same size as your glass, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "You can also cut a Photo Backer to the same size as your glass, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[1],[2],[8] refer to per-frame 'cutting diagrams' and steps[1],[2],[8] have no image. Viewed all 6 unattached images in images[]: 4 are rendered photos, 2 are front/back assembly drawings (5x7, 8x10); none is a cutting (board-layout) diagram. Not Unpublish: cutList gives every part size and the filler/backer sizes"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut (2), back rails notched and stiles trimmed (3-4), fillers glued (5), front stiles to back rails (6), front rails then back stiles (7), glass sized from the finished recess (8), mounted (9)"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes; joinery is glue only"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[5] '[two] glued to each Front Stile, and two ... to each Back Rail' = 4 + 4 = 8 = cutList qty 8 per frame; steps[4] '1/4\" narrower' = 2 1/2 -> 2 1/4 in the viewed drawing; viewed recess 9 1/2 x 7 1/2 minus 1/8 = 9 3/8 x 7 3/8 = materials[6]/[7] and cutList[11]; 8x10 12 1/2 x 10 1/2 -> 12 3/8 x 10 3/8; (b) every part is installed; (c) glue, buttons, hanger, glass, hardboard are listed; (d) steps reach the hung frame"
     }
   },
-  "verdict": null,
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-02",
+    "imagesViewed": [
+      "0adc2bd79f874c01.webp",
+      "a191c51647811ec9.webp",
+      "029cca6efe7333b2.webp",
+      "b7d7a0274cf6946a.webp",
+      "713a742b41d3b73f.webp",
+      "13d9c2e9c3306e18.webp",
+      "3cacd6b6a5f25ccf.webp",
+      "078ee9e04e179c64.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "4-pack picture-frame turn buttons",
+      "what": "Materials cover boards and glass for both frames (4 + 6 boards, two glass lines) but turn buttons and hanger are quantity 1 each; each frame uses four buttons (steps[9]) and a hanger. May be an importer default quantity (§3), so not scored."
+    }
+  ],
+  "verdict": "Fix"
 }
