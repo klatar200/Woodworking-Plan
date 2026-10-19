@@ -15,7 +15,8 @@ for (const e of ledger) {
   if (prefix && !String(e.batch || '').startsWith(prefix)) continue;
   let rec;
   try { rec = JSON.parse(readFileSync(`audit/plan-quality/plans/${e.slug}.json`, 'utf8')); } catch { bad++; console.log(`unparseable: ${e.slug}`); continue; }
-  if (!rec.reader) continue;
+  // A record counts once verdict.mjs has set its verdict (a reader may still be mid-batch).
+  if (!rec.reader || !rec.verdict) continue;
   n++;
   e.stage = rec.verifier?.ran ? 'verified' : 'read';
   e.verdict = rec.verdict;
