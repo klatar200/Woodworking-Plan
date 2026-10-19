@@ -1,0 +1,279 @@
+{
+  "slug": "kitchen-pantry-cabinet",
+  "rubric": "R-2",
+  "batch": "sonnet-check",
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[1].lengthIn",
+      "source": "3/4\" x 34 1/2\" x 23\"",
+      "kind": "fraction-dropped",
+      "imported": 34,
+      "correct": 34.5,
+      "correctRow": [
+        0.75,
+        23,
+        34.5
+      ]
+    },
+    {
+      "path": "cutList[2].lengthIn",
+      "source": "3/4\" x 35 1/4\" x 14 7/8\"",
+      "kind": "fraction-dropped",
+      "imported": 35,
+      "correct": 35.25,
+      "correctRow": [
+        0.75,
+        14.875,
+        35.25
+      ]
+    },
+    {
+      "path": "cutList[2].widthIn",
+      "source": "3/4\" x 35 1/4\" x 14 7/8\"",
+      "kind": "fraction-dropped",
+      "imported": 14,
+      "correct": 14.875,
+      "correctRow": [
+        0.75,
+        14.875,
+        35.25
+      ]
+    },
+    {
+      "path": "cutList[3].widthIn",
+      "source": "3/4\" x 33\" x 14 7/8\"",
+      "kind": "fraction-dropped",
+      "imported": 14,
+      "correct": 14.875,
+      "correctRow": [
+        0.75,
+        14.875,
+        33
+      ]
+    },
+    {
+      "path": "cutList[6].lengthIn",
+      "source": "1/4\" x 35 1/4\" x 34 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 35,
+      "correct": 35.25,
+      "correctRow": [
+        0.25,
+        34.5,
+        35.25
+      ]
+    },
+    {
+      "path": "cutList[6].widthIn",
+      "source": "1/4\" x 35 1/4\" x 34 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 34,
+      "correct": 34.5,
+      "correctRow": [
+        0.25,
+        34.5,
+        35.25
+      ]
+    },
+    {
+      "path": "cutList[7].lengthIn",
+      "source": "1x8 @ 31 1/2\"",
+      "kind": "denominator-as-length",
+      "imported": 2,
+      "correct": 31.5,
+      "correctRow": [
+        0.75,
+        7.25,
+        31.5
+      ]
+    },
+    {
+      "path": "cutList[8].lengthIn",
+      "source": "1x8 @ 15 5/8\"",
+      "kind": "denominator-as-length",
+      "imported": 8,
+      "correct": 15.625,
+      "correctRow": [
+        0.75,
+        7.25,
+        15.625
+      ]
+    },
+    {
+      "path": "cutList[9].lengthIn",
+      "source": "1x3 @ 15 5/8\"",
+      "kind": "denominator-as-length",
+      "imported": 8,
+      "correct": 15.625,
+      "correctRow": [
+        0.75,
+        2.5,
+        15.625
+      ]
+    },
+    {
+      "path": "cutList[10].lengthIn",
+      "source": "1/4\" x 31 1/2\" x 17 1/8\"",
+      "kind": "fraction-dropped",
+      "imported": 31,
+      "correct": 31.5,
+      "correctRow": [
+        0.25,
+        17.125,
+        31.5
+      ]
+    },
+    {
+      "path": "cutList[10].widthIn",
+      "source": "1/4\" x 31 1/2\" x 17 1/8\"",
+      "kind": "fraction-dropped",
+      "imported": 17,
+      "correct": 17.125,
+      "correctRow": [
+        0.25,
+        17.125,
+        31.5
+      ]
+    },
+    {
+      "path": "cutList[11].lengthIn",
+      "source": "1x3 @ 31 1/2\"",
+      "kind": "denominator-as-length",
+      "imported": 2,
+      "correct": 31.5,
+      "correctRow": [
+        0.75,
+        2.5,
+        31.5
+      ]
+    },
+    {
+      "path": "cutList[12].lengthIn",
+      "source": "1x3 @ 12 1/8\"",
+      "kind": "denominator-as-length",
+      "imported": 8,
+      "correct": 12.125,
+      "correctRow": [
+        0.75,
+        2.5,
+        12.125
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "pass",
+      "search": "parts cut/assembled in steps[1]-[14] (sides, undertop, bottom, shelves, top, base trim, backing, door frame, door shelves, shelf trim, door backing, trim) each match a cutList.part"
+    },
+    "R3": {
+      "result": "pass",
+      "search": "each of the 13 cut rows is used by a step; steps never reference an unlisted part"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (\u00a79)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, 1x4, 1x8, 1x3); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "using 1 \u00bc\u201d finish nails"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "1\" finish nails"
+        }
+      ],
+      "reason": "Search materials[].name for /finish nail/: only 1\" (steps[14] uses 1\"). 1 1/4\" finish nails are not in materials."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "carcass built bottom-up, top and trim before backing; door frame, shelves, shelf trim, backing, trim in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "1 \u00bc\u201d pocket hole screws"
+        }
+      ],
+      "reason": "Search all steps for /setting|jig|thickness/: no match. No jig setting is stated for the 3/4\" parts joined with pocket holes. Recorded only, not counted."
+    },
+    "R10": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Insert shelves using wood glue and 1 \u00bc\u201d pocket hole screws."
+        }
+      ],
+      "reason": "Heights of the two door shelves inside the 31 1/2\" door frame are not stated in text; the viewed steps[11] image labels only 15 5/8\" (length) and 7 1/4\" (width). Carcass shelves \"as desired\" and the notch (14 7/8\", 3/4\") pass."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "steps[2] \"as per sketch above\" has its own image, viewed: shows 34 1/2\", 23\", 14 7/8\" and \"cut out 3/4\" notch for sides\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach trim pieces using wood glue and 1\u201d finish nails."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Cabinet hinges full wrap"
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "Shelf pins"
+        }
+      ],
+      "reason": "(b)/(d) Two doors are built (steps[9]-[14]) but no step hangs them: search steps for /hinge|pull|latch|magnet|pin|mount|install/ finds nothing (only \"overhang\" and \"attach backing to door\"). Hinges (6), pulls, magnetic latches and shelf pins are in materials and never installed; the steps end with door trim."
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "sonnet-check-A",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/529e0185dc784228.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2e2df5c3442263c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c2a8bb74f3d08692.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e96433b0c5a5aa5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/89235c21c9b61cc9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/68140e5971fa17a9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/da45e4925e5bd862.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[4].lengthIn",
+      "quote": "36",
+      "what": "Base trim sides (cutList[4], 2 pcs) are 36\" long but steps[0] gives \"Overall dimensions: 36\"w x 24\"d x 36\"h\" and steps[6] attaches them to the carcass sides; a side-mounted trim cannot be 36\" on a 24\" deep cabinet. Also 2 x 36 + 36 (front, cutList[5]) = 108 > the single 1x4 x 96\" listed (materials[2]) if cut from it (stock for these rows is not stated)."
+    }
+  ]
+}
