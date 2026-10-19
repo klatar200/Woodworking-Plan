@@ -71,21 +71,25 @@
       "reason": "No pocket holes; joints are glue plus decking screws."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[3].body",
-          "quote": "attach with wood glue and decking screws"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Using glue and fasteners, attach these two boards to make a leg assembly"
-        }
-      ],
-      "reason": "(c) Glue is used in steps[1] and steps[3]; searched materials[0..1] ('Board, 2x4 96\"', '1.5\" Wood Deck Screws') and description: no glue. Counts agree: step 10 + 12 leg boards match the viewed leg image; 6 slats; 11 boards cover 6 x 90 + 10 x 21.5 + 12 x 18 (5 boards pack as 4+4+(2x21.5,2x18)+5+5)."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[3].body",
+            "quote": "attach with wood glue and decking screws"
+          },
+          {
+            "path": "steps[1].body",
+            "quote": "Using glue and fasteners, attach these two boards to make a leg assembly"
+          }
+        ],
+        "reason": "(c) Glue is used in steps[1] and steps[3]; searched materials[0..1] ('Board, 2x4 96\"', '1.5\" Wood Deck Screws') and description: no glue. Counts agree: step 10 + 12 leg boards match the viewed leg image; 6 slats; 11 boards cover 6 x 90 + 10 x 21.5 + 12 x 18 (5 boards pack as 4+4+(2x21.5,2x18)+5+5)."
+      }
     }
   },
   "verdict": "Fix",
@@ -103,5 +107,20 @@
       "plans/f77ab42c198c093b.webp",
       "plans/c57aedc6c148939a.webp"
     ]
-  }
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Using glue and fasteners, attach these two boards to make a leg assembly",
+      "what": "Glue is used but not in materials (materials[0..1] are 'Board, 2x4 96\"' and '1.5\" Wood Deck Screws'; description has no glue)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "attach with wood glue and decking screws",
+      "what": "Wood glue is used but not in materials."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

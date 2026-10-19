@@ -97,20 +97,24 @@
       "reason": "Searched steps[0..5], materials and viewed steps[0]/[2] images for a jig thickness setting: none, for either the 3/4\" (1x12) or 1 1/2\" (2x2) stock. Recorded only (R9 not counted)."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[3].body",
-          "quote": "Use 1” pocket screws and wood glue on all of the seams."
-        }
-      ],
-      "reason": "(c) wood glue is used by the step; searched materials[0..3] for /glue/i: none (only 1x12, 2x2, 1\" and 2-1/2\" pocket screws). (a) counts agree: 5 pieces at 15\", 2 boards of 1x12 and 2x2 as in materials; (b) all parts installed; (d) steps reach the finished bench."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[3].body",
+            "quote": "Use 1” pocket screws and wood glue on all of the seams."
+          }
+        ],
+        "reason": "(c) wood glue is used by the step; searched materials[0..3] for /glue/i: none (only 1x12, 2x2, 1\" and 2-1/2\" pocket screws). (a) counts agree: 5 pieces at 15\", 2 boards of 1x12 and 2x2 as in materials; (b) all parts installed; (d) steps reach the finished bench."
+      }
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -126,5 +130,14 @@
       "53fde74d2648a132",
       "28dd38f97f875e06"
     ]
-  }
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Use 1” pocket screws and wood glue on all of the seams.",
+      "what": "Wood glue is used but not in materials (searched materials[0..3] for /glue/i: none)."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

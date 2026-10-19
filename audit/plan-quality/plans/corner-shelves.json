@@ -100,20 +100,24 @@
       "note": "5 reference(s), each in a step with its own image"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "Use Titebond I wood glue and Kreg 1 1/4\" pocket screws to attach the shelf backs to the shelf tops."
-        }
-      ],
-      "reason": "(c) The glue used in the only assembly step is not in materials: searched materials[0..3] names for /glue|titebond/i — none (materials are poplar, two pocket screws, Polycrylic). Otherwise: (a) steps[0] 'three corner shelves' = cutList[0..1] qty 3 each; 5 back holes x 3 = 15 = materials[1] qty 15, 2 top holes x 3 = 6 = materials[2] qty 6. (b) backs attached to tops (steps[4]), shelves mounted (steps[6]). (d) steps[6] mounts the shelves."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[4].body",
+            "quote": "Use Titebond I wood glue and Kreg 1 1/4\" pocket screws to attach the shelf backs to the shelf tops."
+          }
+        ],
+        "reason": "(c) The glue used in the only assembly step is not in materials: searched materials[0..3] names for /glue|titebond/i — none (materials are poplar, two pocket screws, Polycrylic). Otherwise: (a) steps[0] 'three corner shelves' = cutList[0..1] qty 3 each; 5 back holes x 3 = 15 = materials[1] qty 15, 2 top holes x 3 = 6 = materials[2] qty 6. (b) backs attached to tops (steps[4]), shelves mounted (steps[6]). (d) steps[6] mounts the shelves."
+      }
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship (unverified)",
   "reader": {
     "batch": "calib-4",
     "imagesViewed": [],
@@ -125,5 +129,14 @@
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
-  "previousVerdict": "Ship (unverified)"
+  "previousVerdict": "Ship (unverified)",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Use Titebond I wood glue and Kreg 1 1/4\" pocket screws to attach the shelf backs to the shelf tops.",
+      "what": "Wood glue is used but not in materials (searched materials[0..3] names for /glue|titebond/i: none)."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

@@ -312,21 +312,25 @@
       "reason": "steps[7] 'Kreg pocket hole Jig (set for 3/4\")' covers every pocket-holed part: 3/4\" poplar frames, 3/4\" oak front rail, 3/4\" ply bottom (cutList thicknessIn 0.75); no pocket holes in the 1/2\" or 1/4\" parts"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[21].body",
-          "quote": "fill all nail holes and other imperfections with wood putty, let it dry."
-        },
-        {
-          "path": "materials[14].name",
-          "quote": "Titebond I wood glue"
-        }
-      ],
-      "reason": "(c) wood putty is used in the last step; searched materials[*].name for /putty|filler/i: no match (glue, sandpaper, finishes are listed). (a)/(b)/(d) check out: top 'final dimensions (22 X 21 1/2\")' = cutList[1] 21.5 x 22; frame 18 1/2 x 19 = rails 18.5 + 2 x 3\" stiles 13 + ... (13 + 3 + 3 = 19); front assembly 15 + 2 x 2 1/2 = 20 = 18 1/2 + 2 x 3/4; drawer, guides, top all installed"
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[21].body",
+            "quote": "fill all nail holes and other imperfections with wood putty, let it dry."
+          },
+          {
+            "path": "materials[14].name",
+            "quote": "Titebond I wood glue"
+          }
+        ],
+        "reason": "(c) wood putty is used in the last step; searched materials[*].name for /putty|filler/i: no match (glue, sandpaper, finishes are listed). (a)/(b)/(d) check out: top 'final dimensions (22 X 21 1/2\")' = cutList[1] 21.5 x 22; frame 18 1/2 x 19 = rails 18.5 + 2 x 3\" stiles 13 + ... (13 + 3 + 3 = 19); front assembly 15 + 2 x 2 1/2 = 20 = 18 1/2 + 2 x 3/4; drawer, guides, top all installed"
+      }
     }
   },
   "verifier": {
@@ -348,5 +352,14 @@
       "eaa214411a2677df.webp"
     ]
   },
-  "verdict": "Fix"
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[21].body",
+      "quote": "fill all nail holes and other imperfections with wood putty, let it dry.",
+      "what": "Wood putty is used but not in materials (searched materials[*].name for /putty|filler/i: no match)."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

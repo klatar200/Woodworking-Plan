@@ -175,21 +175,25 @@
       "reason": "Pocket holes drilled in 3/4\" plywood (cutList thicknessIn 0.75); searched steps for a jig/thickness setting (/setting|jig.*3\\/4|thickness/i): only 'Kreg Pocket Hole Jig' named, no setting; step images viewed (cut diagram, shelf-position drawing, assembly drawing, grooved ply) show no setting"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[5].body",
-          "quote": "attach the top (D) using 1 1/4\" Kreg Screws and wood glue around the perimeter."
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Using the marks from Step 5. install shelves"
-        }
-      ],
-      "reason": "(c) wood glue is used in steps[5] but absent from materials (searched /glue/i: no match). (a) Part sizes otherwise agree with viewed images: shelf stack 36\" side = 19 3/4\" (B) + 16 1/4\" below A; F 6\" + 2\" + 6 3/4\" in image. Door (I) is installed (steps[6]) but never given a size - recorded under R2, not repeated. Steps[4] cites 'Step 5' for the marks, which are made in the previous step (steps[3]); not scored further"
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[5].body",
+            "quote": "attach the top (D) using 1 1/4\" Kreg Screws and wood glue around the perimeter."
+          },
+          {
+            "path": "steps[4].body",
+            "quote": "Using the marks from Step 5. install shelves"
+          }
+        ],
+        "reason": "(c) wood glue is used in steps[5] but absent from materials (searched /glue/i: no match). (a) Part sizes otherwise agree with viewed images: shelf stack 36\" side = 19 3/4\" (B) + 16 1/4\" below A; F 6\" + 2\" + 6 3/4\" in image. Door (I) is installed (steps[6]) but never given a size - recorded under R2, not repeated. Steps[4] cites 'Step 5' for the marks, which are made in the previous step (steps[3]); not scored further"
+      }
     }
   },
   "verifier": {
@@ -212,7 +216,14 @@
       "path": "steps[3].body",
       "quote": "Mark placement of the shelves (A) w/attached back (E) w/attached partial back and (C) w/attached partial back.",
       "what": "Part letters are inconsistent: 'Bottom Shelf (E)' and the F back strips are described as 'attached back' of A/C, while cutList has E as a 9 x 28 1/4 shelf; F strips have no row (see R2)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "attach the top (D) using 1 1/4\" Kreg Screws and wood glue around the perimeter.",
+      "what": "Wood glue is used but not in materials (searched materials for /glue/i: no match)."
     }
   ],
-  "verdict": "Fix"
+  "verdict": "Fix",
+  "consumableCleanup": "2026-10-19"
 }
