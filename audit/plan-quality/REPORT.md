@@ -4,15 +4,23 @@
 
 | | |
 |---|---|
-| Rubric | R-1 |
-| Current stage | **Stage 5 gate — waiting for Keagan to sign off [`calibration.md`](calibration.md)** |
-| Last batch | calib-4 (pilot-1..3, calib-1..4 read; pilot + calib Unpublish findings verified) |
-| Ledger | 610: 70 read/verified, 540 swept |
-| Verdicts (70 read) | Ship 8 · Ship (unverified) 10 · Fix 47 · Unpublish 5 (verifier-upheld) · Human review 7 (combined with another verdict) · not yet read 540 |
-| Updated | 2026-10-18 |
+| Rubric | **R-2** (2026-10-19; DECISIONS_LOG) |
+| Current stage | **Stage 6 — full read** (Sonnet readers, Opus verifier) |
+| Last batch | 70 read plans re-scored under R-2 (rescore-1..7, Opus); Stage 6 batches `s6-01..36` assigned in the ledger (15 each, worst-first) |
+| Ledger | 610: 70 read under R-2, 540 swept (Stage 6 in progress) |
+| Updated | 2026-10-19 |
 
-**Waiting on Keagan (Stage 5):** his verdicts on the core 40 in `calibration.md`, and answers to
-Q1 (R9 at Fix?), Q2 (add R14 + widen R10 → R-2?), Q3 (R1 Fix level?), Q4 (Stage 6 cost / model).
+**Stage 5 gate — signed off by Keagan 2026-10-19:** Q1–Q4 all as recommended; core-40 agent
+verdicts accepted without per-plan review. Rubric R-2 in `docs/PLAN_QUALITY_AUDIT.md` §6; verdicts
+computed by `scripts/verdict.mjs`.
+
+**Sonnet-vs-Opus check (Q4), 2026-10-19:** Sonnet readers re-read 10 calibrated plans from their
+sweep state into `sonnet-check/plans/`, compared with the Opus R-2 records: same verdict bucket 9/10,
+0 false Ships, every Unpublish-level finding matched at `certain`. Differences: Sonnet marked more
+findings `likely` (Opus `certain`) and missed one Fix-level R2 (`gaming-computer-desk`);
+`battery-charging-station` Sonnet Fix vs Opus Ship (unverified) (Opus settled R10 from viewed
+images). Verdict: Sonnet readers go ahead; known downside — the ≥4-certain-Fix → Unpublish route
+may fire less often.
 
 **Stage 2 gate — answered by Keagan 2026-10-18** (relayed by the orchestrating session),
 verbatim: "Yes to both: use the kreg-plans.json from git history, and score the measurement checks
