@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-x-base-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,43 +131,114 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Rip down the 2x10 boards to 8\" wide total. Make sure to cut from both sides of the board in order to remove the rounded edges and give it a cleaner look. Assemble the table top by adding 1 1/2\" Pocket",
-          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged '8\"' in steps[3] is a rip width, not a missing part (see R14); Leg Base, Leg Support, X Supports and Table Top Boards each have a cutList row; the optional 1x4 feet (steps[2], image caption 'Optional: Add 1x4 base') are cut from materials[3] 1x4 though with no length"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 4 cutList rows used in steps[0]-[3]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x10, 2x4, 4x4, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "X Supports quantity 8, 4 x 4 x 18.125 (Kreg source 4x4x18 1/8\")"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Leg Support quantity 2, 4x4x24 3/4\" (Kreg source)"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 4x4 96\""
+        }
+      ],
+      "arithmetic": "4x4 parts: 8 x 18.125 + 2 x 24.75 = 145 + 49.5 = 194.5 (+ 8 cuts x 1/8 = 1) vs bought 2 x 96 = 192; also 2x10: 4 x 72 = 288 + 2 cuts x 1/8 = 288.25 > 2 x 144 = 288. steps[0],[1],[3] name the stock for every part (2x4, 4x4, 2x10).",
+      "reason": "By the rubric formula the 4x4 stock is short (quantity 2 is not a default 1). Only 'likely' because the X supports have 43/47 degree ends whose waste could nest, which the formula does not model; the 2x4 (4 x 30 = 120 + kerf vs 1 x 120) is also short but quantity 1 may be an import default so it is not counted."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 2 1/2\" wood screws (materials[5]) and 2 1/2\" pocket screws (materials[4]) and 1 1/2\" pocket holes; finish nails, bolts and threaded inserts are given without sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the table top to the base by adding threaded inserts into the tabletop and drilling holes through the top of the leg base."
+        }
+      ],
+      "reason": "Where the two leg assemblies sit along the 72-inch top (setback from the ends / spacing between legs) is not given: searched all steps, summary and description for /inset|overhang|apart|from (the|each) end|spacing/ - no hit; viewed images 6c16ae.., a5f662.. show the legs near the ends but carry no dimensions. The pipe length is likewise not given. Leg heights 24 3/4 and widths 30, 3 1/2 are shown."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs, X, feet, top, top attached to base, then pipe; order is possible"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] states '1 1/2\" Pocket Holes' for the 1 1/2\" thick 2x10 boards; other joints state method and fastener (glue + 2 1/2\" countersunk wood screws, glue + finish nails)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the flanges and metal pipe to the inside of the legs, making sure to keep level."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "adding threaded inserts into the tabletop and drilling holes through the top of the leg base. Attach with bolts."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Rip down the 2x10 boards to 8\" wide total."
+        }
+      ],
+      "arithmetic": "Table top: cutList[3] 4 boards x 9.25 wide = 37 vs step 3 'rip down the 2x10 boards to 8\" wide' (4 x 8 = 32 if per board)",
+      "reason": "R14(c): flanges, metal pipe, threaded inserts and bolts are used but none is in materials[0]-[7] (searched /flange|pipe|insert|bolt/i: no match). R14(a): the rip width in step 3 (8\") disagrees with the cut-list width (9.25), and 'total' is ambiguous."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/f9bfca7cca51a458.webp",
+      "plans/6b4a8ea0c9e967b8.webp",
+      "plans/0172536f5f1719af.webp",
+      "plans/6c16aeca7ea3a78b.webp",
+      "plans/a5f6626f39719340.webp",
+      "plans/e50b0f4c4cf85a8c.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the feet to the bottom of the leg base using wood glue and finish nails.",
+      "what": "feet have no length (only 3 1/2\" width in viewed image, marked Optional) and no cutList row; finish nails not in materials (fastener, size never stated)"
+    }
+  ]
 }

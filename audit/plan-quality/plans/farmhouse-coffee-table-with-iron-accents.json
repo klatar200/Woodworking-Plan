@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-coffee-table-with-iron-accents",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,43 +119,138 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": " to the top of the table. Cut the iron balusters so they are 1/4\" smaller that the opening with a jig saw fitted with a metal blade. Cut the twisted balusters so the twist is centered in the opening b",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "iron balusters are purchased parts (materials[4],[5]) and step 8 gives the cutting rule (1/4\" shorter than the measured opening); all wood parts are in cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cutList rows (Legs, Sides, Front/back, Shelf, Top) are cut/used in steps[1]-[6]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "readerNote": "sweep said unknown; Kreg-corrected Top width 7 1/2 exceeds the only listed 1x8 stock width",
+      "evidence": [
+        {
+          "path": "importDiffs cutList[4].widthIn source (Kreg)",
+          "quote": "3/4\" x 7 1/2\" x 48\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x8 96\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "creating a single board that is 22 1/2\" x 48\"."
+        }
+      ],
+      "arithmetic": "Top width 7.5 (Kreg-corrected) > 7.25 (actual 1x8 width, §9); 3 x 7.25 = 21.75 < 22.5 stated in steps[6] ('a single board that is 22 1/2\" x 48\"')",
+      "reason": "Top boards can only come from the 1x8s (the only stock wide enough) and 1x8 is 7 1/4\" wide per §9, so a 7 1/2\" part cannot be cut and the top cannot reach 22 1/2\"."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (2x2, 1x8); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name no screw sizes; materials[2],[3] list 2 1/4\" and 1 1/4\" Kreg screws; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "leg angle 3\" x 1/2\", bottom side piece flush with top of the 3\" angled section (also shown in viewed image), baluster holes 2 3/4\" on center centered on the board, 1/4\" shelf gaps, top centered; baluster count is not stated but viewed images show five per side (see gaps)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the side pieces to the legs so the top piece is flush with the top of the legs"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut the 4 side pieces to 16 1/2\" long. Clamp two of the side pieces together."
+        }
+      ],
+      "reason": "Side pieces are first cut to length and drilled for balusters in step 4 (index 3) but are already pocket-holed and attached to the legs in step 3 (index 2); holes cannot be drilled in clamped loose pieces after assembly. Steps 2 and 3 are in the wrong order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Add pocket holes to the side pieces."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Add pocket holes to the edges of the shelf boards and attach them to the sides"
+        }
+      ],
+      "reason": "Pocket holes drilled in 2x2 and 3/4\" boards; searched all steps and materials for /setting|set (up|to)|thickness|3\\/4\"-thick/ - none states a jig setting; viewed images show none. (recorded only)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "rip down 3 42\" long pieces of the 1x8 boards to 6\" wide."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "secure the side shelf boards leaving 1/4\" gap between them."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut the 4 side pieces to 16 1/2\" long."
+        }
+      ],
+      "arithmetic": "Shelf width 3 x 6 + 2 x 1/4 = 18.5 vs space between front and back legs = side piece 16 1/2 (viewed step-2 image: 16 1/2\" dimension runs between the legs; legs cutList 1.5 x 1.5, table 22 1/2 - 2 x 1 1/2 overhang = 19 1/2 outside) ; 18.5 > 16.5",
+      "reason": "R14(a): numbers do not add up: the three 6\" shelf boards plus gaps are 2\" wider than the opening they are attached into. Likely, since the plan does not say the shelf is notched around the legs."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/25c63ed1a7cb1730.webp",
+      "plans/b7d8eb55f02e9d22.webp",
+      "plans/aea1403552110b23.webp",
+      "plans/b6e7831cb5e58e33.webp",
+      "plans/e93e3a8aa73adffc.webp",
+      "plans/3ba2b0eeaecc8fd0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4]",
+      "quote": "Plain iron balusters",
+      "what": "materials give 4 balusters in total (unit each) but viewed step-0 and step-8 images show 5 balusters on each of the 2 sides (10 total); no step states the baluster count or holes per side - quantity may be packs or an import default"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Place a piece of masking tape on the drill bit",
+      "what": "masking tape used but absent from materials",
+      "kind": "consumable"
+    }
+  ]
 }

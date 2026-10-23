@@ -1,6 +1,6 @@
 {
   "slug": "entryway-hall-tree-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[0]-[13] (bench sides, top/bottom pieces, seat, divider, frame sides/pieces, backing, shelf) has a cutList row; corbels and hooks are in materials[6],[7]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 cutList rows are cut in steps[0],[3],[6],[10],[11],[13]"
     },
     "R4": {
       "result": "unknown",
@@ -49,31 +51,108 @@
       "reason": "R5 precondition not met: unparseable stock materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every fastener size in steps (2 1/2\" and 1 1/4\" pocket screws, 2\", 1 1/2\" and 3/4\" wood screws, 3/4\" and 1\" brad nails) is in materials[8]-[14]; no conflicting sizes for one use"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "best to make pilot holes first to avoid wood splitting). Make sure to sink the wood screw head below the surface of the wood so it doesn't stick up. Repeat if needed from the bottom side of the bench.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5822e15b4fdb9fb2.webp"
+          "path": "steps[12].body",
+          "quote": "Lastly, add your three coat hooks under the shelf."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Then, add the two wood corbels to the front of the frame making sure that the top edges are lined up with the top middle 1x4 piece."
         }
-      ]
+      ],
+      "reason": "Viewed step 9/11 image (935b56..) shows corbels near the frame edges but gives no measurement, and no viewed image shows the three hooks. No number or image gives hook positions or the corbels' horizontal positions; step 9 'Line up your tree hall frame with your bench' gives no front-to-back setback. Searched steps 9, 11, 12 for inch values: none for these positions. Divider position (14 1/2\" = half of 29\"), seat (centered, back flush) and frame rail positions (10\" down) are given."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Join your bottom bench piece (pocket hole side facing down) into your two side pieces with 2 1/2\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Use a miter saw and cut four 2x8 pieces @ 26\" each."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Your build is complete!"
+        }
+      ],
+      "reason": "Top and bottom bench pieces are first made in the last step (13), after the step that uses them (1) and after 'build is complete'. steps[5] says the seat was 'cut to size in step 5' while it is cut in step 4 of the list, so the original order had the top/bottom step second; the importer/scrape most likely moved it. Build is completable once the reader finds step 14."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "for two of the 17\" pieces, add 2 pocket holes on one side. Using 2 1/2\" pocket hole screws and wood glue"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "add two pocket holes to just one end on each of the two pieces."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x8 and 1x4 stock but no jig thickness setting is stated; searched all steps and materials for /setting|set (up|to)|3\\/4\"-thick|thickness/ - no hit; viewed images 208353.., 246c14.., 03a1a9.. show holes only, no setting. (recorded only)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "sizes agree: step 6 '58 1/4\"' frame sides = cutList[6] corrected; 4 x 22\" pieces = cutList[7]; frame width 22 + 2 x 3 1/2 (1x4) = 29 = backing and shelf width; 58 1/4 + 17 + 3/4 = 76 = backing height; every made part is installed (steps 1,2,4,5,7,8,9,10,11,12). Divider size note under gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/208353ffe5bc3fe5.webp",
+      "plans/5822e15b4fdb9fb2.webp",
+      "plans/246c1445761a838a.webp",
+      "plans/935b56277133e277.webp",
+      "plans/ab32ddc9bdd54ae6.webp",
+      "plans/03a1a988e2b3386a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "My cubby divider dimensions were about 14 1/2\" x 14\", but you will need to measure for exact measurements",
+      "what": "step gives about 14 1/2 x 14 but cutList[3] corrected row is 14 wide x 14 1/4 long; hedged ('measure for exact'), so noted not failed"
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "Add wood filler over screws on bench top seat (if desired)",
+      "what": "wood filler used but absent from materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Make sure you attach the 22' piece with the three extra pocket holes",
+      "what": "typo 22' for 22\" (cosmetic)"
+    }
+  ]
 }

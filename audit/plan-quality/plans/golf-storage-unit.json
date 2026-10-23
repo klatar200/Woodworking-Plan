@@ -1,6 +1,6 @@
 {
   "slug": "golf-storage-unit",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,10 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[1]-[12] has a cutList row (bottom, back, interior/exterior sides, cubby front, dividers, front trim, shelves); veneer in materials[6]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 cutList rows are used in steps[1]-[11]"
     },
     "R4": {
       "result": "pass",
@@ -88,29 +90,93 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 1x2, 1x12); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Attach the bottom 15 1/2\" piece to the back using pocket hole screws.",
-          "why": "15 1/2\" screw — no material line lists a 15 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged '15 1/2\"' in steps[1] is the bottom piece's width, not a screw; steps name no screw size, materials[4] '3/4\" Kreg Screws' and materials[5] '1 1/4\" brad nails' match step 8's 1 1/4\" brad nails"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "interior sides 11 1/4\" from right (shelves as guide) and 4\" from left (cubby divider as guide), dividers ~4\" spacing, hole counts per edge, unit 37 1/2 x 45 x 16 (viewed image), shelf heights and pin holes are the builder's choice (adjustable; 2x4 guide)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "steps[4].title",
+          "quote": "Preparation"
+        },
+        {
+          "path": "steps[6].title",
+          "quote": "Step 2"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Using your Kreg Shelf Pin Jig, add the holes for your adjustable shelf."
+        }
+      ],
+      "reason": "Listed order is Step 1, Step 3, Step 4, Preparation, Step 5, Step 2, Step 6...: the pocket-hole 'Preparation' (predrill all holes) comes after steps 1-4 that already join with pocket holes, and the shelf-pin holes (Step 2, interior sides) come after the interior sides are attached to the back (steps 3-4). The author's own step numbers give the intended order, so the list was most likely re-ordered by the scrape/import."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "You will be using pocket holes to attach most of this piece. Predrill all the holes to make assembly quicker."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" plywood and 3/4\" shelves but no jig thickness setting is stated; searched all steps, description and materials for /setting|set (up|to)|thickness|1\\/2\"-thick/ - none; viewed step images show the jig but no setting. (recorded only)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "place the adjustable shelf with shelf pins."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "-Interior sides: 5 holes along one 37 1/2\" side -Front for Umbrella Cubby: 5 holes along one 37 1/2\" side"
+        }
+      ],
+      "arithmetic": "cutList[2] Interior sides 37 and cutList[5] Front for umbrella cubby 37 (Kreg-corrected) vs 37 1/2\" in the hole list; 37 + 1/2\" bottom = 37 1/2\" unit height, so 37 is the consistent value",
+      "reason": "R14(c): shelf pins are used but not in materials (searched materials[0]-[6] for /pin/i: none; the jig is a tool). R14(a): the hole list calls the interior sides and cubby front 37 1/2\" long where the cut list says 37."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/a0156777c8ea3efd.webp",
+      "plans/a0d78a2247a2ed76.webp",
+      "plans/c7d944957a71c263.webp",
+      "plans/bd7c2e2462a3f32f.webp",
+      "plans/9b68f933a2aa79e9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Always add glue to the joint prior to joining with screws.",
+      "what": "wood glue used but absent from materials",
+      "kind": "consumable"
+    }
+  ]
 }

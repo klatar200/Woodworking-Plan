@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-barn-door",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (rails, stiles, X pieces, back panel boards, face frame) = cutList rows Rails, Stiles, X Pieces, Panel Pieces; sliding hardware and pull are in materials[3],[4]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 4 cutList rows are used (steps[2],[4],[6],[7]); viewed design image shows stiles, 3 rails, X and back-panel boards"
     },
     "R4": {
       "result": "pass",
@@ -24,29 +26,87 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": " holes to the rails first. Using Kreg Clamps and 1-1/4\" pocket hole screws, assemble the overall frame. You should have a fairly rigid face frame that can be worked on independently of the back panel.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "Using Kreg Clamps and 1-1/4\" pocket hole screws, assemble the overall frame."
         }
-      ]
+      ],
+      "reason": "1-1/4\" pocket hole screws are used but no materials line is a screw: materials[0]-[4] are boards, sliding door hardware and a door pull. Searched materials names for /screw|nail|fastener|pocket/i - no match."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed design image 7ddeb2.. shows top/middle/bottom rail positions and X in lower panel; X angles fixed by the frame opening; stiles/rails dims in images 91, 3 7/8, 34 1/4, 5. Middle-rail height is shown but not dimensioned."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "back panel and face frame built separately (4-7), finished, then joined (10), then hung (13)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I used my Kreg Foreman to add pocket holes to the rails first."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" boards; searched steps and materials for /setting|set (up|to)|3\\/4|thickness/ - no jig thickness stated; viewed step images show none. (recorded only)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "face frame width 2 x 3.875 + 34.25 = 42.0 = step 0 '42\" wide'; height 91 = stiles/panel boards; 10 x 1x6x96 = 8 panel + 2 stile boards; steps reach a hung door. 8 x 5.5 = 44 back panel is intentionally wider (step 1 note) - see gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/7ddeb27ff87db4d7.webp",
+      "plans/ae196e67f5f1ebed.webp",
+      "plans/556bee00bd6189c3.webp",
+      "plans/b14d057bcd79179d.webp",
+      "plans/8b8eb1982dc42973.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3]",
+      "quote": "8 x Panel Pieces 5.5 x 91",
+      "what": "8 x 5.5 = 44 back panel vs 42 door/face frame width (2 x 3.875 + 34.25); trimming appears only as past tense in steps[1] ('I went back and trimmed the sides') and as 'Optional Step' in steps[11] - final width trim never instructed"
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Door Pull",
+      "what": "Door Pull is in materials but no step installs it or gives its position (steps[13] defers to hardware instructions); viewed photo shows one pull at the middle rail"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Using wood glue and clamps, assemble the back panel and let dry.",
+      "what": "wood glue used but absent from materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "I used Dark Walnut by Varathane for this door.",
+      "what": "stain/pre-stain conditioner/Polycrylic finish used but absent from materials",
+      "kind": "consumable"
+    }
+  ]
 }

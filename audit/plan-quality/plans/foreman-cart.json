@@ -1,6 +1,6 @@
 {
   "slug": "foreman-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -67,21 +67,33 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "man cart using the universal workbenches. The storage is awesome to keep screws and other jigs ready to grab and use in seconds! Check the Youtube video for any questions! Video link is in Extras Tab.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "the only match is the description pointing to a YouTube video 'in Extras Tab' (optional); step 0's 'Kreg Universal Workbench' is a purchased kit (viewed step-0 image shows the metal frame and casters), not a plan we lack; every wood part is sized in the cut list or steps"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Cut a back panel to size, brad nail or screw on the back."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut a back panel to size and attach the back."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "While its all open cut a back panel for the inside of the Universal Bench."
+        }
+      ],
+      "reason": "Back panels (three cabinet backs plus the bench back) are cut by steps but are not in cutList (rows: Tall Cabinet Sides, Side Cabinets Top and Bottom, Middle Cabinet Sides/Top and Bottom, Kreg Platform, Tops) and no step gives their size or stock; materials[0] is only 3/4\" plywood and brad nails imply thin stock. The Base (step 1, 'roughly 20\"x 43 7/8\"') is sized in the step but also not in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 cutList rows are used in steps[2]-[5]"
     },
     "R4": {
       "result": "pass",
@@ -92,23 +104,87 @@
       "reason": "sheet layout not judged (area fits: part area 4×18×18.25 + 4×9.5×18 + 2×10.375×18 + 2×16.5×18 + 1×18×27.5 + 2×16×23 = 4196.5 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "no fastener size is stated in any step ('a few bolts, nuts, and washers', 'screws', 'brad nail'); materials list none"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "all cut parts are sized (18 1/4, 9 1/2, 10 3/8, 16 1/2, 18 x 27 1/2, 23 x 16); cabinet arrangement and the platform beside the tops are shown in the viewed finished photo; shelf-pin hole positions come from the Kreg shelf-pin jig; Foreman height is relational ('level with the tops')"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "bench, base/back, cabinets, platform, tops, shelf-pin holes, Foreman, pegboard - possible in this order"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Pocket hole the top and bottoms to the side cabinets."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Pocket hole the cabinet together."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" plywood but no jig setting is stated; searched all steps, description and materials for /setting|set (up|to)|thickness|3\\/4/ - only the plywood size matches. Viewed step images are video stills with no setting. (recorded only)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Begin assembly of the 20\"x 44\" Kreg Universal Workbench with standard height legs"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "This is optional, you can just attach a solid piece if you wanted. I ripped a couple spacers and attached them into the side cabinets"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I used the Kreg Adjustable Shelf Pin jig to make holes for either adjustable shelves or drawers."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "The Foreman will rest on a single piece of plywood measuring 18\" wide by 27 1/2\" deep."
+        }
+      ],
+      "reason": "R14(c): the Universal Workbench kit and wheel kit (step 0) and the peg board (step 8) are used but materials has only materials[0] plywood and materials[1] 'Drawer Slides' (searched /bench|wheel|caster|peg/i: no match). R14(b): the Kreg Platform is cut in step 5 but no later step installs or positions it (searched later steps for /platform/i: none). R14(d): 7 drawer slides are listed and the finished photo shows drawers, but no step builds drawers or shelves or installs the slides; step 7 only drills holes 'for either adjustable shelves or drawers. This is up to everyone'."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/a7de4143edd73fd2.webp",
+      "plans/e1a68b5b4fbdb215.webp",
+      "plans/291b33b9a035ba97.webp",
+      "plans/48e3805e690db2d6.webp",
+      "plans/f6a1149df9170a88.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "The Base will measure, roughly 20\"x 43 7/8\".",
+      "what": "one 3/4\" sheet is 48 x 96 = 4608 sq in; cutList parts total 4196.5 sq in (sweep) and the Base adds 20 x 43.875 = 877.5 = 5074 sq in (if 3/4\" plywood) plus back panels, so materials[0] (1 sheet) would not cover the steps; R5 left unknown because base thickness is not stated"
+    }
+  ]
 }

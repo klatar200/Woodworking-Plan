@@ -1,6 +1,6 @@
 {
   "slug": "garage-storage-and-work-center",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -467,10 +467,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "two Large Box Dividers, two Large Box Rails, and two Large Box Shelves to size from 3/4\" plywood"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Also cut a Pegboard Cleat from a 1x2 board."
+        }
+      ],
+      "reason": "No cutList.part matches /Large Box Divider/ (rows: Large Box Side, Top/Bottom, Rail, Shelf) and the viewed step-2 image shows only side, rail and top/bottom parts; the step also never drills or assembles dividers. The Pegboard Cleat is cut from 1x2 but has no cutList row and no length (searched cutList and materials for /cleat/i: none). Tower Dividers (2) are in the cut list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 18 cutList rows are cut in steps[0],[2],[4],[6],[10],[11]; counts agree (4 tower sides, 4 tops/bottoms, 2 dividers, 2 rails, 6 shelves)"
     },
     "R4": {
       "result": "pass",
@@ -481,31 +496,82 @@
       "reason": "R5 precondition not met: 3 stock types (1x2, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws, 3\" screws, 3/4\" screws all in materials[3]-[5]; hinge in materials[6]; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "ssured of getting consistent spacing with all of the holes.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/331939367490c55f.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed images give lower ledger 24\" from floor, upper ledger 24\" below tower tops, pegboard cleat 16 3/4\" below, tower/box pocket-hole and shelf-pin hole positions (2\", 1 1/4\", 8 7/8\"), boxes fill the 48\" opening (2 x 24); bench slides onto the small boxes"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "23 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "ledger, towers and small boxes, upper ledger, large boxes, bench, pegboard, shelves - consistent with the viewed assembly images"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Then assemble these parts using a long continuous hinge, as shown."
+        }
+      ],
+      "reason": "Jig setting is stated (steps[0] 'set for 3/4\"-thcik material', steps[2] 'set up for 3/4\" stock') so pocket joints pass, but the Workbench Brace is never joined to anything in text or in the viewed step-10 image (only the 48\" continuous hinge between bench top and hinge plate is shown); no method or fastener for the brace. (recorded only)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "also use heavy-duty wall anchors at the locations where studs aren’t available."
+        },
+        {
+          "path": "cutList[17]",
+          "quote": "Workbench Hinge Plate, 0.75 x 5.5 x 47.75 (Kreg source '3/4\" ply x 5 1/2\" x 47 3/4\"')"
+        },
+        {
+          "path": "steps[10].image (viewed)",
+          "quote": "3 1/2\""
+        }
+      ],
+      "arithmetic": "viewed step-10 image labels the Hinge Plate 3 1/2\" x 48\" and the Workbench Brace 5 3/4\" x 48\"; cutList[16] Brace and cutList[17] Hinge Plate are both 5.5 x 47.75",
+      "reason": "R14(a): hinge plate (3 1/2 vs 5 1/2) and brace (5 3/4 vs 5 1/2) widths in the diagram disagree with the cut list. R14(c): heavy-duty wall anchors are used in steps 7-8 but are not in materials (searched materials[0]-[8] for /anchor/i: none)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/331939367490c55f.webp",
+      "plans/bc0dcd708f086754.webp",
+      "plans/2f282d608c676ed4.webp",
+      "plans/822713708668be48.webp",
+      "plans/f0372c61ab4fc651.webp",
+      "plans/4101147ef78f6f09.webp",
+      "plans/44fbdeab9b4de4b7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[7].name",
+      "quote": "4\" utility pull",
+      "what": "utility pull is in materials and shown on the brace in the viewed step-10 image but no step text installs it or gives its position"
+    }
+  ]
 }

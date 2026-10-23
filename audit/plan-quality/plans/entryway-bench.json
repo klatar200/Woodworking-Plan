@@ -1,6 +1,6 @@
 {
   "slug": "entryway-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -191,10 +191,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[0]-[12] (Seat, Bottom, Upright, Back, Rear Rail, Side Rail, Front/Side/Rear Skirt) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 cutList rows are cut in steps[0],[4]-[8]; counts 3 Uprights/2 Backs/2 Side Rails/2 Side Skirts match the step text"
     },
     "R4": {
       "result": "pass",
@@ -205,30 +207,87 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Then attach the Side Rails by driving 1 3/4\" flat-head wood screws from underneath, as shown."
+        },
+        {
+          "path": "steps[11].image (viewed)",
+          "quote": "Secure Side Rails by driving a 1 1/2\" flathead screw in from under Seat Panel"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1 3/4\" flathead wood screws"
+        }
+      ],
+      "reason": "Two sizes (1 3/4\" in text and materials, 1 1/2\" in the step image caption) for the same use. All other fastener sizes (1 1/4\" fine/coarse pocket screws) are in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give seat pilot-hole positions (1 1/8\" x 1 1/8\"), side-rail curve radius 1 3/4\", skirt cutouts (2\" long, 1\" deep, R1\"), overhangs 3/4\" and 1/2\", side-rail inset 3/4\", stagger offsets 3\"/2\"; overall dims 36x18x19 1/4 and 34 1/2 interior agree with cut list"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Using the cutting diagram as a guide, cut the plywood parts to size. You’ll need one Seat Panel, one Bottom Panel, three Uprights, and two Backs.\n\n**Tip:** Make Better Plywood Cuts When cutting plywoo",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Using the cutting diagram as a guide, cut the plywood parts to size."
         }
-      ]
+      ],
+      "reason": "steps[0] has no image; viewed all 5 unattached images[] (photos and the overall-dimension drawing) - none is a sheet cutting diagram. All part sizes are in cutList, so nothing structural is lost."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels/uprights/rails/skirts are cut first; uprights+backs joined (9); base (10) and seat (11) assembled, then joined to uprights (12)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" jig setting stated in steps[2],[3],[4],[6],[7],[8]; all pocketed parts are 3/4\" (plywood and 1x4)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree (3 Uprights, 2 Backs, 2 Side Rails, 2 Side Skirts); widths check: 3x3/4 + 2x16 1/8 = 34 1/2 = Front Skirt and image dimension; 34 1/2 - 2x3/4 = 33 = Rear Rail/Rear Skirt; every made part is installed by steps[9]-[12]"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "1b460b1972372c2e",
+      "88505cdd32c0f2ae",
+      "2c85c5844241c37c",
+      "050bb779c6314fb3",
+      "e5b2120d4c93325e",
+      "41e8dde6a25a6f20",
+      "1a3edde4aa1ed440",
+      "432a74e351b89d1e",
+      "0c5582c98c6552dc",
+      "2adf4d8bcc285b2a",
+      "d6bfc32c5e95c232",
+      "7ad29874efd5048f",
+      "1634f5df6aca8322",
+      "762068055966dfee"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "drill pocket holes in the back face of each Upright, as shown",
+      "what": "step 2 text says the back face; viewed step-2 image note says 'Be sure to put pocket holes on inside face of each upright' - possible face mismatch for the builder"
+    }
+  ]
 }

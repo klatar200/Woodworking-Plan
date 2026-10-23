@@ -1,6 +1,6 @@
 {
   "slug": "easy-to-build-tv-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -191,10 +191,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0..11] (Front/Back Rail, End Rail, Leg, Top Slat, Base Slat, Wide/Narrow Shelf Slat, Divider, Divider Trim, Back Panel) has a cutList row; the typo row 'Base S;at' is the Base Slat"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 cutList rows are cut in steps[0],[1],[2],[4],[6],[9],[10],[11]; no assemblies or placeholders"
     },
     "R4": {
       "result": "pass",
@@ -205,31 +207,61 @@
       "reason": "R5 precondition not met: 6 stock types (1x2, 2x2, 1x6, 1x8, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only sizes used: 1 1/4\" coarse pocket screws, 1-1/4\" brad nails, 1/4\" shelf pins; all in materials; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "ing and straight holes, so you’ll have wobble-free shelves.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d42f95681a65303d.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed divider image gives shelf-pin hole setback (2\"), spacing (1 1/4\"), 4 1/2\" from ends and pocket-hole offsets (1 1/2\"); base slat image gives pocket positions and 1 1/8\" notch; back panel image gives hole spacing 4\"/5\"/6\"; end bays shown 17 1/4\"; trim centered on divider",
+      "search": "viewed images for steps 4, 9, 10, 11"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "27 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts are cut and assembled before use; dividers (step 10) installed after top and base (step 8); back panel last"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'set up for 3/4\"-thick material' covers rails; steps[4],[9] repeat it; all pocketed parts are 3/4\""
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Join a Narrow Shelf Slat to a Wide Shelf Slat using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws to create a panel, as shown. Repeat this to make the other shelf assembly."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Attach the Back by nailing it to the back edges of the dividers with 1-1/4\" brad nails. Do any final sanding that’s needed"
+        }
+      ],
+      "reason": "R14(b): two shelf assemblies are built in steps 6-7 but no later step places them or the 1/4\" shelf pins in the dividers. Searched all 13 step bodies for /shelf|shelves/: only steps 6,7,9 (making shelves, drilling pin holes). Final image (viewed) shows no shelves installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/d42f95681a65303d.webp",
+      "plans/841915811c50b44f.webp",
+      "plans/3925bbc51edda730.webp",
+      "plans/b4c227433ed3d7da.webp",
+      "plans/e23e5c8ab18ca2e1.webp"
+    ]
+  },
+  "gaps": []
 }

@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-end-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,17 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "gle supports so that the 62 degree cut end hits at about the 10\" height and the 28 degree cut end hits centered at 1/2\" from the angled edge of the base leg support. Using wood glue and 1 1/4\" nails, ",
-          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "the flagged '10\"' in steps[2] is a height mark on the leg (position), not a cut; every part named in steps[0]-[9] has a cutList row (Leg, Base leg support, Top leg support, Angle Supports, Bottom shelf, Feet, Table top supports, Plank table top)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 cutList rows are used in steps[0]-[9]"
     },
     "R4": {
       "result": "pass",
@@ -31,23 +26,85 @@
       "reason": "R5 precondition not met: 4 stock types (1x2, 1x3, 1x12, 2x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/2\", 2 1/2\" pocket-hole screws, 2\" wood screws and 1 1/4\" nails; all listed in materials[4]-[6],[13]; no conflicting sizes for one use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images and text give: 10\" up the leg, 1/2\" from base end, 6 1/4\" from ends of the 15\" short side, 7/8\" from each side, 30 and 15 degree cuts, shelf 2 3/8\" from ends, supports 1/2\" from ends, 1\" top overhang"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "each leg assembly is built first (0-4), joined by shelf (5), feet (6), top supports (7), top built (8) and attached (9)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill 2- 5/8\" pocket holes on both ends of the 21\" long 1x3."
+        },
+        {
+          "path": "steps[0].image (viewed)",
+          "quote": "5/8” pocket holes"
+        }
+      ],
+      "reason": "Other steps use the same 'N- thickness' form that matches the stock (steps[5] '3- 3/4\" pocket holes', steps[8] '5- 1 1/2\"'), but the leg is a 1x3 (cutList[2] thickness 0.75) and a 5/8\" setting contradicts 3/4\". (recorded only)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Drill 5- 1 1/2\" pocket holes on one side of 2 of the 1x6s."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "down to the planked 2x6s, one screw for each corner."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 2x6 72\""
+        }
+      ],
+      "arithmetic": "cutList[6] Plank table top thickness 0.75 (a 1x6) vs materials[3] 2x6 (1.5) and step 9 '2x6s'; description height 24 3/4\" = leg 21 + base support 0.75 + top support 0.75 + foot 0.75 (cutList[4]) + top: 24.75 - 23.25 = 1.5, i.e. a 2x6 top",
+      "reason": "R14(a): the top plank thickness differs between the cut list (3/4\"), step 8 (1x6s) and step 9/materials (2x6); no 1x6 is in materials, only a 2x6."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/a2555df8f7335e80.webp",
+      "plans/99f6120221ebbd9a.webp",
+      "plans/56c0dacf8231c2b9.webp",
+      "plans/98941e835e1724e6.webp",
+      "plans/53433287c71b315e.webp",
+      "plans/a02c3f5645ae2dc9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0]",
+      "quote": "Angle Supports",
+      "what": "8 x 12 = 96 = the whole of materials[0] 'Board, 1x2 96\"' with no kerf (7 x 1/8 = 0.875 more); viewed step-2 image labels the angle support 11 1/2\" not 12 - possible long/short-point mismatch, stock may be 1x3 ripped"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-top-x-accent-console-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,17 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "X-accent pieces are not in cutList but steps[1] says to cut them from the 2x2 (materials[3]) by tracing; all other parts named in steps map to cutList rows"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[0] Legs are not named in any step (searched steps for /leg/i: no match) but steps[0] builds 'the two sides' from end pieces, which needs the legs; the row is a real part (see gaps)"
     },
     "R4": {
       "result": "pass",
@@ -224,23 +219,90 @@
       "reason": "R5 precondition not met: 4 stock types (2x3, 1x4, 2x4, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "no screw or nail size is stated in any step; materials[4],[5] list pocket hole screws and brad nails without sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Complete the base by attaching the stretchers at the top and bottom in like manner."
+        }
+      ],
+      "reason": "The height above the floor of the lower end pieces/lower stretchers (and so of the shelf) is not given: searched all steps and description for inch values with a height - none; viewed overall drawing (715157..) shows the lower rails near the floor but has no dimensions. Top width 48 x 14 and 41 shown in the top image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base, X accent, top, top attached, then shelf slats; slats go on after the top but remain reachable between the legs"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "using two pocket hole screws in either end of the end pieces"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "There will be some spacing between the slats for the bottom shelf."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x and 1x stock but no jig thickness setting is stated; searched steps and materials for /setting|set (up|to)|thickness|3\\/4/ - none. The shelf slats (steps[4]) and the L-brackets (steps[3]) have no stated fastener or method. (recorded only)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach the top to the base using the L-brackets."
+        }
+      ],
+      "reason": "R14(c): L-brackets are used but no materials line is a bracket or the screws for them; searched materials[0]-[7] for /bracket|L-/i - no match. Counts agree: four long boards + two short boards = 4 x 3.5 = 14 and 41 + 2 x 3.5 = 48 (image), 2 pocket holes per end."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/91be7b919ae230c0.webp",
+      "plans/89d33cea146d3814.webp",
+      "plans/6c3d26aae54273f9.webp",
+      "plans/c1b6c16efb2c2705.webp",
+      "plans/715157934afa24e6.webp",
+      "plans/7765abd2c535657b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0].part",
+      "quote": "Legs",
+      "what": "no step mentions cutting, positioning or joining the Legs (the 29-inch row) - only 'the two sides of the table'"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "The easiest method was to clamp the 2x2 across the back of the base and mark a line for the angles to guide the cuts.",
+      "what": "X pieces have no length or angle and no cutList row; sized by tracing only"
+    }
+  ]
 }

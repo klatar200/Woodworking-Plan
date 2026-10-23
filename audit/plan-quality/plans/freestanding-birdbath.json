@@ -1,6 +1,6 @@
 {
   "slug": "freestanding-birdbath",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,10 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0]-[8] (top octagon, lower octagon, top support center/sides, legs, bottom center/sides) all have cutList rows; the circle is cut from the assembled top (steps[2])"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 cutList rows are cut in steps[0] and used in steps[1]-[8]"
     },
     "R4": {
       "result": "pass",
@@ -217,30 +219,64 @@
       "reason": "R5 precondition not met: 4 stock types (2x4, 2x3, 1x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" and 1 1/4\" pocket-hole screws and 1 1/4\" brad nails in steps match materials[5]-[7]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give leg 23\", bottom center 15 1/8\", bottom sides 6 7/8\", overall 19\" x 25 1/2\", saucer 14\"; support centered, legs centered under support (relational); step-6 image shows bottoms flush at leg bottoms"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut the pieces according to the cut list. Refer to the cut diagram for pictures of the angled cuts.\n- Top octagon and lower octagon pieces: both ends cut at a 22.5 degree angle so they angle toward ea",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Refer to the cut diagram for pictures of the angled cuts."
         }
-      ]
+      ],
+      "reason": "steps[0] has no image and none of the 5 unattached images (viewed: hero photos, overall-dimension drawing) is a cut diagram. The angles and which ends are cut are, however, given in the text of steps[0] (22.5, 10 degrees, parallel/toward each other)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top ring, hole, lower ring, support, then legs, then joined in step 8"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] and [6] 'set for 1 1/2\" thick material' (2x stock), steps[4] '3/4\" thick material' (1x4 supports); no contradiction"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree (8 top + 8 lower octagon pieces, 4 legs, 3 bottoms, 3 support pieces; support 2 x 6 1/4 + 3 1/2 = 16 = center piece); every part is installed by step 8; steps reach a finished birdbath"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-21",
+    "imagesViewed": [
+      "plans/22ab7e0b922d910e.webp",
+      "plans/b2189f14f98c642c.webp",
+      "plans/2cd86a2658c16ce9.webp",
+      "plans/86e7b252fc97e78c.webp",
+      "plans/0aeefff8f9638848.webp",
+      "plans/017864e6db49c29d.webp",
+      "plans/d55511df440bce91.webp",
+      "plans/f3a7ba1b5f9f4b8b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0]",
+      "quote": "Top octagon, 2x4",
+      "what": "8 x 7.875 = 63 in vs 'Board, 2x4 5' long' = 60 in (materials[0]); fits only if the 22.5-degree trapezoids are nested, so R5 left unknown"
+    }
+  ]
 }
