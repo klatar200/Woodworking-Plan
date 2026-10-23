@@ -188,7 +188,7 @@
   "checks": {
     "R1": {
       "result": "fail",
-      "level": "Unpublish",
+      "level": "Fix",
       "confidence": "certain",
       "cause": "plan",
       "evidence": [
@@ -205,7 +205,8 @@
           "quote": "Measure as shown in woodworking places and check to make sure it is level before securing."
         }
       ],
-      "reason": "The build leans on the external 'free woodworking plans ... in the Extras Tab' (steps[0]) for the angled cuts, pocket-hole locations and bottom-support position. The plan's own cut list has only 1.5 x 3.5 x length rows with no angle (cutList[0..4]); no step gives a leg angle or bottom-support height (search steps[0..8] for /degree|angle/: only 'angled cuts' and 'slight angle' screws); all 10 images viewed are photos or the step-4 slat diagram (dimensions 3 1/2, 2 1/2, 1, 1/2 only), none showing the angles or support height. The angled legs/supports are structural, so the build cannot be completed."
+      "reason": "The build leans on the external 'free woodworking plans ... in the Extras Tab' (steps[0]) for the angled cuts, pocket-hole locations and bottom-support position. The plan's own cut list has only 1.5 x 3.5 x length rows with no angle (cutList[0..4]); no step gives a leg angle or bottom-support height (search steps[0..8] for /degree|angle/: only 'angled cuts' and 'slight angle' screws); all 10 images viewed are photos or the step-4 slat diagram (dimensions 3 1/2, 2 1/2, 1, 1/2 only), none showing the angles or support height. The angled legs/supports are structural, so the build cannot be completed.",
+      "verifierNote": "Unpublish level refuted: Kreg cut list has 'Legs ... with 30 degree angled cuts at shown' (importer parseCutDetail drops trailing text = cause import); pocket-hole pattern shown in viewed diagram bf4297760ade746a; only Kreg-own gaps are corner-notch size (decorative) and bottom-support height (a position, R10) -> build completable, Fix"
     },
     "R2": {
       "result": "pass",
@@ -242,7 +243,8 @@
           "quote": "The legs connect on the inside to the top support in each corner."
         }
       ],
-      "reason": "The bottom-support height on the legs and the leg lean/angle are positions the builder must set but no number or viewed image gives them (images are photos; step-4 diagram gives only slat gaps). Same root as R1."
+      "reason": "The bottom-support height on the legs and the leg lean/angle are positions the builder must set but no number or viewed image gives them (images are photos; step-4 diagram gives only slat gaps). Same root as R1.",
+      "verifierNote": "Upheld certain: no bottom-support height anywhere (steps[6] 'Measure as shown in woodworking places', Kreg identical; all 13 images viewed, none dimension it); leg angle part of reason is import-dropped 30deg, 'inside ... in each corner' is relational"
     },
     "R11": {
       "result": "pass",
@@ -271,10 +273,16 @@
       "reason": "slat count 5 top + 4 bench = 9 matches cutList[4] x9; every cut part is installed (steps[4]-[8]); screws and oil in materials; steps end with the middle support (finished table)"
     }
   },
-  "verdict": "Unpublish (pending verifier)",
+  "verdict": "Fix",
   "verifier": {
-    "ran": false,
-    "upheld": [],
+    "ran": true,
+    "runs": [
+      "Stage 6 verifier v4, 2026-10-23 (fresh agent, not a reader)"
+    ],
+    "upheld": [
+      "R1",
+      "R10"
+    ],
     "refuted": []
   },
   "measurementsScoredOn": "kreg-corrected",
