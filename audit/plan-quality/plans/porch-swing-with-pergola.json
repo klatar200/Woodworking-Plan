@@ -42,26 +42,31 @@
       ]
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[0].name",
-          "quote": "Pressure Treated Boards, 2x4 96\" (quantity 5)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Cut 4 pressure treated 2x4\"s at 81\" long. (Save left overs for angled base supports.) Cut 2 pressure treated 2x4\"s at 48\" long."
-        },
-        {
-          "path": "cutList[0..2]",
-          "quote": "Posts x4 at 81; Base x2 at 48; Angled Base Supports x4 at 15"
-        }
-      ],
-      "arithmetic": "PT parts: 4 x 81 + 2 x 48 + 4 x 15 = 324 + 96 + 60 = 480\" vs 5 x 96\" = 480\" bought: zero slack. Each post board needs 81 + 15 + 1/8 kerf = 96 1/8\" > 96\" (leftover 14 7/8\" < 15\"), and the two bases need 48 + 48 + 1/8 = 96 1/8\" > 96\"; total with 9 cuts = 481 1/8\" > 480\". Likely rather than certain because it fails only by kerf.",
-      "reason": "Pressure-treated 2x4 bought exactly equals the parts, so kerf makes it short."
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[0].name",
+            "quote": "Pressure Treated Boards, 2x4 96\" (quantity 5)"
+          },
+          {
+            "path": "steps[9].body",
+            "quote": "Cut 4 pressure treated 2x4\"s at 81\" long. (Save left overs for angled base supports.) Cut 2 pressure treated 2x4\"s at 48\" long."
+          },
+          {
+            "path": "cutList[0..2]",
+            "quote": "Posts x4 at 81; Base x2 at 48; Angled Base Supports x4 at 15"
+          }
+        ],
+        "arithmetic": "PT parts: 4 x 81 + 2 x 48 + 4 x 15 = 324 + 96 + 60 = 480\" vs 5 x 96\" = 480\" bought: zero slack. Each post board needs 81 + 15 + 1/8 kerf = 96 1/8\" > 96\" (leftover 14 7/8\" < 15\"), and the two bases need 48 + 48 + 1/8 = 96 1/8\" > 96\"; total with 9 cuts = 481 1/8\" > 480\". Likely rather than certain because it fails only by kerf.",
+        "reason": "Pressure-treated 2x4 bought exactly equals the parts, so kerf makes it short."
+      }
     },
     "R6": {
       "result": "pass",

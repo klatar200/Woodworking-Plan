@@ -10,6 +10,8 @@ const NOT_COUNTED = new Set(['R9']);
 const BLOCKS_SHIP = new Set(['R1', 'R2', 'R8']);
 
 export function computeVerdict(rec) {
+  // Keagan's own call on a plan (DECISIONS_LOG) replaces the computed verdict.
+  if (rec.override?.verdict) return rec.override.verdict;
   const upheld = new Set(rec.verifier?.upheld || []);
   const checks = Object.entries(rec.checks || {}).filter(([id]) => !NOT_COUNTED.has(id));
   const fails = checks.filter(([, c]) => c.result === 'fail' && c.cause !== 'import');

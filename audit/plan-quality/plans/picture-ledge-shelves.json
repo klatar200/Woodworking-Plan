@@ -47,26 +47,31 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x3 96\""
-        },
-        {
-          "path": "cutList[0]",
-          "quote": "Bottom and Back Piece — qty 2, 0.75 x 2.5 x 48 (Kreg-corrected)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "1x3 piece on the back, 1x3 piece on the bottom and 1x2 on the front side"
-        }
-      ],
-      "arithmetic": "steps name the stock (1x3 for Bottom and Back, 1x2 for Front): 1x3 needed = 2 x 48 + 1 cut x 1/8 = 96.125 > 96 bought (1 x 96)",
-      "reason": "One 96\" 1x3 does not cover two 48\" parts plus one saw kerf (short by 1/8\")"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[0].name",
+            "quote": "Board, 1x3 96\""
+          },
+          {
+            "path": "cutList[0]",
+            "quote": "Bottom and Back Piece — qty 2, 0.75 x 2.5 x 48 (Kreg-corrected)"
+          },
+          {
+            "path": "steps[0].body",
+            "quote": "1x3 piece on the back, 1x3 piece on the bottom and 1x2 on the front side"
+          }
+        ],
+        "arithmetic": "steps name the stock (1x3 for Bottom and Back, 1x2 for Front): 1x3 needed = 2 x 48 + 1 cut x 1/8 = 96.125 > 96 bought (1 x 96)",
+        "reason": "One 96\" 1x3 does not cover two 48\" parts plus one saw kerf (short by 1/8\")"
+      }
     },
     "R6": {
       "result": "pass",

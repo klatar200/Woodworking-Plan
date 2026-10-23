@@ -356,3 +356,13 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 ### 2026-10-19 — Plan-quality audit: consumables don't fail R14
 **Source:** Keagan, Stage 6 (R14(c) proved ambiguous: 70 of 136 R14 fails cited glue).
 **Binding:** Glue and other consumables (glue, tape, sandpaper, wood filler, finish) used in steps but missing from materials do **not** fail R14(c). Each is recorded as a `gaps` entry with `kind: "consumable"` and reported once as a catalog-wide item in Stage 8. R14(c) fails only on hardware and components. Earlier records are cleaned up to match.
+
+### 2026-10-23 — Plan-quality audit: Stage 6 rulings before Stage 8
+**Source:** Keagan ("Yes" to all four recommendations after Stage 6).
+**Binding:**
+- **R11:** a diagram attached to *another* step counts as shown, as long as it shows the referenced content.
+- **R5:** a shortfall that comes only from kerf (parts fit with zero kerf, short by ≤ 1/2″) is **not** a Fix. It is recorded as `kerfOnly` and reported once.
+- **Unpublish by Keagan's call** (`override` in the record, honoured by `verdict.mjs`):
+  - `farmhouse-table-made-with-7-boards`: the legs are never bought or sized.
+  - `storage-mirror`: the mirror is never installed.
+- Run Stage 8 now, and fast-forward `main` to the audit branch.

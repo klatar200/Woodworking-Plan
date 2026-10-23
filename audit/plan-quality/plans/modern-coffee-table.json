@@ -83,21 +83,26 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 2x6 96\""
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Top slats 4x 1.5 x 5.5 x 48"
-        }
-      ],
-      "arithmetic": "Only 2x6 stock matches the top slats (1.5 x 5.5 per section 9; they are the only 1.5in-thick parts). 4 x 48 = 192; materials[2] qty 2 x 96 = 192. Minimum cuts to get four 48in pieces from two boards = 2, 2 x 1/8 = 0.25, so 192.25 > 192 (more if each of 4 parts counts a cut: 192.5). Qty is 2, so not a defaulted 1. Not scored (unknown): 1x4 legs 4 x 18 = 72 + 3 x 1/8 = 72.375 vs one 72in board, qty 1 may be an import default and legs have 15 degree ends (steps[1]). 1x2: 4x16 + 2x30 = 124 + 6 x 1/8 = 124.75 <= 2 x 72 = 144 passes."
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[2].name",
+            "quote": "Board, 2x6 96\""
+          },
+          {
+            "path": "cutList[3]",
+            "quote": "Top slats 4x 1.5 x 5.5 x 48"
+          }
+        ],
+        "arithmetic": "Only 2x6 stock matches the top slats (1.5 x 5.5 per section 9; they are the only 1.5in-thick parts). 4 x 48 = 192; materials[2] qty 2 x 96 = 192. Minimum cuts to get four 48in pieces from two boards = 2, 2 x 1/8 = 0.25, so 192.25 > 192 (more if each of 4 parts counts a cut: 192.5). Qty is 2, so not a defaulted 1. Not scored (unknown): 1x4 legs 4 x 18 = 72 + 3 x 1/8 = 72.375 vs one 72in board, qty 1 may be an import default and legs have 15 degree ends (steps[1]). 1x2: 4x16 + 2x30 = 124 + 6 x 1/8 = 124.75 <= 2 x 72 = 144 passes."
+      }
     },
     "R6": {
       "result": "pass",
@@ -124,7 +129,7 @@
       "reason": "(a) 4 leg sides, 4 leg boards, 2 aprons, 4 slats match cutList; viewed drawings show apron 30\" and slats 48\" x 5 1/2\". 3 of 4 slats get holes = 'secure with 2 1/2\" pocket hole screws' and 15 holes drawn = materials[4] qty 15. (b) all parts installed. (c) L brackets in materials[6]. (d) steps reach finished table."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],

@@ -54,22 +54,27 @@
       "readerNote": "Sweep fail rejected: the Kreg-corrected row (24 x 48 x 72, importDiff kind feet-read-as-inches) is a misread of a nominal 2x6 x 48\" label and is contradicted by steps[0]"
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 2x6 96\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut your 2\"x6\"x96\" board directly in half (48\")."
-        }
-      ],
-      "arithmetic": "2x6: 2 x 48 + 1 cut x 1/8 = 96.125 > 96 bought (1 x 96); 1x8: 14.625+12.375+11.125+9.875+8.375+7 = 63.375 + 5 x 1/8 = 64.0 <= 72 passes",
-      "reason": "The two 48\" legs plus one saw kerf exceed the single 96\" board by 1/8\"; steps[0] itself says to adjust if the board is slightly short"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[0].name",
+            "quote": "Board, 2x6 96\""
+          },
+          {
+            "path": "steps[0].body",
+            "quote": "Cut your 2\"x6\"x96\" board directly in half (48\")."
+          }
+        ],
+        "arithmetic": "2x6: 2 x 48 + 1 cut x 1/8 = 96.125 > 96 bought (1 x 96); 1x8: 14.625+12.375+11.125+9.875+8.375+7 = 63.375 + 5 x 1/8 = 64.0 <= 72 passes",
+        "reason": "The two 48\" legs plus one saw kerf exceed the single 96\" board by 1/8\"; steps[0] itself says to adjust if the board is slightly short"
+      }
     },
     "R6": {
       "result": "pass",
@@ -119,7 +124,7 @@
       "reason": "Step 7 gives the smallest shelf as 7\" long on the \"same 8\" width\"; the cut row lists width 7 and length 8 (importer sorts the three numbers smallest to largest, §3), so length and width are swapped"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],

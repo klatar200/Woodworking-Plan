@@ -36,22 +36,27 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 24\""
-        },
-        {
-          "path": "cutList[0..1]",
-          "quote": "Back board x1 0.75 x 5.5 x 12; Sides - cut into 2 shapes x1 0.75 x 5.5 x 12"
-        }
-      ],
-      "arithmetic": "Width 5.5\" is only available from a 1x6 (§9). Back 12\" + Sides 12\" = 24\", plus 1/8\" kerf for the cut between them = 24 1/8\" > 24\" bought (quantity 1).",
-      "reason": "Shortfall is only 1/8\" and steps[0] does not name stock per part (it maps to boards by width), so likely not certain."
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[0].name",
+            "quote": "Board, 1x6 24\""
+          },
+          {
+            "path": "cutList[0..1]",
+            "quote": "Back board x1 0.75 x 5.5 x 12; Sides - cut into 2 shapes x1 0.75 x 5.5 x 12"
+          }
+        ],
+        "arithmetic": "Width 5.5\" is only available from a 1x6 (§9). Back 12\" + Sides 12\" = 24\", plus 1/8\" kerf for the cut between them = 24 1/8\" > 24\" bought (quantity 1).",
+        "reason": "Shortfall is only 1/8\" and steps[0] does not name stock per part (it maps to boards by width), so likely not certain."
+      }
     },
     "R6": {
       "result": "fail",

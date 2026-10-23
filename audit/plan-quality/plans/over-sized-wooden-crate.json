@@ -77,22 +77,27 @@
       "reason": "Corrected rows 3/4 x 3 1/2 come from the 1x4 boards; cutList[2] source '1x4x24'' is a Kreg typo for 24 in (steps[1] says 24 in) and its 1x4 width/thickness fit materials[0]. 1x1 supports come from the 2x2 (steps[3])."
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 2x2 48\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut 4 - 1×1″ to 12″ (inner supports – we ripped ours from 2×2’s.)"
-        }
-      ],
-      "arithmetic": "Steps name the stock for every part. 2x2 stock: materials[2] 'Board, 2x2 48\"' quantity 1 = 48 in. Needed 4 x 12 = 48 in + 4 cuts x 1/8 = 0.5, total 48.5 > 48 (short by 1/2 in; 48.375 even counting 3 cuts). 1x4 stock passes: bought 7 x 72 + 96 = 600 in; needed 6 x 22 + 6 x 15 + 3 x 24 = 294 + 15 x 0.125 = 295.9 <= 600. Material quantities are real (only 31 lines catalog-wide are importer defaults, none here).",
-      "reason": "The single 2x2 48in board has zero allowance for kerf for four 12in supports."
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[2].name",
+            "quote": "Board, 2x2 48\""
+          },
+          {
+            "path": "steps[3].body",
+            "quote": "Cut 4 - 1×1″ to 12″ (inner supports – we ripped ours from 2×2’s.)"
+          }
+        ],
+        "arithmetic": "Steps name the stock for every part. 2x2 stock: materials[2] 'Board, 2x2 48\"' quantity 1 = 48 in. Needed 4 x 12 = 48 in + 4 cuts x 1/8 = 0.5, total 48.5 > 48 (short by 1/2 in; 48.375 even counting 3 cuts). 1x4 stock passes: bought 7 x 72 + 96 = 600 in; needed 6 x 22 + 6 x 15 + 3 x 24 = 294 + 15 x 0.125 = 295.9 <= 600. Material quantities are real (only 31 lines catalog-wide are importer defaults, none here).",
+        "reason": "The single 2x2 48in board has zero allowance for kerf for four 12in supports."
+      }
     },
     "R6": {
       "result": "pass",

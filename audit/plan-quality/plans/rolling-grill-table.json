@@ -419,22 +419,27 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 2x6 72\""
-        },
-        {
-          "path": "cutList[11].part",
-          "quote": "Top Slats"
-        }
-      ],
-      "arithmetic": "Top Slats (corrected 1 1/2 x 5 1/2 x 36, quantity 4) can only come from the 2x6 (5 1/2 in wide): 4 x 36 = 144 + 4 cuts x 1/8 = 144.5 (144.375 with 3 cuts) > 2 boards x 72 = 144 (materials[2] quantity 2). Stock is not named in the steps but the 1 1/2 x 5 1/2 size matches only materials[2]. Other stocks pass: 2x4 96in x5 = 480 vs 455 + 23 x 0.125 = 457.9; 1x4 72in vs 50.5; 1x2 36in vs 32.5; cedar 72in x10 = 720 vs 623.25 + 39 x 0.125 = 628.1.",
-      "reason": "The two 72in 2x6 boards have no kerf allowance for four 36in top slats (short by 1/2 in in total)."
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[2].name",
+            "quote": "Board, 2x6 72\""
+          },
+          {
+            "path": "cutList[11].part",
+            "quote": "Top Slats"
+          }
+        ],
+        "arithmetic": "Top Slats (corrected 1 1/2 x 5 1/2 x 36, quantity 4) can only come from the 2x6 (5 1/2 in wide): 4 x 36 = 144 + 4 cuts x 1/8 = 144.5 (144.375 with 3 cuts) > 2 boards x 72 = 144 (materials[2] quantity 2). Stock is not named in the steps but the 1 1/2 x 5 1/2 size matches only materials[2]. Other stocks pass: 2x4 96in x5 = 480 vs 455 + 23 x 0.125 = 457.9; 1x4 72in vs 50.5; 1x2 36in vs 32.5; cedar 72in x10 = 720 vs 623.25 + 39 x 0.125 = 628.1.",
+        "reason": "The two 72in 2x6 boards have no kerf allowance for four 36in top slats (short by 1/2 in in total)."
+      }
     },
     "R6": {
       "result": "pass",

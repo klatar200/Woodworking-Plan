@@ -41,29 +41,34 @@
       "reason": "cutList[1] width was unparseable at import (Kreg source '1/4\" X 1/3/4\" X 24\"', imported 1); steps[1] states '1/4\" X 1 3/4\" X 24\"', matching materials[0] 'Oak Hard Wood, 1/4\" X 1 3/4\" 96\"'; cutList[0] corrected 0.5 x 1.75 matches materials[1]. cause: import (Kreg typo + parser)."
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[0].name",
-          "quote": "Oak Hard Wood, 1/4\" X 1 3/4\" 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Plywood, 1/2\" X 1 3/4\" 96\""
-        },
-        {
-          "path": "cutList[0]",
-          "quote": "Frame backing x4, 0.5 x 1.75 x 24 (corrected)"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Frame sides x4, 24 long"
-        }
-      ],
-      "arithmetic": "Each stock is 1 board x 96\". Each needs 4 x 24 = 96 plus kerf for 3 cuts x 0.125 = 0.375, total 96.375 > 96 (short 0.375\"). Applies to both the plywood and the hardwood strips. Step 3 later mitres to the painting size, so 24 may only be a starting length (likely, not certain)."
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Shortfall comes only from kerf (parts fit with zero kerf, short by <= 1/2in); not a fail per Keagan 2026-10-23",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "materials[0].name",
+            "quote": "Oak Hard Wood, 1/4\" X 1 3/4\" 96\""
+          },
+          {
+            "path": "materials[1].name",
+            "quote": "Plywood, 1/2\" X 1 3/4\" 96\""
+          },
+          {
+            "path": "cutList[0]",
+            "quote": "Frame backing x4, 0.5 x 1.75 x 24 (corrected)"
+          },
+          {
+            "path": "cutList[1]",
+            "quote": "Frame sides x4, 24 long"
+          }
+        ],
+        "arithmetic": "Each stock is 1 board x 96\". Each needs 4 x 24 = 96 plus kerf for 3 cuts x 0.125 = 0.375, total 96.375 > 96 (short 0.375\"). Applies to both the plywood and the hardwood strips. Step 3 later mitres to the painting size, so 24 may only be a starting length (likely, not certain)."
+      }
     },
     "R6": {
       "result": "fail",
