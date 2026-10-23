@@ -11,6 +11,11 @@
 | Verdicts (610) | Unpublish 24 · Fix 427 (+6 Human review) · Ship (unverified) 91 (+2 Human review) · Ship 60 |
 | Updated | 2026-10-23 |
 
+**Parallel line on `main` (superseded 2026-10-23, Keagan):** another session committed its own
+Stage 5 work to `main` (`f8f738d..c75dd45`: `rubric-R2.md`, a re-score of the same 70, a 10-plan
+model check), from the same Q1–Q4 answers, and stopped at the Stage 5 gate. It was merged with this
+branch's tree kept (`git merge -s ours`). Those files survive in git history only.
+
 **Stage 8 inputs (collected during Stage 6; not yet written up):**
 - Importer defects (bulk fixes):
   - Cut-row detail notes (angles, miters, bevels) are dropped: kids-stepping-stool "Cut at 22.3
