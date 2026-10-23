@@ -1,6 +1,6 @@
 {
   "slug": "traditional-bookshelf-with-modern-legs",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-7] (Top, Sides, Base, Back, Legs, Leg Spans, Leg Middle, Top Face, Side Faces, Bottom Face, shelves) each match a cutList.part; 'Top Face'/'Bottom Face' = cutList[8] 'Top/Bottom Face'"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 cut rows are used in steps[0],[2],[3],[4],[5],[7]"
     },
     "R4": {
       "result": "pass",
@@ -142,33 +144,91 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 0.75x0.75); steps not checked for per-part stock"
+      "reason": "steps never say which stock (3/4 plywood vs 3/4 x 3 1/2 x 8' board) the Legs, Leg Spans, Leg Middle and Faces come from, so lengths are not scoreable; if all the 1-in and 2-in strips were from the single 8' board: 2-wide 4x3 + 2x10.5 + 32 = 65 in and 1-wide 2x37.5 + 2x34.75 = 144.5 in, with only 96 in of length bought"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 'pocket hole screws' (materials[3] 1 1/4\" Kreg Screws), '1\" nails' (materials[4] 1\" brad nails), 'nails' (steps[5], no size, so no conflict). Pocket-hole count 6 (Sides) + 6 (Base) + 8 (Legs) + 8 (Leg Spans) + 4 (Leg Middle) = 32 = materials[3] quantity."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "ch the Side Faces flush along the outside edge of the Sides. There will be a little overhang into the bookshelf. - Using wood glue and nails, attach the Bottom Face flush along the front edge of the B",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9faf36fc22ceb86e.webp"
+          "path": "steps[1].body",
+          "quote": "Using a shelf pin jig, drill shelf pin holes up and down the front and back of both of the Sides."
         }
-      ]
+      ],
+      "reason": "Flagged steps[5] settled as relational (faces flush to front/outside edges; viewed step image shows the overlap). But the shelf-pin hole positions (setback from the front/back edges, start/stop height, spacing) are given nowhere: steps[1] has no image and no number, and no other step or image carries one."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step says 'as shown' or refers to a diagram (search of all steps); step images opened for steps[0],[3],[4],[5]"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame (0), pin holes (1), back (2), legs (3), leg supports (4), face frame (5), finish (6), shelves last (7); heights add: face 34.75 + 0.25 below Top + 1 bottom face = 36 side height"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "- Drill three pocket holes on one end of each Side."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "- Drill two pocket holes in one end of each Leg."
+        }
+      ],
+      "reason": "Pocket holes are drilled in steps[0],[3],[4] but no jig thickness setting is stated in any step, description or materials (searched all fields for /setting|set up|jig/i: only 'shelf pin jig' in steps[1]). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "insert four shelf pins at level height in each corner"
+        },
+        {
+          "path": "materials[0..6].name",
+          "quote": "3/4\" plywood, 4'x8' | 1/4\" plywood, 4'x4' | 3/4\" board, 3/4\"x3 1/2\" x 8' | 1 1/4\" Kreg Screws | 1\" brad nails | Wood glue | Paint or stain"
+        }
+      ],
+      "arithmetic": "Search of materials[0-6] for /pin|support|hardware/i: no match; steps[7] uses shelf pins (4 per shelf x 2 shelves, shelf count from cutList[2] qty 2 and Base).",
+      "reason": "Shelf pins (non-fastener hardware) are used in steps[7] but not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "f5345779d31e54f6",
+      "e3dfeed9a6371f14",
+      "a6a37f82e5f3627a",
+      "9faf36fc22ceb86e"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Add a coat of polyurethane to help protect the shelves",
+      "what": "polyurethane not in materials (consumable)"
+    }
+  ]
 }

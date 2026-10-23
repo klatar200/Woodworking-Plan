@@ -1,6 +1,6 @@
 {
   "slug": "tall-cupboard",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,17 +179,26 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[1-7] (top/middle shelf/bottom, Sides, short/long trim, curved bottom trim, Top, backing, doors, cross supports) each match a cutList.part; doors are a cut row (cutList[8]) whose size is given in the step 7 image"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[3].part",
-          "quote": "Movable shelves",
-          "why": "no step mentions it (searched steps for movable/shelv)"
+          "quote": "Movable shelves (qty 3, 0.75 x 16.5 x 26)"
+        },
+        {
+          "path": "summary",
+          "quote": "A simple farmhouse style storage cabinet with fixed and movable shelves"
         }
-      ]
+      ],
+      "arithmetic": "Search of all steps[0-7] for /movable|adjust|shelf pin|shelves/i finds only steps[1] 'middle shelf' (a fixed carcass shelf, cutList[1] 'Top, middle, bottom'); no step cuts, installs or supports the 3 movable shelves, and materials have no shelf pins/supports.",
+      "reason": "Cut-list row for the movable shelves is never used by any step."
     },
     "R4": {
       "result": "pass",
@@ -197,26 +206,109 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2]"
+      "reason": "steps never name stock for any part (stock labels exist only in the importer source strings, e.g. '1 x 3 @ 77 1/4\"'); informal check of those labels fits the bought lengths but is not R5-scorable"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps[1],[3],[5],[6],[7]: 1 1/4\" pocket hole screws, 1 1/4\" finish nails, 1 1/4\" (countersunk) wood screws; all three in materials[5],[7],[6]; no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[8].name",
+          "quote": "Full wrap hinges"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Make doors. Attach cross supports to door interior using wood glue and 1 ¼” finish nails."
+        }
+      ],
+      "reason": "Viewed images give numbers for shelf heights, face frame, curved trim and door cross supports (2 1/2, 31 1/2, 8 1/4), but nothing gives where the 6 hinges (3 per door), the 2 knobs or the movable shelves go; the only view of them is the unnumbered lifestyle photos (a8ce32ee8b3a3bd5, ed7373b6a234d0fb)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "the only 'as shown'-type reference is steps[0] dimensions with its own image; step images 1,4,6,7 opened and carry the dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "carcass (1), face frame (2) attached (3), curved trim (4), top (5), backing (6), doors (7); carcass shelves 0.75 shallower than sides leave the backing recess; image heights add: 4 3/4 + 3/4 + 35 1/4 + 3/4 + 35 + 3/4 = 77 1/4"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "In the top and bottom be sure to predrill pocket holes for later attaching the face frame."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the short trim pieces to the long trim using wood glue and 1 ¼” pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes are used in steps[1],[2],[3] but no jig thickness setting appears in any step, description or tools note (searched /setting|set up|jig|material/i in all fields; viewed step images carry no setting). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Make doors. Attach cross supports to door interior using wood glue and 1 ¼” finish nails."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "Full wrap hinges"
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Knobs"
+        }
+      ],
+      "arithmetic": "Search of steps[0-7] for /hinge|knob|hang|mount door|install/i: no match. 8 steps total; steps[7] is the last and ends after building the doors.",
+      "reason": "The steps build the doors but never hang them (6 hinges, 2 knobs in materials are never used); the cupboard is left without doors."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "150bde710448569e",
+      "6dbd9bb1ab51d961",
+      "2add223487682ec7",
+      "03662e84e5898241",
+      "c5605c49e29f8c5d",
+      "e69e403c201e95da",
+      "a8ce32ee8b3a3bd5",
+      "f037b3fbc4e4760d",
+      "ed7373b6a234d0fb"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3]",
+      "quote": "Movable shelves",
+      "what": "no shelf-pin holes, supports or shelf-position numbers are given anywhere for the movable shelves (searched all steps and materials for /pin|support|hole|cleat/ : only 'predrill pocket holes' and 'cross supports' for doors)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Attach the top, middle shelf and bottom to the sides using wood glue",
+      "what": "wood glue used in steps[1],[2],[3],[5],[6],[7] is not in materials (consumable)"
+    }
+  ]
 }

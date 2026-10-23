@@ -1,6 +1,6 @@
 {
   "slug": "workshop-table-saw-storage-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -479,45 +479,99 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[1] carcass parts, steps[7] glides, steps[8] 'remaining plywood parts' (door, apron, drawer fronts/sides/backs/bottoms), steps[9],[10],[11],[12] each name parts in cutList; step wording 'cut in step two / step nine' is mis-numbered but the parts exist (see gaps)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 21 rows are cut and used (carcass steps[1]-[6], glides [7], apron [9], drawer parts [10]-[11], door [12]-[13])"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps[0] says all parts are plywood except the glides. Kreg-corrected plywood area: door 13.375x23.25 = 311 + fronts 22.5625 x (7.6875+5.9375+4.9375+4.4375 = 23) = 519 + apron 2x34.5 = 69 + drawer sides 2x23.25x(6.9375+5.1875+4.1875+3.6875 = 20) = 930 + backs 19.9375x20 = 399 + bottoms 4x20.6875x23.25 = 1924 + cabinet bottom 23.25x34.5 = 802 + back 25.25x34.5 = 871 + sides 2x24x25.25 = 1212 + divider 22.5x23.25 = 523 + top 26.25x37.5 = 984 = 8544 in2 <= 2 x 4608 = 9216 (plus the half sheet); the viewed cutting-diagram images (steps[8]) lay every part on the sheets. Oak glides: 6 x 23.25 = 139.5 in from 3/4 x 3 1/2 x 48 ripped to 4 lanes of 0.75 (3 + 3 kerfs 0.375 <= 3.5), each 48 in lane gives 2 glides, 8 >= 6."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps[6],[7],[9],[11]: 1 1/4\" coarse pocket screws (materials[4]), 1 1/4\" brad nails (materials[12]); hinges and mounting plates materials[3], casters materials[5], pulls materials[10],[11]; no conflicting size"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "drill the 2 hinge holes in the door using the dimensions recommended by the manufacturer of the hinges."
+        },
         {
           "path": "steps[13].body",
-          "quote": "On the inside of the cabinet mark the position of the hinge mounting plates. Pre drill small holes for the screws that hold the mounting plates. Attach mounting plates as per the hinge manufacturers i",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8fa2e0bd8481c35a.webp"
+          "quote": "On the inside of the cabinet mark the position of the hinge mounting plates."
         }
-      ]
+      ],
+      "reason": "Flagged steps[13] settled: no number gives the hinge-cup distance from the door edge/top/bottom or the mounting-plate heights; the plan defers to the manufacturer and the viewed step-12/13 images show the hinges without dimensions. Glide heights (7, 13, 18), dados, cabinet and drawer sizes are numbered in viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "both 'as shown' references (steps[1],[7]) have their own images; images for steps[1],[6],[7],[8],[9],[10],[11],[12],[13] opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "carcass (1-6), glides (7), apron (9), drawers built (10-11), door hinges (12-13), finish (14), casters (15); glide heights 7, 13, 18 in the viewed image match drawer sides 6.9375 + 0.75 + 5.1875 + 0.75 + 4.1875 + 0.75 + 3.6875 = 22.4375 <= 22 1/2 bay height"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] states the jig is set to 3/4\" for all pockets on the project; every pocket-holed part is 0.75 plywood"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Using wood glue and 1 1/4\" pocket screws assemble the four drawers. Make sure the drawers are square and adjust if necessary."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "I gave the cabinet and drawer assemblies three coats following manufacturers instructions. After the finish has dried add door/drawer pulls."
+        }
+      ],
+      "arithmetic": "Search of steps[0-15] for /insert|slide|install.*drawer|drawers? (in|into|onto)|place/i: no step puts the four drawers into the cabinet bays on the glides (the door gets steps[12]-[13]).",
+      "reason": "The drawers are made in steps[11] but no later step installs them."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "a61338a287466be7",
+      "53277b28b2ec1f07",
+      "6f06fcb3a04f8501",
+      "8fa2e0bd8481c35a",
+      "eae42eb3bc38829b",
+      "b192a74999d735fd",
+      "6996efe9b0488ffa",
+      "bd422a6af9687ba5",
+      "b5bd65fe97632cad"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "drill pocket holes in the top and both ends of the 3/4\" plywood front apron cut in step nine",
+      "what": "step numbers are wrong: the apron is cut in steps[8] ('Cut remaining plywood parts') and the carcass parts in steps[1], yet steps[2]-[5] say 'cut in step two'"
+    }
+  ]
 }

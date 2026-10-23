@@ -1,6 +1,6 @@
 {
   "slug": "wall-hung-photo-frame",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -80,47 +80,121 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[8] 'steps shown in the video in the 'extra' section' (Danish oil technique) and steps[9] 'See 'extra' section for availability of hangers and turn buttons' are optional finishing / sourcing pointers; the build, cut sizes and hardware (materials[3],[4]) are complete without them"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-9] (stiles, rails, horizontal/vertical stops, backer) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows are cut and used in steps[0],[4],[7]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (0.75x5, 0.25x36, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps[0] names the 3/4 x 5 x 48 board for stiles and rails, steps[4] names 1/4 square dowels (materials[1] 1/4 x 36 x 4, cutting diagram shows (4) 1/4 x 36 square dowels), steps[7] names 1/4 basswood. Kreg-corrected: stiles 8x10.625 = 85 in as 2 strips of 4 (42.5 + 3 kerfs 0.375 <= 48); rails 8x5.125 = 41 + 7 kerfs 0.875 = 41.9 <= 48 on a third strip; strip widths 1.625 + 1.625 + 1.5 + 2 rip kerfs 0.25 = 5.0 <= 5; stops per dowel 2x6.625 + 2x5.125 = 23.5 <= 36; backers 4 x 5x7 fit the 12x24 piece in the viewed diagram."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "Now you can position the rails against the stiles as shown—inset 1/4\" from the ends, and then attach the rails using 1 1/4\" fine-thread pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "attach the rails using 1 1/4\" fine-thread pocket hole screws."
+        },
+        {
+          "path": "materials[0..4].name",
+          "quote": "Board, 3/4\" Thick 5\" x 48\" | Balsa Wood, 1/4\" Thick 36\" | Basswood, 1/4\" Thick Full Sheet | Saw tooth picture hangers | Picture frame turn buttons"
         }
-      ]
+      ],
+      "arithmetic": "Search of materials[0-4] for /screw|fastener|nail/i: no match. steps[3] uses 1 1/4\" fine-thread pocket hole screws (8 rails x 2 ends x 2 holes in the viewed step-2 image).",
+      "reason": "The pocket-hole screws used in steps[3] are not in materials."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "install the saw tooth picture hangers and turn buttons."
+        },
+        {
+          "path": "summary/description",
+          "quote": "Can be hung in portrait or landscape format"
+        }
+      ],
+      "reason": "Rail/stile, chamfer, pocket-hole, stop and glass sizes are numbered in the viewed images (opening 5 1/8 x 7 1/8, chamfers 1/16 and 1/8, rails inset 1/4, spacer 1/8). But no number or labeled image gives where the 2 saw-tooth hangers (for both portrait and landscape hanging), the 4 turn buttons or the 4 rubber bumpers go; the step-9 image is an unlabeled close-up of one button."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "every 'as shown' step has its own step image; images for steps[0]-[4],[6],[7],[9] opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "stiles/rails cut (0), chamfered (1), drilled (2), assembled (3), stops cut (4), painted (5), glued against the spacer (6), backer (7), finish (8), hardware and glass last (9)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] sets the jig for 3/4\" material; the only pocket-holed parts are the 0.75 rails"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut (8) 3/4\" x 1 1/2\" x 10 5/8\" stiles Cut (8) 3/4\" x 1 5/8\" rails"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "{\"part\":\"Stiles\",\"quantity\":8,\"thicknessIn\":0.75,\"widthIn\":1,\"lengthIn\":10} (importDiffs source: 3/4\" x 1 5/8\" x 10 5/8\")"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Install a 1/8\" x 5\" x 7\" thick single-strength glass cut to fit the frame."
+        }
+      ],
+      "arithmetic": "(a) steps[0] gives stiles 1 1/2 wide and rails 1 5/8 wide; Kreg-corrected cut rows give Rails 1.5 x 5.125 and Stiles 1.625 x 10.625, and the viewed step-1 image labels the stile 1 5/8 and the rail 1 1/2 - the step text has the two widths swapped. (c) Search of materials[0-4] for /glass|bumper/i: no match, yet steps[9] installs 1/8 in glass and 4 rubber bumpers per frame.",
+      "reason": "Step 0 swaps the stile and rail widths against the cut list, and the glass and rubber bumpers used in step 9 are not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "020323f1cd0e3045",
+      "903404d32ed0faf8",
+      "6e2645cea50d390e",
+      "e9294a75ddb7b19f",
+      "4cbc3c2e7993f022",
+      "2042d1219c67ccec",
+      "608b109a75139978",
+      "1943c3f1f67c4359",
+      "be7c6fe3b719cc57"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Color the stops with a black spray paint",
+      "what": "black spray paint, glue (steps[6]), masking tape (steps[6]), Danish oil, wipe-on poly and sealer (steps[8]), sandpaper (steps[7]) and the 5x7x1/8 hardboard spacer jig (steps[6]) are not in materials (consumables/jig)"
+    }
+  ]
 }

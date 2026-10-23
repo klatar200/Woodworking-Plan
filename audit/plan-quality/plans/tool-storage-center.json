@@ -1,6 +1,6 @@
 {
   "slug": "tool-storage-center",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,44 +263,120 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-17] (Left Side, Top, Divider, Desk Bottom, 3\" and 3 3/4\" Spacers, Desk Side, Bottom, Desk Filler, Desk Top Support, Desk Top, Desk Stop, Pencil Stop, Frame pieces, Pegboard Stops, Pegboard) each match a cutList.part"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Divier",
-          "why": "no step mentions it (searched steps for divier)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 'Divier' is a misspelling of 'Divider' (cutList[2]); steps[0] cuts the Divider. All 19 rows are cut in steps[0],[2],[3],[4],[5],[6],[8]-[12],[14],[17]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 1x2, 0.75x0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock for every part (3/4\" plywood, 3/4\" square dowel, 1x2, pegboard). Kreg-corrected: 1x2 2x47.75 + 3x24 = 167.5 + 5 kerfs 0.6 = 168.1 <= 2x96 = 192; square dowel 2x32 + 12 + 14 + 14.625 + 13 = 117.6 + kerf <= 4x36 = 144 (each 32 fits its own 36); plywood area 141+91.1+132.2+135.1+164.5+264.4+199.3+35.3+44.1 = 1207 in2 <= 24x48 + 24x24 = 1728; strip layout: 11.75-wide parts 12+7.75+11.25+11.5+14+22.5+11.75 = 90.75 in of 24-in-wide strips across the 24x48 (two 11.75 columns = 96 in) plus Desk Top 13.625 x 14.625 and 3.75 spacer from the 24x24; pegboard 24 x 35 from 24 x 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[7].name",
+          "quote": "1 1/2\" brad nails"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "secure it with a few 1 1/4\" brads"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach the Desk Top Support using 1 1/4\" brad nails."
+        }
+      ],
+      "arithmetic": "Steps[8], [9], [10], [11] each give 1 1/4\" brads/brad nails; the only brad entry in materials is 1 1/2\"; 1 1/4 != 1 1/2. Search of all steps/materials for /brad/ finds no 1 1/4\" brad line.",
+      "reason": "Brad nail size used in the steps is not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give numbers: Top 7 3/4 x 11 3/4 holes; Divider guideline 4 5/8 and 10 3/4; Desk Top Support 12 at guideline; spacers 3 and 3 3/4; Desk Side 5 3/8 / 11 1/2; Bottom pilot holes 2, 8 1/8; Desk Stop 13, 1 5/8, 13/16; frame cleat/bottom inset 1/4, frame top pilot holes 6 and 5/8; Desk Filler position shown. Frame flush with back/bottom of case is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "33 reference(s), each in a step with its own image"
+      "reason": "every 'as shown' step has its own step image; steps[0],[3],[5],[6],[8],[9],[10],[11],[13],[16],[17] images opened; steps[18] has no image and no reference"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "case (0-7), desk fittings (8-11), frame (12-15), frame to case (16), pegboard (17), hang (18); spacers are temporary; viewed images show the Cleat Support/Frame Bottom inset and frame flush with case back and bottom"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] sets the jig for 3/4\" material; every pocket-holed part (plywood and 1x2) is 0.75 thick"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Cut a Desk Top to size from a 3/4\" plywood, and cut a Desk Stop from a 3/4\" square dowel, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Cut the Pencil Stop to length from a 3/4\" square dowel, as shown in the cutting diagram. Glue and nail the Pencil Stop to the face of the Desk Top at the location shown."
+        }
+      ],
+      "arithmetic": "Search of steps[12-18] and all steps for /desk top/i: only steps[9] (Desk Top Support), [10], [11]. No step sets, hangs or fastens the finished Desk Top onto the Desk Top Support, and the Desk Stop's role is never stated; the viewed step 17 image shows the case without a Desk Top.",
+      "reason": "The Desk Top is built but no later step installs or places it."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "46735d2c50ca0393",
+      "168daaaf254260f4",
+      "fca0741062f6d6f7",
+      "265d8fd2b2d56913",
+      "0d47a583124436a8",
+      "338751fd09558f67",
+      "7a70720b96fafb49",
+      "96b74521c8060221",
+      "957940883e625ceb",
+      "8a6b41d17e3e31ab",
+      "03c64249a6f39fbc",
+      "829b2ae435fb5999"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Add a couple dabs of glue on one face of the Filler",
+      "what": "glue used in steps[8],[9],[10],[11],[15] is not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[18].body",
+      "quote": "Finish the storage center with a coat or two of oil",
+      "what": "oil finish not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "sand the cut edge smooth",
+      "what": "sandpaper not in materials (consumable)"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "traditional-toolbox",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,45 +95,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-7] (Bottom, Ends, Sides, Handle) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 4 cut rows are cut and installed in steps[0],[1],[2],[5]-[7]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock for the Bottom and Handle (1x6, 1x3); Ends/Sides are 5.5 wide (only the 1x6). Kreg-corrected: 1x6 20 + 2x10.5 + 2x21.5 = 84 in + 4 kerfs 0.5 = 84.5 <= 96; 1x3 Handle 20.3125 <= 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps[3],[4],[7]: 1 1/4\" coarse-thread Kreg screws, 1/16\" pilot holes; materials[2] 1 1/4\" coarse-thread Kreg pocket-hole screws; count 10 Bottom pocket holes + 4 Handle + 8 Side pilot holes (images) = 22 = quantity"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " cutting diagram. Now you can lay out the curve on each one. You can use a compass, or you can mark out the straight line from the top edge, and then set an ordinary quart can in place and trace aroun",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d517bda55ae9032b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[1] settled by viewed image: curve 3 1/2 radius, 1 1/2 / 3 1/2 / 2 / 5 1/2 / 10 1/2 dims; also viewed: Bottom holes 3 and 1 from edges, Side pilot holes 3/8 and 1, Handle 3 and 1 1/4 and 5/8, 10 degree angle. Handle 'centered and flush at the top of each End' is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "13 reference(s), each in a step with its own image"
+      "reason": "every 'as shown' step has its own step image; steps[0],[1],[2],[5],[6],[7] images opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "bottom, ends, sides cut (0-2), ends attached (3), sides attached (4), handle fitted to the assembled box (5), shaped (6), attached (7)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] sets the jig for 3/4\"-thick material; every pocket-holed part (Bottom, Handle) is 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match (1 Bottom, 2 Ends, 2 Sides, 1 Handle); lengths add: Bottom 20 + 2 x 0.75 Ends = 21.5 = Side length; handle 20 / cos(10 deg) = 20.31 = cutList[3] 20.3125. (b) all parts installed. (c) glue and screws in materials. (d) ends with handle attached and finished."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "d658f2fa90f58078",
+      "d517bda55ae9032b",
+      "3de65fc6f4f2d0ce",
+      "84fcd985a7567e88",
+      "56c72c9fc4152c3b",
+      "8105f9d896480703"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "If you plan to paint the toolbox, as we did, consider painting the Bottom, Ends, and Sides now.",
+      "what": "paint / clear finish (steps[2],[6]) and sandpaper (steps[0],[1],[2],[6]) not in materials (consumables)"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "wall-mounted-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,44 +95,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "inges are secured, open and close the lid to make sure the hinges aren’t binding. Finally, cut a small block of scrap about 3/4\" square and 1\" long and glue it to the edge of the lid to act as a pull.",
-          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "search": "parts in steps[0-10] (Desk Bottom, Sides, Lid Sides, Desk Top, Cleat, Lid Top, Front) each match a cutList.part; flagged steps[10] '3/4\" square and 1\" long' pull block is itself said to be cut from scrap, so it needs no cut row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 rows are cut and used in steps[0],[1],[3],[5],[7],[9]; Lid Sides are the angled offcut of the Side squares (steps[1] and viewed image)"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet size not written in material name"
+      "result": "pass",
+      "reason": "every part is 3/4 plywood (steps[0] names the 3/4 x 48 x 96 sheet). Kreg-corrected areas: Bottom 17.25x42 = 724.5 + Desk Top 9x42 = 378 + Sides 2x17.25x17.25 = 595.1 (Lid Sides are their offcuts) + Cleat 4x42 = 168 + Lid Top 8.125x42 = 341.3 + Front 17.25x43.5 = 750.4 = 2957 in2 <= 4608; layout: 17.25-wide strip A = Bottom 42 + Front 43.5 = 85.5 + kerf <= 96; strip B 17.25 = 2 Sides 34.5 + Lid Top 8.125x42; strip C 13.25 = Desk Top 9 + Cleat 4 + kerf 0.125 = 13.1."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 1 1/4\" coarse-thread Kreg pocket-hole screws (steps[2],[4],[6],[8],[9]), 'heavy-duty cabinet-installation screws' (steps[12], materials[5] cabinet-mounting screws, no size stated); hinges materials[3]; no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give numbers: Bottom pocket holes 2 5/8 and 3 spacing, cord hole 2\" hole 21\" from end and 2\" from edge, angle cut 9\", 6\", 2 3/4, 4 3/4, hinge 5 1/8 from lid end with 3 hinges, hinge edges flush with inside faces. Pull block 3/4 x 1; wall mount at studs is 'position is finalized' by the builder."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "14 reference(s), each in a step with its own image"
+      "reason": "every 'as shown' step has its own step image; images for steps[0],[1],[4],[6],[8],[9],[10] opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "bottom (0), sides (1), sides on bottom (2), top (3-4), cleat (5-6), lid (7-9), hinge lid to desk (10), finish (11), wall mount (12)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] sets the jig for 3/4\"-thick material; all pocket-holed parts are 3/4 plywood"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) widths agree: Bottom 42 + 2 x 0.75 Sides = 43.5 = Front; Desk Top, Cleat, Lid Top all 42 between the sides; 3 hinges shown in the viewed step-10 image = materials[3] '(3 hinges needed)'; 6 mounting screws = 2 per stud x 3 studs. (b) all parts installed. (c) hinges, weatherstripping, mounting screws in materials. (d) ends mounted and sealed."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "d4136e97686a9d71",
+      "a572b76dc02995fd",
+      "215f46f6bc2fa39d",
+      "f874048d8aca25ac",
+      "f8656934d6daf779",
+      "b009246904871354"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "apply your favorite finish. We used a natural oil",
+      "what": "finish (oil, wipe-on polyurethane) and sandpaper not in materials (consumables)"
+    }
+  ]
 }

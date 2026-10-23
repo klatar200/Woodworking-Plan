@@ -1,6 +1,6 @@
 {
   "slug": "vertical-herb-garden",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -91,47 +91,111 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using the template in the extras, draw a curve on the top, front of each board and cut it out with a jig saw."
+        },
         {
           "path": "steps[6].body",
-          "quote": "ter to drain, but keep the soil in place. Also, if you want to add a drip watering system, I have all the details for that on my blog (link in the extras). Fill each shelf with potting soil and plant!",
-          "why": "matches \"my blog\""
+          "quote": "if you want to add a drip watering system, I have all the details for that on my blog (link in the extras)."
         }
-      ]
+      ],
+      "arithmetic": "Search of all fields for /template|extras|blog|http/i: only these two steps; no template or link is in the plan, and the viewed step-0 image shows the curve undimensioned.",
+      "reason": "The curve template is only in 'the extras'; the curve is a decorative corner, so the build can be completed without it (Fix). The drip-system link is optional."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-6] (Sides, Shelves, backs/pickets, Base front/sides) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows are cut and installed in steps[0],[2],[4],[5]"
     },
     "R4": {
       "result": "unknown",
       "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x8, 1x6, 5.5x72); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock for every part (1x8 Sides and Shelves, cedar fence pickets Back, 1x6 Base). Kreg-corrected: 1x8 2x50 + 6x32 = 292 in + 8 kerfs 1.0 = 293 <= 3x96 + 36 = 324; 1x6 35 + 2x8.5 = 52 <= 72; pickets 9x33.5 = 301.5 <= 5x72 = 360."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps[2],[3],[4]: 1 1/4\" pocket hole screws, finish nails, staples; materials[4] 1 1/4\" pocket hole screws (36 = 6 shelves x 2 ends x 3 holes), materials[5] 1 1/4\" finish nails; no conflicting size (staples handled under R14)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numbers given: bottom shelf corner 5 1/2 up, 8 spacing, 60 degree angle, base mitered 45 (viewed step images show the same); back picket start at top, 1/2 gap at bottom. Curve shape is the missing template, recorded under R1."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step says 'as shown' or refers to a drawing (search of all steps); step images opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides curved (0), marked (1), shelves on one side (2), other side (3), back (4), base (5), fabric last (6); 9 x 5.5 = 49.5 leaves the 1/2 in gap on the 50 in side"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill 3 pocket holes in each end of the shelf boards."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4 in shelves but no jig thickness setting appears in any step or field (searched /setting|set up|jig/i). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "keep the soil in place."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "to the inside of each shelf with light staples."
+        }
+      ],
+      "arithmetic": "Search of materials[0-7] for /staple/i: no match; steps[6] (and the 'finish nails or staples' option in steps[4]) uses staples to fix the landscaping fabric.",
+      "reason": "Staples used in steps[6] are not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "8f72110304f9df85",
+      "fde014a495c347d4",
+      "16e69ad6249b3493",
+      "fab09987aa0e49a4",
+      "5eaa42603519c356",
+      "790dafb05be2407d"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Fill each shelf with potting soil and plant!",
+      "what": "potting soil (and plants) not in materials (consumable)"
+    }
+  ]
 }

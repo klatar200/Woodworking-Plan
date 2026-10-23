@@ -1,6 +1,6 @@
 {
   "slug": "watch-and-accessory-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-6] (Base, Up Pegs, Out Pegs, 'watch racks' = Up + Out peg pairs) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 3 rows are cut and used in steps[0],[1],[3],[4],[5]"
     },
     "R4": {
       "result": "pass",
@@ -34,33 +36,70 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 1×10 + 2×2 + 2×2 + kerf 4 cuts (5 parts − 1 boards, the fewest possible)×1/8 = 18.500″; bought: 1×24 = 24″; 18.500 ≤ 24"
+      "reason": "sweep result stands with the layout shown: Base 10 in x 5.5 (full board width) uses 10 of the 24 in; the remaining 14 in x 5.5 rips into two 2 in lanes (2 + 2 + 0.125 = 4.125 <= 5.5), each 14 in lane holds 3 pegs of 4 in (12.25 <= 14), 6 >= the 4 pegs needed; viewed step-0 photo shows the four peg blanks beside the base."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps[4],[5],[6]: 'pocket holes', plugs; materials[1] 1 1/4\" pocket screws (8 = 2 racks x 2 holes in steps[4] + 2 racks x 2 holes in steps[5]) and materials[2] 8 plugs; no size conflict"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Attach each watch rack to the base using pocket holes. Space the first one an inch in from the edge on the opposite side from the accessories dish, then space the second one and inch from the first.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8828ef1b19bd9ec8.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[5] settled: it gives numbers (first rack 1 in from the edge opposite the dish, second 1 in from the first) and the viewed step-5 photo shows a ruler at that spacing; dish 1 in from three sides and 4 in from the short side, 1/4 deep; peg corners 1/2 in with 45 degree lines. Pocket-hole positions on the pegs are shown in the viewed step-4/5 photos."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step says 'as shown' or refers to a drawing (search of all steps); step photos opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cuts (0), dish (1), base edge (2), pegs shaped (3), racks assembled (4) and attached (5), plugged (6), finished (7)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the up pegs to the back of the out pegs using pocket holes."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Attach each watch rack to the base using pocket holes."
+        }
+      ],
+      "reason": "Pocket holes are used in steps[4] and [5] but no jig thickness setting is stated in any step or field (searched /setting|set up|jig|3\\/4/ in steps and materials). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match (1 Base, 2 Up Pegs + 2 Out Pegs = 2 racks; 2 racks x 2 holes + 2 x 2 = 8 screws = 8 plugs); rack spacing 1 + 0.75 + 1 + 0.75 = 3.5 in fits the 4 in zone left by the dish (10 - 1 - 1 - ... dish 4 in from the short side). (b) all parts installed. (c) screws and plugs in materials. (d) ends oiled/stained."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "3b89df0a8317c1aa",
+      "3e1695a8a8c2cf5b",
+      "34c5bc27c81dc024",
+      "12f8a7a3d3d6c893",
+      "8828ef1b19bd9ec8",
+      "4b6244a51e3a7c64"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Put a drop of wood glue into each hole, then add pocket hole plugs.",
+      "what": "wood glue and oil/stain (steps[7]) and sandpaper (steps[2],[4]) not in materials (consumables)"
+    }
+  ]
 }

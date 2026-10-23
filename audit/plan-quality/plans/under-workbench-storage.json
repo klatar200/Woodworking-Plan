@@ -1,6 +1,6 @@
 {
   "slug": "under-workbench-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -223,14 +223,30 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Check out the video first, and as you build. It'll help with a few instructions!"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut down plywood parts according to the cutlist provided above"
+        }
+      ],
+      "arithmetic": "Search of all fields for /video|youtube|http|watch/i: only steps[0] (title 'Watch Video'); no link or video is in the plan. The 10 steps are one line each; no step or viewed image (all 14 are video stills, no dimensions or labels) says where the 3 Lower Braces, 6 Upper Braces and Case Interior sit, where pocket holes go, or what the 'small spacer' of steps[6] measures.",
+      "reason": "The plan says some instructions live in a video we do not carry, and the written steps leave the case layout and slide positions to it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[1]-[8] cover case parts (sides, interior, braces), drawer boxes, bottoms, fronts; every cutList row group (Case Sides/Interior/Braces, Drawer Bottoms, Large/Small Drawer Front, Back/Front, Sides) is named or implied by 'brace pieces', 'drawer pieces', 'false fronts', 'drawer front'"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 rows are used by steps[1]-[8] (Large/Small Drawer Front = the false fronts of steps[4],[7],[8])"
     },
     "R4": {
       "result": "pass",
@@ -238,32 +254,102 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
+      "reason": "steps do not name stock per part and materials[0] '3/4\" Plywood' / materials[1] '1/2\" Plywood' give no sheet size, so area cannot be compared (parts total about 1288 in2 of 3/4 and 2340 in2 of 1/2, both under a 4608 in2 full sheet only if that is what was meant)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws",
-          "why": "1\" screw — no material line lists a 1\" fastener"
+          "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Using 1 1/4 pocket hole screws, assemble the case together"
         }
-      ]
+      ],
+      "arithmetic": "Materials[0-3] are '3/4\" Plywood', '1/2\" Plywood', 'Drawer Pulls', 'Sets of Drawer Slides'; search of materials for /screw|nail|fastener/i: no match, so neither the 1 1/4\" nor the 1\" pocket-hole screws used in steps[3] and steps[5] (nor slide/pull screws) are listed.",
+      "reason": "Both screw sizes the steps use are absent from materials."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Using a small spacer, install 4 sets of drawer slides inside the case"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "cut a 1/2\" wide and 1/4\" deep dado to house the drawer bottoms"
+        }
+      ],
+      "reason": "No number gives: the dado's distance from the bottom edge, the spacer size / slide heights and setback, pocket-hole locations on the braces, where the braces and Case Interior sit between the Case Sides, or the drawer-front reveal and pull locations. Viewed step images are unlabeled video stills showing none of these as numbers."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step says 'as shown' or refers to a drawing (search of all steps); step images opened"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut (1), braces drilled (2), case built (3), dados (4), drawers assembled (5), slides in case (6), drawers installed (7-8)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Grab all of your 3/4\" thick plywood brace pieces to construct the case and drill pocket holes into them"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes are drilled/used in 3/4\" braces and 1/2\" drawer parts but no jig thickness setting appears in any step or field (searched /setting|set up|jig/i). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) corrected sizes agree with each other: Lower Brace 37.25 less 0.75 Case Interior, halved = 18.25 = Upper Brace length; drawer box width 16.25 + 2 x 0.5 sides + 2 x 0.5 slides = 18.25; bottom 16.75 = 16.25 + 2 x 0.25 dado, depth 12.375 = 12.875 - 2 x 0.5 + 2 x 0.25. (b) 4 drawers built (steps 5) and installed (7-8). (c) slides and pulls in materials. (d) ends with drawers installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "d36672d8e551445d",
+      "4325ce21ae8bc0bb",
+      "0ca1ebf6a9e3480a",
+      "b3d00b39a404438f",
+      "2823c4f50d5729d4",
+      "08e3fbd147fd2230",
+      "002c2402e5662720",
+      "dc91c436a8f82d1a",
+      "4836c71d0f462746",
+      "9a0bf1f74bc597c9",
+      "c553d95f3790563d",
+      "56ca58af8c945c2b"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws",
+      "what": "no step drills pocket holes in the 1/2\" drawer parts; steps[2] covers only the 3/4\" brace pieces"
+    }
+  ]
 }

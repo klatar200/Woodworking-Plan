@@ -1,6 +1,6 @@
 {
   "slug": "toddler-bed-with-built-in-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,45 +263,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0-31] (Short/Tall Headboard, Tall/Short Side, Rails, Guard Rail, Footboard, Plywood Bottom, Bookshelf Sides/Bottom/Back/Shelf/Divider/Top) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 14 cut rows are cut and installed in steps[0],[2],[4],[5],[8],[10],[12],[14],[16],[18],[21],[24],[27],[29]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "two stock types; 13 rows are 0.75 x 5.5 (only the 1x6 supplies that, section 9) and steps[14] names plywood for the 27.5 x 52.5 Plywood Bottom, which fits one 48 x 96 sheet. Kreg-corrected 1x6 total: 3x25.25 + 2x32 + 2x26 + 2x32 + 3x43 + 26 + 27.5 + 4x18 + 2x27.5 + 2x27.5 + 10.25 + 3x27.5 + 2x29 = 771 in, plus 27 kerfs x 1/8 = 3.4 -> 774.4 <= 8x96 + 72 = 840. A first-fit-decreasing pack of the 28 pieces onto the 9 boards succeeds."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 1 1/4\" Kreg (pocket-hole) screws, 1 1/4\" flat-head wood screws (#8 x 1 1/4\" in steps[32]), 1/8\" pilot bit; materials[3] 1 1/4\" coarse-thread Kreg pocket-hole screws, materials[7] 1 1/4\" flat-head wood screws; counts 3 (steps[23]) + 1 (steps[28]) + 8 (steps[32], 8 pilot holes of steps[12]) = 12 = materials[7] quantity"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Mark the location of the Rails on the Short Sides, as shown. Spread glue on pocket-holed end of the two Rails that only have those pocket holes. Attach those two Rails to the Short Sides using 1 1/4\" ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e856b9845bd9ec1.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[9] settled: viewed image shows 6 3/4\" rail location from the bottom (also in steps[7]/[32] images); guard rail 5\" hole spacing and 4 1/2\" radius; footboard pilot holes 4 3/4, 6, 1 1/2, 2; bookshelf offset 6 3/4\". Flush/centered placements are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "38 reference(s), each in a step with its own image"
+      "reason": "every 'as shown' step has its own step image; steps[9],[11],[12],[15],[32] images opened and show the referenced content"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "headboard (0-3), sides (4-7), rails (8-9), guard rail (10-11), footboard (12-13), bottom (14-15), bookshelf built bottom-up (16-31) with the loose back board set aside in steps[22] and installed in steps[28], then bookshelf attached (32)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states the 3/4\" setting for the entire project; all pocket-holed parts are 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match (3 short headboards, 2 tall; 4 bookshelf sides -> 2 panels; 3 back boards: 2 lower + 1 upper; 2 shelf, 2 top, 2 bottom); the bed widths agree: 3 x 5.5 + 2 x 5.5 = 27.5 = Footboard 27.5 = Plywood Bottom width 27.5. (b) every made part is installed. (c) plugs, right-angle driver, flat-head screws, Danish oil in materials. (d) ends with bookshelf attached and finish."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-27",
+    "imagesViewed": [
+      "8e856b9845bd9ec1",
+      "51a4ace05281dcac",
+      "90716f73233ad20e",
+      "f1032602cc7f6d0a",
+      "22feb5328a0e0411",
+      "c7e18bb4bebd8b13"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[33].body",
+      "quote": "use a sanding block and 100-grit sandpaper",
+      "what": "sandpaper not in materials (consumable)"
+    }
+  ]
 }
