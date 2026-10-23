@@ -65,22 +65,26 @@
       "reason": "steps[7],[8]: \"1-1/4\\\" screws though 3/4\\\" pocket holes\"; all pocket-holed box parts are 3/4\"."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "place a 16\" diameter, 1/8\" thick mirror within the rabbet. Secure in place using hot glue around edges."
-        },
-        {
-          "path": "materials[8].name",
-          "quote": "Wood glue"
-        }
-      ],
-      "arithmetic": "Search of materials[0]-[8] for /hot|glue gun|silicone|adhesive/i: only \"Wood glue\" matches /glue/.",
-      "reason": "A non-fastener item used by a step (hot glue to secure the mirrors) is not in materials."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[4].body",
+            "quote": "place a 16\" diameter, 1/8\" thick mirror within the rabbet. Secure in place using hot glue around edges."
+          },
+          {
+            "path": "materials[8].name",
+            "quote": "Wood glue"
+          }
+        ],
+        "arithmetic": "Search of materials[0]-[8] for /hot|glue gun|silicone|adhesive/i: only \"Wood glue\" matches /glue/.",
+        "reason": "A non-fastener item used by a step (hot glue to secure the mirrors) is not in materials."
+      }
     }
   },
   "verdict": "Fix",
@@ -104,6 +108,13 @@
       "path": "description",
       "quote": "Elevate a simple wall cabinet into something amazing by swapping traditional doors for rolling round mirrors.",
       "what": "Described as a wall cabinet, but no step or material covers mounting it to a wall (search steps/materials for /wall|hang|cleat|mount|anchor/i: none); steps end at the face frames (steps[12])."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "place a 16\" diameter, 1/8\" thick mirror within the rabbet. Secure in place using hot glue around edges.",
+      "what": "Hot glue is used to secure the mirrors but is not in materials (search of materials[0]-[8] for /hot|glue gun|silicone|adhesive/i: only materials[8] \"Wood glue\" matches /glue/)."
     }
-  ]
+  ],
+  "consumableCleanup": "2026-10-19"
 }

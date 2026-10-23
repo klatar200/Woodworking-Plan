@@ -161,18 +161,22 @@
       "reason": "Pocket holes in 3/4\" plywood (cutList[1] thicknessIn 0.75) and no jig thickness setting is stated; step 2 and 4 images (viewed) show hole positions and \"1-1/4\\\" pocket screws\" but no setting."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "Then run a bead of wood glue around the back panel and let dry overnight."
-        }
-      ],
-      "arithmetic": "Search of materials[0]-[3] for /glue/i: none. Step 4 uses wood glue.",
-      "reason": "A non-fastener item used by a step (wood glue) is not in materials."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[4].body",
+            "quote": "Then run a bead of wood glue around the back panel and let dry overnight."
+          }
+        ],
+        "arithmetic": "Search of materials[0]-[3] for /glue/i: none. Step 4 uses wood glue.",
+        "reason": "A non-fastener item used by a step (wood glue) is not in materials."
+      }
     }
   },
   "verdict": "Fix",
@@ -193,5 +197,13 @@
       "plans/ae63bcd2f9f5fd16.webp"
     ]
   },
-  "gaps": []
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Then run a bead of wood glue around the back panel and let dry overnight.",
+      "what": "Wood glue is used but not in materials (no materials[].name matches /glue/i). Searched materials[0]-[3]."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

@@ -335,25 +335,29 @@
       "reason": "Pocket-hole joints (Kreg screws; pocket holes drawn in viewed step images f2608419b5344693, 45da14051ad89d97, aaf3b7ad549ba8c3) on 1 1/2\" and 3/4\" parts, but no jig thickness setting is stated in any step or viewed image. Search: steps[0-7] for /setting|jig|1 1/2\" material|3/4\" material/ - no match. Recorded only."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[5].body",
-          "quote": "Using glue and 1\" Kreg screws assemble the top."
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Glue and nail in place with brad nails."
-        },
-        {
-          "path": "materials[0..7].name",
-          "quote": "(no material name matches /glue/i)"
-        }
-      ],
-      "reason": "Glue is used in steps[2] and steps[5] but is not in materials. Counts (4 centers, 4 outer sides, 14 1/2\" angled supports) agree with the cut list."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[5].body",
+            "quote": "Using glue and 1\" Kreg screws assemble the top."
+          },
+          {
+            "path": "steps[2].body",
+            "quote": "Glue and nail in place with brad nails."
+          },
+          {
+            "path": "materials[0..7].name",
+            "quote": "(no material name matches /glue/i)"
+          }
+        ],
+        "reason": "Glue is used in steps[2] and steps[5] but is not in materials. Counts (4 centers, 4 outer sides, 14 1/2\" angled supports) agree with the cut list."
+      }
     }
   },
   "verdict": "Fix",
@@ -378,5 +382,20 @@
       "cdcdd3f70ab78bfc.webp",
       "90bb1a5a19c0f165.webp"
     ]
-  }
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Using glue and 1\" Kreg screws assemble the top.",
+      "what": "Wood glue is used but not in materials (no materials[].name matches /glue/i)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Glue and nail in place with brad nails.",
+      "what": "Wood glue is used but not in materials (no materials[].name matches /glue/i)."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

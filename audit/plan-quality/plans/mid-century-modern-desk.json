@@ -781,16 +781,12 @@
           "quote": "Top Long Edging 49 3/4\" (top panel 46 3/4\")"
         },
         {
-          "path": "steps[1].body",
-          "quote": "attaching the End Edging using glue and 1 1/4\" pocket-hole screws"
-        },
-        {
-          "path": "materials[0..17].name",
-          "quote": "(no material name matches /glue/i; the 18 names run from 'Plywood, 3/4\" Thick Full Sheet' to 'Quart oil-based or water-based clear finish')"
+          "path": "steps[13].body",
+          "quote": "Position the Door in the Cabinet opening, inserting shims to center it vertically in the opening."
         }
       ],
-      "arithmetic": "Top Long Edging should span Top Panel 46 3/4 + End Edging 2 x 1 1/2 = 49 3/4 (matches the viewed drawing and the overview 49 3/4); cut list says 94 3/4 (digits transposed). Bottom Long Edging 45 3/4 = 42 3/4 + 3 is consistent, confirming the pattern. Glue is used in steps[1] and no glue is in materials; shims used in steps[13] ('inserting shims to center it') are not in materials either.",
-      "reason": "A cut-list length disagrees with the drawing the step points to, and glue (and shims) used by steps are missing from materials."
+      "arithmetic": "Top Long Edging should span Top Panel 46 3/4 + End Edging 2 x 1 1/2 = 49 3/4 (matches the viewed drawing and the overview 49 3/4); cut list says 94 3/4 (digits transposed). Bottom Long Edging 45 3/4 = 42 3/4 + 3 is consistent, confirming the pattern. Shims used in steps[13] ('inserting shims to center it') are not in materials (no materials[0..17].name matches /shim/i).",
+      "reason": "A cut-list length disagrees with the drawing the step points to, and shims used by steps[13] are missing from materials."
     }
   },
   "verdict": "Fix",
@@ -833,6 +829,13 @@
       "path": "cutList[9]",
       "quote": "Divider Panel 3/4 x 4 x 17 1/4 (Kreg source \"17 1/4\"\"); drawing b81aca68ea7b2cbe shows 'Divider Panel ... 17 3/4\"'",
       "what": "Cut list and the step 5 drawing disagree by 1/2 on divider length (17 1/4 vs 17 3/4)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "attaching the End Edging using glue and 1 1/4\" pocket-hole screws",
+      "what": "Wood glue is used but no material name matches /glue/i (searched all 18 materials)."
     }
-  ]
+  ],
+  "consumableCleanup": "2026-10-19"
 }

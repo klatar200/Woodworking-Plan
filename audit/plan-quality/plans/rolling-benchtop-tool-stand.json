@@ -251,25 +251,29 @@
       "reason": "viewed images b348c94124f59ea8, 348bf00c293af6e0, 5b16989d9910367e label 'Kreg Pocket Hole 1 1/2\"' (all parts 2x4)."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[1].body",
-          "quote": "attach the five 32\" top shelf pieces using 2 1/2\" pocket hole screws and wood glue from the bottom."
-        },
-        {
-          "path": "materials[0..2].name",
-          "quote": "(three lines only: 'Board, 2x4 96\"', '2 1/2\" Kreg Pocket Hole Screws', 'Rolling Casters'; none matches /glue/i)"
-        }
-      ],
-      "arithmetic": "Glue is used in steps[1],[2],[4],[7]-[9] (viewed drawings repeat 'wood glue'); materials[0..2] contain no glue. Counts agree: 5 top + 3 long + 2 short shelf pieces; 4 supports; 4 legs; derived sizes consistent (29 + 3 = 32; 10 1/2 + 7 = 17 1/2; 17 1/2 - 3 = 14 1/2).",
-      "reason": "Wood glue used throughout is not in materials."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[1].body",
+            "quote": "attach the five 32\" top shelf pieces using 2 1/2\" pocket hole screws and wood glue from the bottom."
+          },
+          {
+            "path": "materials[0..2].name",
+            "quote": "(three lines only: 'Board, 2x4 96\"', '2 1/2\" Kreg Pocket Hole Screws', 'Rolling Casters'; none matches /glue/i)"
+          }
+        ],
+        "arithmetic": "Glue is used in steps[1],[2],[4],[7]-[9] (viewed drawings repeat 'wood glue'); materials[0..2] contain no glue. Counts agree: 5 top + 3 long + 2 short shelf pieces; 4 supports; 4 legs; derived sizes consistent (29 + 3 = 32; 10 1/2 + 7 = 17 1/2; 17 1/2 - 3 = 14 1/2).",
+        "reason": "Wood glue used throughout is not in materials."
+      }
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -295,5 +299,14 @@
       "93ab9d48d9015d1e.webp",
       "302f19391b3820dc.webp"
     ]
-  }
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "attach the five 32\" top shelf pieces using 2 1/2\" pocket hole screws and wood glue from the bottom.",
+      "what": "Wood glue is used in steps[1],[2],[4],[7]-[9] but materials[0..2] ('Board, 2x4 96\"', '2 1/2\" Kreg Pocket Hole Screws', 'Rolling Casters') contain no glue."
+    }
+  ],
+  "consumableCleanup": "2026-10-19"
 }

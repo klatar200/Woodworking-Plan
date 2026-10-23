@@ -264,21 +264,25 @@
       "reason": "steps[1],[4],[10] state the jig set for 3/4\" material; all pocket-holed parts (rails, support, shelves, top boards) are 3/4\" (cutList)."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[13].body",
-          "quote": "you can glue them to the underside of the Top assembly. Use clamps or weight the pieces down while the glue sets."
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "add the Top Boards using wood glue"
-        }
-      ],
-      "reason": "c: steps[11] and [13] use wood glue; no materials name matches /glue/i (searched all 9 materials). Otherwise counts agree (5 Top Boards, 2 Shelves, 4+4 edges) and every made part is installed."
+      "result": "pass",
+      "reason": "Only consumables were missing (moved to gaps per 2026-10-19 ruling)",
+      "previous": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "likely",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[13].body",
+            "quote": "you can glue them to the underside of the Top assembly. Use clamps or weight the pieces down while the glue sets."
+          },
+          {
+            "path": "steps[11].body",
+            "quote": "add the Top Boards using wood glue"
+          }
+        ],
+        "reason": "c: steps[11] and [13] use wood glue; no materials name matches /glue/i (searched all 9 materials). Otherwise counts agree (5 Top Boards, 2 Shelves, 4+4 edges) and every made part is installed."
+      }
     }
   },
   "verdict": "Fix",
@@ -293,6 +297,18 @@
       "path": "steps[14].body",
       "quote": "you’re ready to attach it to the island base ... you’ll be able to attach the screws in tight quarters",
       "what": "No fastener type, size or count is given for attaching the top to the base (search: steps[14] and materials have no screw size for this joint; materials[8] is the only screw and is fine-thread 1 1/4\")."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "you can glue them to the underside of the Top assembly. Use clamps or weight the pieces down while the glue sets.",
+      "what": "Wood glue is used but not in materials (no materials[].name matches /glue/i). Searched all 9 materials."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "add the Top Boards using wood glue",
+      "what": "Wood glue is used but not in materials (no materials[].name matches /glue/i). Searched all 9 materials."
     }
   ],
   "reader": {
@@ -302,5 +318,6 @@
       "aecfb82f149b52a6.webp",
       "1bfb0c80b00c5c15.webp"
     ]
-  }
+  },
+  "consumableCleanup": "2026-10-19"
 }
