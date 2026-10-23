@@ -1,6 +1,6 @@
 {
   "slug": "personalized-blanket-ladder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,17 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut/assemble 5' 1x4 poles, 16\" 1x4 rails, 16\" 1x3 rungs; all in cutList (Side Poles = the 5' 1x4s)"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Side Poles",
-          "why": "no step mentions it (searched steps for pol)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Side Poles is the \"(2) at 5' in length\" 1x4 in steps[0] (corrected 1x4x60); no step uses the word pole but \"1\" x 4\" x 5'\" sides are the same part"
     },
     "R4": {
       "result": "pass",
@@ -49,22 +44,68 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "materials Kreg Screws - 1-1/4\"; steps name no size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "rails 3\" down from top and 5\" up from bottom, rungs 9\" apart, 30 degree angle given"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no reference to drawings"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut (step 0), drill (1), assemble one side then second (2-3)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "drill (2) pocket holes into each end of all of your 16\" length boards"
+        }
+      ],
+      "reason": "Pocket holes drilled but no jig thickness setting in any text field (search /setting|thickness|jig/ over steps, description, materials found none); step images not opened for a setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "You will then cut your 1\" x 3\" boards to (4) at 16\" in length."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "space your (3) 1\" x 3\" x 16\" boards evenly between the two of the rails"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Ladder Rails — qty 3, 1 x 3 x 16"
+        }
+      ],
+      "arithmetic": "step 0 says 4 x 1x3x16; step 2 and cutList[2] say 3",
+      "reason": "Step 0 count of 1x3 16\" pieces (4) contradicts the cut list and step 2 (3)"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/410ababa988cbd5b.webp"
+    ]
+  }
 }

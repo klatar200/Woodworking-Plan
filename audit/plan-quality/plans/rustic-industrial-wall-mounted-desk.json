@@ -1,6 +1,6 @@
 {
   "slug": "rustic-industrial-wall-mounted-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (desk sides, desk top, desk support = Support back + Support legs, desk bottom, drawer fronts/backs/sides/bottoms) all match cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used (desk sides step 2, top step 3-4, bottom step 5, drawer parts steps 6-8, support step 9)"
     },
     "R4": {
       "result": "pass",
@@ -145,30 +147,66 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Add pocket holes to the side of 3 of the desk top pieces. Using 1 1 /4\" pocket hole screws, combine the 4 desk top pieces together to create one 14\" wide piece of wood.",
-          "why": "4\" screw — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"1 1 /4\"\" is a typo for 1 1/4\"; steps use 1 1/4\" and 1\" pocket screws, #10 flat head screws and \"heavy duty wood screws\", all in materials (2 1/2\" heavy duty x4, 16 #10 = 4 flanges x 4 holes)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step-6 drawing gives handle half circle 2\" x 1\"; support drawing gives 23\" and 16 1/4\"; sides flush/centered; desk 31 x 14 x 17 stated; wall height \"30\" off the ground\" given",
+      "search": "viewed step images 2, 6, 9"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"as shown\" steps have step images"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the desk sides to the front of the desk support with 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[8].title",
+          "quote": "Build the desk support"
+        }
+      ],
+      "reason": "The desk support (back support + two leg supports) is first built in steps[8] but is already used in steps[1], [3] and [4]; the build can still proceed by reordering, so Fix"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Add pocket holes to the back and top of the desk sides."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards and 1/2\" plywood drawer bottoms with no jig thickness setting in any text (search /setting|thickness|jig/ steps/description/materials: none); viewed images show none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "4 top pieces x 3.5 = 14 = stated 14\" deep; legs 16.25 + top 0.75 = 17 = stated height; back 23 + 2 x 3.5 legs = 30 = Desk bottom length 30; pipe parts: 2 braces x (2 flanges, 2 nipples, 2 elbows, 1 pipe) = 4/4/4/2 match materials; felt and adhesive listed",
+      "arithmetic": "4 x 3.5 = 14; 16.25 + 0.75 = 17; 23 + 3.5 + 3.5 = 30 (cutList[0],[1],[3],[4])"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fce4c698350b7ebf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b810b65b155b0e53.webp"
+    ]
+  }
 }

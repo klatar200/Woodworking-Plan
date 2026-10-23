@@ -1,6 +1,6 @@
 {
   "slug": "planter-boxes",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -91,21 +91,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut wood to size using miter saw. Refer to attached plans for cut list with sizes.\nSand any wood that will be painted with orbital hand sander.",
-          "why": "matches \"attached plans\""
-        }
-      ]
+      "result": "pass",
+      "reason": "\"attached plans\" refers to the cut list, which is in the plan (cutList + step images with dimensions); build completes without external content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use side pieces, legs, top trim, slats; all in cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all four rows used in steps 1-4"
     },
     "R4": {
       "result": "unknown",
@@ -116,23 +111,61 @@
       "reason": "R5 precondition not met: 3 stock types (1x4, 2x6, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps give no fastener sizes; materials list 1 1/2\" Blue-Kote pocket screws"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "slats 11 inches from top (steps[4]); viewed images show side boards 3 x 5 1/4\" = 15 3/4\" flush with leg top, legs 20\", 14 1/4\" outside width",
+      "search": "viewed step images 2 and 4"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "no drawing references beyond \"attached plans\" cut list"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides to legs (box), then trim, then slats inside; slats reachable from top"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "drill 2 pocket holes on the edges of each side piece."
+        }
+      ],
+      "reason": "No jig thickness setting in any text field (search /setting|thickness|jig/ over steps, description, materials: only \"Kreg Jig system\"); slat attachment method/fastener not stated in steps[4]; opened images show dimensions only. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach with staple gun from the top."
+        }
+      ],
+      "reason": "Step 4 attaches the top trim with a staple gun, but no staples in materials (search materials for /staple/: none; materials are boards, Blue-Kote screws, paint, filler)"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1935ff610ec7de32.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57a5ebebb80f0fbb.webp"
+    ]
+  }
 }

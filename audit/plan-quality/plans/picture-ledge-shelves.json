@@ -1,6 +1,6 @@
 {
   "slug": "picture-ledge-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -31,47 +31,113 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "a Kreg Jig. We spaced them out 1\" from the edges and then 1 foot spacing between each pocket hole.\nThe pocket hole placement is detailed in the woodworking plans, which can be found in the Extras tab.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Extras tab\" sentence is a pointer to a placement drawing, but the same step gives the placement in numbers: \"spaced them out 1\\\" from the edges and then 1 foot spacing between each pocket hole\"; build completes without it"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name bottom, back, front pieces; cutList has Bottom and Back Piece (qty 2) and Front Piece"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both rows used in steps 0-3"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Bottom and Back Piece — qty 2, 0.75 x 2.5 x 48 (Kreg-corrected)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "1x3 piece on the back, 1x3 piece on the bottom and 1x2 on the front side"
+        }
+      ],
+      "arithmetic": "steps name the stock (1x3 for Bottom and Back, 1x2 for Front): 1x3 needed = 2 x 48 + 1 cut x 1/8 = 96.125 > 96 bought (1 x 96)",
+      "reason": "One 96\" 1x3 does not cover two 48\" parts plus one saw kerf (short by 1/8\")"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws and 2\" finish nails in materials match steps[2],[3]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "pocket hole spacing given in steps[1]; nail spacing given; mounting not a step"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, drill, attach front to bottom, then back; finish after"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "On the bottom piece of wood (one of the 1x3 pieces) drill 5 pocket holes with a Kreg Jig."
+        }
+      ],
+      "reason": "Pocket holes drilled but no jig thickness setting in any text field (search /setting|thickness|jig/ over steps, description, materials found none); step images not opened for a setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "drill 5 pocket holes with a Kreg Jig. We spaced them out 1\" from the edges and then 1 foot spacing between each pocket hole."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Bottom and Back Piece — qty 2, 0.75 x 2.5 x 48"
+        }
+      ],
+      "arithmetic": "5 holes with 1 ft between each = 4 x 12 = 48 before any edge offset; the piece is 48 long and the holes start 1\" from each edge (48 - 2 x 1 = 46 available)",
+      "reason": "Pocket-hole spacing given in steps[1] does not fit the 48\" bottom piece"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[*] / description",
+      "quote": "Hang them up in your home in the living room, hallway or bedroom",
+      "what": "No step, material or hardware describes how the finished shelf is hung on the wall (searched steps/materials for /hang|mount|wall|cleat|keyhole|anchor/ — only the description says \"Hang\")"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "apply polyurethane over the entire shelf",
+      "kind": "consumable",
+      "what": "Polyurethane used in step 8 is not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": []
+  }
 }

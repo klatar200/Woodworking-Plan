@@ -1,6 +1,6 @@
 {
   "slug": "plywood-mirror-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,17 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Place the shelf pieces over the mirror to determine the length of the slots before cutting these 3/8” wide slots with a jigsaw.",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 3/8\" is a slot width cut in existing shelf parts, not a part; steps use Back, Top shelf, Bottom shelf, all in cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "three rows = \"three pieces of plywood\" in steps[0]"
     },
     "R4": {
       "result": "pass",
@@ -44,23 +39,74 @@
       "reason": "sheet layout not judged (area fits: part area 1×8×46 + 1×3.5×46 + 1×6×46 = 805.0 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "materials give 1 1/4\" pocket-hole screws; steps name no size",
+      "search": "steps for fastener sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slot width 3/8\" given; slot length set from the mirror itself (step 1); viewed images show shelves at top and bottom of the 8\" back, slots along shelf centre-line, pocket-hole positions marked; mirror position is the builder's choice per step title",
+      "search": "viewed images d3a530bf, e7517408, 2d5fb941"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "no unresolved drawing reference; step images 1-3 show parts, mirror overlay and exploded assembly"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, cut slots, assemble, mount; slots cut before assembly"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Assemble with pocket holes and screws."
+        }
+      ],
+      "reason": "No jig thickness setting for 3/4\" plywood in any text (search /setting|thickness|jig/ steps/description/materials: none); viewed step-3 image shows pocket hole arrows only. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "The shelf unit can be attached to the wall by screwing through the back panel in the area that the mirror will cover."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "24\" round mirror"
+        }
+      ],
+      "reason": "The 24\" mirror is a listed material and the finished piece, but no step installs it (search steps for /mirror/: steps[1] uses it only to size slots; steps[2] only says the area it \"will cover\"); no step says to set it in the slots or how it is held"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "attached to the wall by screwing through the back panel",
+      "what": "Wall-mounting screws/anchors are not in materials and no size or spacing is given (search materials for /screw|anchor/: only pocket-hole screws)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3a530bff595ed12.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e75174080511ceed.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d5fb9418f84b47c.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "queen-size-plywood-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,17 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "The tapers on the legs are 5 1/2\" up the side and 2\" in from the bottom, connect the lines and cut. Take the 4\" leg piece with the pocket holes and place it on the longer edge of the 4 3/4\" piece. Dri",
-          "why": "cut sentence states 5 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 5 1/2\" is the leg taper layout, not a part. Steps use long rails, Footboard Rail (= Short Frame Rail), slat supports, mattress slats, 4 3/4\" and 4\" leg pieces, vertical supports (= Headboard Supports), headboard rails, cap; all in cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 rows used: rails/legs steps 2-3, headboard rows step 4, slats step 6, 2x2 supports step 2"
     },
     "R4": {
       "result": "pass",
@@ -96,23 +91,95 @@
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/4\" pocket screws only; materials list 1 1/4\" Pocket Hole Screws, edge banding and spray lacquer"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "leg taper \"5 1/2\" up the side and 2\" in from the bottom\", back legs extend 3/4\" past rails, middle support 25 1/2\" from inside edge of first support, 3/4\" spacer for rail gaps; pocket-hole positions shown in viewed diagram; headboard rail arrangement shown in viewed step-4 image; slats \"evenly spaced\"",
+      "search": "viewed images 5082a9bf, 80e38b6d, 768bd356"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"diagram\" (step 1) and \"pattern shown\" (step 4) have viewed step images showing the pieces/holes and rail arrangement"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Now that you have small pieces of plywood, you should use a table saw to make quick, repeatable cuts"
+        },
+        {
+          "path": "steps[6].title",
+          "quote": "Break Down Plywood"
+        }
+      ],
+      "reason": "The step that breaks the 4x8 sheet into the \"small pieces\" is the last step (steps[6]) but steps[0] already assumes it is done; the build can still proceed, so Fix"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "I used the Kreg K5 Pocket Hole Jig to drill the holes marked in yellow in the diagram."
+        }
+      ],
+      "reason": "Hole positions shown in the viewed step-1 diagram but no jig thickness setting in any text (search /setting|thickness|jig/ steps/description/materials: only the jig name); image shows no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Lay in the 12 Mattress Slats evenly spaced apart"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Place the Mattress Slat with the pocket holes at the open end of the Bed Frame"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Mattress Slats — qty 12, 1 x 4 x 61"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 61\""
+        }
+      ],
+      "arithmetic": "steps need 12 slats (step 6) + 1 slat with pocket holes (step 2) = 13; materials[1] quantity 13; viewed step-1 diagram shows 13 slat boards (12 plain + 1 with end pocket holes); cutList[7] quantity 12",
+      "reason": "Cut list has 12 mattress slats; steps, diagram and materials need 13"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[3]",
+      "quote": "Edge Banding, 3/4\" Thick 150 feet",
+      "what": "Material quantity is 150 (unit \"board\") while the name already states 150 feet; likely importer artifact — a shopping list would multiply 150 x 150 ft"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5082a9bf93e7e9c6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/80e38b6db9ef037d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/768bd356e7265c1a.webp"
+    ]
+  }
 }

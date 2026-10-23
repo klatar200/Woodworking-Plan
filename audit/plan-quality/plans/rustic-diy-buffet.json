@@ -1,6 +1,6 @@
 {
   "slug": "rustic-diy-buffet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut legs, 2x4s, 1x3s (all in cutList) and a bottom shelf cut from the second listed 72\" plywood panel (materials[2]); the top is the other panel, uncut"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all five rows used: legs steps 0-1, top supports step 2-4, bottom supports steps 7 and 9"
     },
     "R4": {
       "result": "pass",
@@ -28,33 +30,86 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x3, sheet-0.75, 4x4); steps not checked for per-part stock"
+      "reason": "steps name stock (2x4, 1x3, 4x4): 2x4 4x31.25+2x13.5=152 (+kerf) <= 2x96=192 and 1x3 4x31.25+2x13.5=152 <= 192 pass, but the 4x4 posts have no stated length (materials[3] \"Board, 4x4 Deck or Bannister Posts\"), so overall unknown"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Now you can add the short 1\"X3\" pieces to the sides and screw into the bottom shelf.",
-          "why": "3\" screw — no material line lists a 3\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"1\"X3\"\" is the 1x3 board size, not a fastener; steps name no screw sizes; materials list 2-1/2\", 1\" and 1-1/4\" Kreg screws",
+      "search": "steps for /screw|nail|inch fastener/"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "bottom supports \"1\" in, and 6\" down on each leg post\"; tops recessed 1\"; leg height 35\"; support spans from cut list fix post spacing; shelf cutouts traced from the posts",
+      "search": "viewed step images 4 and 8"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "only \"as shown\" is steps[2], which has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs cut, top half assembled, shelf cut, long bottom supports, shelf, then short supports"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Then using a Kreg jig, drill pocket holes into either end, and some shallow pocket holes into one side, as shown."
+        }
+      ],
+      "reason": "Pocket holes in 2x4 (1 1/2\") and 1x3 (3/4\") parts with no jig thickness setting in any text (search /setting|thickness/ steps/description/materials: none); viewed step-4 and step-8 photos show none. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "it should all fit with less than a 1/4\" overhang on the tabletop (or should be flush)."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top Supports — qty 4, 2 x 4 x 31.25"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Plywood, 3/4\" x 20\" Stain Grade Panel 72\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Post Legs — qty 6, 4 x 4 x 35"
+        }
+      ],
+      "arithmetic": "length: 3 posts x 3.5 (4x4 actual, §9) + 2 spans x 31.25 = 10.5 + 62.5 = 73 vs 72 panel (frame 1 longer, not a <1/4 tabletop overhang); width: 2 x 3.5 + 13.5 (cutList[2]) = 20.5 vs 20 panel",
+      "reason": "Posts and supports as cut-listed are larger than the 72 x 20 top, contradicting the step-4 fit check"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Don't forget to seal it with a good polyurethane",
+      "kind": "consumable",
+      "what": "Polyurethane is not in materials (materials[7] is \"Paint or Stain\" only)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1e2c55013aebad38.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1d10fae2063227f6.webp"
+    ]
+  }
 }

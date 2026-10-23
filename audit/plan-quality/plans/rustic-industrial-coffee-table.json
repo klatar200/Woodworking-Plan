@@ -1,6 +1,6 @@
 {
   "slug": "rustic-industrial-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "For additional support, attach a set of \"cleats\" to the bottom of the table top."
+        }
+      ],
+      "reason": "Cleats are attached but no cutList row, size, count or stock is given anywhere (search cutList.part, materials.name, all steps for /cleat/: only steps[1]); viewed step-2 image shows two cleats with screws. Non-structural (added \"for additional support\"), so Fix"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "three \"Tabletop\" rows are the six top boards in the viewed step-1 layout (4 centre boards 26 long, 2 end boards 18 long)"
     },
     "R4": {
       "result": "pass",
@@ -94,33 +105,74 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x4); steps not checked for per-part stock"
+      "reason": "stock named in the viewed layout (1x6 x4 pieces, 1x4 x2): 1x4 2x26 = 52 <= 72 and 1x6 2x26+2x18 = 88 (+3 kerfs 0.375) <= 96 would pass, but both material quantities are 1 and may be importer defaults"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Build the top of the coffee table.\nAttach the boards as shown with wood glue and 1-1/4″ pocket holes and screws. Place pocket holes on the bottom side of the tabletop to best hide them.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "Attach the boards as shown with wood glue and 1-1/4″ pocket holes and screws."
         }
-      ]
+      ],
+      "reason": "Step uses 1-1/4\" pocket-hole screws; materials list only boards, hairpin legs, stain and polycrylic (search materials for /screw/: none)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step-1 layout shows board order and sizes (2'-2\" x 1'-6\"); viewed step-2/4 photos show cleat and hairpin-leg positions near corners (no numbers, shown in image)",
+      "search": "viewed step images 1, 2, 4"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"as shown\" step 1 has a viewed layout image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top built, cleats added, finish, then legs"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Place pocket holes on the bottom side of the tabletop to best hide them."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards with no jig thickness setting in any text (search /setting|thickness|jig/ steps/description/materials: none); viewed images show none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "4 centre boards 3.5+3.5+5.5+5.5 = 18 = End board length 18 (cutList[0],[1],[2]); hairpin legs in materials and installed; steps reach finished table",
+      "arithmetic": "3.5 + 3.5 + 5.5 + 5.5 = 18 vs cutList[2] length 18"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Attach the boards as shown with wood glue",
+      "kind": "consumable",
+      "what": "Wood glue is not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3947349eb3eea3f0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c27f327805738a3b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32f2bd11a35f7f2d.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "rolling-tool-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -311,10 +311,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps 0-16 (End Rails/Stiles, Upper/Middle/Lower Side Rails, Side Stiles, End Panels, Top, Bottom, Fixed Shelf, Bottom Frame Rails/Stiles, Adjustable Shelf + Trim, Tray = Tray Base, Tray Ends/Sides) matches a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 17 rows are used by steps 0-15"
     },
     "R4": {
       "result": "pass",
@@ -325,31 +327,89 @@
       "reason": "R5 precondition not met: 3 stock types (1x2, 1x3, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use only 1 1/4\" coarse-thread Kreg pocket-hole screws, in materials; shelf pins and pulls listed"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "elf Pin Jig makes this process easy. Sand the faces smooth.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c56a5ee33e5de358.webp"
+          "path": "steps[16].body",
+          "quote": "screw a pair of utility pulls to the tray."
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "add four swivel casters to the bottom."
         }
-      ]
+      ],
+      "reason": "Pull location on the tray (which faces, height) and caster positions on the bottom frame are never stated; the viewed tray image (step 15) is the unassembled tray with no pulls, and no viewed image shows casters (search steps for /pull|caster/: only steps[16]). Shelf-pin holes, rail heights (12\"), stile/rail hole positions are given in viewed drawings."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "35 reference(s), each in a step with its own image"
+      "reason": "every \"as shown\" step has its own step image; viewed images 0,3,5,8,15 carry dimensions and labels"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "ends and sides built, base frame, end panels, top/shelves, bottom frame, shelf and tray built before final assembly; panels fixed to side stiles before top/shelf"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"Set you Kreg Pocket-Hole Jig for 3/4\"-thick material\"; all pocket-holed parts are 3/4\" thick in the cut list"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "add four swivel casters to the bottom."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "2 1/2\" Locking swivel casters"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Also cut two Middle Side Rails and two Side Stiles to length from 1x2 boards"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Middle Side Rail — qty 2, 0.75 x 2.5 x 20 (Kreg-corrected)"
+        }
+      ],
+      "arithmetic": "casters: step says 4, materials[7] quantity 2; Middle Side Rail: step says 1x2 stock (0.75 x 1.5 per §9) but cut row width is 2.5 (the 1x3 width); the viewed step-4 side-frame image draws the Middle Side Rail narrower than the Lower Side Rail",
+      "reason": "Step caster count (4) exceeds materials (2); step names 1x2 stock for the Middle Side Rails while the cut row is 2.5 wide"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[16].body",
+      "quote": "Wiping on a simple coat of oil finish is simple and effective.",
+      "kind": "consumable",
+      "what": "Oil finish is not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ff693e6cdff591f7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c56a5ee33e5de358.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cd14dacb796d13f3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b6aac7dac8dd76a1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3cef2d99d705615f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af1daca90b944e92.webp"
+    ]
+  }
 }

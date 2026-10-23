@@ -1,6 +1,6 @@
 {
   "slug": "rustic-farmhouse-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -311,44 +311,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all parts named in steps 0-7 (Leg Posts, Inner/Outer Caps and Bases, Feet, Outer/Inner/Cross Rails, Top Slats, Breadboard Ends) match cutList rows with the same quantities"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Foot",
-          "why": "no step mentions it (searched steps for foot)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Foot\" is used as \"Feet\" in steps[0] (\"four Feet\") and steps[1] (\"attach the Feet\"); all 11 rows used"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock named per part (4x4 legs, 2x4 ends/rails, 2x6 slats; Breadboard Ends 5.5 wide = 2x6 only per §9). 2x4: 51+58+55+62+28+132+63+49 = 498 (+~20 kerfs x 1/8 = 2.5) <= 6x96 = 576; 2x6: 6x90+2x33 = 606 (+kerf) <= 7x96 = 672; 4x4: 4x20 = 80 (+3 kerfs) <= 96",
+      "arithmetic": "cutList rows (Kreg-corrected) x quantities vs materials[0-2]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 3\" woodscrews, 2 1/2\" woodscrews, 2 1/2\" Kreg screws; all three in materials; 16 x 3\" = 2 end assemblies x 2 posts x 2 ends x 2 pilot holes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed drawings give cap/base/foot offsets (1 3/4\", 3 1/2\", 4 1/2\"), rail layout 21\" x 3 and 11 1/2\" openings, rail-to-end placement 1 3/4\"; top overhangs \"equal\"",
+      "search": "viewed step images 2, 4, 5"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "every \"as shown\" step has its own image; viewed images show labelled dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "ends, rails, joined, top built, finished, then top attached to base"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] sets the jig for 1 1/2\"-thick material; all pocket-holed parts (2x4 rails, 2x6 slats, ends) are 1.5\" thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step counts match cutList; 6 slats x 5.5 = 33 = Breadboard End length 33; Outer Rail 66 = 3 x 21 + 2 cross rails x 1.5; screw counts consistent; every part installed; steps reach finished table",
+      "arithmetic": "6 x 5.5 = 33 (cutList[9] width, cutList[10] length); 3 x 21 + 2 x 1.5 = 66 (cutList[7], [8], [6])"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "First, spread glue on the ends of the Leg Posts.",
+      "kind": "consumable",
+      "what": "Wood glue (steps 2, 7) and stain/paint/clear finish (step 8) are not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/726d73f0bff10953.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/05c3e5ae6382d79d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e789d37a19cfa91a.webp"
+    ]
+  }
 }

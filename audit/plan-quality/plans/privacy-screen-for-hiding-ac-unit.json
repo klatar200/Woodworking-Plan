@@ -1,6 +1,6 @@
 {
   "slug": "privacy-screen-for-hiding-ac-unit",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use frame boards (legs, horizontal boards) and fence boards; cutList has Frame Boards and Fence Boards"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both rows used in steps 1-4"
     },
     "R4": {
       "result": "pass",
@@ -28,30 +30,62 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 1x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "materials give 1\" Kreg screws (pocket), 1\" brad nails, 1.25\" exterior screws (frame connection); steps name no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Space out your fence boards until you have a desired look. Be sure to keep the boards spaced far enough to allow proper airflow through your privacy screen. Add construction adhesive to the boards alo",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a1fc24d6aa0e49.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Leg length 5 inches given; slat spacing is \"desired look\" with airflow (as desired); viewed finished photo shows evenly spaced slats between rails",
+      "search": "viewed step images 2, 5, 7"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no drawing references"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames assembled, slats nailed on, frames then joined; finishing \"at any step\""
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "drill two pocket holes on each end of the horizontal boards. I used holes 'a' and 'c'."
+        }
+      ],
+      "reason": "Hole letters given but no jig thickness setting in any text (search /setting|thickness/ steps/description/materials: none); viewed images (steps 2, 4, 7) show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "8 frame boards = two frames, 12 fence boards = six per frame (viewed photo shows two panels of six slats); screws: 16 pocket screws = 2 frames x 2 horizontals x 2 ends x 2 holes; frames joined in final step",
+      "search": "steps vs cutList/materials; staples/hinges/anchors not used"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Add construction adhesive to your boards, then secure the frame with your kreg screws.",
+      "kind": "consumable",
+      "what": "Steps 4, 5 and 7 use construction adhesive; materials list only \"Outdoor Wood Glue\" (searched materials for /adhesive/: none)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49fe64b1653c5293.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a1fc24d6aa0e49.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be9965ccd35b4787.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "pedestal-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,66 +179,74 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cut/assembled part in steps[0-7] (Sides, Base, Side Face, Top and Bottom Face, Drawer Sides/Top/Face, Caster Bases, Top, Doors) matches a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 cut rows are used by a step (Doors step 7, Drawer faces/sides/tops step 2, Caster Bases step 2, Top steps 3/6)"
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "result": "pass",
+      "reason": "Top 1.5x20x30 matches materials[2] butcher block 20\" x 30\" x 1 1/2\"; 3/4 parts from 4x8x3/4 sheet, doors 1/2 from 2x4x1/2 sheet; all fit",
       "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top — qty 1, 1.5 x 20 x 30 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Sheet of plywood, 4' x 8' x 3/4\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Sheet of plywood, 2' x 4' x 1/2\""
-        },
         {
           "path": "materials[2].name",
           "quote": "Butcher block (or 3/4\" plywood double stack), 20\" x 30\" x 1 1/2\""
         }
       ],
-      "arithmetic": "cutList[0] 1.5×20: no listed stock has thickness 1.5 (±1/32) with width ≥ 20; stock = sheet 0.75, sheet 0.5, sheet 0.75",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top — qty 1, 1.5 x 20 x 30 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "readerNote": "Sweep fail rejected: Top 1.5 thick matches materials[2] butcher block 20\" x 30\" x 1 1/2\" (sweep did not parse \"1 1/2\")"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "materials give 1¼” pocket-hole screws and 1 1/2\" brad nails; steps give no sizes, no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Base set 11\" from bottom; other placements flush/centered/relational; sink notch size is measured from the builder's own sink"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame, face frame, drawers built before top/doors; notches in Base/Drawer Top cut after assembly (jigsaw) but still reachable"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill three pocket holes along the short, top edge of the two Sides."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" parts (steps 0-2) but no jig thickness setting appears in any text field (search: /setting|thickness|jig|depth/ over steps, description, materials: none); step images not opened for a setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "cut-list rows install: 8 Caster Bases = 2 front corners x 2 bases x 2 drawers; casters qty 4 consistent with caster on each front base; drawer slides 4, hinges 2, pulls 2, knobs 2 match 2 drawers / 2 doors; final step reaches finished piece",
+      "search": "steps[2],[5] caster text; materials casters/slides/hinges"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c60a6e09414b03ec.webp"
+    ]
+  }
 }

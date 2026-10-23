@@ -1,6 +1,6 @@
 {
   "slug": "queen-size-modern-farmhouse-bedframe",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,44 +23,79 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[12].body",
-          "quote": "s optional, but suggested if you don't use a box springs. Cut plywood to size (80\" x 60\") and place on top of your support boards. This will give extra stability and prevent the mattress from sagging.",
-          "why": "cut sentence states 60\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Cut plywood to size (80\" x 60\") and place on top of your support boards."
         }
-      ]
+      ],
+      "reason": "Step 13 (optional) cuts an 80\" x 60\" plywood base; no cutList row and no plywood in materials (search cutList.part and materials.name for /plywood|sheet|80/: none). Non-structural (step says optional)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every row is used: legs steps 0-2, planks 4-7, top caps 8, rails 9, rail supports 9, supports 11, vertical pieces 11"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x4, 1x3, 1x6, 1x8, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock per part (legs 1x4, planks 1x6, top cap 1x3, rails 1x8, supports 2x2). 1x4: 6x50+6x23.5=441 (+kerf) <= 6x96=576; 1x3: 2x69=138 <= 2x72=144; 1x6: 8x62=496 <= 8x72=576; 1x8: 2x82=164 <= 2x96=192; 2x2: 2x80+5x63+5x9=520 (+12 kerfs x 1/8 = 1.5 -> 521.5) <= 5x72+2x96=552",
+      "arithmetic": "all inputs quoted from materials[0-5] and cutList[0-7] (Kreg-corrected)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws (steps 8,9), 1 3/4\" wood screws (step 10), 2 1/2\" wood screws (step 12) all in materials; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step-1 drawing gives notch depth 1\", notch lengths 27 1/2\" (headboard) and 16 1/2\" (footboard) with 22 1/2\" and 7\" solid; cap overhang 1\"; rail 2x2 1\" above bottom, screws every 10\"; rail attach height shown in viewed step-11 drawing; support spacing \"evenly\"",
+      "search": "viewed images 22b43407, f5bb76ad"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"See plans for dimensions\" (steps[0]) is answered by the viewed step-1 image with notch dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "notched legs cut, glued up, then planks slid in bottom-to-top, secured, cap added; rails and supports built before assembly of rails to legs and supports"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill pocket holes on each end of each board."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" planks with no jig thickness setting in any text (search /setting|thickness|jig/ steps/description/materials: none); viewed images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step counts match cutList (8 planks, 4 legs of 3 boards = 6 per end, 2 caps, 2 rails, 2x2 80, 5x63, 5x9); notch lengths 27 1/2 = 5 x 5 1/2 and 16 1/2 = 3 x 5 1/2 planks, 5+3=8 planks; cap 69 = 62 - 2 x 1 notch + 7 leg widths + 2 x 1 overhang; hardware set in materials; steps reach mattress",
+      "search": "viewed drawing 22b43407; materials for hardware"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22b434071321f65d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f5bb76ad1be28f18.webp"
+    ]
+  }
 }
