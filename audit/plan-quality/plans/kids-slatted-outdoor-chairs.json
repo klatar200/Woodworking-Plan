@@ -1,6 +1,6 @@
 {
   "slug": "kids-slatted-outdoor-chairs",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -211,14 +211,26 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Print the back frame board template (in the extras). Cut it out and mark the cut line on the 14\" back frame boards. Cut them out."
+        }
+      ],
+      "reason": "The cut line for the two 14\" Back Frame boards comes from a printable template in 'the extras', which is not in the plan; the viewed step[6] image shows the boards only with a 14\" length and no cut angle. The rest of the build is complete, and the cut can be fitted in place ('level on the bottom'), so Fix rather than Unpublish; likely because the cut's importance to the back lean is not stated. Search: all fields for /template|extras|pdf|print/i, only steps[6] matches.",
+      "readerNote": "sweep recorded pass although steps[6] quotes 'template (in the extras)'"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[1]-[8] (back leg boards, front legs, arms, seat frame 8 1/2 and 14, back frame 14 and 11, slats) vs cutList[0..7]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all eight rows are used in steps[1]-[8]"
     },
     "R4": {
       "result": "pass",
@@ -229,23 +241,51 @@
       "reason": "R5 precondition not met: 3 stock types (2x2, 2x4, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "1 1/2\" pocket hole screws (steps[2],[3]) = materials[3] qty 8 = 2 per leg x 4 legs; 2 1/2\" pocket hole screws (steps[4]-[7]) = materials[4]; 1 1/2\" finishing nails (steps[8]) = materials[5]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numeric: front legs 1\" in, back legs 5 1/2\" back, seat frame top 10\" off the ground, slat gaps 1/2\", 37 1/2 degree cut; back frame boards are relational (flush with the seat frame outside, level on the bottom, flush with the top)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs on arms, seat frame built then attached, back frame, top back board, slats, then finish"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "1 1/2\" jig setting is stated in steps[1], [2], [4], [7] for every pocket-hole part (1 1/2\" 2x4 back legs, 2x2 front legs, seat frame, back frame)"
+    },
+    "R14": {
+      "result": "pass",
+      "arithmetic": "Width: seat 14 + 2 x 2.5 arm width = 19 = step[0] 19\". Seat slats: 4 x 2.5 + 3 x 0.5 = 11.5 = seat frame 8.5 + 2 x 1.5 = 11.5; 8 slats = 4 seat + 4 back. Pocket screws 1 1/2: 2 x 2 front + 2 x 2 back = 8 = materials[3].",
+      "reason": "every made part is installed and the steps reach the finished chair; step[0] 10 3/4\" seat height = 10\" frame top + 3/4\" slat"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/2da215eaf2cc35ea.webp",
+      "plans/a48a34fdfc6ee38a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "The seat is 14\" wide by 11\" deep and sits 10 3/4\" off the ground.",
+      "what": "Seat frame depth is 8 1/2 + 2 x 1 1/2 = 11 1/2 (cutList[3], cutList[1]) and the four seat slats cover 4 x 2.5 + 3 x 0.5 = 11.5, not the 11\" the step gives."
+    }
+  ]
 }

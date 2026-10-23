@@ -1,6 +1,6 @@
 {
   "slug": "horseshoe-pit-frame",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,10 +263,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (frame sides, slats, front/back, back slat, pit back, backstop slats/legs/top) vs cutList[0..7]: all present; paver and sand parts are in materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 cut rows are used in steps[0]-[5]"
     },
     "R4": {
       "result": "unknown",
@@ -277,23 +279,86 @@
       "reason": "R5 precondition not met: unparseable stock materials[2]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 2 1/2\" pocket hole screws (steps[0],[1],[2],[4],[5]) = materials[3]; lag bolts (step[6], no size) = materials[4] 3\"; count 2 per leg x 3 legs x 2 backstops = 12 = qty 12"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "slat gaps and offsets are numeric (steps[0] gap, steps[4] 1/4\"), backstop top overhang and 5 1/2\" are in viewed images, frame openings 15 7/8, 8, 33 1/4 are in the viewed step[2] image; backstop-to-frame gap is 1/4\" (steps[6]); other placements are flush/centered"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames and backstops are built before steps[6] installs them; steps[9] (second backstop) is listed after the install but needs nothing from it"
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "steps[5] sets the jig for 1 1/2\" material to drill pocket holes in the 4x6 backstop legs (3 1/2\" thick in cutList[7]); the step itself says the 4x6 needs a different jig set-up, so whether the setting contradicts the thickness is outside section 9. Frame and slat boards (1 1/2\") are stated and consistent."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "There should be a 6 1/8\" gap between all the slats."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "secure the backstop top with 2 1/2\" pocket hole screws so the front is flush with the front of the legs and the back overhangs."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Backstop top 1 1/2\" x 3 1/2\" x 71 3/4\" (Kreg row; legs cutList[7] are 3 1/2\" x 5 1/5\")"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Now all that is left is to install your horseshoe pit stakes and enjoy a fun summer game!"
+        }
+      ],
+      "arithmetic": "(a) steps[0]: frame side 69 with 3 slats of 1 1/2\" thickness leaves 69 - 3 x 1.5 = 64.5 / 4 openings = 16.125 = 16 1/8 (matches viewed step[0] image '16 1/8\"' x4 and 16 1/4\" slat length), not the 6 1/8 the text gives (4 x 6.125 + 4.5 = 29 <> 69). (a) steps[5]: top is 3 1/2\" wide in cutList[5] and legs are 3 1/2\" deep in cutList[7] (3 1/2\" x 5 1/5\"), so a flush front leaves 3.5 - 3.5 = 0 overhang at the back; the viewed step[5] image shows the top 5 1/2\" deep with a 2\" back overhang (5.5 - 3.5 = 2). Backstop slats cutList[6] are also 3 1/2\" wide while the viewed step[4] image labels a slat face 5 1/2\", and 6 x 2x6 in materials[1] feed no cut row of width > 3 1/2\".",
+      "reason": "(a) step text and cut-list widths disagree with the viewed images; (c) horseshoe stakes are used in steps[8] but are not in materials (search: materials[0..8] for /stake|horseshoe|post/i, no match). Likely, because the width reading rests on the image arrow labels."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/6254679800074044.webp",
+      "plans/f83dd964df4b60b5.webp",
+      "plans/61838372a33f5d20.webp",
+      "plans/1e906bfcd507673b.webp",
+      "plans/561dfcc60ac17b3f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[7]",
+      "quote": "Backstop legs 3 1/2\" x 5 1/5\" x 21\" (importDiffs source; live 3x5x21)",
+      "what": "Source row reads 5 1/5, not a tape fraction; legs 5 1/2 wide along the backstop make 3 x 5.5 + 2 x 27.625 = 71.75 = Backstop top length (cutList[5]), and the viewed step[5] image shows 5 1/2\"."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Fill the throwing platform squares with sand, leaving room for the pavers on the top.",
+      "what": "materials[6] lists four 8x16 pavers, but no step says where they go (the viewed step[2] image shows two 15 7/8\" x 8\" openings per frame)."
+    },
+    {
+      "path": "materials[7].name",
+      "quote": "Wood glue",
+      "kind": "consumable",
+      "what": "Wood glue is in materials; weed barrier (steps[6], optional) is not in materials (consumable)."
+    }
+  ]
 }

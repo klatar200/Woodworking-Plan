@@ -1,6 +1,6 @@
 {
   "slug": "homestead-inspired-rustic-centerpiece",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,36 +23,79 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (2 end pieces, 7 1/2\" base, steel pieces) vs cutList[0..2]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "End Pieces (steps[0]-[4]), Base Piece (step[5]), Ends = steel bars (steps[6]-[10]) are all used"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "cutList[2] 0.125x2x9 is exactly materials[1] 'Flat Metal Bar- 1/8\"x2\"x9\"'; wood rows 1x4 from materials[0] 1x4 48\"",
+      "readerNote": "sweep recorded unknown (thinner than stock) but cutList[2] is the listed steel bar, not wood"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[2] not 0.75″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "arithmetic": "Wood: 5 + 5 + 7.5 = 17.5, + 3 cuts x 1/8 = 17.875 <= 48 (materials[0] 'Board, 1x4 48\"'). Steel: 2 x 9 = 18 vs materials[1] qty 2 x 9\" = 18.",
+      "reason": "steps name the stock for each part (1x4 wood, steel)",
+      "readerNote": "sweep recorded unknown; stock per part is named in steps[0],[4],[5],[6]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1 1/4\" nails (steps[5]) = materials[3]; screws (steps[10], no size) = materials[2] 3/4\" Phillips pan head; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "steel hole positions given as numbers (2 3/4\", 4 1/2\", 6 3/4\", a little over 1/4\" up) in steps[6]; angle marks 1\" and 2\" in steps[0]-[1]; 5\" height in steps[4]; steel lies along the bottom of the base (relational)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "angles cut, pieces cut to 5\", ends attached to base, steel drilled then pre-drilled into wood, finished, then screwed on"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes; nails and glue (steps[5]) and screws (steps[10]) stated"
+    },
+    "R14": {
+      "result": "pass",
+      "arithmetic": "Screws: 3 bottom + 2 side holes = 5 per bar x 2 bars = 10 = materials[2] qty 10. Overall length: base 7.5 + 2 x 0.75 end thickness = 9 = steel length 9.",
+      "reason": "every made part is installed; steps reach the finished piece"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "using 1 1/4\" nails and wood glue.",
+      "kind": "consumable",
+      "what": "Wood glue is used but not in materials (consumable)."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "I decided to add a little hot glue before I screwed my steel to the bases",
+      "kind": "consumable",
+      "what": "Hot glue (optional) is not in materials (consumable)."
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "I stained my bases in Rustoleum Dark Walnut, and painted the steel and screws in Rustoleum Soft Iron",
+      "kind": "consumable",
+      "what": "Stain and paint are not in materials (consumables)."
+    }
+  ]
 }

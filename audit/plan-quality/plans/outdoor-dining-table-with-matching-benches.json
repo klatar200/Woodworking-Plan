@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-dining-table-with-matching-benches",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -32,39 +32,140 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "readerNote": "Video is recommended (steps[0]) and steps[14] defers detail to it ('The video shows this well, around the 8 minute mark'); no link is in the plan and the steps still describe the bench legs, so not scored as a dependency. The vagueness is recorded in gaps.",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|http|video/i: video only in steps[0] (recommendation) and steps[14]"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Parts cut in steps: table top boards (steps[1]-[2]), stretchers (steps[4]), legs 28 1/2 and 23 1/2 (steps[5]), bench legs from the 18\" cut-offs (steps[1],[12]), bench spine and 14 1/2\" pieces (steps[13]), bench tops (steps[15]); all have rows. Scrap-wood feet are an optional tip."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 8 rows are used in steps[1]-[15]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x8, 4x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Pine boards, 4\"x4\"x8'"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Stretchers x 3 [4, 4, 68]"
+        }
+      ],
+      "search": "every step names its stock (4x4 for stretchers, legs, bench spine and 14 1/2\" pieces: steps[4],[5],[13]); 4x4 is the only stock for these rows, quantity 6 (not a default)",
+      "arithmetic": "4x4 parts: 3 x 68 + 4 x 28 1/2 + 4 x 23 1/2 + 2 x 59 + 4 x 14 1/2 = 204 + 114 + 94 + 118 + 58 = 588 in; bought 6 x 8' = 6 x 96 = 576 in; 588 > 576 before kerf (17 pieces from 6 boards needs at least 11 cuts x 1/8 = 1 3/8 more).",
+      "reason": "The 4x4 cut list needs 12\" more than the six 8' boards in materials. 2x8 is covered: 5 x 78 + 4 x 66 + 8 x 18 = 798 < 9 x 96 = 864."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "plug everything with some wood glue and a 3/8\" dowel, cut it down and sand it flush to hide the fasteners."
+        }
+      ],
+      "search": "materials names searched for /dowel|plug|pilot/i: no match; materials[2] 2 1/2\" and materials[3] 4\" XL screws match steps[2],[7],[8],[10]",
+      "reason": "A 3/8\" dowel is used in steps[15] but is not in materials. The screws that fasten the bench tops (steps[15] 'screw them in') have no stated type or size anywhere."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Positions are given for table overhang (3 1/2\" each edge, 1 1/2\" each end, steps[10]) and stretcher spacing (outside the first 4x4, steps[8]), but the text never says which 4-piece arrangement forms a table leg (where the two 23 1/2\" pieces sit between the 28 1/2\" pieces, steps[5]-[7]) nor how the 18\" bench pieces join (steps[12],[14]); the only images are two finished-piece photos and a video thumbnail (viewed), too far away to settle it, and no step has a diagram."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut offcuts (steps[1]), top (steps[2]-[3]), legs (steps[5]-[7]), stretchers (steps[8]), extra pocket holes (steps[9]) then top attached (steps[10]); benches built from the offcuts (steps[12]-[15]); finish last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I drilled 5 holes along one edge of four of the 1x8s using the Kreg Pocket-Hole Jig XL."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "add 3 pocket holes to one of the long ends connect two of them together."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" 2x8 parts (table top, bench legs: steps[2],[12],[14]) with no jig setting stated. Search steps/summary/description for /setting|mark|thick/i: only steps[6] 'Adjust your XL jig to the 3 1/2\" mark', which covers the 4x4s only. No images on these steps. The bench-top fasteners (steps[15]) are 'screw them in' with no size."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "I also left a little bit of space between the two bench boards so water wouldn't get trapped in between them."
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Bench slats x 2 [2, 8, 66]"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "four of the 1x8s"
+        }
+      ],
+      "arithmetic": "(a1) Per steps[15] each bench has 'the two bench boards' and steps[15] says to 'do all of the bench steps twice for two benches': 2 x 2 = 4 slats, while cutList[4] gives x 2 and the other bench rows are totals for two benches (Bench legs x8 = 4 per bench; Bench stretchers x2 = 1 per bench). Nine 2x8s (materials[0]) = 5 table + 4 slat boards. (a2) steps[2] calls the top boards '1x8s' while cutList[0] is 2\" thick and materials are 2\"x8\".",
+      "reason": "Bench slat count disagrees between the steps and the cut list, and the table-top board size is named 1x8 in the steps but 2x8 elsewhere. (b) every part installed; (c) no hardware beyond screws; (d) steps reach finish."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "Attach two of the 2x8 pieces together with pocket holes (attach two of the long sides together).",
+      "what": "The bench leg assembly (which faces of the two 18\" 2x8s meet, how the 14 1/2\" 4x4 sits 'flush to the ground, but centered between the two 2x8s', and the stated result that the spine 'should sit flush with the 2x8s') cannot be followed from the text; the only help is the video."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "There should be a 3 1/2\" overhang along each edge of the table",
+      "what": "Overhang is unverifiable: top is 5 x 7 1/4 = 36 1/4 wide and the base width is never stated (leg frame 23 1/2 + 2 x 3 1/2 = 30 1/2 if the short pieces sit between the uprights would give 2 7/8, not 3 1/2)."
+    },
+    {
+      "path": "steps[17].body",
+      "quote": "I added two coats of outdoor water based spar urethane.",
+      "what": "Finish not in materials beyond 'Finish of choice' (consumable); wood glue and filler are listed.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "b3f5910ee153750c.webp",
+      "6d3abd11c7d804a2.webp",
+      "609e556b489a4b6d.webp"
+    ]
+  }
 }

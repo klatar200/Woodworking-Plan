@@ -1,6 +1,6 @@
 {
   "slug": "knock-down-cutting-support-grid",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -287,10 +287,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0]-[3] (Lower Rails, Upper End Rails, Outer/Center Rail Fillers, Riser Blocks, Upper/Lower Cross Bars, Cross Bar Fillers, 2x4 Cross Bars) vs cutList[0..8]: all present with matching counts"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all nine rows are cut in steps[0]/[2]; the riser blocks are shown fitted under the Lower Rails in the viewed step[1] image"
     },
     "R4": {
       "result": "unknown",
@@ -301,23 +303,59 @@
       "reason": "R5 precondition not met: 2 stock types (2x2, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0]-[4]: no screws or nails ('only used glue'); wood glue is in materials[2]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step[1] image: 1 1/2\" spacing between rail fillers and riser blocks 6\" from each end of the Lower Rail; spacing is a 2x2 scrap (steps[1],[3]); cross bar assemblies sit in the notches"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "5 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "rails cut and glued, cross bars cut and glued, then test fit and sand"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes or screws; joints are glue only (steps[1])"
+    },
+    "R14": {
+      "result": "pass",
+      "arithmetic": "Rail: 2 x 23.75 + 2 x 14.25 + 14 + 4 x 1.5 spacer = 47.5 + 28.5 + 14 + 6 = 96 = Lower Rail (cutList[0]). Cross bar: 31.5 + 2 x 3.75 + 2 x 1.5 = 42 = Upper Cross Bar (cutList[4]). Counts: 4 end, 4 outer, 2 center (steps[0]) = cutList[1..3]; 4 upper, 4 lower, 8 fillers (steps[2]) = cutList[4..6].",
+      "reason": "every made part is installed (riser blocks shown in viewed images) and the steps reach the test-fitted grid"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/57ed5cc896d06beb.webp",
+      "plans/7416ea845bd5589d.webp",
+      "plans/b3809d1d0dd4fdb8.webp",
+      "plans/b1adb1df1ce23aaf.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "We also cut four Riser Blocks to elevate the rail assemblies to the correct height in our Mobile Project Center and Track Horse.",
+      "what": "No step text says to attach the four Riser Blocks to the Lower Rails; their 6\" position appears only in the viewed step[1] image."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "sand the rail notches with 80-grit sandpaper to wide them a bit",
+      "kind": "consumable",
+      "what": "80-grit sandpaper is used but not in materials (consumable)."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "mobile-shop-cart-for-foreman-router-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,24 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "you can add a 3/4\" x 3/4\" piece of wood around the perimeter of the top."
+        }
+      ],
+      "search": "cutList parts and materials names searched for /perimeter|rail|lip|3\\/4\" x 3\\/4\"|strip|trim/i: no match",
+      "reason": "The optional perimeter piece is a part the step assembles; it has no cut-list row, no length, and no listed material to cut it from. All other parts named in steps[0]-[8] have rows (Sides, Top / Bottom, Back, Mid Span, Drawer Guts rows, Drawer Bottom, Drawer Face, Clamp Rack rows)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 11 rows are used: viewed cb6013d05d5a9a35 dimensions each (24x32, 30x32, 22 1/2x30, 22 1/2x4, 20x5 3/4, 15 1/2x5 3/4, 21 1/2x15 1/2, 24x8, clamp pieces). Fit: Top/Bottom 24 outer, 24 - 2 x 3/4 = 22 1/2 = Back width = Mid Span length; Sides 30 = Back height; Drawer 20 + 2 x 3/4 = 21 1/2 = Drawer Bottom length."
     },
     "R4": {
       "result": "pass",
@@ -24,23 +38,114 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "attach DRAWER BOTTOM with wood glue and 1 1/4\" brad nails around the perimeter."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "2\" Brad Nails"
+        }
+      ],
+      "search": "materials names searched for /brad|nail/i: only materials[5] (2\")",
+      "reason": "steps[4] uses 1 1/4\" brad nails but the only nails in materials are 2\" (used by steps[7]). 1 1/4\" pocket screws (steps[0],[1],[3],[6],[8]) match materials[4]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slides at \"8\" from the very top\" (steps[5], dimensioned in viewed dfdcc72ed325a49d); Mid Span at \"16\" back from the face\" (steps[1]); pocket-hole positions shown in viewed cb6013d05d5a9a35; clamp pieces '7\" apart' with outer pieces fixed by the 32\" parts (viewed c2ec7465b6475606); casters at 'four corners'; face 'flush with the top and sides'. Drawer-pull position is not given (see gaps)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "attaching each of the SIDES to the TOP / BOTTOM pieces using wood glue and 1-1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes in the approximate locations shown on each piece."
+        }
+      ],
+      "reason": "The pocket-hole step is last (steps[9]) but steps[0], [1], [3] and [6] already screw through pocket holes in the same parts. Step 9 ends 'See cut list and diagrams first to accurately cut the plywood sheets', so it belongs before step 0. The build can still proceed once reordered, so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes in the approximate locations shown on each piece."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts (cutList thicknessIn 0.75) but no jig thickness setting is stated. Search steps/summary/description for /setting|thick|jig/i: only 'Kreg Drawer slide jig' (steps[5]). Viewed cb6013d05d5a9a35 shows hole positions, no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[6].name",
+          "quote": "Drawer Pull"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Attach DRAWER FACE to be flush with the top and sides of the cart."
+        }
+      ],
+      "search": "all steps searched for /pull|handle|knob/i: no match",
+      "reason": "(c)/(d) The drawer pull is in materials but no step installs it, so the finished drawer has nothing to open it by and no position is given. (a) Dimensions agree: 24 - 2 x 3/4 = 22 1/2 (Back, Mid Span); 20 + 2 x 3/4 = 21 1/2 (Drawer Bottom length 21 1/2); face 24 wide = cart outer width. (b) every other part is installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "Drawer Pull",
+      "what": "No position for the drawer pull anywhere in the plan (never mentioned in steps)."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "use some instant glue or double-sided tape to hold the drawer face in place",
+      "what": "Instant glue / double-sided tape used but not in materials (consumable).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "you can add edge banding to the outer face frame",
+      "what": "Optional edge banding is not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "cb6013d05d5a9a35.webp",
+      "dfdcc72ed325a49d.webp",
+      "c2ec7465b6475606.webp"
+    ]
+  }
 }

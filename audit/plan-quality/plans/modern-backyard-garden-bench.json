@@ -1,6 +1,6 @@
 {
   "slug": "modern-backyard-garden-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Parts named in steps: 15\" crosspieces and 16.5\" verticals (steps[0],[4]), 48\" lengths (steps[5]), cross beam (steps[6]), 18\" slats (steps[7]); cut-list rows: Cross beams for bench ends, Vertical boards, Bench lengths, Bench seat cross support, Bench slats."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 5 rows are used in steps[4]-[7]."
     },
     "R4": {
       "result": "pass",
@@ -145,22 +149,74 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only sized fastener is '2 1/2-inch exterior Kreg screws' (steps[4],[5]) = materials[4] 'Exterior 2 1/2 Kreg Screws'; brad nails (steps[7]) have no size in the steps. Count 36 = 6 crosspieces x 2 ends x 2 holes (24) + 2 lengths x 2 ends x 2 holes (8) + cross beam 2 ends x 2 holes (4)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Crosspiece positions are given: 'aligned with the top' / 'bottom edge' of the 16.5\" boards and middle board 'top edge is 12.25 inches from the floor' (steps[4]); 48\" lengths 'align with the top edge of the middle cross piece' (steps[5]); cross beam shown between the 48\" lengths at their top edge, near mid-span, in viewed 8d40a6889fcd0280 and b9d6cd5b3224f57f. Slats are 'dry fit' (relational)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (steps[0]) and trim (steps[1]-[2]), drill pocket holes (steps[3]), ends (steps[4]), 48\" lengths (steps[5]), cross beam (steps[6]), slats last (steps[7]) then finish. Nothing needs undoing."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] 'Set your pocket jig for 1 1/2 inch lumber' and steps[5] 'pocket holes set for 1 1/2 inches' cover every pocket-holed part (2x4, 1 1/2 thick corrected). Slats use glue and brad nails."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Measure 3-inches from saw blade to the fence, and trim the opposite edge of your 2x4"
+        },
+        {
+          "path": "importDiffs[0].source",
+          "quote": "15\" x 1 1/2\" x 3 1/2\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "You'll end up with six 15-inch pieces of 2x4, two 48-inch pieces of 2x4, and four 16.5-inch pieces of 2x4."
+        },
+        {
+          "path": "materials[0]",
+          "quote": "Board, 2x4 15 board quantity 6"
+        }
+      ],
+      "arithmetic": "(a1) Steps[1]-[2] rip all 2x4s to 3\" wide (3.25 then 3 from the fence); Kreg's cut list (record importDiffs correctRow) gives 3 1/2\" wide for the 2x4 rows, i.e. unripped width. (a2) Cut list 15\" pieces: Cross beams x6 + Bench seat cross support x1 = 7; steps[0] says six 15\" pieces and materials[0] buys 6, while steps[6] cuts one more 2x4 cross beam.",
+      "reason": "Part width in the cut list (3 1/2) disagrees with the width the steps rip to (3), and the 15\" piece count in steps[0] and materials (6) is one short of the cut list (7). (b) every part is installed; (c) no hardware; (d) steps reach the finished bench."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "applied a pre-stain conditioner, and stained the bench",
+      "what": "Pre-stain conditioner and stain are not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "eb6b0fb5b9c77a7c.webp",
+      "b9d6cd5b3224f57f.webp",
+      "8d40a6889fcd0280.webp"
+    ]
+  }
 }

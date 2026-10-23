@@ -1,6 +1,6 @@
 {
   "slug": "kids-cedar-picnic-set",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -227,10 +227,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0]-[6] (tabletop boards, supports, legs, leg supports, bench versions) vs cutList[0..7]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all eight rows are used by steps[0]-[6]; bench rows 4-7 are the 'repeat above steps' parts of steps[6]"
     },
     "R4": {
       "result": "pass",
@@ -241,22 +243,60 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0]-[6] name no fastener size; the only fastener in materials is 1 1/4\" Kreg screws (materials[3]) and wood glue (materials[2]); no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "support placement is numeric (1 1/2\" in from the ends, third across the middle, steps[2]) and gaps 1/8\"; cut angles 40, 10, 25 degrees are stated; leg cross, leg supports and leg tops are relational (where they meet, between the cross and the center support); viewed step[3] and step[5] photos show the X legs and supports in place"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top supports attached, legs built (cross halving) then attached, leg supports last; benches repeat the order"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill two pocket holes in between each of the marks on all three lengths."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts (cutList[1],[2],[3]) but no jig thickness setting is stated. Search: all steps, summary, description, materials for /3\\/4|setting|jig|thickness/i, no match; the viewed step[1] photo shows the jig but no readable setting. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "pass",
+      "arithmetic": "Counts: 6 table top boards in steps[0] = cutList[0]; 3 supports (steps[0],[2]) = cutList[1]; 4 legs = 2 X pairs x 2 = cutList[2]; 2 leg supports = one per X = cutList[3]; benches: 3 boards x 2 = 6 = cutList[4], 3 supports x 2 = 6 = cutList[5], 4 legs x 2 benches x 2 = 8 = cutList[6], 2 x 2 = 4 = cutList[7]. Top width 6 x 3.5 + 5 x 0.125 = 21.625 vs supports 21.",
+      "reason": "every made part is installed and the steps reach the finished table and benches (steps[6])"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/fbcd1ee75d616b1a.webp",
+      "plans/f060a6a9de91cca1.webp",
+      "plans/ea4faf20c304ee35.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1]",
+      "quote": "8 board Board, 1x3 48\"",
+      "what": "The 2 1/2\"-wide cut rows total 63 + 112 + 45.75 + 63 + 96 + 68 = 447.75\" (cutList[1],[2],[3],[5],[6],[7]; 27 pieces, + 27 x 1/8 = 3.375 kerf = 451.125\") but materials[1] buys 8 x 48 = 384\". Even adding every inch left from the 12 x 48 = 576\" of 1x4 after the 6 x 48 + 6 x 40 = 528\" of top boards (48\") gives 432\" < 451.125\". Materials do not cover the cut list (R5 precondition not met: bench parts do not name their stock)."
+    }
+  ]
 }

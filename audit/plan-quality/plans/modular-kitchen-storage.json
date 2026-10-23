@@ -1,6 +1,6 @@
 {
   "slug": "modular-kitchen-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,28 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Insert remaining 1\"x 6\"x 24\" board centered vertically."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top and Bottom Frame x 2 [0.75, 5.5, 24]"
+        }
+      ],
+      "search": "cutList[].part and quantity searched for a third 24\" 1x6: only Top and Bottom Frame x2 is 24\" long (Shelf Divider is 7 1/2\", Back Support is a 1x2); no step or material cuts one",
+      "reason": "steps[0] uses both 24\" boards for the frame, and steps[1] then inserts a 'remaining' 24\" 1x6 vertical divider, which has no cut-list row. The step gives its size and stock (1x6, 24\") but never says to cut it. Other parts (sides, top/bottom, shelves x3, I divider, front rails, back support) have rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 6 rows are used in steps[0]-[5]: Side Frame, Top and Bottom Frame (steps[0]), Shelves x3 (steps[2]-[3]: 2 in the 'I' + 1 on the right), Shelf Divider (steps[2]), Front Rails (steps[4]), Back Support (steps[5])."
     },
     "R4": {
       "result": "pass",
@@ -145,22 +163,80 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Glue and secure using 2\" 18 gauge finish nails."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "using wood glue and 2 inch, 16 gauge finishing nails."
+        }
+      ],
+      "search": "materials names searched for /gauge|nail/i: only materials[2] '2\" 16 gauge nails'",
+      "reason": "steps[1] uses 18 gauge nails for the divider while every other step and materials[2] use 16 gauge; two gauges for the same use and the 18 gauge is not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "'I' shelf base '17\" from the top of the unit' and right shelf bottom '13\" from the top' (steps[3], dimensioned in viewed 14f60fb632016002); 7 1/2\" board 'centered' on the 11 3/4\" boards; front rails at top and bottom edges of the face (viewed e44ef0ce1994e11f, '25 1/2\"'); back support at the top rear (viewed 7894fe6609d53ca7, '24\"'); divider 'centered'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (steps[0]), vertical divider (steps[1]), 'I' shelf assembled (steps[2]) then placed with measurements from the top (steps[3]), front rails and back support (steps[4]-[5]), finish. Shelves are inserted from the open front/back before the rails."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; all joints state glue and nail size/gauge (steps[0]-[5])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using (2) of the 1\"x 6\"x 11 3/4\" boards and the 1\"x 6\"x 7 1/2\" board, and form a \"I\"."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "This will form a 25 1/2\" square."
+        }
+      ],
+      "arithmetic": "Frame inside width = 25 1/2 - 2 x 3/4 = 24 (top/bottom 24, matches cutList[1]); a 3/4\" 1x6 divider centered (steps[1]) leaves (24 - 3/4) / 2 = 11 5/8 per cubby; the 11 3/4 shelves (cutList[2]) are 1/8\" longer than the 11 5/8 opening.",
+      "reason": "(a) The shelves cannot be inserted at the stated length: 11 3/4 > 11 5/8. (b) all parts installed. (c) Mounting Brackets are in materials; steps[5] says 'attach hanging hardware' without naming them. (d) steps reach the finished unit."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Fill all nail holes with wood filler.",
+      "what": "Wood filler is used but not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "14f60fb632016002.webp",
+      "e44ef0ce1994e11f.webp",
+      "7894fe6609d53ca7.webp"
+    ]
+  }
 }

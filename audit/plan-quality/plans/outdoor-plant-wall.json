@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-plant-wall",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,36 +83,134 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Slats, top/bottom frame and side frame pieces (steps[0]-[2]) all have rows: Slats x7, Top & Bottom Frame x2, Side Frame x2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 3 rows are used in steps[1]-[2]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Pressure Treated Wood, 2x6 72\" board"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Slats x 7 [1.5, 5.5, 39]"
+        }
+      ],
+      "search": "steps name 2x6 only for the slats (cutList widths 5.5); 2x6 is the only stock for that row; materials[1] quantity 6 (not a default)",
+      "arithmetic": "Total length passes (7 x 39 + 6 x 1/8 = 273.75 <= 6 x 72 = 432), but each 72\" board yields floor(72 / (39 + 1/8)) = 1 slat since 2 x 39 + 1/8 = 78.125 > 72; 6 boards give 6 slats, 1 short of 7.",
+      "reason": "The six 72\" 2x6 boards cannot supply seven 39\" slats. 2x4: four 72\" boards for 42, 42, 43, 43 (one piece each, 4 boards) is enough."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Sizes used: '2 1/2\" Blue Coated Outdoor Kreg Screws' = materials[10]; corner screws 'two screws through each outside corner (4 total screws in each corner)' = 4 x 4 = 16 = materials[11] '2 1/2\" Exterior Construction Screws'. Steps name no other size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "we drilled two angled holes at the correct height and added steel rods and secured with 100% silicone. The plant wall hangs directly onto the steel rods."
+        }
+      ],
+      "search": "all steps, description and materials searched for /rod|height|bracket|cleat|hang|mount/i: only steps[6] (pot hooks), steps[8]",
+      "reason": "Where the two wall rods go (their height and spacing) and how the finished wall engages them is a position the builder must set; 'the correct height' is not a number and the viewed steps[8] image (f72aad5b2bc21a73) shows a single rod in a block wall with no dimension. Pot hooks 'evenly spaced' for 9 planters pass (relational; 3 x 3 viewed in 2472afdc7969b861)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (steps[0]), pocket holes (steps[1]), assemble (steps[2]), sand, prime, paint (steps[3]-[5]), hooks (steps[6]), plants (steps[7]), hang (steps[8])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the end of each slat (2 on each end)."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Slats x 7 thickness 1.5"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" 2x stock but no jig thickness setting is stated. Search steps/summary/description for /jig|setting|thick/i: no match; viewed ddad3fdb11c11631 shows the jig in use with no readable setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "attaching all slats to one of the side pieces of the frame spacing them evenly with 1/4\" space in between each slat."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Side Frame x 2 [1.5, 3.5, 43]"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "added steel rods and secured with 100% silicone."
+        }
+      ],
+      "arithmetic": "(a) Stack of slats = 7 x 5 1/2 + 6 x 1/4 = 38 1/2 + 1 1/2 = 40 in; slat length 39. The frame is 'mitered' (importDiffs source '1 1/2\" x 3 1/2\" x 42\" with 45 degree mitered edges'); if 42 and 43 are the outer long points the opening is 42 - 2 x 3 1/2 = 35 wide and 43 - 7 = 36 tall, so 39 x 40 slats do not fit (4\" over each way); if they are the inside lengths the slats (39 of 42, 40 of 43) are 3\" short of the sides they must be screwed to.",
+      "reason": "(a) The slat dimensions do not match the frame opening under either reading of the mitered lengths. (c) The steel rods (and masonry anchoring) used in steps[8] are not in materials (silicone is a consumable). (b) every part installed; (d) steps reach a hung wall."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "On one top slat and one bottom slat drill 5 pocket holes horizontally to screw into the top and bottom frame.",
+      "what": "Pocket holes: 7 slats x 2 ends x 2 = 28, plus 5 + 5 = 10, total 38 screws, but materials[10] lists 24 Kreg screws."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "100% silicone",
+      "what": "Silicone used to set the wall rods is not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "b776f8f42136124e.webp",
+      "ddad3fdb11c11631.webp",
+      "294dd66387872342.webp",
+      "2472afdc7969b861.webp",
+      "93da8de75bc8580d.webp",
+      "f72aad5b2bc21a73.webp"
+    ]
+  }
 }

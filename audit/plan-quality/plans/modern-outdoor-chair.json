@@ -1,6 +1,6 @@
 {
   "slug": "modern-outdoor-chair",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Side parts (24\", 27 1/2\", 30 1/2\"), diagonals 27 5/8\", 25\" supports (3 + 4), backrest 22\" and 29 1/2\" all have rows (corrected): 7x25, 4x24, 2x30 1/2, 2x27 1/2, 2x27 5/8, 4x22, 2x29 1/2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 7 rows are used: steps[0] (24, 27 1/2, 30 1/2), steps[1] (27 5/8), steps[2]+[3] (3 + 4 = 7 x 25), steps[4] (22 x4, 29 1/2 x2). Fit: 27 1/2 + 2 x 1 1/2 = 30 1/2 (viewed f41120b406308ae2); 22 + 2 x 1 1/2 = 25 (backrest width = seat supports)."
     },
     "R4": {
       "result": "pass",
@@ -73,23 +77,88 @@
       "arithmetic": "parts: 7×25 + 4×24 + 2×30.5 + 2×27.5 + 2×27.625 + 4×22 + 2×29.5 + kerf 15 cuts (23 parts − 8 boards, the fewest possible)×1/8 = 591.125″; bought: 8×96 = 768″; 591.125 ≤ 768"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Steps use '2 1/2\" pocket hole screws' (materials[1]) and '2 1/2\" wood screws' for the backrest (steps[5], materials[2]); no other sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Heights/positions given in text and viewed images: front support 12 1/4\", back 10\" (steps[2], viewed 4febbea047b24522), diagonal ends 12 1/4\"/10\" (viewed a0fab96c2b8729c8), seat slats every 5\" from the back (viewed c61a6b56fe5d2560), backrest rails 7 1/4\" apart with top rail flush (viewed dd33386bd5e91848), backrest 3 1/2\" in from the side (viewed 52e11a4e20145729)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "5 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (steps[0]), diagonals (steps[1]), cross supports between sides (steps[2]), seat slats (steps[3]), backrest built (steps[4]) then attached (steps[5]-[6]), finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in one end."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Boards thicknessIn 1.5"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" 2x2 parts (steps[0]-[4]) but no jig thickness setting is stated. Search steps/summary/description for /jig|setting|thick/i: only '4\" thick' (cushion, steps[8]). Viewed 4febbea047b24522 and f41120b406308ae2 label 'Pocket Holes' with no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the 27 1/2\" board to the 24\" boards, 10\" from the bottom, using wood glue and 2 1/2\" pocket hole screws."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "One end is 12 1/4\" from the bottom, and the other end is 10\" from the bottom."
+        }
+      ],
+      "arithmetic": "Viewed f41120b406308ae2 dimensions the 27 1/2\" board 5\" from the bottom with 17 1/2\" above it: 24 - 5 - 1 1/2 = 17 1/2 (with the text's 10\" the space would be 24 - 10 - 1 1/2 = 12 1/2). Viewed a0fab96c2b8729c8 shows the diagonal's low end at 10\" with the 27 1/2\" board below it.",
+      "reason": "The step text puts the 27 1/2\" side rail 10\" from the bottom while the step image dimensions it 5\" from the bottom; at 10\" it would also sit where the diagonal's low end attaches (10\", steps[1]). (b)-(d): every part is installed; cushions are purchased (steps[8])."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Fill all the pocket holes in your chair. Sand and either stain or paint the wood. Make sure to use an outdoor polyurethane",
+      "what": "Wood glue, pocket-hole filler, stain/paint and polyurethane are used but not in materials (consumables).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Cut 2- 24\" 2x2's. Drill pocket holes in one end. Cut 2- 27 1/2\" 2x2's.",
+      "what": "Counts mix per-side (2 x 24\") and per-chair (2 x 27 1/2\", one per side) bases; the cut list (4 / 2) is consistent with the images."
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "f41120b406308ae2.webp",
+      "a0fab96c2b8729c8.webp",
+      "4febbea047b24522.webp",
+      "c61a6b56fe5d2560.webp",
+      "dd33386bd5e91848.webp",
+      "52e11a4e20145729.webp"
+    ]
+  }
 }

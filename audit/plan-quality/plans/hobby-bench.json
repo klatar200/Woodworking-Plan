@@ -1,6 +1,6 @@
 {
   "slug": "hobby-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0]-[16] (Legs, Short/Long Stretchers, Lower/Upper Bench Top, Shelves, Shelf Dividers, Shelf Uprights, Shelf Back, Organizer Top/Bottom/Back/Sides/Divider/Shelves) vs cutList[].part; only 'Lower Bench Top' is not named as a row (cutList[5] is a second 'Upper Bench Top' with identical size) - recorded under gaps"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 18 cut rows map to parts the steps cut; the two 'Upper Bench Top' rows are the two layers made in steps[4] and steps[5]"
     },
     "R4": {
       "result": "pass",
@@ -193,23 +195,88 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 4x4, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 2 1/2\" (steps[1],[3]) = materials[3]; 1 1/4\" Kreg screws (steps[7],[11],[13]) = materials[5]; 1 1/4\" flathead screws (steps[6],[17]) = materials[6]; no use of one size for conflicting purposes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give numbers for: leg/stretcher setbacks (2\", 2 1/2\", 9 3/4\"), tray openings and front recess (4 1/2 x 14 1/4, 1 1/2, 5 1/2, 6, 4), shelf upright and shelf back pocket/screw holes (2, 9, 8, 1 1/2, 2 3/4, 3 1/4), organizer pocket and shelf-pin holes (2, 8, 14, 4 7/8, 1 1/4, 2), and shelf unit inset (6\"). Remaining placements are relational (flush, centered, equal overhang)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "28 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "ends, long stretchers, base, tops, shelf unit, then organizer, installed last after the base exists; shelf unit built before attaching (steps[11]-[13])"
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "steps[2] sets the jig for 3/4\"-thick material to drill 'along the edge' of the Upper Long Stretchers (2x4 = 1 1/2\" thick per section 9); which dimension the setting applies to cannot be settled from the plan text. All other pocket-hole thicknesses (1 1/2\" on 2x4, 3/4\" on MDF) are stated and consistent."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "Then cut four Organizer Shelves to size from 3/4\" MDF, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "you need to drill shelf pin holes in these parts."
+        },
+        {
+          "path": "steps[17].body",
+          "quote": "Now you can slip the organizer assembly into the bench."
+        }
+      ],
+      "reason": "(b)/(c) The four Organizer Shelves are cut in steps[16] but no later step places or installs them; shelf pin holes are drilled in steps[15] yet shelf pins are in no step and not in materials. Search: materials[0..6] names for /pin|peg|support/i, no match; steps[17] ends with attaching the organizer and finishing, with no shelf placement."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/2f2c8bae9ca44c8c.webp",
+      "plans/9a3604fc5fb3a786.webp",
+      "plans/6469354d735ff139.webp",
+      "plans/d64876d8c1d2e0ba.webp",
+      "plans/be88e5a963ece685.webp",
+      "plans/e4cdb19185e3a0fe.webp",
+      "plans/fce7b3301a97c354.webp",
+      "plans/b3e3c6c8628a6905.webp",
+      "plans/3be71f17409085e8.webp",
+      "plans/3395ed66520a6583.webp",
+      "plans/ca941609efd723da.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[5].part",
+      "quote": "Upper Bench Top",
+      "what": "cutList[4] and cutList[5] are both named 'Upper Bench Top' (same size); steps[4] cuts a 'Lower Bench Top' that has no row of that name."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Spread wood glue on the underside of the Upper Bench Top",
+      "kind": "consumable",
+      "what": "Wood glue is used (steps[6],[11],[12],[13]) but not in materials (consumable)."
+    },
+    {
+      "path": "steps[17].body",
+      "quote": "We used paint on the base and outer portions of the shelf unit and organizer, then coated the bench top and remaining surfaces with a penetrating oil finish.",
+      "kind": "consumable",
+      "what": "Paint and penetrating oil finish are not in materials (consumables)."
+    }
+  ]
 }

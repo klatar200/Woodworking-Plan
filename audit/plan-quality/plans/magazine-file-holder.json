@@ -1,6 +1,6 @@
 {
   "slug": "magazine-file-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Front, back, bottom (steps[0]) and sides (steps[1], from 1/4\" plywood) each have a cut row: Bottom, Front, Back, Sides x2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 4 rows are used in steps[2]-[4]. Fit: bottom 9 1/2 + front 3/4 + back 3/4 = 11 = Sides width 11 (viewed dc7047d91ddff2e6 shows 11\" x 11 1/2\"); front 6\" and back 11 1/2 match the viewed 5916c424cb09da9d."
     },
     "R4": {
       "result": "pass",
@@ -24,23 +28,76 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "sweepResult": "to-read",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "I used 1-1/4 inch nails as that's my most common size used"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "18 gauge brad nails"
+        }
+      ],
+      "search": "materials names searched for /nail/i: only materials[3], which states no length",
+      "reason": "The steps name a 1-1/4 inch nail size for the side attachment but materials list brad nails with no length. Pocket screws 1-1/4\" (materials[2]) match steps and quantity 4 = 2 holes x 2 ends of the bottom (steps[2])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Front/back/bottom positions are fixed by the parts (viewed 279b0e884eefd765: front butts the bottom end, bottoms flush; 9 1/2 + 2 x 3/4 = 11 sides). Hole in front is optional ('If desired') with its diameter given (1-1/4 inch). Side curve start is limited by 'don't start your curves any lower than 6 inches from the bottom' and shape is design freedom; sides placed 'flush with all sides'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (steps[0]-[1]), front then back onto bottom (steps[2]-[3]), sides last on the frame (steps[4]), finish last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Option #1: Drill two pocket holes in each end of the bottom."
+        }
+      ],
+      "reason": "Pocket holes (optional) are drilled in the 3/4\" bottom but no jig thickness setting is stated. Search steps/summary/description for /jig|setting|thick/i: only 'a 1/4 inch piece of plywood' (steps[1]). Option #2 (glue and brad nails) states method and fastener."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Bottom 9 1/2 + 3/4 + 3/4 = 11 matches sides width 11 (viewed). Back 11 1/2 = side length 11 1/2 (viewed). Front 6 matches 'The front is 6 inches tall' (steps[1]). Quantities: 2 sides per holder. (b) all four parts installed in steps[2]-[4]. (c) no non-fastener hardware used; glue is a consumable. (d) steps end with sand and finish."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the front to the bottom with glue and nails",
+      "what": "Wood glue is used in steps[2]-[4] but is not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "5916c424cb09da9d.webp",
+      "dc7047d91ddff2e6.webp",
+      "279b0e884eefd765.webp"
+    ]
+  }
 }

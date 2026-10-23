@@ -1,6 +1,6 @@
 {
   "slug": "lightweight-concrete-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Parts in steps (basic pieces, top, base plates, side panels, 1-1/2\" strips) all have rows: Side panels x2 rows, Top, Base x2 rows, Strips x2 rows. Viewed cut diagram (33b3cbc099cbeac9) matches the rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "All 7 rows are used: panels form the tube (steps[2]), Top is cut (steps[1]), Base rows are 'base plates' (steps[2]), Strips are the 'ledges' (steps[2])."
     },
     "R4": {
       "result": "pass",
@@ -73,22 +77,75 @@
       "reason": "sheet size not written in material name"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only fastener named is pocket-hole screws; materials[1] 'Box of 1 1/4\" pocket-hole screws'. steps[2] 'Screw the 1-1/2\" wide strips' states no size, but viewed steps[2] image labels 'POCKET HOLES WITH SCREWS'. No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Screw the 1-1/2\" wide strips to the narrow side panels to make ledges for the top and base plates."
+        }
+      ],
+      "search": "searched all steps, description and materials for /ledge|strip|recess|height|from the (top|bottom)/i: only steps[2] and cutList Strips rows",
+      "reason": "Where on the narrow panels the ledge strips go (height from the panel top for the top plate, from the bottom for the base) is a position the builder must set. No number in the text; viewed steps[2] image (5c7f041763dcd354) shows strips as unlabeled sketches with no dimension. 8\" hole diameter and 6\"/6\" top split are dimensioned in viewed steps[1] image, so those pass."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (steps[0]-[1]), strips on narrow panels, then panels joined into a tube, then concrete coat (steps[2]). Ledges are fitted before the tube closes."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use pocket holes to attach the side panels to make a square plywood tube."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Side panels thicknessIn 0.75"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" panels but no jig thickness setting is stated. Search: summary/description/steps/materials for /jig|setting|thick/i: only description '3/4\" plywood'; viewed steps[2] image (5c7f041763dcd354) shows 'POCKET HOLES WITH SCREWS' with no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Panels 14+14 vs 12 1/2+12 1/2(corrected, + 2x3/4 = 14): square tube 14 x 14 outside; Top 12x12 and Base 6+4 1/2 x 12 fit a 12 1/2 inside. Top halves match 'cut it in half' (6\"/6\" viewed). (b) Top and base plates rest on the ledges (steps[2]); no later step, but ledges are made 'for the top and base plates'. (c) concrete mix and sandpaper in materials. (d) finished planter shown in primary image (viewed ab12563d8e073811)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "to make ledges for the top and base plates.",
+      "what": "No step says to place the top and base plates on the ledges (or whether to fasten them); implied only. Base rows total 6+4 1/2 = 10 1/2 in against a 12 1/2 inside width with no stated reason for the gap."
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "ab12563d8e073811.webp",
+      "33b3cbc099cbeac9.webp",
+      "2eef9921e5b347ea.webp",
+      "5c7f041763dcd354.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "modern-sunglasses-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,10 +23,14 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "Only part is the three boards (two with pocket holes plus the middle one); cut-list row 'Boards x 3' covers them. Bungee and hangers are materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "The single row Boards x 3 is used in steps[0]-[1] (two with pocket holes + middle board); viewed 04e4b73afd0d30b2 shows three edge-joined boards."
     },
     "R4": {
       "result": "pass",
@@ -37,22 +41,83 @@
       "reason": "stock length not written (§9)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "sweepResult": "to-read",
+      "reason": "steps[1] says 'pocket hole screws' with no size; materials[1] '1 1/4\" pocket hole screws' x6 = 2 boards x 3 holes (steps[0]). No other fastener size appears."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Add mounting hardware to the back of the sunglasses holder (I used keyhole hangers)."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Hanging hardware, such as keyhole hangers"
+        }
+      ],
+      "search": "all steps, description and materials searched for /hanger|hardware|mount|keyhole/i: only steps[6], materials[5]",
+      "reason": "Where the two hangers go on the back is a position the builder must set and no number, 'centered' or image gives it (viewed ceb2bc7956ea6eb9 shows only the front). Positions that pass: pocket holes 'in the middle and 2\" in from each end' (steps[0]); holes '1 1/2\" in and 1 1/2\" down from the top' (steps[3]); 1\" and 1/4\" hole sizes."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes (steps[0]), join boards (steps[1]), round corners (steps[2]), drill recessed/through holes (steps[3]), finish, bungee (steps[5]), hang (steps[6])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "On two Boards, drill three pocket holes along one long edge."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Boards thicknessIn 0.75"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" boards but no jig thickness setting is stated. Search steps/summary/description for /jig|setting|thick/i: no match (step 0 has no image)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 pocket holes x 2 boards = 6 screws = materials[1] quantity 6; hole positions 2\" from ends in a 16\" board = 2, 8, 14. (b) every part installed. (c) bungee and hangers in materials. (d) steps reach the hung holder."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "Bungee Cord",
+      "what": "No length or diameter for the bungee; steps[5] needs it to span between holes set 1 1/2\" in from each end of a 16\" board."
+    },
+    {
+      "path": "materials[0].name",
+      "quote": "Hardwood board, 3/4\" x 2 1/2\" x 48",
+      "what": "Length 48 has no unit; if inches, 3 x 16 + 2 kerfs x 1/8 = 48 1/4, over 48 (R5 stays unknown: no explicit unit, §9)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-32",
+    "imagesViewed": [
+      "04e4b73afd0d30b2.webp",
+      "268f30316f31a486.webp",
+      "ceb2bc7956ea6eb9.webp"
+    ]
+  }
 }

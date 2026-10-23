@@ -1,6 +1,6 @@
 {
   "slug": "holiday-gift-wrapping-caddy",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (Base, Sides, Interior Divide, Back, Dividers, dowels) vs cutList.part and materials[1] (Hardwood Dowels): all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all five cut rows are used in steps[0]-[5]"
     },
     "R4": {
       "result": "pass",
@@ -97,23 +99,85 @@
       "reason": "R5 precondition not met: 2 stock types (1x12, 0.875x48); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1 1/4\" pocket hole screws (steps[2],[3],[4]) = materials[2], 3x2+8+(2x2+5)=23 = qty 23; 1 1/4\" brad nails (steps[5]) = materials[3]; 1/8\" holes/cotter pins (steps[6],[8]) = materials[4]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dowel hole locations are dimensioned in the viewed step[1] image (1\", 5\", 2 1/4\", 2\" on a 5 1/2\" x 12\" side), divider spacing 7 3/16\" and divide position 3 1/2\" are numeric; pocket-hole positions are shown in the step[0] image without numbers (fastener placement, not a part position)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base, sides, divide, back, dividers installed in order; dowels cut and drilled (steps[6]), finished (steps[7]), then inserted (steps[8])"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the BASE to size and drill three pocket holes on the 12\" sides, and five along one of the 31\" sides."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts (cutList[0] thickness 0.75) but no jig thickness setting is stated. Search: all steps, description, summary and materials for /3\\/4|setting|jig|thickness/i - no setting; the viewed step[0] image shows none. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut the dowels to 35\" long and drill 1/8\" holes 1 1/2\" from each end for the cotter pins."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Base 0.75x11x31 (Kreg-corrected 0.75x11.25x31)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Sides 0.75x5x12 (corrected 0.75x5.5x12)"
+        }
+      ],
+      "arithmetic": "Base 31 sits between the sides (steps[2] attaches sides via base-end pocket holes; viewed step[5] image: 4 x 7 3/16 + 3 x 3/4 = 28.75 + 2.25 = 31 between the sides). Outside width = 31 + 2 x 0.75 = 32.5. Dowel 35 - 32.5 = 2.5, so 1.25 projects past each side. The cotter hole is 1 1/2 from the end, i.e. 1.5 - 1.25 = 0.25 inside the 3/4 side wall.",
+      "reason": "(a) numbers do not add up: the pin hole falls inside the side wall, not in the projecting dowel end. Rests on reading the sides as outside the base; the viewed step[8] photo shows pins close to the wall, so not certain."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/cb85b18880c887e5.webp",
+      "plans/c240d6ba59679dd1.webp",
+      "plans/2fdc47dfcdda9eb2.webp",
+      "plans/fefab77737b652de.webp",
+      "plans/5290dc32494ed6ab.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "using wood glue and 8 - 1 1/4\" pocket hole screws.",
+      "what": "Steps use 8 pocket-hole screws for the Interior Divide and 2 per side for the Back (steps[4]), but no step drills pocket holes in the Interior Divide or Back, and steps[0] drills only the Base."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the SIDES to the BASE",
+      "what": "No step cuts the Interior Divide, Back or Dividers; they appear only in the cut list and in later attach steps (steps[3]-[5])."
+    }
+  ]
 }

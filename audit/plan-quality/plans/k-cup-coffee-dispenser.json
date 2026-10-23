@@ -1,6 +1,6 @@
 {
   "slug": "k-cup-coffee-dispenser",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0]-[11] (base, sides, back, front pieces, top, sub-top, pull) vs cutList[0..6] and materials[3]; steps[3] 'Cut 5 front pieces' = cutList[3] 4 + cutList[6] 1"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 rows are cut in steps[0]-[5] and used in steps[6]-[10]"
     },
     "R4": {
       "result": "unknown",
@@ -121,23 +123,82 @@
       "reason": "R5 precondition not met: 3 stock types (1x8, 1x6, 0.375x48); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "1 1/4\" pocket hole screws (steps[7],[8]) = materials[4]; count 4 (base, viewed step[7]) + 6 (back, viewed step[8]) = 10 = qty 10; no other fastener size used"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "top/sub-top offsets are numeric in the viewed step[6] image; front pieces are 2\" high stacked 4 x 2 = 8 in the viewed step[3] image and sit as shown in step[9]; pull position is 'of your choice'"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, top and sub-top joined, sides to base, back to sides, front pieces, then top and pull"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Join the sides to the base by drilling pocket holes as shown in the base and attaching with 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts (cutList[0],[1],[2]) but no jig thickness setting is given. Search: all steps, summary, description, materials for /3\\/4|setting|jig/i, no match; viewed step[7] and step[8] images show holes only, no setting. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Top 0.375x5x5 (Kreg source 3/8\" x 5 1/2\" x 5 5/8)"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Join the two top pieces by gluing and clamping"
+        }
+      ],
+      "arithmetic": "Viewed step[6] image dimensions on the top: 7/8 + 4 + 7/8 = 5.75 across and 1/2 + 4 1/2 + 7/8 = 5.875 along, but cutList[4] Top is 5.5 x 5.625 (5.75 - 5.5 = 0.25; 5.875 - 5.625 = 0.25). The Sub-top 4 x 4.5 (cutList[5]) matches the image.",
+      "reason": "(a) the top size in the cut list and the offsets shown for joining it do not add up; likely, since only one image carries the numbers"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "plans/94cf126e4c28b766.webp",
+      "plans/a165c711f54aa6e3.webp",
+      "plans/0e1b4674c16b5039.webp",
+      "plans/3f95fcf6e03cd552.webp",
+      "plans/5a1fc3333fa57ce8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3]",
+      "quote": "Front pieces 0.1875x2x5 (Kreg source 3/16\" x 5 1/2\" x 2\")",
+      "what": "Four parts are 3/16\" thick, but materials[2] lists only 3/8\" board; no 3/16\" stock or resawing step is given."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Join the two top pieces by gluing and clamping",
+      "kind": "consumable",
+      "what": "Wood glue (steps[6],[9]) and the finish (steps[11]) are not in materials (consumables)."
+    }
+  ]
 }

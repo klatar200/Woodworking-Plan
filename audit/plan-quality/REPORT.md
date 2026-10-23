@@ -5,19 +5,17 @@
 | | |
 |---|---|
 | Rubric | **R-2** (2026-10-19; DECISIONS_LOG) |
-| Current stage | **Stage 6 — PAUSED by Keagan 2026-10-19** (Sonnet readers, Opus verifier) |
-| Last batch | s6-01..14 and s6-16 complete; s6-15, 17–20 partly read (finished records kept, partial ones reverted); s6-21..36 not started |
-| Ledger | 610: 342 read (321 read + 21 verified), 268 swept |
-| Verdicts (342 read) | Fix 255 · Fix + Human review 4 · Ship 20 · Ship (unverified) 40 (+2 Human review) · Unpublish 18 · Unpublish (pending verifier) 3 |
-| Updated | 2026-10-19 |
+| Current stage | **Stage 6 — PAUSED (scheduled stop, Keagan) 2026-10-23 17:06 UTC** (Sonnet readers, Opus verifier) |
+| Last batch | s6-01..30 complete; s6-31 (2 left) and s6-32 (1 left) partly read; s6-33..36 not started |
+| Ledger | 610: 547 read (521 read + 26 verified), 63 swept |
+| Verdicts (547 read) | Fix 394 · Fix + Human review 6 · Ship 48 · Ship (unverified) 74 (+2 Human review) · Unpublish 22 · Unpublish (pending verifier) 1 |
+| Updated | 2026-10-23 |
 
 **To resume Stage 6:** prompts are in `prompts/` (reader, verifier, consumable cleanup; replace the
 scratchpad paths in them with the new session's scratchpad). For each batch with `swept` entries in
 the ledger (`ledger.json` `batch`), run a Sonnet reader on its swept slugs only, then
 `prompts/commit-batch.sh <batch> <slugs>` (it runs `verdict.mjs --write` + `tally.mjs --write`,
-commits, pushes). Run the Opus verifier on every `Unpublish (pending verifier)` record (now:
-shelving-unit-with-storage-and-tilt-out-laundry, side-table-with-wireless-charger,
-spare-table-that-doubles-as-wall-art), save its JSON to `verifier/<run>.json`, apply with
+commits, pushes). Run the Opus verifier on every `Unpublish (pending verifier)` record (now: farmhouse-table-made-with-7-boards), save its JSON to `verifier/<run>.json`, apply with
 `scripts/apply-verifier.mjs`, then `verdict.mjs --write`.
 
 **Before Stage 8:**
@@ -29,6 +27,12 @@ spare-table-that-doubles-as-wall-art), save its JSON to `verifier/<run>.json`, a
   - Many steps cite "the cutting diagram" where no layout image exists, though the cut list has the
     sizes (R11 Fix/likely). Report this once.
   - R9 (jig setting) and consumables are catalog-wide items.
+  - Importer also drops "30 degree angled cuts" (kids-picnic-table) — same cut-detail defect.
+  - Fidelity checker `correctRow` artifacts: stuffed-animal-storage cutList[6] [0.125,1.5,24] from
+    '1/8" from edge' text; rustic-ladder-shoe-shelf 24x48x72 from `2'x6'x48"`. Spot-check correctRows.
+  - R11 reading is inconsistent between verifiers: v2 (kids-stepping-stool) refused other steps'
+    images, v3 (shelving-unit-with-storage-and-tilt-out-laundry) accepted them. Settle one reading;
+    verdicts unaffected so far.
   - Single-row Kreg cut lists match the source (not import drops): rolling-trash-can-cabinet,
     easy-router-table-storage, diy-concrete-and-wood-nightstand, plywood-chair-set,
     diy-coastal-console-table, easy-garage-shop-cabinets-part-1-lowers.

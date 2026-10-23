@@ -1,6 +1,6 @@
 {
   "slug": "grandkids-christmas-stocking-tree",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut/assembled in steps (feet, post, cap, finial) vs cutList.part and materials.name: Post, Feet in cutList; cap and finial in materials[2], materials[3]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both cut rows (Post, Feet) are used in steps[0]-[1]"
     },
     "R4": {
       "result": "pass",
@@ -73,23 +75,77 @@
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Install the post cap by glueing and nailing the cap in place."
+        }
+      ],
+      "reason": "Step 2 uses nails, but no nails appear in materials and no nail size is given anywhere. Search: materials[0..4] names and all steps for /nail|brad/i; only steps[2] matches."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Foot hole positions are dimensioned in the viewed step[0] image (3/4\", 1\", 1\", 1 1/2\", 1 3/4\", 1 1/4\"); feet sit at the post base and the cap and finial go on top (relational)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "feet drilled then installed, then cap, finial, then paint; each part exists before use"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; feet use 3\" wood screws (materials[4]), cap uses glue and nails"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Feet qty 4 x 3 holes = 12 screws = materials[4] qty 12; every made part is installed; steps reach painted piece"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-31",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/40587ed638a85266.png",
+      "audit/plan-quality/.img-cache/6b6525204593e096.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Drill counter sunk holes in the feet in locations as shown",
+      "what": "The viewed step[0] image shows each foot with an angled end cut, but neither the cut list row (Feet) nor any step gives the angle or size of that cut."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Install the post cap by glueing and nailing the cap in place.",
+      "kind": "consumable",
+      "what": "Glue is used but not in materials (consumable)."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Fill the screw holes, sand and paint the post, cap and feet in any color you desire.",
+      "kind": "consumable",
+      "what": "Wood filler, sandpaper and paint are used but not in materials (consumables)."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Add decorative holiday custom mdf shapes and personalize with mdf letters.",
+      "kind": "optional",
+      "what": "Optional decoration; MDF shapes and letters are not in materials and have no sizes."
+    }
+  ]
 }
