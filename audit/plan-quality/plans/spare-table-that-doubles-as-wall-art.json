@@ -155,21 +155,26 @@
       "reason": "flagged 'my blog' (steps[8]) is a credit/optional colour reference; the front art is free-form ('make the front look like any kind of art work you want') and needs no outside content"
     },
     "R2": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[3].body",
-          "quote": "Add the small mitered 2x4s to the corners for extra support! Attach using 1 1/2\" pocket holes and 2 1/2\" pocket hole screws and glue...of course!"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Slide the dowel rods in to act like pins to hold the legs in!"
-        }
-      ],
-      "reason": "Search of cutList[0..7] part names for /corner|block|miter|brace|dowel|pin/i: no match, and neither step gives a size or says how to cut the corner pieces (viewed step-4 image labels them '2x4 cut 45 degrees off square, ends not parallel' with no dimensions) or the dowel pins (materials[2] is a 48in dowel rod, no pin length). Both are not in the cut list; the corner pieces are 'extra support' so scored Fix."
+      "result": "pass",
+      "reason": "steps[3] makes the corner blocks from listed 2x4 stock; steps[7] pins are the listed 48\" dowel rod",
+      "refutedFinding": {
+        "result": "fail",
+        "level": "Fix",
+        "confidence": "certain",
+        "cause": "plan",
+        "evidence": [
+          {
+            "path": "steps[3].body",
+            "quote": "Add the small mitered 2x4s to the corners for extra support! Attach using 1 1/2\" pocket holes and 2 1/2\" pocket hole screws and glue...of course!"
+          },
+          {
+            "path": "steps[7].body",
+            "quote": "Slide the dowel rods in to act like pins to hold the legs in!"
+          }
+        ],
+        "reason": "Search of cutList[0..7] part names for /corner|block|miter|brace|dowel|pin/i: no match, and neither step gives a size or says how to cut the corner pieces (viewed step-4 image labels them '2x4 cut 45 degrees off square, ends not parallel' with no dimensions) or the dowel pins (materials[2] is a 48in dowel rod, no pin length). Both are not in the cut list; the corner pieces are 'extra support' so scored Fix."
+      },
+      "verifierNote": "Corner blocks are 'small mitered 2x4s' (2x4 96\" listed) and the pins are the listed 1/2\" dowel rod, so the steps name listed material; missing sizes are not an R2 fail"
     },
     "R3": {
       "result": "pass",
@@ -198,7 +203,8 @@
           "quote": "1\" Kreg Screws / 5/8\" brad nails / 2 1/2\" Kreg Screws"
         }
       ],
-      "reason": "Search of materials[0..10] for 1 1/4\": none; only 1\" and 2 1/2\" screws and 5/8\" brad nails are listed. (The listed 5/8\" brad nails are also never used: no step mentions nails.)"
+      "reason": "Search of materials[0..10] for 1 1/4\": none; only 1\" and 2 1/2\" screws and 5/8\" brad nails are listed. (The listed 5/8\" brad nails are also never used: no step mentions nails.)",
+      "verifierNote": "steps[6] '1 1/4\" screws'; materials list only 1\" and 2 1/2\" Kreg screws and 5/8\" brads, no 1 1/4 anywhere"
     },
     "R10": {
       "result": "fail",
@@ -253,14 +259,23 @@
         }
       ],
       "arithmetic": "R14(b)/(d): the A-frame legs are built in steps[4] and braced in steps[5..7], but no step attaches them to the table (searched steps[0..8] for /hinge|handle|attach.*leg|mount/i: only 'hinge' hits none, 'handle' hits none); the 3 hinge sets and 2 handles in materials[5..6] are never used, so the legs (a part the table cannot be used without) are never installed and the steps never reach a folding table. R14(a): steps[0] says the plywood is 47 1/2 long (also 49 - 2 x 3/4 miter = 47.5 per cutList[1]) but cutList[0] gives 48; steps[5] says '2x4 ripped down to 2 1/2\"' for the leg support but cutList[6] row is 1.5 x 1.5 x 10; steps[6] says '1x4 cut at 2 1/2\"' (viewed step-7 image: 2 1/2\" x 3 1/2\") but cutList[7] is 0.75 x 2.5 x 3.",
-      "reason": "Legs never installed (Unpublish-level), plus three step-vs-cut-list size disagreements."
+      "reason": "Legs never installed (Unpublish-level), plus three step-vs-cut-list size disagreements.",
+      "verifierNote": "No step mentions hinge, handle or attaching the A-frame legs (unattached photo cb51 shows hinged legs, but no step installs them); R14(a) mismatches 47 1/2 vs 48, ripped 2 1/2 vs 1.5x1.5, 2 1/2x3 1/2 vs 2.5x3 confirmed"
     }
   },
-  "verdict": "Unpublish (pending verifier)",
+  "verdict": "Unpublish",
   "verifier": {
-    "ran": false,
-    "upheld": [],
-    "refuted": []
+    "ran": true,
+    "runs": [
+      "Stage 6 verifier v3, 2026-10-23 (fresh agent, not a reader)"
+    ],
+    "upheld": [
+      "R14",
+      "R6"
+    ],
+    "refuted": [
+      "R2"
+    ]
   },
   "measurementsScoredOn": "kreg-corrected",
   "reader": {
