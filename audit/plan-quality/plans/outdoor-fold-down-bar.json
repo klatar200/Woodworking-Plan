@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-fold-down-bar",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side, Shelf, Bottom, Wall Cleat, Wide/Narrow Top, Door Boards, Door Braces and Latch Block are all in cutList. The small Arch board is cut from a Door Board (steps[8], viewed 926faf547bc7200f 'Cut Arch from Top Door board', 2 3/8\" x 29\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All nine rows used: Sides steps[0],[2]; Shelf/Bottom steps[1],[2]; Wall Cleat steps[3],[16]; Tops steps[5]-[7]; Door Boards steps[8],[9]; Door Brace steps[11],[12]; Latch Block steps[13]."
     },
     "R4": {
       "result": "pass",
@@ -193,31 +195,80 @@
       "reason": "R5 precondition not met: 2 stock types (1x8, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1 1/4\" Blue-Kote Kreg screws (materials[4]), 2 1/2\" Kreg screws for the wall (materials[5]), 1 1/4\" exterior wood screws for braces (materials[7], qty 10), 2 1/2\" hinges (materials[6]); no conflicting size. Eye screws: see R14."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "th from a 1x8 cedar boards, as shown in the cutting diagram. Measure from the bottom to mark the length of the short edge. Cut the angled top as shown. Sometimes cedar has a smooth side and a rough si",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0a311c51293d54d.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[0]: viewed f0a311c51293d54d gives the short edge 22 1/8\" (and 24 3/4\" long edge, 1 1/4\" hole offsets). Shelf 12 1/4\" and bottom shown in a04384b3698b5672; cleat holes 8\" and 3/4\" in 553ee5ae3e273f21; hinges/chains 5\", 11\", 1 1/4\", 1\" in 29b13843b0c3662e; latch block 5 1/4\" centered in e9f4d6f99317a481; top flush at back, equal side overhang (steps[7])."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "23 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides/shelf/bottom, cleats, top, arch, door, braces, latch block, hinges and hardware, hang. Cleat installation text is missing (R14) but the viewed image shows it; no part is installed out of order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; every part is 0.75\" thick (cutList thicknessIn 0.75)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "install the eye screws, the door chains, the magnetic latch and the door pull where shown."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut the Wide Top board from a 1x8 and the Narrow Top as shown in the cutting diagram. Drill pocket holes in the Wide Top at the locations shown."
+        }
+      ],
+      "reason": "(c) Eye screws are used in steps[15] but a search of materials[].name for /eye/i finds none (materials: 1 1/4\" and 2 1/2\" Kreg screws, hinges, 1 1/4\" flat-head screws, magnetic catch, jack chain, pull, hooks, bottle opener). (b) steps[4] is titled 'Install the Wall Cleats' but its body is a word-for-word copy of steps[5] (cutting the Top boards); no step text attaches the cleats made in steps[3] (search /cleat/i hits only steps[3], steps[4].title, steps[16]); viewed image 8278078dd6b00c4c shows both cleats on the back, so the placement exists only as a picture. Wall anchors in steps[16] are conditional ('if you're unable to locate wall studs') and not in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/8278078dd6b00c4c.webp",
+      "plans/553ee5ae3e273f21.webp",
+      "plans/f0a311c51293d54d.webp",
+      "plans/a04384b3698b5672.webp",
+      "plans/29b13843b0c3662e.webp",
+      "plans/e9f4d6f99317a481.webp",
+      "plans/926faf547bc7200f.webp",
+      "plans/25022dd50fa85210.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Mark the centerline of the plywood, as well as the locations of the ends of the curves as shown.",
+      "what": "The tip about screen molding refers to 'the plywood' and 'the table Top edges', neither of which exists in this plan (Door Board arch is cut from a 1x8, 1 1/2\" rise over 29\" in viewed 926faf547bc7200f); text appears pasted from another plan."
+    },
+    {
+      "path": "steps[2].image",
+      "quote": "[viewed image a04384b3698b5672: Lt. Side labelled 24 1/4\"]",
+      "what": "Assembly diagram labels the side 24 1/4\" while the cut diagram (f0a311c51293d54d) and Kreg cut row give 24 3/4\"."
+    },
+    {
+      "path": "steps[14].body",
+      "quote": "Sand any rough edges of the server, clean any dust with a rag",
+      "kind": "consumable",
+      "what": "Sandpaper and rag are used but not in materials."
+    }
+  ]
 }

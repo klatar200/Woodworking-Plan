@@ -1,6 +1,6 @@
 {
   "slug": "paint-and-stain-storage-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps build Top, Middle and Bottom shelves from Front + Back boards (steps[0]-[2]) and use two Sides (steps[3],[4]); all seven cutList rows exist, quantity 2 each matching 'Repeat for the second ... shelf'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All seven rows used in steps[0]-[4]."
     },
     "R4": {
       "result": "pass",
@@ -24,30 +26,59 @@
       "reason": "sheet layout not judged (area fits: part area 2×11×48 + 2×5×36 + 2×3×36 + 2×3×36 + 2×5×36 + 2×8×36 + 2×6×36 = 3216.0 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name only 'pocket screws'; materials[1] '1\" Kreg Pocket Screws' x42. Count check: 6 shelves x 3 holes (steps[0]-[2]) + 6 shelves x 2 sides x 2 holes (steps[3],[4] 'two pocket holes ... on one side of each shelf') = 18 + 24 = 42 = materials[1]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "the Sides down and lay out each of the shelves on the board. Arrange with spacing and tilt how you like, but ours were done as follows for the height of the front lip of each shelf. Each shelf was ang",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e7f93139bae5ec2.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[3]: heights are numeric - 'Top Shelf 1- 43\" from bottom of Side Top Shelf 2- 35\" ... Bottom Shelf 2- 4\" from bottom of Side' and 'angled about 15 degrees back'; Side Two uses 'the same distances'. Viewed 4e7f93139bae5ec2 shows the six L-shaped shelves standing on the Side."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelves built, laid out on Side One at stated heights, Side Two attached at the same heights, then finish. The pocket-hole drilling step referred to in steps[0] is missing (see gaps) but the build can proceed."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach a Top Front board to a Top Back board using pocket screws in the three pocket holes you drilled."
+        }
+      ],
+      "reason": "All parts are 1/2\" plywood (cutList thicknessIn 0.5) and get pocket holes, but no step drills them and no jig thickness setting appears in any step, material or viewed image (74706e94ca2f0b81, 4943bcd51b959dd1 show no holes). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 + 2 + 2 shelves = 6 = 2 each of the Front/Back rows; 42 screws as counted under R6; highest shelf 43\" + 5\" Top Back = 48\" = Side length 48. (b) every shelf and both Sides installed. (c) screws in materials. (d) steps reach the finished rack."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/74706e94ca2f0b81.webp",
+      "plans/4e7f93139bae5ec2.webp",
+      "plans/4943bcd51b959dd1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "using pocket screws in the three pocket holes you drilled",
+      "what": "No earlier step drills the pocket holes; which board and edge get them, their spacing along the 36\" length, and the jig setting for 1/2\" plywood are never stated (the plan starts at 'Build Top Shelves')."
+    }
+  ]
 }

@@ -1,19 +1,21 @@
 {
   "slug": "outdoor-sofa",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields for /youtube|video|watch|http|pdf|plans?/i: only steps[0] 'Watch the full build on YouTube!' (viewed 695d2c89025ca9cc is a video thumbnail). Steps[1]-[3] carry the cuts, the order, the 1/4\" gap and the 11\" angle-support setting, so the build does not depend on the video; treated as an optional credit/companion."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Seat boards (5 x 96\"), Back rest boards (2 x 72\"), and the six 28\" pieces are all in cutList; steps[1] repeats the cut counts. Viewed b4c37f9c0106a6be shows a leg panel as two 28\" boards joined edge to edge (4 pieces for 2 panels) leaving 2 for the angle supports."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows used in steps[1]-[3]."
     },
     "R4": {
       "result": "pass",
@@ -24,29 +26,63 @@
       "reason": "stock length not written (§9)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "r seat boards leaving 1/4\" gaps. (Used a ruler for spacing)\nScrew the angle supports to seat panels with pocket holes.\nCut notches in the last seat boards to fit around angle supports.\nScrew on back r",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidate rejected: '1/4\"' in steps[3] is the seat-board gap ('leaving 1/4\" gaps'), not a fastener. Steps name no screw size; materials[3] lists 2 1/2\" Kreg Blue-Kote screws; viewed images say 'coated deck screws'."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Given or shown: 1/4\" seat gaps (steps[3]); angle support set '11\" in' from the seat edge (viewed e8c682db72d8308a); legs screwed to the first four seat boards; angle supports on the inside of the leg panels; notches fit around the supports. Leg-panel inset from the seat ends and back rest board heights are drawn but not dimensioned; shown in the viewed image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, leg panels, panels to first four seat boards, angle supports, notch the last board to slide around them (viewed e8c682db72d8308a), back rest, seal."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use pocket holes to connect the pieces. I placed the holes on the inside or under side of the pieces so that they would be less visible."
+        }
+      ],
+      "reason": "Every part is a 2x6 (cutList thicknessIn 2 nominal); no jig thickness setting appears in any step, material, or viewed image (b4c37f9c0106a6be and e8c682db72d8308a only say 'POCKET HOLES WITH COATED DECK SCREWS'). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Seal your sofa, add cushions, and enjoy!"
+        }
+      ],
+      "reason": "(c) Step 4 tells the builder to add cushions but a search of materials[].name and cutList for /cushion|foam|fabric/i finds none and no size is given. Likely rather than certain because cushions are an accessory the seat can be used without. (a)(b)(d) hold: 5 seat boards = 'first four' + 'last' board; 6 x 28\" = 4 leg-panel boards + 2 angle supports; the steps reach a finished sofa."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/b4c37f9c0106a6be.webp",
+      "plans/e8c682db72d8308a.webp",
+      "plans/c4a1fd8d64412ece.webp",
+      "plans/695d2c89025ca9cc.webp"
+    ]
+  },
+  "gaps": []
 }

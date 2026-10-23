@@ -1,6 +1,6 @@
 {
   "slug": "one-sheet-plywood-console",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Measure, mark, and cut middle support to size. Drill 3/4-inch pocket holes into ends and attach as shown with 1 1/4-inch pocket screws."
+        }
+      ],
+      "reason": "The 'middle support' is cut in steps[7] but no cutList.part matches /support/i (parts: Top, Bottom, Long Aprons, Short Aprons, Front, Back, Middle Legs, Side Legs, Curved Pieces) and no step or material gives its size. Viewed Fig. 8 (613202fdb7300169) labels only its 14\" length; its width and thickness appear nowhere. Non-structural (top is also screwed to the aprons per steps[8]), so Fix."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: Short Aprons/Side Legs steps[0], Front/Back/Middle Legs steps[1],[5], Bottom steps[2], Long Aprons steps[3],[4], Curved Pieces steps[6] (24 = 4 corners x 6 openings in Fig. 7), Top steps[8]."
     },
     "R4": {
       "result": "pass",
@@ -24,31 +35,53 @@
       "reason": "sheet layout not judged (area fits: part area 1×16.5×61 + 1×14×58.5 + 4×2.5×53 + 4×2.5×9 + 6×3.5×32.5 + 4×2.5×32.5 + 24×3.5×3.5 = 3747.0 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1 1/4-inch pocket screws, 1 1/4-inch brad nails, 1 inch brad nails all appear in materials[2..4] with the same sizes; no conflicting size for the same use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Measure, mark, and cut top to size. Position over the carcass with a 1/2-inch overhang on all sides. Attach with 1 1/4-inch pocket screws driven from the aprons underneath.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7940d52a84688b0b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[8]: text gives '1/2-inch overhang on all sides' and viewed Fig. 9 (7940d52a84688b0b) shows 61\" x 16 1/2\" with the 1/2\" overhang. Bottom shelf sits between the leg ends (Fig. 3 58 1/2\" x 14\"); middle legs at the midpoint; curved pieces in opening corners (Fig. 7)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, legs, bottom shelf (Fig. 3 shows it at the leg ends), aprons, middle legs, curved pieces, support, top. Each part exists before it is used."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Drill 3/4-inch pocket holes'; every cut-list part is 3/4\" thick (thicknessIn 0.75); other joints are 1 1/4-inch brad nails + glue."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Apron/leg counts add up: Long Aprons 4 = bottom 2 + top 2; legs 6 = 4 + 2 middle; top 16.5 x 61 = carcass (14 + 2 x 0.75 = 15.5; 53 + 2 x 3.5 = 60) + 1\" overhang; Bottom 58.5 = 60 - 2 x 0.75. (b) all made parts installed. (c) hardware in materials. (d) reaches finished console."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/2d40b809f811bf76.webp",
+      "plans/016a8834582eb4eb.webp",
+      "plans/5a67177418f2847d.webp",
+      "plans/613202fdb7300169.webp",
+      "plans/7940d52a84688b0b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1].name",
+      "quote": "3/4-inch Wood Veneer Edge Banding",
+      "what": "Edge banding is listed in materials, but a search of all steps for /band|veneer|edge/i finds no step that applies it; the plan never says which edges to band."
+    }
+  ]
 }

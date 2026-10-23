@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,17 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts are bench top, two legs (cut from a 2x10, viewed 57546cac513cd926 shows 20\" / 51\" / 20\" pieces plus scrap) and two 2x4 supports (viewed ee99cf598113b2d8 shows two 32\" pieces); all in cutList."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Supports",
-          "why": "no step mentions it (searched steps for support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Supports': the steps call them 'the 2x4 pieces' (steps[1] 'cut a 2x4', steps[2] 'I screwed one of the 2x4 pieces first ... I then added another 2x4 piece'); search for /support/i finds nothing but the 2x4 pieces are the only 2x4 parts. Two cut = qty 2."
     },
     "R4": {
       "result": "pass",
@@ -31,22 +26,53 @@
       "reason": "R5 precondition not met: 2 stock types (2x10, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps give no fastener size; materials[2] lists 2 1/2\" blue-kote pocket-hole screws; viewed 596e81d5c01e7e5f says 'coated deck screws' with no size. No conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed 596e81d5c01e7e5f shows where supports and legs sit on the top, screw order, and pocket-hole direction (arrows); no numeric inset/overhang is given but the image shows the placement. Cut angles 15 degrees in steps[0],[1] and images."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Viewed 596e81d5c01e7e5f numbers the order: 2x4 1st, leg 2nd, 2x4 3rd, leg 4th, onto the bench top. Text (steps[2]) agrees."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use pocket holes to connect the pieces. I placed on the holes on the inside of the pieces so that they would be less visible."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x4 supports (cutList thicknessIn 2, nominal 2x) but no jig thickness setting appears in any step, material, or viewed image (596e81d5c01e7e5f labels only 'POCKET HOLES WITH COATED DECK SCREWS'). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 20 + 51 + 20 = 91\" of 96\" 2x10 (viewed 57546cac513cd926) and 2 x 32 = 64\" of 96\" 2x4 match cutList. (b) every part installed. (c) screws, oil in materials. (d) steps reach the finished bench with 'Use sealer'."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/57546cac513cd926.webp",
+      "plans/ee99cf598113b2d8.webp",
+      "plans/596e81d5c01e7e5f.webp"
+    ]
+  },
+  "gaps": []
 }

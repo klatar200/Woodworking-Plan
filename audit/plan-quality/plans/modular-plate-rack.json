@@ -1,6 +1,6 @@
 {
   "slug": "modular-plate-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,17 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] side boards (Side Frame) and 24\" 1x6 boards (Shelves), steps[1] 1x2 rails (Front Rails), steps[2] remaining 24\" 1x2 (Back Support); all in cutList."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Shelves' is used as '24\" 1x6\" boards': steps[0] 'Join both 25 1/2\" and 24\" 1x6\" boards ... Insert remaining 24\" 1x6\" board'. Search of steps for /24\"/ finds it. 2 in the frame + 1 inserted = 3 = cutList[1].quantity."
     },
     "R4": {
       "result": "pass",
@@ -104,22 +99,49 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: only fastener size is '2 inch 16 gauge finishing nails' (steps[0..2]), materials[4] '2 inch 16 gauge Finish Nails'; consistent."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Middle shelf: '12\" from the top of the unit' (steps[0]). Rail positions shown in viewed image cdba6bf6916a57af (5 rails, dims 5\", 7\", 12\"); back support position shown in 06793c166012359a (top rear, 24\" label)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame and middle shelf first, then front rails, then back support, then fill/sand/finish."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joints are glue plus 2\" 16 gauge finish nails, stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Text self-consistent: shelves 24 + 2 x 3/4 side thickness = 25 1/2, matching 'form a 25 1/2\" square' and Front Rails 25.5 (Kreg-corrected). 5 rails in image = cutList[2].quantity 5. (b) all parts installed. (c) glue, filler, stain in materials. (d) reaches finished rack. See gaps for image label."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/cdba6bf6916a57af.webp",
+      "plans/06793c166012359a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].image",
+      "quote": "[viewed image cdba6bf6916a57af: all five rails labelled 24 1/2\"]",
+      "what": "Diagram labels each front rail 24 1/2\" while steps[1].body says '25 1/2\" 1x2\"' and the Kreg cut row is 3/4\" x 1 1/2\" x 25 1/2\"; the text's own arithmetic (24 + 2 x 3/4 = 25 1/2) supports 25 1/2, so the label looks like a diagram typo."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "over-railing-diy-planter-boxes",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -109,17 +109,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps: bottom supports, exterior pieces, 'sides' (= Ends), side supports; all four cutList rows exist. The plan makes two boxes (steps[0] tip): per box 3 exterior pieces (bottom, two sides: steps[1],[3],[5]), 2 Ends, 3 bottom supports, 6 side supports by dividing the quantities."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Ends",
-          "why": "no step mentions it (searched steps for end)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Ends': search of steps for /end/i finds nothing, but steps[2] 'Attach Sides ... attach the sides to the bottom support and exterior piece' uses the name 'sides' for the 4.875\" x 5.5\" end pieces (no other cut row is called a side; 'Side Supports' are steps[4]). Viewed 5cf0810634d52a45 shows the short end board being nailed to the bottom piece. Naming mismatch only."
     },
     "R4": {
       "result": "pass",
@@ -130,22 +125,77 @@
       "reason": "stock length not written (§9)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name no fastener size: 'brad nails or pocket hole screws' (steps[1]-[5]); materials hold '1\" Pocket Hole Screws' and '1\" Brad Nails' (quantities import-defaulted to 1). No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Drill out holes in the bottom of the planter box to accept the hardware to attach to the railing"
+        }
+      ],
+      "reason": "The builder must set hole locations and bit size for the railing hardware, but the step gives no distance from the ends or sides and no hole size. Viewed 40a2be711cee2a02 (step image) is an un-dimensioned photo of a U-shaped bolt/plate lying on the box and 9488167f41046547 shows the bolt around a railing; neither shows where the holes go. Support positions in steps[1],[4] are shown in photos only (viewed e627427de193cdf2, a9ed4597128347e7) and were accepted as shown."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom supports, ends, one exterior side, side supports, other side, fabric, hardware, hang; each part exists before it is used. The fabric is stapled (steps[6]) before the hardware holes are drilled in the bottom (steps[7]) but the build can still proceed."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using brad nails or pocket hole screws, attach the sides to the bottom support and exterior piece"
+        }
+      ],
+      "reason": "Pocket holes are offered for 19/32\" (0.59375) pickets and no jig thickness setting appears in any step or viewed image; likely rather than certain because brad nails are given as the alternative. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Using staples, attach the landscape fabric to prevent all of the soil from being washed away during watering and rain"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Using the hardware from the previous step, attach the planter boxes over the railing"
+        }
+      ],
+      "reason": "(c) Landscape fabric, staples and the railing hardware (U-bolts in the viewed photos) are used in steps[6]-[8]; a search of materials[].name finds only the pickets, 1\" pocket hole screws and 1\" brad nails. The hardware is never named or sized in any step."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/40a2be711cee2a02.webp",
+      "plans/9488167f41046547.webp",
+      "plans/e627427de193cdf2.webp",
+      "plans/5cf0810634d52a45.webp",
+      "plans/a9ed4597128347e7.webp"
+    ]
+  },
+  "gaps": []
 }

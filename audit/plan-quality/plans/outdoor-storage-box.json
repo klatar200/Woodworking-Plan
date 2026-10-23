@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-storage-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -199,21 +199,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "a space, then a slat. Repeat until all twelve slats are attached, then attach the other ends of the attached slats to a second 51 3/4\" board to finish the front side. Repeat to assemble the back side.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "search": "flagged 'attached' match rejected: steps[2] 'attach the other ends of the attached slats' is assembly text, not a reference to outside content. Search of all fields for /full plans|pdf|http|download|template/i finds nothing."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Lid Boards/Slats, Front and Back Boards, Side Boards, F/B/S Slats, Bottom Supports and Legs (2x2 balusters) are each used in steps[2]-[5]; counts agree (12 + 12 + 5 + 5 = 34 slats; 13 lid slats)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All seven rows used (steps[2] front/back, [3] sides and lid, [4] legs, [5] bottom supports)."
     },
     "R4": {
       "result": "pass",
@@ -224,23 +219,62 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1\" pocket hole screws (steps[2],[4],[5]; materials[2] x300); hinge screws 'included with the hinges'; no other size, no conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat spacing '3/4\" apart (use a piece of scrap 1x4 as a spacer)', start-with-a-space vs flush-slat patterns, sides 'flush with the edge of the balusters'; hinge placement is a continuous hinge along the back edge; supports and bottom-support positions shown in viewed 0b968cf487418ba9 and c5257eb329d4b960 (not dimensioned)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Boards cut and drilled, front/back, sides and lid assembled, sides to legs, bottom supports, hinges to box then lid, lid supports."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'drill two 3/4\" pocket holes on each end of all 1x4 boards EXCEPT for the two 55\" boards'; every pocket-holed part is a 1x4 (0.75\" thick); legs take screws from the panels."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "use the same technique with the thirteen 18\" slats and the 55\" boards, but instead of beginning with a space, begin with the slat lined up flush with the edge of the 55\" board"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "attaching five 15\" slats to the 22\" boards"
+        }
+      ],
+      "arithmetic": "Lid: 13 slats x 3 1/2 (cutList[1] 1x4) + 12 gaps x 3/4 (steps[2] spacer) = 45.5 + 9 = 54.5 vs 55\" boards, so a 1/2\" shortfall at the end of a 'flush' start. Lid depth = 18 (cutList[1]) + 2 x 3/4 (cutList[0] thickness) = 19.5\", while the side panels are 22\" wide (cutList[3]) so the box is at least 22\" deep: 22 - 19.5 = 2.5\" uncovered. By the same method the front panel works: 12 x 3.5 + 13 x 0.75 = 51.75 and side 5 x 3.5 + 6 x 0.75 = 22.",
+      "reason": "(a) Lid slat count/spacing does not add up to the 55\" boards, and the lid depth built from the stated parts is shorter than the box. Likely, not certain, because the plan never gives the box's outer footprint or the lid overhang."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/08981ca23d9d942d.webp",
+      "plans/6d3b1694abf85ce0.webp",
+      "plans/0b968cf487418ba9.webp",
+      "plans/a710a1d7e369c948.webp",
+      "plans/a411c8a7da158571.webp",
+      "plans/c5257eb329d4b960.webp"
+    ]
+  },
+  "gaps": []
 }

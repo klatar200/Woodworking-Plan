@@ -1,6 +1,6 @@
 {
   "slug": "ottoman-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use Top, Sides, Long Edges, Short Edges, all in cutList (Kreg-corrected: Top 1/2 x 16 x 38, Sides 1/2 x 16 x 18 1/4, edges 1/4 x 3/4 x 38 and x 16 1/2). No other part is made."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top/Sides steps[2], Long Edge steps[3], Short Edge steps[4] all used."
     },
     "R4": {
       "result": "pass",
@@ -97,30 +99,53 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 0.25x0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: steps say 'pocket hole screws' and 'optional nails' with no size; materials hold '1\" Kreg screws' and '1\" nails'; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Place a level on top of your ottoman, hanging over the edge. Measure from the ground to the level to get the height. - Then, place a board against both sides of the ottoman, make sure they are vertica",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/254788633ec19445.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[0] is how to measure the user's own ottoman (height with a level, length between boards + 1\"); the plan's sizes are for the author's ottoman and the step says adjust. Viewed 254788633ec19445 is a finished-product render with no dimensions needed. Edge strips 'flush with the bottom of the Top so it sticks up 1/4\"'; sides 'flush on the edges'; viewed 79a361d915930e79 shows the three holes spaced across the 16\" end."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled, sides attached to top, long then short edges added, then finish. Nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Start by drilling three pocket holes on one short end of each Side."
+        }
+      ],
+      "reason": "Sides are 1/2\" plywood (Kreg-corrected). Search of all steps, materials and the viewed step image 79a361d915930e79 (three holes drawn, no label) finds no jig thickness setting. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 'add 1\" to account for the Sides' = 2 x 1/2\" side thickness (Kreg cutList[1]); Short Edge 16.5 = Top width 16 + 2 x 0.25 (Long Edge thickness); 6 screws = 3 holes x 2 Sides. (b) all parts installed. (c) screws, nails in materials. (d) reaches the finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/254788633ec19445.webp",
+      "plans/79a361d915930e79.webp",
+      "plans/80b7e9dc6cd082fd.webp"
+    ]
+  },
+  "gaps": []
 }

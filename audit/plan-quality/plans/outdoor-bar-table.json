@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-bar-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] cuts all boards 'according to the cut list'; steps use top edges, 22\" slats, 42.75\" and 21.5\" aprons, 4x4 legs, all in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Table top edges and slats steps[1], Long/Short apron steps[2..4], legs steps[3],[4]; counts 2/12/2/2/4 match the steps ('twelve 22\" ... boards', two 4x4 per long side)."
     },
     "R4": {
       "result": "pass",
@@ -145,29 +147,79 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 4x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": " to hold together flat, and attach using 1 1/4\" pocket hole screws and an electric drill fitted with a Kreg screwdriver head. Continue attaching 22\" boards, spaced 3/4\" apart (use a scrap piece of 1x4",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "attach using 1 1/4\" pocket hole screws and an electric drill fitted with a Kreg screwdriver head."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the 1x4 to the table top and to each of the two legs using 1\" pocket hole screws."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "1\" Kreg pocket hole screws"
         }
-      ]
+      ],
+      "reason": "steps[1] calls for 1 1/4\" pocket hole screws for the 3/4\" 1x4 top joints; materials list only 1\" screws (search of materials for /1 1\\/4/ finds none), and steps[3]/[4] use 1\" screws for the same 3/4\" pocket-hole joints."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat spacing '3/4\" apart (use a scrap piece of 1x4 as a spacer)', slat flush with end, legs 'inset 1/4\" from the front and sides', hole counts given ('two holes on each end ... three to four holes along one long side'). Aprons sit between legs against the top."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top built, flipped, legs and long apron attached, remaining legs and short aprons, last long apron. Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] and steps[2] 'drill ... 3/4\" pocket holes' for every 1x4 (cutList thicknessIn 0.75 after Kreg correction); legs take screws from the apron holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "attach the 22\" boards to one of the 50.25\" 1x4 boards by lining up a 22\" board flush with one end"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Place a 21.5\" 1x4 board between the legs on the short sides of the table"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "inset 1/4\"from the front and sides according to the marks you made"
+        }
+      ],
+      "arithmetic": "Top width = 22\" slat + 2 x 3/4\" edge boards (Kreg cutList[0] 3/4 x 3 1/2 x 50.25) = 23.5\". Space between legs on a short side = 23.5 - 2 x 1/4\" inset - 2 x 3 1/2\" (cutList[4] 4x4 = 3 1/2\") = 16\", but the short apron is 21.5\". Same method on the long side: 50.25 - 2 x 1/4 - 2 x 3.5 = 42.75\" = Long apron, so the method is sound; the 21.5\" is 5.5\" too long (12 slats x 3.5 + 11 x 0.75 = 50.25 confirms the length).",
+      "reason": "(a) Short apron 21.5\" cannot fit between the legs on a 23.5\" wide top; either the 22\" slat length or the 21.5\" apron is wrong (21.5 would fit a 27.5\" slat). No viewed image carries dimensions."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/5ef1c50c239eb59e.webp",
+      "plans/8c7895de13e09104.webp",
+      "plans/df8bb19da62a1772.webp"
+    ]
+  },
+  "gaps": []
 }

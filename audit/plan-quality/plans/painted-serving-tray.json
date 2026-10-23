@@ -1,6 +1,6 @@
 {
   "slug": "painted-serving-tray",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom, Ends and Sides in cutList (Kreg-corrected End 1/2 x 2 1/2 x 12; Side 1/2 x 1 1/2 x 21 3/4); steps name '1/2\" x 3 board' and '1/2\" x 2 board', the nominal names of the 2 1/2\" and 1 1/2\" materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom steps[0],[1]; Ends steps[2],[3]; Sides steps[4],[5]."
     },
     "R4": {
       "result": "pass",
@@ -61,30 +63,54 @@
       "reason": "R5 precondition not met: 3 stock types (0.5x1.5, 0.5x2.5, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "only fastener size is 3/4\" coarse-thread Kreg Pocket-Hole Screws (steps[3],[5]); materials[3] same, qty 12 = 12 holes drawn in the Bottom diagram (3 per long edge + 3 per end x 2). No conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Handle holes and curve located in viewed 21e1344f5c226476 (4 7/8\", 1 1/4\", 3 1/4\", 1\" dia., 2 1/2\" rise); pocket-hole positions in viewed 7937853317009857 (2 3/4\", 2\"); Sides 'hang below the underside of the Bottom panel in order to align with the lower edge of the Ends' (relational); 25 degree bevels given."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "the depth of the jig only to 3/4\" but keep the drill bit setting at 1/2\". Now drill the pocket holes at each beveled end of the Bottom, as shown. Then you can sand the faces of the Bottom panel smooth",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] 'as shown' has no image of its own, and none of the 3 unattached images (b19c5c04b74e24ad overall 22 1/8\" x 13\" render; two finished photos) shows holes, but the hole locations it refers to are drawn and dimensioned in the Bottom diagram 7937853317009857, which the importer attached to steps[0]. The information is in the plan."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom cut and drilled, Ends made and attached, Sides cut and attached to the Bottom edges and Ends, then finish."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set up your Kreg Pocket-Hole Jig for 1/2\"-thick material' and the bevel-end depth change ('depth of the jig only to 3/4\" but keep the drill bit setting at 1/2\"'); all parts are 0.5\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Overall width 13\" in viewed b19c5c04b74e24ad = Bottom 12 + 2 x 1/2 (Side thickness); End width 12 = Bottom width 12; 12 screws = 12 holes in the diagram. (b) all parts installed. (c) screws, glue, milk paint, 1\" bit in materials. (d) reaches the finished tray."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/b19c5c04b74e24ad.webp",
+      "plans/a381e1d644bb155a.webp",
+      "plans/b69cfac304665d48.webp",
+      "plans/7937853317009857.webp",
+      "plans/21e1344f5c226476.webp",
+      "plans/1042da5ed606f461.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "We chose matte grey milk paint and applied it with a foam brush.",
+      "kind": "consumable",
+      "what": "Sandpaper (steps[1],[2],[4],[6] 'sand') and a foam brush are used but not in materials."
+    }
+  ]
 }

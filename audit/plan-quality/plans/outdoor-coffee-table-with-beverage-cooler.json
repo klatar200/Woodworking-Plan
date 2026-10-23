@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-coffee-table-with-beverage-cooler",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -215,10 +215,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make is in cutList: insert frames/outer frame (steps[0],[1]), insert support frame (2), insert supports (3), insert cross supports (4), legs (5), cross leg supports (6), table top supports 3\" and 6 1/4\" (7), planks (8), lid planks and 8\" strips (9), cover planks (10), angle supports (11)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 28 rows are used by the steps above; counts agree (10 lid strips = 'the 10 pieces of fill-it strips'; 3 insert cross supports = 'either end ... and in the middle')."
     },
     "R4": {
       "result": "unknown",
@@ -229,30 +231,78 @@
       "reason": "R5 precondition not met: 4 stock types (2x2, 1x2, 1x6, 0.25x1.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[7].body",
-          "quote": "rt frame, 3\" from both inside edges of the 48\" outer frame, nail into place a 3\" table top support using 1 1/4\" nails.\nUsing the same idea, attach the 6 1/4\" table top supports going the other directi",
-          "why": "48\" nail — no material line lists a 48\" fastener"
+          "path": "steps[3].body",
+          "quote": "Attach insert supports that run the length of the insert frame using 1 1/4\" exterior wood screws."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "1 1/2\" Exterior wood screws"
         }
-      ]
+      ],
+      "reason": "Step 3 uses 1 1/4\" exterior wood screws; the only wood-screw line in materials is 1 1/2\" (search of materials for /1 1\\/4/ finds only '1 1/4\" Exterior 18 gauge nails'). Flagged candidate steps[7] '48\" nail' rejected: the 48\" is the outer frame board, and the nails there are 1 1/4\" (materials[9])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: '6 1/4\" from each end', 'an 8\" space', '4 1/2 inches from each end', '3\" from each end', table top supports '3\" from both inside edges' and 'about 6 1/2\" from the insert frame boards'; table-top layers 'reduced ... by 2 3/4\"' (viewed f9eaf5d5a14f7b17); the 10 lid strips are evenly spaced in viewed c2e4e4a2a86e5cee; cover planks shown in 47579a74ffb16dca."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Insert frame, outer frame, support frame, supports, cross supports, legs, leg supports, top supports, planks, lid, cover planks, angle supports, finish. Each part exists before it is used; the last short top plank is left un-nailed (steps[8]) so the insert can be removed."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Drill 2- 1 1/2\" pocket holes ... collar depth ... about 1\"' and steps[2],[5],[6] repeat 1 1/2\" holes; every pocket-holed part is a 2x2 (cutList thicknessIn 2 nominal = 1 1/2\" actual); joined with 2 1/2\" pocket screws (materials[7])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "This should fit perfectly around the planter insert that has top dimensions of 36\" x 8\" and a height of 6\"."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "*Do not nail last short length plank to allow for easy removal of the planter insert"
+        }
+      ],
+      "reason": "(c) The steps build the table around a 36\" x 8\" x 6\" planter/cooler insert and the plan sells the table as a beverage cooler, but a search of materials[].name, cutList[].part and all steps for /insert|planter|liner|bin|tray/i finds no purchased or built insert (only 'Insert ...' frames, supports and cover planks). Arithmetic checks otherwise hold: 4.5 + (36 + 2 x 1.5) + 4.5 = 48; 6.25 + 1.5 + 8 + 1.5 + 6.25 = 23.5; 3 cover planks x 2\" = 6\" insert height."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/c2e4e4a2a86e5cee.webp",
+      "plans/47579a74ffb16dca.webp",
+      "plans/f9eaf5d5a14f7b17.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "**ALWAYS use exterior grade wood glue when joining two pieces of wood before attaching screws**",
+      "kind": "consumable",
+      "what": "Exterior wood glue is required but not in materials."
+    }
+  ]
 }

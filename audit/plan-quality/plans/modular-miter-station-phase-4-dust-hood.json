@@ -1,6 +1,6 @@
 {
   "slug": "modular-miter-station-phase-4-dust-hood",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps cut: back piece (cutList 'Top & Back' qty 2 = top + back), side pieces (Sides), angled 1/4\" back (Angle Back Piece), trim (Front Trim). No other part is made."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides (steps[2]), Top & Back (steps[3],[4]), Angle Back Piece (steps[5]), Front Trim (steps[7] 'screw trim piece') all used."
     },
     "R4": {
       "result": "pass",
@@ -73,31 +75,63 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: only sizes stated are 1 1/4\" coarse pocket screws (in materials) and 18 ga brad nails (in materials); trim screws given no size (see gaps)"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " to fit down in the middle section of the miter saw station. Depth will depend on the height of your miter saw table. In my case it was 4\". Also, I allowed for more room on the left side (8\") versus t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc9091ac321b6b12.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] viewed: image bc9091ac321b6b12 dimensions the notch (42\" wide, 8\" / 30\" / 4\" across, 4\" deep, 16\" tall, 12\" above the notch). Hood offset 4\" in steps[0]. Plastic strips and trim 'as necessary' are fit-to-saw."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back/sides cut, top and back attached to sides, angled back nailed on, caulked, hood attached to bench, plastic and trim last. Nothing needs undoing."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3].body 'Attach top to side pieces using 3/4\" pocket holes' states the 3/4\" setting; all pocket joints are in 3/4\" plywood (cutList thicknessIn 0.75)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Attach heavy mil plastic (I used a dust collector bag) to the front of the hood using staples."
+        },
+        {
+          "path": "steps[2].image",
+          "quote": "[viewed image bc9091ac321b6b12/07b33028b2e14479 step 3 diagram: side labelled 18\" tall x 20\" wide; cutList[0] source '3/4\" x 17 1/2\" x 20\"']"
+        }
+      ],
+      "reason": "(c) Staples are used in steps[7] but search of materials[].name for /staple/i finds none (materials: plywood, plywood scrap, pocket screws, brad nails, dust bag, caulk). Additionally (a), likely: the step 3 diagram (07b33028b2e14479) labels the side 18\" tall, while the Kreg cut row for Sides is 17 1/2\" x 20\" (17.5 vs 18)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-24",
+    "imagesViewed": [
+      "plans/bc9091ac321b6b12.webp",
+      "plans/07b33028b2e14479.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Then screw trim piece on to cover plastic edge.",
+      "what": "Trim screws have no type or size and are not in materials (materials list only 1 1/4\" pocket screws and 18 ga brads); the plan says screws were used instead of brad nails."
+    }
+  ]
 }
