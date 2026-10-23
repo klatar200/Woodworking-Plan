@@ -85,3 +85,27 @@ internals outside the designer/shopping list (guarded by the CLAUDE.md §7 test 
 | S-17 | P2 | `npm run db:seed` resets `publishedAt` to "now" for every published plan on every run, so the "Newest" sort and the Trending tiebreak reshuffle each seed. | `prisma/seed.ts:103` | open (found planning Sprint 84) |
 | S-18 | P2 | Garbage cut-list rows inside plausible bounds still ship, e.g. `plywood-chair-set` "See Full Plans in Extras" 0.75×48×96 and `rolling-lumber-sheet-goods-cart` "Support panels" 3×45×46. Needs a content pass (or a Kreg re-parse). | `content/plans/` | open (found in the Sprint 84 pre-flight) |
 | S-19 | P1 | **The Kreg importer drops fractions from space-separated dimensions.** `parseNum` only reads `5-1/2`, so `5 1/2"` becomes **5** (`parseFloat`). About 1,400 of 4,938 published cut-list rows are whole numbers in every dimension, and in 299 plans the step text gives a fraction where the cut list has only the whole number. Examples: `one-sheet-workbench` steps say a 16 1/4″ strip, but the cut list says Shelf 16; `2-board-plant-shelf` says 47 1/4″, but its row is 47. Live cut lists, board plans and shopping quantities are wrong by up to 7/8″ per dimension. Fix: correct `parseNum` (and the nominal-lumber path at `:40-47`, which can take a stray number as a length — 32 rows not smallest→largest), then re-import from the Kreg source and re-seed. Needs the `kreg-plans.json` dump or a re-scrape. | `scripts/import-kreg-plans.mjs:19-25`, `:36`, `:40-47` | open (found by the plan-audit brief review, 2026-10-18) |
+
+---
+
+## C — Catalog (plan-quality audit, 2026-10-23)
+
+Coverage: all 610 published plans, read under rubric R-2 (`docs/PLAN_QUALITY_AUDIT.md` §6). Every
+Unpublish was checked by an independent verifier. Per-plan evidence is in
+`audit/plan-quality/plans/<slug>.json`; the numbers and full lists are in
+`audit/plan-quality/REPORT.md` §Stage 8 and `decision-lists.md`. Verdicts: **Unpublish 24 ·
+Fix 433 · Ship (unverified) 93 · Ship 60** (8 of these also need human review). Not covered: tools
+lists, finishing, safety/structural adequacy, and time/cost/difficulty estimates (out of scope
+2026-10-18).
+
+| Id | Sev | Finding | Where | Status |
+|---|---|---|---|---|
+| C-01 | P1 | **24 plans can't be built as published.** 14 depend on content that isn't in the plan (R1), 12 have structural parts that exist nowhere (R2), 14 stop before a part the piece needs is made or installed (R14), 2 have 4+ verified Fix-level failures, and 2 are Keagan's own call. List with one-line reasons: REPORT §Stage 8 "Unpublish". | `content/plans/` (24 slugs) | open — set `published:false` + prod `db:seed` |
+| C-02 | P1 | **Importer measurement damage (S-19 family) in 518 plans** (153 gross: 3/4″ → 3, 1×12 → 1 × 12, 7′ → 7). One importer fix plus a re-import from the Kreg source and a re-seed fixes all of them. | `scripts/import-kreg-plans.mjs:19-26`, `:36`, `:40-47` | open — same work as S-19 |
+| C-03 | P1 | **Importer drops cut-row detail notes**: angles, miters, bevels, notches (e.g. kids-stepping-stool "Cut at 22.3 Degree Angle", kids-picnic-table "30 degree angled cuts"). Builders lose cut angles Kreg gives. | `scripts/import-kreg-plans.mjs` (cut-detail parse) | open — fold into the C-02 re-import |
+| C-04 | P2 | **433 plans need fixes** (1–3 Fix-level failures, or an Unpublish-level finding that is only `likely`). By type: steps/cut list/materials disagree (R14) 257, position not given (R10) 138, fastener missing or contradictory (R6) 134, build order (R8) 46, part not in cut list (R2) 37, materials short (R5) 38, size not from a listed material (R4) 32, "as shown" with nothing shown (R11) 58, cut row not a used part (R3) 30, missing content but buildable (R1) 17. Counts are plans failing each check (a plan can fail several). | `audit/plan-quality/decision-lists.md` | ❓ DECISION — fix, accept, or unpublish by type |
+| C-05 | P3 | **Pocket-hole jig setting not stated** in 275 plans (R9, recorded only). One bulk content fix: state the setting per part thickness. | `content/plans/` | ❓ DECISION |
+| C-06 | P3 | **Consumables used but not in materials** (glue, tape, finish…) in 241 plans. One bulk content pass. | `content/plans/` | ❓ DECISION |
+| C-07 | P2 | **8 plans need a human woodworker's call** (fit clearances, board-foot stock, a mattress size, a clock-movement shaft length, whether summary steps suffice). | REPORT §Stage 8 "Human review" | ❓ DECISION |
+| C-08 | P2 | **Plan images on a host the CSP blocks**: 5 published plans keep an image on `learn.kregtool.com`, not R2. `img-src` and `remotePatterns` allow only R2/Clerk/Blob, so those images can't load. Seen in the code, not yet in a browser. | `src/middleware.ts:82`, `next.config.ts:49`; 5 plans listed in REPORT | open — migrate to R2 (`migrate-images-to-r2.mjs`) or park them |
+| C-09 | P3 | **93 plans ship unverified**: no failure found, but at least one check is `unknown`, mostly R5, which can't be scored when the steps don't name the stock per part. | `decision-lists.md` | open — accept or re-check |
