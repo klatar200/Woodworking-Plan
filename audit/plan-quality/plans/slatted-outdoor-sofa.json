@@ -1,6 +1,6 @@
 {
   "slug": "slatted-outdoor-sofa",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -271,47 +271,87 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "Print the template for the back frame supports (in the extras). Trace the cut lines on the 22\" and 20 1/2\" back frame boards. Cut along the lines. Add pocket holes to the flat edge on the front and to",
-          "why": "matches \"Print the template\""
+          "quote": "Print the template for the back frame supports (in the extras). Trace the cut lines on the 22\" and 20 1/2\" back frame boards. Cut along the lines."
         }
-      ]
+      ],
+      "reason": "The cut shape of the structural back-frame supports (4 boards: cutList[4], [5]) exists only in a printable template in the Extras; no text gives their angle or cut lengths (search of steps[5]/[6]/[8] and description for /angle|degree|bevel|miter/i: only the 37 1/2 degree back-leg cut in steps[1]). Viewed images 7f86c82e (step 5) and 6df3df69 show the boards straight with only length labels 22 and 20 1/2 and no cut line."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (front leg, arm, back leg board, 60 in and 14 1/2 in seat frame, 22 in/20 1/2 in/57 in back frame, seat and back slats) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: steps[1]-[8]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 2x6, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "2x4 parts: 2x60+4x14.5+2x24.5+2x21.5+2x22+2x20.5+57 = 412 in + 13 cuts x 1/8 = 413.6 <= 5 x 96 = 480; 2x6 back legs 2x31.25 = 62.5 + 1/8 <= 72; 1x3 slats: 12 x 60 from 12 x 96 (36 in leftover each)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners in steps: 2 1/2\" pocket hole screws (materials[3]), 'heavy duty wood screws' (materials[4] 2 1/2\" TimberLOK), 'finishing nails' (materials[5]); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given numerically: front leg 1 in in, back leg 8 1/2 in in, seat frame top 15 in up, 18 in between seat frame boards, slat gap 1/2 in; remaining placements relational (flush, lined up with center seat supports)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown' reference without an image; steps[0]-[8] each carry an image except steps[9] (finish)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, seat frame, attach seat, back supports, 57 in top back board, slats; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Drill 2 pocket holes in each end of the 60\" seat frame boards."
+        }
+      ],
+      "reason": "Pocket holes in 1.5 in 2x4/2x6 (steps[1],[2],[3],[5],[6]); search all text for /jig|setting|thickness/i: no match; viewed images 7f86c82e and 6df3df69 show no setting (other step images not viewed). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Arithmetic from quoted inputs: 4 seat-frame boards x 1.5 + 3 gaps x 18 = 60 (steps[3]); 60 + 2 x 3.5 arms = 67 width (steps[0]); 6 slats x 2.5 + 5 x 1/2 = 17.5 = seat frame 14.5 + 3 depth; 12 slats = 6 seat + 6 back; hardware: only fasteners. All parts installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Add the 1x3 back slats to the back frame so they are flush with the edges of the seat frame and 1/2\" gap between boards.",
+      "what": "Back-slat step refers to the edges of the seat frame (copied from the seat step); neither step states how many slats go on seat vs back (cutList row is one line 'x12') or where the first back slat starts"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f86c82ef3cfa1b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6df3df69d818049b.webp"
+    ]
+  }
 }

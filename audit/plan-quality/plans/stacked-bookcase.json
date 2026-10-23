@@ -1,6 +1,6 @@
 {
   "slug": "stacked-bookcase",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -167,45 +167,58 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (Shelves, Sides, Cleats, Long/Short Spacers, Long/Short Base) each match a cutList row of the same name"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: shelves/sides steps[0]-[1], cleats [2]-[3], spacers [4]-[6], bases [7]-[9]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x4, 1x10); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock fixed by width. 1x10: 6x34.5 + 6x12.5 = 282 in + 12 cuts x 1/8 = 283.5 <= 3 x 96 = 288 (each board 2 shelves + 2 sides = 94.4). 1x3: 3x34.5 + 4x31.5 + 4x7.75 = 260.5 + kerf <= 3 x 96 + 72 = 360. 1x4: 2x31.5 + 2x7 = 77 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners in steps: 1 1/4\" Kreg screws (materials[4]) and 1 1/2\" flat-head wood screws (materials[6]) - no conflicting sizes; the coarse/fine thread note in steps[1] is a wood-choice alternative, not a second size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "ll sit higher than most moldings used at the base off walls. Second, the base doesn’t have one of the long pieces inset like the spacers. Instead, the Short Bases are cut to a shorter length. When the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5b51f3f24c3164c0.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[7] only explains why Short Bases are shorter. Positions given: hole locations dimensioned in viewed image d12688bd (7 1/4, 17 1/4, 1 7/8, 1 1/8, 1 3/4 spacing), spacer and base inset 3/4 in, equal end overhang, hole locations for the 1 1/2 in screws per viewed f9926318."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "19 reference(s), each in a step with its own image"
+      "reason": "Every 'as shown' / 'cutting diagram' step has its own image and all lengths are in cutList."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelf assemblies, cleats, spacer/base assemblies, attach to shelves, then stack (steps[10]); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 'set your Kreg Jig for 3/4\"-thick material'; every pocket-holed part is 0.75 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Arithmetic from corrected rows: spacer assembly depth 7.75 + 2x0.75 = 9.25 = shelf depth; cleat 34.5 = shelf length between sides; base depth 7 + 2x0.75 = 8.5 + 3/4 inset = 9.25; 12 flat-head screws = 6 holes x 2 joints (viewed f9926318); 3 assemblies = 6 shelves + 6 sides; anti-tip kit in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d12688bd7e58de60.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f992631834b55b19.webp"
+    ]
+  }
 }

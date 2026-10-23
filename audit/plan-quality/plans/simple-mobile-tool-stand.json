@@ -1,6 +1,6 @@
 {
   "slug": "simple-mobile-tool-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -67,21 +67,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "This is optional, but will make the cart much more practical if you have a small work space like I do. You can find the link to the casters I used in the blog post link in the Extras tab on this plan.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Extras tab' (steps[7]) is a link to the caster the author used; casters are in materials[1] and the step is marked optional."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (bottom, top, sides, back, doors) each have a cutList row; the stop block (steps[10]) is optional scrap per the step"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: bottom steps[1],[3]; sides [2]-[3]; top [4]; back [5]-[6]; doors [8]-[9]."
     },
     "R4": {
       "result": "pass",
@@ -89,26 +84,54 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×24×24 + 1×24×25.5 + 2×24×27.25 + 1×24×26.5 + 2×11.875×26.25 = 3755.4 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "Sheet layout not judged per rule; part area 3755.4 sq in <= 4608 bought (no certain fail). Strip lengths: 2 x 96 in strips hold 24+25.5+2x27.25+26.5+26.25 = 156.75 in + kerf."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '1 1/4\" pocket hole screws' (steps[3],[4],[6]) = materials[3]; no other sized fastener."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Once I drilled the holes for my hinges, I simply attached them onto the cabinet sides."
+        }
+      ],
+      "reason": "Concealed hinges (materials[2], 4 hinges) are installed but no step gives where the hinge cup holes go (distance from door top/bottom or from the door edge); searched all text for /hinge/i: steps[7]..[9] and materials only; viewed step image 8d6da794 is a drilling photo with no dimensions. Pocket-hole and caster positions are shown/relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "'like shown' steps each have their own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass built bottom/sides/top/back, then casters, then doors on the finished cabinet."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Pocket-hole steps state 3/4\" pocket holes (steps[1],[2],[5]); all pocket-holed parts are 0.75 plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Geometry from corrected rows: bottom 24 between sides = top 25.5 - 2x0.75; back 26.5 = side 27.25 - bottom 0.75; doors 2 x 11.875 = 23.75 in a 24 in opening, height 26.25 <= 26.5; step 0 door strip 26 1/4 matches cutList. Hinges and casters are in materials; all parts installed; optional pulls/notch/stop block are optional."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d6da794fb4c7825.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0004cf3a86a7cd91.webp"
+    ]
+  }
 }

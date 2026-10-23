@@ -1,6 +1,6 @@
 {
   "slug": "simple-kids-craft-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,44 +107,76 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step terms 'face spans', 'side spans', 'mid spans', legs, top/tabletop map to cutList rows Front Skirt, Side Skirt, Mid Spans, Leg Halves, Desktop (viewed diagram 7f9a5226 labels the same parts); no unlisted part"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Desktop",
-          "why": "no step mentions it (searched steps for desktop)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Desktop' is the table top: steps[6] 'Attach top from the under-side' and steps[7] 'stain the tabletop'. All 5 rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 0.75x16, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock fixed by width: 1x3 (2.5 in) parts 2x54+2x10+3x13.25 = 167.75 in + 7 cuts x 1/8 = 168.6 <= 2 x 96 = 192; 2x4 legs 8x19.5 = 156 + 8 x 1/8 = 157 <= 192; desktop 15.25 x 60 from the 16 x 60 board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is 1 1/4\" pocket hole screws (steps[0],[3]-[6]) = materials[3]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole and span positions are dimensioned in viewed diagrams 7f9a5226 and 6bf8e9b1; top centered by overhang (60 vs 59 base)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "'diagram' references (steps[0],[3],[5]) each have a step image; viewed 7f9a5226 is the cut diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs glued and trimmed (steps[1]-[2]) before joining to spans; top last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 'drill 3/4\" pocket holes to accommodate 1 1/4\" pocket hole screws'; all pocket-holed parts are 0.75 thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "The boards will be 13 3/4\" apart as shown on the diagram."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Front Skirt x2 0.75 x 2.5 x 54 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Mid Spans x3 0.75 x 2.5 x 13.25 (Kreg-corrected)"
+        }
+      ],
+      "arithmetic": "4 gaps x 13.75 + 3 spans x 0.75 = 55 + 2.25 = 57.25 in, versus the 54 in between the legs (front skirt 54; base 54 + 2x2.5 = 59 matches the 60 in top). Even read as center-to-center (4 x 13.75 = 55) it exceeds 54.",
+      "reason": "R14(a): the spacing given for the three mid spans does not fit the 54 in skirt (viewed step image 6bf8e9b1 shows four 13 3/4 labels). Other sub-checks pass: legs 3.5-1 = 2.5 and 3-0.5 = 2.5 match the 2.5 skirt width; 8 halves = 4 legs; 3 spans; all parts installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f9a52265f1c9191.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6bf8e9b1a4941362.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "simple-fence-gate-hardware-cloth-shou-sugi-ban",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -13,48 +13,105 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[17].body",
-          "quote": "or free video tutorials, view the two YouTube videos in the Extras section.\nThe first takes you through the building and mounting of the gate without the optional steps.\nThe second video takes you thr",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Extras' (steps[17]) points to free YouTube videos that repeat the written steps; every cut and assembly step is complete in text, so the build does not depend on them."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (back/front stiles, back/front rails, center rail, top cap, cross braces) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: back stiles/rails steps[1]-[4], front stiles/rails [6]-[8], top cap [9], optional braces [11]-[13]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable"
+      "result": "pass",
+      "reason": "All rows are 2x4 nominal (importDiffs: cutList[0] unparseable 63.5' typo; thickness 2/width 4 are nominal taken as actual, cause import); every part comes from the listed 2x4 (3.5 in wide stock, parts max 3.5)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "a cut row's Kreg text is not parseable"
+      "reason": "Cut-list lengths: 2x63.5+2x70.5+2x36+29+3x29+4x38+36 = 644 in, 20 pieces x 1/8 = 2.5, total 646.5 <= 7 x 96 = 672. But steps[11] gives the braces as 48 in: 4x48 instead of 4x38 makes 686.5 > 672. Conflict recorded under R14."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '2.5\" deck screws' (steps[8],[9],[12],[13]) = materials[2]; pocket holes use materials[3] 2.5\" Kreg screws; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Rail positions given (top, bottom, center) and openings relational; hinge/latch locations are shown in viewed step image 67db18e1 and supplied by the kit instructions (steps[10])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown' steps have their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back frame, cloth, front frame, cap, hang is a possible order; the optional-step sequence is recorded in gaps."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Using a Kreg Pocket Hole jig, drill two pocket holes at each end of the three Back Rails."
+        }
+      ],
+      "reason": "Pocket holes in 1.5 in 2x4 rails; search all text for /setting|thickness|jig set/i: only 'Kreg Pocket Hole jig'; viewed step image 37ddf26b is a video frame of drilling with no visible setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Roll out your 36\"x60\" hardware cloth panel across the back frame. Staple hardware cloth to the frame starting at the bottom end and moving up each side, finishing along the top."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut 2ea. 2\"x4\"x70.5\" stiles."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Staple hardware cloth to the frame"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Cut 4ea. 2\"x4\" to 48\" in length."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "(Optional) Cross Braces 4 x 2x4x38"
+        }
+      ],
+      "arithmetic": "Frame height 70.5 (back stiles); open height = 70.5 - 3 rails x 3.5 = 60 in two openings; the single 60 in cloth, started at the bottom, ends 60 in up, short of the top rail (3.5 rail at 67-70.5 and a 63.5 in span from bottom-opening edge to top-opening edge). Braces: step 48 in vs cut list 38 in.",
+      "reason": "R14(a): the 36x60 cloth (materials[1] '36\" x 5'') cannot cover a 70.5 in tall frame/63.5 in span and cannot reach 'along the top'. R14(c): staples are used in steps[5] but are not in materials (search materials for /staple/i: none). R14(a): optional braces are 48 in in steps[11] but 38 in in cutList[5]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Using a fence gate hinge and latch kit, attach the gate to the fence using the hardware that comes with the kit.",
+      "what": "Gate is hung in steps[10], then optional steps[11]-[15] (braces laid across the frame, torch, stain) and steps[16] says to attach the gate again; order for builders doing the optional steps is contradictory"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/37ddf26bd2d9773d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9db59d1a056ca79b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/67db18e14730e0d3.webp"
+    ]
+  }
 }

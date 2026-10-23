@@ -1,6 +1,6 @@
 {
   "slug": "sideboard-bar-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (sides, legs, bottom, back, top, center dividers, doors, drawer sides/front/back/bottom/fronts) each match a cutList row; no unlisted part found"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: legs steps[0]-[2], sides [2], bottom [3], back [4], top [5], dividers [6], doors [7], drawer parts [9]/[11]."
     },
     "R4": {
       "result": "pass",
@@ -24,31 +26,77 @@
       "reason": "R5 precondition not met: 4 stock types (0.75x18, 0.75x16, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fasteners in steps are '1\" spax screws' (steps[11], materials[16]); other joints say 'pocket screws' (materials[4] 1 1/4\"), no conflicting sizes (searched steps for /\\d\\s*(\\d\\/\\d)?\"\\s*(screw|nail|brad|spax)/i)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "Attach the doors using inset door hinges.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8aea3f2d8586ed10.webp"
+          "quote": "Attach the doors using inset door hinges."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "First using a forstner bit, drill just enough into the sides of the cabinet that the fastener sits flush or just below the top of the panels."
         }
-      ]
+      ],
+      "reason": "Hinge locations (distance from door top/bottom, count per door) are given nowhere: viewed step image 8aea3f2d shows doors with only 15 1/2 in and 16 1/4 in dimensions, no hinges; searched all text for /hinge/i: steps[7] and materials only. Figure 8 fastener positions (10 in materials[7]) are not given either. Positions that ARE given: dividers 15 1/2 in / 10 1/2 in (viewed 05008dba, 8aea3f2d), drawer slides 3 in / 8 in / 3 in (viewed f5ee2b17), top overhang 1 in."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Every 'as shown' step (steps[4],[8]) has its own image; viewed images give the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs -> sides -> bottom -> back -> top -> dividers -> doors -> slides -> drawers -> fronts; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the sides of the cabinet to the legs using pocket holes and wood glue."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Build the drawers using pocket holes and wood glue."
+        }
+      ],
+      "reason": "Pocket holes in 3/4 in parts (steps[2],[3],[4],[6],[9]); search all text for /jig|setting|thickness setting|collar/i: no match; viewed step images 05008dba, 8aea3f2d, f5ee2b17 show holes/slides but no jig setting (3 of 13 step images viewed). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 3 drawers = 6 sides + 6 front/back + 3 bottoms + 3 fronts, 3 slide sets (materials[9]); 2 doors, 2 dividers; hardware (hinges, slides, pulls, figure 8s) in materials. Arithmetic from cutList: sides 17 - bottom 0.75 = 16.25 = divider/door/back height; top depth 16 = leg 1.5 + side 12 + leg 1.5 + 1 overhang; top width 60 = 56.5 + 2x0.75 + 2x1; viewed image: 15 1/2 + 0.75 + 24 + 0.75 + 15 1/2 = 56.5."
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Place the drawer sides as shown in the image.",
+      "what": "Viewed image f5ee2b17 shows the three pairs of drawer slides mounted on the dividers (3 in, 8 in, 3 in), not drawer sides; step names the wrong item and no step says to install the slides before steps[10] 'Attach the drawer boxes to the drawer slides'"
+    }
+  ],
+  "humanReview": "Fit clearances cannot be judged from section 9: the drawer box is 22.25 + 2x0.75 = 23.75 wide in a 24 in opening (56.5 - 2x15.5 - 2x0.75), and the doors (15.5 x 16.25) equal the stated openings (15 1/2 x 16 1/4); whether the slides/hinges need more side/reveal clearance is outside section 9.",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/05008dba6d23d96a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8aea3f2d8586ed10.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f5ee2b17eebc7b6f.webp"
+    ]
+  }
 }

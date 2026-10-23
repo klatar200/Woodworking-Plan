@@ -1,6 +1,6 @@
 {
   "slug": "simple-diy-toy-box-with-faux-slats",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -56,20 +56,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "readerNote": "Sweep pass stands: the 'extras tab' mentions (steps[1] video, steps[10] soft-close hinge link) are for an optional step and optional hardware; steps[1] gives the full slat procedure in text.",
+      "reason": "Extras references are optional only."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " blade depth on your circular saw to cut into the wood about 1/4\". Adjust your rip fence on your table saw to 3 1/2\" from the blade and run each side panel piece through on each end (to cut two slats)",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1/4\" (steps[1]) is a groove depth, not a part. Parts named in steps (2x2 legs, long/short side panels, bottom, top) all in cutList; back trim is 'scrap 1x2 ... or scrap plywood' (steps[9]) from listed plywood."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: legs steps[5]-[6], long sides [7], short sides [5], bottom [8], top [10]."
     },
     "R4": {
       "result": "pass",
@@ -77,25 +73,84 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Plywood layout not judged per rule (sheet parts total 2x18x31+2x14.5x18+14.5x31+18x36 = 2735.5 sq in <= 4608 bought, no certain fail). 2x2 legs: 4x20=80 + 3x0.125 <= 96 passes."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name '1 1/4\" Kreg pocket hole screws' (steps[5],[7],[8]) = materials[2]; '30\" piano hinge' = materials[3]; no other sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slats 3 1/2 in/7 in given (steps[1]); legs flush top/inside (steps[5]); bottom flush with panel bottoms in viewed step image dc87c6d0; hinge/trim positions relational (back top) and shown in viewed 237b3721; finger slot size left to builder."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'like shown' steps (8, 9, 10) each have an image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the two short plywood side panels between two 2x2 legs using 1 1/4\" Kreg pocket hole screws to make your two sides of the toy box."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Cut your 2x2 legs for the toy box using a miter saw. These should be 20\" long."
+        }
+      ],
+      "reason": "The legs are first used in steps[5] but are only cut in steps[6]; cutting must come before assembly."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Pocket-hole steps state '3/4\" pocket holes' with the Kreg jig (steps[4],[8]); all pocket-holed parts are 0.75 plywood."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "apply glue on edge banding to the top sides of the side panel pieces"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Apply edge banding along the top piece for a cleaner look."
+        }
+      ],
+      "reason": "R14(c): edge banding is used in steps[3] and [10] but is not in materials (search materials for /band|edge|veneer/i: no match). Other sub-checks pass: geometry from corrected rows - bottom 14.5 x 31 = interior between legs (14.5 between legs front-to-back, 31 between legs end-to-end); 5 slats per panel = 3.5+3.5+4+3.5+3.5 = 18; legs 20 = 18 panel + 2; hinge and soft-close hinges in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "I took a piece of scrap 1x2 and screwed into the top of the back side like shown.",
+      "what": "back trim piece the piano hinge attaches to has no length or cut-list row and no screw size/count (scrap, 3/4 thick)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "apply glue on edge banding",
+      "what": "glue not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dc87c6d0df57d94c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/237b37217e820b9e.webp"
+    ]
+  }
 }

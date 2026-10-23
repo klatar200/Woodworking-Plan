@@ -1,26 +1,22 @@
 {
   "slug": "star-wars-tie-fighter-bookshelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "mark of the sections of the TIE fighter. For detailed painting instructions visit the \"Extras\" tab.\n(This step can be completed one the shelf is assembled. I found it easier to paint before assembly.)",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Extras references (steps[3] more photos, steps[4] detailed painting) cover pictures and paint pattern only; wing shape, shelf and assembly are fully given in text/images (viewed 825f0bf0 hexagon 13 x 13 with 8 63/64 top edge; 99c6b467 shelf; 6e8af444 assembly). Painting/finishing is out of scope; steps[5] is a credit link.",
+      "reason": "Optional/decorative references only."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (wings, 1x8 shelf boards) match cutList rows TIE Fighter Wings x2 and Shelf x2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: wings steps[0],[3]; shelf boards steps[1]-[2]."
     },
     "R4": {
       "result": "pass",
@@ -28,25 +24,91 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Sheet part not judged by rule (wings 2x13x13 = 338 sq in <= quarter sheet). 1x8 shelf length is in conflict: cutList 14 in gives 2x14 + 1/8 = 28.1 <= 48, but viewed image 99c6b467 labels the shelf 24 in, giving 2x24 + 1/8 = 48.125 > 48. Conflict recorded under R14."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Create pocket hole joints to join the boards."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the shelf to each wing."
+        }
+      ],
+      "reason": "The shelf and wing joints are pocket-hole joints (steps[1]) that need screws, but materials list no fastener at all (search materials for /screw|nail|glue/i: no match; materials are 1x8, plywood, 2 paints, tape) and no step names a screw size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf position on the wings dimensioned in viewed image 6e8af444 (9 59/64, 3 5/64, 2 49/64, 4 5/16); wing shape dimensioned in 825f0bf0 and steps[0] (2 in from corner, midpoints)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Each step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut wings, drill pocket holes, assemble shelf, attach wings; painting may be done before or after (steps[4])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Create 3 pocket holes on the long side of one of the 1x8 boards."
+        }
+      ],
+      "reason": "Pocket holes in 3/4 in 1x8; search all text for /jig|setting|thickness/i: no match; viewed images c4dfbaec (photo of boards) and 99c6b467/6e8af444 (sketches) show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Shelf x2 0.75 x 7.25 x 14"
+        },
+        {
+          "path": "steps[2].image",
+          "quote": "viewed image 99c6b467 (step 2, 'Join 1x8 boards together') labels the board 24\" long and 7 1/4\" wide"
+        }
+      ],
+      "arithmetic": "Cut list length 14 vs image length 24; 2 x 24 = 48 in = the whole 1x8 48\" board (materials[0]) with no kerf allowance, 2 x 14 = 28.",
+      "reason": "R14(a): the size the steps' image gives for the shelf boards (24 in) disagrees with the cut-list row (14 in); the viewed assembly image 6e8af444 also shows a long shelf spanning the wings."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Create pocket hole joints to join the boards.",
+      "what": "no wood glue or sandpaper in materials (consumables; steps[4] says sand)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/825f0bf01f96c822.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99c6b4678794bd4f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e8af444fef43ec6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4dfbaecc0a3188e.webp"
+    ]
+  }
 }

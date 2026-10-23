@@ -1,6 +1,6 @@
 {
   "slug": "side-table-deck-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -275,44 +275,119 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (sides A/B, cleats, 1x4 slats, trim, legs, lid frame 2x4s, lid slats) each match a cutList.part; no unlisted part found"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: sides steps[1]-[2], cleats [3], bottom slats [4], legs [5]-[7], trim [8], lid frame [9], lid slats [10]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[5] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Legs x4 1 x 1.5 x 17.5 (no importDiffs correction)"
+        }
+      ],
+      "reason": "Thickness 1 is the nominal '1x' label taken as actual (rows 0-4 and 6-10 of the same plan are corrected to 0.75); no listed stock is 1 in thick. Same import defect as the corrected rows, not corrected by the sweep. Other rows fit: 0.75x5.5 from 1x6, 0.75x3.5 from 1x4, 1.5x3.5 from 2x4, 1.5-wide pieces from the ripped 1x6 (steps[5])."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x2, 1x4, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock named by nominal size in cut-row sources (importDiffs[].source). 1x6 x6 boards = 4 boards for sides+slats (4x23=92+0.375 kerf; 2x23+2x21.5=89+0.375; 4x21.5=86; 3x17.625=52.9, all <=96) + 2 boards ripped per steps[5] (2in strips 4x96=384 vs legs/trim 4x17.5+4x20.5+4x20=232; 1.5in strips 2x96=192 vs 4x17.5=70). 1x4 x2: 5x21.5=107.5 <= 192. 2x4 x1: 2x24.5+2x17.625=84.25+0.375 <= 96. 1x2 x1: 2x21.25=42.5+0.125 <= 48."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "dd Side B legs flush with the edge of the side, then add Side A legs flush with Side B legs. The leg should be even at the top and have a 1\" foot at the bottom. Use wood glue and brad nails to attach.",
-          "why": "1\" brad — no material line lists a 1\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1\" foot' (steps[6]) is a leg foot height, not a fastener. Steps name '1 1/4\" outdoor pocket screws'/'1 1/4\" brad nails' (steps[1],[2],[3]) - both in materials[5],[6]; no step gives two sizes for one use (search steps for /\\d+\\s*(1\\/\\d)?\"\\s*(brad|screw|nail)/i)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Attach lid with hinges suitable for outdoor use and a lid support is recommended."
+        }
+      ],
+      "reason": "Hinges and lid support are in materials[7],[8] but no step states which edge the hinges go on, their distance from the ends, or where the support mounts (search steps/description for /hinge|support/i: only steps[11]); viewed step image aa5d8ef5 is a photo with no dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "No candidate; steps[1] 'as shown in the picture' has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides -> box -> cleats -> bottom slats -> legs/trim -> lid frame -> lid slats -> hinges; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill your pocket holes as shown in the picture with Side A on the left and Side B on the right."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "The pocket holes will be on the 17 5/8\" pieces."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4 in sides (steps[1]), 1 1/2 in 2x4 frame (steps[9]) and 3/4 in slats (steps[10]); search all text for /jig|setting|thickness setting|collar/i: no match; viewed step image ba3fc921 shows only drilled holes, no setting. (Recorded only; does not count.)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "You will be screwing the slats into the 23\" piece of the frame."
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Lid Frame x2 2x4x24.5 (corrected 1.5 x 3.5 x 24.5)"
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Lid Frame x2 2x4x17 (corrected 1.5 x 3.5 x 17.625)"
+        }
+      ],
+      "reason": "R14(a): the lid frame has only 24.5 in and 17 5/8 in pieces (searched cutList for 23: only Side A, a box side); no 23 in frame piece exists. Other sub-checks pass: counts match (12 side boards = 3 high x 4 sides; 3 lid slats; 5 bottom slats); leg 17.5 = box 3x5.5 = 16.5 + 1\" foot (steps[6]); lid 24.5 = box 23 + 2x0.75 legs; hardware in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "you will need to rip a 1x6 into two 2\" pieces and one 1.5\" piece",
+      "what": "2 + 2 + 1.5 = 5.5 plus 2 rip kerfs x 1/8 = 5.75 > 1x6 actual 5 1/2 (§9); the three strips cannot all come out full width"
+    },
+    {
+      "path": "cutList[6]",
+      "quote": "Trim x4 1x2x20.5 (corrected width 1.5)",
+      "what": "steps[5] says 2\" strips for trim/legs but the corrected trim and Legs row widths are 1.5; which parts are 2\" wide vs 1.5\" is not stated"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ba3fc921bcf1eeb0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/84caaae6620ba65e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aa5d8ef5e681b4a6.webp"
+    ]
+  }
 }

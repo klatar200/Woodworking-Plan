@@ -1,6 +1,6 @@
 {
   "slug": "simple-stepstool",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,44 +23,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "scroll saw, cut 2 slits out of the board. Measure in 1\" from the sides, and 3 inches from the back. Then cut a 1/2\" slit (see plans for clarification). Once the slits are cut, slide the step in place.",
-          "why": "cut sentence states 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1/2\" (steps[6]) is the slit width, dimensioned in viewed image 81c608e3 (1 in from side, 3 in long, 1/2 in wide). Every part named in steps (frame 16/5/10 in pieces, front legs 6, back legs 13 1/4, supports 9, steps 17) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: frames steps[0], front legs [1], back legs [3], supports [4], steps [6]-[7]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "1x2 parts: 4x16+2x5+2x10+2x13.25+2x9+2x6 = 150.5 in + 14 cuts x 1/8 = 152.25 <= 2 x 96 = 192; 1x8 steps 2x17 = 34 + 1/8 <= 48. Stock fixed by width (1.5 vs 7.25)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Using wood glue and brad nails, secure the steps into place."
+        }
+      ],
+      "reason": "Brad nails are used in steps[7] but no material line lists them or any nail (search materials for /brad|nail/i: none; materials fasteners are only 1 1/4\" pocket hole screws and 1 1/4\" grabber screws)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "6 in frame height dimensioned (viewed 3b35a4f7), slit positions dimensioned (viewed 81c608e3), step overhangs 1/2 in given (steps[7]); leg/support placements are relational (flush, even) per steps[1]-[5]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "reason": "'see plans' steps (1, 3, 4, 5, 6) each have a step image; viewed 3b35a4f7 and 81c608e3 are the referenced sketches."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames built, legs/supports fixed to the small frame then moved to the big frame (steps[5]), treads cut and set last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in each end of the 5\" boards."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4 in 1x2s (steps[0]); search all text for /jig|setting|thickness/i: no match; viewed sketches 3b35a4f7, 81c608e3, cf9cb946 show no setting (step 0 image not viewed). Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match cutList (4x16, 2x5, 2x10, 2x6, 2x13 1/4, 2x9, 2x17); step width 17 = frame 16 + 2x1/2 overhang; hardware: only fasteners and glue. Frame/leg/step parts all installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[4]",
+      "quote": "Steps x2 0.75 x 7.25 x 17",
+      "what": "Large frame sides are 10 in, so the lower frame is 10 + 2x0.75 = 11.5 in deep if the 16 in pieces are front/back (steps[0]); the 7.25 in 1x8 tread covers 7.25 of it, while viewed sketch cf9cb946 appears to show the lower tread spanning the whole frame to the back legs. Not settled from the plan text."
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cf9cb946c99fb70c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/81c608e3c0378373.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3b35a4f7628b631f.webp"
+    ]
+  }
 }

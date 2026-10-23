@@ -1,6 +1,6 @@
 {
   "slug": "rustic-sliding-barn-door",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -215,44 +215,112 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[12].body",
-          "quote": "d cut to width using the table saw. You may want to cut them 1/16\" short on each side to account for any bowing that may be present.\nI recommend cutting the respective top panels to the same width at ",
-          "why": "cut sentence states 1/16\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1/16\" is a trim allowance on panel width (steps[12]), not a part; all parts named in steps (stiles, rails, panels) are in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 cut rows are used: stiles/rails in steps[0],[4],[6]; bottom panels steps[3]-[4]; top panels steps[5]-[6]; left/right panels steps[12]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3]",
+          "quote": "Top Full-Width Panels 0.75 x 6.75 x 34.5 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x6 96\""
+        }
+      ],
+      "arithmetic": "panel width 6.75 (corrected) > 1x6 actual width 5 1/2 (§9); no other listed stock is wider (2x4 = 3 1/2). Steps say panels come from 'tongue and groove wood planks' but materials list only 1x6.",
+      "reason": "Full-width panels (also cutList[6]) are 6 3/4 wide; the only listed 3/4-thick stock is 1x6 (5 1/2 actual). Likely a T&G plank product not named in materials."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x6); steps not checked for per-part stock"
+      "reason": "Sweep unknown stands: panel stock is not named in steps beyond 'tongue and groove wood planks'. For information: 2x4 parts 2x84+3x34.5=271.5in + kerf vs 4x96=384; panel lengths 4x34.5+2x34.5+4x41+2x41=453in vs 6x96=576."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No screws/nails/fasteners used in steps; assembly is glue and tongue-and-groove. Search steps for /screw|nail|brad|staple|bolt/i: none."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Groove/tongue positions given in steps[1]-[2] (3/8\" from fence, depths); panel/rail positions fixed by the frame; handle/trim and hanging hardware positions are optional or per manufacturer."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Once you get the bottom panels cut to length and width, assemble them along with the Left Frame Stile, Bottom Frame Rail, and Middle Frame Rail."
+        },
+        {
+          "path": "steps[12].title",
+          "quote": "Cut Left and Right Panels to Width"
+        },
+        {
+          "path": "steps[13].title",
+          "quote": "Determine the Dimensions"
+        },
+        {
+          "path": "steps[11].title",
+          "quote": "Hang the Door"
+        }
+      ],
+      "reason": "Steps are out of order: the left/right panel width cut (steps[12]) and the door-size determination (steps[13]) come after assembly (steps[4]-[7]) and after Hang the Door (steps[11]), though assembly needs panels already cut to width."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; joinery is router grooves/tongues and glue."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "There are a lot of sliding/barn door hardware options available. After you find one that you like, follow the instructions from the manufacturer to hang the door."
+        },
+        {
+          "path": "materials",
+          "quote": "Board, 2x4 96\" | Board, 1x6 96\" | Wood Glue | Sandpaper, 120-grit"
+        }
+      ],
+      "reason": "R14(c): the sliding/barn door track and rollers the final step installs are hardware not in materials (search materials for /hardware|track|roller|rail|handle/i: none). Other sub-checks pass: panel widths 4x6.75+2x3.75=34.5 = rail 34.5 incl. tongues; stile 84 = 3.5+40+3.5+33.5+3.5 from corrected rows."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Do a final sanding and wipe with a sticky cloth to remove any dust.",
+      "what": "tack/sticky cloth not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": []
+  }
 }

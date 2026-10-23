@@ -1,6 +1,6 @@
 {
   "slug": "shadow-box-display-frames",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,44 +107,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[1],[3],[5] (Frame Rails/Stiles, Box Top/Bottom/Sides, Back Wide/Narrow) has a cutList row of the same name"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: Rails/Stiles steps[1]-[2]; Box Sides/Top/Bottom steps[3]-[4]; Back Wide/Narrow steps[5]-[6]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.5x5.5, 0.5x2.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Corrected parts from 1/2x5.5 stock: 2x19.75+2x6.75+2x8+2x9+10 = 97 in; 9 pieces, <=9 cuts x 1/8 = 1.125; total 98.125 <= 3 boards x 36 = 108. Bin-pack: (19.75+9+6.75+2 kerf 0.25=35.75), (19.75+9+6.75=35.75), (10+8+8=26). Back Narrow 10 <= 1 x 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use only '1\" pocket hole screws' and '1\" brads' (steps[2],[4],[6],[7]); materials[3] and [2] list both at those sizes; no conflicting size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "The frame is light, so you can use a standard sawtooth picture-frame hanger."
+        }
+      ],
+      "reason": "The sawtooth hanger is in materials[5] but no step says where it goes or what part it is fixed to (search steps/description for /hanger|hang/i: only steps[7] and description NOTE). Pocket-hole positions are 'as shown' in step images and box-to-frame placement is fixed by corrected parts (box 10x8 vs frame opening 8 3/4 x 6 3/4 in viewed cf7d3d52/0bb662cf diagram)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " need. For this project, you'll want to note that the materials lists and cutting diagrams are for building ONE FRAME. So, you'll need to multiply everything by the number of frames you want to build.",
-          "why": "\"diagrams\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged text steps[0] is a general note that materials/cutting diagrams are for one frame; each cutting step (steps[1],[3],[5]) has its own image and every cut row is in cutList. The 5 unattached images viewed are photos/frame diagram (0bb662cf shows 19 3/4 x 17 3/4 frame, 8 3/4 opening); no separate cutting diagram exists, but cutList carries all lengths."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, box, back made then back attached to box (steps[6]) then box to frame (steps[7]); no step needs an unmade part."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket-hole step states 'pocket hole jig set up for 1/2\" material' (steps[1],[3],[5]); all parts are 0.5 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match cutList (steps[1] 2 rails+2 stiles; steps[3] 1 top,1 bottom,2 sides; steps[5] 1 wide,1 narrow). Geometry from corrected rows: frame 19.75 x (5.5+6.75+5.5=17.75) = viewed diagram 19 3/4 x 17 3/4; back 5.5+2.5=8 x 10 = box 10 wide x 8 tall (top/bottom 9+2x0.5=10). Hanger in materials[5]; frame, box, back all installed by steps[7]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0bb662cf1c3dcbaa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cf7d3d52cdb83c54.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/789583dc0021fcca.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a29a88731b1133bc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a19fe0b29192f1e.webp"
+    ]
+  }
 }

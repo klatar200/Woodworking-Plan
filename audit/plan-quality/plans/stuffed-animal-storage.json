@@ -1,6 +1,6 @@
 {
   "slug": "stuffed-animal-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -167,45 +167,78 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (vertical frame, top frame, bottom frame, hook, side support, top/bottom horizontal supports, corral bed) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used: frame pieces steps[0]-[1], hooks/side supports [2], horizontal supports [4]-[5],[7], bed [6]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "readerNote": "Sweep unknown resolved: cutList[6] corrected row [0.125, 1.5, 24] is a parse artifact of the source text '1/8\" from edge , 3/4\" x 1 1/2\" x 24\"' (the 1/8\" is the groove offset); the real part is 0.75 x 1.5 x 24 (cause import).",
+      "reason": "0.75x1.5 parts from 1x2, 0.75x2.5 parts from 1x3, bed 0.25 x 9.875 x 24.625 from the 1/4 plywood quarter sheet."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock fixed by width. 1x3: 4x11.25+2x13.25+2x11+2x6 = 105.5 in + ~10 cuts x 1/8 <= 2 x 72 = 144. 1x2: 2x9.5+4x24 = 115 in + ~5 cuts x 1/8 <= 144. Bed 9.875 x 24.625 fits a 24 x 48 quarter sheet."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" pocket hole screws (materials[3]), 1 1/4\" nails (materials[5]) and 1/2\" hex cap screws (steps[8]/materials[4]); no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "r top and bottom horizontal supports (about 1 1/2-2\" apart). Stagger the marks from the top and bottom. Mark locations for 5 screws on the inside edge of the top frame and 5 on the inside of the side ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e73f4ff67d4415c3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[8] gives 12 evenly spaced marks (about 1 1/2-2 in apart) and 5 each on top frame and side support; positions shown in viewed image e73f4ff6; vertical frame offsets 2 1/4 in (steps[1], viewed e87227b4)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Each step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, supports, bed slid in before the last bottom support (steps[6]-[7]), then screws and cord."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states '3/4\" pocket holes' and all pocket-holed parts are 0.75 thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Bottom Corral Bed x1 0.25 x 9.875 x 24.625 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Top Horizontal Support x2 0.75 x 1.5 x 24"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "set the router depth to 1/4\" height and 1/8\" from the edge of the wood"
+        }
+      ],
+      "arithmetic": "Bed length 24.625 vs span: horizontal supports 24 between the side frames (steps[5] 'between vertical frame pieces on either end') + 2 x 1/4 groove depth in the bottom frame pieces = 24.5 < 24.625. Width fits: 11 - 2 x 0.75 = 9.5 + 2 x 1/4 = 10.0 >= 9.875.",
+      "reason": "R14(a): by the plan's own numbers the plywood bed is 1/8 in longer than the space between the grooves (24.5 in). Other sub-checks pass: 29 in overall = 24 + 2 x 2.5; top frame 13.25 = 11 + 1 1/2 footboard + 3/4 (steps[1]); 44 hex screws needed (12+12+2x(5+5)) <= 48; all parts installed; materials include cord, screws, nails."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94f7342a77f7fa17.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e87227b45fb4cd58.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e73f4ff67d4415c3.webp"
+    ]
+  }
 }

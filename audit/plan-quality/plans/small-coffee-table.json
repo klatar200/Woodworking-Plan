@@ -1,6 +1,6 @@
 {
   "slug": "small-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,44 +59,65 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Make additional small cuts as needed to shorten the angled rail until you get a perfect fit as shown between the long rails. My angled rails ended up being 13\" in length after all cuts. Glue in place.",
-          "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 13\" (steps[9]) is the angled rail's final trimmed length from the 15 in cut-list stock ('Make additional small cuts as needed to shorten'); all parts in steps (legs, short/long rails, slats, angled rails, wide/narrow top boards) have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: legs/short rails steps[0]-[3], long rails [5]-[6], slats [8], angled rails [9], top boards [10]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "reason": "Sweep unknown stands: Slats are 0.625 thick but the only listed stock is 3/4 (1x4); the plan does not say to plane/resaw. All other rows fit 2x2, 1x4 (3.5), 1x6 (5.5)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, 1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock fixed by width. 2x2: 4x18+4x15+4x35+4x15 = 332 in + ~15 cuts x 1/8 <= 5 x 72 = 360 (bin-pack: 35+35 x2 boards; 3x18+15; 18+3x15; 4x15). 1x4: slats 8x15.75 + narrow 2x20 = 166 <= 3 x 72 = 216. 1x6: 6x20 = 120 <= 2 x 72 = 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fastener in steps is 3/8\" dowels/holes (materials[3]); step 11 says 'screw' without a size and materials carry 1 1/2\" pocket screws; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Heights given (bottom rail 3 in above floor, top flush), rabbet 3/4 deep x 7/16 wide given, angled rail positions shown in viewed image bf4e989e; slats 'snug' on ledges; top overhang fixed by 40 x 20 top over 38 x 18 frame."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown' steps each have an image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, long rails, slats, angled rails, top, attach top; each part exists before use."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "Steps use dowels and glue; no step drills pocket holes (searched steps for /pocket/i: none)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Arithmetic from corrected rows: top 6x5.5 + 2x3.5 = 40 = frame 35 + 2x1.5 + 2 overhang; top depth 20 = frame 15 + 2x1.5 + 2; angled rail 13 = 12 in between rails / cos 22.5 (stock 15 trimmed per step); slat 15.75 = rail gap 15 + 2x7/16 ledge. 16 dowels = 8 short-rail ends + 8 long-rail ends. No hardware used."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Glue and screw table top to frame to complete.",
+      "what": "No step says where or how the top is screwed (screw size/count, pocket holes in the rails); materials[4] lists 8 '1 1/2\" Pocket Screws' but no step drills pocket holes"
+    }
+  ],
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf4e989ed1dc0943.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c3c247e82560d3c5.webp"
+    ]
+  }
 }

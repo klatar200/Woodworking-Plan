@@ -1,6 +1,6 @@
 {
   "slug": "simple-1-hour-child-coloring-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,43 +10,88 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps: 17\" legs, 25\" legs, 33\" support pieces, desk top - each has a cutList row (4,4,2,1)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used in steps[0]-[3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "2x2 parts: 4x17+4x25+2x33 = 234 in, 9 pieces <=10 cuts x 1/8 = 1.25, total 235.25 <= 3 x 96 = 288 (bin-pack: 25+25+25+17=92; 25+33+33=91; 17x3=51, kerf fits). Top 0.5 x 21 x 34 is the only sheet part and fits a half sheet."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Place the assembled legs on the desk top (pocket hole side down), with a 1/2\" overhang on all sides. Screw through the legs into the desk top to secure in place.",
-          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged text is a 1/2\" top overhang, not a fastener; the only fastener size in steps/materials is 1\" pocket hole screws (materials[2])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Leg-frame joints are corner butt joints ('edges are flush', steps[1]); viewed images 01efb543/c7900b91 show supports joined at the frame corners; top overhang 1/2 in given (steps[3])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No unresolved 'as shown' reference."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Holes drilled, rectangles built, supports join the rectangles, assembly attached to top, finish; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes in either end of the four 17\" leg pieces, and the 33\" leg pieces."
+        }
+      ],
+      "reason": "Pocket holes in 1.5 in 2x2s; search all text for /jig|setting|thickness setting/i: no match; viewed step image 43536891 shows holes and part labels only, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the two sets of legs using the 33\" support piece between."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "with a 1/2\" overhang on all sides"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Desk Top 0.5 x 21 x 34"
+        }
+      ],
+      "arithmetic": "Length: two leg sets (each 1.5 thick) + 33 in support between = 1.5 + 33 + 1.5 = 36 in, but top 34 - 2 x 0.5 overhang = 33 in. Depth works: 17 + 2 x 1.5 = 20 = 21 - 2 x 0.5.",
+      "reason": "R14(a): the numbers a step gives do not add up on the length: the assembled base is 36 in long, longer than the 34 in top, so a 1/2 in overhang on all sides is impossible. Other sub-checks pass (counts 4/4/2/1; all parts installed; no hardware)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/43536891bd53262e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7900b919042859e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/01efb543202c6bb7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f33326051847993.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c751ec5d8312791b.webp"
+    ]
+  }
 }
