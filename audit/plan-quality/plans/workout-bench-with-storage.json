@@ -1,6 +1,6 @@
 {
   "slug": "workout-bench-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts the steps make (short-end verticals/horizontals, cross supports, bottom, short/long sides, top, top underside) all match cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used in steps 1-6"
     },
     "R4": {
       "result": "pass",
@@ -97,22 +99,94 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 2x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach bottom to frame using countersunk 1 ¼” wood screws."
+        },
+        {
+          "path": "steps[3].image (viewed da74f13c52b2119f)",
+          "quote": "attach using 3/4\" countersunk wood screws"
+        }
+      ],
+      "reason": "Two sizes for the same use: step text gives 1 1/4\" wood screws for attaching the Bottom, the viewed step-3 diagram labels 3/4\" countersunk wood screws; materials list only 2\" wood screws x20 and 1 1/4\" wood screws x12 (searched materials for /3\\/4/ screw - none). Also the viewed Top diagram (62702d03012897e3) labels the underside '1 1/4\" pocket hole screws' while steps[6].body says '1 ¼” countersunk wood screws'; no 1 1/4\" pocket hole screws in materials (only 2 1/2\" pocket hole x50)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach top to base using a piano hinge. Finish as desired and finally attach wheels to underside."
+        }
+      ],
+      "reason": "No position for the 36\" piano hinge along the 48\" top or for the four locking wheels (inset from ends/sides); searched steps and all fields for these distances - none; viewed diagrams dimension frame, bottom (46 1/2 x 10 1/2) and underside (43 x 7) but show no hinge or wheel placement; photos show wheels at the corners without dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "end frames (1), cross supports (2), bottom (3), sides (4-5), top upholstered and hinged, wheels last (6); viewed diagrams agree"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the short vertical supports to the longer horizontal supports using pocket holes and 2 ½” pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1.5\" 2x3 frame pieces (steps 1-2); searched all steps/materials/description for a jig thickness setting - none; viewed step-1/2 diagrams show hole locations but no setting. Recorded only, not counted."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "viewed diagrams match corrected rows: verticals 8 3/4, horizontals 10 1/2, cross supports 43 1/2, bottom 46 1/2 x 10 1/2, long sides 48 x 14; 43.5 + 2 x 1.5 = 46.5 = Bottom length; Short sides 10.5 + 2 x 0.75 = 12 = Top width; 'Make 2' frames = 4 verticals + 4 horizontals; piano hinge, wheels, foam, batting, leather in materials; every part installed"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "After attaching leather, batting and foam then attach center top underside",
+      "what": "Step never says how the foam, batting and leather are fastened to the Top (searched steps and materials for /staple|adhesive|spray|glue/i - only 'wood glue' in step 6 for the underside); no staples or adhesive in materials."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Finish as desired and finally attach wheels to underside.",
+      "what": "Viewed photos (unattached images) show metal corner strips on the finished bench that no step or material mentions; appearance only."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "e7db3c7d88892228.webp",
+      "2c927502519c07ea.webp",
+      "32888e0d65053161.webp",
+      "da74f13c52b2119f.webp",
+      "d9ad2bb67296d7ae.webp",
+      "69cd002436dc84de.webp",
+      "62702d03012897e3.webp",
+      "db311d8bebea10c9.webp",
+      "9aaa0df101fb8210.webp",
+      "542967b1fdb0f523.webp",
+      "526575fc5dadf407.webp"
+    ]
+  }
 }

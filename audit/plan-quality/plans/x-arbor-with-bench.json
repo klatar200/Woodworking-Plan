@@ -1,6 +1,6 @@
 {
   "slug": "x-arbor-with-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -224,40 +224,86 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "step 1 says 'I have provided the angles in the image'; viewed step-1/2 images show 59 and 31 degree angles and lengths, so nothing external is needed"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps 0-8 maps to a cutList row; 'seat back boards' (step 6, 41\" 2x4) are not named in the cut list but the 41\" row 'Top supports and seat aprons' x7 = 2 top supports + 2 aprons + 3 seat backs per viewed step-3 and step-6 images (see gaps)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used in steps 0-8"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x4, 2x3, 2x2, 2x10, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "reader resolved sweep unknown: steps name the stock for every part",
+      "arithmetic": "2x4 96\" x10: 4x80 + 6x16 + 5x16 + 7x41 = 783 + kerf 22 x 1/8 = 785.75 <= 960 (a two-per-board packing also fits exactly 10 boards). 2x3 96\" x3: 4x30.5 + 8x15 = 242 + 12 x 1/8 = 243.5 <= 288. 2x2 96\" x3: 7x28 = 196 + 7 x 1/8 <= 288. 2x10 96\" x1: 2x41 = 82 + 1/8 <= 96. 2x6 72\" x2: 2x60 = 120 <= 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use only '2 1/2'' pocket hole screws' and '2 1/2 screws' (steps 5, 7, 8); materials[5] lists 2 1/2'' pocket hole screws x200; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed diagrams dimension rail positions on the 80\" legs (5 1/4, 25 1/2, 25 1/2, 13 1/4), X pieces, seat height (22 1/4), seat-back spacing (4 1/2), support spacing (7 5/8, 9 1/8), rafter spacing (6 3/4, 3\", 4 1/2)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; each 'as shown' step has an image, viewed"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides built (0-2), joined with top supports/aprons (3), seat supports (4), seat (5), seat back (6), lower then top rafters (7-8)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps 0-4 and 6 state '1 1/2'' pocket holes' (the 1.5\" thick stock); all parts are 1.5 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 0 'two 80'' legs and three 16'' rails' per side = Legs 4, Rails 6; long X 2/side = 4, small X 4/side = 8; viewed images show 5 seat supports (16\"), 2 seat boards (9 1/4\" each, 19\" seat), 3 seat-back boards, 7 top rafters (28\"), 2 lower rafters (60\"); every part installed; steps reach finished arbor bench"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[3]",
+      "quote": "Top supports and seat aprons | 7 | 41",
+      "what": "Row name omits the seat back boards that step 6 says are '41'' 2x4'; count 7 only works as 2 top supports + 2 aprons + 3 seat backs from viewed images; row name is misleading but build still determinable."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Fill pocket holes and screw holes and finish as desired.",
+      "kind": "consumable",
+      "what": "Pocket-hole plugs/filler (viewed step-1 image says 'Use wood PH plugs') and finish not in materials (searched /plug|filler|finish|stain|paint|glue/i - none)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "bb0ded844d72119b.webp",
+      "2b03180dde2e1f9b.webp",
+      "69a8e2f2c83dd975.webp",
+      "7c7dd9f1e6ab8413.webp",
+      "9bcaa987294eab64.webp",
+      "3a4a0293bd67d8f2.webp",
+      "cfce7a85e7437db3.webp",
+      "5292a187695c52e3.webp",
+      "b6158324fd6e31ca.webp",
+      "c3819993c41d9056.webp",
+      "c613e08183c8fb21.webp",
+      "b58f7fbf66edca82.webp",
+      "41a76d009ef98049.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "west-elm-knock-off-media-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts the steps drill/assemble (sides, shelf, top, bottom, legs, doors) are all cutList rows; steps never cut the panels, the cut list supplies them"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Back | 1 | 0.25 | 16 | 31"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "To assemble the cabinet drill the sides into the top and bottom insetting them in 1/4” from the back and 3/4” from the front."
+        }
+      ],
+      "reason": "Cut row 'Back' (1/4\" plywood, materials[2]) is never cut, attached or mentioned as a part in steps 0-9; searched all step text for /back panel|1\\/4\" ply|plywood back|attach.*back/i - only location uses of 'back' (step 7 inset, step 8 'facing the back'). A viewed photo (b07835f6d65e4c3f) shows a back panel with a cord hole, so it is a real part with no installing step."
     },
     "R4": {
       "result": "pass",
@@ -52,22 +67,104 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x4, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps state no fastener sizes; materials list no screws at all (see gaps)"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Drill your holes for your euro hinges using a euro hinge jig."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Flip your cabinet over and add your feet to the bottom making sure the pocketholes are facing the back."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Add your doors. Drill your holes for your knobs."
+        }
+      ],
+      "reason": "No position is given for the hinge holes/hinge plates (distance from door top/bottom or edge), the legs (inset from corners) or the knobs; searched all steps and fields for these distances - none; all 12 images viewed are photos with no dimensions. Shelf height is 'the height that you want it' (as desired, passes)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts drilled and edged (0-6), cabinet assembled (7), feet (8), doors and knobs (9); shelf fastening is ambiguous (see gaps) but does not block the build"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocketholes into the sides on the 16” side both at the top and bottom."
+        }
+      ],
+      "reason": "Pocket holes drilled in 0.75 plywood sides/shelf (steps 0, 1) and in 2x4 legs (step 3); searched all steps/materials/description for a jig thickness setting - none; viewed leg/side photos show no setting. Recorded only, not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Add veneer edging to all of the plywood edges that will be shown using an iron. Use a veneer trimmer to clean up the edges."
+        }
+      ],
+      "reason": "Iron-on veneer edging is used but not in materials: searched materials[0-4] for /edg|veneer/i - none (materials: plywood 3/4, 2x4, plywood 1/4, Euro Hinges, Knobs). Corrected sizes otherwise agree: Sides 18 deep = Top/Bottom 19 - 1/4 - 3/4; Shelf 29.5 = 31 - 2 x 0.75; step 2 four 4\" legs = Legs x4."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials",
+      "quote": "Euro Hinges | Knobs",
+      "what": "Steps join parts with pocket holes (steps 0, 1, 3, 7, 8) but materials list no pocket-hole screws or any screws (searched materials for /screw|fastener/i - none); also no glue. kind: fastener-missing"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Drill your shelf into the height that you want it.",
+      "what": "Step says to drill the shelf at a height but never says to fasten it to the sides, and assembly step 7 does not mention the shelf; with pocket holes drilled in the shelf ends (step 1) how and when it is fastened is ambiguous."
+    },
+    {
+      "path": "cutList[3]",
+      "quote": "Doors | 2 | 0.75 | 15.4375 | 16",
+      "what": "Door 2 x 15.4375 = 30.875 exceeds the 29.5 opening between sides (31 - 2 x 0.75) while the sides are inset 3/4 from the front; door size only works as overlay on the sides, but no step states overlay vs inset or the reveal; door height 16 equals the 16 side height with no clearance."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "d7614d6f63bc7d13.webp",
+      "b07835f6d65e4c3f.webp",
+      "761afac3af16898e.webp",
+      "0a2cc490c812689d.webp",
+      "7ae3765024cad8ac.webp",
+      "a6da4e950407cf51.webp",
+      "95c39c0976b0158d.webp",
+      "713da607fedb74ef.webp",
+      "17019ea798e7a09f.webp",
+      "00329f5fb11f9676.webp",
+      "2f2ce442c5a2e71d.webp",
+      "5d17ae329f9efbf4.webp"
+    ]
+  }
 }

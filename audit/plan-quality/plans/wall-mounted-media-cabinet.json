@@ -1,6 +1,6 @@
 {
   "slug": "wall-mounted-media-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part a step cuts (Back Panel, Top/Side Trim, Hanging Cleat, Case Top/Bottom/Sides/Divider/Shelf, Doors) is a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 rows used in steps 0-9"
     },
     "R4": {
       "result": "unknown",
@@ -145,23 +147,64 @@
       "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/4\" fine-thread (step 2; materials[10]) and coarse-thread (steps 6-8; materials[3]) pocket screws and #8 x 1\" flat-head (step 2; materials[5]); no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Finally, mount the doors using full-overlay cabinet door hinges."
+        }
+      ],
+      "reason": "Hinge placement on the doors and case (distance from top/bottom edges, cup position) is not given: searched steps[9], materials[7],[9] for any distance - none; viewed step-9 image (ef7fc92e2f2591b3) shows doors but no hinge positions or dimensions. All other positions are dimensioned in viewed diagrams (cord hole 23 1/4 x 24, cleat 6 and 5 1/4, shelf 5 1/4, divider 17 1/4)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "20 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; viewed cutting diagrams and assembly drawings in step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "back panel, trim and cleat (0-2), case parts (3-5), edging then assembly (6-7), case to back (8), doors (9), mount (10); edging applied before assembly"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps 0, 3, 4, 5 state jig set for 3/4\" material; all pocket-hole parts are 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "viewed diagrams match corrected rows (Back 46 1/2, Shelf 17 1/4 x 12); trim wraps panel 46.5+0.75+0.75 = 48 = Case Top/Bottom 48; two Doors each 14.9375 = 28.5/2 + 0.6875 (28.5 = 48 - 3x0.75 - 17.25, from viewed images; derived); 4 hinges for 2 doors; edging, hinge jig, hanger in materials; steps reach mounted cabinet"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "After sanding the Trim pieces",
+      "kind": "consumable",
+      "what": "Sandpaper not in materials (searched /sand/i - none); optional finish in step 9 also not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "f0cc5c215290552a.webp",
+      "bbce8e0e89f88993.webp",
+      "04fee3ee9dc050c5.webp",
+      "69043d908a6b3eae.webp",
+      "80abfabd2e9e7873.webp",
+      "963d0a139520dca5.webp",
+      "ef7fc92e2f2591b3.webp"
+    ]
+  }
 }

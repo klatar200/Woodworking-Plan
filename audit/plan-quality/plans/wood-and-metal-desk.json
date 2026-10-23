@@ -1,6 +1,6 @@
 {
   "slug": "wood-and-metal-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts the steps make/assemble (legs, frame horizontals, side panels, short/long cross supports, top, shelf ledge, backing) all match cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used in steps 1-9 (long cross supports in step 5 = Back long x2 + Front long x1 per viewed step-5 image)"
     },
     "R4": {
       "result": "pass",
@@ -145,22 +147,84 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 2x2, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 2 1/2\" and 1 1/4\" pocket hole screws, 1/2\" lath screws, 1 1/4\" finish nails, all in materials[4,5,7,8]; viewed step-6 image also calls for 1 1/4\" and 2\" countersunk wood screws; materials[6] '2\" wood screws' x6 present, 1 1/4\" countersunk wood screws only matched by pocket-hole screws (see gaps)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed SketchUp diagrams dimension every placement: 1 5/8\" horizontal offset, 11 1/8\" and 13 1/8\" support spacing, top overhang 1\" front/sides and 1/4\" back, ledge 3\" and 1\" offsets, backing 14\" x 27 1/4\""
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames (1), panels (2), supports and second panel (3-4), base (5), top (6), drawer unit slid in (7), shelf ledge (8), backing (9); viewed step-3/4 diagrams show open front for the unit"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the horizontal piece to the legs using wood glue and 2 ½” pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes in 1.5\" frame pieces (step 1, 2 1/2\" screws) and 0.75\" panels/supports (steps 2-5, 1 1/4\" screws); searched all steps, materials, description for a jig thickness setting - none; viewed diagrams (steps 1-9) show screw sizes but no jig setting. Recorded only, not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Insert the metal drawer unit frame and attach using ½” lath screws at all four corners."
+        },
+        {
+          "path": "description",
+          "quote": "Take a metal tower of drawers and build it into a wood desk frame"
+        }
+      ],
+      "reason": "The purchased metal drawer unit is a required component (steps 3 and 7 size the cabinet around it) but is not in materials: searched materials[0-8] for /drawer|metal|unit|tower/i - none; its size appears only as the 11 1/8\" spacing in the viewed step-3 image. Other numbers agree: 'Make 3' frames = Legs 6 and Side frames top/bottom 6; Legs 29 1/4 + Top 0.75 = 30 = '30\"h'; Top 24 x 44 = frame 22.75 + 1 + 1/4 deep, 42 + 2 x 1 wide."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[6]",
+      "quote": "2\" wood screws",
+      "what": "Viewed step-6 diagram labels '1 1/4\" countersunk wood screws' and '2\" countersunk wood screws'; materials list 2\" wood screws x6 but no 1 1/4\" countersunk wood screws (only 1 1/4\" pocket hole screws x24); step text says only 'countersunk screws'."
+    },
+    {
+      "path": "steps[0]",
+      "quote": "44\"w x 24\"d x 30\"h",
+      "what": "Step 0 is overall dimensions only (an image step); not a build step."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "77a0324630a1e60a.webp",
+      "4f6b6f100627239c.webp",
+      "77a2abb97a71c97c.webp",
+      "7ee65a0141ef2726.webp",
+      "d88ac2a543df0206.webp",
+      "626302d92dbe3666.webp",
+      "18f322934da79242.webp",
+      "8f1c03807188a0ed.webp",
+      "aacb982f843bd7d4.webp",
+      "630f9adfc643b1d1.webp"
+    ]
+  }
 }

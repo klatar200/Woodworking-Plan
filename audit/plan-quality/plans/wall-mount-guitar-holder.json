@@ -1,6 +1,6 @@
 {
   "slug": "wall-mount-guitar-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps 1-4 make Wall Mount (5 1/2\") and Guitar Holder (4 1/2\"); both are cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both cut rows used (steps 1, 4)"
     },
     "R4": {
       "result": "pass",
@@ -73,23 +75,60 @@
       "arithmetic": "parts: 1×5.5 + 1×4.5 + kerf 1 cuts (2 parts − 1 boards, the fewest possible)×1/8 = 10.125″; bought: 1×12 = 12″; 10.125 ≤ 12"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps give no screw sizes; materials list 1 1/4\" pocket screws and 2\" mounting screws; viewed step-0 image says 'Pocket Holes for 1 1/4\" screws', consistent"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step-0 image gives 5 1/2, 4 1/2, 3 1/2 sizes, pocket hole locations and the neck notch; step-4 image shows holder joined at end of wall mount; mounting 'top half of the wall mount' stated; neck cutout 'according to the size of your guitar' is a user-sized relational placement"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; 'as shown in plans' steps have own images; step 0 'These plans illustrate the sizing' image viewed and shows dimensions (resolves R1 candidate: no external plans needed)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut (1), pocket holes (2), neck cutout (3), join (4), finish (5), mount (6)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill two pocket holes according to Kreg Jig directions in the longer piece of wood as shown in plans."
+        }
+      ],
+      "reason": "Part is 0.75 thick; searched all steps/materials/description for a jig thickness setting ('thick', 'setting', '3/4') - none; viewed step-0 image labels only 'Pocket Holes for 1 1/4\" screws' (screw length, not jig setting). Recorded only, R9 not counted."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 1 '5 1/2\" and one 4 1/2\"' = corrected Wall Mount 5.5, Guitar Holder 4.5; two pocket screws and two mounting screws listed; both parts installed; steps reach mounted piece"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Using wall anchors if necessary, sink two screws through the top half of the wall mount into the wall.",
+      "kind": "hardware-conditional",
+      "what": "Wall anchors are conditionally used but not in materials (searched materials for /anchor/i - none); conditional, so not scored as an R14(c) failure."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "a36c04f30fadca9a.webp",
+      "28f6ba5f9dd4bafd.webp",
+      "111999e3958c2ee4.webp"
+    ]
+  }
 }

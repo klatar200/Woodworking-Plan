@@ -1,6 +1,6 @@
 {
   "slug": "two-tiered-serving-tray",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut in steps (legs, sides, tray supports, tray pieces) each match a cutList row (Legs, Sides, Tray supports, Bottom/Top tray boards)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cut rows (Legs, Sides, Tray supports, Bottom tray boards, Top tray boards) are used by steps 0-5"
     },
     "R4": {
       "result": "pass",
@@ -73,22 +75,54 @@
       "reason": "R5 precondition not met: unparseable stock materials[0]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used in steps is 1 1/4\" pocket hole screws (steps 2, 4); listed in materials[3]; plugs in materials[5]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "side-piece position on legs and support positions shown in viewed images (11\" and 3/4\" dimensions); text gives '3/4\" up from the bottom' and flush references"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs and sides cut (steps 0-1) before assembly (2), supports (4) after frame; trays built from cut boards in step 5"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "step 2 'Set your Kreg jig for 3/4\" thick material' covers 3/4\" stock; all pocket-hole parts are 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "leg/side/support counts match cut list (4/2/4); trays 3x3.5=10.5 wide boards; every part installed or a loose tray; steps reach finished piece"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7]/steps[8]",
+      "quote": "Sand and seal the stand and trays. | Use a sled made from scrap wood to fit your router to router the insides of the tray.",
+      "what": "Finish step precedes the final (optional) tray-center routing step, so a builder following in order seals the trays before routing them; ordering only, routing is optional per steps[6]."
+    },
+    {
+      "path": "cutList[1]",
+      "quote": "Cut the 2 side pieces at a 15 degree angle on both ends so they taper together. Leaving the long side 6 1/4\" long.",
+      "what": "Fit of 2 side pieces (long side 6 1/4\" each) from materials[1] 'Board, 1x3 12\"' not determinable without the taper geometry; not scored."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "a48ec1b70d977a01.webp",
+      "9fd22dde1d236aaf.webp"
+    ]
+  }
 }

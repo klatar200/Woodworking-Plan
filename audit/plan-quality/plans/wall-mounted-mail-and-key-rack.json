@@ -1,6 +1,6 @@
 {
   "slug": "wall-mounted-mail-and-key-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -43,14 +43,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut wood according to the visual cut list in the woodworking plans with a table saw and miter saw."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the bottom of the shelf as shown in the woodworking plans."
+        }
+      ],
+      "reason": "Steps defer to a 'visual cut list' and drawings in 'the woodworking plans' that are not part of this plan; viewed step images (0,1,2,8) and all 3 unattached images are photos with no drawings or dimensions. Shelf size is recoverable from cutList (3 1/2 x 15) so the build can proceed; pocket-hole layout and shelf placement are the missing content, hence Fix."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts: shelf (cutList 'Birch') and wood round (materials[1] 'Teak Round, 15\" x 15\" x 1\"', step 0 buy or cut your own); hooks, drawer pull in materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only cut row 'Birch' is the shelf used in steps 0-3"
     },
     "R4": {
       "result": "pass",
@@ -58,26 +73,106 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.75x3.5, 1x15); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 2 stock types (0.75x3.5, 1x15); steps not checked for per-part stock",
+      "readerNote": "Only cut part is the shelf, 15 <= 24 (materials[0] birch 2' x 3 1/2\" x 3/4\"); the teak round is bought whole (materials[1]), so no shortfall found."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name only 'Kreg pocket hole softwood screws' with no size; materials[2] lists 1 1/4\" pocket hole screws; no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the bottom of the shelf as shown in the woodworking plans."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Hold the shelf up to the correct location on the wood round and mark any edges of overlap"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Add hooks to the bottom half of the wood round."
+        }
+      ],
+      "reason": "No number gives the pocket-hole layout, the shelf's height on the round, or hook and drawer-pull spacing; searched all steps and fields for inch values - only the part size; viewed photos (steps 0,1,2,8 and 3 unattached) show the finished look but no dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands (each reference in a step with an image); note R1 above for the missing drawings"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, drill, taper/sand, attach, plug, sand, paint shelf, then oil round, hardware, hang"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the bottom of the shelf as shown in the woodworking plans. We used the Kreg 720 Pro."
+        }
+      ],
+      "reason": "Shelf is 0.75 thick; searched all steps/materials/description for a jig thickness setting - none; viewed step-1 image shows the jig being used with no readable setting. Recorded only, not counted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "You can use either picture-hanging hardware or heavy-duty Command picture-hanging strips."
+        }
+      ],
+      "reason": "The only way the piece is hung is hardware not in materials: searched materials[0-9] for /hang|strip|command|picture/i - none (materials[9] 'Two-prong hooks' x3 are the key hooks added in step 8). Hardware, so R14(c) applies. Parts and counts otherwise agree: Birch 15 = round 15, 3 hooks."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "apply teak oil on the wood round to bring out the natural wood look. Apply 2 coats",
+      "kind": "consumable",
+      "what": "Teak oil not in materials (searched /oil|teak oil/i - only 'Teak Round' material)."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Tape around the shelf using painter’s tape.",
+      "kind": "consumable",
+      "what": "Painter's tape not in materials."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "using 80-grit sandpaper and an orbital sander. Follow up with 150-grit sandpaper",
+      "kind": "consumable",
+      "what": "80- and 150-grit sandpaper not in materials; also wood glue (step 4) not in materials (searched /glue/i - none)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "157ad9583431e928.webp",
+      "566892d8e07037c9.webp",
+      "2664cf9fb075604c.webp",
+      "30e4c6d8a0b426cd.webp",
+      "6d58852466770ff3.webp",
+      "238883b8b244ec77.webp",
+      "092ee1a2daaf12da.webp"
+    ]
+  }
 }

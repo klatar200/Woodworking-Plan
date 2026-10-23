@@ -1,6 +1,6 @@
 {
   "slug": "vanity-stool",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps 1-3,7 cut legs, top supports, top edges, support beams; each matches a cutList row (Legs, Top supports, Top Edges, Middle Cross Support(s))"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used in steps 1-8"
     },
     "R4": {
       "result": "pass",
@@ -97,22 +99,51 @@
       "arithmetic": "parts: 4×12 + 4×8 + 4×12 + 1×11.5 + 2×5 + kerf 13 cuts (15 parts − 2 boards, the fewest possible)×1/8 = 151.125″; bought: 2×96 = 192″; 151.125 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps state no screw size; only materials[1] '2 1/2 inch Kreg Screws' listed, no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Attach the two short pieces to the center of the long piece. Then, attach the support beams to the legs."
+        }
+      ],
+      "reason": "Height of the middle cross supports on the legs is not given: searched all steps, description and summary for a distance/height for the beams - none; viewed step-8 image (5434a48faab42aca) shows beams between legs but no dimension."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut (1-3), top assembled (4-5), legs attached to underside (6), beams cut then attached to legs (7-8)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "step 4 'Set your Kreg pocket hole jig for the thickness of the wood at 1 1/2 inches' covers every part (all 1.5 thick)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 3 'outside edge of 12 inches' = Top Edges 12; step 7 '11 1/2 inches' and '5 inches' = corrected 11.5 and 5; four top supports 4x2=8 fills the 8-inch support length; every part installed; steps end with finish"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "5434a48faab42aca.webp",
+      "a710fd4b3ae2f15c.webp"
+    ]
+  }
 }

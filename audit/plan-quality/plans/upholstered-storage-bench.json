@@ -1,6 +1,6 @@
 {
   "slug": "upholstered-storage-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -251,10 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps 0-9 parts (slats, legs, side tops/bottoms, front/back top & bottom, bottom boards, bottom supports, plywood top) each map to a cutList row; foam/batting/leather in materials[8-10]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 cut rows used; 'Small side slats' is not named in step text but appears as the top slat in viewed step-2 image (see gaps)"
     },
     "R4": {
       "result": "pass",
@@ -265,22 +267,60 @@
       "reason": "R5 precondition not met: 5 stock types (2x2, 1x4, 1x2, 1x6, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/4\" and 2 1/2\" pocket hole screws (materials[6],[5]) and dowels (materials[12] 3/8\"); no conflicting sizes. step 1 cuts 'a dowel' per mitered end, 4 listed"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Attach the finished top to the bench using the hinges. Add a lid support if desired."
+        }
+      ],
+      "reason": "Two 3\" hinges (materials[7]) must be placed on the lid and a back rail, but no position (distance from ends, which board) is given in text; searched steps[8..10] and descriptions for 'hinge' - only this mention. Viewed final image c9c67de4390160a7 does not show hinge positions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands; steps carry own images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "slats and rails assembled into sides (0-2), then front/back (3-5), bottom (6-7), top upholstered (8-9), hinged on (10)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" set in steps 0,3,6,7; 1 1/2\" set in steps 2 and 4 for the 1.5\" rails; each matches the thickness it is used on"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 1 'longest side should be 17\"' = Legs 17; 'longest side 19 1/2\" and short side 16 1/2\"' = corrected Side tops 19.5 / Side bottoms 16.5; step 3 '15\" apart and 15\" in from each side' = 45-15-15 = 15, consistent with 45 slats; foam '44 1/2\" x 19 1/4\"' = corrected Top 44.5 x 19.25; bottom boards 3 x 5.5 = 16.5 = side bottom 16.5; side slat stack 3x3.5+1.5=12 fits frame shown in viewed step-2 image; hinges, staples, foam, batting, fabric all in materials; steps reach finished bench"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[5]",
+      "quote": "Small side slats",
+      "what": "The 1x2 'Small side slats' (2) are never mentioned in any step text (steps 0-2 name only '1x4 boards' and 'slats'); their use is visible only in the viewed step-2 image."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "d8d1c1776c8a65cd.webp",
+      "9b63f5240610ed21.webp",
+      "c9c67de4390160a7.webp",
+      "df9807e3701b38a0.webp"
+    ]
+  }
 }

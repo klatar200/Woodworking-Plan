@@ -1,6 +1,6 @@
 {
   "slug": "wall-mounted-wine-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps 0,1,2,5 cut Back, Long/Short/Angled Braces, Back Spacer; all five are cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used"
     },
     "R4": {
       "result": "pass",
@@ -142,26 +144,57 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 1x4, 1x2); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 3 stock types (1x6, 1x4, 1x2); steps not checked for per-part stock",
+      "readerNote": "Steps name stock per part (Back 1x6, Spacer 1x4, braces 1x2). Back 30.5 <= 36, Spacer 29.75 <= 36; 1x2: 4x14.5 + 2x7.75 + 2x9.25 = 92 + kerf vs 2 x 48 = 96; a two-board split exists (14.5+14.5+9.25+9.25+3 kerf x 1/8 = 47.875; 14.5+14.5+7.75+7.75 = 44.5), mitre waste not counted, so not scored."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 1 1/4\" pocket-hole screws (materials[3]) and #10 x 3 1/2\" (step 6; materials[6]); 22 screws = 12 back holes + 10 brace holes viewed in diagrams, 10 plugs = 10 brace holes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed diagrams give pocket holes (2 1/4\", 9/16\", 14 3/4\", 1 3/4\"), 3/16\" mount holes 8\" from each end, brace layout 3 3/4\" and 1\" offsets, spacer 1\" / 3/8\"; spacer 'centered' is relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; diagrams viewed in steps 0-3,5"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "back and braces cut and drilled (0-1), sides assembled (2), joined to back (3-4), spacer (5), install (6)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "step 0 'Set your pocket-hole jig for 3/4\"-thick material'; Back and all braces are 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 1 counts (four Long, two Angled, two Short) match cutList 4/2/2; viewed sizes 14 1/2, 7 3/4, 9 1/4, 30 1/2 = corrected rows; Back Spacer installed step 5; every part installed; steps reach mounted rack"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "install a pair of heavy-0duty wall anchors, and then mount the rack to the anchors.",
+      "kind": "hardware-conditional",
+      "what": "Wall anchors used when no stud, not in materials (searched /anchor/i - none); conditional, not scored. Sandpaper (steps 0, 2, 5 'Sand ... smooth') also not in materials (consumable)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-36",
+    "imagesViewed": [
+      "b59de884fefd43e3.webp",
+      "a7a79a501a8c1841.webp",
+      "d358e2402360990a.webp",
+      "4475574be0f6dbab.webp",
+      "579fce7ff683e881.webp"
+    ]
+  }
 }
