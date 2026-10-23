@@ -1,6 +1,6 @@
 {
   "slug": "diy-outdoor-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-4] (legs, short aprons, bottom leg supports, long aprons, bottom long support, table supports, slats) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows are used in steps[0-4]"
     },
     "R4": {
       "result": "pass",
@@ -32,23 +34,64 @@
       "reason": "R5 precondition not met: 2 stock types (2x2, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0-4] name no fastener or size at all (searched /screw|nail|pocket|bolt/i: only 'screws' absent); materials list 2 1/2\" Kreg coarse screws (materials[2]) and 2\" wood screws (materials[3]); no size used in a step is missing and none conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numbers given: bottom leg supports 3\" up, bottom long support 7.75\" from the leg, table supports 11\" from each end, 1.5\" end overhang, 1\" front overhang, 1/4\" slat gap; viewed images confirm"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "side frames, long aprons, bottom support, top supports, then slats"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Create the 2 side frames using the Legs, short apron and the bottom leg supports."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2 1/2\" Blue kreg screws coarse"
+        }
+      ],
+      "reason": "Joints are pocket-hole joints (pocket holes visible in the viewed steps[0] image; Kreg screws in materials) in 2x2 (1 1/2\") stock, but no step names the method, fastener or a jig thickness setting (searched all steps for /pocket|jig|setting|screw/i: none); the two viewed images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Kreg-corrected rows (no import diffs) agree with overall 35\" x 22\" x 17 3/4\": legs 17 + 3/4 slat = 17 3/4; length 29 + 2 x 1 1/2 + 2 x 1 1/2 overhang = 35; width 8 x 2 1/2 + 7 x 1/4 = 21 3/4 ~ 22; every part installed"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "c23bd7c3ec5504e3.webp",
+      "a92bd969dfc1b24e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4..6]",
+      "quote": "Outdoor primer",
+      "what": "Outdoor primer, outdoor paint and wood putty are in materials but no step uses them (steps[0-4] end at the top slats; searched steps for /prime|paint|putty|finish|sand/i: none).",
+      "kind": "consumable"
+    }
+  ]
 }

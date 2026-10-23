@@ -1,6 +1,6 @@
 {
   "slug": "coffee-table-with-train-table-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0-7] (base pieces, 45/21 frames, 3/4x1-1/2x21 supports, plywood bottom, surround, tabletop, stoppers) matches a cutList row (Base, Support, Lid stopper, Tabletop surround, Tabletop, Train table base)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows are used: Base 12/45/21 steps[0,2,3], Support steps[4], Train table base steps[5], Tabletop surround steps[1,6], Lid stopper+Tabletop steps[7]"
     },
     "R4": {
       "result": "unknown",
@@ -24,22 +26,78 @@
       "reason": "R5 precondition not met: 3 stock types (2x2, 1x2, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1-1/4\" (steps[1]), 2-1/2\" (steps[2,3]), 1-1/2\" (steps[6]) all present in materials[3,4,9]; no conflicting size for one use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "support spacing (12\" gaps, 21\" span) is dimensioned in viewed image of steps[4]; stoppers, surround and plywood bottom are relational/fixed by the parts"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames, legs, supports, bottom, surround, then top; no step needs an earlier one undone"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes into all of the 1-1/2\"x 1-1/2\" pieces for the base, except the 12\" ones."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes into all four pieces, plus an additional two holes on the sides of the longer pieces to create a \"box.\""
+        }
+      ],
+      "reason": "Pocket holes drilled in 1-1/2\" and 3/4\" parts; searched all steps/materials/description for jig/setting/depth/collar and found no thickness setting; the two viewed step images (SketchUp frames) show none. Recorded only, R9 does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach 1-1/2\"x1-1/2\"x21\" pieces to the frames using 2-1/2\" pocket screws."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "{\"part\":\"Base\",\"quantity\":4,\"thicknessIn\":1.5,\"widthIn\":1.5,\"lengthIn\":21}"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the 3/4\"x1-1/2\"x21\" boards to the base frame"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "{\"part\":\"Support\",\"quantity\":3,\"thicknessIn\":0.5,\"widthIn\":1.5,\"lengthIn\":21}"
+        }
+      ],
+      "arithmetic": "(1) steps[2] builds two frames from 45\" and 21\" pieces: 2 frames x 2 x 21\" = 4 = the whole Base 21\" quantity (cutList[2] quantity 4), leaving none for steps[3]; the viewed steps[3] image shows the pieces joining the frames are 12\" (dimensioned 12\"), the 4 Base 12\" in cutList[0] that no step text installs. (2) Support thickness: step says 3/4\", cut list says 0.5.",
+      "reason": "Step 3 text names 21\" pieces where the cut list and image need the 12\" pieces; Support thickness disagrees between step (3/4\") and cut list (0.5)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "05af0ac7d3dff854.webp",
+      "69c0ef39806c2b46.webp"
+    ]
+  },
+  "gaps": []
 }

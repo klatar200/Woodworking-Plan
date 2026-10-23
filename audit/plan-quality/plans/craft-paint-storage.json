@@ -1,6 +1,6 @@
 {
   "slug": "craft-paint-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[1-5] (box sides, top and bottom, horizontal/vertical dividers, backing) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows are used in steps[1-5]"
     },
     "R4": {
       "result": "pass",
@@ -73,22 +75,68 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.5, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" finish nails (steps[1,4]) and 3/4\" finish nails (steps[5]); both in materials[2,3]; no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed steps[2] image dimensions every notch (1/2\" wide, 2 1/8\" deep, 5\" and 6\" spacing); dividers interlock so their positions are fixed by the parts"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame, notched dividers, dividers into frame, then backing"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes; joints are glue plus finish nails with sizes stated"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Overall dimensions: 20\"w x 17\"h x 4 1/2\"d"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "{\"part\":\"Horizontal dividers\",\"quantity\":2,\"thicknessIn\":0.5,\"widthIn\":4,\"lengthIn\":19}"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "{\"part\":\"Box sides\",\"quantity\":2,\"thicknessIn\":0.5,\"widthIn\":4,\"lengthIn\":17}"
+        }
+      ],
+      "arithmetic": "Kreg-corrected rows (source '1/2\" x 4 1/2\" x 19\"' for Horizontal dividers, '1/2\" x 4 1/4\" x 17\"' for Box sides and 4 1/4\" for Vertical dividers): box depth 4 1/4 + backing 1/4 (materials[1] '1/4\" Thick') = 4 1/2 = stated overall depth; horizontal dividers 4 1/2 + backing 1/4 = 4 3/4, not 4 1/2. The viewed steps[2] image notches both divider sets 2 1/8\" deep (= half of 4 1/4), which also fits 4 1/4, not 4 1/2.",
+      "reason": "Horizontal divider width (4 1/2\") disagrees with the box, vertical dividers and overall depth (4 1/4\"), likely a typo in Kreg's cut list."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "4a5de0ca245ea140.webp",
+      "17fec7f0b10cca1d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Attach box sides to top and bottom using wood glue and 1 ¼” finish nails.",
+      "what": "Wood glue used in steps[1] and steps[5] is not in materials (searched materials for /glue/i: none).",
+      "kind": "consumable"
+    }
+  ]
 }

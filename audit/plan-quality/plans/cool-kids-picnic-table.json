@@ -1,6 +1,6 @@
 {
   "slug": "cool-kids-picnic-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -395,10 +395,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut or assembled in steps[0-14] (Upper Rail/Stile, Seat Rail/Support/Brace, End Rail, Top Board, Long Leg, Side, Top/Side Detail, Bench Top/Back, Short Leg, Bench/Leg Detail) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 16 rows are cut and installed in steps[0-14]"
     },
     "R4": {
       "result": "pass",
@@ -409,23 +411,77 @@
       "reason": "R5 precondition not met: 3 stock types (2x4, 1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: 1 1/4\" and 2 1/2\" exterior pocket screws (materials[3,4]) and 2\" deck screws (materials[5]); no size used that is not listed, no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give the lower-frame setback (9 3/4\", 48 1/4\"), table/bench heights (24 1/4\", 14\", 10 1/4\") and 1/8\" gaps; screw counts/spacing stated in steps[8]"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "20 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sub-assemblies (upper frame, lower frame, top, benches, details) are built before the steps that join them; details removed before paint and reinstalled"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0,2] state jig set for 1 1/2\" (2x4 parts), steps[4,7,10,13] state 3/4\" (1x parts); other joints are 2\" deck screws with counts/spacing in steps[8,9,14]"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[9]",
+          "quote": "{\"part\":\"Top Detail\",\"quantity\":1,\"thicknessIn\":0.75,\"widthIn\":5,\"lengthIn\":47}"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Cut one Top Detail and two Side Details to length from 1x2 boards (we used cedar)"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Cut one Bench Detail and four Leg Details to length from 1x2 boards"
+        },
+        {
+          "path": "cutList[13]",
+          "quote": "{\"part\":\"Bench Detail\",\"quantity\":2,\"thicknessIn\":0.75,\"widthIn\":1,\"lengthIn\":47}"
+        }
+      ],
+      "arithmetic": "(1) Kreg-corrected cutList[9] = 3/4 x 5 1/2 x 47 1/2 (source '3/4\" x 5 1/2\" x 47 1/2\"'), but steps[7] says cut it from 1x2 boards (actual width 1 1/2 per §9) and the viewed steps[7] image dimensions Top Detail at 1 1/2\" wide (Side Detail also 1 1/2\"; cutList[10] 3/4 x 1 1/2). 5 1/2 cannot come from 1x2. (2) steps[13] says one Bench Detail, cutList[13] quantity 2 (two benches).",
+      "reason": "Top Detail width disagrees between cut list (5 1/2\") and step/image (1x2, 1 1/2\"); the Bench Detail step count (1) disagrees with the cut list (2)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "7d228da4b790da4d.webp",
+      "e7f8c4cba61d3ad1.webp",
+      "397ea471e5a7b556.webp",
+      "4a9aa8ad357e66c5.webp",
+      "96c10eaa10864368.webp",
+      "b641ec2e34010e5c.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[15].body",
+      "quote": "Then paint and stain as appropriate, and reinstall the Details.",
+      "what": "Paint and stain are used but not in materials (searched materials for /paint|stain|finish/i: none).",
+      "kind": "consumable"
+    }
+  ]
 }

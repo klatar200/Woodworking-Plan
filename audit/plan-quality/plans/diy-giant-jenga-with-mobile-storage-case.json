@@ -1,6 +1,6 @@
 {
   "slug": "diy-giant-jenga-with-mobile-storage-case",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,36 +179,97 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-5] (Jenga pieces, top/bottom panels, short/long side panels) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows are used in steps[0-6]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x8); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x8 72\""
+        },
+        {
+          "path": "materials[1]",
+          "quote": "{\"name\":\"Board, 1x8 72\\\"\",\"unit\":\"board\",\"quantity\":3}"
+        },
+        {
+          "path": "cutList[1..4]",
+          "quote": "Top Panel Pieces 2 @ 21.5, Bottom Panel Pieces 2 @ 21.5, Short Side Pieces 4 @ 14.75, Long Side Pieces 4 @ 20 (all 3/4 x 7 1/4 corrected)"
+        }
+      ],
+      "arithmetic": "Only 3/4\" thick stock is the 1x8 (§9 actual 3/4 x 7 1/4; the 2x4 is 1 1/2 and its six boards are used up: 54 x 10 1/2 = 567 + 54 x 1/8 kerf = 573.75 of 6 x 96 = 576). Panel parts: 2 x 21.5 + 2 x 21.5 + 4 x 14.75 + 4 x 20 = 43 + 43 + 59 + 80 = 225, plus 12 x 1/8 kerf = 1.5 -> 226.5 > bought 3 x 72 = 216 (short 10.5\").",
+      "reason": "Sweep left R5 unknown because steps do not name stock; thickness fixes it: the twelve 3/4\" panel pieces need 226.5\" but only 216\" of 1x8 is listed."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" pocket hole screws (steps[1,2,4], materials[2 '1 1/4\" Kreg Screws']) and 1 1/4\" wood screws (steps[3,5], materials[8]); no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images dimension panels and box (21 1/2\", 14 1/2\", 14 3/4\") and show pocket-hole positions; hinges, lock, handles and casters are relational/placed per the finished-box image"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels built, box framed, bottom then top (hinged) added, hardware last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble your 21 1/2\" long top and bottom panels with 1 1/4\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "You will also need to drill pocket holes on both ends of the panels to attach them to the small side panels."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards with no jig thickness setting in any step, material or description (searched jig/setting/collar/depth); viewed steps[1] image shows hole positions only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step sizes (21 1/2, 14 3/4, 20, 10 1/2 x 54) match Kreg-corrected rows; box outer length 20 + 2 x 3/4 = 21 1/2 = panel length; every part installed; hinges, lock, casters, handles in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "6dea71dc2a17e523.webp",
+      "6e2b689a2d13ff93.webp",
+      "868823edecdd1152.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Assemble your 21 1/2\" long top and bottom panels",
+      "what": "Viewed steps[1] image gives top/bottom panels 21 1/2\" x 14 1/2\" (2 x 7 1/4) but the viewed steps[3] box image gives 14 3/4\" outer depth (short panels 14 3/4\"), so the panels are 1/4\" narrower than the box."
+    }
+  ]
 }

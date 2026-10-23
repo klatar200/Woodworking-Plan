@@ -1,6 +1,6 @@
 {
   "slug": "diy-modern-bedside-table-with-arches",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-4] (Sides, Top, Bottom, Toe Kicks, Under Drawer Support, Arches, Drawer Back/Sides/Bottom/Face) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 10 rows are used in steps[0-3]"
     },
     "R4": {
       "result": "unknown",
@@ -97,22 +99,69 @@
       "reason": "R5 precondition not met: unparseable stock materials[0]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps say only 'pocket hole screws' (no size) so no size is used that is absent from materials[5,6]; no conflicting size; drawer slides/pull listed (materials[2,7])"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Under Drawer Support is 7 1/4\" down from the Top (steps[2]); toe kicks centred; drawer face centred/flush; viewed finished-drawer image shows face filling the opening; slides follow 'manufacturer's instructions'"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "box, toe kicks, support and arches, drawer, then slides and insertion; nothing needs undoing"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill three pocket holes on the 18\" ends of both Sides"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill two pocket hole screws in each end of the Drawer Back, one end of each Drawer Side, and on three sides of the Drawer Bottom."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" box parts and 1/2\" drawer parts; no jig thickness setting in any step, material or description (materials[5,6] only say 'See tools list'); viewed images are SketchUp renders without a setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Kreg-corrected arithmetic agrees: Bottom 20 wide - 2 x 3/4 sides = 18 1/2 = Under Drawer Support; toe-kick frame 14 1/2 + 2 x 3/4 = 16 and 18 inset 1\" in each direction on 18 x 20; Drawer Back 16 1/2 + 2 x 1/2 = 17 1/2, leaving 1\" for slides in 18 1/2; every part installed; slides, pull, glue, banding in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "f965bce97b7be553.webp",
+      "117e12b2e5de5665.webp",
+      "63a24b19ed46b348.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Using wood glue and pocket hole screws, attach the Sides to the top side of the Bottom",
+      "what": "Materials list two pocket hole screw sizes (materials[5] 1 1/4\", materials[6] 1\") but no step says which size goes in which joint (searched steps for /1 1\\/4|1\"|screw size/i: none)."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "After the drawer is finished, now would be a good time to stain or paint your entire project.",
+      "what": "Stain or paint is used but not in materials (searched materials for /stain|paint|finish/i: none).",
+      "kind": "consumable"
+    }
+  ]
 }

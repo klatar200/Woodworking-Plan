@@ -1,6 +1,6 @@
 {
   "slug": "diy-dartboard-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,10 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-3] (Box Sides/Top/Bottom, Back, Top/Bottom Trim, Doors, Door Sides, Door Top/Bottom, Dart Holder) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows are used in steps[0-3]"
     },
     "R4": {
       "result": "pass",
@@ -109,22 +111,59 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "only fastener size in steps is 1 1/4\" pocket hole screws (steps[0,1,2], materials[2]); dartboard screw is 'the included screw' (steps[5])"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "trim overhang is numeric (3/4\", steps[2]); viewed images show dart holder low on the door interior, knobs at the meeting edges, dartboard centred in the box; hinge, knob and catch placements are relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "box, back, trim (box laid on back), doors, hardware, dartboard in that order"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes on each end of the Box Sides, Box Top and Box Bottom."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood parts (steps[0,1,3]); no jig thickness setting appears in any step, material or description (materials[2] only says 'see tools list'); the three viewed images are SketchUp models without a jig setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "corrected sizes agree: box 5 3/4 + 3/4 overhang = trim 6 1/2, box 21 1/2 + 2 x 3/4 = trim 23, 2 x 10 5/8 doors ~ 21 1/2 box; door frame long edges 21 and 10 5/8 equal door height/width; every part installed; hinges, knobs, magnet catches in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "04343064cc84ec1a.webp",
+      "2470e9366bda6211.webp",
+      "08d8b166e4e204a4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Hang your dart board inside the cabinet using the included screw.",
+      "what": "No step or material says how the cabinet itself is mounted to a wall (searched steps and materials for /wall|mount|cleat|hang|anchor|bracket/i: only the dartboard hanging screw and the closing-door hinges/catches)."
+    }
+  ]
 }

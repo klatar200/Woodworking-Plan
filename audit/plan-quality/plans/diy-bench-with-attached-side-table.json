@@ -1,6 +1,6 @@
 {
   "slug": "diy-bench-with-attached-side-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-14] (long rails, legs, side rails, bench slat supports, slats, countertop, countertop support, backrest) each match a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows are used: rails/legs steps[0-5], supports/slats steps[6-7], countertop and support steps[8-11], backrest steps[12-13]"
     },
     "R4": {
       "result": "unknown",
@@ -24,23 +26,61 @@
       "reason": "R5 precondition not met: 4 stock types (0.75x1.5, 1.5x1.5, 0.75x3.5, 0.75x5.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/2\" pocket screws (steps[3,5,13], materials[5]), 1 1/4\" wood screws (steps[6,7,9], materials[12]), 6 mm loose tenons (materials[4]); figure-8 screws are 'the provided screws' (steps[11]) with the fasteners (materials[6]); no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "slat supports and countertop support are 3/4\" down (steps[6,9]); viewed images show 8 evenly spaced slats over the 46\" supports, the figure-8 locations and the backrest on the back rail; remaining placements are flush/relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Mark the legs and the side rails so that the side rails are flushed to the outside edge of the legs. Set the Mortise Mate to 3/4” using the 6 mm drill bit drill a mortise into the legs and the side rails."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Rip the side rails to 3 inches with a table saw and then cut to size."
+        }
+      ],
+      "reason": "steps[2] joins 'side rails' to the legs ('You should have two of these') before steps[4] rips and cuts the side rails; the viewed steps[2] image shows the long rail on two legs, so the text most likely means the long rails (cut in steps[0]) — as written, the order is impossible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] sets the pocket jig and bit to 3/4\" for the 3/4\" rails; backrest/side-rail pocket joints use the same 3/4\" stock; other joints are loose tenons, glue and 1 1/4\" screws"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step counts match cut list (two long rails, two side rails, 4 legs, 8 slats in viewed image); all parts installed; steps reach cushion and Velcro; hardware (figure 8s, Velcro, cushion/fabric, forstner) in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "2cb29c7f8eed4bfb.webp",
+      "292efdfab7984f4f.webp",
+      "8b5b1227f1cfab5f.webp",
+      "d64059e25ac96d48.webp",
+      "f29987198fdecc57.webp",
+      "d5eb8824192bc9d6.webp"
+    ]
+  },
+  "gaps": []
 }

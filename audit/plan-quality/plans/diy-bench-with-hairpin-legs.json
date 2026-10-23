@@ -1,6 +1,6 @@
 {
   "slug": "diy-bench-with-hairpin-legs",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0,3] (10 1/2\" end pieces, 36\" slats) match cutList[0,1]; spacer is the listed scrap 1x2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both rows are used in steps[0,3]"
     },
     "R4": {
       "result": "pass",
@@ -41,22 +43,59 @@
       "reason": "R5 precondition not met: 2 stock types (2x2, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "only fastener size in steps is 2 1/2\" pocket hole screws (steps[3]), listed in materials[2]; 5 slats x 2 ends x 2 holes = 20 matches quantity 20"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "spacer gaps given (scrap 1x2 turned on its side, 5 x 1 1/2 + 4 x 3/4 = 10 1/2 = end-piece length); leg location given in steps[5] ('2 ½” in from each end'); the viewed finished photo shows two legs at each end"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, drill, sand, assemble, finish, then legs"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 2 pocket holes at each end of your 36” long 2x2 boards"
+        }
+      ],
+      "reason": "Pocket holes drilled in 2x2 stock; no jig thickness setting appears in any step, material or description (searched for jig/setting/collar/depth); the viewed steps[1] photo shows the jig's scale but not which setting is used. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 36\"/10 1/2\" counts match cut list (corrected 10.5); slat+gap arithmetic: 5 x 1 1/2 + 4 x 3/4 (1x2 on its side, §9 actual) = 10 1/2 = end-piece length; all parts installed; legs, finish and hardware listed"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-28",
+    "imagesViewed": [
+      "59173c2a904fda59.webp",
+      "2cb8e05a8127714f.webp",
+      "60d9664c664d5628.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Attach your hairpin legs (I spaced mine 2 ½” in from each end)",
+      "what": "No fastener for mounting the hairpin legs is named in the step or in materials (searched /screw|bolt|fasten/i: only the 2 1/2\" pocket hole screws, used for slats)."
+    }
+  ]
 }
