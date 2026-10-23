@@ -1,6 +1,6 @@
 {
   "slug": "floating-adjustable-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,10 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Three 4' pieces (cutList[0] 'Sides' qty 3 = 2 sides + back), top/bottom and shelves are all in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used (steps[0],[1]); 'Sides' qty 3 includes the third 4' piece."
     },
     "R4": {
       "result": "pass",
@@ -85,22 +87,65 @@
       "arithmetic": "parts: 3×48 + 2×10.5 + 5×10.5 + kerf 7 cuts (10 parts − 3 boards, the fewest possible)×1/8 = 218.375″; bought: 3×96 = 288″; 218.375 ≤ 288"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No step states a fastener size (searched steps for /screw|nail/: none); materials have 1 1/4\" pocket screws and shelf pins."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images 8a76/4322 show pocket-hole locations (12 in 6 pairs on one 4' piece, 8 per small piece) and shelf-pin columns running the full 48\"; spacing set by the Kreg Shelf Pin Jig; top/bottom flush relational. (readerNote: shelf-pin edge distance and first-hole offset are pictured without numbers.)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites an absent drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, attach sides to back, add top/bottom, add shelves; possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Add 12 pocket holes to one of the 4' pieces and 8 pocket holes to each of the 10 1/2\" pieces"
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" stock; searched all steps for /setting|thick|jig/ (only 'actual size 3/4\" x 11 1/4\"' in steps[0]); viewed images 8a76/4322/16a8 show no jig thickness setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 top/bottom + 5 shelves, 5 shelves×4 = 20 pins match; 11 1/4 x 10 1/2 shelf size matches the corrected row; (b) all parts installed (shelves via pins); (c) shelf pins in materials; (d) steps end with a usable shelving unit. Hanging is covered in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the two 4' sides of the shelf using the pocket holes, keeping holes on the back of the shelf.",
+      "what": "The third 4' piece (12 pocket holes) is never named as the back or told where it goes; only the viewed image 4322 shows it."
+    },
+    {
+      "path": "materials[2]",
+      "quote": "Wood screws",
+      "what": "8 wood screws are listed but no step uses them, and no step describes hanging the shelf although the description says 'hung at any height' (searched steps for /hang|mount|wall|screw/: none)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "06ff394c6e66d09b.webp",
+      "8a765111a7ccf44d.webp",
+      "432286fa90f98e5e.webp",
+      "16a857b749183a65.webp"
+    ]
+  }
 }

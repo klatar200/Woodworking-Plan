@@ -1,6 +1,6 @@
 {
   "slug": "entry-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs (steps[0]), braces (steps[1]) and slab top (steps[10]) are in cutList[0..2]; no other part is made."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows used by steps."
     },
     "R4": {
       "result": "unknown",
@@ -21,26 +23,89 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "reason": "Sweep unknown stands (see readerNote).",
+      "readerNote": "4×28.5 (legs) + 4×9 (braces) = 150, +7 kerfs×0.125 = 150.875\" > 1×96\" in materials[0]; quantity 1 possibly import default."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Pocket screws 1.25\" (steps[5]) and 2\" screws (steps[10]) both in materials; no conflicting size for same use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "We used (4) 2\" screws in each leg in a staggered pattern."
+        }
+      ],
+      "reason": "Where the four legs sit on the 48\" slab (inset from the ends/edges) is never given as a number: searched all steps and cutList/summary for 'inset|from the end|from the edge|spacing'; viewed steps[10] image shows one leg on the slab with no dimension."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands: 'as shown' steps have own images."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "We used (4) 2\" screws in each leg in a staggered pattern."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Countersink the holes just deep enough to allow the head of the screw to sit flush."
+        }
+      ],
+      "reason": "Legs are screwed to the top in steps[10]; the countersinking that the screw heads need comes in the later steps[11]. Searched all steps for 'pre-drill|pilot|drill' on the top screws: none."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "You will set your board thickness on your Pocket Hole system to your board thickness. Ours here was 1.25 inches thick."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x4 96\""
+        }
+      ],
+      "reason": "Pocket holes go in 2x4 braces, which are 1 1/2\" thick (§9); the only setting stated is 1.25\". Viewed steps[2] image shows the jig scale but no setting value legible beyond the scale. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) legs 4/braces 4 match steps; 16 pocket screws = 4 braces × 4 holes; (b) all parts installed; (c) no hardware missing; (d) legs attached to top. The 2\" screw count mismatch is recorded in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[5]",
+      "quote": "2\" Countersunk Screws",
+      "what": "quantity 8, but steps[10] says '(4) 2\" screws in each leg' = 4×4 legs = 16 screws; materials undercount."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "6b88a1e0105bf8d0.webp",
+      "c019412ffa24c9c0.webp",
+      "d9881fd087b3aa7e.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "floor-lamp",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -251,37 +251,122 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts the steps cut (legs, fillers, blocks, braces, rails, frame dowels, shade braces, spacer) are in cutList[0..10]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x2, 1x4, sheet-0.75, 0.625x0.625); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut four Legs to length from 1 x 2 boards as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Cut two Short Shade Braces and one Long Shade Brace form 1 x 2 boards as shown in the cutting diagram."
+        },
+        {
+          "path": "materials[0]",
+          "quote": "Board, 1x2 96\""
+        }
+      ],
+      "arithmetic": "1x2 parts named by steps[0],[1],[5],[14],[15] (corrected rows): Legs 4×36 = 144 + Leg Fillers 4×6.5 = 26 + Long Leg Brace 9.1875 + Short Leg Braces 2×3.875 = 7.75 + Long Shade Brace 6.75 + Short Shade Braces 2×2.625 = 5.25 + Spacer 1.5 = 200.4375\" (before kerf) vs materials[0] 'Board, 1x2 96\"' quantity 2 = 192\"; 200.4375 > 192.",
+      "reason": "Quantity 2 is not 1, so not an import default. Other stock fits: 1x4 36\" 4×5.875 = 23.5 ≤ 36; dowels 4×22.25 + 8×6.75 = 143 ≤ 5×36 (each 36\" gives 22.25 + 2×6.75 + 2×1/8 = 36.0); plywood 2 blocks 6.5×6.5 from 24×24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size stated: 1 1/4\" fine-thread pocket hole screws, in materials[4]; 3/8\" holes are drill sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give block layout (6 1/2\", 3 1/4\", 1 1/16\", 4 3/8\", 1 1/2\"), brace 8\" from leg bottom, 2\" gap between blocks, 3/4\" overlap, spacer 1 1/2\" with 3/8\" hole, shade 8\"×8\"×22 1/4\"; flush/centered relational elsewhere."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut four Legs to length from 1 x 2 boards as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut a Top Block and a Bottom Block to size from 3/4\" plywood, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Steps[0],[1],[3],[5],[9],[12],[14],[15] cite a cutting diagram; the unattached images (c7fe, 7d6d, 60f1 photos; 4c68 overview 8/22 1/4/36/59) were viewed and none is a cutting diagram. Stock and sizes are stated in steps and cutList (Fix). Sweep pass rejected."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "reason": "Legs, blocks, leg assembly, braces, bottom block, rails, then shade frame, braces, diffuser; each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'pocket hole jig set for 3/4\" material' stated in steps[5]; all pocket-hole parts (3/4\" plywood blocks and 1x2 braces) are 3/4\" thick; one statement covers all."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 verticals + 8 horizontals, 2×2.625+1.5 = 6.75 = Long Shade Brace and frame interior 8−1.25 = 6.75, 3 1/2\" rails = 3/4+2+3/4 block gap; (b) all parts installed (remaining two legs only pictured, see gaps); (c) nipple, cord set, tape, diffuser in materials; (d) ends with a finished lamp."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Clue and clamp two opposite legs to the Top Block, and then secure them using 1 1/4\" fine-thread pocket hole screws.",
+      "what": "The other two legs are never told to be attached to the Top Block (searched steps 4-8 for /leg/: only the brace assembly and Bottom Block); viewed image 69b9 shows all four legs on the block."
+    },
+    {
+      "path": "steps[11].body",
+      "kind": "consumable",
+      "quote": "finish it with your favorite stain. We used gray gel stain from General Finishes.",
+      "what": "Stain is not in materials (searched /stain|finish/)."
+    },
+    {
+      "path": "steps[15].body",
+      "kind": "consumable",
+      "quote": "paint it with an off-white spray paint",
+      "what": "Spray paint is not in materials."
+    },
+    {
+      "path": "steps[2].body",
+      "kind": "consumable",
+      "quote": "Glue and clamp one Leg Filler to the each Leg",
+      "what": "Wood glue (steps[2],[4],[9],[12]-[15]) is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "c7fe41f18567393b.webp",
+      "7d6d430954fb3148.webp",
+      "60f18f4f5a9eb7b6.webp",
+      "4c68482952784f36.webp",
+      "d4c8e43421758384.webp",
+      "1f8ad522446a1e8c.webp",
+      "a86479fc82c7c1ba.webp",
+      "69b954d59f8ed85d.webp",
+      "9ad0f48564d7a676.webp",
+      "8ce30820d5484713.webp"
+    ]
+  }
 }

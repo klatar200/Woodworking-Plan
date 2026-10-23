@@ -1,6 +1,6 @@
 {
   "slug": "firewood-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,37 +95,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, short rails (steps[0]), V rails (steps[2]), slats (steps[5]) all in cutList[0..3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part. 2x2: 4×26 + 4×9 = 140 + 6 kerf×1/8 = 140.75 ≤ 2×72 = 144 (packs 70.375 per board). 1x4: 4×14.25 + 8×12 = 153 + 11×1/8 = 154.375 ≤ 2×96 = 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" (steps[1]) and 1 1/4\" (steps[3],[5]) coarse pocket screws both in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Lower rail 3/4\" up, upper flush (steps[1]); viewed 52a7 image gives 4\", 3/8\", 3/4\" V-rail offsets; V rail shape/hole positions in viewed 0ecca image; slats flush with outside of legs; overall 26/17 1/4/12/16 1/2 in viewed 44fa image."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut four Legs and four Short Rails to length from 2x2 boards, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut eight slats to length from 1x4 boards, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Steps[0],[2],[5] cite a cutting diagram; all unattached images (7e7b hero, 2489 and 9e23 photos, 44fa overview dimensions) were viewed and none is a cutting diagram. Stock and part sizes are still stated in steps and cutList, so build is completable (Fix). Sweep pass rejected."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "reason": "Frames, V rails, attach to frame one then frame two, slats; order possible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 1 1/2\" setting for 2x2 short rails; steps[2] 3/4\" setting for V rails; thicknesses 1.5 / 0.75 match."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 legs, 4 short rails, 4 V rails, 8 slats match the steps; 9 + 2×1.5 = 12 = depth and slat length 12 (viewed 44fa); (b) every part installed; (c) no hardware beyond screws; (d) steps reach finished rack."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "kind": "consumable",
+      "quote": "apply the finish, stain, or paint that suits your style",
+      "what": "No finish listed in materials (searched materials for /finish|stain|paint/)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "52a7737bf80cf045.webp",
+      "9ff8813d6a74e023.webp",
+      "0ecca5ac3fbed937.webp",
+      "2489ad501acacf4f.webp",
+      "9e23b284e9b41b2d.webp",
+      "44fa8eb3fb560f5a.webp",
+      "d69e93fdbe0e4e2d.webp",
+      "7e7b57d3bb301806.webp"
+    ]
+  }
 }

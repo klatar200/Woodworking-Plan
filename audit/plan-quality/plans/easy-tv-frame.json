@@ -1,6 +1,6 @@
 {
   "slug": "easy-tv-frame",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps[0] 'top and bottom' and steps[1] 'sides' match cutList[0],[1]; no other part made."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both cut rows used by steps[0]/steps[1]."
     },
     "R4": {
       "result": "pass",
@@ -49,23 +51,63 @@
       "arithmetic": "parts: 2×67.875 + 2×39.25 + kerf 0 cuts (4 parts − 4 boards, the fewest possible)×1/8 = 214.250″; bought: 4×96 = 384″; 214.250 ≤ 384"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener sizes in steps: 1 1/4\" pocket screws (steps[4]), in materials; 'Heavy duty staples' in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Groove size given in viewed steps[2] image ('1/4\" deep groove', '1/2\" tall groove'); pocket hole at each mitered end (steps[4]); sensor notch is relational to the TV; elastic 'on each side'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Every 'as shown in the picture' step (0,1,2,4) has its own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, groove, sensor notch, assemble, staple elastic, finish; order possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill one pocket hole on both ends of the top and bottom pieces as shown in the picture. Using wood glue and 1 1/4\" pocket screws"
+        }
+      ],
+      "reason": "3/4\" stock gets pocket holes; searched all steps/materials for 'setting|jig|depth' and viewed steps[4] image (label only 'Pocket holes in top and bottom corners'): no jig thickness setting stated. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) rows 2+2 match steps; (b) frame assembled steps[4], elastic installed steps[5]; (c) elastic and staples in materials; (d) reaches finished frame."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[4]",
+      "quote": "Elastic",
+      "what": "No length/width of elastic given anywhere (searched materials, steps[5]); quantity 1 each."
+    },
+    {
+      "path": "description",
+      "quote": "I have included a way to adjust the size to fit your tv.",
+      "what": "No adjustment instructions exist in steps or cut list (searched /adjust|fit your tv|tv size/); only the 75\" TV dimensions are given."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "442e9a12541add80.webp",
+      "12555837d3af5396.webp"
+    ]
+  }
 }

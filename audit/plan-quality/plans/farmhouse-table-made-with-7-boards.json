@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-table-made-with-7-boards",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,36 +10,100 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Aprons are cutList[0],[1]; top is made in steps[5] from the five listed 8\" planks (materials[0] qty 5), so no unlisted part is cut. Legs are not named in any step (see R14)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used by steps[0]-[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1.25x8, 1.25x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Aprons come from 5/4x6 96\" (materials[1] qty 2 = 192\"): 2×26 + 2×58 = 168 + 3 cuts×1/8 = 168.375 ≤ 192. Top planks are whole boards (steps[5]); legs not scored."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only size stated: 2-1/2\" pocket screws (steps[4]), in materials[2]; steps[5],[6] say 'pocket screws' with no size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Optional groove '2\" from the edge' given; top placement relational; no other position the builder must set beyond the missing legs (R14)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites an absent drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Aprons cut, drilled, frame assembled, top built, sanded, attached; possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use Kreg Jig to drill pocket holes at both ends of each apron piece."
+        },
+        {
+          "path": "cutList[0].thicknessIn",
+          "quote": "1.25"
+        }
+      ],
+      "reason": "Pocket holes in 1 1/4\" aprons and top planks; searched all steps/images (viewed 02fb not opened; step images 9a50, 3a45, 09aa viewed show no jig scale) for 'setting|1 1/4|thick' with no jig thickness setting stated. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "description",
+          "quote": "This farmhouse dining table is made with just seven 5/4″ thick, wide planks and chunky turned legs for an authentic, farmhouse look."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Using 2-1/2\" pocket screws and wood glue, assemble the table frame."
+        }
+      ],
+      "reason": "(b)/(c)/(d) The table needs four legs (viewed images 9a50, 6600, 51ae show turned legs on the frame) but no cutList row, material, or step makes, buys, sizes or attaches them; searched cutList.part, materials.name and all steps for /leg|post|turned/i: no match. Steps end with a legless frame and top."
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Cut a groove into apron pieces 2\" from the edge with a router",
+      "what": "Optional groove has no width/depth and no stated purpose."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Use wood glue and pocket screws to make table top with the five 8\" wide planks.",
+      "what": "Top length is never stated (planks bought at 96\"; no cutList row for the top), and apron 58\" x 26\" frame size vs the top overhang/leg size are never related."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "9a5098ac5cf620ea.webp",
+      "3a45f703f132dade.webp",
+      "09aa8e16298a770d.webp",
+      "6600929ee83e0985.webp",
+      "51aec30f2f965e9f.webp",
+      "3a0106ca9b1cc690.webp"
+    ]
+  }
 }

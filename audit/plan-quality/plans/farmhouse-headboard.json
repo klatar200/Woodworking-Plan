@@ -1,6 +1,6 @@
 {
   "slug": "farmhouse-headboard",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,10 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Inner rails/stiles/long+short braces (steps[0]), outer rails/legs (steps[2]), caps (steps[5]), back panels (steps[7]) all in cutList[0..9]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are installed by steps[1]-[7]."
     },
     "R4": {
       "result": "pass",
@@ -214,26 +216,110 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x6, 2x4, 1x4, sheet-0.1875); steps not checked for per-part stock"
+      "reason": "Precondition unmet: steps[0] names no stock for Long/Short Brace; readerNote records the per-stock shortfalls (also in gaps).",
+      "readerNote": "Parts whose stock the steps name: 1x4 = 2×46 + 2×30.75 + 66 (lower cap) = 219.5\" vs materials 1x4 x 96\" ×1 + 1x4 x 72\" ×1 = 168\"; 2x4 = 2×53 = 106.125\" vs 2x4 x 96\" ×1 = 96\". Quantity 1 lines may be import defaults."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" and 2 1/2\" pocket screws, 1-1/4\" flathead wood screws, 5/8\" flathead wood screws all in materials; each use has one size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give: 30 3/4\" opening between outer rails, pocket holes 1 1/2\" from leg ends, brace/stile layout (f89b), back panel insets 2\"/5 1/4\"/3 1/2\"/2 3/4\" (9fd6). Caps centered (relational)."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using the Cutting Diagram as a guide, cut two Inner Rails and two Inner Stiles to length from 1x4 boards."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "They’re cut as shown so the tongue and groove on the sheet will line up when installed."
+        }
+      ],
+      "reason": "Steps[0],[2],[5],[7] cite a Cutting Diagram; the only unattached images (0fd6 hero photo, 92db overview 68/53/64/60) were both viewed and neither is a cutting diagram, and step images show parts not stock layout. Part sizes are in cutList so the build is completable (Fix). Sweep pass rejected."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "reason": "Inner frame, outer frame, join (steps[4]), cap assembly, attach cap, back panel; each exists before use; back panel last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "With Your Kreg® Pocket-Hole Jig still set up for 3/4\"-thick material, drill a single pocket hole in the end of each Leg"
+        },
+        {
+          "path": "cutList[6] (kreg-corrected)",
+          "quote": "1 1/2\" x 5 1/2\" x 57 3/4\""
+        }
+      ],
+      "reason": "Settings are stated everywhere (steps[0] 3/4\"; viewed b6e7 image: 3/4\" legs ends and upper-rail edge, 1 1/2\" rail ends) but Legs are 1 1/2\" thick per the corrected row while the jig is set to 3/4\" (steps[2] also calls them 1x6). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Also cut two Legs to length from 1x6 boards."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Leg (kreg-corrected row 1 1/2 x 5 1/2 x 57 3/4)"
+        },
+        {
+          "path": "materials",
+          "quote": "Board, 2x6 x 96\" (no 1x6 line; searched materials for /1x6/)"
+        }
+      ],
+      "reason": "(a) Step names 1x6 stock for the Legs but the corrected cut row is 1 1/2\" thick and materials have only 2x6 (qty 3) and no 1x6. (b),(c),(d) pass: all parts installed, hardware in materials, ends with finished headboard."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2],materials[3]",
+      "quote": "Board, 1x4 x 96\" / Board, 1x4 x 72\"",
+      "what": "1x4 parts named by steps (Inner Rails 2×46, Inner Stiles 2×30.75, Lower Cap 66) = 92 + 61.5 + 66 = 219.5\", plus 5 cuts×1/8, vs 96 + 72 = 168\" bought (each qty 1; may be import defaults); Long Brace 51.625 and Short Braces 2×25 add more."
+    },
+    {
+      "path": "materials[1]",
+      "quote": "Board, 2x4 x 96\"",
+      "what": "Upper+Lower Outer Rail (steps[2] 'from 2x4 boards') = 2×53 = 106 + 1/8 = 106.125\" vs one 96\" board (qty 1; may be import default)."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "cut two one Upper Outer Rail and one Lower Outer Rail",
+      "what": "Garbled quantity ('two one'); cutList[4],[5] each quantity 1, so one is intended."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "0fd6c03dd2594e93.webp",
+      "92dbffbddebe216b.webp",
+      "f89b6b1be58404de.webp",
+      "b6e7a37ba94ae2ab.webp",
+      "436441266e413ea6.webp",
+      "9fd62a0956746241.webp"
+    ]
+  }
 }

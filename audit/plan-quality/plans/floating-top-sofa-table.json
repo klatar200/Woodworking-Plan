@@ -1,6 +1,6 @@
 {
   "slug": "floating-top-sofa-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,36 +10,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Console top, side panels, floating top in cutList[0..2]; risers are cut in steps[2] from the listed 1-3/8\" dowel (materials[2])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows used by steps[0],[1],[3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x12, 1.5x14, 1.375x12); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock. 2x12 96\" ×2 = 192\": 50 + 2×27.5 = 105 + 2 kerf×1/8 = 105.25 (fits two boards). Dowel 12\": 4×2 = 8 + 3×1/8 = 8.375 ≤ 12. Top 72\" from 72\" slab."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Add glue to connecting faces and drive 4\" wood screws."
+        },
+        {
+          "path": "materials",
+          "quote": "1/4\" x 4\" lag screws (materials[3]); no 4\" wood screw line"
+        }
+      ],
+      "reason": "Searched materials for /screw/: only '1/4\" x 4\" lag screws' (used for the risers, steps[2]) — the 4\" wood screws for joining panels (4 holes per joint, 2 joints) are not listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Riser holes '4\" from the end and 2\" from each long side', screws 3/4\" from edge, countersink 3/8\" deep; side panels at the console top ends per viewed image e9fd; floating top centered."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites an absent drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut panels, join, risers, attach top, finish; possible."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cover holes with plugs and cut flush."
+        }
+      ],
+      "reason": "(c) Hardwood plugs (viewed e9fd image: 'Counter-bore for 3/8\" plugs ... cover with hardwood plugs') are used but not in materials (searched /plug/: none). (a),(b),(d) pass: 4 risers = 4 lag screws = 4 washers; all parts installed; steps reach finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "kind": "consumable",
+      "quote": "Add glue to connecting faces",
+      "what": "Wood glue is not in materials (searched /glue/: none)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "e9fd3fe109498638.webp",
+      "0a9f46a7e1ec8c99.webp",
+      "e1a71542b9688031.webp"
+    ]
+  }
 }

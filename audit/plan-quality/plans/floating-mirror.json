@@ -1,6 +1,6 @@
 {
   "slug": "floating-mirror",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,37 +143,113 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame Back/Mirror Backer (steps[0]), outer frame parts (steps[2]), inner frame parts (steps[3]) all in cutList[0..7]; mirror is purchased (steps[6])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All eight rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x3, sheet-0.75); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut two Inner Frame Sides, one Inner Frame Top, and one Inner Frame Bottom to length from a 1x3 board"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut two Frame Sides, one Frame Top, and one Frame Bottom to length from 1x3 boards"
+        },
+        {
+          "path": "materials[1]",
+          "quote": "Board, 1x3 96\""
+        }
+      ],
+      "reason": "Steps name 1x3 for every frame part: outer 2×67.5 + 2×28 = 191 (corrected rows) + inner 2×61 + 2×21.5 = 165 → 356\" + kerf vs materials 1x3 96\" qty 2 = 192\". Inner rows are 1.5\" wide and materials also list 1x2 96\" qty 2 (192\"), which would cover 165.4\" if 1x2 was meant, hence likely, not certain. Plywood: 28×66 and 18×56 fit one 48×96 sheet (28+18=46 ≤ 48)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine-thread pocket screws and 1 1/4\" flathead screws both in materials; step 9 1 1/4\" = 3/4+3/4−1/4 consistent."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give pocket-hole and 1/8\" mirror-backer hole positions (3\", 10\", 7\", 8 1/2\", 9\" etc.) and overall 29 1/2 x 67 1/2 x 3 1/2; inner frame and mirror 'center' (relational)."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut one Mirror Backer and one Frame Back to size from a sheet of 3/4\" plywood, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "to length from 1x3 boards, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Steps[0],[2],[3] cite a cutting diagram; every unattached image (7d6b hero, ebd8 overview dims, 6a54/8eca/2fc0 photos) was viewed and none is a cutting diagram. Part sizes are in cutList and stock in the steps, so completable (Fix). Sweep pass rejected."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "reason": "Backer/back, frames, mirror glued to backer, inner frame glued to back, mirror/backer screwed from behind; possible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'pocket-hole jig set up for 3/4\" material' stated in steps[0],[2],[3]; all pocket parts are 3/4\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) corrected row sizes match images (overall 67 1/2\" sides, back 28\"+2×3/4 = 29 1/2\"); (b) all parts installed; (c) plugs, adhesive, mirror, screws in materials (glue/finish are consumables in gaps); (d) ends with mirror attached. Mirror size conflict in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[6]",
+      "quote": "1/4\" (6mm) mirror, 20\" x 60\"",
+      "what": "Mirror is 20×60 but the Mirror Backer it is adhered to is 18×56 (corrected cutList[1] 0.75×18×56) and it must sit inside the inner frame opening: Inner Frame Sides 61 − Top and Bottom 2×1.5 wide = 58\" tall (cutList[7] 'x 61\"', cutList[5] widths 1.5) < 60\"; the step never states a mirror size."
+    },
+    {
+      "path": "steps[4].body",
+      "kind": "consumable",
+      "quote": "After assembly, glue pocket-hole plugs into the Frame Top and Bottom",
+      "what": "Wood glue and stain/paint (steps[4],[7],[8]) are not in materials (searched materials for /glue|stain|paint/; only mirror adhesive)."
+    },
+    {
+      "path": "description",
+      "quote": "whether you mount it to the wall or set it on the floor and let it lean",
+      "what": "No hanging hardware or mounting step exists (searched steps/materials for /hang|mount|wall|cleat/)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "e54551b3c1a7e5dd.webp",
+      "06290065d37fe36e.webp",
+      "593c4ce702bad98b.webp",
+      "5b8d29464b0ee243.webp",
+      "ebd8eabd31a005a7.webp",
+      "6a540d6bfc71ce5a.webp",
+      "8ecac15741b9542c.webp",
+      "2fc00e500ba63a33.webp",
+      "7d6b0d6c5fba58dd.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "go-anywhere-raised-garden",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs (steps[0]), long brace (steps[1]), short braces (steps[3]) are cutList[0..2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows used."
     },
     "R4": {
       "result": "pass",
@@ -121,23 +123,79 @@
       "arithmetic": "parts: 4×23 + 2×7.625 + 1×16.75 + kerf 5 cuts (7 parts − 2 boards, the fewest possible)×1/8 = 124.625″; bought: 2×96 = 192″; 124.625 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener: Kreg XL pocket-hole screws (steps[1]-[5]), in materials[1]; no sizes conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give leg profile (9\", 5 1/2\", 8 1/2\", 2 1/4\", 2\", 3 1/4\"), pocket-hole offsets (1\", 2 3/4\"), brace spacing 7 5/8\", overall 23/23 3/4/27 3/4; braces sit in the leg notch; short braces centered on long brace (relational)."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Start by cutting four Legs to length, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut two Short Braces to length, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Steps[0],[1],[3] cite a cutting diagram; all unattached images (1eec, 5e14, 7161 photos; 5ce6 overview 23/23 3/4/27 3/4) were viewed and none is a cutting diagram. Part sizes are in cutList and the leg profile in step-1 image, so completable (Fix). Sweep pass rejected."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "Legs, braces drilled, long-brace pair, short-brace pairs, join assemblies, finish, plant; possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "We did this using the Kreg® Pocket-Hole Jig XL and XL Pocket-Hole Screws"
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" cedar braces; searched all steps for /setting|thick|depth/ (none) and viewed step-2 image 3291 (hole layout dimensions only, no jig setting). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Then lay down a piece of landscape fabric, and fill the tub with dirt and plants!"
+        }
+      ],
+      "reason": "(c) Landscape fabric is used in the final step but is not in materials (searched materials for /fabric|soil|dirt|plant/: none); likely because the planting step is arguably outside the build. (a),(b),(d) pass: 4 legs, 2 short + 1 long brace match; all installed; steps reach finished planter."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "1d80900f878c5852.webp",
+      "32915175687b9a01.webp",
+      "07059d395369578c.webp",
+      "5ce64df12e67ca98.webp",
+      "5e14779184b38986.webp",
+      "716194e4098e0312.webp",
+      "1eecc9df885dfb61.webp"
+    ]
+  }
 }

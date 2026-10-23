@@ -1,6 +1,6 @@
 {
   "slug": "family-sign",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,37 +35,69 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only part is the sign board (steps[0]) = cutList[0]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Single row used by steps[0]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Single stock; sweep could not parse length but materials[0] states 36\". 24.5 (kreg-corrected row) + 1/8 kerf = 24.625 ≤ 36 (materials[0] 'Oak project board, 3/4\" Thick 36\"')."
     },
     "R6": {
-      "result": "to-read"
+      "result": "n/a",
+      "reason": "No fasteners used (searched steps for screw|nail|glue|staple)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Letter positions are fixed by the routing template (relational); length given 24.5\" in steps[0]; edge profile named; no other positions to set."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Only 'The box shows the template guides' reference (steps[1]) has its own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, rout letters, rout edge, sand, stain, paint, clearcoat; possible order."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; single board."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) one sign, qty 1, 24.5\" in steps[0] matches Kreg-corrected row [0.75,5.5,24.5]; (b) single piece; (c) no hardware used; template/bushing/bit are tools (out of scope) noted in gaps; (d) ends with finished sign."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "I used my router (with guide bushing adaptor) to rout the shapes of the letters in the template.",
+      "what": "The letter template, guide bushing and roman ogee bit are needed to complete the sign but are not in materials or the tools list (tools: miter-saw, tape-measure, router, random-orbit-sander); searched materials and tools for /template|bushing|ogee/."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "\"Alexanders\" wound up being 24.5\". I marked it off, then cut my 36\" project board to length.",
+      "what": "Sign length (24.5\") depends on the author's name text; builder's own name needs its own length; steps[0] explains how to measure, no value invented."
+    }
+  ],
+  "reader": {
+    "batch": "s6-30",
+    "imagesViewed": [
+      "025a77e8e39893eb.webp"
+    ]
+  }
 }
