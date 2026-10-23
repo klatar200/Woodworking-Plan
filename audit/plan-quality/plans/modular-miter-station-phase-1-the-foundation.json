@@ -1,6 +1,6 @@
 {
   "slug": "modular-miter-station-phase-1-the-foundation",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -227,43 +227,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, leg rails, left/right stretchers, middle rails, cross supports, top middle support, tops and side panels in steps[0]-[6] are all cutList rows 0-10."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: rows 0-1 steps[0]; 2-3 steps[1]; 5 steps[2]-[3]; 4 and 6 steps[3] (viewed step-3 image shows the 30in rails and 27in support); 7-8 steps[5]; 9 steps[4]; 10 steps[6]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "2x4 (all rows 0-6 are 1.5 x 3.5): 8 x 41 + 8 x 29 + 3 x 56.75 + 3 x 26.75 + 4 x 30 + 5 x 33 + 27 = 328 + 232 + 170.25 + 80.25 + 120 + 165 + 27 = 1122.5 + 32 x 1/8 = 1126.5 <= 14 x 96 = 1344. 3/4 ply: 3 x 30 x 36 + 36 x 60 = 3240 + 2160 = 5400 <= 2 x 4608 = 9216. 1/4 ply: 2 x 36 x 38.75 + 2 x 25.25 x 36 = 2790 + 1818 = 4608 <= 9216."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "Attach tops to each section using 1/4\" wood screws.",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+          "quote": "Attach tops to each section using 1/4\" wood screws."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Box of 1 1/4\" Spax Wood Screws"
         }
-      ]
+      ],
+      "reason": "A 1/4in screw is named in steps[5] and no such size is in materials[0..6] (search /screw/i: 2 1/2in coarse pocket hole, 1 1/4in Spax, 3in Spax). The step text is not changed by the importer; 1 1/4in is the only wood-screw size that could be meant but the plan does not say so."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Flag-free: bottom rail 'approximately 7\" from the bottom' (steps[0],[1]); saw support 'that exact distance down' = measured on the builder's own miter saw (viewed step-3 image 7dcfb21ef23c10c2 adds 3 1/4 for the middle bottom rails and 'adjustable'); tops and panels sit flush on the sections (viewed step-5 image fd0c9715ac502793 gives 60/36/30 sizes). Cross-support spacing: see gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; no step relies on a missing drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg assemblies (0), stretchers (1), cross supports (2), middle section (3), outside panels (4), tops (5), middle panels (6); the 3in screws in steps[3] go in before panels and tops hide the frame."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 'Use 1 1/2\" pocket holes' and the same setting is repeated in steps[1]-[3]; every pocket-holed part is a 1.5in 2x4. Plywood panels and tops use brads/screws, stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 leg assemblies = 8 legs + 8 rails; 3 + 3 stretchers; legs 41H x 36W = 29 + 2 x 3.5 = 36; 56.75 + 3 = 59.75 ~ 60 top and 26.75 + 3 = 29.75 ~ 30 top (viewed step-5 image). (b) every part is installed (5 cross supports = 2 + 1 on side sections + 2 in the middle section per viewed images). (c) no non-fastener hardware needed in Phase 1. (d) steps reach a finished three-section station."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[8]",
+      "quote": "Top - Right Side 1x 0.75 x 36 x 60",
+      "what": "Row is labelled 'Right Side' while cutList[7] also names 'Right Side'; by the 56 3/4in left stretchers (+ 3 = 60) the 36 x 60 top is the left section's top."
+    },
+    {
+      "path": "cutList[10]",
+      "quote": "Side Panels - Middle Section Bottom 2x 0.25 x 25 x 36",
+      "what": "Panel height 25 1/4 is fixed while steps[3] makes the saw-support depth the builder's own ('measure YOUR miter saw'), so the panel size depends on a value the plan lets vary."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Add cross supports on the top of the left and right sections",
+      "what": "Spacing of the cross supports along the sections is not dimensioned in text or the viewed step-3 image (43347aeeb96b5c1f), which shows 2 on the left and 1 on the right section."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "7dcfb21ef23c10c2",
+      "fd0c9715ac502793",
+      "43347aeeb96b5c1f"
+    ]
+  }
 }

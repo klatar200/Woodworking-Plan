@@ -1,6 +1,6 @@
 {
   "slug": "modern-hexagonal-floating-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,17 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " prefer.\nTo compensate for the angle required to make the hexagon, add 3\" to the size shelf you desire. For example, on my shelves, I wanted 7\" for the interior, so I cut the boards into 10\" sections.",
-          "why": "cut sentence states 7\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the 7\" in steps[0].body is the interior length desired, marked in steps[3] on the 10\" rough sections, which are cutList[0] (12 x 1.5 x 7.25 x 10). The only part is the side; no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single row 'Sides' (12 = six per hexagon, two shelves) is the part cut in steps[0]-[4] and assembled in steps[6]."
     },
     "R4": {
       "result": "pass",
@@ -31,23 +26,61 @@
       "arithmetic": "parts: 12×10 + kerf 10 cuts (12 parts − 2 boards, the fewest possible)×1/8 = 121.250″; bought: 2×96 = 192″; 121.250 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size is used in any step; joints are glue and painter's tape (steps[6]); hanging hardware is left to the builder (see R14)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Interior length is the builder's chosen size, rough length is 'add 3\"', miter angle is 30 degrees (steps[1],[2]); no hole or hardware position is needed other than the hanging method (see R14)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands; the only 'as shown' step (steps[6]) has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rough cut (0), saw setup (1), first angle (2), measure and second angle (3-4), sand (5), tape and glue (6), finish (7), hang (8)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joint is built (pocket holes appear only as a hanging option in steps[8]); the mitered joints state method and fastener: glue plus painter's tape (steps[6])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "There are many ways to hang your shelves...brackets, anchors, even pocket-holes. Find which way works for you, attach them in your space and enjoy!"
+        }
+      ],
+      "reason": "(c)/(d) The last step names brackets and anchors but materials[0..4] list only 2x8 boards, stain, polyurethane, glue and painter's tape (search /bracket|anchor|screw|cleat|hang/i in materials: none), and no hanging method, hardware or position is given, so the steps do not reach a mountable shelf. (a) 12 sides x 10in matches the 'cut the boards into 10\" sections' example."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Work from low to high grits to achieve a smooth surface.",
+      "what": "Sandpaper (steps[5]) and tack cloth/rag (steps[7]) are not in materials (search /sandpaper|grit|tack/i: none)."
+    },
+    {
+      "path": "cutList[0]",
+      "quote": "Sides 12x 1.5 x 7.25 x 10",
+      "what": "The row is the rough length (steps[0] 'cut the boards into 10\" sections'); the final length depends on the builder's chosen interior size and is cut in steps[4]. Number of shelves (12 sides = 2) is not stated in any step."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": []
+  }
 }

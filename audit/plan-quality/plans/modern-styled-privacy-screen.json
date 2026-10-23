@@ -1,6 +1,6 @@
 {
   "slug": "modern-styled-privacy-screen",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Vertical and horizontal frame pieces and the 1x4/1x6 privacy slats are cutList rows 0-6; hinges are materials[8]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: frame pieces in steps[1]-[3], slats in steps[6]."
     },
     "R4": {
       "result": "pass",
@@ -29,34 +31,107 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 1x6, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x4 96\""
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Privacy Slats (for small frames) 10x 1 x 4 x 24"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Privacy Slats (for large frame) 5x 1 x 4 x 43"
+        }
+      ],
+      "arithmetic": "1x4 stock bought: materials[2] qty 4 x 96 = 384in. 1x4 parts as listed: cutList[3] 10 x 24 = 240 + cutList[4] 10 x 24 = 240 + cutList[5] 5 x 43 = 215 = 695 (+ 24 x 1/8 kerf) > 384. If cutList[4] were meant as 1x6 (steps[6] alternates 1x4 and 1x6): 240 + 215 = 455 + kerf still > 384. 1x6 (materials[1] 6 x 96 = 576) vs cutList[6] 5 x 43 = 215 fits. 2x4: 6 x 60 + 4 x 17 + 2 x 36 = 500 + 11 x 1/8 <= 6 x 96 = 576."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": " Start with the smaller 1\"x4\" slat, flush with the top, and nail it to the frame. Measure one inch between slats. You will end with a 1\"x6\" slat flush with the bottom 2\"x4\" of the frame. The feet will",
-          "why": "4\" nail — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: '4\"' is the 1x4 slat name in steps[6], not a nail. Sizes used: 2in Kreg screws (steps[3]) = materials[3]; steps[6] 'nail' gives no size and materials[4] lists 2in finishing nails; hinges materials[8]."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "connect the three frames to each other with hinges that open to the front."
+        },
+        {
+          "path": "materials[8]",
+          "quote": "Hinges (3.5\" with 5/8\" radius)"
+        }
+      ],
+      "reason": "Four hinges must be set (two per joint) but no height or spacing along the 60in edges is given in text or in the viewed hinge photo (eba4960b6059302b). Other positions are numeric: bottom horizontals indent 6 1/4, slats start flush with the top with 1in between."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands; the one 'as shown' step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), layout (1), pocket holes (2), frames built (3), stain (4), slats nailed on pocket-hole-up frames (5-6), frames hinged (7)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill two pocket holes into either side of the 17\" and 36\" horizontal boards that make up the frame."
+        }
+      ],
+      "reason": "1.5in 2x4 horizontals get pocket holes but no jig thickness setting is stated (search steps for /setting|collar|thickness|depth/: none); viewed step-2 image (36b7e5624b1af253) shows the jig with no readable setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Privacy Slats (for small frame) 10x 1 x 4 x 24"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "alternating between 1\"x4\" and 1\"x6\" slats."
+        }
+      ],
+      "reason": "(a) steps[6] alternates 1x4 and 1x6 slats down every frame and materials[1] buys 1x6, but the cut list has no 1x6 x 24 row: rows 3 and 4 are both 1 x 4 x 24 (10 each) while the large frame has both a 1x4 and a 1x6 row (rows 5-6). Counts otherwise agree: 6 verticals, 4 + 2 horizontals = three frames, 5 + 5 slats on the large frame. (b),(c),(d) pass."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Measure one inch between slats. You will end with a 1\"x6\" slat flush with the bottom 2\"x4\" of the frame.",
+      "what": "Stack arithmetic: 5 x 3.5 (1x4) + 5 x 5.5 (1x6) + 9 x 1 gaps = 54 vs 60 - 6 1/4 (steps[1]) = 53.75 available, 1/4in over."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "eba4960b6059302b",
+      "258c4092dfa07ab6",
+      "5a53d3c6f8f0758b",
+      "36b7e5624b1af253"
+    ]
+  }
 }

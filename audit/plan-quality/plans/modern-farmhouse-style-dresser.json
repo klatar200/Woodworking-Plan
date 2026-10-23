@@ -1,6 +1,6 @@
 {
   "slug": "modern-farmhouse-style-dresser",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -155,44 +155,123 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, legs, side trim, bottom supports, top, backing, drawer bottoms/fronts/backs/sides and faces are all cutList rows 0-9; edge banding is materials[8]."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Bottom support",
-          "why": "no step mentions it (searched steps for support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 'Bottom support' (2x2 x 39, cutList[3]) is the 'bottom pieces' attached in steps[3] (titled 'Attach bottom trim', 'jig set for 1-1/2\" thickness' matches the 1.5in 2x2). All other rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (sheet-0.75, 2x2, 1x2, 1x6, 1x8, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock is identifiable by corrected size. Ply 3/4 sheet: sides 2 x 15.75 x 31.25 = 984.4 + top 18.75 x 42 = 787.5 + drawer bottoms 4 x 15.75 x 36.5 = 2299.5 -> 4071.4 <= 48 x 96 = 4608. 2x2 8ft x3 = 288: 4 x 33.5 + 2 x 39 = 212 + 5 x 1/8 = 212.6. 1x2 36in: 2 x 15.75 = 31.5 + 2 x 1/8 = 31.75 <= 36. 1x6 8ft x5 = 480: 8 x 36.5 + 8 x 17.25 = 430 + 16 x 1/8 = 432. 1x8 8ft x2 = 192: 4 x 38.75 = 155 + 4 x 1/8 = 155.5. Optional 1/4in backing not scored: materials[5] '1/4\" Thick 48\"' gives no second dimension."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Once you have them in place using 1\" screws works best to attach the drawer front from the inside."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "use wood glue and 1-1/4\" pocket hole nails."
+        }
+      ],
+      "reason": "Search of materials[0..15] for /screw/i: 1-1/4in pocket hole screws, 2-1/2in pocket hole screws, 3/4in flat head screws (bracket-only); no 1in screws (the only 1in item is '1\" Nails', used in steps[8]). steps[1] names 1-1/4in pocket-hole 'nails', which are not in materials either (only pocket-hole screws)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slide heights are in the viewed step-2 image (4-3/4, 12-1/8, 19-1/2, 26-7/8 in), drawer front gap 3/4in (steps[5]), face gaps 1/4in (steps[7]); side panel 31-1/4 vs leg 33-1/2 and the viewed step-1 photo show legs extending below the panel. Pull positions are covered under R14."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[2] 'See image for measurements' has its own image giving the slide heights (viewed 831e14eed9724471)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side panels to legs (1), slides on sides (2), bottom supports (3), drawers built (4) and installed (5), top (6), faces (7), backing (8), veneer (9). Nothing is fastened that a later step must undo."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes to both of the side boards (inside), I recommend 6 pocket holes on the long side and 4 on the top."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Place pocket holes on the outside, those will be covered with the drawer face later on."
+        }
+      ],
+      "reason": "Only steps[3] states a setting ('set for 1-1/2\" thickness', covers the 2x2s). The 3/4in plywood side panels (steps[0]), drawer parts (steps[4]) and 3/4in top (steps[6]) get pocket holes with no setting (search /setting|thickness|collar/ in steps: only steps[3]); viewed step-0 image shows holes, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[7]",
+          "quote": "Drawer pulls"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Install the plywood top (18-3/4\" x 42\") use pocket holes, and glue or corner brackets as seen in the picture."
+        },
+        {
+          "path": "materials[15]",
+          "quote": "Flat head screws 3/4\" long (if you use corner brackets)"
+        }
+      ],
+      "reason": "(d) 8 drawer pulls are bought but no step installs them or says where the holes go (search steps for /pull|handle|knob/i: none; steps[7] ends with attaching faces). (c) the corner brackets in steps[6] (shown in the viewed image) are not in materials (search /bracket/i in materials: only the screw line's parenthetical). Part counts match: 4 drawers = 4 bottoms, 8 fronts/backs, 8 sides, 4 faces."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[6]",
+      "quote": "16\" drawer slides",
+      "what": "Quantity '4 each' vs 4 drawers each needing a slide on both sides (steps[4] '1/2\" on each side') = 8 single slides; reads as pairs but the unit is 'each'."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "These drawers are measuring 36-1/2\"x 17-1/4\" and have a 3/4\" plywood bottom.",
+      "what": "36 1/2 x 17 1/4 are the front/back and side part lengths; the assembled box is wider (36.5 + 2 x 0.75 = 38), so the stated box size does not match the cut parts."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Sand the boards with a 200grit sandpaper",
+      "what": "Sandpaper (steps[1]) is not in materials (search /sandpaper|grit/i: none); glue is in materials[11]."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "831e14eed9724471",
+      "74a5e06adb58b473",
+      "03ae1122579b87c1",
+      "465bf7ea2af01aba",
+      "a4db5a4f5a8cf8a5",
+      "0925d1a151b50d0a"
+    ]
+  }
 }

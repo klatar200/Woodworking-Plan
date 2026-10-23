@@ -1,6 +1,6 @@
 {
   "slug": "modern-double-bathroom-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -89,44 +89,133 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, end panels, back rails, center supports, face rails, shelf supports, shelves, doors each have a cutList row; countertop is bought (materials[13])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used by steps[0]-[7]; the two Shelf Supports rows are the 32.5 and 16 supports of steps[5]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[1]); cutList[7] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Sweep unknown resolved: legs 3 x 3 from materials[1] '3 x 3 table legs 36\"'; corrected rows 1.5 x 3.5 (2x4), 0.75 x 1.5 (1x2); panels/doors 0.75 plywood, shelves 0.75 melamine; shelf supports 3/4 x 3/4 from materials[5] (cutList[7] source '3/4\" x 3/4'' is a unit typo). Largest sheet parts 16 x 29.5 and 18.75 x 34.5 fit."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "result": "pass",
+      "reason": "Plywood (one type): panels 2 x 16 x 29.5 = 944 + doors 4 x 16 x 29 = 1856 = 2800 sq in <= 48 x 96 = 4608. Melamine: 2 shelves 2 x 18.75 x 34.5 = 1294 <= 2 quarter sheets. 2x4: 2 x 32.5 + 2 x 16 = 97 (130 + 32 = 162 even at 4 back rails) + 1/8 per cut <= 2 x 96 = 192. 1x2: 4 x 32.5 = 130 + 4 x 1/8 = 130.5 <= 2 x 96 = 192. Legs: 6 bought (qty 6)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1-1/4in pocket screws (steps[1]) = materials[8]; 2-1/2in screws (steps[2]) = materials[9]; 1-1/4in brads (steps[5]) = materials[11]. No conflicting sizes; steps[3],[4] name no screw size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "Use Euro-style concealed hinges to mount all four doors. Choose hinges that are designed for frameless cabinets and inset doors. Allow a 1/4\" offset on both top and bottom of cabinet doors.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f20efa378519ce58.webp"
+          "quote": "Use Euro-style concealed hinges to mount all four doors."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach door pulls or knob to cabinet door faces."
         }
-      ]
+      ],
+      "reason": "Door offsets (1/4in top and bottom) and rail/panel heights (5in) are given, but hinge position along the door height and the pull/knob location are never given as numbers; viewed step-8 and step-9 images (f20efa378519ce58, 27b48dc9fd22989a) show hinges near top and bottom and pulls at the door meeting edge with no dimension, and steps[13] defers to a jig."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; every drawing step has its own dimensioned image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs (0), end panels (1), back rails (2), center legs (3), face rails (4), shelf supports (5), shelves (6), doors (7), hang (8), pulls (9), top (10). Steps[13] (hinge mortises) is listed last but is an alternative note, not a blocker."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Secure using wood glue and 1-1/4\" screws through pocket holes."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Secure using glue and 2-1/2\" screws through pocket holes."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach 1x2 face rails between front legs utilizing pocket holes drilled on the inside face."
+        }
+      ],
+      "reason": "3/4in plywood, 1.5in 2x4 and 3/4in 1x2 parts get pocket holes; no jig thickness setting is given anywhere (search all steps for /setting|collar|thickness|depth/: none); viewed step images (end panel, back rails, shelf, hinge) show no jig setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Purchase or laminate six, 3\" x 3\" x 36\", straight table legs. Cut legs to a 34-1/2\" length."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Table Legs 4x 3 x 3 x 34.5"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "cut 35 1/4\" x 18 3/4\" x 3/4\" melamine shelving panels."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Cabinet Shelves 2x 0.75 x 18.75 x 34.5"
+        }
+      ],
+      "arithmetic": "Legs: step 'six' and materials[1] qty 6 (viewed step-0 image 'Cut six') vs cutList[0] qty 4; steps[2]/[3] use a center back and a center front leg. Shelf length: steps[6] and its viewed image say 35 1/4 vs cutList[6] 34.5 (difference 3/4); no importDiff for this row. Back Support Rails: viewed step-2 image (5e0d0d89a547ff43) shows 4 rails (top and bottom on each 32 1/2 span) vs cutList[3] qty 2."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Place on supports and secure in place using construction adhesive.",
+      "what": "Construction adhesive (steps[6], [10]) and wood filler (steps[11]) are not in materials (search /adhesive|filler/i: none)."
+    },
+    {
+      "path": "cutList[7]",
+      "quote": "Shelf Supports 2x 0.75 x 0.75 x 32.5 / 2x 0.75 x 0.75 x 16",
+      "what": "Viewed step-5 image (1d30ebb0201e8e19) shows 2 x 32 1/2 and 2 x 16 supports for one compartment, and steps[6] image shows two shelves; cut rows cover 4 pieces, so the second compartment's supports are not counted (materials[5] 4 x 48 = 192 vs 2 x (65 + 32) = 194 if doubled)."
+    },
+    {
+      "path": "steps[13].title",
+      "quote": "Drill Holes for Hinges",
+      "what": "Hinge-mortise drilling is placed after 'Hang Doors' (steps[8]), pulls, countertop and finish; builder must drill before hanging."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "1c546290356d39c6",
+      "8786a14df176d653",
+      "5e0d0d89a547ff43",
+      "1d30ebb0201e8e19",
+      "1bffc489bcf4bbb7",
+      "f20efa378519ce58",
+      "27b48dc9fd22989a",
+      "2268ea5b000d5f62"
+    ]
+  }
 }

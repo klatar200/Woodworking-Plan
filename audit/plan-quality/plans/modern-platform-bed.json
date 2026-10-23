@@ -1,52 +1,120 @@
 {
   "slug": "modern-platform-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "Get the full tutorial at https://www.charlestoncrafted.com/how-to-build-a-platform-bed-for-50/",
-          "why": "matches \"https://\""
+          "path": "steps[4].body",
+          "quote": "Get the full tutorial at www.CharlestonCrafted.com."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Attach sides to the front and back, then add inner supports along front, back and sides."
         }
-      ]
+      ],
+      "reason": "The steps are four one-sentence summaries plus a cut list, then 'Get Full Tutorial' twice (steps[4],[5]; the viewed step-5 image 13824922d0ba4fb2 is only the site logo). Whether front/back go inside or outside the sides, support heights, leg placement and beam spacing are not in the plan (see R10), so the build appears to depend on the linked tutorial. Whether the build can be finished without it is a judgment call (humanReview)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Front/back, sides, inner supports, leg supports, legs, center beams and slats in steps[0]-[3] are all cutList rows 0-6."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: 'inner supports along front, back and sides' (steps[1]) = Inner Side Supports + Front and Back Leg Supports; 'two center support beams' = Long Center Supports."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x6, 2x4, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock identifiable by corrected size. 2x6 96in x4 = 384: 2 x 56 + 2 x 74 = 260 + 4 x 1/8 = 260.5. 2x4 72in x4 = 288: 2 x 53 + 2 x 67 + 4 x 9 = 106 + 134 + 36 = 276 + 8 x 1/8 = 277. 2x2 72in x2 = 144: 2 x 67 = 134 + 1/8. 1x4 72in x7 = 504: 7 x 53 = 371 + 7 x 1/8 = 371.9."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No step gives a fastener size; steps[0] only says pocket holes. (materials[5] '2\" screws' is not tied to any step, see gaps.)"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "then add inner supports along front, back and sides."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the legs to the leg supports."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Add two center support beams and then lay slats down evenly across the supports."
+        }
+      ],
+      "reason": "Positions the builder must set are numeric nowhere in text or the viewed photos (1aea61e4b84f5c49, 90fd25911bae5e79): height of the inner side supports and leg supports inside the 5.5in frame, where the two center beams sit across the width, where the legs sit and the leg end angle (photos show tapered legs). Slat spacing 'evenly' is relational and passes."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing or 'as shown'."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and drill (0), box frame (1), legs onto leg supports (2), center beams then slats (3); every part exists before it is used."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes to sides, supports and legs."
+        }
+      ],
+      "reason": "1.5in sides, supports and legs get pocket holes (materials[4] 2 1/2\" Kreg Pocket Screws) but no jig thickness setting appears (search all steps for /setting|thickness|collar|depth/: none); viewed photos show none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 7 slats, 4 legs, 2 + 2 + 2 supports are all installed by steps[1]-[3]; 7 slats x 3.5 = 24.5 across 67in leaves even spacing. (b) every part installed. (c) no non-fastener hardware used. (d) steps reach a finished bed (detail missing, see R1/R10)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[5]",
+      "quote": "2\" screws",
+      "what": "6 x 2in screws are listed but no step says where they go (search steps /screw/i: only 'pocket holes' in steps[0]); how the slats are fixed is not stated."
+    },
+    {
+      "path": "cutList[0]",
+      "quote": "Front and Back 2x 1.5 x 5.5 x 56",
+      "what": "With Sides 74 and Front/Back 56, the plan never says whether the sides go between or outside the front/back, so the box is 56 x 77 or 59 x 74 outside and the 53in leg supports/slats (56 - 3) only work for one layout; no mattress size is stated."
+    }
+  ],
+  "humanReview": "R1: whether a builder can finish this platform bed from the four summary steps and the cut list without the linked full tutorial needs woodworking judgment outside section 9.",
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "13824922d0ba4fb2",
+      "1aea61e4b84f5c49",
+      "90fd25911bae5e79"
+    ]
+  }
 }

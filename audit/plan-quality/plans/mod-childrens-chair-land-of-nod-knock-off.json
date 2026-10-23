@@ -1,6 +1,6 @@
 {
   "slug": "mod-childrens-chair-land-of-nod-knock-off",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,63 +95,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, leg joiners, seat, back, seat braces each have a cutList row; seat glue-up from 1x8s is stated in steps[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows are made and used in steps[0]-[6]."
     },
     "R4": {
+      "result": "pass",
+      "reason": "Sweep fail rejected: seat 12 wide is explained by steps[3].body 'If you don't have a board the is 12\" wide glue a couple 1x8\" boards together' (2 x 7.25 = 14.5 >= 12). Legs/joiners 3 wide from 1x4 (3.5), back 6.25 from 1x8 (7.25), brace 1.25 ripped; all 0.75 thick."
+    },
+    "R5": {
+      "result": "pass",
+      "reason": "1x8 48in: back 10.75 + seat glue-up 2 x 12.375 = 35.5 + 3 cuts x 1/8 = 35.875 <= 48. 1x4 96in: legs 4 x 12.375 = 49.5 + joiners 2 x 6.375 = 12.75 + braces 2 x 10.5 = 21 -> 83.25 + 8 x 1/8 = 84.25 <= 96. Both fit with qty 1, so a defaulted quantity cannot cause a fail."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Only 1 1/4in pocket screws are sized (materials[2]); steps give no other fastener size. Viewed brace drawing gives counterbore sizes (1/8 pilot, 3/8 x 1/2) but no screw is named (see gaps)."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Viewed drawings give positions: back 1 3/4 from seat rear edge and 3 pocket holes (dda58a...), brace 2 from seat edge, hole at 5 3/8 x 1 3/4 on back (74916b...), counterbores at 2, 5 1/4, 8 1/2 on brace (9120f0...). Joiner sits between the leg tops, relational."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "Every 'as shown' step has its own dimensioned drawing (viewed steps[0]-[6])."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs and joiners cut (0-1), assembled (2), seat, back, braces made (3-5), then assembled (6); routing note in steps[2] keeps seat area unrouted."
+    },
+    "R9": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[2]",
-          "quote": "CHILDREN'S CHAIR, SEAT — qty 1, 0.75 x 12 x 12.375 (Kreg-corrected)"
+          "path": "steps[2].body",
+          "quote": "Drill four pocket holes, glue, clamp and screw."
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x4 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x8 48\""
+          "path": "steps[6].body",
+          "quote": "Drill 2 pocket on the short edge of each seat brace."
         }
       ],
-      "arithmetic": "cutList[2] 0.75×12: no listed stock has thickness 0.75 (±1/32) with width ≥ 12; stock = 0.75×3.5, 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[2]",
-          "quote": "CHILDREN'S CHAIR, SEAT — qty 1, 0.75 x 12 x 12.375 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "3/4in parts get pocket holes but no jig thickness setting appears in any step (search /setting|collar|depth/ none; steps[5] only names the drill bit); viewed assembly and leg-assembly drawings (dda58a4d725889f4, c9172383075dfa5b) give hole counts only. Recorded only."
     },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x8); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
+    "R14": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "(a) viewed drawings agree with the Kreg-corrected rows: seat 12 x 12 3/8, back 6 1/4 x 10 3/4, brace 1 1/4 x 10 1/2, joiner 6 3/8 x 3, leg long edge 12 9/32 inside the 12 3/8 stock. (b) every part is installed in steps[6]. (c) glue is in materials[3]. (d) steps reach finished chair."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Drill three counter-bores to attach the seat.",
+      "what": "The screws that go in the counterbores (and the back-to-seat screws in steps[6]) are not named or sized; materials list only 25 pocket-hole screws."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "f1eedc95dfc41f9c",
+      "9296b6d8d8ad5872",
+      "c9172383075dfa5b",
+      "40d45906df736af1",
+      "74916b8cb3e51c97",
+      "9120f0d2ce57d762",
+      "dda58a4d725889f4",
+      "540941444bc7eb73"
+    ]
+  }
 }

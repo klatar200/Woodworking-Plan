@@ -1,6 +1,6 @@
 {
   "slug": "modern-farmhouse-indoor-outdoor-dining-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -227,44 +227,73 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " joint, find the center of the top of the board and measure 1-3/4\" on either side, to give you a total of 3-1/2\". Then measure down 1-3/4\" and 1-3/4\" deep to identify the area to chisel out for the ha",
-          "why": "cut sentence states 1-3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the 1-3/4\" in steps[0].body is the half-lap notch dimension (3.5 wide x 1.75 deep, confirmed in viewed image 2eadea5885a17eb1), not a part. Every part the steps make (legs, leg bottom/top spans, base bottom/top/angled spans, table top boards) is a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: steps[0],[2] (leg bottom spans, legs, leg top spans), [3],[5] (base spans), [6] (angle spans), [7] (top boards)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +3 more"
+      "result": "pass",
+      "reason": "Corrected rows: 3.5 x 3.5 parts (legs, leg bottom spans, base bottom span) match materials[0] '4\" x 4\"'; 1.5 x 3.5 parts match materials[1] '2\" x 4\"'. Sweep unknown came from the uncorrected 3x3 / 1x3 values."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (4x4, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "4x4 (3 x 8' = 288in): 4 x 27 + 2 x 24.8125 + 61.5 = 108 + 49.625 + 61.5 = 219.125 + 7 cuts x 1/8 = 220 <= 288. 2x4 (13 x 96 = 1248in): 2 x 58 + 2 x 35.5 + 2 x 27.25 + 10 x 84 = 116 + 71 + 54.5 + 840 = 1081.5 + 21 x 1/8 = 1084.1 <= 1248. Lengths from \"8'\" with explicit unit."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "4in Kreg HD (steps[2]) = materials[2]; 2-1/2in Kreg HD (steps[5]) = materials[3]; 3in deck (steps[2]) = materials[4]; 2-1/2in deck (steps[6],[7]) = materials[5]. No conflicting sizes. Count issue in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numeric in text or viewed images: half-lap 1-3/4 either side of center, legs 5in from bottom with 5 degree end cuts, base angle spans 3.5 each side of center (7.00), base top spans 58 and meet at center. Top overhang: see gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands; the six 'as shown' steps each have their own dimensioned image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg spans drilled and notched (0-1), legs and top spans attached (2), base bottom span lapped and fitted (3-4), joined (5), angle spans (6), top last (7)."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "steps[0] and its image state the XL 3.5in setting for the 3.5in spans, and steps[3] states 1-1/2in, which then covers the 1.5in 2x4 base top spans (steps[5]). steps[3] drills the half-lapped ends of the 4x4 base bottom span, whose remaining thickness is 3.5 - 1.75 = 1.75in vs the stated 1-1/2in setting; whether that contradicts needs the jig's settings, which are outside section 9."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) viewed images agree with Kreg-corrected rows: leg 27, leg bottom span 24.8125, leg top span 35.5, base top span 58; 10 top boards x 3.5 = 35 in the 36 finished width. (b) every part is installed (steps[2],[5],[6],[7]). (c) glue and sandpaper in materials[6],[7]. (d) steps reach finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "attach it to the top of the LEGS as shown with wood glue and four 3\" deck screws in each leg.",
+      "what": "Four 3in screws x 4 legs = 16 vs materials[4] '3\" Deck/Wood Screws' qty 8; viewed image (be70b76720e598a4) draws fewer screws per leg."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Attach Table top boards from the underside using 2-1/2\" deck screws",
+      "what": "Top overhang over the base and gap between the 10 boards are not given as numbers; viewed step-7 image (1bbb077f84cd103c) shows a symmetric overhang with no dimension."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "2eadea5885a17eb1",
+      "be70b76720e598a4",
+      "bfc631aabe0f8dd0",
+      "f849583cf9e043ca",
+      "1bbb077f84cd103c"
+    ]
+  }
 }

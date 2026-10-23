@@ -1,6 +1,6 @@
 {
   "slug": "mobile-power-tool-storage-unit",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,44 +10,117 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides and shelves are cutList rows; back (steps[4]), pegboard sides (steps[6]) and blocks (steps[5]) are cut from listed 1/4in plywood, pegboard and 1x2 scrap in the step text."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: Sides (steps[2]), Shelves (steps[2] top/bottom, steps[8] adjustable). Row name 'top and bottom' with qty 10 covers adjustable shelves too."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x12, sheet-0.75, sheet-0.25, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Plywood, 3/4\" Thick Quarter Sheet"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Shelves, top and bottom 10x 0.75 x 11.25 x 17"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "You can either use additional 1 x 12's to make the 17\" long shelves or 3/4\" plywood."
+        }
+      ],
+      "arithmetic": "Shelves 10 x 11.25 x 17 = 1912.5 sq in. Quarter sheet = 48x96/4 = 4608/4 = 1152 sq in (materials[1], qty 1). 1912.5 > 1152. The only 1x12 listed (materials[0] 'Board, 1x12 72\"' x2 = 144in) is consumed by Sides 2 x 72 = 144in, so no listed 1x12 remains for shelves; the step text calls the 1x12 route 'additional'. Quarter-sheet size is read as a quarter of the section 9 full sheet since the name gives no dimensions, hence likely."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[10].name",
+          "quote": "1-1-1/2\" drawer front screws"
+        },
         {
           "path": "steps[7].body",
-          "quote": "Add the wheels using 1-1/4\" drawer front screws. I use this type of screw with the wide head because of the size of the holes on the wheels.",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+          "quote": "Add the wheels using 1-1/4\" drawer front screws."
         }
-      ]
+      ],
+      "reason": "Two sizes for the same use: materials list 1-1/2in drawer front screws (qty 16 = 4 casters x 4 holes), step 7 says 1-1/4in. The materials name is itself malformed ('1-1-1/2'), so which is intended is unclear. Sweep flag on '1/4\"' rejected as the 1-1/4 in this same sentence."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Top/bottom go 'to the ends' of the sides, pocket holes counted, blocks 'four corners ... and middle along the edges' (viewed steps[5] image shows them), shelf-pin and shelf heights 'customize'. Caster placement: see gaps."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelves cut (0), top/bottom attached (2), pin holes (3), back (4), blocks then pegboard (5-6), wheels (7), shelves (8); each uses only earlier parts."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill three pocket holes on both short ends of two of the shelf pieces."
+        }
+      ],
+      "reason": "3/4in shelves get pocket holes (steps[1], screws materials[6]) but no jig thickness setting appears (search all steps for /setting|collar|depth|thickness/: none besides the material names); viewed step-2 image shows only a screw hole result, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 sides x 72 from 2 boards 'Board, 1x12 72\"'; 4 casters x 4 holes = 16 = materials[10] qty 16. (b) every made part is installed (back, pegboard, blocks, shelves, wheels). (c) casters, pin box, pegboard, staples-or-brad-nails (brads listed) all in materials. (d) steps reach finished unit."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Using glue and pocket screws, attach a shelf to the ends of the 1 x 12\"",
+      "what": "Glue used in steps 2 and 4 is not in materials (search /glue/i in materials: none)."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Add the wheels using 1-1/4\" drawer front screws.",
+      "what": "Caster positions on the base are not stated in text; viewed step-7 image (ee19fc653ce742ab) shows one caster plate near an edge only."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Cut a piece of the 1/4\" plywood to fit the back of the shelving unit.",
+      "what": "The back covers the unit's 72in height (Sides 72) but the only 1/4in plywood listed is a 'Quarter Sheet' (materials[2]), a quarter of 48x96 whose longest side is 48in, so a single piece of that height does not fit; no back size is given."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "ee19fc653ce742ab",
+      "b71b354a311d32c2",
+      "f25e4e5ed1c78458"
+    ]
+  }
 }

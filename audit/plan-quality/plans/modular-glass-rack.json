@@ -1,6 +1,6 @@
 {
   "slug": "modular-glass-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,44 +71,107 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame sides, 5 x 24 boards (top, bottom and three shelves, one with the cut-out), front rails and back support are all cutList rows 0-3."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Sides",
-          "why": "no step mentions it (searched steps for sid)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: Sides (cutList[1]) are the '25 1/2\" 1x6\" boards' joined in steps[0] (step names sizes, not 'sides'). All 4 rows used."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Corrected rows 0.75 x 5.5 (1x6) and 0.75 x 1.5 (1x2) match materials[1],[0]; Sides list width 5 (source '5 12\"' typo) which also fits 1x6."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x2, 1x6); steps not checked for per-part stock"
+      "reason": "Stock for Back Support is contradictory (see R14). Cut list as written has it as 1x6: 5 x 24 + 2 x 25.5 + 24 = 120 + 51 + 24 = 195 > 2 x 96 = 192 (materials[1]); read as the 1x2 that steps[3] says: 1x6 = 171 <= 192 and 1x2 = 2 x 25.5 + 24 = 75 <= 96 (materials[0])."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only '2 inch, 16 gauge finishing nails' are sized (steps[0]-[3]) = materials[2]; no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the remaining 24\" 1x2\"board using wood glue and 2 inch 16 gauge finishing nails. This is an ideal place to attach the unit to the wall"
+        }
+      ],
+      "reason": "The back support's vertical position on the back is not given in text and steps[3] has no image (search steps[3]: no height or edge reference). Shelf heights (3, 12, 18in from top) and cut-out spacing (2 7/16, 4 13/16, 1in wide, 3in deep) are numeric in viewed images 699cf09ee1b45f7a and b0fe139628d924ac."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands; the diagram referenced in steps[4] is its own image (viewed b0fe139628d924ac)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Place cut out 1\"x 6\"x 24\" so that the base of the board is 3\" from the top of the unit."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "The glass rack cutout will be made out of one of the 1\"x 6\" x 24\" boards. Use a jigsaw to cut out 1' wide and 3\" deep cut outs."
+        }
+      ],
+      "reason": "The cut-out shelf is installed in steps[1] but not made until steps[4], after it would already be glued and nailed into the frame; a builder must cut it first. Build can still proceed by reordering, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints; all joints state glue plus 2in 16 gauge finishing nails (steps[0]-[3])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the remaining 24\" 1x2\"board"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Back Support 1x 0.75 x 5.5 x 24 (Kreg source: 3/4\" x 5 1/2\"x 24\")"
+        }
+      ],
+      "arithmetic": "Step 3 and materials[0] (one 1x2 96\": 2 x 25.5 front rails + 24 = 75in) make the back support a 1x2, but Kreg's cut-list source gives it as 5 1/2 wide (1x6). Other counts agree: 5 x 24 boards = top + bottom (steps[0]) + 3 shelves (steps[1]); 2 front rails 25.5 = frame width 24 + 2 x 0.75."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Fill all nail holes with wood filler. Sand smooth, then apply desire stain and/or paint.",
+      "what": "Wood filler and sandpaper (steps[5]) are not in materials (search /filler|sandpaper/i: none); paint/stain is materials[5]."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Use a jigsaw to cut out 1' wide and 3\" deep cut outs.",
+      "what": "Step says 1' wide; viewed diagram shows 1\" wide slots, 5 of them; text and diagram disagree. Sides row width 5 vs 5.5 shelves comes from source text '5 12\"'."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "b0fe139628d924ac",
+      "24d0dac4d216d06d",
+      "699cf09ee1b45f7a"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "modern-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,44 +71,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Leg boards, leg sides, apron and top slats are cutList rows 0-3; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows are used (steps[0]-[6]); 'Legs' = 'leg boards'."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x2, 2x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 2x6 96\""
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Top slats 4x 1.5 x 5.5 x 48"
+        }
+      ],
+      "arithmetic": "Only 2x6 stock matches the top slats (1.5 x 5.5 per section 9; they are the only 1.5in-thick parts). 4 x 48 = 192; materials[2] qty 2 x 96 = 192. Minimum cuts to get four 48in pieces from two boards = 2, 2 x 1/8 = 0.25, so 192.25 > 192 (more if each of 4 parts counts a cut: 192.5). Qty is 2, so not a defaulted 1. Not scored (unknown): 1x4 legs 4 x 18 = 72 + 3 x 1/8 = 72.375 vs one 72in board, qty 1 may be an import default and legs have 15 degree ends (steps[1]). 1x2: 4x16 + 2x30 = 124 + 6 x 1/8 = 124.75 <= 2 x 72 = 144 passes."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1 1/4in pocket screws (steps[4],[5]) = materials[3]; 2 1/2in pocket screws (steps[6]) = materials[4]; 1 1/2in L brackets (steps[7]) = materials[6]. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "iece so the bottom and front are flush. Mark the top corner. Draw a straight line from the top inside corner of the leg to the bottom, going through the corner mark. Cut the legs off along this line t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0f25a96c813c74c9.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag on steps[2] settled: viewed image (0f25a96c813c74c9) shows the taper line constructed from the 1 1/2\" leg side. Apron spans the 30\" leg gap and top slat holes are shown at about 5 per slat (viewed b01eb9..., f3189d...). Bracket placement is 'center the legs' (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; steps with drawings have their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg sides ripped (0), leg boards cut and tapered (1-3), legs assembled (4), apron (5), top built (6), top attached to finished legs (7)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] 'Set your pocket hole jig for 3/4\" thick material' covers the 3/4in leg sides and aprons (steps[5]); steps[6] 'Set your pocket hole jig for 1 1/2\" thick material' covers the 1.5in slats. No contradiction."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 leg sides, 4 leg boards, 2 aprons, 4 slats match cutList; viewed drawings show apron 30\" and slats 48\" x 5 1/2\". 3 of 4 slats get holes = 'secure with 2 1/2\" pocket hole screws' and 15 holes drawn = materials[4] qty 15. (b) all parts installed. (c) L brackets in materials[6]. (d) steps reach finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Assemble the table top by applying hot glue to the edges of the boards",
+      "what": "'hot glue' appears nowhere in materials (only 'Wood glue', materials[5]); likely a wording slip for wood glue."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Drill pocket holes so they are 5-6 inches apart.",
+      "what": "Text spacing disagrees with the drawing: 48in slat at 5-6in apart = 8 to 10 holes per slat, x 3 slats = 24+ vs 15 screws in materials[4] and about 5 per slat in the viewed image (f3189d92936f8e84)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-23",
+    "imagesViewed": [
+      "0f25a96c813c74c9",
+      "b01eb9ad1529577d",
+      "f3189d92936f8e84"
+    ]
+  }
 }
