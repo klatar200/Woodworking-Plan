@@ -1,6 +1,6 @@
 {
   "slug": "rustic-slide-in-end-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,36 +131,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "4 cross pieces (12in), 2 vertical legs (30in), 2 top side (17in), 2 bottom side (20in), 2 top boards all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 5 rows used in steps 0-6; the four 12in pieces = U1, U2, H crossbar, final support"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Take your (2) 1x8s @ 19 1/2\". Drill 3/4\" Pocket Holes along the long ends on one side of each board."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "to create a 19 1/2\" x 15\" table top."
+        }
+      ],
+      "arithmetic": "Kreg-corrected row cutList[4] Top Pieces is 3/4 x 7 1/2 x 19 1/2 (source '3/4\" x 7 1/2\" x 19 1/2\"'). §9: 1x8 actual = 3/4 x 7 1/4, so 7 1/2 > 7 1/4 and cannot come from materials[1] 'Board, 1x8 48\"'; two boards give 2 x 7.25 = 14.5, not the 15 the step states (2 x 7.5).",
+      "reason": "The top boards are 1/4in wider than a 1x8 can supply, so the stated 15in top width is not achievable from the listed board."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part. 2x2 96in x2 = 192: 4 x 12 + 2 x 30 + 2 x 17 + 2 x 20 = 182 + 10 x 0.125 = 183.25 <= 192. 1x8 48in: 2 x 19.5 = 39 + 0.25 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "attach the top to the base using wood glue and 1 1/4\" brad nails."
+        }
+      ],
+      "reason": "1 1/4in brad nails are used but not in materials; searched materials[].name for /brad|nail/i: no match (listed fasteners are 2 1/2in and 1 1/4in pocket hole screws and corner braces). The braces' screws are also unlisted."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "H crossbar bottom 6in from one end given; corner brace places given ('where your vertical H pieces connect to the horizontal pieces'); top overhang over the base is shown in the viewed step 7 and 9 photos."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "U frames and H made first, H joined to the 20in U then the 17in U, final 12in support, top built and attached, braces last; possible"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] drills 1 1/2in pocket holes in the 1 1/2in 2x2s; steps[6] states 3/4in pocket holes for the 3/4in top boards; screws named (2 1/2in and 1 1/4in); top fixed with glue and brad nails."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: (1) 12in per U, per H and final = 4 cross pieces, 2 x 30in, 2 x 17in, 2 x 20in, 4 braces at the 4 joints (2 verticals x top and bottom); every part is installed; steps reach a finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "With wood glue and 2 1/2\" Pocket Hole Screws- attach (1) 12\" piece",
+      "what": "wood glue not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/27d1301bb0bf4527.webp",
+      "plans/b1019ad26d1657e1.webp"
+    ]
+  }
 }

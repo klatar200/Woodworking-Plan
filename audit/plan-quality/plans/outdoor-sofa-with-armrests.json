@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-sofa-with-armrests",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,37 +10,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "The seat panel has a middle piece that is perpendicular to provide strength. See image for details."
+        }
+      ],
+      "reason": "The perpendicular middle piece (drawn as a T stem in the viewed step 4 image) has no cutList row and no length in any step; cutList has only 'Backs/seat' (8) and 'Side panels' (8). Searched cutList.part and steps for /middle|perpendicular|brace|support/i: only this sentence."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "both cut rows (Backs/seat, Side panels) are used in steps 1-4"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock type (2x6); lengths are explicit: materials[0] 2\"x6\"x12' (8) and materials[1] 2\"x6\"x8' (3). Bought 8 x 144 + 3 x 96 = 1152 + 288 = 1440 in. Needed per steps[0]: 8 x 72 + 8 x 30 = 576 + 240 = 816, plus 16 cuts x 0.125 = 2, total 818 <= 1440. Using cutList[0] length 96 instead: 8 x 96 + 240 + 2 = 1010 <= 1440."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener sizes stated in steps; materials list Blue-Kote screws (no size) and putty/dowels. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "seat 1-1/2in from front edge (steps[3]); viewed step 4 image dimensions seat at 9in and shows a 1/4in back-rest gap; back-rest angle is relational (align to side-panel corner)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "'See image for details' in steps[2], which has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "sides, then seat and back panels, then seat attached, then back rest, then seal; order is possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Use pocket holes to connect the pieces."
+        }
+      ],
+      "reason": "Pocket holes in 2x6 stock; no jig thickness setting in any step or material (searched for setting/thickness/jig); the four viewed images (step 1, 2, 3, 4) show none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut 8 pieces of 2x6 at a length of 72\"."
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "Backs/seat"
+        }
+      ],
+      "arithmetic": "steps[0] says 8 pieces at 72 in; cutList[0] 'Backs/seat' quantity 8 has lengthIn 96 (no importDiff for this row, so Kreg's source also says 96). 96 - 72 = 24 in disagreement. The 6 cushions at 24 in wide (materials[5]) give 3 x 24 = 72 in across.",
+      "reason": "The step and the cut list give different lengths for the same 8 seat/back pieces."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/e41f422c900bf5a1.webp",
+      "plans/796d904f3e41e8f7.webp",
+      "plans/68e6d230392a2532.webp",
+      "plans/9c7659f6cf34d091.webp"
+    ]
+  }
 }

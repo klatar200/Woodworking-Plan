@@ -1,6 +1,6 @@
 {
   "slug": "over-toilet-storage-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -79,14 +79,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Print out the templates for the top & bottom back boards from the extras."
+        }
+      ],
+      "reason": "The curve shape of the top and bottom back boards comes only from a downloadable template (viewed step 0 image shows an undimensioned paper template). The boards themselves (5 1/2 x 18 1/2) are in the cut list, so the build can be completed without it: decorative shape only. The sweep's regex search missed this sentence."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "side boards, top & bottom back boards, shelf boards (3), divider all in cutList; aluminum bar and knobs in materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 4 cut rows are used in steps 3-7"
     },
     "R4": {
       "result": "pass",
@@ -97,22 +108,63 @@
       "arithmetic": "parts: 2×24 + 2×18.5 + 3×18.5 + 1×7 + kerf 6 cuts (8 parts − 2 boards, the fewest possible)×1/8 = 148.250″; bought: 2×96 = 192″; 148.250 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4in pocket screws (steps 3,5,7) = materials[1]; 1 1/4in finishing nails = materials[3]; 1in wire nail = materials[7]; no contradicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Drill pilot holes in the bottom back of the shelf to add knobs for hanging items."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "cut a piece of 1/2\" x 1/16\" bar aluminum to size with snips. Drill tiny holes in the aluminum bar and secure with a 1\" wire nail."
+        }
+      ],
+      "reason": "Positions of the 3 knobs (materials[6]) along the shelf, and where the aluminum strip goes, its cut length and nail spacing, have no numbers; the viewed step 8 image shows the strip across the shelf with no dimensions. Shelf heights are fixed (top 2 3/4in, bottom 2in, center fixed by the 7in divider) and pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "curves cut, back boards on shelves, shelves to sides, divider on center shelf, center shelf in, finish, hang; possible"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] and [4] state the jig set for 3/4in wood; all pocket-hole parts are 3/4in. Glue + finishing nails stated for the divider."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree (2 back boards, 3 shelves, 1 divider); every part installed in steps 3-9; D-rings, knobs, aluminum are in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Fill pocket holes. Sand and finish your shelves.",
+      "what": "pocket-hole filler, sandpaper and finish not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/f87ed7dad52e9399.webp",
+      "plans/fdeec92e47b471f4.webp"
+    ]
+  }
 }

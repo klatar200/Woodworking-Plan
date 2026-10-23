@@ -1,6 +1,6 @@
 {
   "slug": "record-player-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,37 +10,108 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps 0-9 has a cutList row; step 9's RECORD DISPLAY FRONT is cutList[10] 'Record Storage Front'; step 8's BACK PANEL is cutList[12] 'Left Back'"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 13 cut rows are used in steps 0-9"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[12] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Attach 1/4\" plywood BACK PANEL using 1-1/4\" brad nails."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        }
+      ],
+      "arithmetic": "cutList[12] 'Left Back' thicknessIn 0.25 (corrected 0.25 x 19.25 x 22.125). Materials: materials[0] 3/4in full sheet and materials[1] 3/4in half sheet only; searched materials[].name for /1\\/4|0\\.25/: no match except the 1 1/4in fasteners.",
+      "reason": "The 1/4in back panel cannot come from either listed 3/4in plywood sheet; no 1/4in plywood is listed."
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×18×47 + 2×18×27 + 1×18×22.25 + 1×14×28.25 + 1×18×18 + 1×7.75×14 + 1×7.75×13.75 + 1×18×18 + 1×4×28.25 + 1×4.625×28.25 + 1×8.5×29.75 + 1×13.75×19.5 + 1×19.25×22.125 = 4667.6 sq in; bought 1×48×96 + 1×48×48 = 6912 sq in)"
+      "reason": "Sheet goods only: area of the 3/4in parts (incl. two Record Display Backs) about 4348 sq in vs 6912 sq in bought, so no certain fail, but the cut layout from one full and one half sheet was not worked out."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All steps use 1-1/4in pocket hole screws and 1-1/4in brad nails, both in materials; concealed hinges and knob listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numbered in the steps and viewed diagrams: bottom 4in up, inside panel 18in, shelf 12-1/4in, base 13in, mid piece 13-3/4in each side, top left 7-3/4in above shelf, hinges 2in from top/bottom, record-holder gap 1/4in and strip dimensions; knob 'upper right corner of the door' is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "search": "'as shown'/'diagram' references in steps 0-9 each have their own step image; viewed images 7, 9 and 12 are dimensioned diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "bottom and sides, inside panel, shelf/base, mid piece, backs, top left, back top, record holder, back panel, front and door, knob; each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes as shown on the RECORD DISPLAY BASE and LEFT PERMANENT SHELF."
+        }
+      ],
+      "reason": "All pocket-hole parts are 3/4in plywood; no jig thickness setting stated in any step or material (searched for setting/set to/thick); the 3 viewed diagrams show hole positions but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].title",
+          "quote": "Attach Record Display Backs"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Secure to the RECORD DISPLAY BACK PIECES and the sides of that area"
+        },
+        {
+          "path": "cutList[6].part",
+          "quote": "Record Display Back"
+        }
+      ],
+      "arithmetic": "cutList[6] 'Record Display Back' quantity 1 (cut-row quantities are all correct vs Kreg's source, so Kreg's own list says 1). Steps use the plural, and the viewed step 4 image shows two 13 3/4 x 7 3/4 back panels either side of the mid piece. Check: 13.75 + 0.75 (mid piece) + 13.75 = 28.25 = Record Display Base width (cutList[3]).",
+      "reason": "Two Record Display Backs are needed; the cut list has one."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "Stain your color choice, and seal using satin polyurethane.",
+      "what": "stain, polyurethane and sandpaper not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/185046d9b219d739.webp",
+      "plans/2881b96cbb1d402c.webp",
+      "plans/bfd849c72e1442f0.webp"
+    ]
+  }
 }

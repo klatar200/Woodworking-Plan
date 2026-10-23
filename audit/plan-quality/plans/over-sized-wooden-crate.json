@@ -1,6 +1,6 @@
 {
   "slug": "over-sized-wooden-crate",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -65,36 +65,99 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Inner supports (4 x 1x1 x 12in) have no cut row but steps[3] says they are ripped from the listed 2x2 (materials[2]); all other parts match cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all three rows (large side slats, small side slats, bottom slats) are cut in steps 0-2 and used in steps 4-6"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Corrected rows 3/4 x 3 1/2 come from the 1x4 boards; cutList[2] source '1x4x24'' is a Kreg typo for 24 in (steps[1] says 24 in) and its 1x4 width/thickness fit materials[0]. 1x1 supports come from the 2x2 (steps[3])."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 2x2 48\""
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 4 - 1×1″ to 12″ (inner supports – we ripped ours from 2×2’s.)"
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part. 2x2 stock: materials[2] 'Board, 2x2 48\"' quantity 1 = 48 in. Needed 4 x 12 = 48 in + 4 cuts x 1/8 = 0.5, total 48.5 > 48 (short by 1/2 in; 48.375 even counting 3 cuts). 1x4 stock passes: bought 7 x 72 + 96 = 600 in; needed 6 x 22 + 6 x 15 + 3 x 24 = 294 + 15 x 0.125 = 295.9 <= 600. Material quantities are real (only 31 lines catalog-wide are importer defaults, none here).",
+      "reason": "The single 2x2 48in board has zero allowance for kerf for four 12in supports."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps state no fastener sizes; materials list brad nails (72). No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 4 - 1×1″ to 12″ (inner supports – we ripped ours from 2×2’s.)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "After both longer sides are together, nail on the 1x4's on each end."
+        }
+      ],
+      "arithmetic": "Each side is 3 slats: 3 x 3 1/2 = 10 1/2 in, but the supports are 12 in; the 1 1/2 in difference (the slat gaps in the viewed step 4 image) is never stated. Searched all steps for /gap|space|spacing|apart/i: no match. Bottom slats (3 x 3 1/2 = 10 1/2 in across a 15 in end width) also have no spacing or position stated.",
+      "reason": "The gap between side slats and the spacing/position of the bottom slats are not given as numbers or shown dimensioned in a viewed image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "supports, then long sides nailed to supports, then end boards, then bottom slats (mentioned in steps[6]), sand and stain; order possible"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Joints are glued and nailed (steps[4]); bottom slats are 'nailed on' (steps[6]). Fastener is brad nails (materials[3])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step cut counts and lengths match cutList rows (6 x 22, 6 x 15, 3 x 24); every part is attached in steps 4-6 (bottom slats only mentioned in steps[6] as already nailed)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "I started by gluing and nailing the long sides to the 1×1’s first.",
+      "what": "wood glue not in materials"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "After we nailed the bottom slates on, we added feet made from round dowels that we had.",
+      "what": "no step tells the builder to nail on the bottom slates or where (only a past-tense mention in step 7); round dowel feet (optional) are not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/27a04a153a49d29b.webp",
+      "plans/2d32854d6969faa3.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "play-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "top sign, side poles, counter tops, long/short trim all have cutList rows; crates are materials[0]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 5 cut rows are cut in steps[0] and installed in steps 4 and 8"
     },
     "R4": {
       "result": "pass",
@@ -25,26 +27,113 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (9.5x12.5, 1x4, 1x10, 0.25x72, 1x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 96\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Side Poles - 1\" x 4\" board cut to 4' length"
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part. 1x4: materials[1] 'Board, 1x4 96\"' quantity 1 = 96 in. Needed (2) side poles x 4' = 2 x 48 = 96 in + at least 1 cut x 1/8 = 96.125 > 96 (96.25 counting a cut per piece). Other stocks pass: 1x10 48 in for 26.3125 + 0.125; 1x6 72 in for 2 x 25 = 50 + 0.25; lattice 72 in for 2 x 26.3125 + 2 x 9.25 = 71.125 + 3 x 0.125 = 71.5 <= 72. Material quantities are real (only 31 lines catalog-wide are importer defaults, none here).",
+      "reason": "The 96in 1x4 has no allowance for the saw kerf when cutting two 48in poles."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "using (6) 5/8\" wood screws to secure them together into the center boards."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Wood Screws - 3/4\""
+        }
+      ],
+      "reason": "Step 2 uses 5/8in wood screws; materials list wood screws only at 3/4in (materials[6]) and 1 1/4in (materials[7]), plus 5/8in brad nails (materials[8]). Searched materials for /5\\/8/: only the brad nails."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach them to the sides of your wooden crates using (4) 3/4\" wood screws"
+        }
+      ],
+      "reason": "The 4ft poles are fastened to crate sides, but where along the pole the crates sit (their height up the pole) and front-to-back position are not given as numbers or relation; the viewed step images are photos without dimensions. Pocket-hole positions (2in and 8 1/2in), sign flush at pole top and counter flush at back are given and pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "crates joined, poles drilled and attached, sign attached, paint/stain, then trim and counters attached last; possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill your pocket holes using your Kreg Jig R3 into the side poles of the play stand"
+        }
+      ],
+      "reason": "Pocket holes drilled in 1x4 poles; no jig thickness setting stated in any step or material (searched for setting/thickness/3/4 thick); viewed step 3 image shows none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Side Poles - 1\" x 4\" board cut to 4' length"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Side Poles"
+        }
+      ],
+      "arithmetic": "Step says 4' = 48 in; cutList[1] Side Poles lengthIn is 4 (the sweep's importDiffs has no entry for this row; the foot mark was read as inches).",
+      "reason": "Cut-list length 4 vs step 4 ft is the importer's feet-read-as-inches defect, not Kreg's content."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "then sealed it with a coat of white furniture wax from Miss Mustardseed Milk Paint.",
+      "what": "furniture wax not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/169a828500e04b65.webp",
+      "plans/ef98477240ba7c1a.webp"
+    ]
+  }
 }

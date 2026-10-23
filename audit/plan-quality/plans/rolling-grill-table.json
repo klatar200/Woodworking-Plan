@@ -1,6 +1,6 @@
 {
   "slug": "rolling-grill-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -407,37 +407,99 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "frame top/bottom, slats, sides, under-drawer, under-shelf, legs, frame sides, top slats, cedar slats, spice shelf back, drawer front stiles/rails/panel, drawer box and bottom all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 18 rows are used in steps 0-17 (3 Frame Top/Bottom Side = top, bottom and the 'last' one in step 4)"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x4, 1x2, 2x6, 1x4, 0.5x3.5); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 2x6 72\""
+        },
+        {
+          "path": "cutList[11].part",
+          "quote": "Top Slats"
+        }
+      ],
+      "arithmetic": "Top Slats (corrected 1 1/2 x 5 1/2 x 36, quantity 4) can only come from the 2x6 (5 1/2 in wide): 4 x 36 = 144 + 4 cuts x 1/8 = 144.5 (144.375 with 3 cuts) > 2 boards x 72 = 144 (materials[2] quantity 2). Stock is not named in the steps but the 1 1/2 x 5 1/2 size matches only materials[2]. Other stocks pass: 2x4 96in x5 = 480 vs 455 + 23 x 0.125 = 457.9; 1x4 72in vs 50.5; 1x2 36in vs 32.5; cedar 72in x10 = 720 vs 623.25 + 39 x 0.125 = 628.1.",
+      "reason": "The two 72in 2x6 boards have no kerf allowance for four 36in top slats (short by 1/2 in in total)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2in and 1 1/4in blue-coat pocket screws (steps 0-3, 13, 15) and 1 1/4in brad nails match materials[5-7]; no contradicting sizes. The top-attachment fastener is unstated (see R14 for the washers)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step 4 image gives the under-shelf height (10 1/2) and 13/16 dimensions; steps give 6in under-drawer, legs flush top with 4in overhang (35in viewed), top 22 x 36. Hook and aluminum-rod placement are free/relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "search": "'according to the diagram' (steps[0]) and 'noted in the drawing' (steps[4]) each have their own step image; viewed step 4 image is a dimensioned drawing"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "frames, inside frame, attach to bottom and top frames, shelves, legs, cedar slats, shelf slats, spice rack, top, drawer; each exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] sets the jig for 1 1/2in material (the 2x4 frame, also the 2x6 top slats in steps[11] are 1 1/2in); steps[13] sets 3/4in for the drawer face frame; drawer box (3/4in) holes in steps[15] follow the same 3/4in setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[12].name",
+          "quote": "3\" wheels (4\" total height)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "The leg piece measurements are for wheels with a 4\" clearance from the top to bottom."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "I drilled holes in the top frame boards, then secured the top though the holes using washers."
+        }
+      ],
+      "arithmetic": "(b/d) The 2 wheels (materials[12], shown on the finished cart in the viewed step 17 image) are never attached: searched all 19 steps for /wheel|caster|castor/i: steps[5] (clearance) and steps[7] ('cover the top of the castor') only. (c) steps[12] uses washers; searched materials[].name for /washer/i: no match, and no fastener is named for the top.",
+      "reason": "No step installs the wheels (which end, how) and the washers/fastener for the top are not in materials. Steps otherwise reach a finished cart; wheels are a rolling-cart part, scored Fix."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Secure the boards with wood glue and 2 1/2\" pocket hole screws.",
+      "what": "wood glue not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/32bd905ccfce5473.webp",
+      "plans/9af3b440a2fffc0e.webp",
+      "plans/4bff1b3c85d43f32.webp"
+    ]
+  }
 }

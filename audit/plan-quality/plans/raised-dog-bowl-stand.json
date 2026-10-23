@@ -1,6 +1,6 @@
 {
   "slug": "raised-dog-bowl-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -149,37 +149,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "end panels, legs, end/front/back rails, front/back panels, stiles, top all in cutList; steps cut each from a named board"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 9 rows cut and installed in steps 0-10"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[1] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Corrected rows: panels/top width 7 1/4 and 11 1/4 from 1x8 and 1x12; rails 3/4 x 1 1/2 are narrower than the 1x8/1x12 stock (but see R5); stiles 1/2 x 1 1/2 match materials[2]; legs 1 1/2 x 1 1/2 match the 2x2 (source '1 1/2' x 1 1/2\" x 10\"' - the live row 1 x 1 x 10 is an import misread, cause import)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x8, 2x2, 0.5x1.5, 1x12); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Cut two End Rails to length from a 1x2 board, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Cut one Front Rail and one Back Rail to length from a 1x2 board, as shown in the cutting diagram."
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part. Rails (corrected rows, 3/4 thick) need 2 x 7 1/4 + 2 x 15 = 44.5 in + 4 x 1/8 = 45 in of a 1x2. materials[] has no 1x2: searched materials[].name for /1x2|1 x 2/i; the only 2in board is materials[2] 'Board, 1/2\" x 2 (1 1/2\" actual width) 48\"', which is 1/2 in thick (rails are 3/4 in) and is needed for the stiles (2 x 7 1/4 = 14.5). Other stocks pass: 1x8 48in for 2 x 7.25 + 2 x 15 = 44.5 + 0.5 = 45 <= 48; 2x2 48in for 4 x 10 = 40.5; 1x12 24in for 19.",
+      "reason": "The 45 in of 1x2 for the four rails is not in materials."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All steps use 1 1/4in pocket hole screws = materials[4]; glue in materials[6]. 3/8in is a starter-hole bit size, not a fastener."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give the numbers: bowl-hole centers 5 1/4 and 5 5/8 with 3in radius, stile spacing 6 3/4, rail offset 1/4, overall 19 x 11 1/4 x 10 3/4; pocket holes shown in images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "search": "'as shown'/'cutting diagram' in steps 0-10, each with its own step image; the cutting-diagram content (which board, what length) is also in the step text and cutList"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "end assemblies, then front/back panels, rails, stiles, top; each exists before use; diagrams in viewed images agree"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and [4] state the jig set for 3/4in material; the parts drilled are 3/4in; pocket-hole positions shown in viewed images; other joints glued and clamped."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step counts (2 End Panels, 4 Legs, 2 End Rails, 1 Front/1 Back Panel, 1 Front/1 Back Rail, 2 Stiles, 1 Top) match cutList quantities; every part is installed; 26 screws not recomputed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Then you can sand the project, and apply the paint or stain of your choice.",
+      "what": "sandpaper and paint/stain not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/aa861a296564bb2e.webp",
+      "plans/e6628c8411b1ff74.webp",
+      "plans/2c5dc6a4b04c9371.webp",
+      "plans/fad0a2cb8266795b.webp",
+      "plans/1b9bd336405692a7.webp",
+      "plans/3a1ba0b972ed8350.webp"
+    ]
+  }
 }

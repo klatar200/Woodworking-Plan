@@ -1,6 +1,6 @@
 {
   "slug": "rustic-scrap-wood-and-pipe-toilet-paper-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "the only wood part (shelf, steps[1] and [7]) is cutList[0]; pipe parts are all in materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "the single row 'Shelf' (3/4 x 3 1/2 x 9 1/2, corrected) is the scrap 1x4 drilled in steps[1] and slid onto the nipple in steps[7]"
     },
     "R4": {
       "result": "pass",
@@ -58,26 +60,59 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "reason": "materials[0] is 'Board, 1x4 Scrap' with no length (§9: stock length unknown); the shelf is 9 1/2in."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "It's best if you can screw at least 2 of the holes of the floor flange into a stud in the wall."
+        }
+      ],
+      "reason": "The flange is screwed to the wall but no screws appear in materials and no size is given (searched materials[].name for /screw|bolt|anchor/i: no match). The 3/4in spade bit is a tool size, not a fastener."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole position numbered (3/4in bit, centered 2in from one end); flange to a stud is fixed by the stud; orientation is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "drill and stain wood, build pipe from washer/nipple/tee/flange/elbow/nipple/cap, slide wood on, second washer and cap, tighten, install; order possible"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; the only joints are threaded pipe fittings and a 3/4in hole."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Pipe parts add up: steps use 3 short nipples (steps 3, 5, 6), 1 tee, 1 flange, 1 elbow, the 6in nipple, 2 caps (steps 6, 7) and 2 washers (steps 3, 7), matching materials[1-7]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Go ahead and sand and stain your wood, and set aside.",
+      "what": "sandpaper and stain not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": []
+  }
 }

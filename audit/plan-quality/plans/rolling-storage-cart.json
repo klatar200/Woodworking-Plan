@@ -1,6 +1,6 @@
 {
   "slug": "rolling-storage-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,10 +71,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "sides, top, bottom, drawer sides/front-backs/fronts/bottoms all have cutList rows; slides, casters, hardware in materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7].part",
+          "quote": "Back"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1/4\" rabbeting bit"
+        }
+      ],
+      "reason": "The cabinet Back (1/4in x 19 x 26 3/4, quantity 1) is never cut or attached: searched all 10 steps for /back|rabbet|1\\/4\" plywood/i; the only 'back' hits are the drawer 'front & back' pieces, and no step uses a rabbet for it (the rabbeting bit in materials is also unused)."
     },
     "R4": {
       "result": "pass",
@@ -82,25 +97,85 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Two sheet types, parts from each; 3/4in parts total about 2953 sq in of 4608 and 1/4in parts about 1663 sq in of 2304 (corrected rows), so no certain area fail, but the cut layout from a 48 x 96 and a 48 x 48 sheet was not worked out."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '1 1/4\" pocket screws' (steps 2, 3, 6) and 1 1/4in screws for drawer fronts (steps 8-9); materials[5] lists '1 1/4\" screws' (10, for drawer fronts). The size appears; the count/use is noted under gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slide positions are numbered (bottom slide 1in up, 3.656in pitch, also dimensioned in the viewed step 7 image), top overhang 3/4in, groove 1/4 x 1/4 starting 1/2in up; fronts 'spaced evenly' is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "'dimensions in the image' (steps[7]) has its own step image, viewed and dimensioned"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "cabinet top/bottom to sides, drawer boxes, slides, drawers, fronts, paint and casters; order possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Drill pocket holes only on the front side of the front & back pieces of the drawer box pieces."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in plywood (cabinet and drawer boxes) and no jig thickness setting stated in any step or material (searched for setting/thickness/jig); viewed step 7 and step 9 images show none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "All the other drawer slides should be 3.656\" from the bottom of one slide to the bottom of the next slide."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Make sure they are spaced evenly and that the last drawer front is flush with the bottom of the cabinet."
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Drawer fronts"
+        }
+      ],
+      "arithmetic": "Five drawer boxes sit on a 3.656 in pitch (also '3 21/32\"' in the viewed step 7 image). The five fronts (cutList[5], source '20\" x 5 9/32\" x 3/4\"', 5 9/32 in shown in the viewed step 9 image) are screwed to those boxes: 5 x 5.28125 = 26.41 in of fronts against a box stack of 4 x 3.656 + 3 = 17.6 in. A 5.28 in front on a 3.656 in pitch overlaps its neighbour by 5.28125 - 3.656 = 1.625 in, so the fronts cannot be 'spaced evenly'.",
+      "reason": "The drawer-slide pitch and the drawer-front height do not agree, so the front step cannot be completed as written."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[5].name",
+      "quote": "1 1/4\" screws to attach drawer fronts",
+      "what": "only 10 screws are listed and they are for the drawer fronts; the 1 1/4in pocket screws used for the top, bottom and 10 drawer-box joints (steps 2, 3, 6) are not listed"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Paint, attach your casters and you're done!",
+      "what": "paint/stain is in materials; no sandpaper listed (not used in steps); wood glue is listed"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/235ded7f8f64b673.webp",
+      "plans/70d3990941715ad5.webp"
+    ]
+  }
 }

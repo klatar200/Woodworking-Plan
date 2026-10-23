@@ -1,6 +1,6 @@
 {
   "slug": "rolling-laundry-cart",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,37 +59,92 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "front/back, shelves and trim in steps 0-2 all have cutList rows; casters and pull in materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 3 rows used (Trim = 3 shelves x 2 edges = 6)"
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[2] Trim is 1/4 x 1/4 x 26 1/2 and the only listed board is 1x8 (3/4 thick); no step says how the 1/4in strips are made, and thinning a 3/4in board is outside §9. Front/back and shelves (3/4 x 7 1/4) match the 1x8."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One board type, length explicit: materials[0] 'Boards, 8'x1\"x8\"' x2 = 2 x 96 in. Board 1: Front 24 + Back 24 + Shelf 26.5 = 74.5 + 3 x 0.125 = 74.9 <= 96. Board 2: 2 Shelves 53 + 2 x 0.125 = 53.25 leaves 42.7 in for the 26.5 in trim strips ripped from one length. Total 127.5 + 5 x 0.125 = 128.1 <= 192 for the full parts."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the short ends of each of the shelves. Attach one shelf to the ends of the front and back flush with the bottom edge."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the casters onto the underside of the bottom shelf."
+        }
+      ],
+      "reason": "The shelves are joined with pocket holes and the casters are screwed on, but materials list no pocket-hole screws and no caster screws; searched materials[].name for /screw|nail|bolt/i: no match. No fastener is named in any step either."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf spacing (11in) and handle (approximately 5in down from top) are given; shelf 1 flush bottom; casters 'to the end' and trim 'outside edge of the top of each shelf' are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "shelves to front/back, trim, casters, handle; order possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the short ends of each of the shelves."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in shelves; no jig thickness setting and no screw named anywhere (searched steps and materials for setting/thickness/screw). No images viewed."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the other two shelves the same way with 11\" of space in between."
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "Front and Back"
+        }
+      ],
+      "arithmetic": "Front and Back are 24 in tall (cutList[0], source '24\" x 7 1/4\" x 3/4\"'). Three 3/4in shelves + two 11 in spaces = 3 x 0.75 + 2 x 11 = 24.25 > 24 (the spaces that fit are (24 - 2.25) / 2 = 10.875).",
+      "reason": "The step's 11in spacing does not fit the 24in sides with a shelf flush at the bottom and the third shelf at the top; the top shelf would stand 1/4in proud."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": []
+  }
 }

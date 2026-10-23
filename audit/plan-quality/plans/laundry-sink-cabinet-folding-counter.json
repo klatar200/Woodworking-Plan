@@ -1,6 +1,6 @@
 {
   "slug": "laundry-sink-cabinet-folding-counter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -503,37 +503,142 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name face frame, side/top/bottom/back/interior support panels, toe kick nailer, side trim, ledgers, folding top, door rails/stiles/panel, edge trim; each has a cutList row (corrected). Temporary ledger is stated as scrap wood."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cutList part matched to a step (face frame, cabinet panels, toe kick, trim, ledgers, door, edge trim)"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[19] thinner than stock — would need planing/resawing, not judged; cutList[22] thinner than stock — would need planing/resawing, not judged; cutList[23] thinner than stock — would need planing/resawing, not judged; cutList[24] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Add 1/4\" thick oak trim to front edge of folding table, cabinet right side panel & folding table side ledger"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        }
+      ],
+      "arithmetic": "cutList[19] Door Panel thicknessIn 0.25 and cutList[22..24] Plywood Edge Trim thicknessIn 0.25 (Kreg correctRow 0.25). Listed stock thicknesses: Plywood 3/4\", Board 1x4 and 1x3 (3/4\" actual, §9). No listed material is 1/4\" thick; searched materials[].name for /1\\/4|oak|hardboard|veneer|thin/i, no match (only 5/16\" lag bolts).",
+      "reason": "The 1/4\" door panel and the 1/4\" x 3/4\" oak edge trim cannot come from any listed material."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x4, 1x3); steps not checked for per-part stock"
+      "reason": "3 stock types (3/4 plywood, 1x4, 1x3) and steps do not name stock per part. Plywood area is not exceeded (panels sum about 5269 sq in vs 3 sheets 13824), but 1x4/1x3 allocation of the 3.5in-wide ledgers/toe kick is not stated."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Lag bolt count 4+3=7 matches materials[7] qty 7; hinge size matches materials[5]. No other sizes stated in steps; brad nails (steps[10]) have no size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "You will have to drill a hole to inlay the hinge into the cabinet door."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "you'll need to cut the holes necessary for drain and plumbing in the cabinet top panel."
+        }
+      ],
+      "reason": "Hinge location on door/face frame and hinge-cup hole size/position are given no number (step 11 image is a photo with no dimensions); drain/plumbing hole positions in the top panel and back panel (steps[8]) have no numbers or diagram. Ledger pocket-hole positions are dimensioned in the viewed step 5 image, which passes."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "search": "steps[4],[5],[7] say 'as shown in the woodworking plans'; each has its own image (step 5 is a dimensioned pocket-hole diagram; steps 4 and 7 are photos). Text carries the cut and joinery detail.",
+      "note": "steps 4 and 7 images are photos, not drawings"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "order: cut, pocket holes, face frame, sand, cabinet, counter, stain, door, install counter, sink, trim, hinge, putty, wall. Door glued after staining and hole drilling after finish are possible, not blocking."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using Kreg's pocket hole system, drill pocket holes where needed."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" parts; no jig thickness setting appears in any step, description or materials (searched for setting/thickness/jig). Also the side/top/bottom cabinet joints (steps[4]) name no fastener or method. Images viewed show no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "*Note: toe kick piece is installed after you put into your laundry room"
+        },
+        {
+          "path": "cutList[21].part",
+          "quote": "Toe Kick"
+        }
+      ],
+      "reason": "Step 4 defers installing the toe kick until the cabinet is in the room, but no later step mentions it (searched steps[5..13] for /toe kick/i: no match). A toe kick is not a part the cabinet cannot be used without, so Fix."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "put 4 quarter-sized dots of silicone in each corner where sink will go",
+      "what": "silicone not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "Using wood putty that matches your stain color, fill all nail holes and gaps.",
+      "what": "wood putty not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "apply wood glue at joints and clamp together the bottom and side pieces",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "Start by adding wood shims under cabinet if necessary.",
+      "what": "wood shims not in materials"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Attach drain assembly to sink & attach faucet and any water line extensions as necessary.",
+      "what": "materials[12] P-Trap and materials[13] Faucet supply lines are never connected in any step (searched steps for /trap|supply/i: no match)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/e50f23d6a757aef7.webp",
+      "plans/ec9ee9e8a64cdd0a.webp",
+      "plans/b4c1f266addc14ac.webp",
+      "plans/cf8e906ecc69bf00.webp",
+      "plans/7618c1b4ba287284.webp"
+    ]
+  }
 }

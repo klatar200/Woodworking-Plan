@@ -1,6 +1,6 @@
 {
   "slug": "raised-planter-with-built-in-compost",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,37 +263,95 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut or assembled in steps 0-14 (laterals, cross braces, vertical spacers, post, basket supports, post spacers, basket spacers, bottom supports, siding, bed spacers) has a cutList row; angle iron, dowel, liner are materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 10 cut rows are cut and installed in steps 0-14"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x6, 4x4, 0.875x24); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part. 2x4 96in x8 = 768: 4 x 96 + 16 x 19.5 + 8 x 7 = 752 + 28 x 0.125 = 755.5 <= 768 (per board: 4 boards x (4 x 19.5 + 2 x 7 + 6 x 0.125) = 92.75 <= 96). Cedar picket 72in x14 = 1008: 41 x 14.25 + 4 x 44 + 12 x 12 = 904.25 + 57 x 0.125 = 911.4 <= 1008 (packs into 13 boards). 4x4 96in: 60 + 2 x 5.5 + 2 x 2.5 = 76 + 0.6 <= 96. 1x6 pressure-treated 72in x2: 70 each + 0.125 <= 72."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach the final portion of the hanging basket support with decking nails and lag screws."
+        }
+      ],
+      "reason": "Decking nails are used but only decking screws (materials[9]), Blue Kote screws (materials[8]) and lag screws (materials[7]) are listed; searched materials[].name for /nail/i: no match. (Possibly a typo for decking screws, but as written it is an unlisted fastener.) All other sizes (2-1/2in, 1-1/2in, 2in) match materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Spacing given as numbers in steps[4] (15, 15.75, 3.50, 7-1/2), siding overhang 1/4in, basket-support length 70 and spacer 5 1/2 dimensioned in the viewed step 13 image; the two 7/8in dowel-hole positions are drawn (undimensioned) in the viewed step 13 and 14 images. Other placements are relational (center, corners, flush)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "search": "'(pictured closest)' in steps[4], which has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "two outer frames, inner cross braces (12 = 16 - 4 used in step 3), spacers join frames, legs, siding, post, spacers, supports, liner, dividers, basket supports; bin spacing 2 x 15 + 2 x 15.75 + 3 x 10.5 = 93 = 96 - 2 x 1.5 checks"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] and [2] specify '1-1/2\" pocket holes' with the Kreg jig for the 1 1/2in-thick 2x4s (the only parts with pocket holes), no contradicting setting; other joints state method and screw sizes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Cut two 2\" blocks off the scrap leftover from the 4x4 and use it as a spacer between the top cross braces and the center post."
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Center Post Spacer"
+        }
+      ],
+      "arithmetic": "steps[9] says 2 in blocks; cutList[5] Center Post Spacer (source '4x4x2.50\"') says 2.5 in; 2.5 - 2 = 0.5. The step geometry agrees with 2 in: steps[4] gives the top-frame brace spacing as '7-1/2\"' and the post is a 4x4 (3 1/2 in), so (7.5 - 3.5) / 2 = 2 in each side.",
+      "reason": "Spacer block length differs between the step and the cut list."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "I left the center open and will be closing those holes with cardboard that will act as a divider",
+      "what": "cardboard, gravel and compost fill (steps[15]) not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "sealing it with metal specific spray paint",
+      "what": "metal spray paint not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/e0ac8ee478707bcc.webp",
+      "plans/4d7fab2b47247f45.webp"
+    ]
+  }
 }

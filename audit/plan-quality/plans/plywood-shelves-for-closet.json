@@ -1,6 +1,6 @@
 {
   "slug": "plywood-shelves-for-closet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,36 +71,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut cleats, plywood shelves and 1x3 front trim; all have cutList rows (Wall cleats, Shelves, Shelf trim)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "3 cut rows, all cut in steps 0, 2, 3"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x2, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part. 1x2 96in x2 = 192: 10 cleats x 13 = 130 + 10 x 0.125 = 131.25 <= 192. 1x3 96in x2 = 192: 5 x 22.25 (corrected row) = 111.25 + 5 x 0.125 = 111.875 <= 192. Plywood: 5 shelves 13 x 23 = 1495 sq in <= 4608 for one 48 x 96 sheet (each part also fits the sheet)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[1] 2in finish nails = materials[3]; no other sizes in steps (materials[4] 1 1/4in nails is unused but not contradicted)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf heights and widths are the builder's choice by design ('Customize to fit your closet space', steps[0], steps[2] measure the space); cleats are level and paired."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no as-shown/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "search": "cleats on wall, shelves on cleats, trim last; possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 1x3 front trim to fit each shelf front."
+        }
+      ],
+      "reason": "No pocket holes. The shelf-trim joint has no method or fastener stated anywhere (searched steps for attach/nail/glue/screw on the trim: none); the shelf-to-cleat joint is 'Place shelves into position' with no fastening stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 1x3 front trim to fit each shelf front."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1 1/4\" finish nails"
+        }
+      ],
+      "reason": "The shelf trim (cutList[2], 5 pieces) is cut in the last step and never attached; steps end there (searched all 4 steps for an attach/nail instruction on the trim: none). Trim is not a part the shelves cannot be used without, so Fix. Materials[4] 1 1/4in finish nails are not used by any step."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Attach 1x2 cleats to wall using construction adhesive and 2\" finish nails.",
+      "what": "construction adhesive not in materials"
+    },
+    {
+      "path": "cutList[2].lengthIn",
+      "quote": "Shelf trim",
+      "what": "corrected Shelf trim length 22 1/4 differs from corrected Shelf length 23 (source '1 x 3 x 22 1/4\"' vs Shelves 13 x 23); steps say only 'cut ... to fit each shelf front', so the sizes are examples"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": []
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "letters-for-santa-mailbox",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,37 +131,138 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut/assemble back, front, sides, bottom, top; all have cutList rows. Wooden letters and rope are components, scored under R14."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 5 cut rows used in steps 0-5"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x12, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Corrected rows: 1x12 72in stock for Front 12.75 + Back 17.875 + Top 11.25 = 41.875 + 3 kerf x 0.125 = 42.25 <= 72. 1x4 48in for Sides 2 x 14.875 + Bottom 9.75 = 39.5 + 3 x 0.125 = 39.875 <= 48. Bottom stock is not named; if cut from the 1x12 instead, 41.875 + 9.75 + 4 x 0.125 = 52.125 <= 72 and sides 29.75 <= 48. Passes either way."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "materials list 1 1/4in pocket screws and 1 1/2in hinges; steps state no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "Line it up, and secure in place with painter's tape before you go back and screw in the opposite side of the hinges."
+        }
+      ],
+      "reason": "Hinge positions on the lid are given no number and no relation (viewed step 12 image shows two hinges near the ends, undimensioned); the hook and eye in materials has no position (never used). Rope holes, letters and mail slot are relational (centered/equidistant) and pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "search": "steps[2] and [3] say 'as shown'; each has its own image"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using wood glue and clamps, glue the top of the mailbox in place being careful to align the 30-beveled edge with the 30 mitered sides."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Screw one side of each hinge into angled edge of the mailbox top."
+        }
+      ],
+      "reason": "The top is glued in place in step 5 and then hinged as a lid in step 12 (the viewed step 12 image shows the slotted top with hinges). Both cannot be true; the build can still be completed."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using a Kreg jig, drill pocket holes and then attach the two sides of the mailbox to the back."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in parts; no jig thickness setting stated in any step (searched steps for setting/thickness). The viewed step 3 image shows the jig but no readable setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Glue wooden letters in place, centered and equidistant from each other."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "thread ribbon or rope through the holes and secure with knots."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Either side should be parallel 30-degree beveled edges and 5 inches."
+        }
+      ],
+      "arithmetic": "(c) wooden letters and ribbon/rope are used but searched materials[].name for /letter|ribbon|rope|cord/i: no match. (a, likely) steps[4] gives the top as 5 inches; Kreg-corrected row Top is 3/4 x 5 3/8 x 11 1/4 (source '3/4\" x 5 3/8\" x 11 1/4\"'); 5 3/8 - 5 = 3/8 unexplained by the plan.",
+      "reason": "Components used in steps are missing from materials (certain); the top width differs between step and cut list (likely)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Using wood glue and clamps, glue the top of the mailbox in place",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Give the mailbox and the top of the mailbox a coat of paint.",
+      "what": "paint not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "secure in place with painter's tape",
+      "what": "painter's tape not in materials"
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Small hobby hook and eye",
+      "what": "hook and eye are listed but never used in any step (searched steps for /hook|eye|latch/: only 'doorknob or hook' in steps[11])"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "attach the two sides of the mailbox to the back",
+      "what": "no step says to attach the Front (cutList[0]); the viewed step 3 image shows a front board already on, but the text never says how or when it is fastened"
+    }
+  ],
+  "reader": {
+    "batch": "s6-33",
+    "imagesViewed": [
+      "plans/003fb516466f8794.webp",
+      "plans/bf494b79f0dbbd70.webp",
+      "plans/95fafe4aa288cb29.webp"
+    ]
+  }
 }
