@@ -1,6 +1,6 @@
 {
   "slug": "jewelry-or-medicine-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[0..5] (37\" and 29.5\" frame boards, 1x6 supports, 1x3 shelves, 31\"/30\" 1x4 door pieces, 27x33 plywood) maps to cutList rows 0-5; the 30\" door piece vs row 29.5 length is recorded under R14"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "row 1 'Cabinet frame Pieces + Cabinet door frame pieces' x4 is the 2 frame + 2 door-frame short pieces; all 6 rows are used"
     },
     "R4": {
       "result": "pass",
@@ -73,29 +75,83 @@
       "reason": "R5 precondition not met: 4 stock types (1x4, 1x6, 1x3, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "cut a piece of 1/4\" plywood 27x33\". Using staples and wood glue, attach it to the back of your cabinet door frame. This will hold your mirror in place.",
-          "why": "33\" staple — no material line lists a 33\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[5] candidate rejected: '27x33\"' is the plywood size, the 33 is not a staple size; staples are given no size. Only fastener size used is 1\" pocket-hole screws (materials[7]); no conflicting sizes. Wall screws 'grabber screws or lag bolts' (steps[8]) give no size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "shelf heights given in steps[3] ('13\" down from the top, and 12 1/2\" up from the bottom', above and below the 1x6); supports top and bottom of frame; hinge/knob/magnet placement not given and judged builder-free"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame, supports, shelves, door frame, backing built before hanging (steps 0-6), mirror glued after, wall mount last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in ends of 29.5\" boards. Using 1\" pocket hole screws and wood glue"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes in each end of the boards."
+        }
+      ],
+      "reason": "No jig thickness setting stated anywhere (search steps[0..8], summary, description for /setting|set (for|to)|thick/: no match). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using staples and wood glue, attach it to the back of your cabinet door frame."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut 2- 30\" 1x4's and drill pocket holes on each end of both boards."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Cabinet frame Pieces + Cabinet door frame pieces, quantity 4, 0.75 x 3.5 x 29.5 (Kreg-corrected)"
+        }
+      ],
+      "arithmetic": "(a) steps[4] says the door-frame short pieces are 30\" but the only cut row covering them (cutList[1], x4 = 2 frame + 2 door) is 29.5\"; (c) staples are used in steps[5] but search of materials[0..12] for /staple/i finds none",
+      "reason": "(c) staples (hardware) used but not in materials; (a) door-frame piece length 30 in step vs 29.5 in the cut row. (b),(d) pass: every made part is installed and the steps reach the finished mounted cabinet."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Using construction adhesive or mirror adhesive, glue your mirror on to the front of the cabinet door.",
+      "what": "mirror/construction adhesive not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Attach the jewelry cabinet to the wall with grabber screws or lag bolts, through the 1x6's.",
+      "what": "wall fasteners (grabber screws or lag bolts) used but not in materials and no size given"
+    }
+  ]
 }

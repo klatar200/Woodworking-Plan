@@ -1,6 +1,6 @@
 {
   "slug": "hall-tree",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -239,10 +239,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0..14] (Main Leg, Seat Leg, Frame Stile/Rail, Hook Rail, Box Bottom parts, Box Front/Back, Seat Rail, Box Brace, Top, Seat Lid, Back Panel) matched to cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 14 cut rows are cut/used in steps; Seat Rail is shown attached to the Box Back in the step 8 image (viewed)"
     },
     "R4": {
       "result": "pass",
@@ -253,31 +255,72 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.25, 1x3, 1x4, 1x6, 1x12); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse pocket-hole screws, #6 x 3/4\" flathead screws and 2 1/2\" hinges in materials; step 14 '3/4\" flathead woodscrews' matches; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "Next, it’s time to position and attach the box assembly. Notice that the box assembly is not inset on the Main Leg like the frame was. The box assembly sits flush with the rear edge of the leg. Spread",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af881cc06f6be04a.webp"
+          "path": "materials[9].name",
+          "quote": "Coat hooks"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Hook Rail"
         }
-      ]
+      ],
+      "reason": "3 coat hooks are bought but no step or viewed construction image gives where on the 28\" Hook Rail they go (spacing/offsets); only the finished photo fbf4005adc101080 shows them undimensioned. Search: steps[0..14] vs /hook/i only match 'Hook Rail'. Flagged step[10] passes: 'flush with the rear edge' is relational and 1/4\" inset stated; leg/seat/brace positions are dimensioned in viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; cutting-diagram references each have a step image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs, frame, box built first (steps 0-8), then joined (9-11), then top, lid, back panel"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[2],[6] state 'pocket-hole jig set for 3/4\"-thick material'; every pocket-holed part is 0.75 thick"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[9].name",
+          "quote": "Coat hooks"
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "simply position the Back against the frame assembly, and then attach it using 3/4\"flathead woodscrews, as shown."
+        }
+      ],
+      "reason": "(c)/(d) The 3 coat hooks in materials are never installed: no step mentions attaching hooks (search steps[0..14], description and summary for /hook/i: only 'Hook Rail' and the summary 'It offers hooks'); last step is the Back Panel. Part (a) checks pass: Top 35.5 = 33 + 2x0.75 box width 34.5 + 1\" = 1/2\" overhang each end, matching steps[12]."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "91be31be140dac21.webp",
+      "65d97ca22e6800fe.webp",
+      "de1ecf5b9dfc00fb.webp",
+      "5f966a312dcf961b.webp",
+      "fbf4005adc101080.webp"
+    ]
+  },
+  "gaps": []
 }

@@ -1,6 +1,6 @@
 {
   "slug": "louvered-wood-planter-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -67,21 +67,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e legs. Then angle the next slat so that the top rests on the first slat and the bottom is flush with the outside of the legs. Work your way down angling your slats until you have attached five slats.",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[2] 'have attached' is ordinary text, not an external document; the only link (steps[6] www.woodshopdiaries.com) is a credit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "slats, legs (cut from a 2x2, steps[2]) and bottom rungs (steps[4]) all have cutList rows 0-2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 cut rows used in steps[0],[2],[4]"
     },
     "R4": {
       "result": "pass",
@@ -92,23 +87,60 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is 1 1/4\" pocket-hole screws (steps[2],[3]), in materials[2]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "slat placement is relational and determined by the stated rule (top slat flat and flush with outside of legs, each next slat's top rests on the previous, bottom flush with outside of legs); viewed images are undimensioned photos; rungs sit on the slats"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "slats cut and drilled, two side panels, joined with remaining slats, rungs, finish"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using a Kreg Pocket Hole Jig, drill pocket holes in each end of all the slats."
+        }
+      ],
+      "reason": "No jig thickness setting stated (search steps[0..6], summary, description for /setting|set (for|to)|thick/: no match). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "5 slats x 4 sides = 20 matches cutList[0]; 4 legs from a 2x2 at 20\" matches cutList[1]; 2 rungs at 16\" matches cutList[2]; all parts installed; finish in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "54ad19254f042f92.webp",
+      "a4c6f63acb0cfb7b.webp",
+      "3e3818a45c5e1b6e.webp",
+      "77bcce8b8d2948b6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Follow the same steps as in step 3 to attach the two side panels together",
+      "what": "self-referencing step number (means step 2); does not stop the build"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "louvered-screen-for-ac-units-pool-equipment",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -311,10 +311,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..5] (corner/center posts, side/front top and middle rails, panel ends, louver slats, wide/narrow vertical and horizontal trellis) all have cutList rows 0-10"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 cut rows used (posts/rails steps 1-2, slats step 3, trellis step 4, panel ends step 5)"
     },
     "R4": {
       "result": "pass",
@@ -325,31 +327,60 @@
       "reason": "R5 precondition not met: 4 stock types (4x4, 2x4, 0.5x3.5, 0.5x5.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" and 1\" pocket-hole screws and 1\" 18-ga brads in materials[4],[5],[9]; steps use only those sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "gle. Remember to mirror each post/end when making the marks. Make the marks starting from the bottom. On the front mark: 2 1/4\", 5 1/2\", 8 3/4\", 12\", 15 1/4\", 18 1/2\", 21 3/4\", 25\". On the back mark: ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57848427d60029ed.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[0] settled by viewed image 57848427d60029ed (all 8 front/back louver marks dimensioned from the bottom); rails 12\" from top, wide trellis 12 3/4\" from ends, trellis inset ~1\", spacing 1\" given"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "marks, front and side frames, slats on upside-down frames, trellis and top rails, then panels joined"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1],[2] 'pocket holes for 1 1/2\" material' (1 1/2\" rails), steps[3],[4] 'for 1/2\" material' (1/2\" slats/trellis); matches thicknesses"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Louver Slats x 42, 0.5 x 3.5 x 23.875 (Kreg-corrected)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "On the front mark: 2 1/4\", 5 1/2\", 8 3/4\", 12\", 15 1/4\", 18 1/2\", 21 3/4\", 25\"."
+        }
+      ],
+      "arithmetic": "8 marks per face = 8 slats per gap (viewed image 849a72fd0fb53e9a shows 8 slats between each post pair); gaps: front 2 (two 23 7/8 spans, image 12e21e6a16e7238f) + 2 per side frame x 2 (image 7fe746fe0d8d9671) = 6 gaps; 6 x 8 = 48 vs cut-list 42",
+      "reason": "(a) slat quantity does not match the marked louver count. (b),(c),(d) pass."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "57848427d60029ed.webp",
+      "12e21e6a16e7238f.webp",
+      "7fe746fe0d8d9671.webp",
+      "849a72fd0fb53e9a.webp",
+      "e4b6a244da510c0d.webp"
+    ]
+  },
+  "gaps": []
 }

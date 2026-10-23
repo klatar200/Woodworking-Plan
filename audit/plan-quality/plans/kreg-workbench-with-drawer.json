@@ -1,6 +1,6 @@
 {
   "slug": "kreg-workbench-with-drawer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[1..8] (shelf, back panel, spacer blocks, drawer braces, drawer sides/front/back, bottom, drawer front) has cutList rows 0-7"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 cut rows used in steps[1]-[8]"
     },
     "R4": {
       "result": "pass",
@@ -157,31 +159,67 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3/4\" coarse, 1 1/4\" coarse and 1 1/4\" fine pocket-hole screws in materials[2..4] cover steps[1],[3],[4],[6],[0]; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "rilled holes in the rails) to secure the plywood in place.\n\n**Tip:** Using screws from the bottom The rails in the workbench have predrilled holes to drive your screws through. Flip the workbench on i",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1359f435a65a5af3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[1]: shelf sits on the frame's bottom rails (viewed cut-diagram image 1359f435a65a5af3 gives 27 1/2 x 19 1/2); blocks touch top rail (image 35591d20aba89b5a, 1 7/8 x 5 1/2); slides 3/4\" inset and flush to brace bottom; box 3/4\" inset and 1 1/4\" below top rail; front 1/8\" gaps; handle 'as desired'"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "steps[1] 'See cut diagram' is answered by its own image 1359f435a65a5af3 (viewed: 27 1/2 and 19 1/2 labelled shelf panel)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame and top, shelf, back panel, blocks, braces, slides, drawer box, then front; each exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3],[4],[6] state '3/4\" pocket holes' for 3/4\" plywood; all pocket-holed parts are 0.75"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Assemble Kreg Workbench Frame according to directions included. Install adjustable feet OR caster wheels"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Make sure to leave 1/8\" gap on the sides and top around the drawer front."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut a piece of 3/4\" plywood to 5 1/2\" x 27 1/2\". Place this between the two back legs"
+        }
+      ],
+      "arithmetic": "(a) opening between the two spacer blocks = back-leg span 27 1/2 - 2 x 1 7/8 (steps[3]) = 23 3/4; drawer front cutList[7] / steps[8] = 23 3/4, i.e. 0 gap each side, not the stated 1/8\". Assumes the front-leg span equals the 27 1/2 back-leg span (not stated; hence likely). (c) search materials[0..6] for /frame|top|caster|feet|wheel/i: none",
+      "reason": "(c) the Kreg workbench frame, 24 x 32 top and casters/feet that steps[0] uses are not in materials (plan is an add-on to a product the reader must already own; description says 'to your Kreg Workbench frame'); (a) drawer front width leaves no 1/8\" side gap. (b),(d) pass."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "1359f435a65a5af3.webp",
+      "9bb7228cf90bc5fd.webp",
+      "35591d20aba89b5a.webp",
+      "5a005686f1b2b52c.webp",
+      "b4d8245f6ba5dcfa.webp",
+      "a19edfc27fa7d89a.webp",
+      "61ead2b4a52f1bc6.webp",
+      "8e8e8c74598f895e.webp"
+    ]
+  },
+  "gaps": []
 }

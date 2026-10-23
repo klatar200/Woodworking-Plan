@@ -1,6 +1,6 @@
 {
   "slug": "hidden-jewelry-cabinet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,17 +203,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[12].body",
-          "quote": "Cut a piece of decorative sheet metal to 7\" x 11 1/2\". Lay it on top of the earring rack frame and secure it to the frame with the wire nails through some of the decorative holes. Add the 1\" hinges to",
-          "why": "cut sentence states 11 1/2\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[8].body",
+          "quote": "Attach the 1x1 boards cut for the earring rack sides and top/bottom by lining up the side pieces so they are flush with the edge of the top/bottom pieces"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x1 36\""
         }
-      ]
+      ],
+      "reason": "The earring-rack frame pieces are never cut by any step and have no cut-list row (search: cutList.part vs /earring|1x1/i no match; steps[0..15] vs /earring/i only steps[8], steps[12]; no length given for any 1x1 piece). Image ea3002242badcdc6 (viewed) gives only the frame's overall 12\" x 6\". Flagged sheet-metal candidate steps[12] rejected: materials[9] 'Decorative metal sheet' is listed and the step itself gives the cut size 7\" x 11 1/2\"."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 12 cut rows are used by steps 0-15 (box, frame, rack, sign, ring parts, back, pegs)"
     },
     "R4": {
       "result": "pass",
@@ -224,22 +232,72 @@
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws, 1 1/4\" finish nails, 5/8\" wire nails, 1\" and 2\" hinges all in materials and match steps[12] (1\" hinges) and steps[14] (2\" hinges); no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "bracelet rack '9\" below the top' (steps[7]), earring rack 'about 1/2\" from the top' (steps[12]), sign peg holes '1 1/2\" clearance on either side' (steps[9]); peg rows on rack and sign shown in viewed image edee497f35ddd2c3; flagged-free. Hinge spacing along edges not stated and judged not to affect completion."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "attach the sides of the wood sign frame to the sides of the sign with 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Cut the pieces for the wood sign and wood sign frame. Drill pocket holes set for 3/4\" thick material along all 4 sides of the plywood back."
+        }
+      ],
+      "reason": "Step 5 assembles the sign and its frame (and says 'After they are painted/stained/sealed') before step 9 cuts those pieces and drills their pocket holes and before step 6 finishes pieces; the build can still be completed by reading ahead, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[1],[4],[9] state pocket-hole jig set for 3/4\" material; every pocket-holed part (1x4, 1x2, 3/4 plywood) is 0.75 thick; other joints state glue/finish nails/wire nails"
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "steps[12] says the metal is cut '7\" x 11 1/2\"' to lay on the earring-rack frame, but viewed image ea3002242badcdc6 labels the frame 12\" x 6\" and it cannot be told whether those are outer or inner dimensions (7 > 6). (b),(c),(d) pass: every made part is installed (steps 3,7,8,12,14); felt, hinges, wire nails in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "60f2dbb0ee38a2d1.webp",
+      "6afd91583901cb1e.webp",
+      "ea3002242badcdc6.webp",
+      "edee497f35ddd2c3.webp",
+      "20fa67a4959b9394.webp",
+      "b5668ff0d2558e32.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "I added a magnetic cabinet latch to the top right corner to help hold the wood sign closed",
+      "what": "magnetic latch is used but not in materials (author describes it as an addition; optional)",
+      "kind": "optional-hardware"
+    },
+    {
+      "path": "steps[12].body + step image ea3002242badcdc6",
+      "quote": "Cut a piece of decorative sheet metal to 7\" x 11 1/2\"",
+      "what": "metal size vs the 12\" x 6\" frame shown in the image do not obviously fit (see R14 unknown)"
+    }
+  ]
 }

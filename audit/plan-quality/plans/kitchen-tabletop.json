@@ -1,6 +1,6 @@
 {
   "slug": "kitchen-tabletop",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,59 +47,122 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[2] cuts 'all wood ... according to the cut list'; middle slats, short/long border slats in steps[3],[5] map to cutList rows 0-2; no uncut part named in steps[0..9]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 cut rows (slats, short border, long border) all used in steps[3],[5]"
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Table Slat — qty 6, 1.5 x 6 x 34 (Kreg-corrected)"
+          "quote": "Table Slat, quantity 6, 1.5 x 6 x 34 (Kreg source '1 1/2\" x 6\" x 34\"')"
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 2x6 144\""
         }
       ],
-      "arithmetic": "cutList[0] 1.5×6: no listed stock has thickness 1.5 (±1/32) with width ≥ 6; stock = 1.5×5.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Table Slat — qty 6, 1.5 x 6 x 34 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "§9: 2x6 actual = 1 1/2 x 5 1/2; slat width 6 > 5.5. Searched steps[0..9] for /lamin|glue.?up|widen|rip/i: none (steps[3] 'gluing all middle slats together' is edge-joining slats, not widening one)",
+      "reason": "A 6\" wide slat cannot be cut from the only stock listed (2x6); width is Kreg's own figure, not an import loss."
     },
     "R5": {
       "result": "pass",
       "arithmetic": "parts: 6×34 + 2×40 + 2×44 + kerf 7 cuts (10 parts − 3 boards, the fewest possible)×1/8 = 372.875″; bought: 3×144 = 432″; 372.875 ≤ 432"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/2\" pocket-hole screws and 1 1/2\" cabinet screws are in materials; steps give no other size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "pocket-hole spots are builder-marked (steps[1]); borders go around the edge; 'top level' relational (steps[9]); 8 cabinet screws to base with no spacing stated is builder-free"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Layout the boards in the correct arrangement as shown in the woodworking plans and mark the areas that you'd like to drill the pocket holes."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut all wood down to size according to the cut list in the woodworking plans with the miter saw."
+        }
+      ],
+      "reason": "Step 1 lays out and drills the pocket holes in the slats/borders before step 2 cuts them to size; order is recoverable by swapping, so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "using a Kreg pocket hole jig, drill all pocket holes according to the depth of your wood."
+        }
+      ],
+      "reason": "No numeric jig thickness setting stated (search steps[0..9], summary, description for /setting|set (for|to)|thick|1 1\\/2\"/ near jig: none). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Table Slat x6 width 6 (Kreg-corrected 1.5 x 6 x 34)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Short Side Table Border Slat x2, 1.5 x 5 x 40"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Long Side Table Border Slat x2, 1.5 x 5 x 44"
+        }
+      ],
+      "arithmetic": "6 slats x 6 = 36 wide, + 2 borders x 5 = 46 vs short border 40; (with 5.5 stock width: 33 + 10 = 43). Long border 44 = slat length 34 + 2 x 5 = 44 matches (taking mitered border length as the outer edge)",
+      "reason": "(a) slat width and short-border length do not agree; short border 40 only fits 6 slats of 5\" (6 x 5 + 10). (b),(c),(d) pass."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "if yours doesn't you would want to incorporate a base using plywood.",
+      "what": "the plan assumes an existing table base; no base parts, plywood or dimensions are in materials or cut list (the piece as built is a tabletop only)"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Fill gaps with wood filler or sawdust mixed with wood glue",
+      "what": "wood filler not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

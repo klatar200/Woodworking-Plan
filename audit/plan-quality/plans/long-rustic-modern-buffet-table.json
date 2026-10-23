@@ -1,6 +1,6 @@
 {
   "slug": "long-rustic-modern-buffet-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -176,13 +176,28 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[13] 'Head to PneumaticAddict.com for finishing and painting tips' is a credit/optional link; steps[1] 'Following the diagram' is answered by its image (viewed 22f7cebc1d0135bb with 28\", 3 1/2\" x 3/4\" notch dimensions)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Use your favorite technique to build three drawer boxes approximately 27\" x 14\"."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Board, 1x3 96\""
+        }
+      ],
+      "reason": "The three drawer boxes are never given cut-list rows or a named stock. Search cutList.part for /drawer box|box/i: none (only Drawer Frame/Fronts); the viewed step-10 image 7501f4669c729ce6 shows box 27\" x 14\" x 5 1/2\" high but no listed board is 5 1/2\" wide for it (1x3 = 2 1/2\", 1x4 and 1x10/1x12 are consumed by other rows) and the only plywood (1/4\" sheet) is the back panel; materials[5] 1x3 x3 and materials[7] sheet are not assigned to any row. Level Fix because the step leaves the box method to the builder."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 cut rows are used in steps[0]-[11]"
     },
     "R4": {
       "result": "pass",
@@ -193,30 +208,89 @@
       "reason": "R5 precondition not met: 8 stock types (2x6, 2x2, 1x4, 1x12, 1x10, 1x3, 1x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Create four, 16-1/2\" x 31-3/4\" rectangular box legs. Join top and bottom plates to sides through pocket holes, using glue and 1-1/2\" screws.",
-          "why": "1-1/2\" screw — no material line lists a 1-1/2\" fastener"
+          "quote": "Join top and bottom plates to sides through pocket holes, using glue and 1-1/2\" screws."
         }
-      ]
+      ],
+      "reason": "1-1/2\" screws (also in viewed image 03049c218d43cecf) are not in materials (materials[8..11] list 2-1/2\", 2\", 1-1/4\" pocket-hole screws and 3/4\" wood screws; search materials for /1-1\\/2/: none)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "notch positions/widths dimensioned (28\", 3 1/2\" x 3/4\") in viewed image; shelf 5 1/2\" above bottom rail; frame 6 3/4\" opening, top frame flush to underside; slide supports flush to side frames; back panel flush to underside; hinge-free"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top/shelf notched, legs built, top, end boards, back panel, frame, slide supports, shelf, drawer boxes, fronts, pulls"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Join three, 2 x 6 boards together, using glue and 2-1/2\" screw through pocket holes."
+        }
+      ],
+      "reason": "No jig thickness setting stated for 1 1/2\" or 3/4\" parts (search steps[0..13], summary, description, viewed images for /setting|set (for|to)|thick/: none). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Create four, 16-1/2\" x 31-3/4\" rectangular box legs."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Table Leg Sides x8, 0.75 x 3.5 x 32.25 (Kreg source '1 x 4 x 32-1/4\"')"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "End Boards x2, 0.75 x 11.25 x 15 (Kreg source '1 x 12 x 15\"')"
+        }
+      ],
+      "arithmetic": "(a) viewed image 03049c218d43cecf shows 15\" plates fitted between the sides and the overall leg labelled 31 3/4\", but the side pieces are 32 1/4\" (0.5\" more). End boards: viewed image 9aeaf75e9e00e484 labels the end board 9 3/4\" x 15\" while the cut row is a 1x12 (11.25) x 15 and the back panel row is 9.75",
+      "reason": "(a) leg height and end-board height in steps/images disagree with their cut rows. (b),(c),(d) pass: all made parts installed; slides, pulls in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "22f7cebc1d0135bb.webp",
+      "03049c218d43cecf.webp",
+      "728450fb17aa27e0.webp",
+      "9aeaf75e9e00e484.webp",
+      "24ccd143c4fd3fd3.webp",
+      "89002fee4da305c4.webp",
+      "9e4dc4a760f14c84.webp",
+      "1fba5025e498aebc.webp",
+      "b93cd1887f5455e9.webp",
+      "7501f4669c729ce6.webp",
+      "d674b3622392cb43.webp",
+      "b523f51615044167.webp"
+    ]
+  },
+  "gaps": []
 }

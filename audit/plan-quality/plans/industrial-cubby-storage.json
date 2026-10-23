@@ -1,26 +1,21 @@
 {
   "slug": "industrial-cubby-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "es. To make a set of DIY, Industrial style storage cubbies from wood and off-the-shelf steel panels, check out this tutorial: http://www.pneumaticaddict.com/2016/02/diy-industrial-storage-cubbies.html",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[6] link is to a separate optional tutorial for loose storage cubbies ('The frame will accommodate standard, 12\" storage cubbies'); the 9-opening frame in steps[0..5],[7] is complete without it (credit/optional link, §2)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[0..5] (posts, 13\" supports, 2x2/2x3/2x4 rails, 1x4x42 top boards, 13\" trim stop blocks) has a cutList row; steps[0] post count disagrees with the row quantity, recorded under R14"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 cut rows are cut and attached in steps[0..5]"
     },
     "R4": {
       "result": "pass",
@@ -31,22 +26,67 @@
       "reason": "R5 precondition not met: 5 stock types (2x2, 2x3, 2x4, 1x4, 0.5x0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2-1/2\" and 1-1/4\" pocket-hole screws and 18-gauge finish nails used in steps are all in materials; no step gives two sizes for one use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "first support flush to post tops, next rows 12-1/2\" apart (steps[1]), rails flush/centered on grid points, top board fits the 42\" x 10-1/2\" opening, stop blocks flush to back on top of each support (1\" strip left); no unspecified position found"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "grids built (1), rails on one grid (2), grids joined (3), top fitted into opening (4), stop blocks (5), finish (7)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill 2-3 pocket holes, evenly spaced on each end of each rail."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Join boards edge to edge with pocket holes and 1-1/4\" screws."
+        }
+      ],
+      "reason": "No jig thickness setting stated for the 1 1/2\" rails/posts or the 3/4\" top boards (search steps[0..7], summary, description for /setting|set (for|to)|thick/: no match). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Vertical Posts quantity 4, 1.5 x 1.5 x 47.5"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut eight, 2 x 2 x 47-1/2\" posts. Lay out four posts on your work surface."
+        }
+      ],
+      "arithmetic": "cut list quantity 4 vs steps[0] 'eight' (two grids of 4 posts, steps[1] 'Repeat ... second grid with remaining vertical posts'); materials[0] 2x2 96\" x8 covers 8 posts: 8 x 47.5 = 380 + 24 x 13 = 312 + 2 x 10.5 = 21 -> 713 plus kerf < 8 x 96 = 768",
+      "reason": "(a) post quantity in cut list disagrees with the step (importDiffs empty, so Kreg's own row). (b),(c),(d) pass: all parts installed, no uncovered hardware, steps reach the finished frame."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": []
+  },
+  "gaps": []
 }

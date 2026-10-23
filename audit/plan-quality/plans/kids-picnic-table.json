@@ -1,6 +1,6 @@
 {
   "slug": "kids-picnic-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -187,21 +187,33 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " woodworking plans provided for your visual cut list in the Extras Tab or see the Cut list tab for more details.\nThere are several angled cuts that will also need to be cut, which are all detailed in ",
-          "why": "matches \"Extras\""
+          "quote": "There are several angled cuts that will also need to be cut, which are all detailed in the plans/cut list."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "drill the pocket holes where shown on the woodworking plans."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Measure as shown in woodworking places and check to make sure it is level before securing."
         }
-      ]
+      ],
+      "reason": "The build leans on the external 'free woodworking plans ... in the Extras Tab' (steps[0]) for the angled cuts, pocket-hole locations and bottom-support position. The plan's own cut list has only 1.5 x 3.5 x length rows with no angle (cutList[0..4]); no step gives a leg angle or bottom-support height (search steps[0..8] for /degree|angle/: only 'angled cuts' and 'slight angle' screws); all 10 images viewed are photos or the step-4 slat diagram (dimensions 3 1/2, 2 1/2, 1, 1/2 only), none showing the angles or support height. The angled legs/supports are structural, so the build cannot be completed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0..8] (top support, bottom support, middle support, legs, table slats) all match cutList rows 0-4"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cut rows are used in steps[4]-[8]"
     },
     "R4": {
       "result": "pass",
@@ -212,23 +224,74 @@
       "arithmetic": "parts: 2×17.5 + 2×40.5 + 1×24 + 4×19 + 9×32 + kerf 8 cuts (18 parts − 10 boards, the fewest possible)×1/8 = 505.000″; bought: 10×96 = 960″; 505.000 ≤ 960"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" pocket-hole screws (materials[1]) and 2 1/2\" construction screws (materials[3]) match every size in steps[4]-[8]; no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Measure as shown in woodworking places and check to make sure it is level before securing."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "The legs connect on the inside to the top support in each corner."
+        }
+      ],
+      "reason": "The bottom-support height on the legs and the leg lean/angle are positions the builder must set but no number or viewed image gives them (images are photos; step-4 diagram gives only slat gaps). Same root as R1."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "readerNote": "steps[6] 'Measure as shown in woodworking places' points to the external plans; its image 17bda4218e9f3931 (viewed) is a photo with no measurement. Recorded under R1/R10 rather than again here.",
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, sand, drill, stain, then top (4), legs (5), bottom supports (6), bench slats (7), middle support (8); each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using your Kreg pocket hole jig, drill the pocket holes where shown on the woodworking plans."
+        }
+      ],
+      "reason": "No jig thickness setting stated for the 1 1/2\" 2x4 parts (search steps[0..8], summary, description for /setting|set (for|to)|thick/: no match). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "slat count 5 top + 4 bench = 9 matches cutList[4] x9; every cut part is installed (steps[4]-[8]); screws and oil in materials; steps end with the middle support (finished table)"
     }
   },
-  "verdict": null,
+  "verdict": "Unpublish (pending verifier)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "0099ce36c4e03f7a.webp",
+      "bf4297760ade746a.webp",
+      "17bda4218e9f3931.webp",
+      "39602a2a1cdededd.webp",
+      "b7a73335abfcaf8b.webp",
+      "5f4e0a28b1f818ac.webp",
+      "7532aee9b6da8c37.webp",
+      "06e70b8a5ee68014.webp",
+      "6b1cbe2d3371d730.webp",
+      "66d98c11dd0aef91.webp"
+    ]
+  },
+  "gaps": []
 }

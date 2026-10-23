@@ -1,6 +1,6 @@
 {
   "slug": "large-bread-board",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -43,21 +43,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Drill pocket holes as per the attached diagram and measurements provided. After you drill the pocket holes in each piece, place it back in order.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[1] 'the attached diagram' is answered by the plan's own step images (viewed 930cfbbfb3c69b76, c932e92c14c6f170: pocket-hole positions with dimensions) and steps[0] image d4cf8e5406fcf6be (layout 7 1/4 x 3, 21 3/4 walnut); no external document needed. 'www.nickandalicia.com' in description is a credit."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..3] (maple sections, walnut strips) match cutList rows 0-2; viewed layout image d4cf8e5406fcf6be shows 8 boards 7 1/4 x 7, one 9\" handle board, two 21 3/4\" walnut strips"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 cut rows all used in steps[0]-[3]"
     },
     "R4": {
       "result": "pass",
@@ -68,23 +63,63 @@
       "reason": "R5 precondition not met: 2 stock types (1x8, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" hardwood pocket-hole screws (materials[2]) used in steps[2],[3]; plugs in materials[4]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "pocket-hole positions dimensioned in viewed images; circle centre by corner-to-corner lines, 9 1/2\" radius jig, handle 2 1/2\" either side of centre (steps[6]); handle hole location 'higher up ... or closer to the center' is builder-free"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut, drill, assemble sections, join to walnut, plug, sand, then cut circle and handle from the glued board"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as per the attached diagram and measurements provided."
+        }
+      ],
+      "reason": "No jig thickness setting stated in text or in the viewed diagrams (search steps[0..9], summary, description for /setting|set (for|to)|thick/: no match). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "3 sections x 7 1/4 = 21 3/4 = walnut strip length; 8 boards + 1 handle board = 9 maple pieces per layout image; every part joined in steps[2]-[3]; screws, plugs in materials"
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-22",
+    "imagesViewed": [
+      "d4cf8e5406fcf6be.webp",
+      "930cfbbfb3c69b76.webp",
+      "c932e92c14c6f170.webp",
+      "98ee59a1242ae376.webp",
+      "22299171dd3cc6e7.webp",
+      "6a72d01b6813d742.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Use a butcher block oil, mineral oil, or other food-safe oil on the board by coating it several times",
+      "what": "finishing oil not in materials",
+      "kind": "consumable"
+    }
+  ]
 }
