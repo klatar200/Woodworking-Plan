@@ -1,6 +1,6 @@
 {
   "slug": "simple-modern-outdoor-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top pieces, leg pieces (24 and 27.5), length/width supports, base piece all in cutList; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used in steps[2-9]."
     },
     "R4": {
       "result": "pass",
@@ -21,25 +23,89 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, 2x2); steps not checked for per-part stock"
+      "reason": "Steps do not name stock per part, 3 stock types. For reference 2x6: 6x59 + 4x24 + 4x27.5 = 560 + kerf <= 4x120 + 96 = 576 (lengths ok), but base piece 59 vs 2x2 48\" is a cut-list error recorded under R14."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2.5\" pocket hole screws (steps 2,4-8) = materials[5]; 2.5\" wood screws (step 9) = materials[6]; no conflicting sizes; counts 4+4+3+3 = 14 = materials quantity."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket hole locations shown in viewed step-1 guide; supports \"evenly spacing\", base piece \"centering\", top \"centered\" are relational; leg size fixed by parts."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Only \"pocket hole guide to the right\" referenced; step-1 image is that guide (viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs, supports, base, then top, then join - possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as outlined in the pocket hole guide to the right."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" stock; searched all steps/materials/description for a jig setting - none; viewed step-1 pocket hole guide image shows hole locations only. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Length-Wise Base Piece qty 1, 1.5 x 1.5 x 59"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "attach the 39\" length-wise base piece by centering it on the bottom of the legs"
+        },
+        {
+          "path": "materials[4]",
+          "quote": "Board, 2x2 48\""
+        }
+      ],
+      "arithmetic": "Cut list length 59 vs step length 39; 59 > 48 (only 2x2 bought, 1 board x 48\") while 39 + kerf fits; viewed step-1 cut-piece image labels \"(1) 39\" 2X2 PIECE\". Source value matches Kreg (no importDiff recorded).",
+      "reason": "Cut-list row disagrees with step and image and cannot come from the listed 2x2 board. (b)(c)(d) otherwise ok: Liquid Nails in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "flip the piece you made in step 4 over, and repeat step 3",
+      "what": "Internal step cross-references are off by one (this step is the 4th; \"legs you built in steps 4 and 5\" in steps[4] likewise) while \"Repeat step 8\" in steps[8] is right - builder may repeat the wrong step."
+    },
+    {
+      "path": "materials[0]",
+      "quote": "Board, 2x6 120\" qty 4 and Board, 2x6 96\" qty 1",
+      "what": "Lengths add up (560 + kerf <= 576) but packing 6x59, 4x27.5, 4x24 into four 120\" + one 96\" boards needs 4x24 + 3 kerfs = 96.375 > 96 on the 96\" board (every other layout is also infeasible); shortfall is only 3/8\" with 1/8\" kerf."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "glue and clamp two pieces together",
+      "what": "Wood glue, sandpaper, stain and spar urethane used but not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a6563426e5fc5aef.webp"
+    ]
+  }
 }

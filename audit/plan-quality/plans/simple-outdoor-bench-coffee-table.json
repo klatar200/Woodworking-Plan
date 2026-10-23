@@ -1,6 +1,6 @@
 {
   "slug": "simple-outdoor-bench-coffee-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bench Top (2) and Bench Sides/Feet (4) in cutList; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used (steps[4] top, steps[1-3] feet)."
     },
     "R4": {
       "result": "pass",
@@ -25,25 +27,63 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 2×36 + 4×14 + kerf 4 cuts (6 parts − 2 boards, the fewest possible)×1/8 = 128.500″; bought: 2×72 = 144″; 128.500 ≤ 144"
+      "reason": "Single stock 2x6 x 72\" x2: 2x36 + 4x14 = 128 + kerf <= 144; layout 36+14+14 per board = 64 (+0.375 kerf) fits each 72\" board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps never give a fastener size and materials list \"Kreg Pocket Hole Screws\" without size - nothing conflicts (screw length not judged, §4)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Foot holes \"about 3 inches from the top and another 3 inches from the bottom\", other \"directly in the middle\"; legs \"flush on the edge\" and holes \"stagger\" are relational/shown in viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram; every step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Feet halves joined, top joined, legs attached to top, finish - possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using a Kreg Jig, drill pocket holes into the side (not the end) of the 2\" x 6\" x 14\" boards"
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" stock; searched all steps/materials/description for a jig setting - none; viewed step-1 and step-4 images show holes only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step 0 two 2x6 x 72\" matches materials; 2 tops + 4 feet (2 per foot) match cutList; legs 14 + top thickness gives a bench height. (b) all parts installed (steps 3,5). (c) no non-fastener hardware. (d) reaches finished bench."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Attach the two 14\" feet together side by side using wood glue",
+      "what": "Wood glue, sandpaper, stain and sealer used but not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca6e264a0348b576.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca7ec4b96750f17b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95183a175a13333f.webp"
+    ]
+  }
 }

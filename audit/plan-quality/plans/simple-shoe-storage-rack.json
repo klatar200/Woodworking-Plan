@@ -1,6 +1,6 @@
 {
   "slug": "simple-shoe-storage-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "End panels and Shelf both in cutList; steps[0-1] cut only those."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used (steps[0] shelves, steps[1] end panels)."
     },
     "R4": {
       "result": "pass",
@@ -46,25 +48,68 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 2×15 + 2×40 + kerf 2 cuts (4 parts − 2 boards, the fewest possible)×1/8 = 110.250″; bought: 1×48 + 1×72 = 120″; 110.250 ≤ 120"
+      "reason": "1x12 72\": shelf + 2x15 = 68.5 (38.5) or 70 (40) + 3 kerfs <= 72; 1x12 48\": one shelf 38.5/40 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws (steps 0,2) = materials[2]; count (3) x 2 ends x 2 shelves = 12 = quantity 12."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf heights shown numerically in viewed step-2 drawing (6\", 3/4\", 6\", 3/4\", 1 1/2\" = 15\" end panel); pocket holes shown in step-0 drawing."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram/drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut shelves, drill holes, cut end panels, assemble, finish - possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill (3) pocket holes in each end of each shelf for 1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" shelves; searched all steps/materials/description for a jig setting - none; viewed step-0 and step-2 images (dimension drawings) show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Shelf qty 2, lengthIn 40 (Kreg source \"3/4\\\" x 11 1/4\\\" x 40\\\"\")"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut one shelf from a 6' 1x12 at 38 1/2\" long and the other shelf from a 4' 1x12 at 38 1/@\" long."
+        }
+      ],
+      "arithmetic": "Step shelf length 38 1/2 vs cut-list 40 (difference 1 1/2 = 2 x 3/4 panel thickness). Viewed step-2 drawing labels the overall width 3' 2 1/2\" = 38 1/2, which with shelves between 3/4\" end panels would make shelves 37. Three different lengths for one part.",
+      "reason": "Cut list, step and drawing disagree on shelf length; step 0 also has typo \"38 1/@\". (b)(c)(d) ok."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d4d33060699e0b41.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/30624eb0ca08a5cd.webp"
+    ]
+  }
 }

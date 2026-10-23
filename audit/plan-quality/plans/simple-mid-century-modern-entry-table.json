@@ -1,6 +1,6 @@
 {
   "slug": "simple-mid-century-modern-entry-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frames, bases, top, legs all in cutList (6 rows); steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used in steps[1-4]."
     },
     "R4": {
       "result": "pass",
@@ -190,26 +192,79 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 2x2); steps not checked for per-part stock"
+      "reason": "Steps do not name stock per part. Reference: 2x2 parts 4x40 + 4x10 1/8 + 4x33 = 332.5 in + kerf vs 5 x 96 = 480; 1x8 top 40 vs 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" screws (steps 1,3,4) = materials[2]; 1 1/4\" screws (step 2) = materials[3]; no conflicts."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Using 2 1/2” Kreg screws, attach the legs to the table base."
+        }
+      ],
+      "reason": "Where each leg sits on the base (corner/inset) and how far the base sits from the leg top (sets overall height) is never given; searched steps[3-4], cutList, description for position words/numbers - none; viewed step-3 image shows a frame being screwed, finished-table photos undimensioned."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "No step cites a diagram; \"(these holes are not shown in photo)\" in steps[0] only notes absence."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame and base built, top onto one frame, legs onto base, base to top - screws reachable per step-0 holes."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "add Kreg holes in both sides of the the two longer table frames, the 2 longer table bases, one side of each of the table legs, and all around the 1” table top."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" (2x2) and 3/4\" (top) stock; searched all steps/materials/description for a jig setting - none; viewed step-0 and step-1 images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Short table top frame qty 2, 2x2 x 10 1/8 (Kreg-corrected 1.5 x 1.5 x 10.125)"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Table top qty 1, 1x8 x 40 (Kreg-corrected 0.75 x 7.25 x 40)"
+        }
+      ],
+      "arithmetic": "Frame (steps[1] \"frame of the table top\") from two 40\" longs and two 10 1/8\" shorts: depth = 10.125 + 2 x 1.5 = 13.125 in (or 43 in long if shorts go outside); top is 7.25 x 40 - top is 5.875 in shallower than the frame it is \"attached to\" (steps[2]); no step explains the difference.",
+      "reason": "Frame size and top size do not agree; assembly layout of the four frame pieces is not stated so likely. (b)(c)(d) otherwise ok."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ee33bc8c8362bca3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9b2f9b4301b9d593.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23b33966542f740d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/72c27f71aeb9af7a.webp"
+    ]
+  }
 }

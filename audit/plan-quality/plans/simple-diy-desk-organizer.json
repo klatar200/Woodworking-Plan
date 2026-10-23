@@ -1,6 +1,6 @@
 {
   "slug": "simple-diy-desk-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Panels (shelves, sides), back ledge and all drawer parts appear in cutList; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: shelf/side pieces steps[0-1], ledge step[2], drawer parts steps[5-6]."
     },
     "R4": {
       "result": "pass",
@@ -154,25 +156,62 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x6, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Steps do not name stock for the drawer parts (steps[5] \"cut drawer pieces according to the cut list\"). For reference 1x6: six 24\" = 144 + 4 cuts x 1/8 = 144.5 vs 2 x 72 = 144 (0.5\" over, margin-level); 1x4: 24+23.75+22.25+2x10.25 = 90.5 + kerf <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws used (steps 0,3,4,6) = materials[3]; no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "cut dadoes in the drawer sides to insert the 1/4\" plywood drawer bottom"
+        }
+      ],
+      "reason": "Dado position (height from drawer-side bottom edge) is a position the builder must set; searched steps[5-6], materials, cutList notes for it - no number; step-6 image (viewed) shows the drawer box in hands, no dado dimension. Shelf gap (3 5/8\"), ledge flush top/back and finger hole centered are fine."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a diagram/drawing; step 6 mentions a YouTube video in an \"extras tab\" for extra visual only (optional, drawer method is described in text)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels, trim, ledge, shelves, other side, then drawer - possible in order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and [3],[6] state \"3/4\\\" pocket holes\"; all pocket-holed parts are 3/4\" (cutList thicknessIn 0.75)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step 1 \"two 11 1/2\\\" long pieces\" = cutList side pieces 11.5; step 0 six 24\" boards = 4 shelf pieces + 2 boards trimmed to side pieces; step 4 gap 3 5/8\" vs drawer front 3.5\" (Kreg-corrected) fits; drawer front 23.75 = 24 shelf interior - 1/4; back 22.25 = 23.75 - 2 x 3/4; bottom 22.75 = 22.25 + 2 x 1/4 dado. (b) every part installed. (c) no non-fastener hardware (pull optional). (d) reaches finished piece."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "I glued up 2 shelf panels and 1 panel for the sides",
+      "what": "Wood glue (and finish) used but not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8a1de66723633584.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b84181abff0dd452.webp"
+    ]
+  }
 }

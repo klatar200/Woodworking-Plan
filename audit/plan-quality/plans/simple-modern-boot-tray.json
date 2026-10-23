@@ -1,6 +1,6 @@
 {
   "slug": "simple-modern-boot-tray",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,36 +71,81 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Short/long frame sides and slats all in cutList; steps[1] cuts only those."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used in steps[1-3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps[1] name stock per part. 1x2 96\": 2x11.75 + 2x36 = 95.5 + 4 cuts x 1/8 = 96.0 <= 96. 1x4 96\": 8x11.75 = 94 + 8 x 1/8 = 95 <= 96. Quantities (1,1) not import-defaulted (no qty diff in record)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws (steps 0,2,3) = materials[2]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat spacing \"about 3/4\\\" apart\" and \"flush to the bottom of the frame\" given (steps[3]); frame fixed by parts."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "\"like shown\" in steps[2],[3] and each has its own step image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using 1 1/4\" pocket hole screws, attach the short frame pieces between the 36\" long pieces on the ends"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Using a Kreg Pocket Hole Jig, drill 3/4\" pocket holes into the ends of the short frame pieces and into both ends of the slat pieces."
+        }
+      ],
+      "reason": "Frame (step 2) and slats (step 3) are fastened with pocket-hole screws before step 5 drills the pocket holes into those same pieces; as ordered the holes cannot exist yet and the slats are already attached. Build can proceed by drilling first, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[5] states 3/4\" pocket holes for the 3/4\" parts (stated, though out of order - see R8)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "I used a piece of tar paper (roofing paper) for this."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "fill your tray with decorative landscape rocks."
+        }
+      ],
+      "reason": "Tar paper (sheet moisture barrier) and landscape rocks are used; searched materials[0-2] (1x2, 1x4, pocket hole screws) - neither listed. (a) counts and sizes match step 1; 8 x 3.5 + 7 x 3/4 = 33.25 <= 34.5 interior length (36 - 2 x 3/4). (b)(d) ok."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": []
+  }
 }

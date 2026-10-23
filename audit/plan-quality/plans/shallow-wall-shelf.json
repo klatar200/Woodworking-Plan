@@ -1,6 +1,6 @@
 {
   "slug": "shallow-wall-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,37 +10,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut/assembled: back (two 1x10), shelves (two 1x4) - cutList \"Back pieces\" x2, \"Shelves\" x2; no other part appears in steps[0-5]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used in steps[0],[2],[3]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1])"
+      "reason": "cutList rows are written in nominal sizes (thicknessIn 1, widthIn 10 / 4) matching materials \"1 x 10\" / \"1 x 4\" by name only; sweep could not parse stock. Actual-size mismatch is recorded under R14."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
+      "reason": "Stock lengths not stated in materials[0] \"Primed MDF boards, 1 x 4\" / materials[1]; qty 2 each with no length."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[2] 1.5\" screws = materials[3] \"Box of 1.5\\\" Wood Screws\"; steps[3] 1\" screws = materials[2]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf spacing numeric (\"I allowed 11\\\" on the bottom and middle\"); pocket-hole positions shown in viewed step-1 image; hooks \"any hooks you want\" is as-desired. Wall mounting not covered anywhere - see gaps."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, join backs, attach shelves, hooks - possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Three pocket holes are needed on one of the 1x10 pieces and on the bottom of both 1x4 pieces."
+        }
+      ],
+      "reason": "Pocket holes in 1x boards; searched steps/materials/description for a jig/thickness setting - none; step-1 image (viewed) shows hole locations only. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "attach two 1x10 pieces together to make it 20” wide. The smaller shelves were then also cut to size (20”)"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Back pieces qty 2, widthIn 10 (materials[1] \"Pine or MDF boards, 1 x 10\")"
+        }
+      ],
+      "arithmetic": "§9 actual 1x10 width = 9 1/4; 2 x 9 1/4 = 18 1/2 (not 20); shelves cut 20 therefore overhang the back by 1 1/2 total. Plan adds nominal 2 x 10 = 20.",
+      "reason": "Step width total does not add up from actual board widths; (b)(c)(d) otherwise ok - hooks, screws, paint in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Now’s the time to hang up those shoes, roll up the towels, and even add in a small plant",
+      "what": "Never says how or where the shelf is fixed to the wall (no mounting method, hardware or height in any step or material; searched steps/materials for /wall|mount|anchor|stud|hang/i - only \"hang up those shoes\"). Plugs and paint/roller in materials but never used in steps."
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dd62c885bf6c8659.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5a2d9ea08c28c453.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/50c69f7681ff7304.webp"
+    ]
+  }
 }

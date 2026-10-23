@@ -1,6 +1,6 @@
 {
   "slug": "scrap-wood-business-card-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "One part (Holder); cutList has \"Holder\"; no other part cut (searched steps for cut/make verbs)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Single row \"Holder\" is the piece made in steps 0-3."
     },
     "R4": {
       "result": "pass",
@@ -21,25 +23,62 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "reason": "Only stock is \"Board, 2x4 2\\\"\" - no usable stock length stated; single part."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fasteners in any step or material (searched /screw|nail|bolt|brad/i)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "I marked where the front and back of the grove needed to be, then made successive cuts to notch out the groove."
+        }
+      ],
+      "reason": "Groove position, width and depth are positions/sizes the builder must set; no number in any step, materials or cut list (searched steps[0-6] for inch values: only \"2\\\" from back to front\" in steps[3]). Step-3 image (viewed) shows the profile but is not dimensioned."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Angle, groove, sand, cut free, finish, felt - possible in order."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes or joinery; single piece."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step 3 \"about 2\\\" from back to front\" consistent with cutList Holder 1.5 x 2 x 3.5 (2x4 section 1.5 x 3.5, 2 long). (b) single part. (c) felt, glue, stain, topcoat are in materials. (d) steps reach finished holder."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "I started with some 150 grit before using the 220 grit.",
+      "what": "Sandpaper used but not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/96b38930e05b1211.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f5891a3d5c879d5f.webp"
+    ]
+  }
 }

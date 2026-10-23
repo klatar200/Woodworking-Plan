@@ -1,6 +1,6 @@
 {
   "slug": "shiplap-wreath-display-frame",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,37 +10,109 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Planks, supports, frame pieces (1x2 x25, x26) all in cutList; steps[0-3] cut nothing else (searched steps for cut verbs)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: Planks steps[1], Support pieces steps[0], Frame pieces steps[3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "Frame pieces qty 2, widthIn 1.5, lengthIn 25"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Frame pieces qty 2, widthIn 1.5, lengthIn 26"
+        },
+        {
+          "path": "materials[1]",
+          "quote": "Board, 1x2 96\""
+        }
+      ],
+      "arithmetic": "Steps name the stock for every part (steps[0-1] \"1x3\", steps[3] \"1x2\"). 1x2 parts: 2x25 + 2x26 = 102 in, plus 3 kerfs x 1/8 = 102.375 > 1 board x 96 = 96 (materials[1] quantity 1; Stage-2 import-fidelity shows no defaulted quantity for this plan). 1x3 is fine: 3 x 25 per 96\" board, 4 boards for 12 parts.",
+      "reason": "One 96\" 1x2 cannot yield 102\" of frame pieces."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" brad nails (steps[6]) and 1 1/4\" pocket hole screws (steps[5]) both in materials; no conflicting sizes. Unsized nail/staple under R14."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Support positions shown in viewed step-4 diagram (two supports inset, 25\" long); frame position fixed by parts; hanger \"whatever you prefer\" is as-desired."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame ends screwed to supports, supports nailed to planks, frame assembled in place, finish, hanger - possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes in the ends of the two support boards."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" supports; searched all steps/materials/description for a jig setting - none; viewed step images 3 and 5 show holes/clamping, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "I used a heavy gauge wire, attached to each support piece with a staple."
+        }
+      ],
+      "reason": "Wire and staples are used in the step but searched materials[0-3] for /staple|wire|hanger/i - absent. Hanger is \"whatever picture hanger you prefer\", hence likely not certain. (a)(b)(d) otherwise agree: 10 x 2.5 = 25 matches supports/planks."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "cut 2 1x2's at that length (should be about 26\") see diagram",
+      "what": "Step-3 diagram labels frame 26\" wide x 25\" tall overall; with 25\" planks and 3/4\" thick frame sides inside, width would be 25 + 2 x 3/4 = 26.5 (cut list 26). Builder is told to measure, so low impact."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Using 1 1/4\" pocket hole screws and wood glue",
+      "what": "Wood glue used in steps but not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/756fc10bf2f1683a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f5b3e5987511186b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6bbdfd00e3b0260c.webp"
+    ]
+  }
 }

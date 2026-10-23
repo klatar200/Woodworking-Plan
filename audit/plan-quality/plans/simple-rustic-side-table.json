@@ -1,6 +1,6 @@
 {
   "slug": "simple-rustic-side-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,37 +107,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, arched ends, top center boards, top edge boards all in cutList; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used in steps[0-3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 2x6, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each cutList part name carries its stock (\"Leg, 2x4\", \"Arched End, 2x6\", \"Top Center, 2x6\", \"Top Edge, 2x2\"), one board each: 2x4 8': 4x22 = 88 + 3 kerf <= 96; 2x6 6': 2x11 + 2x21 = 64 + kerf <= 72; 2x2 3': 2x17 = 34 + kerf <= 36."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 2 1/2\" pocket hole screws (steps 1-3) = materials[3]; no conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket holes and 21/17/11 sizes, 2\" and 1 1/2\" insets shown in viewed step-2 diagram; arch \"touches the center line\"; arched boards \"flush to the top and the front edge\" relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "steps[2] \"as shown in the diagram\" - its step image (viewed) is the dimensioned top diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides built, top built, top placed between legs and screwed - possible in order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] and [2]: jig set for \"1 1/2\\\" thick material\"; all pocket-holed parts are 2x stock (1.5\")."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step-0 tip \"11\\\" wide together\" = 2 x 5.5; diagram top 21 x 11 plus edges 17 matches cutList; arched end length 11 matches leg spacing. (b) all parts installed. (c) wood glue, stain in materials. (d) reaches finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[1]",
+      "quote": "Arched End, 2x6 - source \"1 1/2\\\" x 5 1/5\\\" x 11\\\"\"",
+      "what": "Kreg source width \"5 1/5\" is probably a typo for 5 1/2 (2x6 = 5 1/2 and the arched boards sit flush with 5 1/2 top boards); as written 5.2 would leave the arched ends 0.3\" narrower than the top center boards."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "through all the white pocket hole positions from Step 3",
+      "what": "Cross-reference points to the wrong step (white pocket holes are drilled in steps[2], the 3rd step); harmless but confusing."
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2b78de83d72703e3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b8268e43e29a0dc1.webp"
+    ]
+  }
 }

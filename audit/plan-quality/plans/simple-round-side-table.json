@@ -1,6 +1,6 @@
 {
   "slug": "simple-round-side-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -95,36 +95,76 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs (4x23), cross boards (2x16) and short boards (4x7 1/4) in cutList (\"Boards\" rows); rounds are purchased (materials[0-1]); steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three \"Boards\" rows are used: 16\" and 7 1/4\" in step 1, 23\" legs in step 2."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[2]); cutList[1] no match among parsed stock; unparsed stock present (materials[2]); cutList[2] no match among parsed stock; unparsed stock present (materials[2])"
+      "result": "pass",
+      "reason": "Kreg-corrected rows 0.75 x 1.5 = 1x2 actual (§9) from materials[2] \"Select pine boards, 1x2x4’ long\" (curly foot mark = 48\")."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2]"
+      "result": "pass",
+      "reason": "Single stock 1x2 x 48\" x4 (curly apostrophe read as feet): 4x23 + 2x16 + 4x7.25 = 153 + kerf <= 192; layout 23+23, 16+16+7.25+7.25 = 46.5 (+3 kerf), 7.25+7.25 fits 4 boards. Quantity 4 not defaulted."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws (steps 1-3) = materials[3]; 1\" pocket screws (step 4) = materials[4]; no conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Lower support at \"4 1/2\\\" from the bottom end of each of the legs\", cross center \"8\\\"\", short boards \"3/4\\\"\" mark (steps[1],[3]); rounds \"center\"; countersunk-hole locations shown in viewed step-4 drawing."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram/drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cross supports, legs, lower section, then flip and attach rounds - possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes into the ends of the 16” pieces and the 7 1/4” pieces."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards; searched all steps/materials/description for a jig setting - none; viewed step-1/3/4 images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 cross supports = 2x16 + 4x7 1/4; 4 legs; cross span 7.25 + 1.5 + 7.25 = 16 so legs sit 16\" apart, inside which the 15\" round (lower) fits (7.5 radius < 8). (b) all parts and both rounds installed (step 4). (c) pocket screws in materials. (d) reaches finished table."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Add glue to one end of the shorter boards",
+      "what": "Wood glue, sandpaper and finish used but not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "s6-34",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48a81e9e79e6a4a5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e09b165eab6ca46.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/788f649762f455c6.webp"
+    ]
+  }
 }
