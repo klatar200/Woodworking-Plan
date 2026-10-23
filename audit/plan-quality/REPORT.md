@@ -5,37 +5,38 @@
 | | |
 |---|---|
 | Rubric | **R-2** (2026-10-19; DECISIONS_LOG) |
-| Current stage | **Stage 6 — PAUSED (scheduled stop, Keagan) 2026-10-23 17:06 UTC** (Sonnet readers, Opus verifier) |
-| Last batch | s6-01..30 complete; s6-31 (2 left) and s6-32 (1 left) partly read; s6-33..36 not started |
-| Ledger | 610: 547 read (521 read + 26 verified), 63 swept |
-| Verdicts (547 read) | Fix 394 · Fix + Human review 6 · Ship 48 · Ship (unverified) 74 (+2 Human review) · Unpublish 22 · Unpublish (pending verifier) 1 |
+| Current stage | **Stage 6 — DONE 2026-10-23.** Next: Stage 8 (report + `GO_LIVE_FIXES.md` C section) |
+| Last batch | s6-01..36 complete; every Unpublish verifier-checked (v1–v6); consumable cleanup applied to all records |
+| Ledger | 610: all read (583 read + 27 verified), 0 swept |
+| Verdicts (610) | Fix 432 · Fix + Human review 6 · Ship 57 · Ship (unverified) 91 (+2 Human review) · Unpublish 22 |
 | Updated | 2026-10-23 |
 
-**To resume Stage 6:** prompts are in `prompts/` (reader, verifier, consumable cleanup; replace the
-scratchpad paths in them with the new session's scratchpad). For each batch with `swept` entries in
-the ledger (`ledger.json` `batch`), run a Sonnet reader on its swept slugs only, then
-`prompts/commit-batch.sh <batch> <slugs>` (it runs `verdict.mjs --write` + `tally.mjs --write`,
-commits, pushes). Run the Opus verifier on every `Unpublish (pending verifier)` record (now: farmhouse-table-made-with-7-boards), save its JSON to `verifier/<run>.json`, apply with
-`scripts/apply-verifier.mjs`, then `verdict.mjs --write`.
-
-**Before Stage 8:**
-- Run the consumable cleanup (`prompts/cleanup-prompt.md`) on batches s6-11..s6-14. Their readers
-  started before the 2026-10-19 consumables ruling.
-- Stage 8 items noted so far:
-  - Importer drops cut-row detail notes (angles, miters, bevels): kids-stepping-stool "Cut at 22.3
-    Degree Angle", simple-mirror-frame, a-frame-birdhouse.
-  - Many steps cite "the cutting diagram" where no layout image exists, though the cut list has the
-    sizes (R11 Fix/likely). Report this once.
-  - R9 (jig setting) and consumables are catalog-wide items.
-  - Importer also drops "30 degree angled cuts" (kids-picnic-table) — same cut-detail defect.
-  - Fidelity checker `correctRow` artifacts: stuffed-animal-storage cutList[6] [0.125,1.5,24] from
-    '1/8" from edge' text; rustic-ladder-shoe-shelf 24x48x72 from `2'x6'x48"`. Spot-check correctRows.
-  - R11 reading is inconsistent between verifiers: v2 (kids-stepping-stool) refused other steps'
-    images, v3 (shelving-unit-with-storage-and-tilt-out-laundry) accepted them. Settle one reading;
-    verdicts unaffected so far.
-  - Single-row Kreg cut lists match the source (not import drops): rolling-trash-can-cabinet,
-    easy-router-table-storage, diy-concrete-and-wood-nightstand, plywood-chair-set,
-    diy-coastal-console-table, easy-garage-shop-cabinets-part-1-lowers.
+**Stage 8 inputs (collected during Stage 6; not yet written up):**
+- Importer defects (bulk fixes):
+  - Cut-row detail notes (angles, miters, bevels) are dropped: kids-stepping-stool "Cut at 22.3
+    Degree Angle", kids-picnic-table "30 degree angled cuts", simple-mirror-frame, a-frame-birdhouse.
+  - Feet marks misread as inches: raised-dog-bowl-stand Leg `1 1/2'` → 1, play-stand Side Poles `4'` → 4.
+    Neither is in `importDiffs`.
+- Fidelity-checker `correctRow` artifacts — spot-check before quoting Stage 2 numbers:
+  - stuffed-animal-storage cutList[6] `[0.125,1.5,24]`, read from '1/8" from edge' text.
+  - rustic-ladder-shoe-shelf `24x48x72`, read from `2'x6'x48"`.
+- Single-row Kreg cut lists match the source (not import drops): rolling-trash-can-cabinet,
+  easy-router-table-storage, diy-concrete-and-wood-nightstand, plywood-chair-set,
+  diy-coastal-console-table, easy-garage-shop-cabinets-part-1-lowers.
+- Catalog-wide items, report once each:
+  - R9 (jig setting not stated).
+  - Consumables missing from materials (`gaps` kind consumable).
+  - Steps cite "the cutting diagram" where no layout image exists, though the cut list has the
+    sizes (R11 Fix/likely).
+- Rubric calls for Keagan:
+  - **R11 reading:** verifier v2 (kids-stepping-stool) refused other steps' images, v3
+    (shelving-unit-with-storage-and-tilt-out-laundry) accepted them. Verdicts unaffected so far.
+  - **Kerf-only R5 shortfalls (≤ 1/2″):** e.g. over-sized-wooden-crate, play-stand,
+    rolling-grill-table, picture-ledge-shelves, rustic-ladder-shoe-shelf. Should they count?
+  - **Missing structural part or missing material?**
+    - farmhouse-table-made-with-7-boards: legs installed in images but never bought or sized
+      (R14 Fix; R2 not judged).
+    - storage-mirror: mirror never installed (reader R14 Fix; a strict R14 reading may be Unpublish).
 
 **Stage 5 gate — signed off by Keagan 2026-10-19:** Q1–Q4 all as recommended; core-40 agent
 verdicts accepted without per-plan review. Rubric R-2 in `docs/PLAN_QUALITY_AUDIT.md` §6; verdicts
