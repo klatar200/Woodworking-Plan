@@ -1,6 +1,6 @@
 {
   "slug": "angled-base-dining-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -151,47 +151,109 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "For more projects and printable plans, including for a corresponding bench, visit www.CharlestonCrafted.com",
-          "why": "matches \"printable\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[9] is a credit/promo link ('For more projects and printable plans, including for a corresponding bench, visit www.CharlestonCrafted.com'); every part and step needed for the table is in the plan, so the link is optional (section 2)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut/assemble (angled bases, straight legs, spreader, long tops, top ends, short/long lips) has a cutList row; steps[0] says base pieces are 'two 1x4s glued together', which accounts for the doubled quantities (8 angled = 4 pairs, 8 legs = 4 pairs, 2 spreader = 1 pair)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: steps[1] angled bases + legs, steps[2] spreader, steps[5] long tops, steps[6] top ends, steps[8] lips."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 1x2, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[3]",
+          "quote": "Board, 1x4 120\" x 4"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "All of the base pieces are made from two 1x4s glued together."
+        },
+        {
+          "path": "cutList[2..4]",
+          "quote": "Angled Leg Bases x8 18; Straight Legs x8 29 1/4; Base Spreader x2 52 1/4 (corrected, all 3/4 x 3 1/2)"
+        }
+      ],
+      "arithmetic": "Base parts (3 1/2 wide = 1x4): 8x18 = 144; 8x29.25 = 234; 2x52.25 = 104.5; total 482.5. Bought 4 boards x 120 = 480. 482.5 > 480 even with zero kerf (short 2.5\"); with 18 pieces x 0.125 kerf = 2.25 the need is 484.75. Other stocks fit: 1x6 72\" x7 for 7x72; 1x6 96\" holds 2x38.5 = 77; 1x2 96\" x3 holds 2x75.5 + 2x37.25 (long lips one per board, shorts on the third).",
+      "reason": "Four 1x4 x 120\" boards are shorter than the base parts' total length."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size in the steps conflicts with materials (2 1/2\" and 1 1/4\" Kreg screws listed; steps say only 'pocket screws'). Finishing nails used in steps[8] are not in materials but no size is stated (see gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Steps use 30 degree cuts and relational placement ('Center the Top on the Base', lips 'on the outside of the Legs'); viewed images of steps[0], [3], [7], [8] show the three-way junction, legs and lip positions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; every step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Glue-up and cuts, then leg/base-piece assembly, spreader, base junctions, top, top ends, top onto base, lips last; each exists before the step using it."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill two pocket holes in the other end and connect to the Straight Legs."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Drill two 3/4\" pocket holes on the end of each Leg (this is important because the top is not the same thickness as the legs"
+        }
+      ],
+      "reason": "Base pieces are two glued 3/4 boards (1.5\" thick, steps[0]); steps[1] and [3] drill pocket holes in them with no setting stated, and the only setting given (3/4\") is for the top, applied to the 1.5\" legs in steps[7]. Search for /setting|thickness/ finds only steps[7]. Step images 0,3,6,7,8 viewed show no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: four angled base pieces and four legs (8 each in pairs), spreader, 7 long tops + 2 top ends (7 x 5.5 = 38.5 = Top Ends length), 2+2 lips. (b) all parts installed. (c) no non-fastener hardware used. (d) steps[8] completes the table (steps[9] is a credit link)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[6]",
+      "quote": "Long Lips x2, 3/4 x 1 1/2 x 75 1/2 (corrected); Long Tops x7 72; Top Ends x2 38 1/2",
+      "what": "Top is 72 + 2 x 0.75 = 73.5 long and 7 x 5.5 = 38.5 wide, but the lips that go 'under the table on the outside of the Legs' are 75.5 long (and a 37.25 short lip plus two 0.75 lips = 38.75 wide), larger than the top they sit under; viewed steps[8] image shows the lips inset from the top edge. Lip lengths do not fit the top (likely)."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "using finishing nails and wood glue",
+      "kind": "fastener",
+      "what": "Finishing nails are used but no nails (or size) appear anywhere in materials (searched /nail/)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "327ae33eb1022031.webp",
+      "1ecbf9b017a60672.webp",
+      "01581e4c42d89d9f.webp",
+      "83f75a338be2e3db.webp",
+      "0cb0beb87e882177.webp"
+    ]
+  }
 }

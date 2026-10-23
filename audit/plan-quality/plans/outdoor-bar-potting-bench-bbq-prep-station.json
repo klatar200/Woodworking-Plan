@@ -1,6 +1,6 @@
 {
   "slug": "outdoor-bar-potting-bench-bbq-prep-station",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -287,49 +287,114 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": " into. Using a jig saw, cut the areas you marked to 1 5/8\" x 1 5/8\" to leave a little allowance for a good fit. If your jigsaw can adjust to 22.5 degrees, do so for the holes for the angled supports. ",
-          "why": "cut sentence states 1 5/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Cut 3 - 1x6 fence boards to 26 1/4\", but cut 1 5/8\" squares out of the front two corners of one board, and the two back corners of the board that will go in the back. The center board will not require",
-          "why": "cut sentence states 1 5/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1 5/8\" x 1 5/8\" items (steps[10], steps[11]) are leg notches cut into shelf boards, not parts. Every part a step cuts/assembles (legs, 13 1/2 pieces, 27 1/4 verticals, 23 1/4 horizontals, 56 spans, 30 angled, 20 3/4 planter legs, shelves, planter boards, trim) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 cutList rows map to a step: spans steps[1], verticals steps[2], 23 1/4 steps[4], angled steps[5], planter legs steps[6], shelves steps[10-12], planter boards steps[8], trim steps[9]; 13.5 pieces count checked from images (6 end + 3 centre + 6 supports + 6 planter frame + 2 planter bottom = 23)."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged; cutList[7] thinner than stock — would need planing/resawing, not judged; cutList[8] thinner than stock — would need planing/resawing, not judged; cutList[9] thinner than stock — would need planing/resawing, not judged; +3 more"
+      "reason": "Corrected rows 0-5,13 (1.5 x 1.5) match 2x2. Rows 6-12 are 1\" thick (corrected 1 x 5.3125, 1 x 2) from 'Cedar Fence Boards, 1x6 72\"'; section 9 gives 1x6 as 3/4 x 5 1/2 but fence boards are not dimensional lumber and the plan states no actual size, so thickness 1 vs 3/4 is not settled from the plan."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 2x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Cedar Fence Boards, 1x6 72\""
+        },
+        {
+          "path": "materials[0].quantity",
+          "quote": "10"
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Planter Boards x12, 1 x 5 5/16 x 16 3/64 (corrected)"
+        },
+        {
+          "path": "cutList[6..8]",
+          "quote": "Bottom Shelf x3 @59; Mid Shelf x3 @26 1/4; Top Shelf x3 @60 (corrected)"
+        }
+      ],
+      "arithmetic": "1x6 parts (steps name 1x6 fence boards for all): 3x59 + 3x60 each need a 72\" board; leftover 72-59-0.125=12.875 and 72-60-0.125=11.875, smaller than the smallest other 1x6 part (16.047 planter, 13.5 trim) so 6 boards are consumed by 6 pieces. Remaining 10-6=4 boards must give 3x26.25 + 12x16.047. Per 72\" board: 2 mids + 1 planter=52.5+16.05+0.25=68.8 (2 planters 84.6 no); 1 mid + 2 planters=26.25+32.09+0.25=58.6 (3 planters 74.4 no); 0 mid + 4 planters=64.3 (5 =80.2 no). Max planters from 4 boards with 3 mids = 11 (2m+1p, 1m+2p, 0+4, 0+4) < 12, before the 4 trim strips. Needs >=11 boards vs 10 bought. (Length sum alone, 688.4+kerf <= 720, passes.)",
+      "reason": "Ten 72\" boards cannot yield the listed 1x6 parts because of piece-length packing."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach through the top and bottom span boards with a 2 1/2\" deck screws by driving into the center of the angled board."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/2\" Deck Screws"
+        }
+      ],
+      "reason": "Search of materials for /deck/ finds only '1 1/2\" Deck Screws' (materials[5]); no 2 1/2\" deck screw is listed (materials[3] is a 2 1/2\" pocket-hole screw)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Viewed step images 0,2,3,5,6,7,9: end-frame rail heights (12 3/4, 13, 3/4 foot), centre frame 23 1/4 from end, supports 3 1/2 spacing, angled 29 1/2, planter 20 3/4/13 1/2/15/16 1/2 shown; step 2 text gives 13\" and 23 1/4\"; top shelf 1/2\" overhang given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Each diagram reference sits in a step with its own image (viewed several)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is possible: end frames, spans, centre frame (viewed steps[2] image), supports, 23 1/4 shelf frame, angled supports, planter frame/bottom/panels/trim, then shelves on the finished frame; steps[6] 'skip to step 11' lands on 1-based step 11 'Bottom Shelf'."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Each of the 2x2x13.5\" pieces should have two pocket holes in each end on the under-side."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1 1/2\" 2x2 stock; search of all steps for /setting|thickness|jig/ finds only 'jig saw'. Viewed images (steps 0,2,3,5,6,7,9) show no jig setting; steps 1,4 images not opened."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts/sizes match corrected rows: 27 1/4 verticals x2, 20 3/4 x2, 23 1/4, 30, shelves 59/26 1/4/60 x3. (b) all parts installed. (c) no non-fastener hardware used; glue and paint are in materials. (d) ends with top shelf."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[9]",
+      "quote": "We inserted two full-width fence boards and ripped the last to fit the remaining space.",
+      "what": "steps[8] says the third board on each planter side is ripped narrower, but cutList[9] lists all 12 Planter Boards at the same full 5 5/16 width; the ripped width is not given anywhere (relational only)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "d29280bff7ebbfd3.webp",
+      "b2a3f405a115b451.webp",
+      "c29bfd1c9f17601b.webp",
+      "20013cbe39e915f7.webp",
+      "82f461fe7c2dae39.webp",
+      "163d569546514e51.webp",
+      "f71b392904d6dd63.webp"
+    ]
+  }
 }

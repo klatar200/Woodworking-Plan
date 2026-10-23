@@ -1,6 +1,6 @@
 {
   "slug": "x-leg-tv-stand",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "2\" spindle at a 45 degree angle, then measure approximately 19 inches and make your second 45 degree angle cut. Next cut two small 9 inch spindles with one straight edge, and one 45 degree angle edge.",
-          "why": "cut sentence states 19\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "and make your second 45 degree angle cut. Next cut two small 9 inch spindles with one straight edge, and one 45 degree angle edge. Double check to see if your spindle measurements will be the same as ",
-          "why": "cut sentence states 9\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 19\" and 9\" in steps[2] are the X pieces, which the step itself cuts from the listed 'Pine bead, 1/2\" Thick 96\"' (materials[3]); all other parts (legs, 14\" and 41\" connectors, top, shelf) have cutList rows 0-4."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: legs/14\" connectors steps[1], 41\" connectors steps[3] and [5], top steps[4], shelf steps[6]-[7]; 3 x 41 = top front + top back (step 0 side holes on two 41s) + front support (steps[5])."
     },
     "R4": {
       "result": "pass",
@@ -38,26 +28,74 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x3, sheet-0.5, 0.5x96); steps not checked for per-part stock"
+      "reason": "Boards pass by sum: 2x2 8' 4x23 = 92 + 3 x 0.125 = 92.375 <= 96; 1x3 96\" x2 = 3x41 + 4x14 = 179 + 6 x 0.125 = 179.75 <= 192 (piece packing is 1/4\" short, see gaps). Plywood 'Half Sheet' has no stated dimensions, so the sheet check is unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name no screw size; materials list 1-1/4\" and 1\" fine-thread Kreg screws, no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Numbers present: second 1x3 '14 inches down', X 'approximately 19 inches' / 9 inch pieces, top 'in the center'; viewed images steps[1]-[3], [5] show connector positions, X and frame; frame 41 + 2 x 1.5 = 44 and 14 + 2 x 1.5 = 17 inside the 45 x 18 top give an even 1/2\" overhang."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown' references (steps[1], [6]) each have their own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg frames and X (steps[1]-[2]), joined by 41\" boards (steps[3]), top attached to the console frame (steps[4], viewed image), front support (steps[5]), shelf drilled and installed (steps[6]-[7])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes into either end of all the 1\"x3\" pieces (all 14\" and 41\")."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Drill pocket holes into 3 sides of the bottom shelf, as shown."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" 1x3 and the 1/2\" plywood shelf; searched steps for /setting|thickness|jig/ finds no jig setting; the viewed step-0 image shows a jig but no readable setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 legs, 4 x 14\" (two per leg frame x 2), 3 x 41\" match steps[1], [3], [5]; shelf 41 x 14 = opening between legs. (b) all parts installed. (c) no non-fastener hardware; wood glue noted under gaps. (d) steps[8] finishes."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[1..2]",
+      "quote": "Leg connectors x4, 1 x 3 x 14; Leg Connectors x3, 1 x 3 x 41 from 'Board, 1x3 96\"' x2",
+      "what": "Piece packing: 41+41+14 = 96 plus 2 cuts x 0.125 = 96.25 > 96, and 3x41 + 4x14 does not pack into two 96\" boards (41+41 leaves 13.875 < 14.25; 41+3x14 leaves 12.6); the sum (179.75 <= 192) hides a 1/4\" shortfall (likely)."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "It is best to have a snug fit, and glue in place.",
+      "kind": "consumable",
+      "what": "Glue is used but no glue is in materials (searched /glue/ in materials[0-6]); steps[8] also uses sandpaper."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "98e34cfaceb0d3fa.webp",
+      "17c1c093a3898c69.webp",
+      "1c834cc5594e5d3f.webp",
+      "f76abd310cd6582d.webp",
+      "18b6121f9d9d2945.webp"
+    ]
+  }
 }

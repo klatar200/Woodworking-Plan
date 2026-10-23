@@ -1,6 +1,6 @@
 {
   "slug": "arts-crafts-decorative-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,43 +71,92 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps[1]-[5] (top, sides, top frame strips, legs, bottom) has a cutList row; legs steps[2] 'four 2 1/2\" long legs' = cutList[3] (corrected 2.5)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: top steps[5], sides steps[4]/[7], legs steps[2]/[8], bottom steps[3]/[7], top frame steps[6]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[5] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "reason": "Material names state thickness (1/2\" oak 1x4, 1/2\" maple 1x8, 1/2\" poplar 1x4, 3/4\" maple 1x2, 1/4\" plywood 7 1/2 x 5). Parts 0.5 x 3 x 8/4.5 from the 3 1/2\" oak board; top 0.5 x 7 from the 1x8 (7 1/4); bottom 0.25 x 5 x 7.5 equals the 7 1/2 x 5 plywood; poplar strips 3/8 x 1/2 (viewed steps[6] image: 3/8\" wide, 1/2\" tall) rip from 1/2\" stock; legs 3/4 x 3/4 rip from the 3/4 x 1 1/2 maple."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.25, 1x4, 1x8, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Oak 1x4 36\": 2x8 + 2x4.5 = 25, + 3 cuts x 0.125 = 25.375 <= 36. Maple top 9.5 <= 12 (width 7 <= 7 1/4). Poplar 1x4 12\": two 3/8 strips x (7 + 3.75 + 0.125) = 10.875 <= 12 each, 2 x (3/8+1/8) = 1\" of the 3 1/2\" width. Maple 1x2 12\": 4 x 2.5 = 10 + 0.375 <= 12. Plywood 7 1/2 x 5 = bottom 7.5 x 5."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "Use Titebond I wood glue and 1\" pin nails to attach the four legs to the box.",
-          "why": "1\" nail — no material line lists a 1\" fastener"
+          "quote": "Use Titebond I wood glue and 1\" pin nails to attach the four legs to the box."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "5/8\" pin nails"
         }
-      ]
+      ],
+      "reason": "Searched all steps for /nail/: only steps[8] names a nail size (1\"); the only nail in materials is 5/8\" (x20), so the 1\" nails are not listed and the 5/8\" nails are used nowhere."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Dado '1/4\" up from the bottom edges', bevel border 1 1/2\" x 1/8\" and 8 degrees given in text; viewed steps[6] image gives frame margins 1 1/4\" and strip sizes; viewed steps[8] image shows legs at the corners with a 1\" drop from the rim."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing lacking an image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Measure the opening of the box and make any small adjustments to the length of the frame components so that the frame will fit snugly inside the box."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Assemble box using short sides. long sides and bottom."
+        }
+      ],
+      "reason": "steps[6] needs the finished box opening, but the box is assembled in steps[7]. The viewed steps[6] image dimensions the frame (7\" outer, 1 1/4\" margins, 3 3/4\" inner), so the build can proceed by doing step 7 first."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; corner butt joints with glue and clamps (steps[7]), legs glue + pin nails (steps[8]), frame glue (steps[6]) are all stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: 4 legs, 2+2 sides, 2+2 frame strips; step-6 image frame 7 x 4.5 outer = top 9.5 - 2 x 1.25 and 7 - 2 x 1.25. Box geometry checks: bottom 7.5 x 5 = inner 7 x 4.5 + 2 x 1/4 dado; top 9.5 x 7 = 3/4 overhang on 8 x 5.5 box. (b) all parts installed. (c) no non-fastener hardware. (d) steps[9] finishes."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "fill all nail holes and other imperfections with wood putty",
+      "kind": "consumable",
+      "what": "Wood putty is used but is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "c20c6036f4309e93.webp",
+      "d0fa328de7b7da8d.webp"
+    ]
+  }
 }

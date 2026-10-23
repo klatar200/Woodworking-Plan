@@ -1,6 +1,6 @@
 {
   "slug": "action-figure-display-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,43 +47,99 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut/assembled in steps (sides, top, bottom, shelves, MDF backer) all have cutList rows; backer step 'cut the backer to 12\" x 15-1/2\"' matches cutList[4] (corrected 0.125 x 12 x 15.5). Optional acrylic doors are tip-only."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList rows 0-4 are each used: steps[4] sides/top/bottom/shelves, steps[5]-[6] backer."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.75x3, sheet-0.125); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "One board stock (3/4 x 3 x 8ft = 96\"): 2x12 + 4x14 = 24+56 = 80, + 6 cuts x 0.125 = 80.75 <= 96. MDF 1/8\" 2ft x 2ft = 24 x 24 holds 12 x 15.5. Quantity 1 can only cause a false fail, not a false pass."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach the top and bottom pieces to the side boards using 1-1/4” pocket hole screws. Once that’s done, attach your shelves evenly spaced (in this case the shelves are spaced 3.5” apart.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1-1/4\" pocket hole screws' (steps[4]) matches materials[2] 'Box of 1 ¼ pocket hole screws' (unicode fraction not parsed by sweep); 1\" brad nails (steps[6]) = materials[3]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Shelf spacing given as 3.5\" (steps[4]); photo steps[4]/[5] viewed show sides outside, top/bottom between; optional disc countersink spacing is in an OPTIONAL tip only."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands; no 'as shown' reference without an image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, sand, drill pocket holes, paint, assemble, then cut and nail on backer; each piece exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using your favorite Kreg Pocket-Hole Jig (I used the 720PRO) drill 2 holes at each end of your top and bottom pieces as well as your shelves."
+        }
+      ],
+      "reason": "All pocket-holed parts are 3/4\" (corrected rows 0.75). Search of steps/materials/cutList for /setting|thickness/ finds none; the step-2 image (viewed) shows a jig and drill but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "attach your shelves evenly spaced (in this case the shelves are spaced 3.5” apart."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Shelf sides x2, 12 long (corrected 0.75 x 3 x 12)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "I cut the backer to 12” x 15-1/2”."
+        }
+      ],
+      "arithmetic": "Photo (steps[5] image, viewed) shows top and bottom pieces between full-height sides, consistent with backer 12 tall x 15.5 wide = 14 (top/bottom length) + 2 x 0.75. Inner height = 12 (sides) - 0.75 (top) - 0.75 (bottom) = 10.5; two shelves 2 x 0.75 = 1.5; clear gaps = (10.5-1.5)/3 = 3.0 each, not 3.5. Three 3.5\" gaps would need 3x3.5 + 4x0.75 = 13.5 of side length vs 12 listed. 3.5 equals 10.5/3 (shelf thickness ignored).",
+      "reason": "Stated shelf spacing does not fit the cut-list side length."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "OPTIONAL ACRYLIC DOORS: Take your shelf one step further by cutting some 1/8” clear acrylic to size and attaching with hinges",
+      "what": "Optional doors only: no acrylic size, hinge size or hinge position is given and there are no cutList rows for the doors."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Attach the top and bottom pieces to the side boards using 1-1/4” pocket hole screws.",
+      "what": "Text does not say top/bottom go between the sides (overall 15.5 wide x 12 tall); only the backer size 12 x 15.5 and the step photo imply it."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "76106d1048715f0e.webp",
+      "9412b7e33b5fbe95.webp",
+      "faa40f77cc09ca62.webp",
+      "dc52350e99f483c0.webp"
+    ]
+  }
 }

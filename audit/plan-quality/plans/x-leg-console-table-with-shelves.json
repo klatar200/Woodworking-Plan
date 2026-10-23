@@ -1,6 +1,6 @@
 {
   "slug": "x-leg-console-table-with-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -263,49 +263,68 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps use (leg supports, long/short angled cuts forming the X, top boards, two shelves, top dividers, bottom divider) all have cutList rows; searched steps for any other cut part and found none."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Long Angled cut (see picture)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Short Angled Cut (See Picture)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged rows cutList[6] 'Long Angled cut (see picture)' and cutList[7] 'Short Angled Cut (See Picture)' are real parts: steps[0] 'attach the long angled cut to the legs supports ... Attach the short angled cuts ... to create the X' (qty 2 long + 4 short = two X legs); image of steps[0] shows 40deg/25deg X. All other rows used in steps[0]-[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock identified by corrected cut-list dimensions (1.5x3.5 = 2x4, 1.5x5.5 = 2x6). 2x4 96\" x2 = 192: 4x16.5 + 2x30 + 4x15 = 66+60+60 = 186, +10 pieces x 0.125 = 187.25 <= 192. 2x6 120\" x3 = 360: 3x50 + 2x39.125 + 2x37.125 + 12.75 + 2x14.25 = 150+78.25+74.25+12.75+28.5 = 343.75, +10 x 0.125 = 345.0 <= 360 (also packs by board: 50+50+14.25; 50+37.125+14.25+12.75; 39.125x2+37.125)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners in steps: 2 1/2\" pocket screws (materials[2]) and 1 1/2\" wood screws (steps[2], materials[3]); 'Drill 1 1/2\" pocket hole' is a jig setting, not a screw size. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Text gives dividers '12 1/4\" from each end', middle shelf '13 1/2\"' from the Top, bottom divider '18 1/4\"' from one end; viewed steps[2] image shows X legs 3\" from the top end, steps[0] image shows 40deg and 25deg cut angles; bottom shelf position fixed by leg supports."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Only reference is the cut-list part names '(see picture)'; steps[0] has its own image, viewed, showing the X and angles."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "X legs built (steps[0]), top glued up (steps[1]), legs attached to face-down top (steps[2], image viewed), then dividers/middle shelf (steps[3]) and bottom divider/shelf (steps[4]); every part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "All pocket-holed parts are 1 1/2\" thick (corrected rows 1.5) and steps[0], [1], [3], [4] each state 'Drill 1 1/2\" pocket hole'."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: 4 leg supports, 2 long + 4 short angled (two X legs), 2 top dividers, 2 shelves + top. (b) all parts installed (steps[0]-[4]). (c) no hardware beyond screws. (d) steps[5] 'The X-leg console table is ready.' Possible 13 1/2 vs 14 1/4 mismatch recorded under gaps (geometry not settled)."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "The shelf is 13 1/2\"\" from the Top.",
+      "what": "cutList[2] 'Top divider' x2 is 14 1/4 long (corrected 1.5 x 5.5 x 14.25) and the viewed steps[3] image shows the dividers standing between the face-down Top and the shelf, which would put the shelf 14 1/4 from the Top, not 13 1/2; the reference point of the 13 1/2 is not stated (likely)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "702fdd304c7f2bfe.webp",
+      "4232817b1b60823e.webp",
+      "0674a1f5915aff98.webp",
+      "55af510cbcaf1fef.webp",
+      "4f01dae288e3b435.webp"
+    ]
+  }
 }

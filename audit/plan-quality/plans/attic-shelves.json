@@ -1,6 +1,6 @@
 {
   "slug": "attic-shelves",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,43 +119,86 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "add braces underneath this Shelf, however the space below will be fairly small. You can extend the length of the Posts on initial cut to 75 3/4\" to make the top section the same as the lower sections.",
-          "why": "cut sentence states 75 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '75 3/4\"' (steps[7]) is an optional alternative post length, not a part; posts, side/back/front braces and shelves all have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList rows used: posts steps[0], side braces 4 per side x 2 sides (steps[0]-[1]), back braces steps[2], front braces steps[5]-[6], shelves steps[3]-[7] (4 notched + 1 uncut top = 5)."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[4] no match among parsed stock; unparsed stock present (materials[1])"
+      "reason": "cutList[4] shelves 0.75 x 32 x 48 fit a 48 x 96 sheet, and 1.5 x 3.5 parts match the 2x4 material, but materials[1] 'OSB plywood, 4' x 8'' states no thickness, so 3/4 cannot be confirmed (see gaps)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "reason": "2x4 96\" x10: 4x72.25 + 8x25 + 4x45 + 4x45 = 289+200+180+180 = 849, + 20 pieces x 0.125 = 851.5 <= 960; by board: 4 posts (leftover 23.6, too short for any other part), then 45+25+25 = 95.25 on four boards, and 45+45 on two = 10 boards exactly. OSB is sheet stock: rule gives unknown unless area is exceeded (5 x 1536 = 7680 <= 9216); kerf-level shortfall recorded under gaps."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name only 'pocket hole screws' (materials[3] 2 1/2\" x75); no size conflicts. Step 7 'screws or nails' states no size (see gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "First brace '10 1/4\" up from the bottom of the Posts to the bottom of the Side Brace', next '12 3/4\" up from the top of the first', 'Repeat for two more'; back braces 'in line and level'; front braces 'exactly underneath the lower Shelf'; notch size shown 3 1/2\" x 1 1/2\" in viewed steps[3] image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing without its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, back braces, notched shelves; first shelf dropped in before its front brace (steps[4]-[5]), 'Work your way up from bottom to top' (steps[6]), top shelf last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "- Drill two pocket holes in each end of the Side Braces."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1.5\" 2x4 stock (steps[0], [2], [5]); search of steps/materials for /setting|thickness|jig/ finds nothing; images of steps 0, 3, 5(?) show no jig setting (steps[0], [3], [7] viewed)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 side braces per side x2 = 8; 4 back; 4 front; 4 notched shelves + 1 top. Geometry: 3.5 + 25 + 3.5 = 32 and 1.5 + 45 + 1.5 = 48 match shelf 32 x 48. (b) all parts installed. (c) no hardware beyond screws. (d) steps[7] top shelf completes."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[1].name",
+      "quote": "OSB plywood, 4' x 8'",
+      "what": "No thickness is given for the OSB, but cutList[4] requires 0.75-thick shelves."
+    },
+    {
+      "path": "cutList[4]",
+      "quote": "Shelves x5, 0.75 x 32 x 48",
+      "what": "5 shelves from 2 sheets need one sheet to give 3 pieces: 3 x 32 = 96 plus 2 cuts x 0.125 = 96.25 > 96 (two 48s along the length also need 96.125); the cut list leaves no kerf allowance on a 48 x 96 sheet (likely)."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Using screws or nails, attach the top Shelf onto the top of the Posts.",
+      "kind": "fastener",
+      "what": "No screw/nail size is given and no nails are in materials (only 2 1/2\" pocket hole screws)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "732ddbfdccc6a0c8.webp",
+      "c86fd05ab5016e74.webp",
+      "ece93858b1ebe533.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "art-frames",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -29,43 +29,97 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps[0] (backing) and steps[1] (hardwood sides) have cutList[0] and cutList[1]; no other part is cut or assembled."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0] used in steps[0]/[2]; cutList[1] used in steps[1]/[2]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[1] Kreg text not parseable"
+      "result": "pass",
+      "reason": "cutList[1] width was unparseable at import (Kreg source '1/4\" X 1/3/4\" X 24\"', imported 1); steps[1] states '1/4\" X 1 3/4\" X 24\"', matching materials[0] 'Oak Hard Wood, 1/4\" X 1 3/4\" 96\"'; cutList[0] corrected 0.5 x 1.75 matches materials[1]. cause: import (Kreg typo + parser)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.25x1.75, sheet-0.5); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Oak Hard Wood, 1/4\" X 1 3/4\" 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Plywood, 1/2\" X 1 3/4\" 96\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Frame backing x4, 0.5 x 1.75 x 24 (corrected)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Frame sides x4, 24 long"
+        }
+      ],
+      "arithmetic": "Each stock is 1 board x 96\". Each needs 4 x 24 = 96 plus kerf for 3 cuts x 0.125 = 0.375, total 96.375 > 96 (short 0.375\"). Applies to both the plywood and the hardwood strips. Step 3 later mitres to the painting size, so 24 may only be a starting length (likely, not certain)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "/8\" spacers between the frame and the painting sides to insure proper orientation of the picture inside of the frame. Then I used 1 1/4\" pin nails shot into the back of the frame to hold the painting.",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "quote": "Then I used 1 1/4\" pin nails shot into the back of the frame to hold the painting."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "1\" pin nails"
         }
-      ]
+      ],
+      "reason": "steps[2] uses 1\" pin nails (listed); steps[6] uses 1 1/4\" pin nails for a different job, but the only nail in materials is 1\" (searched /nail/ in materials)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "Only positions are relational/numeric: inner dimension '1/4\" wider than the dimensions of your painting', '1/8\" spacers' (steps[3], [6]); pin nail locations are 'into the back of the frame'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing without an image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut backing and sides, laminate sides to backing (steps[2]), mitre to the painting (steps[3]), glue up, finish, insert painting."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joints are glue and pin nails (stated in steps[2])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 backing + 4 sides match steps[0]/[1]; sides width mismatch (1 vs 1 3/4) is the import typo noted under R4. (b) all parts installed (steps[2], [4]). (c) nails, glue, stain, finish, sandpaper are in materials; 1/8\" spacers noted under gaps. (d) steps[6] inserts the painting."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "I used 1/8\" spacers between the frame and the painting sides",
+      "kind": "consumable",
+      "what": "1/8\" spacers are used to seat the painting but are not in materials and no source (scrap, shims) is named."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": []
+  }
 }

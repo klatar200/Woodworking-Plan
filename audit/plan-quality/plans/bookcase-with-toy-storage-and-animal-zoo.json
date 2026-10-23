@@ -1,6 +1,6 @@
 {
   "slug": "bookcase-with-toy-storage-and-animal-zoo",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps cut/assemble (sides, lower shelves, cube/book/vertical dividers, centre shelves, top, trims, zoo posts/rails/spacer) all have cutList rows; 'Lower Front/Side Trim' (steps[4]) = Base Front/Side Trim."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 rows map to steps[0]-[11]; cutList[6] Toy Shelves x8 (13.5 wide = the 13 1/2\" side bays) is only implied by steps[11] 'remaining shelves' on shelf pins, no step names it."
     },
     "R4": {
       "result": "pass",
@@ -190,33 +192,91 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Sheet stock: rule gives unknown unless area exceeded. 3/4\" parts total about 7553 sq in vs 2 x 4608 = 9216 bought; 1/2\" toy shelves 8 x 13.5 x 14 = 1512 vs 4608."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws (materials[2]) and 1 1/4\" brad nails (materials[3]) cover steps; steps name no other fastener size. Screws for hanging the zoo are unsized (see gaps)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "lf Pins at the appropriate heights for where you want your remaining shelves.\nFill the animal zoo from the top with all your kid’s stuffed animals and pull them through the bungees when you need them!",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a6aea161c52478fa.webp"
-        }
-      ]
+      "result": "pass",
+      "search": "Flagged steps[11] 'appropriate heights for where you want your remaining shelves' is a builder choice (shelf pins) and the viewed steps[11] image shows the shelves; all fixed placements are numeric: lower shelf 3\" up, 14\" and 12\" spacers, dividers 13 1/2\" from sides, centre shelf tops 13\" and 28\", top overhang 1/2\" sides / 1 1/2\" front; zoo hang position shown in viewed steps[11] image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown' reference without an image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame and shelves built before dividers unit (steps[1]-[3]); zoo squares, posts, middle rails (steps[7]-[8]) then bungee and brackets (steps[10]); pocket holes pre-drilled in steps[0]."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Bookcase (2) Sides- Drill 3 pocket holes on one end (3) Lower Shelves- Drill 3 pocket holes on each end"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood parts and zoo strips; search for /setting|thickness/ finds none; step images viewed (7, 8, 10, 11) show no jig setting; steps[1] image is an assembly view."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Slide in Kreg Shelf Pins at the appropriate heights for where you want your remaining shelves."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "The Top should be flush along the back with a 1/2\" overhang on each side and a 1 1/2\" front overhang."
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Top x1, 0.75 x 15.5 x 45.25 (corrected)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Lower Shelves x3, 0.75 x 14 x 42.5 (corrected)"
+        }
+      ],
+      "arithmetic": "(c) Shelf pins are used (steps[11]); searched materials for /pin|shelf/: only pocket hole screws and brad nails, so shelf pins are missing. (a) Sides 2 x 0.75 + Lower Shelf 42.5 = 44.0 outer width; + 1/2\" overhang each side = 45.0, but Top row is 45.25 (other parts agree on 44: Base Front Trim 45.5 = 44 + 2 x 0.75 mitred; 13.5 + 0.75 + 14 + 0.75 + 13.5 = 42.5). Depth checks: Top 15.5 = 14 + 1.5 front overhang.",
+      "reason": "Shelf pins used but not listed; top width is 1/4\" off the stated overhang."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "attach the Spacer flush with the top on the side with no holes drilled.",
+      "what": "steps[6] drills holes in boards of the Front/Back and Sides sets without saying which side is left undrilled; steps[7] and [10] (bungee 'other two bungee sides') then need one undrilled side (likely)."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Align and drill screws into the side of the bookcase and hang the zoo on the bookcase.",
+      "kind": "fastener",
+      "what": "Screws for the keyhole brackets are used but no screw size or type is in materials."
+    }
+  ],
+  "reader": {
+    "batch": "s6-18",
+    "imagesViewed": [
+      "fb73fb340458b15d.webp",
+      "d2ef0cb210e88e96.webp",
+      "1627c70915ec8bbd.webp",
+      "a6aea161c52478fa.webp"
+    ]
+  }
 }
