@@ -1,68 +1,104 @@
 {
   "slug": "custom-cube-organizer",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "readerNote": "Only hit is the optional pairing mention in summary/description ('pair with my DIY Storage Box ... link ... under \"extras\" tab'); no step, cut row or material depends on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps (middle shelf, short sides, shelves 8-1/4, long sides) matched to cutList rows 0-3; sizes and counts agree."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Middle Shelf steps 1/3/4, Short Sides steps 1/5, Shelves steps 2-4 (14 = 7 + 7), Long Sides steps 6-7 (qty 2)."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "confidence": "certain",
+      "cause": "import",
       "evidence": [
         {
           "path": "cutList[3]",
           "quote": "Shelves — qty 14, 1 x 8.25 x 10"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x10 96\""
+          "path": "steps[2].body",
+          "quote": "drill three pocket holes into either end of each 1\"x10\"x8-1/4\" shelf."
         }
       ],
-      "arithmetic": "cutList[3] 1×8.25: no listed stock has thickness 1 (±1/32) with width ≥ 8.25; stock = 0.75×9.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[3]",
-          "quote": "Shelves — qty 14, 1 x 8.25 x 10",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "The importer sorted the three numbers smallest to largest (section 3), so width 10 and length 8.25 are swapped. As the steps give it the shelf is 1x10 x 8-1/4, i.e. nominal 1x10 (matches materials[0] 'Board, 1x10 96\"' like rows 0-2, which pass by the nominal key); 8.25 as a width would also fit 9.25 actual. Flagged mismatch is an artifact of the sort, not a plan defect.",
+      "reason": "Live row shows width 8.25 / length 10; correct is width 10 / length 8.25."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[3] not 0.75″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "Single stock type (1x10 96\", materials[0] qty 4, not 1). Corrected lengths: 2 x 72.75 + 71.25 + 2 x 17.25 + 14 x 8.25 = 145.5 + 71.25 + 34.5 + 115.5 = 366.75; plus 1/8 x 19 cuts = 2.375 gives 369.125 <= 4 x 96 = 384.",
+      "readerNote": "Totals pass but one-board-at-a-time packing does not: see gaps."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only size named in steps is steps[4].body '1-1/4\" Kreg screws', listed in materials[2]; 1\" Kreg screws listed in materials[1]; no step gives two sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf lines are numeric (steps[1] '8-1/4\" intervals with 3/4\" between'; image b7fd787b0885bb65 lists 8-1/4, 9, 17-1/4 ... 63); short sides centered on the guide lines; long sides flush/relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands; the 'pictured' reference is in steps[1], which has its own image (viewed) giving the line positions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Lines/holes (1-2), shelves on middle shelf (3-4), short sides (5), long sides last (6-7); each piece exists before use, and each shelf's far-end pocket holes are reachable for the long side with the stated right-angle driver."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Next drill three pocket holes into either end of each 1\"x10\"x8-1/4\" shelf."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" stock (1x10 actual per section 9); search of all steps/description for /setting|jig|depth|thickness/ finds none; step-2 image viewed shows the jig and a drilled board but no readable setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step sizes agree with cutList: 71-1/4, 17-1/4, 8-1/4, 72-3/4. Arithmetic: 8 x 8.25 + 7 x 0.75 = 66 + 5.25 = 71.25 = Middle Shelf; 8.25 + 0.75 + 8.25 = 17.25 = Short Sides; 71.25 + 2 x 0.75 = 72.75 = Long Sides. Every part is installed; steps reach the finished unit. No non-fastener items beyond finish."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "8df19695efb2912d.webp",
+      "b7fd787b0885bb65.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[0].name",
+      "quote": "Board, 1x10 96\"",
+      "what": "4 boards are not enough once parts are laid out: best packing of 2 x 72.75, 71.25, 2 x 17.25, 14 x 8.25 on 96\" boards with 1/8\" kerf between pieces needs 5 boards (exhaustive search); with zero kerf it fits exactly, so the plan's 4 boards ignore kerf. Sum 366.75 + kerf passes R5's totals test, hence recorded here. Likely/certain given section 9 kerf; the plan offers no extra board."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "use a square to ensure each 8-14\" shelf is straight",
+      "what": "'8-14\"' (also steps[7].body) is not a shelf size; cut list and other steps say 8-1/4\" (probable lost slash; image b7fd787b0885bb65 also reads '62-/14\"' for 62-1/4)."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "diy-coat-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,43 +47,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only part cut is the single 2x6 board (steps[0] cut to 24\", steps[2] rip to 2 3/4\"), matching cutList[0] 'Coat Rack' at corrected 1.25 x 2.75 x 24; S-hooks are purchased hardware."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Coat Rack",
-          "why": "no step mentions it (searched steps for coat/rack)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: cutList[0] 'Coat Rack' is the one board the steps cut and rip (24\" x 2 3/4\", steps[0] and [2]), not an assembly or placeholder; the sweep only missed it because no step uses the words coat/rack in that sense."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "importDiffs[1].source",
+          "quote": "2 3/4\" x 1 1/4\" x 2'"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x6 24\""
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut the 2x6 down from 5 1/2\" wide to 2 3/4\" wide."
+        }
+      ],
+      "arithmetic": "Kreg-corrected row = 1.25 x 2.75 x 24. Section 9: 2x6 actual = 1 1/2 x 5 1/2, so the part is 1.5 - 1.25 = 0.25\" thinner than the only stock. Steps only crosscut and rip to width (search steps for /plane|resaw|thickness|sand down/: none; steps[5] is a light sand), so the board comes out 1.5\" thick.",
+      "reason": "Cut-list thickness 1 1/4 cannot come from the listed 2x6 by the steps given; the steps' own result is 1 1/2. May be Kreg's measured thickness; likely not certain."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[0] not 1.5″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "Single stock (2x6 24\", qty 1, no defaulted-quantity flag): part corrected length 24 <= 1 x 24 = 24; the board is already 24\" so no crosscut kerf is needed (steps[0] 'cut down to 24\"' is a no-op on a 24\" board). Thickness issue is recorded under R4."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener/hardware in steps is S-hooks (steps[4], [5]), listed as '\"S-hooks\"' qty 20; no sizes are stated anywhere and no step gives two sizes. Wall-mount hardware: see gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole line is numeric (steps[2] 'holes are 1/2\" from the bottom'); hole spacing is fixed by the shelf pin jig, with offsets named (steps[1] larger offset, steps[3] smallest); viewed images ee3331911a1c2ccc and cfcd5a212bec2c9b and the hero show the jig rows running along the board. Wall position of the rack is the builder's choice (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep result stands: no step refers to a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Face holes drilled in the 5 1/2\" board (1) before ripping (2), then bottom holes (3), reaming, sanding, finishing, mounting; each step has what it needs."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joinery is a single board with jig-drilled holes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Steps 24\" and 2 3/4\" match the Kreg-corrected row length 24 and width 2.75; the one part is installed (step 7); steps reach a finished rack (hero image). Thickness mismatch is recorded under R4. No non-fastener hardware used except optional wall hangers (gaps)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "c66f5389229a7174.webp",
+      "ee3331911a1c2ccc.webp",
+      "cfcd5a212bec2c9b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "We used key holes in the back of the board to mount it to the wall. But you can directly screw or use hangers from the hardware store",
+      "what": "no mounting hardware (screws with size, or hangers) is in materials and the key-hole method has no dimensions; materials list only the S-hooks.",
+      "kind": "hardware"
+    },
+    {
+      "path": "materials[1].name",
+      "quote": "\"S-hooks\"",
+      "what": "S-hook size is not given (wire/opening size), and step 4 says the holes may need reaming to fit them; the number of holes to drill (versus 20 hooks) is not stated, only 'along the face' / 'along the bottom'."
+    }
+  ]
 }

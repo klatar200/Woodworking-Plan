@@ -1,6 +1,6 @@
 {
   "slug": "diy-keepsake-gift-box",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -68,65 +68,90 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "readerNote": "steps[9] 'Visit www.theAwesomeOrange.com for more pictures of this build and more ideas on how to embellish' is an optional credit/link; no step, cut row or material depends on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (side pieces 14.5, end pieces, lid, bottom as two glued 14.5\" pieces trimmed to 13 x 8 per the step-1 image) are in the cut list or described by the step itself; pulls are in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: sides (steps 0, 2, 4), ends (3, 4), lid (5, 8), bottom (1, 4)."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[3]",
-          "quote": "Bottom — qty 1, 0.75 x 8 x 13"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Plywood, 1/4\" Thick Scrap 8.5\" x 14.5\""
-        }
-      ],
-      "arithmetic": "cutList[3] 0.75×8: no listed stock has thickness 0.75 (±1/32) with width ≥ 8; stock = 0.75×5.5, sheet 0.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[3]",
-          "quote": "Bottom — qty 1, 0.75 x 8 x 13",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: cutList[3] 0.75 x 8 x 13 cannot come from one 5.5\" 1x6, but steps[1] glues two 5.25\" pieces (5.25 x 2 = 10.5 >= 8) and the viewed step-1 image says 'AFTER GLUE UP TRIM TO FINAL DIMENSIONS 13 X 8'. Other rows (0.75 x 5.25, 4.75 from 1x6; lid 0.25 x 8.5 x 14.5 = the listed plywood scrap) fit."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Corrected lengths from the one 1x6 96\" (qty 1, not flagged as defaulted): 2 x 14.5 + 2 x 8 + bottom 2 x 14.5 (steps[1]) = 29 + 16 + 29 = 74 + 6 x 0.125 = 74.75 <= 96 (88.5 + 0.875 = 89.4 <= 96 even if the 14.5\" lid were also cut from it). Lid area 8.5 x 14.5 equals the plywood scrap 8.5 x 14.5 (not exceeded)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Assemble box using wood glue and 23 ga pin nails 1 1/4\" long."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Pack of 23ga Pin Nails"
+        }
+      ],
+      "reason": "The 1 1/4\" pin-nail length used in the step does not appear in materials: search of all material names/notes for /1 ?1\\/4|1\\.25|length|long/ finds nothing (materials[6] has no length)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dado settings numeric (steps[2] 1/4\" height, fence 1/4\" then 3/8\"); end pieces and bottom sizes fixed by the cut list (4.75 / 13 x 8) and the viewed diagrams; pull positions are 'your desired pulls' placed with the Kreg jig (relational, step-7 photo shows the jig on the end piece)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'SEE CUT LIST' (steps[0]) refers to the cut list, which exists; the viewed step-0 and step-1 diagrams give the layout and the 13 x 8 trim."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/rip (0), bottom glue-up (1), dados (2), trim ends (3), assemble (4), lid sized to the built box (5), fill/finish (6), pulls (7), lid inserted (8); each piece exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Joints are glue and 23 ga pin nails 1 1/4\" (steps[4]) and a lid in a 1/4\" dado (steps[2]); method and fastener stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step 1 glues two 14.5\" pieces while cutList[3] is 8 x 13 qty 1: reconciled by the viewed step-1 image ('trim to final dimensions 13 X 8') and the step-0 diagram ('to be trimmed to final dimensions after glue up'); not a text-only gap. Geometry adds up: interior width 8 + 2 x 1/4\" dado depth = 8.5 = lid width; interior length 14.5 - 2 x 0.75 = 13 = bottom length; ends 5.25 - 0.5 = 4.75. Every part is installed; steps reach the finished box (step 8). Pulls are in materials."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "cfe864cbc2802508.webp",
+      "754539e85924479d.webp",
+      "de877bcd9e08f369.webp",
+      "c6e2e9f9cf14fdac.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Assemble box using wood glue and 23 ga pin nails",
+      "what": "wood glue (steps[1], [4]) is used but not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Fill any gaps with wood filler, sand to desired grit",
+      "what": "wood filler used but not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

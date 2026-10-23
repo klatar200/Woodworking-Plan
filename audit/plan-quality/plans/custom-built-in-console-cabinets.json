@@ -1,6 +1,6 @@
 {
   "slug": "custom-built-in-console-cabinets",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,44 +23,145 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "add 15\"x32\" side panels between the 24\" cabinet bases and the 15\" cabinet bases to hide pocket holes."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Shallow Cabinet - Sides | quantity 4 | 0.5 x 15 x 32"
+        }
+      ],
+      "arithmetic": "Shallow sides qty 4 = 2 per 15\" base (steps[2].body \"Place two 15\"x32\" cabinet sides together\") x 2 bases (steps[3].body \"Repeat with the second 15\" cabinet base\") = 4, all consumed by the bases; the step-8 side panels are extra. Search: no cutList.part matches /side panel|filler/i (only 'Sides' rows 0,1 and 'Door Panel'); no step gives a count or stock for the panels (steps[8] image labels one '15\"x32\" Side Panel').",
+      "reason": "Step 8 installs 15x32 side panels that have no cut-list row, count or stock named. Non-structural (hide pocket holes), so Fix."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 rows are used: sides/bottoms/shelves steps 0-5, face frame rows steps 6-7, strips steps 5/12, toe kick steps 2/5, door rows step 9, countertops step 10-11; no assembly or placeholder rows."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[5] Kreg text not parseable; cutList[13] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Unparsed Kreg rows resolved: cutList[5] source 3/4\"x1-1-1/2\"x32 and cutList[13] 1\"x3\"x26-38\" are 1x2 (3/4 x 1 1/2) and 1x3 stock per section 9, both in materials; images show 26-3/8 (door) so live 26 is an import fraction drop (cause import). Plywood parts all <= 48x96 (largest countertop 25x80, 3/4 sheet listed).",
+      "readerNote": "cutList[13] 26 should be 26-3/8 (door image dd7f770a1d0b6563 labels 26-3/8); cutList[5] width 1 should be 1-1/2 (frame width 40 = 37 + 2 x 1.5). Both import."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 5 stock types (sheet-0.5, 2x4, 1x2, 1x3, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "cabinet shelf just above the 2\"x4\" and secure it via pocket screws, then the next shelf at the 11\" mark, and on up until all 4 shelves have been placed. Be sure that the middle pocket hole in each she",
-          "why": "4\" screw — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the '4' in steps[3].body is 'all 4 shelves', not a 4\" screw. No step gives any fastener size (search steps for /screw/: 'pocket screws', 'countersink your screws', no sizes); materials list 1\" and 1.5\" Kreg screws; no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "You will need hinges designed for inset doors, and my also need to add a 1/2\" strip of wood along the inside edges in order to make the hinges sit flush"
+        }
+      ],
+      "reason": "16 inset hinges (2 per door, 8 doors) must be placed on the doors/face frame; no step gives a hinge position (search steps for /hinge/: only step 10), and the viewed step-10 image shows a trim router, not hinge placement. All other positions are numeric or relational (shelf marks 11/18/25, partition lines 18-3/4, 1/2\" overhang, 2\" hole edge distance, bottom rail fixed by the 26-1/2 middle stile)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands: each reference is in a step with its own image; steps[0]/steps[6]/steps[8] images viewed and show the labelled diagrams."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Finally secure the cabinet bases to each other (see arrows), and to the wall via the securing strips."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Finally secure the tops to the cabinet bases being sure to countersink your screws."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "After all your shelves are on, attach the 32\" securing strip to the top."
+        }
+      ],
+      "reason": "The shallow cabinets' securing strip is attached only in step 12, after the cabinets are wall-secured through the strips (step 8) and after the countertops cover the cabinet tops (step 11); deep cabinets' strips are attached earlier in step 5. Step 12 is out of sequence (its text says 'After all your shelves are on')."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes (as shown in the diagram) into the 15\"x32\" and 24\"x32 cabinet sides"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" ply, 3/4\" frames and 1/2\" ply panels; search of all steps/description for /setting|jig|depth|thickness/ finds no jig setting; viewed images steps[0], steps[9], steps[6] show jig/holes but no setting. Recorded only (R9 does not count)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "attach the 32\" securing strip to the top."
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Shallow Cabinet - Securing Strip | quantity 2 | 0.5 x 2.75 x 48"
+        }
+      ],
+      "arithmetic": "Step 12 gives 32\"; cutList[4].lengthIn = 48 (no importDiff recorded for row 4, so Kreg's row agrees with the live 48). 32 != 48. Other step/cut-list sizes agree (37, 26-1/2, 27-7/8, 38, 18-3/4, 12-5/8, 21-3/8; 4 shelves x 2 = 8; 3 tops = 2 + 1; 8 doors x 2 hinges = 16). Parts all installed by a later step; steps reach finished piece."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "36dcc3aa7ef548e0.webp",
+      "d8aecbbc306e6322.webp",
+      "b8cfe94b8a920fbc.webp",
+      "c755f6d78bfd2e92.webp",
+      "926a9bf18207e179.webp",
+      "52df6cd06e2e571c.webp",
+      "965940b4e4ee8e6c.webp",
+      "dd7f770a1d0b6563.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[2].name / cutList[5..7]",
+      "quote": "Board, 1x2 96\" | quantity 6",
+      "what": "Face frame rows 5-7 (all 3/4 thick; steps[6].body calls them 1\"x2\"x37 and 1\"x2\"x26-1/2) total 8x32 + 8x37 + 4x26.5 = 256 + 296 + 106 = 658\" before kerf, versus 6 x 96 = 576\" of 1x2 bought; 1x2 is the only 3/4 x <=1 1/2 stock listed (shortfall 82\"). R5 not scored (5 stock types, steps do not name stock for every part). Likely."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "the line between tops with a little silicone",
+      "what": "silicone caulk used but not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "add a filler piece between the two 24\" cabinet bases so your built-ins will fit snugly",
+      "what": "conditional filler piece has no size or stock; optional/site-dependent, noted only"
+    }
+  ]
 }

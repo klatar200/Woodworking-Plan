@@ -1,6 +1,6 @@
 {
   "slug": "desk-calendar-pencil-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -91,25 +91,37 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "import",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut wood down to size according to the woodworking plans (available in the Extras tab below).\nYou'll need to make a couple angled cuts. For those you can use a double bevel compound miter saw.",
-          "why": "matches \"Extras\""
+          "quote": "Cut wood down to size according to the woodworking plans (available in the Extras tab below).\nYou'll need to make a couple angled cuts."
+        },
+        {
+          "path": "importDiffs[4].source",
+          "quote": "3/4\" x 7\" x 9 1/16\" with 5 degree angeled cut on bottom"
+        },
+        {
+          "path": "importDiffs[0].source",
+          "quote": "3/4\" x 4 1/2\" x 5 5/8\" (on short edge) and 6\" (on long edge)"
         }
-      ]
+      ],
+      "reason": "The live cut list carries no angle or taper for the Front Panel (5 degree bottom cut) or the Side Panels (5-5/8 short edge, 6 long edge); search of steps, cutList, description for /degree|angle|bevel|taper|short edge|long edge/ finds only steps[0] 'a couple angled cuts' with no value. Kreg's own cut-list text had them, so the importer dropped the trailing text; the Extras PDF is where the builder is sent. Fix not Unpublish: the box can be assembled and the parts cut to the corrected sizes; only the angle values are missing."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (sides, back panel, bottom panel, front panel) = cutList rows 0-3; no other parts."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "4 rows, each used: sides + back (step 2), bottom (steps 1-2), front (step 2)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Sweep result stands: Kreg-corrected rows 0.75 x 4.5/5.25/7 wide fit 1x8 (3/4 x 7 1/4) per section 9."
     },
     "R5": {
       "result": "fail",
@@ -123,29 +135,73 @@
         },
         {
           "path": "cutList[0..3]",
-          "quote": "Side Panels — qty 2, 0.75 x 4.5 x 5.625 (Kreg-corrected); Bottom Panel — qty 1, 0.75 x 5.25 x 5.5 (Kreg-corrected); Front Panel — qty 1, 0.75 x 7 x 9.0625 (Kreg-corrected); Back Panel — qty 1, 0.75 x "
+          "quote": "Side Panels — qty 2, 0.75 x 4.5 x 5.625 (Kreg-corrected); Bottom Panel — qty 1, 0.75 x 5.25 x 5.5; Front Panel — qty 1, 0.75 x 7 x 9.0625; Back Panel — qty 1, 0.75 x 4.5 x 5.5"
         }
       ],
-      "arithmetic": "parts: 2×4.5 + 1×5.25 + 1×9.0625 + 1×4.5 + kerf 4 cuts (5 parts − 1 boards, the fewest possible)×1/8 = 28.313″; bought: 1×24 = 24″; 28.313 > 24"
+      "arithmetic": "Sweep result stands (no defaulted-quantity flag for materials[0]; no part is <= half of 7.25 wide so none rip side by side). Shortest length each part can take along the board: 2 x 4.5 + 5.25 + 9.0625 + 4.5 = 27.8125; 4 cuts x 1/8 = 0.5; total 28.3125 > 1 x 24 = 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes named in steps: '1 1/4\" brad nails' (steps[2]) and pocket screws; materials list '1 1/4\" brad nails' and '1 1/4\" pocket hole screws'; no conflicting sizes. Step 6 'small finish nail' gives no size: see gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole count and direction stated (steps[1]: 2 to the front, 1 each side; image aedb66b42d7651f1 shows them); sides/front attach flush/relational; the clip nail position (steps[6] 'on the front') is shown in the viewed hero and step-6 images near the top of the front panel."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands: 'as shown in woodworking plans' (steps[1]) is in a step with its own image, viewed, which shows the hole layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Holes drilled (1) before assembly; sides to back, then bottom, then front last (2, step image shows front clamped last); sanding, filling, finish, clip last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 4 pocket holes on the bottom panel (as shown in woodworking plans) using your Kreg pocket hole jig."
+        }
+      ],
+      "reason": "Holes are in 3/4\" stock (cutList[1] 0.75); search of all steps/description for /setting|thickness|depth/ finds no jig setting; step-1 image viewed shows the drilled holes, no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step 1 '4 pocket holes' = materials '1 1/4\" pocket hole screws' qty 4; step sizes match corrected cut rows; all parts installed (step 2), binder clip in materials, steps reach the finished piece (hero image). Glue, stain, polyurethane, filler, sandpaper all listed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-19",
+    "imagesViewed": [
+      "e0a75cfadd7d64ea.webp",
+      "aedb66b42d7651f1.webp",
+      "b579a316603c3095.webp",
+      "76b05a032511895e.webp",
+      "6f44c6d1a55c099d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "put in a small finish nail on the front to hang a binder clip",
+      "what": "finish nail has no size and is not in materials (only 1 1/4\" brad nails, qty 4, are listed)",
+      "kind": "hardware"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Next attach the bottom panel by screwing in at the pocket hole locations once in place.",
+      "what": "steps[1].body drills 2 holes 'going towards the front', but the front panel is attached last (steps[2] 'Lastly attach the front panel'), so those two screws have nothing to bite when the bottom is screwed in; order not stated."
+    }
+  ]
 }
