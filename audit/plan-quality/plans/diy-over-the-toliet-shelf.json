@@ -1,6 +1,6 @@
 {
   "slug": "diy-over-the-toliet-shelf",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps (shelves, sides, trim, cleat, top, doors) matched to cutList.part: Shelves x4, Sides, Bottom Shelf Trim, French Cleat, Doors"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cut rows used by steps (Doors step 8, French Cleat steps 3/5, Trim step 4, Shelves/Sides steps 2/4/6)"
     },
     "R4": {
       "result": "pass",
@@ -49,23 +51,71 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps vs materials: '1 1/4\" pocket hole screws' and '1 1/4\" wood screws' both in materials; no conflicting sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Start assembling with the two sides, bottom shelf and trim, then working your way up the shelves."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Sides: 27.5 long (4 shelves, 2 sides)"
+        }
+      ],
+      "reason": "Heights of the 3 interior shelves up the 27.5 sides are never given as numbers (searched all steps, description, cut list for a shelf height/spacing; steps[3] image ccae45183aac3821 is a sketch with no dimensions; photos viewed show no dimensions). Door-shelf gap is only implied by door height; bottom and toilet-paper compartment heights are not fixed by any part. Dado positions and finger-pull location ARE given (images 380da1e73128dad7, 390bfd35d9a9513b)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "dados ripped (step 2) and cleat ripped (3) before assembly (4); cleat top half installed (5) before top (6); doors dropped in last (8)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3].body 'Drill 3/4\" pocket holes' - all pocket-hole parts are 0.75 thick; stated"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "parts made are installed (shelves, sides, trim, cleat both halves per image 18daa53e6b13669c, top, doors); counts match; steps reach finished piece"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Waxing the dado track with help with opening and closing the doors.",
+      "what": "wax not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "2177951e467ff6e9.webp",
+      "16e4f5bf7fbdb969.webp",
+      "3ef91c025654132a.webp",
+      "08982b4b9e4edfa3.webp",
+      "ccae45183aac3821.webp",
+      "380da1e73128dad7.webp",
+      "ecbbc10a3b702fc5.webp",
+      "18daa53e6b13669c.webp",
+      "390bfd35d9a9513b.webp"
+    ]
+  }
 }

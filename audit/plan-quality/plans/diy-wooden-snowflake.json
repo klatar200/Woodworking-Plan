@@ -1,6 +1,6 @@
 {
   "slug": "diy-wooden-snowflake",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,36 +131,92 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: Center, Diagonal (x4), End Pieces, Middle Pieces; each a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Boards (you'll rip your 1x4 into 2 1 1/2\" wide pieces and then cut the following measurements from there)"
+        }
+      ],
+      "reason": "cutList[0] (qty 2, 0.75 x 1.5 x 96 corrected) is a stock-prep instruction, not a part any step uses: searched all steps for /rip|boards?/ - no step mentions ripping or this row; parts in steps are Center, Diagonal, End, Middle only."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "arithmetic": "one stock type 'Board, 3/4\" x 3 1/2\" x 8'' (8' stated = 96\"); 1x4 rips to 2 x 1.5 strips = 192\". Parts: Center 1 x 24 + Diagonals 4 x 12 + End 12 x 3 + Middle 12 x 2.5 = 24 + 48 + 36 + 30 = 138\"; kerf 1/8\" x ~28 cuts = 3.5\" -> 141.5 <= 192",
+      "readerNote": "Sweep 'stock length not written' superseded: the material name states 8'; row cutList[0] (2 x 96) agrees with one 8' board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps say 'pocket hole screws' without a size; materials has 1 1/4\" pocket hole screws; no second size"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill one pocket hole into the mitered end of each Diagonal board."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "the pieces angle up and away from the Diagonal."
+        }
+      ],
+      "reason": "No miter angle or angle between Diagonal/Center or End/Middle piece and its Diagonal is given as a number: searched all fields for /degree|°|angle|miter/ - only 'mitered end' and 'angle up and away'. Viewed images 9dc7e5abca614934, 286ca3681cb79b99, 042804f084268b92, 1d0996eeca3ae478 dimension only 1 1/2\" and 5 3/4\" (both given in text) and show no angles. Mark distances (12\", 1 1/2\", 5 3/4\") are given."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "diagonals on centre (0), end pieces (1), middle pieces (2), repeat on other points (3), finish (4) - each piece exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill one pocket hole into the mitered end of each Diagonal board."
+        }
+      ],
+      "reason": "Pocket holes drilled in 0.75 parts (steps 0-2) with no jig thickness setting: searched all text for /setting|jig|collar/ - only tools slug 'pocket-hole-jig'. Viewed images 9dc7e5abca614934, 286ca3681cb79b99, 042804f084268b92, 1d0996eeca3ae478 are SketchUp views without a setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: 6 points = Center ends 2 + 4 Diagonals; 12 End (6 x 2) and 12 Middle (6 x 2) match cut rows; Diagonal outer end 12 from centre = Center half length 24/2; marks 1 1/2 and 5 3/4 fit within 12; steps reach finished snowflake"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "9dc7e5abca614934.webp",
+      "286ca3681cb79b99.webp",
+      "042804f084268b92.webp",
+      "1d0996eeca3ae478.webp"
+    ]
+  }
 }

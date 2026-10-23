@@ -1,6 +1,6 @@
 {
   "slug": "easy-to-build-bookcase",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -167,37 +167,75 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: Legs, Long/Short Rails, shelves, dividers, Top Shelf Divider are cutList rows; the two 10 1/4\" spacers (step 5) are cut from listed 2x2 stock"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 cut rows used (steps 0-7)"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x10); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "steps name stock for every part. 2x2 x 4 (96\"): 4 x 37.5 + 4 x 32 + 4 x 9.25 + 2 spacers x 10.25 = 150 + 128 + 37 + 20.5 = 335.5; kerf 18 x 1/8 = 2.25 -> 337.75 <= 384 (packs: 2 legs + 2 short rails = 94 per board). 1x10: 4 x 35 + 2 x 10.25 + 11 = 171.5 + 0.875 kerf = 172.4 <= 192 (2 x 35 = 70.25 per 72\" board; dividers 31.5 from the 48\")",
+      "readerNote": "sweep unknown (2 stock types) resolved: steps[0], [2], [5] name the stock."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 2 1/2\" and 1 1/4\" coarse-thread Kreg pocket-hole screws; materials list both; plugs optional and listed"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "lower long rail '2 1/4\" up from the bottoms of the Legs', upper flush (steps[1], image 96f65dc37b8d7aa7); spacers 10 1/4\" and divider offset 11 1/2\" from shelf end (viewed 8cd4b3354ac76f32, 02c63d03b8230dd1); pocket-hole positions dimensioned (3d23a6ec18faa90a); top shelf flush with long rail (02c63d03b8230dd1)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "14 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame parts (0), frames (1), shelves/dividers (2), short rails on shelves (3), bottom shelf (4), middle shelves + spacers (5), top shelf (6), second frame last (7)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body sets the jig for 1 1/2\" (2x2) then 3/4\" (short rails, shelves); steps[2] 3/4\" for shelves/dividers"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "leg stack check: top shelf top at leg top 37.5; 0.75 + 11 (top divider) + 0.75 + 10.25 + 0.75 + 10.25 + 0.75 = 34.5, bottom shelf bottom at 37.5 - 34.5 = 3.0 = flush with lower long rail top (2.25 + 1.5 = 3.75 less shelf 0.75 -> shelf top 3.75); shelf 35 = 32 rails + 2 x 1.5 legs; 4 short rails = 2 shelves x 2; counts match; 32 x 2 1/2\" screws plausible"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[1]",
+      "quote": "Long Rail, quantity 4, 1.5 x 1.5 x 32",
+      "what": "viewed image 96f65dc37b8d7aa7 labels the rail span '32 1/4\"' while the cut row (no Kreg correction) is 32; shelves are 35 = 32 + 2 x 1.5, so the drawing label and cut row differ by 1/4\" (label may measure a different edge; not settled from the plan)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "If you plan finish your shelves like we did—with clear finish on the frames and paint on the shelves and dividers",
+      "what": "clear finish, paint and sandpaper not in materials (consumables)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "96f65dc37b8d7aa7.webp",
+      "3d23a6ec18faa90a.webp",
+      "8cd4b3354ac76f32.webp",
+      "02c63d03b8230dd1.webp"
+    ]
+  }
 }

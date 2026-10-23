@@ -1,6 +1,6 @@
 {
   "slug": "dog-bed",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: Wide Legs, Long/Short Rails, Narrow Legs, Long/Short Cleats, Frame Cleats, Long/Short Frame Rails; all nine are cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 cut rows used (steps 0-8)"
     },
     "R4": {
       "result": "pass",
@@ -193,23 +195,87 @@
       "reason": "R5 precondition not met: 3 stock types (1x4, 1x3, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use '1 1/4\" coarse-thread Kreg Screws/screws' and 1/8\" pilot holes; materials has 1 1/4\" coarse-thread Kreg pocket-hole screws; no second screw size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "cleat positions 'flush along the lower edge', centred, frame cleat 1\" up (steps[6], image 15ece4fced85fc45 note 'flush with bottom of Rails, centered'); pilot-hole positions dimensioned in aacdf80143dd2a1a; pocket-hole positions in 2e2b290ffe0b8c4b, 84522820431605eb; legs 'flush at the top'"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "17 reference(s), each in a step with its own image"
+      "search": "cutting-diagram/'as shown' references (steps 0, 2, 5, 7): step images 2e2b290ffe0b8c4b, 84522820431605eb, aacdf80143dd2a1a, c4faf7b5d1c974a8 viewed; they dimension every part (layout on stock not drawn but part sizes are in cutList)",
+      "readerNote": "sweep R11 pass confirmed by viewing step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "long sides (1), short sides (3), base (4), cleats (5-6), frame (7-8), fabric (9-10), finish then frame placed in base (11)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; all parts 0.75"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Long Frame Rail, qty 2, 0.75 x 2.5 x 37.875 (Kreg-corrected from '3/4\" x 2 1/2\" x 37 7/8\"')"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Short Frame Rail, qty 2, 0.75 x 2.5 x 23.375 (Kreg-corrected from '3/4\" x 2 1/2\" x 23 3/8\"')"
+        },
+        {
+          "path": "images (c4faf7b5d1c974a8.webp, 8ca41e4b7050613a.webp, viewed)",
+          "quote": "Long Frame Rail 35 7/8\"; Short Frame Rail 22 3/8\""
+        },
+        {
+          "path": "images (41b47052a15ea440.webp, viewed)",
+          "quote": "base 37 1/2\" x 25 1/2\" x 6\""
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "From a 1x2 board, cut two Long Frame Rails and two Short Frame Rails to length"
+        }
+      ],
+      "arithmetic": "Cut list Long Frame Rail 37.875 > whole base length 37 1/2 (image) so the frame cannot sit in the base; drawn 35.875 fits (base 37.5 - 2 x 0.75 = 36.0). Short: cut list 23.375 + 2 x 0.75 = 24.875 frame width vs drawn 22.375 + 1.5 = 23.875 (base 25.5 - 1.5 = 24.0). Step 7 says the rails come from a 1x2 (1 1/2 wide, section 9) but cut rows are 2.5 wide (1x3) and total 2 x 23.375 + 2 x 37.875 = 122.5\" vs the only 1x2 board 72\" (already needed for cleats: 2 x 23.75 + 2 x 11.75 = 71.0\").",
+      "reason": "Frame-rail lengths in the cut list disagree with the plan's own drawing and would not fit the base; step 7 names the wrong stock (1x2) for 2 1/2\" wide rails."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Once the glue dries, sand the assemblies smooth.",
+      "what": "sandpaper not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "2e2b290ffe0b8c4b.webp",
+      "dce6094b32b33f55.webp",
+      "84522820431605eb.webp",
+      "632bfe1cd2b72e70.webp",
+      "15ece4fced85fc45.webp",
+      "aacdf80143dd2a1a.webp",
+      "c4faf7b5d1c974a8.webp",
+      "8ca41e4b7050613a.webp",
+      "c773a63a0f1a122f.webp",
+      "99efc638583aeb4e.webp",
+      "29db1a9b2f7ee5ea.webp",
+      "41b47052a15ea440.webp"
+    ]
+  }
 }

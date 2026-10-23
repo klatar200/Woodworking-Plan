@@ -1,6 +1,6 @@
 {
   "slug": "diy-padded-sofa",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,50 +47,100 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut/assembled in steps: Shelf, Braces, Supports, Seat, Seat Back; each matches a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cut rows used in steps 0-6"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "certain",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "materials[0]",
-          "quote": "Plywood, 3/4\" Thick Full Sheet — qty 1"
-        },
-        {
-          "path": "cutList[0..4]",
-          "quote": "Shelf — qty 1, 0.75 x 5 x 48; Brace — qty 3, 0.75 x 14.625 x 48 (Kreg-corrected); Support — qty 4, 0.75 x 20 x 28.5 (Kreg-corrected); Seat — qty 1, 0.75 x 22 x 52; Seat Back — qty 1, 0.75 x 18.5 x 52 "
-        }
-      ],
-      "arithmetic": "part area 1×5×48 + 3×14.625×48 + 4×20×28.5 + 1×22×52 + 1×18.5×52 = 6732.0 sq in; bought 1×48×96 = 4608 sq in; 6732.0 > 4608"
+      "result": "unknown",
+      "reason": "Sweep fail rests on cutList[1] Brace 14.625 x 48 (x3 = 2106 sq in). Viewed image c7f5faff59b6cd95.webp labels the Brace '5\"' x '14 5/8\"' (and e4a8efa531bc1663 shows 47\" overall frame), so the row contradicts the plan's own drawing. With the drawn Brace size: 240 (shelf) + 3x5x14.625=219.4 + 1144 (seat 22x52) + 961 (back 18.5x52) + 4 shaped Supports (bounding 20x28.5=570 each, polygon ~260 each per image c9e4b14b96f3e5d5) is well under 4608; no certain area overrun, and no cutting-diagram image exists to test nesting.",
+      "readerNote": "Sweep R5 fail not upheld: Brace row is wrong vs diagram (see R14)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all joinery uses '1 1/4\" coarse-thread Kreg Screws' (steps 2-6); materials has 'Kreg 1 1/4\" coarse-thread pocket hole screws'; no second size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "brace positions (9\", 9 3/4\") shown in viewed images 3ae1ae7e5f3a7c6c, a787a2b8559c273c; shelf overhang 1/2\" in 76a8b24188262177; support layout dims in c9e4b14b96f3e5d5; seat/back placement relational"
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut a Seat to length and width, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "lay out the first Support where shown on the sheet of plywood"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "ripping the one Shelf and three Braces from a sheet of 3/4\"-thick sanded plywood, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Steps 0, 1, 4, 5 cite a cutting diagram / layout on the sheet. Viewed all 12 images (step images c7f5faff59b6cd95 Brace drawing, c9e4b14b96f3e5d5 Support drawing, assembly sketches, 4 photos/overall-dimension sketch): none is a cutting diagram. Part sizes exist elsewhere (cutList, support/brace drawings, e4a8efa531bc1663 52\"x22\"), so only the sheet layout is missing."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "reason": "braces/supports pre-drilled steps 0-1, side assemblies (2), centre brace (3), seat (4), back (5), shelf (6), cushions last (7)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body 'Set your Kreg Jig for 3/4\" thick material'; all parts 0.75"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Brace qty 3, 0.75 x 14 x 48 (Kreg-corrected width 14.625; source '3/4\" x 14 5/8\" x 48\" sanded plywood')"
+        },
+        {
+          "path": "images[5] (c7f5faff59b6cd95.webp, viewed)",
+          "quote": "Brace 5\" ... 14 5/8\""
+        }
+      ],
+      "arithmetic": "Brace drawn 5\" x 14 5/8\" (image); frame length 4 supports x 0.75 + 3 braces x 14.625 = 46.875 ~ image '47\"'. Cut row gives 14.625 x 48 per brace instead of 5 x 14.625.",
+      "reason": "Brace cut-list row (even after Kreg correction) disagrees with the Brace size drawn in the plan; parts and counts otherwise agree and all parts are installed."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "c7f5faff59b6cd95.webp",
+      "c9e4b14b96f3e5d5.webp",
+      "3ae1ae7e5f3a7c6c.webp",
+      "a787a2b8559c273c.webp",
+      "f2b80a858a06eb12.webp",
+      "b0cb947a9500d97d.webp",
+      "76a8b24188262177.webp",
+      "1f6464f3a7031c95.webp",
+      "0dc26b6e5ee61a77.webp",
+      "809f6110a5848fec.webp",
+      "1c60411b74299782.webp",
+      "e4a8efa531bc1663.webp"
+    ]
+  }
 }

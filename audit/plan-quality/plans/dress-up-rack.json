@@ -1,6 +1,6 @@
 {
   "slug": "dress-up-rack",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: bottom, ends (curved), sides, trim for ends/sides all in cutList; dowel (cut to 35\") and end caps are cut from / listed in materials (Wooden Dowel Rod 1-1/4\" 48\", Closet Rod End Cap)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cut rows used (steps 0, 2-8)"
     },
     "R4": {
       "result": "pass",
@@ -52,27 +54,100 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x12, 1.25x48); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut your 1\" x 3\" x 8' board down to: (2) at 12-13/16\" - this will be the trim for the ends (2) at 39-1/8\" - this will be the trim for the sides"
+        },
+        {
+          "path": "materials[0]",
+          "quote": "Board, 1x3 96\", quantity 1"
+        }
+      ],
+      "arithmetic": "2 x 12.8125 + 2 x 39.125 = 25.625 + 78.25 = 103.875\"; kerf 3 x 1/8 = 0.375 -> 104.25 > 96 (one 8' board; step says 'board' singular). Also 1x12: step 0 'Cut your 1\" x 12\" x 8' boards' (plural) but materials list one 96\" + one 48\"; ends 2 x 36 + sides 2 x 37.5625 = 147.125 + kerf 0.375 = 147.5 vs 96 for those parts.",
+      "reason": "Steps name stock for every part; the 1x3 needed (104.25) exceeds the one 96\" board bought. The 1x12 96\" quantity of 1 is probably an import default (step says 'boards'), secondary."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step sizes '1-1/4\" Kreg screws' and '1-1/2\" brad nails' both in materials; no conflicting size; end-cap/bracket screw size not stated (no size used)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "end cap height 'Measure down 4\" from the top of the curve' (steps[8]); dowel 35\"; curve is a drawn freehand shape (relational, steps[1]); legs at 'four corners'; pocket holes shown in viewed image 9daeb80055f637d7"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut (0), curves (1-2), pocket holes (3-4), ends to bottom (5), sides (6), trim (7), end caps (8), legs (9), finish (10)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3].body 'Kreg Jig K5 set at a 3/4\" jig setting'; all parts nominal 1 = 3/4 actual"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Screw in the brackets into the four corners of the bottom side of your dress up rack."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "*We purchased our furniture legs and brackets at Home Depot"
+        }
+      ],
+      "reason": "Mounting brackets for the legs are named as a separately purchased item but are not in materials: searched materials names for /bracket|plate|hardware|hanger/i - only 'Decorative Furniture Legs' (qty 4). Other checks pass: counts match (2 ends, 2 sides, 2+2 trims, 2 end caps), trim lengths agree with the box (see gaps)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "First you will add on the end pieces to hold the dowel rod in place.",
+      "what": "no step places the 35\" dowel (cut in steps[0]) into the end caps; searched steps for /dowel|rod/: only steps[0] and steps[8]."
+    },
+    {
+      "path": "cutList[0]",
+      "quote": "Bottom Piece / Ends Of Rack / Sides Of Rack: thickness 1, width 12",
+      "what": "cut list shows nominal 1x12 (1 x 12); trim lengths use actual: 11.25 + 2 x 0.78125 = 12.8125 (trim for ends) and 37.5625 + 2 x 0.78125 = 39.125 (trim for sides), so the boards are really 3/4 x 11 1/4 (section 9). Cut list thickness/width are nominal (importer nominal-lumber path)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Fill all nail holes or gaps with wood filler, sand and then paint or stain the color of your choice.",
+      "what": "wood filler, sandpaper, paint/stain not in materials (consumables)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "painted the image onto the dress up rack using a dark gray chalk paint",
+      "what": "optional personalisation (vinyl template, chalk paint, spray paint) not in materials; optional"
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "8c42f440e3494960.webp",
+      "9daeb80055f637d7.webp",
+      "e80a847ffb15ffc3.webp",
+      "fa621c3e178d7e63.webp"
+    ]
+  }
 }

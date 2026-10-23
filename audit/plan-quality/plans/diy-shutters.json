@@ -1,6 +1,6 @@
 {
   "slug": "diy-shutters",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: vertical boards, panels, horizontal/decorative boards; both in cutList (Vertical boards, Horizontal boards)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both cut rows used (steps 0-2, 6)"
     },
     "R4": {
       "result": "pass",
@@ -24,23 +26,75 @@
       "arithmetic": "parts: 6×40 + 2×16.5 + kerf 0 cuts (8 parts − 8 boards, the fewest possible)×1/8 = 273.000″; bought: 8×48 = 384″; 273.000 ≤ 384"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use '1-1/4\" KREG pocket hole screws' and '18ga brad nails'; both sizes in materials. Wall screw/anchor size is never stated in steps (see R14)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "mount-hole positions 6 3/4\" / 2 3/4\" shown in viewed image 7375fa9e890723d6; horizontals '4\" off the top and 4\" off the bottom' (steps[6], image fde0bd7f5a2c3859); pocket-hole spacing 6-5/8\" in step 1; tacks centred on each vertical board"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels built (1-2), mount holes drilled (3), finished (4), installed (5), horizontals nailed over mount holes last (6), tacks (7)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1].body 'make sure they are setup for 3/4\" material'; all parts 0.75"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Horizontal boards, quantity 2, 0.75 x 5.5 x 16.5"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "The layout for these is 4\" off the top and 4\" off the bottom."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Buy appropriate anchors for the application."
+        },
+        {
+          "path": "materials (all 5 lines)",
+          "quote": "1-1/4\" KREG pocket hole screws, quantity 10"
+        }
+      ],
+      "arithmetic": "(a) steps[2] makes 2 panels (6 vertical boards, 3 per panel); viewed image fde0bd7f5a2c3859 shows 2 horizontals on one panel (4\" from top, 4\" from bottom) => 2 panels x 2 = 4 horizontals vs cut row qty 2 (materials 8 x 1x6 48\" = 6 verticals + 2 boards for 4 x 16.5, and tacks 12 = 4 x 3, both fit 4). Pocket screws: viewed image 96ef0d604d11b53f shows 5 sets x 2 holes = 10 holes per drilled board, 'x2' boards = 20 holes vs materials quantity 10. (c) search of materials names for /anchor|plug|wall screw|mounting/i: none; steps[5] says to buy anchors and 'screw it into the anchors'.",
+      "reason": "Horizontal count in cut list is half what the steps/image need; pocket screw quantity is half the holes drilled; wall anchors and mounting screws used in step 5 are not in materials (hardware)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "We chose to stain these dark walnut and sealed them with a water based poly.",
+      "what": "finish not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "96ef0d604d11b53f.webp",
+      "92ee8922db74d458.webp",
+      "7375fa9e890723d6.webp",
+      "fde0bd7f5a2c3859.webp"
+    ]
+  }
 }

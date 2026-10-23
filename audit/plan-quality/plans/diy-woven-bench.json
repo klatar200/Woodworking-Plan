@@ -1,6 +1,6 @@
 {
   "slug": "diy-woven-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,36 +83,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: legs, upper support, lower support, remaining upper supports (= 'Upper Supports' x2), brass rods and leather strips (cut from listed materials, step 7); all in cutList or materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 3 cut rows used (steps 1-4); 'Upper & lower supports' x4 = 1 upper + 1 lower per side frame (step 2), 'Upper Supports' x2 join the frames (step 4)"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "reason": "Kreg-corrected rows are 1.5 x 1.5 x L; materials 'Pine boards, 2x2x8'' = 1 1/2 x 1 1/2 actual (section 9)",
+      "readerNote": "sweep unknown (unparsed stock name) resolved by reading 2x2 per section 9"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "arithmetic": "one stock type, 3 x 2x2x8' (' explicit, 96\" each) = 288\"; parts 4 x 18 + 4 x 17 + 2 x 15 = 72 + 68 + 30 = 170\"; kerf 10 x 1/8 = 1.25\" -> 171.25 <= 288",
+      "readerNote": "sweep unknown (unparsed stock) resolved: length written as 8'."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step size '2 1/2” pocket hole screws' matches materials 'Box of 2 1/2\" Kreg Pocket Hole Screws'; jig 1 1/2\" depth only for pocket setup; leather tacking uses 'furniture tacks' (materials)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "lower support '5\" up from the bottom of the bench legs' (steps[2]); rod hole at centre of lower support (relational); upper support flush at leg top as visible in viewed a4a5bff11b2f31bb; tack positions relational"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut (0), holes (1), side frames (2), rod holes (3), frames joined (4), rod (5-6), leather cut/tacked/woven (7-12), finish (13)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1].body 'set your pocket hole jig to 1 1/2” depth and the stop collar ... 11/2”' for 1.5 thick 2x2 parts"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "2 side frames x (2 legs + 1 upper + 1 lower) = 4 legs, 4 x 17 supports; 2 x 15 rails join frames; rods, tacks, leather, gloves in materials; steps reach finished bench. Brass rod length and leather strip count/length listed under gaps (not a count mismatch)"
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "1/4\" x 18' brass rods",
+      "what": "rod length listed as 18 feet; geometry from the cut list gives a span of 15 (Upper Supports) + 2 x 1.5 (support thickness) = 18 inches between outer faces, and step 6 says 'Cut the excess brass'. Plan never states the rod length needed; 18' vs 18\" cannot be settled from the plan (likely unit typo)."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Cut them into 1 1/2” strips.",
+      "what": "number and length of leather strips (both weave directions) never given; only the 1 1/2\" width and 'Yard of leather/vinyl fabric'."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "add a little epoxy to reinforce the rod but that is an optional step",
+      "what": "epoxy not in materials (optional consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "a4a5bff11b2f31bb.webp",
+      "b4956c26f263afc4.webp",
+      "d1ddf6616d2a95f8.webp",
+      "45c9bb146f1f0e64.webp",
+      "cb6466436ac95470.webp",
+      "b6e4b43d92a4081e.webp",
+      "ae6d8ffd279446f5.webp",
+      "46637cc4bcce43de.webp"
+    ]
+  }
 }

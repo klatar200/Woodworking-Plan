@@ -1,6 +1,6 @@
 {
   "slug": "diy-wooden-planter",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps: 1x12x12 sides (front/back/sides), legs, 1x2 bottom slats; each matches a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 3 cut rows used (steps 3-5)"
     },
     "R4": {
       "result": "pass",
@@ -42,22 +44,76 @@
       "reason": "R5 precondition not met: 3 stock types (1x12, 1x2, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use '1 1/4\" pocket hole screws' only; materials lists 1 1/4\" pocket hole screws"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach 2 legs to one of the 1x12x12 pieces. Repeat."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "2x2 boards (for legs), quantity 4, 2 x 2 x 15"
+        }
+      ],
+      "reason": "Legs are 15 long and the side boards 12 (nominal; 11 1/4 actual per §9) but no step gives where on the leg the boards sit (flush top, flush bottom, or an offset), nor the height of the bottom slats above the board bottom; searched steps/description for /flush|above|from the (top|bottom)|inch offset/: none. Viewed images e7943f113a17803c (finished), 6d1c4ce88da99a81, e953ea1b9afb910c, 9b7dc2eb3dc6c310, 4badefd66cf1c265 show legs extending past the box but no dimensions."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut and drill (0-1), legs on front/back (3), sides (4), bottom slats (5), finish (6)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 3 pocket holes along 2 parallel sides of each 1x12x12 boards, and 1 pocket hole at each end of the 1x2 pieces."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1x12 and 1x2 parts; no jig thickness setting stated anywhere: searched all text for /setting|jig|collar|3\\/4/ - only tools slug and '1 1/4\"' screws match. Viewed image 5984e1a369b7ca2a shows the jig but not a stated setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: 4 sides, 4 legs, 4 slats; pocket screws 4 boards x 6 holes + 4 slats x 2 = 32 = materials quantity; slat 13.5 (corrected) vs interior of boards between 1.5 legs: 12 + 2 x 1.5 - 2 x 0.75 = 13.5; all parts installed"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[0]",
+      "quote": "1x12 boards (for sides) thickness 1, width 12, length 12",
+      "what": "cut list gives nominal sizes (1 x 12, and 2 x 2 for legs; legs 1.5 actual) not actual (3/4 x 11 1/4 per section 9); a 1x12 cannot yield a 12 wide, 1 thick part. Importer nominal-lumber path (cause import)."
+    }
+  ],
+  "reader": {
+    "batch": "s6-29",
+    "imagesViewed": [
+      "e7943f113a17803c.webp",
+      "2aa3720dd53e56d9.webp",
+      "5984e1a369b7ca2a.webp",
+      "6d1c4ce88da99a81.webp",
+      "e953ea1b9afb910c.webp",
+      "9b7dc2eb3dc6c310.webp",
+      "4badefd66cf1c265.webp"
+    ]
+  }
 }
