@@ -1,6 +1,6 @@
 {
   "slug": "diy-simplistic-circular-dining-table",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -119,17 +119,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Trim 1/4\" off each length of your 2x8 boards using a table saw.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "search": "steps[0] 'Trim 1/4\" off each length of your 2x8 boards': 2x8 actual width 7 1/4 (§9) - 1/4 = 7, equals Table Top Boards widthIn 7 (Kreg-corrected). Trimming a listed part to size, not a new part. Parts cut in steps[5] (legs, base beams) exist in cutList rows 1-3."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 cut rows are used: top boards (steps 0-2), base/legs (steps 5-8)."
     },
     "R4": {
       "result": "pass",
@@ -140,23 +135,94 @@
       "reason": "R5 precondition not met: 2 stock types (2x8, 4x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Sizes named in steps: 2.5\" (steps[2]), 2\" (steps[9]); both in materials[2],[3]. steps[6] gives no screw size (recorded under R9). No conflicting sizes for the same use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions fixed by the parts or relational. Viewed steps[9] image: base sits centered under the round top; legs on outside edges of the beam (steps[6]). Circle diameter given (54\")."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top glued up, cut round, sanded (steps 0-4); legs/beams cut (5), base assembled (6-8), top attached last (9). Each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Set up your Kreg K4 jig system to the 1.5\" setting."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Using a Kreg HD or R3 system, combine two legs to a base on the two outside edges."
+        }
+      ],
+      "reason": "The 1.5\" setting covers the 2x8 top (1 1/2\" actual, §9). The base joints are pocket-hole joins on 3 1/2\" 4x4 parts (corrected cutList[1..3]) with a Kreg HD/R3 system, and no setting or screw size is stated for them in any step or material (materials list only 2 1/2\" and 2\" soft wood screws)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Then, cut 2 trapezoids for the base beams at 26\" (on the long edge) with 15 degree angles on each end."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Table Base B qty 2, 3.5 x 3.5 x 24.25 (Kreg-corrected: \"should have a 15 degree cut on one edge\")"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Table Base A qty 1, 3.5 x 3.5 x 26"
+        }
+      ],
+      "reason": "Cut list has 3 base pieces (A x1 at 26 + B x2 at 24 1/4) but steps[5] cuts 2 base beams, both 26\" on the long edge. steps[7] then splits one beam in the middle by 3 1/2\" ('cut 3.5\" out of the very middle'), and the viewed step image shows the halves are short (about 11\"), not 24 1/4\". Cut list and steps disagree on count and length of the base beams. (c) hardware items all in materials; (a) top: 8 boards x 7\" = 56\" >= 54\" diameter, ok.",
+      "arithmetic": "base pieces: cutList[1].quantity 1 + cutList[2].quantity 2 = 3 vs steps[5] '2 trapezoids' = 2; half-length after the cut: (26 - 3.5)/2 = 11.25 vs cutList[2].lengthIn 24.25"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "454224c321bcd4de.webp",
+      "6f59c01778e6c33a.webp",
+      "8e9c624ce0c9a83d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1] / cutList[1..3]",
+      "quote": "Board, 4x4 72\" qty 2; cutList Base A 26, Base B 2 x 24.25, Legs 4 x 29.5",
+      "what": "The 3 1/2\" x 3 1/2\" parts can only come from 4x4 (§9). Lengths needed per the Kreg-corrected cut list = 26 + 2 x 24.25 + 4 x 29.5 = 192.5 (before kerf) vs 2 x 72 = 144 bought. Steps never name the stock so R5 is unscored; materials look short by the plan's own numbers (even by the steps' 2 beams: 2 x 26 + 4 x 29.5 = 170 > 144)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Assemble your boards together using wood glue, Kreg clamps, and 2.5\" Kreg soft wood screws.",
+      "what": "Wood glue is not in materials."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "first filling any gaps on your table top with wood filler",
+      "what": "Wood filler is not in materials."
+    }
+  ]
 }

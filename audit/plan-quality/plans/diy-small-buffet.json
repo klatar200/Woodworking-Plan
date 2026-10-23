@@ -1,6 +1,6 @@
 {
   "slug": "diy-small-buffet",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -131,17 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Every part named in steps[1]-[9] (side panels, bottom shelf, top support boards, bottom trim, cleats, shelf, facing, back panel, top boards, door, 2\" plywood strips) matches a cutList row (rows 0-12); no cut in a step lacks a row."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 'Shelves' qty 2 = bottom shelf (steps[1] 'attach the bottom shelf') + upper shelf (steps[4] 'Secure shelf to top of cleats'); searched steps for /shelf/ not /shelv/. All 13 rows used."
     },
     "R4": {
       "result": "pass",
@@ -161,22 +156,88 @@
       "reason": "R5 precondition not met: 6 stock types (1x4, sheet-0.75, sheet-0.5, sheet-0.25, 1x2, 1x10); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Sizes in steps: 1 1/4\" pocket hole screws (steps[1],[2],[5],[7]) = materials[8]; 1 1/4\" finish nails (steps[3],[4]) = materials[9]; 1/2\" finish nails (steps[6],[8]) = materials[10]. No conflicting sizes. Hinges (T hinges, steps[9]) and barrel bolt are in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given or shown in viewed images: bottom shelf 2 3/4\" up from side bottoms (steps[1] image), upper shelf at 14 1/4\" (steps[4] image), door strip spacing 7 1/4\" x3 (steps[8] image), 1/8\" door gap (steps[9]). Trim flush, top supports at top, facing/top relational. Hinge and barrel-bolt positions are not dimensioned, only shown in photos."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box, top supports, trim, cleats/shelf, facing, back, top, door, hardware: each part exists before use; facing attaches to pocket holes drilled in the side panels in steps[0]."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "create pocket holes where indicated by the red dots in the provided cut list"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "attach the bottom shelf to the side panels with 1 1/4\" pocket hole screws and wood glue."
+        }
+      ],
+      "reason": "Pocket-hole joints are used throughout (steps[1],[2],[5],[7]) on 3/4\" parts but no jig thickness setting is stated in any step or material (searched all steps/materials/description for /setting|jig|K4|K5|R3/ - no hit); viewed step images show screw size only, no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Join the (2) 1\" x 10\" x 32 1/2\" boards with 1 1/4\" Pocket Hole Screws and wood glue."
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Top Boards qty 2, 1 x 10 x 31 (Kreg-corrected 31 1/2: \"1\" x 10\" x 31 1/2\"\")"
+        }
+      ],
+      "reason": "steps[7] gives the top boards as 32 1/2\" long; the Kreg cut list row is 31 1/2\" and the viewed step[9] image dimensions the overall width as 31 1/2\". Step and cut list disagree by 1\". (b) all parts installed; (c) hinges/bolt in materials; (d) reaches finished piece.",
+      "arithmetic": "32 1/2 (steps[7]) - 31 1/2 (cutList[9] corrected) = 1"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "fde0b6ae476643fb.webp",
+      "25315f031ebe899e.webp",
+      "797b7350ff420739.webp",
+      "68c405fb762db427.webp",
+      "faa9a229876407ad.webp",
+      "d3f2e2fc7b53fa3c.webp",
+      "f05c9a8a75695328.webp",
+      "794cd1d6a95b4fb9.webp",
+      "970566b3e6d23a69.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body / cutList[6],[7],[12]",
+      "quote": "Attach the door with your T hinges leaving an 1/8\" gap around the perimeter of the door.",
+      "what": "Door (Kreg-corrected) 24 3/4 x 29 3/4 with 1/8\" gap each side needs a 25 x 30 opening. Facing top piece sits between the stiles (25\", viewed step[5] image); opening width 25 matches. Opening height = facing sides 32 1/2 (cutList[6]) - top piece 1x4 = 3 1/2 (§9) = 29, i.e. 1\" short of 30 if the top piece lies inside the 32 1/2 stile length as the viewed image shows. Likely a Kreg drawing inconsistency; could not confirm without Kreg's plan."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "create pocket holes where indicated by the red dots in the provided cut list",
+      "what": "Pocket-hole locations are in a cut-list graphic that is not in the plan; builder must choose them. Does not block the build."
+    }
+  ]
 }

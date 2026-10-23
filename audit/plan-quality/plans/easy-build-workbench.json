@@ -1,6 +1,6 @@
 {
   "slug": "easy-build-workbench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts in steps[0]-[8] (2x4x26 and 2x4x48 frame boards, two birch plywood tops 32 and 29 wide, four 2x6x25.5 legs, casters) match cutList rows 0-4 and materials; counts (two frames = 4 x 48 + 4 x 26, four legs) match."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: two ply rows (steps[2]), frame rows (steps[0]-[1]), legs (steps[3]-[7])."
     },
     "R4": {
       "result": "unknown",
@@ -24,30 +26,81 @@
       "reason": "R5 precondition not met: unparseable stock materials[0]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Only fastener size in steps: 2\" finishing nails (steps[2]) = materials[5]. Pocket/leg screws are named only as 'screws' (materials[3] '2 1/2\" Kreg Screws', casters 'with screws'); no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "e sure the tabletop is flush with the legs on the bottom and sides. Screw into place from the top this time. Flip it over, so you can secure with screws from the inside and outside of both leg pieces.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3dc6e561556543b4.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numbers given: two pocket holes per end (steps[0]), legs about 40\" apart (steps[3]), overhang 2\" (steps[2]). Legs/tops 'flush' and casters 'four bottom corners' are relational; viewed steps[6]-[7] photos show corner screws only."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames assembled (steps[0]-[1]), plywood nailed on (2), legs laid out and both tops attached (3-6), second pair of legs (7), casters (8). Each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill two pocket holes into each end of the 2\"x4\"x26\" boards."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "2 1/2\" Kreg Screws"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x4s (1 1/2\" actual, §9) but no jig thickness setting is stated in any step or material (searched all steps/materials/description for /setting|thickness|jig|collar/); the viewed steps[0] image shows a jig with A/B/C holes but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "The 32\" piece of birch must be centered so that there is a 2\" overhang on either side."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Carefully lay the 48\"x32\" tabletop (without the overhang) flush with the bottom and sides of the 2\"x6\" legs."
+        }
+      ],
+      "reason": "(a) steps[2] says the 32\" plywood piece is the one with the overhang (and steps[5] places 'the tabletop WITH the overhang' second), but steps[4] calls the 48\"x32\" top the one 'without the overhang' and puts it first; the first top should then be the 29\" piece (cutList[1]). Also the overhang number does not add up: frame width = 26 (cutList[3]) + 2 x 1 1/2 (2x4 actual, §9) = 29, which is the width of the other plywood top (cutList[1]); 32 - 29 = 3, i.e. 1 1/2\" per side, not the stated 2\" (likely: assumes the 48\" boards stand on edge). (b) all parts installed; (c) casters listed; (d) reaches finished bench.",
+      "arithmetic": "overhang per side = (32 - (26 + 2 x 1.5)) / 2 = 1.5 vs 'a 2\" overhang on either side'"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "6956952ddebcdf55.webp",
+      "e4267194c97e6c9f.webp",
+      "63a3e73b9b52d2a3.webp",
+      "32fec64b0483f954.webp",
+      "b968855f5d914386.webp",
+      "3dc6e561556543b4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Sand any rough edges, and it is ready for use!",
+      "what": "Sandpaper is not in materials."
+    }
+  ]
 }

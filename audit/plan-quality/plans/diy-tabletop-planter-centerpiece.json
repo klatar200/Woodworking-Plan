@@ -1,6 +1,6 @@
 {
   "slug": "diy-tabletop-planter-centerpiece",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,43 +107,86 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Steps cut/assemble Base, Short Sides, Long Sides, Feet; cutList has Base, Short Sides, Long Sides, Legs (qty 4 = four corners, steps[3] 'each of the four corners')."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: cutList[3] 'Legs' (qty 4, 0.75 x 2 x 2) = the 'Feet' of steps[3] ('Make a 20 degree angled cut on each of the Feet ... on each of the four corners'). Same parts, different name. All 4 rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "search": "materials[0] 'Board, 3/4\" x 5 1/2\" x 8'' is the only stock and its length IS written (8' = 96\"); sweep 'stock length not written' was wrong. Kreg-corrected lengths: 22.5 + 2 x 24 + 2 x 6.5 + 4 x 2 = 91.5; kerf 8 cuts x 1/8 = 1; total 92.5 <= 96. All widths (5.5, 3.75, 3.5, 2) <= 5.5.",
+      "readerNote": "Sweep returned unknown (stock length not written) but materials[0] states 8'."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Only fastener size in steps/materials: pocket hole screws (steps[1],[2]; materials[1] '1 ¼ pocket hole screws'). No other fastener sizes or conflicts; wood glue in materials[2]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole counts given per edge, spacing shown in viewed step[0] image (5 1/4, 5 1/2); feet at 'each of the four corners' and 'edges should line up' are relational; taper dimensions given in steps[3]."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled (steps[0]), short sides then long sides attached, feet last, then routing/finishing. Pocket holes drilled in step 0 serve both side joints."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill two pocket holes on the short edges and four pocket holes on each of the long edges."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Box of 1 ¼ pocket hole screws (see tools list)"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" stock (corrected thickness 0.75) but no jig thickness setting is stated in any step or material (searched all steps/materials/description for /setting|thickness|K4|K5|R3/); materials point to the 'tools list' (pocket-hole-jig carries no note). Viewed step[0] image shows hole layout and dimensions but no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) leg taper '2\" at the top to 1 1/4\" on the bottom' agrees with Legs width 2 / length 2; side counts match (2 long, 2 short). (b) all parts installed (steps[1]-[3]). (c) no unlisted hardware; clamps/router are tools. (d) steps reach finished planter. Sandpaper is a consumable gap."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "c462e71727205a4f.webp",
+      "1c204e8c9304b9cb.webp",
+      "76b27d63cd55ba7d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0..2]; steps[1].body",
+      "quote": "The 10 degree edges should line up with each other.",
+      "what": "Which edges of Base, Long Sides and Short Sides get the 10 degree bevel/miter, and the opposing vs parallel direction, appear only in Kreg's cut-list row text (visible in importDiffs source: \"with 10 degree opposing bevel on both long sides\", \"10 degree parallel bevel\", \"10 degree opposing miter\") and the live cutList rows carry no note, so the live plan never says it. Viewed step images show the sloped sides. Probable import loss (cut-row parenthetical dropped)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "After sanding all remaining edges, add stain and sealant",
+      "what": "Sandpaper is not in materials."
+    }
+  ]
 }

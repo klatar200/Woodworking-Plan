@@ -1,6 +1,6 @@
 {
   "slug": "doll-house",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -43,21 +43,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "simply use paint to complete it, or custom design it over time with your own finishes. You can find some ideas by following the link in the ‘Extras’ at the bottom. Overall size is 41” x 33.375” x 15”.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 'Extras' link (description, steps[9]) points to optional finishing ideas ('For how we finished our doll house and more great ideas'). Build needs only the cut list/diagram, which is in steps[0]'s attached image (viewed: roof panels, back, walls with cutout dimensions) and steps[1] image (pocket holes, top/mid/bottom/back)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts cut/assembled in steps[0]-[8] (back, bottom, mid-shelf, top shelf, roof panels, interior walls, right lower/top walls, left wall, railing moulding) all have cutList rows 0-10; dowels are materials[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: top = 'TOP SHELF', right lower wall = 'RIGHT BOTTOM WALL' (steps[2],[3]); moulding rows used in steps[7]."
     },
     "R4": {
       "result": "pass",
@@ -68,23 +63,53 @@
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Sizes in steps: 1\" pocket hole screws (steps[2]-[4]) = materials[4]; 1-1/4\" brad nails (steps[3],[5],[6]) = materials[5]; 5/16\" dowels/holes (steps[7]) = materials[3]. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed steps[0] image gives door/window cutout sizes and offsets (e.g. 4.5\" x 4.5\" windows, 9\" spacing, 10\" x 4.5\" doors) and back cutout 11\" x 13\"; steps[1] image shows pocket-hole locations; steps[7] image gives 1\" baluster spacing; interior walls 'any location' and mid-shelf 'aligned with the front' are relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and drill (steps[0]-[1]); shelves on left wall (2); right walls (3); back inserted (4); interior walls (5); roof (6); railing built then glued on (7-8). Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Drill pocket holes ... using the 1/2\" setting' and all pocket-hole parts are 1/2\" ply (corrected cutList thickness 0.5)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Mid-shelf 14-1/2\" vs 15\" for others (steps[2]) matches corrected cutList[2] 14.5 and [1] 15; top shelf 29 matches viewed image. (b) all parts installed. (c) hinges/hardware none; sandpaper, glue listed. (d) steps reach finished house. Baluster length gap recorded."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "4252a15f59c863ad.webp",
+      "146198bcc692062c.webp",
+      "d87d0870ad35314e.webp",
+      "5ec405cc18606548.webp",
+      "cabd0c6578df153e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[3]; steps[7].body",
+      "quote": "Wood dowels for railing, 5/16” (qty 35); \"We used 5/16” dowels as the balusters\"",
+      "what": "Dowel (baluster) length is never given in materials or steps, and the viewed steps[7] image dimensions the 11\" and 13\" moulding lengths and 1\" spacing but not baluster height; builder cannot cut or buy them to length from the plan alone."
+    }
+  ]
 }

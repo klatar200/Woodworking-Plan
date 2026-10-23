@@ -1,6 +1,6 @@
 {
   "slug": "drop-front-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -203,10 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts cut in steps[0]-[3] (Sides, Top Shelf, Mid Shelf, Hanging Cleat, Bottom, Desktop) all in cutList rows 0-5; no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used (steps[0]-[3], [7]-[8]). Cleat row dimension conflict recorded under R14."
     },
     "R4": {
       "result": "pass",
@@ -217,31 +219,65 @@
       "reason": "sheet layout not judged (area fits: part area 2×12.5×20 + 1×13×23.25 + 1×11.5×23.5 + 1×8.6875×23.5 + 1×5.5×23.5 + 1×23.5×23.5 = 1958.2 sq in; bought 1×48×48 = 2304 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Only fastener size in steps: 1 1/4\" coarse-thread pocket-hole screws (steps[4],[7],[8]) = materials[1] (qty 24 = 6 cleat + 4 top + 6 mid + 8 bottom pocket holes in viewed images). '#6' drill bit (steps[3]) = materials[7]; hinge/support/hanger fasteners deferred to manufacturer. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " did in the Desktop. Drill the mounting holes, and then install hinges the hinges. Now you can remove the hinges from the Bottom and the Desktop. You’ll reinstall them later when the desk is complete.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2cbb215447f2671a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give: hinge recess positions on Desktop (3 1/2\", 1 1/2\", 1 1/4\") and Bottom (3 5/8\", 1 5/8\"), shelf/cleat setbacks (1 1/2\", 6 3/8\", 1/4\") in steps[7] image, curve centres in the Side drawing, pocket-hole layout, 1/8\" desktop gap. Lid-support and hanger positions are deferred to 'the manufacturer’s instructions' (supplied with the hardware)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "8 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, banded, hinge recesses cut and hinges removed (steps[0]-[5]), finished (6), assembled (7-8). Order of the build itself is possible; the missing hinge reinstall is recorded under R14."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your pocket-hole jig for 3/4\"-thick material' covers all pocket-hole parts (shelves, cleat, bottom; all 0.75 per corrected cutList)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Now you can remove the hinges from the Bottom and the Desktop. You’ll reinstall them later when the desk is complete."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "The next step is to install the lid supports. These are important to hold the desktop in position"
+        }
+      ],
+      "reason": "(b) Step 5 removes the hinges and says they will be reinstalled when the desk is complete, but no later step does it: steps[6] (finish), [7]-[8] (assembly) and [9] (supports, hanger) never mention hinges or attaching the Desktop (searched steps[6]-[9] for /hinge|desktop/i: only steps[9] 'hold the desktop in position'). The Desktop, the working surface of the desk, is never installed. Likely because step 9 presupposes it and step 5 states the intent, so the builder can infer it. (a) Also cutList[5] Hanging Cleat is 23.5 x 23.5 (Kreg-corrected, source '3/4\" ply x 23 1/2\" x 23 1/2\"') while the viewed steps[1] drawing and steps[7] image show it 3 1/2\" x 23 1/2\" (certain, Fix-level, plan cause).",
+      "arithmetic": "cleat width: 23.5 (cutList[5]) vs 3.5 (viewed steps[1] image) = 20"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "6125e4a325c608d1.webp",
+      "1800ccd1919a19be.webp",
+      "b16f1c2800ea1bc0.webp",
+      "45e0c0610d3cf768.webp",
+      "9f0945f8bd34ce39.webp",
+      "2cbb215447f2671a.webp",
+      "7363660a549cecba.webp",
+      "10c32917b2f68f2c.webp",
+      "dc1ddf2418f7810d.webp"
+    ]
+  },
+  "gaps": []
 }

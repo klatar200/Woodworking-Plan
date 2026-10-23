@@ -1,6 +1,6 @@
 {
   "slug": "diy-small-space-vanity",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": false,
   "importDiffs": [],
@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts made in steps[1]-[5] (front legs, back legs, shelf 1x3/1x2 boards, cover panels, side panel) all have cutList rows 0-6; countertop is materials[5] (steps[0])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: legs (steps[1]), shelf front/back/slats (steps[2]), front/side cover panels (steps[3],[5]). Searched steps for each part name."
     },
     "R4": {
       "result": "pass",
@@ -33,30 +35,93 @@
       "reason": "R5 precondition not met: 5 stock types (4x4, 2x4, 1x12, 1x3, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "No fastener size appears in any step (searched steps for /\\d\\s*\\d?\\/?\\d?\"\\s*(screw|nail)/ and 'screw'): steps say only 'screws', 'pocket screws', 'wood glue or construction adhesive'. No size to match or conflict. Missing fasteners are recorded in gaps."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "legs. You can fill these and sand to get a beautiful finish. We chose the height of our shelf to rest on the baseboard for extra stability Now we can attach the side panel using pocket screws. Lastly,",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/132c408f17e48008.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed final photo (steps[6]): front cover panel sits directly under the top between the front legs, shelf low near the floor; steps[5] 'height of our shelf to rest on the baseboard' is relational. Slat spacing is even/relational. No numeric positions given but all shown or relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top, legs, shelf, cover panels made first (steps[0]-[3]); assembled in place (steps[4]-[5]); top attached last. Each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "get busy with your Kreg Jig to drill pocket holes into the ends of each board."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill pocket holes into the ends of these as well."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1\" (3/4\" actual) shelf boards and cover panels but no jig thickness setting is stated anywhere (searched all steps/materials/description for /setting|K4|K5|R3|thickness/). Viewed steps[2] image shows a jig but no legible setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Assemble so the back 1x3 has the pocket holes facing up instead of down to make assembly simple."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Shelf back edge qty 1, 1 x 2 x 16"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "We only put cover panels on the front and visible size of the vanity."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Side panel qty 2, 1 x 12 x 13"
+        }
+      ],
+      "reason": "(a) Two count/size disagreements. 1) steps[2] calls the back shelf board a 1x3 but the cut list's back edge is 1x2 (width 2) and the front edge is the only 1x3 row; materials[3] '1x3 board, 1.5'' = 18\" cannot also yield a second 16\" back board. 2) steps[3]/[5] cover only 'the front and visible' side and 'the side panel' (singular) while the cut list has 2 side panels; materials[2] 1x12 3' = 36\" covers front + one side (16 + 13 = 29) but not front + two sides (16 + 13 + 13 = 42). (b) all parts installed; (c) no hardware used beyond fasteners; (d) reaches finished piece.",
+      "arithmetic": "1x3 stock 18 vs 16 + 16 = 32; 1x12 stock 36 vs 16 + 13 + 13 = 42 (two sides) or 16 + 13 = 29 (one side)"
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "132c408f17e48008.webp",
+      "e6370ae22867168e.webp",
+      "624ed044a3c229d8.webp",
+      "9d4f42675db8eb56.webp",
+      "3ee34db020dbdfd7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[0..5]",
+      "quote": "Assemble the shelf with screws ... Screw the back legs into the wall first.",
+      "what": "Materials list no screws, pocket screws, or construction adhesive at all, and no wall fastener type/size for fixing the back legs to the wall (steps[4]); steps use \"screws\" with no size anywhere."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Use wood glue and clamp them overnight",
+      "what": "Wood glue (and construction adhesive, steps[5]) not in materials."
+    }
+  ]
 }

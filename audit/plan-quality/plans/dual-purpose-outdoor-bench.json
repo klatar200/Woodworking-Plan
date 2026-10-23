@@ -1,6 +1,6 @@
 {
   "slug": "dual-purpose-outdoor-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -407,10 +407,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Every part cut or assembled in steps[0]-[15] (legs, end rails, lower shelf rails/uprights, top rails/support, shelf boards/backs, top boards incl. notched rear board, upper uprights, upper shelf supports) has a cutList row 0-13; step counts (4 end rails, 8 shelf boards, 4 shelf backs, 5 top boards = 4 + 1 rear, 4 upper supports, 2 uprights) match row quantities."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 rows used in steps[0]-[14]; 'Upper Shelf Rail' (cutList[13]) = 'Upper Shelf Supports' of steps[13] (same 4 parts, loose name)."
     },
     "R4": {
       "result": "unknown",
@@ -421,30 +423,113 @@
       "reason": "R5 precondition not met: unparseable stock materials[2]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[12].body",
-          "quote": "make sure that it overhangs equally across the front of the bench. Now attach the top from underneath using 1 1/4\" Blue-Kote™ Pocket-Hole Screws in the Top Rails, Top Support, and the Upper End Rails.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "attach the top from underneath using 1 1/4\" Blue-Kote™ Pocket-Hole Screws in the Top Rails, Top Support, and the Upper End Rails."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/2\" Kreg Blue-Kote™ Pocket-Hole Screws"
         }
-      ]
+      ],
+      "reason": "steps[12] names 1 1/4\" Blue-Kote screws. Searched all materials for /1 1\\/4/: no 1 1/4\" fastener; the only Blue-Kote line is 1 1/2\" (qty 141) and steps[11],[14] use 1 1/2\" Blue-Kote for other joints. The size used to attach the top is not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed (white-background) images give: lower end rail 4\" up, end rails 23 1/2\" apart, 25 1/2\" from rear-leg top (steps[2]); top rails 31\", 1/2\" insets, Top Support 18 3/4\" from end rail (steps[6]); upper shelf spacing 9 1/2\" and rail 8 5/8\" (steps[14]); lower uprights 11\", 8 5/8\" (steps[4]); top-board pocket-hole spacing and notch 4 1/4\" x 3 1/2\" (steps[10]). Top overhang 'equally' and shelf 'flush with the upper face of the Lower Shelf Rail' are relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "23 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs/rails (0-2), lower rails/uprights (3-4), top rails/support (5-6), shelves made (7-8) and installed (9), top made (10-11) and attached (12), upper uprights/supports (13-14), upper shelves (15). Each part exists before use; shelf assemblies are installed before the top covers them."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Make sure the jig and drill bit are still set for 3/4\" material."
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Shelf Board qty 8, 1 x 5.25 x 39 (Kreg-corrected; \"1\" x 5 1/4\" x 39\"\")"
+        }
+      ],
+      "reason": "The plan equates the jig setting with the part thickness (steps[5] 'set ... to the 1 1/2\" settings to match the 2x4 thickness'). steps[7] drills the Shelf Boards, which the cut list gives as 1\" thick (5/4x6 stock, materials[2]), with the standard jig 'still set for 3/4\"'; the same 3/4\" setting is carried to the 1\"-thick top boards (steps[10]). Every other pocket-hole setting (3 1/2\" for 4x4 rails, 1 1/2\" for 2x4) is stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Cut five boards to length from 1x6 cedar to make the top."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Cedar Decking, 5/4x6 x 96\""
+        },
+        {
+          "path": "cutList[10]",
+          "quote": "Top Board qty 4, 1 x 5.25 x 47.5 (Kreg-corrected)"
+        }
+      ],
+      "reason": "(a) steps[10] cuts the five top boards from '1x6 cedar' but materials list no 1x6 (searched materials for /1x6/: none; only 5/4x6 decking, which steps[7] uses for the Shelf Boards) and the cut list gives the top boards as 1\" thick, while a 1x6 is 3/4\" thick (§9). The stock named for the top disagrees with materials and the cut list. Other numbers add up: end rails 18.75 between legs with 3.5 + 18.75 + 3.5 = 25.75; Top Support 22.25 = 25.75 - 0.5 - 1.5 - 1.5; 11 + 1.5 + 11 = 23.5 between end rails. (b) all parts installed; (c) no unlisted hardware; (d) steps reach finished bench."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "c84903afe65b1f2e.webp",
+      "369d0c550bfd40d5.webp",
+      "2152d6d100305f42.webp",
+      "69eaf55e0290c071.webp",
+      "b425667e285f513b.webp",
+      "bdc38c43150edacc.webp",
+      "2e05fb36c1499de0.webp",
+      "e771871d107b6198.webp",
+      "b759fc956719a0fb.webp",
+      "4abcbacc0f2fe119.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Start with the Top Support that goes between the Rear Legs. ... and then use glue and 2 1/2\"-long XL Pocket-Hole Screws to hold attach this Top Rail.",
+      "what": "Part names are swapped in the step: the first piece (rear, between the Rear Legs, flush with the rear face) is the Top Rail, and the one-off Top Support (22.25) is the cross piece placed last; the viewed step image labels them correctly (31\" rails, Top Support between)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "apply clear finish to the Shelf Boards before assembly",
+      "what": "Clear finish is not in materials (only two deck stains)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "When done, sand these Legs smooth.",
+      "what": "Sandpaper is used in many steps but is not in materials."
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "slug": "diy-wood-candle-holder",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -47,17 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Then with a miter saw, cut the 2 ½” x 2 ½” board into small blocks ranging from 2” to 6” long. I didn't provide lengths for these blocks, because these are totally random and you could cut any length ",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "search": "Flag rejected: steps[0] trims 1/2\" off each of four sides of a 3 1/2\" 4x4 (§9 actual; corrected cutList[0] 3.5 x 3.5): 3.5 - 2 x 0.5 = 2.5, matching the stated 2 1/2\" x 2 1/2\". steps[1] cuts blocks from that stock and says lengths are free (2\"-6\"), so it states how to cut them from listed material."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Single row 'Board' (corrected 3.5 x 3.5 x 72) is the 4x4 stock that steps[0] takes and trims; used. The blocks themselves are defined in steps[1] (random lengths)."
     },
     "R4": {
       "result": "pass",
@@ -68,22 +63,55 @@
       "arithmetic": "parts: 1×72 + kerf 0 cuts (1 parts − 1 boards, the fewest possible)×1/8 = 72.000″; bought: 1×72 = 72″; 72.000 ≤ 72"
     },
     "R6": {
-      "result": "to-read"
+      "result": "n/a",
+      "reason": "No fasteners or hardware in the steps (searched steps/materials for screw|nail|bolt|hinge|bracket)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole position given: X from corner lines locates the center (steps[2]); depth 1/2\" and bit 1 1/2\" given. Arrangement of blocks is 'any way you'd like'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Trim stock (steps[0]), cut blocks (1), drill holes (2), sand (3), finish (4). Holes drilled before sanding/finish, no conflict."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes or joints; blocks are single pieces."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) trim arithmetic 3.5 - 1.0 = 2.5 matches; blocks 2\"-6\" long, 21 needed (steps[1],[2] agree with each other). (b) no sub-assemblies. (c) no hardware; white paint is a consumable (gap). (d) steps reach finished set of holders. Candle count 22 vs 21 blocks recorded as a gap."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": [
+      "b31a6091f52b3a73.webp",
+      "feb4f5ded4abe106.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1] / steps[1].body",
+      "quote": "You would need 21 of these blocks.",
+      "what": "materials[1] lists 22 candles (\"1 1/2\" Candles\" qty 22) for 21 blocks (steps[1] \"21 of these blocks\", steps[2] \"all 21 blocks\"); one candle without a holder (or a spare). Could not tell from the viewed final photo; may be an intended spare."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Then lightly brush white paint over the stain to make a whitewash effect.",
+      "what": "White paint is used in the finish but is not in materials (stain and pre-stain are)."
+    }
+  ]
 }

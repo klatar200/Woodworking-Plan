@@ -1,6 +1,6 @@
 {
   "slug": "easy-folding-desk",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts in steps[0]-[6] (leg tops, angled legs, back legs, desk backs, desk top boards) = cutList rows 0-4; no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used (steps[0]-[3], [5]-[6])."
     },
     "R4": {
       "result": "pass",
@@ -157,30 +159,47 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, 1x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Sizes in steps: 2 1/2\" pocket hole screws (steps[2]) = materials[2]; 1 1/4\" pocket hole screws (steps[3]) = materials[3]; '1\" long wood screws' for hinges (steps[5]) = materials[7] #8 1\"; catches use 'included screws'. No conflicting sizes. Counts agree: 8 holes in steps[2] = 8 screws; 3 joints x 5 holes = 15; 4 hinges, 4 catches."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given: second desk back 5\" up from bottom, catches about 6\" in from sides and 5\" in from front, 1 1/2\" overhang each side (steps[5],[6]); legs flush at back, angled leg 'touching the top corner of the back leg' are relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Sand and stain/paint the finished pieces. Don't forget to also sand and stain/paint the desk back pieces that are not attached to anything yet.",
-          "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[4] only contains the word 'attached' ('desk back pieces that are not attached to anything yet'); it refers to no drawing or 'as shown'. No other step references a diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg tops/angled legs cut (0-1), legs assembled (2), top built (3), finished (4), hinges (5), catches (6), set-up (7). Each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'Set your Kreg pocket hole jig for 1 1/2\" thick material' (legs, corrected 1.5) and steps[3] 'for 3/4\" thick material' (desk top boards, 0.75)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[1] '27 5/8\" long from end to end' is consistent with cutList[1] 29 1/16\" (long edge) less the 22 1/2 degree end cut on a 3 1/2\" board (3.5 x tan 22.5 = 1.45; 29.0625 - 1.45 = 27.6). Overhang: desk back 37 (cutList[3]) + 2 x 1 1/2 (leg thickness) = 40; top 43 (cutList[4]) leaves 1 1/2\" each side as steps[6] says. 4 hinges = 2 desk backs x 2 ends; 4 catches match. (b) all parts installed; (c) hinges and catches in materials; (d) steps reach the set-up desk."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "s6-20",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Sand and stain/paint the finished pieces.",
+      "what": "Sandpaper and stain/paint are not in materials."
+    }
+  ]
 }
