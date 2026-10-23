@@ -1,6 +1,6 @@
 {
   "slug": "sliding-closet-doors-with-windows",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -71,10 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Stiles, bottom/panel-top/curved/top rails (8 'Door rails', 17\" x 3.5\" in step 6 image), window rails (2), window stiles (4), panels (2) all in cutList. Steps 6 and 8 call the 17\" curved/top pieces 'door stile' (naming only, see gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used."
     },
     "R4": {
       "result": "pass",
@@ -85,22 +87,84 @@
       "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener size; only 1 1/4\" pocket hole screws in materials[3]; no conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Positions given: door 24 x 84; panel-top rail top 68 1/2\" (step 3 text, step 0/3 images); window stile 4 7/8\" and 17\" (step 5 image); curve 1\" / 3 1/2\" (step 6 image); groove 3/8\" from front, 3\" in from top and bottom; window pieces centered."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "Step 5 'like shown' images viewed (step 0, 5, 6, 7, 8) show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Grooving, bottom rail, panel, panel-top rail, window rows, curved rail, top rail, finish in a possible order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Add pocket holes to the back of both sides of the piece."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "using wood glue and pocket holes."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" stock (door rails, window pieces) but no jig thickness setting is stated: searched all steps/materials/description for /setting|jig|collar|depth/ (only 'deep' for the 1/4\" groove) and viewed step 5, 6, 7, 8 images - holes drawn, no setting label. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Hang the doors according to the manufacturer's directions for the sliding door hardware you choose."
+        }
+      ],
+      "reason": "R14(c): sliding door hardware (track/rollers) is used but is not in materials or any cutList row. Search: materials[0-4] are 1x4, plywood, acrylic, screws, glue; no match for /track|roller|hardware|hanger/i. Other R14 parts pass: panels 2, acrylic 8 = 4/door x 2 doors, window stiles 4, rails 8 = 4/door (bottom, panel-top, curved, top); 24 = 3.5+17+3.5; 68.5 = 3.5 + 61.5 + 3.5; 1x4 length 336+136+34+19.5+kerf 2.25 = 527.75 <= 6x96 = 576."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Fill the pocket holes with plugs.",
+      "what": "pocket-hole plugs, sandpaper and finish not in materials"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "On one of the remaining door stiles, measure 1\" down on one side.",
+      "what": "Step 6 and step 8 ('Attach the top door stile') call the 17\" x 3 1/2\" curved and top pieces 'door stiles'; cutList has 4 stiles at 84\" (2 per door, used as sides) and 8 rails at 17\"; the step 6 image shows the curved piece is 17\" x 3 1/2\" so it is a rail. No stile is 'remaining'."
+    }
+  ],
+  "reader": {
+    "batch": "s6-35",
+    "imagesViewed": [
+      "5298fdcae0498a46.webp",
+      "8f0f1a577c0fa520.webp",
+      "839a1d54743f91e9.webp",
+      "8b96de77941cc3b0.webp",
+      "d4e6428fea00daa4.webp",
+      "8c4c2b5f60cbe814.webp",
+      "a8da9a52de138373.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "sturdy-2x4-bench",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Posts, seat frame, planks 59/66, backrest frame 19/16/56 are in cutList rows 0-8; step 0 image shows the 59, 23, 19, 27 1/2 and 23 1/2 parts."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows appear in step images (arm rests 27 1/2 and 19\" arm rails in step 0 image) though step text never names arm rests (see gaps). Plank count: 59\" x6 = 2 frame + 2 seat + 2 backrest, 66\" x8 = 5 seat + 3 backrest (steps 1 and 3 images)."
     },
     "R4": {
       "result": "pass",
@@ -60,22 +62,71 @@
       "reason": "R5 precondition not met: 2 stock types (2x4, 4x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps: 2 1/2'' pocket hole screws (materials[2]), 'deck screws' (materials[3] 2 1/2\"), '4 inch lag screws' (materials[4] 5/16\" x 4\"); step 4 says 'lag bolts' without size, same item. Lag spacing 'about 10 inches': 5 gaps x 10 = 50 <= 56 for 6 lags."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Step 0 image (viewed): frame 59\", cross members 23\" with 14\"/15 1/4\" spacings, 19\" arm rails, arm 27 1/2\", posts 23 1/2\", 13 1/2\"; plank gap 1/4\" (text); backrest 56\" x 19\", 16\" supports at 19\"/15\"/19\" and 15 degree cuts (step 2 image); lags about 10\" apart. Check: seat 7 x 3 1/2 + 6 x 1/4 = 26 = 19 + 2 x 3 1/2."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "Only reference is 'as shown' style; step images viewed (0, 1, 2, 3, 4, 6)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Steps 0-3 make seat frame, seat, back frame, back planks before steps 4/6 join them. Step 7 'Build Seat Frame' (after finishing) duplicates step 0 rather than a new part: step 0 already attaches the 2x4s to the posts and its image shows the full frame. See gaps."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 0 and 2: 'Drill 1 1/2'' pocket holes' (1 1/2\" stock = 2x4)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step text sizes (59, 66, 19, 16, 15 degrees) agree with corrected cut rows (arm 27.5, posts 23.5 only in image/cutList). 2x4 total 1226\" + 27 x 1/8 = 1229.4 <= 16 x 96 = 1536; 4x4 4 x 23.5 + 3 x 1/8 = 94.4 <= 96. All parts installed; piece complete."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Drill 1 1/2'' pocket holes and attach 2x4's to 4x4 posts using 2 1/2'' pocket hole screws.",
+      "what": "No step text mentions the arm rests (cutList 'Arm Rests' 27 1/2) or the 19\" arm rails, or says how they attach; they appear only in the step 0 image."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Build the seat frame using pocket hole screws.",
+      "what": "Steps run out of order/duplicated: step 7 (seat frame) comes after planking and finishing, steps 4 and 6 both attach the backrest with lag screws, step 5 finishes before step 6."
+    },
+    {
+      "path": "materials[3]",
+      "quote": "25 each 2 1/2\" Self Tapping Deck Screws",
+      "what": "Quantity looks low: step 1 and 3 images (viewed) show 7 seat planks over 5 frame members (>= 35 crossings) and 5 backrest planks over 4 uprights (>= 20); at one screw per crossing 55 > 25. Not scored (no check covers fastener counts)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Fill holes, sand, and paint or stain the bench. Finishing off with polyurethane.",
+      "what": "wood filler, sandpaper, paint/stain and polyurethane not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-35",
+    "imagesViewed": [
+      "8209641d1d4b94d3.webp",
+      "6c53a15b0e084f00.webp",
+      "1aecb1f5ad3ca916.webp",
+      "c7047ff30e9aa83f.webp",
+      "8d873640adb0e539.webp",
+      "9047faf18b1611fc.webp"
+    ]
+  }
 }

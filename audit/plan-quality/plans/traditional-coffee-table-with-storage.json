@@ -1,6 +1,6 @@
 {
   "slug": "traditional-coffee-table-with-storage",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -311,10 +311,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, end aprons, end shelf rails, front/back aprons, top stretchers, shelf rails/stretchers/slats, top slats, drawer parts, false front, drawer bottom all match cutList rows 0-16."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 rows used (steps 0-18)."
     },
     "R4": {
       "result": "unknown",
@@ -325,23 +327,81 @@
       "reason": "R5 precondition not met: 5 stock types (1x6, 1x4, 1x2, sheet-0.25, 2x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine-thread pocket hole screws (materials[6]) in steps 2, 5, 7, 9, 11, 13, 15; 1\" fine-thread (step 18) = materials[7]; no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Images (viewed): leg angle 3/4\" x 3/4\", shelf rails 6 1/2\" up and inset 1/2\" (steps 2, 11 images), apron opening 18\" x 3\", 13 1/2\" from the end, 1 1/4\" top and bottom (step 3 image), shelf notch 1 1/4\" x 1 1/4\", drawer groove 1/4\" x 1/4\", pull centered, slides per manufacturer. Check: 45 + 2 x 1.5 = 48, top 51.5 gives 1 3/4\" overhang; 21 + 3 = 24, top 5 x 5.5 = 27.5 gives 1 3/4\"; 13.5 + 18 + 13.5 = 45."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "33 reference(s), each in a step with its own image"
+      "note": "33 reference(s), each in a step with its own image",
+      "reason": "All 'as shown' steps have images; those viewed (0, 2, 3, 10, 11, 15, 16, 18, 19) show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Ends, aprons, shelf, base assembled in the stated order (step 11), then top, drawer, slides; finishing after removing hardware."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "With your pocket-hole jig set up for 3/4\" material, drill pocket holes in the Legs, creating two matched pairs of legs, as shown."
+        }
+      ],
+      "reason": "The 3/4\" setting is given for pocket holes drilled in the Legs, which are 2x2 (cutList[0] corrected 1.5 x 1.5); the step 0 image (viewed) shows holes near the leg end. Setting names a thickness other than the stock drilled. Other settings are consistent (3/4\" for 3/4\" parts; step 16 1/2\" for the drawer front/back). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "Cut two Drawer Sides, one Drawer Front, and one Drawer Back to length from a 1/2\" x 3\" (2 1/2\" actual width) board"
+        },
+        {
+          "path": "cutList[12]",
+          "quote": "Drawer Side 0.5 x 2 x 20"
+        }
+      ],
+      "reason": "R14(c): the drawer box parts (2 x 20 + 2 x 16 = 72\" of 1/2\" x 2 1/2\") come from a '1/2\" x 3\" board' that is not in materials. Search: materials[0]-[10] names contain no '1/2' board (1x6 96\" x8, 1x4 96\", 1x4 24\", 1x2 96\" x2, 1/4\" ply 24 x 24, 2x2 72\", screws, slides, pull, glue); the 1x4 24\" is used by the 19\" False Front. Other R14 parts pass: counts match; lumber fits (1x6: 5 top slats leave 44.5\" for 21 + 22.5 pairs; 3 wide slats leave 48.5\" for 45\" aprons = 8 boards), 1x4 2 x 47.5 + 1/8 = 95.1 <= 96, 2x2 4 x 15 = 60 <= 72."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[20].body",
+      "quote": "Apply the finish, or stain and finish, of your choice.",
+      "what": "sandpaper and stain/finish not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "s6-35",
+    "imagesViewed": [
+      "eb5c7134a3a05ca7.webp",
+      "365a9643c9258ac8.webp",
+      "c5f8ae537473c63e.webp",
+      "f684868eede83df9.webp",
+      "15f91f7ec29df016.webp",
+      "8b231a870fb889e5.webp",
+      "212192f52fd5cce1.webp",
+      "0bc45c8d53536fe4.webp"
+    ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "slug": "stackable-storage-crates",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Ends, side slats, bottom slats all in cutList rows 0-2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used (steps 0-4)."
     },
     "R4": {
       "result": "pass",
@@ -97,23 +99,60 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x6, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps 3-4 '1 1/4\" coarse-thread pocket hole screws' = materials[3]; 36 = 6 side slats x 4 + 3 bottom slats x 4 holes (images); no conflicting size. Caster mounting screws unspecified (casters optional)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Handle holes 1 1/4\" dia, 1 1/2\" from top, 7 1/2\" from each edge (step 0 image); side slat gaps 1/2\" (step 3 image); bottom slat top 10 3/4\" below end top (step 4 image); even spacing otherwise."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "note": "10 reference(s), each in a step with its own image",
+      "reason": "'as shown in the cutting diagram' and 'as shown' steps 0-4 each have a viewed image (step 0 diagram shows 11 1/2 x 20 end with handle)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut ends/slats, drill, attach sides, bottoms."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 1 and 2: 'pocket-hole jig set up for 3/4\" stock'."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Side slats 3 x 3 1/2 + 2 x 1/2 = 11 1/2 = end height (images); counts 2/6/3 match cutList; plywood 24 x 24: 11 1/2 + 11 1/2 + 1/8 = 23.125 <= 24; 1x4 72\": 3 x 18.5 + 2 x 1/8 = 55.75 <= 72 (x2 boards); 1x6 3 x 18.5 = 55.5 <= 72. Parts installed; piece complete."
     }
   },
-  "verdict": null,
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "drill pocket holes in the ends of the Side Slats, as shown.",
+      "what": "Step 2 is 'Make the Bottom Slats' but its text says Side Slats (its image shows Bottom Slat); wording slip only."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "You can even screw small swiveling casters if you want to make your crate mobile.",
+      "what": "Optional casters are in materials[4] but no screw size/position is given; optional so not scored."
+    }
+  ],
+  "reader": {
+    "batch": "s6-35",
+    "imagesViewed": [
+      "0ce9f6a130ee78d4.webp",
+      "c5192b17830d323b.webp",
+      "94ef919f76eb6ec9.webp",
+      "b72f0a329397f27b.webp",
+      "4c635991b4b4b1a1.webp"
+    ]
+  }
 }

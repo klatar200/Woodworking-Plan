@@ -1,6 +1,6 @@
 {
   "slug": "storage-mirror",
-  "rubric": "R-1",
+  "rubric": "R-2",
   "batch": null,
   "importAffected": true,
   "importDiffs": [
@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, frame bottom, base sides, frame sides, frame top, base front all named in steps 1-6 and match cutList rows 1-6; Backing is the panel the steps attach to."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used (backing in every step)."
     },
     "R4": {
       "result": "pass",
@@ -121,22 +123,74 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x4, 1x3, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All steps: '1 ¼” finish nails' = materials[4]; no other fastener."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed images give overall 13 5/8 x 16 1/8, opening 12 1/8 x 12 1/8, base 3 1/2 deep / 5 deep, 2 1/2 tall rail/base front, frame top 1 1/2; positions fixed by the parts. Check: 2 1/2 + 12 1/8 + 1 1/2 = 16 1/8; 12 1/8 + 2 x 3/4 = 13 5/8."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "Every step is its own diagram image; viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base, frame bottom, base sides, frame sides, frame top, base front can be added in that order (images 1-6 viewed)."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joints are glue and 1 1/4\" finish nails in every step."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[5]",
+          "quote": "12\" square mirror"
+        },
+        {
+          "path": "materials[7]",
+          "quote": "Construction adhesive"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Step 6: Attach the base front to the base and sides using wood glue and 1 ¼” finish nails."
+        }
+      ],
+      "reason": "R14(b)/(d): the steps end at the base front and never install the mirror (a listed material) or use the construction adhesive, and never say how to hang the piece. Search: steps[0]-[6] (titles and bodies) have no match for /adhesive|install the mirror|insert|hang|mount|wall/; the only 'mirror' is the step 0 title 'mirror dimensions' and image captions. Photos (viewed) show a mirror in the frame and the piece on a wall but no instruction. Level Fix because the mirror is a bought sheet that fits the drawn 12 1/8\" opening (viewed step 0 image), so the build proceeds; a verifier may judge it Unpublish-level. Other R14 parts pass: counts match (2 base sides, 2 frame sides, 1 each of the rest)."
     }
   },
-  "verdict": null,
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "mirror dimensions",
+      "what": "Steps 0-6 consist only of one-line captions (title plus 'attach X using wood glue and 1 1/4\" finish nails'); all dimensions and positions come from the diagram images."
+    }
+  ],
+  "reader": {
+    "batch": "s6-35",
+    "imagesViewed": [
+      "252d99625770b6ad.webp",
+      "6978de74660d9a40.webp",
+      "268c1b306a4ebd44.webp",
+      "f123e372a1e6f0cb.webp",
+      "66b0ef86e0f38993.webp",
+      "9aad26face94e595.webp",
+      "6dc2669fbea51be1.webp",
+      "ab9d08318be1749b.webp"
+    ]
+  }
 }
