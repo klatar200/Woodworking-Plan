@@ -236,13 +236,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no full-plans/PDF/template/link in any field"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part a step makes (Side Panels, Back/Front Panel, Front/Back Legs, Outer/Center Stretchers, Rails, Bottom) has a cut row; step 8 image (viewed) shows Front Rail and Back Rail."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are used in steps 0-13."
     },
     "R4": {
       "result": "unknown",
@@ -253,31 +255,59 @@
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only two fastener sizes in steps: 1 1/4\" coarse-thread pocket hole screws (steps 7,9,10,11,12 = materials[5]) and 1\" flat head wood screws (step 13 = materials[6]); no conflicting size.",
+      "search": "steps vs /\\d.*(screw|nail)/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: panels and legs (0-7), frame parts (8-9), frame to side assemblies (10), back (11), front (12), bottom dropped in (13)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] and steps[4]: \"With your pocket hole jig set up for 3/4\" material\" covers all 3/4\" ply and 3/4\" frame parts; the 1/2\" bottom and 2 1/2\" legs get no pocket holes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give the layout: curve offsets and 6\" stations (step 0 diagram), back panel layout, pocket-hole locations on stretchers/rails (4\", 7 3/4\", 7/16\"), 5\" leg offset, 1 5/8\" overhang. Step 13 screw placement is stated as non-critical."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flag steps[6] \"as shown in the cutting diagram\" settled: leg lengths 24\" and 30\" are shown in the viewed step 7 image and in cutList[3],[4]; other \"cutting diagram\" steps (0,3,8) have own images showing the layout (viewed)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[6].body",
-          "quote": "Cut two Front Legs and two Back Legs length from 3x3 boards, as shown in the cutting diagram. Sand the Legs smooth.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].body",
+          "quote": "Cut two Outer Stretchers, one Center Stretcher and two Rails to length as shown in the cutting Diagram."
         },
         {
-          "path": "steps[6].body",
-          "quote": "Cut two Front Legs and two Back Legs length from 3x3 boards, as shown in the cutting diagram. Sand the Legs smooth.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[7]",
+          "quote": "Rail"
         }
-      ]
+      ],
+      "reason": "Step 8 and its viewed image (Back Rail and Front Rail, each 76\") need two Rails; cutList[7] \"Rail\" has quantity 1 (no importDiff for quantity, so the live 1 stands). Supporting: step 13 screw count \"three screws in each Rail, and two in each Stretcher\" = 2x3+3x2 = 12 = materials[6] quantity 12 only with 2 rails; 3 x 1x4 96\" bought fits 2x76 + 3x31.5 (94.5) but not a single rail.",
+      "arithmetic": "step 2 rails vs cutList[7].quantity 1; 2x3 + 3x2 = 12 screws = materials[6].quantity 12"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "plans/30d1ba078c2af8f7.webp",
+      "plans/9a758ddfca5fcad5.webp",
+      "plans/fe0f90235d9abf8e.webp",
+      "plans/95059bb1ddad8d4b.webp",
+      "plans/86c4247db7f4e847.webp",
+      "plans/97b8bf4098f85746.webp",
+      "plans/80c9d6186ed963b6.webp",
+      "plans/7751b12a2f8bf773.webp"
+    ]
+  },
+  "gaps": []
 }

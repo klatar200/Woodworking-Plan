@@ -44,41 +44,89 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no external dependency"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single part (the rack board) is cut from the listed 2x6 in steps 0 and 2."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Coat Rack",
-          "why": "no step mentions it (searched steps for coat/rack)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: the one row \"Coat Rack\" is the board the whole sequence makes (steps[0] \"Cut your 2x6 down to 24\" in length\", steps[2] \"down from 5 1/2\" wide to 2 3/4\" wide\"); length 24 and width 2.75 match the Kreg-corrected row."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Coat Rack"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x6 24\""
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut the 2x6 down from 5 1/2\" wide to 2 3/4\" wide."
+        }
+      ],
+      "reason": "Kreg-corrected row is 1.25 x 2.75 x 24 (source \"2 3/4\" x 1 1/4\" x 2'\"). The only stock is a 2x6, actual 1 1/2 x 5 1/2 (section 9), and the steps change only length and width. Search steps for /plane|resaw|thick|1 1\\/4|mill/i: no hit, so the plan never gets from 1 1/2\" to the 1 1/4\" in the cut list.",
+      "arithmetic": "1.5 (2x6 thickness) vs cutList thickness 1.25"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[0] not 1.5″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "Single stock (2x6 24\"); part length 24 <= 24 bought, no crosscut kerf needed. Thickness issue recorded under R4."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No screws or nails with sizes; only S-hooks (materials[1], 20). Wall mounting is left open (\"key holes ... or directly screw or use hangers\")."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: cut length, drill face holes, rip to width, drill bottom holes, ream, finish, mount."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes in the plan."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Holes are 1/2\" from the final bottom edge (steps[2]), pitch is set by the shelf-pin jig at its larger offset (face) and smallest offset (bottom), shown in viewed step 1 and 3 photos. Number of holes along the 24\" is not stated (gap)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references in steps (sweep)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Length 24 and width 2 3/4\" agree with the Kreg-corrected row (thickness recorded under R4); 20 S-hooks in materials; mounting offered as alternatives so no unlisted hardware is required; steps reach a mounted rack."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "ee3331911a1c2ccc",
+      "cfcd5a212bec2c9b",
+      "c66f5389229a7174"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "drill your holes along the face of the 2x6",
+      "what": "no count of holes or start position is given for the 24\" board (20 S-hooks listed); the viewed photo shows a row of holes running the length",
+      "kind": "note"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "We used key holes in the back of the board to mount it to the wall.",
+      "what": "wall-mount hardware is not in materials; alternatives offered (screws or hangers), no sizes",
+      "kind": "consumable"
+    }
+  ]
 }

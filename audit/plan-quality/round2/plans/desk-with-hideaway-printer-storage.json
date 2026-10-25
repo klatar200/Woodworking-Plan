@@ -7,25 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; steps[9] is a credit line (\"For more free building plans... visit JenWoodhouse.com\"), not a dependency"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps 0-8 has a cut row (legs, carcass sides/back, aprons, 1x2 stretchers/trim/slide support/tray parts, door, drawer parts, faces, top); drawer backs \"rip a 1x4 board down to 3\" wide\" matches cutList[16],[20] width 3."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Long Stretcher",
-          "why": "no step mentions it (searched steps for stretcher)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Short Stretcher",
-          "why": "no step mentions it (searched steps for stretcher)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: Long/Short Stretcher are the \"1x2s\" of steps[1] (\"Drill 3/4\" pocket holes into the 1x6s and 1x2s and attach ... to the printer cabinet carcass\"); the viewed step 1 image labels two 1x2 stretchers low between the legs. Every other 1x2 row is named elsewhere (trim, slide support, tray back/sides), so the stretchers are the remaining 1x2s."
     },
     "R4": {
       "result": "pass",
@@ -36,17 +26,87 @@
       "reason": "R5 precondition not met: 6 stock types (sheet-0.75, sheet-0.25, 2x2, 1x6, 1x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Build the tray by attaching the 1x2 back and sides to the 3/4\" plywood bottom with 1-1/4\" brad nails and wood glue."
+        },
+        {
+          "path": "materials[11].name",
+          "quote": "3/4\" Brad Nails"
+        }
+      ],
+      "reason": "Step 3 uses 1-1/4\" brad nails; the only brad nail line is 3/4\" (search materials[].name for /brad|nail/i: only materials[11] \"3/4\" Brad Nails\"). Step 5 uses 3/4\" brad nails for a different joint, so 3/4\" is listed but 1-1/4\" is not."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: carcass (0), aprons/legs/stretchers (1), shelf (2), tray and slides (3), door (4), drawers built, faced, installed (5-7), top last (8)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"Drill 3/4\" pocket holes\" is stated in steps[0], [1], [2], [5] for every pocket-hole part (3/4\" ply, 1x6, 1x2, 1x4); no contradiction."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach door to printer cabinet with hinges."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "Hinges"
+        }
+      ],
+      "reason": "The door (15 x 23, 2 hinges in materials) is hinged with no stated edge and no hinge positions; the viewed step 4 image shows the door off the cabinet with no hinges drawn, and search steps/description for /hinge/i finds only steps[4]. Positions that are given and shown: legs 29\", plywood 27\", carcass 23 1/4\" x 18\", shelf 10 1/4\" down (step 2 image), faux fronts 7 5/8\" each (step 4 image), top 1\" overhang."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references in steps (sweep)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "To hide the raw plywood edges, iron on 3/4\" veneer edge banding."
+        }
+      ],
+      "reason": "Step 8 uses iron-on veneer edge banding (a component applied to the build, not glue/tape/sandpaper/filler/finish); search materials[].name for /band|veneer|edge/i: no hit. Counts otherwise agree: 5 pulls = 2 on the door + 2 on the desk drawers (viewed final image) + 1; top 58 1/2\" x 23\" = 56 1/2\" frame + 2 x 1\" (frame: 26 1/4\" cabinet + 28 3/4\" apron + 1 1/2\" leg = 56 1/2\"); every made part is installed.",
+      "arithmetic": "26.25 (23.25 + 2 x 1.5 legs) + 28.75 + 1.5 = 56.5; 56.5 + 2 x 1 = 58.5 = cutList[24] length"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "cb4c9e33e0b3307e",
+      "9ba6c9a5b19f2d61",
+      "e2b5df1f4d5eb170",
+      "68f13231b3841586",
+      "cb7b58b5eb7ca791",
+      "631698a899f368c8",
+      "ede271c5e7d23948",
+      "b43783d89336a234"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[13]",
+      "quote": "Door",
+      "what": "live row 0.75 x 15 x 23; the viewed step 4 image dimensions the door 23 1/4\" wide x 15 1/4\" tall (two 7 5/8\" faux drawer fronts), so fractions look dropped (import, S-19) - no importDiff recorded",
+      "kind": "import"
+    }
+  ]
 }

@@ -91,21 +91,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut wood down to size according to the woodworking plans (available in the Extras tab below).\nYou'll need to make a couple angled cuts. For those you can use a double bevel compound miter saw.",
-          "why": "matches \"Extras\""
+          "quote": "Cut wood down to size according to the woodworking plans (available in the Extras tab below).\nYou'll need to make a couple angled cuts."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "as shown in woodworking plans"
         }
-      ]
+      ],
+      "reason": "Step 0 sends the builder to downloadable woodworking plans (Extras) for the cuts, and the angled cuts are described only there: search all steps, summary, description and cutList notes for /degree|angle|bevel|miter|taper/i finds only \"a couple angled cuts\" (steps[0]). The cut list gives sizes, so a build is possible with guessed angles - Fix, not Unpublish. (Source rows carried \"5 degree angeled cut on bottom\" and \"5 5/8\" (short edge) and 6\" (long edge)\" but the live rows do not.)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four parts (side panels, bottom, front, back) have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four cut rows are used in steps 1-2."
     },
     "R4": {
       "result": "pass",
@@ -129,18 +137,57 @@
       "arithmetic": "parts: 2×4.5 + 1×5.25 + 1×9.0625 + 1×4.5 + kerf 4 cuts (5 parts − 1 boards, the fewest possible)×1/8 = 28.313″; bought: 1×24 = 24″; 28.313 > 24"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" brad nails (steps[2] = materials[1]) and 1 1/4\" pocket hole screws (4 = 2 front + 1 + 1 per steps[1], materials[2]). Step 6 \"small finish nail\" gives no size.",
+      "search": "steps vs /\\d.*(nail|screw)/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides to back, then bottom, then front last is a possible order; no step needs access that an earlier step has closed off."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 4 pocket holes on the bottom panel (as shown in woodworking plans) using your Kreg pocket hole jig."
+        }
+      ],
+      "reason": "Bottom panel is 3/4\" stock (cutList[1]) and gets pocket holes, but no jig thickness setting is stated: search steps/materials/description for /setting|thickness|3\\/4/i - no hit in steps. Viewed steps[1] image shows the holes, no jig setting."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "steps[1] gives the hole count and direction (2 toward the front, 1 each side) and the viewed step 1 image shows their layout; clip nail position is shown in the viewed step 6 photo (\"on the front\"). Cut angles are recorded under R1."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Only reference is steps[1] \"as shown in woodworking plans\", which has its own image; viewed: it shows the four pocket holes in the bottom panel."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (4 pocket holes = 4 pocket screws; sides, back, bottom, front all installed in steps[2]); sanding/stain/poly/filler/glue/binder clip in materials. Finish-nail for the clip has no size or materials line (fastener, see gaps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "aedb66b42d7651f1",
+      "b579a316603c3095",
+      "e0a75cfadd7d64ea",
+      "76b05a032511895e"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "put in a small finish nail on the front to hang a binder clip",
+      "what": "finish nail is not in materials (only 1 1/4\" brad nails x4 listed) and has no size",
+      "kind": "fastener"
+    }
+  ]
 }

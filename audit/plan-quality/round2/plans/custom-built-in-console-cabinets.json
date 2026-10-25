@@ -20,13 +20,29 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; steps[0..12], description, materials contain no full-plan/PDF/external dependency"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "add 15\"x32\" side panels between the 24\" cabinet bases and the 15\" cabinet bases to hide pocket holes"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Shallow Cabinet - Sides"
+        }
+      ],
+      "reason": "Step 8 adds 15\"x32\" side panels, but no cut row is for them and the only 15x32 row (qty 4) is fully used by the two shallow cabinets (steps[2], steps[3]: two sides per cabinet, \"Repeat with the second 15\" cabinet base\"). Search: cutList.part vs /panel/i matches only \"Door Panel\"; steps vs /side panel/i matches only steps[8]. Panel quantity is never stated. Not structural, so Fix.",
+      "arithmetic": "Shallow sides qty 4 = 2 cabinets x 2 sides, leaving 0 for the side panels"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 cut rows are used by steps 0-12 (sides, bottoms, strips, face frame, partition, toe kick, door parts, countertops)."
     },
     "R4": {
       "result": "unknown",
@@ -34,28 +50,107 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.5, 2x4, 1x2, 1x3, sheet-0.75); steps not checked for per-part stock"
+      "reason": "R5 precondition not met: 5 stock types (sheet-0.5, 2x4, 1x2, 1x3, sheet-0.75); steps not checked for per-part stock",
+      "readerNote": "5 stock types and steps do not name stock for every part, so it stays unknown. (1x2: if face-frame sides are 1x2, parts total 8x32+8x37+4x26.5=658 in vs 6 x 96 = 576 bought, but the sides stock is unnamed.)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flag rejected: the quoted \"2\"x4\"\" is the toe-kick lumber, not a screw. Pocket screws are 1\" and 1.5\" (materials[5],[6]); no step gives a different fastener size.",
+      "search": "steps vs /\\d+(-\\d/\\d)?\"?\\s*(screw|nail|bolt|brad)/i: no sizes other than listed"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "cabinet shelf just above the 2\"x4\" and secure it via pocket screws, then the next shelf at the 11\" mark, and on up until all 4 shelves have been placed. Be sure that the middle pocket hole in each she",
-          "why": "4\" screw — no material line lists a 4\" fastener"
+          "path": "steps[8].body",
+          "quote": "Finally secure the cabinet bases to each other (see arrows), and to the wall via the securing strips."
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "After all your shelves are on, attach the 32\" securing strip to the top."
         }
-      ]
+      ],
+      "reason": "Step 8 fastens the bases to the wall via securing strips, but the 15\" cabinet securing strip is only attached in the last step (12), after the countertops (step 11) are fixed on."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes (as shown in the diagram) into the 15\"x32\" and 24\"x32 cabinet sides"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Drill double pocket holes in either end of the the 1\"x2\"x37\" face frame pieces"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" ply (steps[0], steps[4]) and 3/4\" frame/door parts (steps[6], steps[9]); no jig thickness setting is stated. Search: all steps/materials/description vs /setting|jig|thickness/i - no hit. Viewed steps[0] image (no setting visible, jig shown without a readable setting)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "You will need hinges designed for inset doors, and my also need to add a 1/2\" strip of wood along the inside edges"
+        }
+      ],
+      "reason": "Hinge positions on 8 doors / face frames are never given as a number; viewed steps[9] (door assembly) and steps[10] (trim router) images show no hinge locations. Shelf heights (11\", 18\", 25\"), partition lines (18-3/4\") and overhang (1/2\") are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "steps[0] \"as shown in the diagram\" - own image is a labeled layout of bottoms and sides (viewed). Sweep result stands."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "attach the 32\" securing strip to the top"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Shallow Cabinet - Securing Strip"
+        }
+      ],
+      "reason": "Step 12 names a 32\" securing strip; the only shallow-cabinet strip row is 48\" long (qty 2). cutList[4] is not in importDiffs, so the live 48 stands. (Face-frame, door, partition, strip 18-3/4 and countertop counts otherwise agree; 15x32 side panels recorded under R2.)",
+      "arithmetic": "step 32\" vs cutList[4].lengthIn 48 (0.5 x 2.75 x 48)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "plans/965940b4e4ee8e6c.webp",
+      "plans/b8cfe94b8a920fbc.webp",
+      "plans/dd7f770a1d0b6563.webp",
+      "plans/d8aecbbc306e6322.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Fill any holes, as well as the line between tops with a little silicone",
+      "what": "silicone is used but not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "cutList[13]",
+      "quote": "Door Strips (sides)",
+      "what": "cutList[13] length 26 vs the viewed step 9 image label \"26-3/8\" (source \"26-38\" typo): fraction dropped, cause import (S-19)",
+      "kind": "import"
+    }
+  ]
 }

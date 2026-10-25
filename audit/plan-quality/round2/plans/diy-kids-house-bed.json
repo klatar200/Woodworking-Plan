@@ -452,41 +452,60 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Steps[3] says the roof assembly can be seen \"in the video in the extras tab\"; the step text itself gives the bevels (45 and 22.5 degrees), the order and the fasteners. Optional link, not a dependency.",
+      "search": "all steps vs /extras|video/i: steps[3]"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps build has a cut row (posts, 2x6 rails, slat panels, roof tops, front/back frame pieces, runners, bed slats, 2x4 blocks, roof supports)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 18 rows are used in steps 0-15."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x6, 2x4, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every part matches one stock and the steps name it. 2x6 120\" x4: 4x40 + 73 + 2x24 + 2x73 = 427 + kerf ~1.1 = 428.1 <= 480. 2x4 96\" x12: 4x54 + 4x30.375 + 2x10.5 + 2x10.5 + 2x73 + 2x75 + 9x3.5 = 707 + kerf <= 1,152. 2x2: 73 <= 96. 1x4 120\" x8: 6x40 + 2x10.5 + 6x20.5 + 10.5 + 3x66 + 9x40 = 952.5 + ~19 cuts x 1/8 = 954.9 <= 960 (tight: three 40\" slats on one board are short by 1/4\" of kerf, so the 15 slats of 40\" need care; the pooled total still fits)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[13].body",
-          "quote": "Cut two more 2x4s at about 75” long and screw into the bottom of the front and back panel using 2 ½” wood screws. These give somewhere to place the bed slats onto.",
-          "why": "75\" screw — no material line lists a 75\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: \"75\" long\" in steps[13] is the runner length, the screw is \"2 1/2\" wood screws\" (materials[6]). All sizes used (2 1/2\" and 1 1/4\" pocket screws, 2 1/2\" and 1 1/4\" wood screws) are listed (materials[4]-[7]); brad nails are only an \"or\" alternative."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: end panels (0-3), front frame/panels (4-6), back (7-9), assembly (10-11), roof and slat supports (12-15)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" settings stated for 1x4 ends (steps[0],[4],[8]) and 1 1/2\" for 2x4/2x6 (steps[1],[5],[8],[12]); no contradiction."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given: 54\" posts, 40\" rails, 10 1/2\" between 2x6 rails (=3 x 3 1/2\" slats), 22.5/45-degree bevels, 73\"/24\" front frame (viewed step 5 image); roof supports \"as high or low as you wish\"; slats \"evenly space\". Rail and panel height on the posts is shown only in the viewed step 1/10/11 images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "All \"like shown\" steps have their own images (sweep)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 6 side slats = 2 panels x 3 (3 x 3.5 = 10.5 = gap in step 1); 6 front slats = 2 x 3; 3 back slats at 66\" = 73 - 2 x 3.5; 9 slats + 9 blocks; 2 roof 2x4s + 1 2x2 at 73\"; no unlisted hardware; steps end with the mattress."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "e9444083bed37023",
+      "6a9e5082ba59f223",
+      "1f72988983b71679",
+      "5b4696a5311a76ce"
+    ]
+  },
+  "gaps": []
 }

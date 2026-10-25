@@ -116,13 +116,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[11] points to a YouTube video and blog \"in the extras tab\" for \"more details\"; no build instruction depends on them.",
+      "search": "all steps vs /extras|video|blog/i: steps[11]"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Posts, frame pieces, panels, base pieces, legs and slats all have cut rows; steps[0] gives the rule (posts = panel height + 3\", frame pieces = panel width) that matches 15 and 12."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used in steps 0-10."
     },
     "R4": {
       "result": "pass",
@@ -133,24 +136,39 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x2, 1x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": " degree cut parallel to the other so the legs will tilt out for a retro look. You can make these as long or short as you wish. Mine were roughly 6” long. Then screw in place in each corner like shown.",
-          "why": "6\" screw — no material line lists a 6\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: \"6\" long\" in steps[8] is the leg length. Sizes used: 2 1/2\" pocket screws (steps[2]), 1 1/4\" pocket screws (steps[6],[7]), 2\" wood screws (steps[10]), all in materials[3]-[6]; step 8 names no leg screw size."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: frame (0-2), panels (3-6), base frame (7), legs (8), slats (9), base to box (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "1 1/2\" pocket holes for the 2x2 frame (steps[1]) and 3/4\" for plywood and 1x3 base (steps[4],[7]) are stated; no contradiction."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Frame rails sit flush top and bottom of the posts (viewed step 2 photo), panels fit the 12\" x 12\" openings, base equals the box bottom (15\" = 10\" + 2 x 2.5\"), legs \"in each corner like shown\"; leg length \"as long or short as you wish\" (mine 6\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "All \"like shown\" steps have their own images (sweep); viewed steps 2, 7, 8."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts and sizes agree: 8 frame pieces x 2 ends = 16 pocket screws; 4 posts 15\" = 12\" panel + 3\"; 4 panels; base 15\" x 15\"; 2 slats 11 3/4\" fit inside the 12\" opening; 4 legs; all made parts are installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "bb4d8f04bcb2a7b7",
+      "a180fd97ae2583af",
+      "5a0d11bb5805ca44"
+    ]
+  },
+  "gaps": []
 }

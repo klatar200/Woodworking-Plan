@@ -20,13 +20,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no external dependency"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only made part is the pole; steps[0]-[8] use four poles plus rope, screws, washers and the drop cloth, all in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single row \"Poles\" (4 x 2x2 x 72) is used throughout."
     },
     "R4": {
       "result": "pass",
@@ -40,31 +42,48 @@
       "arithmetic": "parts: 4×72 + kerf 0 cuts (4 parts − 4 boards, the fewest possible)×1/8 = 288.000″; bought: 4×72 = 288″; 288.000 ≤ 288"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only one fastener size is used: 1/2\" screws and washers (steps[6],[8] = materials[1],[2]); 8 = 4 poles x top and bottom."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: stain and prepare poles (0-1), rope and shape (2-5), then drop cloth and screws (6-8)."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes in the plan."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Next, drill a hole through each pole about 1 foot from the top. Make your hole big enough to feed your rope through. It’s a good idea to put your teepee together in the space it is going in. This way,",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c31afe11ff3ef09a.webp"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Start adding the drop cloth from the back of the teepee. Find your middle point and place a screw and washer at the top of your pole.",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: steps[1] gives \"about 1 foot from the top\"; the example footprint is \"44\" wide\" opening and \"22\" wide\" back (steps[4]); screw positions are the pole top/bottom and the cloth midpoint (steps[6],[8]), relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references (sweep)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Wrap the rope around the two poles once or twice, then staple it."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "To hold the shape while you work, staple some rope to each pole around the bottom."
+        }
+      ],
+      "reason": "Steps 3-4 use staples to fix the rope to the poles; search materials[].name for /staple/i: none (materials are poles, 1/2\" screws, washers, rope, drop cloth). Counts otherwise agree: 4 poles, 8 screws and 8 washers = top and bottom of 4 poles, 72\" poles from 4 x 72\" boards."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": []
+  },
+  "gaps": []
 }

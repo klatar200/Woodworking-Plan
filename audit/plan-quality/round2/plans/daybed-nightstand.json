@@ -146,47 +146,106 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no full-plans/PDF/template dependency in any field"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part has a cut row; the top (12\"x36\") is not a cut row but steps[5] says to rip it from the listed 1x16 glued board (\"ripped down to 12\" exactly\"). Spacers (3/4\" board, 32 1/2\" spacer, 1/4\" spacer) are temporary jigs, not parts.",
+      "search": "cutList.part vs /top|table/i: none; steps[5] gives size and stock"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used (legs, supports, bottom frames, aprons, front frame, shelf, drawer parts). cutList[5] live values (0.75x5.5x1) are an import defect, corrected row is 0.75x4.5x8.25."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[5] Kreg text not parseable; cutList[10] no match among parsed stock; unparsed stock present (materials[3])"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[10]",
+          "quote": "Drawer Bottom"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Attach 1/4\" plywood drawer bottom to the bottom of the drawer sides"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Plywood, 1/2\" Thick Half Sheet"
+        }
+      ],
+      "reason": "Drawer Bottom is 1/4\" thick (corrected 0.25 x 7.25 x 17). Materials list only 2x2, 1x6, 1x2, 1x16 glued board and 1/2\" plywood; search materials[].name for /1\\/4/ finds only the screw/nail names (materials[14] \"1 1/4\" nails\"), no 1/4\" panel stock. A 1/4\" part cannot come from 1/2\" ply or the 1x lumber (sheet thickness as written, section 9). This is also the R14(c) item (sheet component missing from materials); recorded once, here.",
+      "arithmetic": "0.25 required vs listed thicknesses 1.5 (2x2), 0.75 (1x), 0.5 (ply)"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[3]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "ttom frames (2\" from the bottom of the legs). Clamp, glue, and attach the shelf supports to the legs using 2 1/2\" pocket hole screws. Attach the shelf to the bottom frames using 1\" pocket hole screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "attach the shelf supports to the legs using 2 1/2\" pocket hole screws"
         },
         {
-          "path": "steps[9].body",
-          "quote": "Position drawer face over the drawer front so that there is 1/8\" space on all sides. Hold steady and nail the drawer face into the drawer sides using 1 1/4\" nails and a electric nail gun.",
-          "why": "1/8\" nail — no material line lists a 1/8\" fastener"
+          "path": "steps[0].body",
+          "quote": "attach the bottom frame using a clamp, wood glue, and 2 1/4\" pocket hole screws"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "2 1/4\" pocket holet screws"
         }
-      ]
+      ],
+      "reason": "Step 4 uses 2 1/2\" pocket hole screws; no materials line lists a 2 1/2\" fastener (search materials[].name for /2 1\\/2/: none; sizes listed are 1 1/4\", 1\", 2 1/4\", 3\"). Step 0 and step 3 give the same joint (2x2 ends, 1 1/2\" pocket holes) a 2 1/4\" screw."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: front/back frames (0-1), side aprons (2), shelf (3), shelf to legs (4), top (5), drawer box (6-7), slides (8), face (9), finish (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Pocket-hole thickness is stated per part: steps[0] 1 1/2\" (2x2) and 3/4\" (1x2, 1x6), steps[2] 3/4\", steps[3] 1 1/2\" and 1/2\", steps[6] 1/2\". No contradiction."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: bottom frame and shelf supports 2\" from leg bottoms, top 1/4\" overhang, drawer face 1/8\" gaps (opening 8.5 = 8.25 + 2 x 1/8), pull 2 1/4\" high and 3\" apart (half of 4 1/2\" face). Drawer slide height is set by the Kreg slide jig (viewed step 8 image shows jig seated under the top)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "4 references, each in a step with its own image (sweep). Viewed steps[8] image (slide jig) and step 9 image (drawer face 4 1/2\", 1/2\" top overhang)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts and sizes agree with the Kreg-corrected rows (shelf supports 32 1/2\", drawer front/back 6 3/4\", drawer face 4 1/2\" in the viewed image; top 12\"x36\" = 11 1/2\" body + 1/4\" overhang each side, 35 1/2\" + 1/2\"). Missing 1/4\" ply drawer bottom recorded under R4; every made part is installed; steps reach the finished piece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "91060c47d26b1d36.png",
+      "dd94ca86bd07b9f6.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[5]",
+      "quote": "Drawer Face",
+      "what": "live row 0.75 x 5.5 x 1 is wrong; source \"1\"x4 1/2\" (cut 1\" off of 1x6 width) x8 1/4\"\" and the viewed step 9 image (4 1/2\") give 0.75 x 4.5 x 8.25 (import defect, cause import)",
+      "kind": "import"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Table top dimensions are 12\"x36\"",
+      "what": "the top has no cut-list row; size and stock are given only in the step text",
+      "kind": "note"
+    }
+  ]
 }

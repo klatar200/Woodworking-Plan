@@ -128,60 +128,81 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no full-plans/PDF/external dependency"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Rails, Stiles, Thin Stiles, Rail Ends (\"End Rails\" in steps[1]), Decorative Squares and Back all have cut rows; mirror and hanging kit are in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows are used in steps 0-8."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 0.25x3, sheet-0.25); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "cut two Thin Stiles from a 1/4\"x3 oak board, as shown in the cutting diagram"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1/4\" x 3\" 24\""
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Thin Stile"
+        }
+      ],
+      "reason": "Steps[2] names the stock for the Thin Stiles: a 1/4\"x3 board. The only such material is 2 boards of 24\" (length stated with a unit), but the Kreg-corrected Thin Stile is 0.25 x 2.5 x 31.125 (qty 2) - each part is longer than any board bought, so it cannot be cut however many boards are bought. Decorative Squares (steps[5], stock not named) only add to the need. Scored on the named-stock subset (thin stiles) because the shortfall does not depend on the unnamed squares.",
+      "arithmetic": "2 stiles x 31.125 = 62.25 (+1/8 kerf) vs 2 x 24 = 48; single part 31.125 > 24 per board"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners: 1 1/4\" fine-thread pocket hole screws (steps[3] = materials[4], 8 = 2 holes x 2 ends x 2 rails) and #6 x 3/4\" pan-head woodscrews (steps[8] = materials[5]; viewed back image shows 16 pilot holes). No other size used.",
+      "search": "steps vs /\\d.*(screw)/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: parts (0-2), frame (3), rail ends (4), squares (5), back cut (6), finish (7), back on (8), mirror (9), hang (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0]: \"Set your pocket hole jig for 3/4\" material\" - the only pocket-hole parts are the 3/4\" Rails (steps[3])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give the numbers: pocket-hole positions on the rail (step 0 image, near each end), 1\" inset of rails from stile ends and 1\" rail-end projection (step 4 and assembly images), decorative squares 1 1/2\" apart with middle square centered on the rail (step 5), 16 back pilot holes at 1/2\" and 6 1/2\"/8\" spacing (step 6). Hanging hardware placement is \"any hanging mechanism into the solid wood\" (relational)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Cut four End Rails to length from a 1x3 oak board, as shown in the cutting diagram. Sand them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stile",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "ils to length from a 1x3 oak board, as shown in the cutting diagram. Sand them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stiles from a 1x3 oa",
-          "why": "\"diagram\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "and them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stiles from a 1x3 oak board, as shown in the cutting diagram. Sand the Stiles smooth, too.",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "and them smooth, and then set them aside for now. These Rail Ends will get glued in place later. Also cut two Stiles from a 1x3 oak board, as shown in the cutting diagram. Sand the Stiles smooth, too.",
-          "why": "\"diagram\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] \"as shown in the cutting diagram\" settled: the viewed step 2 image shows Stile 31 1/8\" x 3/4\" and Thin Stile 1/4\", the viewed assembly image (unattached) shows 37 1/8\", 31 1/8\", 1\" rail-end offsets, and the Kreg-corrected cut list carries the sizes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 8 pocket screws, 4 rail ends (viewed images show one at each stile/rail corner), 6 squares (3 per rail), 16 back screws (viewed image), 2 stiles + 2 thin stiles. Opening 24 1/8\" x 30 1/8\" (viewed) fits the 24\" x 30\" mirror in materials[7]. Every made part is installed and the steps end with a hung mirror."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "3f7097c42b261951",
+      "548163affded0307",
+      "b4d4c172f30d59b5",
+      "94c61db2a7307cb8",
+      "1b8ac02e2822ba79",
+      "34b027ab15b3b36d",
+      "e20734499d0f792f"
+    ]
+  },
+  "gaps": []
 }

@@ -224,13 +224,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Steps 8, 10, 14, 15 point to a YouTube video \"in the extras tab\" as an illustration, but each of those steps states the instruction in its own text (steps[8]: 1 1/2\" scrap spacer, 3/4\" from the front edge; steps[10]: nail then 1 1/4\" screws from inside; steps[15]: pocket holes around the inside top, centered top, 2 1/2\" screws). Optional link, not a dependency.",
+      "search": "all steps vs /extras|video|youtube/i: steps 8,10,14,15"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All made parts have cut rows (frames, panels, bottom, 2x2 and 2x4 supports, middle panel, drawer parts, fronts, door, back, three top boards); the spacer block (steps[7]) is a scrap piece the step defines; baseboard/crown trim (steps[16], marked optional) and door molding (steps[11], \"whatever detail ... you wish\") are in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 15 rows are used in steps 0-15."
     },
     "R4": {
       "result": "pass",
@@ -241,29 +244,60 @@
       "reason": "R5 precondition not met: unparseable stock materials[3], materials[5]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "(about 3\" wide) of scrap ¾” plywood about 19-20” long and screw into the middle panel at the top of the side that's not flush as a spacer. This is so you can mount your drawer slides on a smooth, flus",
-          "why": "20\" screw — no material line lists a 20\" fastener"
-        },
-        {
-          "path": "steps[13].body",
-          "quote": "Finally, cut a piece of ¼” plywood backing to staple onto the back side like shown.",
-          "why": "1/4\" staple — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: steps[7] \"20\" long\" is the length of a plywood spacer, not a screw; steps[13] \"staple\" is not a fastener size (staples recorded under R14). Pocket-hole screws 2 1/2\" (1 1/2\" holes) and 1 1/4\" (3/4\" holes) are listed (materials[11],[13]), and 1 1/4\" wood screws (steps[10]) = materials[12]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is possible: side frames and panels (0-1), top/bottom frame (2), bottom (3), middle supports/panel (4-6), spacer and slides (7-8), drawers (9-10), door (11-12), back (13). The top and trim come after the finishing step, which is awkward but not blocked (step 15 says drilling the top pocket holes later \"Either way works\")."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Thickness settings are stated for every pocket-hole part: 1 1/2\" (steps[0],[2],[4],[5],[15]) and 3/4\" (steps[1],[3],[6],[9]); none contradicts the stock."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given or shown: slide height 1 1/2\" below the top 2x4 and 3/4\" from the front (steps[8], viewed image shows slides on both outer walls and the middle supports), supports and top centered, door hinge cups shown at both ends of the door in the viewed step 12 photo, drawer-front gaps \"even\". Dado/staple for drawer bottom is offered as an either/or."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "References are \"like shown\" in steps with their own images (sweep); viewed steps 8, 9, 12 images."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Finally, cut a piece of ¼” plywood backing to staple onto the back side like shown."
+        },
+        {
+          "path": "materials[13].name",
+          "quote": "54 each 1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "Step 13 staples the 1/4\" back on (and steps[9] offers \"staple on the drawer bottom\"); search materials[].name for /staple/i: none, and no staple size or brad-nail line exists either. Counts otherwise agree: 2 drawers = 4 sides + 4 front/back + 2 bottoms + 2 fronts, 2 pairs of slides, 3 knobs = 2 drawers + 1 door, 2 hinges, top 3 x 2x10 at 48\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "1672493a20f0b794",
+      "de92430b3e780777",
+      "090e39724b69101a",
+      "d517a8a8594d26c9"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "brad nail in place onto the front of each drawer",
+      "what": "brad nails are used in steps[10], [11], [16] but no brad-nail line (or size) is in materials",
+      "kind": "fastener"
+    }
+  ]
 }

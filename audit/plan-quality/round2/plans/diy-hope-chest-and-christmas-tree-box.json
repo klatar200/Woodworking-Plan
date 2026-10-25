@@ -284,41 +284,61 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Step 10 and step 11 mention hardware links \"in the extras tab\" and a video; the hardware is already listed in materials[9]-[12] and the hinge/soft-close instruction is in the step text. Optional links, not a dependency.",
+      "search": "all fields vs /extras|video|link/i: steps[10], steps[11]"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps 0-8 has a cut row (short/long frame pieces, bottom, 28 slats, lid frame, inside liners, 1x2 supports, three 1x6 slats incl. the 4 1/2\" rip)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used (steps 0-8)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (sheet-0.75, 1x3, 1x2, 2x4, 1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every part matches exactly one listed stock by thickness x width (2x4 1.5x3.5, 1x4 0.75x3.5, 1x3 0.75x2.5, 1x2 0.75x1.5, 1x6 0.75x5.5, 3/4\" ply) and the steps name it. 2x4: 4x38+4x11+4x15.5+4x11+2x38+2x15.5 = 409, +22 cuts x 1/8 = 411.75 <= 5 x 96 = 480. 1x4: 28 x 15.5 = 434 + 27/8 = 437.4 <= 480. 1x3: 2x15.5+2x33.5 = 98 <= 120. 1x2: 2x14 = 28 <= 36. 1x6: 3x35 = 105 <= 120. Ply 15.5x35 = 542.5 sq in <= 1,152 (quarter sheet 24x48)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Cut and screw “inside liner” pieces cut from a 1x3 along the inside of this frame leaving a ¾” lip along the top. Screw these 1x3 boards in place using 1 ¼” wood screws.",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: \"3/4\" lip\" is a lip width, not a screw. Sizes used: 2 1/2\" pocket screws (56), 1 1/4\" pocket screws (20), 1 1/4\" wood screws (62) - all in materials[6]-[8]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: frames (0-1), box (2), bottom (3), slats (4), lid frame, liner, supports, slats (5-8), hinges (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "1 1/2\" holes for 2x4 (steps[0],[1],[5]) and 3/4\" holes for plywood and 1x2 (steps[3], viewed step 7 image) stated."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given or shown: bottom about 1\" from the bottom edge, 3/4\" lip on slats and liner, lid supports 10\" and 14\" (viewed step 7 image), slat widths 5 1/2\" / 4 1/2\" / 5 1/2\" (viewed step 8 image); hinge location is shown in the viewed step 10 photo, handles/latch are marked optional."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "\"(See video)\" in steps[11] is not a drawing reference; \"like shown\" steps all have their own images (sweep)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 28 slats = 2 x 10 + 2 x 4 (viewed step 4 image); lid slats 5 1/2 + 4 1/2 + 5 1/2 = 15.5 = inner lid width; 35\" slats = 38 - 2 x 1.5; hardware (hinges, handles, latch, soft close) all in materials; every made part is installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-15",
+    "imagesViewed": [
+      "48a75aaac9da4438",
+      "840b3b61dcbf471f",
+      "05a78792639f1d80",
+      "6757d30e9b98ab93",
+      "b3754c10452b6bf8"
+    ]
+  },
+  "gaps": []
 }
