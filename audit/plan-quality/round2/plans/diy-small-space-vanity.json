@@ -7,13 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Searched all fields for plans/extras/PDF/download/http: none. 'as shown in tutorial' (materials[0]) only offers an alternative to buying a 4x4."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, shelf rows, cover panels are cut-list rows; the vanity top is materials[5] 'Slab for vanity top ... 20 1/4 x 23 1/2'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: legs (steps[1]), shelf front/slats/back (steps[2]), front and side panels (steps[3],[5])."
     },
     "R4": {
       "result": "pass",
@@ -29,29 +31,100 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (4x4, 2x4, 1x12, 1x3, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "1x12 board, 3'"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Front panel"
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Side panel"
+        }
+      ],
+      "reason": "Front panel and Side panel are 1 x 12 (1x12 is the only listed 1 x 12 stock); 42\" of 1x12 is needed but one 3' board (36\") is bought. Quantity 1 is not shown to be an importer default.",
+      "arithmetic": "Front panel 1 x 16 = 16; Side panel 2 x 13 = 26; total 42\" + 1/8\" x 2 cuts = 42.25\" vs bought 1 x 36\" = 36\"; short 6.25\" (not kerf-only). Other stock fits: 1x2 7 x 15 + 16 = 121 + 1 = 122 <= 132 (11'); 1x3 16 <= 18; 2x4 2 x 30 = 60 <= 72; 4x4 2 x 30 = 60 <= 72."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener sizes are stated in steps or materials, so no size mismatch; absence of any screws in materials is recorded in gaps."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "legs. You can fill these and sand to get a beautiful finish. We chose the height of our shelf to rest on the baseboard for extra stability Now we can attach the side panel using pocket screws. Lastly,",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/132c408f17e48008.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged placement 'rest on the baseboard' (steps[5]) is relational. Viewed photos 3ee34db020dbdfd7 and d571209bd76d3cf7 show the front cover panel directly under the top and the slatted shelf near the floor; 7 slats evenly spaced."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram reference in steps; 'as shown in tutorial' (materials[0]) is an optional alternative."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top first, legs, shelf and cover panels cut, back legs to wall, front legs with shelf and front panel, joined to back legs, side panel, top last; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "get busy with your Kreg Jig to drill pocket holes into the ends of each board."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill pocket holes into the ends of these as well."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" boards (shelf, cover panels) with no jig thickness setting stated anywhere (searched all steps and materials for /setting|thick|3\\/4/: only the slab thickness '2 3/4 thick'); no viewed image shows a setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Assemble so the back 1x3 has the pocket holes facing up instead of down to make assembly simple."
+        },
+        {
+          "path": "cutList[6].part",
+          "quote": "Shelf back edge"
+        }
+      ],
+      "reason": "Step 3 calls the back shelf piece a 1x3, but the cut list makes the back piece a 1 x 2 (Shelf back edge 1 x 2 x 16) and the front piece the 1 x 3 (Shelf front edge 1 x 3 x 16); materials hold only one 1x3 at 1.5' (18\").",
+      "arithmetic": "Row widths: Shelf front edge 3, Shelf back edge 2; step says back is 1x3."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "132c408f17e48008.webp",
+      "3ee34db020dbdfd7.webp",
+      "d571209bd76d3cf7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "fastener-unlisted",
+      "path": "materials",
+      "quote": "Slab for vanity top (can laminate smaller pieces together to make) 20 1/4 x 23 1/2 (ours is 2 3/4 thick)",
+      "what": "steps use screws, pocket screws and wood glue/construction adhesive but materials list no screws or adhesive (searched materials for /screw|glue|adhesive/: none)"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "We only put cover panels on the front and visible size of the vanity.",
+      "what": "steps install a front panel and 'the side panel' (singular, steps[5]) but the cut list has Side panel x 2"
+    }
+  ]
 }

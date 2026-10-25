@@ -43,21 +43,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "simply use paint to complete it, or custom design it over time with your own finishes. You can find some ideas by following the link in the ‘Extras’ at the bottom. Overall size is 41” x 33.375” x 15”.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag resolves: 'the link in the Extras' (description, steps[9]) points to finishing/decorating ideas only; steps[9] 'You can customize in many different ways' is optional; the CUT LIST/DIAGRAM of steps[0] is image 4252a15f59c863ad in the plan (viewed)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part is a cut-list row: Top = 'TOP SHELF', Bottom, Mid-Shelf, Left Wall, Right Lower Wall ('RIGHT BOTTOM WALL'), Top Right Wall, Back, Interior Walls, Roof Panels, railing mouldings; dowels are materials[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used. Railing rows: 3 sections (11 + 13 + 11 = 35 dowels = materials[3]) x 3 mouldings (base, top, cover layer) = 6 x 11 and 3 x 13 as listed (viewed step 8 image d87d0870ad35314e)."
     },
     "R4": {
       "result": "pass",
@@ -65,21 +60,53 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "reason": "All panel parts are 1/2\" plywood from two sheets (4x8 and 2x4); area 4654 in2 (1060+600+580+435+620+377+210+281+491) <= 4608 + 1152 = 5760 so no certain shortfall, but sheet layout cannot be verified; mouldings 6 x 11 + 3 x 13 = 105 + 1.1 <= 3 x 48 = 144; dowels 'Wood dowels for railing, 5/16\"' have no stated length."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1\" pocket hole screws (materials[4]), 1-1/4\" brad nails (5), 5/16\" dowels (3), 1/4 x 1/2 moulding (2); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Door/window cutouts and interior-wall offsets are dimensioned in viewed step 1 image 4252a15f59c863ad (4.5 x 10 at 5.25\", 4.5\" squares 9\" apart, 11 x 13 back corner); shelf spacing 13\"/13\"/27.5\" in step 3 image cabd0c6578df153e; railing dowels 0.5\" end, 1\" pitch in step 8 image d87d0870ad35314e. Interior walls 'at any location you wish' is as-desired."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "'CUT LIST/DIAGRAM', 'cut locations indicated the image', 'locations shown' all sit in steps with their own image; steps[0],[2],[7] images viewed and carry the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and drill all parts, shelves onto left wall, right walls, back inserted, interior walls, roof, then optional railing; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'drill pocket holes ... using the 1/2\" setting' (steps[1]) covers every part: all pocket-hole parts are 1/2\" plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Mid-Shelf '14-1/2\" wide versus ... 15\"' = rows 14.5 / 15; Left Wall 32.75 = Right Lower 14 + Top Right 18.75; 35 dowels = 11 + 13 + 11; roof 35 degree bevel = row; (b) every part installed; (c) all hardware, glues, sandpaper in materials; (d) steps end with railing and optional finishing."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "4252a15f59c863ad.webp",
+      "146198bcc692062c.webp",
+      "cabd0c6578df153e.webp",
+      "560a4842ceb2c74e.webp",
+      "540fd9eb071fcf45.webp",
+      "d87d0870ad35314e.webp",
+      "5ec405cc18606548.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "measurement",
+      "path": "materials[3].name",
+      "quote": "Wood dowels for railing, 5/16”",
+      "what": "dowel length (and so railing height) is not stated in materials or steps[7]; viewed image d87d0870ad35314e dimensions rail lengths 11\"/13\" and dowel pitch but not dowel length; the railing is marked optional"
+    }
+  ]
 }

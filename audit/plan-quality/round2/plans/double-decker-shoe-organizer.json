@@ -47,45 +47,76 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Ends, Shelves and Rails are all cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: Ends and Shelves (steps[0],[3]), Rails (steps[2])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock named in steps[0]: quarter sheet of 3/4\" plywood and a 1x2. 1x2 96\": 4 x 23.75 = 95 + 1/8 x 3 cuts = 95.4 <= 96. Plywood quarter sheet 24 x 48: Ends 2 x 12 x 12 + Shelves 2 x 10 x 23.75 = 763 in2 <= 1152, and they lay out (two 10 x 23.75 side by side = 20 x 23.75; two 12 x 12 = 24 x 12; 23.75 + 12 = 35.75 <= 48)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is 1 1/4\" coarse-thread pocket-hole screws (steps[2],[3]) = materials[2]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf slope positions are numeric in viewed step 4 image 993a18c7373c50e7 (6 1/2\" spacing, 2\"/1\" and 1 1/2\"/1/2\" offsets); rail offsets 1/4\" below and above in step 3 image; pocket-hole layout shown in step 2 image c104750137341cdf."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut two Ends and two Shelves to size from a quarter sheet of 3/4\" plywood, as shown in the cutting diagram. Also cut four Rails to length from a 1x2 board.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut two Ends and two Shelves to size from a quarter sheet of 3/4\" plywood, as shown in the cutting diagram. Also cut four Rails to length from a 1x2 board.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Ends and two Shelves to size from a quarter sheet of 3/4\" plywood, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] refers to a cutting diagram but has no step image; all 8 images were viewed (5 unattached: a 25 1/4 x 12 x 12 assembly drawing and four photos; step images 2-4) and none is a cutting/layout diagram. Part sizes are in the cut list, so the build can be completed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and drilled, rails onto shelves, then shelf/rail assemblies onto the ends; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'With your jig set up for 3/4\" stock' (steps[1]) covers every pocket-hole part (all 3/4\")."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 'two Ends and two Shelves' and 'four Rails' = rows (2, 2, 4); overall 25 1/4\" = 23 3/4 + 2 x 3/4; 24 screws = 12 pocket holes x 2 shelves (viewed step 2 image); (b) every part installed; (c) only listed hardware used; (d) ends with painting."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "d709a2404fd64d27.webp",
+      "ad0799a385fd4ee4.webp",
+      "1b5099b46386d318.webp",
+      "5ffff141ca8e5be1.webp",
+      "9b288e356a02267d.webp",
+      "c104750137341cdf.webp",
+      "1a795f286d57f6c8.webp",
+      "993a18c7373c50e7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Latex makes a great choice, because it’s easy to scrub should your shoes leave any dirt behind.",
+      "what": "paint, sandpaper and spackling compound (Tip) used but not in materials"
+    }
+  ]
 }

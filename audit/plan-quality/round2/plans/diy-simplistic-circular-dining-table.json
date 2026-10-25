@@ -119,39 +119,121 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Trim 1/4\" off each length of your 2x8 boards using a table saw.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag 'Trim 1/4\" off' resolves: 2x8 actual 7 1/4 (§9) - 1/4 = 7 = Table Top Boards corrected width 7. Legs and base beams (steps[5]) are cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: Table Top Boards (steps[0]-[2]), Table Legs and Table Base A/B (steps[5]-[8])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x8, 4x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 4x4 72\""
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Table Legs"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Table Base A"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Table Base B"
+        }
+      ],
+      "reason": "All base parts are 3.5 x 3.5 (4x4 per §9, the only listed material that matches); 4x4 bought is 2 x 72\" = 144\" but the corrected cut list needs 192.5\" (the steps' own 4 legs at 29.5\" + 2 beams at 26\" = 170\" also exceeds 144\").",
+      "arithmetic": "Kreg-corrected rows: Legs 4 x 29.5 = 118; Base A 1 x 26 = 26; Base B 2 x 24.25 = 48.5; total 192.5\" + 1/8\" x 6 cuts = 193.25\" vs bought 2 x 72 = 144\"; short 49.25\" (not kerf-only). Quantity 2 is not an importer default of 1."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps (2.5\" Kreg soft wood screws, 2\" screws) match materials[2],[3]. Fastener for the base joints (steps[6]-[8]) is not stated; recorded in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Circle size given ('54\" in diameter'), leg end angles 15 degrees, legs 'on the two outside edges', 'cut 3.5\" out of the very middle', all numeric or relational and step 8 image viewed shows the cross pieces. Base placement under the top is unstated but centred by the round top (not a set position)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'as shown in the photo' (steps[7]) has its own step image; viewed 6f59c01778e6c33a shows the base with the cross pieces and legs."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top glued up, circle cut and sanded; legs and beams cut (steps[5]) before assembly; leg/beam sub-assemblies (steps[6]-[7]) before joining (steps[8]) and before top attach (steps[9])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Using a Kreg HD or R3 system, combine two legs to a base on the two outside edges."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Set up your Kreg K4 jig system to the 1.5\" setting."
+        }
+      ],
+      "reason": "Only the 1.5\" setting (for the 1.5\" top boards) is stated; the 3.5\" base parts (4x4) get pocket holes via 'Kreg HD or R3' with no setting given (searched all steps for a setting/size: only steps[1])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Then, cut 2 trapezoids for the base beams at 26\" (on the long edge) with 15 degree angles on each end."
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Table Base B"
+        }
+      ],
+      "reason": "Step 6 makes 2 base beams at 26\"; the cut list has Table Base A x1 (26\") and Table Base B x2 (24.25\" corrected), i.e. 3 pieces at two different lengths. Step 8 then splits only 'the last base piece' into halves ('cut 3.5\" out of the very middle').",
+      "arithmetic": "Step: 2 beams at 26 = 52\" of beam. Cut list (Kreg-corrected): 1 x 26 + 2 x 24.25 = 74.5\" in 3 pieces. Counts 2 vs 3, and halves of a 26\" beam (26 - 3.5)/2 = 11.25 vs 24.25."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "454224c321bcd4de.webp",
+      "6f59c01778e6c33a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Assemble your boards together using wood glue, Kreg clamps, and 2.5\" Kreg soft wood screws.",
+      "what": "wood glue (and wood filler in steps[4]) used but not in materials"
+    },
+    {
+      "kind": "fastener-unspecified",
+      "path": "steps[8].body",
+      "quote": "using the Kreg HD or R3 again, but with 2\" screws this time",
+      "what": "'this time' implies a different screw for the base joints (steps[6]-[8]) but no screw size is stated or listed for them"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "smooth it out on the next step with a band saw",
+      "what": "next step (steps[4]) sands the edge with 60-80 grit; no band saw step exists"
+    }
+  ]
 }

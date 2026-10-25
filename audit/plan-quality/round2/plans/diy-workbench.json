@@ -188,60 +188,85 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Searched all fields: 'following the manufacturer's instructions' (steps[9]) concerns the optional Clamp Trak accessory ('If you're not going to add this feature, make both top layers the size shown for the Sub-Top'); the build does not depend on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut is a cut-list row (Bottom Shelf in steps[7] = row Shelf)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: Leg and fillers (steps[0],[2]), Bottom/Top/Side Rails (steps[1],[3],[5]), Shelf, Sub-Top, Top (steps[7],[8],[10])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock named: 2x4 for all rail/leg parts, MDF for Top/Sub-Top/Shelf. 2x4 96\" x6 = 576: Leg 4 x 35 + Long Filler 4 x 20 + Short Filler 4 x 8 + Bottom Rail 2 x 38 + Top Rail 2 x 46 + Side Rail 4 x 19 = 140+80+32+76+92+76 = 496 + 1/8 x 18 cuts = 498.25 <= 576 (a 6-board packing exists, e.g. 46+46; 38+38+19; 35+35+20 twice; 20+20+19+19+8+8). MDF: 22 x 31 + 29.25 x 47.25 + 27 x 45 = 682 + 1382 + 1215 = 3279 <= 4608 and the three fit one 48 x 96 sheet (29.25 + 27 = 56.25 along 96, shelf 31 in the remaining 39.75)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used all appear in materials: 2 1/2\" HD screws (materials[2]), 2 1/2\" standard pocket-hole screws (3), 1 1/4\" coarse-thread screws (4), 2 1/2\" flat-head wood screws (5; 4 x 4 + 6 x 4 = 40 as listed). No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "All positions numeric or in viewed images: 1/4\" holes dimensioned (01fd560663065b7e, 4f42244f495f9f55), pocket holes at 7\"/6\"/11\", fillers 8\"/20\" (10661c53736b7daf), overhangs 3 5/8\" and 5/8\" (e4222cf467881504), top/sub-top flush edges (f1cbd66a5f7d0abb)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "ers, and four Long Leg Fillers to length from 2 x 4 boards, as shown in the cutting diagram. Sand the parts smooth.\nTip: Be Picky when Picking Boards The base for this bench is made from 2x4 stud lumb",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "illers to length from 2 x 4 boards, as shown in the cutting diagram. Sand the parts smooth.\nTip: Be Picky when Picking Boards The base for this bench is made from 2x4 stud lumber. These boards are ine",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Cut four Legs, and four Short Leg Fillers, and four Long Leg Fillers to length from 2 x 4 boards, as shown in the cutting diagram."
         },
         {
           "path": "steps[7].body",
-          "quote": "cut out one Top, one Sub-Top, and one Bottom Shelf to size, as shown in the cutting diagram. The dimensions shown accommodate the Kreg Universal Clamp Trak Kit we installed. If you’re not going to add",
-          "why": "\"as shown\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "-Top, and one Bottom Shelf to size, as shown in the cutting diagram. The dimensions shown accommodate the Kreg Universal Clamp Trak Kit we installed. If you’re not going to add this feature, make both",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "From a sheet of 3/4\" MDF, cut out one Top, one Sub-Top, and one Bottom Shelf to size, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[7] refer to a cutting diagram and have no step image. Of 12 images, 10 viewed (4 unattached: an overview with dimensions and three photos; step images 1-3,5,8,10) show no cutting/layout diagram; steps[4] and steps[6] images not viewed. Part sizes themselves are in the cut list and other viewed diagrams, so the build can be completed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg parts, bottom rails, leg assemblies, top rails, side rails, then MDF top and shelf, track, install top then shelf; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated per group and shown in viewed image 65b36b4e9fd904a0: 3/4\" setting for rail edge/center holes that attach the 3/4\" MDF, 1 1/2\" setting for rail-end holes into 1 1/2\" stock (steps[1],[3],[5]); no setting contradicts a thickness the plan gives for the joined part."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 40 flat-head screws = 4 fillers x 4 + 4 fillers x 6; Top 27 x 45 and Sub-Top 29 1/4 x 47 1/4 match image f1cbd66a5f7d0abb; Bottom Rail 38 and Short/Long Filler 8/20 match step image; (b) every part installed; (c) Clamp Trak Kit listed; (d) steps end with finish. Glue and finish recorded in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "2ddb27476fab8695.webp",
+      "f1c3e337dd7c10ae.webp",
+      "5b67b16bf62efe06.webp",
+      "0c5551d214e19dd5.webp",
+      "01fd560663065b7e.webp",
+      "10661c53736b7daf.webp",
+      "4f42244f495f9f55.webp",
+      "65b36b4e9fd904a0.webp",
+      "f1cbd66a5f7d0abb.webp",
+      "e4222cf467881504.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Spread glue on the back face of each Short Leg Filler, and then clamp them to the Legs",
+      "what": "wood glue and the oil finish used in steps[10] are not in materials"
+    }
+  ]
 }

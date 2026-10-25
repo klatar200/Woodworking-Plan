@@ -7,42 +7,102 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Searched all fields for plans/extras/PDF/download/http: none."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frames (Tabletop frame x4 at 48 and x4 at 26), birch tops and legs are cut-list rows; steps name the same sizes (2x4x26, 2x4x48, 2x6x25.5)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: frames (steps[0]-[1]), birch plywood x2 (steps[2]), legs (steps[3]-[7])."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0])"
+      "reason": "Birch plywood rows (0.5 x 32 x 48 and 0.5 x 29 x 48) fit within 48 x 96, but materials[0] 'Birch, 4x8 Full Sheet' states no thickness, so 1/2\" cannot be matched; 2x4 and 2x6 rows match section 9."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "reason": "Stock named in steps (2x4 for frames, 2x6 legs, birch sheet). 2x6 96\" x2: 4 x 25.5 = 102 + 3/8 <= 192; 2x4 96\" x4: 4 x 48 + 4 x 26 = 296 + kerf <= 384 and packs as 48 + 26 per board (74.1 <= 96) on 4 boards (two 48s do not share a board: 96.1 > 96); birch 4x8: 32 x 48 + 29 x 48 = 2928 <= 4608 and the two 48\" pieces stack across the 96\" length (61 <= 96)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fasteners are 2 1/2\" Kreg screws (materials[3]) and 2\" finishing nails (steps[2], materials[5]); other steps say 'screws' with no size, no conflict."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "e sure the tabletop is flush with the legs on the bottom and sides. Screw into place from the top this time. Flip it over, so you can secure with screws from the inside and outside of both leg pieces.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3dc6e561556543b4.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged step 8 placement is relational ('flush with the legs on the bottom and sides'); 2\" overhang, 'centered', legs 'approximately 40\" apart' and casters at 'the four bottom corners' are stated numerically or relationally."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram reference in any step."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames built, plywood nailed on, legs laid out, tops screwed to first pair of legs, second pair added, casters last; each part exists before use (step 5/6 overhang naming conflict is in gaps)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill two pocket holes into each end of the 2\"x4\"x26\" boards."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x4 (1 1/2\" thick, §9) but no jig thickness setting is stated (searched all steps and materials for /setting|thick|3\\/4|1 1\\/2/: none); the viewed jig photo (6956952ddebcdf55) does not show a legible setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "The 32\" piece of birch must be centered so that there is a 2\" overhang on either side."
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Tabletop Frame"
+        }
+      ],
+      "reason": "Step 3 gives a 2\" overhang for the 32\" birch piece; the frame it sits on is 26\" boards between 48\" boards, which with 2x4 on edge (1 1/2\", §9) is 29\" wide, exactly the 29\" birch row, so the overhang is 1 1/2\" a side. Assumes the 2x4s stand on edge (the 29\" row only matches that orientation).",
+      "arithmetic": "Frame width = 26 + 2 x 1.5 = 29. Overhang = (32 - 29) / 2 = 1.5, step says 2."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "c3eee64b3046a675.webp",
+      "64a5935889fbaa85.webp",
+      "026217e7fcb66771.webp",
+      "6956952ddebcdf55.webp",
+      "e4267194c97e6c9f.webp",
+      "63a3e73b9b52d2a3.webp",
+      "32fec64b0483f954.webp",
+      "4f6e15eaad0831e0.webp",
+      "b968855f5d914386.webp",
+      "92863e2ca1261b7d.webp",
+      "3dc6e561556543b4.webp",
+      "66fafc33fa306c54.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Carefully lay the 48\"x32\" tabletop (without the overhang) flush with the bottom and sides of the 2\"x6\" legs.",
+      "what": "contradicts steps[2], which says the 32\" piece is the one centered with a 2\" overhang; steps[5] then calls the other tabletop the one 'WITH the overhang'"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Sand any rough edges, and it is ready for use!",
+      "what": "sandpaper used but not in materials"
+    }
+  ]
 }

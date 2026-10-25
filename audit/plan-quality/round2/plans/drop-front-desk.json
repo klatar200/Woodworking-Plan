@@ -203,10 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut is a cut-list row: Sides, Top Shelf, Mid Shelf, Hanging Cleat, Bottom, Desktop."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows are used in steps[0]-[3] and the final assembly (steps[7]-[8])."
     },
     "R4": {
       "result": "pass",
@@ -214,29 +216,80 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 2×12.5×20 + 1×13×23.25 + 1×11.5×23.5 + 1×8.6875×23.5 + 1×5.5×23.5 + 1×23.5×23.5 = 1958.2 sq in; bought 1×48×48 = 2304 sq in)"
+      "reason": "Single sheet type (3/4\" plywood half sheet) so area only: cut-list parts 1958 in2 (2 x 12.5 x 20 + 13 x 23.25 + 11.5 x 23.5 + 8.6875 x 23.5 + 5.5 x 23.5 + 23.5 x 23.5) <= 48 x 48 = 2304, no certain shortfall; sheet layout cannot be verified, and the Hanging Cleat row (23.5 x 23.5) disagrees with the 3 1/2 x 23 1/2 in the step 2 image (see gaps)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners: 1 1/4\" coarse-thread pocket-hole screws (steps[4],[7],[8]) = materials[1]; #6 self-centering bit = materials[7]; hinge screws come with the hinges. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " did in the Desktop. Drill the mounting holes, and then install hinges the hinges. Now you can remove the hinges from the Bottom and the Desktop. You’ll reinstall them later when the desk is complete.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2cbb215447f2671a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged hinge placement (steps[5]) is relational ('center them ... an equal gap on each side', 1/8\" shown in viewed image 2cbb215447f2671a); curve radii/hole positions dimensioned in viewed step 1 image 6125e4a325c608d1; hinge and lid-support positions shown in viewed assembly image f55fbbf5ec55f384; pocket holes shown in step 2/3 images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "All 8 'as shown'/'cut diagram' references sit in steps with their own image; images 6125e4a325c608d1, 1800ccd1919a19be, 2cbb215447f2671a viewed and show the referenced parts/dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and edged, Bottom temporarily screwed to a Side to mark hinges (steps[4]) then detached (steps[5]), finish applied before assembly, then final assembly; the temporary fastening is undone by design."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'Set your pocket-hole jig for 3/4\"-thick material' (steps[1]) covers every pocket-hole part (all 3/4\" plywood)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "You’ll reinstall them later when the desk is complete."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Follow the manufacturer’s instructions to install and adjust the supports."
+        }
+      ],
+      "reason": "steps[5] removes the hinges from the Desktop and Bottom and says to reinstall them later, but no later step reinstalls the hinges or attaches the Desktop to the Bottom: steps[6]-[9] are finish, final assembly of Bottom/shelves/cleat to the Sides, and supports/hanger. Searched all steps for /hinge|desktop/i: hinges appear only in steps[3]-[5] (and steps[9] refers to holding the desktop). The Desktop (the drop front) is made and never installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "6125e4a325c608d1.webp",
+      "1800ccd1919a19be.webp",
+      "2cbb215447f2671a.webp",
+      "f55fbbf5ec55f384.webp",
+      "e9da426e4f8aa3ea.webp",
+      "54911ecb5f86d7f4.webp",
+      "10c32917b2f68f2c.webp",
+      "dc1ddf2418f7810d.webp",
+      "49ad297825ed6c02.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "measurement",
+      "path": "cutList[5].part",
+      "quote": "Hanging Cleat",
+      "what": "cut list gives the Hanging Cleat as 3/4 x 23 1/2 x 23 1/2 (Kreg source '3/4\" ply x 23 1/2\" x 23 1/2\"') but the step 2 image 1800ccd1919a19be dimensions it 3 1/2\" x 23 1/2\""
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "We used a black stain that creates a dramatic color while still allowing the grain to show.",
+      "what": "stain, polyurethane, sandpaper, 1/8\" shims and masking tape are used but not in materials"
+    },
+    {
+      "kind": "hardware-position",
+      "path": "steps[9].body",
+      "quote": "Just follow the manufacturer’s instructions for mounting the hanger to the Cleat and to the wall.",
+      "what": "hanger placement on the cleat and wall is deferred to the hanger's own instructions"
+    }
+  ]
 }

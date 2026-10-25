@@ -206,47 +206,117 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Searched all fields for video/extras/PDF: 'You can see the video in the extras tab for more info' (steps[8]) and 'See video' (steps[12],[13]) are supplementary; the middle-drawer image viewed (bcec20a3b14053d7) labels every piece size (8\" back pieces, 11 1/2\" sides, 11 1/4\" middle piece, 16\" sides, 28 1/2\" front) and matches cut-list rows 11-13."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame, side panels, dividers, drawer boxes, fronts, backer and top are all cut-list rows; the middle drawer bottom is traced from 1/4\" plywood per steps[8] (listed material)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 rows are used: frame rows (steps[0]-[1]), panels (2), dividers (4), drawer box rows (7-8), fronts (11), faux backer (10), top boards (3)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Resolved by reader: cutList[7] source is '3/4\" x 7\" x 28 1/2\"' (sweep could not parse); 3/4 x 7 fits 3/4\" plywood. All other rows fit 2x2, 1x2, 2x12 ripped to 10\", or the plywood sheets.",
+      "readerNote": "Sweep R4 was unknown only because cutList[7] source text was unparseable; Kreg source quoted in importDiffs."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[5]"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[12].body",
-          "quote": "ers leaving about 1/8” gap around all sides. For the top, screw the front in place through the piece you added in step 11. It’s helpful to have an extra set of hands to hold the front in place while y",
-          "why": "1/8\" screw — no material line lists a 1/8\" fastener"
+          "path": "materials[0].name",
+          "quote": "Board, 2x2 96\""
         },
         {
-          "path": "steps[15].body",
-          "quote": "net into them through the back frame pieces using 2 ½”-3” screws. Then, install and hook up the supply lines to the faucet and the drain lines to the sink. Once everything is hooked up, make sure the ",
-          "why": "3\" screw — no material line lists a 3\" fastener"
+          "path": "cutList[0].part",
+          "quote": "Legs"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Side Frames"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Front and Back Frames"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "First, cut down 2x2 pieces to assemble the frame according to the cut list."
         }
-      ]
+      ],
+      "reason": "The steps name 2x2 for the frame pieces and all three frame rows are 1.5 x 1.5 (2x2, the only listed 1.5 x 1.5 stock); the corrected cut list needs 304\" of 2x2 plus kerf but only 288\" is bought.",
+      "arithmetic": "Legs 4 x 29 = 116; Side Frames 4 x 16 = 64; Front and Back Frames 4 x 31 = 124; total 304\" + 1/8\" x 11 cuts = 305.4\" vs bought 3 x 96 = 288\"; short 17.4\" (not kerf-only). Quantity 3 is not an importer default of 1. Other stock fits: 1x2 2x31+31 = 93 + 1/4 = 93.25 <= 96; 2x12 2 x 36 = 72 <= 96."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "All sizes used are in materials: 1 1/2\" pocket holes with 2 1/2\" pocket screws (materials[6]), 1 1/4\" pocket screws (7), 1 1/4\" wood screws (8), 2 1/2\" wood screws (9). Sweep flags are false positives ('1/8\" gap'; stud screws '2 1/2\"-3\"' is a range whose lower size is listed). No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "So you will need to install only two pair of 16” drawer slides into the cabinet."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Stain or paint as desired and install drawer hardware. See video for more details on how I installed the hardware."
+        }
+      ],
+      "reason": "No height or setback is given for the drawer slides in the cabinet, and no position is given for the three pulls; the only reference is a video. Step image viewed (bbe4592eb9eb703b) shows a slide being fixed but no dimension."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'like shown' (steps[1],[10]) and 'according to the image below' (steps[8]) all sit in steps with their own image; steps[8] image viewed and shows the referenced assembly."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, panels, top glue-up, dividers, slides, then drawer boxes into slides, top attached, backer, fronts onto installed boxes, hardware, install; each part exists before the step that uses it."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated per thickness: 1 1/2\" pocket holes for the 2x2 frame (steps[1]); 3/4\" pocket holes for the 3/4\" panels, dividers, drawer boxes and backer (steps[2],[4],[7],[10])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Glue and staple this onto the bottom of the drawer and install into the vanity frame."
+        },
+        {
+          "path": "materials[11].name",
+          "quote": "16\" drawer slides"
+        }
+      ],
+      "reason": "(c) The middle drawer bottom must be glued and stapled, but no staples are in materials (searched materials for /staple|brad|nail/: no match). (a),(b),(d) pass: opening 23\" = 5 1/2 + 8 + 8 + 2 x 3/4 (dividers on edge) and fronts 5.25/7.75 = openings less 1/4; drawer sides 16 and fronts 28 1/2 match steps[7]; every part is installed and the steps end at installation."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "bcec20a3b14053d7.webp",
+      "bbe4592eb9eb703b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "I simply applied some glue and used painters tape to hold in place until it was dry.",
+      "what": "wood glue, painters tape and (optional) edge banding are used but not in materials"
+    }
+  ]
 }

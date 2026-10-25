@@ -47,17 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Then with a miter saw, cut the 2 ½” x 2 ½” board into small blocks ranging from 2” to 6” long. I didn't provide lengths for these blocks, because these are totally random and you could cut any length ",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag resolves: 4x4 actual 3 1/2 (§9) - 2 x 1/2 trim = 2 1/2, matching the stated '2 ½” x 2 ½”'. The blocks are cut from the listed 4x4 as step 2 states; their lengths are deliberately free ('ranging from 2” to 6” long')."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single cut-list row 'Board' (Kreg-corrected 3 1/2 x 3 1/2 x 72) is the 4x4 stock that steps[0] trims and steps[1] cuts into blocks."
     },
     "R4": {
       "result": "pass",
@@ -68,17 +63,48 @@
       "arithmetic": "parts: 1×72 + kerf 0 cuts (1 parts − 1 boards, the fewest possible)×1/8 = 72.000″; bought: 1×72 = 72″; 72.000 ≤ 72"
     },
     "R6": {
-      "result": "to-read"
+      "result": "n/a",
+      "reason": "No fasteners or hardware in the steps or materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole position 'The center of the X' (diagonals of the 2 1/2\" face), diameter 1 1/2\", depth 1/2\" all stated; block lengths 2\"-6\" are explicitly free."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram reference in any step."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Trim stock, cut blocks, mark X and drill, sand, stain; each stage uses what the previous made."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes or joints."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) trim 1/2\" on four sides: 3 1/2 - 2 x 1/2 = 2 1/2 agrees with step title; 21 blocks needs at least 21 x 2 = 42\" <= 72\" board; (b) all blocks drilled and finished; (c) candles, stains listed; (d) ends with finished blocks. Candle count mismatch is in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "count",
+      "path": "steps[1].body",
+      "quote": "You would need 21 of these blocks.",
+      "what": "steps make 21 blocks (also steps[2] 'all 21 blocks') but materials[1] lists '1 1/2\" Candles' quantity 22"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Then lightly brush white paint over the stain to make a whitewash effect.",
+      "what": "white paint used but not in materials (materials list only Pre-Stain and Briarsmoke Stain); sandpaper/shop paper towel also unlisted"
+    }
+  ]
 }

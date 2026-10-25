@@ -107,38 +107,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, Long Sides, Short Sides and the feet (cut-list row 'Legs') are all cut-list rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag resolved: cutList[3] 'Legs' x4 is the part steps[3] calls 'Feet' ('attach the Feet ... on each of the four corners'; 2\" top taper matches the 2 x 2 row)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Single stock (3/4 x 5 1/2 x 8' = 96\"): 22.5 + 2 x 24 + 2 x 6.5 + 4 x 2 = 91.5 + 1/8 x 8 cuts = 92.5 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is '1 1/4 pocket hole screws' (materials[1]); steps say 'pocket hole screws' with no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole counts and positions given by number and shown in viewed image c462e71727205a4f; feet taper numeric ('2\" at the top to 1 1/4\" on the bottom'); feet 'on each of the four corners' is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram reference in any step; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled first (steps[0]), short sides to base, long sides to base and short sides, feet, then router/finish; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "On the under (smaller) side of the Base, drill two pocket holes on the short edges and four pocket holes on each of the long edges."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Box of 1 ¼ pocket hole screws (see tools list)"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" stock but no jig thickness setting is stated (searched all steps, materials and tools notes for /setting|thick/: none; viewed step 1 image c462e71727205a4f shows hole positions and 5 1/4\"/5 1/2\" widths only)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) feet: 'taper down from 2\" at the top' = Legs 2 wide; four feet = Legs x4; (b) all parts installed; (c) only listed items used (glue, finish, screws); (d) steps end with finishing."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "c462e71727205a4f.webp",
+      "1c204e8c9304b9cb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "import",
+      "path": "cutList[0]",
+      "quote": "Base",
+      "what": "Kreg source row text '5 1/2\" x 22 1/2\" x 3/4\" (with 10 degree opposing bevel on both long sides)' (also Long Sides '10 degree parallel bevel', Short Sides '10 degree opposing miter') was reduced to numbers by the importer; no live cut row or step says which edges get a 10 degree bevel/miter or in which direction (steps[1],[2] only mention '10 degree edges' and '10 degree angled edges')."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "After sanding all remaining edges, add stain and sealant to match your decor.",
+      "what": "sandpaper used but not in materials"
+    }
+  ]
 }

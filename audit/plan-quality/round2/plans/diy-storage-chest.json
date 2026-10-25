@@ -167,54 +167,121 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, sides, front/back, trim, uprights and lid boards are cut-list rows; feet are bought components (see R14)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: Base/Sides/Front & Back (steps[0]-[2]), trim rows (steps[3]-[4]; viewed step 4 image 3263951c678babb7 shows mitred trim 3'-1/2\" x 1'-5 1/4\" = 36.5 x 17.25), Upright Trim 10.75 (steps[4] image: four uprights, 10 3/4\"), Lid rows (steps[7] image: 2'-2\" x 1'-6\" with 1x6/1x4/1x4/1x6 and two 1x6 ends)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x4, 1x6, 0.25x48); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed stock. Aspen trim: 4 x 10.75 + 2 x 36.5 + 4 x 17.25 = 43 + 73 + 69 = 185 + 1/8 x 9 = 186.1 <= 4 x 48 = 192; 1x4 72\": 2 x 26 = 52.1 <= 72; 1x6 96\": 2 x 26 + 2 x 18 = 88 + 3/8 = 88.4 <= 96; plywood area 17 x 36 + 2 x 15 x 17 + 2 x 15 x 34.5 = 2157 <= 4608."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Start by attaching the sides of the bench to the base with 1-1/4\" pocket hole screws and wood glue. The sides should sit flush with the outside edges of the base.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Start by attaching the sides of the bench to the base with 1-1/4\" pocket hole screws and wood glue. The sides should sit flush with the outside edges of the base.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": " of the bench to the base and sides with 1-1/4\" pocket hole screws and wood glue. The front and back should sit flush with the outer edges of the base and line up flush with the inside of the side pie",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "Attach the front and back of the bench to the base and sides with 1-1/4\" pocket hole screws and wood glue."
         },
         {
           "path": "steps[7].body",
-          "quote": "To make the lid of the storage chest, attach the boards as shown on the right with wood glue and 1-1/4\" pocket holes and screws. Attach at the bottom side of the lid to best hide the pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "attach the boards as shown on the right with wood glue and 1-1/4\" pocket holes and screws."
         }
-      ]
+      ],
+      "reason": "1-1/4\" pocket hole screws are used in steps[0],[1],[2],[7] but materials list no screws of any size (searched materials[0..4] for /screw|nail|fastener/: no match)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers or viewed images give positions: uprights 10\" / 6 1/2\" / 10\" openings and 10 3/4\" height (steps[4] image), 1/4\" overhang, trim flush top and bottom, four feet at the corners (steps[5] image 1ca8f1f703fe6dec), hinges at the back shown in step 7 image d8c25b208d69e906, lid board order shown in lid image 4330d0d473d0c3fc."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'according to the dimensions shown' (steps[4]) and 'as shown on the right' (steps[7]) are in steps with their own images; both viewed and show the referenced dimensions/layout."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the storage chest lid with hinges at the back of the chest."
+        },
+        {
+          "path": "steps[7].title",
+          "quote": "CHEST LID"
+        }
+      ],
+      "reason": "The lid is attached with hinges in steps[6], but the instructions to make the lid come afterward in steps[7] ('To make the lid of the storage chest...'). A builder can read ahead, so the build is completable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Start by attaching the sides of the bench to the base with 1-1/4\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "attach the boards as shown on the right with wood glue and 1-1/4\" pocket holes and screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood and 3/4\" boards but no jig thickness setting is stated (searched all steps for /setting|thick|set (up|the)/: none; viewed step images show dimensions only)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Add the furniture feet. Most feet come with bolts in them for easy attachment."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Hinge"
+        }
+      ],
+      "reason": "(c) Step 6 installs furniture feet (four shown in viewed image) but no feet or bolts appear in materials (searched materials for /feet|foot|leg|bolt/: no match). (a),(b),(d): 3 uprights openings 10 + 6.5 + 10 + 4 x 2.5 = 36.5 = trim length; steps end with lid installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "3263951c678babb7.webp",
+      "7597caa78f361ae3.webp",
+      "1ca8f1f703fe6dec.webp",
+      "d8c25b208d69e906.webp",
+      "4330d0d473d0c3fc.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Attach the top and bottom trim to the bench with finish nails and wood glue.",
+      "what": "finish nails (no size) and wood glue used but not in materials"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Start by attaching the sides of the bench to the base with 1-1/4\" pocket hole screws and wood glue. The sides should sit flush with the outside edges of the base.",
+      "what": "steps[1] body is identical to steps[0] body; no step cuts or assembles anything between them"
+    }
+  ]
 }

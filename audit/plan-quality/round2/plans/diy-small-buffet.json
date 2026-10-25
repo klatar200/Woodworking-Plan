@@ -128,20 +128,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Searched all fields for plans/extras/PDF/download/video/http: no dependence on outside content; the 'provided cut list' red dots are an annotation recorded under R11."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps use is a cut-list row: side panels, shelves, top supports, bottom trim, cleats, facing, back, top, door and door trim."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag resolved: 'Shelves' x2 are used - 'attach the bottom shelf' (steps[1]) and 'Secure shelf to top of cleats' (steps[4]). All other rows are used."
     },
     "R4": {
       "result": "pass",
@@ -157,21 +152,93 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (1x4, sheet-0.75, sheet-0.5, sheet-0.25, 1x2, 1x10); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material (1 x 4, 1 x 2, 1 x 10, 3/4, 1/2 and 1/4 plywood). 1x4 96\" x3 = 288 vs top supports 2 x 28.5 + bottom trim 2 x 17.25 + 31.5 + facing sides 2 x 32.5 + facing top 25 = 213 + 1/8 x 8 = 214 <= 288; 1x10: 2 x 31.5 = 63 <= 72; 1x2: 2 x 17 = 34 <= 72; sheets by area: 3/4 = 2 x 17 x 36 + 2 x 17 x 28.5 = 2193 <= 4608, 1/2 door 24.75 x 29.75 = 736 <= 2304, 1/4 back + trim = 30 x 36 + 2 x 2 x 29.75 + 4 x 2 x 20.75 = 1365 <= 2304."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1 1/4\" pocket hole screws (materials[8]), 1 1/4\" and 1/2\" finish nails (materials[9],[10]); hinges and barrel bolt are listed; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numeric or shown in viewed diagrams: bottom shelf 2 3/4\" up (steps[1] image), shelf at 14 1/4\" on cleats (steps[4] image), facing 25\" x 32 1/2\", door strips 7 1/4\" openings, door gap 1/8\"; hinges and barrel bolt positions shown in viewed photos 0baa8c685619f46f and 970566b3e6d23a69."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Make Cuts and create pocket holes where indicated by the red dots in the provided cut list."
+        }
+      ],
+      "reason": "Step 1 refers to red dots on a 'provided cut list' graphic; the plan's cut list is a table with no dots. Of 13 images, the 10 viewed (six step diagrams and four product photos) show no red-dot cut list; steps[3],[6],[7] images not viewed. Pocket-hole locations on each part are therefore not given; the build can still be completed."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Box, top supports, trim, shelf on cleats, facing, back, top, then door built and hung last; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using the 2 side panels and 1 shelf, attach the bottom shelf to the side panels with 1 1/4\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Make Cuts and create pocket holes where indicated by the red dots in the provided cut list."
+        }
+      ],
+      "reason": "Pocket holes are used on 3/4\" plywood and 1x stock but no jig thickness setting is stated in any step (searched steps for /setting|thick|set (up|your)/: none); viewed step images (1,2,4,5,8,9 and four photos) show screw length labels only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Join the (2) 1\" x 10\" x 32 1/2\" boards with 1 1/4\" Pocket Hole Screws and wood glue."
+        },
+        {
+          "path": "cutList[9].part",
+          "quote": "Top Boards"
+        }
+      ],
+      "reason": "Step 8 gives the top boards as 32 1/2\" long; the Kreg-corrected cut list row is 1 x 10 x 31 1/2 (source '31 1/2'; viewed step 10 diagram f05c9a8a75695328 also shows 31 1/2\" overall). Other counts and sizes agree (door 24 3/4 x 29 3/4 matches Door; facing 25 x 32 1/2).",
+      "arithmetic": "Step: 32.5. Cut list (corrected): 31.5. Difference 1.0\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-16",
+    "imagesViewed": [
+      "fde0b6ae476643fb.webp",
+      "25315f031ebe899e.webp",
+      "68c405fb762db427.webp",
+      "faa9a229876407ad.webp",
+      "d3f2e2fc7b53fa3c.webp",
+      "f05c9a8a75695328.webp",
+      "0baa8c685619f46f.webp",
+      "970566b3e6d23a69.webp",
+      "794cd1d6a95b4fb9.webp",
+      "14f4550bfd0a2b93.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Finish with your desired style and enjoy!",
+      "what": "finish not in materials (consumable); wood glue is listed"
+    }
+  ]
 }
