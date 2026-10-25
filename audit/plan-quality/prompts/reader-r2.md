@@ -27,3 +27,4 @@ Rulings added 2026-10-23 (Keagan; binding, also in docs §6):
 - R11: an image attached to ANY step (not only the citing step's own image) or unattached, when viewed and showing the referenced content, counts as shown.
 - R5: a shortfall that comes ONLY from kerf (parts fit with zero kerf, short by <= 1/2") is not a fail: record `pass` with `kerfOnly: true`.
 This is an independent second round: judge only from the plan, the sweep record and the docs. Do not open audit/plan-quality/plans/ (round 1) or round2 records other than your own slugs.
+- Items used only in a step the plan itself marks optional ("optional", "if desired", "can be added") do not fail R14(c); record them in `gaps`. (Orchestrator ruling, round 2.)
