@@ -116,34 +116,105 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no external/paid content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name legs, \"side panel cross supports\" (= Side trim, 2 per frame x 2 frames = 4 = cutList[1]), side panels, fixed shelves, carcass top, front trim, top, movable shelves, backing; all map to cut-list rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 rows used (Shelf trim x2 + x1 = 3 fronts for 2 fixed shelves + carcass top; steps[7],[9],[10])"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep stands (Kreg-corrected): legs 1.5x1.5 from 2x2; trims 0.75x2.5 from 1x3 and 0.75x1.5 from 1x2; backing 0.75x5.5 = T&G 1x6; plywood parts max 15.75x56.5 fit 48x96"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 2x2, 1x2, 1x3, 1x6); steps not checked for per-part stock"
+      "reason": "Sheet part: 3/4\" plywood parts total 2x12x56.5 + 2x12x31.5 + 12x33 + 2x12x31.25 + 15.75x36 = 1356 + 756 + 396 + 750 + 567 = 3825 sq in vs 6912 bought (4608 + 2304), not exceeded. Linear stocks by total length: 2x2 (4x72=288): 4x59.25 = 237 + 0.375; 1x3 (2x72=144): 4x12 + 3x31.5 = 142.5 + 6 x 1/8 = 143.25 <= 144; 1x2 (96): 2x31.25 = 62.5; T&G (6x96=576): 6x57.25 = 343.5."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1 1/4\" pocket screws (steps[2]-[5],[7],[9]), 2\" wood screws (steps[6]), 1 1/4\" wood screws (steps[8],[10]); all in materials[6..8]"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "description",
+          "quote": "Tons of storage and two adjustable shelves."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Make two movable shelves. Attach front trim to shelf using 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "The two movable shelves need positions of their supports (shelf-pin holes, cleats or similar), which the builder must set, but no step, material or viewed image (steps[0],[2],[4],[9]) gives them; searched steps and materials for /pin|peg|cleat|hole|bracket|adjust|support/: only \"cross supports\" (side frame pieces). Fixed-shelf positions (27 7/8\", 1 3/4\") and cross-support spacing are shown in the viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: no diagram references; each step has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs tapered (1), frames (2), panels in frames (3), shelves between panels (4-5), top (6), trims (7), top (8), movable shelves (9), backing (10); each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the side panel cross supports using pocket holes and 1 1/4\" pocket hole screws. Make 2."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" parts and 1 1/2\" legs (steps[2],[4],[7],[9]) but no jig thickness setting is stated: searched all steps, materials, description for /setting|jig|thickness/ : none; viewed images show none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Make two movable shelves."
+        },
+        {
+          "path": "description",
+          "quote": "two adjustable shelves"
+        }
+      ],
+      "reason": "Step 9 makes the two movable shelves but no later step installs or supports them, and no shelf-support hardware (pins, clips, cleats) is in materials[0..8] (searched /pin|clip|cleat|peg|bracket/i: none). Remaining counts/sizes agree: 59.25 + 0.75 = 60\" height, 31.5 + 2x0.75 = 33\" carcass, 33 + 2x1.5 = 36\" top."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7a3b02acd038a38f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f52fdbd2ebd50afd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5e25fee9f1fa7fc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e8d8d226114b12bd.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "Board, 1x3 72\" (quantity 2)",
+      "what": "Packing check: 1x3 parts are 3 x 31.5\" + 4 x 12\" (cutList[5],[6],[1]); with 1/8\" kerf no assignment of these pieces fits two 72\" boards (best: 2x31.5 on one board leaves 8.75\"; 31.5 + 3x12 = 68\" leaves 4\"), so a third board is needed even though total length passes R5."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the side panel cross supports using pocket holes",
+      "what": "\"Cross supports\" is not a cut-list name (matched to Side trim by count); steps name no stock or size for it."
+    }
+  ]
 }
