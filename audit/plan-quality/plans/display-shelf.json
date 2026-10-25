@@ -83,8 +83,31 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x1); steps not checked for per-part stock"
+      "result": "pass",
+      "level": null,
+      "confidence": null,
+      "cause": null,
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut one Lower Shelf, one Upper Shelf, and two Shelf Backs from 1x6 pine boards"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut four Support Stiles and four Support Rails from 1\" square dowels"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 72\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Square Dowel, 1\" x 1\" (actual size) 36\""
+        }
+      ],
+      "arithmetic": "1x6: 35 + 35 + 33 + 33 = 136 + 3 x 1/8 = 136.375 <= 2 x 72 = 144. Dowel: 4 x 17.75 + 4 x 5.5 = 93 + 7 x 1/8 = 93.875 <= 3 x 36 = 108.",
+      "kerfOnly": false,
+      "reason": "Adjudicated: steps name the stock for every part (steps[0] \"two Shelf Backs from 1x6 pine boards\", steps[2] \"four Support Rails from 1\" square dowels\"). Kreg-corrected rows fit both stocks with kerf; per-board layouts 35 + 35 and 33 + 33 each fit a 72\" board, 17 3/4 + 17 3/4 fits a 36\" dowel. Quantities 2 and 3, no import default."
     },
     "R6": {
       "result": "pass",
@@ -92,7 +115,20 @@
     },
     "R10": {
       "result": "pass",
-      "reason": "viewed images dimension the frame (17 3/4\" x 5 1/2\", 1\" rails) and the shelf backs sit against the rails/flush to the stile fronts with 1/4\" rear inset in steps[4]; hanging cleat half is relational to the Shelf Back"
+      "level": null,
+      "confidence": null,
+      "cause": null,
+      "evidence": [
+        {
+          "path": "steps[5].image",
+          "quote": "plans/14ad4199ebb18365.webp"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Make sure the front of the Shelf Back is flush with the front edge of the Support Stiles and the Shelf Assembly is resting on the bottom Support Rail."
+        }
+      ],
+      "reason": "Adjudicated: the upper shelf height is given in viewed steps[5] image 14ad4199ebb18365: a 1\" dimension at the top of each stile runs vertically from the stile top to the top edge of the upper Shelf Back (zoomed; the extension lines are offset vertically, not across the stile). Lower shelf rests on the bottom rail (steps[4]); fronts flush and 1/4\" rear inset (steps[4]-[5]). The cleat half \"attaches to the upper Shelf Back\" with no structural position (hanging hardware placed against that part). Round 2 read the 1\" as the stile size."
     },
     "R11": {
       "result": "pass",
@@ -112,7 +148,7 @@
       "reason": "viewed frame image 17 3/4\" matches corrected cutList[3] (17.75); shelf length 35 = Shelf Back 33 + two 1\" stiles; every part installed; hanger in materials[4], glue in materials[5]"
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -127,5 +163,15 @@
       "816a8c61fdddba50.webp"
     ]
   },
-  "gaps": []
+  "gaps": [],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5",
+      "R10"
+    ],
+    "note": "R5 pass (steps name 1x6 and dowel stock; fits); R10 pass (upper shelf 1\" below stile top in viewed step-5 image)."
+  }
 }

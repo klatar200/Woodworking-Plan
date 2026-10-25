@@ -96,12 +96,43 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "unknown",
-      "reason": "steps[2] 'Attach the seat facing to the arms as shown' assembles a 'seat facing', but no cutList.part matches /facing/i (searched cutList, materials, steps, description: only steps[2]). cutList[6] 'Side Supports' (2x4, 22 3/4\", qty 2) is the only row no step names and may be the same part, but the name and the quantity (2 vs 'the seat facing') do not settle it. steps[2] image not viewed because the sweep did not flag it. The steps[3] 'side rail supports (1 1/2\" x 1 3/4\" x 22 3/4\")' match cutList[5] by size."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the seat facing to the arms as shown using Kreg HD Pocket Holes and Kreg HD Screws."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "{\"part\":\"Seat Back Supports\",\"quantity\":4,\"thicknessIn\":2,\"widthIn\":4,\"lengthIn\":24}"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "{\"part\":\"Seat Supports\",\"quantity\":4,\"thicknessIn\":2,\"widthIn\":4,\"lengthIn\":24}"
+        }
+      ],
+      "arithmetic": "24\" 2x4 parts shown: 4 back (steps[1] image) + 1 facing (steps[2] image) + 4 seat (steps[4] image) = 9; cut list 24\" rows: cutList[0] 4 + cutList[1] 4 = 8",
+      "reason": "The seat facing (front 2x4 between the arms, highlighted in viewed steps[2] image 06cc56ece6262059 together with the two side boards) has no cut-list row and no stated size. Searched cutList.part, materials.name, steps, description for /facing/i: only steps[2]. Viewed steps[1] image shows four 24\" back supports (= cutList[0] qty 4) and steps[4] image four seat supports (= cutList[1] qty 4); the side boards in the steps[2] image are cutList[6] Side Supports (qty 2, 22 3/4 corrected). Fix, not Unpublish: the facing is a front apron, the seat supports rest on the side rails (steps[3]-[4]) and the 24\" span is dimensioned in the steps[4] image. Likely: part identity read from images."
     },
     "R3": {
-      "result": "unknown",
-      "reason": "cutList[6] 'Side Supports' is not named by any step (searched steps for /side support/i: none; steps[3] 'side rail supports' matches cutList[5] by size). Same open question as R2; not counted twice."
+      "result": "pass",
+      "level": null,
+      "confidence": null,
+      "cause": null,
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "{\"part\":\"Side Supports\",\"quantity\":2,\"thicknessIn\":2,\"widthIn\":4,\"lengthIn\":22}"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the seat supports to the side rails"
+        }
+      ],
+      "reason": "Adjudicated: cutList[6] \"Side Supports\" (2x4, 22 3/4 corrected, qty 2) are the two side boards installed along the inside of the arms in viewed steps[2] image 06cc56ece6262059 (highlighted with the facing) and labelled \"side rails\" in the viewed steps[3] image (\"Attach ripped 2x4's to side rails\"). Every row is used."
     },
     "R4": {
       "result": "pass",
@@ -156,11 +187,19 @@
     },
     "R14": {
       "result": "pass",
-      "search": "step counts/sizes and viewed-image dimensions vs Kreg-corrected cutList; installs of every made part; non-fastener items vs materials",
-      "reason": "(a) Viewed images agree with the Kreg-corrected rows: arm frame 25 3/4 top, two 24 1/4 uprights, 22 3/4 bottom (image 0a20ae64bb3adeea; cutList[2] q2, [3] q4, [4] q2 = one set per arm x 2); four 24\" back supports (image 1f0bb58d23e858d0; cutList[0] q4); four seat supports (image a96eff8b45d18f44; cutList[1] q4); steps[3] '(1 1/2\" x 1 3/4\" x 22 3/4\")' side rail supports = cutList[5] corrected 1.5 x 1.75 x 22.75 q2. Seat depth: 4 x 3 1/2 + 3 x 2 7/8 gaps = 22 5/8 within the 22 3/4 inner arm depth (25 3/4 − 2 x 1 1/2). (b) arms, back supports, seat facing, side rails and seat supports are all attached by steps[1]-[4]. (c) no non-fastener hardware is used. (d) steps end with the seat installed (image a96eff8b45d18f44 shows the complete chair). Note for R2 (not re-scored here): image 06cc56ece6262059 shows the steps[2] 'seat facing' as a front 2x4 between the arms in addition to the four back and four seat 24\" boards."
+      "level": null,
+      "confidence": null,
+      "cause": null,
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "In order to get the two side rail supports (1 1/2\" x 1 3/4\" x 22 3/4\") use a table saw to rip a 2x4 cut to 22 3/4\" in half."
+        }
+      ],
+      "reason": "Adjudicated: round 2's claim that Side Supports are never installed is refuted by viewed steps[2] image 06cc56ece6262059 (two side boards attached with the facing) and the steps[3] image naming them \"side rails\". (a) viewed images agree with Kreg-corrected rows (arms 25 3/4 / 24 1/4 / 22 3/4; four back and four seat supports at 24; ripped 1 1/2 x 1 3/4 x 22 3/4 = cutList[5]); (b) every made part installed; (c) no non-fastener hardware; (d) steps reach the finished chair. The missing facing row is R2."
     }
   },
-  "verdict": "Ship (unverified) + Human review",
+  "verdict": "Fix",
   "gaps": [],
   "reader": {
     "batch": "calib-2",
@@ -178,5 +217,16 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified) + Human review",
+    "round2": "Fix",
+    "decided": [
+      "R2",
+      "R3",
+      "R14"
+    ],
+    "note": "R2 fail Fix likely (seat facing has no cut row: 9 x 24\" parts shown, 8 listed); R3/R14 pass (Side Supports = side rails installed in step-2 image)."
+  }
 }

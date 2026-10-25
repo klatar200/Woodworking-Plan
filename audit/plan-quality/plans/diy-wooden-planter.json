@@ -40,29 +40,44 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x12, 1x2, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "level": null,
+      "confidence": null,
+      "cause": null,
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "1x12 board, 1x12x6"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "1x2 board, 1x2x6"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2x2 board, 2x2x6"
+        }
+      ],
+      "arithmetic": "1x12: 4 x 12 = 48 + 3 x 1/8 = 48.375 <= 72. 1x2 (corrected 13.5): 4 x 13.5 = 54 + 3/8 = 54.375 <= 72. 2x2: 4 x 15 = 60 + 3/8 = 60.375 <= 72.",
+      "kerfOnly": false,
+      "reason": "Adjudicated: each part names its stock (cutList parts \"1x12 boards (for sides)\", \"1x2 boards (for bottom slats)\", \"2x2 boards (for legs)\"), one material each. Material lengths \"1x12x6\" etc. are NxMxL with L = 6 <= 16, read as 6 ft = 72\" (section 9 assumption). No qty-unreadable-defaulted diff."
     },
     "R6": {
       "result": "pass",
       "search": "steps use '1 1/4\" pocket hole screws' only; materials lists 1 1/4\" pocket hole screws"
     },
     "R10": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
+      "result": "pass",
+      "level": null,
+      "confidence": null,
+      "cause": null,
       "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "attach 2 legs to one of the 1x12x12 pieces. Repeat."
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "2x2 boards (for legs), quantity 4, 2 x 2 x 15"
+          "path": "steps[5].body",
+          "quote": "try to space them as evenly as possible"
         }
       ],
-      "reason": "Legs are 15 long and the side boards 12 (nominal; 11 1/4 actual per §9) but no step gives where on the leg the boards sit (flush top, flush bottom, or an offset), nor the height of the bottom slats above the board bottom; searched steps/description for /flush|above|from the (top|bottom)|inch offset/: none. Viewed images e7943f113a17803c (finished), 6d1c4ce88da99a81, e953ea1b9afb910c, 9b7dc2eb3dc6c310, 4badefd66cf1c265 show legs extending past the box but no dimensions."
+      "reason": "Adjudicated: positions are relational and shown in viewed images: legs flush with the panel tops, extending below as feet (finished photo e7943f113a17803c); bottom slats flush with the panel bottom edges (steps[5] image 9b7dc2eb3dc6c310, planter upside down); slat spacing \"as evenly as possible\" (relational)."
     },
     "R11": {
       "result": "pass",
@@ -90,7 +105,7 @@
       "reason": "counts agree: 4 sides, 4 legs, 4 slats; pocket screws 4 boards x 6 holes + 4 slats x 2 = 32 = materials quantity; slat 13.5 (corrected) vs interior of boards between 1.5 legs: 12 + 2 x 1.5 - 2 x 0.75 = 13.5; all parts installed"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -115,5 +130,15 @@
       "9b7dc2eb3dc6c310.webp",
       "4badefd66cf1c265.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R10"
+    ],
+    "note": "R5 pass (parts name their stock; 6 ft lengths fit); R10 pass (legs flush top, slats flush bottom in viewed photos)."
   }
 }

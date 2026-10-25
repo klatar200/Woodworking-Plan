@@ -84,25 +84,44 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "level": null,
+      "confidence": null,
+      "cause": null,
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut two pieces of 1x8 to 14 ½” long."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x8 36\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x3 72\""
+        }
+      ],
+      "arithmetic": "1x8: 2 x 14.5 = 29 + 1 x 1/8 = 29.125 <= 36. 1x3: 2 x 16 + 2 x 14.5 = 61 + 3 x 1/8 = 61.375 <= 72.",
+      "kerfOnly": false,
+      "reason": "Adjudicated: steps[0] names 1x8 for the Bottoms; the sides are 3/4 x 2 1/2 (Kreg-corrected) which matches only the 1x3 material. No qty-unreadable-defaulted diff, so the quantities of 1 are not import defaults."
     },
     "R6": {
       "result": "pass",
       "search": "steps use 1 1/4\" pocket hole screws and 1\" wood screws; both in materials; no conflicting sizes"
     },
     "R10": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
+      "result": "pass",
+      "level": null,
+      "confidence": null,
+      "cause": null,
       "evidence": [
         {
           "path": "steps[7].body",
           "quote": "drill two holes in each side of each handle just large enough for a 1” wood screw to fit through."
         }
       ],
-      "reason": "Location of the 4 screw holes per handle is not given as a number anywhere (searched steps, cutList, materials, description for hole spacing/offset on the handle). Viewed images 0d82185f1e0e2fba (photo) and fc3f2993b83ee6c8 (sketch) show two holes per foot with no dimensions. Handle bend marks (3\", 1 1/4\") and centred cutout are given."
+      "reason": "Adjudicated: the handle position is fixed by the parts and relational: centred on the short side (steps[3] \"Center the handle\"), trimmed flush to the edges (steps[7]), bends at numbered marks (steps[2] 3\" and 1 1/4\"). The two screw holes per foot are fastener holes through a 3/4\" strap onto the side's top edge; viewed steps[9] image 0d82185f1e0e2fba shows them near each end of each foot. No position the build depends on is unstated."
     },
     "R11": {
       "result": "pass",
@@ -122,7 +141,7 @@
       "reason": "2 bottoms make a 14.5 square (corrected 7.25 x 14.5 each); long sides 16 = 14.5 + 2 x 0.75; short sides 14.5; 2 handles from 2 x 24\" bars; 8 wood screws = 2 handles x 4 holes (2 per side x 2 sides); all parts installed, steps reach the finished tray"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -159,5 +178,15 @@
       "0d82185f1e0e2fba.webp",
       "e6fe64e3bbc04d5b.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R10"
+    ],
+    "note": "R5 pass (1x8 named, sides match only 1x3; fits); R10 pass (handle placement relational, screw holes shown in viewed step-9 image)."
   }
 }
