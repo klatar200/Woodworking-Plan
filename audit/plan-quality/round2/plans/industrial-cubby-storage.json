@@ -6,42 +6,81 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "es. To make a set of DIY, Industrial style storage cubbies from wood and off-the-shelf steel panels, check out this tutorial: http://www.pneumaticaddict.com/2016/02/diy-industrial-storage-cubbies.html",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged http link in steps[6].body is an optional pointer for making storage cubbies to sit in the finished frame ('The frame will accommodate standard, 12\" storage cubbies'); the frame is complete without it. Search for full plans/PDF/extras/template: nothing else."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts cut in steps (posts, 2x2 horizontal supports, 2x2/2x3/2x4 rails, 1x4 top boards, 1/2\" trim stop blocks) all have cutList rows (cutList[0]-[6]); quantity mismatch for posts is recorded under R14."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[6] are all used: posts steps[0], supports steps[1], rails steps[2], top steps[4], stop blocks steps[5]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x2, 2x3, 2x4, 1x4, 0.5x0.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (2x2 posts/supports, rails from 2x2/2x3/2x4, 1x4 top, 1/2\" trim). 2x2 x 96\" x 8 = 768: using the steps' 8 posts, 8 x 47.5 + 24 x 13 + 2 x 10.5 = 380 + 312 + 21 = 713 + 34 cuts x 1/8 = 717.25 <= 768 (also fits per board: 2 x 47.5 = 95.125 <= 96; 7 x 13 = 91.875). 2x3 x 96: 6 x 10.5 = 63 + .75 <= 96. 2x4 x 96: same <= 96. 1x4: 3 x 42 = 126 + .375 <= 96 + 72 = 168. Trim: 9 x 13 = 117 + 1.125 = 118.125 <= 120. No Stage-2 import default shown for the quantity-1 boards."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2-1/2\" screws (pocket holes, steps[1]-[3]), 1-1/4\" screws (steps[4]) and 18 gauge finish nails (steps[5]); materials[6],[7],[9] list 2-1/2\" pocket hole screws, 1-1/4\" pocket hole screws, 18-gauge finish nails. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Row spacing stated (12-1/2\" from bottom of supports, nine 13\" x 12-1/2\" openings), rails at named grid intersections, rails flush outside/centered, stop blocks 'flush to the back' leaving a 1\" strip, top fits a 42\" x 10-1/2\" opening."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep result stands; no unillustrated drawing references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Grids built (steps[1]), rails attached to one grid (steps[2]), second grid joined (steps[3]), top inserted (steps[4]), stop blocks (steps[5]), finish (steps[7])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using pocket holes and 2-1/2\" screws, connect posts and supports."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Join boards edge to edge with pocket holes and 1-1/4\" screws."
+        }
+      ],
+      "reason": "Search of all steps/materials/description for a jig thickness setting (/set|setting|thickness/): none for the 1 1/2\" parts or the 3/4\" top boards. Images not viewed. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut eight, 2 x 2 x 47-1/2\" posts. Lay out four posts on your work surface."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Vertical Posts, quantity 4, 1.5 x 1.5 x 47.5"
+        }
+      ],
+      "arithmetic": "Two grids of four posts each (steps[0] 'four posts', steps[1] 'second grid with remaining vertical posts') = 8 posts; cutList[0].quantity = 4. Quantity is a parsed value, not a defaulted 1, and importDiffs is empty.",
+      "reason": "Cut-list post quantity (4) disagrees with the step count (8). Other counts reconcile: 24 supports = 4 rows x 3 x 2 grids; 9 stop blocks = 9 openings; top 3 x 3.5 = 10.5 = opening depth."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": []
+  }
 }

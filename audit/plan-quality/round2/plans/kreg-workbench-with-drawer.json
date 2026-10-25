@@ -140,13 +140,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[0] defers frame/top assembly to 'directions included' (manufacturer instructions for the purchased Kreg Workbench frame); the plan is an add-on to that product ('Add a drawer and shelf to your Kreg Workbench frame'), and all drawer/shelf dimensions are in the plan. steps[5] 'see the link below' is optional extra reading (no link present; positions are stated). Search for full plans/PDF/extras/http: nothing else."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts cut in steps[1]-[8] (bottom shelf 19 1/2 x 27 1/2, back 5 1/2 x 27 1/2, 2 blocks 1 7/8 x 5 1/2, 2 braces 5 1/2 x 18 1/4, drawer sides 4 x 16, front/back 4 x 21 1/2, bottom 16 x 23, front 5 1/2 x 23 3/4) each match cutList[0]-[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[7] all used by steps[1]-[8]."
     },
     "R4": {
       "result": "pass",
@@ -154,29 +156,50 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet parts only. 3/4\" parts: 19.5x27.5 + 5.5x27.5 + 2x1.875x5.5 + 2x5.5x18.25 + 2x4x16 + 2x4x21.5 + 5.5x23.75 = 536.25+151.25+20.6+200.75+128+172+130.6 = 1339.5 sq in <= 48 x 48 = 2304; 1/4\": 16x23 = 368 <= 24x24 = 576. Not a certain fail, so unknown per the R5 sheet rule."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 3/4\" pocket-hole screws (materials[2]), 1 1/4\" coarse pocket-hole screws (steps[4],[6], materials[3]), 1 1/4\" fine-thread (steps[0], materials[4]) and '1 1/4\" screws' (steps[8]). No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "rilled holes in the rails) to secure the plywood in place.\n\n**Tip:** Using screws from the bottom The rails in the workbench have predrilled holes to drive your screws through. Flip the workbench on i",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1359f435a65a5af3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] candidate (screws from the bottom through the rails' predrilled holes) needs no placement: the shelf rests on the bottom rails. Other positions are numeric or fixed by parts: back/blocks 'touching the top rail', braces '1 7/8\" from the inside corner of the legs', slides '3/4\" inset ... flush along the bottom edge', box '3/4\" inset' and 'approximately 1 1/4\" below the top rail', front '1/8\" gap'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands: the one 'See cut diagram' (steps[1]) is in a step with its own image and all dimensions are in the text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (steps[0]), shelf, back, blocks, braces (steps[1]-[4]), slides on braces (steps[5]), drawer box built then installed (steps[6],[7]), front last (steps[8])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] and steps[6] say 'Drill 3/4\" pocket holes' for the 3/4\" plywood braces and drawer front/back; every pocket-holed part is 3/4\" (cutList)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Assemble Kreg Workbench Frame according to directions included. Install adjustable feet OR caster wheels (I used caster wheels so it's mobile!). Attach 24\" x 32\" Kreg workbench top"
+        },
+        {
+          "path": "materials",
+          "quote": "no material name matches /workbench|frame|top|caster|feet/i (7 materials searched: two plywood sheets, three pocket-hole screw lines, drawer slides, drawer pull)"
+        }
+      ],
+      "reason": "The Kreg Workbench frame, its 24\" x 32\" top and the adjustable feet/casters are used in steps[0] but are not in materials; the plan is an add-on to a product the builder must buy (likely). Counts/sizes reconcile: drawer width 21.5 + 2 x 0.75 = 23 = drawer bottom; sides 16 = bottom depth; braces 1 7/8\" inset x 2 gives 23.75\" clear = drawer front 23 3/4\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": []
+  }
 }

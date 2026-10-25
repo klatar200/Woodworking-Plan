@@ -95,10 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts a step uses (side pieces, braces, drawer front/back/sides/bottoms, drawer fronts) all have cutList rows[0]-[9]; the steps cut no part outside the cut list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[9] all used: box (steps[0]), braces cutList[2] (steps[1]), drawer boxes/bottoms (steps[2],[3]), fronts (steps[4])."
     },
     "R4": {
       "result": "pass",
@@ -106,27 +108,81 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Sheet parts only. 3/4\": 2x30x32 + 2x20x32 + 2x4x18.5 + 7.25x20 + 2x12x20 = 1920+1280+148+145+480 = 3973 sq in <= 4608; 1/2\": 2x5.25x16 + 2x5.25x16.5 + 4x10x16 + 4x10x16.5 + 3x16x17.5 = 168+173.25+640+660+840 = 2481 <= 4608. Area does not exceed the sheets, so not a certain fail; unknown per R5 sheet rule."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Begin by building the box for the cart. Drill 3/4\" screws into the upper and lower edges of the side pieces of the box. Using wood glue and 1 1/4\" pocket screws, attach the side pieces to the box, mak",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "path": "steps[4].body",
+          "quote": "firmly attach them using 1\" wood screws drilled from the inside of the drawer box, in all four corners."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1\" pocket screws"
         }
-      ]
+      ],
+      "reason": "Search of materials[0]-[13]: fasteners are 1 1/4\" and 1\" pocket screws, 1\" and 1 1/4\" brad nails, 5/8\" wood screws (casters). No 1\" wood screws line (pocket screws are a different item). Flagged candidate steps[0] '3/4\" screws' is an apparent 'pocket holes' wording slip (steps[1] says 'Drill 3/4\" pocket holes'), not a fastener size: listed under gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Braces '17\" in from the front side', drawer fronts flush with top/bottom with a 1/8\" gap, brad nails two per front, casters/pulls placed as in the viewed steps[5] image (pulls centered on fronts, casters at the four bottom corners). Viewed sketches are small and dimension text was not legible at the size opened."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep result stands: no step text cites a drawing without its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box (steps[0]), braces (steps[1]), drawer boxes (steps[2]), bottoms and slides (steps[3]), fronts (steps[4]), pulls and casters (steps[5]). Nothing needs undoing."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Drill 3/4\" pocket holes into each end of the 3/4\" braces' and steps[2] 'Drill 1/2\" pocket holes into the front and back pieces of the drawer boxes' state the setting per thickness; the box sides use 3/4\" (steps[0])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "summary",
+          "quote": "it also includes hidden dust collection and TONS of storage for all of your Kreg tools!"
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "Bucket top shop vacuum"
+        },
+        {
+          "path": "materials[13].name",
+          "quote": "5 gallon bucket"
+        }
+      ],
+      "reason": "Search of all 6 steps for /vac|bucket|dust|hose|foreman|collect/i: no match. The shop vacuum and bucket are listed and the summary promises dust collection, but no step builds, mounts or connects it (no hole, bracket or hose location). Other numbers reconcile: fronts 7.25 + 12 + 12 + 2 x 1/8 = 31.5 = 30 + 2 x 0.75 box height; drawer 16.5 + 2 x 0.5 = 17.5 = bottom width; cart supports 18.5 = 20 - 2 x 0.75."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/09521247844b0f35.webp",
+      "plans/917b05831268e70f.webp",
+      "plans/4af15cfcf2c285b4.webp",
+      "plans/dfc5671cd1ca4cc7.webp",
+      "plans/8206865409a5438d.webp",
+      "plans/e6495c8ac6f2573e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Drill 3/4\" screws into the upper and lower edges of the side pieces of the box.",
+      "what": "Apparently means pocket holes (compare steps[1]); as written it names a 3/4\" screw that no material supplies. Not scored as a size conflict."
+    }
+  ]
 }

@@ -164,13 +164,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[5] 'Visit www.JenWoodhouse.com' is a credit/ad; the small-version plans are an optional extra. All sizes needed are in the cut list and viewed figures."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts a step cuts/attaches (base, sides, back, top, drawer sides/front/back/bottom, front panel, drawer face) all have cutList rows[0]-[8]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[8] all used by steps[0]-[4]."
     },
     "R4": {
       "result": "pass",
@@ -178,29 +180,89 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet parts only. 3/4\": 562.9+636.5+477.4+584.25+342+465.5+171+327.75 = 3567 sq in <= 4608; 1/4\": 18 x 26 = 468 sq in from a 'Quarter Sheet' whose dimensions are not written. Not a certain fail, so unknown."
     },
     "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": " to the carcass with 1 1/4-inch pocket screws and wood glue. Slide the drawer box into place and attach the drawer face to the drawer box with 1 1/4-inch wood screws driven in from the inside. Install",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f868a1f21b080763.webp"
+          "quote": "attach the drawer face to the drawer box with 1 1/4-inch wood screws driven in from the inside."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1 1/4-inch Pocket Screws"
         }
-      ]
+      ],
+      "reason": "Search of materials[0]-[6]: only '1 1/4-inch Pocket Screws' and '3/4-inch Brad Nails' are fasteners; no 1 1/4\" wood screws line (pocket screws are a different item)."
+    },
+    "R10": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Install 18-inch drawer slides according to the manufacturer's directions."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Slide the drawer box into place and attach the drawer face to the drawer box with 1 1/4-inch wood screws driven in from the inside."
+        }
+      ],
+      "reason": "The viewed Fig. 3 gives bowl-hole positions (10 1/4\", 7 1/8\", 9\") and Fig. 4/5 the drawer and front sizes, but no step or viewed figure gives the height of the slides/drawer box in the 16 3/4\" opening (box 9 1/2\" tall, face 11 1/2\" + front 6\" = 17 1/2\"), so where the box sits behind the face is unset. Plastic feet positions are not given (step image shows one foot at a corner)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands; viewed Figs. 3-5 are the step images and show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base+sides (steps[0]), back (steps[1]), top (steps[2]), drawer box and slides (steps[3]) through the open front, front panel then drawer face (steps[4]), feet last (steps[6])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[1],[3] 'Drill 3/4-inch pocket holes' for 3/4\" plywood; all pocket-holed parts are 3/4\" (cutList)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Screw on plastic feet to keep the dog food station slightly elevated."
+        },
+        {
+          "path": "materials",
+          "quote": "no material name matches /feet|foot/i (7 materials: plywood x2, drawer slides, knob, pocket screws, brad nails, wood glue)"
+        }
+      ],
+      "reason": "Plastic feet are used in steps[6] but are not in materials. Other numbers reconcile: side depth 19 + back 0.75 = base depth 19.75; top 20.5 = 19.75 + 0.75; drawer box 24.5 + 2 x 0.75 = 26 = bottom width = 27 interior - 1\" for slides; front 6 + face 11.5 = 17.5 = 16.75 + 0.75 base."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/f8e7405e65c3130e.webp",
+      "plans/98f4bbbf33cc22f9.webp",
+      "plans/f868a1f21b080763.webp",
+      "plans/0ad844a9881824d7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "I wrapped the top with marble contact paper (found on Amazon).",
+      "what": "Contact paper is the author's optional finish and is not in materials."
+    }
+  ]
 }

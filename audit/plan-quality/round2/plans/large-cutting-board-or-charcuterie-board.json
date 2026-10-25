@@ -35,43 +35,83 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Once the wood glue has dried, cut your 1x6 boards at 3 inches. Before final glue up, you may consider planing each section of wood to remove excess wood and smooth.",
-          "why": "cut sentence states 3\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": ", so make sure to add these, if desired. Cut 2- 24\" 1x2's, and 2- 18\" 1x2's. Using wood glue and clamps, attach to the sides of your cutting board. You can also use brad nails or pin nails if desired.",
-          "why": "cut sentence states 18\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "search": "Flagged candidates rejected: steps[2] 'cut your 1x6 boards at 3 inches' is a cut of the glued-up main panel (3\" strip + 16 1/2\" panel, shown in the viewed steps[2]/[5] images), not a new part; steps[6] 'Cut 2- 24\" 1x2's, and 2- 18\" 1x2's' is the optional border, whose step itself says 'This lumber is not included in the supply and cut lists'. Main (3 x 19 1/2\") and accent (3 x 16 1/2\") parts match cutList[0],[1]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0] used steps[0],[4]; cutList[1] used steps[1]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part (1x6 mains, 1x2 accents); each matches exactly one listed material. 1x6 72\": 3 x 19.5 = 58.5 + 2 cuts x 1/8 = 58.75 <= 72. 1x2: 3 x 16.5 = 49.5 + kerf <= 36 + 24 = 60 (two on the 36\" board = 33.125 <= 36, one on the 24\" board). Border lumber is stated as not included."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fasteners are required (description: 'glue-up plan, with no hardware'); the optional border 'brad nails or pin nails if desired' gives no size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give the arrangement: 3 mains glued to 16 1/2\" x 19 1/2\", 3\" strip cut off, accent strip (1 1/2\" x 3 = 4 1/2\") between panel and strip (steps[5] image and final photo). Border and roundover are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep result stands; no unillustrated drawing reference."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Once the wood glue has dried, cut your 1x6 boards at 3 inches."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Use Kreg bar clamps and face clamps to glue your boards together."
+        }
+      ],
+      "reason": "The viewed images show the 3 mains glued into a 16 1/2\" x 19 1/2\" panel and then cut at 3\" (steps[2],[5] images), but as ordered steps[2] cuts the panel before steps[4] glues the main boards; steps[3] 'Before you begin' is mid-sequence and steps[10] 'Square the Board' comes last. The builder can reorder from the images, so Fix."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joints are glue-ups (glue and clamps stated)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 x 5.5 = 16.5 = accent length 16.5; accent 3 x 1.5 = 4.5; final width 16.5 panel... viewed drawing 16 1/2\" + 4 1/2\" + 3\" = 24\" = border long piece 24\"; end border 16.5 + 2 x 0.75 = 18\". (b) all parts installed (border optional). (c) glue and oil in materials. (d) steps reach finished board (finish step[8])."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/af378e4d00448e33.webp",
+      "plans/cf6954bfa9b40d0c.webp",
+      "plans/91b3e6cfa073b95d.webp",
+      "plans/a6b749b9d841de38.webp",
+      "plans/37a8b751675932f4.webp",
+      "plans/0dda04f572b4c24e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Use wax paper to prevent the glue from dripping on your work surface",
+      "what": "Wax paper and tack cloth (steps[8]) are used but not in materials."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "This lumber is not included in the supply and cut lists, so make sure to add these, if desired.",
+      "what": "Optional border 1x2 pieces (2 x 24\", 2 x 18\") are absent from materials and cutList, by the step's own statement."
+    }
+  ]
 }

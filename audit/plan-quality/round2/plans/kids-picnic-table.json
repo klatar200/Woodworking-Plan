@@ -187,21 +187,33 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " woodworking plans provided for your visual cut list in the Extras Tab or see the Cut list tab for more details.\nThere are several angled cuts that will also need to be cut, which are all detailed in ",
-          "why": "matches \"Extras\""
+          "quote": "Follow along with the free woodworking plans provided for your visual cut list in the Extras Tab or see the Cut list tab for more details."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "drill the pocket holes where shown on the woodworking plans."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Measure as shown in woodworking places and check to make sure it is level before securing."
         }
-      ]
+      ],
+      "reason": "The build leans on an Extras-tab drawing we do not have for structural information: the notch shape on the top/bottom supports (cutList[0],[1] 'with notches on corners as shown'), the angled leg cuts, pocket-hole positions and the bottom-support (seat) height. All 13 plan images viewed are photos plus one top-assembly sketch (3 1/2\", 2 1/2\", 1\", 1/2\"); none gives the notch, leg-angle layout, pocket-hole or seat-height numbers. 'likely' not 'certain' because the finished-table photos show the general shape."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts handled in steps (table slats, top supports, legs, bottom supports, bench slats 'two table slats on each side', middle support) all have cutList rows[0]-[4]; no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[4] all used (steps[4],[5],[6],[7],[8])."
     },
     "R4": {
       "result": "pass",
@@ -209,21 +221,86 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 2×17.5 + 2×40.5 + 1×24 + 4×19 + 9×32 + kerf 8 cuts (18 parts − 10 boards, the fewest possible)×1/8 = 505.000″; bought: 10×96 = 960″; 505.000 ≤ 960"
+      "reason": "Sweep result stands: all parts are 2x4 (1.5 x 3.5, one listed stock); 2x17.5 + 2x40.5 + 24 + 4x19 + 9x32 = 35+81+24+76+288 = 504, + 8 cuts x 1/8 = 505 <= 10 x 96 = 960."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2 1/2\" pocket hole screws (steps[4],[7]) = materials[1] '2 1/2\" Blue-Kote Pocket Hole Screws' and 2 1/2\" construction screws (steps[5],[6],[8]) = materials[3]. No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Measure as shown in woodworking places and check to make sure it is level before securing."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "drill the pocket holes where shown on the woodworking plans."
+        }
+      ],
+      "reason": "Height/position of the bottom (seat) supports on the legs and the pocket-hole locations are builder-set positions given only as 'as shown on the plans'; no number in text, and none in the viewed images (step 6 image is a photo of screwing). Top slat inset is shown in steps[4] drawing (1\", 1/2\" gap)."
     },
     "R11": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Measure as shown in woodworking places and check to make sure it is level before securing."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "1 1/2\" x 3 1/2\" x 1' 5 1/2\" with notches on corners as shown"
+        }
+      ],
+      "reason": "Sweep pass overridden: the 'as shown' references (steps[2], steps[6], cutList notes) point to the Extras-tab plans, not to any plan image. All 13 images viewed (7 unattached photos, step images 0-4 and 6) show none of the referenced content (pocket-hole positions, bottom-support height, notch/angle detail). Structural, and the information exists nowhere in the plan."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Cut/sand/drill/stain (steps[0]-[3]), top assembled (steps[4]), legs (steps[5]), bottom support (steps[6]), bench slats (steps[7]), middle support (steps[8]). Nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using your Kreg pocket hole jig, drill the pocket holes where shown on the woodworking plans."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" 2x4 parts but no jig thickness setting is stated in any step/material/description; steps[2] image viewed shows the jig with its 'Board Thickness' scale but the setting is not legible/stated. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 9 slats = 5 top + 4 bench ('two table slats on each side'); top width 5 x 3.5 + 4 x 1/2 = 19.5 and top support 17.5 = 19.5 - 2 x 1\" inset matches the viewed steps[4] drawing; 4 legs, 2 top supports, 2 bottom supports, 1 middle support match steps. (b) every part installed. (c) screws in materials. (d) steps reach the finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/39602a2a1cdededd.webp",
+      "plans/b7a73335abfcaf8b.webp",
+      "plans/5f4e0a28b1f818ac.webp",
+      "plans/7532aee9b6da8c37.webp",
+      "plans/06e70b8a5ee68014.webp",
+      "plans/6b1cbe2d3371d730.webp",
+      "plans/66d98c11dd0aef91.webp",
+      "plans/0099ce36c4e03f7a.webp",
+      "plans/6089a961c2cd842a.webp",
+      "plans/21554e1bc8c39032.webp",
+      "plans/a677a048a36690ed.webp",
+      "plans/bf4297760ade746a.webp",
+      "plans/17bda4218e9f3931.webp"
+    ]
+  }
 }

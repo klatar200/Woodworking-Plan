@@ -131,59 +131,67 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts cut in steps (4 Outer Sides, 2 Side Handles, 2 Center Sides, 2 Outer Seats + 1 Center Seat, Seat Support) each match cutList[0]-[5]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[5] all used (steps[0],[1],[4],[6])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x2, 1x3, 1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for each part (1x4: sides, seats; 1x2: handles; 1x6: center sides) and the Seat Support 0.75 x 2.5 matches exactly one listed material (1x3). 1x4 x 48\" x 2 = 96: 4 x 11 + 3 x 13.5 = 44 + 40.5 = 84.5 + 6 cuts x 1/8 = 85.25 <= 96 (11x4 + 3 kerfs = 44.4 fits one 48; 3 x 13.5 + 2 kerfs = 40.75 fits the other). 1x2 24\": 2 x 5.5 = 11 <= 24. 1x6 24\": 2 x 8 = 16 <= 24. 1x3 24\": 13.5 <= 24."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": " attaching the Outer Sides to the Side Handle and Center Side, as shown. Secure the pieces using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws. Glue in Kreg Pocket-Hole Plugs, and then sand them flush.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Secure the pieces using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws."
         },
         {
-          "path": "steps[5].body",
-          "quote": "Attach the Outer Seats to the Center Seat using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws, as shown. Then round over the edges of the seat assembly—but not the lower ends.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Secure the Seat Support to one side assembly where shown using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Attach the seat assembly to the side assembly and to the Seat Support with 1 1/4\" coarse-thread Kreg Pocket-Hole Screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Secure the other side assembly with 1 1/4\" coarse-thread Kreg Pocket-Hole Screws as shown.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "path": "materials[4].name",
+          "quote": "Coarse-thread Kreg Pocket-Hole Screws"
         }
-      ]
+      ],
+      "reason": "Steps give the screw size (1 1/4\", steps[2],[5],[7],[8],[9]) consistently but no materials line states a size (materials[0]-[7] searched: only '1 1/2\" drill bit' has one). No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give positions: handle hole centre 2 1/4\" from top and 1 1/2\" diameter (steps[0] image), corner radius 2 1/4\", arch 3 1/2\" radius and 6 1/4\" centre (steps[3] image), seat support at the arch with 3 1/2\" height and pocket-hole layout (steps[7] image)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands; viewed step images are dimensioned drawings of the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides assembled (steps[2]) then shaped (steps[3]); seat assembled (steps[5]); support onto one side, seat added, other side last (steps[7]-[9])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'pocket hole jig set up for 3/4\" material'; all pocketed parts are 3/4\" (cutList)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) side = 1.5 + 8 + 1.5 = 11 = Outer Side length; 3.5 + 5.5 + 3.5 = 12.5 wide with 5.5\" handles matching the 5.5\" Center Side; part counts (4/2/2/2/1/1) match steps. (b) every part installed. (c) plugs and drill bit in materials. (d) steps reach finished stool."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/ba26a3949677f270.webp",
+      "plans/e58bbaa4ce206ca8.webp",
+      "plans/a85b2ff0803757db.webp"
+    ]
+  }
 }

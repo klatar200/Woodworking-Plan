@@ -263,69 +263,117 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Every part cut in steps has a cutList row: sides (steps[0]), upper/lower shelves, divider, top/bottom (steps[2]), back (steps[10]), legs (steps[12]), rails (steps[13]), braces (steps[15]), doors (steps[18]), tracks (steps[19],[21],[22]); long/short door track totals 12/6 reconcile with lower 4+2 and paired upper 8+4 -> 4+2 pairs."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0]-[13] are all used by steps."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[7] no match among parsed stock; unparsed stock present (materials[4])"
+      "reason": "cutList[7] Legs 2.5 x 2.5 x 8 come from 'Board, 3x3 36\"' (steps[12] 'from a 3x3 oak board'); 3x3 is not in section 9. All other rows match listed plywood (3/4\", 1/4\"; all fit 48 x 96), 1x3 (0.75 x 2.5) and 1/4\" square dowel."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[4]"
+      "reason": "Plywood parts need sheet scoring: 3/4\" area 2x23.5x66 + 2x23.25x46.25 + 2x22x22.75 + 21.75x22 + 3x10.75x46.25 = 3102+2150.6+1001+478.5+1491.6 = 8223.7 sq in <= 2 x 4608 = 9216 (not a certain fail); 1/4\" 47.25x65.75 + 2x21.5x23.75 = 3106+1021 = 4127 <= 4608. Lumber fits: 1x3 2x96 vs 2x42.25+2x18+4x6 = 144.5; 3x3 36\" vs 4x8 = 32 + 3 cuts x 1/8; 18 square dowels (36\") vs 12 x 23.125 + 6 x 22.75 one per dowel."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" coarse-thread pocket-hole screws (materials[5]), 1 1/4\" fine-thread (steps[14], materials[6]), 1\" brad nails (steps[11], materials[11]), 1 1/2\" flat-head wood screws (steps[16], materials[7] '#8 x 1 1/2\" flat head wood screws'). No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give positions: Top Panel '3/4\" down from corner and 1/4\" in from front edge', lower shelf 10 1/2\", upper shelves 13 3/8\" apart 'flush at back and down 1/4\" from top' (steps[6],[8]); door finger hole 1 1/4\" dia, 2\" and 10 3/4\" (steps[18]); track offsets 1/4\", flush to divider front (steps[19]); pocket-hole layouts on top/bottom/shelves/divider (steps[2]). Back panel centered, base rear legs flush."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flagged 'cutting diagram' references (steps[10],[12],[22]) have no step image, but the referenced pieces are plain rectangles whose sizes are in cutList[6],[7],[11],[12] and steps[22]; the viewed steps[19] image dimensions the tracks (22 3/4\", 23 1/8\"). Steps with 'as shown' elsewhere have own images, viewed for steps[0],[2],[6],[8],[18],[19]."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "From 1/4\" oak plywood, cut the Back Panel to size, as shown in the cutting Diagram. Sand as needed, wipe down the Panel, and then apply stain and finish. Here, we applied a “whitewash” stain, and then",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "lywood, cut the Back Panel to size, as shown in the cutting Diagram. Sand as needed, wipe down the Panel, and then apply stain and finish. Here, we applied a “whitewash” stain, and then wiping varnish",
-          "why": "\"Diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Cut four legs to length from a 3x3 oak board, as shown in the cutting diagram. Set them aside for now.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Cut four legs to length from a 3x3 oak board, as shown in the cutting diagram. Set them aside for now.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[19].body",
+          "quote": "Install the tracks by first positioning the pieces on the Bottom Panel, as shown. Start with the Short Door Tracks."
         },
         {
           "path": "steps[22].body",
-          "quote": "face of the Bottom Panel and Top Panel. To start, cut six Short Door Tracks to 22 3/4\" long, and cut and twelve Long Door Tracks to 23 1/8\" long from 36\" square dowel, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "To start, cut six Short Door Tracks to 22 3/4\" long, and cut and twelve Long Door Tracks to 23 1/8\" long"
         },
         {
-          "path": "steps[22].body",
-          "quote": "face of the Bottom Panel and Top Panel. To start, cut six Short Door Tracks to 22 3/4\" long, and cut and twelve Long Door Tracks to 23 1/8\" long from 36\" square dowel, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[20].body",
+          "quote": "slide it up into into the innermost upper track until it stops."
+        },
+        {
+          "path": "steps[21].body",
+          "quote": "Now you can add the upper door tracks."
         }
-      ]
+      ],
+      "reason": "As ordered, the tracks are installed (steps[19],[21]) before they are cut (steps[22]), and the doors are installed (steps[20]) before the upper tracks they slide into exist (steps[21]). Builder can resequence, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'Set your pocket-hole jig for 3/4\"-thick material' and steps[13] 'still set for 3/4\" think material'; all pocket-holed parts (plywood panels, 3/4\" rails) are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[13]",
+          "quote": "Door, quantity 2, 0.25 x 21.5 x 23.75 (source '1/4\" x 23 3/4\" x 21 1/2\" oak ply')"
+        },
+        {
+          "path": "steps[18].image",
+          "quote": "door cutting diagram labels 21 1/2\" and 23 1/4\" (image text, viewed)"
+        }
+      ],
+      "arithmetic": "steps[18] image (viewed) dimensions the Door as 21 1/2\" x 23 1/4\"; Kreg-corrected cut list row has 23 3/4\" (importDiffs: 23 3/4 -> 23.75). 23.75 - 23.25 = 1/2\" disagreement on door width.",
+      "reason": "Door width differs between the step drawing and the cut list. Other counts/sizes reconcile (tracks 12/6, shelves 3+2, Back 47.25 vs case 46.25+1.5 = 47.75, side 66 + 8\" legs = 74\" overall in viewed image)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/e688a626b3ec5dd8.webp",
+      "plans/88029b3c07f239ed.webp",
+      "plans/9a4c36389f780242.webp",
+      "plans/c4c0349def88b857.webp",
+      "plans/d766d8ff768c07a8.webp",
+      "plans/cf82edc5d97bc32d.webp",
+      "plans/8e8e12463af9ecff.webp",
+      "plans/002db0d0c9149add.webp",
+      "plans/310347a0b670e000.webp",
+      "plans/97cb1834e73b50ec.webp",
+      "plans/199d6f94ec490198.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[16].body",
+      "quote": "With the assembled Base standing upright, apply glue the ends of one Corner Brace",
+      "what": "Wood glue used (steps[16],[19],[21]) but not in materials."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "We used a gray gel stain, followed by a couple of coats of satin wiping varnish.",
+      "what": "Wiping varnish used in steps[4],[10] but not in materials (stains are listed)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[20].body",
+      "quote": "you can apply a small amount of paste wax inside the Tracks",
+      "what": "Paste wax is optional ('you can') and not in materials."
+    }
+  ]
 }

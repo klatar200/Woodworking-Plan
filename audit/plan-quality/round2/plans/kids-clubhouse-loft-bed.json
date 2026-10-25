@@ -59,98 +59,138 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Every part a step cuts or assembles matches a cutList row: posts/side rails/small side rails/2x2 supports (steps[0]-[2]; cutList[0]-[2],[19],[20]), door post cutList[5] (steps[4]), window frame cutList[3],[4] (steps[5]), mattress rails cutList[6] (steps[6]), bed slats cutList[15] (steps[7]), roof frame cutList[7] 'Cut 4 - 2\"x2\" to 28 3/4\"' (steps[8]), roof beams cutList[8], siding cutList[16]-[18],[21], roof slats cutList[14], window panes cutList[9],[10] (steps[12]), ladder cutList[11],[12] (steps[13])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[13]",
+          "quote": "Back Ladder Support, quantity 1, 1 x 4 x 17"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Use 3 - 3\" screws on each side of the steps of the ladder to the two ladder posts."
+        }
+      ],
+      "reason": "Search of all 17 steps, summary and description for /ladder support|back ladder|1x4|17\"/ finds no step that cuts or installs a 1x4 x 17 ladder support (steps[13] and steps[15] mention only ladder posts, steps and flush mount hangers)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "nominalRows": [
-        "cutList[0]",
-        "cutList[1]",
-        "cutList[2]",
-        "cutList[3]",
-        "cutList[4]",
-        "cutList[5]",
-        "cutList[6]",
-        "cutList[7]",
-        "cutList[8]",
-        "cutList[9]",
-        "cutList[10]",
-        "cutList[11]",
-        "cutList[12]",
-        "cutList[13]",
-        "cutList[14]",
-        "cutList[15]",
-        "cutList[16]",
-        "cutList[17]",
-        "cutList[18]",
-        "cutList[19]",
-        "cutList[20]",
-        "cutList[21]"
-      ]
+      "reason": "Sweep result stands: all rows' thickness x width match listed 2x4/2x2/1x4/1x3/1x6 (nominal). Part lengths versus stock lengths are scored under R5."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x4, 1x4, 1x3, 2x2, 1x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 2x2 96\" (quantity 5)"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 96\" (quantity 7)"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 1x6 72\" (quantity 9; materials[5] repeats it, quantity 1)"
+        },
+        {
+          "path": "cutList[21]",
+          "quote": "Back siding, quantity 3, 1 x 6 x 83.5"
+        }
+      ],
+      "arithmetic": "Each part's thickness x width matches exactly one listed stock. 2x2 (cutList[3],[4],[6],[7],[8],[9],[10],[19]): 2x29 + 2x27 + 2x75 + 4x28.75 + 2x79 + 1x27 + 2x8 + 4x15 = 58+54+150+115+158+27+16+60 = 638 in, + 19 cuts x 1/8 = 2.4, vs 5 x 96 = 480. 1x4 (cutList[13],[14]): 23 x 32 + 17 = 753 vs 7 x 96 = 672 (and 3 x 32 + 2 kerfs > 96, so 2 per board). 1x6 (cutList[16]-[18],[21]): 6x12 + 3x55.25 + 9x44 + 3x83.5 = 72+165.75+396+250.5 = 884.25 vs (9+1) x 72 = 720; each 83.5 piece is longer than a 72 board. (2x4 and 1x3 are sufficient: 1503 <= 1728; 738 <= 864.)",
+      "reason": "Materials do not cover the cut list for three stocks; quantities involved are 5, 7, 9/1 and cutList values are Kreg-corrected (importDiffs fix 2x2x28.75, 1x6x55.25, 1x6x83.5)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Using 2 1/2\" Pocket hole screws attach the 2x4 posts to the side rails as shown. Attach the 2x2's spaced equally using 2 1/2\" pocket hole screws to the top guard rail and the mattress support.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "path": "steps[9].body",
+          "quote": "Using 2\" Kreg Screws attach the two 2x2 boards at the top of the roof frame"
         },
         {
-          "path": "steps[0].body",
-          "quote": "Using 2 1/2\" Pocket hole screws attach the 2x4 posts to the side rails as shown. Attach the 2x2's spaced equally using 2 1/2\" pocket hole screws to the top guard rail and the mattress support.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Using 2 1/2\" Kreg screws attach the door frame 2x4 to the front bed frame from the right end.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Using 2 1/2\" Kreg screws screw the 2x2 window frame 12\" from the door opening and a second one 39\" from the left bed post.\nScrew the top 2x2 window frame 5 1/2\" from the top 2x4\" and one 11\" from the ",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Using 2 1/2\" Kreg screws screw the 2x2 window frame 12\" from the door opening and a second one 39\" from the left bed post.\nScrew the top 2x2 window frame 5 1/2\" from the top 2x4\" and one 11\" from the ",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": " cut to 40 degrees. The roof frame should be 18\" tall. Using glue and brad nails, nail the corners of the roof frame and use 3\" wood screws to screw the frame down onto the bed posts from the corners.",
-          "why": "18\" brad — no material line lists a 18\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": " cut to 40 degrees. The roof frame should be 18\" tall. Using glue and brad nails, nail the corners of the roof frame and use 3\" wood screws to screw the frame down onto the bed posts from the corners.",
-          "why": "18\" nail — no material line lists a 18\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": " cut to 40 degrees. The roof frame should be 18\" tall. Using glue and brad nails, nail the corners of the roof frame and use 3\" wood screws to screw the frame down onto the bed posts from the corners.",
-          "why": "18\" nail — no material line lists a 18\" fastener"
+          "path": "steps[12].body",
+          "quote": "Attach the 2x2x27\" with 2\" Kreg screws to the window frame."
         }
-      ]
+      ],
+      "reason": "Search of materials[0-13]: 'Box 3\" Screws', 'Box 2 1/2\" Kreg Scews', 'Box 1 1/2\" Kreg Screws', 'Box 2\" Brad Nails', '3\" Wood screws', '3.5\" - Bolts' - no 2\" Kreg/pocket screw. Flagged 2 1/2\" candidates rejected: materials[8] 'Box 2 1/2\" Kreg Scews' (typo) lists them; 1 1/2\" is materials[9]; 3\" is materials[7],[13]."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Using 2 1/2\" Kreg screws attach the door frame 2x4 to the front bed frame from the right end."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Using a nail gun attach the 1x6\" siding pieces with a 3/4\" gap on all four sides."
+        }
+      ],
+      "reason": "Door post position along the front frame ('from the right end') has no distance, and the door opening width is never stated although steps[5] ('12\" from the door opening') and steps[15] depend on it; steps[4] image viewed is a photo with no dimensions. The 21 siding pieces (12\", 44\", 55.25\", 83.5\") are not assigned to frame faces or heights; steps[10] has no image and the viewed photos (hero shots, steps[0], steps[4]) show no siding layout. Window-frame, bolt, roof-beam and slat positions are numeric."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands: the one 'as shown' (steps[0]) has its own image, viewed: dimensioned back-frame drawing showing 'Top guard rail 75\"' and the four 15\" supports."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames (steps[0]-[2]) bolted (steps[3]), door/window frames, mattress rails, slats, roof frame, beams, siding, roof slats, window pane, ladder, finish, ladder hung last (steps[15]). Nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using 2 1/2\" Pocket hole screws attach the 2x4 posts to the side rails as shown."
+        }
+      ],
+      "reason": "Frames of 1 1/2\" stock are pocket-holed (2x4 and 2x2) but no jig thickness setting appears in any step/material/description; steps[0] image viewed shows a dimensioned back-frame drawing with pocket holes and no jig setting. Recorded only."
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "Counts checked and agree: 18 bed slats (steps[7]) = cutList[15]; 4 roof frame pieces at 28 3/4\" = cutList[7]; 3 ladder steps (steps[13]) = cutList[12]; 2x2x27/2x2x8 window pieces = cutList[9],[10]; 4 back guard supports = 4 photos/drawing; 8 bolts for 4 corner post pairs; all made parts installed; hardware hangers/bolts in materials; steps reach the finished bed. Not settleable: roof slats (steps[11] '3/4\" spacing and a 1\" hang off on the two ends') - 23 x 1x4 slats cover 23 x 3.5 + 22 x 0.75 = 97 in, but the number of roof planes and the roof surface width are not stated anywhere, so the slat count cannot be tested; roof beam count ('the two 2x2 boards at the top ... and one 6\" from the bottom') is ambiguous against cutList[8] qty 2."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/32f7c1cdab99d65d.webp",
+      "plans/ec51fc359804e002.webp",
+      "plans/d6814a88276c9ce4.webp",
+      "plans/6b43832c838ce231.webp",
+      "plans/b48cfe398cd56a44.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Make sure to install three siding pieces to the back frame as a guard rail along with three siding pieces to the foot of the bed so that the railing is sitting at least 5\" above the top of the mattress.",
+      "what": "Plan never says which cut-list siding lengths (12, 44, 55.25, 83.5) go on which faces; 'Back siding' 3 x 83.5 and the foot siding (3 pieces) are not mapped, and 83.5 exceeds the 72\" board listed."
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "attach the two 2x2 boards at the top of the roof frame and one 6\" from the bottom of the rood frame",
+      "what": "Reads as three beams (two at top + one at 6\") but cutList[8] has quantity 2 of 79\"."
+    }
+  ]
 }

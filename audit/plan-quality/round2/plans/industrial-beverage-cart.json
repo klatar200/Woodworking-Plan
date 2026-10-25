@@ -10,17 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Then we cut our 1\"x3\" boards down so that we had (6) 19.25\" lengths and (3) 26\" lengths using a compound miter saw.",
-          "why": "cut sentence states 25\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged candidate rejected: steps[1].body 'we had (6) 19.25\" lengths and (3) 26\" lengths' matches cutList[2] (6 x 19.25) and cutList[1] (3 x 26); the '25\"' was a parse of '19.25\"'. Shelf bottoms 6 x 26 = cutList[0] (steps[0]). No part cut or assembled without a row (search: steps vs part names shelf bottom/edge/back/sides)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0] used steps[0],[3]; cutList[1] steps[4],[5],[6]; cutList[2] steps[5],[6]."
     },
     "R4": {
       "result": "pass",
@@ -32,22 +27,76 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x10, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part (steps[0] 1x10 boards, steps[1] 1x3 boards); thickness/width match exactly one listed material each (1x10 vs 1x3). 1x10: 6 x 26 = 156 from 6 boards x 36 = 216 (one 26 per board). 1x3: 3 x 26 + 6 x 19.25 = 78 + 115.5 = 193.5, + 9 cuts x 1/8 = 1.125 -> 194.625 <= 3 x 96 = 288. Quantities 6 and 3 are not 1."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '1 1/4\" Kreg screws' (steps[3]) = materials[4] '1 1/4\" Kreg Screws'; angle iron/caster steps say only 'screws' (no size stated); materials[5] 3/4\" wood screws listed. No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "We placed two holes near the top and two near the bottom and two in the middle."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "We attached the angle iron to the corners of the shelves using a drill and screws. We used a level to ensure the shelves are level."
+        }
+      ],
+      "reason": "The builder must set the shelf heights along the 1\" x 36\" angle iron (materials[2]) and drill the holes there, but no height/spacing or hole offset is given as a number ('near the top/bottom'); steps[11] and steps[13] images viewed are photos with no dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "Sweep result stands: no step cites a diagram that lacks an image; every step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Boards cut (steps[0],[1]), pocket holes drilled (steps[2],[4]), shelves assembled (steps[3],[5],[6]), plugs/sand/stain, then angle iron drilled/clear coated and attached to finished shelves (steps[11]-[13]), casters last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Then we used the Kreg Jig to place pocket holes into the 1\" x 10\" x 26\" boards."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "We drilled pocket holes in each end of the 1\" x 3\" x 26\" boards."
+        }
+      ],
+      "reason": "Search of all steps/materials/description for 'set'/'setting'/'3/4' jig thickness: none stated. steps[2] image viewed (jig on a board) shows no readable setting. Recorded only; not counted."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 6 x 26 boards -> 3 shelves of 2 boards (steps[0],[2],[3]); 6 x 19.25 + 3 x 26 1x3 pieces = cutList[2],[1] used on 3 shelves; 4 angle irons and 4 casters in materials. (b) all parts installed. (c) angle iron, casters, plugs in materials. (d) steps reach the finished cart."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-19",
+    "imagesViewed": [
+      "plans/7f0dcbf3e86d67e3.webp",
+      "plans/df106b7d2157cd7e.webp",
+      "plans/c6baed4c0f0459d8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "We placed a bit of wood glue into the pocket holes that we wanted to fill with Kreg Pocket Hole Plugs.",
+      "what": "Wood glue used but not in materials."
+    }
+  ]
 }
