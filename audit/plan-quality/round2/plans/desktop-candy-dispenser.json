@@ -7,58 +7,117 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "only external reference is a blog URL (steps[10]), a credit, not needed to build"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Use a router, jigsaw, or scroll saw to cut a smooth, 3-1/4\" diameter dispenser circle. Determine where you would like the pick-up notch to be located. Use a 1-3/8\" diameter forstner drill bit to bore ",
-          "why": "cut sentence states 3-1/4\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Use a router, jigsaw, or scroll saw to cut a smooth, 3-1/4\" diameter dispenser circle."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Sides - cut into 2 shapes, qty 1, 3/4 x 5 1/2 x 12"
         }
-      ]
+      ],
+      "reason": "The dispenser circle (the rotating part, 3 1/4\" diameter) is not in cutList[0..3] and step 2 names no stock for it; its thickness is given nowhere (viewed step 2 and 6 images give only the 3 1/4\" diameter). Search: cutList.part, materials[].name, steps[0..12] for /circle|disc|wheel/ -> only steps[2],[6],[7],[1]. The 1x6 24\" is used up by the back and sides (see R5); the 4\" waste between the side shapes in the step 1 image could supply it but the plan does not say so"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 4 cutList rows used by steps[0],[1],[3],[4],[5]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 1x2, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "back 12 + sides 12 from one 1x6 24\"; lid from 1x2 6\"; bottom from 1x3 6\"",
+      "search": "stock named by steps[0] (1x6, 1x2, 1x3) and by width (§9)",
+      "kerfOnly": true,
+      "arithmetic": "1x6: 12 + 12 + 1 cut x 1/8 = 24.125 vs 24 bought (short 1/8\", kerf only). 1x2: 5.5 <= 6. 1x3: 5.5 <= 6"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[11].body",
-          "quote": "Apply wood glue to adjoining faces. Use Kreg 3\" Wood Project clamps to hold pieces together tightly in place while drying or secure with 1-1/4\" brad nails.",
-          "why": "1-1/4\" brad — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Apply wood glue to adjoining faces. Use Kreg 3\" Wood Project clamps to hold pieces together tightly in place while drying or secure with 1-1/4\" brad nails.",
-          "why": "1-1/4\" nail — no material line lists a 1-1/4\" fastener"
+          "quote": "Use Kreg 3\" Wood Project clamps to hold pieces together tightly in place while drying or secure with 1-1/4\" brad nails."
         },
         {
           "path": "steps[12].body",
-          "quote": "Use a Kreg 16\" Auto-Adjust bar clamp to hold pieces in place while drying or secure using 1-1/4\" brads.",
-          "why": "1-1/4\" brad — no material line lists a 1-1/4\" fastener"
+          "quote": "secure using 1-1/4\" brads."
         }
-      ]
+      ],
+      "reason": "1-1/4\" brad nails are named as the alternative to clamping (steps[11],[12], and in the step 3/4 images) but no brad or nail is in materials (search: all 11 materials[].name for /brad|nail/ -> none). Optional alternative to clamps, so likely rather than certain. #4 x 1/2\" screws and 3/4\" hinges match steps[5],[8]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give side shape (3/4\", 7\", 3 3/8\", 1 5/8\", 45 degrees), bottom overhang 1\", lid 1 1/2\", circle 3 1/4\" and 1 3/8\" notch bore; notch position is \"where you would like\"; screws \"5 along either edge\"",
+      "search": "images of steps[1],[2],[3],[4],[5],[6] viewed"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no drawing references in steps (search /as shown|diagram|drawing|attached/ -> none)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "boards cut, sides shaped, circle made, sides on back, bottom, lid, circle placed, acrylic cut and screwed on last; steps[11],[12] are clamping tips at the end"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "no pocket-hole joints; joints state glue plus clamps/brads (see step images) and hinges/screws",
+      "search": "steps[0..12] for /pocket/ -> none"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[3].name",
+          "quote": "11\" x 14\" x 1/6\" acrylic sheet"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Place 1/16\" thick acrylic sheet over the face of the dispenser assembly."
+        }
+      ],
+      "reason": "Materials list the acrylic as 1/6\" thick; step 7 says 1/16\" thick (two sizes for the same sheet). Other numbers agree: lid 1 1/2 x 5 1/2 (cutList[2], steps[5]); bottom 2 1/2 x 5 1/2 (cutList[3], steps[4]); back 5 1/2 x 12 (cutList[0], steps[3]); bottom extends 1\" = 2 1/2 - (3/4 back + 3/4 side depth); circle 3 1/4 in a 3 3/8 opening; every part installed",
+      "arithmetic": "2 1/2 bottom - (3/4 + 3/4) = 1\" overhang as step 4 states"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/b627396e5177eb8c.webp",
+      "plans/b956ae871f61b510.webp",
+      "plans/f2c6c60f6f2ade8e.webp",
+      "plans/06e2fe5244cf6126.webp",
+      "plans/60cf047c9d4613a8.webp",
+      "plans/af53ae9928eede9b.webp",
+      "plans/62b672616eb1f579.webp",
+      "plans/2a1e0b4829d27e0e.webp",
+      "plans/22bfb657bdcf0dcc.webp",
+      "plans/222936f7a35fb21a.webp",
+      "plans/7ad8f909dfe61019.webp",
+      "plans/0076a205d92f8677.webp",
+      "plans/0b98c06480701f95.webp",
+      "plans/042957c47562c26b.webp",
+      "plans/0ce95ad386c5392b.webp",
+      "plans/51e700097a818a22.webp",
+      "plans/f0dfe7d61989ae59.webp",
+      "plans/1160b4e3c35b48ba.webp"
+    ]
+  }
 }

@@ -416,85 +416,123 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; also read all steps: only \"Menards\" hinge mention, optional"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Insert cabinet dividers between the bottom shelf and base of the bookshelf as shown."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top Shelf Dividers qty 2, 1 x 12 x 69 1/4\""
+        }
+      ],
+      "reason": "Step 2 installs cabinet dividers; no cutList row is a cabinet divider (only \"Top Shelf Dividers\", which step 3 uses as the top dividers, 5' 9 1/4\" tall in the step 3 image). Search: all 15 cutList.part names for /divider/ -> one match. Step 2 image (viewed) shows 2 dividers 1' 9 1/2\" tall, so the size is readable from the image; level kept at Fix because of that",
+      "arithmetic": "Top Shelf Dividers 69 1/4\" (cutList[1]) vs cabinet dividers 1' 9 1/2\" = 21.5\" in steps[2] image: different parts"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 15 cutList rows used by a step; Top and Bottom Carcass shown in step 0 image"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x12, 1x2, 1x3, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "search": "stock identified by §9 size: 1x12, 1x2, 1x3, 1/4\" sheet; part lengths from Kreg-corrected rows",
+      "arithmetic": "1x12: 2x94+2x69.25+72+70.5+70.5+9x22.75 = 744.25 (+17 cuts x 1/8 = 746.4) <= 10x96 = 960. 1x2: 4x67.5+2x19.75 = 309.5 <= 4x96 = 384. 1x3: 2x19.75+3x72+12x21.5+12x5.875 = 584 (+29 x 1/8 = 587.6) <= 7x96 = 672. Back sheets: 48x93+24x93 = 6696 sq in <= 2x(48x96)=9216"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " the outer carcass of the bookshelf. Use wood glue and 1 1/4\" pocket hole screws to attach the bottom shelf to the vertical side 1 x 12s. Place pocket holes along the bottom of the shelf to hide them.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Position the bottom shelf according to the dimensions shown and attach with wood glue and 1 1/4\" pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "e of the bookshelf as shown. Attach with 1 1/4\" pocket hole screws and wood glue on the top and bottom of each divider. Place 2 pocket holes on the top and 2 pocket holes on the bottom to ensure a sol",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "he top dividers as shown and attach with 1 1/4\" pocket hole screws and wood glue. Again, use 2 pocket holes on the top and 2 on the bottom of each divider for a strong joint.\nOnce you've added all the",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Use wood glue and 1 1/4\" pocket hole screws to attach the bottom shelf to the vertical side 1 x 12s."
         },
         {
           "path": "steps[4].body",
-          "quote": "ce frame to the bookshelf using wood glue and 1 1/2\" finish nails.\nI built the face frame before attaching it to the bookshelf to make sure it's a solid frame. To make sure everything lines up, assemb",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": " frame pieces on top of it and put them together there.\nIf you assemble the face frame prior to putting it on the carcass, attach each piece with 1 1/4\" pocket hole screws (in the back) and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "attach the face frame to the bookshelf using wood glue and 1 1/2\" finish nails."
         },
         {
           "path": "steps[5].body",
-          "quote": "Attach the back to the bookcase with 1\" finish nails. Since the bookshelf is so large, use 2 sections of 1/4\" plywood.",
-          "why": "1\" nail — no material line lists a 1\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "d glue inside the grooves of the slats and rails to hold the panel. Attach the rails to the slats with 1 1/4\" pocket hole screws and wood glue. Place pocket holes on the back of the door to hide them.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the back to the bookcase with 1\" finish nails."
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" pocket hole screws, 1 1/2\" finish nails and 1\" finish nails; materials list has no screws or nails at all (search: all 7 materials[].name for /screw|nail|fastener/ -> none)"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "top and 2 on the bottom of each divider for a strong joint.\nOnce you've added all the dividers, drill shelf pins along the height of each divider where you want shelves. I used a Kreg Shelf Pin jig an",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/263360de389d9fe5.webp"
+          "path": "materials[5].name",
+          "quote": "Cabinet Handles"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Attach the cabinet doors to the bookshelf.\nI used overlay hinges from Menards and spaced the doors with about a 1/8\" gap."
         }
-      ]
+      ],
+      "reason": "Six cabinet handles are listed but no step mentions installing them or where they go (search: steps[0..11] for /handle|pull|knob/ -> none); step 10 image (viewed) shows doors without handles. Hinge placement is left to \"your hinges\""
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "references in steps 1-3 each have their own step image; images viewed show the dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "carcass, dividers, face frame, back, shelves, then doors; order is possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Use wood glue and 1 1/4\" pocket hole screws to attach the bottom shelf to the vertical side 1 x 12s."
+        }
+      ],
+      "reason": "Every pocket-hole joint is on 3/4\" stock; no step states a jig setting (search steps[0..11] for /setting|thickness|jig/ -> only \"Kreg Shelf Pin jig\"). Images viewed (steps 0-4, 10) show none"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 3 \"total of 9 shelves\" = cutList[5] qty 9; 6 doors = 12 slats/12 rails/6 panels; 12 hinges = 2 per door; slat groove 21.5 - 2 x 2.25 = 17 = panel length; every part installed; doors last",
+      "search": "steps vs cutList"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/ea4d3a9fbe83d017.webp",
+      "plans/799746e3f8878021.webp",
+      "plans/263360de389d9fe5.webp",
+      "plans/3f6e54458c099b2f.webp",
+      "plans/42a36cc3787c4203.webp",
+      "plans/938665df7ef9c7ea.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "Shelf Pins",
+      "what": "18 shelf pins listed for 9 shelves; steps never state pins per shelf, so sufficiency cannot be judged from the plan",
+      "kind": "unverifiable"
+    }
+  ]
 }

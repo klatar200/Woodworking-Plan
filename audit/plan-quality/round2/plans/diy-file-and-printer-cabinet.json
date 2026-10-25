@@ -104,50 +104,112 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "no external-content references in steps[0..5]"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " 1/4\" plywood to the back of the cabinet. The plywood is cut 1/8\" smaller on all sides so the edges aren't visible. Install casters or stationary feet as desired. Add hanging file rails on the sides o",
-          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 1/8\" is the back-panel setback; sides, top/bottom, shelf, drawer boxes and fronts match cutList; the 1/4\" back is cut by rule in steps[5] from listed 1/4\" plywood (drawer bottoms: see R14)",
+      "search": "steps[0..5] vs cutList[0..11]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 12 cutList rows used (rows 6 and 8 are mislabelled \"Drawer box 1 front/back\" but are the 6\" and 4\" boxes)"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "three sheet types, one per thickness; areas fit",
+      "arithmetic": "3/4 ply: 2x18x32 + 2x18x18.75 + 17.25x18 + 17x(12+8+6) = 1152+675+310.5+442 = 2579.5 sq in <= 4608. 1/2 ply: 2x10x16.75 + 2x10x15.25 + 2x6x16.75 + 2x6x15.25 + 2x4x16.75 + 2x4x15.25 = 640+384+256 = 1280 <= 2304. 1/4 ply back 18.5 x 33.25 = 615 <= 2304"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1-1/4\" pocket screws (steps[0],[1]) and 1\" coarse pan head pocket screws (step 3 \"we use 1\\\" screws\") are in materials; no other sizes in steps",
+      "search": "steps[0..5] fastener sizes vs materials[3],[4]"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach drawer fronts to the drawers. These are inset drawers. You can use the Hardware jig to attach drawer hardware.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3ac3bfb412b0d9a3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed images give carcass size (18 3/4\" x 18\" x 33 1/2\"), shelf set-back and width, drawer box and front heights (4/6/10 and 6/8/12 stacked), pocket-hole positions; hardware by the Kreg hardware jig; back panel 1/8\" smaller on all sides; casters \"as desired\"",
+      "search": "images of steps[0..5] viewed"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "one reference (\"as shown\", steps[1]) in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cabinet carcass, shelf, drawers on slides, fronts, back, casters, file rails"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the top and bottom to the side plywood using wood glue and pocket hole screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Since we are using 1/2\" plywood, we use 1\" screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" and 1/2\" plywood; no jig setting stated for either thickness (search steps[0..5] for /setting|thickness|jig/ -> only \"Hardware jig\"). Viewed step images show hole positions only"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Build the three drawers using pocket hole screws and wood glue."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Drawer box 1 sides qty 2, 1/2 x 10 x 16 (Kreg 16 3/4)"
+        }
+      ],
+      "reason": "The three drawers are built and installed but no drawer bottom is in the cut list or mentioned in any step (search: cutList.part and steps[0..5] for /bottom/ -> only the cabinet \"top and bottom\"); the viewed step 3 image shows drawer boxes with no bottom. The drawers cannot hold anything as written. Level kept at Fix: a 1/4\" plywood sheet is listed and the box sizes are given. Other numbers agree: box outer width 15.25 + 2 x 1/2 = 16.25, + 1\" for slides = 17.25 = shelf width = interior; fronts 17 = 17.25 - 1/4",
+      "arithmetic": "15.25 + 2 x 0.5 + 2 x 0.5 (slides) = 17.25 = 18.75 - 2 x 0.75"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/df886209a337c02d.webp",
+      "plans/ad19f595f8b86acc.webp",
+      "plans/d50159ef73d4c558.webp",
+      "plans/f06512c8566aab7f.webp",
+      "plans/70caece9762b4fb5.webp",
+      "plans/3ac3bfb412b0d9a3.webp",
+      "plans/12d926f56b9c3134.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[5].name",
+      "quote": "Drawer slides",
+      "what": "slide length is not stated in materials or steps (drawer boxes are 16 3/4\" deep); not scored",
+      "kind": "missing size"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Attach the top and bottom to the side plywood using wood glue and pocket hole screws.",
+      "what": "wood glue (steps 0-3) not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Add a 1/4\" plywood to the back of the cabinet.",
+      "what": "no fastener or method named for the back panel",
+      "kind": "wording"
+    }
+  ]
 }

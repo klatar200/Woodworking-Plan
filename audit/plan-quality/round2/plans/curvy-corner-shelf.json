@@ -91,54 +91,147 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Download and familiarize yourself with the plans.",
-          "why": "matches \"Download\""
+          "quote": "Download and familiarize yourself with the plans."
         },
         {
-          "path": "steps[13].body",
-          "quote": "Check out our blog www.RealityDaydream.com for more tutorials and fun project inspiration!",
-          "why": "matches \"our blog\""
+          "path": "steps[8].body",
+          "quote": "Layout the location for the shelves and drill a 1/8\" pilot hole through both backs."
         }
-      ]
+      ],
+      "reason": "Step 0 sends the builder to downloadable plans (step 0 image is a photo of a printed plan sheet, not legible at the size shown). The front template drawing with dimensions is in the step 2 image and the part sizes are in cutList, but the shelf locations are given nowhere in the plan (see R10), so the printed plans appear to be needed for that. The build can still be completed by choosing the shelf spacing, so Fix. The blog URL in steps[13] is a credit and is not scored"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Cut 1/4\" Template and sand smooth.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 1/4\" is a scrap template, not a build part; backs, 6 shelves (4 + 2 radius), fronts board, and caps in steps[1],[6],[7] match cutList[0..7]",
+      "search": "steps[0..12] vs cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 8 cutList rows used by steps[1],[4],[6],[7],[8..12]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1]); +4 more"
+      "result": "pass",
+      "reason": "all plywood parts are 3/4\" thick and fit 48 x 96; the 1/8\" x 3/4\" caps are ripped from the 3/4\"-thick 1x4 pine named in steps[6]",
+      "search": "materials[1] 3/4 x 4x8; materials[0] 1x4 (§9: 3/4 x 3 1/2)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
+      "result": "pass",
+      "reason": "plywood: three 61\" strips plus six shelf blanks fit one 4x8; caps from the one 1x4 board",
+      "search": "stock named by steps[1] (plywood) and [6] (pine caps)",
+      "arithmetic": "plywood widths: Kreg-corrected 13.3125 + 12.625 + 16 = 41.94 (+3 x 1/8 = 42.3) <= 48; remaining 96 - 61 = 35\" holds 3 x 12.625 wide by 2 x 12.5 = 37.9 x 25. caps: 2x65 + 4x12.625 + 2x24 = 228.5 in of 1/8 x 3/4 strip; a 3 1/2\" wide 1x4 gives strips each 1/8 + 1/8 kerf, 3.5/0.25 = 14 strips x 72 in >= 228.5 (longest piece 65 <= 72)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Screw the Narrow back to the other back."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "line up and screw the shelves into position."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Gripper Feet"
+        }
+      ],
+      "reason": "Steps screw the backs together and the shelves in, but materials list no screw (or any fastener) of any size and the steps give none (search: materials[].name for /screw|nail|fastener/ -> none; steps[0..12] for a screw size -> none)"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Layout the location for the shelves and drill a 1/8\" pilot hole through both backs."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "line up and screw the shelves into position."
+        }
+      ],
+      "reason": "The position of each of the six shelves on the backs is not given by number in any step or in the viewed images (step 2 image gives the front profile only; steps 8 and 11 images are photos with no dimensions, viewed at reduced size). Pocket-hole positions on the Narrow Back are also unstated"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step refers to a drawing other than the plans download (see R1)",
+      "search": "steps[0..13] for /as shown|diagram|drawing|attached/ -> none"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "template and fronts first, caps, shelves, backs joined, shelves screwed in, fronts glued last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes on one edge of the Narrow Back."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood with no jig setting stated (search steps[0..12] for /setting|jig|thickness/ -> none); step 9 image (viewed at reduced size) shows the jig, no legible setting"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "step 1 \"both backs, six shelves, and a board ... for both fronts\" = cutList 2 backs, 4 + 2 shelves, 1 fronts board; every part installed (shelves step 11, fronts step 12); steps end with fronts glued on. Gripper Feet in materials are never used (see gaps)",
+      "search": "steps vs cutList"
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/6766acb4932730e5.webp",
+      "plans/8d9cd2a49617403b.webp",
+      "plans/bcd84391e0829265.webp",
+      "plans/0a9756d17baa645d.webp",
+      "plans/32c53ff9dcde38e8.webp",
+      "plans/e652907b2aa4e5a7.webp",
+      "plans/863f83076f13793c.webp",
+      "plans/d0dbced9b11f2ea6.webp",
+      "plans/7b8058bc984e3579.webp",
+      "plans/4e81177df4f092a5.webp",
+      "plans/684cc34128b23aaa.webp",
+      "plans/1af8965dd31f8084.webp",
+      "plans/de520294d7a12d0c.webp",
+      "plans/e58ccb3306f82d3b.webp",
+      "plans/d1c8d92f0443cb78.webp",
+      "plans/e91466383662fca4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "Gripper Feet",
+      "what": "listed but no step installs them (search steps[0..13] for /feet|gripper/ -> none)"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Cut 1/8\" pine caps using a table saw and glue onto the edge of the plywood fronts.",
+      "what": "wood glue (steps 6, 7, 12) and carpet tape (step 5) not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "cutList[2]",
+      "quote": "Fronts qty 1, 3/4 x 16 x 61",
+      "what": "Kreg drawing in steps[2] image dimensions the front as 16 5/16\" tall by 61\" long; cutList[2] widthIn is 16 and has no importDiff, so a 5/16\" difference is unexplained (likely S-19, source row not recorded)"
+    }
+  ]
 }

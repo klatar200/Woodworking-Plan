@@ -13,50 +13,82 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": ". We will be doing this with the face down.\nStart with (1)ea table top end (part 2) and (1) of the table top main.\nSee the attached image / Note all table top assembly steps are assembled upside down.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "\"See the attached image\" in steps[1] refers to that step's own image, not an external document"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (table top main x6, ends, legs x4, part 4 supports x3, part 5 supports x4) vs cutList[0..4]; all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "cutList[0..4] each used: main (steps 0,3,4), ends (1,2), legs (5), Base Support (6), Base Supports (5)"
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable"
+      "reason": "cutList[0] Kreg text \"1-/12\\\" x 3-1/2\\\" x 19-1/2\\\"\" is a typo for the thickness, live row says 1; sibling 2x4 rows are 1.5 thick. Cannot be settled from the plan"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "search": "stock inferred from §9 by size (3.5 wide=2x4; 1.5x1.5=2x2)",
+      "arithmetic": "2x4: 6 x 19.5 + 2 x 22.25 = 161.5 (+8 x 1/8 kerf = 162.5) <= 2 x 96 = 192. 2x2: 4 x 28.5 + 3 x 19.5 + 4 x 15.25 = 233.5 (+11 x 1/8 = 234.9) <= 3 x 96 = 288"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": " the top through the upper supports on the base. *Please note you will want to drill a 1/4\" clearance through those supports only. This will allow for wood movement. Attach using a #8 x 2\" wood screw.",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Attach using a #8 x 2\" wood screw."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2-1/2\" Kreg pocket screw"
         }
-      ]
+      ],
+      "reason": "Steps call for #8 x 2\" wood screws to fasten the top; materials list only 2-1/2\" Kreg pocket screws (search: all materials names; no 2\" screw)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "step 5 image (viewed) shows lower support 8\" from the leg bottom and upper support at leg top; top-to-base positions relational; gap 1/4\" stated",
+      "search": "steps[5] image viewed"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "both references have their own step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top built upside down, base frames then joined, top fastened last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "*Make sure the setting on your Kreg pocket hole jig is set for the right thickness, as well as the collar on the drill bit."
+        }
+      ],
+      "reason": "No jig setting number anywhere in text; step 0 image viewed (no setting shown); other step images not viewed"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: 6 mains, 2 ends, 4 legs, 3+4 supports; 6 x 3.5 + 5 x 1/4 = 22.25 = ends length; every part installed; top attached in final step"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/159cad10e521e64b.webp",
+      "plans/0d070f908c60a70b.webp"
+    ]
+  },
+  "notes": "importDiff cutList[0] thickness 1 vs likely 1-1/2 (import)."
 }

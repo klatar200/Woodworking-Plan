@@ -179,65 +179,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "posts, filler posts, narrow/wide side slats, post beams, top beams, top slats in steps[0..9] vs cutList[0..6]; all present with matching counts (4, 2, 14, 16, 4, 6, 8)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 7 cutList rows used by steps[0],[1],[5],[8],[9]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (4x4, 2x2, 1x4, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "search": "steps name the stock for every part (4x4: posts; 2x2: narrow slats and top slats; 1x4: wide slats; 2x6: beams); fillers are 3 1/2 x 3 1/2 = 4x4 by size",
+      "arithmetic": "4x4: 4x120 + 2x11 = 502 (+6 cuts x 1/8 = 502.75; 4th post + two fillers = 142.4 from the 144\" board) <= 3x120 + 144 = 504. 2x2: 14x41 + 8x82 = 1230 (+22 x 1/8 = 1232.75) <= 15x96 = 1440. 1x4: 16x41 = 656 (+2) <= 8x96 = 768. 2x6: 4x68 + 6x50.5 = 575 (+1.25) <= 10x96 = 960"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "trim screws #8 x 2 1/2\" (materials[5]) and 1/4\" x 3\" lag screws (materials[6]) match every size in steps[2],[3],[6],[7],[8],[9]; no conflicting sizes",
+      "search": "steps[0..10] for screw/lag sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e posts are aligned so you’ll end up with a square assembly. A great way to check is to measure from the top corner of one post to the bottom corner of the other. Then take the same measurement at the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/999da319a35ed372.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed images give slat spacing and 11\" start (steps[2],[3]), hole layout 45 1/2\" x 26 1/2\" and depth (step 4), beam overhangs 9 1/2\" and 10 1/4\" (steps[5],[8]), top slat spacing and 1 1/2\" inset (step 9)",
+      "search": "images of steps[2],[3],[4],[5],[6],[7],[8],[9] viewed"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut four Posts to length from cedar 4x4s, as shown in the cutting diagram. Also cut two Filler Posts. The Filler Posts will be used later so set them aside for now.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut four Posts to length from cedar 4x4s, as shown in the cutting diagram. Also cut two Filler Posts. The Filler Posts will be used later so set them aside for now.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Posts to length from cedar 4x4s, as shown in the cutting diagram."
         },
         {
           "path": "steps[1].body",
-          "quote": "Cut 14 Narrow Side Slats to length from 2x2 cedar boards, and cut 16 Wide Side Slats to length from 1x4 cedar boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Cut 14 Narrow Side Slats to length from 2x2 cedar boards, and cut 16 Wide Side Slats to length from 1x4 cedar boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Steps 0, 1 (and 5, 9) refer to a cutting diagram; steps 0 and 1 have no image and none of the 13 images is a cutting diagram (all viewed: 4 photos, one dimensioned overview, 8 step drawings, none showing how parts are cut from boards). Part lengths and stock are in cutList and the step text, so the build is not blocked"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "posts and slats cut first, panels built, set in holes, post beams, outer top beams, middle assembly, top slats, stain"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "no pocket-hole joints; every joint states fastener (trim screws with pilot holes, lag screws)",
+      "search": "steps[0..10] for /pocket/ -> none"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: 4 posts + 2 fillers, 14 narrow + 16 wide slats, 4 post beams + 6 top beams (4 outer + 2 middle, steps[7],[8]), 8 top slats; 232 trim screws = 14x4 + 16x8 + 8x6 = 56+128+48; post beam 68 = 49 post span + 2 x 9 1/2 overhang in viewed image; every part installed; steps end with finish",
+      "search": "steps vs cutList and viewed images"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/60c12c47c55f41d6.webp",
+      "plans/725eb23acf0388b5.webp",
+      "plans/9c4cbf933e47adc2.webp",
+      "plans/520bcddda63996a2.webp",
+      "plans/aafe2428fbbfad36.webp",
+      "plans/999da319a35ed372.webp",
+      "plans/403bcb3d158a2095.webp",
+      "plans/30c685a98f4ef5a0.webp",
+      "plans/3ddf1ea11a463585.webp",
+      "plans/15b089996579c48a.webp",
+      "plans/eed630afd5c540f6.webp",
+      "plans/923a050271f832c7.webp",
+      "plans/85f1cce8666b13aa.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Drill four pilot holes for each Post and secure with 1/4\" x 3\" exterior construction lag screws.",
+      "what": "Lag screw total (materials[6] = 71) cannot be checked: step 6 gives 4 beams x eight = 32 and step 8 gives 16 + 16 = 32 (64 of 71), but step 7 states no screw count (only pilot holes, and step 6 shows pilot-hole count and screw count differ: \"four pilot holes ... eight 1/4\\\" x 3\\\" ... lag screws\"). Not scored",
+      "kind": "count"
+    }
+  ]
 }

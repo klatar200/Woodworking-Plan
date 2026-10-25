@@ -10,55 +10,122 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cutout and attach 2”X2” pieces to the face of your storage. One with an 1 1/5” hole in it."
+        },
         {
           "path": "steps[7].body",
-          "quote": "Cut a 2” piece of 3/4” material in half at a 45 degree angle. Mount one piece into your storage and one piece onto the wall so that they match fit each other and the one on the wall holds the storage ",
-          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Cut a 2” piece of 3/4” material in half at a 45 degree angle."
         }
-      ]
+      ],
+      "reason": "Step 6 makes 2\" x 2\" face pieces and step 7 makes a French cleat from \"3/4\\\" material\"; neither is in cutList[0..2] (plywood 18x40, 2x40 x2, 2x17 x13, all 1/2\") and the only materials are 1/2\" plywood, screws, stain (search: cutList.part, materials[].name for /cleat|2.?x.?2|3\\/4/ -> none). The cleat is how the unit hangs, but the step is self-contained enough to proceed, so Fix"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Plywood",
-          "why": "no step mentions it (searched steps for plywood)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Plywood",
-          "why": "no step mentions it (searched steps for plywood)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Plywood",
-          "why": "no step mentions it (searched steps for plywood)"
-        }
-      ]
+      "result": "pass",
+      "reason": "all three rows are real parts used by steps[0],[3],[4] (names are all generic \"Plywood\")"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×18×40 + 2×2×40 + 13×2×17 = 1322.0 sq in; bought 1×60×60 = 3600 sq in)"
+      "result": "pass",
+      "reason": "single stock (1/2\" plywood 5'x5'); area fits",
+      "search": "cutList rows all from materials[0]",
+      "arithmetic": "1x18x40 + 2x2x40 + 13x2x17 = 720+160+442 = 1322 sq in <= 60x60 = 3600 sq in"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name no fastener size; materials list a box of Kreg pocket screws with no size, and no step contradicts it",
+      "search": "steps[0..9] for screw/nail sizes -> none"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Make horizontal lines every 3”s starting 2”s from the top until you’ve made 12 lines. Then make vertical intersecting lines every 2”s."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cutout and then pocket hole 2”x17” shelf pieces to the back of your storage."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Cutout and attach 2”X2” pieces to the face of your storage."
+        }
+      ],
+      "reason": "Positions the builder must set are not given by number and the viewed step images are photos with no dimensions: where the first vertical line starts (and so how many columns), where the two 2x40 body pieces and the 13 shelf pieces sit on the back (12 hole rows, 13 shelf pieces), how many 2x2 face pieces there are and where, and the length of the cleat. Searched steps[0..9]"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no drawing references in steps (search /as shown|diagram|attached/ -> none)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panel cut and drilled, back pieces attached, face pieces, cleat, hang"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cutout and then pocket hole 2”X40” body pieces to the back of your storage."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Mount one piece into your storage and one piece onto the wall"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" parts (steps[3],[4]) with no jig setting stated anywhere (search steps[0..9] for /setting|jig|thickness/ -> none); the cleat joints name no method or fastener. Images viewed are photos with no setting"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "no step count contradicts the cutList; 12 rows start 2\" and repeat every 3\" = last row at 35\" of the 40\" panel; body pieces 2 x 1/2\" + shelf 17 = 18\" panel (inputs from cutList[0..2]); every part installed; steps end by hanging the unit",
+      "search": "steps vs cutList"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/a172512cc845a252.webp",
+      "plans/04a46cee09b9635e.webp",
+      "plans/60a4530d5998b133.webp",
+      "plans/6a6f4126f733acbc.webp",
+      "plans/a2a52f137b82d23f.webp",
+      "plans/6af68f4f64c6008d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "One with an 1 1/5” hole in it.",
+      "what": "\"1 1/5\\\"\" is not a tape-measure fraction and no other hole size matches (step 2 hole is 1 3/8\"); size of this hole cannot be determined from the plan"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Mount one piece onto the wall so that they match fit each other and the one on the wall holds the storage up.",
+      "what": "no fastener or anchor named for fixing the wall cleat or the storage cleat (search steps[0..9], materials[].name for /screw|anchor|nail/ -> only the unsized box of pocket screws)"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Cutout and attach 2”X2” pieces to the face of your storage.",
+      "what": "wood glue appears in the step 6 image but no glue or attaching method is in the text or materials",
+      "kind": "consumable"
+    }
+  ]
 }

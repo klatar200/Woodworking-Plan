@@ -451,51 +451,68 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "center panel. If you do not have a router, I have a post on my blog with 3 ways to build cabinet doors (link in extras). Cut the buffet door rails and stiles and router a 1/4\" x 1/4\" groove in one sid",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "blog mention in steps[7] is an optional alternative for building doors without a router; the steps themselves build the doors with a router and give all door sizes",
+      "search": "sweep search plus steps[0..21]"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all parts named in steps[0..19] vs cutList[0..25]; adjustable shelves (steps[17],[18]) are cut \"out of the leftover plywood\", a listed material"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 26 cutList rows used: buffet steps[0..8], hutch steps[9..16]"
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[23] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[23] hutch plexiglass panel is 1/8\" (0.125) thick but materials[6] is \"0.093 thick plexiglass\"; whether 0.093 acrylic is the 1/8\" panel the groove (1/8\" wide, steps[15]) is cut for needs knowledge outside §9. All wood and plywood rows fit §9 sizes and 48 x 96"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (1x3, 1x2, 1x6, sheet-0.75, sheet-0.25, 0.25x0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock identified by width (§9) since the steps name only some parts; sums, not layouts",
+      "arithmetic": "1x3 (2.5 wide): 4x34 + 4x15 + 4x17.75 + 44.5 + 46 + 4x8.75 + 4x19.75 = 471.5 (+22 cuts x 1/8 = 474.25) <= 5x96 = 480. 1x2: 4x34 + 2x10.5 + 3x42 + 18 + 2x20 + 2x37.5 + 43 = 459 (+15 x 1/8 = 460.9) <= 6x96 = 576. 1x6: 3x48 = 144 <= 3x48 = 144. 3/4 ply area: 2x10.5x27.75 + 2x13.5x45.5 + 28.5x42 + 2x12x40 + 2x11.25x44.5 + 2x11.25x21.75 + 40x44.5 = 7238.9 sq in <= 2x4608 = 9216. 1/4 ply: 2x13.125x15.375 = 403.6 <= quarter sheet. Trim: 4x16.25 + 4x10.25 = 106 (+1) <= 3x48 = 144. Plexi: 2x9.25x15.25 = 282.1 <= 18x24 = 432"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws, 1 1/4\" finish nails, 5/8\" brad nails, 5/8\" wood screws, 5\" mending plates, 1\" corner braces all in materials; step 11 calls the 1 1/4\" nails \"brad nails\" and step 12 \"finish nails\" (same size, listed once as finish nails)",
+      "search": "steps[0..21] fastener sizes vs materials[7..15]"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[19].body",
-          "quote": "Install the buffet and hutch doors with hinges made for inset face-frame cabinet doors. If using concealed hinges, use the Kreg Concealed Hinge Jig to drill cup holes for the hinges with a regular dri",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "numbers given for leg tapers (5 1/2\" x 1 1/2\", 2 1/2\" x 1\"), door grooves (2 1/4\" in), hutch shelf and bottom support set-backs (3/4\" in from back), pocket holes every 6\"; other positions are relational (flush, centered); hinge and pull positions are delegated to the named Kreg jigs (steps[19]); adjustable shelf spacing is the builder's",
+      "search": "steps[0..21] placement phrases; step images are drawings (viewed as thumbnails)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "one reference (\"as shown\", steps[10]) in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "buffet legs, sides, face frame, shelves, back, top, doors; hutch frame, face frame, shelves, back, doors; hinges, finish, then hutch on buffet"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"set for 3/4\\\" material\" in steps[0],[2],[3],[9],[10]; all pocket-hole parts are 3/4\" stock"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "4 doors = 4+4 rails/stiles buffet (2 doors) and 4+4 hutch (2 doors); 8 hinges = 2 per door x 4; 4 pulls; door panels fit the stile/rail openings: buffet panel 15.375 = rail 15 + 2 x 1/4 groove - 1/8, 13.125 = (17.75 - 2x2.5) + 1/2 - 1/8; hutch plexi 9.25 = 8.75 + 1/2, 15.25 = (19.75 - 5) + 1/2; hutch top shelf set back 12 - 11.25 = 3/4 as step 9 says; every part installed",
+      "search": "steps vs cutList; materials[6] thickness vs cutList[23] is an R4 unknown"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified) + Human review",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Attach them to the edge of the 1x3 buffet legs with wood glue and 1 1/4\" pocket hole screws.",
+      "what": "wood glue used throughout (steps 0-16) and sandpaper/stain/paint/wood filler (step 20) are not in materials (search materials[].name for /glue|stain|paint|filler|sand/ -> none)",
+      "kind": "consumable"
+    }
+  ],
+  "humanReview": "R4: cutList[23] plexiglass panel thickness 1/8\" vs listed \"0.093 thick plexiglass\" (nominal vs actual acrylic thickness is not in §9)"
 }

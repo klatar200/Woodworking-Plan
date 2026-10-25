@@ -295,65 +295,103 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Drill pocket holes in the parts on the attached diagram in the approximate locations shown.",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Drill pocket holes in the parts on the attached diagram in the approximate locations shown.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "\"the attached diagram\" in steps[0]/[1] is each step's own image (viewed: step 0 image is the pocket-hole layout drawing with dimensions); steps 11-13 are optional extra shelving with lumber stated as not included, not needed to complete the organizer",
+      "search": "sweep search plus read of steps[11..13]"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step parts (box top/bott/shelves x4, sides, wall braces, drawer parts LG/SM, slide mounts, fronts, face frame vert/horiz/bottom) vs cutList[0..14]; all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 15 cutList rows used: Drawer Slide Mounts (LG) qty 8 = 2 per drawer x 4 drawers (steps[6])"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "search": "stock identified by §9 size/name; Kreg-corrected rows",
+      "arithmetic": "1x2: 2x66.5 + 6x22.25 = 266.5 (+8 x 1/8 = 267.5) <= 3x96 = 288. 1/4\" ply: 3x15.5x21.25 + 15x21.25 = 988.1+318.75 = 1306.9 sq in <= 4608. 3/4\" ply parts total 6471.2 sq in (1520+2104+166.25+770.25+604.5+360+102.3+522.7+77.9+138.25+105) <= 2 x 4608 = 9216; area fits (layout not tested)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "ond shelf with 4 x 1 1/4\" pocket hole screws. Attach to the wall into at least one stud using 2 1/2\" construction screws (you can do this step later if you are not ready to install into position yet).",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "Attach to the wall into at least one stud using 2 1/2\" construction screws"
         },
         {
           "path": "steps[10].body",
-          "quote": " drawers is to put double-sided tape on the drawer box and place it into position. Then open it and use 2 1 1/2\" pocket hole screws to screw through the inside of the drawer and into the drawer front.",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "quote": "use 2 1 1/2\" pocket hole screws to screw through the inside of the drawer and into the drawer front."
         },
         {
-          "path": "steps[10].body",
-          "quote": " drawers is to put double-sided tape on the drawer box and place it into position. Then open it and use 2 1 1/2\" pocket hole screws to screw through the inside of the drawer and into the drawer front.",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "path": "materials[6].name",
+          "quote": "1 1/4\" Kreg Pocket Hole Screws"
         }
-      ]
+      ],
+      "reason": "Step 3 needs 2 1/2\" construction screws and step 10 needs 1 1/2\" screws; neither size is in materials (search: all 14 materials[].name for 2 1/2\" / 1 1/2\" fastener -> none). Step 10 calls them \"pocket hole screws\" at 1 1/2\" while materials and every other step use 1 1/4\" pocket hole screws (two sizes for the same use)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give shelf heights 13\", 13\", 34\", 2 3/4\" from bottom (steps[2]), wall brace 3 1/2\" bands (steps[3]), slide-mount heights 3 1/4\", 6 1/2\", 6 1/2\", 4\" (steps[6]), drawer front sizes and centered knobs (steps[10]); pocket-hole layouts in steps[0]",
+      "search": "steps[2],[3],[6],[10] images viewed"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "8 references each in a step with own image; images viewed"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "box, braces, face frame, slide mounts (after face frame), drawers, slides, fronts; optional shelving last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the parts on the attached diagram in the approximate locations shown."
+        }
+      ],
+      "reason": "Plywood and 1x2 parts are 3/4\" stock with pocket holes; no step states a jig thickness setting (search steps[0..13] for /setting|thickness|jig/ -> only \"Kreg Drawer Slide Jig\"). Images viewed (steps 0,2,3,6,10) show hole positions, no setting"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "4 drawers: LG 3 + SM 1 fronts, F/B 6+2, sides 6+2, bottoms 3+1, slide mounts 8; face frame verticals 66.5 = sides 65.75 + 3/4\" (step 5 says frame exceeds top by 3/4\"); face frame width 2 x 1.5 + 22.25 = 25.25 = box 23.75 + 2 x 3/4\"; every part installed; drawers and fronts end the build",
+      "search": "steps vs cutList, images viewed"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": [
+      "plans/6dbd67e282243cc1.webp",
+      "plans/6bf5a5cc9e373ad7.webp",
+      "plans/314a08f33789fe36.webp",
+      "plans/88fa00f80b1207aa.webp",
+      "plans/799e300c1fa1b6e7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[12].name",
+      "quote": "1 1/4\" Hardwood Dowels",
+      "what": "Dowels (qty 3) and \"1 5/16-inch Heavy Duty Closet Pole Sockets\" (materials[13], qty 3) are listed but no step, cut row or description uses them (search steps[0..13], cutList[0..14], description for /dowel|pole|rod|socket/ -> none)"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "put double-sided tape on the drawer box and place it into position.",
+      "what": "double-sided tape used, not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

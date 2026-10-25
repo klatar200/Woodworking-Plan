@@ -155,53 +155,105 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "f the table to help support these. The half X pieces are 14.5\" with one end cut at 31.6 degrees and the other 58.6 degrees. You should have 8 of these cut. Pre drill all of your holes and screw it flu",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged \"14.5\\\"\" is the half-X length (see R14); every part in steps[1],[5..9],[11],[14] is in cutList[0..6]",
+      "search": "steps vs cutList"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 7 cutList rows used by steps[1],[6],[8],[9],[11],[14]"
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[6] feet blocks are 1\" thick x 3 1/2 x 3 1/2 and no stock is named for them (steps[11] \"cut a small 3.5 x 3.5 x 1 inch square block\"); 1\" is thinner than either listed stock (2x4, 2x6 = 1 1/2\" thick, §9) so it needs resawing/planing, which §9 does not judge. All other rows match 2x6 (5 1/2) or 2x4 (3 1/2) widths"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x6, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock identified by width (§9); feet blocks counted against 2x4 (also fits 2x6)",
+      "arithmetic": "2x6: 4x48 + 37.75 + 2x18 = 265.75 (+7 cuts x 1/8 = 266.6) <= 3x96 = 288. 2x4: 2x25 + 4x20 + 8x15 + 4x3.5 = 264 (+18 x 1/8 = 266.25) <= 3x96 = 288"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2\" pocket hole screws in materials[2]; steps name no other screw size; L brackets are listed (optional)",
+      "search": "steps[0..15] for screw sizes -> only the pocket screw"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[14].body",
-          "quote": " is personal preference. Finish your table any way you want. Make sure to measure down 16.5 inches to attach the 37.75 inch horizontal support. Next, measure in 8.5 inches from the horizontal support ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "own 16.5 inches to attach the 37.75 inch horizontal support. Next, measure in 8.5 inches from the horizontal support and attach the 18 inch supports with 15 degree ends parallel to each other. All att",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ca8205c9726d98a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "numbers given: base 1.5\" from the table edge (step 6), supports 16.5\" down and 8.5\" in from the horizontal support (step 14), angles; centering and \"on the edge\" placements are relational; L bracket and foot screw positions are optional/relational",
+      "search": "steps[6],[8],[9],[11],[14]; step images are photos with no dimensions (viewed as thumbnails)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "references have own step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top glued up and trimmed, base parts cut, I-frame, half X pieces, brackets, feet, fancy supports last"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Drill 2 holes at the end of each of your 25 inch 2x4s."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2 inch pocket hole screws, Kreg"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x4/2x6 stock (steps[7],[14]) with no jig thickness setting stated (search steps[0..15] for /setting|thickness|jig/ -> only \"simple Kreg Pocket Hole Jig\"); step 7 image (viewed as a thumbnail) shows the jig, no legible setting"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "The half X pieces are 14.5\" with one end cut at 31.6 degrees and the other 58.6 degrees."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Half X Supports qty 8, 2 x 4 x 15; Kreg source \"2x4x15 (31.6 degrees one end, 58.4 degrees the other)\""
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "attach 2 of the 20 inch boards with 31.6 degree ends opposite each other"
+        }
+      ],
+      "reason": "Step 9 gives the half X length as 14.5\" and the far angle as 58.6 degrees; the cut list gives 15\" and 58.4 degrees (31.6 + 58.4 = 90, 31.6 + 58.6 = 90.2). Step 6 gives the 20\" base boards 31.6 degree ends but the Kreg cut-list text for cutList[2] is \"2x4x20 (15 degrees each end)\", so two angles are given for the same part",
+      "arithmetic": "14.5 (steps[9]) vs 15 (cutList[3]); 58.6 vs 58.4; 31.6 (steps[6]) vs 15 (cutList[2] source)"
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-06",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "Make sure to measure down 16.5 inches to attach the 37.75 inch horizontal support.",
+      "what": "cannot be reconciled from the plan: the plan does not say what the 37.75\" support spans (table top 48\" long, base set 1.5\" from each end per steps[6], boards 1.5\" thick), so its length was not checked",
+      "kind": "unverifiable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "I glued up 4 x 48 inch long boards at 6 inches wide each.",
+      "what": "steps call the top boards 6\" wide while cutList[0] (2x6, Kreg-corrected) is 5 1/2\" wide; no later number depends on the 6\"",
+      "kind": "wording"
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Use glue as well for extra strength.",
+      "what": "wood glue (steps 1, 11, 12) and wood filler (step 13) not in materials",
+      "kind": "consumable"
+    }
+  ]
 }
