@@ -91,21 +91,9 @@
   ],
   "checks": {
     "R1": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[2].body",
-          "quote": "I’ve provided a template for exactly what I did in the extras tab if you want to do trees like mine. Or, feel free to freehand your own design as desired."
-        },
-        {
-          "path": "description",
-          "quote": "The plan provides a template for this particular tree design"
-        }
-      ],
-      "reason": "The tree-scene cutout shapes (the decorative pieces) depend on an Extras-tab template not in the plan; the plan itself allows freehand, so the build can be completed without it (non-structural) -> Fix. Search: steps/description for template|extras|video; steps[6] and steps[12] also say 'video in the extras tab' but only as optional detail."
+      "result": "pass",
+      "reason": "steps[2] \"I've provided a template for exactly what I did in the extras tab if you want to do trees like mine. Or, feel free to freehand your own design as desired.\" and steps[3] \"either using the provided template OR your own design\"; steps[0] \"you may want a different design\". The build does not depend on the template; the blanks are in cutList[0..2]. Videos in steps[6],[12] are extra detail.",
+      "search": "all fields vs /extras|template|video|pdf|full plans/i: description, steps[2],[3],[6],[12]"
     },
     "R2": {
       "result": "pass",
@@ -144,24 +132,11 @@
       "reason": "steps[4],[6],[10]: 3/4\" pocket holes stated for all 3/4\" stock (1x4 and 3/4\" plywood)."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[12].body",
-          "quote": "This piece can be hung on the wall with a sawtooth hanger like shown, or can simply set on a console table, or shelf."
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Secure wires in place with staples OR painters tape."
-        }
-      ],
-      "reason": "Step 12 is titled 'Add Hanging Hardware' and shows a sawtooth hanger, and step 11 offers staples; neither appears in materials (search: materials[].name has only 1x4 board, 3/4 plywood quarter sheet, 20 light battery light pack, 1 1/4 pocket hole screws). Both are optional alternatives, so confidence is likely. Painters tape (steps 9, 11) is a consumable -> gaps."
+      "result": "pass",
+      "reason": "(a) frame: 16 1/2 top/bottom pocket-screwed between 15 1/2 sides -> inner 16.5 x (15.5 - 1.5 = 14) = backdrop 14 x 16 1/2 (Kreg-corrected); 2 x 20-light packs = materials[2]. (b),(d) every part installed, reaches finished piece. (c) sawtooth hanger is optional (\"can be hung on the wall with a sawtooth hanger like shown, or can simply set on a console table, or shelf\"); staples are an alternative to painters tape (consumable) in steps[11]. Both recorded as gaps."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -185,6 +160,22 @@
       "path": "steps[8].body",
       "quote": "Make sure you cut a hole large enough for your particular battery packs.",
       "what": "Cubby size left to the builder (depends on their own battery pack); relational, not failed."
+    },
+    {
+      "kind": "optional",
+      "path": "steps[12].body",
+      "quote": "This piece can be hung on the wall with a sawtooth hanger like shown, or can simply set on a console table, or shelf.",
+      "what": "sawtooth hanger (optional) and staples (alternative to tape, steps[11]) not in materials"
     }
-  ]
+  ],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship (unverified)",
+    "decided": [
+      "R1",
+      "R14"
+    ],
+    "note": "R1 pass: plan twice offers freehand instead of the Extras template; R14 pass: sawtooth hanger and staples are offered as alternatives (set on a shelf / painters tape)."
+  }
 }
