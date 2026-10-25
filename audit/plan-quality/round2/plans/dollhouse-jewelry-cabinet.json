@@ -247,38 +247,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "a table saw, this is easily and inexpensively possible! See my blog for pictures of the little trick that I did that made it so easy to do! You could also just brad nail the shelves in, it will be fin",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "red these boards in fabric before screwing them in, head to my blog to see more of that in depth! Use 1/2\" pocket holes and 1\" screws with ample glue to attach them. NOTE: I didn't screw these in unti",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "n have straight roof boards if you would like! If you check out my blog post you can see how I used a sliver of a pvc pipe to trace and then just sanded them along the pencil line! Wasn't hard at all!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: the three 'my blog' references (steps[1] dado trick, steps[7] fabric, steps[8] rounding with PVC) are optional tips; steps[1] itself offers 'just brad nail the shelves in', and dado positions (5, 1/2, 4 3/4 in, 1/8 in deep) are in the viewed step-2/3 images. No Extras/PDF dependency found."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut-list part is cut in steps[0],[5],[7],[8],[13]. The boxes of steps[10]-[11] are made 'out of the same poplar boards that I used on the roof' (listed material); the viewed step-12 image gives their parts (2 at 4 3/8 in, 2 at 3 in, 1/4 in bottom 4 3/8 x 4 in)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[12].part",
-          "quote": "Top rail",
-          "why": "no step mentions it (searched steps for rail)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: cutList[12] 'Top rail' is the 'small trim piece' of steps[9] (Step 11); the viewed step-11 image shows it as a 3/4 in tall piece under the roof. Other rows used: sides, bottom, supports, shelves, backs, slats, doors, moldings."
     },
     "R4": {
       "result": "pass",
@@ -289,33 +267,81 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.5, 0.5x6, 0.25x6, 0.25x96); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "and brad nail! Viola! Then I cut some of the 1/4\" poplar to size and glued and brad nailed it to the bottom of them...no the 1/4\" board is not inset, it is on the bottom and shows before it's painted!",
-          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the 1/4\" in steps[10] is the poplar thickness, not a brad. Fasteners used: 1\" screws (materials[4]), brad nails (materials[6] 3/4\"), hinges (materials[5],[13]); no size conflicts."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach the other side board that you didn't cut dados into now. Again I inset the board by an 1/8 of an inch!",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad4b07529607d0ce.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: steps[4] 'inset the board by an 1/8 of an inch' is a number. Dado positions are dimensioned in the viewed step-2/3 images; roof 1/4 in overhang and slat layout in the step-10 image; top rail 3/4 in under the roof in the step-11 image; door sizes 5 x 14 3/8 and 10 1/4 x 14 3/8 in the step-14/15 images; box parts in the step-12 image; window and pre-made door positions are shown in the viewed finished photos (no dimensions)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both 'as shown / in the picture' references (steps[3], steps[6]) are in steps with their own images, viewed (steps[6] image confirms shelves 4 3/4 x 4 in, the text corrects 4 to 4 1/4)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Steps are numbered out of sequence (Step 10 before 11-13 before Step 9) but the order is possible: sides/dados (1-3), carcase (4-5), supports (6), shelves slid into dados (7), backs (8), roof and trim (10-11), boxes (12-13), molding (9), doors (14-16), finish (17)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Pocket holes will need to be drilled along the bottom of each of these boards at a depth of 1/2\"' states the setting; all pocket-holed parts are 1/2 in thick (cutList rows 0-6); steps[5] and steps[7] repeat 'pocket holed at 1/2\"' / '1/2\" pocket holes'."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "I took the 1/2\" poplar board listed in your materials and ripped it down to 1 1/8\". I did this three times to get enough to make my boxes (later) and the roof."
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Roof Slats, quantity 15, 0.5 x 1.125 x 6.25 (one end beveled at 24 degrees)"
+        }
+      ],
+      "reason": "Searched all steps for /roof|slat/ and for any attach verb: steps[5] attaches the roof supports and steps[8] cuts and bevels the roof boards, but no step says to fasten the 15 slats to the supports (no glue/brad nail/screw statement). The viewed step-10 image shows the finished roof only. Level Fix: the cabinet is built without it."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Add this small trim piece with glue and brad nails.",
+      "what": "The viewed step-11 image dimensions the top rail as 15 1/4 in long; cutList[12] (Kreg-corrected) says 15.5 in. Quarter-inch disagreement between image and cut list."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "I drilled the holes for my pegs at this time",
+      "what": "No peg hole position, diameter or count in text; materials[9] lists 8 pegs while the viewed step-12 image shows 3 on the back. Window cutout sizes (steps[13]) also depend on unnamed purchased windows; materials[12] magnet/nail and materials[8] pre-made door are never mentioned in a step."
+    },
+    {
+      "path": "steps[15].body",
+      "quote": "I added trim to the doors, using proper placement of the trim you are able to disguise the fact that there are two doors on the front",
+      "what": "Door trim lengths are not given; materials[3] has one 96 in molding (1/2 wide x 1/4 thick per the viewed image) and the bottom molding rows total 26.5 in, so sufficiency cannot be checked."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "6cd5b69ded3f8bc2.webp",
+      "603da810856add04.webp",
+      "ecdc5540d40c64bf.webp",
+      "3cc64924b8a6cad5.webp",
+      "d855424a8c84e7fd.webp",
+      "6c2d6deb5a9e7714.webp",
+      "13aac657ff734ca7.webp",
+      "db832fc27c0cc18a.webp",
+      "297401dea3e692b7.webp",
+      "1321e7ca4e0d5f30.webp",
+      "be9c66ec29f9d1c2.webp",
+      "fdfb1de106401b59.webp",
+      "0a31e6dc9ee0ed1f.webp",
+      "14037a510a55992d.webp",
+      "1c399c327dd4e271.webp",
+      "327ddf8bfc73b062.webp"
+    ]
+  }
 }

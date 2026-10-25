@@ -739,83 +739,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "wo grooves. I like to use a corded drill and vacuum when drilling a lot of pocket holes. It helps keep the bit cool and prevents the jig from clogging up. Check out Link 5 in the Extras for more info.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "/4” deep. The length varies by the size of the panel. Refer to the Extras section for more detail. It is a good idea to mark the top and front of each leg and number them to avoid confusion as you go.",
-          "why": "matches \"Extras\""
+          "path": "steps[12].body",
+          "quote": "Mark the location of the bottom and center rails on each leg per the 3D sketches in the Extras section."
         },
         {
           "path": "steps[6].body",
-          "quote": "ck panel. It is also marked 4-1/4” from the bottom and 10” long, and is marked 5/8” in from the rear edge. Again, please refer to the Extras section for 3D representations that make this much clearer.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "tom and center rails on each leg per the 3D sketches in the Extras section. Then I clamp up each section so it stays square while driving the screws. A rubber mallet can help make any fine adjustments",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[19].body",
-          "quote": "will never be seen. Pre-drill and countersink #6 x 1” Wood Screws to attach the bottom to the sides. This is a very quick and solid method for making drawers. Check out Link 6 in Extras for more info.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[21].body",
-          "quote": "lipping the board in between, to get a 1/2” groove that is perfectly centered. There are several great video tutorials available online that explain this method in great detail. (Link 3 in the Extras)",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[22].body",
-          "quote": " perfectly in the groove. Using a test piece allows you to dial in the table saw settings for a perfect fit. Repeat on the other end of the stile. Click Link 3 in the Extras section for a great video.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[30].body",
-          "quote": ". Remove the drawer box and attach the last screw on each side. There are so many good tutorials on using this jig to install full extension slides. Check out Link 7 in the Extras for a helpful video.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[31].body",
-          "quote": " 3/4” stainless machine screws and washers to attach the pull. We will install the drawer front in the next step. Check out Link 8 in the Extras for a video showing the Cabinet Hardware jig in action.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[44].body",
-          "quote": " demonstrating these fasteners. There will be a link in the Extras section for reference (Link 4). First, layout the locations for each fastener. They are installed in the top of the rails; one inch f",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[45].body",
-          "quote": " UV absorbers and contains a mildewcide. There is a link in Extras with more information about this finish (Link 10). It sprays easily with an HVLP and I was able to apply all 3 coats in one day. Reas",
-          "why": "matches \"Extras\""
+          "quote": "Again, please refer to the Extras section for 3D representations that make this much clearer."
         }
-      ]
+      ],
+      "reason": "The vertical positions of the bottom and center rails on the legs are given to the builder only by 3D sketches in the Extras, which are not in the plan; the six viewed photos show the built frame but no dimensions. The positions can be worked out from the leg-groove positions in steps[4]-[6] and the panel lengths (e.g. panel 23 3/8 in less 1 1/2 in of groove depth = 21 7/8 in opening in a 30 1/2 in leg), so the build can be completed: Fix. Other 'Link n in Extras' references are optional videos."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[37].body",
-          "quote": " trim it to final size with a circular saw or track saw. Start by crosscutting one end, then mark the final length of 58” and crosscut the other end. Then do the same for the width, ripping it to 27”.",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[39].body",
-          "quote": " pass, to reduce strain on the bit. My bit has a cutting length of 1-1/4”, so there is about an 1/8” of an inch still connecting the disc to the hole. The next step will show removing the center disc.",
-          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 27 in is the finished top width (steps[37]; top boards cutList[14] are cut larger and trimmed); 1/8 in is a bit-length remark. Every cut-list part is cut in steps[0],[8]-[10],[15]-[24],[35]; door mounting strips come from stile offcuts (steps[20]); the shelf/floor boards are cut in steps[18]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Searched steps for every cutList part: legs/rails (steps[0]-[2],[12]-[14]), panel boards (steps[8]-[10],[12]), cleats (steps[15]), grill support (steps[16]), floor/platform boards (steps[18]), top boards (steps[35]-[37]), door and drawer-front stiles/rails/panels (steps[20]-[25]), mounting strips and rails (steps[17],[28]), drawer box (steps[19]). All used."
     },
     "R4": {
       "result": "pass",
@@ -826,44 +772,102 @@
       "reason": "R5 precondition not met: 5 stock types (4x4, 2x4, 1x6, 2x6, sheet-0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every fastener size in the steps is in materials: Kreg HD screws (materials[6]), 3/4 in pan head Micro screws ([7]), #6 x 1 ([21]), 8-32 x 2 and 8-32 x 3/4 with #8 washers ([13],[14],[15]), #8 x 1 and #8 x 3/4 stainless for the top fasteners ([17],[18]), #8 x 1 washer head ([22]), 1-1/4 and 2-1/2 deck screws ([23],[24]). Counts agree: 10 top fasteners = 8 corner + 2 centre (steps[44]); 4 hinges for 2 doors."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "e starts 4-1/4” from the bottom and ends 2-3/4 from the top. The right rear leg gets grooves on the front face and left face (as viewed from the front of the table). Both of these grooves also start 4",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        },
-        {
-          "path": "steps[29].body",
-          "quote": "The doors and drawer front will likely be too tight. At the table saw, trim a small amount from each side of the drawer front until it fits with a nice reveal. Next, trim a small amount from the top a",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e72d053103af6ba.webp"
-        },
-        {
-          "path": "steps[29].body",
-          "quote": "h side of the drawer front until it fits with a nice reveal. Next, trim a small amount from the top and bottom of each door until they fit well. Finally, trim the doors to width. Do NOT trim the jamb ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e72d053103af6ba.webp"
-        },
-        {
-          "path": "steps[45].body",
-          "quote": "Now that the table is completely assembled, let’s take it back apart and apply the finish. I chose General Finishes Exterior 450 Satin for this project. It is water based and formulated for exterior u",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4536a093ebb8c799.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Positions are numbers or relational: leg grooves 5/8 in from the edge, 3/4 in deep, 4 1/4 in from the bottom and 2 3/4 in from the top (steps[4]-[6]); rails set in 1/8 in (steps[12]); cleats and grill support 3/4 in below the rail tops (steps[15],[16]); hinge mortises at 3 in and 13 1/2 in (steps[24]); slide front even with the lower rail (steps[30]); top fasteners 1 in from each corner leg (steps[44]); hole centre 13 1/2 in from the left and front (steps[39]); hooks 'even spacing'. Rail heights are recorded under R1; pull positions are set with a jig and shown in the viewed photos."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Flag settled: 'per the diagrams' (steps[14]) and the 3D sketches reference content only in the Extras; the step-14 photo (viewed) shows the joined frame and the opening dimensions are in the cut list. Missing sketch content is recorded under R1."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Go ahead and complete the base frame by combining the assembly from the last step and the right end sub-assembly with the long rails and panel."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Using the same techniques from the last step, connect the left side assembly and center divider assembly with the front and back short rails per the diagrams."
+        },
+        {
+          "path": "steps[46].body",
+          "quote": "Next, we will connect these assemblies with the front and back rails to complete the base frame."
+        }
+      ],
+      "reason": "The base-assembly steps are out of order: steps[13] ('Combine ... - 2') joins the right end to an assembly that steps[14] ('Combine ... - 1') builds afterwards, and the 'three sub-assemblies' recap (steps[46]) is the last step of the plan. The order can be recovered from the titles, so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Each rail will get two pocket holes on each end."
+        },
+        {
+          "path": "steps[19].body",
+          "quote": "I prefer the Kreg Micro for 1/2\" ply."
+        }
+      ],
+      "reason": "Searched steps for a jig thickness setting for the 1 1/2 in rails (Kreg HD) and the 1/2 in plywood drawer parts (Micro): none stated; viewed step-12 photo shows the jig with no readable setting. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[17].body",
+          "quote": "A support is needed on both sides of the drawer cavity to mount the full extension slides."
+        },
+        {
+          "path": "cutList[25]",
+          "quote": "Drawer Mounting Rail, quantity 2, 1.5 x 3.5 x 18 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[23]",
+          "quote": "Drawer Bottom, quantity 1, 0.5 x 17 x 18 (Kreg-corrected)"
+        }
+      ],
+      "arithmetic": "Drawer front = 2 stiles x 2.5 + (rail 14.5 - 1.5 tongues = 13) = 18 in wide (cutList[19],[20]) and fits the cavity; drawer box = Drawer Front/Back 16 + 2 sides x 0.5 = 17 in (cutList[22],[21]; bottom 17 in). Mounting rails 2 x 1.5 = 3 in on the cavity sides leave 18 - 3 = 15 in, less than the 17 in box (before any slide clearance).",
+      "reason": "The 17 in drawer box cannot fit between the two 1.5 in mounting rails in an 18 in cavity. The cavity width is inferred from the drawer front, so likely rather than certain. Step counts otherwise agree (14 short + 4 long rails; 2 doors from 4 panel boards; 6 legs; 4 hinges)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[1]",
+      "quote": "Board, 2x4 96\" board (quantity 11)",
+      "what": "R5 lumber arithmetic (steps name the stock): 4x4: 6 x 30.5 = 183 in vs 192 in; 2x4: 14 x 18 + 4 x 27.5 + 3 x 18 + 2 x 27.5 + 22 + 4 x 22 + 4 x 9.5 + 2 x 8.5 + 2 x 14.5 + 2 x 18 = 701 in vs 1056 in; 2x6 tops 6 x 58 = 348 in vs 432 in; 1x6 floor/platform 10 x 22 = 220 in vs 288 in; pickets about 486 in plus oversize allowance vs 720 in; all fit. Plywood not layout-judged, so R5 stays unknown."
+    },
+    {
+      "path": "steps[32].body",
+      "quote": "use playing cards to shim the drawer front until you have the desired reveal. Next, use two-sided tape",
+      "kind": "consumable",
+      "what": "two-sided (carpet) tape is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "b1b382d8843a6122.webp",
+      "2f018d607743d944.webp",
+      "e4538ea02b0c5d8c.webp",
+      "3a346e85b5c8d77f.webp",
+      "d671d2ba0b98b71d.webp",
+      "608fd8aecca670fa.webp"
+    ]
+  }
 }

@@ -6,28 +6,16 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " family members write notes to the girls of what they love most about them.\nYou can find more detailed photos of the build process and completed photos of this project on our blog: www.SimplyCiani.com",
-          "why": "matches \"our blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[9] 'more detailed photos ... on our blog' is a credit/optional link. Steps[2] sends the reader to the Kreg jig manual for the stop-collar setting, which is a tool-use note, not plan content. No Extras/PDF dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts are cut in steps[0] and match cutList (47-1/16 in boards, 48-9/16 and 21-7/8 in trim); no other part is made."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Shiplap Boards",
-          "why": "no step mentions it (searched steps for shiplap)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: cutList[0] 'Shiplap Boards' are the four '6\" boards' joined in steps[4]-[5] (title 'Shiplap Advent Calendar')."
     },
     "R4": {
       "result": "pass",
@@ -39,46 +27,75 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock (steps[0] 1x6 boards, 1x2 trim). 1x6: 4 x 47.0625 = 188.25 in + 3 kerfs 0.375 = 188.625 in vs 2 x 96 = 192 in (two per board: 94.125 + 0.125 <= 96). 1x2: 2 x 48.5625 + 2 x 21.875 = 97.125 + 43.75 = 140.875 in vs 2 x 72 = 144 in (one long + one short per board: 70.4375 + 0.125 <= 72)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "your pre-cut trim pieces and stain them in your desired stain color first before attaching to the main boards. After they are dry, take your brad nailer loaded with 2\" brad nails and nail in your trim",
-          "why": "2\" brad — no material line lists a 2\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "your pre-cut trim pieces and stain them in your desired stain color first before attaching to the main boards. After they are dry, take your brad nailer loaded with 2\" brad nails and nail in your trim",
-          "why": "2\" nail — no material line lists a 2\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "your pre-cut trim pieces and stain them in your desired stain color first before attaching to the main boards. After they are dry, take your brad nailer loaded with 2\" brad nails and nail in your trim",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "take your brad nailer loaded with 2\" brad nails and nail in your trim"
         }
-      ]
+      ],
+      "reason": "Searched materials[0]-[6] for /brad|nail/i: none. The 2 in brad nails used to attach the trim are not in materials (only pocket screws materials[6], hooks, D-ring hanger)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[8].body",
-          "quote": " on the next, having 26 hooks in total. You may ask, why 26? Well, the perfectionist in me just wasn't okay with how an odd number looked spaced out, and secondly that 26th hook actually comes in hand",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c10c880083d69d91.webp"
+          "path": "materials[2]",
+          "quote": "OOK 20 Lb. D Ring Hanger"
         }
-      ]
+      ],
+      "reason": "Searched all steps, cut list, summary and description for /hang|hanger|D ring|D-ring|wall/: only the hooks (steps[8]) and the materials line; no step installs the D-ring hanger or gives its position, and none of the six viewed photos shows the back. Hook positions are given (1 in down from the top, 6 in apart, 7 and 6 alternating = 26)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown/see diagram' references found in steps (search stated in the sweep record)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), drill (1-2), sand (3), clamp and screw (4-5), paint (6), stain trim before nailing on (7), hooks last (8). Possible as ordered."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'For this project we have set it at 3/4\"' states the setting; the boards are 1x6 (0.75 in, cutList[0]); pocket hole spacing 'one pocket hole every 12\"' (steps[1])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step 0 sizes equal cutList; 2 x 1x6 boards cut to 4 pieces; 4 rows alternating 7,6,7,6 = 26 hooks as stated in steps[8]; trim, hooks, paint and stain are all in materials. The D-ring hanger is listed but not used (recorded under R10)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[3]",
+      "quote": "Package Of OOK 1-1/4\" Cup Hooks",
+      "what": "steps[8] needs 26 hooks; the package count is not given in the plan, so sufficiency cannot be checked."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "start with your second row, measure 6\" in from the trim and place your first hook ... giving you a total of 6 hooks in all.",
+      "what": "The first row's 7 hooks are 'in the middle distance' of the second row's 6, which would give 5 positions between them; the 7-hook row's end positions are not stated (viewed photos show an alternating zigzag)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "ae6f48294401e5b6.webp",
+      "8eed31fca2d11a55.webp",
+      "d46af3ad7aebee30.webp",
+      "e2e80cdbb703d32a.webp",
+      "c10c880083d69d91.webp",
+      "6c00b3b2b57670e6.webp"
+    ]
+  }
 }

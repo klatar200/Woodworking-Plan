@@ -6,57 +6,105 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "d add some cardboard over the board. Take the stencil back off before spraying the blue paint. Spray the blue paint and let it dry for an hour.\n\n**Tip:** See Extras tab for a link to the star stencil.",
-          "why": "matches \"Extras\""
+          "quote": "**Tip:** See Extras tab for a link to the star stencil."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Wipe clean and add the star stencil on the upper left corner."
         }
-      ]
+      ],
+      "reason": "The star stencil that sets the blue field and the star layout is only in the Extras link; no stencil is in materials and no blue-field or star size is given anywhere in the text (searched all fields for union/field/stars). The viewed photos show the finished field about seven stripes tall in the upper left, undimensioned. The flag body, frame and stripes can be built without it, so Fix."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts are cut in the steps: 13 strips of 36 in and 2 of 18 in (steps[0]), frame pieces (steps[11]); each matches a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows are used: strips (steps[1]-[2]), brackets (steps[4]-[5]), frame 36 in and 19.5 in pieces (steps[11]-[12])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1])"
+      "result": "pass",
+      "reason": "Flag resolved: the cut-list rows are labelled '(1x2 wood)' and '(1x3 wood)' and their sizes (1 x 2, 1 x 3) are the nominal names of materials[0] and [1] (section 9)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
+      "result": "pass",
+      "reason": "Assumption (section 9): 'Boards, 1x2x10' and '1x3x10' are 10 ft = 120 in boards (L <= 16 read as feet). 1x2: 13 x 36 + 2 x 18 = 504 in + 14 cuts x 0.125 = 505.75 in vs 5 x 120 = 600 in (three 36 in per board = 108.25 in; fifth board 36 + 18 + 18). 1x3: 2 x 36 + 2 x 19.5 = 111 in + 3 cuts 0.375 = 111.375 in vs 1 x 120 = 120 in using the cut-list lengths. See gaps for the mitre allowance."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Add nails to the 18” brackets (1 nail in each strip, 13 total).",
-          "why": "18\" nail — no material line lists a 18\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: '18\"' in steps[5] is the bracket length. Fasteners: box 1\" nails (materials[3]) for the brackets, 1 1/4\" Kreg screws (materials[4]) in steps[12], 1/2\" screws with washers (materials[5]) in steps[14]; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Take your 1x3 wood and cut 2 pieces at 36” and 2 at 19.5”. These will be cut at 45 degree angles on each side. Measure from the heel/short part of the angle.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a160dda3c3a3082b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: frame pieces are measured 'from the heel/short part of the angle' (steps[11]) so they equal the 36 x 19.5 in panel; pocket holes 4 top/bottom, 3 each side 'evenly' (steps[3]); brackets one per side clear of the pocket holes (viewed step-5 photo shows them near the ends); cord position is 'desired'; the blue field position is 'upper left corner' with its size shown only in photos (recorded under R1)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown/diagram' references in the steps (sweep search); the Extras tip is recorded under R1."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Strips cut, glued, pocket-holed (0-3); brackets on the back (4-5); face sanded, painted (6-9) and burned (10); frame cut, screwed on through the back pocket holes (11-12); frame burned, cord, polyurethane (13-15). Possible as ordered."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Take your pocket-hole jig and add 4 pocket holes on the top and bottom and 3 on each side. Space them out evenly."
+        }
+      ],
+      "reason": "The pocket holes are in 3/4 in glued 1x2 strips; searched all steps for a jig thickness setting: none stated; the viewed step-3 photo shows the jig with no readable setting. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "13 strips x 1.5 in = 19.5 in matches cutList[3] 19.5 in and the 13-strip count of steps[0]; 36 in strips match the 36 in frame pieces; every part is installed (steps[4]-[5], [12]); materials list screws, nails, cord, paint, tape and polyurethane. Stencil recorded under R1; sandpaper and cardboard are consumables."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "These will be cut at 45 degree angles on each side. Measure from the heel/short part of the angle.",
+      "what": "Frame pieces are measured to the short point (36 and 19.5 in), so each mitred 1x3 (2.5 in wide per section 9) is 2.5 in longer at the long point. Nested mitre cuts need about 36 + 36 + 19.5 + 19.5 + 4 x 2.5 = 121 in plus kerf from one 1x3x10 (120 in under the 10 ft assumption); the R5 formula on cut-list lengths passes (111.4 in), so only recorded here."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Add nails to the 18” brackets (1 nail in each strip, 13 total).",
+      "what": "Two brackets cross 13 strips each, so one nail per strip per bracket is 26, not '13 total'; the count is ambiguous."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "sand first with 80 grit and finish with 220 grit.",
+      "kind": "consumable",
+      "what": "sandpaper, cardboard, and the star stencil (steps[7]) are not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "be9169f62de02f00.webp",
+      "4d49993805fb1f5a.webp",
+      "f65084fc4717fcda.webp",
+      "77cc3e4a71f8704d.webp",
+      "bc0e7feedfe62a1b.webp",
+      "a160dda3c3a3082b.webp",
+      "3e11383b5a17cf3a.webp",
+      "30d58d53bba68514.webp",
+      "5fbde24f54c0fb12.webp",
+      "a2894ba6c0092a4b.webp"
+    ]
+  }
 }

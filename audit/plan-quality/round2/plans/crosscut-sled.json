@@ -6,33 +6,25 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "Take your sled base and cut 3/4\" grooves based on the attached image. Make sure the groves are a little over 3/8\" deep. You can make these cuts with a Router or dado stack on your table saw. These gro",
-          "why": "matches \"the attached\""
+          "path": "steps[19].body",
+          "quote": "In order to test the squareness of the sled you need to conduct the five cut method. Many people have done this method and a a simple google search will help you achieve this."
         }
-      ]
+      ],
+      "reason": "The squaring/verification procedure is not in the plan; the step sends the builder to an outside web search. The sled parts can all be cut and assembled without it, so Fix level. Step 10's 'attached image' was viewed and is a dimensioned groove layout, so it is not an R1 dependency."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Take your front fences and cut them to 2 1/4\" width on the Table saw. Make sure to use the jointed edge. This is the height the Kreg Swing Stops need to function properly.",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[21].body",
-          "quote": "tape to the Trak and dial in the saw, you should have about 13\" of cut capacity to the left of the blade and about 11\" to the right. The extension fence can be attached to either side giving you a lot",
-          "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 2 1/4 in (steps[5]) is the trimmed width of the glued fence from cutList[1] width 3; 13 in (steps[21]) is the cut capacity result, not a part. Sled base (steps[10]-[14]) and 6 fence parts glued to 3 fences (steps[2]) account for every cut part; miter bars, tracks and fixture bar are purchased materials[3]-[5]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows are used: 'Sled base' in steps[10], [14]; 'Fence parts' glued into front and back fences in steps[2]-[9], [15], [18]."
     },
     "R4": {
       "result": "pass",
@@ -43,37 +35,64 @@
       "reason": "sheet layout not judged (area fits: part area 1×24×30 + 6×3×24 = 1152.0 sq in; bought 1×48×48 = 2304 sq in)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[15].body",
-          "quote": "Attach the back fence to the sled with 6 1-1/2\" drywall screws. Make sure to clamp the fence down and pre-drill with a chamfer bit so that the screw sits slightly shy of the sled base so that it doesn",
-          "why": "1-1/2\" screw — no material line lists a 1-1/2\" fastener"
+          "quote": "Attach the back fence to the sled with 6 1-1/2\" drywall screws."
         },
         {
           "path": "steps[20].body",
-          "quote": "the Fixture bar to the second front fence with some #6-1/2\" screws. Slide the extension fence onto the other fence and make sure the traks are touching correctly. Attach the Fixture bar to the front f",
-          "why": "6-1/2\" screw — no material line lists a 6-1/2\" fastener"
+          "quote": "Attach the Fixture bar to the second front fence with some #6-1/2\" screws."
         }
-      ]
+      ],
+      "reason": "Searched materials[0]-[8] for any screw/fastener line: none (miter bars and Top Trak screws are 'provided' by the products). The 1-1/2 in drywall screws and the #6 screws for the fixture bar are not in materials. Steps[18] also says 'Attach one screw' with no size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Key positions are numbers or relational: table saw fence at 11 in for the miter bars (steps[14]); groove 3/8 in from jointed edge (steps[4]); rabbet fence at 5/8 in (steps[7]); Top Trak cut 1 1/2 in from jointed edge (steps[6]); T-track groove layout dimensions are in the viewed step-10 image (8, 7, 6, 15, 6 in); the fences sit at the base ends as shown in the viewed step-18 image."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[21].body",
-          "quote": "e saw, you should have about 13\" of cut capacity to the left of the blade and about 11\" to the right. The extension fence can be attached to either side giving you a lot of versatility with your cuts.",
-          "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[21] 'attached' is about attaching the extension fence, not a drawing reference. Steps[10] 'attached image' has its own image, viewed; steps[2] colours (red/blue fences) match the viewed step-18 image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is possible: fence parts glued, jointed, grooved, rabbeted, tracked, trimmed (steps 2-9) and chamfered (12) before assembly; grooves cut (10) and T-track installed (11) before the miter bars are fixed to the base (14); back fence (15) before front fence is pivoted and squared (18), extension fence last (20)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes in the plan (searched steps and materials for /pocket|kreg jig/i: none). Other joints state method and fastener: glue and clamps (steps[2]), CA glue and provided screws (steps[14]), drywall screws (steps[15])."
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "steps[8] says 'Attach one of the 24\" Kreg Top Trake sections to each of the front fences' (two sections) while materials[1] is 'Kreg Top Trak' qty 1; whether one unit holds two sections needs outside product knowledge. All other counts agree (6 fence parts -> 3 fences; 2 miter bars; fixture bar; stops kit) and the steps reach the finished sled (steps[21])."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix + Human review",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[21].body",
+      "quote": "Apply the tape to the Trak and dial in the saw",
+      "kind": "consumable",
+      "what": "The tape is not in materials (may be part of materials[6] Precision Trak kit; not stated)."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "The piece of track on the right side should be about 24\" to allow for use of hold down clamps.",
+      "what": "Optional T-track: materials list one 2 Ft T-Track plus 3 intersection kits, but the step-10 groove image shows two long grooves and three cross grooves; the plan never states the track lengths to cut, so the track quantity cannot be checked."
+    }
+  ],
+  "humanReview": "Whether the single 'Kreg Top Trak' material line (qty 1) contains the two 24-inch Top Trak sections that steps[8] attaches (one to each front fence); the product contents are not in the plan or section 9.",
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "9b1d9b7d18d13a7d.webp",
+      "a6d7ea40809f5c8e.webp"
+    ]
+  }
 }

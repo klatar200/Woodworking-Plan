@@ -131,66 +131,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "t. Place the four frames on the fabric. Cut fabric 2 1/2'' to 3'' bigger on each side of each frame. Stretch and fold ends over and staple to inside of 1x2 frames. Start on the long side and work your",
-          "why": "cut sentence states 3\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 3 in in steps[5] is the fabric allowance, not a part. Viewed step images dimension every cut-list part (2x2 frames 34 x 11 3/4 with 8 3/4 rails; 1x2 frames 31 x 8 3/4 and 8 3/4 x 8 3/4). The 1x4 support board (steps[7]) is cut from listed materials[2] and sized 31 in in the viewed step-7 image."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Stiles",
-          "why": "no step mentions it (searched steps for stil)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Stiles",
-          "why": "no step mentions it (searched steps for stil)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the two 'Stiles' rows are the long members of the 2x2 frames (steps[0]) and the 1x2 fabric frames (steps[2]); steps name them 'frames'. Rails rows 2x2 x8 (frames + side rails, steps[0]-[1]), 1x2 x8 and x4 (steps[2]-[3]) are all used; counts agree with the viewed frame images."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock for every part (2x2 frames steps[0]; 1x2 fabric frames steps[2]-[3]; 1x4 support steps[7]). 2x2: 4 x 34 + 8 x 8.75 = 136 + 70 = 206 in + 12 kerfs 1.5 in vs 3 x 96 = 288 in (two 34 in stiles per board). 1x2: 4 x 31 + 8 x 7.25 + 4 x 8.75 = 124 + 58 + 35 = 217 in vs 288 in (three 31 in stiles per board = 93 + 2 kerfs <= 96). 1x4: support 31 in vs 36 in."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " step and glue and nail them in from the sides with 2'' finish nails. Either option will work, I ended up doing this on my build because I was out of 2 1/2'' pocket hole screws and in a remote locatio",
-          "why": "2\" nail — no material line lists a 2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the 2'' finish nails in steps[1] are an explicitly optional alternative to the 2 1/2'' pocket screws, not the main method. Fasteners used: 2 1/2'' and 1 1/4'' pocket screws (materials[3],[4]), 3/8 in staples (materials[8])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": " the fabric frames into the light fixture box one at a time. Make sure to push them in from the inside of the box frame. Once installed, staple or screw them to the 2x2 frame from the inside. Note: My",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/92968942f434a301.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: steps[6] the fabric frames sit against the 2x2 frame from the inside (relational), with the 1/4 in note conditional. The support board position is 'flush with the bottom of the 2x2' in the viewed step-7 image with 31 in length; the fixture hole positions depend on the purchased light (steps[7] says so) and cannot be fixed by the plan."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "The three 'as shown' references (steps[2],[3] and the diagram labels) are in steps with their own images, all viewed and dimensioned."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box frames (steps 0-1), fabric frames (2-3), stain box (4), fabric (5), frames into box (6), support board (7), hardware and hang (8). Possible as ordered."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] '1 1/2'' pocket holes' for the 1 1/2 in 2x2 parts; steps[2],[3],[7] '3/4'' pocket holes' for the 3/4 in 1x2 and 1x4 parts."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 2 large + 2 small frames (steps[2],[3]) = 'four frames' (steps[5]); 31 in stiles fit the 31 in opening of the 34 in 2x2 frame, 8 3/4 in rails fit 8 3/4 in side opening (viewed images). Every made part is installed (steps[1],[6],[7]); hanging hardware is covered by materials[5] 'supplies to hang and wire'; staples in materials[8]; steps reach the hung fixture (steps[8])."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Sand and fill any holes that may show. Stain or Paint light fixture box to desired finish.",
+      "kind": "consumable",
+      "what": "wood filler and stain/paint are not in materials; wood glue (steps[0]) is also not listed."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "added screw eyes to my 1x4 support board and attached chains for hanging",
+      "what": "Screw eyes and chain are only the author's reuse; materials[5] covers 'supplies to hang' generically, with no hanging layout or lengths."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "1d61ad4bf3636962.webp",
+      "2b128ac8897cc9b3.webp",
+      "c242c74d3590925c.webp",
+      "d0a5b7e7a761f67b.webp",
+      "f995a235e6d0da40.webp",
+      "92968942f434a301.webp"
+    ]
+  }
 }

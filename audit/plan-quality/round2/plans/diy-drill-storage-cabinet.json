@@ -6,45 +6,16 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[13].body",
-          "quote": "Check out my YouTube video to show more of this build! https://www.youtube.com/watch?v=8tjL8GcqcjI&t=50s",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "Go checkout this out to see more pictures of this project! https://woodshopmike.com/how-to-make-diy-drill-charging-cabinet/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: steps[13] (YouTube) and steps[14] (blog) are 'see more' links; the build is described in the steps and cut list. The phrases 'as detailed in the plans' / 'as located in the plans' are recorded under R10, not as an external dependency."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "needed for this project.\nFor the french cleats, I first cut 3\" wide pieces at 24-3/4\" long. I then set the blade to 45° and ripped them into two equal halves.\nI used a table saw and miter saw for this",
-          "why": "cut sentence states 3\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "oject.\nFor the french cleats, I first cut 3\" wide pieces at 24-3/4\" long. I then set the blade to 45° and ripped them into two equal halves.\nI used a table saw and miter saw for this process, but a ci",
-          "why": "cut sentence states 24-3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[0] cleat 3 in x 24-3/4 in is the cleat stock (conflict with cutList[4] recorded under R14). Every cut-list part is used: Back/Sides (steps[2]), Top/Shelves (steps[3],[4]), Door (steps[5],[8]), cleats (steps[6]); tool-holder blocks (steps[9]) are free-form scrap per the step."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Bottom",
-          "why": "no step mentions it (searched steps for bottom)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: cutList[3] 'Bottom' has no step by that name, but the cut list has 4 horizontal 11 x 27.25 parts (Top/Shelves x3 + Bottom) and the viewed finished-cabinet photo (steps[10]) shows four horizontals: top, two shelves, and the slotted drill holder at the base (steps[4] 'Assemble Top and Drill Holder', steps[11])."
     },
     "R4": {
       "result": "pass",
@@ -55,24 +26,118 @@
       "reason": "sheet layout not judged (area fits: part area 1×27.25×30 + 3×11×27.25 + 2×11.75×30 + 1×11×27.25 + 6×1.75×27.25 + 1×19×28.75 = 3553.9 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I like to glue and nail these in place with 1-1/4\" brads."
+        },
         {
           "path": "steps[7].body",
-          "quote": "There are several options to hang this cabinet, but I opted to simply secure it directly into studs.\nWith my wife's help, we located and secured the cabinet in place with 3\" construction screws.",
-          "why": "3\" screw — no material line lists a 3\" fastener"
+          "quote": "we located and secured the cabinet in place with 3\" construction screws."
         }
-      ]
+      ],
+      "reason": "Searched materials[0]-[5] for any brad, nail or construction screw: only 1-1/4\" pocket hole screws (materials[2]) are listed. The 1-1/4\" brads (also steps[9]) and 3\" construction screws are not in materials."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Next I added the shelves as located in the plans."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Using my concealed hinge jig, I drill for the cabinet hinges in the door."
+        }
+      ],
+      "reason": "No shelf height or spacing is given anywhere (searched steps, cut list, description for shelf/height/spacing); the viewed step-3 and step-10 photos show shelves at relative positions only, with no dimension. Hinge cup and plate positions (steps[5],[12]) are also not given. Cleat positions are explicitly free ('completely up to you'); the door/cabinet outer size is given in steps[10]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Searched steps for as shown/see diagram/drawing/attached: no references that need a drawing; 'the cut sheet' is the cut list."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Simply line up the hinge with the mounting clips and snap them into place!"
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Draw layout lines and transfer the hinge position from the door to inside the cabinet. Then simply run the provided screws into the mounting plate to secure it."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "I measure out the spacing required for my drills and then drill a 1-3/4\" circle at the end of each slot."
+        }
+      ],
+      "reason": "Steps are out of order: the door is snapped onto the mounting plates in steps[8] but the plates are screwed into the cabinet only in steps[12]; the drill holder is attached to the cabinet in steps[4] ('Assemble Top and Drill Holder') but its slots are made in steps[11] (after 'Finished!' steps[10]). A builder can reorder, so Fix not Unpublish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Next I broke out my K5 and drilled pocket holes as detailed in the plans."
+        }
+      ],
+      "reason": "All pocket-holed parts are 3/4 in plywood; searched steps and materials for a jig thickness setting: none. The viewed step-1 image shows the jig in use with no readable setting. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "For the french cleats, I first cut 3\" wide pieces at 24-3/4\" long. I then set the blade to 45° and ripped them into two equal halves."
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "French Cleat, quantity 6, 0.75 x 1.75 x 27.25"
+        }
+      ],
+      "arithmetic": "Step: 3 in wide strip split into two equal halves = 3 / 2 = 1.5 in wide each, 24-3/4 = 24.75 in long. Cut list: 1.75 in wide, 27.25 in long. 1.75 - 1.5 = 0.25 in; 27.25 - 24.75 = 2.5 in. The importer found no fraction loss on this row.",
+      "reason": "The step and cut list give different cleat sizes. Level Fix: the cabinet and door build either way."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Now I'll attach the top with the pocket holes facing up and the drill holder with the pocket holes facing down.",
+      "what": "The 'drill holder' is not a named cut-list row; it is inferred to be the 'Bottom' row (see R3). The door in cutList[5] (19 x 28.75, dimensions sorted by the importer) is shown in the viewed photos as 28.75 wide x 19 tall covering the upper compartments; orientation is not stated in text."
+    },
+    {
+      "path": "materials[5]",
+      "quote": "Edge Banding 26' (optional)",
+      "kind": "consumable",
+      "what": "wood glue (steps[6],[9]) is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "eae01b9cb1855df7.webp",
+      "a51ab15e89ab1a54.webp",
+      "16afe2e557b33bfd.webp",
+      "4fc6d91fce1121b7.webp"
+    ]
+  }
 }

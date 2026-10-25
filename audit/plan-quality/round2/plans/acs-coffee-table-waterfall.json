@@ -31,45 +31,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "miter going away from the cut side. When complete, the mitered top and leg will make a 90 degree joint. ***See attached image for illustration - you'll want to remove the RED area with your bevel cut.",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "& C (see parts list) and assemble the coffee table leg, per the attached drawing.\nFor this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & ",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags settled: steps[4] 'See attached image' and steps[6] 'per the attached drawing' are the step images, both viewed (waterfall leg miter diagram with 17 in dimension and red waste area; labeled A/B/C leg frame drawing). No Extras/PDF/external dependency found searching all fields."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "- not away. I did this on the ACS - using the stops that came with the system, I set them at 33\", adjusted the saw to 45 degrees and made the cut. You can also use a circular saw with a straight edge.",
-          "why": "cut sentence states 33\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "our alignment method you'll need to cut 2ea pieces of 2x4 at 8\" long - Then cut them in half with your miter saw at 45\". Now you'll have 4ea beveled blocks at approximately 4\" (long point). You will n",
-          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 33 in is the panel cut point (steps[3]) and 50-33=17 matches steps[4] '17\" of the panel'; the 8 in 2x4 pieces in steps[5] are temporary clamping blocks, not parts (see gaps). Parts A, B, C are in steps[6]; the 4 x 50 in boards in steps[0]."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Part C",
-          "why": "no step mentions it (searched steps for its words and label C)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[6] 'Take parts A, B & C (see parts list) and assemble the coffee table leg'; the viewed image labels A, B and C."
     },
     "R4": {
       "result": "pass",
@@ -80,25 +51,65 @@
       "reason": "R5 precondition not met: 2 stock types (1x6, 2x3); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "drawing.\nFor this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & C - so that when fully assembled and installed they will not be seen. You",
-          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[6] '2-1/2\" Kreg pocket hole screws' matches materials[2] 'Kreg SML-C150-500 Pocket Hole Screws 2-1/2-Inch'; steps[9] '2ea 2\" wood screws' matches materials[4]. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Leg location is given: steps[9] 'I used a 3\" offset from the edge of the table and centered it on the width'. Miter/taper geometry is fixed by the cut list rows and the viewed drawings; pocket-hole and biscuit positions are not dimensioned but are not positions that change the build (relational/hidden)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Three references are backed by images that were viewed: steps[4] image shows the 17 in waterfall leg with the red waste triangle; steps[6] image shows the A/B/C leg frame."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: boards cut, glued to a panel (0-2), top cut off at 33 in and leg piece re-mitered (3-4), mitered joint glued (5), leg frame built (6), finish, then the leg is attached to the finished top (9). Steps[7] explicitly defers joining the two pieces until after finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "For this step you will use 2-1/2\" Kreg pocket hole screws. Place pocket holes facing up, and facing down on parts B & C"
+        }
+      ],
+      "reason": "Pocket holes drilled in parts B and C (1.5 in thick per cutList[2], [3]); searched all steps and materials for a jig/thickness setting: none stated. Step 6 image viewed shows a leg drawing, no setting. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Panel 4 boards x 5.5 in = 22 in matches steps[2] '22\" x 50\"' (4 x 5 = 20 matches the ripped case); 33 + 17 = 50 matches cutList[0] length 50. Leg parts A x2, B, C are all assembled in steps[6] and the leg is attached in steps[9]; the top/waterfall piece is assembled in steps[5]. Hardware (2-1/2 in and 2 in screws) in materials. Consumables noted in gaps."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Ship (unverified)",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "you'll need to cut 2ea pieces of 2x4 at 8\" long - Then cut them in half with your miter saw at 45\".",
+      "what": "Temporary clamping blocks cut from 2x4, but no 2x4 is in materials (only materials[1] 2x3). Not a part of the table."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "For this step I recommend biscuits (#0). This will help with alignment and strength. Short dowels will work as well.",
+      "kind": "consumable",
+      "what": "biscuits/dowels and 18ga pins for holding the blocks are not in materials"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "I chose to stain my coffee table with espresso stain and applied a satin poly on top of it.",
+      "kind": "consumable",
+      "what": "stain/poly not in materials; wood filler (steps[5]) and pocket plugs (steps[6]) also absent"
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "2ec253cd314af7ae.webp",
+      "e3c1c38c5008834c.webp"
+    ]
+  }
 }

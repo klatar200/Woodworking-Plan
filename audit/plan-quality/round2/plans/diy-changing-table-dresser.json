@@ -283,28 +283,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": " the top and two large on the bottom. For more information and details on making and installing drawers and slides, see this post: https://www.woodshopdiaries.com/theres-no-wrong-way-to-make-a-drawer/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[7] link is 'for more information' on drawers; the plan itself covers drawers (steps[8]-[10]) and slide positions are shown in the viewed step-7 image. Searched all fields for Extras/PDF/template: only steps[15] 'video in the extras tab' for the OPTIONAL changing tray (see gaps); the dresser builds without it."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Cut your top from your remaining plywood to 24” wide and 53” long. Apply edge banding if desired. Then, center your top onto the dresser side to side and bring the back side flush. Screw top in place ",
-          "why": "cut sentence states 53\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 53 in top (steps[11]) is cut by the step itself from 'your remaining plywood' (materials[0]), 24 x 53 vs the 23 in carcase depth + 1 in and 51 in width + 2 in. The 1x4 brace 21 1/2 in (steps[12]) is also cut by the step from a listed 1x4. Every other part in steps[0]-[13] has a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Searched steps for each cutList part: legs/frames (steps[0],[2],[4]), drawer frame, dividers, runners (steps[6]), drawer boxes and bottoms (steps[8]), fronts (steps[10]), backing (steps[13]); all used."
     },
     "R4": {
       "result": "pass",
@@ -315,43 +303,70 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x4, 1x2, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "er, I measured down from the top 1 ½” and screwed another screw about halfway in. Then I bent my scrap wood piece (or you could use ¼” plywood here, too) around the screws and traced. Using a jig saw,",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "op 1 ½” and screwed another screw about halfway in. Then I bent my scrap wood piece (or you could use ¼” plywood here, too) around the screws and traced. Using a jig saw, I cut along the marked curve.",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
-        },
-        {
-          "path": "steps[13].body",
-          "quote": "Finally, it’s ready to button up and finish. Cut a piece of ¼” plywood backing about 50” x 26” and staple in place on the back side.",
-          "why": "26\" staple — no material line lists a 26\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 1 1/2 in and 1/4 in in steps[1] are jig layout measurements, not fasteners; 26 in in steps[13] is the backing size. Fasteners used: 1 1/4 pocket screws (materials[5]), 1 1/4 wood screws ([6]), 2 1/2 in ([7]) in steps[6], 2 in ([8]) in steps[11]. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "onto the dresser side to side and bring the back side flush. Screw top in place from the back side like shown. If I had planned this through better, I would have drilled pocket holes in the sides prio",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d33f68112c53bf3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Positions given: bottom frame piece 'top of it is 23 ¾” from the bottom of the top frame piece' (steps[2],[5]); drawer frame '6” from the bottom of the top frame piece' (steps[6]); curve 1 1/2 in down at centre (steps[1]); top 24 x 53 centred, back flush (steps[11]); brace centred (steps[12]). Slide heights and pull positions have no numbers but are shown in the viewed step-7 and step-14 images (pulls: 2 small + 2 per large drawer = 6, matches materials[10])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both 'like shown' references are in steps with their own images, viewed for steps[3], [6], [7]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames and panels (steps 2-3), then front/back frames (5), drawer framing (6), slides (7), drawers built and hung (8-9), fronts (10), top (11) screwed from the back and toenailed, bottom brace (12), backing (13). Nothing is fastened where a later step cannot reach."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'Drill ¾” pocket holes into each end of the top and bottom frame pieces' states the 3/4 in setting; all pocket-holed parts are 3/4 in thick (cutList rows 1-13, 0.75), and later steps repeat '¾” pocket holes'."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Cut a piece of ¼” plywood backing about 50” x 26” and staple in place on the back side."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "you can glue and staple them onto the bottom instead"
+        }
+      ],
+      "reason": "Searched materials[0]-[10] for /staple|brad|bracket/i: none. Staples are used for the backing (and the optional drawer bottoms) but are not in materials; steps[15] also uses brad nails and small L brackets, and 1x3 boards, none listed (optional tray). Level Fix: the dresser is otherwise complete."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[15].body",
+      "quote": "attach using small L brackets like shown in the video in the extras tab of this plan",
+      "what": "Optional changing tray: its size depends on the reader's pillow and its attachment is shown only in a video we do not have; 1x3 boards, brad nails and L brackets are not in materials."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Once you have them cut, attach edge banding (if desired)",
+      "kind": "consumable",
+      "what": "edge banding (optional) is not in materials; wood glue (steps[11]) is also not listed."
+    },
+    {
+      "path": "materials[1]",
+      "quote": "Board, 1x4 96\" board (quantity 2)",
+      "what": "R5 lumber check from the steps' named stock: 1x4 parts = 2x20 + 2x48 + 20 + 21.5 = 177.5 in vs 192 in bought; 1x2 parts = 40 + 96 + 96 + 12 + 21.5 = 265.5 in vs 288 in; 2x2 legs 4x33 = 132 in vs 192 in. All fit; two 48+48 pairs need 96 in exactly, short by 1/8 in of kerf only. Sheets not layout-judged."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "21ace7fb8c4188c9.webp",
+      "eab7e8d0ef7126f8.webp",
+      "ca4abf1d7eb19a48.webp",
+      "0d1ad703f219a06f.webp"
+    ]
+  }
 }

@@ -175,28 +175,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e boards from step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: steps[2] 'I have attached one site with good information' is an optional tip (no link is present and the glue-up is fully described). 'plans available on buildsomething.com' in the description refers to a different piece. No Extras/PDF dependency found."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "he bit in my Kreg Router Table and set the cutting height to 3/8\". Cut the legs on the front stiles using either a band saw or a jig saw. Use Titebond I wood glue, Kreg fine 1 1/4\" pocket screws and 1",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 3/8 in in steps[9] is a router-bit cutting height. Every part cut in steps[1]-[5],[13] is a cut-list row; the leg openings (steps[5]) and stile legs (steps[9]) are cut from listed parts and dimensioned in the viewed step-5 and step-9 images."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Searched steps for each cutList part: tops (steps[2],[16]), stiles/rails (steps[9],[10]), sides/top frame/bottom/backs (steps[3],[4],[8]), drawer box sides/fronts/backs/bottoms (steps[13],[14]), drawer fronts (steps[15]), guides (steps[11],[12])."
     },
     "R4": {
       "result": "unknown",
@@ -207,33 +195,75 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": " overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in place but allo",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: '1 1/2\"' in steps[16] is the front overhang, not a screw. Fasteners used: 1 1/4 in coarse/fine pocket screws and 1 1/4 in brad nails, both in materials[5] and [8]; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": "oximately 1\" overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in pl",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3810d7c539cd528.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag settled: steps[16] gives 'approximately 1\" overhang on both sides and 1 1/2\" at the front'. Leg opening layout (1 3/4, 1 1/4, 3, 2 1/2, 2 in) is in the viewed step-5/9 images; guide height '6\" below the bottom of the top rail ... opening of 5 3/4\"' (steps[12]); guide pocket holes in the viewed step-11 diagram; knob centred on the drawer front in the viewed step-17 photo."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "The four 'diagram/picture/see picture' references each sit in a step with its own image; the diagram of steps[11] (guide with 2 1/8, 14 3/4, 1/2 x 3/8 rabbet, 3/4) and the washer picture of steps[16] were viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (steps 1-6), cases assembled with backs (8), stiles and rails (9-10), guides screwed into the finished case (11-12), drawers built (13-14), fronts (15), top screwed from below through 1/4 in holes (16), finish and pulls last (17). Nothing is fastened where a later step cannot reach."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[6]/[7] 'Kreg Pocket Hole Jig set to 3/4\"' (steps[7] and again steps[11]); all pocket-holed parts are 3/4 in (cutList rows 4-6, 11 and the frame)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Repeat this process three more times until all drawer boxes are complete."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Cut the four drawer sides and four drawer fronts/backs from 1/2\" poplar"
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "The top is held in place by four Kreg 1 1/4\" fine pocket screws that have flat washers added."
+        }
+      ],
+      "arithmetic": "One drawer box = 2 sides + front + back + bottom. Step 13 and cutList[7],[8],[10] give 4 sides, 4 fronts/backs, 2 bottoms = 2 boxes (one per night stand). Step 14 says one box then 'three more times' = 4 boxes. Searched materials[0]-[12] for /washer/i: none.",
+      "reason": "(a) The step says 4 drawer boxes while the cut list, step 13 and the materials (2 knobs, 2 drawer fronts) are for 2. (c) Flat washers used in steps[16] are not in materials. Level Fix."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "I sand the rabbets and apply paste wax to help the drawers slide easily.",
+      "kind": "consumable",
+      "what": "paste wax is not in materials"
+    },
+    {
+      "path": "materials[2]",
+      "quote": "Board, Board Feet Maple (quantity 11)",
+      "what": "R4/R5 stay unknown: maple (11), poplar (6) are rough lumber in board feet with no widths or lengths. The oak part is checkable: 4 guides x 14.75 in from one 36 in 1x6 ripped to two 2 1/8 in lanes = 2 x 29.5 in of 72 in lane length, which fits."
+    }
+  ],
+  "reader": {
+    "batch": "r2-01",
+    "imagesViewed": [
+      "6b772efa728791cb.webp",
+      "a184e34457e68330.webp",
+      "f812f5cbc032b642.webp",
+      "53f833d933bc151a.webp",
+      "d3810d7c539cd528.webp",
+      "e05cdef142398851.webp",
+      "d6755373e97e2597.webp",
+      "ceb0316f67f5abb8.webp",
+      "798900cfcfca0da0.webp"
+    ]
+  }
 }
