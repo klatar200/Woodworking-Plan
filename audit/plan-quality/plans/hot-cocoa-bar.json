@@ -22,8 +22,19 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x11.5, 1x1); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Legs (cutList[0]-[5], 1 x 1) match only materials[1] 1\" x 1\"; the tops (cutList[6]-[8], 4.75/4.75/6.25 wide) can come only from materials[0], the one stock wider than 1\". Kreg source quantities are 1 and 2 (no import default). Round 2's 47 1/4\" > 43\" layout did not rip the board into two strips.",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1\" x 11-1/2\" 43\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1\" x 1\" 48\""
+        }
+      ],
+      "arithmetic": "1x1: 4x2.25 + 2x2.75 + 4x5 + 4x2.75 + 4x7 + 4x4.25 = 9 + 5.5 + 20 + 11 + 28 + 17 = 90.5; + 22 pieces x 1/8 = 2.75 -> 93.25 <= 2 x 48 = 96. Tops: rip the 11.5\" board into 6.25 + 1/8 + 4.75 = 11.125 <= 11.5; 6.25\" strip holds Large 27 <= 43; 4.75\" strip holds Small 20 + 1/8 + Medium 22 = 42.125 <= 43."
     },
     "R6": {
       "result": "pass",
@@ -52,7 +63,7 @@
       "reason": "every made part is installed, glue/sandpaper/stain/polyurethane are all in materials, steps reach the stained and sealed pieces"
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -65,5 +76,14 @@
       "plans/c61eb6b111a061b9.webp",
       "plans/57a1400c0f0eb2a9.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5"
+    ],
+    "note": "R5: round 2 shortfall missed ripping the 11 1/2\" board into 6 1/4\" and 4 3/4\" strips; both board types cover the parts."
   }
 }

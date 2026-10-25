@@ -47,9 +47,9 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet size not written in material name",
-      "readerNote": "materials[0] name does state 3/4\" x 48\" x 96\". Sheet rule gives unknown unless area exceeds: 84x10 + 9x14x10 + 30x1.5x10 + 21x2.5x10 = 840+1260+450+525 = 3075 sq in vs 48x96 = 4608 (no area fail); width of strips 3x10 + 4x1.5 + 3x2.5 = 43.5 + kerf <= 48 (my layout, not scored)."
+      "result": "pass",
+      "reason": "Single stock, materials[0] \"Plywood, 3/4\" x 48\" x 96\"\" (size stated).",
+      "arithmetic": "Full-length strips: Back 10 (84 <= 96); Shelves 2 strips x 10 (6 per strip: 6 x 14 + 6/8 = 84.75 <= 96 -> 12 >= 9); Narrow Cleats 4 strips x 1.5 (9 per strip: 9 x 10.125 = 91.1 -> 36 >= 30); Wide Cleats 3 strips x 2.5 (27 >= 21). Widths 10 + 20 + 6 + 7.5 = 43.5 + 10 kerfs x 1/8 = 44.75 <= 48. Area 3075 <= 4608."
     },
     "R6": {
       "result": "pass",
@@ -60,8 +60,17 @@
       "reason": "viewed diagrams (alpha composited on white) give shelf pilot holes 2 35/64\" and 2 1/2\" from edges, cleat spacing 1 1/2\" / 2 3/8\" / 1/8\"; mounting 'near the top, bottom, and middle' and stud location are field-fixed"
     },
     "R11": {
-      "result": "pass",
-      "reason": "sweep pass stands; cut diagram and cleat layout images viewed"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "rip the Back, Shelves, and the two sizes of Cleats to width as shown in the cut diagram."
+        }
+      ],
+      "reason": "All 9 images viewed (a5da71759aa91de5, e336787b1e41eaf0, 5b326c616c8522dd, 3fdda363b9ef1367, 8308b9fb50af6b58, f33f15e73e6edc5d, 9b1d4688cf78d63e, 45b6f9127d11e5be, 6a7c1d92389015b3): four photos, an 84\" elevation, a shelf drawing, and shelf-cleat, cleat-stack and section drawings; none is a cut diagram. Widths/lengths are in the cut list, so the build can proceed -> Fix, not Unpublish."
     },
     "R8": {
       "result": "pass",
@@ -76,7 +85,7 @@
       "reason": "counts agree: Narrow Cleat 30 = 9 shelf cleats + 21 back cleats = Wide Cleat 21 + 9; #8 x 2\" 45 = 2 x 21 + 3 mounting; #8 x 1 1/2\" 18 = 2 x 9; viewed diagram shows Shelf 14 x 10 = corrected row; all parts installed; steps reach mounted rack"
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -105,5 +114,15 @@
       "45b6f9127d11e5be.webp",
       "6a7c1d92389015b3.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5",
+      "R11"
+    ],
+    "note": "R5 pass (explicit strip layout fits the stated sheet). R11 upheld at certain: all 9 images viewed, none is the cut diagram steps[0] cites; sizes are in the cut list so Fix."
   }
 }

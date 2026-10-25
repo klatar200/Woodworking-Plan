@@ -652,9 +652,14 @@
       "reason": "Every part a step cuts or assembles has a cut row (legs, rails, support posts, axle block/leg/supports, 8 braces, end/shelf/side slats, top ends/sides, 4 slat supports, 2 top track supports, top slats). Axle: steps[9] \"Cut an axle 19\\\" long from threaded rod\" (materials[7] \"1/2\\\" x 24\\\" threaded rod\"). Tracks: steps[11]/[19] cut 51\\\" pieces of aluminum (materials[5] \"1/16\\\" x 3/4\\\" x 72\\\" aluminum angle\" x4). Name mismatch for the wide long side slat recorded in gaps."
     },
     "R3": {
-      "result": "unknown",
-      "sweepResult": "to-read",
-      "reason": "cutList[16] \"Narrow Lower Side Slat\" (qty 4) and cutList[17] \"Wide Lower Side Slat\" (qty 2) are named in no step (search steps for /lower/i: none). steps[13] \"Add Side Slats\" lists only \"Long Side Slats, Medium Side Slats, and Short Side Slats\". Whether the lower slats are installed in steps[13] needs its image, which the sweep did not flag (not opened). All other rows are used."
+      "result": "pass",
+      "reason": "Viewed steps[13].image (d37ad904a79c80e4) labels \"Lower Side Slats\" among the slats steps[13] attaches, so cutList[16]/[17] are used; every other row is named in a step. cutList[9] is the wide Long Side Slat (only 3 1/2\" x 52 1/2\" slat row), used in steps[13].",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Then you can attach them to the frame using glue and brad nails."
+        }
+      ]
     },
     "R4": {
       "result": "pass",
@@ -704,21 +709,8 @@
       "note": "29 reference(s), each in a step with its own image"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[13].body",
-          "quote": "Cut Narrow and Wide versions of the Long Side Slats, Medium Side Slats, and Short Side Slats from 1x2 and 1x4 cedar material"
-        },
-        {
-          "path": "cutList[9].part",
-          "quote": "Wide Long Top Slat"
-        }
-      ],
-      "reason": "(a) steps[13] cuts 'Wide versions of the Long Side Slats' but no cut row is named so; searched cutList.part for /long side/i: only cutList[8] 'Narrow Long Side Slat'. cutList[9] 'Wide Long Top Slat' (52 1/2\", qty 7) has the long-side-slat length, while the top slats are cutList[24]/[25] (51 1/2\"), so the builder must match the row by length (likely a mislabel). (b) every sub-assembly is installed (frame steps[0]-[8], axle steps[9], tracks steps[12]/[19], top slid on steps[21]). (d) steps reach the finished cart with top on (steps[21]). Glue (steps[10],[13],[18],[20]) and wax (steps[21]) moved to gaps as consumables (2026-10-19 ruling)."
+      "result": "pass",
+      "reason": "(a) no count or size a step gives contradicts a row: the steps[13] \"Wide versions of the Long Side Slats\" are cutList[9] \"Wide Long Top Slat\" (0.75 x 3.5 x 52.5), a row-name slip kept as a gap, not a count/size mismatch; tracks 51\" (steps[11],[19]) = cutList[23] length. (b) every sub-assembly installed, top slid on in steps[21]. (c) wheels, rod, angle, pulls listed; glue/wax consumables. (d) reaches the finished cart."
     }
   },
   "gaps": [
@@ -735,7 +727,7 @@
       "what": "Wax used in steps[21]; searched materials[].name for /wax/i: no hit."
     }
   ],
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -759,5 +751,15 @@
   "notes": "Only open question is whether the Lower Side Slats are installed in steps[13] (R3 unknown); measurements check out on Kreg's dimensions.",
   "previousVerdict": "Ship (unverified)",
   "rescoreNote": "2026-10-19 consumable cleanup: confidence certain->likely. 'certain' rested on the glue/wax part of (c), now in gaps; the remaining (a) mislabel finding was recorded by the reader as likely.",
-  "consumableCleanup": "2026-10-19"
+  "consumableCleanup": "2026-10-19",
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R3",
+      "R14"
+    ],
+    "note": "R3: viewed step[13] image labels the Lower Side Slats. R14: \"Wide Long Top Slat\" vs steps[13] \"Long Side Slats\" is a row-name slip (gap), not a count/size mismatch."
+  }
 }

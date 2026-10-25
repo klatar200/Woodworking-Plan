@@ -155,8 +155,9 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock for every part (plywood: steps[0],[1],[3]; 1x2: steps[5]; 2x2: steps[6],[7]).",
+      "arithmetic": "Plywood 48 x 96: Back 24 + 1/8 + Seat 23.25 = 47.375 <= 48 across, 46 along; remaining 96 - 46.125 = 49.875 x 48 holds two 15 x 29 Side Panels (15 + 1/8 + 15 <= 48, 29 <= 49.875). 1x2 72\": 2 x 29 + 1/8 = 58.125 <= 72. 2x2 5 x 72: 4x12 + 4x21 + 4x46 = 316 + 12 x 1/8 = 317.5 <= 360; per board 46 + 1/8 + 21 = 67.125 <= 72 (4 boards), 4 x 12 + 4 x 1/8 = 48.5 <= 72 (5th)."
     },
     "R6": {
       "result": "pass",
@@ -182,11 +183,33 @@
       "reason": "Steps 1 and 3: 'jig set up for 3/4\" material'; steps 6 and 7: 'set for 1 1/2\" (thick) material'."
     },
     "R14": {
-      "result": "pass",
-      "reason": "Counts 2/1/1/2/4/4/4 match cutList and images. 2x2: 4x12 + 4x21 + 4x46 = 316 + 12 kerf x 1/8 = 317.5 <= 5 x 72 = 360 (4 boards 46 + 21; 5th board 4 x 12). Sheet: 23.25 + 24 + 1/8 = 47.4 <= 48 across, 46 along."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6].part",
+          "quote": "Front/Back Rails"
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Side Rails"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Then join these assemblies by attaching the Front and Back Rails using 2 1/2\" exterior pocket hole screws."
+        },
+        {
+          "path": "steps[8].image",
+          "quote": "viewed 1759d5965db5bad4: base labelled 47 1/2\" long, 24\" deep, 12\" high"
+        }
+      ],
+      "arithmetic": "Kreg-corrected rows: Legs 1.5 x 1.5, Side Rails 21, Front/Back Rails 46. Depth: 1.5 + 21 + 1.5 = 24 = image 24\". Length: rails join the two leg/side-rail assemblies, 1.5 + 46 + 1.5 = 49 vs image 47.5 (rails would need 44.5); rails outside the legs would be 47.5; 47.5 - 46 = 1.5 is one leg, so no symmetric layout fits. Seat 46 + 2 x 0.75 Side Panels = 47.5 matches the image.",
+      "reason": "(a) the cut-list rail length disagrees with the base size the assembly step dimensions; the same method reproduces the 24\" depth, so certain."
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -215,5 +238,15 @@
       "c0e76c1581e667df.webp",
       "1759d5965db5bad4.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5",
+      "R14"
+    ],
+    "note": "R5 pass (steps name stock; explicit sheet layout fits). R14 upheld at certain: 46\" front/back rails + two 1 1/2\" legs = 49\" vs the 47 1/2\" base in the viewed step[8] image, while 21\" side rails reproduce its 24\"."
   }
 }

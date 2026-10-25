@@ -139,29 +139,21 @@
       "reason": "all 10 rows used in steps 0-9"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[9] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "cutList[9] Hanging Cleat 0.5 x 1.5 x 36 comes from materials[1] \"Board, 1/2 x 2 36\"\" (1/2 thick, 1.5 <= 2); 3/4\" parts are 1x2 (0.75 x 1.5) or plywood parts within 48 x 96."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock (1x2 trim steps[1]; plywood steps[0],[3],[4],[5],[9]); the cleat is the only 1/2\" part and materials[1] the only 1/2\" stock.",
+      "arithmetic": "1x2 2 x 96: 48 + 1/8 + 47.25 = 95.375 <= 96, + 47.25 on board 2. Cleat 36 <= 36. Plywood 48 x 96 (Kreg-corrected): Back 46.5 x 46.5 + 1/8 = 46.625 along; four 12\" strips across the 48\" width (4 x 12.125 = 48.5): Case Top, Case Bottom (12 x 48 each), strip of Sides 2 x 10.5 + Divider 10.5 = 31.5 + 2/8, strip of Doors 2 x 14.9375 + Shelf 17.25 = 47.125 + 2/8 = 47.375 <= 48. 46.625 + 48.5 = 95.125 <= 96."
     },
     "R6": {
       "result": "pass",
       "reason": "steps use 1 1/4\" fine-thread (step 2; materials[10]) and coarse-thread (steps 6-8; materials[3]) pocket screws and #8 x 1\" flat-head (step 2; materials[5]); no conflicting sizes"
     },
     "R10": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[9].body",
-          "quote": "Finally, mount the doors using full-overlay cabinet door hinges."
-        }
-      ],
-      "reason": "Hinge placement on the doors and case (distance from top/bottom edges, cup position) is not given: searched steps[9], materials[7],[9] for any distance - none; viewed step-9 image (ef7fc92e2f2591b3) shows doors but no hinge positions or dimensions. All other positions are dimensioned in viewed diagrams (cord hole 23 1/4 x 24, cleat 6 and 5 1/4, shelf 5 1/4, divider 17 1/4)."
+      "result": "pass",
+      "reason": "Hinges are used only in steps[9] \"Add Doors if Desired\", an optional step, so their positions are not needed to complete the build. Both rounds found every other position dimensioned in viewed drawings (cord hole, cleat, shelf; divider fixed by shelf/door sizes)."
     },
     "R11": {
       "result": "pass",
@@ -180,7 +172,7 @@
       "reason": "viewed diagrams match corrected rows (Back 46 1/2, Shelf 17 1/4 x 12); trim wraps panel 46.5+0.75+0.75 = 48 = Case Top/Bottom 48; two Doors each 14.9375 = 28.5/2 + 0.6875 (28.5 = 48 - 3x0.75 - 17.25, from viewed images; derived); 4 hinges for 2 doors; edging, hinge jig, hanger in materials; steps reach mounted cabinet"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -206,5 +198,16 @@
       "963d0a139520dca5.webp",
       "ef7fc92e2f2591b3.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R4",
+      "R5",
+      "R10"
+    ],
+    "note": "R4/R5 pass (cleat from the 1/2 x 2 board; explicit sheet layout fits); R10 pass: hinges are only in the optional doors step."
   }
 }

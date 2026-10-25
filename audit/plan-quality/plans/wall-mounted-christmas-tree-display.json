@@ -131,9 +131,22 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)",
-      "readerNote": "Single stock type (materials[0] '3/4\" x 3 1/2\" x 8'' = 96\"). Corrected part lengths: 20+16+12+8.5 (Bases) + 6x11.75 (Sides) + 8 + 7 = 142\" before kerf vs 1 x 96\" bought (materials[0].quantity 1); step 0 'Cut down your board into 2\" wide' leaves 1.5\" waste so one 3 1/2\" board yields one 2\" strip. Quantity 1 may be an import default, so not scored as fail (see gaps)."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board of choice, 3/4\" x 3 1/2\" x 8' 8'"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut down your board into 2\" wide, or cut down a strip of plywood."
+        }
+      ],
+      "arithmetic": "One stock type. Kreg-corrected lengths: 20 + 16 + 12 + 8.5 + 6 x 11.75 + 8 + 7 = 56.5 + 70.5 + 15 = 142; + 12 pieces x 1/8 = 1.5 -> 143.5. Bought 1 x 8' = 96. A 3 1/2\" board yields one 2\" strip (2 + 1/8 + 2 = 4.125 > 3.5). Short 46\" before kerf. Kreg source wood_products quantity is \"1\" (kreg-plans.json at efb0c79), so not an import default.",
+      "reason": "Materials do not cover the cut list; the quantity-1 caveat that made round 1 unknown is settled by the source."
     },
     "R6": {
       "result": "pass",
@@ -165,11 +178,11 @@
       "reason": "All pocket-hole parts are 0.75 thick (cutList corrected); searched all step text, materials and description for a jig thickness setting - none; viewed images (steps 2,4,7) show none; other images not opened. Recorded only, not counted."
     },
     "R14": {
-      "result": "pass",
-      "reason": "all four bases, six sides and both top pieces installed per steps 1-4 and viewed images; step 0 pocket holes 24+4+2=30 = screws 30 = plugs 30; steps reach hung tree (see gaps for brackets and step 4 wording)"
+      "result": "unknown",
+      "reason": "(a) counts agree (4 Bases, 6 Sides = 2 x 3 layers, Top Left/Right). (b)/(d): steps[4] \"Connect Top\" says \"Base 1\" where Base 4 is meant, but its own viewed image (0adfdfd7c086b1ae) shows the step-3 top unit joined above layer 3, so the top is installed (wording slip, in gaps). (c) steps[7] uses \"wall hangers\" on the Sides and \"brackets\" on the wall; materials list only \"Picture hanging hooks\" (2) - whether that one item covers both cannot be settled."
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -200,5 +213,15 @@
       "0adfdfd7c086b1ae.webp",
       "01ab19189b09321c.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5",
+      "R14"
+    ],
+    "note": "R5 upheld at certain (Kreg source quantity is 1, not an import default: 143.5\" of 2\" strip from one 96\" board). R14 unknown: \"Base 1\" slip resolved by the step image, but hangers/brackets vs one hook item unclear."
   }
 }

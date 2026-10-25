@@ -263,8 +263,9 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x2, 1x4, 1x2, 1x6, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each Kreg-corrected part matches exactly one material: 1.5x1.5 -> 2x2; 0.75x3.5 -> 1x4; 0.75x1.5 -> 1x2; 0.75x5.5 -> 1x6; Top -> 3/4\" quarter sheet.",
+      "arithmetic": "2x2 4 x 96 = 384: 4x17 + 2x19.5 + 2x16.5 + 4x45 = 68 + 39 + 33 + 180 = 320 + 12 x 1/8 = 321.5 <= 384 (boards: 45+45, 45+45, 4x17+19.5, 19.5+16.5+16.5). 1x4 5 x 96 = 480: 6x16.5 + 6x45 = 369 + 12 x 1/8 = 370.5 (3 boards of 2x45, 2 boards of 3x16.5). 1x2 72: 4 x 16.5 = 66 + 4 x 1/8 = 66.5 <= 72. 1x6 3 x 48: one 45 each. Top 19.25 x 44.5 <= 24 x 48."
     },
     "R6": {
       "result": "pass",
@@ -278,10 +279,14 @@
       "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "Attach the finished top to the bench using the hinges. Add a lid support if desired."
+          "quote": "Attach the finished top to the bench using the hinges."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "3\" hinges"
         }
       ],
-      "reason": "Two 3\" hinges (materials[7]) must be placed on the lid and a back rail, but no position (distance from ends, which board) is given in text; searched steps[8..10] and descriptions for 'hinge' - only this mention. Viewed final image c9c67de4390160a7 does not show hinge positions."
+      "reason": "Where the two hinges go (which board, distance from the ends) is never given; R10 names hinge positions explicitly. Search of all fields for /hinge/i: only materials[7] and steps[10]. Viewed steps[10].image (df9807e3701b38a0) is a blog logo; viewed finished photo (c9c67de4390160a7) shows the front only. Not every image opened, so likely."
     },
     "R11": {
       "result": "pass",
@@ -322,5 +327,15 @@
       "c9c67de4390160a7.webp",
       "df9807e3701b38a0.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R10"
+    ],
+    "note": "R5 pass (every part matches exactly one material, totals fit). R10 stays fail/Fix/likely: no hinge position anywhere; step[10] image is a logo."
   }
 }

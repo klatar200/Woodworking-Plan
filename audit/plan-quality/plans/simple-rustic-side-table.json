@@ -143,11 +143,29 @@
       "reason": "steps[1] and [2]: jig set for \"1 1/2\\\" thick material\"; all pocket-holed parts are 2x stock (1.5\")."
     },
     "R14": {
-      "result": "pass",
-      "reason": "(a) step-0 tip \"11\\\" wide together\" = 2 x 5.5; diagram top 21 x 11 plus edges 17 matches cutList; arched end length 11 matches leg spacing. (b) all parts installed. (c) wood glue, stain in materials. (d) reaches finished table."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1].part",
+          "quote": "Arched End, 2x6"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Draw a line across the center of the arched end boards."
+        },
+        {
+          "path": "steps[0].image",
+          "quote": "viewed 4777e89be346f353: arched end 11\" long, 2 3/4\" + 2 3/4\", labelled 5 1/2\""
+        }
+      ],
+      "arithmetic": "Kreg-corrected cutList[1] = 1.5 x 5.2 x 11 (source \"1 1/2\\\" x 5 1/5\\\" x 11\\\"\", read correctly by the importer). Step[0] diagram: 2.75 + 2.75 = 5.5, labelled 5 1/2\". 5.5 - 5.2 = 0.3. Top Center boards beside it are 5.5 (cutList[2]).",
+      "reason": "(a) the width the step's diagram gives for the Arched End differs from its cut-list row; Kreg's own typo, cause plan."
     }
   },
-  "verdict": "Ship",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -172,5 +190,14 @@
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2b78de83d72703e3.webp",
       "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b8268e43e29a0dc1.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship",
+    "round2": "Fix",
+    "decided": [
+      "R14"
+    ],
+    "note": "R14 upheld at certain: Kreg cut list \"5 1/5\" arched-end width vs the viewed step[0] diagram 5 1/2\" (2 3/4 + 2 3/4)."
   }
 }

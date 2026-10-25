@@ -155,20 +155,28 @@
     "R14": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
       "evidence": [
         {
-          "path": "cutList[4]",
-          "quote": "Top 0.375x5x5 (Kreg source 3/8\" x 5 1/2\" x 5 5/8)"
+          "path": "steps[4].body",
+          "quote": "Cut the top per dimensions indicated"
         },
         {
-          "path": "steps[6].body",
-          "quote": "Join the two top pieces by gluing and clamping"
+          "path": "steps[4].image",
+          "quote": "viewed b37eb0579ffd7b46: top labelled 5 3/4\" and 5 7/8\""
+        },
+        {
+          "path": "steps[6].image",
+          "quote": "viewed 5a1fc3333fa57ce8: offsets 7/8\" + 4\" + 7/8\" and 1/2\" + 4 1/2\" + 7/8\""
+        },
+        {
+          "path": "cutList[4].part",
+          "quote": "Top"
         }
       ],
-      "arithmetic": "Viewed step[6] image dimensions on the top: 7/8 + 4 + 7/8 = 5.75 across and 1/2 + 4 1/2 + 7/8 = 5.875 along, but cutList[4] Top is 5.5 x 5.625 (5.75 - 5.5 = 0.25; 5.875 - 5.625 = 0.25). The Sub-top 4 x 4.5 (cutList[5]) matches the image.",
-      "reason": "(a) the top size in the cut list and the offsets shown for joining it do not add up; likely, since only one image carries the numbers"
+      "arithmetic": "Kreg-corrected cutList[4] Top = 0.375 x 5.5 x 5.625 (source \"3/8\\\" x 5 1/2\\\" x 5 5/8\"). Step[4] image: 5.75 x 5.875 (5.75 - 5.5 = 0.25; 5.875 - 5.625 = 0.25). Step[6] image: 7/8 + 4 + 7/8 = 5.75 and 1/2 + 4.5 + 7/8 = 5.875, the same as step[4]. Sub-top 4 x 4.5 matches cutList[5].",
+      "reason": "(a) the size the \"Cut the top\" step gives (in its image) differs from the cut-list row by 1/4\" in both directions; two viewed images agree with each other, so certain. Kreg's own cut list, cause plan."
     }
   },
   "verdict": "Fix",
@@ -200,5 +208,14 @@
       "kind": "consumable",
       "what": "Wood glue (steps[6],[9]) and the finish (steps[11]) are not in materials (consumables)."
     }
-  ]
+  ],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship (unverified) + Human review",
+    "decided": [
+      "R14"
+    ],
+    "note": "R14 upheld at certain: the step[4] \"Cut the top\" image (5 3/4 x 5 7/8) and the step[6] offsets agree with each other, not with the Kreg cut list (5 1/2 x 5 5/8)."
+  }
 }

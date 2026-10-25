@@ -239,8 +239,26 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x3); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x3 48\""
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Bench Top Supports"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "the smaller supports and the leg pieces detailed in the cut list"
+        }
+      ],
+      "arithmetic": "Every 1x3 row (Kreg-corrected 0.75 x 2.5: cutList[1],[2],[3],[5],[6],[7]) matches only materials[1] 1x3. Needed: 3x21 + 4x28 + 2x22.875 + 6x10.5 + 8x12 + 4x17 = 63 + 112 + 45.75 + 63 + 96 + 68 = 447.75\" (+ 27 x 1/8 = 3.375 kerf). Bought: 8 x 48 = 384\". Short 63.75\" before kerf (> 1/2\", not kerfOnly). Even all 1x4 left over (12 x 48 - (6x48 + 6x40) = 576 - 528 = 48\") gives 432 < 447.75. Kreg source quantity \"8\" (no import default).",
+      "reason": "R5 precondition met by the exact-match ruling (1x3 -> 3/4 x 2 1/2, 1x4 -> 3/4 x 3 1/2); the 1x3 bought is short."
     },
     "R6": {
       "result": "pass",
@@ -277,7 +295,7 @@
       "reason": "every made part is installed and the steps reach the finished table and benches (steps[6])"
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Fix",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -298,5 +316,14 @@
       "quote": "8 board Board, 1x3 48\"",
       "what": "The 2 1/2\"-wide cut rows total 63 + 112 + 45.75 + 63 + 96 + 68 = 447.75\" (cutList[1],[2],[3],[5],[6],[7]; 27 pieces, + 27 x 1/8 = 3.375 kerf = 451.125\") but materials[1] buys 8 x 48 = 384\". Even adding every inch left from the 12 x 48 = 576\" of 1x4 after the 6 x 48 + 6 x 40 = 528\" of top boards (48\") gives 432\" < 451.125\". Materials do not cover the cut list (R5 precondition not met: bench parts do not name their stock)."
     }
-  ]
+  ],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5"
+    ],
+    "note": "R5 upheld at certain: 1x3 parts match only materials[1]; 447.75\" needed vs 384\" bought; Kreg source quantity is 8."
+  }
 }
