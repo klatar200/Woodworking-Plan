@@ -29,3 +29,4 @@ Rulings added 2026-10-23 (Keagan; binding, also in docs §6):
 This is an independent second round: judge only from the plan, the sweep record and the docs. Do not open audit/plan-quality/plans/ (round 1) or round2 records other than your own slugs.
 - Items used only in a step the plan itself marks optional ("optional", "if desired", "can be added") do not fail R14(c); record them in `gaps`. (Orchestrator ruling, round 2.)
 - R5 precondition: "the steps name the stock" is also met for a part whose thickness x width matches exactly ONE listed material (state that match in the reason). If a part could come from two or more listed materials, R5 stays unknown.
+- Images: open at most ~4 per plan, and only when needed. If a Read of an image returns "[media removed" or shows nothing, it does NOT count as viewed: do not list it in imagesViewed and do not base a finding on it (use unknown).
