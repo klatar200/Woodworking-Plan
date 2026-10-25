@@ -127,58 +127,94 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "y simple to build from off-the-shelf 1/2\" and 3/4\" boards, and an inexpensive clock movement. To make the project even easier, we've included a free printable dial (see Extras at the end of the plan).",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "description",
-          "quote": "y simple to build from off-the-shelf 1/2\" and 3/4\" boards, and an inexpensive clock movement. To make the project even easier, we've included a free printable dial (see Extras at the end of the plan).",
-          "why": "matches \"printable\""
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "Click on the “Extras” tab (below the main project photo) to find the pdf clock dial we’ve provided. Print the dial on a heavy art paper. Then cut out the dial. Cut a Clock Backer to size from 1/4\" har",
-          "why": "matches \"Extras\""
+          "quote": "Click on the “Extras” tab (below the main project photo) to find the pdf clock dial we’ve provided. Print the dial on a heavy art paper."
         },
         {
-          "path": "steps[8].body",
-          "quote": "the “Extras” tab (below the main project photo) to find the pdf clock dial we’ve provided. Print the dial on a heavy art paper. Then cut out the dial. Cut a Clock Backer to size from 1/4\" hardboard or",
-          "why": "matches \"pdf\""
+          "path": "description",
+          "quote": "we've included a free printable dial (see Extras at the end of the plan)."
         }
-      ]
+      ],
+      "reason": "The dial exists only in an Extras PDF we do not have. Search of cutList, materials, steps for a dial diameter/size or numeral layout: none (only 'Clock Backer 8 x 8' and '8 1/2\" x 11\" art/craft paper'). Fix level: the case, backer and movement can all be built without it; only the printed face is missing."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps 0-11 (Legs, Top Rails, Bottom Rails, Sides, Braces, Top, Clock Backer, back frame = second frame) all match cutList[*].part; dial is paper in materials[16]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used by steps 0-11."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "readerNote": "Sweep unknown resolved: materials are named by actual thickness ('1/2 x 2 (1 1/2\" actual width)', '1/2 x 3 (2 1/2\" actual width)', '1/2 x 4 (3 1/2\" actual width)', '1/2 x 6 (5 1/2\" actual width)', '1x4', 1/4\" plywood), so each Kreg-corrected row 0.5x1.5, 0.5x2.5, 0.5x3.5, 0.5x5.5, 0.75x3.5, 0.25 sheet has a listed material with the same thickness and width. Backer 8x8 fits the 12x12 plywood.",
+      "basis": "Kreg-corrected cut rows vs listed 1/2-thick and 1x4 boards"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x2, 2x3, 2x4, 2x6, 1x4, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (step 0 '1/2\" x 2 oak' legs/top rails, '1/2\" x 3 oak' bottom rails; step 2 '1/2\" x 4 oak'; step 3 '1x4 oak'; step 6 '1/2\" x 6 oak'; step 8 '1/4\" hardboard or plywood'). Arithmetic with Kreg-corrected rows: 1/2x2: 4 x 11 + 2 x 6.5 = 57, + 6 cuts x 1/8 = 57.75 <= 48 + 24 = 72. 1/2x3: 2 x 6.5 = 13 + 2 x 1/8 = 13.25 <= 24. 1/2x4: 2 x 10.5 = 21 + 2 x 1/8 = 21.25 <= 24. 1x4: 2 x 8 = 16 + 2 x 1/8 = 16.25 <= 24. 1/2x6: 12.5 <= 24. Backer 8 x 8 = 64 sq in <= 12 x 12 = 144. No quantity-default entry in importDiffs.",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fastener sizes in steps: 1\" fine-thread pan-head pocket-hole screws (steps 1,4,5), 1\" flat-head wood screws (7), 1/2\" pan-head wood screws (10); materials[8..10] list exactly these. Step 4 right-angle driver is materials[12]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give: rail pocket-hole positions and arch (step 0 image: 1\" rise, 1/2\" flats, holes 1/2\", 5/8\", 7/8\"), side pocket-hole positions (step 2 image: 1 1/4\" from top, 3/4\" from bottom), brace holes and countersinks (step 3 image: 2 1/2\", 1 1/2\"), backer pilot holes 1/2\" x 3/8\" and shaft hole at centre (step 8 image). Top centred side to side, spacers 1/2\", chamfer 1/4\" depth are in the text."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "17 reference(s), each in a step with its own image"
+      "note": "17 reference(s), each in a step with its own image",
+      "reason": "Viewed images for steps 0, 2, 3, 4 and 8 show the referenced drawings with dimensions; step 6 Top size is in cutList[5] (12.5 x 5.5) and the unattached viewed image shows the 12 1/2\" x 5 1/2\" Top."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rails/legs (0), frames (1), sides (2), braces (3), body (4), body to front frame (5), top (6-7), backer made (8) then finished (9) then fitted inside the open back before the back frame is glued on (10-11), movement last (12). Viewed step 4/8 images support this."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 0 'With the jig set up for 1/2\"-thick material' (rails) and step 2 'jig set for 1/2\"-thick material' (sides); braces are 3/4\" and the viewed step 3 image states 'Micro Pocket Hole Jig set for 3/4'' think material'."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step sizes agree with Kreg-corrected rows: sides 10 1/2 (viewed 2744b image), braces 8 x 3 1/2, top 12 1/2 x 5 1/2, backer 8 x 8; frame width 6.5 + 2 x 1.5 = 9.5 equals the viewed overall '9 1/2\"'; screw counts 2 and 4 match materials[9], [10]. (b) every part is installed. (c) movement, spray adhesive and screws are in materials. (d) steps end with the movement installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "We used a “java” stain, followed by a couple of coats of wipe-on varnish.",
+      "what": "stain/varnish and sandpaper (steps 0-9 'Sand') are not in materials (consumables)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "Then use clamps or masking tape to hold the rear frame in place while the glue dries.",
+      "what": "masking tape not in materials (consumable)"
+    }
+  ],
+  "notes": "R1 Fix only because the printable dial is in the Extras PDF.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "5559a290e834d7b9.webp (step 0)",
+      "2744b30af487d974.webp (step 2)",
+      "9de03b3963c10e80.webp (step 3)",
+      "8ae9edad89ad745e.webp (step 4)",
+      "17c3912d14d2c2d6.webp (step 8)",
+      "f81faf9a7ba4e0cf.webp (unattached images[4])",
+      "06bd24edb2bb64bc.webp (unattached images[3])"
+    ]
+  },
+  "verdict": "Fix"
 }

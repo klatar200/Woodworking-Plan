@@ -227,39 +227,74 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " joint, find the center of the top of the board and measure 1-3/4\" on either side, to give you a total of 3-1/2\". Then measure down 1-3/4\" and 1-3/4\" deep to identify the area to chisel out for the ha",
-          "why": "cut sentence states 1-3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag (steps[0] '1-3/4\"') is the half-lap notch size, not a part. Parts named in steps 0-7 (LEG BOTTOM SPANS, LEGS, LEG TOP SPANS, BASE BOTTOM SPAN, BASE TOP SPANS, BASE ANGLE SPANS, table top boards) all match cutList[0..6]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used by steps 0-7."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +3 more"
+      "result": "pass",
+      "readerNote": "Sweep unknown resolved: rows are Kreg-corrected to 3.5 x 3.5 (legs, spans, base bottom span) = listed 4x4 and 1.5 x 3.5 (top/angled spans, top boards) = listed 2x4; the 'thinner than stock' flags came from the uncorrected whole-number values.",
+      "basis": "Kreg-corrected cut rows vs listed 4x4 and 2x4"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (4x4, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed stock (3.5 x 3.5 = 4x4, 1.5 x 3.5 = 2x4) and lengths have units (8' = 96\"). 4x4: 4 x 27 + 2 x 24.8125 + 61.5 = 219.125, + 6 cuts x 1/8 = 219.9 <= 3 x 96 = 288 (boards 61.5 + 27 | 27 + 27 + 24.8 | 27 + 24.8 fit). 2x4: 2 x 58 + 2 x 35.5 + 2 x 27.25 + 10 x 84 = 1,081.5, + cuts about 1.9 = 1,083.4 <= 13 x 96 = 1,248 (10 boards for the 84\" top boards; 58 + 35.5 on each of two boards; two 27.25 on one = 13 boards).",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: 4\" Kreg HD screws (2), 3\" deck screws (2), 2-1/2\" Kreg HD screws (5), 2-1/2\" deck screw (6, 7, image), alt '2-1/2\" outdoor standard Kreg screws' (7, optional); materials[2] 4\" HD, [3] 2-1/2\" HD, [4] 3\" deck/wood, [5] 2-1/2\" deck/wood. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Given numerically or in viewed images: legs 5\" from the bottom, leg top span 3\" inset (step 2 image), half-lap 3.5\" x 1.75\" x 1.75\", angled spans centred 7\" apart (step 6 image), base top spans meet at the centre of the leg top spans, one 2.5\" deck screw per top board; top boards 'from the underside' with even gaps shown in the step 7 image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "note": "6 reference(s), each in a step with its own image",
+      "reason": "The 'as shown' steps have their own images; viewed images for steps 0, 2, 3, 6 and 7 show the dimensions referenced."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg spans notched (0), legs and leg top spans (2), base bottom span lapped and dry-fitted (3-4), spans, top spans and angled spans fixed (5-6), top boards from underneath (7), finish (8). Viewed step 6 and step 7 images agree."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] '3-1/2\" setting' for the 4x4 leg spans, steps[3] '1-1/2\" setting' (image: after the half lap) for the base bottom span ends and the 1 1/2\" base top spans; viewed step 0 and step 3 images repeat the settings."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts and sizes agree with Kreg-corrected rows: legs 27 (viewed step 2 image), leg top span 35.5, leg bottom span 24 13/16 (24.25 short point in step 0 image), base bottom span 61.5 (step 3 image), angled span 27.25 (26-7/32 short point, step 6 image), 10 x 3.5 = 35\" top plus gaps for 36\". (b) every part is installed. (c) no hardware beyond screws. (d) steps end with the finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[4]",
+      "quote": "3\" Deck/Wood Screws | each | quantity 8",
+      "what": "Step 2 says 'four 3\" deck screws in each leg' (viewed image: four per leg) = 4 legs x 4 = 16 vs quantity 8; '2-1/2\" Deck/Wood Screws' quantity 24 vs one per top board at each support (10 boards x several supports). Fastener quantities are outside the rubric, noted only."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "You can choose to leave it natural, stain it, use a penetrating oil or paint it.",
+      "what": "finish is optional and unlisted (consumable); sandpaper and glue are listed"
+    }
+  ],
+  "notes": "Clean; Ship if verdict script agrees.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "2eadea5885a17eb1.webp (step 0)",
+      "be70b76720e598a4.webp (step 2)",
+      "4c4466231e6913d6.webp (step 3)",
+      "f849583cf9e043ca.webp (step 6)",
+      "1bbb077f84cd103c.webp (step 7)"
+    ]
+  },
+  "verdict": "Ship"
 }

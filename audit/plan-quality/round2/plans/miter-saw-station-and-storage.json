@@ -395,10 +395,29 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps 1-14 (cabinet bottom/top/dividers/sides inside+outside, bottom skirt, table support, top support, front/back table, fence, miter saw shelf, shelf support, bottom brace, MS shelf face, drawer sides/b-f/bottom/front, doors) vs cutList[*].part: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[20]",
+          "quote": "Cabinet back | quantity 2 | 0.25 x 30 5/8 x 46 1/2"
+        },
+        {
+          "path": "cutList[21]",
+          "quote": "Middle back | quantity 1 | 0.25 x 26 x 29 1/8"
+        },
+        {
+          "path": "cutList[13]",
+          "quote": "Shelf | quantity 4 | 0.75 x 15 1/2 x 22 5/8"
+        }
+      ],
+      "reason": "Search of all 15 step titles/bodies for /cabinet back|middle back|back panel|back piece|1\\/4\" plywood|shelves|\\bshelf\\b not followed by pin/support/face and for 'adjustable' finds nothing that uses these rows ('back' occurs only as 'back will have a 1/4\" inset', 'back of cabinet top', 'back of the front table', 'back table', 'inset 1/4\" from the back'; 'shelf' only as miter saw shelf, shelf pins, shelf support, MS shelf face). Viewed unattached images [1] and [3] show cabinet backs, a middle back under the saw and shelves in the compartments, so the finished piece needs them; no step cuts-to-use, positions or fastens them (step 7 drills shelf-pin holes but never places a shelf)."
     },
     "R4": {
       "result": "pass",
@@ -406,41 +425,87 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet rule: all parts are on two sheet types and the total area does not exceed what is bought, so it cannot be a certain fail. 3/4\" parts total about 13,194 sq in (sum of quantity x width x length, Kreg-corrected) vs 3 x 48 x 96 = 13,824; 1/4\" parts 2 x 30.625 x 46.5 + 26 x 29.125 + 2 x 14 x 21.875 = about 4,218 vs 1 x 4,608. Whether the parts nest on the sheets is not judged (optimizer limitation)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: 1 1/4\" pocket hole screws (1,2,3,5,6,8,12,13), 1 1/4\" brad nails (9,12,13), '4 - 1 1/4\" screws' for casters (6); materials[9] '1 1/4\" pocket hole screws', materials[6] '1 1/4\" brad nails', materials[2] casters. Hinges, knobs, slides, shelf pins listed. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "cut a 3\" x 2 3/4\" notch from the cabinet side inside pieces. If the 'cabinet side inside' pieces are notched, then also cut the angle from the front table. You can match the swing angle of the miter s",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/13c5d3fb6c316031.webp"
+          "path": "steps[7].body",
+          "quote": "Attach the 14\" drawer sides to the cabinet now before the table top is in place."
         },
         {
-          "path": "steps[11].body",
-          "quote": "Measure and mark the miter saw table + plywood height previously measured. Measure from table top and mark onto the cabinet side. Inset the shelf support 3/4\" from the cabinet front. Use wood glue and",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab629991a86180bf.webp"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "rk the miter saw table + plywood height previously measured. Measure from table top and mark onto the cabinet side. Inset the shelf support 3/4\" from the cabinet front. Use wood glue and brad nails an",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab629991a86180bf.webp"
+          "path": "steps[14].body",
+          "quote": "Attach cabinet doors to the cabinet. I used frameless full overlay concealed hinges. Attach door knobs as desired."
         }
-      ]
+      ],
+      "reason": "The height/position of the 14\" drawer slides on the cabinet side and divider is never given (step 7 text; step 13 only 'Attach 14\" drawer slides to the drawer b/f'; viewed images for steps 7, 8, 13 do not show it), and hinge position on the doors/cabinet (distance from door edges/top) is not given. Search of all steps for /slide|slider/i finds only these. Positions that are given: divider at 22 7/8\", top 2 3/4\" down, shelf-pin jig 8 3/4\" from bottom, top supports 22 7/8\" and 4 1/4\" (viewed step 8 image), shelf support inset 3/4\"."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the plywood according to the cut diagram."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Use a jig saw or similar to cut a 3/4\" x 2\" notch from the cabinet dividers (see cut diagram)."
+        }
+      ],
+      "reason": "The step 0 image (viewed) is a photo of a track saw cut and the step 4 image (viewed) is a photo of a jig saw; unattached images [1]-[4] (viewed) are photos and two overview renders, none a cutting diagram (images[0] is the primary photo, not opened). Fix not Unpublish: every part size is in the cutList; only the notch location on the divider appears in the diagram alone (steps 6/8 say it sits 'in notched area of cabinet divider')."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Skirt to bottom, bottom to outside side, top, notches, divider, inside side (1-6); slides before the table is on (7, stated); top supports, table and fence (8-9); saw-height measurement then shelf support and shelf (10-12); drawers and doors last (13-14). Viewed step 8 image shows the cabinet at that stage."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Drill pocket holes for 3/4\" material' (repeated in steps 3, 5, 8, 12, 13); all pocket-holed parts are 3/4\". Viewed step 13 image labels 'Pocket Hole for 3/4\" Material'."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step numbers agree with Kreg-corrected rows: divider at 22 7/8\" = (46.5 - 0.75)/2; divider 26 3/8 = 32 5/8 - 2 3/4 - 3/4 - 2 3/4; doors 23 7/8 x 27 3/8 = openings + 1; table 8 + 3/4 + 7 = 15 3/4 = side width; drawer b/f 14 + sides 20 3/8 + 2 x 3/4 = 21 7/8 = drawer bottom. (b) all parts the steps make are installed. (c) hinges, slides, knobs, casters, shelf pins, Trak kit are in materials. (d) the missing backs and shelves are recorded under R3 and not double-reported."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Attach the 14\" drawer sides to the cabinet now",
+      "what": "'drawer sides' here must mean the 14\" drawer slides (the cut-list Drawer side parts are 20 3/8\" long); wording error."
+    },
+    {
+      "path": "materials[4]",
+      "quote": "14\" drawer slides | each | quantity 2",
+      "what": "Two drawers each get slides on both sides (step 13); whether quantity 2 means two pairs cannot be told from the plan."
+    }
+  ],
+  "notes": "Back panels, middle back and shelves are cut-list rows never used; slide/hinge positions not given.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "525286d63878ad2f.webp (step 0)",
+      "13c5d3fb6c316031.webp (step 4)",
+      "56a501fb5133522e.webp (step 7)",
+      "91457513315b2895.webp (step 8)",
+      "fc50167c0af21758.webp (step 13)",
+      "90d7e1d569344687.webp (step 14)",
+      "ee6c1cb1383fbb9f.webp (unattached images[1])",
+      "eaaa08fd709a24d2.webp (unattached images[2])",
+      "cc0bd0d43ddd0719.webp (unattached images[3])",
+      "aad41b1d2163d732.webp (unattached images[4])"
+    ]
+  },
+  "verdict": "Fix"
 }

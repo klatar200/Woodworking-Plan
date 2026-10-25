@@ -10,39 +10,108 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (shelves, sides, 1/4\" back, pegboard sides, wood blocks, casters) vs cutList[0..1] and materials[0..4],[9]: shelves and sides are rows; the back ('Cut a piece of the 1/4\" plywood to fit'), pegboard ('Cut and piece pegboard') and blocks are cut from listed material by the steps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used (sides steps 2-3, shelves steps 1-2 and 8)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x12, sheet-0.75, sheet-0.25, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "You can either use additional 1 x 12's to make the 17\" long shelves or 3/4\" plywood."
+        },
+        {
+          "path": "materials[1]",
+          "quote": "Plywood, 3/4\" Thick Quarter Sheet | quantity 1"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Shelves, top and bottom | quantity 10 | 0.75 x 11 1/4 x 17"
+        }
+      ],
+      "arithmetic": "Shelves in plywood: 10 x 11.25 x 17 = 1,912.5 sq in > one quarter sheet (a quarter of 48 x 96 = 24 x 48 = 1,152 sq in), short 760.5. Shelves from 1x12 instead: 10 x 17 = 170 in of 1x12 plus 10 cuts x 1/8, but both listed 1x12 x 72\" boards are used by the sides (2 x 72 = 144 in, cutList[1] quantity 2 x 72). Even combining all 3/4\" stock, 1,620 (two 1x12) + 1,152 = 2,772 sq in < sides 2 x 11.25 x 72 = 1,620 + shelves 1,912.5 = 3,532.5.",
+      "reason": "Quarter-sheet size is taken as 24 x 48 by arithmetic from §9's full sheet; materials[1] quantity 1 could be an importer default (importDiffs shows none). Author's note 'leftover plywood and shelving that I had in my woodpile' explains the gap."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "Add the wheels using 1-1/4\" drawer front screws. I use this type of screw with the wide head because of the size of the holes on the wheels.",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+          "quote": "Add the wheels using 1-1/4\" drawer front screws."
+        },
+        {
+          "path": "materials[10].name",
+          "quote": "1-1-1/2\" drawer front screws"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "1-1/4\" wood screws"
         }
-      ]
+      ],
+      "reason": "The same item (wide-head 'drawer front screws' for the casters) is 1-1/4\" in the step and 1-1-1/2\" (16, = 4 casters x 4) in materials; the only 1-1/4\" screw listed is a plain 'wood screw' (12, for the blocks). The odd '1-1-1/2' name could be an import artifact of '1 1/2\"' (not shown in importDiffs). Sweep flag text '1/4\" screw' was the tail of '1-1/4\"'."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Blocks at the four corners and middle of each side's edges (viewed step 5 image shows them); top/bottom shelves at the ends of the 1x12 sides; shelf-pin spacing set by the jig and shelves 'customize the placement'; casters on the bottom (viewed step 7 image)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "steps[5] '(see photo)' has its own image; viewed, it shows the blocks."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), pocket holes in two shelves (1), top/bottom onto sides (2), shelf-pin holes (3), back (4), blocks then pegboard on the sides (5-6), casters (7), shelves in last (8). Viewed step 5 and 7 images agree."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill three pocket holes on both short ends of two of the shelf pieces."
+        }
+      ],
+      "reason": "3/4\" shelves get pocket holes; search of all steps/materials/description for /setting|thickness|collar/i finds no jig setting. The step 2 image (viewed) is a close-up of a pocket hole and shows no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 16 drawer-front screws = 4 casters x 4 holes; shelf total 10 = top/bottom 2 + 8 adjustable; width 17 + 2 x 3/4 = 18 1/2 between 72\" sides. (b) every made part is installed. (c) casters, shelf pins, nails in materials; step 6 'staples or brad nails' is covered by the listed brad nails. (d) steps end with shelves placed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Cut a piece of the 1/4\" plywood to fit the back of the shelving unit.",
+      "what": "Back height equals the 72\" sides (cutList[1]) but the listed 1/4\" quarter sheet (24 x 48) is only 48\" long in its long direction; the plan does not say the back is pieced. Unit size is not stated either."
+    }
+  ],
+  "notes": "Shelves exceed the listed plywood; wheel screw size conflicts with materials.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "b71b354a311d32c2.webp (step 2)",
+      "f25e4e5ed1c78458.webp (step 5)",
+      "ee19fc653ce742ab.webp (step 7)"
+    ]
+  },
+  "verdict": "Fix"
 }

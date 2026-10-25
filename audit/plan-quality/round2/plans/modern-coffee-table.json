@@ -71,39 +71,64 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-7 (leg boards, 1x2 leg sides, leg apron, top slat boards, L clips) vs cutList[0..3] and materials[6]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used (steps 0-3 legs/sides, 5 apron, 6 slats)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x2, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Steps name the stock by name (1x2 leg sides/apron; leg boards 3/4 x 3 1/2 only match the listed 1x4; slats 1 1/2 x 5 1/2 only match the listed 2x6), lengths are stated with units. 1x4: 4 x 18 = 72 <= 1 x 72 = 72 with zero kerf; with 3 cuts x 1/8 = 0.375 it is short by 3/8\" (kerf only, angled ends not counted). 2x6: 4 x 48 = 192 <= 2 x 96 = 192 with zero kerf; kerf short by about 1/4\" (kerf only). 1x2: 4 x 16 + 2 x 30 = 124, + 5 x 1/8 = 124.6 <= 2 x 72 = 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: 1 1/4\" pocket hole screws (steps 4, 5), 2 1/2\" pocket hole screws (6), L clips/brackets (7); materials[3] 1 1/4\", materials[4] 2 1/2\", materials[6] '1 1/2\" L brackets with screws'. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "iece so the bottom and front are flush. Mark the top corner. Draw a straight line from the top inside corner of the leg to the bottom, going through the corner mark. Cut the legs off along this line t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0f25a96c813c74c9.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Taper layout is a construction (flush bottom/front, mark, line to the marked corner, 1 1/2\" shown in the step 2 image); apron 30\" between legs at the top (viewed step 5 image); pocket holes 5-6\" apart; legs centered on the top; six L brackets located in the viewed step 7 image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No drawing references in the step text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Angled rips and cuts (0-1), taper (2), bottom sides ripped (3), legs assembled (4), apron between legs (5), top built (6), legs fixed to the top with L brackets last (7). Viewed step 5 and 7 images match the order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] 'Set your pocket hole jig for 3/4\" thick material' covers leg sides and apron (3/4\"); steps[6] 'Set your pocket hole jig for 1 1/2\" thick material' covers the 2x6 slats."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: 4 leg boards + 4 leg sides, 2 of the sides bottom (step 3) and 2 'other' (step 4), 3 of 4 slats drilled (step 6), 6 L brackets as in the viewed image; apron 30\" as the viewed step 5 image shows. (b) every made part is installed. (c) brackets listed. (d) steps end with the table flipped."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Assemble the table top by applying hot glue to the edges of the boards, clamps them tight, and secure with 2 1/2\" pocket hole screws.",
+      "what": "'hot glue' is not in materials (wood glue is); looks like a wording slip for wood glue. Also 3 slats drilled 5-6\" apart along 48\" gives about 8 holes x 3 = 24 screws vs materials[4] 15 (2 1/2\" pocket hole screws)."
+    }
+  ],
+  "notes": "Clean; R5 kerf-only on exactly-sized boards.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "0f25a96c813c74c9.webp (step 2)",
+      "b01eb9ad1529577d.webp (step 5)",
+      "0e88d17c0c25c4ac.webp (step 7)"
+    ]
+  },
+  "verdict": "Ship"
 }

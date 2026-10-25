@@ -167,45 +167,133 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (Frame Top Rail, Frame Stiles, Frame Bottom Rail, Top/Bottom Shelf, Long/Short Dividers, Long Edge, Box Front/Outside/Inside/Center/Divider, Metal Panel, cork) vs cutList[*].part and materials[5..6]: all present (Box Outside/Inside = 'Pencil Box Sides' x2, per viewed step 6 image)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 12 rows are used (frame steps 0-2, shelves 3, dowel dividers 4-5, pencil box 6-7)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x2, 1x6, 1x8, 0.5x6, 0.5x36); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0]",
+          "quote": "Board, 1x2 96\" | quantity 1"
+        },
         {
           "path": "steps[0].body",
-          "quote": "Using Cutting Diagram 1 as a guide, cut one Frame Top Rail and two Frame Stiles to length from a 1x2 board. Also cut one Frame Bottom Rail to length from a 1x8 board.",
-          "why": "\"Diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "cut one Frame Top Rail and two Frame Stiles to length from a 1x2 board."
+        },
+        {
+          "path": "cutList[0..1]",
+          "quote": "Frame Stiles | quantity 2 | 0.75 x 1 x 34 (Kreg 3/4 x 1 1/2 x 34) ; Frame Top Rail | quantity 1 | 30 3/4 (Kreg)"
+        }
+      ],
+      "arithmetic": "1x2 parts (0.75 x 1.5 matches only the listed 1x2): 2 x 34 + 1 x 30.75 = 98.75; + 2 cuts x 1/8 = 99.0 > 1 board x 96 = 96. Short 3.0 (2.75 with zero kerf, so not kerf-only). Step 0 itself says 'a 1x2 board' (one); no importDiffs entry shows the quantity 1 is an importer default, but it could be.",
+      "reason": "Other stocks fit: 1x6 31.5 + 37 + 0.25 = 68.75 <= 96; 1x8 34 <= 48; 1/2 x 6 5 x 5.5 + 0.625 = 28.1 <= 48; dowel 31.5 + 15.5 + 3 x 5 + 4 x 1/8 = 62.5 <= 72."
+    },
+    "R6": {
+      "result": "pass",
+      "search": "steps use 1 1/4\" pocket-hole screws (2, 8) and 5/8\" pan head screws (12); materials[7] '1 1/4\" coarse-thread pocket-hole screws', materials[8] '5/8\" panhead screws'. No other fastener sizes."
+    },
+    "R10": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "add a pair of D-ring picture hangers to the back of the frame, and it's ready to hang on your wall."
+        }
+      ],
+      "reason": "Hanger positions (height/spacing on the back) are not given as numbers or relation, and step 13 has no image; search of all steps/materials for /hanger|D-ring/i finds only materials[9] and this step. Everything else is positioned by text or viewed images: top shelf 5 1/4\" above the bottom shelf (step 8 image), dividers 13\", 15 1/2\", 2 1/4\" (step 5 image), pencil box at the end (step 9 image), pocket holes as drawn (steps 1, 3 images)."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using Cutting Diagram 1 as a guide, cut one Frame Top Rail and two Frame Stiles to length from a 1x2 board."
         },
         {
           "path": "steps[4].body",
-          "quote": "Using Cutting Diagram 2 as a guide, cut one Long Divider, three Short Dividers, and one Long Edge to length from a 1/2\" square dowel.",
-          "why": "\"Diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Using Cutting Diagram 2 as a guide, cut one Long Divider, three Short Dividers, and one Long Edge to length from a 1/2\" square dowel."
         }
-      ]
+      ],
+      "reason": "Steps 0 and 4 have no image. Viewed: all four unattached images (images[0] primary photo not opened, [1]-[3] photos) and the step images for steps 1-3, 5, 6, 8, 9, 11 show no cutting diagram; images for steps 7 and 12 not opened. Fix not Unpublish: every cut size and the stock for each part is in the cut list and steps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (0-2), shelves and dividers (3-5), pencil box (6-7), shelves then pencil box onto frame (8-9), paint (10), metal and cork screwed/glued to the back last (11-12), hangers (13). Viewed step 8/9 images show the stage order is physically possible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your pocket-hole jig and drill bit for 3/4\"-thick materials' covers every pocket-holed part (rails, shelves are all 3/4\")."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Frame Top Rail | quantity 1 | lengthIn 30 3/4 (source '3/4\" x 1 1/2\" x 30 3/4\"')"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Frame Bottom Rail | quantity 1 | lengthIn 34 (source '3/4\" x 7 1/4\" x 34\"')"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in the end of the Top Rail and Bottom Rail, as shown."
+        }
+      ],
+      "arithmetic": "Step 1 image (viewed) draws the Top Rail and Bottom Rail the same length, and the step 2 image shows both rails between the same two stiles; the cut list gives 34 - 30.75 = 3.25 difference. With 2 x 1.5 stiles: 30.75 + 3 = 33.75 vs 34 + 3 = 37 frame width. Bottom shelf 37 (cutList[4]) matches the 37 option.",
+      "reason": "(a) rails disagree as above (one number is wrong; the plan does not say which). (b) all parts installed. (c) hardware in materials. (d) steps reach the hung unit."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "cut one Box Front, one Box Outside, one Box Inside, one Box Center Divider, and one Box Divider to size from a 1x6 board",
+      "what": "Step names a 1x6 (3/4\") board but cutList[5..8] are 0.5\" thick and materials[3] is 'Board, 1/2\" x 6\" 48\"'; stock named in the step conflicts with the row."
+    },
+    {
+      "path": "cutList[2] / steps[11].body",
+      "quote": "Use a 24\"x36\" piece of galvanized metal, or cut one to size, to create the Metal Panel.",
+      "what": "Viewed step 11 image shows panel 36\" x 24\". Frame opening height = 34 - 1.5 (1x2 top rail) - 7.25 (1x8 bottom rail) = 25.25, 1.25\" more than the 24\" panel; width 36 vs frame width 33.75 or 37 depends on the rail conflict above. Not settled from the plan."
+    }
+  ],
+  "notes": "Top/bottom rail lengths conflict; 1x2 board short; hangers unplaced; cutting diagrams absent.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "8095e9f9dfbdcb45.webp (step 2)",
+      "d89fca5ff29e2e25.webp (step 1)",
+      "042ea628b41f6641.webp (step 3)",
+      "568e48911a522c54.webp (step 5)",
+      "2cddafae1373832f.webp (step 6)",
+      "1eec288dc957f2e0.webp (step 8)",
+      "a46db33c09e473fe.webp (step 9)",
+      "6800e88a7733a2bd.webp (step 11)",
+      "74cf6244a9df1e54.webp (unattached images[1])",
+      "a881e9b8fa9a38da.webp (unattached images[2])",
+      "1fbebcd90b4a17df.webp (unattached images[3])"
+    ]
+  },
+  "verdict": "Fix"
 }

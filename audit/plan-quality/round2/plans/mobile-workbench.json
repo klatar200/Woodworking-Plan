@@ -47,43 +47,96 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-6 (legs, small/large side supports, table top, shelf, 1x2 framing, casters) vs cutList[0..6] and materials[5]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used (legs/supports steps 1-2, table top 3, shelf 4, framing 6)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); cutList[1] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); cutList[2] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); cutList[5] no match among parsed stock; unparsed stock present (materials[1], materials[2], materials[3]); +1 more"
+      "result": "pass",
+      "readerNote": "Sweep unknown (unparsed 'Pieces of wood, 4x4x8' names) resolved: the cut rows use nominal labels that the viewed step 0 image repeats ('(4) 4x4x29 1/4\" (Legs)', '(4)2x4x53\" (Large Supports)', '(4)2x4x15\" (Small Supports)'), matching the listed 4x4, 2x4 and 1x2 stock; table top 3/4 x 24 x 62 and shelf 3/4 x 18 x 55 fit the 48 x 96 plywood. Nominal-as-actual is an import-style labelling, not a plan failure (§3).",
+      "basis": "nominal labels vs listed nominal stock"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1], materials[2], materials[3]"
+      "reason": "Plywood parts (24 x 62 + 18 x 55 = 1,488 + 990 = 2,478 sq in) do not exceed one 48 x 96 sheet (4,608), so the sheet rule gives no certain fail. Lumber passes with L=8 read as feet = 96\" (§9, L <= 16): 4x4: 4 x 29.25 = 117, + 3 x 1/8 = 117.4 <= 2 x 96 = 192; 2x4: 4 x 53 + 4 x 15 = 272, + 7 x 1/8 = 272.9 <= 4 x 96 = 384; 1x2: 2 x 62 + 2 x 24 = 172, + 3 x 1/8 = 172.4 <= 2 x 96 = 192."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "finished look. Attach your 1x2’s using wood glue and 1 1⁄4” brad nails. **Make sure your 1x2’s line up exactly with your tabletop - this will make a completely flat surface. Conceal your nail holes us",
-          "why": "1 1/4\" brad — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach your 1x2’s using wood glue and 1 1⁄4” brad nails."
         },
         {
-          "path": "steps[6].body",
-          "quote": "hed look. Attach your 1x2’s using wood glue and 1 1⁄4” brad nails. **Make sure your 1x2’s line up exactly with your tabletop - this will make a completely flat surface. Conceal your nail holes using p",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "path": "materials[0..12]",
+          "quote": "Box of 2.5\" Kreg Pocket Hole Screws | 3-Inch Caster Wheels | Box of 1 3⁄4” Construction Screws | Plastic Wood | 120 Grit Sandpaper (no brad nails)"
         }
-      ]
+      ],
+      "reason": "Search of materials[*].name for /brad|nail/i finds nothing, so the 1 1/4\" brad nails in step 6 are not listed. Step 5 also uses 'washers' (no material line; no size). Other sizes match: 2.5\" pocket hole screws, 1 3/4\" construction screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Supports at the very top and 4\" up from the bottom of the legs (steps 1-2); screw counts per leg/support (step 3); shelf notches 1.5\" in from the side and bottom, shelf on the bottom supports (step 4, viewed image); casters on leg bottoms; framing 'line up exactly with your tabletop' (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No drawing references in the steps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes and sanding (0), side frames (1), front/back supports (2), top (3), shelf (4), wheels (5), framing (6), paint (7). Viewed step 4 image shows shelf resting on the lower supports under the top."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes on each side of all your small and large supports."
+        }
+      ],
+      "reason": "2x4 supports get pocket holes; search of all steps/materials/description for /setting|thickness|collar|depth/i finds no jig setting (only the plywood '3⁄4” x 24” x 62”' size). The step 0 image (viewed) shows the pocket holes in the laid-out supports, no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using 3” caster wheels attach them to the bottom of your legs using 2.5” screws and washers!"
+        }
+      ],
+      "reason": "(c) washers are hardware used in step 5 but no material line matches /washer/i (search of materials[*].name). (a) counts agree: 8 + 4 legs/supports = 4 + 4 + 4 rows; frame 53 + 2 x 4 = 61 and 15 + 2 x 4 = 23 vs top 62 x 24. (b) all parts installed. (d) steps reach a finished bench."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "I decided to prime and paint my workbench. Used 123 Primer and Behr Cabinet and Trim",
+      "what": "primer is used (paint/stain and polyurethane are listed); primer is a consumable not in materials"
+    }
+  ],
+  "notes": "Brad nails and washers absent from materials; no pocket-hole setting.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "ef07cd6fec84e888.webp (step 0)",
+      "37ee54e3559dbe15.webp (step 4)",
+      "62e5b266e74e3dfe.webp (step 6)"
+    ]
+  },
+  "verdict": "Fix"
 }

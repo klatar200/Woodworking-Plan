@@ -89,39 +89,124 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-10 (legs, plywood end panels, 2x4 support rails and center supports, 1x2 face rails, 3/4 x 3/4 shelf supports, melamine shelves, doors, countertop) vs cutList[0..8] and materials[1..13]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are used by steps 0-7."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[1]); cutList[7] Kreg text not parseable"
+      "result": "pass",
+      "readerNote": "Sweep unknown resolved: Table Legs 3 x 3 match listed 'Table legs, 3 x 3'; Shelf Supports 0.75 x 0.75 match listed 'Board, 3/4\" x 3/4\" 48\"' (cutList[7] Kreg text '3/4\" x 3/4'' is a typo for inches); rails, face rails, panels and doors match listed 2x4, 1x2, plywood (Kreg-corrected 1.5 x 3.5, 0.75 x 1.5).",
+      "basis": "Kreg-corrected cut rows vs listed stock"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "reason": "Sheet rule: plywood parts 2 x 16 x 29.5 + 4 x 16 x 29 = 944 + 1,856 = 2,800 sq in <= one 48 x 96 sheet (4,608); melamine shelves 35.25 x 18.75 fit a 24 x 48 quarter sheet each. No certain fail, nesting not judged. Lumber: legs 6 x 34.5 cut from six 36\" legs fits; 2x4 4 x 32.5 + 2 x 16 = 162 <= 2 x 96 = 192; 1x2 4 x 32.5 = 130 <= 192; 3/4 x 3/4: 4 x 32.5 + 4 x 16 = 194 vs 4 x 48 = 192 if the supports are doubled as the step 5 image implies (see R14), otherwise 97."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: 1-1/4\" screws through pocket holes (1), 2-1/2\" screws through pocket holes (2), 1-1/4\" brads (5); materials[8] 1-1/4\" pocket hole screws, [9] 2-1/2\", [11] 1-1/4\" 18-gauge brads; hinges and pulls listed. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "Use Euro-style concealed hinges to mount all four doors. Choose hinges that are designed for frameless cabinets and inset doors. Allow a 1/4\" offset on both top and bottom of cabinet doors.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f20efa378519ce58.webp"
+          "quote": "Use Euro-style concealed hinges to mount all four doors. Choose hinges that are designed for frameless cabinets and inset doors. Allow a 1/4\" offset on both top and bottom of cabinet doors."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach door pulls or knob to cabinet door faces. The Kreg cabinet hardware jig makes drilling perfectly aligned holes simple."
         }
-      ]
+      ],
+      "reason": "Hinge position on the door and cup distance from the door edge, and pull/knob locations, are not given as numbers; the viewed step 8 image shows hinges near top and bottom without dimensions and step 13 only names the Kreg hinge jig. Given and fine: 5\" toe kick, 22 1/2\" rail spacing, 3/4\" below the face rails for supports, 1/4\" reveal and door offsets (viewed images)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No drawing references in the step text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs, end panels, back rails, center legs, face rails (0-4), supports and shelves (5-6), doors then hinges and pulls (7-9), top and finish (10-11). Step 13 (hinge mortises) is placed after the finish but is an alternative for non-mortise hinges (step 13 text), so it does not block the build."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Secure using wood glue and 1-1/4\" screws through pocket holes."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Secure using glue and 2-1/2\" screws through pocket holes."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood and 1x2 and in 1 1/2\" 2x4s; search of all steps/materials/description for /setting|thickness|collar/i finds none (only the Kreg jigs for hardware). The step 1 image (viewed) shows pocket holes with no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Purchase or laminate six, 3\" x 3\" x 36\", straight table legs. Cut legs to a 34-1/2\" length."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Table Legs | quantity 4 | 3 x 3 x 34.5"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Back Support Rails | quantity 2 | 1.5 x 3.5 x 32.5 (Kreg 2 x 4 x 32-1/2\")"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "cut 35 1/4\" x 18 3/4\" x 3/4\" melamine shelving panels."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Cabinet Shelves | quantity 2 | 0.75 x 18.75 x 34.5"
+        }
+      ],
+      "arithmetic": "Legs: step 0 and materials[1] (quantity 6) give six, cut list 4; the step 3 text joins a front center leg to a back center leg, so six. Back rails: the viewed step 2 image shows 4 rails (a top and a bottom in each of the two bays, each '32 1/2\"') vs quantity 2; Face Rails (cutList[5]) are 4 for the same two bays. Shelves: step 6 and its viewed image give 35 1/4\" long, cut row 34.5 = 0.75 shorter. Shelf supports: viewed step 5 image shows supports on all four sides of a bay (2 x 32 1/2 + 2 x 16) so two bays need 4 x 32.5 + 4 x 16 = 194, cut list has 2 + 2 = 97 (materials[5] is 4 x 48 = 192).",
+      "reason": "(a) the counts/size above disagree (supports count 'likely', rest certain). (b) all parts installed. (c) hinges, pulls, countertop listed; construction adhesive and wood filler are consumables. (d) steps reach a finished vanity."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Place on supports and secure in place using construction adhesive.",
+      "what": "construction adhesive (steps 6, 10), wood filler and paint/finish (step 11) are not in materials (consumables)"
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Non-mortise hinges may be used to mount cabinet doors. If using traditional concealed hinges, use the Kreg Concealed Hinge Jig kit",
+      "what": "Step 13 (hinge mortises) is ordered after the finishing step; it applies before step 8 when concealed hinges are used. Step 8 says 'inset doors' while the 29\" doors (viewed step 8 image) cover the face rails."
+    }
+  ],
+  "notes": "Cut-list counts disagree with steps/images (legs, back rails, shelf supports, shelf length).",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "8786a14df176d653.webp (step 1)",
+      "5e0d0d89a547ff43.webp (step 2)",
+      "1d30ebb0201e8e19.webp (step 5)",
+      "1bffc489bcf4bbb7.webp (step 6)",
+      "f20efa378519ce58.webp (step 8)"
+    ]
+  },
+  "verdict": "Fix"
 }

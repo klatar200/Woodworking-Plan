@@ -67,43 +67,77 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e legs. Then angle the next slat so that the top rests on the first slat and the bottom is flush with the outside of the legs. Work your way down angling your slats until you have attached five slats.",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag (steps[2] 'have attached') is ordinary text, not a missing-content reference. Step 6 'check out more DIY woodworking projects at www.woodshopdiaries.com' is a credit link (§2)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps (slats, legs, bottom rungs) vs cutList[*].part: Slats, Legs, Bottom Rungs all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows used: slats steps 0-3, legs step 2, rungs step 4."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (step 0 '1x4', step 2 '2x2', step 4 '1x4'); 1x4 (0.75x3.5) and 2x2 (1.5x1.5) each match exactly one listed material. 1x4 quantity 4 and 2x2 quantity 1 have no quantity-default entry in importDiffs. Arithmetic: 1x4 = 20 x 15.5 + 2 x 16 = 342; + 22 cuts x 1/8 = 2.75 -> 344.75 <= 4 x 96 = 384. 2x2 = 4 x 20 = 80; + 4 x 1/8 = 80.5 <= 1 x 96 = 96. Rows used (Kreg-corrected): cutList[0] 15.5, cutList[1] 20, cutList[2] 16.",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "only fastener size in steps is 1 1/4\" pocket hole screws (steps[2],[3]); materials[2] '1 1/4\" pocket hole screws'. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat positions are relational (top slat flat, flush with outside of legs; each next slat top rests on previous, bottom flush with leg outside); viewed step 2 image shows the top slat flush with the leg tops. Rung position ('one row of the angled slats', 'if you wanted more rungs') is a stated choice."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "Reference is in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Slats cut/drilled (0-1), two side panels (2), joined with remaining 10 slats (3), rungs set in last (4). Step 2 image (viewed) shows the side panel built as described."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using a Kreg Pocket Hole Jig, drill pocket holes in each end of all the slats."
+        }
+      ],
+      "reason": "Pocket holes go in 3/4\" slats; search of all steps/materials/description for /setting|thickness|depth|collar/i finds none. The step 1 image (viewed) shows the jig with a drill guide but no readable thickness setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps 0/2/4 give 15 1/2\", 20\", 16\" and 20/4/2 counts matching cutList (Kreg-corrected 15.5, 20, 16; 20 = 5 per side x 4 sides; 4 legs; 2 rungs). (b) every part installed or set in place. (c) no unlisted hardware. (d) steps reach the finished planter."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Follow the same steps as in step 3 to attach the two side panels together",
+      "what": "Step 3 refers to itself; the slat-angling method is in step 2 (cross-reference slip, meaning still clear)."
+    }
+  ],
+  "notes": "R1 flag false positive; R5 now scoreable (unique stock match).",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "54ad19254f042f92.webp (step 2)",
+      "3b83ca1407337ab2.webp (step 1)"
+    ]
+  },
+  "verdict": "Ship"
 }

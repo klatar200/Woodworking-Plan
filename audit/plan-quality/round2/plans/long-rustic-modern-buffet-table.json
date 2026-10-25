@@ -179,10 +179,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Use your favorite technique to build three drawer boxes approximately 27\" x 14\". Before building, measure the exact width between slide supports"
+        }
+      ],
+      "reason": "The three drawer boxes are made in step 10 but have no cut-list row and no step names the listed stock to cut them from. Search: cutList[*].part and materials[*].name for /drawer box|box|drawer side|drawer bottom/i finds only 'Drawer Fronts', 'Drawer Frame ...' and '14\" drawer slides'; 1x3 x3 boards are listed but no step or row ties them to the boxes. Box height is also never given. Fix level: the builder can make boxes to the stated approx 27x14 and the rest of the table is complete."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 cut rows are used: top/shelf (steps 0-1,9), leg sides/plates (2), end boards (4), frame rails/sides (6,7), back panel (5), slide supports (8), drawer fronts (11)."
     },
     "R4": {
       "result": "pass",
@@ -193,25 +204,95 @@
       "reason": "R5 precondition not met: 8 stock types (2x6, 2x2, 1x4, 1x12, 1x10, 1x3, 1x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Create four, 16-1/2\" x 31-3/4\" rectangular box legs. Join top and bottom plates to sides through pocket holes, using glue and 1-1/2\" screws.",
-          "why": "1-1/2\" screw — no material line lists a 1-1/2\" fastener"
+          "quote": "Join top and bottom plates to sides through pocket holes, using glue and 1-1/2\" screws."
+        },
+        {
+          "path": "materials[8..11]",
+          "quote": "2-1/2\" pocket hole screws | 2\" pocket hole screws | 1-1/4\" pocket hole screws | 3/4\" wood screws"
         }
-      ]
+      ],
+      "reason": "Search: materials[*].name for /1-1\\/2/ matches only '2-1/2\" pocket hole screws'; no 1-1/2\" fastener is listed. Step 4 uses 1-1/4\" screws through pocket holes in the same 3/4\" stock, so the plan also gives two sizes for pocket-hole joints in 1x stock."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Notch positions (2-1/4 end, 3-1/2 x 3/4 notch, three 28 spans), 6-3/4 frame opening, 5-1/2 shelf gap are given in text/viewed images and slide-support placement is shown in the step 8 image. The location of the pulls/knobs is not given: steps[12] 'Use the Kreg Cabinet Hardware Jig to attach drawer pulls or knobs to drawer fronts.' ; step 12 image not opened (image budget), so unsettled."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "steps[1] 'Following the diagram' has its own image; viewed (22f7cebc) it shows the notch layout with dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top/shelf made and notched (0-1), legs (2), top onto legs (3), end boards (4), back (5), frame rails then sides (6-7), slide supports (8), shelf (9), drawers last (10-12). Images for steps 7-8 viewed show the order is physically possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Join top and bottom plates to sides through pocket holes, using glue and 1-1/2\" screws."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Join three, 2 x 6 boards together, using glue and 2-1/2\" screw through pocket holes."
+        }
+      ],
+      "reason": "Pocket holes are used on 3/4\" (legs, end boards) and 1-1/2\" (2x6 top) stock. Search of all steps, materials and description for /setting|thickness|jig/i finds only 'Kreg Drawer Slide Jig' and 'Cabinet Hardware Jig'; no jig thickness setting is stated. The step 2 image (viewed) shows pocket holes with no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Table Leg Sides | quantity 8 | lengthIn 32.25 (Kreg source '1 x 4 x 32-1/4\"')"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Create four, 16-1/2\" x 31-3/4\" rectangular box legs. Join top and bottom plates to sides"
+        }
+      ],
+      "arithmetic": "Step 2 image (viewed) shows the 15\" plates fitted between full-height sides and the 31 3/4\" dimension taken over the whole leg; sides are cut 32-1/4\" (cutList[1]), 32.25 - 31.75 = 1/2\" longer than the leg they form. Width check passes: 15 + 2 x 0.75 = 16.5 = '16-1/2\"'.",
+      "reason": "(a) fails as above. (b) top, legs, end boards, back, frame, supports, shelf, drawers and pulls are all installed. (c) hardware (slides, pulls, brackets) is listed; glue not listed (consumable, gap). (d) steps reach the finished piece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "using glue and 2-1/2\" screw through pocket holes",
+      "what": "glue is used throughout but is not in materials (consumable)"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "build three drawer boxes approximately 27\" x 14\"",
+      "what": "drawer box height and parts are not given anywhere in the plan (see R2)"
+    }
+  ],
+  "notes": "Drawer boxes have no parts; leg side length 32-1/4 vs 31-3/4 leg height.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "22f7cebc1d0135bb.webp (step 1)",
+      "03049c218d43cecf.webp (step 2)",
+      "9e4dc4a760f14c84.webp (step 7)",
+      "1fba5025e498aebc.webp (step 8)"
+    ]
+  },
+  "verdict": "Fix"
 }

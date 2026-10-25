@@ -311,10 +311,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[1..5] (front middle rail, center post, side middle rails, panel ends, louver slats, wide/narrow vertical trellis, horizontal trellis, front/side top rails) matches a cutList[*].part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 cut rows are used in steps 1-5 (posts, rails, panel ends, slats, three trellis parts)."
     },
     "R4": {
       "result": "pass",
@@ -325,26 +327,67 @@
       "reason": "R5 precondition not met: 4 stock types (4x4, 2x4, 0.5x3.5, 0.5x5.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fastener sizes in steps: 2 1/2\" (pocket hole screws), 1\" pocket hole screws, 1\" nails; materials: '2 1/2\" pocket hole screws', '1\" pocket hole screws', '1\" brad nails (18 ga)'. No size missing, no conflicting size for one use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "gle. Remember to mirror each post/end when making the marks. Make the marks starting from the bottom. On the front mark: 2 1/4\", 5 1/2\", 8 3/4\", 12\", 15 1/4\", 18 1/2\", 21 3/4\", 25\". On the back mark: ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57848427d60029ed.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Louver mark heights are given in steps[0] and match the step 0 image (viewed: 2 1/4 ... 25 front, 4 3/4 ... 27 1/2 back); rails 12\" from top; trellis 12 3/4\" from each end, 1\" inset/spacing, middle horizontal centred; center post at rail center."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "note": "2 reference(s), each in a step with its own image",
+      "reason": "Both references ('cut list/diagram', '(Note: diagram shows frame upside down.)') sit in steps with their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Marks (0), front frame and side frames (1-2), slats (3), trellis then top rails (4), panels joined (5); each uses parts already made. Step 3 image (viewed) shows slats fitted between posts below the middle rail."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'drill pocket holes for 1 1/2\" material' and steps[3]/[4] 'pocket holes for 1/2\" material' state the thickness for each thickness that gets pocket holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Louver Slats | quantity 42 | 1/2 x 3 1/2 x 23 7/8 (source)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "On the front mark: 2 1/4\", 5 1/2\", 8 3/4\", 12\", 15 1/4\", 18 1/2\", 21 3/4\", 25\". On the back mark: 4 3/4\", 8\", 11 1/4\", 14 1/2\", 17 3/4\", 21\", 24 1/4\", 27 1/2\"."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Secure the side middle rails to the corner post/panel end ... secure the side middle rails to the center post with 2 - 2 1/2\" screws in each side middle rail."
+        }
+      ],
+      "arithmetic": "8 marks per face (steps[0], matches the viewed step 0/3 images: 8 slats per bay). Bays: front frame has 1 center post (steps[1]) = 2 bays; each of the 2 side frames has a center post and 2 side middle rails (cutList[3] quantity 4) = 2 bays each; 3 panels x 2 bays = 6 bays. 6 x 8 = 48 slats needed vs 42 in the cut list (6 short).",
+      "reason": "(a) slat count does not reconcile (bay and slats-per-bay counts read from the steps plus viewed images, hence likely). (b) all parts installed. (c) no unlisted hardware; glue/sandpaper/finish listed. (d) steps reach the assembled screen."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[3] / cutList[7]",
+      "quote": "Side Middle Rail | quantity 4 | 1 1/2 x 3 1/2 x 25 5/8 ; Louver Slats ... 23 7/8",
+      "what": "Front bay: (51 1/4 front middle rail - 3 1/2 center post)/2 = 23 7/8 = slat length. Side bays are 25 5/8 (side middle rail) so the same 23 7/8 slats would be 1 3/4 short there; the cut list has no separate side-slat row. Also horizontal trellis is 51 1/4 for all 3 panels while the side clear width is 25 5/8 + 3 1/2 + 25 5/8 = 54 3/4. Possible plan inconsistency; could not be settled from the plan alone."
+    }
+  ],
+  "notes": "Slat count 42 vs 48 implied; side bays vs slat length unsettled.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "57848427d60029ed.webp (step 0)",
+      "849a72fd0fb53e9a.webp (step 3)",
+      "862bf69cfc35af1b.webp (step 4)",
+      "e4b6a244da510c0d.webp (step 5)"
+    ]
+  },
+  "verdict": "Fix"
 }

@@ -7,13 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "materials[2] '(link in extras)' is a shopping pointer for the dripper; steps[1]-[3] build around 'the coffee dripper' and any dripper is traced, so no build content is missing. www.LazyGuyDIY.com is a credit (§2)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps 0-8 (top/bottom panels, support panel, dowels) vs cutList[*].part and materials[1]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: steps[0] cuts them, steps[1]-[8] use them."
     },
     "R4": {
       "result": "pass",
@@ -21,28 +23,49 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "reason": "Parts are all 3/4\" plywood: area 2 x 7 x 5.25 + 6.5 x 5.25 = 73.5 + 34.125 = 107.625 sq in against a quarter sheet (24 x 48 = 1152), so by the sheet rule it cannot be scored as a fail. Dowel pieces have no length in the plan (rod cut flush on the panels), so the dowel stock cannot be totalled."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "no screws or nails in any step; the only fasteners are dowels (steps[4]-[8] '5/16\" drill bit') and materials[1] 'Dowel rod, 48\" 5/16th' - sizes agree."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": " evenly spaced holes that will be used for the dowel joints. Take note that you will be drill from the top down through the bottom for the top panel and from the bottom up through the top for the bott",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7070770d953a9fd3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Support end 0.75\" line, dowel line 0.375\" from that end, 'at least 3 evenly spaced holes' (relational, matches viewed step 4 image with marked line), dripper 'centered between the 0.75\" line and the opposite end', router depth 1/16-1/8\", 2\" funnel hole traced from the seated dripper."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "steps[0] mentions 'the graphics'; its own image (viewed) shows the three panels labelled 7\", 6 1/2\" and 5 1/4\" and the 5/16\" dowel."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), mark (1), router lip (2), funnel hole (3), dowel holes in top/bottom panels (4), then holes in support panel using the drilled panels as guides (5), glue and dowels (7-8), fill and sand (9-10). Viewed step 4 image shows the dowel line near the end of the panel."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints; the dowel joint states method and size (5/16\" bit and 5/16\" dowel, glue, hole depth about 1\" in the support panel)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[0] panels 7.00 x 5.25 (x2) and 6.50 x 5.25 match cutList (Kreg-corrected rows equal imported; importDiffs empty). (b) panels and dowels are all joined in steps 4-8. (c) the dripper is listed; no other hardware. (d) steps end with the sanded, finished coffee maker."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Add a few dabs of wood glue to the pilot holes of the support panel",
+      "what": "wood glue, stain, polyurethane and sandpaper are used but not in materials (consumables)"
+    }
+  ],
+  "notes": "Clean plan; R5 left unknown by the sheet rule.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "a9ed65600b7972b1.webp (step 0)",
+      "7070770d953a9fd3.webp (step 4)"
+    ]
+  },
+  "verdict": "Ship (unverified)"
 }

@@ -23,22 +23,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[1].body",
-          "quote": "Make 8 kerf cuts that are 3/4\" apart. Start making the cuts 1/2\" into your drawer front on both sides. Make sure to only leave 1/8\" of material left when making your kerf cuts. Using wood glue and a s",
-          "why": "cut sentence states 1/2\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[4].body",
+          "quote": "Attach the back with a brad nailer and 1 1/4\" brad nails"
         },
         {
-          "path": "steps[1].body",
-          "quote": "nto your drawer front on both sides. Make sure to only leave 1/8\" of material left when making your kerf cuts. Using wood glue and a strap clamp bend the drawer front until all the kerfs are closed up",
-          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "cutList[0..6]",
+          "quote": "Nightstand Top and Bottom | Nightstand Sides | Drawer Front | Drawer Slide Supports | Drawer Box Front | Drawer Box Sides | Drawer Box Bottom"
         }
-      ]
+      ],
+      "reason": "Search of cutList[*].part and materials[*].name for /back/i finds no back part; the step gives no size or stock for it (the only size, 18 x 19.75, appears in the step 5 image, viewed). Sweep flags on steps[1] ('1/2\"', '1/8\"') are kerf-cut depths, not parts: rejected. Fix not Unpublish: a 1/4\" back panel is a stiffener and the 1/4\" sheet is listed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used (top/bottom/sides steps 2-3, front 1/8-9, supports 5, drawer box 7)."
     },
     "R4": {
       "result": "pass",
@@ -46,21 +49,97 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet rule: parts are on two sheet types and area does not exceed what is bought. Two nightstands (step 0), 3/4\": per stand 540 + 392.4 + 141 + 172.5 + 61 + 96 + 109.5 = 1,512, x 2 = 3,024 <= 4,608; 1/4\" (back 18 x 19.75 from the viewed image + box bottom if 1/4\") about 930 <= 2' x 4' = 1,152. No certain fail; nesting not judged."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the back with a brad nailer and 1 1/4\" brad nails"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "attach the drawer bottom using wood glue and 1 1/4\" brad nails."
+        }
+      ],
+      "reason": "Search of materials[*].name for /brad|nail/i finds none (materials: plywood x2, edge banding, furniture feet, 12\" slides, glue, 1 1/4\" Pocket Screws, flush trim bit). The 1 1/4\" pocket screws and the 1 1/4\" screws in step 10 are covered by materials[6]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step 6 image gives slide support 5 3/4\" tall, 15\" long and 10 1/8\" clear between supports (= 9 1/8 box + 2 x 1/2 slides); step 7: slides flush with support front and 1/2\" up from drawer sides; kerf cuts start 1/2\" in, 3/4\" apart, leaving 1/8\"; drawer front 1/8\" below the top; curve traced from the front."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "note": "12 reference(s), each in a step with its own image",
+      "reason": "Viewed images for steps 5, 6, 7 and 8 show the diagrams (18 x 19.75 back, supports, slides, drawer box 9 1/8 x 12 x 4). The steps 2-3 'diagram' references restate the requirement in text (sides flush with the back) and their images were not opened."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Drawer front kerfed and bent first to dry 24 h (1), body assembled uncurved (2-3), back (4), slide supports and slides (5-6), drawer box (7), top and bottom cut to the dried front's curve (8), front fitted (9), banding and finish (10). Viewed step 9 image shows the flush-trim stage."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 2, 3 and 7 state 3/4\" pocket holes ('drill the pocket holes at 3/4\"', 'Drill 3/4\" pocket holes'); all pocket-holed parts are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Drawer Box Bottom | quantity 1 | thicknessIn 0.75 | 9.125 x 12"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Once the box is complete, attach the drawer bottom using wood glue and 1 1/4\" brad nails."
+        }
+      ],
+      "arithmetic": "Step 8 image (viewed) dimensions the bottom as '1/4\"' under 4\" sides and 9 1/8\" x 12\" overall; the cut row says 3/4\". Width check passes: 7 5/8 + 2 x 3/4 = 9 1/8.",
+      "reason": "(a) bottom thickness disagrees (a 3/4\" bottom would also change the slide fit). (b) every made part is installed. (c) slides, feet and banding are in materials; double-sided tape is a consumable. (d) steps reach a finished nightstand."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[3]",
+      "quote": "Furniture Feet | each | quantity 1",
+      "what": "Furniture feet are listed but no step installs them and no position or count is given (search of steps for /feet|foot|leg/i: no match)."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Make 8 kerf cuts that are 3/4\" apart. Start making the cuts 1/2\" into your drawer front on both sides.",
+      "what": "Unclear whether 8 cuts total or 8 at each end of the 23.5\" front."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Using double sided tape, position the drawer front so it sits just under the top",
+      "what": "double-sided tape not in materials (consumable)"
+    },
+    {
+      "path": "materials[4]",
+      "quote": "12\" Drawer Slides | each | quantity 2",
+      "what": "Two nightstands (steps[0]) need two pairs of slides; whether quantity 2 means two pairs cannot be told from the plan."
+    }
+  ],
+  "notes": "Back panel has no cut row; brad nails unlisted; drawer-bottom thickness conflict.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "d439ba343b3f4b2e.webp (step 6)",
+      "3bc5437c5beeb855.webp (step 7)",
+      "cd8bb093e807c171.webp (step 2)",
+      "071a17308c44a8e4.webp (step 8)",
+      "af2461100bb63994.webp (step 5)",
+      "57dcf1c53113f38a.webp (step 9)"
+    ]
+  },
+  "verdict": "Fix"
 }

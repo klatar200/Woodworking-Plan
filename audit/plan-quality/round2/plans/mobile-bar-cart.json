@@ -127,43 +127,102 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "ith wheels so that the antiqued brass wheel was visible but the attached portion was hidden behind the 1x2 upright. This is also the time when, if you are choosing to add the brass tube accent rail, y",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag (steps[5] 'the attached portion') is ordinary text. steps[9] Instagram tags are a credit (§2)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-8 (upright legs, 1x2x18 cross supports incl. 2 blanks, 1x3x24 long sides, 1x3x16.5 short sides, 1x6 bottom panels) vs cutList[0..4]: all present; blanks are the 6 minus 4 'with pocket holes' per step 2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows are used by steps 0-8."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2]); +1 more"
+      "result": "pass",
+      "readerNote": "Sweep unknown (unparsed 'Boards, 1x2x8' names) resolved: Kreg-corrected rows 0.75x1.5 (A,B), 0.75x2.5 (C,D), 0.75x5.5 (E) match listed 1x2, 1x3, 1x6; length L=8 <= 16 read as feet = 96\" (§9)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2]"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed stock (1x2, 1x3, 1x6), so the stock is determined. Lengths read as 8 ft = 96\" (§9, L=8 <= 16). 1x2: 4 x 36 + 6 x 18 = 252, + 10 cuts x 1/8 = 253.25 <= 3 x 96 = 288. 1x3: 4 x 24 + 4 x 16.5 = 162, + 8 x 1/8 = 163 <= 2 x 96 = 192. 1x6: 6 x 22.5 = 135 (steps[0] cuts them an inch longer: 6 x 23.5 = 141), + 6 x 1/8 = 141.75 <= 2 x 96 = 192. No quantity is 1.",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step fasteners: 1 1/4\" pocket hole screws (steps 5, 7) = materials[3]; 3/8\" hole with brass rod (steps 5, 8) = materials[9]/[8]; optional 'countersink a screw' has no size. Wheels are not fasteners (see R14)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "On the bottom portion, I installed my cross supports with wheels so that the antiqued brass wheel was visible but the attached portion was hidden behind the 1x2 upright."
+        }
+      ],
+      "reason": "The upper cross support is placed ('about 2.75” from the top') but the height of the lower cross support (and so the lower tray) on the 36\" uprights is never given as a number; viewed step 5 and step 8 images show it only without dimensions. Search of steps for a distance 'from the bottom' finds none."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "note": "3 reference(s), each in a step with its own image",
+      "reason": "No real drawing reference in the text (sweep hits are the words 'attached'); nothing to show."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and panels glued (0-1), cross supports drilled and doubled, wheels fitted (2-4), uprights and cross supports framed with holes for the optional rail drilled first (5), trays built (6), trays set on frames and fastened (7), through-dowel (8), finish (9). Viewed step 5 and step 8 images match."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes using the Kreg 720PRO into (4) of the (6) 1x2x18 cross support pieces."
+        }
+      ],
+      "reason": "Pocket holes go in 3/4\" 1x2 stock. Search of all steps/materials/description for /setting|thickness setting|collar|3\\/4\"/ finds no jig setting. The step 2 image (viewed) shows the jig and drilled 1x2 pieces but no readable setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Install wheels of your choice according to the instructions provided by wheel manufacturer to the bottom of the two lower cross supports after they come out of clamps."
+        },
+        {
+          "path": "materials[0..9]",
+          "quote": "Boards, 1x2x8 | Boards, 1x3x8 | Boards, 1x6x8 | Box of 1 1/4\" Kreg pocket hole screws | Safety glasses | Oil or finish | Measuring tape | Combination square | Brass tube rail | Solid brass rod"
+        }
+      ],
+      "reason": "(c) wheels are hardware used by the steps but no material line matches /wheel|caster/i (search of materials[*].name). (a) counts agree: 6 cross supports = 4 drilled + 2 blanks, 16 pocket holes = 4 x 2 x 2; tray 24 = 22.5 + 2 x 3/4 and 16.5 short sides. (b) all parts installed. (d) steps reach a finished cart."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "super glued solid brass rod inside",
+      "what": "wood glue and super glue are used (steps 1, 3, 8) but not listed in materials (consumables)"
+    }
+  ],
+  "notes": "Wheels missing from materials; lower cross-support height not given.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "21da64f3797a0af1.webp (step 5)",
+      "1925072cb7d4bd65.webp (step 2)",
+      "0706c89c3c6ed404.webp (step 8)",
+      "b16784d4b9454abb.webp (primary)"
+    ]
+  },
+  "verdict": "Fix"
 }

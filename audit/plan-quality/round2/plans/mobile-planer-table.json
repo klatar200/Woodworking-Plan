@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps 0-7 (Planer Legs, Planer Base, Outfeed Legs, Outfeed Base, Base, optional Shelf, casters) vs cutList[0..5] and materials[4]: all present"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used; Shelf (row 3) is used by the optional step 7 and the step 7 image (viewed) shows it."
     },
     "R4": {
       "result": "pass",
@@ -118,27 +120,62 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1.5x3.5, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Plywood parts are all from one sheet type and their area (Base 22 x 32 + Planer Base 20 x 22 + Outfeed Base 12 x 22 + Shelf 19 x 32 = 704 + 440 + 264 + 608 = 2,016 sq in) does not exceed 1 x 48 x 96 = 4,608, so under the sheet rule it cannot be a certain fail and stays unknown. The lumber part passes: legs 4 x 26.25 + 4 x 23.75 = 200, + 7 cuts x 1/8 = 200.9 <= 3 x 96 = 288 (1 1/2 x 3 1/2 matches only the listed 2x4)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "lling two pocket holes on each end of all eight of the legs. - Set the collar depth of the drill to 3/4\" instead of 1 1/2\" thickness, due to the fact that the screw will be going into 3/4\" thick wood.",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "search": "sweep flag at steps[0] is the 1 1/2\" thickness of the 2x4 legs, not a screw. Step fasteners: 1 1/4\" pocket hole screws (steps 1-4) = materials[3] '1 1/4\" Kreg Screws' (32 = 8 legs x 2 holes x 2 ends). 'long screw' (step 4, optional) and 'screws' (step 6) give no size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Leg positions are corners of the Base and platforms (steps 1-4) with the two middle legs 'next to the Planer Legs', shown in the viewed step 4 image; casters 'in each corner'; shelf 'in the middle of the planer table legs' (optional, viewed step 7 image shows it at mid height); Base length 32 = Planer Base 20 + Outfeed Base 12."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No drawing references in the step text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs drilled (0), two sub-assemblies (1-2), both set onto the Base (3-4), casters with the table on its side (5), planer set up last (6). Viewed step 4 image shows the arrangement."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Set the collar depth of the drill to 3/4\" instead of 1 1/2\" thickness, due to the fact that the screw will be going into 3/4\" thick wood."
+        },
+        {
+          "path": "cutList[4..5]",
+          "quote": "Outfeed Legs | 26 1/4\" x 1 1/2\" x 3 1/2\" ; Planer Legs | 23 3/4\" x 1 1/2\" x 3 1/2\""
+        }
+      ],
+      "reason": "The pocket holes are drilled in the 1 1/2\" thick 2x4 legs (step 0 'on each end of all eight of the legs') but the only setting given is 3/4\", which the plan itself contrasts with the 1 1/2\" thickness; by the R9 text the stated setting contradicts the thickness it is used on."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: eight legs = 4 + 4, 32 screws = 8 legs x 2 holes x 2 ends, platforms 20 + 12 = 32 base length and both 22 wide as the Base (viewed step 4 image). (b) all parts installed (shelf in optional step 7). (c) casters in materials[4]. (d) steps end with the planer set up on the table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "You may also want to add a long screw to attach these two legs in the middle to keep them aligned.",
+      "what": "optional long screw (and 'screws' in step 6 for the planer, caster screws in step 5) has no size and is not in materials"
+    }
+  ],
+  "notes": "Pocket-hole depth setting stated as 3/4 for 1.5 thick legs.",
+  "reader": {
+    "batch": "r2-20",
+    "imagesViewed": [
+      "26e8f0d22f41ff94.webp (step 4)",
+      "1e3835382b83ed80.webp (step 7)"
+    ]
+  },
+  "verdict": "Ship (unverified)"
 }
