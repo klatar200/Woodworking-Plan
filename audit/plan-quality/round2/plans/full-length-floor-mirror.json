@@ -80,69 +80,129 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep pass stands. The only outside pointer is steps[0].body \"The video below shows how\" for optionally softening corners; the build does not depend on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0..6] (Legs, Braces, Mirror Ledge, Cleats) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "4 cutList rows each used: Leg steps[0,2], Brace steps[1,2], Cleat steps[5,6], Mirror Ledge steps[3,4]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands (Kreg-corrected rows vs board materials)"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (2x2, 1x2, 0.25x1.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[9].body",
-          "quote": "s into the wall anchors—you can use 1/4\" coarse-thread Kreg screws. The space is tight, though, so a drill won’t fit. You can use a 90° drill attachment, though, as shown below.\n\n**Tip:** Drive Right ",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+          "quote": "drive screws into the wall anchors—you can use 1/4\" coarse-thread Kreg screws."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1 1/4\" coarse-thread Kreg pocket-hole screws"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "#8 x 1\" flat-head wood screws"
         }
-      ]
+      ],
+      "reason": "The wall screws are given as 1/4\"; search of materials[].name for a 1/4\" fastener finds none (listed fasteners are 1 1/4\" pocket-hole screws and #8 x 1\" wood screws). Possibly a typo for 1 1/4\", which is what the pocket-hole steps use; the text as written does not match materials."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs/braces/ledge/cleats cut (steps[0-5]) before assembly (steps[2,4,6]); finish (steps[7]) precedes mirror tape (steps[8]); wall mounting last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"Set your Kreg Jig for 3/4\"-thick material\" (steps[1]); all pocket-holed parts (Braces, Cleats of 3/4\" stock) are 3/4\" thick."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "o use one hole in each Cleat, but having two offers options. To secure your new dressing mirror to the wall, first mark the location of each cleat on the wall. If there’s no stud behind either cleat, ",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give every position: brace spacing 4 1/2\", 17 1/2\", 17 1/2\", 6\" (steps[2] image), pilot holes 3\" and 3/8\" (steps[4]), cleat 4\" up and 6\" long, centered (steps[6]), pocket-hole layouts (steps[1],[5]). Flagged wall step is relational (mark each cleat on the wall); hooks are \"if desired\" on the cleats."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Start by cutting two Legs to length from 2x2 pine, as shown in the cutting diagram. Better-grade 2x2s will have square corners that you may want to soften. You can either sand the corners, or round ov",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "cutting two Legs to length from 2x2 pine, as shown in the cutting diagram."
         },
         {
-          "path": "steps[0].body",
-          "quote": "g two Legs to length from 2x2 pine, as shown in the cutting diagram. Better-grade 2x2s will have square corners that you may want to soften. You can either sand the corners, or round over the edges us",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "from 1x2 pine, as shown in the cutting diagram."
         },
         {
           "path": "steps[9].body",
-          "quote": "rill won’t fit. You can use a 90° drill attachment, though, as shown below.\n\n**Tip:** Drive Right When Space is Tight When space is tight, it can be difficult or impossible to position a drill and a l",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "You can use a 90° drill attachment, though, as shown below."
         }
-      ]
+      ],
+      "reason": "All 11 images viewed (5 unattached, 6 step images): two room photos, two lifestyle closeups, an overall 68\" x 19 1/8\" drawing, and part/assembly drawings for steps 1-6. None is a cutting diagram or shows the right-angle drill attachment. Part lengths are in the cut list, so only the board layout is missing: Fix."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut four Braces to rough length (7\") from 1x2 pine"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Brace [0.75, 1, 16] (Kreg-corrected 0.75 x 1.5 x 16.125)"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "If there’s no stud behind either cleat, install a wall anchor at each location."
+        }
+      ],
+      "reason": "(a) Step gives Brace rough length 7\" but the cut-list row (Kreg-corrected 16 1/8\") and the viewed step-1 image (\"Brace 16 1/8\"\") say 16 1/8\"; the 7\" is the Cleat length (steps[5] \"7\"-long\"). (c) Wall anchors are used in steps[9]; search of materials[].name for /anchor/i found none. (b),(d) pass: all four part types are installed and the steps reach the mounted mirror."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/72ccf05780e2cd3d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2aca0894cf9c876.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eeddeb8b5e480bf6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/826125dad892e995.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c5141f3891acebcc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1805a921ffab9e6b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/322d8d0bd98ab376.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/675a7eaf198251c6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2bfb52b20bbcf386.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/094643475c767566.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1be1e9e096995b15.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Drill two pilot holes at the locations shown",
+      "what": "#8 x 1\" flat-head screws (materials[6], qty 2) are never driven: search of all steps for /#8|flat-head|screw.*ledge/ finds no step that installs them."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "we used a natural oil to bring out the color",
+      "what": "Finish product not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

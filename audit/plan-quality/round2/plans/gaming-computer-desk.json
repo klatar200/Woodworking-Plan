@@ -284,123 +284,114 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep pass stands; no step refers to outside content."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "sk top and will need to be trimmed to size. (Ex. desk top is 27 1/2\" wide, side panels should be trimmed to 26 3/4\" wide). Trim the front edge of the side panels using a table saw, circular saw with f",
-          "why": "cut sentence states 27 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut a 1/4\" thick piece of plywood to 13\" wide and 23 1/4\" long. Apply a bead of wood glue to each of the rabbeted grooves on the side panels and attach the plywood backing with 3/4\" brad nails or narr",
-          "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut a 1/4\" thick piece of plywood to 13\" wide and 23 1/4\" long. Apply a bead of wood glue to each of the rabbeted grooves on the side panels and attach the plywood backing with 3/4\" brad nails or narr",
-          "why": "cut sentence states 23 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged step sizes resolved: steps[1] \"27 1/2\\\"\" is a worked example (desk top 5 x 5 1/2 = 27 1/2 in cutList[0]; panel 26 3/4 = cutList[4] length); steps[3] back \"13\\\" wide and 23 1/4\\\" long\" is cut by the step itself from 1/4\" plywood listed in materials[2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 19 cutList rows matched to steps: desk top steps[0], side pieces steps[1], plywood bottom steps[2], legs steps[4], drawer boxes/bottoms steps[6] (both bottom options), faces steps[7,11], riser rows steps[8]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands (Kreg-corrected rows vs materials)"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 6 stock types (2x6, sheet-0.75, sheet-0.25, 4x4, 1x4, 1x6); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " and let cure for several hours or overnight. If using pocket joinery, drill 1 1/2\" pocket holes into the sides of the boards and join together with 2 1/2\" pocket screws, in addition to the wood glue.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Attach the boards together with wood glue and 1 1/4\" pocket screws.\nMeasure the width of the desk top. The side panels should be 3/4\" narrower than the desk top and will need to be trimmed to size. (E",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "s into each of the long sides of the 3/4\" plywood that makes up the cabinet bottom. Using wood glue and 1 1/4\" pocket screws, attach the plywood so it is flush with the bottom edge of the side panels.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "join together with 2 1/2\" pocket screws, in addition to the wood glue."
         },
         {
           "path": "steps[3].body",
-          "quote": "piece of plywood to 13\" wide and 23 1/4\" long. Apply a bead of wood glue to each of the rabbeted grooves on the side panels and attach the plywood backing with 3/4\" brad nails or narrow crown staples.",
-          "why": "3/4\" brad — no material line lists a 3/4\" fastener"
+          "quote": "attach the plywood backing with 3/4\" brad nails or narrow crown staples."
         },
         {
-          "path": "steps[3].body",
-          "quote": "piece of plywood to 13\" wide and 23 1/4\" long. Apply a bead of wood glue to each of the rabbeted grooves on the side panels and attach the plywood backing with 3/4\" brad nails or narrow crown staples.",
-          "why": "3/4\" nail — no material line lists a 3/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "piece of plywood to 13\" wide and 23 1/4\" long. Apply a bead of wood glue to each of the rabbeted grooves on the side panels and attach the plywood backing with 3/4\" brad nails or narrow crown staples.",
-          "why": "3/4\" staple — no material line lists a 3/4\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "t on top of the legs so that the edges are flush with each of the corners. Drill 1/16\" pilot holes through the plywood bottom and into the legs. Attach the cabinet to the legs with 2 1/2\" wood screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "of one end of the desktop. Flip the desktop over and install the cabinet on the opposite end, flush with the edge of the desktop. Clamp the desktop to the cabinet and attach with 1 1/4\" pocket screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Assemble the drawer boxes using wood glue and 1 1/4\" pocket screws. The inset drawer bottom will fit inside the dado groove when the drawer box is being assembled. Ensure all pieces are flush and squa",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "pieces are flush and square.\nIf attaching the drawer bottom to the bottom edge of the drawer boxes, cut the drawer bottom to b e 18\" x 11\". Attach the drawer bottom with wood glue and 3/4\" brad nails.",
-          "why": "3/4\" brad — no material line lists a 3/4\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "pieces are flush and square.\nIf attaching the drawer bottom to the bottom edge of the drawer boxes, cut the drawer bottom to b e 18\" x 11\". Attach the drawer bottom with wood glue and 3/4\" brad nails.",
-          "why": "3/4\" nail — no material line lists a 3/4\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Drill 3/4\" pocket holes into the 5 1/2\" pieces that make up the middle and top drawers. Glue and attach them to the second pieces of the drawer faces with 1 1/4\" pocket screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "path": "steps[8].body",
+          "quote": "Attach with 3\" wood screws."
         }
       ],
-      "flagsOmitted": 5
+      "reason": "Steps use 2 1/2\" and 1 1/4\" pocket screws, 2 1/2\", 3\" and 1 1/4\" wood screws and 3/4\" brad nails/staples. Search of materials[0..13].name for /screw|nail|brad|staple/i matches none (materials are lumber, plywood, slides, legs, pulls, finish, sandpaper)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Desk top, panels, cabinet, legs (steps[0-4]) then hairpin legs and cabinet on top (steps[5]), drawers (steps[6,7]), riser (steps[8]), finish, slides and faces last (steps[9-11]); riser is screwed up from beneath the top, reachable at the hairpin end."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"drill 1 1/2\\\" pocket holes\" for the 2x6 top (steps[0]); \"Drill 3/4\\\" pocket holes\" for all 3/4\" parts (steps[1,2,6,7,8])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[6].body",
-          "quote": "e the drawer boxes using wood glue and 1 1/4\" pocket screws. The inset drawer bottom will fit inside the dado groove when the drawer box is being assembled. Ensure all pieces are flush and square.\nIf ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3cf40bf525b4d986.webp"
+          "path": "steps[11].body",
+          "quote": "Use the Kreg cabinet hardware jig to drill holes into the front of the drawer faces."
         }
-      ]
+      ],
+      "reason": "Position of the pull holes on each drawer face is not given as a number in any step and no viewed image (steps 6, 7, 8, 10, 11) shows pulls or their location. Everything else checked is given: hairpin legs 1\" inset, cabinet flush, riser 4\" in, gaps 1/8\" (text and step-11 image), slide heights 3 5/8\" and 12 3/4\" and 1/4\" off the bottom (step-10 image), dado 1/4\" up. Flagged drawer-box step is covered by the step-6 image (3\", 8\", 8 3/4\", 9 1/2\", 18\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both \"diagram\" references (steps[1] \"NOT SHOWN IN DIAGRAM\" and the step-8 riser) have step images; viewed images show the referenced content."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Drill 3/4\" pocket holes into the boards to attach them together to make a 10\" wide pieces."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Riser shelf [0.75, 5, 41] (Kreg-corrected 0.75 x 5.5 x 41.5), quantity 2"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Drill 3/4\" pocket holes into the 5 1/2\" pieces that make up the middle and top drawers."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Top drawer face [0.75, 4, 13] (Kreg-corrected 0.75 x 4 x 13.5), quantity 1"
+        }
+      ],
+      "arithmetic": "Riser shelf: 2 boards x 5 1/2\" (cutList[3], quantity 2) = 11\", but steps[8] says \"10\\\" wide\"; the viewed step-8 image dimensions are 5 1/2\" + 5 1/2\". Drawer faces: cutList[6] top drawer face is one 4\" piece (quantity 1) with no second piece; the 5 1/2\" pieces are cutList[11] \"Middle drawer face part 1\" and cutList[15] \"Bottom drawer part 1\" (viewed step-7 image: top 4\", middle 3 1/2\"+5 1/2\", bottom 5 1/8\"+5 1/2\").",
+      "reason": "(a) Two step statements disagree with the Kreg-corrected cut list and viewed images: riser width 10\" vs 11\", and \"middle and top drawers\" where the two-piece faces are the middle and bottom drawers. (b),(c),(d) pass: every part is installed; hardware (slides, hairpin legs, pulls) is in materials; steps reach the finished desk."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3cf40bf525b4d986.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/413398b4c780fcfa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8efb20d0021f7520.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bd71dae42d984888.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1efad371277425a1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "description",
+      "quote": "the addition of the LED lighting takes it to the next level",
+      "what": "LED lighting is advertised but no step or material covers it (optional extra, not needed for the build)."
+    }
+  ]
 }

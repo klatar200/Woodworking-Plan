@@ -6,62 +6,174 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "description",
-          "quote": " wanted something with ample storage. We capitalized on the all too often wasted space under a bed and built in three full-width drawers. Head over to the Extras tab to grab a full set of these plans!",
-          "why": "matches \"Extras\""
+          "quote": "Head over to the Extras tab to grab a full set of these plans!"
         },
         {
-          "path": "steps[11].body",
-          "quote": "Go checkout this out to see more pictures of this project! https://woodshopmike.com/diy-farmhouse-platform-bed-with-storage/",
-          "why": "matches \"https://\""
+          "path": "steps[3].body",
+          "quote": "To assemble, position the items as shown in the plans and screw the parts together."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "I used a scrap of plywood cut to the drawer opening shown in the plans and located the stile against it."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I start by cutting the grooves in all of the parts per the plans."
         }
-      ]
+      ],
+      "reason": "Three steps send the builder to \"the plans\" (the Extras download) for layout the plan itself never gives: where the parts of the headboard/footboard go, the drawer-opening size that fixes the face-frame stile positions, and the groove layout for the false fronts. Search of all steps, cutList and materials for an opening size or stile spacing found none. Part sizes are in the cut list, so likely rather than certain that the structure cannot be completed."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "h sawn lumber for this build, so I bought a bit more than what I needed to account for waste and \"design opportunities.\" To start off, I crosscut the material about 1” longer than needed for my parts.",
-          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Every part a step makes (posts, rails, panels, face frame rails/stiles, false-front rails/stiles/panels, drawer fronts/sides/bottoms, slide supports, 1x4 slats) maps to a cut-list row; \"Bed Slats\" (11 x 3/4x3 1/2x38) correspond to \"Secure 1x4s to supports\"."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[19].part",
+          "quote": "Mounting Piece False Drawers"
+        }
+      ],
+      "reason": "Search of all steps, title, description and summary for /mount/ found no match; step 10 attaches the false fronts by drilling through the drawer pull holes into the drawer box and no step uses a separate mounting piece. Row is qty 3 [0.75, 4, 10]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[4]); cutList[1] no match among parsed stock; unparsed stock present (materials[4]); cutList[2] no match among parsed stock; unparsed stock present (materials[4]); cutList[3] no match among parsed stock; unparsed stock present (materials[4]); +3 more"
+      "reason": "Hardwood parts (posts, caps, rails, stiles) come from materials[4] \"Hardwood ,, Board feet\" with no thickness or width stated, so stock cannot be compared with §9. Sheet parts all fit: 3/4 ply (drawer fronts/sides, braces), 1/4 ply (bottoms), 1/2 MDF panels, laminated 1/4 beadboard + 1/4 ply = 0.5 for the 35.75 x 40.25 headboard panel; none exceeds 48 x 96."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[4]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "rdware by Rockler. Position the \"keyed\" plates and use 3/4” screws to attach it.\nThen secure the \"hole\" plates to the posts using 1-1/4\" pocket hole screws.\nWith the rails secured, install the drawer ",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Position the \"keyed\" plates and use 3/4” screws to attach it."
+        },
+        {
+          "path": "materials[6..8].name",
+          "quote": "Kreg 1-1/4\" Pocket Hole Screws | Kreg 2-1/2\" Pocket Hole Screws | Drywall Screws"
         }
-      ]
+      ],
+      "reason": "3/4\" screws are used for the keyhole plates; search of materials[].name for /3\\/4/ finds only plywood lines, so no 3/4\" fastener is listed. \"Drywall Screws\" (materials[8]) has no size, and steps[10] gives only \"no more than 3\"\" spacing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: frame parts milled and dadoed (steps[1]), panel laminated (steps[2]) before headboard/footboard assembly (steps[3]); face frames (steps[4,5]) and false fronts (steps[6,7]) and drawers (steps[8]) before final assembly (steps[10])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "The headboard and footboard are assembled using 2-1/2\" pockethole screws."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Now I drill pocket holes as needed in the stiles for 1-1/4” screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1.5\" frame parts and 3/4\" stiles/drawer parts; search of all steps for /jig|setting|thickness/ finds no jig thickness setting (only screw lengths), and no viewed image shows one."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "I used a scrap of plywood cut to the drawer opening shown in the plans and located the stile against it."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "drilled through the holes for the drawer pulls (previously drilled) into the drawer box."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Position the \"keyed\" plates and use 3/4” screws to attach it."
+        }
+      ],
+      "reason": "Positions the builder must set and no number or viewed image gives: drawer-opening size / center stile positions, pull-hole locations, keyhole plate positions, drawer-slide support heights and slat-support heights. Search of steps and cut list for these found only the references to \"the plans\". Images viewed (steps 3,5,6,10 and 4 unattached) are workshop/room photos with no dimensions."
     },
     "R11": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "To assemble, position the items as shown in the plans and screw the parts together."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "I used a scrap of plywood cut to the drawer opening shown in the plans and located the stile against it."
+        }
+      ],
+      "reason": "Steps refer to drawings in \"the plans\"; their own images (steps[3], steps[5]) and the unattached images are photographs with no dimensions or layout drawing (viewed), and the referenced layout exists nowhere else in the plan. Structural (face frame, headboard assembly), but only likely because part sizes are in the cut list."
+    },
+    "R14": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "(a) 3 drawers = 6 \"Drawer Front\" (fronts+backs) + 6 sides + 3 bottoms; 6 false fronts = 6 panels + 12 rails + 12 stiles; 2 face frames = 4 rails + 8 stiles as steps[5] (\"outside stiles\", \"center stiles\"). (b) built parts are installed in steps[10] (the unused Mounting Piece is recorded under R3). (c) keyhole hardware, slides and pulls are in materials. (d) steps reach the assembled bed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix + Human review",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f028fe3d0db18d3c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f05d6c1a3a7b050.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d4f599da521388ea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/66ac3e0597d0dd70.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/157620a33146dc1b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b75884e018c9f0b9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4d5cbb79ccb507f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ee7c979cce584307.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ae37911e665997fd.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "Hardwood ,, Board feet",
+      "what": "Hardwood bought as 10 board feet; summed volume of the hardwood parts is 3758.5 cu in (posts 2x3x3x50.5 + 2x3x3x24.5, caps 2x1.5x3.5x44, top/bottom rails 4x1.5x3.5x35, center rails 2x1.25x3.5x35, bed frame rails 4x0.75x2x75, stiles 8x0.75x2x7.5, drawer-front rails 12x0.75x1.5x22.0625, stiles 12x0.75x1.5x5), about 26 board feet if a board foot is 144 cu in (a definition not in section 9)."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Secure 1x4s to supports with drywall screws",
+      "what": "Step uses 1x4s; no 1x4 lumber is listed in materials (search /1x4|1 x 4/ in materials found none; only the hardwood board-feet line could cover them)."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "I applied contact cement to the surfaces to be joined",
+      "what": "Contact cement is used but not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "cutList[2].part",
+      "quote": "Headboard / Footboard Cap",
+      "what": "No step names the cap; it is only implied by \"Assemble Headboard & Footboard\"."
+    }
+  ],
+  "humanReview": "R5: hardwood is bought in board feet (materials[4]); comparing it with part volume needs the 144 cu in board-foot definition, which is outside section 9."
 }

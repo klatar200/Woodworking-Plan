@@ -187,88 +187,139 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": "un teepee stencils on the front. Get creative with your finish! For more photos and tips and tricks on this build check out my blog post. http://www.mylove2create.com/2017/10/kids-pull-down-table.html",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[16].body",
-          "quote": "un teepee stencils on the front. Get creative with your finish! For more photos and tips and tricks on this build check out my blog post. http://www.mylove2create.com/2017/10/kids-pull-down-table.html",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The blog link in steps[16] is an optional pointer for more photos; steps[15] \"read through the plans\" refers to this plan."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts have cut-list rows; viewed step-0/3/4/14 drawings match them (cabinet 48 x 21 3/4, face frame 43\", frames 11 1/4\" rails x 16 1/2\" stiles, sheet layout of top, bottom, sides, dividers, shelves)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 10 rows used: frames steps[4], face frame steps[3], top steps[12], cabinet top/bottom/sides/dividers steps[0], shelves steps[1], back steps[2]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands; sheet layout drawing (step 14) fits all plywood parts in 48 x 96"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 2x2, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Attach the side and dividers as shown to the top and bottom boards. Use wood glue and 3/4'' pocket holes and 1 1/4'' pocket hole screws.\nMake sure to inset the dividers back 3/4''.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Add the shelves at your desired height with 1 1/4'' pocket hole screws and wood glue. If you want your shelves adjustable use the Kreg shelf pin jig.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Use wood glue and 3/4'' pocket holes and 1 1/4'' pocket hole screws."
         },
         {
           "path": "steps[2].body",
-          "quote": "Attach the 1/4'' plywood to the back of the cabinet with 1/2'' screws, pre-drill and drill into the sides, dividers, top and bottom.",
-          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Build the front three frames as shown. Be sure to use 2 1/2'' pocket holes and screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[12].body",
-          "quote": " now you can attach the table top to the face frame. I countersunk 1 1/4'' screws through the table top into the face frame. It is helpful to use a clamp to avoid shifting. Then I filled in the holes.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the 1/4'' plywood to the back of the cabinet with 1/2'' screws"
         },
         {
           "path": "steps[13].body",
-          "quote": "Now you can add the middle frame to the front. Use wood glue on the back of the frame and center it between the side frames, use shims to help. Then secure with 2'' finish nails.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "Then secure with 2'' finish nails."
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" and 2 1/2\" pocket-hole screws, 1/2\" screws, 1 1/4\" countersunk screws and 2\" finish nails. Search of materials[0..7].name for /screw|nail|staple|brad/i matches none (materials are plywood, boards, hinges, latch, legs)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the side and dividers as shown to the top and bottom boards."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Use the diagram for your plywood cuts to get all of them in one sheet."
+        },
+        {
+          "path": "steps[15].title",
+          "quote": "Read through plans"
+        }
+      ],
+      "reason": "The plywood cutting step is listed 15th, after every step that already uses the cut plywood (sides, dividers, shelves, back, top in steps[0-2],[12]), and \"Read through plans / before beginning\" is listed 16th. The titles make the intended order recoverable, so Fix. Rest of the order works (cabinet, face frame, frames, hinges, top, middle frame)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Be sure to use 2 1/2'' pocket holes and screws."
+        }
+      ],
+      "reason": "The viewed step-4 image says \"Build three front frames, with 2 1/2\" pocket holes and 2 1/2\" pocket hole screws\" for 2x2 frames (cutList[0],[1] Kreg-corrected 1 1/2\" thick): a \"2 1/2\" pocket hole\" setting contradicts the 1 1/2\" thickness, while 3/4\" settings for the 3/4\" parts are stated (steps[0], images). Recorded only."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[9].body",
-          "quote": "ll need to notch out the table top around the spring hinges. Measure and mark where to notch, then cut with a jigsaw. Make sure you are aware that you do not notch too high or you will go past the fac",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18791901301295c3.webp"
+          "path": "steps[8].body",
+          "quote": "Attach the spring hinges to the face frame and the inside of the cabinet following the package directions."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Add the hinges to the outside frames, then attach them to the face frame as shown."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Add the latch and hook to the face frame and side of the cabinet."
         }
-      ]
+      ],
+      "reason": "Positions of the 4 regular hinges, 2 spring hinges and latch/hook are not given as numbers; step images 5, 7, 8, 9, 10, 13 (viewed) are photos with no dimensions (only the notch depth \"approximately 3/4\\\"\" and the step-9 \"mark where to notch\" appear). Spring-hinge placement is deferred to package directions, not part of the plan. Shelf height is \"your desired height\" (passes)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Each \"as shown\" step has its own image and the viewed images show the referenced content (sheet layout, face frame, frames, hinges)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 frames = 6 stiles + 6 rails (14 1/4\" x 16 1/2\" in viewed image; 3 x 14 1/4 = 42 3/4 <= 43\" face-frame opening); cabinet 3 x 15 + 4 x 3/4 = 48; dividers 15 1/4 = 16 - 3/4 inset as step 0 says. (b) all parts installed. (c) hinges, latch, legs in materials. (d) steps reach a finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5b01045e8a8dc724.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/464ff77b10f5e59c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e49037b5ec4b593e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ae5186be8ebdc1c7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/238997a43f2f583d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/33d2e7e461441379.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aa12c98982d9b4a6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18791901301295c3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c695ccb1686811f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ea86baa8c1190166.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/895265d3e6551c79.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "I added the legs to the bottom of the cabinet.",
+      "what": "No leg attachment method or hardware (mounting plates, screws) and no leg positions are given; materials[7] lists only \"Legs @ 14 1/4''\"."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Use wood glue on the back of the frame and center it between the side frames, use shims",
+      "what": "Shims, wood filler and stain/paint are used but not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

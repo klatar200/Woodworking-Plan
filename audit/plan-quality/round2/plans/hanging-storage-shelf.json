@@ -164,67 +164,94 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep pass stands; steps[10] is only a credit link."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part a step makes has a cut-list row or is cut by the step from listed stock (sides steps[0]; back 1x12 + ripped 1x6 steps[1]; shelves, dividers, bins, face frames from 1x10, plywood, 1x2)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep candidate \"Shelves\" rejected: the steps say \"top shelf\" (steps[3]) and \"bottom shelf\" (steps[5]); the sweep searched only \"shelv\".",
+      "search": "/shelf/i in steps matches steps[3], steps[5]; all other rows matched: sides steps[0], back rows steps[1], dividers steps[4], bin sides/back/bottom steps[6,7], face frame rows steps[8]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 5 stock types (1x12, 1x6, 1x10, 1x2, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[1].body",
-          "quote": "th boards to 29 1/4'' long. Rip your 1x6 board so that it is 4 3/4'' wide. Then using glue and pocket hole screws attach your 1x12 and ripped 1x6 board together to create the 29 1/4''x16'' back piece.",
-          "why": "4 3/4\" screw — no material line lists a 4 3/4\" fastener"
+          "path": "steps[8].body",
+          "quote": "Using 1x2's and 3/4'' pocket holes and 1 1/4'' pocket hole screws and glue, create a face frame"
         },
         {
           "path": "steps[6].body",
-          "quote": "plywood for my storage bins, because I needed to use it up. You can use 3/4''or 1/2'' plywood or any scrap wood to build these bins. Using glue and 2'' finish nails attach the two sides to the bottom.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Using 1x2's and 3/4'' pocket holes and 1 1/4'' pocket hole screws and glue, create a face frame for the open front of the bin. Attach hardware cloth to the back of the frame with staples. Then glue an",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Using glue and 2'' finish nails attach the two sides to the bottom."
         }
-      ]
+      ],
+      "reason": "Fasteners used: 1 1/4\" pocket-hole screws (steps[8]; also 1 1/2\" screws in the step 2 and 4 images), 2\" finish nails (steps[6]) and finish nails (steps[5,7]). Search of materials[0..8].name for /screw|nail|staple/i matches none (the sweep \"4 3/4\" screw\" flag is the 4 3/4\" rip width of the 1x6 in steps[1], rejected)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: sides, back, back-to-sides, top shelf, dividers, bottom shelf (steps[0-5]), bins (steps[6-8]), finish and hanging (steps[9])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" settings are stated: \"3/4\\\" pocket holes\" in steps[8] text and in the step-1, step-3 and step-4 images (\"3/4\\\" pocket holes and 1 1/2\\\" pocket hole screws\"). All pocket-holed parts are 3/4\"."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "the two boards to 10''. This will give you two 10''x16'' boards. Referring to the photo, measure and mark on your boards where the semi circles start by using the dimensions given. Using a circular ob",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ac8ca83645f46a62.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give the positions: side curves 2 1/2\" x 2 1/2\" and 4 1/2\" / 5 1/2\" / 4\" (step 0), top shelf 11 3/4\" above the back bottom (step 3), dividers 9 1/4\" spacing x 7\" (step 4). Hooks are evenly spaced on the bottom back piece (step 9 image) and the French cleat is the author's stated hanging choice (\"I choose to use a french cleat\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"Referring to the photo\" (steps[0]) and the pictured front piece (steps[7]) have step images; the step-0 image shows the dimensions."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Attach hardware cloth to the back of the frame with staples."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Just make sure you are using studs and anchors in the walls to keep it secure."
+        }
+      ],
+      "reason": "(c) Staples and wall anchors are used; search of materials[].name for /staple|anchor/i found none (materials: boards, plywood, knobs, hooks, hardware cloth, French cleat). (a) passes: 1x12 11 1/4 + ripped 1x6 4 3/4 = 16 = back height; 3 compartments 3 x 9 1/4 + 2 x 3/4 dividers = 29 1/4 = back width; 3 bins x (2 sides, back, bottom, 2+2 face-frame rows). (b),(d) pass."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ac8ca83645f46a62.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5be365e6e520baee.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d7c1447685981c8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eef6cff7966a5faf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b444aae2b29e7a6a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aec74168bce5a0bb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Pictured is an optional front piece if you do not want to do the front that is in the next step.",
+      "what": "Optional front piece has no size or cut-list row."
+    }
+  ]
 }

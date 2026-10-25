@@ -19,81 +19,119 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
-          "why": "matches \"PDF\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " Also, the drawer bottom will be cut to size later as well. There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings.",
-          "why": "matches \"printable\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] says \"There is a PDF in the extras section with printable plans that includes a materials list, cut list, cutting diagrams, and measured drawings\"; the plan already carries the materials, cut list and numbered steps, and every position and size needed is in the steps (drawer arithmetic, hole layout, template circle). The PDF is a convenience copy, not required to complete the build."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "at you’ve built! I used 1/4” mdf for the template stock. It is cut to the same width as the end pieces. I start by cutting a 12” diameter circle out of the center using a circle jig and plunge router.",
-          "why": "cut sentence states 12\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 12\" in steps[1] is the optional decorative half-circle template (12\" circle cut from template stock, then halved, step-2 text); every part the steps cut or assemble has a cut-list row (ends, top, trims, false front, drawer sides/front/back/bottom)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 8 rows used: End/Leg steps[3-6,12], Top steps[7,10], Back/Front Trim steps[7,10,11], Drawer parts steps[14-18], False Drawer Front steps[25,26], Drawer Bottom steps[17,18]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands (plywood parts 3/4 and 1/4)"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only \"pocket screws\" with the listed box of 1-1/4\" Kreg screws (materials[2]); no other fastener size is stated in the steps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and drilled (steps[0-9]), base assembled (steps[10-13]), drawer built and slides installed (steps[14-24]), false front, roundovers, finish. Drawer front/back and bottom are cut late on purpose and the steps give the arithmetic."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "The beauty of this table is its simplicity and how quickly it goes together. All parts are joined with pocket holes."
+        }
+      ],
+      "reason": "All pocket-holed parts are 3/4\" plywood; search of all steps for /setting|thickness|jig/ finds only the K5 promotion in steps[8] and the \"thickness\" of plywood in steps[14]; no jig thickness setting is stated. The jig photos were viewed only as thumbnails, so a setting printed on a jig scale could not be read. Recorded only."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "You should now have two end pieces with perfect half circles cut from the bottom. I really like the look of the cutout and how it makes the table appear to have four feet. If you don’t like the circle",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbf68aaad413d778.webp"
-        },
-        {
-          "path": "steps[21].body",
-          "quote": "Next, transfer the marks from the front of the legs to the inside of each end piece. These will be the mounting points for the full extension slides.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f9bf2c13d7db0b5.webp"
-        },
-        {
-          "path": "steps[22].body",
-          "quote": "binet portion of each slide on the inside of each end piece. Be sure to offset them from the front by the thickness of your plywood to allow room for the false front we will add later. I recommend sli",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c932d828ea35660.webp"
-        },
-        {
-          "path": "steps[29].body",
-          "quote": "Take it all back apart and sand everything up to 220 grit, then apply your finish of choice. It’s going to need some protection from those dirty little monsters! I hope your kids enjoy it as much as m",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d10f7f6222014d1.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Hole layout is numbered (Top: 5 per long edge, 3 per short edge; Back Trim: 2\" from top edge, 1\" from bottom, one halfway; drawer 3 per end); slide positions come from a stated procedure (centerline of the drawer sides transferred to the end pieces, offset from the front by the plywood thickness, drawer 1/4\" above front trim); false-front reveal 1/16\"-3/32\". Flagged steps are relational. All 33 images are photographs."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using the cut list and diagram, cut all of the parts for the table base to size."
+        }
+      ],
+      "reason": "The cutting diagram (and the \"measured drawings\") are only in the PDF; all 33 images were viewed on contact sheets (thumbnail resolution) and every one is a photograph with no diagram or drawing. Part sizes are in the cut list, so only the board layout is missing: Fix."
+    },
+    "R14": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "(a) drawer front/back arithmetic in steps[14] 30-1/4 - 11/16 - 11/16 - 1/2 - 1/2 - 1/16 = 27-13/16 equals the cut-list row (27.8125); bottom \"28-9/16\\\" x 13-3/8\\\"\" equals the corrected row; Top 15 1/4 x 30 1/4 fits two 15\" plates. (b) all parts installed. (c) slides and screws in materials. (d) steps reach a finished table with drawer."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0986cea20b849cd6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c0590d5ae6c4ad1c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eed9578f0c1f2d72.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/798df6bfc75222cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83e0404241f14fc7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/03c1c66b36b6d88c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b8bff2d6e06ec860.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/abeb42d064ee2f6c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c21154be1df3b077.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1a0a0d5ce84df2aa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24ff2a369e23922b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbf68aaad413d778.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77e3c56c0f0fa586.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/68543588602063c0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc508a2a089be4b2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a3262081ac7645c4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/adc19202b094e494.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f79615529c7de58.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ade2e88440d0c83f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d8a3919cb92dff5a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/677d76a7f20492d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f3dc822d6b858b2e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb9e85b71756c96c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c11f6e6de10fceb6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f9bf2c13d7db0b5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c932d828ea35660.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a3cd3ad1e0c25b27.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/50d2cfaa304f5f65.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fd804f12bfa099d6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de5bd756bd908210.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/41895063cb576959.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/08c395daff7ff3be.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d10f7f6222014d1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "15” Duplo Lego Build Plate",
+      "what": "Two build plates are listed and the description says the top fits them, but no step places or attaches them (search of steps for /plate|duplo|lego/i finds none)."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Attach the template to the end piece with two-sided tape.",
+      "what": "Two-sided carpet tape (steps[5], steps[25]) and 1/4\" MDF template stock (steps[1], optional step) are used but not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

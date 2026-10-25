@@ -224,63 +224,91 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep pass stands; no step depends on outside content."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut all of the Case parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide",
-          "why": "cut sentence states 48\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 48\" is the sheet size (\"3/4\\\" x 48\\\" x 48\\\" piece of veneer plywood\" = materials[0] half sheet); every part in steps[1-10] has a cut-list row (Case Side, Top, Bottom, Top/Bottom Fixed Shelf, Case Back, Door, Adjustable Shelf)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 7 rows used: Case Side steps[2,4,5], Top/Bottom/Fixed Shelves steps[1,4], Case Back steps[3,4], Door steps[6-9], Adjustable Shelf steps[10]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "readerNote": "Sweep unknown resolved: the thin parts are the two Adjustable Shelves, which steps[10] cuts from the listed 1/4\" Plexiglas sheet.",
+      "arithmetic": "Corrected row 0.25 x 4 x 18.5 (x2) from materials[7] \"1/4\\\" (or .22\\\") x 18\\\" x24\\\" Plexiglas Sheet\": 18.5 <= 24, two 4\" strips <= 18. Plywood parts (0.75 x 5.5 x 36 etc.) fit a 48 x 48 half sheet."
     },
     "R5": {
       "result": "unknown",
       "reason": "sheet layout not judged (area fits: part area 2×5.5×36 + 1×5.5×18.5 + 1×5.5×18.5 + 2×5.5×18.5 + 1×18.5×22 + 1×19.875×23.875 + 2×4×18.5 = 1832.5 sq in; bought 1×48×48 = 2304 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" coarse pocket screws (materials[1]) and 1/4\" shelf-pin holes with 1/4\" shelf pins (materials[8]); edging 3/4\" x 25 ft (materials[2]): parts need 4 x 18.5 + 2 x 36 + 4 x 5.5 + 2 x (23.875 + 19.875) = 74 + 72 + 22 + 87.5 = 255.5\" <= 300\"."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, drilled and banded (steps[0-3]) before the case is assembled around the back (steps[4,5]); door banded, hinged, removed for finish, remounted (steps[6-9]); hang and shelves last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"set your pocket hole jig for 3/4\\\"\" (steps[1]); all pocket-holed parts are 3/4\"."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "edge of each Case Side. Trim and sand that edging, as well.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c0bc4238f1306c1.webp"
+          "path": "steps[7].body",
+          "quote": "Follow the manufacturer's instruction for the locations of the holes on the Door."
         }
-      ]
+      ],
+      "reason": "Concealed-hinge cup hole locations on the door (and the matching positions on the case) are deferred to the hinge manufacturer; no number appears in the steps, cut list or any of the 10 viewed images. Given and viewed: shelf-pin holes (1\", 2\", 1 1/4\" spacing, 11 3/4\" from ends, 9 1/4\" on back), pocket holes (steps 1, 3), 22\" between fixed shelves and 5 1/2\" depth (step 4/5 images), overall 36\" x 20\" with mirror 24\" and 6\" gaps (unattached image), back 1/4\" in. Hangman \"just under the Top Fixed Shelf\" and the bar pull centered under the case (image) pass as relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "se parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide to help keep you",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram.\n\n**Tip:** Make Better Plywood Cuts When cutting plywood with a circular saw, use an edge guide to help keep your saw straight and o",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut all of the Case parts out of a 3/4\" x 48\" x 48\" piece of veneer plywood, as shown in the cut diagram."
         }
-      ]
+      ],
+      "reason": "No cutting diagram exists in the plan: all 10 images were viewed (4 photos, an overall elevation 20\" x 36\", the shelf-pin layouts, fixed-shelf pocket holes, back, and two assembly drawings). Part sizes are in the cut list, so only the sheet layout is missing: Fix."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) back 18 1/2 x 22 = interior width 20 - 2 x 3/4 and the 22\" between fixed shelves in the viewed image; 2 adjustable shelves x 5 pins = 10 shelf pins in materials[8]. (b) every part installed. (c) hinges, jig, pull, mirror adhesive, hanger, acrylic in materials. (d) steps reach the hung cabinet."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2a35907a681cd3c8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7ffa2f2539323ef7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5a841234ac90482.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e44f7ec1945c6a6a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/988df6a265757b54.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ac644fdda6781df3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c0bc4238f1306c1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/90cf3ba25601203c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/01b4fa55b7f68f10.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5339eb3d1127631b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "mount the other half of the system to the wall where you want your medicine cabinet to hang",
+      "what": "Wall fasteners/anchors for the hanger are not mentioned or listed (\"Following the manufacturer's instructions\").",
+      "kind": "consumable"
+    }
+  ]
 }

@@ -332,57 +332,107 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep pass stands. The shelf/partition mention in steps[8] (\"You have everything you need to make a shelf and partition though if you would like\") is optional."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts a step makes have a cut-list row or are cut by the step from listed stock (back plywood \"1/4\\\" (27 1/2\\\" x 71\\\")\" matches cutList[10]; door pieces steps[13-18] match cutList[11])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[11].part",
-          "quote": "Herringbone Pieces",
-          "why": "no step mentions it (searched steps for herringbone)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep candidate \"Herringbone Pieces\" rejected: steps[14] \"I would cut 14 boards for each door of the exact same size ... 9 7/8\\\"\" = 4 doors x 14 = 56 pieces at 9 7/8\" (cutList[11]: qty 56, Kreg-corrected length 9.875); the steps call them \"boards\".",
+      "search": "other rows matched: top/side/bottom rails steps[0-3], stiles steps[4,5], plywood steps[6,7], support rails steps[8], door frames steps[11], door plywood steps[12], door stops steps[21]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 8 stock types (2x2, 1x2, sheet-0.5, sheet-0.75, 0.25x1.75, 3.5x4.5, 1x4, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "Attach front stiles! Still using same pocket hole depth of 1 1/2\" and same screws at 2 1/2\"! Make sure and glue!",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "path": "steps[22].body",
+          "quote": "staple the 1/4\" (27 1/2\" x 71\") plywood to the back of your buffet, I used 1 1/4\" brad nails"
+        },
+        {
+          "path": "materials[10..12].name",
+          "quote": "1 1/4\" pocket hole screws | 2 1/2\" pocket hole screws | 1\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Flagged \"1 1/2\" screw\" in steps[4] rejected: 1 1/2\" is the pocket-hole depth, the screws are the listed 2 1/2\". But steps[22] uses 1 1/4\" brad nails (and staples in steps[18,21,22]) and search of materials[].name for /brad|nail|staple/i finds none."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (steps[0-5]) -> plywood panels and support rails (steps[6-8]) -> feet while inverted (steps[9]) -> door frames, panels, herringbone (steps[11-18]) -> finish -> hang doors, stops, back (steps[20-22])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated for each thickness: \"1 1/2\\\"\" for 2x2s (steps[0]), \"3/4\\\" thick so make sure and adjust your jig\" (steps[6]), \"3/4\\\" holes\" (steps[7,8,11]), \"pocket holes at 1/2\\\"\" for the 1/2\" door plywood (steps[12])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[20].body",
-          "quote": "the hinges you use will determine how you do this next step! I used an inset concealed hinge so I has to add blocks on the inside of the buffet so the hinge had a place to attach to...but there are ma",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://learn.kregtool.com/content/uploads/2021/03/Step-21-4.jpg"
-        }
-      ]
+      "result": "unknown",
+      "reason": "Hinge and hinge-block positions (steps[20] \"Depending on the hinges you use will determine how you do this next step\"; \"I used an inset concealed hinge so I has to add blocks on the inside\") are not given in text. The only image for that step is on learn.kregtool.com (non-R2 host), which §5 does not allow fetching without Keagan's go-ahead, so it was not viewed. Everything else is given: front stile spacing 16 1/8\" x4 openings and 25 1/2\" (step-4 image), door frame 15 7/8\" x 25 1/4\" (step-11 image), door center \"around 6 7/16\\\"\" and 9 7/8\" pieces (steps[13,14])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands (2 references, each in a step with its own image)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[21].body",
+          "quote": "I just used a small scrap piece of wood and glue and stapled it in the bottom of the buffet!!"
+        },
+        {
+          "path": "steps[18].body",
+          "quote": "I started gluing and stapling as I went after that!"
+        }
+      ],
+      "reason": "(c) Staples are used in steps[18], [21], [22]; search of materials[].name for /staple/i found none. (a) passes: 4 openings x 16 1/8 + 3 front stiles x 1 1/2 = 64 1/2 + 4 1/2 = 69, equal to the bottom-rail row (69); doors 15 7/8 wide x 25 1/4 high fit 16 1/8 x 25 1/2 openings; 4 doors x 14 = 56 herringbone pieces. (b),(d) pass."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3dfbd394c60834e0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c46123437788728.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/941c8e0399418325.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[9].name",
+      "quote": "Drawer pulls",
+      "what": "Four pulls are listed (qty 4) for a buffet with only doors; no step installs pulls or knobs (search of steps for /pull|knob|handle/i found none)."
+    },
+    {
+      "path": "cutList[12]",
+      "quote": "Door plywood [0.5, 12, 22] quantity 4 (Kreg-corrected 0.5 x 12.875 x 22.25)",
+      "what": "Area of 4 pieces = 4 x 12.875 x 22.25 = 1145.9 sq in against materials[2] \"Plywood, 1/2\\\" Thick Quarter Sheet\" (24 x 48 = 1152 if a quarter sheet is a quarter of 48 x 96, which section 9 does not define); only 3 such pieces can be laid out on 24 x 48 without a rip-and-rejoin. Not scored (sheet size not given)."
+    },
+    {
+      "path": "steps[20].body",
+      "quote": "I had to add blocks on the inside of the buffet so the hinge had a place to attach to",
+      "what": "Hinge blocks have no size, count or cut-list row; hinge type is left to the builder."
+    },
+    {
+      "path": "steps[19].body",
+      "quote": "Sand everything down and paint or stain your doors and buffet!",
+      "what": "Paint/stain not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

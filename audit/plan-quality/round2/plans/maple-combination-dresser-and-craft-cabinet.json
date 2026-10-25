@@ -307,63 +307,112 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "uquerque Hardwoods that I cut, flatten and plane to final dimensions. Dimensional lumber will work as well it will just be more expensive. See Popular Woodworking article linked in the Extras section.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "e boards from step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Both hits are optional: steps[0] \"See Popular Woodworking article linked in the Extras section\" (about using dimensional lumber) and steps[3] \"I have attached one site with good information on the process\" (edge gluing). The build steps are complete without them."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make (top, doors, drawer fronts, face frame stiles/rails, case plywood, top frame, shelf and drawer box parts) has a cut-list row; counts agree (8 drawer sides + 8 fronts/backs = 4 drawers; 8 shelf sides + 8 fronts/backs = 4 shelves)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 25 rows matched to steps: maple steps[1,3,11,12], plywood steps[2,4-7], top frame steps[8,9], shelves steps[15,16], drawer boxes steps[14,16], bottoms steps[14,16]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[19].body",
-          "quote": " overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in place but allo",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep candidate rejected: \"1 1/2\\\"\" in steps[19] is the 1 1/2\" front overhang of the top, not a screw.",
+      "reason": "Fasteners used: 1 1/4\" coarse and fine pocket screws, 1 1/4\" brad nails, Kreg 1 1/4\" fine screws with washers: all in materials[5] and materials[12]. No conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and glue up (steps[1-3]), case (steps[4-10]), face frame (steps[11,12]), slides (steps[13]), boxes/shelves (steps[14-16]), doors and fronts (steps[17,18]), top (steps[19]), finish (steps[20]) is possible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "\"Kreg Pocket Hole Jig set to 3/4\\\"\" stated in steps[6,7,9] for all 3/4\" parts."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[19].body",
-          "quote": "oximately 1\" overhang on both sides and 1 1/2\" at the front. Insert the screws from the bottom side of the top frame. The screws should be drawn snug but not over tight. This should hold the top in pl",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e01ac66048bb0f.webp"
+          "path": "steps[17].body",
+          "quote": "Following the manufacturers instructions attach the hinges of your choice (I used 105 Degrees Compact Cabinet Hinge, 1/2\" Overlay from Amazon) to the doors."
+        },
+        {
+          "path": "steps[20].body",
+          "quote": "After the finish has dried add door/drawer pulls."
         }
-      ]
+      ],
+      "reason": "Positions of the 4 hinges, 2 knobs and 4 bail pulls on doors/fronts are not given as numbers and no viewed image (steps 17 and 18 photos) shows them. Given in viewed drawings: leg cutouts (step 4), stile layout 16 1/2\" / 27\" / 2 1/2\" (step 11), slide heights 5 1/2\" / 10 1/2\" / 17 1/2\" / 26\" and shelf 13\" / 26\" (step 13), drawer-front stack, top overhang 1\" and 1 1/2\" (text). Shelf slide spacing is \"most useful spacing for your needs\" (passes)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Each \"following diagram\"/\"see picture\" reference has a step image; viewed drawings show the referenced pocket holes, stile layout, slide heights and screws with washers."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "I then use my table saw to cut a 1/2\" deep X 1/2\" inch wide dado in all sides and fronts/backs."
+        },
+        {
+          "path": "cutList[15].thicknessIn",
+          "quote": "Shelf Sides Poplar [0.5, 2, 19] (Kreg-corrected 0.5 x 2.5 x 19.5)"
+        }
+      ],
+      "arithmetic": "Dado depth 1/2\" in shelf sides/fronts/backs that are 0.5\" thick (steps[15] \"from 1/2\\\" poplar\"; cutList[15], [16] thickness 0.5) = cut-through; the drawer step uses 1/4\" x 1/4\" for 1/2\" stock (steps[14]).",
+      "reason": "(a) The shelf dado depth in steps[15] equals the part thickness, so as written it severs the parts (likely a copy of the drawer step with the wrong depth). Other numbers agree: drawer fronts 6+6+7+8 = 27 = the 27\" opening (viewed step-11 image); top overhang 1\" each side (60 - 58 body) and 1 1/2\" front. (b),(c),(d) pass: hinges, slides, brackets, knobs, pulls, finishes are in materials; every part is installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/008e0e7e1f54cbb5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8837c6c408ba712b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ed1a8638c567201d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d02f1381a78a22b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e0f3b0e3c7d2d464.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ed8c4ad4f74c4fef.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/930b6dd2da660576.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6845d00e077c29b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb74ac8a28b8efaf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/14a215fb45a55eda.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/406ef41022959f4f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cf633bcf0224309e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/42b17f6b9f48151e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc75c6c8a9744766.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/26ef0a754de9b50a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1de450825ee1bbef.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8bf7e1c445cac6c5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b065bcadd00dff2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/356f7ec158c1fc11.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fd8a085f93d77ea3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e01ac66048bb0f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f28e2d3a488b84bd.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "Board, Hard Maple Board Feet",
+      "what": "Hardwood quantities (27 maple, 26 poplar) are in board feet with no thickness stated; not compared with the part list (R5 unknown)."
+    }
+  ]
 }

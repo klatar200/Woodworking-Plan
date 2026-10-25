@@ -115,63 +115,58 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Place the Leg pieces inside the attached Leg Top pieces. Make sure the table top pieces are still lined up. Bolt the two Leg pieces together at the center hole with a washer between the boards. Then b",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "a washer between the boards. Then bolt the rounded edges to the attached Leg Top pieces with a washer between the boards. The legs will stand up properly once bolted. Repeat for the other leg assembly",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The two \"attached\" hits are ordinary assembly wording (steps[6]: \"the attached Leg Top pieces\"); steps[8] only credits the author. No step depends on outside content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0..6] (Top Edge, Top Center Slats, Leg, Leg Top) each match a cutList.part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "4 cutList rows each used: Top edges steps[0,1], Top center slats steps[0,1], Leg Tops steps[2,5], Legs steps[2,6]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Kreg-corrected rows match nominal sizes (§9): 1.5x1.5 = 2x2 (6' stock, part 55.5), 1.5x5.5 = 2x6 (slat 12), 1.5x3.5 = 2x4 (leg 38, leg top 24). The sweep unknown came from the live whole-number thicknesses (S-19)."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 3 stock types (2x2, 2x6, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "he bolt head and nut totally hidden inside the legs pieces or they will get stuck when you fold and unfold your table. I used 3” bolts and need to replace them with the shorter bolts and deeper holes.",
-          "why": "3\" bolt — no material line lists a 3\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 3\" bolt rejected: steps[4] says \"I used 3” bolts and need to replace them with the shorter bolts\", i.e. the plan's bolt is the 2 1/2\" one in materials[4]. Bolts/nuts/washers: 6 each in materials[4..6]; 3 bolt points per leg assembly x 2 assemblies = 6 (steps[6]). 2 1/2\" pocket screws in materials[3]."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Tops built (steps[0,1]), legs cut, drilled, recessed (steps[2-4]), leg tops fixed to tops (steps[5]) before legs bolted in (steps[6])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "All parts are 1 1/2\" thick; \"Set your pocket hole jig for 1 ½” thick material\" (steps[0]) and \"pocket holes set for 1 ½” thick material\" (steps[5])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "To fold the table, pull the two sides of the table top apart until the rounded edges of the leg assembly are visible. Then let the table top pieces fall flat to the sides and press all the leg pieces ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4477c26db96e2d4a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Slat gap 3/4\", hole 1 3/4\" from end, second hole 17 23/32\", recess 1\" x 1/2\" are in the text; leg-top positions (2 7/8\", 3 3/16\") and bolt-head/nut faces are shown in viewed images of steps[4] and steps[5]. The flagged fold step (steps[7]) is use, not a position to set."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "\"according to the diagram\" in steps[4] and steps[5]: viewed step images are the referenced diagrams (hole-for-bolt-head/nut layout; leg-top placement with 2 7/8\" and 3 3/16\" dimensions)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 18 slats = 2 tops x 9; 9 x 5 1/2 + 8 x 3/4 gaps = 49.5 + 6 = 55.5, equal to the 55.5 top edge row. 4 legs + 4 leg tops = 2 leg assemblies. (b) every part installed in steps[5,6]. (c) bolts, nuts, washers in materials. (d) folds and stands per steps[6,7]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a44204a5fd41e1da.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95addc1a4923d00e.webp"
+    ]
+  },
+  "gaps": []
 }

@@ -43,63 +43,106 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "our jig to 1-1/2\" but set your drill bit collar to 3/4\" *** See attached image. ***\nThis is only for the mitered end - the \"peak short\" will get pocket holes on the square end - use your typical setti",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "1/2\" pocket hole screws, attach the peaks to each other per the attached image. Glue is recommended on all the pieces that will be screwed together.\nRepeat the above step for the other peaks for the o",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The flagged \"attached image\" phrases refer to the plan's own step images, not outside content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble the ends of the house bed per attached image."
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Horizontals"
+        }
+      ],
+      "reason": "The viewed step-0 parts drawing lists \"Horizontal(s) Ends 02ea\" at 40\" and \"Horizontal(s) 05ea\" at 72\", and the step-3 image shows a 40\" and a 72\" board; the cut list has only Horizontals qty 5 x 72 (search of cutList[].lengthIn for 40: none). The two 40\" end rungs, installed at the bottom of each end frame (step-1 image), have no cut-list row and no step cuts them from listed stock; the length exists only in the images, so the build is completable: Fix."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Verticals",
-          "why": "no step mentions it (searched steps for vertical)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep candidate \"Verticals\" rejected: the four verticals are the uprights of the end frames in steps[1] (viewed step-0 and step-1 images label them \"Vertical(s) 04ea\" and show them); the step text refers to \"ends\" and \"the ends ... per attached image\".",
+      "search": "Horizontals steps[2,3], Peak (long)/(short) steps[4,5], Verticals steps[1]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands (all parts 1.5 x 3.5 = 2x4)"
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 4×61.5 + 5×72 + 2×29.8125 + 2×28.3125 + kerf 2 cuts (13 parts − 11 boards, the fewest possible)×1/8 = 722.500″; bought: 4×96 + 7×72 = 888″; 722.500 ≤ 888"
+      "readerNote": "Recomputed including the two 40\" end rungs that the cut list omits.",
+      "arithmetic": "96\" boards (4): each gives one 61 1/2\" vertical plus a 34 1/2\" offcut (61.5 + 28.3125 + 2 x 1/8 = 90.06 <= 96, so each also yields one short peak). 72\" boards (7): 5 x 72 horizontals (72 <= 72), the other 2 each give 40 + 29.8125 + 1/8 = 69.94 <= 72 (40\" rung + long peak). Everything fits in 4 x 96 + 7 x 72."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All screws are 1 1/2\" pocket-hole screws (steps[3],[5]) = materials[2]; plugs in materials[3]; glue in materials[4]."
     },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "bedroom otherwise you'll build the ship outside the bottle.\nI'd recommend having all your pocket holes face away from the front of the bed or the door. Even though we are filling them, we can keep the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ec1f94c84947c7d.webp"
+          "quote": "Now that you have both \"house ends\" built, connect them with with your horizontals*"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill pocket holes on both ends of all the horizonatal pieces."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Using the same 1 1/2\" pocket hole screws, attach the peaks to each other per the attached image."
         }
-      ]
+      ],
+      "reason": "The ends are connected with the horizontals (steps[2]) before the horizontals have their pocket holes drilled (steps[3]) and before the peaks are drilled and assembled (steps[4,5]); the viewed step-2 image already shows the peaks and ridge in place. Steps run in the order 1, 2, 3, 4, 5 as listed; the builder must reorder (drill horizontals, drill and assemble peaks, then connect). Titles make the intent recoverable, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "All parts are 1 1/2\" thick; \"for 1 1/2\\\" setting\" (steps[3]); peaks \"Set your jig to 1-1/2\\\" but set your drill bit collar to 3/4\\\"\" for the mitered ends (steps[4]) with the jig scale shown in the viewed step-4 image."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Positions are fixed by the parts or shown: 40\" rung between verticals at the bottom (step-1 image), horizontals at vertical tops/bottoms and ridge at the apex (step-2 image), pocket-hole locations on all parts (step-0 and step-3 images). Flagged step[2] is a recommendation on which way pocket holes face."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Each \"attached image\" step has its own image and the viewed images show the referenced content (ends, jig settings, peaks)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) no step gives a count or size that disagrees with the cut list (peaks 29 13/16 and 28 5/16 in the viewed step-0 image = Kreg-corrected 29.8125 / 28.3125). (b) every cut part is installed in steps[1,2,5]. (c) only screws/plugs/glue, all in materials. (d) steps reach the assembled frame."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b13430daf6013569.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49926e7d927d01a7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ec1f94c84947c7d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/412f7086ef372196.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a4f2832992bfe0af.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ec3f2adc0daaf3a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/35a2c9693fee82c2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "on the ends with the miters, you will drill on the long side",
+      "what": "The miter angle of the peaks (and of the vertical tops they sit on) is never stated in the text, the cut list or the viewed images."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Using the cutlist provided, cut all the parts necessary for this build.",
+      "what": "Cut list is incomplete (see R2): the two 40\" end rungs shown in the step-0 drawing are missing."
+    }
+  ]
 }

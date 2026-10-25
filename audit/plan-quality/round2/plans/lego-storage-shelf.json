@@ -79,73 +79,118 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].title",
-          "quote": "Download plans",
-          "why": "matches \"Download\""
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Download the plans for this shelf for a few more detailed instructions while you build.",
-          "why": "matches \"Download\""
+          "quote": "Download the plans for this shelf for a few more detailed instructions while you build."
         },
         {
-          "path": "materials[6].name",
-          "quote": "Lego Bins (https://amzn.to/3sl4V64)",
-          "why": "matches \"https://\""
+          "path": "steps[2].body",
+          "quote": "set depths to 3/4\" and drill all the pocket holes as shown in the plans."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "mark and cut out the materials as shown on the cut list / build plans."
         }
-      ]
+      ],
+      "reason": "The plan sends the builder to downloadable plans for pocket-hole locations and \"a few more detailed instructions\". Part sizes are in the cut list and the assembly order is in steps[5], so the shelf can still be built; what is missing is the layout detail (see R10): Fix. The Amazon link in materials[6] is only a product reference for the bins."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps[5] (Back, Top, Sides, Shelves, Toe Kick) all have cut-list rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Top of Cabinet",
-          "why": "no step mentions it (searched steps for cabinet)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Shelves",
-          "why": "no step mentions it (searched steps for shelv)"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep candidates rejected: \"Top of Cabinet\" is the \"Top\" in steps[5] (\"Starting with the Back and Top pieces\") and \"Shelves\" is \"Shelfs\" in steps[5]/steps[3] (\"selves\"); the sweep searched \"cabinet\" and \"shelv\".",
+      "search": "all 5 rows used in steps[3] and steps[5]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep pass stands (3/4\" plywood parts, toe kick 3/4 x 1 1/2 strip from plywood; total area about 5,100 sq in of 2 x 4,608)"
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener size other than the 3/4\" pocket depth; materials list 1 1/4\" and 2\" screws and plugs. No conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, band, sand, assemble (back and top, sides, shelves top to bottom, toe kick), finish: order works."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "All parts are 3/4\" plywood and steps[2] says \"set depths to 3/4\\\"\"."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "set depths to 3/4\" and drill all the pocket holes as shown in the plans."
+        },
         {
           "path": "steps[5].body",
-          "quote": "e Back and Top pieces, start assembling the shelf together.\nThan add Sides, and than the Shelfs, working from the top to the bottom.\nFinally install the Toe Kick.\nAll pieces were glued and screwed tog",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/062ac892dd2b9b09.webp"
+          "quote": "Than add Sides, and than the Shelfs, working from the top to the bottom."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "We also pre-drilled holes in the back for the shelfs at the same time as drilling the pocket holes"
         }
-      ]
+      ],
+      "reason": "Where each of the 5 shelves sits on the sides/back (shelf heights, hole locations in the back) is not given as a number in the steps or cut list (search of all steps for a height or spacing found none); the viewed step images (cutting, jig, assembled shelf on its side) and the 9 unattached photos show the shelves but carry no dimensions or drawing. Likely because evenly spaced shelves are visible in the photos."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "set depths to 3/4\" and drill all the pocket holes as shown in the plans."
+        }
+      ],
+      "reason": "\"as shown in the plans\" refers to a drawing that is not in the plan: all 15 images are photographs (viewed step 1, 2, 5 images in full and the other 12 as a contact sheet), none shows pocket-hole or shelf layout with dimensions. Fix, not Unpublish: the cut list gives part sizes and the layout can be chosen."
+    },
+    "R14": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "(a) cut-list sizes are self-consistent (shelf 13 deep + 3/4 back = 13 3/4 side depth; back 35 + 2 x 3/4 sides = 36 1/2 top width). (b) all parts installed in steps[5]. (c) edge banding, finish, filler, plugs, bins in materials. (d) steps reach a finished shelf."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-03",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77a1c8f852ade648.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b3352b57e93eeb5d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/062ac892dd2b9b09.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/74aa0a6852dc2fdd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/677864ce0498d471.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/59f97da88a71d8ab.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ae56ff816d4aaac1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/977bb62c5ca46fc3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/411acc3115cf283a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c06d3b325b4031fb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aba87c109965e4c2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/73e1451470589eeb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1].name",
+      "quote": "Edge Banding, 3/4\"",
+      "what": "Quantity 1 with no length; exposed edges to band (steps[3]) cannot be totalled against it."
+    }
+  ]
 }
