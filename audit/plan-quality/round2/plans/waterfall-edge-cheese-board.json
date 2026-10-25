@@ -47,80 +47,82 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top center/outer boards and middle/outer side boards are all in the cut list; step 0 'Make all cuts in the cut list'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used: steps[2] (Top Center, Top Outer) and steps[3] (Middle Side, Outer Side)."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[0]",
-          "quote": "Top Center Board — qty 1, 0.75 x 3 x 28.75 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Top Outer Boards — qty 2, 0.75 x 3 x 30.25 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Middle Side Boards — qty 2, 0.75 x 3 x 8"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Outer Side Boards — qty 4, 0.75 x 3 x 7.25 (Kreg-corrected)"
+          "path": "steps[0].body",
+          "quote": "We used wide boards of cherry and poplar to give a striped look and trimmed them down to exactly 3\" wide each. You can use standard off-the-shelf 1x3 boards as well."
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 1x3 72\""
         }
       ],
-      "arithmetic": "cutList[0] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[1] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[2] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5; cutList[3] 0.75×3: no listed stock has thickness 0.75 (±1/32) with width ≥ 3; stock = 0.75×2.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top Center Board — qty 1, 0.75 x 3 x 28.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Top Outer Boards — qty 2, 0.75 x 3 x 30.25 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Middle Side Boards — qty 2, 0.75 x 3 x 8",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Outer Side Boards — qty 4, 0.75 x 3 x 7.25 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "Every cut row is 0.75 x 3 wide; section 9 gives a 1x3 as 3/4 x 2 1/2, so 3 > 2.5 and the listed 1x3 cannot supply the parts; the step's own stock (wide cherry/poplar) is not in materials.",
+      "reason": "Sweep result confirmed: listed stock is narrower than every part and the step's alternative (1x3) contradicts it."
     },
     "R5": {
       "result": "pass",
       "arithmetic": "parts: 1×28.75 + 2×30.25 + 2×8 + 4×7.25 + kerf 7 cuts (9 parts − 2 boards, the fewest possible)×1/8 = 135.125″; bought: 2×72 = 144″; 135.125 ≤ 144"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" Kreg screws are used (steps[2]); materials list 1 1/4\" Kreg Pocket Screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole counts and 'evenly spaced' are relational; end gap given as 3/4\" (steps[2]); middle sides go 'inside the gap', outer sides under the outer tops (7.25 + 0.75 = 8 = middle side length). Router slot for the magnet strip is sized to the tape (builder fit)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps/description for /as shown|see (the )?(diagram|drawing)|pictured|attached/i: none."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, join top boards with 3/4\" end gaps, attach side pieces inside/under, then rout and oil. Possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in the necessary boards."
+        }
+      ],
+      "reason": "All parts are 3/4\" and get pocket holes; search steps/description/materials for /thick|setting|set (your|the)/i finds no jig thickness setting (no image viewed)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 30.25 - 28.75 = 1.5 = 2 x 3/4\" end gaps; 7.25 + 0.75 top = 8 = Middle Side length; side counts (2 middle, 4 outer) match; (b) all pieces installed; (c) magnetic tape in materials, oil is a consumable (gaps); (d) steps reach finished board."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Coat in food-safe cutting board oil and let dry.",
+      "what": "cutting board oil not in materials"
+    }
+  ],
+  "readerNote": "R4 sweep fail stands; reader confirmed from steps[0] and section 9."
 }

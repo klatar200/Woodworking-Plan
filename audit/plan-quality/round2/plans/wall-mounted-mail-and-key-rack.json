@@ -43,36 +43,115 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut wood according to the visual cut list in the woodworking plans with a table saw and miter saw."
+        }
+      ],
+      "reason": "The step defers to a 'visual cut list in the woodworking plans' that is not in the plan; the cut list row (Birch 0.75 x 3.5 x 15, Kreg-corrected) and materials allow the build to be completed, so Fix, not Unpublish."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The one cut part (birch shelf) has a cut-list row; the teak round is a purchased material (steps[0] 'purchase a ready to-use 15\" wood round or cut your own')."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Birch row is the shelf used in steps[1]-[6]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.75x3.5, 1x15); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Part 0.75x3.5 matches exactly one listed material (Birch 2' x 3 1/2\" x 3/4\"); 15 in (+0 kerf, single end cut) <= 24 in."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 'Kreg pocket hole softwood screws' (steps[3]) and plugs are named; materials list 1 1/4\" Kreg pocket hole screws and plugs. No sizes conflict."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Hold the shelf up to the correct location on the wood round and mark any edges of overlap"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Add hooks to the bottom half of the wood round."
+        }
+      ],
+      "arithmetic": "No number for the shelf's position on the 15\" round, the spacing/arrangement of the 3 hooks, or the position of the drawer pull on the shelf (search all steps for inch values: only 80/150-grit and 15\" round in steps[0]). Viewed step images (157ad958..., 566892d8..., 30e4c6d8...) and the three unattached finished photos show the shelf and hooks only without measurements.",
+      "reason": "Shelf, hook and pull positions are not given as numbers and no viewed image gives dimensions."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the bottom of the shelf as shown in the woodworking plans."
+        }
+      ],
+      "reason": "The referenced drawing is not in the plan: viewed step-1 image 566892d8e07037c9 is a photo of the jig with no hole layout; no other viewed image shows a hole layout."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Cut, drill, fit/taper, attach, plug, sand, paint shelf, oil round after taping, add hooks/pull, hang. Possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the bottom of the shelf as shown in the woodworking plans. We used the Kreg 720 Pro."
+        }
+      ],
+      "reason": "The 3/4\" shelf gets pocket holes; search steps/materials/description for /thick|setting|set (your|the)/i finds no jig setting; viewed step-1 photo shows no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) one birch part 15\" matches the 15\" round width; (b) shelf, hooks (3 two-prong hooks) and pull installed; (c) hooks, pull, primer, paint, level in materials; sandpaper, tape, teak oil are consumables and hanging hardware is an either/or choice (gaps); (d) steps end with hanging."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/157ad9583431e928.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/566892d8e07037c9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/30e4c6d8a0b426cd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6d58852466770ff3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/238883b8b244ec77.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/092ee1a2daaf12da.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Tape around the shelf using painter’s tape.",
+      "what": "painter's tape, sandpaper (80/150 grit) and teak oil not in materials"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "You can use either picture-hanging hardware or heavy-duty Command picture-hanging strips.",
+      "what": "Hanging hardware is an either/or choice and is not in materials."
+    }
+  ]
 }

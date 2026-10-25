@@ -83,31 +83,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "End frame parts, cross supports, bottom, sides, top and top underside are all in the cut list (2 end frames x (2 vertical + 2 horizontal), 4 cross supports)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All eight rows used in steps[1]-[6]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 2x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Parts match one stock each (1.5x2.5 -> 2x3; plywood 0.75/0.25 sheets). 2x3: 4x8.75 + 4x10.5 + 4x43.5 = 35+42+174 = 251 + 12 x 1/8 = 252.5 <= 5x96 = 480 (43.5 x 2 per 96 board). 3/4 sheet area 2x10.5x14 + 2x14x48 + 12x48 + 7x43 = 294+1344+576+301 = 2515 <= 4608; strips along 96: 14+14+12+7 = 47 + kerfs, short sides 10.5 x 14 fit in the rest. 1/4 quarter sheet 24x48: 10.5 x 46.5 fits."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach bottom to frame using countersunk 1 ¼” wood screws."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/4\" wood screws"
+        }
+      ],
+      "arithmetic": "Viewed step-3 drawing (da74f13c52b2119f) labels the bottom 'attach using 3/4\" countersunk wood screws' (text: 1 1/4\"): two sizes for the same use, and 3/4\" is not in materials. Viewed top drawing (62702d03012897e3) labels 'attach using wood glue and 1 1/4\" pocket hole screws' for the underside while steps[6] says '1 ¼” countersunk wood screws'; materials list only 2 1/2\" pocket hole screws.",
+      "reason": "Conflicting fastener sizes for the same joint, and sizes shown that are not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed drawings give the frame sizes (8 3/4\", 10 1/2\", 2 1/2\", 43 1/2\") and pocket-hole positions; the top underside is shown set in on the top (7 x 43 on 12 x 48). Hinge and wheel placement are not numeric (gaps) but are along the back edge and at the corners."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps/description for /as shown|see (the )?(diagram|drawing)|pictured|attached/i: none."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "End frames, cross supports, bottom, short and long sides, upholstered top with underside, hinge, wheels. Possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the short vertical supports to the longer horizontal supports using pocket holes and 2 ½” pocket hole screws."
+        }
+      ],
+      "reason": "All pocket holes are in 1 1/2\" stock; search steps/description/materials for /thick|setting|set (your|the)/i finds no jig setting; viewed step images show hole positions only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 10.5 + 2x0.75 = 12 = Top width; 43.5 + 2x1.5 = 46.5 = Bottom length; foam 12x48 = Top; end vertical 8 3/4\" matches viewed drawing; (b) all parts installed; (c) hinge, wheels, foam, batting, leather in materials; (d) steps end with finish and wheels."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c927502519c07ea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32888e0d65053161.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/da74f13c52b2119f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/62702d03012897e3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Attach top to base using a piano hinge. Finish as desired and finally attach wheels to underside.",
+      "what": "No hinge placement along the 48 in edge, no wheel positions or wheel/hinge screw sizes, and no method or fastener for attaching the leather, batting and foam (staples not in materials; search steps for /staple|tack|glue/: only glue for the top underside)."
+    }
+  ]
 }

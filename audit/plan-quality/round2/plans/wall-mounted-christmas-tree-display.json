@@ -119,31 +119,103 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base 1-4, Sides, Top Left, Top Right all appear in steps[0]-[3] and the cut list. Bevel angles are missing but that is import loss (gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used in steps[1]-[4] (Sides 6 = 2 per layer x 3 layers; Top Left/Right in steps[3])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board of choice, 3/4\" x 3 1/2\" x 8' 8'"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut down your board into 2\" wide, or cut down a strip of plywood."
+        }
+      ],
+      "arithmetic": "One stock type. Kreg-corrected lengths: Base 20 + 16 + 12 + 8.5 = 56.5; Sides 6 x 11.75 = 70.5; Top Left 8 + Top Right 7 = 15; total 142 in + kerf. Bought: 1 x 8' = 96 in (explicit ' unit). 142 > 96. A 3 1/2\" wide board yields one 2\" strip, so ripping does not add length. Confidence likely only because quantity 1 could be an importer default (importDiffs show no evidence either way).",
+      "reason": "Parts need 142 in of 2\"-wide strip; one 96 in board is bought."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" Kreg screws and pocket hole plugs are used; both in materials; hangers/hooks discussed in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Layer spacing given as '1 1/4\" away from the ends' (steps[2],[4]); other placements relational ('flush against the angled edges', 'so the angles align'); viewed images show the layer stacking. Wall-hanger spot is 'back of the Sides in the third section' (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps/description for /as shown|see (the )?(diagram|drawing)|pictured|attached/i: no reference to a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Layers built (steps[1]), joined bottom-up (steps[2]), top built (steps[3]); the wrong base reference in steps[4] is recorded under R14."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill all your pocket holes at once. - Drill two pocket holes in each end of all the Side and Top Right pieces."
+        }
+      ],
+      "reason": "All parts are 3/4\" and get pocket holes; search steps/description/materials for /thick|setting|set (your|the) jig/i finds no jig thickness setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach the Top Left into the top of Base 4 so that the angles align on the left side."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "attach the Sides connected to Base 3 into the bottom of Base 1."
+        }
+      ],
+      "arithmetic": "Base 1 already carries the first layer's Sides (steps[1]) and is the bottom of the tree; the Top built on Base 4 in steps[3] is never attached to anything by name. Search steps for /Base 4/: only steps[3]. The viewed step-4 image (0adfdfd7c086b1ae) shows the top triangle joined above layer 3.",
+      "reason": "steps[4] 'Connect Top' names Base 1 where the finished top (Base 4) must be joined; as written the top is not installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0adfdfd7c086b1ae.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24bfeced462f6d08.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "cause": "import",
+      "path": "steps[0].body",
+      "quote": "Cut all the beveled angles on each piece.",
+      "what": "Bevel angles are in the Kreg source rows (importDiffs[].source: 'with opposing 15 degree bevels', 'opposing 30 degree bevels', 'parallel 15 degree bevels') but appear nowhere in the live plan (search of all fields for /bevel|degree/: only this step)."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Add brackets to the wall and then hang your tree.",
+      "what": "'brackets' and 'wall hangers' are not in materials (only 2 'Picture hanging hooks'); unclear if the same item."
+    }
+  ]
 }

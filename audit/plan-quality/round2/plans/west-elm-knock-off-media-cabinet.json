@@ -35,10 +35,26 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps cut or assemble (sides, shelf, legs, doors, top/bottom) all have cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Back, qty 1, 0.25 x 16 x 31"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "drill the sides into the top and bottom insetting them in 1/4” from the back and 3/4” from the front."
+        }
+      ],
+      "arithmetic": "Search of all steps, summary and description for /back/i and /1/4/: only the 1/4\" inset in steps[7] and 'pocketholes facing the back' in steps[8]; no step cuts, drills or attaches the 1/4\" Back panel.",
+      "reason": "The Back row (and the 1/4\" plywood in materials[2]) is never used by any step."
     },
     "R4": {
       "result": "pass",
@@ -49,20 +65,86 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x4, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Each part matches one listed stock (0.75 ply, 1/4 ply, 2x4), 2x4: 4 legs x 4 = 16 + kerf <= 24, but the plywood names give only a length ('Plywood, 3/4\" Thick 96\"', 'Plywood, 1/4\" Thick 36\"') with no width, so the area bought is unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener or hardware size is named in the steps (Euro hinges and knobs are in materials). Absence of any screws/glue in materials is recorded in gaps."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Drill your holes for your euro hinges using a euro hinge jig."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Flip your cabinet over and add your feet to the bottom making sure the pocketholes are facing the back."
+        }
+      ],
+      "arithmetic": "No number for hinge position along the door edges, knob position (steps[9] 'Drill your holes for your knobs'), or leg inset from the cabinet corners; search steps for inch values: only the 1/4\" and 3/4\" assembly insets, 16\", 18\" and 4\". Viewed images 00329f5fb11f9676, 2f2ce442c5a2e71d and 5d17ae329f9efbf4 are photos without dimensions.",
+      "reason": "Hinge, knob and leg positions are not given as numbers or in a viewed image with dimensions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps/description for /as shown|see (the )?(diagram|drawing)|pictured|attached/i: none."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes, legs, edging, shelf and hinge holes are prepared before assembly (steps[0]-[6]); cabinet assembled, feet added, doors last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocketholes into the sides on the 16” side both at the top and bottom."
+        }
+      ],
+      "reason": "3/4\" parts (steps[0],[1]) and 1 1/2\" legs (steps[3]) get pocket holes; search of steps/description/materials for /thick|setting|set (your|the)/i finds no jig setting; viewed images show none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Add veneer edging to all of the plywood edges that will be shown using an iron. Use a veneer trimmer to clean up the edges."
+        }
+      ],
+      "arithmetic": "Search of materials[*].name for /veneer|edging|banding/i: none (materials: plywood, 2x4, 1/4 plywood, Euro Hinges, Knobs).",
+      "reason": "Veneer edging used in steps[4] is not in materials. Other checks: 31 - 2x3/4 = 29.5 = Shelf; 19 - 1/4 - 3/4 = 18 = Side depth; hinges 4 = 2 doors x 2."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/00329f5fb11f9676.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2f2ce442c5a2e71d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d17ae329f9efbf4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials",
+      "quote": "Euro Hinges; Knobs",
+      "what": "Materials list no screws, pocket screws or wood glue at all, though steps use pocketholes and leg/cabinet assembly (search materials for /screw|glue|nail/i: none)."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Drill your shelf into the height that you want it.",
+      "what": "Shelf height is builder's choice (relational), recorded for information."
+    }
+  ]
 }

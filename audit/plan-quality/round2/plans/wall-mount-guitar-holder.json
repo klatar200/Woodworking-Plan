@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both pieces cut in steps[1] (5 1/2\" and 4 1/2\") match cut-list rows Wall Mount 0.75x3.5x5.5 and Guitar Holder 0.75x3.5x4.5 (Kreg-corrected)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Wall Mount used in steps[2],[4],[6]; Guitar Holder notched in steps[3] and attached in steps[4]."
     },
     "R4": {
       "result": "pass",
@@ -73,18 +75,53 @@
       "arithmetic": "parts: 1×5.5 + 1×4.5 + kerf 1 cuts (2 parts − 1 boards, the fewest possible)×1/8 = 10.125″; bought: 1×12 = 12″; 10.125 ≤ 12"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Pocket screws 1 1/4\" (materials, and plan image 'Pocket Holes for 1 1/4\" screws'); '2\" Black Screws for Mounting' for steps[6]. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed plan image shows part sizes and pocket-hole positions on the 5 1/2\" piece; steps[4] image (111999e3958c2ee4) shows the holder joined at the bottom end of the mount. Notch size is 'according to the size of your guitar' (builder fit); screws 'through the top half' relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown in plans' (steps[2]) and 'as shown' (steps[4]): viewed step[0] image a36c04f30fadca9a is the dimensioned drawing with pocket holes; viewed step[4] image shows the joint."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, notch, join, finish, mount - each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill two pocket holes according to Kreg Jig directions in the longer piece of wood as shown in plans."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" Wall Mount; search steps/materials/description for /thick|setting|set your/i finds none, and the viewed plan image a36c04f30fadca9a says only 'Pocket Holes for 1 1/4\" screws'."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[1] 5 1/2\" and 4 1/2\" = rows 5.5 and 4.5; 5.5 + 4.5 + 1/8 = 10.125 <= 12\" board; (b) both parts installed; (c) stain/clear coat in materials; wall anchors optional ('if necessary', gaps); (d) ends with mounting."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a36c04f30fadca9a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/111999e3958c2ee4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Using wall anchors if necessary, sink two screws through the top half of the wall mount into the wall.",
+      "what": "Wall anchors are conditional ('if necessary') and not in materials."
+    }
+  ]
 }

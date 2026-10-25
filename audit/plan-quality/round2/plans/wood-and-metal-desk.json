@@ -131,31 +131,104 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, frame rails, side panels, short/long cross supports, top, ledge and backing in steps[1]-[9] all have cut-list rows (3 frames = 6 legs + 6 rails; 2 panels; 4 short, 2 back, 1 front supports)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All nine rows are used in steps[1]-[9] (viewed step images show each part)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 2x2, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Parts match exactly one listed stock by thickness x width (1.5x1.5 -> 2x2; 0.75x1.5 -> 1x2; plywood parts -> 3/4 and 1/4 sheets). 2x2 (4 x 96 = 384): 6x29.25 = 175.5 (3 per board, 87.75 + 2 kerfs) ; 6x19.75 + 2x26.375 = 118.5 + 52.75; total 346.75 + 14 x 1/8 = 348.5 <= 384 and boards pack (4x19.75 = 79; 2x19.75 + 2x26.375 = 92.25 + 3 x 1/8 <= 96). 1x2 96: 4x11.125 + 26.375 = 70.875 <= 96. 3/4 sheet: area 2x19.75x24.625 + 24x44 + 22.75x26.375 = 972.6+1056+600 = 2628.6 <= 4608; two 24-wide columns: top 44 + ledge 26.375 = 70.375 <= 96, panels 2x24.625 = 49.25 <= 96. 1/4 quarter sheet 24x48: 14 x 27.25 fits."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the desk top the frame using countersunk screws."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "2\" wood screws"
+        }
+      ],
+      "arithmetic": "The viewed step-6 drawing (18f322934da79242) labels 'attach using 1 1/4\" countersunk wood screws' (twice) and '2\" countersunk wood screws'. Materials hold '2\" wood screws' (6), '1 1/4\" pocket hole screws', '2 1/2\" pocket hole screws', '1/2\" lath screws', '1 1/4\" finish nails': no 1 1/4\" wood (countersunk) screw is listed (search materials for /1 1/4.*(wood )?screw/i: only pocket hole screws).",
+      "reason": "A fastener size used in the step image is not in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed drawings give the dimensions and positions: overall 44 x 24 x 30, panel 19 3/4 x 24 5/8 kept flush to interior, support lengths 11 1/8 and 13 1/8, 26 3/8 aprons, ledge 3\" and 22 3/4, top overhang 1\" front/sides and 1/4\" back, backing 14 x 27 1/4."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps/description for /as shown|see (the )?(diagram|drawing)|pictured|attached/i: none; every step has its own dimensioned drawing (viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames, panels, cross supports between panels, base, top, drawer unit, ledge, backing - each part exists before use (viewed drawings follow this order)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the horizontal piece to the legs using wood glue and 2 ½” pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" rails and 3/4\" panels/supports; search steps/materials/description for /thick|setting|set (your|the)/i finds no jig setting; viewed images 77a2abb97a71c97c and 7ee65a0141ef2726 label only screw sizes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Insert the metal drawer unit frame and attach using ½” lath screws at all four corners."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "I suggest placing the metal drawer unit temporarily in position to ensure proper spacing."
+        }
+      ],
+      "arithmetic": "Search of materials[*].name for /drawer|metal|tower|cabinet/i: none (materials are plywood, 2x2, 1x2 and screws/nails only).",
+      "reason": "The metal drawer unit that the desk is built around is not in materials (steps[3],[7]; description 'Take a metal tower of drawers')."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-39",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77a0324630a1e60a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77a2abb97a71c97c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7ee65a0141ef2726.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/626302d92dbe3666.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18f322934da79242.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f1c03807188a0ed.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aacb982f843bd7d4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/630f9adfc643b1d1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "using wood glue and 2 ½” pocket hole screws.",
+      "what": "wood glue not in materials"
+    }
+  ]
 }
