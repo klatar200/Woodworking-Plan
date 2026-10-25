@@ -10,22 +10,24 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
-    },
-    "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "cutList[1].part",
-          "quote": "Top and Bottom Supports",
-          "why": "no step mentions it (searched steps for support)"
+          "path": "steps[2].body",
+          "quote": "These are diagonals are mainly for decoration so they do not need to be super secure – we used a single screw and some glue!"
         },
         {
-          "path": "cutList[2].part",
-          "quote": "Cross Pieces",
-          "why": "no step mentions it (searched steps for cros)"
+          "path": "steps[2].body",
+          "quote": "Instead he simply held the piece up whilst I drew a line on the wood piece for the angle"
         }
-      ]
+      ],
+      "reason": "Step 3 cuts diagonal pieces (non-structural, decorative) that have no cutList row and no stock or count is named. Searched cutList.part for /diagonal|brace|angle/i and materials: none."
+    },
+    "R3": {
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
@@ -33,32 +35,100 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x6); steps not checked for per-part stock"
+      "reason": "2 stock types (2x2, 1x6); steps do not name stock for top/diagonals; precondition not met"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "es created you can begin to attach and secure them using 2″ screws and some more of that DAP glue. I actually think the glue is stronger than the screws but we used both to be safe. This DAP stuff is ",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "attach and secure them using 2″ screws and some more of that DAP glue"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Pocket Hole Screws"
         },
         {
           "path": "steps[6].body",
-          "quote": "gth of wood and secure to the frame with a couple of 1 1/2″ nails in each end that go into the base. Measure to make sure you have the same over hang on all sides – mine was 1 1/2″ all around.\nIt woul",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+          "quote": "secure to the frame with a couple of 1 1/2″ nails in each end"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Finishing Nails"
         }
-      ]
+      ],
+      "reason": "Steps give 2″ screws and 1 1/2″ nails; materials list \"Pocket Hole Screws\" and \"Finishing Nails\" with no size. Searched materials[*].name for /2″|1 1\\/2/: none."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Use your Kreg Jig to create 2 pocket holes on the inside so the screws would not be seen from the outside."
+        }
+      ],
+      "reason": "Pocket holes in 1.5″ stock; no jig thickness/depth setting stated anywhere. Searched all steps for /setting|thickness|depth|1 1\\/2.? (setting|stock)/. Images not viewed."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Measure to make sure you have the same over hang on all sides – mine was 1 1/2″ all around."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Top qty 6, 0.75 x 5.5 x 30"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Cross Pieces qty 4, 1.5 x 1.5 x 32"
+        }
+      ],
+      "reason": "Top plus stated 1 1/2″ overhang gives a base smaller than the 32″ cross pieces in either direction.",
+      "arithmetic": "Top = 6 × 5.5 = 33 wide × 30 long. Base outer = 33 − 2×1.5 = 30 and 30 − 2×1.5 = 27. Cross Pieces length 32 > 30 and > 27, so they cannot sit inside the base the overhang implies. (Overhang is the author's own, \"mine was 1 1/2″\".)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "some more of that DAP glue",
+      "what": "wood glue, wood filler (steps[3]), sandpaper 240 grit, stain, paint, polyurethane, pre-stain conditioner used but not in materials"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "The dimensions you need are dependent on your table size requirements.",
+      "what": "frame height and how top/bottom rails sit on the legs (between or on ends) is not stated; leg 15.5 vs rail positions unspecified"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "my car wouldn’t fit the 9′ long boards",
+      "what": "step says 9′ boards; materials list 1x6 96\" boards"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": []
+  }
 }

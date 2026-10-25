@@ -139,68 +139,102 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": " length from a 1/2\"-thick board, as shown in the cutting diagram. Note: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut another spacer about 4\" long.",
-          "why": "cut sentence states 4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "pass",
-      "arithmetic": "parts: 2×11.5 + 1×10 + 1×1.5 + 2×11.5 + 3×8.5 + 2×2.5 + 1×1.5 + kerf 9 cuts (12 parts − 3 boards, the fewest possible)×1/8 = 90.625″; bought: 3×48 = 144″; 90.625 ≤ 144"
+      "result": "pass"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "and one Short Center Leg to length from a 1/2\"-thick board, as shown in the cutting diagram.\nNote: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut a ",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " to length from a 1/2\"-thick board, as shown in the cutting diagram.\nNote: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut a short piece of scrap abo",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Outside Legs, one Tall Center Leg, and one Short Center Leg to length from a 1/2\"-thick board, as shown in the cutting diagram."
         },
         {
           "path": "steps[4].body",
-          "quote": "ace, and one Center Face to length from a 1/2\"-thick board, as shown in the cutting diagram. Note: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut an",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[4].body",
-          "quote": " to length from a 1/2\"-thick board, as shown in the cutting diagram. Note: These, as well as the other parts are cut extra-long, and will be trimmed after assembly. Also cut another spacer about 4\" lo",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Outside Faces, three Tall Inside Faces, one Short Inside Face, and one Center Face to length from a 1/2\"-thick board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Steps 1 and 5 refer to a cutting diagram. Viewed all 10 images: assembly drawings and finished photos only, none a board cutting diagram with lengths; the lengths exist only in the cutList."
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; glue joints stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut two Outside Faces, three Tall Inside Faces, one Short Inside Face, and one Center Face"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Short Inside Face qty 2, 0.5 x 1.5 x 2.5"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "spread glue on both edges of the Tall Inside Faces, Short Inside Faces, and Center Face"
+        }
+      ],
+      "reason": "Step 5 says cut \"one Short Inside Face\" (and then glues \"Short Inside Faces\"); cut list has quantity 2 (importDiffs show no qty default for this row).",
+      "arithmetic": "Step 5 count = 1 vs cutList[5] quantity = 2."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[1]",
+      "quote": "Tall Center Leg qty 1, 0.5 x 1.5 x 10 and Short Center Leg qty 1 x 2",
+      "what": "center column 10 + 2 = 12 before any spacer gap exceeds the 11.5\" Outside Legs it is clamped between; leg is trimmed after assembly, but 10 - 3/4\" stop + gap exceeds the 9 1/2\" final in the image; the intended layout cannot be confirmed"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "you can paint or finish your tablet stand",
+      "what": "paint/finish is in materials; sandpaper/file for fit not listed"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fc6e0f4d66d62a35.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d2ed372e583d396a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a22bc515a95b043b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9858a401703321cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c42e41e2a9b8ed46.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c272a2c407b66bc0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4699056185c25564.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99b01610eb8ce664.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/576ee966766296e4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b0cefb8c660d05e.webp"
+    ]
+  }
 }

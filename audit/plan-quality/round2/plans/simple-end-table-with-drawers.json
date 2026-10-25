@@ -217,21 +217,13 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Top/Bottom Front Frame (2x2)",
-          "why": "no step mentions it (searched steps for frame)"
-        }
-      ]
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
@@ -239,28 +231,92 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 1.5x1.5, 0.75x1.5); steps not checked for per-part stock"
+      "reason": "4 stock types; steps do not name stock for every part; precondition not met"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "s that allows you to separate the two sections. Use 2\" wood screws through the top front 2x2 and 1 1/4\" pocket hole screws through the pocket holes in the side and back panels to secure. NOTE: Make su",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Use 2\" wood screws through the top front 2x2"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Install onto the drawer boxes using 1 1/4\" wood screws from the inside."
+        },
+        {
+          "path": "materials[10].name",
+          "quote": "5/8\" wood screws (to install slides)"
         }
-      ]
+      ],
+      "reason": "Step 9 uses 2\" wood screws and step 8 1 1/4\" wood screws; materials list only 5/8\" wood screws plus 1 1/4\" and 2 1/2\" pocket hole screws. Searched materials[*].name for /2\"|1 1\\/4\" wood/: no 2\" screw, no 1 1/4\" wood screw."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "See plywood cut diagram."
+        }
+      ],
+      "reason": "Step 1 refers to a plywood cut diagram. Viewed all 14 images (step 1 shows one pocket-holed panel 16 x 27 1/2, not a sheet layout; the other images are photos and assembly drawings); none shows a cut diagram. Part sizes are in the cutList, so only the sheet layout is missing."
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "pass"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "add knobs or drawer pulls."
+        }
+      ],
+      "reason": "Step 11 has the builder add knobs or drawer pulls; materials has no knob/pull/handle. Searched materials[*].name for /knob|pull|handle/: none. Counts and sizes otherwise agree (fronts 5 3/4 x 15 3/4 in image; top 21 over 19 carcass with 1\" overhang: 16 + 2x1.5 = 19, 21 - 19 = 2 = 2x1)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Paint and/or stain and finish as desired",
+      "what": "paint/stain/finish not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dc56e309de47d00f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/33a79cc0ccdbd961.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d6eb4269b0ed71b4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/603c5e622c90cdea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0e93769210c7b7d2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/785ed7334cb4cd54.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/472e74e1bea806cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f6ed564cb8f1372.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1382c0ee4de3404e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0c170e63dcf3caaf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94483c9b4ad134a3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/68b5ed6ccc67a204.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2b8accb6750ed96a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8be8765d7d7a85ef.webp"
+    ]
+  }
 }

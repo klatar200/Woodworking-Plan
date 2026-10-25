@@ -6,21 +6,13 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "f is the same width.\nFor example, my trim piece was 3\" tall, and the bottom shelf was 0.75\" thick. So, I ripped down my 2x4 supports to 2 1/4\" before attaching them.\nAttach using wood glue and screws.",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R4": {
       "result": "unknown",
@@ -28,28 +20,74 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x10, 1x12, 3x96, 1.5x96); steps not checked for per-part stock"
+      "reason": "4 stock types; steps do not name stock for every part; precondition not met"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Use pocket holes and wood glue to attach the two 22 1/4\" pieces to the top piece."
+        },
         {
           "path": "steps[2].body",
-          "quote": " taller than the second to account for the trim piece.\nOnce the vertical dividers are attached, attach the first 39.5\" piece across the top of them, using pocket holes to attach it to the side pieces.",
-          "why": "\"attached\" with no step image; 1 unattached image(s) in images[] to view",
-          "unattachedImages": 1
+          "quote": "Use wood glue and pocket holes to attach five 8 1/4\" pieces to the top piece"
         }
-      ]
+      ],
+      "reason": "Pocket holes are used on 3/4\" stock but no jig setting is stated. Searched all steps for /setting|thickness|depth/; viewed all 10 images, none shows a jig setting."
+    },
+    "R14": {
+      "result": "pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "attach five 8 1/4\" pieces to the top piece, spaced 6\" apart",
+      "what": "5 dividers x 0.75\" + 6 gaps x 6\" = 3.75 + 36 = 39.75\", but the interior (39.5\" row) is 39.5\", 1/4\" less; \"6 apart\" cannot be exact"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "So, I ripped down my 2x4 supports to 2 1/4\" before attaching them.",
+      "what": "author-specific rip (3\" trim - 0.75\" shelf) differs from cutList[6] 2 x 4 x 41 as stock; no cut row for the ripped width"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Use pocket holes and wood glue",
+      "what": "wood glue and finish/sealer not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6c61daf1ec015354.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c129273e8f696f69.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a72b8aa1bb177e0d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/debad96f4aad55b8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ea0b9d101765819.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb50786800811c21.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5aa44def85802989.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c0ca895657793710.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5adc68646473a849.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c56d97a27c2c43d0.webp"
+    ]
+  }
 }

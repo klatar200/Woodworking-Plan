@@ -55,21 +55,13 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "do this and you can find some links to great resources here http://www.iamahomemaker.com/simple-diy-arbor/ ‎. Before you start digging any holes or using any post anchors, you must call your local uti",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
@@ -77,41 +69,63 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 4x4, 2x4, 1x2); steps not checked for per-part stock"
+      "reason": "4 stock types (1x6, 4x4, 2x4, 1x2); steps do not name stock for every part (runners, posts); precondition not met"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "rom the 16\" mark and transpose on all 4 posts using a level. Next, measure down 5.5\", mark and transpose. These will serve as guides for the final height of the arbor and the top horizontal support he",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0dfba1ee295509ff.webp"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": " using a level. Next, measure down 5.5\", mark and transpose. These will serve as guides for the final height of the arbor and the top horizontal support height.\nAttach the top horizontal support at th",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0dfba1ee295509ff.webp"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "These will serve as guides for the final height of the arbor and the top horizontal support height.\nAttach the top horizontal support at the height of the lower mark you just made, using pocket holes.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0dfba1ee295509ff.webp"
-        }
-      ]
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "attach 16\" high on either side of the arbor using pocket holes"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Attach using pocket holes."
+        }
+      ],
+      "reason": "Pocket holes in 1.5″ 2x4s (steps 5, 6, 8); no jig thickness setting stated anywhere. Searched all steps and description for /setting|thickness|depth/. Images not viewed."
+    },
+    "R14": {
+      "result": "pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "There are a couple of ways to do this and you can find some links to great resources here",
+      "what": "how the posts are secured in the ground (hole depth, concrete/anchors) is not in the plan or materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Using bright spray paint to mark the corners where the posts will go.",
+      "what": "spray paint (marking) not in materials"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "measure and mark 16\" up from the ground",
+      "what": "step 5 \"attach 16\" high\" does not say whether 16\" is the bottom or top edge of the 2x4; 71 1/2\" verticals vs marks (16, 74-5.5) cannot be checked to better than about 1/2\" without it"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": []
+  }
 }

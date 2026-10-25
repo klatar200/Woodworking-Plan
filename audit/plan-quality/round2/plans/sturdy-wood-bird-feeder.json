@@ -6,21 +6,27 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "1. Rip three strips to two and a quarter inches wide by 24 inches long. 2. To laminate strips together, spread glue evenly across each piece, and use clamps to hold the setup in place while the glue c",
-          "why": "cut sentence states 24\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Pressure Treated Southern Yellow Pine Boards"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "cut your board into two sections so it’s slightly easier to manage"
+        }
+      ],
+      "reason": "The only cut-list row is the raw stock (2 x 1x6x72), not a part the steps use; none of the actual parts (8 octagon sides, post strips, brackets, braces) has a row. Searched cutList: 1 row."
     },
     "R4": {
       "result": "pass",
@@ -34,31 +40,55 @@
       "arithmetic": "parts: 2×72 + kerf 0 cuts (2 parts − 2 boards, the fewest possible)×1/8 = 144.000″; bought: 2×72 = 144″; 144.000 ≤ 144"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "oard 2. Each side will need to be bevel cut to 22.5 degrees. To do that: Measure and mark eight inches on the strip you just cut. Next, align the saw blade to the mark and set up a stop to keep each p",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7c5ee1f46c478af.webp"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "ur safety glasses. Always use caution and don’t force the tool. Let it cut at its own speed. We found it easier to route the inside edge of the feeder from the top, and the outside edge from the side.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f09537ecbdedef8a.webp"
-        }
-      ]
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; octagon is glue-only (step 6), braces glue and nails; method and fasteners stated."
+    },
+    "R14": {
+      "result": "pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "making two pieces – one at around 4.5 feet long and the other around 5.5′ feet long",
+      "what": "4.5' + 5.5' = 120\" exceeds one 72\" board; only works across the two listed boards (54 and 66 from separate boards)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/450e395fa61b12ef.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24b24305a51d06ae.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c609e6c6bd4f2104.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8936a434e9720516.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/02fa61018f01029c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7c5ee1f46c478af.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc9406b48e65e5b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab6ded081777bccb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/235dbb92e57ebe57.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0523bc32f88474ef.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f09537ecbdedef8a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/022c7815b2e1b6ae.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d12c29fbf32e6441.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be086eb35bbcfe4a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/04e04cfee0b50b55.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f31df1e961a884d9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/36ab00bf14ccb3de.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1a810e825667c56d.webp"
+    ]
+  }
 }

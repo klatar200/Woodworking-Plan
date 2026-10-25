@@ -43,50 +43,103 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Bed posts",
-          "why": "no step mentions it (searched steps for bed/post)"
-        }
-      ]
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x4, 1x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "To finish the headboard off, attach a 60\" long 1x2 to the top of the headboard with brad nails.",
-          "why": "0\" brad — no material line lists a 0\" fastener"
-        }
-      ]
+      "result": "pass"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using a Kreg Jig, drill pocket holes in both ends of boards."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in each end of all 5 boards."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" 1x4/1x2 stock; no jig thickness setting stated. Searched all steps for /setting|thickness|depth/; viewed all 13 images, none shows a setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut 5- 1x2 boards 23 1/2\" long. Drill pocket holes in each end of all 5 boards."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Vertical slats qty 4, 0.75 x 1.5 x 23.5"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "attach a 60\" long 1x2 to the top of the headboard with brad nails"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Top rail qty 1, 0.75 x 1.5 x 39"
+        }
+      ],
+      "reason": "Step 2 cuts 5 slats but cut list and viewed images have 4; spacing \"8 1/2\" and 8 3/4\" apart\" only fits 4: 4 x 1.5 + (8.75 + 8.5 + 8.75) = 32 = rail length, while 5 slats need 5 x 1.5 + 4 x 8.5 = 41.5 > 32. Step 7 says top 1x2 is 60\" but cut list and image give 39\" (= 32 + 2 x 3.5 post width).",
+      "arithmetic": "Slats: 4 vs 5. Top: 60 vs 39. 4 x 1.5 + 26 = 32; 5 x 1.5 + 4 x 8.5 = 41.5."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Fill any holes and edges with wood filler. Sand, and paint or stain the headboard.",
+      "what": "wood glue (steps 3, 4), wood filler, sandpaper, paint/stain not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9556f996cd4d31d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f5d108f4d0647b4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af526b6ebf791fe5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cf127efddec67f78.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99b8e048003f76eb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d801bbaad5e6188b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c0860542ecb0aaea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6aa44d40b69b95bb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9356fef5b344f69a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a423835c71bdd209.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6c42bf6e57520184.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ae011f20f5a15311.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f58d3fb258c4fef.webp"
+    ]
+  }
 }

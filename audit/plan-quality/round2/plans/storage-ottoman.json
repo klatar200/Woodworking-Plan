@@ -187,36 +187,13 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Cut four 23\"-long pieces of iron-on oak-veneer edging and apply one piece to the top edge of each Side. Trim ends and edges of the edging flush using either a veneer trimmer or a sharp utility knife. ",
-          "why": "cut sentence states 23\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "four Cleats, mitering each end at 45°, and making the cleats 1/16\" shorter than the inside distance you measured. Sand the Cleats smooth, and then glue them in place on the top assembly, as shown. Cla",
-          "why": "cut sentence states 1/16\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "iece of 4\"-thick cushion foam to 22\" x 22\". Then cut a 27\" x 27\" piece of 1/2\"-thick batting, and create 2 1/2\" x 2 1/2\" notches in the corners. Select a piece of upholstery fabric you like, and cut i",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "a 27\" x 27\" piece of 1/2\"-thick batting, and create 2 1/2\" x 2 1/2\" notches in the corners. Select a piece of upholstery fabric you like, and cut it to 36\" x 36\". Then lay the cushion parts out to pre",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
@@ -224,34 +201,71 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, 0.5x5.5, 2x2); steps not checked for per-part stock"
+      "reason": "Sheet goods (3/4\" half sheet, 1/2\" quarter sheet) layouts not stated; boards fit: 2x2 4x12.75 + 4x25 = 151 + kerf <= 4 x 48 = 192; oak strips 8 pieces <= 24\" each; sheet areas 1914 <= 2304 and 478.5 <= 1152 so no certain fail."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[10].body",
-          "quote": "Cut the Cushion Panel to size from 1/2\" plywood, as shown in the cutting diagram. On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "on Panel to size from 1/2\" plywood, as shown in the cutting diagram. On one surface, draw lines around the perimeter 3\" in from the edges. These will be Cut (or have a fabric store cut) a piece of 4\"-",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
+          "quote": "Cut the Cushion Panel to size from 1/2\" plywood, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Step 11 refers to a cutting diagram for the Cushion Panel. Viewed all 16 images: none is a cushion-panel cutting diagram (exploded cushion image labels foam 4 x 22 x 22, batting 27 x 27, fabric 36 x 36 but not the panel size). The size (21 7/8\") is only in cutList[7]; step text gives none."
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "pass"
+    },
+    "R14": {
+      "result": "pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "If you’re planning to stain, use 180-grit sandpaper.",
+      "what": "sandpaper not in materials"
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "Board, 1/2\" x 11/2\" 24\"",
+      "what": "name reads \"11/2\" (apparently 1 1/2\"); cut rows use 0.5 x 1.5"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ea7c66d7f26dbed.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/307843b30a1d9176.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/656084092d97430b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e961795fbbb8751c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/506cf73e07ada705.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7be460b565f4f4f5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1f6e153c7ea3d77e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ac586d339adcc90a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f6346e7327b8ac52.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e0ff8a31fb949818.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c82260172cab5b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7a0a9c5388312749.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eafd6453e2c9b6df.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3ae43215118aef00.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/427dbc5623df4254.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/50c1b13c68b49157.webp"
+    ]
+  }
 }

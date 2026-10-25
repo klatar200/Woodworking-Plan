@@ -55,50 +55,106 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "kerfOnly": true
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "being careful to not punch it out the backside of your workpiece. I used 3/4 inch wire nails, if I were to go back and do it again I would've used 1 inch nails for my wife's sanity in the next step...",
-          "why": "3/4\" nail — no material line lists a 3/4\" fastener"
+          "quote": "I used 3/4 inch wire nails, if I were to go back and do it again I would've used 1 inch nails"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Boxes of 1\" wire nails"
         }
-      ]
+      ],
+      "reason": "Step 8 gives two sizes for the string-anchor nails (3/4\" used, 1\" recommended); materials list only 1\" wire nails. Searched materials[*].name for /3\\/4/: no 3/4\" nail."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "hing, there's a lot of ways to get lettering onto the piece. My wife printed her saying, cut apart the words, then colored the back of the paper with a pencil. She taped the words where she wanted the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b52f55d50d5b6a3.webp"
-        }
-      ]
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joints are glue plus 1.25\" brad nails (step 3), method and fastener stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "then cut three lengths of 1x2 at 20.75\" to mount our face boards onto"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Backer boards qty 3, 0.75 x 1.5 x 20.5"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Weave the design"
+        }
+      ],
+      "reason": "(a) Step 1 gives backer length 20.75\" but the cut row is 20.5\". (c) Step 9 weaves the design but no string/thread is in materials and no step names it. Searched materials[*].name and all steps for /string|thread|yarn|floss|twine|cord/ (title only): none in materials.",
+      "arithmetic": "20.75 - 20.5 = 0.25 difference between step and cut row."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "we had a photo of the design we wanted to do, the trick was getting it traced on to the workpiece",
+      "what": "no design or nail layout is supplied; builder must provide their own"
+    },
+    {
+      "path": "materials[5].name",
+      "quote": "Hanging hardware",
+      "what": "listed in materials but no step installs it"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Our choice of stain for our project was the Varthane Carrington.",
+      "what": "stain, shellac, paint/marker, 220 grit sandpaper not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d57b7b4652c4804.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/10c40ee9879c764a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/08922c9927336154.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad2074d0d79afe57.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23d18bdeea1b0a22.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/07aa04eb6bb3cc16.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f620c4e3a69cccad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b52f55d50d5b6a3.webp"
+    ]
+  }
 }

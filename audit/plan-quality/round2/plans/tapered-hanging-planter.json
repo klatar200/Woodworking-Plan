@@ -187,80 +187,62 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "pass"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Cut 2 equal pieces of cording (I used two 80\" long pieces). Tie the center of each piece to the bottom of an S-hook. Then feed them through the eye hooks in the planter and pull back to the S-hook.\nUs",
-          "why": "cut sentence states 80\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Corner, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Front/back top, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Front/back 2nd, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Front/back 3rd, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Front/back bottom, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Top frame front/back, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Top frame side, 1x2 (see Step 1 for angles)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "pass",
-      "arithmetic": "parts: 4×7.625 + 2×7.75 + 2×7 + 2×6.3125 + 2×5.625 + 8×5.5 + 2×7 + 2×10.75 + 2×10 + kerf 24 cuts (26 parts − 2 boards, the fewest possible)×1/8 = 186.375″; bought: 2×96 = 192″; 186.375 ≤ 192"
+      "result": "pass"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "pass"
     },
     "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "result": "pass"
+    },
+    "R8": {
+      "result": "pass"
+    },
+    "R9": {
+      "result": "pass"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Staple the fabric to the inside of the top frame to secure."
+        }
+      ],
+      "reason": "Step 8 staples the landscape fabric; materials list has no staples (hardware). Searched materials[*].name for /staple/i: none. Other numbers agree (cord 2 x 80\" = 160\" <= 16' = 192\")."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "If you are planning to paint or seal your planter, I recommend doing it now",
+      "what": "paint/sealer not in materials (optional)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-11",
+    "imagesViewed": []
+  }
 }
