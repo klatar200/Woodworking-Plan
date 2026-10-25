@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: table slats (steps[3]), border slats (steps[5] \"miter cut border slats\") = cutList[0]-[2]. Base is user-supplied (gaps). No other part cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: Table Slat (steps[3]), Short/Long Side Table Border Slat (steps[5])."
     },
     "R4": {
       "result": "fail",
@@ -76,25 +78,93 @@
           "quote": "Table Slat — qty 6, 1.5 x 6 x 34 (Kreg-corrected)",
           "why": "no listed material gives this thickness and width"
         }
-      ]
+      ],
+      "reader": "confirmed",
+      "reason": "Confirmed: Table Slat is 1 1/2 x 6 (cutList[0], Kreg-corrected thickness; width 6 is Kreg's own value, not an import diff) but the only listed stock is materials[0] 2x6 = 1 1/2 x 5 1/2 (§9); 6 > 5 1/2. Searched steps for a glue-up/lamination that would widen a board (/lamina|glue.?up|resaw|widen/): none; steps[3] glues slats edge to edge only. The two Border Slat rows (1 1/2 x 5) fit the 2x6. Probably a dimension typo, but no value is given to replace it."
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 6×34 + 2×40 + 2×44 + kerf 7 cuts (10 parts − 3 boards, the fewest possible)×1/8 = 372.875″; bought: 3×144 = 432″; 372.875 ≤ 432"
+      "arithmetic": "parts: 6×34 + 2×40 + 2×44 + kerf 7 cuts (10 parts − 3 boards, the fewest possible)×1/8 = 372.875″; bought: 3×144 = 432″; 372.875 ≤ 432",
+      "reason": "Parts 1 1/2 x 5-6 match only materials[0] 2x6 (144\"); fits by packing: board 1 = 4 x 34 = 136, board 2 = 2 x 44 + 34 = 122, board 3 = 2 x 40 + 34 = 114, each + kerf <= 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: only \"screws\" (steps[3], [5], [9]) without size; materials[1] 1 1/2\" pocket hole screws and materials[5] 1 1/2\" cabinet screws (to attach to base). Nothing stated that conflicts or is missing."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Pocket-hole positions are left to the builder (\"areas that you'd like to drill\", discretionary). Border placement is mitered around the slat field (viewed step 5 image); table-to-base screw positions depend on the builder's own base (relational)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "note": "2 reference(s), each in a step with its own image",
+      "reason": "\"as shown in the woodworking plans\" (steps[1]) sits in a step with its own image; viewed step 5 image shows the slat field with mitered border (the arrangement). Viewed step 1 image shows the jig only."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Layout the boards in the correct arrangement as shown in the woodworking plans and mark the areas that you'd like to drill the pocket holes."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut all wood down to size according to the cut list in the woodworking plans with the miter saw."
+        }
+      ],
+      "reason": "steps[1] lays out and drills pocket holes in the slats before steps[2] cuts the wood down to size, so the parts being drilled do not yet exist. Easily reordered, so Fix not Unpublish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Next, using a Kreg pocket hole jig, drill all pocket holes according to the depth of your wood."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" 2x6 slats (cutList thickness 1.5); no jig setting number is stated in any step (searched /setting|thickness|depth/); viewed step 1 image is a photograph of a jig with 1/2, 5/8, 3/4 marks only, no setting chosen. R9 recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Table Slat"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Short Side Table Border Slat"
+        }
+      ],
+      "reason": "(a) Mitered border opening disagrees with the slat field: Short border long-point 40 - 2 x 5 (border width, cutList[1]) = 30 inner width; Long border 44 - 2 x 5 = 34 = Table Slat length (cutList[0]) which does match; but 6 slats x 6 (cutList[0] width) = 36 > 30 (and 6 x 5 1/2 = 33 > 30 even at actual 2x6 width). Same defect as R4, seen from the other side. (c) The base: see gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/88cce2c481ac893d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/87c67293d1575dfb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Attach table top to base with screws. Our table base had a platform already attached (from the old table), but if yours doesn't you would want to incorporate a base using plywood.",
+      "what": "table base is user-supplied and not in materials or cut list; plywood base, shims and wood filler (steps[7], [9]) not in materials",
+      "kind": "user-supplied"
+    }
+  ]
 }

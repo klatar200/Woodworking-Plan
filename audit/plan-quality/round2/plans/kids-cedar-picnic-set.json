@@ -227,31 +227,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: tabletop boards/supports (steps[0]-[2]), legs (3), leg supports (5), bench set \"three 40\" 1x4\", smaller supports, leg pieces\" (6) = cutList[0]-[7]. Bench counts: 6/2 = 3 tops, 6/2 = 3 supports, 8/2 = 4 legs, 4/2 = 2 leg supports per bench."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used (table rows steps[0]-[5]; bench rows steps[6] \"repeat above steps ... detailed in the cut list\")."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x3); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x3 48\""
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Bench Top Supports"
+        }
+      ],
+      "reason": "Every 1x3 part (Kreg-corrected 3/4 x 2 1/2: cutList[1],[2],[3],[5],[6],[7]) matches exactly one listed material, materials[1] 1x3 (3/4 x 2 1/2); lengths are named (48\"). Quantity 8 is not 1, so not an import default. The 1x4 side passes: 6 x 48 + 6 x 40 = 528 <= 12 x 48 = 576 (each part from its own board, leftover only 8\" pieces).",
+      "arithmetic": "1x3 needed: 3 x 21 + 4 x 28 + 2 x 22.875 + 6 x 10.5 + 8 x 12 + 4 x 17 = 63 + 112 + 45.75 + 63 + 96 + 68 = 447.75\"; bought 8 x 48 = 384\"; short 63.75\" (before kerf), far more than 1/2\"."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name no fastener size; materials[3] \"1 1/4\" Kreg Screws\" is the only fastener. Nothing to conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Support position given \"1 1/2\" in from the ends\" (steps[2]); gap 1/8\" (steps[0]); leg angles 40, halving cut 10 degrees, leg support 25 degrees from perpendicular; leg-support ends fixed between the cross and the center support. Viewed step 3 and 4 photos show the X leg lying between the end supports. Bench cut angles for the 12\" legs are not restated (steps[6] \"Repeat above steps\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram reference in any step (searched /as shown|see (the )?diagram|drawing|pictured|attached/i)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top boards and supports (0-2), legs (3) then attached (4), leg supports between leg cross and center support (5), benches by repeat (6). Order possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill two pocket holes in between each of the marks on all three lengths."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" 1x3 supports and legs (steps[1], [4], [5]); no jig thickness setting in any step text (searched /setting|thickness|jig/); viewed step 3 and 4 images are photographs with no setting. R9 recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Six 1x4 at 3 1/2 + 5 gaps x 1/8 = 21 + 5/8 = 21 5/8 vs supports 21 (laid across); leg supports \"22 7/8\" = cutList[3] Kreg-corrected 22.875; 3 supports, 4 legs, 2 leg supports per table; 3 tops/3 supports/4 legs/2 supports per bench x 2 benches = cutList quantities 6/6/8/4. (b) all installed; (c) glue and screws listed; (d) steps reach table and benches."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ad7126a284fe440.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fbcd1ee75d616b1a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "if you want higher benches, the lengths of the legs, the leg supports and the cut angles will be different.",
+      "what": "bench cut angles for the 12\" legs and 17\" leg supports are not stated; steps[6] says only to repeat the table steps",
+      "kind": "measurement"
+    }
+  ]
 }

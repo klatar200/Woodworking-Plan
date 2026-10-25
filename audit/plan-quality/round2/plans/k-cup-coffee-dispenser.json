@@ -107,32 +107,77 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: base, sides, back, 5 front pieces (steps[3] \"Cut 5\" = Front pieces x4 + Bottom front piece x1), top, sub-top (cutList[0]-[6]); pull = materials[3]. No part cut outside the list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are cut in steps[0]-[5] and used in steps[6]-[11]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "reason": "Front pieces are 3/16\" thick (cutList[3]); the thinnest listed stock is materials[2] \"Board, 3/8\" 48\"\", and the plan has no step or material for thinning stock. Top/Sub-top/Bottom front piece (3/8) match materials[2] thickness but that line gives no width. Sides 7 1/4 wide = 1x8 (materials[0]). Whether 3/16\" parts can be had from the listed stock is outside §9."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x8, 1x6, 0.375x48); steps not checked for per-part stock"
+      "reason": "Base/Back (3/4 x 4) could come from materials[0] 1x8 or materials[1] 1x6 (ripped), so the stock per part is not named and more than one listed material could supply them. Lengths: Sides 2 x 12 = 24 + 1/8 <= 36 (1x8, matches only 7 1/4 width); Base 7 1/4 + Back 11 1/4 = 18 1/2 + 1/8 <= 24 (1x6)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is \"1 1/4\" pocket hole screws\" = materials[4] (steps[7], [8])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed step 3 image: front pieces 2\" x 5 1/2\" (4 x 2\" = 8\" stack). Viewed step 6 image: sub-top offset 7/8\", 1/2\", 7/8\" on the top, dimensioned. Viewed step 7 and 9 images: pocket-hole positions shown, front-piece stack and bottom piece shown flush to the box. Pocket-hole positions are shown, not numbered."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "note": "3 reference(s), each in a step with its own image",
+      "reason": "\"as shown\" / \"dimensions indicated\" references (steps[0]-[5], [7]-[9]) are each in a step with its own image; viewed steps 3, 6, 7, 9, 10 images show the referenced dimensions and holes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0-5), tops joined (6), sides to base (7), back to sides (8), front pieces installed (9), top fitted (10), pull added (11)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Join the sides to the base by drilling pocket holes as shown in the base and attaching with 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock (Base, Back, steps[7], [8]); no jig thickness setting in any step text (searched /setting|thickness|jig/); viewed step 7 image shows four holes in the base with no setting. R9 recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) \"Cut 5 front pieces\" = 4 + 1 (cutList[3], [6]); viewed step 3 image shows four 2\" strips = 8\" and a 2\" x 5 1/2\" bottom piece, same as Kreg-corrected rows. Width: Base 4 + 2 x 3/4 sides = 5 1/2 = Top width 5 1/2 = Front piece length 5 1/2. (b) every part is installed; (c) pull listed (materials[3]); (d) steps reach the finished dispenser."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified) + Human review",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94cf126e4c28b766.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5a1fc3333fa57ce8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0e1b4674c16b5039.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a165c711f54aa6e3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/21a0d6b356c32682.webp"
+    ]
+  },
+  "humanReview": "R4: whether the 3/16\" Front pieces (cutList[3]) can be made from the listed 3/8\" board (needs thinning not described) cannot be settled from §9",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Join the two top pieces by gluing and clamping",
+      "what": "wood glue (steps[6], [9]) and finish (steps[11]) not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

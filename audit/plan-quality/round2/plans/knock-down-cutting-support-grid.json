@@ -287,32 +287,71 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: Lower Rails, Upper End Rails, Outer/Center Rail Fillers, Riser Blocks (steps[0]); Upper/Lower Cross Bars, Cross Bar Fillers, 2x4 Cross Bars (steps[2]) = cutList[0]-[8]. Nothing else cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used. Riser Block (steps[0]) and the 2x4 Cross Bar row (steps[2] \"You can also cut two 2x4 Cross Bars\") are introduced as optional/fit-dependent but are real parts with stated purpose."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Rows 1 1/2 x 1 1/2 = materials[0] 2x2; 2x4 Cross Bar 1 1/2 x 3 1/2 = materials[1] 2x4. Riser Block \"0.5 x 1.5 x 1.5\" is a 1/2\"-long slice of 2x2 (viewed step 0 diagram: 1/2\" and 1 1/2\"); the importer sorts dimensions smallest to largest (cause import for the \"thickness\" 0.5). Thinning is not needed."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each row matches exactly one listed material (2x2 or 2x4). 2x2 lengths are named (96\").",
+      "arithmetic": "Lower Rails 2 x 96 = 192 (2 boards, zero-kerf fit, step 0 says trim if long). Remaining 2x2: 4x23.75 + 4x14.25 + 2x14 + 4x42 + 4x31.5 + 8x3.75 + 4x0.5 = 95 + 57 + 28 + 168 + 126 + 30 + 2 = 506; kerf 24 cuts x 1/8 = 3 => 509 <= 6 x 96 = 576; first-fit-decreasing packing uses 6 boards (95.75, 95.75, 96.0, 94.9, 94.6, 32.0). 2x4: 2 x 31.5 = 63 + 1/8 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener sizes anywhere: steps[1] \"We only used glue - no screws or nails\". Nothing to match."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed step 1 image: filler gaps 1 1/2\" between Upper End Rail, Outer, Center, Outer, Upper End Rail; risers 6\" from each end of the Lower Rail. 23 3/4 x 2 + 14 1/4 x 2 + 14 + 4 x 1 1/2 = 96 = Lower Rail. Viewed step 3 image: cross-bar fillers at the ends with spacer; 31 1/2 + 2 x 3 3/4 + 2 x 1 1/2 = 42 = Upper Cross Bar."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "note": "5 reference(s), each in a step with its own image",
+      "reason": "All five \"as shown in the cutting diagram\" / spacer references are in steps with their own image; viewed steps 0, 1, 3 images show the referenced diagram and layouts."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rail parts cut (0), assembled (1), cross-bar parts cut (2), assembled (3), test fit and sand (4). Each part exists before use."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; every joint is wood glue with spacers (steps[1], [3]), method stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts match: 4 Upper End Rail, 4 Outer, 2 Center filler (per rail 2 + 2 + 1, x 2 rails), 4 Upper + 4 Lower Cross Bar, 8 Cross Bar Filler (2 per bar), 4 Riser Blocks. Rail run 96 and cross bar 42 add up (see R10). (b) Riser Blocks are cut in steps[0] but the step text never installs them; the viewed step 1 image shows them 6\" from each end of the Lower Rail, so the placement is available in the plan. (c) glue listed; masking tape and 80-grit sandpaper are consumables (gaps). (d) steps reach the finished grid."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57ed5cc896d06beb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7416ea845bd5589d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b3809d1d0dd4fdb8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "You can clamp the pieces or wrap them with masking tape while the glue dries",
+      "what": "masking tape and 80-grit sandpaper (steps[4]) not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "We also cut four Riser Blocks to elevate the rail assemblies to the correct height in our Mobile Project Center and Track Horse.",
+      "what": "step text cuts the Riser Blocks but never says where they go; only the viewed step 1 image (6\" from each end) shows it"
+    }
+  ]
 }

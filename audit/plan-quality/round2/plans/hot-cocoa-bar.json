@@ -10,32 +10,78 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts: three tiers of legs (steps[1]-[3], cutList[0]-[5]) and three tops (cutList[6]-[8], steps[4]-[6]). Every part assembled in a step has a row; nothing else is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: legs rows in steps[1]-[3], tops in steps[4]-[6]. Row 5 name carries stray text (\"1\"x1\"x\") but is the large-tier top/bottom piece (see gaps)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x11.5, 1x1); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1\" x 11-1/2\" 43\""
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Small Tier Top"
+        }
+      ],
+      "reason": "The three tops (cutList[6]-[8], 4.75, 4.75 and 6.25 wide) are wider than materials[1] 1\" x 1\", so they can come only from materials[0] (11 1/2\" x 43\"). At most two fit across 11 1/2\" (4.75 + 4.75 = 9.5; 6.25 + 4.75 = 11; all three = 15.75 > 11.5).",
+      "arithmetic": "Best pairing across the width: Large 27 beside Medium 22 uses 27\", then Small 20 uses another 20\" = 47\"; other pairings give 49\". 47 + kerf 1/8 + 1/8 = 47 1/4 > 43 bought. Legs from 2 x 48 = 96: 4x2.25 + 2x2.75 + 4x5 + 4x2.75 + 4x7 + 4x4.25 = 9 + 5.5 + 20 + 11 + 28 + 17 = 90.5, + kerf ~21 cuts x 1/8 = 2.6 => 93.1 <= 96 (passes)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener sizes in steps: every joint is wood glue and clamps (materials[2])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Leg position \"1-1/2\" from the edge\" given for all three tiers (steps[4]-[6]); viewed step 4 image shows 1 1/2\" from the end and side. Leg assembly shape shown in viewed step 1 image (U shape: 2 1/4\" sides, 2 3/4\" bottom)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "note": "3 reference(s), each in a step with its own image",
+      "reason": "Three \"as shown\"-type references each sit in a step with its own image; viewed step 1 and step 4 images show the referenced leg shape and placement."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), legs assembled per tier (1-3), then attached to the matching tops (4-6), sand and finish last (7-8)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints; every joint is \"wood glue and clamps\" (method stated, no fasteners)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Leg frame width + 2 x 1 = top width: small 2.75 + 2 = 4 3/4 = cutList[6] width; medium 2.75 + 2 = 4 3/4 = cutList[7]; large 4.25 + 2 = 6 1/4 = cutList[8]. Side counts 4/4/4 = two legs per tier. (b) all legs installed on tops; (c) glue, sandpaper, stain, polyurethane all in materials; (d) finish step reaches the finished bar."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1e72a63cf3155a7d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c61eb6b111a061b9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57a1400c0f0eb2a9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[5].part",
+      "quote": "Large Tier Legs - top & bottom pieces 1\"x1\"x",
+      "what": "part name is truncated with stray text"
+    }
+  ]
 }

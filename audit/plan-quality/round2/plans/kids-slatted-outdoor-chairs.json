@@ -211,36 +211,77 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Print the back frame board template (in the extras). Cut it out and mark the cut line on the 14\" back frame boards. Cut them out."
+        }
+      ],
+      "reason": "The cut line for the two 14\" Back Frame boards (cutList[2], structural: they carry the chair back and screw to seat frame, back leg and arm) exists only on a printable template \"in the extras\". Searched steps and cut list for an angle or dimension for that cut (/degree|angle|º|cut line/): only the 37 1/2 degree back-leg cut (steps[1]) appears; the viewed step 6 image shows the boards leaning, labelled only \"14\"\", no cut-line size or angle. Sweep R1 marked pass; its search missed this. Likely rather than certain because the angle might equal the back-leg angle, but the plan does not say so."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: back legs (2x4 21 5/8, step 1), front legs, arms (step 2), seat frame 8 1/2\" and 14\" boards (step 4), 14\" back frame boards (step 6), 11\" back frame board (step 7), slats (step 8) = cutList[0]-[7]. Back Frame/Seat Frame appear twice in the list (two lengths each)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used in steps[1]-[8]; the duplicate part names are different lengths (14 vs 8 1/2; 14 vs 11)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, 2x4, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every part matches exactly one listed material: 1 1/2 x 1 1/2 rows = materials[0] 2x2 (96\"); Back Legs 1 1/2 x 3 1/2 = materials[1] 2x4 (48\"); Arms/Seat Slats 3/4 x 2 1/2 = materials[2] 1x3 (96\").",
+      "arithmetic": "2x2: 2x15 + 2x14 + 2x14 + 2x8.5 + 11 = 30 + 28 + 28 + 17 + 11 = 114; kerf 8 cuts x 1/8 = 1 => 115 <= 2x96 = 192. 2x4: 2x21.625 = 43.25 + 1/8 = 43 3/8 <= 48 (angle waste not scored). 1x3: 2x15.75 + 8x14 = 31.5 + 112 = 143.5 + kerf 10 x 1/8 = 144.75 <= 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name 1 1/2\" pocket hole screws (materials[3]), 2 1/2\" pocket hole screws (materials[4]) and 1 1/2\" finishing nails (materials[5]); steps[3] says \"1 1/2\" pocket holes\" meaning the same screws. No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Positions given: front legs \"1\" in from the front\", back legs \"5 1/2\" back from the front\", seat frame top \"10\" off the ground\", slat gaps 1/2\", seat 10 3/4\" off ground. Viewed step 3 image: 5 1/2\" dimension; step 4 image: seat frame 14\" x 8 1/2\"; step 8 image: 14\" slats, 1/2\" gap. Back-frame board placement \"flush with outside of the seat frame and level on the bottom\" is relational; its cut line is the R1 gap."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Only reference \"as shown in the diagram\" (steps[4]) has its own image; viewed: seat frame diagram 14\" x 8 1/2\". The step 6 template is recorded under R1, not here."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back legs cut (1), front/back legs on arms (2-3), seat frame built (4) and attached (5), back frame boards (6), top back board (7), slats (8), finish (9). Order possible apart from the missing template in R1."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated and matching: \"depth set for 1 1/2\" wood\" on 2x4 back legs (steps[1], 1 1/2 thick), 2x2 front legs (steps[2]), seat frame 2x2 (steps[4]) and 11\" back board (steps[7]). Arms joined by screws into 3/4\" boards (steps[2]); slats nailed with 1 1/2\" finish nails."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Part counts match: 2 front legs, 2 back legs, 2 arms, seat frame 2 x 14 + 2 x 8.5, back frame 2 x 14 + 1 x 11, 8 slats (viewed step 8 image: 4 seat + 4 back slats). Slats: 4 x 2 1/2 + 3 x 1/2 = 11 1/2. 10\" frame top + 3/4\" slat = 10 3/4\" seat height (steps[0], [5]). (b) all parts installed; (c) nothing non-fastener outside materials; glue and paint listed; (d) steps reach the finished chair. Stated seat depth 11\" vs 11 1/2\" in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2da215eaf2cc35ea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c35d48c7b59a4997.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b5d0a236a2b3fdd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/50f0b451d9e433d7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "The seat is 14\" wide by 11\" deep and sits 10 3/4\" off the ground.",
+      "what": "seat depth stated 11\" but seat slats 4 x 2 1/2 + 3 x 1/2 gaps = 11 1/2\" and seat frame 8 1/2 + 2 x 1 1/2 = 11 1/2\" (cutList[3], [7] Kreg-corrected); approximate overall figure"
+    }
+  ]
 }

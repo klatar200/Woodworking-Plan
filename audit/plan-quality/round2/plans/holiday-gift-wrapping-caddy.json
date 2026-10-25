@@ -83,32 +83,96 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: BASE, SIDES, INTERIOR DIVIDE, BACK, DIVIDERS (cutList[0..4]); dowels are materials[1], cut in steps[6]. All present."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows used: Base (0), Sides (1, 2), Interior Divide (3), Back (4), Dividers (5)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x12, 0.875x48); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Cut list is one stock type (1x12, materials[0]; description: \"Only one 1 x 12 x 8' board required!\"). Narrow parts must be ripped from the 11 1/4\" board, so lanes: base 31 across full width; Back 5 1/2 + Sides 5 1/2 (11 + 1/8 = 11 1/8 <= 11 1/4) in two lanes; Interior Divide 4 3/4 + Dividers 3 1/2 (8 1/4 <= 11 1/4).",
+      "arithmetic": "Lane lengths: 31 (Base) + 31 (Back lane; other lane 12 + 12 + 1/8 = 24 1/8 <= 31) + 31 (Interior Divide lane; other lane 3 x 4 3/4 + 2 x 1/8 = 14 1/2 <= 31) = 93; + 2 crosscut kerfs x 1/8 = 93 1/4 <= 96 (1x12 96\"). Narrow-lane ripping is the optimizer rule, not a §9 fact, so this is likely not certain; pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" pocket hole screws (materials[2]), 1 1/4\" brad nails (materials[3]), 1/8\" holes and cotter pins (materials[4] 1/8\"), 1\" spade bit (tool). No conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed: step 1 image (1\" holes 1\", 2 1/4\", 5\", 2\" from edges), step 3 (interior divide 3 1/2\" from back edge), step 5 (dividers 7 3/16\" apart, 3 1/2\" wide), step 0 (pocket hole layout, 31\" x 11 1/4\"). Dowel pin holes \"1 1/2\" from each end\". Sides flush front shown in step 2 image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "Only reference \"indicated on the sketch\" (steps[1]) has its own image; viewed: dimensioned hole sketch."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base, sides drilled (0-1), sides on base (2), interior divide (3), back (4), dividers through back and divide (5), dowels cut (6), finish (7), dowels inserted (8)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the BASE to size and drill three pocket holes on the 12\" sides, and five along one of the 31\" sides."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock (steps[0], [3], [4]); no jig thickness setting in any step text (searched for /setting|thickness|jig/); viewed step 0, 3, 4 images show hole layouts only. R9 recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut the dowels to 35\" long and drill 1/8\" holes 1 1/2\" from each end for the cotter pins."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Insert DIVIDERS 7 3/16\" apart and secure with 1 1/4\" brad nails through the BACK and INTERIOR DIVIDE."
+        }
+      ],
+      "reason": "Interior width between the sides is 31: Back and Interior Divide are 31 (cutList[3], Kreg-corrected cutList[2]) and fit between the sides (viewed step 3 image), and 4 x 7 3/16 + 3 x 3/4 (Dividers thickness cutList[4]) = 28 3/4 + 2 1/4 = 31. Outer width over the 3/4\" sides = 31 + 2 x 3/4 = 32 1/2. Pin holes are 35 - 2 x 1 1/2 = 32 apart, less than 32 1/2, so with a centered 35\" dowel each cotter-pin hole is 1/4\" inside the outer face of a side (no clearance for a pin); at least one hole must be inside a side wherever the dowel sits. Other counts agree: Dividers qty 3 = 3 dividers between four 7 3/16 gaps; two 48\" dowels give two 35\" dowels (two hole pairs in viewed step 1 image)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb85b18880c887e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c240d6ba59679dd1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b7db66be5071261e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fbcbfed3bf26fdf0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3f3d84f84e84e8d6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2fdc47dfcdda9eb2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "drill three pocket holes on the 12\" sides",
+      "what": "step calls the base ends \"12\" sides\" but Kreg-corrected Base width is 11 1/4 (cutList[0]); sides 12\" long overhang by the 3/4\" Back thickness; labelling only"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "We chose to paint the main section of the caddy white, and stained the dowels",
+      "what": "wood glue is listed; paint/stain optional (materials[6]); no gap beyond optional finish",
+      "kind": "consumable"
+    }
+  ]
 }

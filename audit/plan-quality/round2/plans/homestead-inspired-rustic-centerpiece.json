@@ -23,31 +23,59 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps: end pieces (cutList[0]), base piece (cutList[1]), two steel pieces (cutList[2] \"Ends\", materials[1]). No other part cut. Searched steps for cut/make verbs."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: End Pieces steps[0]-[4], Base Piece steps[5], \"Ends\" (1/8 x 2 x 9) = the steel pieces of steps[6]-[10]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "cutList[0],[1] are 1x4 nominal (materials[0] Board, 1x4); cutList[2] 1/8 x 2 x 9 matches materials[1] \"Flat Metal Bar- 1/8\"x2\"x9\"\" exactly, so it is bought at size, not cut from the board."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[2] not 0.75″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "Wood parts all come from materials[0] (1x4 48\"); metal row is bought to size (2 bars for qty 2).",
+      "arithmetic": "2 x 5 + 7 1/2 = 17 1/2; kerf 2 cuts x 1/8 = 1/4 (plus angle cuts, step 0 cuts angles from a longer piece); 17 3/4 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name 1 1/4\" nails (materials[3]) and a screw size only via materials[2] \"3/4\" Phillips Pan Head Screws\" (steps[10] \"screw your metal\"); no size conflicts. Hot glue is optional (gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Steel hole positions given in steps[6] (\"2 3/4\", 4 1/2\", and 6 3/4\"\", about 1/4\" up from the bottom edge, one centered each end). Angle marks \"1\" in\" and \"2\" down\" (steps[0], [1]); angle 64 degrees; end height \"5\" from the top\". Steel placement \"along the bottom of one side of the base\" is fixed by parts. Not image-dependent."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram reference in any step (searched /as shown|see (the )?diagram|drawing|pictured/i)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Angles marked and cut (0-3), ends cut to 5\" (4), nailed to base (5), steel marked/drilled (6-8), finish (9), steel screwed on (10). Order possible."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; ends are nailed and glued (1 1/4\" nails), steel screwed with 3/4\" pan head screws."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Steps: 2 end pieces of 5\" and 7 1/2\" base match cutList[0],[1] (Kreg-corrected). Steel 9\" = 7 1/2 + 2 x 3/4 (the two end pieces) = 9. Screw count 2 x (3 bottom + 2 end holes) = 10 = materials[2] qty 10. 64 degrees ~ atan(2/1) = 63.4 degrees from the 1\" / 2\" marks. (b) all parts installed; (c) steel and screws listed; hot glue is optional and paints are finish; (d) steps reach the finished centerpiece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "This is totally optional, but I decided to add a little hot glue before I screwed my steel",
+      "what": "hot glue, wood glue (steps[5]), paint and stain (steps[9]) not in materials",
+      "kind": "consumable"
+    }
+  ]
 }
