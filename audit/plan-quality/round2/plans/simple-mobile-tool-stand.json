@@ -67,21 +67,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "This is optional, but will make the cart much more practical if you have a small work space like I do. You can find the link to the casters I used in the blog post link in the Extras tab on this plan.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Extras tab' (steps[7]) is a link to the casters the author used, in an optional step; casters are listed in materials[1] and the build needs no downloaded content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom, Top, Sides, Back, Doors are cutList rows; casters, hinges and screws are in materials. The optional stop block is 'any little scrap wood piece' (gap)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Bottom steps[1],[3]; Sides steps[2],[3]; Top steps[4]; Back steps[5],[6]; Doors steps[8],[9]."
     },
     "R4": {
       "result": "pass",
@@ -89,21 +84,61 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×24×24 + 1×24×25.5 + 2×24×27.25 + 1×24×26.5 + 2×11.875×26.25 = 3755.4 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "Single sheet type (3/4\" full sheet) but sheet layout is not judged per rubric; area 3755.4 sq in (sweep) < 4608 sq in, so no certain shortfall. 1-D check on the two 24\" strips of steps[0]: 24 + 25.5 + 27.25 + 27.25 + 26.5 + 26.25 = 156.75 + 5 cuts x 1/8 = 157.4 <= 2 x 96 = 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use only '1 1/4\" pocket hole screws' (materials[3]); hinge and caster screws are not sized in the steps."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Once I drilled the holes for my hinges, I simply attached them onto the cabinet sides."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "I attached 3” caster wheels along the bottom corners."
+        }
+      ],
+      "reason": "No step gives where the 4 concealed hinges sit along the 26 1/4 inch door edge (or how far the hinge cups/doors are inset), nor how far casters sit from the corners; the viewed step-7 and step-9 photos have no dimensions. Search of steps/description for 'from the top|from the bottom|inset|reveal' finds none. Pocket-hole positions and part flush/inside placement are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Sweep: all 6 'as shown'/'like shown' references are in steps with their own image (photos, viewed steps 3, 7, 9)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, bottom to sides, top, back, casters, doors prepared then hinged; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1],[2],[5] each say 'drill 3/4\" pocket holes' (all pocket-holed parts are 0.75 plywood)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Numbers agree: 24 + 2 x 0.75 = 25.5 = Top; 27.25 - 0.75 = 26.5 = Back; 2 x 11.875 = 23.75 in a 24 opening; Doors 26.25 in 26.5 opening; steps[0] 'cut a 26 1/4\" long piece, then rip in half'. 4 casters and 2 pair hinges in materials; all parts installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3eaf4c17496ccb73.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b3eeb027644ccd05.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d6da794fb4c7825.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "I added a little scrap wood stop block at the bottom of the inside of the cabinet. Any little scrap wood piece will work fine.",
+      "what": "Optional stop block has no size or position (step marked optional)."
+    }
+  ]
 }

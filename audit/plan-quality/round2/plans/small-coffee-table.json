@@ -56,42 +56,69 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; nothing external needed."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Make additional small cuts as needed to shorten the angled rail until you get a perfect fit as shown between the long rails. My angled rails ended up being 13\" in length after all cuts. Glue in place.",
-          "why": "cut sentence states 13\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '13\"' (steps[9]) is the author's finished length of the 15\" Angled Rails blanks (cutList[4]) after fitting cuts; geometry check: top-to-bottom long-rail gap 18 - 1.5 - 3 - 1.5 = 12, and 12 / cos 22.5 degrees = 12.99 = 13. All other parts are cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: legs/short rails steps[0]-[3]; long rails steps[5],[6]; slats steps[8]; angled rails steps[9]; table top boards steps[10]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[3] Slats are 0.625 thick x 3.5 (Kreg-corrected); the only listed stock of that width is 1x4 (0.75 thick), and no step planes or resaws it (sweep: thinner than stock, not judged). All other rows match 2x2, 1x4 or 1x6."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, 1x4, 1x6); steps not checked for per-part stock"
+      "reason": "Slats (0.625 thick) match no listed stock exactly and the steps do not name it, so per-part stock is ambiguous. No assignment shows a shortfall: 2x2: 4x18 + 4x15 + 4x35 + 4x15 = 332 + 11 cuts x 1/8 = 333.4 <= 5 x 72 = 360; 1x4 + 1x6 parts 8x15.75 + 2x20 + 6x20 = 286 + 1.4 <= 3 x 72 + 2 x 72 = 360."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3/8\" holes (steps[0],[2],[5]) match materials[3] 3/8\" dowels; 16 dowels = 4 short rails x 2 + 4 long rails x 2 joints. Steps name no other fastener size ('screw' in steps[11] is unsized)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Bottom rail 3\" above the floor, top rail flush with leg tops (steps[2]); rabbet 6/8\" deep x 7/16\" wide (steps[5]); table top overhang from the narrow boards (40 wide x 20 deep over a 38 x 18 frame); viewed step-8/9/11 photos show slat spacing, the four angled rails at the ends of the front and back, and the top overhang."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Sweep: both 'as shown' references (steps[1],[9]) are in steps with their own photos; viewed step-9 photo shows the fit of the angled rails."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, long rails (rabbets cut before assembly), slats on ledges, angled rails, top assembled then frame painted and top attached; each part exists before use."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "Dowel and glue joints are stated. steps[11] 'Glue and screw table top to frame' names no screw size or pocket holes, although materials[4] lists Kreg 1 1/2\" pocket screws; whether a pocket-hole jig setting is needed cannot be settled from the steps."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts/sizes agree: 4 legs 18, 4 short rails 15, 4 long rails 35, 4 angled rails; frame 15 + 2 x 1.5 = 18 deep and 35 + 3 = 38 long; slat length 15.75 = 15 + 2 x 7/16 (rabbets); top 6 x 5.5 + 2 x 3.5 = 40 x 20. All parts installed; paint and stain listed; finished table reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5c629ffa5de8205.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf4e989ed1dc0943.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c3c247e82560d3c5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Glue and screw table top to frame to complete.",
+      "what": "Screw size, count, and where they go are not stated; materials[4] lists 8 Kreg 1 1/2\" pocket screws but no step drills pocket holes."
+    },
+    {
+      "path": "cutList[3]",
+      "quote": "Slats 0.625 3.5 15.75",
+      "what": "Slats are 5/8\" thick but no listed material is 5/8\" thick and no step reduces 3/4\" stock."
+    }
+  ]
 }

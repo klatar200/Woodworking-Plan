@@ -68,13 +68,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; no reference to full plans/PDF/external content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps (Top, Side, Shelf boards) all in cutList; legs and leg brackets are purchased (materials[3], materials[4])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top (steps[0]), Shelf (steps[4]), Side (steps[2]) each used by steps."
     },
     "R4": {
       "result": "pass",
@@ -85,25 +87,56 @@
       "arithmetic": "parts: 3×20 + 3×15.5 + 6×6.25 + kerf 10 cuts (12 parts − 2 boards, the fewest possible)×1/8 = 145.250″; bought: 1×72 + 1×96 = 168″; 145.250 ≤ 168"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "ng, drill four 1/4\" holes spread out along the board. Next, screw the legs into the board. Now you can paint the legs with ease. Once the paint dries, you can apply a clear protective finish to the le",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1/4\" holes' (steps[10]) are drilled in a scrap board to hold legs while painting, not a build fastener; bracket screws are 'provided'. All build fasteners use 1 1/4\" Kreg screws, in materials[2]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-6 image: sides inset 1 1/2\" from top edges, shelf 15 1/2\" between sides; viewed step-9 image: leg brackets 3/4\" / 3/4\" from corner. Pocket-hole locations shown on step images (not individually opened)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "reason": "Sweep: every 'as shown' reference sits in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top, Sides, Shelf panels made, then sides to top, shelf between sides, finish, brackets, legs; each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; all pocket-holed parts are 0.75 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Top 3x5.5 = 16.5 matches image 16 1/2\" (viewed); Side 3 boards x 5.5 = 16.5; counts 3/6/3 match steps; legs/brackets installed in steps[9],[10]; piece finished."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4973874306ab762c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c2425751ceb3091f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Apply glue to the mating edges of three Side boards and align them to form a Side panel, as shown.",
+      "what": "Step titled 'Add the Sides to the Top' repeats the side-panel text and never says to attach the sides to the Top or where; the image (viewed) shows 1 1/2\" inset and settles it."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "mask off the bottom 6\" or so of each leg with a quality painters’ tape",
+      "what": "painter's tape not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Sand both sides of the panel flat with 120 grit sand paper",
+      "what": "sandpaper not in materials"
+    }
+  ]
 }

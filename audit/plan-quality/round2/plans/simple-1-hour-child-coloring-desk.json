@@ -7,13 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; nothing external needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "17\", 25\", 33\" pieces and the desk top are cutList rows (cutList[0..3]); no other part is cut or assembled in the steps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: steps[0],[1] (17\" and 25\" legs), steps[2] (33\" supports), steps[3] (Desk Top)."
     },
     "R4": {
       "result": "pass",
@@ -21,27 +23,58 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 2x2); steps not checked for per-part stock"
+      "reason": "Lumber: parts (1.5 x 1.5) match only materials[1] 2x2; 4 x 17 + 4 x 25 + 2 x 33 = 234 + 7 cuts x 1/8 = 234.875 <= 3 x 96 = 288 (no shortfall). Sheet: Desk Top 21 x 34 = 714 sq in from a '1/2\" Half Sheet' whose size is not written in the name, so sheet layout stays unknown per rubric."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Place the assembled legs on the desk top (pocket hole side down), with a 1/2\" overhang on all sides. Screw through the legs into the desk top to secure in place.",
-          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1/2\"' in steps[3] is the desk-top overhang, not a screw size. Only fastener in materials is 1\" Kreg pocket-hole screws (materials[2]); steps name no other size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole count and ends stated (steps[0]); 1/2\" overhang on all sides (steps[3]); viewed step-2 image shows supports joined at the rectangle corners. Footprint matches: top 34 - 2 x 0.5 = 33 = support length, 21 - 1 = 20 = 17 + 2 x 1.5."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep: no unmet 'as shown' reference; every step has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs drilled, rectangles built, joined with supports, then attached to the top (steps[0]-[3]); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes in either end of the four 17\" leg pieces, and the 33\" leg pieces."
+        }
+      ],
+      "reason": "Search of all steps, materials and description for /jig|setting|set (it|your|the)|thick/ finds no pocket-hole jig thickness setting for the 1.5-thick 2x2 parts. Viewed step-1, step-2 and step-3 images are photos with no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: four 17\" pieces, two 17 + two 25 per rectangle (x2 = 4 + 4), two 33\" supports; all parts installed (steps[1]-[3]); steps end at finished desk. Pocket-hole screws: 4 x 2 ends x 2 + 2 x 2 ends x 2 = 24 <= 40 listed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7900b919042859e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/01efb543202c6bb7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f33326051847993.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Sand all the edges very smooth (no splinters for your little ones!)",
+      "what": "sandpaper, and paint/stain/sealer, not in materials"
+    }
+  ]
 }

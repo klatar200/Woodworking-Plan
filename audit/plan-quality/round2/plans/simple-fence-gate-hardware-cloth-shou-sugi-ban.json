@@ -13,43 +13,89 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[17].body",
-          "quote": "or free video tutorials, view the two YouTube videos in the Extras section.\nThe first takes you through the building and mounting of the gate without the optional steps.\nThe second video takes you thr",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Extras' (steps[17]) points to optional free YouTube videos; steps[1]-[16] are complete without them (search of all fields for plans/PDF/template/download finds only that)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Stiles, rails, braces and top cap named in steps[1],[2],[6],[7],[9],[11] all match cutList rows; hardware cloth and hinge/latch kit are materials[1],[4]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used (cross braces in optional steps[11]-[13], labelled optional in the row)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable"
+      "result": "pass",
+      "reason": "All rows are 2x4 (cutList thickness 2, width 4, nominal as steps[0] states) matching materials[0] 2x4 96\"; lengths <= 96. cutList[0] Kreg text has a stray feet mark after 63.5 (a typo); steps[6] says 63.5\"."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "a cut row's Kreg text is not parseable"
+      "result": "pass",
+      "reason": "Single timber stock (2x4 96\", qty 7): 2x63.5 + 2x70.5 + 2x36 + 29 + 3x29 + 4x38 + 36 = 127 + 141 + 72 + 29 + 87 + 152 + 36 = 644 + 8 cuts x 1/8 = 645 <= 7 x 96 = 672. (Optional steps[11] blanks of 48 x 4 would be 685 > 672.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use only '2.5\" deck screws' (materials[2]); pocket-hole screws 2.5\" (materials[3]) and hinge kit hardware are listed; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Rails 'one at the top, one at the bottom and one in the center'; hinge and latch positions shown in viewed step-10 image (hinges near top and bottom of the gate, latch on the post at mid-height); braces run 'from a hinge-side corner to the latch-side center' (optional)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Sweep: both 'as shown' references (steps[10],[16]) have their own images; viewed step-10 image shows hinge and latch."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back frame built, cloth stapled, front parts cut then attached over cloth, cap added, gate hung; optional braces/finish follow and steps[16] explicitly repeats the hanging step."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Using a Kreg Pocket Hole jig, drill two pocket holes at each end of the three Back Rails."
+        }
+      ],
+      "reason": "Search of all steps, materials and description for /setting|set (it|your|the)|thick|1 1/2/ finds no pocket-hole jig thickness setting for the 1.5-thick 2x4 rails; viewed step-3 photo shows no legible setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Staple hardware cloth to the frame starting at the bottom end and moving up each side, finishing along the top."
+        },
+        {
+          "path": "materials",
+          "quote": "Board, 2x4 96\" / 36\" x 5' Hardware Cloth Panel / Box of 2.5\" Deck Screws / Box of 2.5\" Kreg Pocket Hole Screws / Gate Hinge & Latch Kit / Can of Stain (Optional)"
+        }
+      ],
+      "arithmetic": "Search: no materials line contains 'staple'. Also steps[5] 'Roll out your 36\"x60\" hardware cloth panel across the back frame' vs steps[1] back stiles 70.5\" (back frame 70.5 tall; open height 70.5 - 3 x 3.5 = 60 across both openings): a 60\" cloth stapled from the bottom end cannot reach the top rail, leaving at least 70.5 - 60 = 10.5\" of frame height (7\" of opening) uncovered.",
+      "reason": "Staples are used but not in materials (certain); the 60\" cloth is shorter than the 70.5\" frame it is stapled up (likely). Other counts agree: back/front frames 70.5 tall, 3.5 + 63.5 + 3.5 = 70.5; widths 29 + 2 x 3.5 = 36."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9db59d1a056ca79b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/78f345fbaa65028b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/67db18e14730e0d3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/37ddf26bd2d9773d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Cut 4ea. 2\"x4\" to 48\" in length.",
+      "what": "Optional cross braces: step gives 48 inch blanks, cutList[5] gives 38; step also says cut to length with angles, so the two may be blank vs finished length."
+    }
+  ]
 }

@@ -7,30 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; nothing external needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The steps assemble 'a frame of a rectangle box' from the cut pieces; End rails, Side rails and Legs are the only parts and are all in cutList. Hooks are materials[4]."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "End rails",
-          "why": "no step mentions it (searched steps for rail)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Side rails",
-          "why": "no step mentions it (searched steps for rail)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged rows are not named in the steps, but step 0 says 'Cut wood to sizes specified' and steps[1],[2] drill and assemble 'each cut 2\" x 4\" piece' into the frame; all three rows (rails, legs) are the frame's parts, none is an assembly or placeholder."
     },
     "R4": {
       "result": "pass",
@@ -42,21 +27,66 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Parts match exactly one listed stock each (2x4 rows -> materials[0] 2x4 120\"; 4x4 legs -> materials[1] 4x4 96\"). 2x4: 4 x 36 + 4 x 66 = 144 + 264 = 408 + 4 cuts x 1/8 = 408.5 <= 4 x 120 = 480. 4x4: 4 x 48 = 192 <= 4 x 96 = 384."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[2] '2-1/2\" pocket screws' matches materials[2] '2-1/2\" Kreg pocket screws'."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Simply assemble the rack using wood glue and 2-1/2\" pocket screws. You are building a frame of a rectangle box."
+        }
+      ],
+      "reason": "The 4 end rails and 4 side rails form two levels on the 48\" legs, but no step, cut-list row or description gives the height of either rail level on the legs (search for 'height|from the floor|above|flush|inch' in steps, summary, description finds none). The viewed step-2 photo has no dimensions. Hook positions are also not given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references in the steps (sweep search)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill pocket holes in ends, then assemble the frame; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using a Kreg Jig drill pocket holes into ends of each cut 2\" x 4\" piece"
+        }
+      ],
+      "reason": "Search of all steps, materials, summary and description for /setting|set (it|your|the)|thick|1 1/2/ finds no pocket-hole jig thickness setting for the 1.5-thick 2x4 ends; the viewed step-1 photo shows the jig but no readable setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match: 4 end rails, 4 side rails, 4 legs form two rectangular levels; hooks (4) are in materials[4]; steps end with the rack loaded. No numbers in the steps to cross-check."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/621a57e0c8be8297.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77b3ec5620dc63bd.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Add hooks to the rack for hanging PFDs, drybags, etc.",
+      "what": "Hook placement is not given (4 hooks in materials[4]); the leg height and rail spacing for the kayaks and boards are not stated either."
+    }
+  ]
 }

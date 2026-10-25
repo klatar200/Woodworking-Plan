@@ -104,42 +104,84 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; nothing external needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Face spans = Front Skirts, side spans = Side Skirts, mid spans, legs (8 halves glued in pairs), top (Desktop) are all cutList rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Desktop",
-          "why": "no step mentions it (searched steps for desktop)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Desktop' is the 'top' attached in steps[6]; the viewed step-0 diagram labels the 60\" x 15 1/4\" panel as the top. All 5 rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 0.75x16, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed stock (Leg Halves 1.5 x 3.5 -> 2x4; skirts/spans 0.75 x 2.5 -> 1x3; Desktop 0.75 x 15.25 x 60 -> 16\" x 60\" project board). 2x4: 8 x 19.5 = 156 + 6 cuts x 1/8 = 156.75 <= 2 x 96 = 192. 1x3: 2x54 + 2x10 + 3x13.25 = 167.75 + 5 cuts x 1/8 = 168.4 <= 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All steps use 1 1/4\" pocket hole screws (materials[3]); no other size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed diagrams: skirts inset 1/8\" from the leg faces (step 3), mid spans '13 3/4\"' apart (step 5), top 60 x 15 1/4; leg trim amounts given in steps[2]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Sweep: all 4 'diagram' references are in steps with own images; viewed step-0/3/5 images are the diagrams."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, legs glued and trimmed (steps[1],[2]), legs joined to skirts, then side spans, mid spans, top; each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'drill 3/4\" pocket holes'; pocket holes are in the 0.75 skirts/spans only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "The boards will be 13 3/4\" apart as shown on the diagram."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Front Skirt 54"
+        }
+      ],
+      "arithmetic": "Three mid spans (0.75 thick, cutList[2]) in a 54\" run between the legs (cutList[0], viewed step-3/5 diagrams) leave 54 - 3 x 0.75 = 51.75 of clear gap over 4 gaps. The viewed step-5 diagram shows four '13 3/4\"' dimensions: 4 x 13.75 = 55. Under any consistent way of measuring (face to face 51.75; center to center 54; widest case 54.75) the total never reaches 55.",
+      "reason": "The 13 3/4\" spacing does not add up to the 54\" skirt run (about 1\" over). Other numbers agree: leg 1.5 + 1.5 glued = 3 thick, trim 1/4 each side = 2.5; width 3.5 - 2 x 1/2 = 2.5 = skirt width; skirt gap 15 - 2 x (1/8 + 3/4) = 13.25 = mid span length; Leg Halves 8 = 4 legs."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f9a52265f1c9191.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f08ae30b99ccce29.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6bf8e9b1a4941362.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Join the two pieces from step 4 using wood glue and 1 1/4\" pocket hole screws.",
+      "what": "Step refers to itself ('step 4'); the pieces joined are the two leg/face-span assemblies from step 3."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Sand using 80 grit, followed by 120 and finish with 220 grit sandpaper.",
+      "what": "sandpaper not in materials"
+    }
+  ]
 }

@@ -212,42 +212,108 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; no external content needed."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[12].body",
-          "quote": "d cut to width using the table saw. You may want to cut them 1/16\" short on each side to account for any bowing that may be present.\nI recommend cutting the respective top panels to the same width at ",
-          "why": "cut sentence states 1/16\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1/16\"' (steps[12]) is a fit allowance, not a part. Frame stiles/rails and all panels in cutList; Left/Right panels are the 3.75-wide rows (cutList[4],[5],[7],[8])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: stiles/rails steps[0], full-width and left/right panels steps[3],[4],[5],[6],[12]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[3].widthIn",
+          "quote": "3/4\" x 6 3/4\" x 34 1/2\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x6 96\""
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "cut your bottom panels to length from the tongue and groove wood planks"
+        }
+      ],
+      "arithmetic": "Full-width panel rows (cutList[3], cutList[6]) are 6.75 wide (Kreg-corrected); the only listed stock that thick is 1x6 = 5 1/2 actual (§9); 6.75 > 5.5. The 'tongue and groove wood planks' the steps name are not a listed material.",
+      "reason": "Full-width panels cannot be cut from the listed 1x6; the stock they come from is not in materials."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x6); steps not checked for per-part stock"
+      "reason": "Two stock types (2x4, 1x6) and the panels come from 'tongue and groove wood planks', not a listed material, so per-part stock cannot be matched."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fasteners in steps; joints are tongue-and-groove with wood glue (materials[2]). Door hardware is recorded under R14."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Groove position given (bit edge 3/8\" from fence, two passes, 3/4\" wide x 1/2\" deep), tongue size, panel setback ('3\" shorter'), door size 40 1/2\" x 84\". Hardware placement is by manufacturer instructions."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep: the one 'as shown' (steps[1]) has its own step image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "assemble them along with the Left Frame Stile, Bottom Frame Rail, and Middle Frame Rail"
+        },
+        {
+          "path": "steps[11].title",
+          "quote": "Hang the Door"
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Mark the left and right panels at the end of the tongue on each end of the rail and cut to width using the table saw."
+        }
+      ],
+      "reason": "The step that cuts the Left/Right panels to width (steps[12]) and the step that determines the dimensions (steps[13]) come after the door is assembled, glued and hung (steps[4]-[11]); steps[4] and [6] already slide those panels into the stiles. The build can still proceed by reordering, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Joinery method stated: router grooves/tongues (steps[1],[2]) glued (steps[7],[8])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "There are a lot of sliding/barn door hardware options available. After you find one that you like, follow the instructions from the manufacturer to hang the door."
+        },
+        {
+          "path": "materials",
+          "quote": "Board, 2x4 96\" / Board, 1x6 96\" / Wood Glue / Sandpaper, 120-grit"
+        }
+      ],
+      "reason": "The steps hang the door with sliding/barn-door hardware (track, hangers) that no materials line lists. Search: materials[0..3] names contain no hardware. Arithmetic otherwise agrees: vertical 3 rails x 3.5 + panels 34.5 + 41 - 4 grooves x 1/2 = 84 (stile length); horizontal 4 x 6.75 + 2 x 3.75 = 34.5 (rail length)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "cut your bottom panels to length from the tongue and groove wood planks",
+      "what": "Panel stock (tongue-and-groove planks) is never specified in materials; see R4."
+    }
+  ]
 }

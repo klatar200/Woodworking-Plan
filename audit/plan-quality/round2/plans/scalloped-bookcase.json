@@ -92,25 +92,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Sweep search stands; no external content required."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "g wood glue and pocket hole screws, attach the Short Faces between the two Long Faces. - These should line up with the 6\" edges of the Short Faces attaching flush with the 6\" cut in on the Long Faces.",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "g wood glue and pocket hole screws, attach the Short Faces between the two Long Faces. - These should line up with the 6\" edges of the Short Faces attaching flush with the 6\" cut in on the Long Faces.",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '6\"' (steps[4]) is the straight edge shown on the Long Face (step-1 image, viewed), not a part. Sides, Top/Bottom, Shelves, Long/Short Face, Back all in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: Top/Bottom/Sides/Shelf steps[0],[2]; faces steps[1],[4],[5]; Back steps[6]; remaining Shelves steps[9]."
     },
     "R4": {
       "result": "pass",
@@ -118,20 +108,53 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2]"
+      "reason": "Sheet goods: parts of 3/4\" plywood total 2x10.5x72 + 2x10.5x34.5 + 5x10.5x34.5 + 2x8x72 + 2x8x24 = 1512 + 724.5 + 1811.25 + 1152 + 384 = 5583.75 sq in <= 2 sheets x 4608 = 9216 sq in, so no certain area shortfall; sheet layout not judged (per rubric)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener sizes in steps: pocket-hole screws (materials[3] 1 1/4\") and 'pin nails' (steps[6], size unstated; materials[5] '1\" nails'); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket-hole locations given (steps[0]); scallop corner marks 6\" x 6\" and shown in viewed step-1 image; fixed shelf 'at the center'; shelf-pin hole positions set by the Kreg Shelf Pin Jig (stated in steps[3]) and 'up and down both Sides'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep: no unmet 'as shown' reference found; step-1 and step-4 images viewed show the face scallops and assembly."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut/drilled first (steps[0],[1]), box assembled (steps[2]), shelf-pin holes, face assembled then attached to box, back, finish, then shelves; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the following locations on these boards: Top- 2 on each end Bottom- 2 on each end (1) Shelf- 2 on each end (2) Sides- 4 on one long edge"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Drill two pocket holes on each short edge of the Short Faces."
+        }
+      ],
+      "reason": "Search of all step bodies, materials and description for /setting|set (the|your)|jig|3/4/ finds only 'Kreg Shelf Pin Jig' (steps[3]); no pocket-hole jig thickness setting stated for the 3/4\" parts. Viewed step-1 and step-4 images show no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Long 8x72 and Short 8x24 faces: 24 + 6 + 6 (straight edge on Long Face, viewed image) = 36 = Top/Bottom 34.5 + 2 x 0.75 Sides; one fixed Shelf + 4 removable shelves (5 rows); 16 shelf pins = 4 shelves x 4; every part installed; finish reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-25",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/596efa2a9aa9c1a2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2e606c837a74c194.webp"
+    ]
+  }
 }
