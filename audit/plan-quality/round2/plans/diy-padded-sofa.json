@@ -47,45 +47,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made in steps: Shelf, Braces (3), Supports (4), Seat, Seat Back - each a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows used: Shelf/Braces steps[0], Support steps[1], Seat steps[4], Seat Back steps[5], Shelf steps[6]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
+      "result": "unknown",
+      "reason": "Sweep fail rejected: it sums bounding rectangles of the 4 Supports (4 x 20 x 28.5 = 2280 sq in) but the viewed Support drawing (steps[1] image) is a notched non-rectangular shape, so rectangle area overstates the plywood used; and the viewed step[0] image shows a Brace as 5\" x 14 5/8\", not the cut row 14.625 x 48 (3 x 14.625 x 48 = 2106 sq in), so the sheet total cannot be certain. Neither the cutting diagram nor part nesting is in the plan. Cannot establish a certain shortfall.",
+      "readerNote": "Sweep fail (rectangles area 6732 > 4608) overridden: Supports are non-rectangular per viewed steps[1] image and Brace row disagrees with viewed steps[0] image (5\" x 14 5/8\")."
+    },
+    "R6": {
+      "result": "pass",
+      "search": "steps use \"1 1/4\\\" coarse-thread Kreg Screws\" (steps[2],[4],[5],[6]); materials[1] \"Kreg 1 1/4\\\" coarse-thread pocket hole screws\"; single size, no conflict."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Viewed images give the Brace placement (9\" and 5\" on Support assembly, centre Brace 9 3/4\"), Seat set back 2 5/8\" from Support back edge, Shelf 1/2\" overhang, pocket-hole locations on Braces and Supports; text gives relational placements (equal overhang, flush)."
+    },
+    "R11": {
       "result": "fail",
       "level": "Fix",
       "confidence": "certain",
       "cause": "plan",
       "evidence": [
         {
-          "path": "materials[0]",
-          "quote": "Plywood, 3/4\" Thick Full Sheet — qty 1"
+          "path": "steps[0].body",
+          "quote": "as shown in the cutting diagram"
         },
         {
-          "path": "cutList[0..4]",
-          "quote": "Shelf — qty 1, 0.75 x 5 x 48; Brace — qty 3, 0.75 x 14.625 x 48 (Kreg-corrected); Support — qty 4, 0.75 x 20 x 28.5 (Kreg-corrected); Seat — qty 1, 0.75 x 22 x 52; Seat Back — qty 1, 0.75 x 18.5 x 52 "
+          "path": "steps[4].body",
+          "quote": "Cut a Seat to length and width, as shown in the cutting diagram."
         }
       ],
-      "arithmetic": "part area 1×5×48 + 3×14.625×48 + 4×20×28.5 + 1×22×52 + 1×18.5×52 = 6732.0 sq in; bought 1×48×96 = 4608 sq in; 6732.0 > 4608"
+      "reason": "Three steps (0, 4, 5) refer to a cutting diagram. I viewed all 12 plan images (7 step images, 5 unattached): they are Brace drawing, Support drawing, assembly views, a final dimensioned view and 4 photos - none is a sheet cutting diagram. Layout of parts on the sheet is nowhere shown (Seat/Seat Back/Shelf/Brace sizes are in the cut list, so a build is still possible: Fix, not Unpublish).",
+      "readerNote": "Sweep pass (each reference in a step with own image) overridden: none of the 12 images shows a cutting diagram."
     },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
+    "R8": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Braces and Supports made first, side assemblies, then centre Brace, then Seat, Seat Back, Shelf; each exists before use."
     },
-    "R11": {
+    "R9": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "reason": "steps[0].body \"Set your Kreg Jig for 3/4\\\" thick material\" - all pocket-holed parts (Braces, Supports) are 3/4\" plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts agree: 3 Braces, 4 Supports (2 left, 2 right), seat 22 deep and 28 1/2 support in viewed final-dimension image match cut rows. (b)(c)(d) All made parts installed; cushions and oil in materials; steps reach cushions on and finished."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[1].widthIn",
+      "quote": "14.625",
+      "what": "Viewed steps[0] image dimensions a Brace as 5\" x 14 5/8\"; cut row is 0.75 x 14.625 x 48 (qty 3) - the 5\" width appears nowhere in the cut list; cannot tell if import or Kreg"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "You can learn more in the How-To video below.",
+      "what": "refers to a video not in the plan (optional learning aid, not build content)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "c7f5faff59b6cd95",
+      "c9e4b14b96f3e5d5",
+      "3ae1ae7e5f3a7c6c",
+      "a787a2b8559c273c",
+      "f2b80a858a06eb12",
+      "b0cb947a9500d97d",
+      "76a8b24188262177",
+      "1f6464f3a7031c95",
+      "0dc26b6e5ee61a77",
+      "809f6110a5848fec",
+      "1c60411b74299782",
+      "e4a8efa531bc1663"
+    ]
+  }
 }

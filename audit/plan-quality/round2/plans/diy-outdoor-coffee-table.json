@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts cut/assembled in steps (legs, short apron, bottom leg supports, long aprons, bottom long support, top supports, top slats) are cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: Legs/Short Aprons and Leg Supports (steps[0]), Long Aprons (steps[1]), Bottom Long support (steps[2]), Top Supports (steps[3]), Top Slats (steps[4])."
     },
     "R4": {
       "result": "pass",
@@ -28,22 +30,54 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Two stocks but each part matches exactly one listed material by thickness x width: 2x2 rows (2x2) -> \"Board, 2x2 96\\\"\"; Top Slats (1x3) -> \"Board, 1x3 96\\\"\". 2x2 parts: 4x17+4x17+2x17+2x29+1x29 = 257 + 13 parts x 1/8 kerf = 258.6 <= 3x96 = 288. 1x3: 8x35 = 280 + 7 x 1/8 = 280.9 <= 4x96 = 384. Quantities 3 and 4, not importer defaults."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps searched /screw|inch size/ - no fastener size appears in any step; materials list 2 1/2\" Kreg and 2\" wood screws, no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: bottom leg supports 3\" from edge (image shows 3\" from the bottom), bottom long support 7.75\" from side of leg, top supports 11\" from each end, slat overhang 1.5\" and 1/4\" spacing. Viewed images show short apron and long aprons flush with leg tops."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Side frames, then long aprons join them, then bottom long support, top supports, then slats on the frame; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Create the 2 side frames using the Legs, short apron and the bottom leg supports."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2 1/2\" Blue kreg screws coarse"
+        }
+      ],
+      "reason": "Joints are pocket-hole joints (images show pocket holes, materials list Kreg screws) but no jig thickness setting is stated in the text; searched all fields for /pocket|jig|setting|drill|hole|pilot/ - only tools slugs match. Not shown in the viewed image either. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step counts agree: 2 side frames x (short apron + bottom support) = 4 \"Short Aprons and Leg Supports\"; 4 legs; 2 top supports; 8 slats x 2.5 + 7 x 1/4 = 21.75 ~ 22\" depth in description; slat 35\" less frame width (29 long apron + 2 x 1.5 leg = 32) = 3 = 2 x 1.5\" overhang as stated. (b)(d) every part installed; slats finish the table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "c23bd7c3ec5504e3",
+      "93619bfaf0f35582"
+    ]
+  }
 }

@@ -68,35 +68,72 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[2].body and steps[10].body point to the extras tab/video only for \"more details\"; the handle bending is written out in steps[2] and every other step is complete, so the build does not depend on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts made: bottom boards (Bottoms), tray sides (Long/Short Sides), handles cut/bent from the listed 24\" steel flat bar (materials[3]); all present."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: Bottoms steps[0], sides steps[1],[3],[5]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part fits exactly one listed material: Bottoms 0.75 x 7.25 only 1x8; sides 0.75 x 2.5 only 1x3 (Kreg-corrected rows). 1x8 36\": 2 x 14.5 = 29 + 1/8 = 29.125 <= 36. 1x3 72\": 2 x 16 + 2 x 14.5 = 61 + 3 x 1/8 = 61.375 <= 72. No quantity diff recorded, so the 1s are not import defaults.",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" pocket hole screws (steps[0],[5]) and 1\" wood screws (steps[7],[9]); materials[2] and materials[4] match; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Bend marks 3\" from centre and 1 1/4\" further given in steps[2]; handle centred and flush per steps[3]/[7]; pocket-hole placement shown in viewed step images; handle screw holes just need to land over the 3/4\" side edge (relational)."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Handles shaped (steps[2]) before tracing the side cutouts (steps[3]); pocket holes, tray assembly, then handles trimmed, painted, and screwed on last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body states 3/4\" pocket holes; every pocket-holed part (Bottoms, sides) is 3/4\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Square: two 1x8 boards cut to 14 1/2 give a 14.5 square; Long Sides 16 = 14.5 + 2 x 3/4; Short Sides 14.5; 2 handles = materials[3] qty 2; 8 screws = 2 handles x 2 holes x 2 sides. (b)(c)(d) every part installed; handles attached last."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Using wood glue and 1 ¼” pocket hole screws",
+      "what": "wood glue used but not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "apply spray paint as desired. I painted mine with rose gold spray paint.",
+      "what": "spray paint (and finish) not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "a8cfa1da8a87e490",
+      "8b0dce58ba36ab66",
+      "fc3f2993b83ee6c8",
+      "7d5e2df3a68a6166"
+    ]
+  }
 }

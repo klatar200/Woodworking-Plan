@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps cut/assemble: vertical boards and horizontal boards, both cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used (verticals steps[1],[2]; horizontals steps[6])."
     },
     "R4": {
       "result": "pass",
@@ -24,18 +26,69 @@
       "arithmetic": "parts: 6×40 + 2×16.5 + kerf 0 cuts (8 parts − 8 boards, the fewest possible)×1/8 = 273.000″; bought: 8×48 = 384″; 273.000 ≤ 384"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Mounting fasteners: steps[3] \"4 fasteners\", steps[5] \"screw it into the anchors\" give no size and none is in materials (sizes not stated, so none to conflict); pocket screws 1-1/4\" (steps[2]) and brads 18ga 1-1/4\" match materials[1],[3]; no conflicting sizes. Missing mounting screws recorded in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images: 5 hole pairs at 6-5/8\" spacing (6 3/4\" from each end, consistent with 40\" board), mounting holes shown (one dimensioned 6 3/4\" x 2 3/4\" = centred on a 5 1/2\" board, others drawn on same pattern), horizontals 4\" from top and bottom (text + image). Window alignment is relational."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Verticals cut, drilled, assembled into panels, finished, mounted, then horizontals nailed on after panels are on the wall; tacks last (optional)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1].body \"Check your settings on your KREG jig ... setup for 3/4\\\" material\" - verticals and all pocket-holed parts are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Buy appropriate anchors for the application. Mine was a stucco finish so I bought a plastic plug."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "The layout for these is 4\" off the top and 4\" off the bottom."
+        },
+        {
+          "path": "cutList[1].quantity",
+          "quote": "2"
+        }
+      ],
+      "reason": "(c) Anchors are used in steps[5] but are not in materials; searched materials[*].name for /anchor|plug|mount|wall/ - no match (materials: 1x6 boards, pocket screws, glue, brads, tacks). (a) Cut list has 2 Horizontal boards but the plan makes 2 panels (steps[1] \"Drill all your holes on 2 vertical boards\"; steps[2] adds a board each side of each, 6 verticals) with 2 horizontals per panel (steps[6], viewed image: top and bottom bands) = 4; 12 tacks = 4 x 3 verticals agrees with 4.",
+      "arithmetic": "2 panels x 2 horizontal boards each (4\" off top and 4\" off bottom) = 4 vs cutList[1].quantity 2; tacks materials[4] \"12\" = 4 horizontals x 3 verticals."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Grab your panel and screw it into the anchors securing it to the wall.",
+      "what": "wall-mount screws are never specified or listed in materials (4 fasteners per shutter per steps[3])",
+      "kind": "fastener"
+    },
+    {
+      "path": "materials[1].quantity",
+      "quote": "10",
+      "what": "screw count looks short: steps[1] \"5 sets of evenly spaced holes\" on each of 2 boards; viewed image shows 5 pairs = 10 holes per board, 2 boards = 20 holes, one screw per hole, vs 10 listed (could be a Kreg count by sets)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "96ef0d604d11b53f",
+      "7375fa9e890723d6",
+      "fde0bd7f5a2c3859",
+      "4248a9b5a2107ab5"
+    ]
+  }
 }
