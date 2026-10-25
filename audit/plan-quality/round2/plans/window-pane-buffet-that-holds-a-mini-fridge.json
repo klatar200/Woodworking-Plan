@@ -296,49 +296,118 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs link/PDF/Extras terms; only hit is steps[14] 'Visit www.theAwesomeOrange.com for more photos' (credit/photos, optional) and finishing brand names in steps[12]"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "Rip round overs off the 2x6's to a final width of 5\". Glue 5 of these pieces together for an overall width of 25\". Once top is dry trim to final length 65\" using a circular saw.",
-          "why": "cut sentence states 65\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 65\" is the Top: steps[7] itself says to cut it from the listed 2x6 ('Rip round overs off the 2x6's to a final width of 5\". Glue 5 of these pieces ... trim to final length 65\"'), so a cut-list row is not required. Every other cut in steps[0..13] matches a cut row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 18 cut rows are used: legs/sides/bottom/face frames (steps 0-2), dividers and divider face frame (3-4), supports (5), shelves (6), styles/rails/panes (8), glass and solid panes (9), back panels (13)"
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[15] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[15] thinner than stock — would need planing/resawing, not judged",
+      "readerNote": "Only the Glass rows (0.125 thick) cannot come from a listed lumber/sheet material; glass sourcing is recorded under R14(c). All other parts match listed stock (legs 1.5x1.5=2x2, 0.25 parts=1/4 sheet, rest 3/4 sheet or 1x2)."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, 2x6, 2x2, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[11].body",
-          "quote": "igger than the screws you are using) in the cabinet support pieces. And then attach top using 1 1/2\" screws with a washer into top. The oversized holes in the cabinet supports allow for wood movement.",
-          "why": "1 1/2\" screw — no material line lists a 1 1/2\" fastener"
+          "quote": "attach top using 1 1/2\" screws with a washer into top."
+        },
+        {
+          "path": "materials[10].name",
+          "quote": "1 1/4\" #8 Spax Screws"
         }
-      ]
+      ],
+      "reason": "Step 11 uses 1 1/2\" screws with washers; materials list only 1 1/4\" pocket screws and 1 1/4\" #8 Spax screws (qty 2, which step 4 uses for 'a 1 1/4\" screw from top face frame into divider face frame'). Search of materials[0..12] for /1 1\\/2|washer/i: no match."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Divider positions 17\"/24\"/17\" shown in viewed image 95ea0a8b; hinges '3 1/2\" from the ends'; legs leave 1 1/4\" at bottom; divider face frame leaves 3/4\" gap; supports flush to top; knob location is shown in the viewed renders (door top corners); shelf-pin holes set by the shelf pin jig."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both references ('See photo for upright location', etc.) are in steps with their own images; viewed step-4 image shows the upright locations."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 'Using 3/4\" pocket holes and 1 1/4\" pocket hole (PH) screws'; every later PH joint is in 3/4\" stock and says 3/4\" PH's."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[15]",
+          "quote": "Glass\", \"quantity\": 8, \"thicknessIn\": 0.125, \"widthIn\": 6, \"lengthIn\": 13 (Kreg-corrected 0.125 x 6.375 x 13.75)"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "install the glass pieces using clear silicone for the two outside doors."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Knobs or Pulls"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Shelves will be approximately 3/4\" x 18\" x 22\"."
+        }
+      ],
+      "arithmetic": "(c) Glass: search of materials[0..12] for /glass|silicone/i: no match, so the 8 glass panes are not in materials. (d) Materials list 3 knobs/pulls; search of all steps for /knob|pull/i: no match, no step installs them, though viewed renders show knobs. (a) Shelf: outer cabinet interior = Cabinet Supports width 17.75 (Kreg-corrected row [0.75, 3.5, 17.75]; viewed image 95ea0a8b shows 17\"); shelf width 18 > 17.75 and shelf depth 22 > side depth 21 (cutList[1] 21).",
+      "reason": "Glass component missing from materials, pulls never installed, and the shelf size given in step 6 does not fit the cabinet opening it goes in."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass built in order (legs/sides, bottom, top support, dividers with face frames, cabinet supports, shelf pin holes), top glued up separately, doors built then hung, top attached, finish, back last; each part exists before use. steps[9] says to install glass after painting while steps[10] hangs doors before steps[12] finishing, but steps[12] repeats 'Paint or stain the cabinet doors before installing the glass', so the build proceeds."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "95ea0a8b9d99eca4.webp",
+      "764a5bc9a4015953.webp",
+      "aaeb80affb2032b1.webp",
+      "montage m4.png of edd76877, 28058570, 3cece975, b8faa2c9, 31472fa1, 02da7adf, 64b4641f"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "install the glass pieces using clear silicone",
+      "what": "clear silicone not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Edge band plywood shelves using iron-on edge banding.",
+      "what": "iron-on edge banding not in materials"
+    },
+    {
+      "path": "cutList[12..14]",
+      "quote": "Vertical Panes\", \"quantity\": 6 ... Horizontal Panes\", \"quantity\": 4 ... 2",
+      "what": "cut list has 6 vertical + 6 horizontal panes, but the viewed door image (764a5bc9) shows one vertical and one horizontal pane per door and glass+solid panes total 12 = 4 openings x 3 doors, which implies 3 + 3"
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "attach top using 1 1/2\" screws with a washer into top",
+      "what": "washers are not in materials and no screw count is given for attaching the top"
+    }
+  ],
+  "verdict": "Fix"
 }
