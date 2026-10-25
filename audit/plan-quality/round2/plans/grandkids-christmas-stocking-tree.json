@@ -59,32 +59,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts: post (cutList[0]), feet (cutList[1]); cap and finial are pre-made items in materials[2], [3]. Nothing else is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: Post (steps[1] image, installed with feet) and Feet (steps[0], steps[1])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Feet 1 1/2 x 2 1/2 match exactly one listed material (materials[0] Board, 2x3 48\"); Post 3 1/2 x 3 1/2 matches materials[1] Post 3 1/2\" x 3 1/2\" 48\".",
+      "arithmetic": "Feet: 4 x 12 = 48; zero-kerf fit 48 <= 48; with kerf 3 cuts x 1/8 = 3/8 -> 48 3/8 > 48, short 3/8 <= 1/2 (kerf only). Post: 42 + 1/8 = 42 1/8 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only size in steps is \"3\" wood screws\" = materials[4]. Steps[2] \"nailing\" and steps[3] \"screwing through the wood cap\" give no size, so nothing to match or contradict (nail/finial screw absence recorded in gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed step 0 image: three counter-sunk hole positions dimensioned (1\", 1 1/2\", 1 3/4\", 3/4\", 1\", 1 1/4\"). Viewed step 1 and 3 images: feet at post base in a cross, cap and finial centered on top; relational. 3\" screw count 12 = 4 feet x 3 holes."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "Only reference \"in locations as shown\" (steps[0]) has its own image; viewed: dimensioned counter-sunk hole layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Feet drilled (0), installed on post (1), cap (2), finial (3), paint (4). Order possible."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; feet fastened with counter-sunk holes and 3\" screws (method and fastener stated)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "summary",
+          "quote": "For those of you who do not have a fireplace to hang stockings on, these Christmas Stocking Trees will do the trick."
+        }
+      ],
+      "reason": "The finished-piece photo (images[0], viewed) shows a hook on each post, but no step, cut-list row or material mentions a hook or hanger. Search all fields for /hook|hang|hanger|peg/i: only the two summary/description \"hang stockings\" hits. The steps end with painting and MDF shapes; nothing installs the thing the stockings hang from. Not Unpublish: the post, feet, cap and finial are complete."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/40587ed638a85266.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6b6525204593e096.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/259e489d385376af.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/600d8fb0797f888b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0]",
+      "quote": "Drill counter sunk holes in the feet in locations as shown",
+      "what": "step 0 image shows the foot with an angled end cut (not mentioned in any step, no dimensions for the angle); viewed image shows only hole positions dimensioned",
+      "kind": "measurement"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Install the post cap by glueing and nailing the cap in place.",
+      "what": "nails (and the screw used for the finial in steps[3]) not in materials, no size given; glue and paint consumables not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Add decorative holiday custom mdf shapes and personalize with mdf letters.",
+      "what": "MDF shapes/letters not in materials or cut list; decorative step",
+      "kind": "optional-item"
+    }
+  ]
 }

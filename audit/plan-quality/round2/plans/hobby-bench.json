@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps exists in the cut list: Legs x4, Short Stretchers x4, five Long Stretchers (3 Upper + 2 Lower), Shelves x3, Shelf Dividers x3 (row \"Divider\"), Shelf Uprights x2, Shelf Back, Organizer Back/Top/Bottom/Sides/Divider, four Organizer Shelves. steps[4] \"Lower Bench Top\" has no row of that name; cutList[4] and [5] are both named \"Upper Bench Top\" with identical 28 1/2 x 48 size (see gaps), so the part exists."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 18 rows are used by a step. The duplicate \"Upper Bench Top\" row (cutList[5]) is the Lower Bench Top of steps[4] (same size as the viewed step 5 diagram, 28 1/2\" x 48\")."
     },
     "R4": {
       "result": "pass",
@@ -190,21 +192,81 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 4x4, 2x4); steps not checked for per-part stock"
+      "reason": "Lumber passes: 4x4 4x35 = 140 + 3 kerf cuts x 1/8 <= 2x96 = 192; 2x4 (1 1/2 x 3 1/2 matches only materials[2]) 4x19 + 5x38 = 76 + 190 = 266, + kerf 6 x 1/8 = 266.75 <= 3x96 = 288 (packs 38+38+19, 38+38+19, 38+19+19). MDF is a sheet: parts total 8,217 sq in (2x1368 + 2x144 + 3x276 + 648 + 3x42 + 2x456 + 3x288 + 969 + 4x211.5, Kreg-corrected) vs 2 x 49 x 97 = 9,506 bought; area not exceeded so no certain fail, and sheet layout cannot be checked from areas."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used in steps: 2 1/2\" Kreg Pocket-Hole Screws (materials[3]), 1 1/4\" Kreg Pocket-Hole Screws (materials[5]), 1 1/4\" flathead screws and \"four 1 1/4\" wood screws\" (materials[6] #8 x 1 1/4\" Flathead). No size is given twice for the same use. materials[4] 1 1/2\" screws is not named in any step (unused, not an R6 matter)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed images: step 1 (short stretchers 2\" from leg end, 2 1/2\" setback), step 3 (upper stretchers 9 3/4\" apart, 2 1/2\" offset, rear flush), step 5 (tray openings 4 1/2\" x 14 1/4\", recess 4\"), step 13 (shelf unit 6\" in from each end), step 15 (shelf-pin hole spacing 1 1/4\", 4 7/8\", 2\", pocket holes). Shelf spacing is fixed by Dividers; pilot-hole pair in steps[17] lands on the stretchers it screws into (fixed by parts)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "28 reference(s), each in a step with its own image"
+      "note": "28 reference(s), each in a step with its own image",
+      "reason": "Every \"as shown\"/cutting-diagram reference is in a step with its own image (sweep). Viewed steps 1, 3, 5, 13, 15 images show the dimensioned layouts referenced."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs and short stretchers (0-1), long stretchers (2-3) complete base, tops cut (4-5), glued (6) and attached (7), shelf parts (8-10) assembled (11-12) then attached to the bench (13), organizer parts (14-15) assembled (16) and installed last (17). No part is used before it exists."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "To do that, set your jig and bit for 3/4\"-thick material, and then drill pocket holes along the edge of three pieces to create the Long Upper Stretchers."
+        }
+      ],
+      "reason": "Long Upper Stretchers are 2x4 stock (cutList[2] Kreg-corrected thickness 1 1/2) and the same step first set the jig \"for 1 1/2\" material\"; the second setting (3/4\") differs from the stretcher thickness it is used on. May be intentional (holes drive screws up into a 3/4\" MDF top) but the plan does not say so. Also steps[16] attaches parts without naming the screw. All other settings match (1 1/2\" for 2x4 steps[0],[2]; 3/4\" for MDF steps[8],[9],[14],[15]). R9 recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "Then cut four Organizer Shelves to size from 3/4\" MDF, as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[17].body",
+          "quote": "Now you can slip the organizer assembly into the bench."
+        }
+      ],
+      "reason": "(b) Four Organizer Shelves (cutList[17]) are cut in steps[16] and no later step places them: steps[17] only installs the organizer to the stretchers. (c) steps[15] drills 1/4\" shelf-pin holes (viewed step 15 image \"1/4\" shelf pin hole, 3/8\" deep\") but no material or step names shelf pins. Search: materials[].name has no /pin/ other than \"Pocket-Hole Screws\"; steps[14..17] never say insert/install pins or shelves. Other counts agree: shelf unit 3 shelves + 3 dividers + 2 uprights = 3x3/4 + 3x5 1/4 = 2 1/4 + 15 3/4 = 18 = Shelf Upright 18; 2 x 3/4 + 34 1/2 = 36 = Shelf Back 36; unit centered by 6\" each end: 48 - 2x6 = 36. Organizer sides 24 + 2 x 3/4 = 25 1/2 = Organizer Back 25 1/2. Heights fine."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9a3604fc5fb3a786.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6469354d735ff139.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be88e5a963ece685.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b3e3c6c8628a6905.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3395ed66520a6583.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[5].part",
+      "quote": "Upper Bench Top",
+      "what": "cutList[4] and cutList[5] are both named \"Upper Bench Top\", identical 28 1/2 x 48; steps[4] cuts a \"Lower Bench Top\" that has no row of that name"
+    },
+    {
+      "path": "steps[17].body",
+      "quote": "Then you can paint or finish the bench.",
+      "what": "paint/penetrating oil and wood glue (steps[6], [11], [12], [13]) not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

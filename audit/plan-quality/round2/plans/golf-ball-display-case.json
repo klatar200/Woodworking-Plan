@@ -23,32 +23,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut piece is in the cut list: 2x 14\" + 1x 14\" (steps[0], steps[1]) = Horizontal frame pieces qty 3; 2x 18 1/2\" = Vertical frame pieces; 5x 14\" shelves (steps[2]). Backing plywood (steps[6]) is an explicitly optional step."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three cut rows are used: frame pieces steps[0]/[1], shelves steps[2]/[3], vertical pieces steps[0]/[3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "All cut rows are 3/4 x 2 1/2 = matches exactly one listed material (materials[0] Board, 1x3 96\"); plywood has no cut row.",
+      "arithmetic": "3x14 + 5x14 + 2x18.5 = 42 + 70 + 37 = 149; kerf (10 parts - 2 boards = 8 cuts) x 1/8 = 1; 150 <= 2x96 = 192. Packs: board A 5x14 + 18.5 = 88.5 + 6x1/8 = 89.25 <= 96; board B 3x14 + 18.5 = 60.5."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name 1 1/4\" pocket hole screws, 1 1/2\" brad nails, 7/32\" drill bit (tool); materials[2] and [3] list both sizes; no conflicting size for the same use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed step 2 image: tee holes dimensioned (1\", 2\" spacing, 1 1/4\" from edge, drill halfway). Shelf spacing given \"Leave 2 1/2\" between each shelf\". Viewed step 0 image: frame 14\" x 18 1/2\". Backing plywood is optional."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "Only reference is \"See diagram\" in steps[2], which has its own image; viewed it: dimensioned tee-hole layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame built (0), extra top board added (1), shelves drilled (2) then attached to the vertical frame pieces (3), tees glued last (5); backing optional last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in each end of both boards."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" 1x3 (steps[0], steps[1], steps[3]); no jig thickness setting in any step (searched for /setting|thickness/). Viewed step 0 image: only \"1 1/4\\\" pocket hole screws\" callouts, no setting. R9 recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 14\" x2 + 1 = 3 frame pieces, 5 shelves, 2 vertical match cut list; tee holes every 2\" from 1\" in a 14\" board = 7 holes x 5 shelves = 35 = tees qty 35 = \"room to display 35\". Heights: 18 1/2\" - (3 x 3/4\" frame boards incl. extra top board = 2 1/4\") - (5 x 3/4\" shelves = 3 3/4\") = 12 1/2\" = 5 x 2 1/2\" gaps, consistent. (b) all parts installed; (c) tees, screws, nails listed; (d) tees fitted in step 5."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c3f0fff71babc60.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0db94927519a0a03.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Secure the 14\" boards to the 18 1/2\" boards with 1 1/4\" pocket hole screws and wood glue",
+      "what": "wood glue not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Add decorative trim, if desired.",
+      "what": "optional trim not in materials or cut list",
+      "kind": "optional-item"
+    }
+  ]
 }

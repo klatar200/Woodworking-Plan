@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut/assembled in steps: Legs (cutList[0]), Long Brace (cutList[2]), Short Braces (cutList[1]); tub is in materials[2]. No other part cut. Searched steps for cut/make verbs."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three cut rows (Leg x4, Short Brace x2, Long Brace x1) are cut in steps[0], steps[3], steps[1]."
     },
     "R4": {
       "result": "pass",
@@ -121,18 +123,58 @@
       "arithmetic": "parts: 4×23 + 2×7.625 + 1×16.75 + kerf 5 cuts (7 parts − 2 boards, the fewest possible)×1/8 = 124.625″; bought: 2×96 = 192″; 124.625 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener named in steps is \"XL Pocket-Hole Screws\" = materials[1] \"Kreg XL Pocket-Hole Screws\"; no length stated anywhere that could conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "reason": "Viewed step 0 image: leg notch/arc fully dimensioned (9\", 5 1/2\", 8 1/2\", 2 1/4\", 3 1/4\", 2\"). Viewed step 1 and 3 images: pocket-hole positions dimensioned (1\", 2 3/4\", 1 3/8\", 3 1/8\"). Short/Long Brace placement between legs fixed by parts; assemblies \"centered\" on Long Brace is relational. Drain holes \"half dozen or so\" in tub floor = discretionary."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "note": "12 reference(s), each in a step with its own image",
+      "reason": "Every \"as shown\"/cutting-diagram reference sits in a step with its own image; viewed steps 0, 1, 3 images show the referenced cut-out and hole layouts."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs cut (0), Long Brace cut+drilled (1), attached to 2 legs (2), Short Braces made (3) and attached to other 2 legs (4), assemblies joined (5). Each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "We did this using the Kreg® Pocket-Hole Jig XL and XL Pocket-Hole Screws, which are 25% larger than standard Kreg Screws."
+        }
+      ],
+      "reason": "Pockets are drilled in 1 1/2\" cedar 2x6 parts (steps[1], steps[3]) but no jig thickness setting appears in any step; searched all steps for /setting|thickness|1 1\\/2/. Opened step images 1 and 3 (hole layouts, dimensions only, no setting). Not every image opened, hence likely. R9 recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Legs 4, Long Brace 1, Short Braces 2 in steps match cut list; Long Brace 16 3/4\" and Short Brace 7 5/8\" in step images match Kreg-corrected rows. (b) all parts installed; (c) tub in materials[2]; glue/finish in materials; (d) step 6 reaches finished planter."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-33",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1d80900f878c5852.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32915175687b9a01.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c284a890fb22a59.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Then lay down a piece of landscape fabric, and fill the tub with dirt and plants!",
+      "what": "landscape fabric, soil and plants not in materials; step frames drain holes and fabric as \"a good idea\" so treated as optional/non-build",
+      "kind": "optional-item"
+    }
+  ]
 }
