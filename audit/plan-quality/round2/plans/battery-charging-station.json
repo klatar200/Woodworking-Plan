@@ -139,36 +139,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "d in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood into manageable str",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " and diagram provided in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood",
-          "why": "matches \"PDF\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " diagram provided in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood int",
-          "why": "matches \"download\""
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part. Layout these locations with a pencil and square to aid in lining up the jig when drilling. Mark ",
-          "why": "matches \"Extras\""
+          "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project."
         }
-      ]
+      ],
+      "reason": "Pocket-hole locations on every part (\"per the plans\") and the cord-hole layout are given only in the Extras PDF drawings; the viewed step photos (steps[5],[7]) show an open drawing book but no legible dimensions. All sizes, the assembly and the hanging holes are in the steps, so the shelf can be built without it, hence Fix."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Shelf, back, bottom, chase front, front trim and the two sides are all cut in steps[0]-[2] and match the cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All six rows used: shelf/back/bottom/chase front/front trim (steps[0]-[1]), sides (steps[2])."
     },
     "R4": {
       "result": "pass",
@@ -179,26 +172,62 @@
       "reason": "sheet layout not judged (area fits: part area 1×10×36 + 1×3.75×36 + 1×3.75×36 + 1×3×36 + 1×1.5×36 + 2×4.5×11.5 = 895.5 sq in; bought 1×24×48 = 1152 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "#8 x 2-1/2\" (steps[12]), #8 x 1-1/4\" (steps[10]) and 1-1/4\" pocket screws (steps[8],[13]) are all in materials[1]-[3]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[13].body",
-          "quote": "ws, attach the shelf to the outer studs through these holes. The screws in the last step are more than enough to support the weight of the chargers and batteries, but these screws will add stability a",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7bbd83c79365f8a.webp"
+          "path": "steps[5].body",
+          "quote": "Also, mark the shelf for the 5 holes that will be drilled for the power cords to be fed through. The bottom also gets marked for a through hole."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "The shelf gets 1-1/2” holes and the bottom gets a 2” hole."
         }
-      ]
+      ],
+      "reason": "Sizes (1-1/2\" x 5 in shelf, 2\" in bottom) are given but not where the holes go (edge distance, spacing, position relative to the 3\" chase); searched steps[5],[7],[14] for any hole location: none; viewed steps[7] photo shows five holes with no dimensions. Pocket-hole locations are likewise only \"per the plans\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "reason": "References sit in steps with their own photos; the numeric content (3 holes 16\" apart, 32\" pocket holes, side-angle marks) is in the step text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (steps[0]-[4]), holes drilled (steps[5]-[7]), assembled shelf-up (steps[8]-[11]), hung (steps[12]-[13])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Setup your jig and drill all of the pocket holes in each part."
+        }
+      ],
+      "reason": "All parts are 3/4\" plywood; searched all steps and materials for /setting|thickness|3\\/4\" (material|setting)/ - no jig setting stated; viewed step photos (steps[6] jig photo) show no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 holes 16\" apart = 32\" between outer pocket holes (steps[12],[13]); bottom 3 3/4\" = back thickness 3/4\" + 3\" chase gap; 10\" strip + 2 x 3 3/4\" + 3\" + 1 1/2\" = 22\" rips from a 24\" quarter sheet; (b)-(d) all parts installed and hung."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a03c6f5ae1644f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ad5ce09cbb3b58e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7bbd83c79365f8a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5bc3886b2aa46f5f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6c44ec754ec23979.webp"
+    ]
+  }
 }

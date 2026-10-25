@@ -151,33 +151,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " wood and set your miter saw according to the marks rather than measuring the angles. Here's a link to a video of this trick that may help: https://www.instagram.com/p/BblPbYCD5S6/?taken-by=thediyhubs",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Only link is an Instagram video of an optional marking trick (steps[9]); the trick is also shown in the step photo. Not needed to complete the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "Parts named in steps: leg 1 1/2x1 1/2x26.5, top span x21, plywood 3/4x18x22 1/2, 18\" pieces, X pieces, 3/4x2 3/4x18, 1 1/2x3 1/2x18, 18x18 plywood all have cut rows (Kreg-corrected)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Top Cross Boards",
-          "why": "no step mentions it (searched steps for cros)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Upper & Lower Cross Boards",
-          "why": "no step mentions it (searched steps for cros)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged rows are used: \"Top Cross Boards\" = steps[0] \"1 1/2\" x 1 1/2\" x 21\" top span\"; \"Upper & Lower Cross Boards\" = steps[3]/[4]/[6] \"1 1/2\" x 1 1/2\" x 18\"\" pieces."
     },
     "R4": {
       "result": "pass",
@@ -188,26 +171,77 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 2x2, 2x4, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fastener sizes in steps (2 1/2\" pocket, 1 1/4\" pocket, 1 1/4\" nails, \"1 1/4\" screws\") all appear in materials[5..7]; no conflicting size for the same use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[13].body",
-          "quote": "planter. Take the height of your plastic planter and add 2\". Measure that distance from the top of the wood planter and mark it on two sides of the interior of the planter. Attach a 3/4\" x 2 3/4\" x 18",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9e6694b38c4b9f85.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[13] shelf height is given by formula (\"Take the height of your plastic planter and add 2\"\") and image viewed (steps[13]) shows the supports; other placements are relational (flush, along the bottom of plywood, corner to corner)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Each \"as shown/diagram\" reference sits in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels (steps 0-6) built before assembly into box (steps[7]); X pieces and options attach after. No part used before it is cut."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes into each into each of the 3/4\" x 18\" x 22 1/2\" plywood boards as shown in the diagram above."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood and 1 1/2\" lumber; searched all steps/materials for a jig thickness setting (/setting|jig|thickness/i) - none stated in text; viewed step images (steps[13], steps[3]) show holes but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "you will add the 3/4\" x 1 1/2\" x 18\" pieces on each side as in Option #1 above"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Attach a 3/4\" x 2 3/4\" x 18\" piece of wood to each side"
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Line with 3.0 mil plastic sheeting by stapling 1 1/2\" from the top of the planter. Pull some excess plastic"
+        }
+      ],
+      "reason": "Option #2 (a) calls for 3/4 x 1 1/2 x 18 side pieces \"as in Option #1\", but Option #1 and cutList[7] (Kreg-corrected 0.75 x 2.75 x 18) are 3/4 x 2 3/4 x 18; no 3/4 x 1 1/2 x 18 row exists. (c) plastic sheeting, landscape fabric and staples are used in steps[14] but searched materials[0..10] names for /plastic|fabric|staple|gravel/ - none."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9e6694b38c4b9f85.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f6995a4ab313b07.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "place a piece of painters tape from corner to corner and mark with a pencil",
+      "what": "painters tape not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "Sand with 80 grit, followed by 120 and 220 grit to finish.",
+      "what": "sandpaper not in materials"
+    }
+  ]
 }

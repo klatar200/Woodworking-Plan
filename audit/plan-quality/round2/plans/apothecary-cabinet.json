@@ -512,20 +512,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "No dependency on outside content; sweep search stands."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps (base parts, bottom/divider/top, lower sides/stiles, backs, upper stiles/side frames, upper and lower door parts, glass stops, shelves) has a cut row; glass is in materials[10],[11]."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Shelf",
-          "why": "no step mentions it (searched steps for shelf)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Shelf\" (cutList[6]) is made in steps[18] \"Make the Shelves\" and installed in steps[19]; all other rows are used by name."
     },
     "R4": {
       "result": "pass",
@@ -536,31 +531,76 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.5, 1x2, 1x3, 0.25x48); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" and 1\" coarse pocket screws (materials[5],[6]) match steps[1],[5],[7],[10],[17],[19]; hinges, pulls, glass in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give dimensions for hinges (3\", 3\", 2\", 2\" from edges, steps[20]), pull \"centered on stile\", leg pocket-hole positions (steps[0]) and shelf pocket holes (steps[18]); the two shelves are shown in the viewed step[19] image and the 3-compartment layout in the overall drawing; no numeric shelf height is given anywhere."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "\"as shown in the cutting diagram\" in steps[2] has no step image, but the referenced sizes are cutList[0]-[2] (17 x 21) and the viewed steps[3] image shows the overhang; steps with their own diagram images (steps[0],[18]) were viewed and are dimensioned. No plywood sheet layout image exists, but no information is missing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base, bottom, lower sides/backs/divider, upper frames, doors, shelves, finish/glass, then doors hung; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps state the setting for every thickness drilled: 3/4\" (steps[0],[4],[6],[8],[9],[13],[16]) and 1/2\" (steps[16],[18])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "Divider, and Top to size from 3/4\" plywood (we used birch), as shown in the cutting diagram. Then, add iron-on edging to all edges of these pieces to cover up the exposed plywood.\n\n**Tip:** Iron On a ",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[6]",
+          "quote": "Shelf"
         },
         {
-          "path": "steps[2].body",
-          "quote": " from 3/4\" plywood (we used birch), as shown in the cutting diagram. Then, add iron-on edging to all edges of these pieces to cover up the exposed plywood.\n\n**Tip:** Iron On a Finished Edge Plywood is",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[23]",
+          "quote": "Door panel"
+        },
+        {
+          "path": "cutList[17].part",
+          "quote": "Lower door stile"
         }
-      ]
+      ],
+      "reason": "(a) Shelf size in the cut list does not match the shelf diagram: the viewed image of steps[18] dimensions the Shelf 18 1/2\" wide x 14 1/2\" deep (matching upper back 18 1/2\" in cutList[4]), but cutList[6] Shelf (Kreg source \"1/2\" ply x 13 7/8\" x 12 7/8\"\") is the same 12.875 x 13.875 as the Door panel row. Lower door panel also exceeds its opening height.",
+      "arithmetic": "Shelf: diagram 18.5 x 14.5 vs cutList[6] 12.875 x 13.875 (width short by 5.625\", depth short by 0.625\"). Lower door panel (flush inside frame, steps[17]): opening height = lower door stile cutList[17] 15.125 - 2 x rail width 1.5 (cutList[18]) = 12.125 vs cutList[23] length 13.875 x 12.875 (0.75\" taller); width 13.875 = rail length cutList[18], fits."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ff5bb2c4b14cbfc8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/01ac7a9fe35e54b8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb189d3b1b417144.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e63c087b8fea810.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/47b90835691b51e3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ea6dd05231094cb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fef7ba8e032eabc6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9ebd9fa3e030df27.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77172f555bde5889.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0bb689c80c12e94d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[13].body",
+      "quote": "drill pocket holes in the Upper Side Rails. It’s important that you offset these holes toward one edge, just as you did with the upper side pieces.",
+      "what": "step is about the door parts; \"Upper Side Rails\" should be the Upper Door Rails (naming error)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[19].body",
+      "quote": "you can put the glass in place and glue in the Glass Stops",
+      "what": "wood glue (steps[11],[12],[19]), masking tape, paint/finish and sandpaper not in materials"
+    }
+  ]
 }

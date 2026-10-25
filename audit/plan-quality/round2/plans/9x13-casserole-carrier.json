@@ -47,47 +47,60 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Front/back (steps[0]) and the four \"center pieces\" (steps[1], 9 1/2\" opening width) both have cut rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Center supports, 1x2",
-          "why": "no step mentions it (searched steps for support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[1] \"Center supports, 1x2\" are the \"4 center pieces\" of steps[1] (qty 4 = 4, length 9.5 = \"opening ... 9 1/2\"\")."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "search": "Cut-list part names state the stock (1x4 / 1x2). 1x4 3': 2 x 17 = 34\" + 1/8\" = 34.125\" <= 36\". 1x2 4': 4 x 9.5 = 38\" + 3 x 1/8\" = 38.375\" <= 48\"."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is 1 1/4\" pocket hole screws = materials[2]; 16 = 4 pieces x 2 holes x 2 ends."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "nside the opening with the handles outside and adjust as needed.\nOn the front and back pieces, measure and mark out the angles according to the diagram below. Cut the angles out with the circular saw.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cbd585477d369c92.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed diagram (steps[0] image) gives all angle-cut dimensions (1/2\", 1 1/2\", 2 1/4\", 2 1/2\", 3/4\", 17\"); center piece positions are numeric/relational in steps[1]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "The \"diagram below\" in steps[0] is its own image, viewed and dimensioned."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut shapes (steps[0]), center pieces on one side (steps[1]), second side (steps[3]), plugs and finish after."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states \"pocket hole jig set for 3/4\" thick material\"; all pocket-holed parts are 3/4\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 center pieces x 9 1/2\" = opening width 9 1/2\"; 16 screws = 4 x 2 x 2; (b) all parts installed; (c) hardware only pocket screws; (d) steps reach a finished carrier."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cbd585477d369c92.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "To hide your pocket holes, glue pocket hole plugs into them",
+      "what": "pocket hole plugs, sandpaper and finish not in materials"
+    }
+  ]
 }

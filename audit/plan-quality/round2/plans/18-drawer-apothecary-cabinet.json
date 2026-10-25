@@ -35,17 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": " tall and 22\" long, you will need two. Cut the back piece 9\" tall and 13\" long. Take the two sides and the back piece and cut a notch 3/8\" tall and 1/4\" wide along one of the long sides of the pieces.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1/4\" is the notch width on drawer parts, not a part. Back, sides, top boards, front long/short pieces, corner pieces, top brackets, drawer front/sides/back/bottom all appear in steps and cut list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: steps[0] back/sides, [1] front pieces, [2] corner pieces, [3] top brackets, [4] top, [6]-[12] drawer parts."
     },
     "R4": {
       "result": "pass",
@@ -56,24 +51,72 @@
       "reason": "R5 precondition not met: 5 stock types (sheet-0.75, 1x12, sheet-0.375, 1x8, 1x10); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " flush and 1 1/8\" overhang on front and sides. Use glue and screws to secure the top in place. This is where the top brackets will come in handy, use them to secure the top in the back. Pre drill hole",
-          "why": "8\" screw — no material line lists a 8\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"8\" screw\" is the \"1 1/8\" overhang\". Fasteners used (1\" Kreg screws, 1\" brad nails, 1\" wood screws, 3/8\" T-nuts) are all in materials[6],[7],[9],[12]."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "steps[14] defers the vertical placement of the 18 slides and the handle positions to \"manufacturer instructions\" and the Kreg slide/hardware jigs, and steps[12] leaves the drawer-front vertical offset to the chosen slides; not settleable from the plan and steps[14] has no image. All carcass positions (14 3/4\" spacing, flush, 1 1/8\" overhang, corners) are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram reference without an image (sweep search stands)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass (steps[0]-[3]), top built (steps[4]) then installed (steps[5]), drawers cut/assembled (steps[6]-[12]), legs and slides last (steps[13]-[14]); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Using the Kreg Pocket Jig, drill two pocket holes in each end of the back piece opposite the side with the notch."
+        },
+        {
+          "path": "cutList[6].thicknessIn",
+          "quote": "0.375"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/8\" drawer back/sides/bottom (cutList[6]-[8]); searched all steps/materials for /setting|jig setting|thickness/i - no jig thickness setting stated; images not opened for this check."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Be sure to keep 14 3/4\" spacing between the sides. The piece should be flush on both ends"
+        },
+        {
+          "path": "cutList[3].lengthIn",
+          "quote": "96"
+        },
+        {
+          "path": "cutList[0].lengthIn",
+          "quote": "93.75"
+        }
+      ],
+      "reason": "(a) The four long front pieces are to be \"flush on both ends\" of the carcass, whose width is the back piece, but the cut list gives them as 96\" against a 93.75\" carcass (no step trims them); source row also says 96\".",
+      "arithmetic": "Carcass width = 7 sides x 3/4\" + 6 gaps x 14 3/4\" = 5.25 + 88.5 = 93.75\" (= cutList[0] back 93.75); cutList[3] long front pieces = 96\" (96 - 93.75 = 2.25\" over). Top is 96\" only because 93.75 + 2 x 1 1/8\" overhang = 96\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "materials[7].name",
+      "quote": "1\" Kreg Jig screws",
+      "what": "Steps drill per drawer 4 (back, steps[7]) + 4 (sides, steps[9]) + 1 (bottom, steps[8]) = 9 pocket holes; 9 x 18 drawers = 162 screws vs materials[7] quantity 130 (fastener count, not scored)."
+    }
+  ]
 }

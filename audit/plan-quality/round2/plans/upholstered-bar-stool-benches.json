@@ -91,33 +91,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "leg so it is centered on the center leg and flush with the top. Three on the lower part of the legs, 8\" up from the bottom and centered on each leg (you should have 12\" in between the attached sides).",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Lay the other assembled leg piece front-side down. Lay the leg piece with the attached side pieces on top of it and attach the side pieces the same as in the above step.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged hits are the phrase \"the attached\" (side pieces attached to legs), not an external reference; no link, PDF or Extras anywhere (search stated in sweep)."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "ines match up and pin. Sew along the lines with a basic straight stitch making sure to backstitch at the beginning and end of the stitches. Cut off the excess fabric leaving about 1/2\" seam allowance.",
-          "why": "cut sentence states 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"1/2\" seam allowance\" is a sewing allowance, not a part. Legs, sides, seat supports, leg supports and seat all have cut rows; foam and fabric are in materials[6..7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows used: Legs steps[0]/[1], Sides steps[2], Seat supports steps[0], Leg supports steps[4], Seat steps[6]/[7]."
     },
     "R4": {
       "result": "pass",
@@ -128,25 +111,72 @@
       "reason": "R5 precondition not met: 3 stock types (2x3, 1x2, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "ide of the seat board is now showing. Stretch the fabric about 1-1 1/2\" over the seat board and secure with staples. I drew a line at 1 1/2\" to help me stretch the fabric consistently around the seat.",
-          "why": "1 1/2\" staple — no material line lists a 1 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1 1/2\" in steps[6] is how far the fabric wraps over the seat, not a staple size; materials[9] \"5/16\" staples\" and materials[5] 1 1/4\" pocket screws cover the fasteners with sizes (finishing nail in steps[4] has no size - see gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are given or relational: taper \"8\" up from the bottom and 1\" in\", sides \"8\" up from the bottom and centered\", \"flush to the front\", \"flush with the top\"; seat/leg-set footprints are fixed by the 12\" x 28\" seat (leg set 9\" side + 2 x 1 1/2\" = 12\")."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg sets built (steps[0]), tapered (steps[1]), joined by sides (steps[2]-[3]), leg supports (steps[4]), seat upholstered (steps[5]-[6]), then joined (steps[7]); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes to both sides of the seat support boards and one in the middle (to attach the seat later)."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Add pocket holes to both sides of the side boards."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" 1x2 parts (cutList[1]-[3]); searched all steps and materials for /setting|jig|thickness/i and no jig thickness setting is stated; step images not opened for this check."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: 6 legs, 4 seat supports (2 per set x 2), 6 sides (3 top + 3 lower), 2 leg supports; fabric 20\" x 36\" less 2 x 4\" notches = 12\" x 28\" = foam/seat size. (b) every part installed; (c) foam, fabric, adhesive, staples are in materials; (d) steps[7] finishes the bench."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Sew along the lines with a basic straight stitch making sure to backstitch",
+      "what": "thread not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Sand and finish the base of the bar stools.",
+      "what": "sandpaper and finish not in materials"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "To keep the board from twisting, add a finishing nail to the top of the board.",
+      "what": "finishing nail (fastener, no size) not in materials"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Add felt pads to the bottom of the feet if desired.",
+      "what": "optional felt pads not in materials"
+    }
+  ]
 }

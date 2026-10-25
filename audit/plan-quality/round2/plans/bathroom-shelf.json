@@ -7,20 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Only external reference is a credit/visit line (www.JenWoodhouse.com, steps[7]); not needed to build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, back (two boards), bottom/shelf, divider, carcass top, top and 1x2 trim all have cut rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Top Trim",
-          "why": "no step mentions it (searched steps for trim)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[6] \"Top Trim\" is the \"1x2 board\" attached to the top in steps[5]; \"Shelf and Top\" qty 2 = bottom (steps[2]) + carcass top (steps[4])."
     },
     "R4": {
       "result": "pass",
@@ -31,25 +26,64 @@
       "reason": "R5 precondition not met: 3 stock types (1x12, 1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "s as shown. Fill pocket holes with wood filler or pocket hole plugs, sand, and finish as desired. To hang the shelf on the wall, drive 2-1/2\" wood screws from the inside the shelf into the wall studs.",
-          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
+          "quote": "To hang the shelf on the wall, drive 2-1/2\" wood screws from the inside the shelf into the wall studs."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1-1/4\" Wood Screws"
         }
-      ]
+      ],
+      "reason": "Searched materials[0..5] names for /2-1\\/2|2 1\\/2|wall|stud/: none; the 2-1/2\" wood screws used in steps[6] are not in materials (only 1-1/4\" pocket screws and 1-1/4\" wood screws)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images dimension the side cut (10\", 6 3/4\", 6 1/4\", 5\"), shelf 20\" / cubby height 9\", cubby widths and overall 22 1/2\" x 17 1/2\"; divider is centred (9 5/8\" each side); hooks are shown evenly spaced under the shelf; wall screws go \"into the wall studs\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both \"as shown\" references are in steps with their own dimensioned images (viewed steps[0],[6])."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, back, bottom, divider, carcass top, top, hooks in order; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket-hole step states 3/4\" holes (steps[0]-[5]); all parts are 3/4\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) top 22.5\" = back 21.5\" + 1\" overhang; shelf 20\" = back 21.5\" - 2 x 3/4\" sides; back 5.5 + 11.25 = 16.75\" = side height; divider 8.25\" + 3/4\" = viewed 9\" cubby; 17 1/2\" overall = 16.75 + 3/4. (b)-(d) all parts installed; hooks in materials[4]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e66d6363aade4721.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5d36680d8cb5061.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c3a14c664fa7e112.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[3].name",
+      "quote": "1-1/4\" Pocket Hole Screws",
+      "what": "materials[3] and materials[5] both have quantity 1 for screws; the steps drill pocket holes in six joints (>= 12 screws), so quantity 1 looks like an importer default (not scored)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Fill pocket holes with wood filler or pocket hole plugs, sand, and finish as desired.",
+      "what": "wood filler/plugs, sandpaper, finish not in materials"
+    }
+  ]
 }

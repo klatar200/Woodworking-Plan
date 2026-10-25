@@ -391,50 +391,92 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "3 boards to my door to give it a 3-D look.\nInstall the barn door hardware per instructions. I made my own barn door hardware. Check out all the details in the blog post. Link is under the \"Extras\" tab",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[10] points to a blog post under \"Extras\" only for the author's home-made barn door hardware; materials[11] lists a \"Barn door hardware kit\" installed \"per instructions\", so the build does not depend on the link."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts in steps have cut rows (rails, slats, legs, sides, trims, shelf, divider, top rail/slats/trim, back, door slats, drawer parts). The \"adjustable shelf\" in steps[4] is not made by any step - see gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 21 rows are used (steps[0]-[10])."
     },
     "R4": {
-      "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[14].part",
+          "quote": "Large drawer fronts"
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Board, 1x8 96\""
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "There are 3 drawers with 1x6 boards and 1x8 drawer face and 1 drawer with 1x3 boards and 1x4 drawer face."
+        }
+      ],
+      "reason": "cutList[14] (Kreg source \"7 1/2\" x 3/4\" x 23\"\", corrected row 0.75 x 7.5 x 23) is made from the only 1x8 listed, which is 7 1/4\" wide (§9); no wider board is in materials.",
+      "arithmetic": "Part width 7.5\" (cutList[14].widthIn, Kreg-corrected) > 1x8 actual width 7 1/4\" (§9) = 0.25\" too wide; all other rows fit their 1x2/1x3/1x4/1x6/2x2 widths.",
+      "readerNote": "Sweep marked R4 pass; 7.5\" exceeds the 7 1/4\" §9 width of the only 1x8 listed."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 8 stock types (1x2, 1x3, 2x2, 1x4, 1x6, 1x8, sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Build sides by attaching the 3/4\" plywood to the 2x2 legs using pocket hole screws and wood glue. Make 2 of these.",
-          "why": "4\" screw — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"4\" screw\" is a false match (\"2x2 legs\" text). Viewed images give sizes: 3/4\" holes with 1 1/4\" pocket screws, 1 1/2\" holes with 2 1/2\" screws, 1 1/4\" finish nails - all in materials[8],[10],[12]."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "steps[8] says to install four drawers \"on one side of the cabinet using 16\" drawer slides\" and gives no vertical order or slide heights; the viewed steps[8] image shows only the two drawer boxes. All carcass positions are numeric or shown in viewed images (slat end offset 3 1/8\", slat gap 2 1/2\", divider 24\" from sides, legs extend 10\" below the sides)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Both \"schematics\"/diagram references are in steps with their own image (viewed steps[0],[8])."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rack (steps[0]), sides (steps[1]-[2]), rack+shelf (steps[3]), divider/rail (steps[4]-[5]), top (steps[6]-[7]), drawers (steps[8]), back (steps[9]), door (steps[10]); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Viewed steps[0] image states \"Kreg Pocket Hole 3/4\" Use 1 1/4\" pocket hole screws\" and \"Kreg Pocket Hole 1 1/2\" Use 2 1/2\" Pocket hole screws\"; steps[1] image repeats 3/4\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 9 slats x 2 1/2\" + 8 gaps x 2 1/2\" + 2 x 3 1/8\" (viewed steps[0]) = 48.75\" = rail length; sides 18 3/4\" + 2 x 1.5\" legs; back 51 3/4\" = 48.75 + 2 x 1.5 (viewed steps[9]); top slats 47.25 + 2 x 0.75 trim = 48.75. (b) all parts installed; (c) slides and barn door kit are in materials; (d) steps reach the finished cabinet."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e2a1bdea59dfb02.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/675c1e61572b81d0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1933bd3dda2d1651.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb5ad46f99e89ff8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/866721bf809e16b4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "make the shelf pin holes for an adjustable shelf on one side of the cabinet",
+      "what": "no adjustable shelf row in cutList and no shelf pins in materials (searched cutList parts for /shelf/: only Bottom Shelf; materials names for /pin/: none)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "using pocket hole screws and wood glue",
+      "what": "wood glue (steps[1]-[4],[6],[7],[9]) and finish/paint not in materials"
+    }
+  ]
 }

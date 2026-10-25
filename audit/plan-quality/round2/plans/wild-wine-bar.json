@@ -31,79 +31,109 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "ou built yourself an Wild Wine Bar! You deserve a drink! Visit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "ou built yourself an Wild Wine Bar! You deserve a drink! Visit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[9] \"Visit my blog for a full description of the products, finishes, and hardware used\" is an optional credit/extra; every cut, material and assembly step needed is in the plan."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "I made my trim 2 1/4\" W to cover the wine X's. You can make adjust your width to fit your storage needs. I attached the trim using wood glue and 18 ga 1 1/4\" brad nails. You can see in the pic that I ",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Drawer front will need to be trimmed approximately 1/16\" - 1/8\" to ensure drawer opens properly. Once you have it to correct size I lined it up with the drawer box and the opening and marked where is ",
-          "why": "cut sentence states 1/16\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Drawer front will need to be trimmed approximately 1/16\" - 1/8\" to ensure drawer opens properly. Once you have it to correct size I lined it up with the drawer box and the opening and marked where is ",
-          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged sentences (2 1/4\" trim width, 1/16\"-1/8\" drawer-front trim) are adjustments to listed parts, not new parts; face trim, side trim, drawer front/box/bottom, legs, stretchers, top, panels and shelves all have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows are used: legs/stretchers steps[2], top steps[1], panels steps[3], shelves steps[4], trim steps[5], drawer parts steps[7]-[8]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "reason": "2x6 stock is milled to 1.25\" x 5\" in steps[0] (\"Mill all 2x materials to 1.25\" Thick x 5\" Wide\"), so 1.25 x 5 and 1.25 x 4.5 parts come from 2x6 (1 1/2 x 5 1/2, §9); plywood 3/4 and 1/4 parts fit a full/quarter sheet; trim 3/4 x 1.5 from 1x4."
     },
     "R5": {
       "result": "unknown",
       "reason": "R5 precondition not met: 4 stock types (2x6, 1x4, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "I attached the trim using wood glue and 18 ga 1 1/4\" brad nails."
+        }
+      ],
+      "reason": "Searched materials[0..12] names for /brad|nail/i: none; the 1 1/4\" brad nails used in steps[5] are not in materials (2\" and 1 1/4\" Kreg screws are, and match steps[1],[2],[4],[6])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "s on both ends. Be sure that the pocket holes are faceing down once assembled. *Tip - make sure PH's on leg uprights are installed facing the back so you don't see looking at the piece from the front.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7cc16809d6e4249.webp"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "th of your box will be 1\" smaller than the opening or 12.5\". Install slides set back to where the plywood sides start or 1.25\". This will give room for the drawer front to sit flush with the top. Once",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b994148d189647b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed photos: steps[2] shows stretcher at the foot of the legs; steps[3] shows panel flush with the leg tops and a gap above the stretcher. Shelf drops (5\", 14.25\", 14.25\"), slide setback (\"1.25\"\") and slide gaps are numeric; trim/drawer-front placement is flush/relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "One \"pic\" reference in steps[5], which has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Mill (steps[0]) -> top glue-up (steps[1]) -> leg frames (steps[2]) -> panels (steps[3]) -> shelves (steps[4]) -> trim (steps[5]) -> top (steps[6]) -> drawer (steps[7]-[8]); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes for 1.25\" material (adjust if necessary to your thickness) and use 2\" Kreg pocket hole screws."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach shelves using pocket holes and 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "A jig setting is stated for the 1.25\" legs/stretchers (steps[2]) but pocket holes are also drilled in the 3/4\" plywood panels and shelves (cutList[4],[5]; steps[3],[4]); searched all steps/materials for /setting|jig|thickness|3\\/4\" material/ - no setting for 3/4\" stated; photos viewed (steps[2],[3]) show holes only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Glue top pieces together (5\" - 4.5\" - 4.5\" - 4.5\" - 5\")"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Top"
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Top"
+        }
+      ],
+      "reason": "(a) The top glue-up needs five boards (two 5\" + three 4.5\" = 23.5\", matching the description width) but the cut list has only two 5\" rows (cutList[2] q 2) and two 4.5\" rows (cutList[3] q 2); no other row supplies a third 4.5\" x 18\" top board (searched cutList parts for /top/i).",
+      "arithmetic": "2 x 5 + 3 x 4.5 = 10 + 13.5 = 23.5\" (steps[1] and description \"23.5″ W\"); cut list: cutList[2] q 2 x 5\" + cutList[3] q 2 x 4.5\" = 10 + 9 = 19\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7cc16809d6e4249.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/12e53c6db401b09e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "add then hardware and X's!",
+      "what": "\"X's\" are never defined or sized; only materials[12] \"IKEA Nornas Wine Racks - (OPTIONAL)\" qty 2 could be them, against 3 shelves."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "I made my trim 2 1/4\" W to cover the wine X's.",
+      "what": "trim width 2 1/4\" vs cutList[6]/[7] Kreg range \"1 1/2\" - 2 1/2\" W\" imported as 1.5 (import range collapse); builder must choose a width."
+    }
+  ]
 }

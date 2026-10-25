@@ -47,96 +47,94 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "First cut two pieces of 2x4 to 67” in length and two pieces to 11 1/4\". Then using a Table Saw, rip off ¼” on both sides of the 2x4s pieces to eliminate round edges. Since 2x4s come with rounded edges",
-          "why": "cut sentence states 67\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "h and two pieces to 11 1/4\". Then using a Table Saw, rip off ¼” on both sides of the 2x4s pieces to eliminate round edges. Since 2x4s come with rounded edges and 1x12s come with straight edges we need",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "s on the 2x4s for the boards to match perfectly. See picture of 2x4s with cut rounded edges. Than cut 1x12 to 64” long. Sand the boards before attaching them together. It makes things easier later on.",
-          "why": "cut sentence states 64\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Next cut four pieces of 2x4 to 14 1/2\" in length and two pieces of 1x12 to 14 1/2\". Then drill pocket holes as shown on the picture.",
-          "why": "cut sentence states 14 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Next cut four pieces of 2x4 to 14 1/2\" in length and two pieces of 1x12 to 14 1/2\". Then drill pocket holes as shown on the picture.",
-          "why": "cut sentence states 14 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Next cut four pieces of 2x4 to 14 1/2\" in length and two pieces of 1x12 to 14 1/2\". Then drill pocket holes as shown on the picture.",
-          "why": "cut sentence states 14 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Next cut four pieces of 2x4 to 14 1/2\" in length and two pieces of 1x12 to 14 1/2\". Then drill pocket holes as shown on the picture.",
-          "why": "cut sentence states 14 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Cut one 2x4 piece to 60” in length and attach it to the back side of the bench 2” from the ground.",
-          "why": "cut sentence states 60\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Now we’ll work on the two boxes that go under the bench. Cut ½” plywood for the bottom, back and sides as shown on the picture. Since there are two boxes, cut two of each board.",
-          "why": "cut sentence states 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "Take 1x8 and cut two pieces to 28\" in length. One of the boards will be trimmed to 6 1/4\" in width. Drill pocket holes on the smaller board. Using a 1 3/4\" Hole Saw Bit, drill two holes to provided di",
-          "why": "cut sentence states 28\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "ieces to 28\" in length. One of the boards will be trimmed to 6 1/4\" in width. Drill pocket holes on the smaller board. Using a 1 3/4\" Hole Saw Bit, drill two holes to provided dimensions. Then with ji",
-          "why": "cut sentence states 6 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Every part the steps cut is cut from named listed stock with sizes in the step text or a viewed dimensioned drawing: 2x4 67\"/11 1/4\"/14 1/2\"/60\"/11\", 1x12 64\"/14 1/2\", 1x8 28\" (6 1/4\" wide), plywood box parts (steps[7] image: back 27 x 12 3/4, bottom 27 x 11 1/4, sides 12 3/4 x 11 3/4). The cut list itself is a placeholder (see R3)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Boards"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 2x4 96\""
+        }
+      ],
+      "reason": "The only cut row, \"Boards\" q 4 (Kreg source \"2x4x8'\", corrected 1.5 x 3.5 x 96), is the raw stock (materials[1] 4 x 2x4 96\"), not a part any step cuts or uses; none of the parts the steps actually cut (67\", 64\", 14 1/2\", 60\", plywood box parts) has a cut-list row."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "search": "Steps name stock for every part. 1x12 96\": 64 + 2 x 14.5 = 93\" + 2 kerf x 1/8\" = 93.25\" <= 96\". 1x8 72\" x2: 2 x 28 = 56\" <= 144\". 2x4 96\" x4 = 384\": 2 x 67 + 2 x 11.25 + 4 x 14.5 + 60 + 2 x 11 = 296.5\" (plus unstated \"2x4s for middle supports\", 11 1/4\" each in the steps[6] image) + kerf; leaves 87\" for them. Plywood parts 2 x (27x11.25 + 27x12.75 + 2 x 12.75x11.75) = 1,895 sq in <= 4x4 half sheet 2,304 sq in."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Both boxes will sit on two 2x4s that are 11\" long. Attach these 2x4 using 1 5/8\" Wood Screws.",
-          "why": "1 5/8\" screw — no material line lists a 1 5/8\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"1 5/8\" screw\" is listed in materials[6] (\"1 5/8 Wood screws\", inch mark missing); 1 1/4\" and 2 1/2\" pocket screws and 1 1/4\" brads are materials[4],[5],[8]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numeric or in viewed images: back support \"2\" from the ground\", middle support \"exactly in the middle\", legs/panels (steps[3]-[4] images), box supports under the box ends (steps[9] image), handle slot 4\" x 2\" (steps[10] image)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "reason": "Every \"as shown on picture\" step has its own image; viewed images (steps[3],[6],[7],[9],[10]) carry the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top (steps[0]-[2]), legs (steps[3]-[4], attachment shown in the viewed steps[4] image), back/middle supports, boxes, box supports, front covers, finish; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states \"set the Kreg Jig correctly to drill pocket holes for 1 1/4\" screws on 1x12 board and 2 1/2\" Pocket Hole Screws on 2x4 boards\"; the 1x8 front board (steps[10]) uses the same 3/4\" 1 1/4\" setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) top 64\" 1x12 + 2 x 1 1/2\" 2x4 ends = 67\"; 2x4 sides ripped 1/4\" each side; legs 14 1/2\" x 4 and 1x12 panels x 2; two boxes (27\" each) fit between the 60\" back support; (b) all parts installed (legs and boxes shown in viewed images); (c) fasteners and glue in materials; (d) steps reach the finished bench."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-05",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1fa08ff8339c1e7d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/423ff1fd6e32fb9f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b9a558541d6a582.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/29ba37b6e80462fd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b48fa0dd834a74ac.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def5daf79cd6d569.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b273474d143111c.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Next cut four pieces of 2x4 to 14 1/2\" in length and two pieces of 1x12 to 14 1/2\". Then drill pocket holes as shown on the picture.",
+      "what": "steps[4] \"Assemble and Attach Legs\" repeats steps[3] word for word, so the text never says how the legs are assembled/attached; only the steps[4] image shows it."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Using a 1 3/4\" Hole Saw Bit, drill two holes to provided dimensions.",
+      "what": "steps[10] image shows a 4\" x 2\" slot; text says 1 3/4\" holes joined by a jigsaw cut (slot height would be 1 3/4\")."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Next cut 2x4s for middle supports as shown on a picture.",
+      "what": "number of middle supports not stated (viewed steps[6] image shows one 2x4 11 1/4\" piece); materials[0] \"Plywood, 4x4 Half Sheet\" gives no thickness although steps[7] says 1/2\" plywood."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "Apply wood conditioner, stain and paint.",
+      "what": "wood conditioner, stain, paint and sandpaper not in materials"
+    }
+  ]
 }
