@@ -172,8 +172,25 @@
       "reason": "R5 precondition not met: unparseable stock materials[0]"
     },
     "R6": {
-      "result": "pass",
-      "reason": "Sizes in the steps: 2 1/2\" pocket-hole screws for rails to legs (steps[3]-[5]) = materials[4]; 1 1/2\" pocket-hole screws for slats (steps[7]) = materials[3]. One size per use."
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "And then attach these two Slats using 1 1/2\" S Blue-Kote™ Pocket-Hole Screws."
+        },
+        {
+          "path": "images: steps[7] image 0bba37b716db596a (viewed)",
+          "quote": "Third: Attach all Slats using 1 1/4\" Pocket-Hole Screws"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1 1/2\" Kreg Blue-Kote™ or Stainless Pocket-Hole Screws"
+        }
+      ],
+      "reason": "Adjudicated: the plan gives two sizes for the same use (slat attachment): 1 1/2\" in steps[7] and materials[3], 1 1/4\" in the viewed step-7 diagram label (flattened on white). No 1 1/4\" screw in materials."
     },
     "R8": {
       "result": "pass",
@@ -215,7 +232,7 @@
       "search": "(a) counts match: 'two End Rails' (steps[0]), 'two Side Rails and a Center Rail' (steps[1]), 'four Legs' (steps[2]), 'nine Top Slats and two End Top Slats' (steps[6]) = cutList[0..5] quantities. Sizes add up (Kreg-corrected): table width 23 end rail + 2 × 3 1/2 legs = 30 = slat length (cutList[4],[5]); table length 53 1/2 side rail + 2 × 3 1/2 legs = 60 1/2 = 11 slats × 5 1/2 (end slats notched around the legs, steps[6]); end rail set 1\" below the leg top (steps[3] image) = 1\" slat thickness, so the top finishes flush with the legs. (b) end assemblies, rails and all 11 slats are installed (steps[3..5],[7]). (c) no non-fastener item beyond waterproof glue (materials[5]). (d) steps[7] attaches the last slats — finished table."
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Fix",
   "gaps": [],
   "reader": {
     "batch": "calib-2",
@@ -230,5 +247,14 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R6"
+    ],
+    "note": "R6 fail: step-7 text says 1 1/2\" slat screws, its viewed diagram says 1 1/4\"."
+  }
 }
