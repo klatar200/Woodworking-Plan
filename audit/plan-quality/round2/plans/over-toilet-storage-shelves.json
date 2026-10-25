@@ -79,14 +79,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Print out the templates for the top & bottom back boards from the extras."
+        }
+      ],
+      "reason": "The decorative outline of the top and bottom back boards exists only in a downloadable template ('the extras') that the plan does not contain; viewed step 0 image shows a paper template with no dimensions. Only the decorative shape is missing (boards are 18 1/2 x 5 1/2 in the cut list, curves on the sides are given in steps[1]), so the build can be completed. The sweep missed it although its regex includes 'template'."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side boards, top & bottom back boards, shelf boards (3) and center divider in steps[0]-[7] all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "4 rows used: side boards steps[1],[5]; back boards steps[0],[3]; shelf boards steps[3],[4],[7]; divider steps[6]"
     },
     "R4": {
       "result": "pass",
@@ -97,17 +108,50 @@
       "arithmetic": "parts: 2×24 + 2×18.5 + 3×18.5 + 1×7 + kerf 6 cuts (8 parts − 2 boards, the fewest possible)×1/8 = 148.250″; bought: 2×96 = 192″; 148.250 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws (steps[3],[5],[7]) = materials[1]; finishing nails (steps[6],[7]) = materials[3] 1 1/4\"; 1\" wire nail (steps[8]) = materials[7]; bar aluminum 1/2\" x 1/16\" = materials[5]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Top shelf 2 3/4\" from the top and bottom shelf 2\" up (steps[5]); curve mark 2 3/4\" (steps[1]); center shelf height is fixed by the 7\" divider between it and the top shelf; D-rings 'just under the top shelf board' relational; aluminum strip position visible in viewed step 8 image. Knob and strip lengths/positions unspecified (gaps)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown' or diagram reference except the template (R1); steps[0] has an image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back boards joined to top/bottom shelves, divider onto center shelf, then shelves to sides; metal detail, knobs and hanging last; the divider-to-top-shelf nails are reachable from above"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] and [4]: 'Kreg jig set to 3/4\" thick wood'; all parts 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree (2 sides, 2 back boards, 3 shelf boards with 'last shelf board' as the center, 1 divider, 3 knobs, 2 D-rings); (b) every part installed; (c) D-rings, knobs, aluminum bar, nails all in materials; (d) steps reach hanging the finished shelf"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/fdeec92e47b471f4.png",
+      "audit/plan-quality/.img-cache/f87ed7dad52e9399.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "cut a piece of 1/2\" x 1/16\" bar aluminum to size with snips",
+      "what": "length and position of the aluminum strips (materials[5] two 36in pieces) and knob/pilot-hole positions are not given in text; viewed image shows a strip along the shelf fronts without dimensions (decorative)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Fill pocket holes. Sand and finish your shelves.",
+      "what": "wood filler, sandpaper and finish not in materials"
+    }
+  ]
 }

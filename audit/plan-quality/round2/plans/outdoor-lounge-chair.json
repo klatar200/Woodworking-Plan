@@ -236,13 +236,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; steps refer only to cutting diagrams that are step images"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps[0],[1],[3],[5],[7],[9],[11],[14],[16] map to cutList rows 0-9 (7 slats = First Slat + 6 Slat)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used by steps (Front Leg [0], Side Rail [1], Back Leg [3], Back Support [5], Cleat [7], Top Cap [9], slats [11], Front Rail [14], Back Filler [16])"
     },
     "R4": {
       "result": "pass",
@@ -253,18 +255,48 @@
       "arithmetic": "parts: 2×15.75 + 2×14.5625 + 2×14.625 + 2×23.25 + 2×9 + 1×23.5 + 1×23.5 + 6×23.5 + 1×23.5 + 2×23.5 + kerf 16 cuts (21 parts − 5 boards, the fewest possible)×1/8 = 414.875″; bought: 5×96 = 480″; 414.875 ≤ 480"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is '1 1/4\" Blue-Kote' screws; materials[1] is '1 1/4\" Kreg Blue-Kote Pocket-Hole Screws'; 1/8\" bit is a drill bit"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Front Leg 12 degree angle and 15 3/4 in shown in viewed step 0 image; cleat 'flush with bottom of Side Rail' 5 1/2 in, Top Cap 'flush with upper end and front edge of Back Support', Front Rail 1/2 in, Back Filler inset 1/4 in and 5 3/4 in shown in viewed images; First Slat inset 1/4 in and slat gap 1/4 in in text"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "26 reference(s), each in a step with its own image"
+      "reason": "Every step that cites the diagram has its own image; viewed step 0, 8, 10, 15, 17 images show the referenced content"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Each side built (leg+rail, back leg trimmed to fit, support, cleat, cap), slats and rails added, then second side attached last (steps[18])"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your Kreg Pocket-Hole Jig for 3/4\" thick material'; all parts are 0.75 thick; cleat fastened with stated 1 1/4\" screws in pilot holes"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: 2 legs, 2 rails, 2 back legs, 2 supports, 2 cleats, 1 cap, 7 slats (1+6), 1 front rail, 2 fillers; (b) every part installed; (c) only screws and glue used, both in materials; (d) steps end with sanding/finish"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/53c8076d1707eb90.png",
+      "audit/plan-quality/.img-cache/2a65a3618d2e7ed0.png",
+      "audit/plan-quality/.img-cache/e2b3c8907d483d76.png",
+      "audit/plan-quality/.img-cache/b1a69c47d6d2f3fa.png",
+      "audit/plan-quality/.img-cache/6ff36071635c5e36.png"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[19].body",
+      "quote": "apply an exterior finish. We used “Cedar Naturaltone” transparent stain.",
+      "what": "stain/finish not in materials"
+    }
+  ]
 }

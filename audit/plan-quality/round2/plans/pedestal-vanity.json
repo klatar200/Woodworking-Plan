@@ -176,64 +176,84 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; 'tag @CharlestonCrafted' is a credit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, Base, face frame (Top/Bottom Face, Side Face), drawer parts, Drawer Faces, Doors, Top and Caster Bases in steps[0]-[7] all have cutList rows; cardboard/scrap templates (steps[3]) are not parts"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used: Sides/Base [0]; faces [1]; drawer sides/top/face/caster bases [2]; Top [3],[6]; Doors [7]"
     },
     "R4": {
+      "result": "pass",
+      "reason": "Reader overrides sweep fail: materials[2] is 'Butcher block (or 3/4\" plywood double stack), 20\" x 30\" x 1 1/2\"', exactly the Kreg-corrected Top row 1.5 x 20 x 30; 0.75 parts from materials[0] 3/4\" sheet, Doors 0.5 from materials[1] 1/2\" sheet",
+      "readerNote": "sweep R4 fail did not consider materials[2] (butcher block 20 x 30 x 1 1/2)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "Sheet goods: area does not exceed bought (3/4\" parts ~3348 sq in = 1073+457+106+56+278+320+896+162 vs 4608 sq in sheet; 1/2\" doors 446 vs 1152), so no certain fail; layout/packing of parts on the sheet not checked (rule: unknown unless area exceeds)"
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Steps use only 'pocket screws' and 'brad nails' without sizes; materials list 1 1/4\" pocket-hole screws and 1 1/2\" brad nails; no conflicting sizes"
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Base 11\" up from bottom of Sides (steps[0]); face frame top flush with Sides and front of Base; arithmetic agrees (Sides 29 - frame height 14 + 2x2 = 18 -> 11\"); drawers stacked under the Base as shown in viewed step 5 image; pedestal notch is traced from the builder's own sink (steps[3])"
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "No step refers to a diagram or 'as shown'"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, face frame, drawers, notches, finish, drawers on slides, top slid on, doors; order possible (notch in Base is cut after assembly with a jigsaw, reachable)"
+    },
+    "R9": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[0]",
-          "quote": "Top — qty 1, 1.5 x 20 x 30 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Sheet of plywood, 4' x 8' x 3/4\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Sheet of plywood, 2' x 4' x 1/2\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Butcher block (or 3/4\" plywood double stack), 20\" x 30\" x 1 1/2\""
+          "path": "steps[0].body",
+          "quote": "Drill three pocket holes along the short, top edge of the two Sides."
         }
       ],
-      "arithmetic": "cutList[0] 1.5×20: no listed stock has thickness 1.5 (±1/32) with width ≥ 20; stock = sheet 0.75, sheet 0.5, sheet 0.75",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top — qty 1, 1.5 x 20 x 30 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "Search of all steps/description/materials for /setting|jig|thick/ finds no jig thickness setting for the 3/4\" plywood parts; viewed images (steps 2, 5) are 3D drawings without a setting. Recorded only."
     },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
+    "R14": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "(a) counts agree: 2 Sides, 2+2 face pieces, 4 Drawer Sides = 2 per drawer, 8 Caster Bases = 2 per front corner x 2 corners x 2 drawers, 2 Doors/2 hinges/2 knobs, 2 pulls; frame 14 + 2 + 2 = 18 and Base 11 up give Sides 29; base 17.25 + 0.75 face = 18 vs Sides 18.5 leaves the 1/2\" door thickness; (b) every part installed; (c) slides, casters, hinges, pulls, knobs listed; (d) ends with attached doors"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/c60a6e09414b03ec.png",
+      "audit/plan-quality/.img-cache/cced88862d42a73f.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Attach a caster in each corner of the underside of the drawer on the Caster Bases.",
+      "what": "'each corner' (4 per drawer = 8) vs materials[7] '4 casters'; caster bases exist only at the two front corners (steps[2]), so 4 casters likely, but the text is ambiguous"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Attach the two drawers underneath the Base piece, using drawer slides.",
+      "what": "slide height and spacing for the two stacked drawers not given in text (image shows them stacked); screws for slides, casters and hinges not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "using wood glue and brad nails",
+      "what": "wood glue is listed; finish and sandpaper (steps[3]) are not itemised beyond 'Stain or paint'"
+    }
+  ]
 }

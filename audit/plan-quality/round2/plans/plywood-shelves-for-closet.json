@@ -68,34 +68,101 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Cleats (steps[0]), plywood shelves (steps[2]) and 1x3 front trim (steps[3]) all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 rows used: Wall cleats steps[0]-[1]; Shelves steps[2]; Shelf trim steps[3]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x2, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material (0.75 sheet; 0.75x1.5 = 1x2; 0.75x2.5 = 1x3). 1x2: 10x13 = 130 + 10 cuts x 1/8 = 131.25 <= 2x96 = 192. 1x3: 5x22.25 = 111.25 + 5/8 = 111.9 <= 192. Sheet: 5 shelves 13 x 23 (area 1495 sq in) fit on one 48 x 96 sheet (4608 sq in), no area shortfall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is '2\" finish nails' (steps[1]) = materials[3]; materials[4] 1 1/4\" nails are not used by any step (gap)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Plan is explicitly custom ('Customize to fit your closet space', 'cut to fit the depth'); cleat height/shelf spacing is the builder's choice (level, cleats in pairs) and the viewed photos give no numbers; recorded in gaps"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram or 'as shown'"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cleats on wall, shelves set on cleats, trim last; each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 1x3 front trim to fit each shelf front."
+        }
+      ],
+      "reason": "No pocket holes. Cleat joint states adhesive and 2\" finish nails (steps[1]), shelves rest on cleats (steps[2]), but the method and fastener for the front trim are never stated (viewed images do not show it). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 1x3 front trim to fit each shelf front."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Shelf trim | 5 | 1 x 3 x 22"
+        }
+      ],
+      "reason": "(b)/(d) The last step only cuts the 5 front trim pieces; no step attaches them or says how (search of steps for /trim|attach|nail|glue/: trim appears only in steps[3]; nailing is mentioned only for cleats in steps[1]). Trim is cosmetic, so Fix. (a) 10 cleats = 2 per shelf x 5 shelves matches. (c) construction adhesive is a consumable (gaps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/8bc05ba203f6613d.png",
+      "audit/plan-quality/.img-cache/26054a19412026d6.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Attach 1x2 cleats to wall using construction adhesive and 2\" finish nails.",
+      "what": "construction adhesive not in materials (consumable); materials[4] lists 25 x 1 1/4\" finish nails that no step uses"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "using construction adhesive",
+      "what": "construction adhesive"
+    },
+    {
+      "path": "cutList[2] vs cutList[0]",
+      "quote": "Shelf trim 22.25 long; Shelves 13 x 23",
+      "what": "trim (22 1/4) is 3/4in shorter than the shelf width (23) it fronts; steps only say 'cut to fit', so not scored"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Be sure to use a level and keep cleats in pairs.",
+      "what": "no cleat height or shelf spacing given (5 shelves, closet-specific)"
+    }
+  ]
 }

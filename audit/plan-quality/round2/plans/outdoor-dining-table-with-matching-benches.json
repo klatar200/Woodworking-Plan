@@ -32,34 +32,143 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Video is recommended ('We recommend watching the corresponding video') and cited once for clarity (steps[14]); steps give the cut sizes, overhangs and assembly sequence in text, so the build is not gated on it. Noted in gaps."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps (table top boards, 3 stretchers, 4+4 legs, bench stretcher, 14 1/2 pieces, 18 in leg pieces, bench tops) all have cutList rows; scrap risers are an optional tip"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 cut rows are used: steps[1]-[5], [12]-[15]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x8, 4x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Pine boards, 4\"x4\"x8'"
+        },
+        {
+          "path": "materials[1].quantity",
+          "quote": "6"
+        },
+        {
+          "path": "cutList[1..3,6,7]",
+          "quote": "Stretchers 3 @68; Table legs 4 @28 (Kreg 28.5); Table legs 4 @23 (Kreg 23.5); Bench stretchers 2 @59; Short bench stretchers 4 @14.5"
+        }
+      ],
+      "arithmetic": "Every 4x4 part (4x4 thickness/width) matches only the 4x4 material. Lengths: 3x68=204 + 4x28.5=114 + 4x23.5=94 + 2x59=118 + 4x14.5=58 = 588 in, before kerf. Bought 6 x 8' = 6 x 96 = 576 in. 588 > 576, short 12 in (> 1/2 in, so not kerf-only; with 17 cuts x 1/8 = 2.125 need 590.1). 2x8: 5x78 + 2x66 + 8x18 = 666 in (+15 cuts x 1/8 = 1.9) <= 9x96 = 864 ok.",
+      "reason": "6 4x4x8' boards cannot yield the 4x4 cut list"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[15].body",
+          "quote": "plug everything with some wood glue and a 3/8\" dowel, cut it down and sand it flush to hide the fasteners"
+        }
+      ],
+      "reason": "A 3/8\" dowel size is used in the steps but no dowel appears in materials (search of materials[0..6] /dowel/i: none). 2 1/2\" and 4\" XL screws used in steps are listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given: 3 1/2\" side and 1 1/2\" end overhang (steps[10]), 5 holes, 3 holes, 18 in/14 1/2 in parts; leg/stretcher/bench layout is relational ('just outside the first 4x4', 'flush', 'centered') and visible in the viewed finished photos"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing or 'as shown'; only the video is referenced (steps[14]) which is not an image reference"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Table top, legs, stretchers, base, attach top; bench legs from leftover 18 in pieces, then spine, then slats; order is possible (step 9 pocket holes added after step 8 but still reachable)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I drilled 5 holes along one edge of four of the 1x8s using the Kreg Pocket-Hole Jig XL."
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Lay your 2x8 bench tops on your base and screw them in."
+        }
+      ],
+      "reason": "Setting is stated only for the 4x4s (steps[6] 'Adjust your XL jig to the 3 1/2\" mark'); no setting for the 1 1/2\" thick 2x8 pocket holes (steps[2], [12], [14]) and the bench-top fastener is just 'screw them in' with no type/size. Viewed images are finished-piece photos, no setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Bench slats | quantity 2 | 2 x 8 x 66"
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "I also left a little bit of space between the two bench boards so water wouldn't get trapped"
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "you'll have to do all of the bench steps twice for two benches"
+        }
+      ],
+      "arithmetic": "2 bench boards per bench x 2 benches = 4 slats at 66\", but the cut list has 2. Bench legs (8 = 4/bench x 2) and bench stretchers (2 = 1/bench x 2) are totals for both benches, so the slat row is the odd one. The 9 2x8 boards bought = 5 table-top + 4 bench slats supports 4. Other counts agree (table top 5x78 after '18\" off each board'; 4 28.5 + 4 23.5 legs per steps[5]).",
+      "reason": "(a) bench slat count disagrees with steps; (b),(d) pass; (c) dowel handled under R6"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/b3f5910ee153750c.png",
+      "audit/plan-quality/.img-cache/6d3abd11c7d804a2.png",
+      "audit/plan-quality/.img-cache/609e556b489a4b6d.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "(The video shows this well, around the 8 minute mark.)",
+      "what": "bench-leg assembly points to the video for clarity; text describes it but ambiguously ('attach two of the long sides together'); not scored as R1 because build steps are otherwise given"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Connect the four leg pieces together using Kreg 4\" XL Pocket-Hole Screws",
+      "what": "which of the 28 1/2 and 23 1/2 pieces go where in a leg is not stated in text; only inferable from the finished photos"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "four of the 1x8s",
+      "what": "step names 1x8s but materials and cut list are 2x8 (naming slip)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[16].body",
+      "quote": "I sanded with 150 and ended with 220 grit sandpaper.",
+      "what": "sandpaper not in materials"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "I added a few pieces of scrap wood feet \"risers\" to the corners of the legs",
+      "what": "optional tip; risers not in cut list or materials"
+    }
+  ]
 }

@@ -7,35 +7,111 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "The seat panel has a middle piece that is perpendicular to provide strength. See image for details."
+        },
+        {
+          "path": "cutList",
+          "quote": "Backs/seat | 8 | 2 x 6 x 96; Side panels | 8 | 2 x 6 x 30"
+        }
+      ],
+      "reason": "A perpendicular middle piece in the seat panel is a part the steps assemble, but no cutList row, no cutting step (steps[0] cuts only 8 x 72\" and 8 x 30\") and no length exist for it; search of steps/cutList/materials/description for /perpendicular|middle|rib|cleat|brace/i finds only this sentence. Viewed step 2 image shows it but gives no size. Not clearly structural, so Fix."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: Backs/seat steps[2],[3],[4]; Side panels steps[1]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Single stock type (both material lines are 2x6) and lengths are written: materials[0].name 'Boards, 2\"x6\"x12'' x 8 = 8x144 = 1152 in; materials[1] x 3 at 8' = 288 in; bought 1440 in. Parts per cutList: 8x96 + 8x30 = 1008 + 16 cuts x 1/8 = 2 -> 1010 <= 1440 (per steps with 72in pieces: 816 <= 1440). Overrides sweep 'stock length not written'."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name no screw size; materials[2] lists Kreg Blue-Kote screws without a size; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Seat 1-1/2\" from front edge (steps[3]) and 9\" seat height, back rest 1/4\" gap and 'align back rest to corner of side panels' in the viewed step 4 image; backrest angle is relational (aligned to side-panel corner)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'See image for details' (steps[2]) has its own step image (viewed, shows the perpendicular piece and pocket-hole direction)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side panels and seat/back panels built first, seat added to upside-down sides, backrest last; order possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Use pocket holes to connect the pieces."
+        }
+      ],
+      "reason": "Search of all steps/materials/description for /setting|jig|thick|length/ finds no jig thickness setting for the 1 1/2\" 2x6 parts and no screw size (viewed step 1 image only says 'POCKET HOLES WITH COATED DECK SCREWS'). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut 8 pieces of 2x6 at a length of 72\"."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Backs/seat | quantity 8 | 2 x 6 x 96"
+        },
+        {
+          "path": "materials[5]",
+          "quote": "6 each 24\" wide cushions for sofa"
+        }
+      ],
+      "arithmetic": "Step cuts 8 pieces at 72\"; cut list row says 96\". 6 cushions = 3 across x 24\" = 72\" supports the step; 8 boards of 12' (materials[0]) fits one 96\" piece per board, supporting the cut list (two 72\" pieces = 144.125\" > 144\" per board).",
+      "reason": "(a) Backs/seat length 72 (steps[0]) vs 96 (cutList[0]) disagree; the plan does not say which is right. (b)-(d) pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/e41f422c900bf5a1.png",
+      "audit/plan-quality/.img-cache/796d904f3e41e8f7.png",
+      "audit/plan-quality/.img-cache/68e6d230392a2532.png",
+      "audit/plan-quality/.img-cache/9c7659f6cf34d091.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Use pocket holes to connect the pieces.",
+      "what": "how the 8 Backs/seat boards split between seat panel and back panel is not stated"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "then seal with an outdoor sealer",
+      "what": "materials has 'Outdoor stain/sealer' and putty/dowels; sandpaper not listed"
+    }
+  ]
 }

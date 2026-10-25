@@ -62,34 +62,88 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Large/small side slates and bottom slates have rows; the 4 inner supports (steps[3] 'Cut 4 - 1x1 to 12 (inner supports - we ripped ours from 2x2's)') are not in the cut list but the step states the listed material (materials[2] 2x2 48\")"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 rows used: steps[0] (22), [2] (15), [1] (24)"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Reader resolves sweep unknown for cutList[2] (Bottom Slates 1 x 4 x 24): steps[1] 'Cut 3 - 1x4 to 24' names the 1x4; same nominal-taken-as-actual import pattern as rows 0-1 (cause import). Sheet check n/a."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock for every part (1x4 for slates, 2x2 for supports). 1x4: 6x22 + 6x15 + 3x24 = 294 + 15 cuts x 1/8 = 1.875 -> 295.9 <= 7x72 + 96 = 600. 2x2: 4x12 = 48 (+3/8 kerf = 48.375 vs 48; the step rips the 2x2 into strips so more than 48 in of strip results, no shortfall)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size appears in steps ('nailing', 'gluing'); materials list brad nails; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "1x1 'flush with the bottom of your 1x4' (steps[4]); long sides to supports, ends on each end shown in viewed step 6 image; slat gaps and bottom-slat spacing are builder's choice (relational/unmentioned, no part position is fixed by a number)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram or 'as shown'"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides built on supports, then ends, then (implicitly) bottom and optional feet, then sand/stain/letter; no part is used before it exists"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; joint method and fastener are stated (steps[4] 'gluing and nailing', brad nails in materials[3])"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut 3 - 1×4″ to 24″ (bottom slates)"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "After we nailed the bottom slates on, we added feet made from round dowels that we had."
+        }
+      ],
+      "reason": "(b) The 3 bottom slates are cut in steps[1] but no step says to attach them or where; steps[4] and [5] build only the long sides and ends and the only later mention is the past-tense 'After we nailed the bottom slates on'. Search of steps for /bottom/: steps[1], steps[6] only. (a) counts agree (6/6/3, 4 supports). (c) feet/lettering are marked optional; glue is a consumable (gaps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/27a04a153a49d29b.png",
+      "audit/plan-quality/.img-cache/c23189ce05b1eb25.png",
+      "audit/plan-quality/.img-cache/2d32854d6969faa3.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[2]",
+      "quote": "Bottom Slates | 3 | 1 x 4 x 24",
+      "what": "bottom slates are 24in but the long sides are 22in; no step gives bottom length reconciliation or slat spacing across the 15in end width (viewed images do not show the bottom)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "I started by gluing and nailing the long sides to the 1×1’s first.",
+      "what": "wood glue not in materials; sandpaper and stain are listed"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Cut 4 - 1×1″ to 12″ (inner supports – we ripped ours from 2×2’s.)",
+      "what": "inner supports are not in cutList (made from materials[2] 2x2)"
+    }
+  ]
 }

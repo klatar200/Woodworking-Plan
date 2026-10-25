@@ -7,13 +7,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; mention of 'our dress up rack plans' is a credit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top Sign, Side Poles, Counter Top and the lattice trim (long/short) cut in steps[0] all have cutList rows; crates are purchased materials[0]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "5 rows used: steps[0] (cut), steps[4] sign, [3] poles, [8] counter top and trim"
     },
     "R4": {
       "result": "pass",
@@ -25,21 +27,92 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (9.5x12.5, 1x4, 1x10, 0.25x72, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Steps name the stock for every part (steps[0]). 1x4 96\": Side Poles cut to 4' = 2x48 = 96 in fits with zero kerf, 96.125 with one kerf (short 1/8\", kerf only). 1x10 48\": 26.3125 ok. 1x6 72\": 2x25 = 50 + 1/8 ok. Lattice 72\": 2x26.3125 + 2x9.25 = 71.125 + 3 kerfs 3/8 = 71.5 <= 72. Side Pole length taken from steps (cutList has 4, see R14)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "using (6) 5/8\" wood screws to secure them together into the center boards"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Wood Screws - 3/4\""
+        }
+      ],
+      "reason": "Step 2 uses 5/8\" wood screws; search of materials[0..11] for /5\\/8/ finds only 'Brad Nails - 5/8\"'. Listed wood screws are 3/4\" and 1-1/4\"; 3/4\" is used for a different joint (steps[3])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket holes 2\" and 8-1/2\" from the top end (steps[2], viewed image shows tape), sign flush at top of poles, counter first board flush with back of crates, second 'slightly hangs off the front'; poles/crates relationship visible in viewed finished photo (front/back position of the poles is not stated, see gaps)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram or 'as shown'"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, join crates, drill/attach poles, attach sign, paint, stain trim/counter, chalkboard paint, final trim and counter; order possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill your pocket holes using your Kreg Jig R3 into the side poles of the play stand measured at 2\" down from the top end and 8-1/2\" down from the top end"
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" poles anywhere (search /setting|thick|3\\/4/ in steps: only wood screws); viewed step 3 image shows a blue jig and tape measure, setting not legible/stated. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "import",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "(2) Side Poles - 1\" x 4\" board cut to 4' length"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Side Poles | 2 | 1 x 4 x 4"
+        }
+      ],
+      "arithmetic": "Step gives 4' = 48 in; cut list row length is 4 in (feet read as inches by the importer; the 4x4 inch row also cannot span crate height plus sign: sign has pocket holes '2\" down ... 8-1/2\" down from the top end').",
+      "reason": "(a) Side Pole length 48 in (steps) vs 4 in (cutList[1]); likely importer unit slip (importDiffs does not list it). Other counts and sizes agree: Counter Top 2 x 25 = width of two 12-1/2\" crates, Top Sign 26.3125 = 26-5/16, short trim 9.25 = 1x10 width. (b)(c)(d) pass."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/e65927ab961fa5f2.png",
+      "audit/plan-quality/.img-cache/ef98477240ba7c1a.png",
+      "audit/plan-quality/.img-cache/d6ad3d29c078748b.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "attach them to the sides of your wooden crates using (4) 3/4\" wood screws",
+      "what": "front/back position of the poles on the crate sides is not stated in text (finished photo shows them at the back)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "then sealed it with a coat of white furniture wax from Miss Mustardseed Milk Paint",
+      "what": "furniture wax, foam roller not in materials"
+    }
+  ]
 }

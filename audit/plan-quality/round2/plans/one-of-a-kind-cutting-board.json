@@ -44,35 +44,58 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|attached/i; 'Lay out the pattern' (steps[1]) is answered by the viewed step image with dimensions (1 1/2in, 3 5/8in, 3/4in hole)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps (Sides, Handle, Bottom Center) = cutList rows 0-2; bottom/top panels are assemblies; plate recess is a cutout, not a part"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Each of 3 cut rows is used: Sides steps[0], Handle steps[1], Bottom Center steps[1]/[2]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material: Sides 3/4x5.5 = 1x6 (steps[0] 'from 1x6 maple'); Handle and Bottom Center 3/4x2.5 = 1x3 (steps[1] 'from 1x3 maple'). 1x6 72\": 4x14=56 + 3 kerfs 3/8 = 56.375 <= 72. 1x3 36\": 20+12=32 + 1 kerf 1/8 = 32.125 <= 36."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener in steps is 1 1/4\" fine-thread pocket-hole screws (steps[2], steps[4]); materials[2] lists the same size; no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give pocket-hole positions (1\", 6\", 11\" from end), handle shape/hole (1 1/2\", 3 5/8\", 1 1/4\" radius, 3/4\" hole) and plate recess (2 5/8\", 1 3/4\")"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Referenced diagrams/'as shown' are in the step images viewed (steps[0], [1], [3]); part sizes also in cut list"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides cut/drilled, Handle shaped, bottom panel assembled, recess cut, top panel assembled, panels glued; order is possible"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your pocket-hole jig for 3/4\"-thick material'; all parts are 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Handle 20, Bottom Center 12, Sides 14 agree with cut rows and the viewed images; (b) every part installed; (c) screws, glue, oil all in materials; (d) steps reach the finished board"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/49198553cdcc4876.png",
+      "audit/plan-quality/.img-cache/5b7c78c95a46fc5f.png",
+      "audit/plan-quality/.img-cache/0007083e94b8dbf7.png"
+    ]
+  },
+  "gaps": []
 }

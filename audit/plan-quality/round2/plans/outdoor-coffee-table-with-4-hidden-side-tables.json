@@ -7,34 +7,106 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; no step defers to plans/PDF"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps[0..24] has a cutList row (Top Long Sides, Short Top Sides and Middle, Short Top Middle, Quadrant pieces, legs, stretchers, side table top/leg/rail parts); scrap spacers are not parts"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 cut rows are used by steps[0]-[24]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x3, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "materials[1].quantity",
+          "quote": "9"
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Side Table Middle Top Pieces | 24 | 0.75 x 2.5 x 6.25"
+        }
+      ],
+      "arithmetic": "Every part's thickness x width matches exactly one listed board (2.5 wide = 1x3 only; 3.5 = 1x4; 1.5 = 1x2). 1x3 parts per cutList: 12x9.5=114 + 4x17.5=70 + 2x23=46 + 4x11.125=44.5 + 24x6.25=150 + 16x16.25=260 + 16x7.5=120 + 16x7.75=124 = 928.5 in; 94 cuts x 1/8 = 11.75; need 940.25 in vs 9 boards x 96 = 864 in; short 76.25 in (> 1/2 in, not kerf-only). 1x4: 303.5+23/8=306.4 <= 384 ok; 1x2: 260+2=262 <= 384 ok. If row 9 were 8 (steps[15]/[16]) the 1x3 need would be ~838.25 <= 864.",
+      "reason": "As written the cut list needs more 1x3 than materials supply; the excess comes from the cutList[9] quantity that disagrees with steps (see R14a)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use only '1-1/4\" pocket screws' / '1-1/4\"'; materials[3] is '1-1/4\" exterior pocket screws'; no second size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Stretcher positions given (2-1/2\" down from top, 2\" up from bottom, steps[8]/[9]); side table bottom rail 2\" up, top rail flush (steps[19]/[23]); pocket holes at 'center of each top rail'; quadrant spacing 1/2\"; other placements are 'center'/'flush' relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step defers to a diagram; every step has its own image anyway"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top built first, then leg assemblies, then legs attached to top; side table tops and leg assemblies built before attaching; pocket holes drilled before the joints they serve"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut 3 pieces of 1x4 to 22-1/2\" and drill pocket holes in each end."
+        }
+      ],
+      "reason": "Search of all steps/summary/description/materials/tools for /setting|jig|3\\/4\"|thick/ finds no jig thickness setting for the 3/4\" parts; images not viewed (a setting shown in an image would count). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[9]",
+          "quote": "Side Table Middle Top Pieces | quantity 24 | 6.25"
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Cut 8 pieces of 1x3 to 6-1/4\" and drill pocket holes in each end."
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "Place 2 long top pieces on your workbench. Then apply glue to 2 short top pieces and 2 middle pieces"
+        }
+      ],
+      "arithmetic": "Side table tops: steps[13] 'Cut 8 pieces of 1x4 to 13-1/2\"' at 2 per top = 4 tops; 2 middle pieces per top x 4 tops = 8 (matches steps[15] 8) but cutList[9] quantity is 24. Other quantities agree (long 8, short 8, wide legs 16, rails 16, narrow legs 16, narrow rails 16). Coffee top sums check: 22.5+2x3.5=29.5; 3x3.5+2x9.5=29.5; quadrant 3x2.5+4x0.5=9.5.",
+      "reason": "(a) cut-list quantity 24 contradicts the steps' 8; (b)(c)(d) otherwise pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[27].body",
+      "quote": "Apply a coat of primer and several coats of exterior paint or a few coats of exterior stain.",
+      "what": "primer, paint/stain not in materials (finish consumable)"
+    }
+  ]
 }

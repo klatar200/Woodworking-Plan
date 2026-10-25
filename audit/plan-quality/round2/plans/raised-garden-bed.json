@@ -152,35 +152,88 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[1] cuts 'according to the cut list'; every part the later steps use (leg boards, long/short side boards, center 2x4 supports, long/short top caps) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: legs [2]-[3], side boards [5],[7],[9], caps [10]-[14], center supports [12]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material (Kreg-corrected 1.5x3.5 = 2x4; 1.5x5.5 = 2x6). 2x4: 6x22 + 2x58 + 2x28 = 304 + 10 cuts x 1/8 = 305.25 <= 3x120 = 360. 2x6: 4x22 + 8x54 + 8x28 = 744 + 20 cuts x 1/8 = 746.5 <= 7x120 = 840."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '2 1/2 inch Kreg screws' (materials[2]) and '2 1/2 inch wood screws' (materials[3]); no other sizes; chicken wire is 'if needed'"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Leg stack 4 x 5 1/2 = 22 matches leg length; 4 pocket holes per leg and 2 screws per board end given; center supports 'centered'; cap sits on the walls (relational). Which two sides get the supports is not stated (gaps)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "No step refers to a diagram or 'as shown' (sweep's single reference has its own image)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs built, sides attached in layout order, cap frame built separately and attached from underneath last, then level/weed cloth/soil"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use a pocket hole jig to attach the two boards that form each leg. Drill pocket holes into the 2x4 board."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Drill pocket holes to enable the top caps to be connected from the underside using 2 1/2 inch Kreg screws."
+        }
+      ],
+      "reason": "Search of all steps/description/materials for a jig thickness setting (/setting|thick|1 1\\/2/) finds none for the 1 1/2\" parts; viewed step 2 photo shows the jig but no readable setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: 8 long + 8 short side boards = 4 per side x 4 sides; legs 4 x (2x6 + 2x4) + 2 center supports = 6 2x4 pieces; 2 long + 2 short caps; 4 x 5.5 = 22 = leg height; soil 54 x 28 x 22 = 33,264 cu in = 19.25 cu ft vs 'approximately 19.1' / 'approximately 19'; (b) every part installed; (c) weed barrier, soil, screws listed; chicken wire is 'if needed'; (d) steps reach a filled bed"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/105f5b86860dc2d8.png",
+      "audit/plan-quality/.img-cache/83c1e30f605be56c.png",
+      "audit/plan-quality/.img-cache/c3226afe758da34f.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[12].body",
+      "quote": "Center the 2x4 middle supports on the outside of the planter and then attach with 2 1/2 inch screws from the inside.",
+      "what": "cut list has 2 center supports but the text does not say which sides get them or how many; step 12 image not dimensioned"
+    },
+    {
+      "path": "materials[4]",
+      "quote": "Outdoor stain / Sealer",
+      "what": "stain/sealer is listed but no step applies it (finishing out of scope)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[16].body",
+      "quote": "Use chicken wire to keep gophers out if needed.",
+      "what": "chicken wire is optional ('if needed'); not in materials"
+    }
+  ]
 }

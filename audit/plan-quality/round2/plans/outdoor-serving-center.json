@@ -644,36 +644,87 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; steps defer only to cutting diagrams, which are step images"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps[0]-[20] has a cutList row (legs, rail, support posts, axle parts, 8 braces, end/shelf/side slats, top sides/ends/supports, track supports, top slats, 2 x 51in track pieces from the aluminum angle). Row 'Wide Long Top Slat' (7 x 52.5) is the wide Long Side Slat of steps[13] under a different name (gap)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 26 rows map to a step: [0],[2],[4],[6],[10],[13],[14],[16],[18],[20]; 'Narrow/Wide Lower Side Slat' and 'Short Side Slat' fall under steps[13] side slats"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x4, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed board (1.5x3.5=2x4; 0.75x1.5=1x2; 0.75x3.5=1x4). Kreg-corrected lengths: 2x4 412.5 + 24 pieces/8 = 415.5 <= 5x96 = 480; 1x2 1004 + 35/8 = 1008.4 <= 19x96 = 1824; 1x4 1221.5 + 42/8 = 1226.75 <= 18x96 = 1728; aluminum 2 x 51 + 2 x 51 = 204 on 4 x 72 angle (one 51 per piece)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 2 1/2\" pocket screws (materials[4]), 1 1/4\" (materials[3]), 1 1/2\" sheet-metal screws (materials[13]), 5/8\" sheet metal screws (materials[6]); brad nails (materials[8]); no conflicting sizes for one use"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions in viewed images are dimensioned (support post 17 1/4\" from back leg, 18 1/2\" legs above rail, axle block/leg 9\" and 5 1/2\", braces 15\", 4\", 20 1/2\"); slat supports 3/4\" down, track gap 1/8\" and 1/16\" in text; handles/hooks relational. Images for steps 0, 17-20 not viewed."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "29 reference(s), each in a step with its own image"
+      "reason": "Every referencing step has its own image; viewed steps 3, 5, 7, 11 images show the referenced content"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, braces, second side, axle, slats, bottom track, side slats, then separate top built and tracks mounted, then slid on; each part exists before the step using it"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Jig stated 1 1/2\" for the 2x4 parts (steps[0],[2],[4]; braces are 2x4) and 3/4\" for the 1x4 parts (steps[14],[16]); other joints are glue+brad nails or stated sheet-metal screws"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) axle 19\" from 24\" rod, 4 track pieces x 51\" from 4 x 72\" angle, brace count 8 = row, end/top widths 19.5 consistent across rows; (b) every part installed; (c) wheels, rod, pulls, tracks, screws all listed; (d) steps reach the finished cart with top. Axle retention hardware and the top-slat fit question are in gaps."
     }
   },
-  "verdict": null,
+  "verdict": "Ship",
   "measurementsScoredOn": "kreg-corrected",
-  "rescoreNote": "2026-10-19 consumable cleanup: confidence certain->likely. 'certain' rested on the glue/wax part of (c), now in gaps; the remaining (a) mislabel finding was recorded by the reader as likely."
+  "rescoreNote": "2026-10-19 consumable cleanup: confidence certain->likely. 'certain' rested on the glue/wax part of (c), now in gaps; the remaining (a) mislabel finding was recorded by the reader as likely.",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/d741d7152522a0ea.png",
+      "audit/plan-quality/.img-cache/496c63e211eaee2b.png",
+      "audit/plan-quality/.img-cache/4cea9536a48dd07c.png",
+      "audit/plan-quality/.img-cache/03605b57a8df09f6.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[10].name / description",
+      "quote": "Chest cooler, 50-70 quart (up to ~19\"x32\"x16\")",
+      "what": "description says '60-quart rectangular cooler (up to 29\" long x 17\" wide x 18\" tall)'; the two stated maximum cooler sizes contradict each other (19x32x16 vs 29x17x18)"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "feed it through the holes in the Axle Block, and attach the 8\" Lawnmower wheels making sure they spin freely but are secure",
+      "what": "no retention hardware (nuts/washers/cotter pins) is named or in materials to keep the wheels on the 1/2\" rod; no step says where/how big the holes in the Axle Block are"
+    },
+    {
+      "path": "cutList[9] vs cutList[25]/[24]",
+      "quote": "Wide Long Top Slat | 7 | 0.75 x 3.5 x 52.5; Narrow Top Slat | 3 | 0.75 x 1.5 x 51.5; Top Side | 0.75 x 3.5 x 52.5; Top End 19.5; Top Track Support 51",
+      "what": "if Top Ends sit between the Top Sides (steps[15]) the frame opening is 52.5 - 2x0.75 = 51 in long (matches the 51 in track supports), but the top slats are 51.5 in; layout not shown in viewed images, so not scored"
+    },
+    {
+      "path": "cutList[9]",
+      "quote": "Wide Long Top Slat",
+      "what": "row name says Top Slat but the part is the wide Long Side Slat of steps[13] (52.5 in, same as Top Side)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[21].body",
+      "quote": "Rub some wax on the aluminum tracks for smooth sliding",
+      "what": "wax, stain/finish not in materials"
+    }
+  ]
 }

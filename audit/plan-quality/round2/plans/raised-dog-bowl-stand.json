@@ -146,35 +146,84 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing; 'cutting diagram' references are step images"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "End Panels, Legs, End Rails, Front/Back Panels, Front/Back Rails, Stiles and Top cut in steps[0]-[9] all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used by steps[0]-[9]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[1] Kreg text not parseable"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Cut two End Rails to length from a 1x2 board, as shown in the cutting diagram."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "End Rail | 2 | 0.75 x 1.5 x 7.25 (Kreg-corrected)"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1/2\" x 2 (1 1/2\" actual width) 48\""
+        }
+      ],
+      "arithmetic": "Rails (cutList[2], [5], [6]) are 0.75 x 1.5; steps[2] and [6] say cut them from 'a 1x2 board'. Listed boards: 1x8 (0.75x7.25), 2x2 (1.5x1.5), 1/2\" x 2 (0.5x1.5), 1x12 (0.75x11.25). None is 0.75 thick x 1.5 wide; search of materials for /1x2|1 x 2|1\"x2/ finds nothing (only the 1/2\" x 2 board used for the Stiles in steps[8]).",
+      "reason": "No 1x2 board in materials for the 4 rails. Legs row cutList[1] '1 x 1 x 10' is the S-19 fraction drop of the 2x2 (1 1/2\" x 1 1/2\") named in steps[1] (cause import, passes R4); all other parts match a listed board."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x8, 2x2, 0.5x1.5, 1x12); steps not checked for per-part stock"
+      "reason": "Steps name the stock for every part but the 1x2 rails have no listed material or length, so R5 cannot be completed. Listed stocks fit: 1x8 48\": 2x7.25 + 2x15 = 44.5 + 3/8 = 44.875 <= 48; 2x2 48\": 4x10 = 40 + 3/8 <= 48; 1/2\" x 2: 2x7.25 = 14.5 + 1/8 <= 48; 1x12 24\": 19 <= 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is '1 1/4\" pocket hole screws' (steps[1],[5],[10]) = materials[4]; no conflicting sizes (3/8\" is a starter-hole drill size)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give dimensions: bowl holes 3\" radius at 5 1/4\" from each end and 5 5/8\" from the edge on a 19 x 11 1/4 top; legs 10\" / 7 1/4\" end panel; stiles 6 3/4\" each side; end rails offset 1/4\" in text"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "reason": "Every step that says 'as shown' has its own image; viewed steps 1, 5, 8, 9 images show dimensioned references"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "End assemblies, front/back panels, rails, stiles, then top; each part exists before use; stiles and rails are glued onto outer faces after the box is built, reachable"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and [4] 'pocket-hole jig set up for 3/4\" material'; all pocket-hole parts are 0.75 thick; rails and stiles are glued"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree (2 end panels, 4 legs, 2+2 rails, 1+1 panels, 2 stiles, 1 top); 6 3/4 + 1 1/2 + 6 3/4 = 15 = panel length; top 19 x 11 1/4 matches cutList; (b) every part installed; (c) bowls, screws, glue listed; (d) ends with attached top and finish"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/aa861a296564bb2e.png",
+      "audit/plan-quality/.img-cache/12a2f97823878170.png",
+      "audit/plan-quality/.img-cache/e6628c8411b1ff74.png",
+      "audit/plan-quality/.img-cache/6d7abc4f23e22598.png"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "then you can sand the project, and apply the paint or stain of your choice",
+      "what": "paint/stain and sandpaper not in materials"
+    }
+  ]
 }

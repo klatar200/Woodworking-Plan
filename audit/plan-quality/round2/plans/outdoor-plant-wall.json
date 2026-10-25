@@ -80,34 +80,99 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps cut only slats, top/bottom frame and side frame (steps[0] 'according to the cut list'); all three have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 cut rows all used (steps[1],[2])"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed board (1.5x5.5 = 2x6; 1.5x3.5 = 2x4). Total length rule: 2x6 7x39 = 273 + 7/8 kerf <= 6x72 = 432; 2x4 2x42 + 2x43 = 170 + 4/8 <= 4x72 = 288. Passes the R5 total-length test; per-board packing problem recorded in gaps.",
+      "readerNote": "see gaps: 7 slats of 39in cannot come from six 72in boards"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name no screw size; materials list both 2 1/2\" screw types; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat gap 1/4\" given (steps[2]); 2 pocket holes per end and 5 horizontal given; hooks 'evenly spaced' and wall hang height are relational/user-chosen. Miter angle is not a position (gap)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram or 'as shown'"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Slats to one side frame, then top and bottom, then other side; sanding, finishing, hooks, hanging follow; order possible"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the end of each slat (2 on each end)."
+        }
+      ],
+      "reason": "Search of all steps/description/materials/tools for a jig thickness setting (/setting|jig|1 1\\/2|thick/) finds none for the 1 1/2\" parts; viewed images (steps 0, 2, 8) are photos with no setting. The fastener for the mitered corners is stated (2 1/2\" exterior construction screws). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "we drilled two angled holes at the correct height and added steel rods and secured with 100% silicone. The plant wall hangs directly onto the steel rods."
+        }
+      ],
+      "reason": "(c) The only hanging method in the plan uses steel rods and silicone; search of materials[0..11] /rod|silicone|anchor|bracket|cleat/i finds none. Steps do not mark it optional, though it is phrased as the author's own brick-wall method. (a) Hook count 9 = pots 9 = succulents 9; screws '(4 total screws in each corner)' x 4 corners = 16 = materials[11] 16; slat-stack vs frame opening (7x5.5+6x0.25 = 40) cannot be checked because frame orientation is not stated. (b),(d) otherwise pass."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/294dd66387872342.png",
+      "audit/plan-quality/.img-cache/f72aad5b2bc21a73.png",
+      "audit/plan-quality/.img-cache/b776f8f42136124e.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1] / cutList[0]",
+      "quote": "Pressure Treated Wood, 2x6 72\" (quantity 6); Slats | 7 | 39",
+      "what": "packing: two 39in slats need 78.125in (2x39 + 1/8) > 72in, so each 72in board yields one slat; 7 slats need 7 boards, only 6 bought (total-length R5 test passes at 273.9 <= 432). 2x4: four 72in boards yield exactly the 4 frame pieces"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "On the mitered corners of the frame, add two screws through each outside corner",
+      "what": "frame corners are mitered but no step or cut-list row gives the miter angle or says to miter the ends (step 0 only 'cut wood down to size according to the cut list')"
+    },
+    {
+      "path": "materials[10]",
+      "quote": "2 1/2\" Blue Coated Outdoor Kreg Screws | quantity 24",
+      "what": "pocket holes in steps[1]: 7 slats x 4 holes = 28, plus 5 + 5 horizontal = 38 holes vs 24 pocket screws (screw counts are not an R-2 check)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Roll on primer onto entire structure.",
+      "what": "primer is listed; roller and sandpaper (steps[3]) not in materials"
+    }
+  ]
 }

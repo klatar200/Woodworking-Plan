@@ -104,35 +104,106 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep regex over all fields found nothing"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (slats, side top pieces, aprons 11 1/2 and 16, legs) all have cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: steps[0],[1],[3],[4]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps[0] names the stock for every part (1x4 for 16in and 11 1/2in sections, 2x4 for 21 3/4in). Per steps: 1x4 6x16 + 2x11.5 = 119 + 8 crosscuts x 1/8 = 120 <= 2x72 = 144; 2x4 2x21.75 = 43.5 + 1/4 <= 96. Cut-list lengths are lower still."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/2\" screws (steps[1],[4]) and 1 1/4\" pocket screws (steps[5]); materials[2] and [3] list both"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat gap 1/2\"; overhang '1/2 inch on the front and back, sides almost flush'; pocket-hole counts given; apron-to-leg position visible in viewed step 4 image (frame at the leg ends, cut side out marked green)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Only reference is steps[4] 'as shown' / 'green marks in the picture', which has its own image (viewed, shows the green marks and 11 1/2\" / 16\" labels)"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble the table top by attaching the two side top pieces to the slats using 1 1/2\" pocket hole screws."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "You will need two on either end of each slat, 2 on either end of each apron as well as two holes along one side of each apron"
+        }
+      ],
+      "reason": "The slat-end pocket holes are drilled in steps[2], after steps[1] has already joined the sides to the slats with them; as ordered the top cannot be assembled. Builder must do step 2 first (build can proceed)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "You will need two on either end of each slat, 2 on either end of each apron"
+        }
+      ],
+      "reason": "Search of all steps/description/materials for a jig setting (/setting|jig|thick/) finds none for the 3/4\" slats and aprons; viewed images (steps 3, 4, 5) show none. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "You will need 6 sections of 1x4 cut to 16\", 2 sections of 1x4 cut to 11 1/2 and 2 sections of 2x4 cut to 21 3/4\". Then, rip each cut in half."
+        },
+        {
+          "path": "cutList[0,1,3]",
+          "quote": "Top slats 7; Top Sides 2; Long Apron 2 (all 16 in); Short Apron 2 (11.5 in)"
+        }
+      ],
+      "arithmetic": "Ripping each section in half doubles it (2 sections of 2x4 -> 4 legs = cutList Legs 4). 6 sections x 2 = 12 pieces at 16in vs cutList 7+2+2 = 11; 2 sections x 2 = 4 pieces at 11 1/2in vs cutList Short Apron 2 (steps[4]: '11 1/2\" aprons on the sides' and two 16in aprons = 4 aprons).",
+      "reason": "(a) steps[0] yields 1 more 16in piece and 2 more 11 1/2in pieces than the cut list; (b),(c),(d) pass"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-35",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/1a15ffca3bf0857a.png",
+      "audit/plan-quality/.img-cache/650fe6e36e4184d0.png",
+      "audit/plan-quality/.img-cache/a17895011565c39c.png"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Add each additional slat spaced 1/2\" apart",
+      "what": "7 slats x 1.75 (ripped 1x4, Kreg-corrected) + 6 gaps x 1/2 = 15.25 vs the 16in Top Sides they span (cutList[1]); layout assumed from steps[1]/[3] and viewed image, so not scored"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "just make sure you finish it correctly to protect it from weather",
+      "what": "finish not in materials"
+    }
+  ]
 }
