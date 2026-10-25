@@ -487,28 +487,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "ig kid bed! The bed is designed like a house and is perfect for a kid's bedroom! The build incorporates pocket hole joinery to assemble. Measurements / plans can be found under the \"Extras\" tab below.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Description says 'Measurements / plans can be found under the \"Extras\" tab', but the cut list carries every part size and the step images (viewed: 2affd2f5 trim/window dimensions, ad10dc30 back panel 73 1/2, 5d2827de side-panel back detail, 9fdf0cdd roof panels, 960bb13a ledger/slat detail) hold the drawings; no step defers a part, size or template to Extras/PDF."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make maps to a cut-list row (side panels [0], trim [1]-[9], 2x4 edge supports [10], V roof support [11], pickets [12], ledgers [13]-[14], slats [15], back panel [16]-[17], supports [18]). The one part with no row, the platform plywood, is cut by steps[6] from listed 3/4 plywood ('cut a piece of 3/4 plywood down to size'); its missing size is recorded in gaps."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[18].part",
-          "quote": "Support beams for assembling bed and attaching panels",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged cutList[18] 'Support beams for assembling bed and attaching panels' (3 x 1.5x3.5x73.5) is the part steps[5] uses: 'Connect the two side panels with 3 total 2x4 supports'. Not an assembly or placeholder."
     },
     "R4": {
       "result": "unknown",
@@ -516,28 +504,115 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x4, 1x2, sheet-0.75, 1x3, 1x4, 1x6); steps not checked for per-part stock"
+      "reason": "Precondition not met (6 stock types, steps do not name stock per part). For the record: the 3/4 x 3.5 perimeter trim rows [1]-[3] total 4x49.25 + 4x24.0625 + 2x39.5 = 372.25 in, vs only 3 x 1x4 x 96 = 288 in of 3.5-wide stock named; ripping from plywood or pickets is not excluded by the plan, so no fail is claimed."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "ld roof panels out of cedar fence pickets stacked horizontally with 4 1/4 inch reveals. Attach together with nails. Once built, spray clear sealant on to seal the wood since these will not be painted.",
-          "why": "4 1/4\" nail — no material line lists a 4 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '4 1/4 inch reveals' (steps[3]) is a gap between pickets, not a nail size (image 9fdf0cdd labels '4 1/4 reveals between slats on roof'). Steps name 'finish nails' and 'pocket hole' joinery with no sizes; materials list 1 1/4\" and 1\" 15 GA finish nails and 1 1/2\" / 2 1/2\" pocket screws. steps[3] 'Attach together with nails' gives no size; no two sizes for one use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut back panel out of 3/4 inch plywood and attach 2x4 to top and bottom with pocket hole joinery."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Connect the two side panels with 3 total 2x4 supports on each corner edges of the roof and front bottom corners of the panels with pocket hole joinery."
+        }
+      ],
+      "reason": "Height of the 15 in back panel (8 in plywood between two 2x4s, image ad10dc30) on the side panels is never given: searched steps[1], [5], [6] and the viewed images (side panels back detail 5d2827de, step photo 24c8593c) for a number or dimension locating it; steps[5], 'Assemble side & back panels', never mentions the back panel. All other positions (window, trim, 10 in leg extension, 4 1/4 reveals, 8 in...) are dimensioned in viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown in plans' (steps[0]) and the roof/support references each sit in a step with an image; viewed image 2affd2f5 (steps[0]) shows the trim cut detail and window with dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels, supports and platform parts are cut/built before the assembly in steps[5]-[6]; plugs, paint, filler follow assembly. The roof panels' missing install step is recorded under R14(b)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "attach 2x4 to top and bottom with pocket hole joinery."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Add 2x4 supports to edges of side panels with pocket hole joinery."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x4 (1 1/2 in) stock in steps[1], [2], [4], [5], [6], but no jig thickness setting is stated: searched description, summary and all steps for /setting|jig|thickness|drill guide/i, none; viewed images (side detail 5d2827de, back panel ad10dc30, slat detail 960bb13a) mark pocket-hole positions but show no setting. Recorded only; R9 does not count toward the verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Build roof panels out of cedar fence pickets stacked horizontally with 4 1/4 inch reveals."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "This will be added to the middle of the bed under the roof pickets for support."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Connect the two side panels with 3 total 2x4 supports on each corner edges of the roof and front bottom corners of the panels"
+        }
+      ],
+      "reason": "b) The roof panels (steps[3]) and V roof support (steps[4]) are built but no later step attaches either to the bed: searched steps[5]-[9] for /roof|picket|V shaped|support piece/: only 'edges of the roof' (steps[5], about 2x4 supports). The roof is non-structural to using the bed (Fix level). Also (a): cutList[12] has 12 pickets, while the viewed roof drawing 9fdf0cdd shows 3 pickets per panel x '(2 TOTAL)' = 6 (see gaps); not scored separately."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Lastly cut a piece of 3/4 plywood down to size and lay on top of ledger boards and 2x4 supports to create platform for mattress.",
+      "what": "platform plywood has no dimensions in any step or cut-list row; viewed ledger detail 960bb13a gives inside frame 69 1/2 x 36 1/2 but not the plywood size"
+    },
+    {
+      "path": "cutList[12]",
+      "quote": "Cedar fence pickets for roof panels (quantity 12; Kreg-corrected 0.625 x 5.5 x 80.5)",
+      "what": "viewed roof drawing 9fdf0cdd shows 3 pickets per roof panel (3 x 5 1/2 + 2 x 4 1/4 reveals = 25 in vs drawn 25 1/8) and '(2 TOTAL)' panels = 6 pickets, but the cut list and materials[6] give 12; the finished-bed photos show more pickets than the drawing, so the count cannot be settled"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "spray clear sealant on to seal the wood",
+      "what": "clear sealant not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Fill nail holes with wood filler and sand",
+      "what": "wood filler not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/2affd2f5abb801e5.png",
+      "audit/plan-quality/.img-cache/ad10dc30831798e1.png",
+      "audit/plan-quality/.img-cache/5d2827def36664d9.png",
+      "audit/plan-quality/.img-cache/9fdf0cdd288a6abd.png",
+      "audit/plan-quality/.img-cache/1ec6f1bb324fcc7d.png",
+      "audit/plan-quality/.img-cache/24c8593c74387002.png",
+      "audit/plan-quality/.img-cache/960bb13a9826a129.png",
+      "audit/plan-quality/.img-cache/699c6326a3759a69.png",
+      "audit/plan-quality/.img-cache/a4bb3634ab19e390.png",
+      "audit/plan-quality/.img-cache/5c62447d2ab6266d.png"
+    ]
+  }
 }

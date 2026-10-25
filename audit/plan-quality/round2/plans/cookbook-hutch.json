@@ -43,68 +43,149 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
-    },
-    "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[1].body",
-          "quote": "Cut (2) side panels to the dimensions shown out of 1x12 material cut down to 9 3/4\"",
-          "why": "cut sentence states 9 3/4\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[0].body",
+          "quote": "If you have not already constructed the CAT LITTER BOX CABINET..... see plan and construct the base"
         },
         {
-          "path": "steps[3].body",
-          "quote": "es to the dimensions shown out of 1x12 material cut down to 9 3/4\". Also drill three pocket holes on the bottom in each end of each shelf and connect to the side panels with two 1 1/4\" pocket hole scr",
-          "why": "cut sentence states 9 3/4\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "description",
+          "quote": "Decided the best place was above the Cat Litter Box Cabinet that was constructed earlier this year."
         }
-      ]
+      ],
+      "reason": "The hutch is described as sitting on a base cabinet that is a different plan; no cut row, material or step here builds it (searched cutList/materials for /cabinet|base|litter/i: none). The hutch itself (steps[1]-[9]) can be completed without it, so Fix level. How the hutch attaches to the base is also never stated."
+    },
+    "R2": {
+      "result": "pass",
+      "reason": "Flagged '9 3/4\"' is a rip width applied to the listed 1x12 (steps[1], [3] say to cut sides and shelves from 1x12). Sides/shelves, back pieces and top face-frame piece are cut-list rows; the other face-frame parts (steps[6]) and crown (steps[7]) are cut by the step from listed 1x12 offcuts / 1x2. The width disagreement is under R14(a)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "'Sides and shelves' (qty 5 = 2 sides steps[1] + 3 shelves steps[3]), 'Back panel pieces' (qty 6 = 2 stiles + 4 rails, viewed image 1a66ac51) and 'Top face frame piece' (3 1/2 in top rail, viewed image 81b34cea) are all used by the steps."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x12, 1x4, 1x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "1x12 x 48 in x 5 boards: 2 sides x 48 + 3 shelves x <=48 (drawn 3'10 1/2 in, image 1152f56f) = one part per board, 5 parts <= 5 boards, no cut needed beyond rips. 1x4 x 48 in x 7 boards: stiles 2 x 48 + rails 4 x 41 (3'5\", image 1a66ac51) + top rail 3'9\" = 96 + 164 + 45 = 305 in, and 7 parts <= 7 boards (bought 7 x 48 = 336 in). 1x2 x 72 in x 1: crown front 4'1\" = 49 + two 11 1/4 returns = 71.5 + 2 cuts x 1/8 = 71.75 <= 72 in (image e1244ab8; miters, if any, not stated). Face-frame 1x2 strips come from 1x12 offcuts (see gaps)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "d of the horizontal pieces and join to the vertical pieces with 1 1/4\" pocket hole screws. Also route a 1/4\" rabbet along the inside edge of each piece to accept the plywood/beadboard in the next step",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "o the dimensions shown out of 1x12 material cut down to 9 3/4\". Also drill three pocket holes on the bottom in each end of each shelf and connect to the side panels with two 1 1/4\" pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "connect to the side panels with two 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Steps[2], [3] and [6] all use 1 1/4\" pocket hole screws; the only screw line in materials has no size (searched materials for /1 1\\/4|screw/i: only 'Pocket hole screws', qty 50). Nails are used too (steps[4] 'nail gun', steps[6], [7]) with no nail line or size in materials (search /nail|brad/i: none). No two sizes conflict."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "View of the assembly from the front",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/442f5a01afe6a3dd.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[5] ('View of the assembly from the front') places nothing. Positions are dimensioned in viewed images: shelf spacing 1'3\" / 1'3\" / 1'3 3/4\" (1152f56f), back-frame rail positions 11\" / 1' / 11\" with 3 1/2\" rails (1a66ac51), face-frame rail positions (81b34cea), crown 4'1\" and 11 1/4\" (e1244ab8)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'dimensions shown' in steps[1], [3], [6], [7] each sit in a step with its own image; viewed images show the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels, back frame, shelves cut/assembled in steps[1]-[3], back attached steps[4], face frame and crown steps[6]-[7]; the beadboard/plywood goes in last (steps[9]) into the rabbets routed in steps[2]; nothing shown makes a step impossible (sequence quirk noted in gaps)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill (2) pocket holes in each end of the horizontal pieces and join to the vertical pieces with 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "drill three pocket holes on the bottom in each end of each shelf"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4 in stock (back rails, shelves, face frame) but no jig thickness setting is stated: searched description, summary and every step for /setting|jig|thickness/i, none; viewed drawings carry only dimensions. Recorded only; R9 does not count toward the verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut (2) side panels to the dimensions shown out of 1x12 material cut down to 9 3/4\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "{\"part\":\"Sides and shelves\",\"quantity\":5,\"thicknessIn\":0.75,\"widthIn\":11,\"lengthIn\":48} (Kreg-corrected 0.75 x 11.25 x 48)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "{\"part\":\"Back panel pieces\",\"quantity\":6,\"thicknessIn\":0.75,\"widthIn\":3,\"lengthIn\":48} (Kreg-corrected 0.75 x 3.5 x 48)"
+        }
+      ],
+      "arithmetic": "Width: steps[1] and steps[3] say 9 3/4 in (viewed image 154fd218 labels 9 3/4\") vs cut-list width 11.25 on the combined sides/shelves row: 11.25 - 9.75 = 1.5 in disagreement. Length: viewed image 1152f56f draws the shelf run as 3'10 1/2\" = 46.5 in vs cut-list length 48 for all 5 parts; viewed image 1a66ac51 draws the 4 back-panel rails as 3'5\" = 41 in vs 48 on all 6 back-panel rows. Cut list therefore lists blank sizes, not the part sizes the steps use.",
+      "reason": "Sizes the steps/drawings give for sides, shelves and back rails disagree with the cut-list rows for the same parts; (b) all parts are installed, (c) beadboard/plywood is in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Also drill three pocket holes on the bottom in each end of each shelf and connect to the side panels with two 1 1/4\" pocket hole screws.",
+      "what": "three pocket holes per shelf end but only two screws named per end"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "using 1x2 material cut off of the 1x12's used for shelving and side panels",
+      "what": "1x12 actual 11 1/4 less 9 3/4 = 1 1/2 in strip per board before sawkerf; the 1 1/2 in face-frame stiles/rails drawn in image 81b34cea would be about 1/8 in narrow after a 1/8 in rip kerf"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Also route a 1/4\" rabbet along the inside edge of each piece to accept the plywood/beadboard in the next step",
+      "what": "'next step' is steps[3] (shelves); the beadboard goes in at steps[9], and the cut size/number of beadboard or plywood pieces is not given in any step or cut-list row (materials[3] is one '1/4\" Thick 48\"' plywood)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Attach the back panel to the shelves and side panels by gluing and nailing with your nail gun",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Finish the book shelf by painting or staining",
+      "what": "paint/stain not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/12f0aca9858b53fe.png",
+      "audit/plan-quality/.img-cache/154fd2188ae3ba7e.png",
+      "audit/plan-quality/.img-cache/1a66ac514a0bd546.png",
+      "audit/plan-quality/.img-cache/1152f56fe34e9cee.png",
+      "audit/plan-quality/.img-cache/91f9ef023305103c.png",
+      "audit/plan-quality/.img-cache/442f5a01afe6a3dd.png",
+      "audit/plan-quality/.img-cache/81b34cea3651e0d2.png",
+      "audit/plan-quality/.img-cache/e1244ab8c9a9b739.png"
+    ]
+  }
 }

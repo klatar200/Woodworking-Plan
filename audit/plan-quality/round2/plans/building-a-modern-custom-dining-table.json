@@ -43,38 +43,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " be fully surfaced (S4S) to 1 1⁄2” to ensure an even finish. For a demonstration of this step, please reference the video listed in the Extras tab.\nYou can also purchase S4S lumber and skip this step.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Using a router and template, create a box joint to connect the legs with the table support, as shown here.\nFor a demonstration of this step, please reference the video listed in the Extras tab.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "Remove the table legs and install threaded inserts on tabletop using CA glue, as shown in the video in the Extras tab. Repeat step for both sides.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Three 'Extras tab' references (steps[0], [4], [10]) each point to a video 'demonstration' of a step whose text already says what to do (surface to 1 1/2, router box joint with template, install inserts with CA glue); steps[0] also offers 'purchase S4S lumber and skip this step'. No cut, part or dimension is deferred to a PDF/full plans."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Cut all the tabletop, table support, and leg pieces to measure 4” wide using a table saw or track saw.",
-          "why": "cut sentence states 4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '4 inches wide' is a rip instruction applied to the listed parts (tabletop, support, leg pieces), all of which are cut-list rows 'Table Top', 'Table Support', 'Table Legs'; the 4 vs 6 width mismatch is recorded under R14(a)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Rows Table Top / Table Support / Table Legs map to steps[2] (tabletop glue-up), steps[3]-[5] ('leg piece and the cross pieces', box joint 'leg with the table support') and steps[8]. No assembly or placeholder rows."
     },
     "R4": {
       "result": "pass",
@@ -85,25 +63,65 @@
       "arithmetic": "parts: 10×72 + 4×40 + 8×30 + kerf 7 cuts (22 parts − 15 boards, the fewest possible)×1/8 = 1120.875″; bought: 15×96 = 1440″; 1120.875 ≤ 1440"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Place legs on the tabletop. Align the 3/8” holes and secure leg pieces using bolts from the supply list.\nFinish table with preferred wood finish.",
-          "why": "3/8\" bolt — no material line lists a 3/8\" fastener"
-        }
-      ]
+      "result": "unknown",
+      "reason": "steps[11] says 'secure leg pieces using bolts from the supply list' and 'Align the 3/8\" holes'; materials list only 'Screws' (qty 6) and 'Threaded Inserts' (qty 6), neither with a size, and search of materials for /bolt/i finds nothing. The 3/8\" is a hole size, not a stated fastener size, so no size contradiction can be shown; whether 'Screws' are the 'bolts' cannot be settled from the plan."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pilot-hole positions for the three leg-attachment holes are dimensioned in viewed image 4d2827a6 (spacings read 9 1/2 / 9 / 9 1/2 / 9 along the support); legs 'flush with the table' (relational); bevel angle given (22-degree). Box-joint finger size is not a position the text or viewed image gives numerically; recorded in gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "'as shown here' (steps[4]), 'as shown here' (steps[8]), video references: each in a step with its own image; steps[4] image viewed (fa789f44) shows the box joint with finger layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Boards ripped (steps[1]), tabletop and leg/support panels glued (steps[2]-[3]), box-jointed (steps[4]-[5]), bevel then flip tabletop, drill, inserts, attach legs (steps[7]-[11]) in a workable order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes. Joints: box joint glued (steps[5]); legs attached with bolts into threaded inserts (steps[9]-[11]); the fastener is named 'bolts' while materials say 'Screws' (see R6)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut all the tabletop, table support, and leg pieces to measure 4” wide using a table saw or track saw."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "{\"part\":\"Table Top\",\"quantity\":10,\"thicknessIn\":1,\"widthIn\":6,\"lengthIn\":72} (Kreg-corrected row 1.5 x 6 x 72)"
+        }
+      ],
+      "arithmetic": "Step width 4 vs cut-list width 6 on all three rows (Table Top 1.5x6x72, Table Support 1.5x6x40, Table Legs 1.5x6x30). The cut list may be the pre-rip blank size but nothing in the plan says so. Counts otherwise consistent: 10 top pieces x 4 = 40 in wide vs 40 in support length.",
+      "reason": "A size the step gives for the parts (4 in wide) disagrees with every cut-list row (6 in wide); the plan never says the 6 in is a pre-rip size."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Using a router and template, create a box joint to connect the legs with the table support, as shown here.",
+      "what": "no finger width, depth or template size is given in text; viewed image fa789f44 shows the fingers without dimensions"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "install threaded inserts on tabletop using CA glue",
+      "what": "CA glue is used but not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/fa789f444bd1f8ac.png",
+      "audit/plan-quality/.img-cache/4d2827a6abcd4ca8.png",
+      "audit/plan-quality/.img-cache/ec4e5caa507626ae.png"
+    ]
+  }
 }

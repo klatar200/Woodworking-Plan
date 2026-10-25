@@ -179,143 +179,82 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "n the cutting diagram. On each Vertical Cleat, cut or sand a 1/4\" chamfer the ends, as shown. Next, drill six 3/16\" holes at the locations shown. Now cut a Hanger Cleat from 1x2 cedar and drill two 3/",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1/4\"' is a chamfer size (steps[3]), not a part. Every part has a row: Cap (steps[1]), Long/Short Cap Trim (steps[2]), Vertical/Hanger Cleats (steps[3]), Sign Trim, Sign Back, Hanger Spacer (steps[4])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All eight rows are cut and used by steps[1]-[5]; none is an assembly or placeholder."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Cap — qty 1, 0.875 x 3.5 x 22 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Long Cap Trim — qty 1, 0.875 x 1.5 x 23.75 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Short Cap Trim — qty 2, 0.875 x 1.5 x 3.5 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Sign Back — qty 1, 0.875 x 5.5 x 23.75 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[4]",
-          "quote": "Sign Trim — qty 2, 0.875 x 1.5 x 23.75 (Kreg-corrected)"
-        },
-        {
-          "path": "cutList[5]",
-          "quote": "Vertical Cleat — qty 2, 0.875 x 1.5 x 8.5 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x2 48\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x4 48\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 1x6 48\""
-        }
-      ],
-      "arithmetic": "cutList[0] 0.875×3.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 3.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[1] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[2] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[3] 0.875×5.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 5.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[4] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5; cutList[5] 0.875×1.5: no listed stock has thickness 0.875 (±1/32) with width ≥ 1.5; stock = 0.75×1.5, 0.75×3.5, 0.75×5.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Cap — qty 1, 0.875 x 3.5 x 22 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Long Cap Trim — qty 1, 0.875 x 1.5 x 23.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Short Cap Trim — qty 2, 0.875 x 1.5 x 3.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[3]",
-          "quote": "Sign Back — qty 1, 0.875 x 5.5 x 23.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[4]",
-          "quote": "Sign Trim — qty 2, 0.875 x 1.5 x 23.75 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[5]",
-          "quote": "Vertical Cleat — qty 2, 0.875 x 1.5 x 8.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[6]",
-          "quote": "Hanger Cleat — qty 1, 0.875 x 1.5 x 8 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[7]",
-          "quote": "Hanger Spacer — qty 1, 0.875 x 1.125 x 1.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep fail (parts 7/8 in thick vs 3/4 in nominal 1x boards) is explained by the plan: steps[0] 'In our case, the cedar was 7/8\" thick ... In some stores, cedar may have an actual thickness of 3/4\"'. Widths fit named stock: 3.5 from 1x4, 5.5 from 1x6, 1.5 from 1x2.",
+      "readerNote": "sweep R4 fail resolved by steps[0], which states the cedar's 7/8 in thickness"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "Steps name the stock per part (steps[1] Cap from 1x4; steps[2],[3],[4] trims, cleats, sign trim, spacer from 1x2; steps[4] Sign Back from 1x6), lengths stated as 48\". 1x4: Cap 22 <= 48. 1x6: Sign Back 23.75 <= 48. 1x2 (Kreg-corrected): 23.75 + 2 x 3.5 + 2 x 23.75 + 2 x 8.5 + 8 + 1.5 = 23.75 + 7 + 47.5 + 17 + 8 + 1.5 = 104.75; 9 parts - 3 boards = 6 cuts x 1/8 = 0.75; 105.5 <= 3 x 48 = 144 (a packing exists: 2 x 23.75 + kerf, then 23.75 + 8.5 + 8.5, then 8 + 3.5 + 3.5 + 1.5)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "jig accordingly, and choose shorter 1 1/4\"-long pocket-hole screws and flat-head screws for assembly. Also, cedar is usually rough on one face. We used that rough face as the back or underside in all ",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "cordingly, and choose shorter 1 1/4\"-long pocket-hole screws and flat-head screws for assembly. Also, cedar is usually rough on one face. We used that rough face as the back or underside in all cases.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Steps use 1 1/2\" exterior pocket-hole screws (materials[4], 9 = the 9 pocket holes drawn in viewed image 225850eb) and 1 1/2\" flat-head exterior screws (materials[5]; 6 + 6 + 2 = 14 holes in steps[3]/[4] images). The flagged 1 1/4\" is only the stated alternative for 3/4 in boards (steps[0]), tied to that thickness."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed drawings dimension the light openings (3, 2 1/2, 6 3/4, 8, 4 7/8, 1 5/8 in; 7/8 in dia., image 225850eb), pocket holes (shown), cleat holes and positions (2 1/2, 5/8, 3/8, 2 1/4 in, image f802da3c), cleat position 3 in from ends and 1/4 in gaps (b03bf414), hanger cleat 'center on length ... near upper edge', cap position and 9 / 5 1/2 / 5 1/4 in overall (d2874fb7)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "'as shown in the cutting diagram' (steps[1]-[4]): no board-layout diagram exists, but every length it would show is in the cut list and in the viewed drawings (Cap 22, 23 3/4 sign back/trim, cleats 8 1/2 and 8). Flagged steps[0] 'shown here' refers to the step's own text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cap and trim (steps[1]-[2]), cleats (steps[3]), sign back (steps[4]) are made before the cap is attached to the back (steps[5]); finish, numbers, lights and hanger follow."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states 'pocket-hole jig set for 7/8\"-thick material' (steps[0] explains the 7/8 in cedar and the 3/4 in case); pocket holes are only in the Cap."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "/8\" thick. So, the pocket-hole jig setups and screw lengths shown here are for that 7/8\" thickness. In some stores, cedar may have an actual thickness of 3/4\". Or, if you choose another wood, know tha",
-          "why": "\"shown here\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "path": "steps[7].body",
+          "quote": "When the finish dries, you can install the address numbers."
+        },
+        {
+          "path": "materials",
+          "quote": "Pair of Solar Railing Lights; 1 1/2\" exterior pocket-hole screw; 1 1/2\" flat-head exterior wood screw; Waterproof exterior wood glue; Hangman Hanging System, 6\""
         }
-      ]
+      ],
+      "reason": "c) The address numbers are installed in the last step but are not in materials (searched materials for /number|numeral|digit|house/i: none) and no fasteners or placement for them is given. They are a component, not a consumable. (a),(b),(d): counts (9 pocket screws, 14 flat-head screws), parts and the end state are consistent; the numbers are installed, so no Unpublish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "We then applied a couple of coats of a clear exterior oil finish",
+      "what": "exterior oil finish/stain and 150-grit sandpaper are not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "798c201c62faab06",
+      "cd66c3c1940abb5c",
+      "122d43d8dae12773",
+      "d2874fb7ad99c843",
+      "225850eb7fd60587",
+      "5aafd3d082d9ab17",
+      "f802da3c219e023c",
+      "b03bf414c389a7ac",
+      "fe386504e8af28e4"
+    ]
+  }
 }

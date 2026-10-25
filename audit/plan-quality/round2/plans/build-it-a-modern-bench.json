@@ -23,34 +23,30 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "(1) Cut six boards to your desired length, not to exceed 95 inches – especially if purchasing 8′ length (2) Once the ideal length is determined, use a circular saw or a jigsaw to cut the taper at each",
-          "why": "cut sentence states 95\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "he boards at the same time. (3) Cut 10 lengths at 1 foot, 9.5 inches; Cut 12 lengths at 1 foot, 6 inches. (4) Lay one of the longer cut boards on top of the smaller cut boards. (5) Using glue and fast",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "10 lengths at 1 foot, 9.5 inches; Cut 12 lengths at 1 foot, 6 inches. (4) Lay one of the longer cut boards on top of the smaller cut boards. (5) Using glue and fasteners, attach these two boards to ma",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '95 inches' is a maximum ('not to exceed 95 inches'), not a part dimension; steps[0] says to cut six boards (slats) and steps[1] says to cut 10 lengths at 21 1/2 in and 12 at 18 in, each from the listed 2x4 boards, so every part is cut from listed material by the step itself."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[0].part",
-          "quote": "Pressure Treated Southern Yellow Pine",
-          "why": "no step mentions it (searched steps for pressure/treated/southern/yellow/pine)"
+          "quote": "Pressure Treated Southern Yellow Pine"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut six boards to your desired length, not to exceed 95 inches"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut 10 lengths at 1 foot, 9.5 inches; Cut 12 lengths at 1 foot, 6 inches."
         }
-      ]
+      ],
+      "arithmetic": "The only cut-list row is 11 x 2x4x96 (the stock, named for its species), while the steps cut 6 slats + 10 legs at 21.5 + 12 legs at 18 = 28 parts; no row matches any of them (searched cutList for slat/leg: none).",
+      "reason": "The sole cut-list row is the stock lumber, not a part the steps use; the slat and leg parts are absent from the list."
     },
     "R4": {
       "result": "pass",
@@ -64,25 +60,45 @@
       "arithmetic": "parts: 11×96 + kerf 0 cuts (11 parts − 11 boards, the fewest possible)×1/8 = 1056.000″; bought: 11×96 = 1056″; 1056.000 ≤ 1056"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps say only 'decking screws' / 'fasteners' with no size; materials[1] lists '1.5\" Wood Deck Screws'. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "(1) Lay one of the slats face down on a flat surface. (2) Place one leg assembly on top, eight inches from the end. (3) Use a square to place the leg 90-degrees to the face of the slat. (4) Glue and s",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f77ab42c198c093b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2] gives 'eight inches from the end' for the leg assembly (viewed image f77ab42c shows the inset leg); remaining placements are relational (flush, line up, 90 degrees); taper angle and slat length are explicitly 'desired'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Slats and leg pieces are cut in steps 0-1 before assembly in steps 2-3; each added layer is stacked on the previous assembly."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; joint method and fastener stated: 'glue and screw ... decking screws' (steps[2].body)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Viewed image 7cde1e38 shows qty (12) 2x4x18 and (10) 2x4x21 1/2, matching steps[1]; steps[3] says to repeat 'until there are no more boards left', so cut parts are all installed; steps end in the finished bench. 6 slats from 6 boards plus 22 leg pieces fit the remaining 5 of 11 boards (e.g. 4x21.5, 4x21.5, 2x21.5+2x18, 5x18, 5x18 = 10 long, 12 short)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Using glue and fasteners, attach these two boards to make a leg assembly",
+      "what": "wood glue is used but not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/f77ab42c198c093b.png",
+      "audit/plan-quality/.img-cache/7cde1e38d381dd80.png"
+    ]
+  }
 }

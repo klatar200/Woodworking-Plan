@@ -403,148 +403,108 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "ds labeled in step 2. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        },
-        {
-          "path": "steps[6].body",
-          "quote": " to drill all of the pocket holes for the frame assemblies. The attached diagram shows the approximate location of pocket holes in the frame assemblies. Please note that the top and bottom frames have",
-          "why": "matches \"The attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2] 'I have attached one site with good information' is an optional how-to link (no site content is needed to glue up boards); steps[6] 'The attached diagram' is the step image (viewed ff156ece shows pocket-hole locations). No part or size is deferred to outside content."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "cut grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of the inside edges of the rear stiles. Alternatively the grooves can be cut on a table saw. Now mark the legs o",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "cut grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of the inside edges of the side front stiles. Alternatively the grooves can be cut on a table saw. Now mark the ",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "and grooves. The groove cutter bit is adjusted to cut 1/4\" X 3/8\" grooves in the center of both edges of the center stiles. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both e",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": " both edges of the center stiles. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the center stiles. Alternatively the grooves and tongues can be cut on a table saw.",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": " six rails. Use the groove cutter bit adjusted to cut 1/4\" X 3/8\" grooves in the center of the top and bottom side rails inside edges and both edges of the side middle rails. Then use the tongue cutte",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": " both edges of the side middle rails. Then use the tongue cutter bit adjusted to cut 1/4\" X 3/8\" tongues on both ends of the six rails. Alternatively the grooves and tongues can be cut on a table saw.",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '3/8\"' values are groove/tongue sizes (steps[8]-[11]), not parts. Every part in the steps has a cut-list row: sides' stiles/rails/panels (steps[12] per side: 1 rear stile, 2 center stiles, 1 front stile, 3 rails, 4 panels = rows qty 2/4/2/6/8), frames, guides (14), drawer boxes (7 boxes = 14 fronts/backs + 14 sides + 7 bottoms), drawer fronts, top, back, front stiles."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 28 rows map to steps (checked each against steps[1]-[21] and the viewed cutting diagram 29d25f0a); none is an assembly or placeholder."
     },
     "R4": {
+      "result": "pass",
+      "reason": "Sweep flagged 9\" and 8\" drawer fronts and the 21 1/4\" top as wider than any board. steps[1] says 'the 8\" drawer front, 9\" drawer front and the top will require glueing up. Two pieces ... for each of the drawer fronts and three pieces for the top'; viewed cutting diagram 29d25f0a shows 7 1/4 in boards: top = 3 x 7 1/4 = 21.75 >= 21.25, each drawer front 2 x 7.25 = 14.5 >= 9 / 8. Other rows fit the named stock.",
+      "readerNote": "sweep R4 fail resolved by the glue-up in steps[1] and the cutting diagram"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "Sheet goods involved (2 x 1/4\" oak plywood sheets: parts 33.25x49 + 8 x 7.25x21.75 + 7 x 18.5x27.4375 = 1629.3 + 1261.9 + 3553.7 in2 = 6444.9 in2 vs 2 x 4608 = 9216 in2, so no certain fail) so unknown under R-2. Lumber, for the record, passes: 3/4 poplar 1x4 x 96 x 8: each board holds 2 rails x 32.5 + 2 stiles x 13 = 91 + 0.5 kerf <= 96; 1/2 poplar boards: 10 in board = 2 x 27.9375 + 2 x 18.75 (8.1875 wide parts) = 93.4 <= 96, and 8/8/8/8 in boards, 6 in and 4 in boards each hold one drawer's 2 + 2 parts (about 93.4 in); oak per viewed cutting diagram 6 boards 96 x 7 1/4 plus one 3 1/2 board, matching materials[0] and [7]."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[19].body",
+          "quote": "Start two 1\" flat headed self tapping wood screws on inside of each box."
+        },
+        {
+          "path": "materials",
+          "quote": "Kreg 1 1/4\" Coarse and Fine Pocket Screws; 1 1/4\" Brad Nails; 1\" Pin Nails"
+        }
+      ],
+      "reason": "Seven drawer boxes x 2 = 14 flat-head self-tapping 1 in wood screws are used to hang the drawer fronts, but no materials line is a 1 in screw (searched materials for /screw/i: only the two Kreg pocket-screw lines; /self.?tap|flat/i: none). Other sizes match: 1 1/4 in coarse pocket screws, 1 1/4 in brad nails, 1 in pin nails, 1 1/4 in fine pocket screws with 4 washers."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Flagged steps[14] frame heights are dimensioned in viewed image e24f9abc (4, 13, 21, 28, 35, 42, 48, 52 1/4 in); guide spacing 28 in (steps[13]); pilot holes '2 inches in ... half way down' (steps[19]); top-frame holes and screws shown near the corners in viewed image 1cb821ee; leg cuts 4 in / 1 in and grooves 1/4 x 3/8 dimensioned in 37f59e1b; pulls shown on drawer fronts in finished photos (0a2eb2e7, 947dd08c)."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "'diagram' / 'attached diagram' references sit in steps with images; the cutting diagram (29d25f0a) and pocket-hole diagram (ff156ece) were viewed and show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut steps[1]-[5], frames and sides built steps[6]-[12], guides attached to frames before the frames go into the sides (steps[13] then [14]), stiles, back, drawers, top, finish, pulls in an executable order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[6] states 'Kreg pocket hole Jig (set for 3/4\")' for the 3/4 in poplar frames; later pocket-hole joints are the same frames. Other joints name glue + brad/pin nails or pocket screws."
+    },
+    "R14": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[1]",
-          "quote": "9\" Drawer Front - Oak — qty 1, 0.75 x 9 x 28"
+          "path": "steps[6].title",
+          "quote": "Assemble the eight chest frames"
         },
         {
-          "path": "cutList[2]",
-          "quote": "8\" Drawer Front - Oak — qty 1, 0.75 x 8 x 28"
+          "path": "steps[6].body",
+          "quote": "assemble the five frames using wood glue and 1 1/4\" Kreg coarse pocket screws."
         },
         {
-          "path": "cutList[6]",
-          "quote": "Top - Oak — qty 1, 0.75 x 21.25 x 36 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "3/4\" Oak, 1x8 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "3/4\" Poplar, 1x4 96\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "1/2\" Poplar, 1/2\" X 10 96\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "1/2\" Poplar, 1/2\" X 8 96\""
-        },
-        {
-          "path": "materials[4].name",
-          "quote": "1/2\" Poplar, 1/2\" X 6 96\""
-        },
-        {
-          "path": "materials[5].name",
-          "quote": "1/2\" Poplar, 1/2\" X 4 96\""
+          "path": "cutList[15]",
+          "quote": "Frame Rails - Poplar quantity 16 / Frame Stiles - Poplar quantity 16"
         }
       ],
-      "arithmetic": "cutList[1] 0.75×9: no listed stock has thickness 0.75 (±1/32) with width ≥ 9; stock = 0.75×7.25, 0.75×3.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, sheet 0.25, 0.75×3.5; cutList[2] 0.75×8: no listed stock has thickness 0.75 (±1/32) with width ≥ 8; stock = 0.75×7.25, 0.75×3.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, sheet 0.25, 0.75×3.5; cutList[6] 0.75×21.25: no listed stock has thickness 0.75 (±1/32) with width ≥ 21.25; stock = 0.75×7.25, 0.75×3.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, 0.5×0.5, sheet 0.25, 0.75×3.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[1]",
-          "quote": "9\" Drawer Front - Oak — qty 1, 0.75 x 9 x 28",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "8\" Drawer Front - Oak — qty 1, 0.75 x 8 x 28",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[6]",
-          "quote": "Top - Oak — qty 1, 0.75 x 21.25 x 36 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x8, 1x4, 0.5x0.5, sheet-0.25); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[14].body",
-          "quote": "Prepare for assembly by very accurately measuring and marking the distance of the lower edge of the frames from the bottom feet. The bottom frame should be flush with the bottom side rail and the top ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e24f9abc22ef7584.webp"
-        }
-      ]
-    },
-    "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "arithmetic": "The step body says 'the five frames'; its title and text give 8 (2 'top and bottom' + 'the middle six'), and 16 rails / 2 per frame = 8 and 16 stiles / 2 per frame = 8 agree with eight (viewed image e24f9abc shows 8 frames). Other counts checked and consistent: 7 drawer boxes (14 fronts/backs, 14 sides, 7 bottoms), 14 guides for 7 frames, 8 pulls for 7 drawers with the top drawer made to look like two.",
+      "reason": "One count in a step ('five') contradicts the cut list and the same step's title ('eight'). (b), (d): every made part is installed through steps[21]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[22].body",
+      "quote": "fill all nail holes and other imperfections with wood putty",
+      "what": "wood putty, finishing supplies beyond those listed, and the black Sharpie of steps[21] are not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "29d25f0a8660906b",
+      "ff156ece3f7ea66f",
+      "e24f9abc22ef7584",
+      "37f59e1be6ba3c18",
+      "0a2eb2e70a474904",
+      "947dd08cb562b56c",
+      "df7aca5d5cc02a8c",
+      "e84c3caf43478251",
+      "7d337afac7bd73d6",
+      "942bbe076bcdce9a",
+      "1cb821ee45b5de55",
+      "9240c578c7cf1a38",
+      "7f5681f63042ef01"
+    ]
+  }
 }

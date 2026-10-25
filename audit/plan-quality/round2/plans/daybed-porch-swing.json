@@ -107,37 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "or the other 3 boards. Cut to a finish size of 2 1/4\" x 5\" x 87\" ] [ SIDE BEAMS... glue up 3 of the 3/4\" x 5 1/2\" x 24\" boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/\" x 5\"",
-          "why": "cut sentence states 87\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "for the other 3 boards. Cut to a finish size of 2 1/\" x 5\" x 35 3/4\" ] [ FRONT VERTICALS... glue up 3 of the 3/4\" x 2 3/4\" x 24\" boards and repeat the for the other 3 boards. Cut to a finish size of 2",
-          "why": "cut sentence states 35 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "the for the other 3 boards. Cut to a finish size of 2 1/4\" x 2 1/4\"\" x 17\" ] [ REAR VERTICALS... glue up 3 of the 3/4\" x 2 3/4\" x 14\" boards and repeat the for the other 3 boards. Cut to a finish size",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "e other 3 boards. Cut to a finish size of 2 1/4\" x 2 1/4\"\" x 17\" ] [ REAR VERTICALS... glue up 3 of the 3/4\" x 2 3/4\" x 14\" boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/4\"",
-          "why": "cut sentence states 17\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/4\" x 2 1/4\"\" x 12\" ] [ BACK SUPPORT... glue up the 2 @ 3/4\" x 3 1/2\" x 80\" boards. Cut to a finish size of 1 1/2\" x 3\" x 77\" ]",
-          "why": "cut sentence states 2 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged finish sizes in steps[0] (87\", 35 3/4\", 2 1/4\", 17\", 12\", 77\") are the finished glue-up sizes of parts that all have rows (beams, side beams, front/rear verticals, back support). Conflicts between those sizes and the cut list are scored under R14(a)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 12 rows are used: beams/verticals/back support (steps[0]-[4]), pickets (steps[5]-[6]), armrests (steps[7]), slat supports, spacers, slats (steps[8]-[10])."
     },
     "R4": {
       "result": "pass",
@@ -148,32 +123,104 @@
       "reason": "parts ≤ half the 5.5″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": " front vertical support. You can glue these up or use pocket holes on the side facing the inside of the bed. A later step will require 7\" screws going through these which will make them even stronger.",
-          "why": "7\" screw — no material line lists a 7\" fastener"
+          "quote": "A later step will require 7\" screws going through these which will make them even stronger."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "use 6\" Timberlok screws (2 per side) to attach the front beam to the vertical and side supports"
         }
-      ]
+      ],
+      "reason": "Steps[1] announces 7 in screws through the side support / front vertical joint; the only later step that drives screws through that joint (steps[2]) uses 6 in Timberlok screws, and materials list 'Timberlok 6\" Screws' x 4 (2 per side = 4). Searched all steps and materials for /7\"|7 in/: only steps[1]. Two sizes for the same use, and no 7 in screw in materials."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "that is 1 13/16\" wide to set my spacing between each picket. I start from the front and work towards the back so if the last space is not perfect, it will not be as noticeable. You will attach the bot",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d1839a3ce524883.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[5] gives the picket spacing as a number ('1 13/16\" space', also in viewed image 4d1839a3), rear spacing 3 3/16\", back support 3/4\" setback and flush (steps[4]), armrest flush/centered, slat supports flush with the beams (steps[8]), spacers 9 1/4\" (steps[9]), rope holes 1\" from the sides and 3/4\" dia. (steps[11]); beam, vertical and armrest sizes/positions dimensioned in viewed images 0d3dfac5, 57ccf6a2, 1e6f713a."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram or 'as shown'; each build step has a viewed SketchUp image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "L-assemblies (steps[1]) before front/rear beams (steps[2]), verticals (steps[3]), back support (steps[4]), pickets, armrests, slat supports, spacers, slats, rope holes (steps[11]) in an executable order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "use the Kreg HD and place 2 pocket holes on the inner sides of the verticals and attach them to the rear support beam."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "You will need to put 2 pocket holes in the top and bottom of each picket."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2 1/4 in glue-ups with the Kreg HD jig (steps[2]-[4]) and in 3/4 in pickets (steps[5]-[6]) but no jig thickness setting is stated for either: searched description and all steps for /setting|jig|thickness/i, none; viewed SketchUp images carry only dimensions. Recorded only; R9 does not count toward the verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "[ SIDE BEAMS... glue up 3 of the 3/4\" x 5 1/2\" x 24\" boards and repeat the for the other 3 boards. Cut to a finish size of 2 1/\" x 5\" x 35 3/4\" ]"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "{\"part\":\"Side Support Beams (will glue up)\",\"quantity\":6,\"thicknessIn\":0.75,\"widthIn\":5,\"lengthIn\":38} (Kreg-corrected 0.75 x 5.5 x 38)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "[ FRONT & REAR BEAMS... glue up 3 of the 3/4\" x 5 1/2\" x 96\" boards and repeat for the other 3 boards. Cut to a finish size of 2 1/4\" x 5\" x 87\" ]"
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "I hang mine with rope and use these holes to run the rope through and attach them. You can also use eye bolts and use chain."
+        }
+      ],
+      "arithmetic": "(a) Side beams: step says 24 in boards but the finish length is 35 3/4 in (24 < 35.75) and the cut list says 38 in (viewed image 0d3dfac5 shows the side support as 2' 11 3/4\" = 35.75). (a) Front and rear beams: step says both finish at 87 in, but viewed image 57ccf6a2 (step 2) dimensions the front beam 7' 3\" = 87 in and the rear beam 6' 5\" = 77 in, matching the 77 in back support/slat supports. (c) The rope, or eye bolts and chain, that hang the swing are not in materials (searched materials for /rope|chain|eye ?bolt|hook|hang/i: none).",
+      "reason": "Step counts/sizes disagree with the cut list and drawings (a), and hanging hardware is missing from materials (c). The steps do make and install every part; the swing hardware omission is Fix level."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "glue up 3 of the 3/4\" x 5 1/2\" x 96\" boards",
+      "what": "wood glue (steps[0], [1]) and the finish ('ready for the finish of your choice') are not in materials"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Use a finish nailer to attach the pickets to the back support.",
+      "what": "finish nails (also steps[7]) are used but not in materials, no size given"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "0d3dfac5ba0d1f8c",
+      "57ccf6a29979067c",
+      "5ef6e9ae98cdc57c",
+      "73e5cdfd54501fdc",
+      "4d1839a3ce524883",
+      "c049263540184b99",
+      "1e6f713aad3072ff",
+      "45413eb1b0dbd3ce"
+    ]
+  }
 }

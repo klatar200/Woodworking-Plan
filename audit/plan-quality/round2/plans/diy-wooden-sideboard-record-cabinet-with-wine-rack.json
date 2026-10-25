@@ -295,33 +295,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[14].body",
-          "quote": "and, stain, seal, and add then hardware! You're all set!\nVisit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "and, stain, seal, and add then hardware! You're all set!\nVisit my blog for a full description of the products, finishes, and hardware used on this build (direct link can be found in the \"Extras\" tab)!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[14] 'Visit my blog for a full description of the products, finishes, and hardware used (direct link ... in the \"Extras\" tab)' is an optional credit/product note; part sizes, positions and the X angle are in the plan's own SketchUp drawings (viewed, e.g. 79ade8bf, f83a8b59, c0fc8260). Row 'See Plans For Exact Lengths' is answered by the viewed X drawing (22 3/4 and 11 in)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make has a row: legs, panel frames (5 = four 12 in tops/bottoms of steps[1] + the 'final 12\" top' of steps[4]), small bottom brace (steps[3]), top wine-rack brace (steps[8]), cabinet frames 37 in (steps[2]), middle panel sides (steps[4]), cabinet panels (3 = two frame panels steps[1] + the 'leftover plywood panel piece' steps[4]), X pieces, back/bottom panels, top, door sides/tops/bottoms (steps[11])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Wine Racks: \"X\" Pieces (See Plans For Exact Lengths)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged cutList[5] 'Wine Racks: \"X\" Pieces (See Plans For Exact Lengths)' is a real part: the X pieces of steps[7]-[8]; the viewed drawing c0fc8260 gives the lengths (22 3/4 in larger piece, 11 in pieces). All other rows are used."
     },
     "R4": {
       "result": "pass",
@@ -329,28 +312,101 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 2x2, 1x3); steps not checked for per-part stock"
+      "reason": "Sheet goods involved (one 1/2 in full sheet; parts total about 3026 in2 vs 4608 in2, no certain fail), so unknown under R-2. Lumber for the record fits: 2x2 x 96 x 4: 4 x 29 + 5 x 12 + 12 + 11.5 + 2 x 37 + 2 x 21.5 = 316.5 + 11 cuts x 1/8 = 317.875 <= 384; 1x3 x 72 x 2: 4 x 16 + 4 x 12 = 112 + 7 cuts x 1/8 = 112.875 <= 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes stated in steps/images (3/4 in and 1 in brad nails, 1 1/4 in pocket hole screws for the doors) all appear in materials[6], [9], [13]; materials[7] adds 1 in pocket hole screws with no step naming a size. No two sizes for one use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[8].body",
-          "quote": "h wood putty later.\nNext, install your smaller 11.5\" top brace to hide any imperfections and square the front of the unit. This can be installed with brad nails or pocket holes and glue from the back.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95595a562eecc27e.webp"
+          "path": "steps[12].body",
+          "quote": "Install your doors along with your hinges. Try to leave a 1/8\" gap on all sides."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Next, sand, stain, seal, and add then hardware!"
         }
-      ]
+      ],
+      "reason": "Positions the builder must set are not given: where the two hinges on each door sit (distance from top and bottom; hinge type is only 'Door Hinges', materials[3]) and where the knobs/pulls go. Searched steps[11]-[14] and viewed drawings (a129ddce door 12 x 16; 8fcd8c7c) for a distance: none. Other positions are dimensioned in viewed images: 24 in / 11 1/2 in clearances (b18c6a16), 20 / 29 / 6 in frame (79ade8bf), 21 1/2 in panels (d4088660), X 22 3/4 and 11 in at 30 degrees (c0fc8260), door 12 x 16 in with 1/8 in gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to an unavailable drawing; each step has a viewed SketchUp drawing with dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Outer frames (steps[1]), cabinet frame, middle brace and middle panel (steps[2]-[5]), bottom panels, X and top brace, back panels and top (steps[6]-[10]) then doors, hinges, panels, hardware: executable order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach all pieces using pocket holes, screws, and wood glue."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "install the back panels using pocket hole joinery and wood glue."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2 in 2x2s and in 1/2 in plywood and 3/4 in 1x3 door parts, but no jig thickness setting is stated for any: searched description, summary and all steps for /setting|jig|thickness/i, none; viewed drawings only mark the holes (e.g. 79ade8bf, d4088660) and the door drawing a129ddce says 'Build doors using 1 1/4\" pocket hole screws & wood glue' (a screw size, not a setting). Recorded only; R9 does not count toward the verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "If you are using metal panels, like I did. Add them on by stapling them to the inside of the cabinet doors."
+        },
+        {
+          "path": "materials",
+          "quote": "Door Hinges; Knobs or Pulls; Metal Panels/Wire Grilles (For Cabinet Panels); Bottle of Wood Glue; Wood Putty/Filler; Iron-On Wood Banding/Edging"
+        }
+      ],
+      "reason": "c) The metal panels are attached with staples, which are not in materials (searched materials for /staple/i: none). Counts otherwise agree: 4 hinges for 2 doors, 2 pulls, 2 metal panels, 2 + 1 plywood panels, 5 panel frames; 24 + 11.5 + 1.5 (middle panel) = 37 in matches the 37 in cabinet frames. The steps end with hardware and finish; the middle-panel and X are installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[5]",
+      "quote": "Wine Racks: \"X\" Pieces (See Plans For Exact Lengths) quantity 2, 0.5 x 11.5 x 22.75; steps[7]: Use one full plywood panel for your X that is measured at 11 1/2\" x 22 3/4\"",
+      "what": "the width of the X strips is never given: as written the row is an 11.5 x 22.75 panel, while viewed drawing c0fc8260 shows narrow crossing strips (22 3/4 in and two 11 in pieces) with no strip width"
+    },
+    {
+      "path": "cutList[7]",
+      "quote": "Small Back Panel (Kreg source '1/2\" x 11 1/5\" x 21 1/2\"')",
+      "what": "source prints 11 1/5 in (live row 11 x 21); the neighbouring openings are 11 1/2 in wide in viewed drawing f1bfe24f (11 1/2 in, 24 in), so the width looks like a source typo"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "46665ab31a656b4a",
+      "79ade8bfc5af16b1",
+      "a7f0be3cf71d89c8",
+      "b18c6a161b68246b",
+      "f83a8b591f3d050e",
+      "d4088660c00f86e7",
+      "a129ddcec96b963f",
+      "c0fc8260ee4b50d9",
+      "95595a562eecc27e",
+      "f1bfe24f7f642814",
+      "33ac831400d92fa4",
+      "8fcd8c7c3c24e6d9"
+    ]
+  }
 }

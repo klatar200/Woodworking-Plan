@@ -6,99 +6,50 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[17].body",
-          "quote": "link at the end of this project to check out the details on my site! I got you covered!\nFor the paint color, we mixed up our own blend of General Finishes Milk Paint and the countertop were stained wi",
-          "why": "matches \"my site\""
+          "path": "steps[2].body",
+          "quote": "Following my plans, I cut the face frame parts to final size. I then drilled 2 pocket holes in each end of pieces 6, 7, 8, & 10."
         },
         {
-          "path": "steps[19].body",
-          "quote": "To see more photos of this project, check out: www.woodshopmike.com/how-to-make-a-farmhouse-kitchen-island\nLink in Extras Tab!",
-          "why": "matches \"Extras\""
+          "path": "steps[12].body",
+          "quote": "I cut two strips of plywood (lengths specified in plans) to set the height where the drawer slide spacers need to be installed."
         },
         {
-          "path": "steps[20].body",
-          "quote": "Check out my YouTube video to show more of this build! https://youtu.be/gkritJY9v5k\nLink in Extras Tab!",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[20].body",
-          "quote": "Check out my YouTube video to show more of this build! https://youtu.be/gkritJY9v5k\nLink in Extras Tab!",
-          "why": "matches \"https://\""
-        }
-      ]
-    },
-    "R2": {
-      "result": "to-read"
-    },
-    "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Part 1",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Part 2",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Part 3",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Part 4",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Part 5",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Part 6",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Part 7",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Part 8",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Part 9",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[9].part",
-          "quote": "Part 10",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[10].part",
-          "quote": "Part 11",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[11].part",
-          "quote": "Part 12",
-          "why": "no step mentions it (searched steps for its words)"
+          "path": "steps[7].body",
+          "quote": "I drill for pocket holes as shown on the plans and cut the grooves on the table saw."
         }
       ],
-      "flagsOmitted": 21
+      "reason": "The steps build from 'my plans' (a drawing set with numbered pieces) that is not part of this plan: cut-list rows are only 'Part 1'...'Part 33' with sizes, and I viewed all 25 images, which are 2 finished-piece photos and 23 video stills with no drawings or part numbers. Without the drawings the builder cannot tell which Part is a side, shelf, stretcher, drawer part or false-front rail, how the base is laid out, or where pocket holes and slide spacers go. Searched all fields for a plans link/PDF: only 'Link in Extras Tab!' (photos page and a YouTube video, steps[19]-[20]). Likely rather than certain because a skilled builder might infer a case from the part sizes. The woodshopmike.com / YouTube / painting-details links themselves are optional extras."
+    },
+    "R2": {
+      "result": "pass",
+      "reason": "Parts the steps make are in the cut list by number (face frame pieces 6, 7, 8, 10; trim pieces 14, 15, 16 = qty 2/2/8 matching mitered trim and corner boards; false-front rails/stiles, MDF panels) or are made from listed material (steps[16] countertop from the hardwood). Missing countertop and slide-spacer sizes are recorded in gaps."
+    },
+    "R3": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Part 1"
+        },
+        {
+          "path": "cutList[32].part",
+          "quote": "Part 33"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I mitered the boards (pieces 14 & 15) that go along the base"
+        }
+      ],
+      "reason": "All 33 rows are named only 'Part N'. Steps cite by number just pieces 6, 7, 8, 10 (steps[2]), 14, 15 (steps[6]) and 16 (steps[6]); the other 26 rows (Parts 1-5, 9, 11-13, 17-33) are never named or numbered in any step, so they cannot be matched to a step from the plan (searched steps for /part|piece/i). Their sizes may be real parts, but the plan gives no way to tell."
     },
     "R4": {
       "result": "unknown",
@@ -106,28 +57,139 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[4], materials[5]"
+      "reason": "Materials include 'Board feet, 9 Poplar' and 'Board feet, 20 Hardwood of choice' (no lengths) and several sheet types, so R5 cannot be scored; unknown stands."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[14].body",
-          "quote": "er's tape in the approximate area that I'd be drilling. Then I measured the hole spacing of my pulls and adjusted my Kreg Cabinet Hardware Jig accordingly. I used a 3/16\" bit to drill the screw holes.",
-          "why": "3/16\" screw — no material line lists a 3/16\" fastener"
+          "path": "steps[4].body",
+          "quote": "secured it with 2\" brads about every 6\"."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "1-1/2\" Brads"
         }
-      ]
+      ],
+      "reason": "The face-frame step uses 2 in brads; the only brad line in materials is 1-1/2 in (searched materials for /brad/i: only that line). Flagged '3/16\" screw' in steps[14] is a drill-bit size for the pull holes, not a fastener (rejected). Other sizes match: 1-1/4 in and 2 in pocket-hole screws, 1-1/4 in drywall screws with washers."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "I cut two strips of plywood (lengths specified in plans) to set the height where the drawer slide spacers need to be installed."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Then I measured the hole spacing of my pulls and adjusted my Kreg Cabinet Hardware Jig accordingly."
+        }
+      ],
+      "reason": "The heights of the drawer-slide spacers (and so each drawer's height in the base) are not given anywhere: the strip lengths are deferred to 'plans', and searched steps and the cut list for them (rows are unnamed). The pull positions on the false fronts are not stated either (no pull in materials, no spacing or height). Viewed images are photos without dimensions."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "I drill for pocket holes as shown on the plans and cut the grooves on the table saw."
+        }
+      ],
+      "reason": "steps[2], [7] and [12] point to drawings ('as shown on the plans', 'lengths specified in plans'); the attached images (all viewed) are video stills and photos that do not show pocket-hole locations, strip lengths or part numbers. Covered more broadly under R1."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Base, face frame, trim, drawer boxes and false fronts are built before the slide spacers and drawers are installed (steps[12]-[13]), pull holes are drilled before the fronts are attached (steps[14]-[15]), top attached last (steps[18])."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "use 1-1/4\" pocket hole screws to secure it together."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "I drill for pocket holes as shown on the plans"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4 in plywood, poplar and drawer parts (steps[1], [2], [7]) but no jig thickness setting is stated: searched description, summary and all steps for /setting|jig|thickness/i; the only jig named is the 'Kreg Cabinet Hardware Jig' for pulls (steps[14]). Recorded only; R9 does not count toward the verdict."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Then I measured the hole spacing of my pulls and adjusted my Kreg Cabinet Hardware Jig accordingly. I used a 3/16\" bit to drill the screw holes."
+        },
+        {
+          "path": "materials",
+          "quote": "22\" Full Extension Drawer Slides; Paint of Choice; Stain of Choice; Clear Coat of Choice; Bottle of Glue"
+        }
+      ],
+      "reason": "c) Drawer pulls are installed (steps[14]-[15], visible in the photos) but are not in materials (searched materials for /pull|handle|knob/i: none). Drawer slides, washers and screws are listed. The steps end at final assembly of the finished island."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[16].body",
+      "quote": "I simply milled the lumber and glued up two panels about 17\" wide. I then planed each panel to 1\" thick and glued them together",
+      "what": "the countertop's finished length, width and overhang are never given (not in the cut list, no dimension in any step), and the hardwood is given only as '20 board feet'"
+    },
+    {
+      "path": "steps[15].body",
+      "quote": "Using 4 1-1/4\" drywall screws and washers, I secure the false drawer front to the drawer box.",
+      "what": "4 screws per false front vs materials[8] 14 drywall screws and materials[9] 14 washers; the number of false fronts is never stated, so the totals cannot be checked"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "I putty any seams or nail holes in the trim.",
+      "what": "wood putty is not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "bc8b43c4dc9121d7",
+      "bc159316bd979eb5",
+      "338cdbffce0807f0",
+      "d95ea6559a0ac504",
+      "07f42d1fef14889a",
+      "f7e33687e7eb1f57",
+      "ac9605f0a7919727",
+      "fbd95512f589fa96",
+      "cc20d0ad42b47f02",
+      "3291a36a315fbcd5",
+      "9f69019c3ad706ed",
+      "73f1b51a43620f4c",
+      "94b3f3334414774e",
+      "bc8135a1021b4795",
+      "5fe10f0e4637413c",
+      "e6719950cfbe5ddc",
+      "847e823cc9f7484f",
+      "372ce584a5628d33",
+      "d84af2a1ace01a14",
+      "f81fedcc7bc90a0c",
+      "b678310cc4f1cebf",
+      "5dc3bb18af7487ea"
+    ]
+  }
 }

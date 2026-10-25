@@ -151,58 +151,76 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "ail and glue them to the frame. You may want to sand all of these parts during this step, rather than later.\nFor a visual aid to help get those X's right, please visit my blog (link in the extras tab)",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[3] 'visit my blog (link in the extras tab)' is a visual aid only; the X angles and sizes are in the plan's own drawings (viewed a20725e0 cut diagram, 8e9be457 X detail). No part, size or step is deferred to an outside page."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frames (6 sides + 6 tops/bottoms = 3 frames), shelves (8 = 2 x 4), top (5), braces (4) and Large X-Legs (4) have rows; the smaller X pieces are cut by steps[3] ('then cut the smaller pieces down to size') from the listed 2x4 with sizes 6 5/8 and 7 7/8 in shown in the viewed cut diagram a20725e0 and X detail 8e9be457."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Large X-Legs (make all angled cuts on the 2\" side - see cut list and plans for details)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged cutList[5] 'Large X-Legs (make all angled cuts on the 2\" side - see cut list and plans for details)' is a real part (the 16 in X legs of steps[3], diagram a20725e0 'LRG. X LEG'); the long name is an annotation, not an assembly."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "arithmetic": "Stock is clear from the parts: braces are 2x2 (steps[6] 'Attach the 2x2\" braces'); all other rows are 3.5 in wide = 2x4. 2x4 x 96 x 8 (Kreg-corrected): 5 x 54 + 8 x 20 + 6 x 18 + 6 x 11 + 4 x 16 = 270 + 160 + 108 + 66 + 64 = 668; plus the small X pieces drawn in a20725e0 (2 x 6 5/8 + 2 x 7 7/8 = 29) = 697; 33 + 4 parts - 8 boards = 29 cuts x 1/8 = 3.625; 700.625 <= 8 x 96 = 768. 2x2 x 96 x 1: 4 x 20 = 80 + 3 cuts x 1/8 = 80.375 <= 96. The viewed cut diagram lays the parts on 8 boards plus 1 board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2 1/2\" pocket hole screws (materials[2]), 2\" brad nails (materials[3]) and 2\" wood screws (materials[4], steps[8], viewed 18753ab2 'countersinking screws'); no size conflicts."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Attach the seat to the rest of the bench by screwing it in from the bottom of the braces. You can cover these holes and your pocket holes with wood filler later.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18753ab2da7e353c.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[8] (top on braces) is relational; positions are dimensioned in viewed images: frame 18 in tall, 15 in deep, 3 in shelf height (ba2367c8), 20 in bays and brace layout (0a37f2d3), X angles and 6 5/8 / 7 7/8 / 15 7/8 / 16 in cuts (8e9be457, a20725e0), top 54 x 17 1/2 (dfff169d)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'cut diagram' and 'diagram describing the cuts for the X legs' (steps[1]) are in the step image (viewed a20725e0 shows both)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (steps[1]), frames built (steps[2]) and X's fitted to the frames (steps[3]) before shelves (steps[4]-[5]), braces (steps[6]), top built and attached last (steps[7]-[8])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "The pocket-hole setting is stated in viewed images ba2367c8 and 685f04c7: 'Kreg Pocket Hole 1 1/2\"'; every pocket-holed part is 1 1/2 in thick (2x4, 2x2)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 3 frames, 2 shelves of 4 boards, 5 top boards, 4 braces, 4 large X legs (a20725e0 shows the 16 in leg pieces on a board with the frame tops). All made parts are installed; steps end at the finished bench. The angle label question is in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Start by cutting four larger pieces first with 30 degree angles on each end (cut the angle on the 2\" side), and then cut the smaller pieces down to size. The inner angles are set at 21 degrees.",
+      "what": "viewed image 8e9be457 labels 'Outside Angles Cut @ 35 Degrees' while the step text and viewed cut diagram a20725e0 say 30 degrees; the 35 may refer to the small pieces' outer ends, which the plan does not say"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Fill all holes with wood putty and then sand, stain, and seal your bench.",
+      "what": "wood glue (used in steps[2]-[8]), wood putty/filler and sandpaper are not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "dfff169d06dcb358",
+      "a20725e02c28937b",
+      "ba2367c89f8d2b78",
+      "8e9be45764f5df07",
+      "18753ab2da7e353c",
+      "685f04c79a86ea1a",
+      "0a37f2d354875e53",
+      "7415bd524d7d5e2f"
+    ]
+  }
 }

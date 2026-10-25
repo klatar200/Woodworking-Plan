@@ -55,21 +55,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "materials[11].name",
-          "quote": "Set of non-mortise brackets (see Extras)",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "materials[11] 'Set of non-mortise brackets (see Extras)' duplicates materials[7] 'Set of non-mortise brackets', which already names the item; every part size is in the cut list and steps. Nothing needed to complete the build is deferred to Extras."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make has a lettered row: headboard (A posts, B rails, C stiles; steps[2]-[5]), footboard (D posts, E rail; steps[6]), F bed rails and G slat supports (steps[9]), H cap (steps[5]), I slats (steps[10]). Spacer scraps (1x2, 1x3 offcuts) are explicitly scrap, not parts."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All nine rows A-I are used by named steps; none is an assembly or placeholder. Import note: cutList[0] and [3] show length 4 where Kreg's source reads 42\" and 18\" (steps[8] confirms 18 in foot posts); cutList[1] length shows 8 for source 36 1/8\"; cutList[8] shows 8 for source 38 7/8\" (cause: import, S-19 family)."
     },
     "R4": {
       "result": "unknown",
@@ -80,33 +75,79 @@
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3], materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size is stated in the steps (screw types appear only in materials[5]-[6]; brackets in materials[7]); no two sizes conflict. The optional 18g brad nail of steps[5] ('I used an 18g brad nail') has no materials line, noted in gaps."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "hem look slightly less chunky and a little more finished.\n- Think about what type of reveal you want your bed rails to have. I went with ¾” and this basically means choosing how much you want to inset",
-          "why": "placement with no measurement (no step image)",
-          "image": null
+          "path": "steps[4].body",
+          "quote": "Lay everything out with pocket holes up, utilizing clamps to hold your posts (A) in place so that they do not push away when you begin to fasten your rails (B) to them."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Repeat the same process as above, except use 4 pocket holes on each end of the footboard rail (E)."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Cut them to length and test them out!"
         }
-      ]
+      ],
+      "reason": "Positions the builder must set that appear nowhere as numbers: (1) the height of the headboard rails B (and footboard rail E) on the 42 in / 18 in posts, (2) the spacing of the 12 mattress slats (I) along the 75 in rails. Searched steps[2]-[10] and materials/description for a height, distance or 'evenly' for these; all 14 images are photos with no dimensions (viewed). Positions given as numbers: brackets 18 in up (steps[8]), 3/4 in reveal, 1x3 spacer for the slat support (steps[9]), screws about 12 in apart."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "er again without having to keep measuring it out each time (see photo at miter saw)\n- It’s nice to cut all the parts in advance and then assemble but I would wait to cut your mattress support slats un",
-          "why": "\"see photo\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'see photo at miter saw' (steps[0]) is a tip; the step-1 miter saw photo (1d8557bf) exists and shows the saw cut. No cut or part depends on it."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (steps[1]) before headboard/footboard assembly (steps[2]-[6]), brackets on posts and rails (steps[7]-[8]), slat supports on rails (steps[9]) before 'Assemble your bed' and cutting slats to the measured width (steps[10]); finish last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] tip: 'Make sure your bit has the stop collar set at the ¾” mark' for the 3/4 in stock; pocket holes go only in 3/4 in rails and stiles (posts are 3x3). Other joints: brackets, pre-drilled screws into the slat supports (steps[9])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 9 headboard stiles (steps[3] 'each end of the 9 headboard stiles' = row C qty 9), 2 headboard rails, 2 posts each end; footboard 4 pocket holes per end of 1 rail; 12 slats. 9 x 2.5 + 8 x 1.5 (1x2 spacer flat) = 34.5 in <= 36.125 in rail. 'Foot posts 18 in' (steps[8]) matches D (source 18\"); slat length 38 7/8 (steps[10]) matches row I; slat-support geometry (2.5 in 1x3 spacer, 3/4 in slat) gives the stated 1 3/4 in mattress recess. All made parts are installed; steps end at the finished bed."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Be sure to use glue on all your joints as it is the combination of glue and the screw that make pocket holes a strong joint.",
+      "what": "wood glue is used throughout but not in materials"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "I used an 18g brad nail, 1 in each bed post, to pin it in place while I applied clamps",
+      "what": "18g brad nails are used (optional pinning) but are not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-02",
+    "imagesViewed": [
+      "cb4110ef62fa6dd0",
+      "03c0ca6de9d2dce6",
+      "d3dd923e6042f204",
+      "3e8ac2aa76d672e7",
+      "1d8557bf12050951",
+      "c147030233d9ad06",
+      "2d93cc38f5150239",
+      "2ae43d07996475a4",
+      "0befa9e6460bca36",
+      "a93868dc0a365091",
+      "68cd4a9df5a06de3",
+      "5116cfeeb2509bff",
+      "c3f5218cfc9687c9",
+      "d5cf9f3be56ae90c"
+    ]
+  }
 }
