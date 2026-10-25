@@ -347,10 +347,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name Bottom, Front Panel, Sides, Top, Top Rail, Shelves, Back Cleats, Middle Panel, aprons, Base Support, Easel Panel/Cleats/Stops/Lip, Back Panel = cutList rows 0-17"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 18 rows used (steps[0],[2],[4],[7],[10]-[14])"
     },
     "R4": {
       "result": "pass",
@@ -358,21 +360,61 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 8 stock types (sheet-0.75, sheet-0.25, 1x10, 1x8, 1x6, 1x3, 1x2, 0.75x0.75); steps not checked for per-part stock"
+      "reason": "Steps name the stock and every lumber group fits: 1x10 48\": 2 x 19.375 + 0.125 = 38.875 <= 48; 1x8 96\": 39.5 + 2 x 19.375 + 0.25 = 78.5 <= 96; 1x6 96\": 42.5 + 20 + 20 + 0.25 = 82.75 <= 96; 1x3 2 x 96\": 39.5 + 4 x 19.375 + 41 + 0.75 = 158.75 <= 192; 1x2 96\": 4 x 21.625 + 0.5 = 87 <= 96; dowel 20.125 <= 36; 1/4\" ply 34.75 x 39.5 <= 48 x 48. The six 3/4\" MDF parts (areas 19.75x39.5 + 10.625x39.5 + 2x20x40 + 19x34 + 20.125x29.25 = 780.1+419.7+1600+646+588.7 = 4034.5 <= 4608) do not exceed the sheet area, but a fit on one 48 x 96 sheet could not be confirmed by hand, and the rule marks sheet-fit unknown unless area is exceeded."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse-thread pocket-hole screws (many steps), #8 x 3/4\" panhead (step 17) and #8 x 1 1/2\" flat-head (step 16) all in materials[8]-[10]; no use has two sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numeric: bottom/back 1/4\" inset, shelf and cleat placement 9 1/4\", 7 1/4\", 5 1/4\" (viewed 704217cf); easel finger holes 2 1/2\", 3 1/2\", 5 1/2\" (viewed b941d8eb); back-panel screw holes dimensioned (viewed dab4393f); easel cleats 1 3/8\" and 1 3/4\", apron drop 2 1/2\", base support inset 3/4\" in text"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "21 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "case parts and shelves before middle panel (1-6), apron and base support after case (7-9), easel built (10-13), back panel cut (14), finish (15), easel installed (16), back panel last (17); each part exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your jig for 3/4\" thick material. ... leave the jig set this way for the entire project'; all pocket-hole parts are 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) middle-panel split: (39.5 - 0.75)/2 = 19.375 = shelf/cleat width (cutList[5]-[7]); easel cleats 20.125 + 2 x 0.75 overhang = 21.625 = cutList[14]; back panel 34.75 x 39.5 matches the viewed diagram. (b) all parts installed, both stops (steps[12],[16]). (c) screws in materials; wax is a consumable. (d) ends with back panel on a finished piece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "704217cfd92f3733.webp",
+      "b941d8ebf30c33a9.webp",
+      "dab4393fa99bedbb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[16].body",
+      "quote": "First, rub wax on the lower Easel Cleat to help it slide easily.",
+      "what": "wax not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "Start by easing all of the sharp edged. You can do that by sanding with 120-grit paper.",
+      "what": "sandpaper and paint/finish not in materials"
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "Don’t install the final cleat. It gets added later",
+      "what": "'final cleat' should read 'final Stop' (the second Easel Stop, installed in steps[16]); cutList[15] has 2 stops"
+    }
+  ]
 }

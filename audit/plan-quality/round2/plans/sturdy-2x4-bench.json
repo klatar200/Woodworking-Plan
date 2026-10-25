@@ -35,10 +35,13 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps (4x4 posts, seat frame 2x4s, seat planks 59\"/66\", backrest frame 19\"/16\", backrest planks) all in cutList rows 0-8; arm rests are in the cutList and shown in viewed 8209641d"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Arm Rests (cutList[5]) are not named in any step text (search /arm/i over steps: none) but are dimensioned (27 1/2\") and shown on the posts in viewed image 8209641d; other 8 rows used by steps[0]-[3]",
+      "note": "see gaps"
     },
     "R4": {
       "result": "pass",
@@ -56,21 +59,63 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each row's thickness x width matches exactly one listed material (2x4 rows 0-7 -> 2x4 96\"; 4x4 row 8 -> 4x4 96\"). 2x4 lengths: 2*16 + 2*19 + 2*56 + 6*59 + 8*66 + 2*27.5 + 2*19 + 3*23 = 32+38+112+354+528+55+38+69 = 1226; kerf 27 cuts x 0.125 = 3.375; 1229.375 <= 16*96 = 1536. 4x4: 4*23.5 = 94 + 3*0.125 = 94.375 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "pocket hole screws 2 1/2\" (steps[0],[2]) and deck screws (steps[1],[3]; materials 2 1/2\" deck screws) and 4\" lag screws (steps[6] '4 inch lag screws' = materials[4] 5/16\" x 4\"); step[4] 'lag bolts' is the same hardware, no size conflict"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "seat plank spacing 1/4\", lag screws ~10\" apart (steps[6]), angles 15 degrees (steps[2]); frame and cross-rail positions dimensioned in viewed 8209641d and 1aecb1f5; backrest seats on the rear rail per viewed 8d873640"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "steps[0] builds the seat frame so planks (1) can be attached; backrest frame (2) -> planks (3) -> attach (4/6). steps[7] 'Build Seat Frame' at the end and steps[4]/[6] (both attach the backrest) are duplicates, and finishing (5) precedes the lag-screw step (6), but nothing is blocked",
+      "note": "see gaps"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[2] '1 1/2\\'\\' pocket holes' for 2x4 stock (1 1/2\" thick per §9); no contradicting setting"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) planks: seat depth 19 + 2*3.5 (posts) = 26 = 7 planks 7*3.5 + 6*0.25 = 26; backrest 5 planks 5*3.5 + 4*0.25 = 18.5 ~ 19 frame; plank lengths 59 x6 and 66 x8 consistent with 2+2+2 and 5+3 of the cut list (inference from viewed images, not stated in text). (b) every part installed. (c) screws and lag screws in materials. (d) reaches finished bench. Finishing consumables in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "8209641d1d4b94d3.webp",
+      "6c53a15b0e084f00.webp",
+      "2722090642631cd6.webp",
+      "1aecb1f5ad3ca916.webp",
+      "8d873640adb0e539.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body / steps[6].body",
+      "quote": "Using lag bolts, attach the backrest to the bench seat. Screw the bottom 2x4 of the frame to the bench seat.",
+      "what": "steps[4] and steps[6] both attach the backrest (duplicate); steps[5] finishes the bench between them; steps[7] 'Build Seat Frame' repeats step 0 at the end"
+    },
+    {
+      "path": "cutList[5]",
+      "quote": "Arm Rests 2 2 4 27",
+      "what": "Arm Rests are not mentioned in any step text and the step text never says how they are fastened to the 4x4 posts (only visible in image 8209641d with 27 1/2\")"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Fill holes, sand, and paint or stain the bench. Finishing off with polyurethane.",
+      "what": "wood filler, paint/stain, polyurethane not in materials"
+    }
+  ]
 }

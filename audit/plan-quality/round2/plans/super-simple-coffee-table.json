@@ -155,74 +155,102 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name Legs, End Aprons, Side Aprons, Stretchers, Top, Side/End Edging = cutList rows 0-6"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all seven rows used by steps[0]-[9]"
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[3]",
-          "quote": "Stretcher — qty 2, 1.5 x 2.5 x 22.5 (Kreg-corrected)"
+          "path": "steps[3].body",
+          "quote": "Then cut two Stretchers from 1x3 boards, as shown in the cutting diagram."
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 2x2 36\""
+          "path": "cutList[3]",
+          "quote": "Stretcher 2 1 2 22 (Kreg source: 1 1/2\" x 2 1/2\" x 22 1/2\")"
         },
         {
           "path": "materials[1].name",
           "quote": "Board, 1x3 48\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 1x4 48\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Board, 1x4 96\""
-        },
-        {
-          "path": "materials[4].name",
-          "quote": "Board, 1x2 96\""
-        },
-        {
-          "path": "materials[5].name",
-          "quote": "Plywood, 3/4\" Thick Quarter Sheet"
         }
       ],
-      "arithmetic": "cutList[3] 1.5×2.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 2.5; stock = 1.5×1.5, 0.75×2.5, 0.75×3.5, 0.75×3.5, 0.75×1.5, sheet 0.75",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[3]",
-          "quote": "Stretcher — qty 2, 1.5 x 2.5 x 22.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "Stretcher thickness 1 1/2 (Kreg source row, not an import loss) vs 1x3 actual 3/4 x 2 1/2 (§9): 1.5 != 0.75; no other listed stock is 1.5 thick and >= 2.5 wide (2x2 is 1.5 x 1.5).",
+      "reason": "The plan's own step names the stock (1x3) that cannot give the cut-list thickness. Width 2 1/2 and length 22 1/2 do match the 1x3."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x2, 1x3, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part (legs 2x2, aprons 1x4, stretchers 1x3, edging 1x2, top quarter-sheet plywood). 2x2 36\" x2: 2 legs per board 2*15+0.125 = 30.125 <= 36. 1x4 (48+96 = 144): 4 parts 2*21 + 2*45 = 132 + 0.375 <= 144; 45 from the 48\", 45+21+21+0.375 = 87.4 <= 96. 1x3 48\": 2*22.5 = 45+0.125 <= 48. 1x2 (2 x 96): 49.5+22.5+22.5+0.25 = 94.75 <= 96 and 49.5 (or with the image's 25.5 ends: 49.5+25.5 = 75.1 per board). Top 24 x 48 = quarter sheet."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 1 1/4\" pocket hole screws used (steps[2],[4],[5],[8],[9]) = materials[6]; steps say 'fine-thread', materials do not state thread (not a size)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "stretchers 14 1/4\" from each apron end (viewed 22acf896); 3/4\" edging reveal (viewed 87e12468); aprons/top flush and relational; leg bevel angle not stated but is a cut shape, not a position"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "14 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs/end aprons -> ends (0-2); side aprons/stretchers (3-4); base (5); top drilled (6); edging cut (7) and attached to top (8) before top is attached to base (9)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "With your pocket hole jig set up for 3/4\" material, drill pocket holes in the ends of all four pieces, as shown."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Legs 4 1 1 15 (Kreg source 1 1/2\" x 1 1/2\" x 15\")"
+        }
+      ],
+      "reason": "The legs are 1 1/2\" thick (2x2) but the only setting stated for the pocket holes drilled in them is 3/4\". Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "End Edging 2 0.75 1 22 (Kreg source: 3/4\" x 1 1/2\" x 22 1/2\")"
+        },
+        {
+          "path": "steps[7].image (viewed 63ba9696)",
+          "quote": "25 1/2\" (end edging) and 49 1/2\" (side edging) labels"
+        }
+      ],
+      "arithmetic": "cutList[4] Top 24 wide + 2 x 0.75 edging thickness = 25.5 (matches the viewed 25 1/2\" label and the 49 1/2\" side edging = 48 + 2 x 0.75); cut-list End Edging is 22.5 = 3\" short.",
+      "reason": "Cut-list length for End Edging disagrees with the step image dimension and with the top it frames; Kreg's own source row also says 22 1/2."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "cfe76a2353df3f4e.webp",
+      "22acf896e19fef3c.webp",
+      "0fdda5e1afdf4180.webp",
+      "63ba96974601bfab.webp",
+      "87e12468153639e9.webp"
+    ]
+  }
 }

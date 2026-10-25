@@ -239,10 +239,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps 0-15 (bottom, top, sides, center, shelf, back, base front/back, base top/bottom, base center support, drawer boxes/fronts, plexiglass, paper shelves) matches a cutList.part or materials[9] plexiglass"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 14 cut rows used: Paper shelves by steps[11]/[16] (1/4\" MDF shelves on shelf pins); the rest by steps[0]-[14]"
     },
     "R4": {
       "result": "pass",
@@ -250,20 +252,70 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.5, sheet-0.25, 1x2); steps not checked for per-part stock"
+      "reason": "4 stock types (3/4, 1/2, 1/4 sheet goods and 1x2); steps do not name stock per part and no listed area/length rule settles it"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws, 1\" pocket hole screws, 1 1/4\" finish nails, 1 1/4\" wood screws, 5/8\" brad nails all in materials[5..12]; steps[14] '1\" screws' size appears in materials[6]; no use has two sizes"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "drill holes for the paper shelves on the left side of the printer cart. Make sure the shelf pin holes are set further back on the side board to accommodate for the plexiglass door slider."
+        }
+      ],
+      "reason": "Setback of the shelf-pin hole column from the front edge is not given as a number (only 'further back'); the viewed step image (8cd1282c42004714) shows a jig and a column of holes but no dimension. Number of shelves is 9 (cutList[13]) but vertical start/spacing also unstated. Other placements (center 9 3/8\" in, shelf 9 1/2\" up, drawer stack) are numeric or fixed by parts."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "groove routing (steps 0-1) precedes assembly; base, drawers, shelf pins, slides, door all after carcass; nothing fastened that a later step must undo"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Drill pocket holes set for 1 1/4\" material on each side of the center base support pieces."
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Base center support 2 0.75 1 18"
+        }
+      ],
+      "reason": "Setting 1 1/4\" stated for a part whose cut-list thickness is 3/4\" (Kreg-corrected row 0.75 x 1.5 x 18); steps 2-4,7 use 3/4\" setting for 3/4\" parts. Recorded only (R9 not counted)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) top 17x22 = 21x16 carcass + 1/2\" overhang each edge: 16+2*0.5=17, 19.5+2*0.75=21, 21+1=22; center 9 3/8\" x2 + 3/4\" = 19.5 = bottom length 19.5; shelf 9 3/8 = (19.5-0.75)/2. (b) every part installed (shelf/paper shelves steps[4],[11],[16]; drawers [14]; plexi [15]). (c) plexiglass, slides, shelf pins in materials. (d) ends at finished cart."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "8cd1282c42004714.webp",
+      "49030c7de87db1f7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "Decorate if desired with frosted vinyl.",
+      "what": "frosted vinyl not in materials; optional step"
+    }
+  ]
 }

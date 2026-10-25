@@ -143,32 +143,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name Side Panels, Back Panel, Seat Panel, Arms, Legs, Side Rails, Front/Back Rails = cutList rows 0-6; cushions are in materials[7],[9]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all seven rows used by steps[0]-[8]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 2x2, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part (plywood: side/back/seat; 1x2: arms; 2x2: legs and rails). Plywood: 24 + 23.25 + 0.125 kerf = 47.375 <= 48 across the 46\" length; remaining 50\" x 48\" holds two 15 x 29 sides (15+15 = 30 <= 48, 29 <= 50); area 2*435 + 1104 + 1069.5 = 3043.5 <= 4608. 1x2 72\": 2 x 29 = 58 + 0.125 <= 72. 2x2 (5 x 72\" = 360): 4*12 + 4*21 + 4*46 = 48+84+184 = 316 + 12 cuts x 0.125 = 1.5 -> 317.5 <= 360; per board 46+21+0.25 = 67.25 <= 72 (4 boards) and 48+0.5 <= 72 (5th)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" and 2 1/2\" exterior pocket hole screws, 1 1/2\" brad nails, 2\" wood screws all in materials[3]-[6]; no use has two sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "seat panel sits between sides at the bottom and arms on the side panel tops per viewed ead98e15/c0e76c15; base joins under the seat flush (relational); screw counts per rail given in steps[9]; pocket-hole locations shown in step images"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "16 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels cut, side/back/seat assembled (1-4), arms (5), base built (6-8, shown upside down), painted and joined to the seat (9)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" setting stated steps[1],[3] for plywood panels; 1 1/2\" setting steps[6],[7] for 2x2 (1.5\" thick)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Front/Back Rails 4 1 1 46"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Side Rails 4 1 1 21"
+        },
+        {
+          "path": "steps[8].image (viewed 1759d596)",
+          "quote": "47 1/2\" (overall base length label); 24\" (overall base depth label)"
+        }
+      ],
+      "arithmetic": "Base depth: Side Rails 21 + 2 legs x 1.5 = 24, matches the image's 24\". Base length: Front/Back Rails 46 + 2 legs x 1.5 = 49, but the viewed image labels the overall length 47 1/2\" (= seat width 46 + 2 x 3/4 side panels = 47.5). A 47 1/2\" base needs 44 1/2\" rails; cut list says 46.",
+      "reason": "Cut-list rail length (corrected row 1.5 x 1.5 x 46, no import diff) disagrees with the base length dimensioned in the viewed step image; the same method reproduces the 24\" depth. Base would be 1 1/2\" wider than the seat."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "ead98e1542ea7be9.webp",
+      "c0e76c1581e667df.webp",
+      "1759d5965db5bad4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[7]/materials[9]",
+      "quote": "2 each 24\" x 24\" outdoor cushions with backs / 4 each Deep seat cushions, approximately 23\" x 23\"",
+      "what": "materials list both 2 back cushions and 4 seat cushions (6 total) for a 46\" seat; no step mentions cushions or how many are used"
+    }
+  ]
 }

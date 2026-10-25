@@ -59,32 +59,63 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name box frame face/back/sides, 3/4 x 1 1/2 x 36 rails; match cutList rows 0-2; bungee in materials[2]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 rows: frames (steps[1],[4]), rails (steps[5])"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed material: 0.75x3.5 = 1x4 (rows 0,1), 0.75x1.5 = 1x2 (row 2). 1x4 (2 x 96\"): board A 4 x 20 = 80 + 4 x 0.125 = 80.5 <= 96; board B 4 x 18.5 = 74 + 0.5 = 74.5 <= 96. 1x2 (2 x 96\"): 2 x 36 = 72 + 0.125 per board <= 96, 2 boards = 4 rails."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket-hole screws (steps[4]) and 1 1/4\" drywall screws (steps[5]) both in materials[3],[4]; 5/16\" holes for 1/4\" bungee; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "bungee hole layout dimensioned in viewed image 5ff0d166: face/back 4\" x 5 spaces = 20\", 1\" from edge; sides 3 1/4\" + 3 x 4\" + 3 1/4\" = 18 1/2\"; rails at the inside corners per viewed bc145cff (relational)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut and drilled (0-2), frames assembled (4), joined with rails (5), finished (7), bungee strung after finishing (8)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Set your jig for 3/4\" material'; pocket-hole parts (frame sides) are 0.75 thick; other joints (rails) use 1 1/4\" drywall screws with pre-drilling stated"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) frame outer 18 1/2 + 2 x 3/4 = 20 = face/back length (cutList[0],[1] corrected); step 1 '3/4 x 3 1/2 x 18 1/2' = cutList[1]; step 5 rails '3/4 x 1 1/2 x 36' = cutList[2]; 16 pocket screws = 4 sides x 2 ends x 2 holes, 16 drywall = 4 rails x 2 ends x 2. (b) all parts installed. (c) bungee cord in materials. (d) ends with trimmed bungee."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "5ff0d16613da1aa3.webp",
+      "bc145cff9c8432fa.webp",
+      "30f84e636ea33f4a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Paint or stain the assembled cage as desired.",
+      "what": "paint/stain not in materials; optional finish"
+    }
+  ]
 }

@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name leg pieces, side pieces, tray supports, tray pieces = cutList rows 0-4"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all five rows used by steps[0],[1],[4],[5]"
     },
     "R4": {
       "result": "pass",
@@ -70,20 +72,55 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "reason": "1x1 96\": 4 x 12 + 4 x 11 = 92 + 7 cuts x 0.125 = 92.875 <= 96 (angle waste not counted); 1x4 96\": 3 x 16 + 3 x 12 = 84 + 0.625 <= 96. Sides (1x3 12\" qty 1, possibly an importer default): 2 x 6.25 + 0.125 = 12.625 > 12 by 0.625 if cut straight; the viewed step image shows the two 15-degree trapezoids nested on one board, whose fit cannot be shown from the plan's numbers without trigonometry, so unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 1 1/4\" pocket hole screws (steps[2],[4]) = materials[3]; plugs in materials[5]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "side long edge 6 1/4\" (step and viewed 3e54926c), lower supports 3/4\" up and upper supports flush with side top, 11\" support height shown (viewed 9fd22dde), pocket holes 2 per side end (viewed a48ec1b7); tray rim width in optional steps[6]/[8] is only 'use a fence' (optional)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs and sides cut (0-1), sides built and plugged (2-3), supports attached (4), trays glued (5) then routed; steps[7] seals before steps[8] routes the tray centre (order oddity, see gaps) but nothing is blocked",
+      "note": "optional routing only"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'Set your Kreg jig for 3/4\" thick material' covers all 3/4\" parts; supports are 0.75 x 0.75 (cutList[2])"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 15 degree cuts and 6 1/4\" long side match cutList[1]; screws 16 = 8 side pocket holes (2 per end, viewed a48ec1b7) + 8 support ends; plugs 8 = the 8 side pocket holes. (b) all parts installed; trays rest on supports. (c) plugs in materials; food-safe finish is a consumable. (d) reaches finished stand and trays."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "3e54926c5d22278a.webp",
+      "9fd22dde1d236aaf.webp",
+      "a48ec1b70d977a01.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Make sure to use a food safe finish for the trays",
+      "what": "finish and sandpaper not in materials"
+    },
+    {
+      "path": "steps[7].body / steps[8].body",
+      "quote": "Sand and seal the stand and trays. / Use a sled made from scrap wood to fit your router to router the insides of the tray.",
+      "what": "the sealing step comes before the optional tray-centre routing step; steps[8] routes after the finish step"
+    }
+  ]
 }

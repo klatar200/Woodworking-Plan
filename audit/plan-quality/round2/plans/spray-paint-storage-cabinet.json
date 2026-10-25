@@ -131,32 +131,58 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "step parts (inner sides, 2 3/4\" shelf pieces, bottom caps, outer sides, 12 3/4\" top/bottom) each match cutList rows 0-4"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used: steps[0] inner sides, [1]-[2] shelves, [3] bottom cap, [4] outer shelves (2 per side x4 = 8), [5] top/bottom"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x8, 1x4, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock per part (steps[0]/[1]/[3] 1x8, steps[4] 1x4, steps[5] 3/4\" plywood). 1x4: 8 x 46 7/8 -> 2 per 96\" board: 2*46.875+0.125=93.875 <= 96, 4 boards bought (materials[1]) = 8 parts. 1x8 (4 boards): 2 boards give the 4 inner sides (93.875 each); shelves are 2 3/4\" strips ripped from the 7 1/4\" width (steps[1] 'Cut the all the 2 3/4\" wide shelf pieces from the 1x8 boards'), 2 lanes per board: 2 boards -> 4 lanes of 96\"; 13 x 7.25 + 12 x 0.125 = 95.75 <= 96 per lane, 4 lanes -> 52 >= 44 shelves + 4 caps. Plywood: two 12.75 squares from 13 x 26 = 25.5 + 0.125 <= 26. Counted with ripping; without rip lanes the 1x8 total would not fit."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws and 1 1/4\" finish nails in materials[3],[4]; lazy Susan wood screws/spacers in [7],[8]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "shelf marks 4 1/4\", 3 5/8\" up, 1\" in (steps[2]); cap 1\" from front (steps[3]); notches 1 7/8\" x 3 5/8\", 1/4\" overhang (steps[5]); lazy Susan at center bottom (relational)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "center assembled (0), shelves cut and attached (1-2), caps (3), outer sides (4), top/bottom (5), lazy Susan (6); each part exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'set for 3/4\" thick material' stated in steps[1] and steps[3] for the 3/4\" parts; step 0 boards are 3/4\" (cutList 0.75)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 8 outer = 2 per side x 4 (steps[4]); shelves 11 per side: marks start 3 5/8\" then every 4 1/4\" within 46 7/8\" (3.625+10*4.25=46.125) x4 = 44 = cutList[1] qty; top/bottom 12 3/4\" x2 = cutList[4]. (b) all parts installed. (c) lazy Susan hardware, spacers, screws in materials. (d) ends with finished cabinet. Footprint vs 12 3/4\" top not derivable from stated numbers (not scored)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "Heavy duty lazy Susan hardware",
+      "what": "no size/capacity given for the lazy Susan; step 6 defers to 'a link to the one I purchased in blog post' (credit link; build not blocked)"
+    }
+  ]
 }

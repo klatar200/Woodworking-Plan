@@ -311,32 +311,91 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps 0-18 (legs, end aprons, end shelf rails, front/back aprons, top stretchers, shelf rails/stretchers, shelf slats, top slats, drawer parts, false front) all match cutList rows 0-16"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 17 rows used by steps[0]-[18]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[12] thinner than stock — would need planing/resawing, not judged; cutList[13] thinner than stock — would need planing/resawing, not judged; cutList[14] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[16].body",
+          "quote": "Cut two Drawer Sides, one Drawer Front, and one Drawer Back to length from a 1/2\" x 3\" (2 1/2\" actual width) board"
+        },
+        {
+          "path": "cutList[12]",
+          "quote": "Drawer Side 2 0.5 2 20 (corrected 0.5 x 2.5 x 20)"
+        }
+      ],
+      "arithmetic": "Listed boards (materials[0]-[3],[5]) are 3/4 x 5 1/2, 3/4 x 3 1/2, 3/4 x 1 1/2 and 1 1/2 x 1 1/2 (§9); none is 1/2\" thick. The 1/2\" x 3\" board the step names is not in materials (search /1\\/2/ over materials: only the 1 fine-thread screws and none for lumber).",
+      "reason": "Drawer sides/front/back (cutList[12]-[14], 0.5 x 2.5 x 20 and 16) can only come from a board the materials list omits. Replaces the sweep's 'thinner than stock' unknown; also covers the missing stock under R14(c)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x6, 1x4, 1x2, sheet-0.25, 2x2); steps not checked for per-part stock"
+      "reason": "Drawer parts (cutList[12]-[14]) come from the unlisted 1/2\" x 3\" board, so not every part's stock is a listed material. All listed-stock groups do fit: 1x6 (8 x 96\"): 2*21+2*45+2*22.5+3*47.5+5*51.5 = 577 + 14 cuts x 0.125 = 578.75 <= 768, and a board-by-board layout works (5 boards 51.5+22.5+21 / 51.5+22.5+21 pairs, 3 boards 47.5+45); 1x4 96\": 2 x 47.5 = 95 + 0.125 <= 96; 1x4 24\": 19; 1x2 (2 x 96\"): 45+45+0.125 and 21+21+21.5+21.5+0.375 <= 96; 2x2 72\": 4 x 15 + 0.5 <= 72; 1/4\" ply 16.375 x 19.375 <= 24 x 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" and 1\" fine-thread pocket hole screws (steps[2],[5],[7],[9],[11],[13],[15],[18]) = materials[6],[7]; pull mounting screws come with the pull (materials[9])"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give: drawer opening 18\" x 3\" centred (13 1/2\" each side, 1 1/4\" above/below) in c5f8ae53; end shelf rails 6 1/2\" down and offset 1/2\" (365a9643); shelf corner notches 1 1/4\" x 1 1/4\" (f684868e); drawer grooves 1/4\" x 1/4\" and pocket holes 9/16\"/7/8\" (8b231a87); slides per maker's instructions, top overhang 'evenly', pull centred (relational)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "33 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "ends (0-2), apron/stretcher assembly (3-5), shelf rail assembly (6-7), shelf (8-10), base (11), top (12-15), drawer (16-19), finish (20); each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "With your pocket-hole jig set up for 3/4\" material, drill pocket holes in the Legs, creating two matched pairs of legs, as shown."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Leg 4 1 1 15 (Kreg source 1 1/2\" x 1 1/2\" x 15\")"
+        }
+      ],
+      "reason": "The legs are 1 1/2\" (2x2) but the only setting stated for the holes drilled in them is 3/4\". 3/4\" is correct for the aprons/rails and steps[16] states 1/2\" for the drawer parts. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 5 top slats x 5.5 = 27.5 = base depth 21 + 2 x 1.5 legs = 24 + 2 x 1.75 overhang; 51.5 = 45 + 2 x 1.5 = 48 + 2 x 1.75; opening 18 x 3 (viewed) vs drawer 16 + 2 x 0.5 = 17 wide, 2.5 tall, false front 19 x 3.5 covers it. (b) all parts installed (shelf 11, drawer 18-19, false front 18). (c) slides, pull, screws in materials; the unlisted 1/2\" board is recorded under R4. (d) ends with finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "c5f8ae537473c63e.webp",
+      "f684868eede83df9.webp",
+      "8b231a870fb889e5.webp",
+      "365a9643c9258ac8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[20].body",
+      "quote": "Apply the finish, or stain and finish, of your choice.",
+      "what": "stain/finish and sandpaper not in materials"
+    }
+  ]
 }

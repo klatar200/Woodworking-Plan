@@ -167,10 +167,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name top boards, sides, cubby shelf, cubby dividers, drawer dividers, drawer supports, drawer box, drawer base, drawer front, backing; each matches cutList rows 0-9"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all ten rows used: rows 3 (5 = 2 drawer dividers + 3 drawer supports, steps[5],[6]), 7/8 (drawer box sides, fronts/backs steps[7]), 6 (drawer fronts steps[9]-[10])"
     },
     "R4": {
       "result": "pass",
@@ -178,21 +180,71 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "reason": "Steps do not name stock. Several parts could come from more than one listed material: 5 1/2\" wide parts (cutList[4],[7],[8]) match 1x6 (3/4 x 5 1/2) or 3/4\" plywood; 7 1/4\" fronts match 1x8 or plywood. 1x6 total if all from 1x6: 2*22.5 + 6*21.75 + 6*18.25 = 45+130.5+109.5 = 285 > 2 x 96 = 192, so the plywood alternative is needed; undecidable without per-part stock."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws, 2\" wood screws (steps[4]), 2\" and 3/4\" finish nails (steps[4],[11]), 1 1/4\" wood screws (steps[8],[10]) all in materials[5]-[9]; no use has two sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give: cubby shelf 5 1/2\" below top (b913b0d6) and cubby dividers 21\" bays (ea4d1e94); drawer dividers 21\" bays (d1069608); drawer supports 12 3/4\" (3db74a93); pull cutout 4\" wide, 1 1/2\" deep, 8 3/8\" each side (a2ca6bdb); glides 'per hardware instructions'. Backing vertical placement not dimensioned (see gaps)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top boards (1), sides to top (2), cubby shelf (3), cubby dividers (4), drawer dividers (5), supports (6), drawers (7-10), backing last (11); each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the top boards using wood glue, pocket holes and 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Attach drawer dividers to shelf using wood glue, pocket holes and 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes are used on 3/4\" parts throughout (steps 1,2,3,5,6,7) but no jig thickness setting is stated in any step, materials, summary or description (search /jig|setting|set (for|to)/i over all fields: no match); viewed step images show hole positions only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) top 5 x 4.5 = 22.5 = overall depth (steps[0],[1]); shelf 66 - 2 x 0.75 = 64.5; bays (64.5 - 2 x 0.75)/3 = 21 = drawer-support length and viewed 21\"; sides 27.25 = 5.5 + 0.75 + 21; drawer box 18.25 + 2 x 0.75 = 19.75 = drawer base width (cutList[9]). (b) every part installed. (c) glides in materials. (d) ends with backing on finished unit."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "6d9e789c99e47cae.webp",
+      "3db74a935cf40759.webp",
+      "d1069608ba79e39e.webp",
+      "b913b0d6ab621cb7.webp",
+      "a2ca6bdbd193311e.webp",
+      "ea4d1e945f90449d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Attach the top boards using wood glue",
+      "what": "wood glue used throughout but not in materials"
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Attach backing to unit using wood glue and 3/4\" finish nails.",
+      "what": "vertical placement of the 14 1/2\" x 66\" backing is not stated (image 258b9281 not viewed)"
+    }
+  ]
 }

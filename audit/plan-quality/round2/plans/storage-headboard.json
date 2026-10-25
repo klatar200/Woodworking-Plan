@@ -143,32 +143,68 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name Legs, Top, Shelf, Lower Rail, Upper Panel, Lower Panel; each is a cutList row 0-5"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all six rows used in steps[0]-[7]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x8, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock: legs/top/shelf 1x8, rail 1x4, panels 3/4\" plywood. 1x8: 4 pieces (54, 54, 65.25, 65.25) from 4 x 96\"; no two share a board (54+65.25 = 119.25 > 96) so 4 boards = 4 pieces, each <= 96. 1x4: rail 65.25 <= 96. Plywood: 28 + 18 + 0.125 kerf = 46.125 <= 48 across and 65.25 <= 96 along one full sheet."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only '1 1/4\" fine-thread pocket-hole screws' used (steps[2],[3],[6],[7]) = materials[3]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "shelf 18\" below top and rail 1\" back / 7 1/4\" up given in text and viewed images; panel positions fixed by shelf, rail and legs (viewed 3ecfa2cf: lower panel sits under shelf, in front of rail); panels flush at back (steps[6])"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "13 reference(s), each in a step with its own image"
+      "reason": "viewed step images show the cutting diagrams (top/shelf 65 1/4 x 7 1/4 with hole layout; lower panel 65 1/4 x 28 with hole layout)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top/shelf/legs frame (2), rail (3), then upper panel (6) and lower panel (7) fit between frame members; panel pocket holes drilled before install"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[1],[4],[5] 'pocket-hole jig set up for 3/4\" material'; every part is 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Upper Panel 18\" (cutList[5]) = 18\" shelf drop in steps[2] and viewed image; panels and top/shelf/rail all 65 1/4 (legs outside, per viewed ab9e50f7); rail 1\" back + 3/4\" panel = 1/4\" inset (steps[7]: 1\" - 3/4\"). (b) every part installed. (c) no non-fastener items beyond mounting hardware (see gaps). (d) reaches finished headboard."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "ab9e50f74c1465c0.webp",
+      "b20a896e248ccff0.webp",
+      "5eb239256906a9cb.webp",
+      "3ecfa2cf5fc837df.webp",
+      "09e56a9c04cce295.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "[Make a Lower Panel] Cut one Upper Panel to size from a sheet of 3/4\" plywood",
+      "what": "Lower Panel step says 'Upper Panel' (typo); cut list and viewed image identify the 28 x 65 1/4 Lower Panel"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "You may be able to use screws or bolts, or you may need to pick up some bed-rail hardware at your local home center.",
+      "what": "bed mounting hardware and its sizes/positions unspecified; plan defers to the builder's bed frame"
+    }
+  ]
 }

@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name only 'boards', the 30\" main board and 10\"/11 1/4\" sections; viewed ff267af1 maps the 3 x 30, 4 x 10, 2 x 11 1/4 pieces to cutList rows 0-2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "the three generic 'Boards' rows are real parts: main board 3 x 30, section flank boards 4 x 10, section centre/handle boards 2 x 11 1/4 (viewed 47129036)"
     },
     "R4": {
       "result": "pass",
@@ -73,18 +75,65 @@
       "arithmetic": "parts: 3×30 + 4×10 + 2×11.25 + kerf 7 cuts (9 parts − 2 boards, the fewest possible)×1/8 = 153.375″; bought: 2×96 = 192″; 153.375 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener is 1 1/4\" fine-thread pocket hole screws (steps[1]) = materials[1]; no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "piece lengths and hole positions are dimensioned in viewed ff267af1/47129036 (30\", 10\", 11 1/4\"); sections sit at each end of the 30\" board per viewed ce4e728c (10\" each, 30\" overall, 10 1/2\" wide); handle rounding 1/2\" from corners (optional)"
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut and drill (0), three pieces assembled (1), sections glued to main board (2), routing (3), optional rounding (4), plugs/sanding/finish (5)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut boards to the sizes indicated and drill pocket holes in locations shown."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble as three separate pieces as shown using waterproof wood glue and 1 1/4\" FINE thread pocket hole screws."
+        }
+      ],
+      "reason": "All parts are 0.75 thick and get pocket holes, but no jig thickness setting is stated in any step or material (search /jig|setting|set (for|to)|3\\/4\"/ over steps/materials/description: none); viewed images ff267af1/47129036 show hole positions only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 x 3.5 = 10.5 = viewed 10 1/2\" width; 10 + 10 + (section centre 11 1/4 centred) ; 18 screws = 18 pocket holes counted in viewed ff267af1 (3+4+3 on the 30\" boards, 2 each on four 10\" boards); 10 plugs = the 10 holes on the main board bottom. (b) all parts installed (steps[2]). (c) glue, oil, plugs in materials; handle hardware is optional (gaps). (d) reaches finished board."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-38",
+    "imagesViewed": [
+      "ff267af131bc8799.webp",
+      "47129036b143104f.webp",
+      "ce4e728c488a09ef.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "If you'd like to add some hardware handles, select some that have a distance of less than 3 1/2\" between the holes.",
+      "what": "optional hardware handles not in materials (optional step)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Sand with a 150 grit sandpaper on an orbital sander ... Follow-up with a 220 grit sandpaper.",
+      "what": "sandpaper not in materials"
+    }
+  ]
 }
