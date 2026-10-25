@@ -167,45 +167,97 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part has a row: Side/Shelf Slats (steps[0],[1],[4]), Vertical Rails (steps[2]), Front/Back Rails (steps[12]), Top Frame/Panel/Sheet (steps[6]), Caster Blocks (steps[11]). steps[2] says \"Top Side Rail\" and \"Side Rail\" where it means the Top Side Slat/Side Slats; naming slip, no missing part (recorded in gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All nine rows used (Top Sheet is cut from the listed galvanized sheet)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Flag resolved: cutList[7] Top Sheet (0.0625\") comes from materials[8] \"24\" x 24\" galvanized sheet metal\", not from board stock; the other rows match 1x6, 1x4, 1x2 and 3/4\" plywood after Kreg correction."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Boards pass on Kreg-corrected rows: 1x6 96\" x5: 4 x 23.5 = 94 + 3 kerfs 0.375 = 94.4 <= 96 per board for 20 slats; 1x4 96\": 3 x 21.25 + 4 x 3.5 = 63.75 + 14 = 77.75 + 0.75 <= 96; 1x2 96\" x4: 4 x 33.625 + 3 x 21.25 + 4 x 27 = 134.5 + 63.75 + 108 = 306.25 (+ kerf) <= 384. Sheet rule: Top Panel 24 x 24 from \"Plywood, 3/4\" Thick 24\"\" (area bought not stated) so no certain fail; unknown. Note: if steps[12] is right that Front Rails come from a 1x4 board, the single 1x4 would be short (3 x 21.25 + 3 x 21.25 + 4 x 3.5 = 141.5 > 96); cutList[2] and materials[2] say 1x2."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" pocket-hole screws (steps[2],[3],[5],[7]-[10]) = materials[6] \"1-1/4\" exterior-rated pocket-hole screws\" (step text also says Blue-Kote, same size). Casters/lag screws in materials[4],[5]; no size in steps to conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numbered in viewed images or relational: slat length 23 1/2\" and pocket holes (17a62904e36226b6), rail holes 3/8\" (4790d617fa56b6c6), caster blocks at the corners (4187820274252d6c), shelf heights 14 1/2\" / 14 5/8\" (3c114e748ffcca68); middle shelf \"aligning it with the lower edge of the third Side Slat\"; top overhang \"equally on all sides\"."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flag resolved: steps[0] \"as shown in the cutting diagram\" has no own image, but the viewed steps[1] image (17a62904e36226b6) shows the slat size (23 1/2\" x 5 1/2\", make 10 and make 2); the other cited diagrams have their own step images."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "cut twenty Slats to length from 1x6 boards, as shown in the cutting diagram. Some of these Slats will be used to make the sides of the grilling station, and others will be used to make the shelves, bu",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[5].body",
+          "quote": "Assemble two shelves by joining four Slats to a Front Rail and a Back Rail"
         },
         {
-          "path": "steps[0].body",
-          "quote": "ty Slats to length from 1x6 boards, as shown in the cutting diagram. Some of these Slats will be used to make the sides of the grilling station, and others will be used to make the shelves, but they a",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[12].body",
+          "quote": "Cut three Front Rails to length from a 1x4 board, and cut three Back Rails to length from a 1x4 board"
         }
-      ]
+      ],
+      "reason": "steps[5] (and the final assembly in steps[8]/[9]) use Front and Back Rails, but they are first cut and drilled in steps[12], the last step. The build can proceed if the builder reads ahead, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1], [4] and [12] state the jig set for 3/4\"-thick material; every pocket-holed part (slats, rails, top panel) is 0.75\" thick; other joints use stated screws, epoxy or construction adhesive."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "Cut three Front Rails to length from a 1x4 board"
+        },
+        {
+          "path": "cutList[2].part",
+          "quote": "Front Rail"
+        }
+      ],
+      "reason": "(a) steps[12] says the Front Rails come from a 1x4 board but cutList[2] Front Rail is 0.75 x 1.5 x 21.25 (corrected; a 1x2) and viewed image 4790d617fa56b6c6 shows the Front Rail 1 1/2\" wide while the Back Rail is 3 1/2\". (b) steps[5] builds two shelves from one Front Rail and one Back Rail each (2 + 2), but cutList[2]/[3] and steps[12] make three of each, and no step installs the third pair (search steps for /rail/i: steps[2],[5],[12] only). (c) casters, lag screws, epoxy, sheet metal listed. (d) steps reach the finished cart."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e72e9a681452491.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/28b1b740d3d9ea2d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9cba905c3fcf2721.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c114e748ffcca68.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/17a62904e36226b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4187820274252d6c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4790d617fa56b6c6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Position one Top Side Rail and one Side Rail between each pair of Vertical Rails",
+      "what": "Names \"Top Side Rail\"/\"Side Rail\" do not match any part (means Top Side Slat and Side Slat)."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Then use denatured alcohol and a rag to clean the metal sheet.",
+      "what": "kind: consumable - denatured alcohol, sandpaper and exterior deck stain not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

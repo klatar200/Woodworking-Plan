@@ -131,17 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Rip down the 2x10 boards to 8\" wide total. Make sure to cut from both sides of the board in order to remove the rounded edges and give it a cleaner look. Assemble the table top by adding 1 1/2\" Pocket",
-          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag resolved: steps[3] \"Rip down the 2x10 boards to 8\" wide\" is a rip of listed 2x10 (cutList[3] Table Top Boards, 2x10), not a missing part. Legs (2x4 + 4x4), X supports, top boards all have cut rows. Feet (steps[2]) are marked \"Optional: Add 1x4 base\" in viewed image 0172536f5f1719af and 1x4 is listed (materials[3]); see gaps. Metal pipe/flanges are hardware, scored under R14(c)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used: Leg Base steps[0], Leg Support steps[0], X Supports steps[1], Table Top Boards steps[3]."
     },
     "R4": {
       "result": "pass",
@@ -149,20 +144,85 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x10, 2x4, 4x4, 1x4); steps not checked for per-part stock"
+      "reason": "Scorable by stock (each part matches exactly one material: 1.5x3.5->2x4, 3.5x3.5->4x4, 1.5x9.25->2x10). 2x10: 4x72=288 vs 2x144=288, short only by kerf 3 x 1/8 = 0.375 <= 1/2 (pass, kerfOnly). 2x4: 4x30=120 vs 1x120, kerf 0.375 (pass, kerfOnly). 4x4: 2x24.75 + 8x18.125 = 49.5+145 = 194.5 (+kerf) vs 2x96 = 192 on straight-length sum, but steps[1] says X supports are cut \"one side at a 43 degree angle, and the other at a 47 degree angle\" with 18 1/8\" the LONGEST side, so the straight-length sum overstates what is consumed; cannot be settled without cut geometry."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 2 1/2\" wood screws (steps[0],[1]; materials[5] \"Box of 2 1/2\" Wood Screws\"), 2 1/2\" pocket hole screws (steps[3]; materials[4] \"Box of 2 1/2\" Coarse Kreg Jig Screws\"). No size is given for finish nails, threaded inserts or bolts in steps, so no size mismatch; no conflicting sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are shown in viewed images or fixed by the parts: X supports and 4x4 centre (6b4a8ea0c9e967b8), 4x4 vertical on 2x4s with 24 3/4\" dimension (f9bfca7cca51a458), pocket holes (6c16aeca7ea3a78b), pipe at X centre between legs (a5f6626f39719340), feet 3 1/2\" (0172536f5f1719af). Leg inset along the top and pipe length are not numbered; recorded in gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references in steps (sweep search stands); step images viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs (steps[0]) -> X supports on legs (steps[1]) -> feet (steps[2]) -> top (steps[3]) -> top onto base (steps[4]) -> pipe between legs (steps[5]) -> finish. Each item exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] states \"1 1/2\" Pocket Holes and 2 1/2\" Pocket Hole Screws\" for the 1.5\" 2x10 top boards (matches thickness); all other joints state method and fastener (wood glue + 2 1/2\" wood screws, countersunk; glue + finish nails)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach the flanges and metal pipe to the inside of the legs, making sure to keep level."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Rip down the 2x10 boards to 8\" wide total."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Table Top Boards"
+        }
+      ],
+      "reason": "(c) Flanges and metal pipe are installed in steps[5] but are not in materials (search materials[].name for /pipe|flange/i: none) and no pipe size or length is given anywhere in the plan. (a) steps[3] rips the top boards to 8\" while the Kreg-corrected cutList[3] row is 1.5 x 9.25 x 72 (the unripped 2x10 width).",
+      "arithmetic": "steps[3] width 8 vs cutList[3] corrected widthIn 9.25: 9.25 - 8 = 1.25 difference"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f9bfca7cca51a458.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6b4a8ea0c9e967b8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0172536f5f1719af.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6c16aeca7ea3a78b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/73abd61e5506d594.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a5f6626f39719340.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the feet to the bottom of the leg base using wood glue and finish nails.",
+      "what": "Feet have no cut row or size in text (image 0172536f5f1719af says Optional, 1x4 base, 3 1/2\"); 1x4 72\" material is not tied to any cut row. Finish nails not in materials."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Attach the table top to the base by adding threaded inserts into the tabletop and drilling holes through the top of the leg base. Attach with bolts.",
+      "what": "Threaded inserts and bolts not in materials and no size/count/hole location given; plan offers an alternative (wood screws and glue), so recorded here not as a failure."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Attach the table top to the base",
+      "what": "Leg inset from table-top ends (position of the two bases along the 72\" top) and the metal pipe length are not given in text; only shown qualitatively in images."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "using wood glue and 2 1/2\" wood screws (countersunk)",
+      "what": "kind: consumable - wood glue and wood filler (steps[6]) not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

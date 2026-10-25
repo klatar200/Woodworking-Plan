@@ -203,39 +203,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "X accent has no cut row but step 1 says to cut it from the listed 2x2 (\"clamp the 2x2 across the back\"); materials[3] is Board, 2x2 96\". All other cut rows and step-made parts (top boards, slats, ends, stretchers) are in the cut list. Search: steps[0..5] vs cutList parts."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        }
-      ]
+      "result": "pass",
+      "reason": "\"Legs\" is not named in a step, but steps[0] builds \"the two sides of the table\" with \"end pieces\" - sides cannot exist without legs; row is a real part, not an assembly/placeholder. All other rows used (steps[0],[2],[4])."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x3, 1x4, 2x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every cut part matches exactly ONE listed material (Kreg-corrected rows): 1.5x2.5 -> 2x3 (legs, upper end/stretcher); 1.5x3.5 -> 2x4 (lower end/stretcher); 0.75x3.5 -> 1x4 (slats, top). 2x3: 4x29 + 2x6 + 2x42 = 116+12+84 = 212 (+ 8 cuts x 1/8 = 1) <= 3 x 96 = 288. 2x4: 2x6 + 2x42 = 12+84 = 96 (+0.5 kerf) <= 1 x 120. 1x4: 11x11 + 2x14 + 4x41 = 121+28+164 = 313 (+17 cuts x 1/8 = 2.1) <= 4 x 96 = 384. X accent (2x2) has no cut row so cannot be totalled."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "I used 18 guage brad nails and glue"
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Brad nails"
+        }
+      ],
+      "reason": "Step gives a fastener size (18 gauge) that materials[5] does not carry; no other fastener size is given in steps. Search: steps for screw/nail sizes (inch measurements, gauge)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Placement by relation or by the parts: top \"Center the top on the base\"; slats equal spacing \"equally distribute\"; X marked in place from the base. Lower-stretcher/lower-end height above floor has no number but is shown in the viewed SketchUp image (715157934afa24e6 vs 7765abd2c535657b: lower frame sits a short way above leg bottoms, upper frame flush under the top)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Only reference is steps[2] \"as shown\", which has its own step image; SketchUp image 7765abd2c535657b viewed also shows the assembly."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: base sides + stretchers (steps[0]) -> X accent attached to base (steps[1]) -> top assembled (steps[2]) -> top attached to base (steps[3]) -> slats (steps[4]). Slats are fixed after the X, nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "using two pocket hole screws in either end of the end pieces"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Put two pocket holes into each end of the long boards"
+        }
+      ],
+      "reason": "Pocket holes in 1.5\" (steps[0]) and 0.75\" (steps[2]) stock; no jig thickness setting stated anywhere (search steps/description/materials for setting|thickness|jig|depth: none). steps[4] also gives no method or fastener for attaching the lower slats (search steps[4] for screw|nail|glue|pocket: none)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach the top to the base using the L-brackets"
+        }
+      ],
+      "reason": "R14(c): L-brackets used in steps[3] are not in materials (search materials[].name for /bracket/i: none). (a) Top: 4 x 3.5 = 14 = \"Table top end\" length 14; slats 11 x 3.5 = 38.5 fits 42 opening; (b)/(d) all parts installed, steps reach finish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c1b6c16efb2c2705.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/715157934afa24e6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7765abd2c535657b.webp"
+    ]
+  },
+  "gaps": []
 }

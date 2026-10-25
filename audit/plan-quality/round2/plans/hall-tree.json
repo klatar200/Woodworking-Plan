@@ -239,10 +239,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part has a row: Seat/Main Legs (steps[0]), Frame Stile/Rail and Hook Rail (steps[2]), Small/Large Box Bottom (steps[4]), Box Front/Back, Seat Rail, Box Brace (steps[6]), Top (steps[12]), Seat Lid (steps[13]), Back Panel (steps[14])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All fourteen rows are used (Seat Rail: steps[6] cut, steps[8] image and title, steps[13] hinges attach to it)."
     },
     "R4": {
       "result": "pass",
@@ -250,29 +252,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.25, 1x3, 1x4, 1x6, 1x12); steps not checked for per-part stock"
+      "reason": "Every part matches exactly one board by thickness x width (Kreg-corrected): 0.75x11.25 -> 1x12; 0.75x5.5 -> 1x6; 0.75x3.5 -> 1x4; 0.75x2.5 -> 1x3. 1x12 72\" x3: Main Legs 2 x 72 (one per board) + Large Box Bottom 33 + Seat Lid 32.75 = 65.75 (+ 0.125) <= 72. 1x6 72\" x3: 2 x 17.75 + 3 x 33 + 35.5 = 170 (+0.75) <= 216, packable (33+33; 33+35.5; 17.75+17.75+35.5 = 71 + 0.25). 1x4 72\": 33 + 14.75 = 47.75 <= 72. 1x3: 2 x 54.25 + 2 x 28 + 28 = 192.5 (+0.75) <= 96 x2 + 48 = 240, packable. The 1/4\" beadboard Back Panel 32.5 x 54 is a sheet part (full sheet 4608 sq in vs 1755), so by the sheet rule no certain fail and not scored."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" coarse-thread pocket-hole screws (steps[1],[3],[5],[7]-[11]) = materials[6]; 3/4\" flathead wood screws (steps[14]) = materials[7] \"#6 x 3/4\" flathead wood screws\"; 2 1/2\" non-mortise hinges (steps[13]) = materials[8]. No conflicts."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "Next, it’s time to position and attach the box assembly. Notice that the box assembly is not inset on the Main Leg like the frame was. The box assembly sits flush with the rear edge of the leg. Spread",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af881cc06f6be04a.webp"
+          "path": "materials[9].name",
+          "quote": "Coat hooks"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut two Frame Stiles, two Frame Rails and one Hook Rail from 1x3 pine boards"
         }
-      ]
+      ],
+      "reason": "Flag resolved: steps[10] box assembly \"sits flush with the rear edge of the leg\" and its height is fixed by the parts (frame 54.25 + box 17.75 = 72 Main Leg; viewed images af881cc06f6be04a, a42dc7c6c2779111). But the three coat hooks (materials[9], visible on the Hook Rail in hero photo e7d29e8db435a1c9) have no placement on the Hook Rail: no step mentions installing hooks and no spacing or height is given in text or any viewed image (search steps for /hook/i: only \"Hook Rail\" in steps[2],[3])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "reason": "Sweep stands: 23 \"as shown\"/diagram references, each in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs (steps[0],[1]) and frame (steps[2],[3]) built, box built (steps[4]-[8]), final assembly leg -> box -> second leg (steps[9]-[11]), top (steps[12]), lid (steps[13]), back panel last (steps[14]). Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0], [2] and [6] state the jig set for 3/4\"-thick material; all pocket-holed parts are 0.75\" thick; other joints state glue, screws or hinges."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Sizes agree: frame width 28 + 2 x 2.5 = 33 = box parts 33 and Seat Lid 32.75 in the 33\" opening; Top 35.5 = 33 + 2 x 0.75 + 2 x 1/2 overhang (steps[12]); frame 54.25 + box 17.75 = 72 Main Leg. (b) all made parts installed. (c) hinges, hooks, screws listed; glue listed. (d) steps reach the finished tree except hook installation (scored in R10)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e7d29e8db435a1c9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af881cc06f6be04a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de1ecf5b9dfc00fb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a42dc7c6c2779111.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5754f45526b44da5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/79c07d5938be171f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7a345cbd795da1cc.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "we dry-brushed a colonial blue paint",
+      "what": "kind: consumable - paint/stain and sandpaper not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

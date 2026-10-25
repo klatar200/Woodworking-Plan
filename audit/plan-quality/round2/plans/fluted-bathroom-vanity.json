@@ -53,48 +53,125 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "use CA glue and glue the trim onto the backboard"
+        }
+      ],
+      "reason": "steps[5] glues the fluted trim onto a \"backboard\". No cut row is named back/backboard and no step cuts or installs one. Search: cutList[].part (Sides of Cabinet, Bottom of cabinet, Face frame center/sides, Fluting detail, Doors, Baseboard front/sides, Door Trim, Upper trim front/sides) and steps[0..10] for /back/i: only steps[5]. Viewed image acdf0a9885da3f49 shows a plain board behind the fluting, so it is a separate piece."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[4].part",
-          "quote": "Fluting detail",
-          "why": "no step mentions it (searched steps for fluting/detail)"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[6].part",
-          "quote": "Baseboard front",
-          "why": "no step mentions it (searched steps for baseboard)"
+          "quote": "Baseboard front"
         },
         {
           "path": "cutList[7].part",
-          "quote": "Baseboard Sides",
-          "why": "no step mentions it (searched steps for baseboard)"
+          "quote": "Baseboard Sides"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Door Trim"
         }
-      ]
+      ],
+      "reason": "Baseboard front/sides: no step cuts or attaches them (search steps[0..10] for /baseboard|base\\b|kick|toe|plinth|skirt/i: none; only steps[2] mentions the floor). cutList[8] Door Trim is 8 x 0.25 x 0.25 x 0.25 - a quarter-inch length cannot trim a 12.875 x 24 door (S-18 style garbage row; steps[7] \"Add trim to the door fronts\" is optional). Fluting detail (cutList[4]) is used by steps[5] (fluted trim) and passes."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0]); +7 more"
+      "reason": "Only stock is \"3/4\" thick wood, Board feet\" (materials[0]) with no board width or length: thickness 0.75 of cutList[0-7] matches, but part widths (e.g. 19.75, 20.5) cannot be checked against a stated width, and the 0.25-thick trim rows (cutList[8-10]) have no matching listed stock."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "reason": "One stock type, bought as 60 board feet (materials[0]); converting parts to board feet needs the board-foot definition, which is not in section 9, so not scored. For the human: parts total about 2372 cu in = 16.5 bf at 144 cu in/bf vs 60 bf bought."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" pocket hole screws (steps[0],[2],[3]) = materials[1]; 1 1/2\" brad nails (steps[4]) = materials[2]. No conflicting sizes. Hinge size not given in steps or materials (\"Inset door hinges\") - no size stated to compare."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "using the Kreg Hinge Jig drill the cup holes for the hinges"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut the face frame to size and attach together using 1 1/4\" pocket hole screws and wood glue."
+        }
+      ],
+      "reason": "Positions the builder must set but no number is given or shown in a viewed image: (1) hinge/cup-hole location along each door (steps[6]; image 76b05afe2e6636de shows the jig on a board, no distances); (2) where the three Face frame center rails sit between the two Face frame sides (steps[3]; cutList[2] qty 3 x 25.5, images de9e160ee4b4d205/06671d9601f90edb carry no dimensions); (3) where the fluted band and baseboard sit (steps[5]; photos only). Reveal is \"even\" (relational) and 3.5\" floor clearance is numbered, so those pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references in the steps (sweep search stands)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sequence is possible: side panels (steps[0]-[1]), bottom (steps[2]), face frame made and nailed on (steps[3]-[4]), fluting (steps[5]), doors drilled and hung (steps[6],[8]), trim, stain. The missing backboard is recorded under R2."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "using wood glue and 1 1/4\" pocket hole screws"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "attach together using 1 1/4\" pocket hole screws and wood glue"
+        }
+      ],
+      "reason": "Pocket holes in steps[0], [2] and [3] on 0.75\" stock; no jig thickness setting stated in any step, material or description (search for /setting|thickness|jig/ finds only \"Kreg Hinge Jig\", steps[6]). Viewed images 7f7c4b9ca0d984d2 and de9e160ee4b4d205 show no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Steps give few numbers: bottom 3.5\" off floor (sides 35 long) - no conflict; 2 doors x 2 hinges = 4 = materials[9]. (b) fluted trim, doors, door trim, upper trim are installed by later steps; backboard noted under R2, baseboard under R3. (c) hinges and CA glue listed. (d) steps reach a finished cabinet with doors; stain last."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix + Human review",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/597dabcb9543b34b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7e0c791e1596829c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f10cd1947e61d107.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f4a2ff521cd352d0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f7c4b9ca0d984d2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de9e160ee4b4d205.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/06671d9601f90edb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/acdf0a9885da3f49.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/76b05afe2e6636de.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Cut the panel to size using a table saw, track saw or circular saw.",
+      "what": "Which panel is being cut is not named (side panel glue-ups are widths 19.75-20.5 per cutList[0-1]); no glue-up instructions for the wide panels."
+    },
+    {
+      "path": "cutList[4].part",
+      "quote": "Fluting detail",
+      "what": "One 0.75 x 3.75 x 25.5 piece, but viewed photos show a fluted band spanning the cabinet front; no flute size, count or router-bit use is stated in steps (materials list \"Triple beaded bit\", \"Roundover bit\"). Door knobs seen in photos are not in materials or steps."
+    }
+  ],
+  "humanReview": "R5: stock is bought in board feet; converting the cut list to board feet needs the board-foot definition (outside section 9). Parts come to about 16.5 bf vs 60 bf bought, so likely fine."
 }

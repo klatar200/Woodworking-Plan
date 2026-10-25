@@ -71,10 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part has a cut row: Exterior sides, Back, Interior sides, Bottom (steps[1]-[3],[7]), Front trim \"1x2x45\" (steps[10]), Front for umbrella cubby (steps[5]), dividers (steps[9]), Shelves (steps[4],[11]). Search: step part names vs cutList[].part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All eight rows used by steps[1]-[11]."
     },
     "R4": {
       "result": "pass",
@@ -85,27 +87,80 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 1x2, 1x12); steps not checked for per-part stock"
+      "reason": "Parts by stock (Kreg-corrected). 1x12 48\": 3 x 15.5 = 46.5 + 2 kerfs 0.25 = 46.75 <= 48 (shelf 11.25 wide matches only 1x12). 1x2 72\": Front trim 45 + 2 dividers x 4 = 53 <= 72. 1/2\" plywood: 2x16x37.5 + 37.5x44 + 2x15.5x37 + 15.5x44 + 4x37 = 1200 + 1650 + 1147 + 682 + 148 = 4827 sq in vs full sheet 48x96 = 4608 plus a half sheet (size not stated): not a certain fail, sheet layout not judged."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Attach the bottom 15 1/2\" piece to the back using pocket hole screws.",
-          "why": "15 1/2\" screw — no material line lists a 15 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag resolved: steps[1] \"Attach the bottom 15 1/2\" piece\" is a part size, not a fastener. Fastener sizes in steps: 1 1/4\" brad nails (steps[8]) = materials[5]; pocket hole screws unsized in steps, materials[4] \"3/4\" Kreg Screws\". No conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbered or relational: first interior side 11 1/4\" from the right, second 4\" from the left (steps[2],[3]); dividers \"approximately 4\" spacing\"; trim \"along the bottom edge\"; shelf-pin hole layout by jig and \"a 2x4 as a guide\"; stationary shelf height is the builder's choice (\"desired height\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references (sweep search stands)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order is possible although step titles are out of sequence (Step 1, 3, 4, Preparation, 5, 2, 6...): bottom/interior sides on back, cubby front, shelf-pin holes, exterior sides, dividers, trim, shelves, veneer. The \"Preparation\" pocket-hole step sits after steps that use pocket holes (recorded in gaps), but no part is missing at any point."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "You will be using pocket holes to attach most of this piece. Predrill all the holes to make assembly quicker."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the bottom 15 1/2\" piece to the back using pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes in 1/2\" plywood (back, bottom, interior sides, cubby front) and 3/4\" shelves; no jig thickness setting stated anywhere (search steps/materials/description for /setting|thickness|jig set/: only \"Kreg Shelf Pin Jig\", steps[6]). Viewed image a0156777c8ea3efd (the Preparation step) shows the jig but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "place the adjustable shelf with shelf pins"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Interior sides: 5 holes along one 37 1/2\" side"
+        }
+      ],
+      "reason": "(c) steps[6] and steps[11] use shelf pins for the adjustable shelf; none is in materials (search materials[].name for /pin/i: none; materials are plywood, 1x2, 1x12, 3/4\" Kreg screws, brad nails, veneer). (a) steps[4] gives 37 1/2\" for the Interior sides and Front for Umbrella Cubby, but their rows are 37 (cutList[2] corrected 0.5 x 15.5 x 37; cutList[5] 37); 37.5 is the Exterior sides/Back length.",
+      "arithmetic": "steps[4] interior side 37.5 vs cutList[2].lengthIn 37: 37.5 - 37 = 0.5"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a0156777c8ea3efd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7d944957a71c263.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].title",
+      "quote": "Preparation",
+      "what": "Steps appear as Step 1, Step 3, Step 4, Preparation, Step 5, Step 2, Step 6... so pocket-hole preparation and the shelf-pin step are out of numbered order."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Always add glue to the joint prior to joining with screws.",
+      "what": "kind: consumable - wood glue and stain/paint not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

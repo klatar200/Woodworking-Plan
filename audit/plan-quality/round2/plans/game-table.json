@@ -119,10 +119,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts steps cut/assemble have rows: Legs (steps[0]), Rails (steps[1]), Short/Long Top (steps[3]), Cleat Spacer/Cleat (steps[5]), Bottom/Shelf (steps[7]), Game Board (steps[11]), Edging and Center Bar (steps[14]); optional storage dowels (steps[15]) are cut from listed 1/2\" square dowel."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All twelve rows are used by a step (legs steps[0] ... Center Bar steps[14]; its installation gap is scored under R14)."
     },
     "R4": {
       "result": "unknown",
@@ -130,76 +132,84 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "reason": "Sheet rule (R5 \"unknown unless area exceeds area bought\"): plywood parts fit the sheets bought by area, so no certain fail and sheet layout is not judged. Board/dowel stock all passes: Steps name the stock for every part. Kreg-corrected rows. 3x3 36\" x2: 2 legs per board = 2 x 15.25 + 1 kerf = 30.6 <= 36. 1x6 96\" x2: Rails 4 x 21 = 84 (+0.375) <= 96 and Tops 2x28 + 2x17 = 90 (+0.375) <= 96. 1/2\" x 1 1/2\" 48\" x3: Cleats 2x17 = 34, Short Edging 2x16 = 32, Long Edging 2x17 = 34, one pair per board <= 48. 3/4\" square dowel 36\": 2 x 17 = 34 + 0.125 <= 36. 1/2\" square dowel: Center Bar 16 <= 36. Three 24 x 24 plywood pieces for Bottom 24x24, Shelf 24x24, Game Board 16x16 (area 576 each, no part exceeds). importDiffs are fraction-dropped only."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give 1 1/4\" coarse-thread Kreg screws (steps[2],[4],[9],[10]) = materials[7]; \"wire nails\" (steps[6]) = materials[11] \"Package 1 1/4\" wire nails\". No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Placements are numbered in step text or viewed images: rail inset 1/4\" (steps[2]); pocket holes 6\" and 3/4\" (a9b95f97d3730bbf); notches 1 1/2\" x 3/4\" and 10 1/2\" holes (cb18a76914b6f75c); shelf 2\" from leg ends (ca0a8e4910f683b7); backgammon points 6 1/4\", 7 1/2\", 1 1/4\", 1/2\" bar (96bf59332a875033). Top overhang is relational (\"equally on all sides\")."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Start by cutting four Legs to length from 3x3 poplar boards, as shown in the cutting diagram. Sand the edges and ends of the Legs smooth.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Start by cutting four Legs to length from 3x3 poplar boards, as shown in the cutting diagram. Sand the edges and ends of the Legs smooth.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "The game board will rest on a pair of cleats that get attached to the underside of the table top. Each cleat is made from two pieces. First, cut two Cleat Spacers to length from a 3/4\" square dowel, a",
-          "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[5].body",
-          "quote": ", cut two Cleat Spacers to length from a 3/4\" square dowel, as shown in the cutting diagram. Next, cut two Cleats to the same length from a 1/2\" x 2 board (1 1/2\" actual width), as shown in the cuttin",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Cleat Spacers to length from a 3/4\" square dowel, as shown in the cutting diagram. Next, cut two Cleats to the same length from a 1/2\" x 2 board (1 1/2\" actual width), as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Cleat Spacers to length from a 3/4\" square dowel, as shown in the cutting diagram. Next, cut two Cleats to the same length from a 1/2\" x 2 board (1 1/2\" actual width), as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Cleat Spacers to length from a 3/4\" square dowel, as shown in the cutting diagram. Next, cut two Cleats to the same length from a 1/2\" x 2 board (1 1/2\" actual width), as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Cut one Game Board to size from 3/4\" plywood, as shown in the cut diagram. Then sand the surfaces smooth. On one face—the one that will be the backgammon board—we applied a clear finish. The finish ne",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "e Game Board to size from 3/4\" plywood, as shown in the cut diagram. Then sand the surfaces smooth. On one face—the one that will be the backgammon board—we applied a clear finish. The finish needs to",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Start by cutting four Legs to length from 3x3 poplar boards, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] cites a cutting diagram and has no step image. The five unattached images were viewed (6f3e2595a94089ec hero photo, 5b03a512d19152b6, ba51eaaacbbef991, ec7737797ae15625 photos, a388f15dd96f2591 overall SketchUp 28\" x 28\" x 16\"); none shows the leg cut. The leg length is in cutList[0] (15.25), so only the board layout is missing. The other cited diagrams (steps[1],[3],[5],[7],[11]) are shown by step images or by images viewed on other steps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base (steps[1],[2]) and top (steps[3],[4]) built, cleats attached to the top (steps[5],[6]), bottom/shelf cut (steps[7]), painted (steps[8]), top attached (steps[9]), bottom and shelf installed (steps[10]), game board made last (steps[11]-[14]). Order is possible; table is upside-down for steps[9],[10] as stated."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] and steps[3] state \"Set your Kreg pocket hole jig for 3/4\" thick material\"; all pocket-holed parts (Rails, Short Top, Bottom, Shelf plywood) are 0.75\" thick. Nailed joints state glue and wire/brad nails."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Cut the Center Bar to length from a 1/2\" x 1/2\" square dowel, as well. It won’t need pocket holes."
+        },
+        {
+          "path": "cutList[11].part",
+          "quote": "Center Bar"
+        }
+      ],
+      "reason": "(b) steps[14] cuts, sands and paints the Center Bar but no step glues or nails it on: the rest of steps[14] attaches only the Short and Long Edging (search steps[0..15] for /center bar|bar/i: steps[14] only; viewed image 51e5dee6076284dd and 96bf59332a875033 show a bar on the board, but no text installs it). (a) Counts/sizes agree otherwise: top 5.5 + 17 + 5.5 = 28; board 16 x 16 + edging; legs 15.25 + 0.75 top = 16\" (image a388f15dd96f2591)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6f3e2595a94089ec.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5b03a512d19152b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ba51eaaacbbef991.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ec7737797ae15625.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a388f15dd96f2591.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a9b95f97d3730bbf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb18a76914b6f75c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca0a8e4910f683b7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a47f4c450ddf3346.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/51e5dee6076284dd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/96bf59332a875033.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "We used a simple white paint, but you can paint or stain to suit your tastes.",
+      "what": "kind: consumable - paint/stain not in materials (spray lacquer and painter's tape are).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[15].body",
+      "quote": "you’ll need to figure out a layout that works for your game pieces.",
+      "what": "Optional storage layout is left to the builder (no dimensions)."
+    }
+  ]
 }

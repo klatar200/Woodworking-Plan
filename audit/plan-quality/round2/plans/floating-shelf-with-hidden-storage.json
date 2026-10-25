@@ -215,10 +215,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part a step cuts/assembles has a cut row: Wall Box Front/Back/Side/Divider (steps[0]), Bottom (steps[3]), Cleats (steps[4]), Aprons (steps[5]), Shelf Tops and Lid (steps[7]). Search: step cut-sentences vs cutList[].part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All ten rows used: rows 0-3 steps[0], row 4 steps[3], row 9 steps[4]/[9], rows 5-6 steps[5], rows 7-8 steps[7]."
     },
     "R4": {
       "result": "pass",
@@ -226,29 +228,58 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x3, sheet-0.25, 1x4, 1x10, 0.25x0.25); steps not checked for per-part stock"
+      "reason": "Sheet rule (R5 \"unknown unless area exceeds area bought\"): plywood parts fit the sheets bought by area, so no certain fail and sheet layout is not judged. Board/dowel stock all passes: Steps name the stock for every part (1x3 steps[0]; 1/4\" plywood steps[3]; dowel steps[4]; 1x4 steps[5]; 1x10 steps[7]); Kreg-corrected rows, 1/8\" kerf. 1x3 96\": 32+32+2x6.875+2x6.875 = 91.5 + 5 cuts x 1/8 = 92.1 <= 96. 1x4 72\": 2x8.5+34.5 = 51.5 + 0.25 <= 72. 1x10 48\": 2x12.75+9.25 = 34.75 + 0.25 <= 48. Dowel 36\": 3x7.75 = 23.25 + 0.25 <= 36. Quarter sheet: one part 8.375 x 32 fits 24 x 48. importDiffs show only fraction/numerator defects, no defaulted quantity."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps all in materials: 1 1/4\" fine-thread pocket-hole screws (materials[5]), 1 1/4\" brad nails (materials[7]), 5/8\" brad nails (materials[6]), 3\" wood screws (materials[8]). No conflicting sizes for one use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Separate the shelf top assembly from the wall box (most slides can be separated after installation). Now decide on the location for your shelf, and then locate the wall studs. Once you’ve done that, l",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c5f35e6fb016ad1.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[11] resolved by viewed image 2c5f35e6fb016ad1: screws through Wall Box Back at \"16\" (to match wall stud spacing)\", 3/16\" holes. Other positions numbered in viewed images: dividers 10 1/2\" (bec9db45d0911440), cleat 3/16\" from top edge (667e9cdf6655a919), lid cleats 1/2\" and 7/8\" (d15aeb90ed8cbdd4), slides/spacers (79e9f82e08d5b9ca), lid hole \"in the center\". Shelf height on wall is \"decide on the location\" (builder choice)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "20 reference(s), each in a step with its own image"
+      "reason": "All \"as shown\"/\"cutting diagram\" references are in steps with their own images; cutting diagram image 379193f9376dc793 viewed and shows part sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Wall box built first (steps[0]-[3]) with cleat (steps[4]); shelf aprons (steps[5]-[6]); tops/lid (steps[7]-[8]); lid cleats (steps[9]); slides (steps[10]); wall mount (steps[11]). Slides are fitted before sanding is irrelevant; finish done before slides per steps[9]. Nothing needs undoing."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and steps[5] state \"pocket-hole jig set up for 3/4\" material\" and the pocket-holed parts (Wall Box Sides, Aprons) are 0.75\" thick; other joints state glue + 1 1/4\" brad nails / 5/8\" brad nails / glue."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step values match corrected rows: 3/16\" cleat offset; lid cleats 7 3/4\" = 8.75 - 2 x 1/2 (image d15aeb90ed8cbdd4); dividers: image shows 10 1/2\" compartments. (b) cleats (3), dividers, lid, aprons, tops all installed (steps[2],[4],[6],[8],[9]); lid rests on cleats. (c) hardware: drawer slides materials[9], screws listed; scrap board/pennies/spacers go in gaps. (d) steps reach the finished shelf (steps[11])."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/379193f9376dc793.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bec9db45d0911440.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/667e9cdf6655a919.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d15aeb90ed8cbdd4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/79e9f82e08d5b9ca.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c5f35e6fb016ad1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Then, use spacers to slightly raise the wall box assembly—pennies work great.",
+      "what": "kind: consumable/shop aid - spacers (pennies) and a 3/4\"-thick scrap board are not in materials; not a hardware gap.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Use glue and 1 1/4\" pocket-hole screws",
+      "what": "kind: consumable - wood glue listed (materials[11]); finish (\"clear wipe-on oil finish\", steps[9]) not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

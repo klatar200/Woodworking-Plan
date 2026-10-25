@@ -467,10 +467,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "two Large Box Dividers"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Large Box Shelf"
+        }
+      ],
+      "reason": "steps[2] says to cut \"two Large Box Dividers\" but the cut list has no Large Box Divider row (search cutList[].part: Tower Divider exists, Large Box Side/Top/Bottom/Rail/Shelf exist, no Large Box Divider). The viewed Large Box diagram (bc0dcd708f086754) shows only Side, Rail and Top/Bottom, so the step text is probably the stale one, but the plan contradicts itself. All other cut parts have rows; Pegboard Cleat is cut from the listed 1x2 by steps[11] (length not given, see gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All eighteen rows are used by steps[0]-[11] (towers steps[0],[1]; large boxes steps[2],[3]; small boxes steps[4],[5]; ledgers steps[6],[7],[9]; workbench steps[10],[11]; pegboard steps[11])."
     },
     "R4": {
       "result": "pass",
@@ -478,29 +493,72 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheets: 3/4\" plywood parts (Kreg-corrected) total 16441.65 sq in = 4536 + 1417.5 + 708.75 + 157.5 + 2114.4 + 1512 + 1417.5 + 157.5 + 704.8 + 756 + 1417.5 + 157.5 + 859.5 + 262.6 + 262.6 vs 4 x 48 x 96 = 18432 bought: no certain fail, sheet layout not judged. 1x2 96\" x2: Lower Ledger 96 + Upper Ledger 48 (+ Pegboard Cleat, length not stated) fits in two boards. Pegboard 16.75 x 48 fits 24 x 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" coarse-thread Kreg pocket-hole screws (steps[1],[3],[5],[8],[9],[11]) = materials[3]; 3\" screws (steps[7]-[9]) = materials[4]; 3/4\" screws for the pegboard (steps[11]) = materials[5]. No conflicts. Continuous hinge = materials[6]."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "ssured of getting consistent spacing with all of the holes.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/331939367490c55f.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag resolved by viewed image 331939367490c55f: shelf-pin holes 2\" from edge, 1 1/4\" pitch, 8 7/8\" and 6 1/4\" runs; large box and rail pocket holes numbered (bc0dcd708f086754). Mounting heights are numbered in steps: Lower Ledger 24\" from floor (steps[7]), towers 48\" apart, Upper Ledger 24\" down from tower tops (steps[9]), Pegboard Cleat 16 3/4\" below large boxes (steps[11])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "reason": "Sweep stands: 23 \"as shown\"/diagram references, each in a step with its own image; Tower and Large Box diagrams viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Towers, large boxes, small boxes and ledgers built first (steps[0]-[6]), then installed ledger -> towers/small boxes -> upper ledger/large boxes (steps[7]-[9]), workbench (steps[10]-[11]). Finishing after installation is allowed by steps[11]. Pass."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states the jig set for 3/4\" thick material (typo \"thcik\"), steps[2] \"3/4\" stock\"; all pocket-holed parts (tops, bottoms, dividers, rails, ledgers) are 0.75\" thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "heavy-duty wall anchors"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "3\" flat-head wood screws or deck screws"
+        }
+      ],
+      "reason": "(c) steps[7],[8],[9],[11] call for heavy-duty wall anchors where studs are not available; no anchor appears in materials (search materials[].name for /anchor/i: none). Usage is conditional on the wall, not marked optional. (a) Widths agree: 2 towers x (22.5 + 2 x 0.75) = 48 and 2 small boxes = 48 give the \"48\" of space\" in steps[8]; Pegboard 16.75 matches \"16 3/4\"\" (steps[11]); workbench parts 47.75 fit the 48\" opening.",
+      "arithmetic": "2 x (22.5 + 1.5) = 48 wide towers; 96 - 48 = 48 gap = steps[8] \"48\" of space\""
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/331939367490c55f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc0dcd708f086754.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[7].name",
+      "quote": "4\" utility pull",
+      "what": "A 4\" utility pull is listed but no step installs or places it."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Also cut a Pegboard Cleat from a 1x2 board.",
+      "what": "Pegboard Cleat length is not given (no cut-list row)."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "We just added a coat of wipe-on a polyurethane.",
+      "what": "kind: consumable - finish not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

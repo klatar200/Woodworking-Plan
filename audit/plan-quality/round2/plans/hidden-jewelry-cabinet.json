@@ -203,17 +203,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[12].body",
-          "quote": "Cut a piece of decorative sheet metal to 7\" x 11 1/2\". Lay it on top of the earring rack frame and secure it to the frame with the wire nails through some of the decorative holes. Add the 1\" hinges to",
-          "why": "cut sentence states 11 1/2\" — no cut-list dimension or material size matches (corrected values)"
+          "path": "steps[8].body",
+          "quote": "Attach the 1x1 boards cut for the earring rack sides and top/bottom"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x1 36\""
         }
-      ]
+      ],
+      "reason": "steps[8] builds the earring rack frame from 1x1 pieces \"cut for\" its sides and top/bottom, but no cut row exists for them and no step cuts them or gives lengths. Search: cutList[].part (Box sides ... Pegs) for /earring|1x1|rack/: only \"Bracelet rack\" (1x2); steps[0..15] for /cut.*earring/: none. The only size is the sheet-metal top \"7\" x 11 1/2\"\" (steps[12]). Flag resolved: that sheet-metal cut is from listed materials[9], not a missing part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All twelve rows are used: Box parts steps[0]; frame steps[1]-[2]; ring compartments steps[3]; Bracelet rack steps[4],[7]; sign parts steps[5],[9]; Box back steps[10]; Pegs steps[7],[11]."
     },
     "R4": {
       "result": "pass",
@@ -221,20 +229,63 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "reason": "Boards pass (Kreg-corrected, each part matches exactly one material): 1x4 96\": 2x17 + 2x14.5 = 63 (+0.375) <= 96. 1x2 96\" x2: 2x20 + 2x16 + 13 + 2x18.5 + 2x16 = 154 (+1.1) <= 192, packable (20+20+18.5+18.5+16 = 93 on one board). 1/4\" x 1 1/2\" 36\": 13 + 3.25 = 16.25. 3/16\" dowel 48\": 20 x 2 = 40 (+19 kerfs 2.4) <= 48. Sheet parts (Box back and Sign, 14.5 x 18.5 = 268 sq in each, from quarter sheets of 1152) are no certain fail so the sheet rule gives unknown; the 1x1 earring-rack stock cannot be totalled because it has no cut rows (see R2)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1 1/4\" pocket hole screws (step 5) = materials[7]; 1 1/4\" finish nails (steps[8],[10]) = materials[8]; wire nails (steps[12]) = materials[13] 5/8\"; 1\" hinges (steps[12]) = materials[14]; 2\" hinges (steps[14]) = materials[15]. No conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numbered or relational: bracelet rack 9\" below the top (steps[7]), earring rack hinged about 1/2\" from the top (steps[12]), wall opening 14 1/2\" x 18 1/2\" (steps[13]), sign inset 3/4\", peg-hole clearance 1 1/2\" each side (steps[9]), frame flush with the box inside (steps[2]). Necklace-peg height is \"low enough that it will clear the box frame\" (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references (sweep search stands)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "attach the sides of the wood sign frame to the sides of the sign with 1 1/4\" pocket hole screws"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Cut the pieces for the wood sign and wood sign frame. Drill pocket holes set for 3/4\" thick material along all 4 sides of the plywood back."
+        }
+      ],
+      "reason": "steps[5] assembles the wood sign from the sign plywood and frame (and uses its pocket holes) before steps[9] cuts those pieces and drills the pocket holes; the sign cannot be built in the written order. The build can proceed by reordering, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[1],[4],[9] state pocket holes set for 3/4\" material; all pocket-holed parts (box, frame, rack, sign) are 0.75\" thick. Other joints state glue plus finish/wire nails or hinges."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Sizes agree: box 14.5 x 18.5 outside (sides 17 + 2 x 0.75; top/bottom 14.5) = Box back/Sign 14.5 x 18.5 and wall opening 14 1/2\" x 18 1/2\"; frame 16 x 20 outside gives a 13 x 17 opening = box inside (steps[2]); Bracelet rack 13 = box inside width. (b) all made parts installed (rack, ring compartments, earring rack, sign). (c) hinges, metal sheet, felt, spray glue, nails listed; the magnetic latch is \"I also added\" (gaps). (d) steps reach the finished cabinet."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "I added a magnetic cabinet latch to the top right corner",
+      "what": "Optional extra: magnetic latch not in materials."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Sand and finish all the pieces for the jewelry cabinet.",
+      "what": "kind: consumable - paint/stain/sealer and hot glue not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

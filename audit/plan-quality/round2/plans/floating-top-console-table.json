@@ -95,57 +95,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part a step cuts has a cut row: Legs steps[0], Short Rails steps[1], Long Rails steps[2], Top Supports steps[5], Top steps[7]. Search: step \"Cut ...\" sentences vs cutList[].part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows are used by steps[0]-[8]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x6, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (2x2 legs steps[0]; 1x4 rails/supports steps[1],[2],[5]; 1x6 top steps[7]). Kreg-corrected rows. 2x2 60\" x4: 4 legs x 34 = 136 <= 240 (one 34\" leg per board). 1x4 96\" x2 = 192: 2x13+2x42+3x14 = 26+84+42 = 152 + 6 cuts x 1/8 = 152.75 <= 192 (board 1: 42+42+0.25; board 2: 13+13+3x14+0.5 = 68). 1x6: 3 x 45.75 = 137.25 <= 96+48 = 144 (two on the 96\", one on the 48\"). importDiffs only fraction-dropped, no defaulted quantity."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is 1 1/4\" pocket hole screws (steps[3],[4],[6],[8]); materials[4] \"1 1/4\" coarse pocket hole screws\". No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Flag-free. Positions are numbered in viewed images: rail inset 1/4\" and support 3 3/4\" from leg, support 1/4\" (f40de2bd8ff711d9), top overhang 3/8\" and 1/8\" gaps (af775a4ad1ba4b33), corner arc 2\" dia / 1\" (89f93367422781b6); step text gives 1/4\" rail inset and 1/4\" support offset."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut four Legs to length from 2x2 boards (we used clear pine), as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut four Legs to length from 2x2 boards (we used clear pine), as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Legs to length from 2x2 boards (we used clear pine), as shown in the cutting diagram."
         },
         {
           "path": "steps[7].body",
-          "quote": " Top pieces to length from 1x6 boards (we used soft maple), as shown in the cutting diagram. Before you attach the Top, now is a good time to stain, paint, or finish the Top pieces and the base. This ",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "om 1x6 boards (we used soft maple), as shown in the cutting diagram. Before you attach the Top, now is a good time to stain, paint, or finish the Top pieces and the base. This is especially true if yo",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "as shown in the cutting diagram"
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[7] cite a cutting diagram but have no step image; the five unattached images (e44dc75d0629d512, 04b2b3ce8d8f117e, 96f54c20e2fe452f, d7db113cb5d5b147, da4791942c81a555) were all viewed: four photos and one overall SketchUp with 46 1/4\" x 16 3/4\" x 35 1/2\", none is a cutting diagram. Part lengths exist in the cut list (cutList[0] Leg 34, cutList[4] Top Boards), so only the board layout is missing. steps[1],[2],[5] cite the diagram but their step images show the part dimensions (viewed 89f93367422781b6, f40de2bd8ff711d9)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs, rails (steps[0]-[2]) -> short rails then long rails on legs (steps[3],[4]) -> supports cut (steps[5]) and attached to rails (steps[6]) -> top cut (steps[7]) and attached last (steps[8]). Pass."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1],[2],[5] state \"pocket hole jig set up for 3/4\" material\" and the pocket-holed parts (rails, supports) are 0.75\" thick; pocket-hole screws joins elsewhere use the same stated screws."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step offsets agree with rows: base length = 2 x 1.5 (leg) + 42 (Long Rail) = 45; top 45.75 = 45 + 2 x 3/8 (image af775a4ad1ba4b33); top width 3 x 5.5 + 2 x 1/8 = 16.75; Top Support 14 = base depth 16 (13 + 2 x 1.5 legs) - 2 x 1/4 inset - 2 x 0.75 rail thickness = 14.0. (b) all parts installed (steps[3],[4],[6],[8]); (c) no hardware beyond screws; (d) steps reach finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e44dc75d0629d512.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/04b2b3ce8d8f117e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/96f54c20e2fe452f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d7db113cb5d5b147.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/da4791942c81a555.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/89f93367422781b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f40de2bd8ff711d9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af775a4ad1ba4b33.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "images[4].url",
+      "quote": "da4791942c81a555",
+      "what": "Viewed unattached SketchUp image labels the table 46 1/4\" long, 16 3/4\" deep, 35 1/2\" high; cut-list-derived size is 45.75\" top length (cutList[4]) and leg 34 + 0.75 top, so image length (+1/2\") and height do not match the text/cut list. Not scored; image dimensions only."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "now is a good time to stain, paint, or finish the Top pieces and the base",
+      "what": "kind: consumable - stain/paint/finish not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

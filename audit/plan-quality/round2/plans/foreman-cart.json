@@ -67,21 +67,29 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": "man cart using the universal workbenches. The storage is awesome to keep screws and other jigs ready to grab and use in seconds! Check the Youtube video for any questions! Video link is in Extras Tab.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag resolved: description \"Check the Youtube video for any questions! Video link is in Extras Tab.\" is optional help, not needed for any measurement (every cut size is in the cut list/steps). The Kreg Universal Workbench and Kreg Foreman are purchased products, not plan content; their omission from materials is scored under R14(c)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut the base to fit the opening, the cabinets and Kreg Foreman will rest on the base. The Base will measure, roughly 20\"x 43 7/8\"."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut a back panel to size, brad nail or screw on the back."
+        }
+      ],
+      "reason": "Parts the steps cut that have no cut row and no named stock: the Base (roughly 20\" x 43 7/8\", steps[1]), a back panel for the workbench (steps[1]), back panels for the side cabinets (steps[2]) and middle cabinet (steps[3], \"Cut a back panel to size\"), peg-board spacers (steps[8]). Search: cutList[].part (Tall Cabinet Sides, Side Cabinets Top and Bottom, Middle Cabinet Sides, Middle Cabinet Top and Bottom, Kreg Platform, Tops) and materials[] (only 3/4\" plywood sheet and Drawer Slides) for base/back/spacer: none. Back panel sizes and thickness are never given."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All six rows used: steps[2] (Tall Cabinet Sides, Side Cabinets Top and Bottom), steps[3] (Middle Cabinet), steps[4] (Kreg Platform), steps[5] (Tops)."
     },
     "R4": {
       "result": "pass",
@@ -89,21 +97,95 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 4×18×18.25 + 4×9.5×18 + 2×10.375×18 + 2×16.5×18 + 1×18×27.5 + 2×16×23 = 4196.5 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "One listed stock (3/4\" plywood full sheet) but the base (20 x 43 7/8 = 877.5 sq in) and back panels have no cut row or named stock. Cut-list area alone is 4196.5 sq in vs 4608 bought (no certain fail); adding the base alone would be 4196.5 + 877.5 = 5074 > 4608, but the base's material is not stated, so not scored."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size is given in any step (screws, brad nails, \"a few bolts, nuts, and washers\" are unsized) so there is nothing to mismatch; unlisted fasteners recorded in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Cabinet and cut sizes are numbered in steps; shelf-pin/drawer hole layout is explicitly the builder's choice (\"This is up to everyone\"); Foreman height is set relationally (\"level with the tops\"); cabinet layout across the 43 7/8\" opening is shown only in photos (0fe4ff9dd3f470a0: side cabinets at the ends, middle cabinet with platform between). Recorded in gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Sweep stands: referenced content (\"Check the Youtube video\") is not an \"as shown\" drawing; step images viewed are video stills."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Workbench assembled (steps[0]) -> base and back (steps[1]) -> cabinets (steps[2],[3]) -> platform (steps[4]) -> tops (steps[5]) -> shelf-pin holes (steps[6]) -> Foreman set level (steps[7]) -> optional peg board (steps[8]). Possible in order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Pocket hole the top and bottoms to the side cabinets."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Pocket hole the cabinet together."
+        }
+      ],
+      "reason": "Pocket holes in 0.75\" plywood (steps[2],[3]); no jig thickness setting stated anywhere (search steps/description/materials for /setting|thickness|jig|3\\/4\" material/: only \"Kreg Adjustable Shelf Pin jig\", steps[6]). Viewed images a7de4143edd73fd2, 291b33b9a035ba97 (video stills) show no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Begin assembly of the 20\"x 44\" Kreg Universal Workbench"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "to get the keg foreman level with the tops"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I like drawers."
+        }
+      ],
+      "reason": "(c) The steps build on a Kreg Universal Workbench (with wheel kit, steps[0]) and set a Kreg Foreman into the cart (steps[7]); a peg board is used in steps[8]; none is in materials (search materials[].name for /workbench|foreman|wheel|peg/i: none; materials are only \"Plywood, 3/4\" Thick Full Sheet\" and \"Drawer Slides\"). (b)/(d) materials[1] lists 7 Drawer Slides and the viewed photo 0fe4ff9dd3f470a0 shows slide-out drawers, but no step builds a drawer or mounts a slide (search steps for /drawer|slide/: only steps[6], \"either adjustable shelves or drawers\"), and no drawer cut rows exist; drawers are left optional, so Fix not Unpublish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7de4143edd73fd2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/291b33b9a035ba97.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48e3805e690db2d6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aaf47e45abbe37a9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0fe4ff9dd3f470a0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Begin assembly of the 20\"x 44\" Kreg Universal Workbench",
+      "what": "No assembly instructions for the workbench are in the plan (it is a purchased Kreg product); builder relies on its own manual."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "I ripped a couple spacers and attached them into the side cabinets to give the peg board something to attach to with a couple screws.",
+      "what": "Optional peg board and spacers: no sizes given."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "I used a combination of a few bolts, nuts, and washers",
+      "what": "Bolts, nuts, washers, screws and brad nails are used but no fastener line is in materials (no sizes given, so not an R6 mismatch)."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "I cut, two top pieces from a 3/4\" plywood measuring 23\"x16\".",
+      "what": "Layout of the two 23 x 16 tops (and 11\"-wide side cabinets, 18\"-wide middle cabinet) across the 43 7/8\" opening is not stated in numbers; 2 x 23 = 46 exceeds 43 7/8 if the 23\" side runs along the length, so orientation is only clear from photos."
+    }
+  ]
 }

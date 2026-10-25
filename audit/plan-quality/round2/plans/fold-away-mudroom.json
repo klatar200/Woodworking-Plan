@@ -215,46 +215,95 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts steps cut or assemble have rows: Back legs, Shelf backs, Front legs (steps[2]), back supports (steps[5]), Shelf fronts and slats (steps[0]), Front leg supports (steps[7]). Hooks are hardware, scored under R14(c)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All nine rows used: Back legs steps[1],[3]; Shelf backs steps[0]; Front legs steps[2]; back supports steps[5]; Shelf fronts/slats steps[0]; Front leg supports steps[7]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x2, 1x3, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every part matches exactly one listed material by thickness x width (Kreg-corrected): 1.5x1.5 -> 2x2; 0.75x2.5 -> 1x3; 0.75x5.5 -> 1x6; 0.75x1.5 -> 1x2. 2x2 96\" x2: 2x52 + 2x30 = 164 (+3 cuts x 1/8) <= 192 (each board 52+30). 1x3 96\" x2: 2x54.25 + 2x30.125 = 168.75 (+0.375) <= 192 (each board 54.25+30.125 = 84.4). 1x6 72\": 2x30.125 = 60.25 (+0.125) <= 72. 1x2 96\" x4: 2x30 + 2x33.125 + 9x13.875 + 9x6.5 = 60+66.25+124.875+58.5 = 309.6 (+22 cuts x 1/8 = 2.75) <= 384. importDiffs are fraction-dropped only, no defaulted quantity."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give 1 1/4\" pocket hole screws (steps[0],[5]) = materials[4]; 1/4\" holes + \"hex bolts\" (steps[1],[8]) with materials[6] 2 1/2\" long 1/4\" hex bolts, washers, nuts; 5mm shelf pins (steps[4],[6]) = materials[9] (4 = 4 back-leg holes). Hook screws have no size (recorded in R14(c))."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "k legs together so the holes you just drilled are facing up. Mark the boards for the back supports and shelves by measuring from the top of the legs down according to the diagram. Then draw a line acr",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def29126c2ac8ae2.webp"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "rom the top 10 5/8\" and attach the support top at that line. For the bottom support, measure up from the bottom front (the longest part of the leg) 4 5/8 and attach the support top at that line. Attac",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5814e82996965e8.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags resolved by viewed images: leg marks at 2\", 9\", 11\", 28\", 46 3/4\", 49\" (def29126c2ac8ae2); front supports at 10 5/8\" from top and 4 5/8\" from bottom (steps[7] and image b5814e82996965e8); slat spacing 2 1/8\"/2\" (7d404784d37bddea). Hook position is relational (\"so that the shelf will be able to fold down over them\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"according to the diagram\" (steps[3]) and \"according to the photo\" (steps[0]) both have their own step images, viewed."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Make sure to take note what side of the front leg is the back because of the angle at the bottom of the leg."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut the front legs to size. Then cut the bottom of each leg at a 15 degree angle."
+        }
+      ],
+      "reason": "steps[1] clamps and drills the front legs and refers to their cut bottom angle, but the front legs are only cut to size and angled in steps[2], after. Builder must cut first; the build can still be completed, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] and steps[5] state \"Kreg pocket hole jig set for 3/4\" thick material\"; all pocket-holed parts (slats, supports, front leg supports) are 0.75\" thick. Other joints state glue, bolts/washers/nuts, shelf pins."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "mark where to add the hooks so that the shelf will be able to fold down over them. Secure with screws."
+        },
+        {
+          "path": "steps[9].title",
+          "quote": "Attach hooks"
+        }
+      ],
+      "reason": "(c) steps[9] installs hooks (photo 4c5064557c9faa6c shows two coat hooks) but materials list no hooks and no hook screw size (search materials[].name for /hook|screw/i: only \"1 1/4\" Kreg pocket hole screws\"). (a) steps[2] \"54 1/4\" = Front legs row 54.25; steps[7] image 33 1/8\" = row 33.125; slat counts match images; (b),(d) all parts installed, steps reach setup (steps[10])."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/def29126c2ac8ae2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5814e82996965e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7d404784d37bddea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4c5064557c9faa6c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be50969151377f2b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "I also purchased a drip tray for under the shelf to help contain melting snow.",
+      "what": "Optional purchased item, not in materials (not scored)."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "I also clamped a scrap board to the bottom of the 1x3 to help prevent tear out",
+      "what": "Scrap board shop aid, not a consumable of the build.",
+      "kind": "consumable"
+    }
+  ]
 }

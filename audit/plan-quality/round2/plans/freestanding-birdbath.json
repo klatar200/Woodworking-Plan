@@ -203,10 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut part has a row: Top octagon and Lower top octagon pieces (steps[1],[3]), Top support center/sides (steps[4]), Leg, Bottom center/side (steps[6]). Search: step part names vs cutList[].part; the saucer is a purchased item in materials[9]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All seven rows used: steps[1] (Top octagon), steps[3] (Lower octagon), steps[4]-[5] (Top support rows), steps[6]-[7] (Leg, Bottom rows)."
     },
     "R4": {
       "result": "pass",
@@ -214,28 +216,57 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 2x3, 1x4, 1x2); steps not checked for per-part stock"
+      "reason": "Every part matches exactly one stock by thickness x width (1.5x3.5 -> 2x4; 1.5x2.5 -> 2x3; 0.75x3.5 -> 1x4; 0.75x1.5 -> 1x2). 2x3 8' (96\"): 4 x 23 = 92 + 3 kerfs <= 96; 2x3 3' (36\"): 15.125 + 2 x 6.875 = 28.875 + 0.25 <= 36; 1x4 3' (36\"): 16 + 2 x 6.25 = 28.5 + 0.25 <= 36; 1x2 5' (60\"): 8 x 6.75 = 54 + 0.875 <= 60. 2x4 5' (60\"): 8 x 7.875 = 63 > 60 on a straight-length sum, but the octagon pieces are cut with 22.5 degree angles at both ends (steps[0]; image 4d6fd3a3a00948e2 shows trapezoids with 7 7/8\" the long side), so alternate pieces can share cuts; consumption cannot be settled without the cut geometry."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 2 1/2\" pocket hole screws (steps[1],[5]-[8]) = materials[5]; 1 1/4\" pocket hole screws (steps[4]) = materials[6]; 1 1/4\" brad nails (steps[3]) = materials[7]. No conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are relational or in images: legs \"centered under the support pieces\", support \"Center the assemble support\", saucer circle sized by measuring the saucer (steps[2]); bottom pieces and leg assembly dimensioned in d55511df440bce91 (6 7/8\", 15 1/8\", 23\"); screw holes in 017864e6db49c29d."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut the pieces according to the cut list. Refer to the cut diagram for pictures of the angled cuts.\n- Top octagon and lower octagon pieces: both ends cut at a 22.5 degree angle so they angle toward ea",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag resolved: steps[0] \"Refer to the cut diagram for pictures of the angled cuts\" has no diagram image, but viewed step images show the referenced cuts: octagon pieces (4d6fd3a3a00948e2, 7 7/8\" with trapezoid ends), legs/bottom pieces with angled ends (d55511df440bce91), support-end slope (017864e6db49c29d); the angles themselves are in the text (22.5 and 10 degrees)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top octagon (steps[1]) -> saucer hole (steps[2]) -> lower octagon (steps[3]) -> support built (steps[4]) and attached (steps[5]) -> legs (steps[6],[7]) -> join (steps[8]). Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Jig settings stated per thickness: 1 1/2\" (steps[1],[6]) for the 2x4/2x3 parts, 3/4\" (steps[4]) for the 1x4 top support; matches the thicknesses drilled. Other joints state glue plus brad nails/screws."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Octagon check: long side 7 7/8\" (cutList[0] corrected 7.875) gives 19\" across flats in image 0aeefff8f9638848 (7.875 x 2.414 = 19.0); counts 8 + 8 octagon, 4 legs, 3 bottoms agree with steps. (b) support, legs, bottoms all installed (steps[5],[7],[8]). (c) saucer, sealer, glue listed; only rocks/pebbles optional. (d) steps reach finished birdbath."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b2189f14f98c642c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2cd86a2658c16ce9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/86e7b252fc97e78c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0aeefff8f9638848.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d6fd3a3a00948e2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/017864e6db49c29d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d55511df440bce91.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "I also added some small rocks and pebbles to one side for smaller birds.",
+      "what": "Optional; rocks not in materials (not scored)."
+    },
+    {
+      "path": "materials[9].name",
+      "quote": "14\" plastic plant saucer (see extras for link)",
+      "what": "Purchased item with an Extras link; a generic 14\" saucer, so the link is not needed to complete the build."
+    }
+  ]
 }

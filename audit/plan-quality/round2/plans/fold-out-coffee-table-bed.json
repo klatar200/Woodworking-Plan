@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut or assembled all have rows or are cut from listed stock by the step itself: Top & bottom (steps[0]), Face/Side boards (steps[1]), Full-length leg pieces then five 8-1/4\" legs (steps[7]), Stretchers (steps[8],[9]); veneer pieces are cut from the listed 1/4\" and 1/2\" MDF panels (steps[2])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows used: Top & bottom steps[0]; Face boards steps[3],[5]; Side boards steps[4],[6]; leg pieces steps[7]; Stretchers steps[8],[9]."
     },
     "R4": {
       "result": "pass",
@@ -21,57 +23,59 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, sheet-0.5, 1x3, 0.75x48); steps not checked for per-part stock"
+      "reason": "Mixed stock incl. sheets. Sheet rule: total 3/4\" MDF area 2 x 45 x 45 + 2 x 8.25 x 42.5 + 4 x 8.25 x 41 = 4050 + 701.25 + 1353 = 6104.25 sq in vs 2 x 48 x 96 = 9216 bought, so no certain fail (not scored further). Board stock: three 48\" leg pieces = 144 vs 1x3 96\" + 1x3 48\" = 144, short only by one kerf 1/8\" (kerfOnly pass); stretchers 8 x 39 = 312 <= 8 x 48 = 384."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Align the lower box face on the top of the bottom panel. Allow a 1-1/4\" set-back from all edges. Secure in place using glue and 1-1/4\" screws through pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Align the lower sides flush to the ends of the lower face. Allow a 1-1/4\" set-back from both sides. Secure in place using glue and 1-1/4\" screws through pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Align the upper face on the underside of the Top. Allow a 1-1/4\" set-back from all edges. Secure in place using glue and 1-1/4\" screws through pocket holes.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "-back from top edges. Secure in place using glue and 1-1/4\" screws through pocket holes, as well as 2-1/2\" screws driven from the face. The sides will be set in 13/16\" from the ends of the face board.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "as well as 2-1/2\" screws driven from the face"
         },
         {
-          "path": "steps[6].body",
-          "quote": "-back from top edges. Secure in place using glue and 1-1/4\" screws through pocket holes, as well as 2-1/2\" screws driven from the face. The sides will be set in 13/16\" from the ends of the face board.",
-          "why": "2-1/2\" screw — no material line lists a 2-1/2\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "the dowels as double, side-by-side stretchers. Create a 1/2\" space between stretchers. Align the bottom face of stretchers 3\" from the bottom of each leg. Secure in place using glue and 1-1/4\" screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Connect leg pairs together with remaining stretchers. Secure in place from the underside using glue and 1-1/4\" screws through 3/4\" pocket holes",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "path": "materials[6].name",
+          "quote": "1/14\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Step uses 2-1/2\" screws (steps[6]) and none of materials[6]-[8] (\"1/14\" pocket hole screws\", \"3\", #8 wood screws\", \"1\", 23 gauge brads\") is 2-1/2\". Steps[3]-[6],[8],[9] use 1-1/4\" screws; materials[6] lists \"1/14\"\", which is not a size used anywhere in steps.",
+      "arithmetic": "steps use 1-1/4\" and 2-1/2\" and 3\" screws; materials sizes: 1/14\", 3\", 1\": 1-1/4\" matches none (typo reading), 2-1/2\" matches none"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Every placement is numbered: 1-1/4\" set-backs (steps[3]-[5]), 2-1/8\" and 13/16\" (steps[6]), legs 1/2\" from edges (steps[10]), center leg 8\" from open side (steps[11]), stretchers 3\" up and 1/2\" gap (steps[8]); veneer is random by design."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references (sweep search stands)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Lower box (steps[3],[4]) and upper box (steps[5],[6]) built, legs laminated and cut (steps[7]), joined with stretchers (steps[8],[9]), base attached from inside the lower box (steps[10]-[11]), veneer last (steps[12]). Each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[8] and [9] state 3/4\" pocket holes; every pocket-holed part (0.75\" MDF panels, 0.75\" dowels) is 0.75\" thick; other joints state glue plus screw size or brads."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step numbers agree: lower face 42.5 = 45 - 2 x 1-1/4 (steps[3] vs cutList[1]); stretcher 39 = 45 - 2 x 1/2 (legs from edge) - 2 x 2.5 (leg width) = 39 (steps[10] vs cutList[4]); five 8-1/4\" legs = 41.25 <= 48 (steps[7]). (b) all made parts installed; (c) fasteners only (see R6); (d) steps reach finished table with finish and mattress."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-18",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[13].body",
+      "quote": "Sand the entire surface with 220-grit sand paper. Remove dust and paint or finish however you'd like.",
+      "what": "kind: consumable - wood glue (steps[3]-[10]), sandpaper and paint/finish not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }
