@@ -179,32 +179,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut or assemble (Wide/Narrow Legs, Long/Short Rails, Long/Short/Frame Cleats, Long/Short Frame Rails) is a cut-list row; the fabric is cut from the listed yard of ripstop (step 9)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: steps[0],[1],[2],[3],[5],[6],[7],[8]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x3, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock for every part (1x4: legs/rails; 1x3: Narrow Legs, Frame Cleats; 1x2: cleats) and the Frame Rails (0.75 x 2.5, Kreg-corrected) match only the listed 1x3 by thickness x width. 1x4 (2 x 72 = 144): 4 x 6 + 2 x 30.5 + 2 x 19 = 123 + 8 x 1/8 = 124. 1x3 (2 x 48 + 72 = 168): 4 x 6 + 2 x 6 + 2 x 23.375 + 2 x 37.875 = 158.5 + 10 x 1/8 = 159.75. 1x2 (72): 2 x 23.75 + 2 x 11.75 = 71 + 4 x 1/8 = 71.5. All within stock; no quantity diff recorded. Conflict on Frame Rail stock is under R14."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" coarse-thread Kreg screws throughout (steps[1],[3],[4],[6],[8]) = materials[4]; pilot holes 1/8\" (steps[5], images); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Cleats flush with bottom of rails and centred, Frame Cleat sticks up 1\" (steps[6]); pocket-hole and pilot-hole locations dimensioned in viewed images (e.g. Frame Cleat 3/4\" x 1 1/2\", Long Cleat 4\" in); fabric 6\" beyond frame (step 9 image)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "17 reference(s), each in a step with its own image"
+      "reason": "Steps 0, 2, 7 cite \"the cutting diagram\"; the viewed images for steps 0, 2, 5, 7 are dimensioned part drawings (Long Rail 30 1/2\", Short Rail 19\", Narrow Leg 6\" x 2 1/2\", Short/Long Frame Rail, cleats), which show the referenced sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs/rails, side assemblies, base, cleats, then frame, fabric wrap, finish, frame dropped into base last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body \"Set your Kreg Pocket-Hole Jig for 3/4\\\"-thick material\" - all pocket-holed parts are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "From a 1x2 board, cut two Long Frame Rails and two Short Frame Rails to length, as shown in the cutting diagram."
+        },
+        {
+          "path": "cutList[5].lengthIn",
+          "quote": "37 (Kreg-corrected 37.875, source \"37 7/8\")"
+        },
+        {
+          "path": "steps[7].image",
+          "quote": "viewed drawing label: Long Frame Rail 35 7/8\", Short Frame Rail 22 3/8\", both 2 1/2\" wide"
+        }
+      ],
+      "reason": "(a) Step 7 says to cut the Frame Rails from a 1x2 (3/4 x 1 1/2) but the cut-list row and the viewed drawing are 2 1/2\" wide (only the listed 1x3 fits; the single 1x2 board is fully used by the cleats: 71.5 of 72\"). The Kreg-corrected cut-list lengths (Long Frame Rail 37 7/8, Short Frame Rail 23 3/8) also disagree with the viewed step-7 drawing (35 7/8, 22 3/8).",
+      "arithmetic": "Long Frame Rail cut list 37.875 vs drawing 35.875 (diff 2); Short Frame Rail 23.375 vs 22.375 (diff 1). 1x2 stock: 2 x 23.75 + 2 x 11.75 = 71 + 3 cuts x 1/8 = 71.375 of 72."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "We applied a natural non-toxic butcherblock oil.",
+      "what": "finish named in materials as \"Butcherblock iol\" (typo) - consumable listed",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "2e2b290ffe0b8c4b",
+      "84522820431605eb",
+      "632bfe1cd2b72e70",
+      "15ece4fced85fc45",
+      "c4faf7b5d1c974a8",
+      "8ca41e4b7050613a",
+      "c773a63a0f1a122f",
+      "7eb63a922047ae66",
+      "dce6094b32b33f55",
+      "aacdf80143dd2a1a",
+      "8524d45f3e547408",
+      "bdaeace2555deb85"
+    ]
+  }
 }

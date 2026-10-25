@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts used (1x12 side/front/back panels, legs, 1x2 bottom slats) are the 3 cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: panels steps[3],[4], legs steps[3], slats steps[5]."
     },
     "R4": {
       "result": "pass",
@@ -38,21 +40,58 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x12, 1x2, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each row matches exactly one listed material by thickness x width: 1x12 panels -> \"1x12 board, 1x12x6\"; 1x2 slats -> \"1x2 board, 1x2x6\"; 2x2 legs -> \"2x2 board, 2x2x6\" (\"x6\" read as feet, L <= 16, assumption per section 9). 1x12: 4 x 12 = 48 + 3 x 1/8 = 48.375 <= 72; 1x2 (Kreg-corrected 13.5): 4 x 13.5 = 54 + 3 x 1/8 = 54.375 <= 72; 2x2: 4 x 15 = 60 + 3 x 1/8 = 60.375 <= 72. No quantity diff recorded."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[3],[5] use 1 1/4\" pocket hole screws = materials[3]; single size, no conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed final photo shows legs flush with panel tops and extending below as feet; hole counts given (3 per long side, 1 per slat end); slat spacing \"as evenly as possible... doesn't have to be perfect\" (relational)."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Cut, drill, sand, legs onto front/back, sides, then slats, then finish; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 3 pocket holes along 2 parallel sides of each 1x12x12 boards, and 1 pocket hole at each end of the 1x2 pieces."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes on 1x12 and 1x2 (3/4\") but no jig thickness setting is stated; searched all fields for /setting|jig/ - only tools slug matches; the viewed step[1] photo shows a jig but the chosen setting is not legible. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Screw count: 4 panels x 3 holes x 2 sides = 24 + 4 slats x 2 ends = 8 -> 32 = materials[3] qty 32; slat 13.5 = 15 outer - 2 x 3/4. (b)(c)(d) all parts installed; sanding block and finish in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "5984e1a369b7ca2a",
+      "6d1c4ce88da99a81",
+      "e953ea1b9afb910c",
+      "9b7dc2eb3dc6c310",
+      "4badefd66cf1c265",
+      "e7943f113a17803c"
+    ]
+  }
 }

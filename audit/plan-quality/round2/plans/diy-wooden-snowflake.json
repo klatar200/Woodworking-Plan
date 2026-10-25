@@ -131,31 +131,87 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps use (Center, Diagonals, End pieces, Middle pieces) is a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Boards (you'll rip your 1x4 into 2 1 1/2\" wide pieces and then cut the following measurements from there)"
+        },
+        {
+          "path": "cutList[0].lengthIn",
+          "quote": "8"
+        }
+      ],
+      "reason": "Row 0 is stock preparation (rip the 1x4 into two 1 1/2\" lanes), not a part any step uses; searched steps[*] for /rip|boards/i - the only matches are in cutList[0].part. Kreg-corrected row is 0.75 x 1.5 x 96 (feet read as inches by the importer, cause import for the length)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock, \"Board, 3/4\" x 3 1/2\" x 8'\" (explicit unit). Plan rips it into 2 lanes of 1 1/2\" (3.5 - 2 x 1.5 = 0.5 left, kerf 1/8). Parts: Center 24 + 4 Diagonals x 12 = 48 + 12 End x 3 + 12 Middle x 2.5 = 36 + 30 = 138; 28 cuts x 1/8 = 3.5; 141.5 <= 2 lanes x 96 = 192. Miter waste not scored."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" pocket hole screws (steps[0]-[2]) = materials[1] \"1 1/4\"\" ; no other fastener size; no conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Marks given: centre 12\", End pieces 1 1/2\" down, Middle pieces 5 3/4\" down (also dimensioned in viewed images); 30 degree miters fix the 60 degree arm angle; hanging hardware is optional."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Diagonals on Center, then End pieces at 1 1/2\" marks, then Middle pieces at 5 3/4\" marks, repeat for other points, finish, display."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill one pocket hole into the mitered end of each Diagonal board."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Box of 1 ¼\" pocket hole screws (see tools list)"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock but no jig thickness setting stated; searched all fields for /setting|jig/ - only tools slug \"pocket-hole-jig\"; viewed images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 Diagonals + Center = 6 arms of 12; per point 2 End + 2 Middle (step 3) x 6 = 12 + 12 matches rows. (b)(c)(d) all parts installed; finishing and glue in materials; hanging hardware only \"You can add\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "You can add hanging hardware to hang them on the wall",
+      "what": "optional hanging hardware not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "9dc7e5abca614934",
+      "286ca3681cb79b99",
+      "042804f084268b92",
+      "1a17559ab7eea466"
+    ]
+  }
 }

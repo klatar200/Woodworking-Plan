@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts used (Bottom, Ends, Sides, Trim for Ends/Sides, 35\" dowel cut from materials[3]) are cut-list rows or listed material; \"end pieces\" in steps[8] are the closet rod end caps (materials[7]; viewed step 8 image shows caps being screwed to the curved ends)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used (steps[0]-[8])."
     },
     "R4": {
       "result": "pass",
@@ -52,22 +54,79 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x12, 1.25x48); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut your 1\" x 3\" x 8' board down to: (2) at 12-13/16\" - this will be the trim for the ends (2) at 39-1/8\" - this will be the trim for the sides"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut your 1\" x 12\" x 8' boards down to: (2) at 3' - these will be the ends (2) at 37-9/16\" - these will be the sides"
+        }
+      ],
+      "reason": "Step 0 names the stock for every part. The single 1x3 x 8' (96\") board cannot yield the trims even with zero kerf; the 1x12 x 8' stock (materials[2] qty 1, though the step says \"boards\") cannot yield the ends and sides either.",
+      "arithmetic": "1x3: 2 x 12.8125 + 2 x 39.125 = 25.625 + 78.25 = 103.875 > 96 (zero kerf; + 3 x 1/8 = 104.25). 1x12 8': 2 x 36 + 2 x 37.5625 = 72 + 75.125 = 147.125 > 96 (with the 4' board: bottom 36 uses it; 48 + 96 = 144 vs bottom 36 + 147.125 = 183.125)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1-1/4\" Kreg screws (steps[6]) = materials[4]; 1-1/2\" brad nails (steps[7]) = materials[5]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dowel end caps \"4\\\" from the top of the curve\" (steps[8]); sizes of all parts in cut list; legs at the four corners and curve shape are relational/free; viewed images show the rack as a C-shape with ends on the bottom."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "Cut, curve ends, pocket holes, ends to bottom, sides, trim, end caps and legs, then finish; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3].body \"Kreg Jig K5 set at a 3/4\\\" jig setting\" for all pocket-holed 3/4\" boards."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Geometry agrees: sides 37.5625 = bottom 36 + 2 x 3/4 + 1/16; trim 39.125 = 37.5625 + 2 x 25/32; 35\" dowel between ends 36\" apart with caps. (b)(d) every part installed; the dowel placement is only implied (see gaps). (c) legs and caps in materials; brackets only mentioned as part of the legs hardware."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "First you will add on the end pieces to hold the dowel rod in place.",
+      "what": "no step says to insert the 35\" dowel between the caps (implied only)"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Screw in the brackets into the four corners of the bottom side of your dress up rack.",
+      "what": "leg mounting brackets/screws not listed in materials (legs listed only as \"Decorative Furniture Legs\")",
+      "kind": "hardware"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Fill all nail holes or gaps with wood filler, sand and then paint or stain",
+      "what": "wood filler, paint/stain not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "8c42f440e3494960",
+      "3a0aa3b7fc2ac33f",
+      "45dabd884bf03d28",
+      "e80a847ffb15ffc3"
+    ]
+  }
 }

@@ -83,31 +83,67 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts the steps use are cut-list rows: Legs, \"Upper & lower supports\" (4 = upper + lower for each end frame), \"Upper Supports\" (2 = \"the remaining upper supports\", step 4); leather strips are cut from the listed leather (step 7)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used (steps[2] and steps[4])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "reason": "Kreg-corrected rows are 1.5 x 1.5 = actual size of 2x2 (section 9); materials[0] \"Pine boards, 2x2x8'\" is a 2x2 with explicit foot mark; sweep unknown came from not parsing the NxMxL form."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "reason": "One stock, 3 x 2x2 x 8' (L = 8 <= 16, explicit foot mark): Legs 4 x 18 = 72 + supports 4 x 17 = 68 + 2 x 15 = 30 = 170; 10 parts -> 7 cuts at minimum, use 10 x 1/8 = 1.25; 171.25 <= 3 x 96 = 288. Quantity 3 is not a default 1."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[2] \"2 1/2” pocket hole screws\" = materials[1] \"2 1/2\" Kreg\"; steps[1] jig \"1 1/2” depth\"; brass rod drilled with bit \"same size as your rod\" (1/4\"). No conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Lower support \"5\\\" up from the bottom of the bench legs\" (steps[2]); rod hole at centre of each lower support; leather strips 1 1/2\"; upper supports sit at the top under the woven seat (viewed final photo) - relational."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Cut, pocket-hole, build two end frames, drill rod holes, join frames with upper supports, rod, trim, then cut and weave leather, tack, finish."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1].body \"set your pocket hole jig to 1 1/2” depth\" - every pocket-holed part is 2x2 = 1 1/2\" thick, consistent."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 frames x (1 upper + 1 lower) = 4 \"Upper & lower supports\"; 2 \"remaining upper supports\" join the frames; 4 legs; rod 2 in materials (1 per support pair). (b)(c)(d) all parts installed, leather, tacks, rods, glue and stain are in materials; epoxy optional."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "1/4\" x 18' brass rods",
+      "what": "rods listed as 18 feet each while the bench frame is about 18\" (15 upper support + 2 x 1 1/2 legs); likely a unit typo, cannot confirm from the plan"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "you can add a little epoxy to reinforce the rod but that is an optional step",
+      "what": "epoxy optional, not in materials",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "b4956c26f263afc4",
+      "d1ddf6616d2a95f8",
+      "cb6466436ac95470",
+      "46637cc4bcce43de"
+    ]
+  }
 }

@@ -131,62 +131,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make (Shelf, Mounting Cleat, Hinge Plate, Front Rail, Legs, Leg Blocks) is a cut-list row; the Bench Surface is the purchased door (step 0). \"Mounting Plate\" in steps[7] = Mounting Cleat."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: Bench Surface steps[0],[5]; Cleat/Shelf steps[1],[2]; Hinge Plate steps[3]; Front Rail steps[4]; Legs and Leg Blocks steps[6]."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Bench Surface — qty 1, 1.5 x 24 x 80 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x4 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 2x4 96\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 2x2 96\""
-        }
-      ],
-      "arithmetic": "cutList[0] 1.5×24: no listed stock has thickness 1.5 (±1/32) with width ≥ 24; stock = 0.75×3.5, 1.5×3.5, 1.5×1.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Bench Surface — qty 1, 1.5 x 24 x 80 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "unknown",
+      "reason": "Sweep fail not confirmed: the Bench Surface is not cut from lumber - steps[0].body names it as the purchased solid-core door (materials[3] \"30\\\" x 80\\\" solid-core door\"), so a 1x4/2x4/2x2 match is not applicable. Width 24 <= 30 and length 80 = 80, but the door thickness is not written anywhere in the plan, so the 1.5 thickness cannot be checked. The 24 vs 30 conflict is under R14."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 2x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock for every part. 1x4 (3 x 96 = 288): Shelf 80 + Hinge Plate 80 + Front Rail 80 + 2 Leg Blocks x 7 = 254 + 4 x 1/8 = 254.5 <= 288. 2x4 (96): Cleat 80 <= 96. 2x2 (96): 2 x 33.5 = 67 + 1/8 <= 96. Door is bought whole."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" coarse-thread pocket-hole screws (steps[2],[5]) = materials[4]; #8 x 1 1/2\" (steps[6]) = materials[7]; viewed step 7 image: 1 1/2\" screws (hinge plate to cleat) and 3 1/2\" screws (cleat to studs) = materials[9],[5]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give hinge positions (12\" from each end, 40\" between), Front Rail 8\" from the edge, Leg Block 8\" and 1 1/2\"; text gives the 34 1/4\" cleat line and \"two screws into each wall stud\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "13 reference(s), each in a step with its own image"
+      "reason": "Steps 1, 3, 4, 6 cite \"the cutting diagram\"; viewed step images show dimensioned drawings of the Mounting Cleat (80\" x 3 1/2\"), Hinge Plate and Front Rail positions, Leg/Leg Block, and the 30\" x 80\" surface; sizes also in the cut list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts built (shelf/cleat, hinge plate, front rail, legs) before mounting; cleat to wall first, then hinge plate, then bench hung on hinges."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated: 1 1/2\" for the 2x4 cleat (steps[1]) and 3/4\" for the 1x4 front rail (steps[4]); shelf 3/4\" joins to the cleat."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "It’s just a 30\"-wide solid-core door."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "30\" x 80\" solid-core door"
+        },
+        {
+          "path": "cutList[0].widthIn",
+          "quote": "24 (source \"1 1/2\\\" x 24\\\" x 80\\\"\")"
+        },
+        {
+          "path": "steps[0].image",
+          "quote": "viewed drawing label: Bench Surface 80\" x 30\""
+        }
+      ],
+      "reason": "(a) Bench Surface is 30\" wide in step 0, materials and the viewed drawing/overview (30\" x 80\", 32 3/8\" overall depth), but the cut-list row says 24\" wide.",
+      "arithmetic": "step/material width 30 vs cutList[0].widthIn 24 (source text \"24\"): difference 6."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[10].name",
+      "quote": "Folding leg brackets",
+      "what": "two legs need two folding leg brackets; listed quantity 1 each (may be a pair pack or an import default; not determinable)"
+    },
+    {
+      "path": "materials[6].name",
+      "quote": "#8 x 2\" flathead wood screws",
+      "what": "no step or viewed image uses #8 x 2\" screws (10 listed); hinge-to-surface screws unspecified"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "04994d8f04c8bea0",
+      "f7b3e83567f9afb5",
+      "adb325319a731dab",
+      "ca88145f0d4cdbef",
+      "e50a14621190701b",
+      "d1deafb297ea90c0",
+      "09d9b31e33b8e117",
+      "95da6e5ef93c545f"
+    ]
+  }
 }

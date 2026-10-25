@@ -107,31 +107,75 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps use (11.5\" and 29\" leg pieces, 35\" middle braces, 3 top boards 1x6x4) is a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: steps[0] (Side Table Top Pieces 11.5, Table Leg Side Pieces 29), steps[1] (Middle Table Top Braces 35), steps[2] (Table Top Boards 48)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each row matches exactly one listed material by thickness x width (Kreg-corrected): 1.5 x 3.5 rows -> 2x4; 0.75 x 5.5 -> 1x6. 2x4 (3 x 96 = 288): 2 x 35 + 4 x 11.5 + 4 x 29 = 232 + 7 cuts x 1/8 = 232.875 <= 288. 1x6 (2 x 72 = 144): 3 x 48 = 144 + 1 cut x 1/8 = 144.125 > 144, short by 1/8\", kerf only (parts fit with zero kerf). Per-board packing is a separate defect, see gaps.",
+      "kerfOnly": true
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[3] \"2\\\" wood screws\" = materials[4]; pocket hole screws unsized in steps[2], listed as 2 1/2\" and 1 1/4\" in materials[2],[3]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images show the frame layout (11.5\" pieces between 29\" posts, braces at front and back tops between the two frames, top over the frame); top overhang is relational."
     },
     "R11": {
+      "result": "pass"
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Leg frames, then braces joining them, then top boards assembled and screwed on last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "With pocket hole screws, screw the 3 1x6x4 boards together to form the top of the table."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2 1/2\" Pocket Hole Screws"
+        }
+      ],
+      "reason": "Pocket-hole joints are used on 1.5\" (2x4) and 3/4\" (1x6) parts but no jig thickness setting is stated; steps[0] and steps[1] state no joint method at all. Searched all fields for /setting|jig|pocket/ - only steps[2], materials[2],[3] and the tools slug match; viewed step images show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Counts agree: 2 leg frames x (2 x 29 + 2 x 11.5) = 4 + 4; 2 braces front/back; 3 top boards of 48 (step 2 \"3 1x6x4\") match the row. (b)(c)(d) every part installed; top attached last; screws in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[1].name",
+      "quote": "Board, 1x6 72\"",
+      "what": "two 72\" 1x6 boards cannot yield three 48\" top boards (floor(72/48) = 1 piece per board, 3 needed); R5 total-length rule passes only on kerf"
+    }
+  ],
+  "reader": {
+    "batch": "r2-31",
+    "imagesViewed": [
+      "412d89f45fa31aa2",
+      "59128c771e853b46",
+      "45569d3d039ad61f",
+      "bb9dfdddcbcc8055"
+    ]
+  }
 }
