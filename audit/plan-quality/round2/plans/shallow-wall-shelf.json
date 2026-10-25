@@ -10,32 +10,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Two 1x10 back pieces and two 1x4 shelves are the only cut parts and both have cut rows; hooks, screws and plugs are listed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows are used: Back pieces (steps[0], [2]) and Shelves (steps[0], [3])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1])"
+      "result": "pass",
+      "readerNote": "Rows read 1 x 10 and 1 x 4 (nominal sizes as written on the listed boards, cause import: nominal taken as actual); the actual widths (9.25, 3.5) are used in R14.",
+      "reason": "Back pieces match the listed 1x10 and shelves the listed 1x4 (nominal)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1]"
+      "reason": "materials[0] and materials[1] ('Primed MDF boards, 1 x 4', 'Pine or MDF boards, 1 x 10') give no length (section 9: never assume 8 ft)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1.5\" and 1\" screws used in steps[2] and [3] are both in materials (materials[3], [2]); no conflicting sizes. Hook screws are not specified."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf spacing \"I allowed 11\" on the bottom and middle, leaving a smaller piece on top\"; three pocket holes per board shown in the viewed step-1 image; hooks are 'any hooks you want'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill pocket holes, join the two back boards, then attach the shelves to the back, then hooks."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Three pocket holes are needed on one of the 1x10 pieces and on the bottom of both 1x4 pieces."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" boards (search: all steps/description vs /setting|jig|thick/i - none); the viewed step-1 image shows hole locations but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "attach two 1x10 pieces together to make it 20” wide"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Pine or MDF boards, 1 x 10"
+        }
+      ],
+      "arithmetic": "Two 1x10 boards are 2 x 9 1/4 = 18.5\" wide (section 9: 1x10 actual 3/4 x 9 1/4), not the stated 20\"; the 20\" shelves (cutList[1].lengthIn 20) would overhang the 18.5\" back by 1.5\".",
+      "reason": "The step's 20\" back width is the nominal 2 x 10 and cannot be made from two 1x10s."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Now’s the time to hang up those shoes, roll up the towels, and even add in a small plant",
+      "what": "The shelf is a wall shelf but no step or material says how it is fastened to the wall (no anchors/screws or cleat); the steps stop at hooks."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "dd62c885bf6c8659.webp",
+      "5a2d9ea08c28c453.webp"
+    ]
+  }
 }

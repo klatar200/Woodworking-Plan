@@ -131,31 +131,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (12\", 17\", 20\", 30\" 2x2 pieces and the two 19 1/2\" 1x8 top boards) has a cut row; corner braces are listed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows used: Base Cross Pieces x4 (12\": steps[1], [2], [5]), Vertical Leg Pieces (steps[2]), Base Top Side 17\" and Bottom Side 20\" (steps[1]), Top Pieces (steps[6])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[4].part",
+          "quote": "Top Pieces"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Take your (2) 1x8s @ 19 1/2\"."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x8 48\""
+        }
+      ],
+      "arithmetic": "Kreg source row (importDiffs cutList[4]) is 3/4\" x 7 1/2\" x 19 1/2\"; the listed 1x8 is 3/4 x 7 1/4 (section 9). 7.5 > 7.25 by 0.25\", so the 7 1/2\" width cannot come from a 1x8; the two boards give 14.5\" not the stated 15\" top.",
+      "reason": "Top Pieces width (Kreg-corrected 7.5\") is wider than the listed 1x8 can yield (7.25\")."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Parts 1.5x1.5 match only the listed 2x2, and steps name the 1x8 for the top. 2x2 96\" x2 (192): 4x12 + 2x30 + 2x17 + 2x20 = 48+60+34+40 = 182 + 10 cuts x1/8 = 183.25 <= 192. 1x8 48\": 2x19.5 = 39 + 1 cut x1/8 = 39.1 <= 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "attach the top to the base using wood glue and 1 1/4\" brad nails."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1 1/4\" Pocket Hole Screws"
+        }
+      ],
+      "reason": "1 1/4\" brad nails are used in steps[7] but materials list only pocket hole screws (search: materials names vs /brad|nail/i - none). The corner braces (steps[8]) also have no screws named."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "H crossbar bottom 6\" from one end; pocket hole counts and positions given; top overhang direction shown in the viewed final image; corner brace locations are the joints named."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Two U frames and the H are built, the big U joins the H, the other U and last 12\" piece complete the base, the top is built separately and then attached, then corner braces."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] states 1 1/2\" pocket holes for the 2x2s and steps[6] states 3/4\" pocket holes for the 1x8 top boards."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "12\" pieces: 2 in the U frames + 1 in the H + 1 final = 4 (cutList[0] qty 4); 17\", 20\" and 30\" pieces match; 4 corner braces for the 4 leg/frame joints; the table is assembled and finished at steps[9]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Spray paint your corner braces if desired",
+      "what": "Spray paint, stain/finish (steps[5],[6],[9]) and wood glue are used but not in materials (consumables)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "27d1301bb0bf4527.webp",
+      "d578732dbe10b701.webp",
+      "b1019ad26d1657e1.webp"
+    ]
+  }
 }

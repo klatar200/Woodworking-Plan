@@ -10,32 +10,115 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Planks, two supports and the 25\" and 26\" frame pieces cut in steps[0]-[3] each have a cut row; the 26\" figure matches the viewed step-3 diagram."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used: Planks (steps[1]), Support pieces (0, 2), Frame pieces 25\" and 26\" (3)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[2].part",
+          "quote": "Frame pieces"
+        },
+        {
+          "path": "cutList[3].part",
+          "quote": "Frame pieces"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x2 96\""
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut 2 1x2's at the same length as your support pieces"
+        }
+      ],
+      "arithmetic": "The frame parts (0.75 x 1.5) match only the listed 1x2 and steps[3] names 1x2s: 2x25 + 2x26 = 102 + 3 cuts x1/8 = 102.4 vs 1 x 96\" bought = 96 -> short by 6.4\" (not kerf only). 1x3: 10x25 + 2x25 = 300 + 8 cuts = 301 <= 4x96 = 384 passes.",
+      "reason": "One 8' 1x2 cannot supply the four frame pieces (102\" of parts); quantity 1 is as imported (no Stage 2 quantity diff recorded)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws and 1 1/4\" brad nails are used for assembly and both are in materials; no conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "attach the support pieces to the backs of your planks."
+        }
+      ],
+      "reason": "Where along the 25\" planks the two supports sit (distance from the top and bottom, or 'evenly') is never given; the viewed step-7 photo shows them inboard of the ends but with no dimensions and the step-3 diagram shows them unattached."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and dry-fit, supports joined to the frame and nailed to the planks, frame assembled with glue, painted, then hung; no step needs a part that does not yet exist."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill pocket holes in the ends of the two support boards."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" supports (search: all steps/description vs /setting|jig|thick/i - none); the viewed step-3 diagram shows holes but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "I used a heavy gauge wire, attached to each support piece with a staple."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "steps[9] installs a picture hanger/heavy-gauge wire with staples, none of which is in materials (search: materials names vs /hanger|wire|staple|nail/i - only brad nails and screws); the plan never fixes what hanger to buy."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Use wood glue at every joint, and assemble the frame in place.",
+      "what": "Wood glue and paint/stain (steps[8]) are used but not in materials (consumables)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "756fc10bf2f1683a.webp",
+      "ccce41ab84840d12.webp"
+    ]
+  }
 }

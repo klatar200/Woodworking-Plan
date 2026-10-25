@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only cut part is the 1x4 shelf (cut row, Kreg-corrected 0.75 x 3.5 x 9.5); every pipe piece the steps use (3 connector nipples, 6\" nipple, tee, elbow, floor flange, 2 end caps, 2 washers) is in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single Shelf row is the scrap 1x4 drilled in steps[1] and slid onto the pipe in steps[7]."
     },
     "R4": {
       "result": "pass",
@@ -58,21 +60,55 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "reason": "materials[0] is \"Board, 1x4 Scrap\" with no length written; the 9.5\" shelf cannot be checked against a stock length (§9: never assume)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "It's best if you can screw at least 2 of the holes of the floor flange into a stud in the wall."
+        }
+      ],
+      "reason": "The flange is screwed to a stud but no screw or size is named in any step or in materials (search: steps, materials, description vs /screw/i - only this sentence)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole is \"centered 2\" from one end\"; pipe layout is fixed by the fittings; orientation is as desired; wall height is not required by the build."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Hole drilled and wood stained, pipe built tee-first, 1x4 slid onto the open top nipple before the last end cap, then tightened and mounted."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket-hole joints; the joints are threaded pipe fittings and a through-hole, with the method stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Fitting counts agree with the steps: tee, flange and nipple (steps[3]-[5]); final short nipple, elbow, 6\" nipple and end cap (step 6); second washer and end cap (step 7) = 3 nipples, 2 caps, 2 washers as listed; the holder is installed in steps[9]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Go ahead and sand and stain your wood, and set aside.",
+      "what": "Sandpaper and stain used but not in materials (consumable)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": []
+  }
 }

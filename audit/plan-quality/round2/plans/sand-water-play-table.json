@@ -10,32 +10,73 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps use (box sides, 1x2 slats, 1x6 divider, legs, shelf rails and slats, top, trim) has a cut row; torsion hinges are listed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used: box sides (steps[0]), slats (1), divider (2), legs (3), shelf rails/slats (4-5), top (6), trim (7)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x8, 1x6, 1x3, 1x2, sheet-0.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed material (7.25 = 1x8; 5.5 = 1x6; 2.5 = 1x3; 1.5 = 1x2; 0.5 ply). 1x8 96\" x2: 2x18.75 + 2x47.75 = 133 + 4 cuts x1/8 = 133.5 <= 192. 1x6 24\": 17.25 <= 24. 1x3 96\" x4: 8x22.75 + 2x49.25 = 280.5 + 10 cuts x1/8 = 281.75 <= 384. 1x2 96\" x7: 9x17.25 + 17x13.75 + 2x50.75 + 2x17.25 = 525 + 30 cuts x1/8 = 528.75 <= 672. Ply: one 20.25 x 50.75 part fits a 48 x 96 sheet."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used (1-1/4\" pocket hole screws, 1-1/4\" wood screws, 1-1/4\" brad nails) all appear in materials with matching sizes; no conflicts. Hinge screws are not specified."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Install hinges to attach the top to the play table."
+        }
+      ],
+      "reason": "Where the two torsion hinges go (which long edge, distance from the ends) is never given as a number; the viewed Fig. 7 and Fig. 8 images show the lid and trim but no hinges."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box, slats, divider, legs, bottom shelf built then attached, lid hinged, trim added, then finish; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" pocket holes stated in steps[0], [1], [2], [4]; all pocket-holed parts are 3/4\" stock."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree and add up: 9 slats x 1.5 + 8 gaps x 4-1/4 = 47.5 vs the 47.75 inside length; 17 shelf slats x 1.5 + 16 gaps x 1-1/2 = 49.5 vs 49.25 rails (approximate spacing); trim 17.25 + 2x1.5 = 20.25 = top width; hinges listed; the table is finished at steps[9]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "construct the box with 1-1/4\" pocket hole screws and wood glue.",
+      "what": "Wood glue is used in most steps but is not in materials (consumable)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "5c976f00325ba361.webp",
+      "50ad2eb159687dd4.webp",
+      "edf794a772f3e4dc.webp",
+      "03d9a47d39d01917.webp"
+    ]
+  }
 }

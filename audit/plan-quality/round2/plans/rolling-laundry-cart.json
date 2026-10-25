@@ -59,32 +59,83 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (front, back, 3 shelves, trim, casters, handle) all have cut rows or listed hardware."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Front and Back (steps[0]), Shelves (0-1), Trim (2): all three rows used; trim 6 = 2 per shelf x 3 shelves."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Kreg-corrected 0.75x7.25 parts match the listed 1x8 board (0.75 x 7 1/4); the 0.25x0.25 trim can be ripped from the same 3/4\" stock (rip, not planed to a different width)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock type, length written (8'). Wide parts: 2x24 + 3x26.5 = 127.5 + 5 cuts x1/8 = 128.1 <= 2x96 = 192; the six 26.5\" 1/4\" trim strips are ripped from the remaining 63.9\" of the same 1x8."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the short ends of each of the shelves."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the casters onto the underside of the bottom shelf."
+        }
+      ],
+      "reason": "The shelf joints are pocket-hole joints and the casters need screws, but no screw/nail is named in any step or in materials (search: steps, materials, description vs /screw|nail|fastener/i - none)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Handle \"approximately 5\" down from the top of the front\"; shelf spacing 11\"; bottom shelf flush with bottom edge; four caster positions shown at the corners of the underside in the viewed step-3 image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "1 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelves attach to front/back, trim to the shelves, casters to the bottom shelf underside, then the handle on the front; every part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the short ends of each of the shelves."
+        }
+      ],
+      "reason": "No jig thickness setting and no screw for the 3/4\" pocket holes anywhere in the plan (search: steps/description/materials vs /setting|jig|screw/i - none)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match (2 front/back, 3 shelves, 6 trim = 2 per shelf, 4 casters, 1 pull); every made part is installed; pull, casters, glue, stain, sealant are in materials; the piece is finished at steps[4]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Attach the other two shelves the same way with 11\" of space in between.",
+      "what": "Three 3/4\" shelves with two 11\" spaces = 0.75x3 + 11x2 = 24.25\" vs 24\" Front and Back (cutList[0].lengthIn 24); the viewed step-1 image shows the sides standing above the top shelf, so the 11\" may not mean what the arithmetic assumes. Unresolved from the plan."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "751a8aa22acf079b.webp",
+      "87b0ab1acba9819f.webp"
+    ]
+  }
 }

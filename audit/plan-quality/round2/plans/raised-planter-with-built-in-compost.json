@@ -263,32 +263,100 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part a step cuts (2x4 laterals/braces/spacers, 4x4 post, 2\" 4x4 blocks, 1x6 supports, cedar siding/supports/dividers, 5-1/2\" 4x4 blocks) has a cut-list row; no step cuts a part with no row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 cut rows are used: Lateral Frame (steps[0]), Cross Brace (1), Vertical Spacer (2), Cedar Siding (7), Support Post (8), Center Post Spacer (9), Cedar Bottom Support (10), Cedar bed spacer (12), Hanging Basket Support and Spacer (13)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x6, 4x4, 0.875x24); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock for every part. 2x4 96\" x8: 4 laterals x96 + 16x19.5 + 8x7 = 384+312+56 = 752 + 24 cuts x1/8 = 755 <= 8x96 = 768 (packs as 4 per board + 2 spacers in each remainder). Cedar 1x6 72\" x14: 41x14.25 + 4x44 + 12x12 = 584.25+176+144 = 904.25 + 57 cuts x1/8 = 911.4 <= 1008. 1x6 72\" x2: 2x70 = 140 <= 144. 4x4 96\" x1: 60 + 2x2.5 + 2x5.5 = 76 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "Attach the final portion of the hanging basket support with decking nails and lag screws."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "Box of 1-1/2\" decking screws"
+        }
+      ],
+      "reason": "steps[14] calls for decking nails, which have no size and are not in materials (search: materials names vs /nail/i - none); every other step uses decking screws."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "pre-drill the 7/8\" holes for the dowel rod to hold the hanging planters"
+        }
+      ],
+      "reason": "Position of the two 7/8\" dowel holes along the 70\" 1x6 is never given as a number; the viewed step-13 image shows two holes near the ends with only the 70\", 3 1/2\" and 5 1/2\" dimensions, none locating them."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames built (steps 3-4), joined (5), legs (6), siding (7), post (8-9), bottom supports and liner (10-11), dividers (12), then hanging support on the post (13-14). Brace counts add to 16 (4 end + 12 inner) and the frame spacings in the viewed step image add to 96."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states \"pair of 1-1/2\" pocket holes\" on 1-1/2\" (actual) 2x4s; later pocket joints are the same 2x4 stock. Read as the thickness setting; not contradicted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Cut two 2\" blocks off the scrap leftover from the 4x4"
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Center Post Spacer"
+        }
+      ],
+      "arithmetic": "Step says two 2\" blocks; cut-list row Center Post Spacer quantity 2 has length 4 in the live file, and the Kreg source size is 4x4x2.50\" (importDiffs cutList[5], correctRow [3.5,3.5,2.5]) -> 2.5\" vs 2\".",
+      "reason": "Block length in the step (2\") disagrees with Kreg's cut-list length (2.50\")."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "I then added a layer of gravel, then sticks and leaves and then leftover compost dirt",
+      "what": "Cardboard, gravel and compost fill used in steps but not in materials (consumable)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "e0ac8ee478707bcc.webp",
+      "4d7fab2b47247f45.webp",
+      "370c7f06165fde87.webp",
+      "ce01dad043c4f4a9.webp"
+    ]
+  }
 }

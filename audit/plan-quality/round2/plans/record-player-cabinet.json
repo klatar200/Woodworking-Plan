@@ -10,32 +10,109 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps name is in the cut list; RECORD DISPLAY FRONT (steps[9]) = Record Storage Front 8.5x29.75 (matches the 29 3/4\" shown in the viewed step-9 image) and BACK PANEL (steps[8]) = Left Back. No part is cut without a row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows used: Bottom/Sides (0), Inside Panel (1), Record Display Base and Left Permanent Shelf (2), Mid Piece (3), Display Back (4), Top Left (5), Back Top Piece (6), Record Holder Piece (7), Left Back (8), Record Storage Front and Left Door (9)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[12] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[12].thicknessIn",
+          "quote": "0.25"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Attach 1/4\" plywood BACK PANEL using 1-1/4\" brad nails."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        }
+      ],
+      "reason": "Left Back is 0.25\" thick but the only plywood in materials is 3/4\" (search: materials names vs /1\\/4|0?\\.25|thin/i - none), so the part cannot come from a listed material."
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×18×47 + 2×18×27 + 1×18×22.25 + 1×14×28.25 + 1×18×18 + 1×7.75×14 + 1×7.75×13.75 + 1×18×18 + 1×4×28.25 + 1×4.625×28.25 + 1×8.5×29.75 + 1×13.75×19.5 + 1×19.25×22.125 = 4667.6 sq in; bought 1×48×96 + 1×48×48 = 6912 sq in)"
+      "reason": "All 3/4\" parts could share the two 3/4\" sheets but sheet layout is not judged: 3/4\" part area = 4667.6 - (19.25x22.125 = 425.9 for the 1/4\" Left Back) = 4241.7 sq in vs 6912 sq in bought (48x96 + 48x48), so no certain shortfall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1-1/4\" pocket hole screws and 1-1/4\" brad nails are used in steps; both are in materials (materials[2], [3]); hinges and knob are listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numeric (bottom 4\", inside panel 18\", shelf 12-1/4\", base 13\", mid piece 13-3/4\", top 7-3/4\", hinges ~2\" from ends) or shown in viewed images (backs, record holder 2 1/4\" strips); knob is relational (upper right corner)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "6 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom/sides, inside panel, shelf and display base, mid piece, backs, top left, back top piece, record holder, back panel, front and door, then knob: each part is placed on parts that already exist."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket five holes on each end of the BOTTOM, as shown."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" plywood pocket holes (search: all steps/description for /setting|thickness/i - none); viewed step-0 image shows holes but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].title",
+          "quote": "Attach Record Display Backs"
+        },
+        {
+          "path": "cutList[6].quantity",
+          "quote": "1"
+        },
+        {
+          "path": "cutList[6].part",
+          "quote": "Record Display Back"
+        }
+      ],
+      "arithmetic": "Steps use plural \"RECORD DISPLAY BACKS\"/\"BACK PIECES\" but the row has quantity 1. Viewed step-4 image shows two backs of 13 3/4\" either side of the mid piece: 13.75 + 0.75 (Mid Piece thickness) + 13.75 = 28.25 = Record Display Base length (cutList[3].lengthIn 28.25).",
+      "reason": "Cut list gives one Record Display Back where the steps and the 28.25\" base need two."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "Stain your color choice, and seal using satin polyurethane.",
+      "what": "Stain and polyurethane used but not in materials (finish consumable)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "1ae073109ae020e6.webp",
+      "185046d9b219d739.webp",
+      "bfd849c72e1442f0.webp",
+      "2881b96cbb1d402c.webp",
+      "2bd7e2af73499b3e.webp"
+    ]
+  }
 }

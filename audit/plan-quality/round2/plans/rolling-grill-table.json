@@ -407,32 +407,99 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (top/bottom frame boards, slats, side boards, under-drawer and under-shelf boards, legs, drawer parts, top slats, cedar slats, spice shelf back, aluminum rod) has a cut-list row or listed material."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 18 rows are used by steps[0]-[16]; none is an assembly or placeholder."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x4, 1x2, 2x6, 1x4, 0.5x3.5); steps not checked for per-part stock"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Each part's thickness x width (Kreg-corrected) matches exactly one listed material (1.5x3.5 = 2x4; 0.75x1.5 = 1x2; 0.75x3.5 = 1x4; 1.5x5.5 = 2x6; 0.5x3.5 = cedar picket). 2x4 96\" x5: 118+54+48+26+27+70+112 = 455 + 23 cuts x1/8 = 457.9 <= 480. 1x2 36\": 2x5.75+2x10.25 = 32 <= 36. 1x4 72\": 2x11+2x14 = 50 <= 72. Pickets 72\" x10: 240+148.5+153+19+12.75+50 = 623.25 + 39 cuts x1/8 = 628.1 <= 720. 2x6 72\" x2: 4x36 = 144 + cuts 0.125-0.5 vs 144 bought: parts fit with zero kerf, short by <= 1/2\" (kerf only)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "I drilled holes in the top frame boards, then secured the top though the holes using washers."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "2 1/2\" blue-cote pocket hole screws"
+        }
+      ],
+      "reason": "The top is fastened with washers and an unnamed screw; washers are not in materials (search: materials names vs /washer/i - none) and no screw size is given for this joint."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric: under-drawer boards \"6\" down from the top\", legs flush top and 4\" overhang; shelf height shown in viewed step-4 image (10 1/2\"); slats even-spaced/centered are relational. Hook height on legs is unstated (see gaps) but is an as-desired accessory position."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top/bottom frames (0), inside frame (1), attached to bottom then top (2-3), shelves (4), legs (5), slats (6-9), spice rack (10), top (11-12), then drawer parts (13-16) and install (17); each part exists before it is used."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"Set your pocket hole jig for 1 1/2\" thick material\" covers the 1.5\" parts and top boards; steps[13] \"Set pocket holes for 3/4\" thick material\" covers the drawer parts (0.75\"). No contradiction."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[12].name",
+          "quote": "3\" wheels (4\" total height)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "The leg piece measurements are for wheels with a 4\" clearance from the top to bottom."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "to cover the top of the castor"
+        }
+      ],
+      "reason": "The wheels are listed and the finished piece (viewed step-17 image) has one, but no step attaches them (search: steps[0..18] title/body vs /wheel|caster|castor/i - only steps[5] and steps[7] mention them, neither installs them)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[17].body",
+      "quote": "Attach hooks to the legs of the cart for hanging grill accessories.",
+      "what": "No position (height/spacing) for the coat hooks on the legs; not shown in the viewed final image."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Secure the boards with wood glue and 2 1/2\" pocket hole screws.",
+      "what": "Wood glue is used throughout but is not in materials (consumable)."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "9af3b440a2fffc0e.webp",
+      "4bff1b3c85d43f32.webp",
+      "32bd905ccfce5473.webp"
+    ]
+  }
 }

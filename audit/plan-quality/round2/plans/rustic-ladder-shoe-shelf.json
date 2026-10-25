@@ -35,57 +35,65 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both legs and all six shelves are cut in steps[0] and steps[6] and have cut rows; no step uses an unlisted part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Shelf Legs (steps[0]-[2]) and the six Shelf rows (steps[6] lists 14 5/8, 12 3/8, 11 1/8, 9 7/8, 8 3/8, 7\"); row 5 reads 7 x 8 because the importer sorts dimensions smallest to largest (cause import: 8\" wide x 7\" long)."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Shelf Legs — qty 2, 24 x 48 x 72 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 2x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x8 72\""
-        }
-      ],
-      "arithmetic": "cutList[0] 24×48: no listed stock has thickness 24 (±1/32) with width ≥ 48; stock = 1.5×5.5, 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Shelf Legs — qty 2, 24 x 48 x 72 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "readerNote": "Sweep fail rejected: the Kreg source row \"2'x6'x48\\\"\" uses foot marks (a typo), giving the nonsensical 24 x 48 x 72 correctRow; steps[0] says \"Cut your 2\\\"x6\\\"x96\\\" board directly in half (48\\\")\" and materials[0] is 2x6 96\", so the leg is 1.5 x 5.5 x 48 from the listed 2x6. Shelves 0.75 x <=7.25 come from the listed 1x8.",
+      "reason": "Legs match the listed 2x6 (1.5 x 5.5) per steps[0]; shelves match the listed 1x8 (0.75 x 7.25)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x6, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Steps name the stock (2x6x96\" for legs, 1x8x72\" for shelves). 2x6 96\": 2x48 = 96 + 1 cut x1/8 = 96.125 vs 96 bought: fits with zero kerf, short by 1/8\" (kerf only; steps[0] allows adjusting if the board is short). 1x8 72\": 14.625+12.375+11.125+9.875+8.375+7 = 63.375 + 5 cuts x1/8 = 64.0 <= 72."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only Kreg screws are used and materials[2] gives 1-1/4\" coarse thread (24 needed for 6 shelves x 4 holes <= 30); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf marks at 10\" then 5\" increments from the cut angle, pocket holes 1\" and 6 1/2\" in, shelf protrudes 3/4\" at the top; the viewed step-4 image shows the 10\" marks."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs cut and angled, marks drawn, shelves cut and drilled, shelves attached to one leg, then the second leg."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "You will drill pocket holes in each shelf; two on each side."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" shelves (search: all steps/description/materials vs /setting|jig|thick/i - none); the viewed step-7 image shows holes but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step 6 shelf lengths match cutList[1]-[5] (14 5/8 = 14.625, 12 3/8 = 12.375, 11 1/8 = 11.125, 9 7/8 = 9.875, 8 3/8 = 8.375) and 7\" = row 5; both legs and all shelves are installed (steps[8]-[9]); finish is optional."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "83638d4e4bfcba61.webp",
+      "1318daa2272be32f.webp"
+    ]
+  }
 }

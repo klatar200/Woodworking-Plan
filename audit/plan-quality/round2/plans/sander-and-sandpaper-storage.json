@@ -71,10 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps use (vertical supports, top, bottom, back, 1/4\" shelves) all have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used: Vertical supports (steps[0]-[2]), Top and bottom (2-3), Back (4), Shelves (5)."
     },
     "R4": {
       "result": "pass",
@@ -82,20 +84,56 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "The sheets are named only 'Half Sheet' with no dimensions (section 9: sizes only as written), so no layout or area limit can be checked. Kreg-corrected areas for reference: 3/4\" parts 2x13x21.75 + 4x13x13.75 = 565.5+715 = 1280.5 sq in; 1/4\" parts 15.25x21.75 + 15x6.625x13 = 331.7+1291.9 = 1623.6 sq in."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both sizes used (1 1/4\" pocket hole screws, 1 1/4\" screws) match materials[2]; brad nails are listed and no nail size is stated in the steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dados 1/4\" wide, five, 1\" apart, on the top half of the supports (first groove sits near the top edge in the viewed step-0 image); supports 6 1/4\" apart; 4x0.75 + 3x6.25 = 21.75 = the Top and bottom length so ends are flush; pocket holes at the bottom of each support."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Dados cut and pocket holes drilled before the supports go on the bottom, then top, back, and shelves slide in last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes at the bottom of each vertical support on the same side as the dados."
+        }
+      ],
+      "reason": "No jig thickness setting for the 3/4\" supports is stated (search: all steps/description vs /setting|jig|thick/i - none); the viewed step-1 image shows the holes but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 4 supports (2 with dados on both sides = 3 bays) x 5 dados = 15 shelves; back 15.25 = 13.75 + 2x0.75 high x 21.75 wide matches the box; the unit is finished at steps[6]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Cut five 1/4\" dados, 1\" apart, on the top half of the vertical supports.",
+      "what": "Dado depth is never stated. The 1/4\" Shelves are 6.625\" (Kreg-corrected) wide but the bays are 6 1/4\" apart (steps[2]), so the shelves only fit if the dados are cut to a depth the plan does not give."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "a4b1845b3436310f.webp",
+      "a364e256b1499c4a.webp"
+    ]
+  }
 }

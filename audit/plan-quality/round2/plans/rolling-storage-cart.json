@@ -71,10 +71,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut or fit (sides, top, bottom, drawer sides, front/backs, fronts, bottoms) has a cut row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7].part",
+          "quote": "Back"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1/4\" rabbeting bit"
+        }
+      ],
+      "reason": "The 1/4\" plywood Back (19 x 26.75, Kreg-corrected) is never cut or attached: search of steps[0..9] title/body vs /back panel|rabbet|\\bback\\b/i matches only the drawer-box \"front & back pieces\" (steps[5], [6]); no step mentions a cabinet back."
     },
     "R4": {
       "result": "pass",
@@ -82,20 +97,75 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Two sheet types; layout not judged. Area fits: 3/4\" parts (Kreg-corrected) 2x16x27 + 16.75x20 + 16x18.5 + 10x3x15 + 10x3x16 + 5x5.2813x20 = 864+335+296+450+480+528.1 = 2953.1 <= 4608 (48x96); 1/4\" parts 5x14x16.5 + 19x26.75 = 1155+508.25 = 1663.25 <= 2304 (48x48)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" screws/pocket screws are used in steps and materials[5] lists 1 1/4\" screws; no conflicting sizes. Slide and caster screws are given no size anywhere."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Top overhang 3/4\", groove 1/4\" x 1/4\" starting 1/2\" up, bottom slide 1\" up and spacing given, fronts evenly spaced with the last flush with the bottom; four caster positions shown at the corners in the viewed final image."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cabinet shell, drawer boxes, slides, boxes installed, fronts attached from inside, casters last; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using 1 1/4\" pocket screws and wood glue, attach the top through the pocket holes on the inside of the sides of the cabinet."
+        }
+      ],
+      "reason": "No jig thickness setting is stated for the 3/4\" stock (search: steps/materials/description vs /setting|jig|thick/i - none; viewed images show no setting)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "All the other drawer slides should be 3.656\" from the bottom of one slide to the bottom of the next slide."
+        },
+        {
+          "path": "cutList[5].part",
+          "quote": "Drawer fronts"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Make sure they are spaced evenly and that the last drawer front is flush with the bottom of the cabinet."
+        }
+      ],
+      "arithmetic": "Drawer fronts are 5.2813\" tall (Kreg-corrected cutList[5]; viewed step-9 image shows 5 9/32\") and 5 are stacked evenly from the bottom: front k covers about (k-1)x5.28 to kx5.28, so front 5 is at about 21.1 to 26.4. Boxes are 3\" tall (cutList[3].widthIn 3) at the stated 3.656\" slide pitch from 1\": box 5 = 1 + 4x3.656 = 15.6 to 18.6. No overlap, so front 5 cannot be screwed to box 5 from inside (fronts 4-5 and 3 barely overlap their boxes).",
+      "reason": "The slide pitch (3.656\") and the front height (5 9/32\") cannot both hold for fronts to line up with the boxes; the viewed step-8 image labels 3 21/32\" without saying whether it is a gap or a pitch."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "15\" full extension drawer slides",
+      "what": "Quantity 5 (unit each) for 5 drawers; each drawer needs two slides. Unclear if 5 means pairs."
+    }
+  ],
+  "reader": {
+    "batch": "r2-36",
+    "imagesViewed": [
+      "235ded7f8f64b673.webp",
+      "70d3990941715ad5.webp",
+      "1df10a7f769d540f.webp"
+    ]
+  }
 }
