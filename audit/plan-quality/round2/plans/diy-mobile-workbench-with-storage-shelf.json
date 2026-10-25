@@ -164,35 +164,103 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; hits in steps[7] 'Check out the video in the extras tab and the blog post for more details' (supplementary video) and steps[5]/[7] Trak directions (a purchased product's own instructions, scored under R10)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frames, bottom shelf, legs, top, trim supports (steps[8]), divider, side panels, cubby shelf all in cutList[0..9]; cubby dividers from scrap are optional (steps[11])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used in steps[0]-[13]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 4x4, 2x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 2x4 96\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Frame Long Sides qty 4, 1.5 x 3.5 x 96"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Frame Short Pieces qty 6, 1.5 x 3.5 x 41"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Workbench Top Long Trim Supports qty 2, 1.5 x 3.5 x 96"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Workbench Top Short Trim Supports qty 2, 1.5 x 3.5 x 51"
+        }
+      ],
+      "arithmetic": "All four rows are 1.5 x 3.5 = 2x4, the only listed stock of that size (4x4 is 3.5 x 3.5). Bought 9 x 96 = 864 in. Needed 4 x 96 + 6 x 41 + 2 x 96 + 2 x 51 = 384 + 246 + 192 + 102 = 924 in > 864 (short 60 in, zero kerf). Trim supports are 2x4 per steps[8].",
+      "reason": "2x4 bought is 60in (more than 6 boards' worth of one 96in) short of the cut list."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every step size has a materials line: 2 1/2in pocket screws (steps[0],[2]) [3]; 1 1/4in wood screws (steps[1],[3]) [4]; 3in (steps[2]) [5]; 2 1/2in wood screws (steps[4],[8]) [6]; 2in (steps[6]) [7]; 1 1/4in Kreg pocket hole screws (steps[10],[12],[13]) [8]. No conflicting size for one use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Trim your top according to the directions on the traks based on the size you order."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Install the traks per instructions."
+        }
+      ],
+      "reason": "Trak cutout size/position and bolt-hole locations are not given anywhere in the plan (delegated to the product's directions); step 5 and step 7 images viewed are photos with no dimensions. Other positions pass: casters at corners plus two in the middle, cubby shelf height 'however high you want', divider/side panel positions fixed by side panel width 13in."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands ('like shown' steps have own images)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames, bottom shelf, legs, casters, top frame, top (trimmed then attached), traks, trim, divider, side panels, shelf; each part exists before use. Divider placed then attached after side panels (steps[9]-[10])."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] '1 1/2\" pocket holes' for the 2x4 frames (1.5in thick); steps[12] '3/4\" pocket holes' for the 3/4in shelf/panels (one statement covers later joints of that thickness)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Frame 4x8: 41 + 2 x 3.5 = 48 and 96; 6 casters = 'six 3in casters' in steps[3] and materials[9]; corrected leg 26 1/4 and divider/side panels 26 1/4 high. (b) all parts installed. (c) casters, Clamp Traks in materials; scrap dividers optional. (d) ends with shelf and loading."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-mobile-workbench-with-storage-shelf-s5.webp",
+      "audit/plan-quality/.img-cache/diy-mobile-workbench-with-storage-shelf-s7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "then screw in the dividers from scrap wood",
+      "what": "cubby dividers from scrap are optional ('You can finish out your cubby however you want'); no materials line"
+    }
+  ]
 }

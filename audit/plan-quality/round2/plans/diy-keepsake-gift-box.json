@@ -71,57 +71,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side pieces, end pieces, lid, bottom (steps[0]-[5]) each have a cutList row; the bottom blank mismatch is recorded under R14."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0..3] all used in steps[0]-[5]."
     },
     "R4": {
+      "result": "pass",
+      "reason": "Sweep fail on cutList[3] (0.75 x 8 vs 1x6 5.5 wide) resolved: steps[1] 'Glue and clamp two (2) of the 14.5\" pieces together for the bottom' is the glue-up; two 5 1/4in pieces = 10.5in >= 8. Sides 5.25 and ends 4.75 fit 1x6 (5.5); lid 0.25 x 8.5 x 14.5 = materials[1] plywood scrap 8.5 x 14.5."
+    },
+    "R5": {
+      "result": "pass",
+      "reason": "All 3/4in parts match only the 1x6 (96in). Using step blanks: 2 x 14.5 sides + 2 x 14.5 bottom blanks + 2 x 8 ends = 29 + 29 + 16 = 74 + 5 cuts x 1/8 = 74.6 <= 96. Lid from the plywood scrap (8.5 x 14.5 = lid size)."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Assemble box using wood glue and 23 ga pin nails 1 1/4\" long."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Pack of 23ga Pin Nails"
+        }
+      ],
+      "reason": "Step gives pin nail length 1 1/4in; materials[6] states gauge only, no length. Search of materials[*].name/note for /1 1\\/4|length/ finds none."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Dado fence/depth settings 1/4in and 3/8in given in steps[2]; lid width 'approximately 8.5in'; pull positions are 'desired' (relational/as desired); end piece width 4.75 from cut list."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "'SEE CUT LIST' in steps[0] refers to the plan's cut list, which exists; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/rip, glue bottom, dado, trim ends, assemble, rip lid to measured box, finish, pulls, insert lid; order possible. Ends trimmed 1/2in (5.25 -> 4.75) so the lid slot at 1/4-1/2in clears them."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; glue and 1 1/4in pin nails stated."
+    },
+    "R14": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
+          "path": "steps[1].body",
+          "quote": "Glue and clamp two (2) of the 14.5\" pieces together for the bottom."
+        },
+        {
           "path": "cutList[3]",
-          "quote": "Bottom — qty 1, 0.75 x 8 x 13"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Plywood, 1/4\" Thick Scrap 8.5\" x 14.5\""
+          "quote": "Bottom qty 1, 0.75 x 8 x 13"
         }
       ],
-      "arithmetic": "cutList[3] 0.75×8: no listed stock has thickness 0.75 (±1/32) with width ≥ 8; stock = 0.75×5.5, sheet 0.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[3]",
-          "quote": "Bottom — qty 1, 0.75 x 8 x 13",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "arithmetic": "Step 0 rips all boards to 5 1/4in, so two glued 14.5in pieces = 10.5 x 14.5; the cut list bottom is 1 piece 8 x 13 and no step trims the glue-up to 8 x 13 (13 = 14.5 - 2 x 3/4 end pieces). The two extra 14.5in blanks are also in no cutList row (cutList 14.5in boards: 2 sides only).",
+      "reason": "Step's bottom blank size/count disagrees with the cut-list row and the final trim is not stated."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Fill any gaps with wood filler",
+      "what": "wood filler not in materials"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Visit www.theAwesomeOrange.com for more pictures of this build",
+      "what": "credit/optional link only; build is complete without it"
+    }
+  ]
 }

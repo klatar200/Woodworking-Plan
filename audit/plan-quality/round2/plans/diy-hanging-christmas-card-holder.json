@@ -203,10 +203,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Left Side, Right Side and Rows 1-6 (steps[0]-[6]) all in cutList[0..7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used by steps[0]-[6]."
     },
     "R4": {
       "result": "pass",
@@ -214,20 +216,79 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet size not written in material name"
+      "reason": "Sheet size not written in materials[0] ('1/2\" plywood'); no stock length/area to compare."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps say only 'pocket hole screws'; materials[1] lists 1in Kreg screws; no conflicting size. 26 screws = 6 rows x 2 ends x 2 holes + 2 on the Right Side miter."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Row spacing given as 'approximately 6\" up' (numeric, but see R14), Row 6 flush at bottom, apex angle 30 degrees, clothes pins 'use our image as a guide' with image step 8/9; hook at apex shown in step 9 image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'use our image as a guide' (steps[8]) has its own image; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, then rows from bottom to top, then paint and clothes pins, then hang; order possible. Image step 1 shows the two sides meeting at the apex, which is where the hook hangs (image step 9)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes in each end of all the Row pieces - Drill two pocket holes on the 30 degree mitered end of the Right Side."
+        }
+      ],
+      "reason": "Pocket holes in 1/2in plywood strips; search of steps/materials/description for /setting|jig|thickness/i finds none; viewed images (step 1, step 9) show no jig setting; step 0 has no image."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "This should be approximately 6\" up from the last row."
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Row 6 1.5 x 0.5 x 24 (Row 5 = 20, Row 4 = 16, Row 3 = 12, Row 2 = 8, Row 1 = 4)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Right Side 48"
+        }
+      ],
+      "arithmetic": "Rows sit 'where the two ends meet the two Sides' so row length is proportional to distance from the apex: Row 6 = 24 at 48in (Right Side) from the apex, each row 4 shorter = 4/24 x 48 = 8in apart along the side (51in Left Side: 8.5in); five gaps = 40in. The step says 6in up (5 x 6 = 30in), where the sides would be 24 x (48-30)/48... Row 1 would sit 18in from the apex = 9in wide, not the 4in cut.",
+      "reason": "Stated 6in row spacing is inconsistent with the cut row lengths (4in step per row = about 8in along the sides) so rows cannot both span the sides and sit 6in apart."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-hanging-christmas-card-holder-s1.webp",
+      "audit/plan-quality/.img-cache/diy-hanging-christmas-card-holder-s9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Start by drilling all your pocket holes at once.",
+      "what": "No step cuts the pieces or states the miter on the Left Side; only the Right Side's '30 degree mitered end' is mentioned (steps[0]) and steps[1] says 'aligning the 30 degree ends'; the angle at the Left Side top and the angled bottom ends seen in the step 1 image are not stated."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Use green paint to paint the tree. - Use red paint to paint the clothes pins.",
+      "what": "clothes pin count in materials[3] is 18 while steps[8] says 'as many as you'd like'; not a conflict"
+    }
+  ]
 }

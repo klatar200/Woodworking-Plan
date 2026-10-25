@@ -83,31 +83,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top/bottom, sides, toe kicks, under drawer support, arches, drawer parts and face (steps[0]-[4]) all in cutList[0..9]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used in steps[0]-[3]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0]); +3 more"
+      "result": "pass",
+      "reason": "Sweep unknown (stock names '4' x 8' x 3/4' unparsed) resolved: materials[0] is a 3/4in 4x8 sheet and materials[1] a 1/2in 4x4 sheet; every 0.75 part (largest 18 x 27.5) fits 48x96 and every 0.5 drawer part (largest 15.5 x 16.5) fits 48x48; toe kicks 1in wide are rips."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "reason": "Sheet goods. Areas for two tables (description: 'two bedside tables from one sheet'): 3/4in = 2 x (720 + 990 + 36 + 29 + 111 + 72 + 126) = 2 x 2084 = 4168 <= 4608; 1/2in = 2 x (160 + 82.5 + 255.75) = 996 <= 2304. Area does not exceed what is bought; layout not judged (sheet rule)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps say only 'pocket hole screws'; materials list 1 1/4in and 1in boxes; no conflicting size; drawer slides 16in match drawer side length 16."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Support 7 1/4in down from the top (steps[2]); toe kicks 'centered'; arch curve 'as much arch as you like'; drawer position shown in the viewed step 4 image (above the support); slides per manufacturer; pull 'of choice'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No drawing references beyond own-image steps; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box, toe kicks, support and arches, drawer, then slides and insert; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Drill two pocket hole screws in each end of the Drawer Back, one end of each Drawer Side, and on three sides of the Drawer Bottom."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in (box, support) and 1/2in (drawer) parts; search of steps/materials/description for /setting|jig|thickness/i finds only 'See tools list'; viewed images step 2, 3, 4 show no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Corrected: interior width 20 - 2 x 3/4 = 18.5 = Under Drawer Support length; toe kick rectangle 18 x (14.5 + 2 x 3/4 = 16) centred on 20 x 18 bottom leaves 1in each side; drawer: back 16.5 + 2 x 1/2 sides = 17.5 = 18.5 less 2 x 1/2 slide clearance; bottom 15.5 x 16.5 = inside of drawer (16 - 1/2). (b) all parts installed. (c) slides, pull, edge banding, glue in materials. (d) ends with styled table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-modern-bedside-table-with-arches-s2.webp",
+      "audit/plan-quality/.img-cache/diy-modern-bedside-table-with-arches-s3.webp",
+      "audit/plan-quality/.img-cache/diy-modern-bedside-table-with-arches-s4.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "Drawer pull of choice (qty 1) and 'Pairs of 16\" drawer slides' (qty 2)",
+      "what": "Description says two bedside tables are made from one sheet and materials[7] has 2 pairs of slides (two tables) but 1 pull and the cut list is for one table; pull quantity looks like a one-table / import default; not scored."
+    }
+  ]
 }

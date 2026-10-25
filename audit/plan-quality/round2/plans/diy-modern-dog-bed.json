@@ -20,13 +20,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; hits: steps[3],[5],[8] mention the video in the extras tab (supplementary, 'You can see this process in the video'), steps[7] 'according to this template' is the leg drawing in the step 7 image (viewed: 6in wide, 6 7/8in high, 4in, 2in, 1 1/2in dimensions). Nothing needed is missing."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Back, sides, front, bottom (steps[0]) and legs (steps[7]) all in cutList[0..4]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used in steps[0]-[8]."
     },
     "R4": {
       "result": "pass",
@@ -34,21 +36,61 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x8); steps not checked for per-part stock"
+      "reason": "'Half Sheet' (materials[0]) has no written dimensions, so the sheet size is unknown; part area 35.5x10 + 2x24x10 + 17x10 + 24x34 = 355 + 480 + 170 + 816 = 1821 sq in (legs may come from scrap/1x8 per steps[7])."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4in pocket hole screws (steps[2],[5]/image 6) = materials[3]; 2in wood screws, two per leg x 4 = 8 (steps[8]) = materials[2] qty 8; no conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Legs 2 1/2in in from each corner at 45 degrees (viewed step 8 image and steps[8]); leg shape and dimensions in step 7 image; front attached against the left side piece; kerf decoration optional."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "'See image of attaching front piece from sides' (steps[6]) has its own image, viewed: shows the front attached with 3/4in pocket holes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box, stain, front, legs cut then installed, finish; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2]: 'Drill ¾” pocket holes ... using a Kreg pocket hole jig'; step 6 image: 'Attach front through 3/4\" pocket holes'; all parts 3/4in."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Corrected back 35.5 = 34 bottom + 2 x 3/4; bottom 24 x 34 = '1 inch smaller' than the 25x35 bed; two 2in screws x 4 legs = 8; four legs = cutList[4]. (b) all parts installed. (c) no hardware used besides screws; edge banding is in an optional step. (d) ends with finishing."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-modern-dog-bed-s0.webp",
+      "audit/plan-quality/.img-cache/diy-modern-dog-bed-s6.webp",
+      "audit/plan-quality/.img-cache/diy-modern-dog-bed-s7.webp",
+      "audit/plan-quality/.img-cache/diy-modern-dog-bed-s8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "I applied edge banding, but this is just an optional step.",
+      "what": "edge banding not in materials; step optional"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "I used a water based clear coat poly.",
+      "what": "stain/finish not in materials"
+    },
+    {
+      "path": "cutList[2]",
+      "quote": "Front Box Side 0.75 x 10 x 17",
+      "what": "Front piece is 17 long against a 34 long bottom edge and the viewed step 6 image shows the front reaching across the near edge; the plan does not state how much of the front is open, so the intended front length/opening could not be confirmed (not scored)."
+    }
+  ]
 }

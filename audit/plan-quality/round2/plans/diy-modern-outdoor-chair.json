@@ -95,10 +95,30 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the seat facing to the arms as shown using Kreg HD Pocket Holes and Kreg HD Screws."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Seat Back Supports qty 4, 2 x 4 x 24"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Seat Supports qty 4, 2 x 4 x 24"
+        }
+      ],
+      "arithmetic": "Viewed images: step 1 shows 4 back supports (24in), step 4 shows 4 seat supports (24in), step 2 shows one more 24in front board (the seat facing, placed with 16 1/2, 5 3/4, 4 1/4 dimensions). Need 4 + 4 + 1 = 9 boards at 24in; cut list has 4 + 4 = 8. Search: no cutList.part or materials.name matches /facing/i and no step gives its size.",
+      "reason": "The seat facing is made and installed (steps[2]) but has no cut-list row or stated size."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows map to steps/images: back supports (step 1), seat supports (step 4), arm boards (step 0 image: 25 3/4, 24 1/4 x2, 22 3/4), seat board supports (step 3 rip), side supports ('side rails' steps[3],[4])."
     },
     "R4": {
       "result": "pass",
@@ -117,18 +137,64 @@
       "arithmetic": "parts: 4×24 + 4×24 + 2×25.75 + 4×24.25 + 2×22.75 + 2×22.75 + 2×22.75 + kerf 16 cuts (20 parts − 4 boards, the fewest possible)×1/8 = 479.000″; bought: 4×144 = 576″; 479.000 ≤ 576"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Kreg HD Screws (steps[0]-[2]) = materials[1]; 2 1/2in outdoor/wood screws (steps[3],[4]) = materials[2]; no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are dimensioned in the viewed images: back supports 2in apart and 5 3/4in from bottom (step 1), seat facing 16 1/2 / 5 3/4 / 4 1/4 (step 2), seat support spacing 2 7/8in (step 4), side rail supports 1 1/2in (step 3)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "Every 'as shown' step has its own image, viewed steps 0-4 show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Arms, back supports, seat facing, side rail supports, seat supports; each exists before it is used."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill Kreg HD Pocket Holes and assemble the pieces as shown using Kreg HD Screws."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2in 2x4 parts; search of steps/materials/description for /setting|jig|thickness/i finds no jig setting; viewed step 0-4 images show pocket holes and 'Kreg HD' labels but no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Side Supports qty 2, 2 x 4 x 22.75"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "In order to get the two side rail supports (1 1/2\" x 1 3/4\" x 22 3/4\") use a table saw to rip a 2x4 cut to 22 3/4\" in half. Attach as shown using 2 1/2\" outdoor wood screws."
+        }
+      ],
+      "arithmetic": "Step 3 attaches only the two ripped 1 1/2 x 1 3/4 x 22 3/4 pieces (highlighted in the viewed image) to 'side rails'; step 4 attaches seat supports to 'side rails'. The two 2 x 4 x 22 3/4 Side Supports (cutList[6]) are never told to be attached to the frame; search of steps[0..4] for 'Side Supports' finds nothing, and the arm frame in step 0 already uses its own 22 3/4 bottom board (cutList[4]).",
+      "reason": "Cut-list part 'Side Supports' is never installed by a step; names 'side rails' / 'side rail supports' / 'Side Supports' / 'Seat Board Supports' are used interchangeably."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-modern-outdoor-chair-s0.webp",
+      "audit/plan-quality/.img-cache/diy-modern-outdoor-chair-s1.webp",
+      "audit/plan-quality/.img-cache/diy-modern-outdoor-chair-s2.webp",
+      "audit/plan-quality/.img-cache/diy-modern-outdoor-chair-s3.webp",
+      "audit/plan-quality/.img-cache/diy-modern-outdoor-chair-s4.webp"
+    ]
+  },
+  "gaps": []
 }
