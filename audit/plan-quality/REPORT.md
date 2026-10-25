@@ -5,11 +5,11 @@
 | | |
 |---|---|
 | Rubric | **R-2** (2026-10-19; DECISIONS_LOG) |
-| Current stage | **Round 2 in progress (2026-10-25)** — independent re-read of the 586 published plans into `round2/` (39 batches `r2-01..39`, `round2/ledger.json`; prompt `prompts/reader-r2.md`; commit with `prompts/commit-r2.sh <batch>`; `scripts/round2.mjs status|compare`). Round 1 (below) is complete. |
-| Last batch | All 610 read; every Unpublish verifier-checked (v1–v6); Keagan's 2026-10-23 rulings applied |
-| Ledger | 610: all read (583 read + 27 verified) |
-| Verdicts (610) | Unpublish 24 · Fix 427 (+6 Human review) · Ship (unverified) 91 (+2 Human review) · Ship 60 |
-| Updated | 2026-10-23 |
+| Current stage | **Round 2 DONE 2026-10-25.** Two independent full reads + adjudication; prod reseed is Keagan's (needs `.env.local`) |
+| Last batch | Round 2: 586 re-read (`round2/`), 72 bucket disagreements adjudicated (Opus), all 25 Unpublish re-verified on white-flattened images |
+| Ledger | 610: all read; 25 Unpublish (all `published:false` in content) |
+| Verdicts (610) | Unpublish 25 · Fix 411 (+7 Human review) · Ship (unverified) 86 (+1 Human review) · Ship 80 |
+| Updated | 2026-10-25 |
 
 **Parallel line on `main` (superseded 2026-10-23, Keagan):** another session committed its own
 Stage 5 work to `main` (`f8f738d..c75dd45`: `rubric-R2.md`, a re-score of the same 70, a 10-plan
@@ -130,29 +130,29 @@ questions. No rubric change is made until he answers (R-1 still in force).
 
 | Verdict | Plans |
 |---|---|
-| Unpublish | 24 |
-| Fix | 427 |
-| Fix + Human review | 6 |
-| Ship (unverified) | 91 |
-| Ship (unverified) + Human review | 2 |
-| Ship | 60 |
+| Unpublish | 25 |
+| Fix | 411 |
+| Fix + Human review | 7 |
+| Ship (unverified) | 86 |
+| Ship (unverified) + Human review | 1 |
+| Ship | 80 |
 
-Unpublish rate 3.9%. 2 verdict(s) are Keagan's own call (`override`).
+Unpublish rate 4.1%. 2 verdict(s) are Keagan's own call (`override`).
 
 ### Failures by check (plans failing, `cause: "plan"`)
 
 | Check | What | Plans | Unpublish-level | Fix-level |
 |---|---|---|---|---|
 | R9 | pocket-hole jig setting not stated (recorded only; not counted) | 275 | 0 | 275 |
-| R14 | steps, cut list and materials disagree | 271 | 14 | 257 |
-| R10 | position not given | 138 | 0 | 138 |
-| R6 | fastener/hardware missing or contradictory | 134 | 0 | 134 |
-| R11 | "as shown" with nothing shown | 60 | 2 | 58 |
+| R14 | steps, cut list and materials disagree | 260 | 14 | 246 |
+| R6 | fastener/hardware missing or contradictory | 132 | 0 | 132 |
+| R10 | position not given | 131 | 0 | 131 |
+| R11 | "as shown" with nothing shown | 57 | 2 | 55 |
 | R2 | part not in the cut list | 49 | 12 | 37 |
 | R8 | build order impossible | 46 | 0 | 46 |
-| R5 | materials don't cover the cut list | 38 | 0 | 38 |
-| R4 | part size not from a listed material | 32 | 0 | 32 |
+| R5 | materials don't cover the cut list | 41 | 0 | 41 |
 | R1 | depends on content we don't have | 31 | 14 | 17 |
+| R4 | part size not from a listed material | 31 | 0 | 31 |
 | R3 | cut row not a real used part | 30 | 0 | 30 |
 
 ### Catalog-wide items (one bulk fix each, not per-plan verdicts)
@@ -167,16 +167,16 @@ Unpublish rate 3.9%. 2 verdict(s) are Keagan's own call (`override`).
 
 | Check | Unknown |
 |---|---|
-| R2 | 2 |
-| R3 | 3 |
+| R2 | 1 |
+| R3 | 1 |
 | R4 | 53 |
-| R5 | 389 |
+| R5 | 370 |
 | R8 | 1 |
 | R9 | 14 |
 | R10 | 2 |
-| R14 | 4 |
+| R14 | 6 |
 
-### Unpublish (24)
+### Unpublish (25)
 
 | Plan | Why |
 |---|---|
@@ -203,6 +203,7 @@ Unpublish rate 3.9%. 2 verdict(s) are Keagan's own call (`override`).
 | [spare-table-that-doubles-as-wall-art](https://notchplans.com/plans/spare-table-that-doubles-as-wall-art) | R14: Legs never installed (Unpublish-level), plus three step-vs-cut-list size disagreements. |
 | [storage-mirror](https://notchplans.com/plans/storage-mirror) | Keagan: The mirror is never installed; steps end at the base front |
 | [tall-cupboard](https://notchplans.com/plans/tall-cupboard) | R14: The steps build the doors but never hang them (6 hinges, 2 knobs in materials are never used); the cupboard is left without doors. |
+| [ultimate-folding-tailgate-table](https://notchplans.com/plans/ultimate-folding-tailgate-table) | R5, R6, R8, R14 (4+ certain Fix, verifier-upheld) |
 | [upholstered-top-storage-coffee-table](https://notchplans.com/plans/upholstered-top-storage-coffee-table) | R2: The box side and end boards, the base legs and rails, and the leg trim pieces are assembled but are not in the cut list (cutList has only three uncut… |
 
 ### Human review (8)
@@ -211,7 +212,7 @@ Unpublish rate 3.9%. 2 verdict(s) are Keagan's own call (`override`).
 |---|---|---|
 | cabin-bed | Fix + Human review | Summary says "twin sized" and the plan gives no mattress size; the back panel/ledger frame is 73 1/2 x 36 1/2 (cutList[16], cutList[13]-[14]). Whethe… |
 | compact-picnic-table-and-stools | Ship (unverified) + Human review | R4 unknown: decking board '5/4 x 6' actual size (cut rows 1 x 5 1/2) is not in the section 9 table. |
-| diy-modern-outdoor-chair | Ship (unverified) + Human review | unknown on R2 |
+| dining-room-buffet-with-hutch | Fix + Human review | R4: cutList[23] plexiglass panel 1/8" vs listed "0.093 thick plexiglass" (acrylic nominal vs actual thickness is not in §9) |
 | farmhouse-platform-bed-with-storage | Fix + Human review | R5: hardwood is bought as '10' of unit 'Board feet' (materials[4] 'Hardwood ,, Board feet'); judging it against the cut list needs the board-foot def… |
 | modern-platform-bed | Fix + Human review | R1: whether a builder can finish this platform bed from the four summary steps and the cut list without the linked full tutorial needs woodworking ju… |
 | sideboard-bar-cabinet | Fix + Human review | Fit clearances cannot be judged from section 9: the drawer box is 22.25 + 2x0.75 = 23.75 wide in a 24 in opening (56.5 - 2x15.5 - 2x0.75), and the do… |
@@ -273,3 +274,38 @@ Stage 2 counts. Examples: stuffed-animal-storage cutList[6] `[0.125,1.5,24]` cam
   before the ruling. Leftovers would show as R14 fails that cite glue.
 - The cut-row detail-note defect was not counted across the catalog.
 
+## Round 2 — independent second read (2026-10-25)
+
+Keagan asked for one more complete audit before the prod reseed (DECISIONS_LOG 2026-10-25).
+
+- **Method.** 39 fresh Sonnet readers re-read all 586 published plans from a fresh sweep, into
+  `round2/plans/`. They never saw round 1 and applied R-2 with every ruling to date. Their prompt is
+  `prompts/reader-r2.md`, plus three clarifications added while they ran: optional-step items
+  don't fail R14(c); R5's unique-material precondition; image-view limits.
+  `scripts/round2.mjs compare` listed every plan whose bucket (Ship / Fix / Unpublish) differed.
+  Six fresh Opus adjudicators (`prompts/adjudicator-prompt.md`) decided each of those from the plan
+  and wrote the result into the round-1 record (`adjudication` block). They also acted as verifier
+  for any new Unpublish.
+- **Agreement.** Before adjudication, round 2 put 527 of 586 plans (90%) in the same bucket as
+  round 1. 72 plans were adjudicated: 41 changed bucket (27 Fix→Ship, 13 Ship→Fix, 1 Fix→Unpublish)
+  and 31 kept round 1's bucket.
+- **New Unpublish: 1.** `ultimate-folding-tailgate-table` has 4 certain, verifier-upheld Fix
+  findings: R5 (1x6 short by 6″), R6, R8, R14. It is now `published:false` (586 → 585 live).
+- **Transparent-image defect (found in round 2).** About 700 cached plan diagrams are transparent
+  webp files. Earlier PNG conversions rendered them on black, which hid their black dimension
+  labels. All 692 were re-flattened onto white. Fresh Opus verifiers then re-checked all 25
+  Unpublish plans against the white images (`verifier/rv-1..3.json`). All 25 were upheld, both
+  overrides were confirmed, and only one image they depended on was transparent.
+  **Not re-checked:** Fix-level R10/R11/R14 findings that say an image shows nothing. Some may be
+  false Fixes. No Ship or publish decision rests on them.
+- **Borderline, for Keagan:** `printers-cabinet-cat-litter-box-enclosure` is Unpublish on 4
+  certain Fix findings. One of them, R14, rests only on the 16 cup handles: no step installs
+  them, but the steps[14] image shows them fitted. If an image showing installation satisfies
+  R14(d), the plan drops to Fix.
+- **Other round-2 notes:**
+  - The fidelity checker's `correctRow` still drops a fraction when Kreg wrote a space before the
+    slash (`11 1 /4`).
+  - One reader saw image reads come back as "[media removed]". Its image-based claims on 4 plans
+    are weaker.
+  - Several readers converted the whole image cache or saved images in the repo root. The images
+    were cleaned up; nothing was committed.
