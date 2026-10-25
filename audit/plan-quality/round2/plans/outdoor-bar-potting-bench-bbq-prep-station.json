@@ -287,44 +287,120 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": " into. Using a jig saw, cut the areas you marked to 1 5/8\" x 1 5/8\" to leave a little allowance for a good fit. If your jigsaw can adjust to 22.5 degrees, do so for the holes for the angled supports. ",
-          "why": "cut sentence states 1 5/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Cut 3 - 1x6 fence boards to 26 1/4\", but cut 1 5/8\" squares out of the front two corners of one board, and the two back corners of the board that will go in the back. The center board will not require",
-          "why": "cut sentence states 1 5/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1 5/8\" figures are notch sizes cut into shelf boards, not parts. Every part the steps make (2x2 frame pieces, angled boards, shelves, planter boards, trim) has a cutList row; Main Legs appear only in the step-0 image (35\", viewed)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 cut rows are used: end frame/spans/supports (steps 0-4), angled boards (5), planter legs/frames (6-7), planter boards (8), trim (9), shelves (10-12). 23 x 13 1/2\" boards = 6 (step 0 frames) + 3 (step 2) + 6 (step 3 image) + 6 planter frame (step 6 image, counted from viewed image) + 2 (step 7)."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged; cutList[7] thinner than stock — would need planing/resawing, not judged; cutList[8] thinner than stock — would need planing/resawing, not judged; cutList[9] thinner than stock — would need planing/resawing, not judged; +3 more"
+      "reason": "Shelf/planter/trim parts are 1\" x 5 5/16\" from \"Cedar Fence Boards, 1x6 72\"\" - fence-board actual size is not in section 9 (1x6 actual is 3/4\" x 5 1/2\"), so thickness cannot be judged. The 2x2 parts are 1.5 x 1.5 (corrected) = 2x2 actual and fit."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock is named or exactly one nominal match for every part (2x2x13.5/56/30 named; 1.5x1.5 -> 2x2 only; 1x5.3125 -> fence boards only; trim ripped from a fence board per step 9). Length totals: 2x2 = 4x35 + 2x20.75 + 2x27.25 + 23x13.5 + 2x30 + 2x23.25 + 4x56 = 877 + 29 cuts x 1/8 = 880.6 <= 10 x 96 = 960; fence boards = 3x59 + 3x26.25 + 3x60 + 12x16.0469 + (2x15 + 16.5 + 13.5) = 688.3 + 15 cuts x 1/8 = 690.2 <= 10 x 72 = 720. Per-board layout not judged."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Attach through the top and bottom span boards with a 2 1/2\" deck screws by driving into the center of the angled board."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/2\" Deck Screws"
+        }
+      ],
+      "reason": "Step 5 uses 2 1/2\" deck screws; materials list only 1 1/2\" deck screws (and 2 1/2\" Blue-Kote pocket-hole screws). Search: materials for /deck/ finds only materials[5]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give numbers: end frame rails at 12 3/4\", 13\", 3/4\"; verticals 23 1/4\" from the end panel, 27 1/4\"; center horizontal \"13\" from the top of the bottom span\"; angled boards 29 1/2\"; planter 20 3/4\" legs, 15\"/16 1/2\" trim; planter boards 5 5/16\" + 2 7/8\" + 5 5/16\"; top shelf 1/2\" overhang. Supports \"as evenly as possible\" and shelf boards \"against the back legs\" are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "All six \"diagram\"/\"indicated\" references are in steps with their own image; images viewed are dimensioned diagrams of the referenced parts."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "End frames (0), spans (1), center frame (2), supports (3), shelf frame (4), angled supports (5), optional planter (6-9, with skip to step 11 stated), shelves (10-12). Viewed images match."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Each of the 2x2x13.5\" pieces should have two pocket holes in each end on the under-side."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1.5\" (2x2) parts in steps 0-4 and 6-7 but no jig thickness setting is stated. Search: all steps, materials, summary, description for /setting|thick|jig/ found none; the 13 viewed step/unattached images show no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill two pocket holes on each end of the 2x2x56\" pieces."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Clamp all four 56\" pieces in place, ensure square and secure with wood glue and 12 - 2 1/2\" Kreg Blue-Kote wood screws."
+        }
+      ],
+      "reason": "Step 1 gives two pocket holes per end on four 56\" pieces but names 12 screws; the holes it describes need 16.",
+      "arithmetic": "4 pieces x 2 ends x 2 holes = 16 screws, step says 12 (step 0: 3 pieces x 2 ends x 2 holes = 12, stated 12 per frame, consistent)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d29280bff7ebbfd3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7299d17340c04f0f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b2a3f405a115b451.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c29bfd1c9f17601b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ff48339f06b8436.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/20013cbe39e915f7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/82f461fe7c2dae39.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/163d569546514e51.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e8b7cb2f109439ee.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f71b392904d6dd63.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dfd712bf1b388219.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23b9527de2fcc16c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/492b104109919590.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8583d5b282a6f430.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b8b3fea36daa9a0f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Drill 2 pocket holes on each end of all three 13 1/2\" pieces. Add three supports along the top, and three along the bottom as indicated on the diagram",
+      "what": "\"all three\" pieces vs six supports; the viewed step-3 image shows six, so wording only."
+    },
+    {
+      "path": "materials[3].quantity",
+      "quote": "2 1/2\" Blue-Kote Pocket Hole Screws",
+      "what": "Quantity 108; pocket holes the plan describes: 23 x 4 + 2 x 4 (Midpoint Verticals) + 2 x 4 (Shelf Horizontals) + 4 x 4 (Span Boards) = 124 (cutList part names say \"w/2 pocket holes on each end\"). Count not a rubric check; noted only."
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "White Paint",
+      "what": "Paint listed; sanding/primer not mentioned. No consumable missing from materials that steps use (glue listed).",
+      "kind": "consumable"
+    }
+  ]
 }

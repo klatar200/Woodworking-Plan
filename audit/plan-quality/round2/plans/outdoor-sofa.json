@@ -7,41 +7,101 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Step 0 \"Watch the full build on YouTube!\" is a pointer to a companion video; no step says the video is needed for any measurement, and steps 1-4 plus the viewed diagrams carry the build (position gaps are scored under R10)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Seat boards, Back rest boards and \"Legs and angle supports\" (6 x 28\") are the only parts the steps cut (\"Cut 5 pieces ... 96\", 2 ... 72\", 6 ... 28\"\"), and all are in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 cut rows are used in steps 1-3."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "All parts are 2x6; lengths with explicit feet marks: 5x96 + 2x72 + 6x28 = 792 + 5 cuts x 1/8 = 792.6 <= 7 x 120 + 1 x 144 = 984 (6 legs: 5 from the 12' board = 140 + 4 cuts x 1/8, 1 from a 72\" backrest offcut)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "r seat boards leaving 1/4\" gaps. (Used a ruler for spacing)\nScrew the angle supports to seat panels with pocket holes.\nCut notches in the last seat boards to fit around angle supports.\nScrew on back r",
-          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1/4\" is the seat gap, not a screw. No step states a screw size; materials list 2 1/2\" Kreg Blue-Kote screws; the viewed diagram says \"coated deck screws\" (a type, not a size)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Screw the leg panels to the first four seat boards leaving 1/4\" gaps."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Screw on back rest boards."
+        }
+      ],
+      "reason": "Where the leg panels sit along the 96\" Seat boards (inset from the ends) and where/how high the two 72\" Back rest boards go on the angle supports are not given as numbers or relations; the viewed step-3 diagram dimensions only the 11\" angle-support set-out and the photos are undimensioned. Search: steps for /inset|from the (end|edge)|centered|height/: no match."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a diagram or \"as shown\"; steps 1-3 each have their own image (step images viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (1), leg panels (2), panels to the first four seat boards, then angle supports, notched last seat board, back rest (3), seal/cushions (4)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use pocket holes to connect the pieces."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x6 stock (1.5\" actual) but no jig thickness setting is stated. Search: steps, materials, summary, description for /setting|thick|jig/ found none; the viewed step-2 diagram says only \"POCKET HOLES WITH COATED DECK SCREWS\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: step 1 cuts 5 x 96\", 2 x 72\", 6 x 28\" = cutList; 6 x 28\" = 4 leg boards (two per panel in the viewed step-2 image) + 2 angle supports; sealer is listed; steps end with seal and cushions."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/695d2c89025ca9cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4a1fd8d64412ece.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b4c37f9c0106a6be.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e8c682db72d8308a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/688455fcf57b9a0f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5e25a457f2c978c4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6632cf537350edc6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Seal your sofa, add cushions, and enjoy!",
+      "what": "Cushions are mentioned but no size or source is given and they are not in materials; optional finish step."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Cut notches in the last seat boards to fit around angle supports.",
+      "what": "Notch size/location is not given (the viewed diagram only sketches it)."
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "150 grit sandpaper for orbital sander",
+      "what": "Sandpaper and sealer are listed; no consumable missing.",
+      "kind": "consumable"
+    }
+  ]
 }

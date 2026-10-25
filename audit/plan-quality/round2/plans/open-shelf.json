@@ -107,22 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "the divider board as shown. For easy placement use scrap spacer boards, one cut at 12'' and one at 17''. Use a right angle clamp or a bar clamp to hole the shelf in place while drilling in the screws.",
-          "why": "cut sentence states 12\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "the divider board as shown. For easy placement use scrap spacer boards, one cut at 12'' and one at 17''. Use a right angle clamp or a bar clamp to hole the shelf in place while drilling in the screws.",
-          "why": "cut sentence states 17\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 12\" and 17\" are scrap spacer boards (\"use scrap spacer boards\") used as placement aids, not parts; Base, Divider board and Shelves are all in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 cut rows are used (Base step 2, Divider steps 2-3, Shelves step 3; image shows 6 shelves)."
     },
     "R4": {
       "result": "pass",
@@ -133,18 +123,72 @@
       "arithmetic": "parts: 1×27.5 + 1×67.5 + 6×13 + kerf 6 cuts (8 parts − 2 boards, the fewest possible)×1/8 = 173.750″; bought: 2×96 = 192″; 173.750 ≤ 192"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener used is 2 1/2\" pocket-hole screws (steps 1-3); materials lists \"2 1/2'' pocket hole screws\"."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-3 diagram dimensions every shelf position (12\" from base, 17\" between shelves, 13\" shelf length); divider \"to the center of the base\"; dimensions drawing gives 69\" overall and 27 1/2\" x 9 1/4\" base."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "The one \"as shown\" is in step 3, which has its own image; the viewed image is the dimensioned shelf-placement diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), drill (1), divider to base (2), shelves to divider (3), finish (4)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 2 1/2'' pocket holes. Each shelf board will need 4 pocket holes on ONE side."
+        }
+      ],
+      "reason": "Pocket holes are drilled in every part (all 1.5\" thick per corrected cutList) but no jig thickness setting is stated; \"2 1/2''\" reads as screw length. Search: steps, materials, summary, description for /setting|thick|1 1\\/2/ found no jig setting; the step-1 photo (viewed) shows the jig but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Screw count matches: 6 shelves x 4 pocket holes (step 1) = 24 + divider 4 = 28 = materials quantity 28. Base 27.5 = 13 + 1.5 + 13. All parts installed; steps end with the finish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dabb85423b8f5661.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a660fb3d06e1efd3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1838ef0d7209feaf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/45e65aec4f6c3851.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb50f8a0abc48c40.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad315b5c194d6d1d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/acb68a36e187c764.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/301d4e0435c430bb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/159740d5fbd1f226.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Using 2 1/2'' pocket hole screws and wood glue attach the divider board to the center of the base.",
+      "what": "Wood glue used (steps 2, 3) but not in materials; consumable.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Fill desired pocket holes with wood filler or pocket hole plugs, then sand smooth",
+      "what": "Wood filler/plugs/sandpaper not in materials; consumable and optional.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "you can add an L bracket underneath a shelf at the back and attach it to the wall for safety",
+      "what": "L bracket is an optional add-on (\"If you are worried about stability\"), not in materials."
+    }
+  ]
 }

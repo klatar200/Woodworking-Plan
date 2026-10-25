@@ -83,10 +83,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps use (Top, Sides, Long Edges, Short Edges) are all in cutList; no other part is cut (search steps for /cut|rip/: none beyond these)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 cut rows are used in steps 2-4."
     },
     "R4": {
       "result": "pass",
@@ -94,28 +96,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 0.25x0.75); steps not checked for per-part stock"
+      "reason": "Stock is identifiable by thickness x width (Top/Sides 1/2\" from the 1/2\" plywood sheet; Long/Short Edges 1/4\" x 3/4\" from \"Strips, 1/4\" x 3/4\"\"). Plywood area 38x16 + 2x16x18.25 = 1192 sq in <= 4608 passes, but the Strips material states no length (materials[1].name \"Strips, 1/4\\\" x 3/4\\\"\") so the 2x38 + 2x16.5 = 109\" of edging cannot be compared (never assume a length)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name only \"pocket hole screws\" and \"nails\" with no size; materials list 1\" Kreg screws (6) and 1\" nails (12). No conflicting size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Place a level on top of your ottoman, hanging over the edge. Measure from the ground to the level to get the height. - Then, place a board against both sides of the ottoman, make sure they are vertica",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/254788633ec19445.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images show the three pocket holes evenly across the Side end and each edging strip flush with the Top underside (step 3: \"sticks up 1/4\" to form a lip\"); overall sizes come from the ottoman measuring method (relational) with \"add 1\" to account for the Sides\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a diagram or \"as shown\"; steps 1-6 each have their own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Measure (0), drill Sides (1), attach Sides to Top (2), Long Edges (3), Short Edges (4), finish (5)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Start by drilling three pocket holes on one short end of each Side."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" plywood Sides (cutList[1] corrected thickness 0.5) with no jig thickness setting stated. Search: all steps, materials, summary, description for /setting|thickness|jig|1\\/2/ found no setting; the viewed step-1 image shows three holes and no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Numbers agree: Top = ottoman length + 1\" for two 1/2\" Sides (cutList[0] 38, thickness 0.5); edge lip 3/4\" strip - 1/2\" Top = 1/4\" (\"sticks up 1/4\"\") matches cutList[2] 0.25 x 0.75; Short Edges 16.5 = Top width 16 + 2 x 0.25 Long Edge thickness; screws 2 Sides x 3 holes = 6 = materials 6. All parts installed; finish step reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/254788633ec19445.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/79a361d915930e79.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7b7619081a15b97b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/80b7e9dc6cd082fd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ed5c8412b775683.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a03320576a622d54.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[1].name",
+      "quote": "Strips, 1/4\" x 3/4\"",
+      "what": "No stock length is given for the edging strip (cut list needs 2 x 38\" + 2 x 16.5\"), so the amount to buy is unspecified."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Using wood glue and pocket hole screws, attach the Sides to the bottom ends of the Top, flush on the edges.",
+      "what": "Wood glue is in materials; stain/polyurethane listed; no consumable gaps beyond sandpaper (step 1 \"Sand down all boards and edges to 220 grit\"), not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

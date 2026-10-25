@@ -131,38 +131,85 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Table top edges, slats, long/short aprons and legs are all in cutList and are the only parts steps 0-4 cut or assemble (search steps for /cut/: step 0 only, \"according to the cut list\")."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 cut rows are used in steps 1-4."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material by thickness x width (0.75 x 3.5 -> 1x4; 3.5 x 3.5 -> 4x4). 1x4: 2x50.25 + 12x22 + 2x42.75 + 2x21.5 = 493 + 12 cuts x 1/8 = 494.5 <= 6 x 96 = 576; 4x4: 4 x 36.5 = 146 + 2 cuts x 1/8 = 146.25 <= 2 x 96 = 192."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": " to hold together flat, and attach using 1 1/4\" pocket hole screws and an electric drill fitted with a Kreg screwdriver head. Continue attaching 22\" boards, spaced 3/4\" apart (use a scrap piece of 1x4",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "attach using 1 1/4\" pocket hole screws and an electric drill fitted with a Kreg screwdriver head."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "1\" Kreg pocket hole screws"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the 1x4 to the table top and to each of the two legs using 1\" pocket hole screws."
         }
-      ]
+      ],
+      "reason": "Step 1 uses 1 1/4\" pocket-hole screws; the only fastener in materials is 1\" (steps 3-4 use 1\"), so the step-1 size is not listed, and the plan gives two sizes for the same pocket-hole use. Search: materials for /1 1\\/4/ : no match."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Legs \"inset 1/4\"\" and slat spacing \"3/4\" apart\" are numeric, but where each 42.75\"/21.5\" apron sits relative to the leg faces and top edge (setback) is neither dimensioned in the text nor in the viewed images (5 step images and 4 unattached images are photos with no dimensions)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a diagram or \"as shown\"; each step 0-4 has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut/sand (0), top built (1), aprons drilled (2), top flipped and legs/aprons attached (3-4)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 1 and 2 say \"3/4\" pocket holes\"; all pocket-hole parts are 1x4 (0.75\"); the 4x4 legs get none."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Numbers add up: top length 12 slats x 3 1/2 + 11 gaps x 3/4 = 50.25 = edge length; top width 22 + 2 x 3.5 (edges laid flat) = 29; apron between legs: 50.25 - 2 x 0.25 inset - 2 x 3.5 = 42.75 and 29 - 0.5 - 7 = 21.5 (cutList long/short apron). All parts installed; steps end with the assembled table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5ef1c50c239eb59e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7907ea9816b86c49.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/538ce24f489d0a20.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8c7895de13e09104.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/270f7f5e3f07680f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6634206703129e95.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/281d2b06241f485f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/df8bb19da62a1772.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a36e0d3860f7ef1f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Place one of the 42.75\" boards in between the 4x4 table legs, making sure the holes along the long side of the 1x4 are facing down toward the table top.",
+      "what": "Apron setback from the leg/top outer faces is not stated (see R10 unknown). No finish, glue or sandpaper issues: step 0 sandpaper is used but not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

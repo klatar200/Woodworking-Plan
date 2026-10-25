@@ -199,43 +199,76 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "a space, then a slat. Repeat until all twelve slats are attached, then attach the other ends of the attached slats to a second 51 3/4\" board to finish the front side. Repeat to assemble the back side.",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"the attached\" in step 2 is ordinary wording (\"attach the other ends of the attached slats\"); no step refers to plans, PDFs or external pages."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps use (Lid Boards, Lid Slats, Front and Back Boards, Side Boards, 15\" slats, Bottom Supports, Legs) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 cut rows are used in steps 2-5."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one material by thickness x width (0.75 x 3.5 -> 1x4; 1.5 x 1.5 -> 2x2). 1x4: 2x55 + 13x18 + 4x51.75 + 4x22 + 34x15 + 2x52.5 = 1254 + 43 cuts x 1/8 = 1259.4 <= 16 x 96 = 1536; 2x2: 4 x 24 = 96 + 0 extra cuts (one per 36\" baluster) <= 4 x 36 = 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size in steps is 1\" pocket-hole screws (steps 2, 4, 5), listed (300); hinge screws are \"included with the hinges\"."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric: slat spacing 3/4\" (scrap 1x4 spacer), 12 slats per front/back, 5 per side, 13 on the lid starting flush, front board 51 3/4\" = 12 x 3 1/2 + 13 x 3/4. Legs flush at the box end; Bottom Supports and the folding lid supports are shown in the viewed step 5/8 photos (undimensioned); continuous hinge sits on the back top edge (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "No step cites \"as shown\"/a diagram without an image of its own; steps 0-8 each have an image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), drill (1), front/back (2), sides and lid (3), sides to legs (4), bottom supports (5), hinges to box then lid (6-7), lid supports (8)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 1: \"drill two 3/4\" pocket holes on each end of all 1x4 boards\"; every pocket-holed part is 1x4 (0.75\"); the legs and 55\" Lid Boards get none."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts and sizes agree: front/back 2 x 12 + sides 2 x 5 = 34 slats (cutList 34); 12 x 3 1/2 + 13 x 3/4 = 51.75 (front board), 5 x 3 1/2 + 6 x 3/4 = 22 (side board); lid depth 18 + 2 x 3 1/2 = 25 = 22 + 2 x 1 1/2 legs; hinge and lid supports are in materials; steps end with the lid supports."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/08981ca23d9d942d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c5257eb329d4b960.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2f8abf779c92d797.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b968cf487418ba9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6d3b1694abf85ce0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b60e5e915cc89c75.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d9dc0a07bc24222.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f0066b5817ea397.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6b93f9143d07614b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "use the same technique with the thirteen 18\" slats and the 55\" boards, but instead of beginning with a space, begin with the slat lined up flush with the edge of the 55\" board and follow a slat, space, slat, space pattern.",
+      "what": "13 slats x 3 1/2\" + 12 spaces x 3/4\" = 54.5\" against the 55\" board leaves 1/2\" unaccounted at the far end; minor, build can proceed."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Line up one end of the sides to be flush with the edge of the balusters.",
+      "what": "Which end is flush (top or bottom) is not stated; box height 22\" vs leg 24\" leaves 2\" projecting either way."
+    }
+  ]
 }

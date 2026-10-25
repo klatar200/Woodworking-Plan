@@ -10,38 +10,87 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps cut a 2x10 (Bench top, Legs) and a 2x4 (\"2x4 pieces\" = Supports); the viewed step-0 and step-1 diagrams show 20\"/51\"/20\" and 32\"/32\", matching cutList rows."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Supports",
-          "why": "no step mentions it (searched steps for support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Supports\": step 1 cuts \"a 2x4\" into two 32\" pieces (viewed diagram) and step 2 screws \"the 2x4s to both the legs and to the top\"; the 2x4 pieces are the Supports row."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x10, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock (2x10 for top and legs, 2x4 for supports). 2x10 8': 51 + 2x20 = 91 + 2 cuts x 1/8 = 91.25 <= 96 (viewed diagram shows 20 + 51 + 20 with scrap ends); 2x4 8': 2x32 = 64 + 1/8 <= 96. Angled-cut waste not judged."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No fastener size appears in any step; materials list 2 1/2\" blue-kote pocket-hole screws (the viewed step-2 diagram labels them \"coated deck screws\", a type not a size)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I screwed one of the 2x4 pieces first before adding a single leg. I then added another 2x4 piece and then the last leg."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "I used pocket holes to screw the 2x4s to both the legs and to the top of the bench."
+        }
+      ],
+      "reason": "Where each Leg and each Support sits on the 51\" Bench top (inset from the ends, setback from the front/back edge) is not given as a number or relation in the text; the viewed assembly diagram (step 2) is an undimensioned sketch and the photos are undimensioned. Search: steps for /inch|\"|from the (end|edge)|inset|centered/: no placement measurement."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a diagram or \"as shown\"; each of steps 0-2 has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Step 2 and its viewed diagram give the order: 2x4 to top (1st), leg (2nd), second 2x4 (3rd), second leg (4th)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use pocket holes to connect the pieces."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x10/2x4 stock (1.5\" actual) but no jig thickness setting is stated. Search: steps, materials, summary, description for /setting|thick|jig/ found none; the viewed step-2 diagram says only \"POCKET HOLES WITH COATED DECK SCREWS\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Cut sizes in the viewed step-0/1 diagrams (20\", 51\", 20\", 32\", 32\") match cutList rows; 2x4 cut from 8' board = 64\"; the one assembly step ends with sealing the finished bench; sealer (penetrating oil) and 80 grit sandpaper are in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57546cac513cd926.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ee99cf598113b2d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/596e81d5c01e7e5f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ce29c7e734a6c46f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ddd2ecf44a73cec3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f4905b2d52af937a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/71afcf42b58fef28.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Cut a 2x10 with the blade set at 15 degree angle.",
+      "what": "Steps give no part lengths in text (sizes appear only in the step images and cut list) and no statement of which direction each 15 degree cut faces; the diagram sketches show the shapes."
+    }
+  ]
 }

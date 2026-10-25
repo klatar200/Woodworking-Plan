@@ -119,45 +119,124 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut/assembled part (Leg, Side/Back Rail, Drawer Front, Top Boards, Slide Spacers, Drawer Box Front/Back/Sides, Drawer Bottom) is in cutList; spacer dowels are listed in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 cut rows are cut/used in steps 0-12. Step 13 calls the spacers \"Slide Supports\" (see gaps) but no row is unused."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (0.5x4, 0.5x3, 1x6, 1x2, sheet-0.75, 0.25x0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (1x2 cherry legs; 1x6 cherry rails/front/top; 1/2x3 pine spacers; 1/2x4 pine drawer box; 3/4 plywood bottom). 1x2 96\"x2=192 vs legs 8x20=160 (+7 kerfs=0.875); 1x6 72\"x2=144 vs 2x13+2x13+12.75+3x17=115.75 (+kerf); 1/2x3 36\" vs 2x13=26; 1/2x4 24\"x2=48 vs 2x11+2x12=46 (+3 kerfs=0.375 -> 46.4); plywood 11x11 from 24x24. All fit."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes used in steps (1 1/4\" fine-thread PH screws, 1\" coarse PH screws, 1\" brad nails, 1\" flat-head wood screws) all appear in materials; one size per use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are numeric in viewed images: handle cutout (4 3/8\", 4 7/8\", 1\", 1/2\", 1\" Dia), rail/back-rail pocket holes (2 1/4\", 1 1/2\"), arch rise 1\", slide spacer (2 1/2\" tall, 1/4\" below arch), top overhang 1/2\", top-board pocket holes (8 1/2\", 1 1/2\"). Equal gaps / flush are relational. Drawer slide mounting follows the manufacturer and spacer height."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "\"cutting diagram\" refs: no image is a layout diagram, but every part referenced is dimensioned in a viewed step image (legs 20\", rail 13x5 1/2, drawer front 12 3/4x5 1/2, top boards 17x5 1/2, drawer box 12/11, spacer 2 1/2) and in the cut list; the 5 unattached images are photos/overview (viewed)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Cut the eight Legs to rough length from 1x2 Cherry boards, as shown in the cutting diagram. Note that these pieces are initially cut extra-long. They’ll get glued together in pairs to form four thicke",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[3].body",
+          "quote": "Lay two leg assemblies on a flat surface with the glue joint facing up."
         },
         {
-          "path": "steps[0].body",
-          "quote": "ough length from 1x2 Cherry boards, as shown in the cutting diagram. Note that these pieces are initially cut extra-long. They’ll get glued together in pairs to form four thicker leg assemblies, and t",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].title",
+          "quote": "Create the Leg Assemblies"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Apply glue to the faces of two Leg pieces and attach them face to face making sure the edges are flush with one another."
         }
-      ]
+      ],
+      "reason": "Leg assemblies are first used in step 3 but are only glued up and cut to final length in step 8; the build can proceed by doing step 8 first."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Set your pocket-hole jig and bit for 1/2\"-thick material, and then drill pocket holes at the locations shown."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Cut a Drawer Bottom to size from 3/4\" plywood as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Pocket holes are drilled in the Drawer Bottom, cut from 3/4\" plywood, but the jig is set for 1/2\"; the viewed step-11 image repeats \"Set pocket-hole jig for 1/2\"-thick material.\" on the 11x11 bottom."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut two Sides Rails and one Back Rail to length from a 1x6 cherry board"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "\"part\": \"Back Rail\" ... \"quantity\": 2"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Lay the Back Rail on 1/4\" spacers"
+        }
+      ],
+      "reason": "Steps cut and install one Back Rail; the cut list lists 2 (the step-4 image also shows a single Back Rail).",
+      "arithmetic": "steps say 1 Back Rail; cutList[2].quantity = 2 (row quantity 2 is not an importer default of 1). Other counts/sizes agree: Drawer Front 12.75 (image 12 3/4), top 3 x 5.5 = 16.5 (image 16 1/2), leg 20 + top 3/4 = 20 3/4 overall (image)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f3d073a7b2d0f4f2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ef55c03f65ed623.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/923feb2ec65bfbd5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a03e2c311fc0efab.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ce8c927d4ea3059c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e07a23be8346a6e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7bc8d39692706af8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fa89e9d65cd86aad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6a74b81b31001db5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e8dbecbbd1f6787.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c076ebbd96303529.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23464603f78a867b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/119330e17039e16d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/79fcb3ea3edcb36e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4f58caa10617fcb2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1e182feaa992bc03.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7aa9b8e92ba3623e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/efb0421e457a2a2d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[13].body",
+      "quote": "Attach the Drawer Slides to the Slide Supports and to the drawer box following the slide manufacturer’s instructions.",
+      "what": "\"Slide Supports\" is not a part name anywhere else (parts are called Drawer Slide Spacers); naming inconsistency only."
+    }
+  ]
 }

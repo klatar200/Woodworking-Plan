@@ -215,39 +215,107 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps name (36\"/23 1/2\" insert frame, 48\" outer frame, 5 1/2\" insert support frame, insert supports, 11\" cross supports, legs, 23 1/2\" cross leg supports, 3\" and 6 1/4\" table top supports, planks, cover planks, lid planks, 8\" lid supports, angle leg supports) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 28 cut rows are used in steps 0-11 (angle leg supports 47.25\"/26.75\" appear in the step-11 image with 30 and 18 degree cuts)."
     },
     "R4": {
       "result": "unknown",
       "reason": "cutList[13] thinner than stock — would need planing/resawing, not judged; cutList[14] thinner than stock — would need planing/resawing, not judged; cutList[26] thinner than stock — would need planing/resawing, not judged"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x2, 1x6, 0.25x1.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material (2x2 parts -> 2x2; 1x2/nominal 1x2 planks -> 1x2; 0.625 x 2 cover planks -> ripped cedar pickets; 0.25 x 1.25 -> fill-it strip). 2x2: 119 + 143 + 22 + 64 + 47 + 37 + 148 = 580 + 23 cuts x 1/8 = 582.9 <= 7 x 96 = 672; 1x2: table top planks 601.5 + lid planks 7x34 = 238 + middle plank 34 + insert supports 72 = 945.5 <= 12 x 96 = 1152; pickets: 6x36 + 6x12.25 = 289.5 <= 3 pickets x 2 strips x 72 = 432; fill-it strips: 3x11 + 10x8 = 113 + 12 cuts x 1/8 = 114.5 <= 2 x 72 = 144."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[7].body",
-          "quote": "rt frame, 3\" from both inside edges of the 48\" outer frame, nail into place a 3\" table top support using 1 1/4\" nails.\nUsing the same idea, attach the 6 1/4\" table top supports going the other directi",
-          "why": "48\" nail — no material line lists a 48\" fastener"
+          "path": "steps[3].body",
+          "quote": "Attach insert supports that run the length of the insert frame using 1 1/4\" exterior wood screws."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "1 1/2\" Exterior wood screws"
         }
-      ]
+      ],
+      "reason": "Step 3 (and its viewed image \"Attach using 1 1/4\" wood screws\") uses 1 1/4\" exterior wood screws; materials list 1 1/2\" exterior wood screws (qty 4 = 2 supports x 2 ends) and no 1 1/4\" screw. Search: materials for /1 1\\/4/: only nails (materials[9])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions numeric in text/images: 36\" boards 6 1/4\" from the ends (8\" gap), insert frame 4 1/2\" from the 48\" ends, support frame 3\"/2 1/2\", insert cross supports 11\", 3\" and 6 1/4\" top supports (6 1/2\"), angle cuts 30 and 18 degrees; table-top herringbone layers each reduced 2 3/4\"; lid support strips are shown in the viewed photo."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "The only \"diagram\"-type reference is in a step with its own image; step images viewed are dimensioned drawings."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames (0-3), cross supports (4), legs (5), cross leg supports (6), top supports (7), top planks (8), lid (9), cover planks (10), angle supports (11), finish (12); flip-over instructions in steps 4-5 match the viewed images."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Every pocket hole is in 2x2 (1.5\") stock and steps 0-2, 5-7 say \"2- 1 1/2\" pocket holes\" with the bit collar set to 1\" (stated reason: 2 1/2\" screw must not exit); no other thickness gets pocket holes. Wording gives collar depth rather than a jig setting number, noted."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "This should fit perfectly around the planter insert that has top dimensions of 36\" x 8\" and a height of 6\"."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "*Do not nail last short length plank to allow for easy removal of the planter insert"
+        }
+      ],
+      "reason": "The steps assume a separate 36\" x 8\" x 6\" planter/cooler insert that is neither built by any step nor listed in materials. Search: materials and cutList for /insert|planter|liner|cooler|bucket/i: only cut rows named \"Insert ...\" (frame parts) and the \"Insert cover planks\"; none is the insert."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c6685cb72ceeb9e2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fec5f945ae3c69ca.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/82cf1ec6e7e49d44.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b2a166b8a8fb0b5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d66a7548780154b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ff9a1ebaec5a7d3e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/537cb1797e4402cb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b0102f833d90fd52.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f9eaf5d5a14f7b17.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c2e4e4a2a86e5cee.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/47579a74ffb16dca.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dfc1aaf3eecb93fc.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "I felt it was worth it to use the more expensive cedar 2x2s for this part only.",
+      "what": "Tip suggests cedar 2x2 for the legs but materials list only cedar-tone treated pine 2x2; optional tip, not failed."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "**ALWAYS use exterior grade wood glue when joining two pieces of wood before attaching screws**",
+      "what": "Exterior wood glue is required by the step but not in materials; consumable.",
+      "kind": "consumable"
+    },
+    {
+      "path": "materials[8].name",
+      "quote": "2\" Exterior 18 gauge nails",
+      "what": "Same 2\" nail line appears twice (qty 50 and 24, materials[8] and [13]); duplicate entry only."
+    }
+  ]
 }

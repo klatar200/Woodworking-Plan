@@ -419,69 +419,124 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps (Shelf Stile/Rail, Front Rail/Stile, Center Stile, Side Rail/Stile, Back Rail/Stile, Filler, Brackets, Bar Sides/Front, Shelf Slats, Wide/Narrow Face Slats, Tile Backer) has a cutList row; Center Stile qty 4 = 2 front (step 2) + 2 back (step 8)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 cut rows are cut and installed in steps 0-23."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x6, 0.25x36); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x6 96\""
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x6 72\""
+        },
+        {
+          "path": "cutList[13].quantity",
+          "quote": "8"
+        },
+        {
+          "path": "steps[19].body",
+          "quote": "Cut six Shelf Slats to length from 1x6 cedar, as shown in the cut diagram."
+        }
+      ],
+      "reason": "Stock is identifiable for every part (1x3 or 1x6 named in steps, or exactly one nominal match: Wide Face Slat 0.75x5.5 -> 1x6, Narrow Face Slat 0.75x2.5 -> 1x3). 1x3 fits (2036.75 + 4.875 kerf = 2041.6 <= 12x96 + 14x72 = 2160), but the 1x6 total exceeds what is bought when the cut list quantity of 8 Shelf Slats is used (with the step's six it fits: 567 + ~1.6).",
+      "arithmetic": "1x6 parts (corrected): Bracket 7 x 4.5 = 31.5; Front Bar 1 x 58.75 = 58.75; Side Bar 2 x 24.375 = 48.75; Shelf Slat 8 x 47.5 = 380; Wide Face Slat 4 x 35.75 = 143; total 662.0 + kerf (22 pieces - 7 boards = 15 cuts x 1/8 = 1.875) = 663.875 vs bought 5 x 96 + 2 x 72 = 624; short 39.9\". With 6 slats: 285 + 31.5 + 58.75 + 48.75 + 143 = 567 + 13 cuts x 1/8 = 568.6 <= 624."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" Blue-Kote pocket-hole screws, 1 1/4\" brad nails, 3/4\" exterior pan-head screws and 1 1/4\" cement board screws; all in materials (16 pan-head = 4 casters x 4 pilot holes)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give numbers: shelf frame positions 5 3/4\", 14 1/2\", 13 1/4\" (step 4); center stiles 20 1/8\" (step 3); filler 20 1/8\" (step 12); side rails 11 1/2\", 5 1/4\" (step 6); bar 58 3/4\" x 47 3/4\" x 24 3/8\"; brackets centered on stiles (relational); face slats equal spacing; casters \"toward the outside corners\" is relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[19].body",
-          "quote": "Cut six Shelf Slats to length from 1x6 cedar, as shown in the cut diagram. Apply glue to the bottom and middle shelf frames where needed, space the slats equally on the frames, and secure the Shelf Sl",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[19].body",
-          "quote": "x Shelf Slats to length from 1x6 cedar, as shown in the cut diagram. Apply glue to the bottom and middle shelf frames where needed, space the slats equally on the frames, and secure the Shelf Slats us",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut six Shelf Slats to length from 1x6 cedar, as shown in the cut diagram."
         },
         {
           "path": "steps[21].body",
-          "quote": "e Face Slats and 24 Narrow Face Slats to length from cedar, as shown in the cut diagram. It’s much easier to apply finish to the Slats now, before you install them. We used the “Cedar Naturaltone” sta",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[21].body",
-          "quote": "Narrow Face Slats to length from cedar, as shown in the cut diagram. It’s much easier to apply finish to the Slats now, before you install them. We used the “Cedar Naturaltone” stain on the Narrow Fac",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[23].body",
-          "quote": "rt by cutting a Tile Backer to size from tile backer board, as shown in the cut diagram. The easiest way to do this is to score a line with a utility knife, then snap the backer board at the score lin",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[23].body",
-          "quote": " Backer to size from tile backer board, as shown in the cut diagram. The easiest way to do this is to score a line with a utility knife, then snap the backer board at the score line. Center the Backer",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Wide Face Slats and 24 Narrow Face Slats to length from cedar, as shown in the cut diagram."
         }
-      ]
+      ],
+      "reason": "Steps 19, 21 and 23 cite the cut diagram and have no image of their own; none of the 12 images viewed (5 unattached, steps 3,4,6,12,14,17,22) is a cutting diagram or dimensions the slats or tile backer. The sizes exist only in the cut list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames built in order (shelf, front, side, back), side/back frames attached to the front assembly, filler/brackets, bar top, casters, slats, finish, face slats, backer and tile; viewed step images agree."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 0: \"Set your Kreg Jig® for 3/4\"-thick material\"; all parts are 0.75\" thick (corrected cutList), backer board has no pocket holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[19].body",
+          "quote": "Cut six Shelf Slats to length from 1x6 cedar, as shown in the cut diagram."
+        },
+        {
+          "path": "cutList[13].part",
+          "quote": "Shelf Slat"
+        },
+        {
+          "path": "cutList[13].quantity",
+          "quote": "8"
+        }
+      ],
+      "reason": "Step 19 cuts six Shelf Slats; the cut list has 8 (not an importer default). No other step mentions Shelf Slats (search /slat/i: steps 19, 21, 22 only; 21-22 are Face Slats).",
+      "arithmetic": "steps[19] \"six\" vs cutList[13].quantity 8. Other counts agree: Shelf Rail 3+3+4 = 10, Face Slats 4 x (3+1+3) = 4 wide + 24 narrow, tile 3 x 7 3/4 = 23 1/4 = backer width, 47 1/2 = backer length."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/97b1407a958a4478.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d5cc3f7288a24620.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b6ecea8546280e40.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e6d7c4dbe573b37.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c9a6491dd62c6f98.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/29ec7c7ab9a78426.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/393f981c6948306a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a627eae857e2e409.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/157a2bb6094f1bd7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2ab91a7b29efec16.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dfe143d92ca9346f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e0d1dad92e4ea41d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[20].body",
+      "quote": "We used a transparent exterior stain in a color called “Cedar Natural Tone” on everything except the Bar and Brackets.",
+      "what": "Stain (two kinds) used but not in materials; finish consumable.",
+      "kind": "consumable"
+    }
+  ]
 }

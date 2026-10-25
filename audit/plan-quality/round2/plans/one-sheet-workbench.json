@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All seven cut parts named in steps (Leg, Front/Back Rail, End Rail, Shelf Support, Leg Brace, Top, Shelf) have cutList rows; step 0 also cuts them from the single listed plywood sheet."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 cut rows are cut and installed in steps 0-15."
     },
     "R4": {
       "result": "pass",
@@ -70,40 +72,96 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet size not written in material name"
+      "reason": "Sheet rule: all parts are from one sheet type, but total area does not exceed the sheet, so no certain fail and layout is not judged. Area: Tops 2 x 23.75 x 48 = 2280; Legs 4x3x28=336; Front/Back Rails 2x3x42=252; End Rails 4x3x16.25=195; Shelf Support 3x38.25=114.75; Leg Braces 4x3x31=372; Shelf 16.25x42=682.5; total 4232.25 sq in vs 48 x 96 = 4608."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is 1 1/4\" coarse-thread pocket-hole screws (steps 3,5,7,9,11,13,15), listed in materials; 3/4\" spade bit and 1/8\" pilot holes are tools/holes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric or drawn: lower End Rails \"3” up from the lower end of each Leg\"; top pilot-hole grid 2\" / 11\" spacing and dog holes 3\" spacing in viewed images; Shelf Support \"centered\"; End Rails \"centered on the width of the Legs\"; top flush with Leg Braces / equal overhang are relational. Dog holes are optional (\"If you’re adding dog holes\")."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "e parts for this project get cut from one sheet of plywood, as shown in the cutting diagram. To get the parts from one sheet, you need to cut them in a certain sequence. Double-check your measurements",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "All of the parts for this project get cut from one sheet of plywood, as shown in the cutting diagram."
         },
         {
           "path": "steps[0].body",
-          "quote": " get cut from one sheet of plywood, as shown in the cutting diagram. To get the parts from one sheet, you need to cut them in a certain sequence. Double-check your measurements, and mark each part the",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "-wide cut, and then rip a long strip for the Shelf Support, as shown. Now you can reset the Rip-Cut to 3\", and then crosscut ten 3\"-wide strips from the remainder of the sheet. Finally, cut a 16 1/4\"-",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "rip a long strip for the Shelf Support, as shown."
         }
-      ]
+      ],
+      "reason": "Step 0 has no image and refers to a cutting diagram; none of the 20 images (5 unattached viewed, step 1-15 images viewed) is a sheet cutting layout. The step text itself gives the full cut sequence and all part sizes are in the cut list, so the build can proceed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts are cut in step 0, legs/rails/end rails/support/braces built in order (1-9), top layered and drilled (10-12) before attaching (13), shelf last (14-15)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 1: \"Set your Kreg Jig® for 3/4\"-thick material\"; every part in the cut list is 3/4\" (thicknessIn 0.75 on all rows)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "from one of your ten 3\"-wide strips, cut four Legs to final length"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "from the remaining pieces of the strips you used for the Legs, cut four End Rails"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "From your four remaining 3\"-wide plywood strips, cut four Leg Braces"
+        }
+      ],
+      "reason": "Step 1 takes all four Legs from ONE strip, but 4 x 28\" cannot come from one strip, and the strip counts only add up if the Legs use four strips.",
+      "arithmetic": "10 strips - 2 (steps[2]: \"From two more of the strips\") - 4 (\"four remaining\") = 4 strips left for the Legs, i.e. one Leg per strip; as written 1 (Legs) + 2 (Rails) + 4 (Braces) = 7 != 10. Legs: cutList[0] 4 x 28 = 112\" from one strip (the strip is at most 48\"/the sheet remainder wide)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-22",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1e49cb9c58092a9b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3e077fd02723a627.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/577020eaa232d707.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3be52d60f9196023.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99866f9c6eb5a082.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ab5d16d1e4fe0dc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc28f4703b7128dc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d5c1d14e896fd09c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f47c030bbe12abcf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a053e4b77ea26ef0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/472e33a000efc00a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1dd1df0d63a66a90.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c9c59ec6ab2f7d3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/71915fb13f379ecd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2dde5ef23634ca72.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3262ee393b670fba.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f4a7a9567af0c506.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/01377d1c1a6fe73e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/87d6cf4a41abebb6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c3f9cbfe26f9afd3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[15].body",
+      "quote": "We also stained the base structure to give the bench a bit of style, and then mounted the Clamp Vise.",
+      "what": "Kreg Clamp Vise (and its bench dogs, step 12 \"that come with the Kreg Clamp Vise we installed\") is hardware used but not in materials; only described as the authors' own add-on with optional dog holes (\"If you’re adding dog holes\"), so not failed under R14(c)."
+    }
+  ]
 }
