@@ -263,10 +263,37 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "to the 16\" x 21\" plywood panel using wood glue and 8 x 1 1/4\" pocket hole screws"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Install the two 3/4\" x 8\" x 17 1/2\" boards in the center"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach 1/4\" x 19 1/2\" x 30 1/2\" back with finishing nails"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "The top is 33\" x 19 1/2\", centered and secured"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Attach 1/4\" x 13\" x 15\" to the bottoms with wood glue and a brad nailer."
+        }
+      ],
+      "reason": "Side panels (2), center supports (2), back, top (no thickness stated) and the four drawer bottoms (13x15 x2, 28x15 x2) are assembled with sizes given in step text but none has a cut-list row (cutList[0..12] are legs, spans, drawer faces, back spans and drawer boxes only; searched cutList.part for /ply|panel|support|top(?! )|bottom|back(?! span)/i: only 'Back Spans','Vertical Back') and no step says which listed sheet to cut them from (3/4 plywood and laminated pine are both 3/4 stock). Dimensions are present in the steps, so the build can proceed (Fix)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are real parts used via steps 0-10. Naming defect only: cutList[9] and cutList[10] are both 'Large Drawer Sides' x4 but [9] is 3 1/4 wide (matches Small Drawer Box Front/Back 3 1/4 [11]) and [10] 3 3/4 wide (matches Large [12]); recorded in gaps."
     },
     "R4": {
       "result": "pass",
@@ -274,43 +301,73 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[7]"
+      "reason": "Parts 0.75 x 3.5 .. 3.75 (back spans, drawer sides, drawer boxes) and 0.75 x 5 (faces, 'use 1x6') could come from 1x6, 3/4 plywood or the laminated pine board, so stock is not named per part; bun legs (materials[7]) have no length. Precondition not met."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach 1/4\" x 19 1/2\" x 30 1/2\" back with finishing nails using a brad nailer or finishing nails and hammer.",
-          "why": "30 1/2\" nail — no material line lists a 30 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Attach 1/4\" x 19 1/2\" x 30 1/2\" back with finishing nails using a brad nailer or finishing nails and hammer.",
-          "why": "30 1/2\" brad — no material line lists a 30 1/2\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Attach 1/4\" x 13\" x 15\" to the bottoms with wood glue and a brad nailer.\nCut the drawer faces to 14 3/4\" x 5\" and route the edges if you wish. Again, we used the same bit as the top - Royal Ogee. Do n",
-          "why": "15\" brad — no material line lists a 15\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Attach 1/4\" x 28\" x 15\" to the bottoms with wood glue and a brad nailer.\nCut the drawer faces to 30\" x 5 1/2\" and route the edges if you wish. Again, we used the same bit as the top - Royal Ogee. Do n",
-          "why": "15\" brad — no material line lists a 15\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '30 1/2\" nail'/'15\" brad' are part dimensions, not fastener sizes (steps[4], [7], [9] state no nail length). Screws used in steps: 2 1/2\" (materials[9] 2.5\"), 1 1/4\" (materials[8] 1.25\"); no conflicting sizes. Nails unlisted - see gaps."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Drawer slide placement (height in opening, setback from front) is not given as a number: steps[10] 'attach bottom-mounted metal slides ... to the bottom of each drawer box and the corresponding side of each drawer opening' with 'Kreg Drawer Slide Jig' as help; whether that fixes the position depends on slide/jig knowledge outside section 9. Everything else is given: openings 4\" and 4 1/2\" (steps[1]), knobs 7 3/8\" in (steps[10], viewed image 97db8997), center supports 8\" x 17 1/2\" lined up with the vertical piece (viewed image 580770fc), side panels 16\" x 21\" with legs 21\"/26\" (viewed image 40295519)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "16 reference(s), each in a step with its own image"
+      "reason": "16 'as shown in the diagram' references each sit in a step with its own image; viewed images for steps 0, 3 and 10 are dimensioned 3D diagrams."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (0), front spans (1), back spans (2), center supports (3), back (4), top (5), drawers built (6-9), slides/faces/knobs after carcass (10), finish (11)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes as shown in the diagram."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Drill pocket holes as shown in the diagram on the front and back pieces of the drawer frames."
+        }
+      ],
+      "reason": "Pocket holes in 3/4 and 1 1/2 thick parts; searched all fields for /setting|thickness|jig/: only 'Kreg Drawer Slide Jig' and tool slugs. Viewed step diagrams (0, 3) show hole positions but no jig thickness setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) openings: 21 = 2.5 + 4 + 1.5 + 4.5 + 1.5 + 4.5 + 2.5 (steps[1] quotes 4\" and 4 1/2\" 'equal space of 4 1/2\" for the two bottom drawers'); width 29 + 2 x 1 1/2 legs = 32, top 33; small box 11 1/2 + 2 x 3/4 = 13 = bottom 13; large 26 1/2 + 1 1/2 = 28 = bottom 28; knobs 7 3/8\" = half of 14 3/4\" face; 2+2x2 = 6 knobs = materials[14]; 4 drawers = 4 slide pairs. (b) every made part is installed. (c) bun legs 2, slides 4, knobs 6 in materials. (d) steps reach finished dresser."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix + Human review",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/402955197f4646a2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/580770fc4b308ab1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/97db899759b690ec.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "fastener-unlisted",
+      "path": "steps[4].body",
+      "quote": "Attach 1/4\" x 19 1/2\" x 30 1/2\" back with finishing nails using a brad nailer",
+      "what": "finishing/brad nails used in steps 4, 7, 9 are not in materials; no nail size is stated so R6 is not triggered"
+    },
+    {
+      "path": "cutList[9]",
+      "quote": "Large Drawer Sides ... lengthIn 15 (corrected 0.75 x 3.25 x 15)",
+      "what": "two rows are named 'Large Drawer Sides' (cutList[9], [10]); [9] 3 1/4 wide matches the small drawers; no row is named for small drawer sides"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "The top is 33\" x 19 1/2\"",
+      "what": "top thickness not stated in the step and the top has no cut row; materials list a 3/4\" laminated pine board 20\" x 96\" (not tied to the top)"
+    }
+  ],
+  "humanReview": "R10: whether drawer-slide placement is fixed by the named Kreg Drawer Slide Jig / slide hardware (knowledge outside section 9)"
 }

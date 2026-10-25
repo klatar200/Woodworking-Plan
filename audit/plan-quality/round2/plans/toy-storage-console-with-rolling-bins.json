@@ -371,22 +371,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Cut the top of the front legs so the front of each leg is 25 1/2\" tall and the back is 24 7/8\" tall (a 22.5 degree angle).",
-          "why": "cut sentence states 24 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut the side frame top so the top is 7\" long and the bottom is 6 13/32\" long (a 22.5 degree angle). Attach it to the back leg with pocket holes so it is flush with the top.",
-          "why": "cut sentence states 6 13/32\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Both flagged quotes are derived angle-cut dimensions of parts already in the cut list, not separate parts: front leg 25 1/2\" = cutList[0] corrected 25.5; 'side frame top ... 7\" long' = cutList[4] 7. 24 7/8\" and 6 13/32\" are the short-edge lengths of the angled cut. Every step part (leg supports=Leg braces 4+2=6, frame boards 3+1=4, panels, slats, bin supports) maps to a cut row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 cut rows are used: legs steps 1-2/9, braces 2/9, side frame top 3, angle 5, frame boards 7/11, front panel 11, top 14, back 8, bottom 10, side panels 4, center panels 13, bin supports 15, slats 16-17, bin bottoms 15."
     },
     "R4": {
       "result": "pass",
@@ -394,20 +384,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (2x2, 1x3, 1x4, 1x10, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Each part's thickness x width matches exactly one listed material (1.5x1.5->2x2; 0.75x2.5->1x3; 0.75x9.25->1x10; 0.75x3.5->1x4; 0.5 -> 1/2in plywood), so lumber is scorable: 2x2 parts = 51+64.5+40+75+14+20+192+120 = 576.5in (+28 pieces x 1/8 = 3.5) vs 7 x 96 = 672 pass; 1x3 48 vs 48 pass; 1x10 top 52 vs 72 pass; 1x4 slats 16x14+16x22 = 576 (+32x1/8=4) vs 7x96=672 pass. Plywood: 'Half Sheet' has no numeric size in name; parts area 9.25x48+12.5x48+2x9.25x12.5+2x10.75x12.5+2x14x20.5 = 444+600+231.25+268.75+574 = 2118 sq in, not a certain overage; sheet portion unknown per R5 sheet rule."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener sizes (only 'pocket holes', 'finishing nails', 'castors no taller than 3\"'); materials list 2 1/2\" and 1 1/4\" pocket screws and 8 castors. Search of all step bodies for fastener sizes found none conflicting."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: 20\" up from bottom (steps 2,7), flush top (3), 15 1/2\" in from each side (13), 1/2\" overhang (14), mark dimensions (4,13). Front frame height in step 12 ('flush along the back') is fixed by viewed step-12 image showing it flush with the top of the front legs/sides. Remaining placements are relational (flush, center, four corners)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram/'as shown'; steps carry images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides built (steps 2-6), joined (7), back panel (8), center leg (9), bottom (10), front frame built (11) then attached (12), center panels (13), top (14); bins built separately (15-18). No part used before it exists."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Connect the front and back legs to the leg supports with pocket holes."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "2 1/2\" pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes are used on 1.5in, 0.75in and 0.5in parts; search of steps, materials, description and summary for /jig|setting|thickness/ finds no jig thickness setting (only tool slug 'pocket-hole-jig'). Only one image opened (step 12), which shows none."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) bin: 4 slats x 3 1/2 + 3 x 1/2 gap = 15.5 = 15 support + 1/2 plywood; top 52 = 48 frame + 2x1 1/2 legs + 2x1/2 overhang; slat counts 16/16 = 2 bins x 4 slats x 2 sides; leg support 6 = 4+2; frame boards 4 = 3+1. (b) all parts installed incl. castors step 18, top step 14. (c) castors in materials. (d) steps reach finished piece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5dd17df9ed4e28fb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "using wood glue and finishing nails from the back and bottom of the unit",
+      "what": "wood glue not in materials (consumable)"
+    },
+    {
+      "kind": "fastener-unlisted",
+      "path": "steps[14].body",
+      "quote": "Attach the top of the console with wood glue and finishing nails",
+      "what": "finishing nails used in steps 13-17 are not in materials; no nail size is stated so R6 not triggered"
+    }
+  ]
 }

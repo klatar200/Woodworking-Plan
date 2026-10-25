@@ -80,42 +80,113 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Step 8 points to a finishing video in the 'extra' section and step 9 to 'extra' for where to buy hangers/turn buttons; neither is needed to complete the build (finish is the builder's choice, hangers and turn buttons are in materials[3],[4]). Frame credit in the summary is fine."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Stiles, rails, stops and backers all have cut rows. The glass and the 5x7x1/8 hardboard spacer are not cut-list parts; glass is scored under R14(c)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Stiles/Rails step 0, Vertical/Horizontal stops step 4, Backers step 7."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (0.75x5, 0.25x36, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock is named for every part: stiles/rails 'Used a 3/4\" x 5\" x 48\" curly maple board' (materials[0]); stops 'from 1/4\" square dowels' (viewed step-4 diagram '(4) 1/4\" x 36\" SQUARE DOWELS' = materials[1] x4); backer 'from 1/4\" basswood' (materials[2]). Rip lanes from the 5\" x 48\" board: 1 5/8 + 1 5/8 + 1 1/2 + 2 x 1/8 rip kerf = 5.0 <= 5; lane A 4 x 10 5/8 = 42.5 (+3 x 1/8) <= 48, lane B same, lane C 8 x 5 1/8 = 41 (+7 x 1/8) <= 48 (stile/rail widths per Kreg-corrected rows; the step text swaps them, same total). Stops per dowel 2 x 6 5/8 + 2 x 5 1/8 = 23.5 (+0.5) <= 36. Backers 4 x 5 x 7 = 140 sq in <= 48x96 sheet. No material-quantity importDiffs recorded."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "Now you can position the rails against the stiles as shown—inset 1/4\" from the ends, and then attach the rails using 1 1/4\" fine-thread pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "attach the rails using 1 1/4\" fine-thread pocket hole screws."
+        },
+        {
+          "path": "materials",
+          "quote": "materials[0..4].name = Board, 3/4\" Thick 5\" x 48\" | Balsa Wood, 1/4\" Thick 36\" | Basswood, 1/4\" Thick Full Sheet | Saw tooth picture hangers | Picture frame turn buttons"
         }
-      ]
+      ],
+      "reason": "Pocket-hole screws (16 holes' worth for 8 rails x 2 ends) are used but no screw of any size is in materials: searched all materials names/notes for /screw/i - none."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "install the saw tooth picture hangers and turn buttons."
+        }
+      ],
+      "reason": "Placement of the 2 saw-tooth hangers and 4 turn buttons on the frame back is not given as a number or relation (searched steps[3],[6],[9] for inch values near 'hanger'/'button': none); viewed step-9 photo shows them in place without dimensions. Rail inset 1/4\", chamfers, stops against the 5x7x1/8 spacer are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "6 reference(s), each in a step with its own image"
+      "reason": "All 6 'as shown'/'cutting diagram' references are in steps with their own images; the viewed step-4 image is the dowel cutting diagram (6 5/8, 6 5/8, 5 1/8, 5 1/8)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0), chamfered (1), pocket holes (2), frame assembled (3), stops cut to the assembled opening (4), painted (5), glued in (6), backer cut (7), finished (8), hardware/glass last (9)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'pocket hole jig set up for 3/4\" material'; all pocket-holed parts are 3/4 thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut (8) 3/4\" x 1 1/2\" x 10 5/8\" stiles Cut (8) 3/4\" x 1 5/8\" rails"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Stiles: Kreg-corrected row 3/4 x 1 5/8 x 10 5/8 (live: 0.75 x 1 x 10); Rails: corrected 3/4 x 1 1/2 x 5 1/8"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Install a 1/8\" x 5\" x 7\" thick single-strength glass cut to fit the frame."
+        }
+      ],
+      "reason": "(a) Step 0 gives stile width 1 1/2 and rail width 1 5/8; the Kreg-corrected cut list has stiles 1 5/8 and rails 1 1/2 (swapped). Corrected rail width matches the opening: stile 10 5/8 - 2 x 1/4 inset - 2 x 1 1/2 rail = 7 1/8 = 5x7 photo + spacer clearance (vertical stops 6 5/8 + 2 x 1/4 = 7 1/8; horizontal stops 5 1/8 = rail length), while the step's 1 5/8 rails would give 6 7/8 < 7. (c) Glass is installed in step 9 but not in materials: searched materials for /glass/i - none. Mat, rubber bumpers and the spacer are optional or builder-made (see gaps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be7c6fe3b719cc57.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4cbc3c2e7993f022.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "I used (3) coats of Danish Oil, and (3) coats of a wipe on poly finish.",
+      "what": "Danish oil, poly, sealer and black spray paint (step 5) and wood glue (step 6) not in materials (consumables)"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "I also added (4) rubber bumpers at the corners to protect the wall.",
+      "what": "optional rubber bumpers and the mat ('if using a 4\" x 6\" photo') not in materials"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Use a 5\" x 7\" x 1/8\" hardboard spacer.",
+      "what": "hardboard spacer jig is made by the builder from material not in materials"
+    }
+  ]
 }

@@ -91,42 +91,101 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Using the template in the extras, draw a curve on the top, front of each board and cut it out with a jig saw."
+        },
         {
           "path": "steps[6].body",
-          "quote": "ter to drain, but keep the soil in place. Also, if you want to add a drip watering system, I have all the details for that on my blog (link in the extras). Fill each shelf with potting soil and plant!",
-          "why": "matches \"my blog\""
+          "quote": "I have all the details for that on my blog (link in the extras)."
         }
-      ]
+      ],
+      "reason": "The curve template is in 'the extras', which the plan does not contain (searched all fields for template/extras/http: only these). The curve is decorative on the top front of the Sides, so the build can be completed without it (Fix). The blog link in steps[6] is for an optional drip system (credit/optional, passes)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, Shelves, Back pickets, Base front/sides all have cut rows; step 6 landscaping fabric pieces '11\" x 36\"' are cut from listed materials[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Sides step 0, Shelves step 2, Back step 4, Base front/sides step 5."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "reason": "Back 0.5 x 5.5 x 33.5 is meant to come from materials[3] '5 1/2\" cedar fence pickets 72\"' whose thickness is not stated and is not in section 9; width matches. Other parts match 1x8 (0.75x7.25) and 1x6 (0.75x5.5)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x8, 1x6, 5.5x72); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (steps[0] 'from the 1x8 boards', steps[2] shelves 'from the 1x8 boards', steps[4] 'cedar fence pickets', steps[5] 'the 1x6 boards'). 1x8 (3x96 + 36 = 324): 2x50 + 6x32 = 292 (+8 cuts x 1/8 = 1.0 -> 293) <= 324. 1x6 72: 35 + 2x8.5 = 52 (+0.375) <= 72. Pickets 5x72 = 360: 9x33.5 = 301.5 (+1.1) <= 360 (2 per picket, 9 <= 10). No material-quantity importDiffs recorded."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name '1 1/4\" pocket hole screws' (materials[4]); nail size not stated in steps (materials[5] '1 1/4\" finish nails'); no second size for the same use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf placement given: bottom shelf 5 1/2\" up from bottom, 60 degree angle, each shelf 8\" above the last (steps[1]); back leaves 1/2\" open at bottom (steps[4]); base hides the open area under the bottom shelf (relational). The curve outline is covered under R1."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references (the template reference is R1)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides cut and marked (0-1), shelves attached to one side then the other (2-3), back (4), base (5), fabric and planting last (6)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Drill 3 pocket holes in each end of the shelf boards."
+        }
+      ],
+      "reason": "Pocket holes in 3/4 thick boards; searched all fields for /setting|jig|thickness/: only the tool slug 'pocket-hole-jig' and '3/4\" thick' in step 4 (about board thickness). No jig thickness setting stated; images not viewed."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "to the inside of each shelf with light staples"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach them to the back of the herb garden with wood glue and finish nails or staples."
+        }
+      ],
+      "reason": "(c) Staples are used in steps 4 and 6 (step 6 has no alternative) but materials[0..7] list no staples: searched materials for /staple/ - none. (a) numbers add up: 0.75 + 32 + 0.75 = 33.5 = Back length ('around 33 1/2\"'); base front 33.5 + 2 x 3/4 miter = 35. (b) all parts installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "if you want to add a drip watering system, I have all the details for that on my blog",
+      "what": "optional drip system described elsewhere; not part of the build"
+    },
+    {
+      "path": "materials[7]",
+      "quote": "Landscaping fabric",
+      "what": "quantity 1 with no size; step 6 calls for 11\" x 36\" pieces for each shelf (6 shelves) - cannot check coverage"
+    }
+  ]
 }

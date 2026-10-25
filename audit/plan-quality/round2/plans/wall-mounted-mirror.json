@@ -107,45 +107,118 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom Rail, Top Rail, Side Stiles, Cap, Ledge and the four glass stops (Top/Bottom Stop x2, Side Stop x2) all have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: rails steps 0-1, stiles 2, Cap/Ledge 3-4, stops 5."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x2, 0.25x48); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "Cut one Cap and one Ledge to length from a 1x2 board, as shown in the cutting diagram. Then sand all the parts you’ve made to prepare them for assembly.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "Cut a Top Rail to length from a 1x4 board, as shown in the cutting diagram."
         },
         {
-          "path": "steps[3].body",
-          "quote": "Cut one Cap and one Ledge to length from a 1x2 board, as shown in the cutting diagram. Then sand all the parts you’ve made to prepare them for assembly.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[2].body",
+          "quote": "Cut two Side Stiles to length from a 1x4 board, as shown in the cutting diagram."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 96\""
         }
-      ]
+      ],
+      "arithmetic": "Steps name the 1x4 for Top Rail (cutList[1] 34) and 2 Side Stiles (cutList[2] 2 x 34) = 34 + 68 = 102, plus 3 cuts x 1/8 = 0.375 -> 102.375 in. materials[1] is quantity 1 x 96 = 96 in. 102.375 > 96, short 6.375 in (not kerf-only). No material-quantity importDiff recorded, so the quantity 1 is not a flagged default. Other stock fits: 1x6 48: Bottom Rail 34 <= 48; 1x2 96: Cap + Ledge 72 (+0.25) <= 96; 1/4 x 2 boards: 2x33 + 2x23.875 = 113.75 (+0.5) <= 3 x 48 = 144.",
+      "reason": "Parts named for the single 1x4 board exceed its length by more than kerf."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Steps use '1 1/4\" fine-thread pocket-hole screws' (materials[4]) and '5/8\" brad nails' (materials[6]); glass retainers and D-rings are listed hardware."
+    },
+    "R10": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "secure the mirror to the stops with glass retainers, and screw on a pair of D-ring hooks for mounting your project to the wall."
+        }
+      ],
+      "reason": "Positions of the 8 glass retainers and the 2 D-ring hangers are not given as numbers or relations (searched steps[5], [6] for inch values near 'retainer'/'D-ring': none). The 3 coat hooks have no step at all (see R14). Viewed images show hooks on the Bottom Rail but no dimensions. Stop placement ('lay the mirror in position ... verify their positions') and Cap/Ledge overhang 'equally' are functional/relational."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut one Cap and one Ledge to length from a 1x2 board, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Step 3 has no image; all 5 unattached images viewed (3 room photos, a hook close-up, and an overall drawing 36 x 31 1/2 x 1 1/2) - none is the cutting diagram. Cap/Ledge length 36 is in the cut list and the overall drawing, so the build is not blocked (Fix). Steps 0-2 reference the diagram too but have their own images (not viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Rails, stiles, cap and ledge cut and drilled (0-3), frame assembled (4), stops fitted around the mirror (5), finish and mirror/hardware last (6)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 0-2 each say 'pocket hole jig set up for 3/4\" material'; all pocket-holed parts are 3/4 thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[9].name",
+          "quote": "Coat hooks"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "screw on a pair of D-ring hooks for mounting your project to the wall."
+        }
+      ],
+      "reason": "(d) Coat hooks (materials[9], quantity 3) are on the finished mirror in the viewed photos but no step installs or positions them: searched all steps for /hook/ - only the title 'Mount the Mirror and Hooks' and 'D-ring hooks'. (a) Cap/Ledge 36 = frame width 34 + 2 x 1 overhang; (b) all made parts installed; (c) mirror, retainers, D-rings in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e667c1389b0efb74.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3997282fdcddf49a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/423995b3046e716a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d948227ee6c52feb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c633f42d73f670d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[2]",
+      "quote": "Side Stiles 0.75 x 3.5 x 34 (Kreg-corrected); viewed overall drawing labels '31 1/2\"' total height",
+      "what": "Stile length 34 exceeds the 31 1/2 overall height in the viewed drawing (stiles sit between the 3 1/2 Top Rail and 5 1/2 Bottom Rail), so the 34 looks wrong; not scored beyond R5."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "add the stain, finish, or paint of your choice",
+      "what": "finish not in materials (consumable)"
+    }
+  ]
 }

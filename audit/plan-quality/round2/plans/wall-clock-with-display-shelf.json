@@ -275,10 +275,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps 0-9 (Upper/Lower Sides, Top, Bottom, Center Divider, rails, stiles, trim, back fillers, cleat, cleat fillers, Clock Face and Backer) has a cut row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 17 rows are used by steps 0, 4, 6, 7, 8."
     },
     "R4": {
       "result": "pass",
@@ -286,34 +288,82 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x6, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Steps name the stock per part ('from 1x6 boards' step 0, 'from 1x2 boards' steps 4/6/7, 'from 1/4\"-thick hardboard' step 8). Lumber covers: 1x6 (96+48 = 144): 2x20 + 18.5 + 2x17.5 + 17 + 17 = 127.5 (+7 cuts x 1/8 = 0.9 -> 128.4) <= 144; 1x2 (3 x 96 = 288): 2x17 + 2x20 + 15.5 + 2x15.5 + 2x6.25 + 20 + 2x20 + 17 + 2x3 + 17 = 233 (+16 x 1/8 = 2.0 -> 235) <= 288. Hardboard 'Quarter Sheet' has no numeric size (two 18x18 parts = 648 sq in), so the sheet portion cannot be scored under the sheet rule."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "drive three #8 x 1 1/4\" flathead screws through the lower sides into the upper sides"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "1 1/4\" fine-thread pocket-hole screws"
+        }
+      ],
+      "reason": "Steps use #8 x 1 1/4\" flathead screws (6 for the two Lower Sides); materials list only pocket-hole screws (quantity 26) as screws. Searched materials names/notes for /flathead|#8|wood screw/i: none."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: pocket holes and pilot holes dimensioned in viewed step-0 image (1/2\", 1 1/4\", 1 1/2\"); upper assembly overlaps 2\", sits 3/4\" forward, Bottom up 3/4\" (steps[2],[3]); hour holes 1 1/4\", 5\", 9\", 3/4\" and 1/2\" diameters in viewed step-8 grid; back filler notch 2\" x 3/4\" in viewed step-7 image; cleat set in 1/4\" (steps[10]). Remaining placements are relational (flush, centered)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Upper Rails, two Upper Stiles, one Lower Rail, and two Lower Stiles to length from 1x2 boards, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "Step 4 has no image. All 5 unattached images viewed (4 room photos and one overall-dimension drawing 20/35 1/2/14/15 1/2) and the step 7, 8, 0 images viewed show other content; none is the 1x2 rail/stile cutting diagram. Step 6 image not viewed. The rail/stile lengths are in cutList[5..8], so the build is not blocked (Fix)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0), upper and lower assemblies (1-2), joined (3), rails/stiles and trim on the case (4-6), fillers and cleat cut (7), face made (8), installed (9), cleat and hanger last (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'set your pocket hole jig for 3/4\"-thick material'; steps[7] 'jig set up for 3/4\" material'; all pocket-hole parts are 3/4 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Height 20 + 17 1/2 - 2 overlap = 35 1/2 (matches the viewed overall drawing); width Top 18 1/2 + 2 x 3/4 = 20 = Upper Stile length 20 / Upper Side 20, and Upper Rail 17 + 2 x 1 1/2 stiles = 20. (b) all made parts are installed (steps 5, 6, 9, 10). (c) hanger, movement and hands are in materials. (d) steps reach the hung clock."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/adc946919477dade.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48e2b0b9c8c1593a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eb5df6f9cf5b643f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c639661f96977a0a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/646b76efded27866.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d5d9d750e261269a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/db5f8af8ff784af3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f790943b149f3fbe.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "We simply glued them in place, and clamped them until the glue dried.",
+      "what": "wood glue (steps 5, 6, 8, 9) not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "We chose white for the Face, and black for the backer.",
+      "what": "paint and finish (steps 8, 10) not in materials"
+    }
+  ]
 }

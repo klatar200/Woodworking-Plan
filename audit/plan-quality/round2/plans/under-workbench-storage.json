@@ -223,14 +223,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Check out the video first, and as you build. It'll help with a few instructions!"
+        }
+      ],
+      "reason": "The plan sends the builder to a video that is not in the plan (searched all fields for video/youtube/http: only this step; no link). Whether the build can be completed without it is not settled by the text; the placements the text omits are recorded under R10. Level Fix because the cut list, assembly sequence and hardware are all present."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (case sides/interior/braces, drawer boxes, bottoms, false fronts) all have cut rows; 'Cut down plywood parts according to the cutlist' (steps[1])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: case parts steps 2-3, drawer bottoms/back-front/sides step 4-5, fronts steps 7-8."
     },
     "R4": {
       "result": "pass",
@@ -238,27 +249,92 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Plywood materials name no sheet size ('3/4\" Plywood', '1/2\" Plywood', quantity 1 each) and the steps do not name stock per part beyond thickness; no certain overage (3/4 parts total 2x10.5x27.5 + 9.75x27.5 + 3x2x37.25 + 6x2x18.25 = 577.5+268.125+223.5+219 = 1288.1 sq in; 1/2 parts total about 2339 sq in)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Using 1 1/4 pocket hole screws, assemble the case together"
+        },
         {
           "path": "steps[5].body",
-          "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws",
-          "why": "1\" screw — no material line lists a 1\" fastener"
+          "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws"
+        },
+        {
+          "path": "materials",
+          "quote": "materials[0..3].name = 3/4\" Plywood | 1/2\" Plywood | Drawer Pulls | Sets of Drawer Slides"
         }
-      ]
+      ],
+      "reason": "Two screw sizes are used in the steps and materials list no screws at all (searched all materials names and notes for /screw/i: none). Slide/pull mounting screws are not mentioned either."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "cut a 1/2\" wide and 1/4\" deep dado to house the drawer bottoms"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Using a small spacer, install 4 sets of drawer slides inside the case"
+        }
+      ],
+      "reason": "Dado position on the 6 3/4\" and 2 1/2\" drawer pieces (distance from bottom edge), slide height/setback and the 'small spacer' size are not given as numbers; searched steps 3-8 for inch values: only the dado width/depth. Viewed step 3, 6 and 7 photos show a built case, a slide being fitted and pulls on fronts, with no dimensions. Brace locations in the case are shown only in a photo."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references; 'cutlist provided above' is the cut list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (1), case built (2-3), drawer pieces dadoed (4) and assembled (5), slides in case (6), drawers/fronts/pulls installed (7-8)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "drill pocket holes into them"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Assemble all 4 drawer boxes using 1\" long pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4 and 1/2 thick plywood; searched all steps for /jig|setting|thickness/: no jig thickness setting is stated for either thickness. Viewed step-2 photo shows the jig in use with no legible setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 drawer boxes = 2 large + 2 small: back/front 4 and 4, sides 4 and 4, bottoms 4, fronts 2+2, pulls 4, slide sets 4. Case: 3 lower braces 37 1/4 = 2 x 18 1/4 upper-brace bay + 3/4 interior. Drawer bottom 16 3/4 = back/front 16 1/4 + 2 x 1/4 dado. (b) all parts installed. (c) pulls and slides are in materials. (d) steps reach finished storage unit."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4325ce21ae8bc0bb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0ca1ebf6a9e3480a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/08e3fbd147fd2230.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/002c2402e5662720.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[0].name",
+      "quote": "3/4\" Plywood",
+      "what": "no sheet size given for either plywood line, quantity 1 each (cannot confirm the cut list fits what is bought)"
+    }
+  ]
 }

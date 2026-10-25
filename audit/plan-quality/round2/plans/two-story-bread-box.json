@@ -203,48 +203,81 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Using a circular saw with the edge guide, cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and cut 1 piece for the top flap 15\" x 5\".",
-          "why": "cut sentence states 4 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Using a circular saw with the edge guide, cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and cut 1 piece for the top flap 15\" x 5\".",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "he cutting board through a planner to smooth the top and bottom. As assembled, the cutting board will be 8 1/2\" deep. Trim the cutting board to 8 1/4\" with a table saw or circular saw with edge guide.",
-          "why": "cut sentence states 8 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged quotes are plexiglass pieces: steps[8] says 'cut the plexiglass. Cut 1 piece for the door 11 3/8\" x 4 1/8\" and ... top flap 15\" x 5\"' - the step itself cuts them from listed materials[6] '15\" x 10\" 0.22 thick plexiglass'. 8 1/4\" (steps[9]) is the trim of the cutting board whose assembled width is 8 1/2\" = cutList[8] 2.5 + 4 x cutList[9] 1.5 = 8.5; 'will be 8 1/2\" deep' agrees."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used. 'Bottom front' is not named in steps[2] ('bottom back board and one back board') but the viewed step-2 image shows two edge-joined two-board panels, 14\" wide: bottom (back 5.5 + front 3.5 = 9 deep = side depth 5.5+3.5) and back (2 x 5.5 = 11 + 3/4 bottom = 11.75 sides)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x4, 1x6, 1x2, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one material: 0.75x5.5 -> 1x6 96\"; 0.75x3.5 -> 1x4 48\"; 0.75x1.5 -> 1x2 96\"; 0.75x2.5 -> 1x3 24\". 1x6: 2x11.75 + 2x14 + 14 + 16 = 81.5 (+6 x 1/8 = 0.75 -> 82.25) <= 96. 1x4: 2x11.75 + 14 = 37.5 (+0.375) <= 48. 1x2: 2x6.625 + 2x10.875 + 4x14.5 = 13.25+21.75+58 = 93 (+8 x 1/8 = 1.0 -> 94.0) <= 96. 1x3: 14.5 <= 24. No material-quantity importDiffs recorded. See gaps for the different-species stripe boards."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '1 1/4\" pocket hole screws' (materials[4]) and '1/2\" screws' with bolts (materials[8] '1/2\" screws with bolts'); no conflicting sizes. Finishing nails (steps[5]) have no stated size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "To attach the hinges to the plexiglass cover for the top of the bread box, mark where the holes need to be."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "To attach the door, line up the hinges on the front of the door and secure."
+        }
+      ],
+      "reason": "Position of the 2 hinges along the 15\" flap and along the door is not given as a number or relation (searched steps[10], steps[11], description for inch values near 'hinge': none); viewed step-10 and step-11 photos (no dimensions) show a hinge and the knob jig but no hinge spacing. Other positions are given: groove 1/4\" deep, 3/4\" thick, stops 3/4\" from back; latch 3/4\" in from front; door 1/8\" space; top 1/4\" overhang; knob centered."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references in any step."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (0-1), bottom/back panels (2), assembly (3-4), top (5), door (6-8), cutting board (9), flap and door hardware after box exists (10-11), shelf slid in last (12)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2].body 'Drill pocket holes set for 3/4\" material'; all pocket-hole parts are 0.75 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Top 16 = 14 + 2 x 3/4 + 2 x 1/4 overhang; door plexi 11 3/8 = rail 10 7/8 + 2 x 1/4 groove, 4 1/8 = stile 6 5/8 - 2 x rail 1 1/2 + 2 x 1/4; cutting board 14 1/2 = 14 + 2 x 1/4 groove, 8 1/4 deep = 9 side depth - 3/4 groove stop. Plexi pieces 15x5 + 11 3/8 x 4 1/8 fit 15x10 (5 + 4 1/8 = 9 1/8 <= 10). (b) every made part installed (steps 3-5, 7, 10-12). (c) hinges 4, screws with bolts, knob, magnetic latch, plexiglass all in materials. (d) steps reach finished box."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0f9aeabb034ae4d1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b1c41c97dfe97374.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d2feb64e659dbd3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7e54a3a9f5b3c52a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "To give it stripes, use 2 1x2 boards of a different species.",
+      "what": "materials list a single 1x2 96\" board with no species; the plan does not say whether a second board is needed or which cutList rows use the other species. Not scored (1x2 total 94 <= 96 either way)."
+    },
+    {
+      "kind": "fastener-unlisted",
+      "path": "steps[5].body",
+      "quote": "Secure with a few finishing nails.",
+      "what": "finishing nails not in materials; no size stated"
+    }
+  ]
 }

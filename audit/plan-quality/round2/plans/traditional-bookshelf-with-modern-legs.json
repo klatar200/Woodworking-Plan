@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps (Top, Sides, Base, Back, Legs, Leg Spans, Leg Middle, Top Face, Side Faces, Bottom Face, Shelves) is in the cut list; Top Face + Bottom Face = cutList[8] 'Top/Bottom Face' qty 2."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 cut rows used in steps 0-7 (Back step 2, Legs 3, Leg Spans/Middle 4, faces 5, Shelves 7)."
     },
     "R4": {
       "result": "pass",
@@ -142,28 +144,88 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 0.75x0.75); steps not checked for per-part stock"
+      "reason": "Parts 0.75x2 and 0.75x1 (Legs, Leg Spans, Leg Middle, faces) could come from either the 3/4 plywood or the 3/4 x 3 1/2 board, so the stock is not named; precondition not met. Plywood area is nowhere near exceeded in any case."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name only '1\" nails' (materials[4] '1\" brad nails') and unsized 'pocket hole screws' (materials[3] 1 1/4\" Kreg Screws); no size conflict."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "ch the Side Faces flush along the outside edge of the Sides. There will be a little overhang into the bookshelf. - Using wood glue and nails, attach the Bottom Face flush along the front edge of the B",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9faf36fc22ceb86e.webp"
+          "path": "steps[1].body",
+          "quote": "Using a shelf pin jig, drill shelf pin holes up and down the front and back of both of the Sides."
         }
-      ]
+      ],
+      "reason": "Flagged step 5 passes (flush placements; viewed image shows frame flush with front edges). But hole locations for the shelf pins (distance in from front/back edge, lowest/highest hole) are given nowhere as numbers: searched all steps, description, materials for inch values near 'shelf pin' - none; step 1 has no image and viewed step 7 image shows no hole spacing. Shelf height itself is 'your desired height' (passes)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references in any step."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (0) -> shelf pin holes (1) -> back (2) -> legs (3) -> leg supports (4) -> face frame (5) -> finish (6) -> shelves (7); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill three pocket holes on one end of each Side."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill two pocket holes in one end of each Leg."
+        }
+      ],
+      "reason": "Search of all steps/materials/description for /jig|setting|thickness/ finds no pocket-hole jig thickness setting (only 'shelf pin jig' in steps[1]); viewed images steps[5], steps[7] show none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "insert four shelf pins at level height in each corner"
+        },
+        {
+          "path": "materials",
+          "quote": "materials[0..6]: plywood, 1/4\" plywood, 3/4\" board, 1 1/4\" Kreg Screws, 1\" brad nails, Wood glue, Paint or stain"
+        }
+      ],
+      "reason": "Shelf pins (hardware, 4 per shelf x 2 Shelves) are used in step 7 but no material matches /pin/ other than 'brad nails': search of materials[].name and note found no shelf pins. (a) counts/sizes otherwise agree: Top 37.5 = 36 Base + 2 x 3/4 Sides; Side Faces 34.75 = (36 + 3/4 Top) - 2 x 1 faces; (b) all parts installed; (d) ends at finished bookshelf."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9faf36fc22ceb86e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ff7521fe23a8f7a8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Add a coat of polyurethane to help protect the shelves from wear and tear.",
+      "what": "polyurethane not in materials (finish consumable)"
+    },
+    {
+      "path": "cutList[7]",
+      "quote": "Back 0.25 x 36 x 36 3/8 (Kreg-corrected)",
+      "what": "Back is 36 wide x 36 3/8 tall; Sides are 36 tall under the Top (steps[0]) so the 36 x 36 inside opening is not 36 3/8 tall; the plan does not say how the extra 3/8 is accommodated (groove step is optional). Not scored."
+    }
+  ]
 }

@@ -227,17 +227,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "with the Kreg AccuCut and a circular saw. I like to cut the beadboard about 1/8\" smaller than the opening so it is easier to fit into the routered edge. Secure with wood glue and 1/2\" finishing nails.",
-          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '1/8\" smaller than the opening' is a clearance for the beadboard (cutList[4] 0.25 x 11.25 x 12), not a separate part. All parts in steps (inner frame horizontals/verticals, outer frame, legs, beadboard/plywood insets, side tops, frame pieces, slat supports, slats, headboard plywood) have cut rows; foam and fabric are materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: inner frame steps 0-1, outer 2, legs 3, beadboard 4, plywood insets 5, side tops 6, Bed frame 7, Slat supports 8, Slats 9, Plywood back = headboard 10-15."
     },
     "R4": {
       "result": "pass",
@@ -245,21 +240,55 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (1x2, 1x3, 2x2, 1x6, sheet-0.25, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Side top pieces (0.75x2.5, 1x3) could come from either 'Board, 1x3 96\"' or 'Furring strips, 1x3 96\"' (steps[9] names furring only for the Slats), so per the precondition R5 stays unknown. Computed anyway: 1x2 20 pcs 12x10.75 + 8x14.5 = 129+116 = 245 (+20 x 1/8 = 2.5) <= 3 x 96 = 288; 2x2 4x38.25 + 4x28 + 3x75 = 153+112+225 = 490 (+1.4) <= 6 x 96 = 576; 1x6 2x75 = 150 <= 2 x 96; 1x3 2x42 + 16x39 = 84+624 = 708 (+2.3) <= 9 x 96 = 864 across both 1x3 lines; 1/2 plywood 2x14.5x38.25 + 30x74.75 = 1109.25+2242.5 = 3351.75 sq in <= 48x96 = 4608; 1/4 beadboard 6x11.25x12 = 810 sq in (quarter sheet size not numeric)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every fastener size in steps appears in materials: 1 1/4\" pocket hole screws [7], 1/2\" finishing nails [9], 1\" finishing nails [16], 1 1/4\" finishing nails [12]; staples 3/8\" [15] (size not restated in steps). No size conflict: 1 1/4\" screws used for 3/4 and 1/2 thick stock in the steps, each with a jig setting."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Headboard vertical position: steps[15] gives only 'Keep the back of the plywood flush with the back of the bed'; steps[10] ties the decorative edge to 'flush with the top of the sides' but no step states where the 30\" panel's bottom sits against the frame, and viewed step-15 photo does not settle it. All other positions are given numerically or relationally (notch 1/4\" x 1/4\", skip 1 1/4\"; plywood inset ~0.43\"; front frame set back 3/4\"; back frame even with bottom of outer frame, confirmed by viewed step-7 image; evenly spaced slats)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as shown in the picture below' (steps[0]) and the other reference sit in steps with their own images; viewed step-7 and step-8 images show frame and supports."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Inner frame (0-1), outer frame (2), legs (3), insets (4-5), side tops (6) form each arm; frame between arms (7), supports (8), slats (9); headboard cut, foam cut, drilled, upholstered, then attached last (10-15)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated: 3/4\" (steps[1], [2], [7]), 1 1/2\" (steps[3], covers the 2x2 slat support in steps[8]), 1/2\" (steps[12])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Place the foam on top of the cut our headboard and use a serrated knife (I use a bread knife) to cut it to the same shape)."
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Lay out the fabric with right side facing down. Then lay the batting on top of it. Place the batting on top then finish with the plywood with pocket holes facing up."
+        }
+      ],
+      "reason": "(b) The foam is cut in step 11 but no later step places it in the upholstered layers: searched all steps for /foam/ - only steps[11]; step 13 lists fabric, batting, plywood only (batting named twice). Numbers otherwise add up: 4 x 1 1/2 + 3 x 10 3/4 = 38 1/4 = outer frame/inset length; beadboard 12 = (14 1/2 - 2 x 1 1/2) + 2 x 1/4 notch; foam 30\" x 75\" vs plywood 30 x 74 3/4. (c) fabric, batting, staples, foam, beadboard in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb874a48244111d7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4854352ccfa5e213.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/185e59dea9f96f4e.webp"
+    ]
+  },
+  "gaps": []
 }

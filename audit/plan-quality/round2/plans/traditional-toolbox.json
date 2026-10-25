@@ -95,40 +95,68 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps cut Bottom, Ends, Sides, Handle; all four are cut-list rows (qty 1/2/2/1 match steps 0-5)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 cut rows used in steps 0-7."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one material: 0.75x5.5 (Bottom/Ends/Sides) -> Board 1x6 96\"; Handle 0.75x2.5 -> Board 1x3 24\" (steps[5] 'from a 1x3 board'). 1x6: 20 + 2x10.5 + 2x21.5 = 84, plus 4 cuts x 1/8 = 0.5 -> 84.5 <= 96. 1x3: 20 5/16 <= 24. No material-quantity importDiffs recorded."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every step screw is '1 1/4\" coarse-thread Kreg Screws' = materials[2] '1 1/4\" coarse-thread Kreg pocket-hole screws'; no second size used (1/16\" is a pilot-hole bit, not a fastener)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " cutting diagram. Now you can lay out the curve on each one. You can use a compass, or you can mark out the straight line from the top edge, and then set an ordinary quart can in place and trace aroun",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d517bda55ae9032b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged steps[1] End curve: viewed image d517bda5 gives 3 1/2\" radius, 3 1/2\", 1 1/2\", 2\", 5 1/2\", 10 1/2\". Bottom pocket holes shown 1\" / 3\" (d658f2fa); Side pilot holes 1\" and 3/8\" shown (3de65fc6); Handle curve 1 1/4\" rise, 3\" ends, pocket holes 5/8\" shown (56c72c9f). Handle position is 'centered and flush' (relational); angle ~10\" given in steps[5]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "13 reference(s), each in a step with its own image"
+      "reason": "All 'as shown' / 'cutting diagram' references (steps 0-6) sit in steps with their own image; viewed step images 0,1,2,6 are dimensioned drawings of the referenced part."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom (0), Ends (1), Sides (2) cut before assembly (3-4); handle cut/angled from assembled Ends (5), shaped (6), attached (7)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body 'Set your Kreg Jig® for 3/4\"-thick material'; all pocket-hole parts (Bottom, Handle) are 3/4 thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Sides 21.5 = Bottom 20 + 2 x 3/4 Ends; Handle 20 5/16 = 20/cos 10 deg (approx.) consistent with step's ~10 degree angle (no outside facts used for pass beyond the quoted numbers: 20 and 10 deg are the plan's); counts match steps. (b) all four part types installed (steps 3,4,7). (c) no non-fastener hardware used. (d) steps reach finished toolbox."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d658f2fa90f58078.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d517bda55ae9032b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3de65fc6f4f2d0ce.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/56c72c9fc4152c3b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "consider painting the Bottom, Ends, and Sides now",
+      "what": "paint/finish not in materials (consumable)"
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "as shown in the how-to video below",
+      "what": "refers to a how-to video not in the plan; only about optional paint roller technique, build does not depend on it"
+    }
+  ]
 }

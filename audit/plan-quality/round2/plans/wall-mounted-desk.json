@@ -95,17 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "inges are secured, open and close the lid to make sure the hinges aren’t binding. Finally, cut a small block of scrap about 3/4\" square and 1\" long and glue it to the edge of the lid to act as a pull.",
-          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '3/4\" square and 1\" long' pull block: steps[10] itself says to 'cut a small block of scrap ... and glue it to the edge of the lid' (scrap of the listed plywood). All other parts (Bottom, Top, Sides, Lid Sides cut from the Side squares, Cleat, Lid Top, Front) are cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: Bottom/Sides steps 0-2, Desk Top 3-4, Cleat 5-6, Lid Top 7-8, Lid Side 1/8, Front 9."
     },
     "R4": {
       "result": "pass",
@@ -113,21 +108,49 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet size not written in material name"
+      "reason": "Single stock, 'Plywood, 3/4\" x 48\" x 96\"' (materials[0]); sheet rule: unknown unless total area certainly exceeds the sheet. Area check: Bottom 17.25x42 = 724.5; Top 9x42 = 378; 2 Sides 2x17.25x17.25 = 595.1 (Lid Sides 2x8.125x11 are cut from the Side squares per steps[1]); Cleat 4x42 = 168; Lid Top 8.125x42 = 341.25; Front 17.25x43.5 = 750.4; total 2957.3 <= 48x96 = 4608, so no certain shortfall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '1 1/4\" coarse-thread Kreg Pocket-Hole Screws' (materials[1]) and 'heavy-duty cabinet-installation screws' (materials[5], 6 for 2 per stud) ; hinge screws come with hinges. No second size for the same use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-0 drawing: 2\" hole 21\" from the end and 2\" from the back edge; pocket holes 2 5/8\" then 3\" spacing. Viewed step-1 drawing: angle cut 9\", 6\", pocket holes 2 3/4\" and 4 3/4\". Viewed step-10 image: hinges 5 1/8\" and 4 7/8\" from the ends and one at the middle, flush faces. Top/Front/Cleat placements are flush/between relations."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "14 reference(s), each in a step with its own image"
+      "reason": "All 14 'as shown'/'cutting diagram' references are in steps with their own images; the three viewed images show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom (0), Sides (1-2), Top (3-4), Cleat (5-6), Lid Top and Lid Sides (7-8), Front (9), hinges (10), finish (11), wall mounting (12)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; every pocket-holed part is 3/4 plywood."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Front 43 1/2 = 42 + 2 x 3/4 Sides; Top, Cleat, Lid Top 42 between Sides; Side 17 1/4 = Bottom depth 17 1/4; 3 hinges needed vs 2 pairs. (b) all made parts installed (Lid, Front, pull block step 10). (c) hinges, weatherstripping, cabinet screws in materials. (d) steps reach mounted desk."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-27",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d4136e97686a9d71.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a572b76dc02995fd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/215f46f6bc2fa39d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "we applied two coats of satin wipe-on polyurethane",
+      "what": "natural oil and polyurethane finish not in materials (consumable)"
+    }
+  ]
 }
