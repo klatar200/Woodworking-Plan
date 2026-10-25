@@ -164,35 +164,102 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only \"cutting diagram\" references, which are images"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part cut in steps[0..8] (Legs, Upper/Lower End Rails, Side Rails, Stretcher, Seat Slats) is in the cut list; steps[2],[1] call Lower End Rails \"Lower Rails\"/\"Bottom Rails\" (same part)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used in steps[0],[1],[2],[4],[5],[8]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep stands (Kreg-corrected): Leg 3.5x3.5 from 4x4; 1.5x3.5 rails/stretcher from 2x4; Seat Slat 1.5x5.5 from 2x6"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (4x4, 2x4, 2x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1]",
+          "quote": "Cedar board, 2x4 x 96\", quantity 2"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut two Upper End Rails to length from a 2x4 board"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Cut two Side Rails to length from a 2x4 board"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Cut one Stretcher to length from a 2x4 board"
+        }
+      ],
+      "reason": "Steps name the 2x4 for every rail/stretcher part (steps[1],[2],[4],[5]) and the 2x4 count of 2 x 96\" is less than the parts need (qty 2, not an import default).",
+      "arithmetic": "Kreg-corrected lengths: Upper End Rail 2x18 = 36 + Lower End Rail 2x18 = 36 + Stretcher 1x22 = 22 + Side Rail 2x55.5 = 111 -> 205\"; + kerf 5 cuts x 1/8 = 0.625 -> 205.6\". Bought 2 x 96 = 192\". Short by 13.6\" (zero-kerf shortfall 13\")."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all steps use 2 1/2\" screws (steps[3],[6],[7],[8]), listed materials[3]; no conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "rail positions on the legs and base assembly are shown in viewed images (steps[3],[7]); slat overhang equal on each end/side (relational); numeric height of the Lower End Rail on the legs is not given, see gaps"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "18 reference(s), each in a step with its own image"
+      "search": "sweep stands: 18 references each in a step with its own image; viewed steps[1]/[4]/[7] images show the part layouts; sizes are in the cut list"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "end assemblies (steps[3]) and rail/stretcher assembly (steps[6]) built before joining (steps[7]); base attached to slats last (steps[8])"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "with your Kreg® Pocket-Hole Jig set up for 1-1/2\" stock, drill pocket holes in the Legs"
+        }
+      ],
+      "reason": "Legs are 4x4 (3 1/2\" thick, Kreg-corrected cutList[0] [3.5, 3.5, 16]) but the only jig setting stated for them is 1 1/2\". Settings for 1 1/2\" rails are stated (steps[2])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: 2 upper + 2 lower end rails, 2 side rails, 1 stretcher, 5 slats; width check: 5 slats x 5.5 = 27.5 vs base 18 + 2x3.5 = 25 -> 1.25 overhang each side. (b) all parts installed. (c) no non-fastener hardware; glue in materials[4]; finish is consumable (gaps). (d) reaches finished bench"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/184f534f6379057e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aa9076e6c286aa50.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/30d19910732208b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c73c305a7f089b9d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "position them as shown, making sure that the pocket holes in the Legs are oriented properly",
+      "what": "Height of the Lower End Rail on the Legs (and Upper rail relative to leg top) is not given numerically; shown only in the step image."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "protect your bench with a couple of coats of exterior stain or finish",
+      "what": "Finish not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

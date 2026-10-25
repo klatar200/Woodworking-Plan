@@ -32,65 +32,99 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; steps[6] link tidbits-cami.com is an optional credit/\"see more\" link, not needed to build"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] cuts \"top shelf\" (= Top Plate) and two legs (= Legs); both in cut list"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both rows used in steps[0],[1],[4]"
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Top Plate — qty 1, 0.75 x 7.75 x 28 (Kreg-corrected)"
+          "quote": "Top Plate x1; Kreg source \"3/4\\\"x7 3/4\\\"x28\\\"d\" -> corrected 0.75 x 7.75 x 28"
         },
         {
           "path": "cutList[1]",
-          "quote": "Legs — qty 2, 0.75 x 7.75 x 8 (Kreg-corrected)"
+          "quote": "Legs x2; Kreg source \"3/4\\\"x7 3/4\\\"x8\\\"\" -> corrected 0.75 x 7.75 x 8"
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 1x8 96\""
         }
       ],
-      "arithmetic": "cutList[0] 0.75×7.75: no listed stock has thickness 0.75 (±1/32) with width ≥ 7.75; stock = 0.75×7.25; cutList[1] 0.75×7.75: no listed stock has thickness 0.75 (±1/32) with width ≥ 7.75; stock = 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Top Plate — qty 1, 0.75 x 7.75 x 28 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Legs — qty 2, 0.75 x 7.75 x 8 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "The only stock is a 1x8 (§9 actual 3/4 x 7 1/4); the Kreg-corrected width of both rows is 7 3/4 and no step describes a glue-up.",
+      "arithmetic": "7.75 (corrected width, importDiffs correctRow) > 7.25 (1x8 actual, §9) by 0.5\"; searched all 7 steps for /glue.?up|laminat|edge.?join|two boards/: none"
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 1×28 + 2×8 + kerf 2 cuts (3 parts − 1 boards, the fewest possible)×1/8 = 44.250″; bought: 1×96 = 96″; 44.250 ≤ 96"
+      "reason": "sweep stands: 28 + 2x8 + kerf = 44.25\" <= 96\" (1x8 x 96)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name \"Kreg jig screws\" and \"Kreg jig plugs\" with no size; materials[1],[2] list both (4 each = 2 holes x 2 legs); no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "legs go flush at the ends of the Top Plate with holes facing the center (steps[4] \"faced towards the center of the shelf\"; viewed steps[3]/[4] images show a leg at the end of the plate); hole spacing \"evenly spaced\" relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no \"as shown\"/diagram references in any step"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut -> drill -> glue -> screw -> plug/sand -> finish; each in order"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using the Kreg jig pocket-hole jig, drill two holes on one of the legs, evenly spaced apart."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" legs but no jig thickness setting stated: searched all steps, materials, description for /setting|thickness|3\\/4.{0,10}(setting|material)/: none; viewed steps[1] image shows a jig in use with no legible setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 1 top + 2 legs match steps; 2 holes x 2 legs = 4 screws/plugs matches materials[1],[2]; (b) legs installed steps[4]; (c) no non-fastener hardware; (d) steps reach finished riser. Finish is consumable (gaps)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ed0ac8b0085bee9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a74ee58d8684861f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/37def0e6e017a4a9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/871b35dbea6bccd6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0e71c986419111d2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Apply paint or stain based on your preference.",
+      "what": "Finish not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "materials[1].name",
+      "quote": "Kreg jig screws",
+      "what": "Screw size never stated in text (viewed steps[2] image shows a box labelled 1\")."
+    }
+  ]
 }

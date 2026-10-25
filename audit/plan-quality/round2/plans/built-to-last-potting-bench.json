@@ -308,35 +308,113 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only reference is to a \"cutting diagram\", which is images in the plan, not an external doc"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all parts cut in steps[0..10] are in the cut list except the Bottom Slats (steps[9]), which the step cuts \"from 5/4 (1\"-thick) deck boards\" = listed materials[3]; sizes missing, see gaps"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 12 rows used: legs steps[0], end rails steps[1], side rails/stretchers steps[3], slats steps[7], risers/shelves steps[10]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] no match among parsed stock; unparsed stock present (materials[3]); cutList[8] no match among parsed stock; unparsed stock present (materials[3]); cutList[9] no match among parsed stock; unparsed stock present (materials[3])"
+      "result": "pass",
+      "reason": "Kreg-corrected rows: 1.5x3.5 parts from 2x4 (materials[0]); Back Legs 1.5x5.5 and Risers 1.5x5.5 from 2x6; Shelf 0.75x9.25 = 1x10 actual 9 1/4 (materials[2]); slats 1x5.5 from 5/4x6 (steps[7] says \"5/4 (1\"-thick\"), width 5.5 <= 6"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "result": "pass",
+      "reason": "steps name stock for every row. 2x4 (5x96=480): legs 2x34.5 + end rails 4x16.5 + side rails 4x44 + top stretchers 2x22.5 + bottom stretchers 2x17.5 = 69+66+176+45+35 = 391, +14 cuts x 1/8 = 392.75 <= 480. 2x6 (2x96=192): 2x60 + 2x9 = 138 + 0.375 <= 192. 1x10 (96): 2x44 = 88 + 0.125 <= 96. 5/4x6 (5x96=480): 3x48 + 44 + 48 = 236 + 0.625 <= 480 (Bottom Slats not in cut list, not counted)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 2 1/2\" (steps[2,4,5,6]) and 1 1/2\" (steps[8,9,11]) screws, both in materials[4],[5]; no conflicting sizes (steps[9] repeats \"1 1/2\" 1 1/2\"\" as a typo)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "end-rail positions given in viewed steps[2] image (5 1/2\" from ends); slat overhang equal (relational); shelf/riser heights on the Back Legs and notch sizes are shown only pictorially (viewed steps[11] and steps[7]/[10] images, no numbers), see gaps"
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Cut three Long Bottom Slats, and one Short Bottom Slat to size from 5/4 (1\"-thick) deck boards, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Step 9 refers to a cutting diagram for the bottom slats. Viewed all 17 images except steps[4] and steps[5] images (assembly steps): steps[9] own image shows the bottom slats installed with no dimensions, the leg diagram (steps[0]) and top-slat diagram (steps[7]) carry no bottom-slat sizes; no cutList row or text gives them."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "22 reference(s), each in a step with its own image"
+      "reason": "legs -> end rails -> ends -> side rails/stretchers -> assemblies -> join -> top slats -> bottom slats -> shelves/risers; each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "With your pocket hole jig set up for 1\" material, drill pocket holes in the Risers"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Cut Two Shelf Risers to length from a 2x6 board"
+        }
+      ],
+      "reason": "Risers are cut from a 2x6 (thickness 1 1/2\"; Kreg-corrected cutList[10] row [1.5, 5.5, 9]) but the jig is set for \"1\" material\". Settings for the other thicknesses are stated (1 1/2\" steps[1,3]; 3/4\" steps[10])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) End/side/stretcher counts match steps (4 end rails = 2+2; 4 side rails; 2+2 stretchers; 2 shelves; 2 risers). (b) every made part installed (steps[2,4,5,6,8,9,11]). (c) no non-fastener hardware used; finish only (gaps). (d) steps end with finished bench. Check: Top Stretchers 22.5 + 2x1.5 = 25.5 = Front Leg 3.5 + Top End Rail 16.5 + Back Leg 5.5."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e80eaec2bdab5cb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/15435c0e76b5038d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7a8b8111d6f7756.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/508696406d7c9110.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/72d426a5975a5aff.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a8d221e78d0fe1b3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/033578778e5f5d5d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/645d379fba4ec825.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/677b478ccf3f54ba.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a7fb82dc4b59dd32.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f314e4572e79b302.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99bc7c7c93a26904.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cd2ef1633859b619.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d63455c36c14ad3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Cut three Long Bottom Slats, and one Short Bottom Slat to size from 5/4 (1\"-thick) deck boards, as shown in the cutting diagram.",
+      "what": "Bottom Slats have no cut-list row and no length/width anywhere in the plan or viewed images; the builder cannot size them. Also the 5/4 stock total for them is unverifiable."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Attach the first Shelf to the Back Legs using 1 1/2\" Blue-Kote™ pocket-hole screws.",
+      "what": "Shelf and riser heights on the Back Legs are not given numerically (shown only in the step image)."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Then cut the notches on the Front Top Slat, as shown.",
+      "what": "Notch size on the Front Top Slat (and on the Shelf ends, steps[10]) is not dimensioned in text or in the viewed images."
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Protect your potting bench with outdoor stain or exterior paint.",
+      "what": "Finish not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

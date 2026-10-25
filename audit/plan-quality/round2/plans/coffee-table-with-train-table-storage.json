@@ -7,34 +7,106 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no external/paid content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] says \"Once pieces are cut to size according to cut list\"; every part named later (Base 45/21/12, Supports, Tabletop surround, plywood bottom, tabletop, stoppers) is a cut-list row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used: Base steps[2],[3] (12\" legs per viewed steps[2] image), Support steps[4], surround steps[1],[6], Tabletop steps[7],[11], Lid stopper steps[7], Train table base steps[5],[9]"
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[4] thinner than stock — would need planing/resawing, not judged"
+      "reason": "cutList[3] Support and cutList[4] Lid stopper are 0.5\" thick, thinner than any listed stock (1x2 = 3/4\"); no step says how they are made (steps[4] calls the Supports \"3/4\"x1-1/2\"x21\"\", see R14). All other rows fit: Base 1.5x1.5 from 2x2; surround/top/base 0.75 parts fit one 48x96 sheet."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, 1x2, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Sheet part: 3/4\" plywood parts total 24x45 + 2x4x43.5 + 2x4x24 + 21x42 = 1080 + 348 + 192 + 882 = 2502 sq in vs 4608 bought (does not exceed, so not a certain fail). Linear stock fits: 2x2 (4x96=384): 4x12 + 4x45 + 4x21 = 312 + 0.1 <= 384; 1x2 (2x96=192): 3x21 + 2x44 = 151 <= 192 (if stock is 1x2)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1-1/4\" (steps[1]) = materials[3]; 2-1/2\" (steps[2],[3]) = materials[4]; 1-1/2\" (steps[6]) = materials[9]; no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "support spacing 12\" and frame/leg dimensions (45\", 12\", 21\") are shown in viewed steps[2]/[3]/[4] images; stoppers/surround positions relational or fixed by the parts"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "sweep stands: \"as illustrated in image\" (steps[2]) has its own image, which shows the frames"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "pieces cut/sanded (0-1), frames (2), joined (3), supports (4), plywood bottom (5), surround attached (6), stoppers (7), paint/landscape (8-10); each exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes into all of the 1-1/2\"x 1-1/2\" pieces for the base, except the 12\" ones"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the 3/4\"x1-1/2\"x21\" boards to the base frame to create a support for the bottom of the tabletop."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" and 3/4\" parts (steps[0],[1]) but no jig thickness setting is stated anywhere (searched steps, materials, description for /setting|jig|thickness/: none). The Support, plywood-bottom (steps[5]) and stopper (steps[7]) joints name no fastener or method."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using 45\" and 21\" pieces of the 1-1/2\"x1-1/2\" boards, create two frames as illustrated in image using 2-1/2\" pocket screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach 1-1/2\"x1-1/2\"x21\" pieces to the frames using 2-1/2\" pocket screws."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the 3/4\"x1-1/2\"x21\" boards to the base frame"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Support x3, 0.5 x 1.5 x 21"
+        }
+      ],
+      "reason": "Step 2 builds both frames from 45\" and 21\" pieces, which would use all four 21\" Base pieces, yet step 3 attaches 21\" pieces again and the 12\" Base pieces (x4) are never named as installed; the viewed steps[2] image shows each frame made from two 45\" and two 12\" pieces. Separately the Supports are 3/4\" thick in steps[4] but 0.5\" in the cut list.",
+      "arithmetic": "Base 21\" x4 (cutList[2]): two frames x 2 x 21\" = 4 used in steps[2]; steps[3] needs 4 more (image shows 4 cross pieces) -> 8 needed vs 4. Support thickness: steps[4] 3/4 vs cutList[3] 0.5."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8988bb38a2bf4b9f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/05af0ac7d3dff854.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/69c0ef39806c2b46.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/803d6d16cf9ec6b9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[4]",
+      "quote": "Lid stopper, quantity 2, 0.5 x 1.5 x 44",
+      "what": "Stopper length 44\" vs the surround box inner length 43.5\" (long pieces 43.5 sit between the 24\" short pieces, outer 45\"): cannot be checked/placed from the text; no step gives its position or fastener."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Using a matte black paint of your choice, paint the base.",
+      "what": "Painted after the plywood bottom is in (steps[5]); order is awkward, not blocking.",
+      "kind": "consumable"
+    }
+  ]
 }

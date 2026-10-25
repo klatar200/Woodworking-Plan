@@ -224,35 +224,71 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only \"cutting diagram\" references (images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] lists Top, Long Bottom, Long Side, Short Side, 2 Horizontal Dividers, Lower and Upper Vertical Divider; steps[2] lists Box Top, Box Bottom, 2 Box Sides, Box Cleat; all are cut-list rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 rows used in steps[0],[2]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep stands (Kreg-corrected): 0.75x5.5 parts from 1x6; 0.75x11.25 box parts from 1x12 (actual 11 1/4); Box Cleat 0.75x2.5 from 1x3"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 1x12, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock (1x6 for outside box, 1x12 for box, 1x3 for cleat). 1x6 (96+48 = 144): 33.5 + 32 + 2x8 + 15.625 + 17.125 + 8 + 8.75 = 131 + 7 cuts x 1/8 = 131.9 <= 144. 1x12 (96): 2x14.5 + 2x16 = 61 + 0.375 <= 96. 1x3 (24): 14.5 <= 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1 1/4\" pocket screws (steps[1],[3]) = materials[4]; #8 x 2\" (steps[1],[4]) = materials[5]; Hangman system = materials[6]; no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "divider/hole positions are dimensioned in the viewed steps[0]/[2] images (e.g. 8\", 15 5/8\", 7 1/4\", 4 1/2\", 1\"); inside-box placement uses the pre-drilled holes as guides (steps[4]); cleat position shown in viewed steps[3] image"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "search": "sweep stands: 7 references each in a step with its own image; steps[5] (no image) has none"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "outside parts (0) -> assembled (1); inside parts (2) -> assembled (3); boxes joined (4); finish/mount (5)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "all pocket-hole parts are 3/4\" thick; steps[0],[2] set the jig for 3/4\" material"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts/sizes match the viewed steps[0] diagram (33 1/2\", 32\", 15 5/8\", 17 1/8\", 8\", 8 3/4\"); Box Cleat 14 1/2\" = inner box width 14 1/2\" (Box Top). (b) all parts installed (cleat shown in viewed steps[3] image). (c) Hangman system in materials[6]; no other hardware. (d) reaches mounted shelf; finish is consumable (gaps)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c6661db48281b074.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c29c97e0903cc170.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ce501ae86e5f2ef5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf12ba6973ea9c14.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "you can apply the stain or paint of your choice",
+      "what": "Stain/paint not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Assemble the inside box using 1 1/4\" Pocket Hole Screws, as shown.",
+      "what": "Text never mentions the Box Cleat (cut in steps[2]); it is shown installed in the viewed steps[3] image."
+    }
+  ]
 }

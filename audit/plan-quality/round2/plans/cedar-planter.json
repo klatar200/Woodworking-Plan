@@ -200,35 +200,98 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only \"cutting diagram\" references (images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part cut in steps[0..13] (Side Slats, Legs, Bottom Rails, End Slats, Long/Short Top Trim, Edge Trim, Bottom Slats) is a cut-list row; steps[7] calls the End Slats \"Side Slats\" (see gaps)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used (steps[0],[2],[3],[6],[9],[12],[13])"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Kreg-corrected: slats 0.75x5.5 from 1x6; Legs 3.5 sq from 4x4; Bottom Rails 1.5x3.5 from 2x4; Top Trim 1.5x5.5 from 2x6; Edge Trim 0.75x1.5 from 1x2 (actual 3/4 x 1 1/2)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x2, 1x6, 2x4, 2x6, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name stock per part. 1x6 (4x96=384): 6x25 + 6x26.5 = 150+159 = 309 (+ 3x18 = 363 if Bottom Slats were 1x6) + 12 cuts x 1/8 = 364.5 <= 384. 2x6 (2x96=192): 2x29.5 + 2x18.5 + 3x18 = 59+37+54 = 150 + 1 <= 192. 2x4 (96): 4x18 = 72.4. 4x4 (96): 4x21 = 84.4. 1x2 (2x96=192): 8x16.5 = 132 + 0.9 <= 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used (1 1/4\" pocket screws, 2 1/2\" pocket screws, 1 1/4\" brad nails) all in materials[5..7]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "rail/panel/leg positions shown in viewed steps[4],[5],[7],[11] images (panels flush at leg tops, rail at the foot); overhang equal on all sides, gaps \"consistent\" relational; body arithmetic: 18 + 2x3.5 = 25 = Side Slat length; End Slat 26.5 = 25 + 2x0.75; trim 29.5 = 18.5 + 2x5.5"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "22 reference(s), each in a step with its own image"
+      "search": "sweep stands: 22 references each in a step with its own image; viewed images show the referenced assemblies"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "slat panels, legs, rails built (0-3); side assemblies (4) then joined (5); end panels (6-7) attached (8); top trim made/joined (9-10) then attached (11); edging (12); bottom slats last (13-14)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Note that the pocket holes at the upper end are drilled with your pocket-hole jig set up for 1 1/2\" material."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut four Legs to length from a 4x4 board"
+        }
+      ],
+      "reason": "Legs are 4x4 (3 1/2\" thick, Kreg-corrected cutList[1] [3.5, 3.5, 21]) but the stated jig settings for pocket holes in the Legs are 1 1/2\" and 3/4\". Settings for the other parts (3/4\" slats, 1 1/2\" rails/trim) are stated."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Bottom Slats, qty 3, Kreg source 3/4\" x 5 1/2\" x 18\""
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Cut three Bottom Slats to length from a 2x6 board, as shown in the cutting diagram. With your pocket-hole jig set up for 1 1/2\"-thick material"
+        }
+      ],
+      "reason": "The Bottom Slats row is 3/4\" thick but step 13 cuts them from a 2x6 (1 1/2\" thick) and sets the jig for 1 1/2\" material; the two cannot both be right.",
+      "arithmetic": "cutList[7] thickness 0.75 (source \"3/4\\\" x 5 1/2\\\" x 18\\\"\") vs 2x6 actual thickness 1.5 (§9) and step \"1 1/2\\\"-thick material\""
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e0d1c915f338f6b0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ce9682e54b7c357d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/910bca13005062a4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fafcebcdbbc37d7b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Create two end panels by joining Side Slats together as shown",
+      "what": "Names Side Slats; the End Slats (cut in steps[6]) are meant. Counts: 6 Side Slats are already used in steps[1]."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "attaching the other two Bottom Rails using glue and 2 1/2\" exterior-rated pocket-hole screws",
+      "what": "Glue (steps[5],[8]) is not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

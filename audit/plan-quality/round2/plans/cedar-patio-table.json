@@ -152,35 +152,97 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only \"cutting diagram\" references (images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0..6] cut End Rails 2, Side Rails 2 + Center Rail 1, Legs 4, Top Slats 9 + End Top Slats 2: all match cut-list rows and quantities"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used in steps[0],[1],[2],[6]"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] no match among parsed stock; unparsed stock present (materials[0]); cutList[5] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "reason": "Kreg-corrected: rails 1.5x3.5 from 2x4 (materials[1]); Leg 3.5x3.5 from 4x4 (materials[2]); slats 1x5.5 from 5/4x6 (steps[6] \"5/4 x 6\\\" cedar deck boards\"), width <= 6"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "reason": "steps name stock for End Rails (2x4), Legs (4x4), slats (5/4x6); Side/Center Rails 1.5x3.5 match only the 2x4. 2x4 (3x96=288): 2x23 + 3x53.5 = 46+160.5 = 206.5 + 4 cuts x 1/8 <= 288. 4x4 (2x96=192): 4x30 = 120 + 0.375 <= 192. 5/4x6 (4x96=384): 11x30 = 330 + 1.25 <= 384."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "attach these two Slats using 1 1/2\" S Blue-Kote™ Pocket-Hole Screws"
+        },
+        {
+          "path": "images (viewed, step 7 image 0bba37b716db596a)",
+          "quote": "label in diagram: \"Third: Attach all Slats using 1 1/4\" Pocket-Hole Screws\""
+        }
+      ],
+      "reason": "The slat screws are 1 1/2\" in the step text and materials[3] but the step-7 diagram label gives 1 1/4\" for the same use; no 1 1/4\" screw is in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "rail/leg positions shown in viewed steps[4] image (rails flush at leg tops, \"10 3/8\"\" between rails), slat edge-hole spacing 3 1/2\"/2\" shown in steps[1] image, end-slat notch 3 5/8\" x 3 5/8\" shown in steps[6] image; gap around legs \"consistent\" relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "11 reference(s), each in a step with its own image"
+      "search": "sweep stands: 11 references each in a step with its own image; viewed steps[1],[4],[6],[7] images show the referenced layouts"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "rails, legs and slats cut/drilled (steps[0..2],[6]); end assemblies (3), rails joined (4), second end (5), slats last (7)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Set your Kreg® Pocket-Hole Jig and drill bit for 3/4\" material, and then drill pocket holes along one edge of each End Rail"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Set your Kreg® Pocket-Hole Jig and drill bit for 1\" material, and then drill pocket holes along one edge of each Rail"
+        }
+      ],
+      "reason": "Edge holes for attaching the Top Slats get a 3/4\" setting on the End Rails but a 1\" setting on the Side/Center Rails (same use, same 1 1/2\" thick stock). 1 1/2\" settings for rail ends are stated in both steps."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match; length check: Side Rail 53.5 + 2x3.5 legs = 60.5 = 11 slats x 5.5 (9 Top + 2 End); width: End Rail 23 + 2x3.5 = 30 = slat length. (b) all parts installed. (c) no non-fastener hardware; glue in materials[5]; stain is consumable (gaps). (d) reaches finished table"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be079bd70d6a8bec.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d06e1fe5868a6f37.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/314cd3b788c22b7d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0bba37b716db596a.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "go ahead and apply the stain to the completed base assembly now",
+      "what": "Stain/finish not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "drill holes in the ends of the Side Rails",
+      "what": "Text omits the Center Rail ends (it also gets end pocket holes, shown in the viewed steps[1] diagram \"Side/Center Rail (make three)\")."
+    }
+  ]
 }

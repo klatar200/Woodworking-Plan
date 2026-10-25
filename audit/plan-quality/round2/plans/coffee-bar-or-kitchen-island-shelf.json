@@ -80,35 +80,70 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only brand names (Miss Mustard Seed) as finish, not needed content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[0] lists every cut (4 @ 38\", 2+2 @ 16\"/12\" of 2.5\" and 1.5\" stock, 10 @ 12\"), all in the cut list; steps[1],[2],[3] use them"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used; Short Top Board (1 1/2 x 12) is cut in steps[0] and shown installed at the top in the viewed steps[2] image, see gaps"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[5] no match among parsed stock; unparsed stock present (materials[1])"
+      "result": "pass",
+      "reason": "steps[0] states the stock widths (2\" x 8', 2.5\" x 6', 1.5\" x 6', 3.5\" x 12') and \"all 1\" lumber measures 3/4\"\": Legs 0.75x1.75 from the 2\" board (the Tip trims its edges), 1.5/2.5/3.5-wide parts from the matching boards; names in materials[1..3] (\"1x1 1/2\", \"1x2 1/2\", \"1x3 1/2\") carry the same widths"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "result": "pass",
+      "reason": "steps[0] names the stock per part. 2\" x 8' (2x96=192): 4x38 = 152 + 2 cuts x 1/8 <= 192. 1.5\" x 6' (72): 2x16 + 2x12 = 56 + 0.375 <= 72. 2.5\" x 6' (72): 56 + 0.375 <= 72. 3.5\" x 12' (144): 10x12 = 120 + 9 x 1/8 = 121.1 <= 144."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is 1 1/4\" pocket-hole screws (steps[1],[2],[3]) = materials[5]; no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "bottom rail \"12\" from the bottom up\" (steps[1]); shelf-board gap 1/4\" (steps[3]); top rail at the top and overall dims 19 1/2\", 12\", 38\" shown in viewed steps[0]/[1] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "steps[3] \"see image for reference\" has its own image (viewed b88f2b544673369b shows the bottom shelf boards)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut (0) -> leg frames (1) -> side boards join frames (2) -> shelf boards (3) -> finish (4); each part exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "all pocket-hole parts are 3/4\" thick; steps[1] \"drill 3/4\" pocket holes\", steps[2],[3] \"Kreg Jig for 3/4\" material\""
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match steps[0]: 4 legs, 2+2 @ 16\", 2+2 @ 12\", 10 shelf boards = 5 per shelf; width check 5x3.5 + 4x0.25 = 18.5 within 19 1/2\" shown in the steps[0] image. (b) parts installed (steps[1],[2],[3]; Short Top Board per image only, see gaps). (c) no hardware other than screws; glue/paint/wax/brush/sandpaper in materials. (d) reaches finished shelf"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9a36bcf4ef0ab1e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb27bfb69480edea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ac118c9dd7a36e00.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b88f2b544673369b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Attach 2 1/2 x 12\"s to the leg frames using 1 1/4\" pocket screws.",
+      "what": "Text attaches only the 2 1/2 x 12 pieces; the two 1 1/2 x 12 Short Top Boards cut in steps[0] are never named in any step text (viewed steps[2] image shows them across the top)."
+    },
+    {
+      "path": "description",
+      "quote": "This shelf is 38″ high by 13″ wide",
+      "what": "Width 13\" does not match 12\" short boards + 2 x 3/4\" leg thickness = 13.5\"; not a step or cut-list value, noted only."
+    }
+  ]
 }

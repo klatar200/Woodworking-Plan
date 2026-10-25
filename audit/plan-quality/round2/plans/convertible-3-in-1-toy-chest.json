@@ -92,38 +92,92 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no external/paid content"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name sides, front panel, base, lid, fixed back board, backrest, armrests/supports; all are cut-list rows (Backrest = \"Bench Rest/ Table Top\")"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used in steps[0..4]"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "nominalRows": [
-        "cutList[6]",
-        "cutList[7]"
-      ]
+      "reason": "sweep stands: plywood parts max 16.5x27 fit one 48x96 sheet; Arm Rest/Support are 1x2 nominal rows"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x2); steps not checked for per-part stock"
+      "reason": "Sheet part: 3/4\" plywood parts total 2x13.25x18 + 2x13.25x23.5 + 16.5x23.5 + 2x25 + 16x25 + 11x27 = 477 + 622.75 + 387.75 + 50 + 400 + 297 = 2234.5 sq in vs 4608 bought (not exceeded, so not a certain fail). 1x2 (96): 2x20.25 + 2x13.25 = 67 + 0.375 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Now assemble using pocket screws the base of the toy box."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "attach Armrest and support legs to the backrest."
+        }
+      ],
+      "reason": "The steps join parts with pocket screws (steps[0]) and name no fastener for the lid, backrest and armrest joints (steps[1],[3]), but materials[0..7] list no wood screws of any size; searched materials for /screw|nail|glue|bolt/: only the 1/4-28 x 2 hex cap screw and eye bolts. The hex cap screw also needs its own nut (steps[4] \"the nut inside the toy box\"), only the eye bolts are listed \"with nut\"."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "key dimensions shown numerically in viewed images: box 23 1/2 x 16 1/2 x 13 1/4 x 18 (steps[0]), lid 25 x 16 and back board 25 x 2 (steps[1]), arm positions 5\" and 4\" from the bottom of the backrest (steps[3]), pivot hole 5 3/32\" (steps[4]); hinges flush with the fixed board (relational); lip/handle-notch sizes and eye-bolt hole position are shown pictorially only, see gaps"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no \"as shown\"/diagram references in any step"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "box (0) -> lid (1) -> backrest (2) -> arms/supports on backrest (3) -> mount to box (4); each part exists before use"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Now assemble using pocket screws the base of the toy box."
+        }
+      ],
+      "reason": "Pocket-hole joints in 3/4\" plywood but no jig thickness setting stated (searched steps, materials, description for /setting|jig|thickness/: none; viewed steps[0] image shows none). Lid, backrest and arm joints name no method or fastener."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match steps (2 sides, front/back, 2 arm rests, 2 supports). (b) every made part installed (steps[0],[1],[3],[4]). (c) hinges and eye bolt/hex cap screw hardware in materials; no unlisted non-fastener hardware used in steps. (d) reaches the bench/table; unused listed hardware under gaps"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/97f466a555ca4f89.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/075f5fd9e27a262e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b906fe024af4f6d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4cea80d432ecae21.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "Universal lid support",
+      "what": "Lid support and the 2 magnetic catches (materials[7]) are listed but no step installs them."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Using a jigsaw cut the lip into the 2 sides and front panel boards.",
+      "what": "Lip and handle-notch size/position are not dimensioned in text or the viewed steps[0] image (shape only); eye-bolt hole position (steps[4]) likewise."
+    }
+  ]
 }

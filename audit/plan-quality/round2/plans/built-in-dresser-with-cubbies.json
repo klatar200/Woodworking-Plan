@@ -452,34 +452,126 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no reference to full plans/PDF/external page in any field"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0..9] matched to cutList.part (Base Middle Supports, Dresser Bottom/Sides/Dividers/Top, drawer parts, Cubby parts); baseboard is in materials[4]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 18 rows used: Cubby Dividers 3 (steps[6]) + 4 (steps[7]) = 7; Drawer Faces used in steps[4] (named there \"Skinny Drawer Face\", see R14)"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[10] no match among parsed stock; unparsed stock present (materials[3], materials[4])"
+      "result": "pass",
+      "reason": "3/4 parts fit 3/4 plywood sheet (max 15.5x62.25 < 48x96); 1/4 bottoms 14.5x28.625 fit 1/4 sheet; 1.5x3.5 base parts match materials[2]; Dresser Top 1.5x16.5x62.25 from butcher block 6' or two glued 3/4 ply (steps[2])"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3], materials[4]"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 4' x 8' x 3/4\""
+        },
+        {
+          "path": "materials[0].quantity",
+          "quote": "3"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Drawer Sides, qty 16, 3/4 x 5(.5) x 14(.5)"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Drawer Front/Back, qty 16"
+        }
+      ],
+      "reason": "All 3/4\" thick parts match exactly one listed material (3/4\" plywood; no other listed stock is 3/4\" thick) and their total area exceeds the 3 sheets bought. Dresser Top excluded (butcher block / extra sheet).",
+      "arithmetic": "Kreg-corrected areas (qty x width x length, sq in): 4x3.5x14.5=203 + 4x3.5x27.125=379.75 + 2x4.25x29.25=248.6 + 16x5.5x14.5=1276 + 16x5.5x27.125=2387 + 8x6.25x29.25=1462.5 + 15.5x62.25=964.9 + 2x15.5x30.75=953.25 + 2x15.5x30.75=953.25 + 2x15.5x46.75=1449.25 + 15.5x62.25=964.9 + 15.5x60.75=941.6 + 2x15.5x33=1023 + 7x13x15.5=1410.5 = 14617.5 sq in. Bought 3 x 48 x 96 = 13824. Shortfall 793.5 sq in (single-use qty 1 rows confirmed by steps, not import defaults)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only sizes used: 1 1/4\" pocket screws (materials[5]) and 1\" brad nails (materials[8]); step 1 \"nails\" unsized but only nail listed; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "drawer-slide gaps given (1/4\"), cubby divider spacing 13\" and ~16 1/4\" given (check: 62.25-1.5-26-3x0.75=32.5, /2=16.25); side-cubby shelf heights shown in viewed steps[7] image (two shelves per side); rest relational (flush/centered/evenly)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no \"as shown\"/diagram references in any step"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base -> body -> top -> drawers -> cubby unit -> mount to top; each part exists before use; 3+4 cubby dividers; nothing fastened that a later step must undo"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes on each 3 1/2\" end of the Base Middle Supports."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Drill two pocket holes in each 3 1/2\" end of the Skinny Drawer Fronts/Backs."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" and 1 1/2\" stock but no jig thickness setting is stated; searched all steps, materials, summary, description for /jig|setting|thickness setting/ (only tool slug pocket-hole-jig). Two viewed images (steps[1], steps[7]) show no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Ensure the unit is attach to the studs in the wall for safety purposes, using brackets."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "attach a Skinny Drawer Face to the front of the drawer box, flush along the bottom and centered on the drawer."
+        }
+      ],
+      "reason": "Brackets (hardware) are used in steps[8] but searched materials[0..9] for /bracket/i: none. Also steps[4] tells the builder to attach a \"Skinny Drawer Face\" to each of the eight regular drawers, but the cut list has only 2 Skinny Drawer Faces (the 8 regular ones are \"Drawer Faces\")."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d8dde3ffdebd22d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2db27092fe04327.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[7].name",
+      "quote": "Drawer pulls of choice",
+      "what": "Drawer pulls are bought (qty 10) but no step installs them and no position is given."
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Add a mirror up to 28\" in diameter between the cubbies.",
+      "what": "Mirror and its mounting are not in materials; step is an optional accessory step."
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Baseboard, 6\"",
+      "what": "Baseboard length is not stated (dresser front is 62 1/4\"); quantity 1 may be an import default."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "using brackets",
+      "what": "No fasteners for mounting brackets to studs are listed or sized."
+    }
+  ]
 }

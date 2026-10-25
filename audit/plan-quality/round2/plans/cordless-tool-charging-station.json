@@ -128,35 +128,90 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; only \"cutting diagram\" references (images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "every part cut in steps[0..10] (Top Shelf, Trim, Top Rail, Middle Shelf, Bottom Shelf + Trim, Bottom Rail, 2 Sides) is a cut-list row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows used (steps[0],[1],[2],[4],[6],[8],[10])"
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "sweep stands (Kreg-corrected): 3.5 wide from 1x4, 1.5 from 1x2, 5.5 from 1x6, 7.25 from 1x8; steps name the board for each part"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x2, 1x3, 1x4, 1x6, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "1x4 (24): 16 <= 24. 1x2 (48): 16 + 17.5 = 33.5 + 0.125 <= 48. 1x6 (48): 2x16 = 32 + 0.125 <= 48. 1x8 (96): 16 + 16 + 2x26.5 = 85 + 3 x 1/8 = 85.4 <= 96. (1x3 x 48 in materials[1] has no part, see gaps.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1 1/4\" coarse-thread pocket screws (all assembly steps) = materials[5]; \"3\" screws\" (steps[13]) = materials[6]; no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "hole and cutout positions dimensioned in viewed steps[4]/[6] images (3\", 8\", 2 1/4\", 2 3/4\", 7 1/4\"); trim overhang 3/4\" in steps[7]; assembly positions shown in viewed steps[11]/[12] images; stud/anchor wall position is the builder's"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "27 reference(s), each in a step with its own image"
+      "search": "sweep stands: 27 references each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "shelf/rail sub-assemblies (0-9), sides cut (10), final assembly (11-13); each exists before use"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "all pocket-hole parts are 3/4\" thick; steps[0] sets the jig for 3/4\"-thick material"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "If you can’t locate the station over a stud, use medium- or heavy-duty wall anchors."
+        }
+      ],
+      "reason": "Wall anchors (hardware) are called for as the mounting alternative to the 3\" stud screws but are not in materials; searched materials[0..6] for /anchor|toggle|molly/i: none. (Conditional on the wall, so likely not certain.)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-29",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0a5509a88bace3d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d55a2f698b3218e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c8e408664dbc0d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83a865ee8ed9f044.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "drill a half-circle cutout along the back edge of the Middle Shelf using a 2 1/2\" hole saw",
+      "what": "Step is about the Bottom Shelf; the viewed steps[6] image shows the cutout on the Bottom Shelf, so \"Middle Shelf\" looks like a wrong name."
+    },
+    {
+      "path": "materials[1].name",
+      "quote": "Pine board, 1x3 x 48\"",
+      "what": "No cut-list row or step uses a 1x3 (no part is 2 1/2\" wide); searched cutList and steps for /1x3|2 1\\/2\" wide/."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Then you can mount a power strip to the backside of the Bottom Rail.",
+      "what": "Optional power strip not in materials (optional)."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "We wiped on a couple coats of oil finish.",
+      "what": "Finish not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }
