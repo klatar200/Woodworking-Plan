@@ -164,35 +164,57 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame parts, shelves, dividers all have cut rows. The two 10 1/4\" spacers (steps[5].body: \"Cut two 10 1/4\"-long spacers from 2x2 boards\") are temporary jigs cut from listed 2x2 stock, so a cut row is not required."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All seven cut rows (Leg, Long Rail, Short Rail, Top and Bottom Shelf, Middle Shelf, Shelf Divider, Top Shelf Divider) are used in steps 0-7."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows 1 1/2 x 1 1/2 (2x2) and 3/4 x 9 1/4 (1x10) match section 9 nominal sizes of listed boards."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x10); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (2x2 step 0 and spacers step 5; 1x10 step 2). 2x2 (4x96=384): 4x37.5 + 4x32 + 4x9.25 + 2x10.25 spacers = 150+128+37+20.5 = 335.5 + ~14 cuts x 1/8 = 337.25 <= 384. 1x10 (2x72 + 48 = 192): 4x35 + 2x10.25 + 11 = 140+20.5+11 = 171.5 + 7 cuts x 1/8 = 172.4 <= 192; 72\" boards each hold 2x35 (70.125 <= 72)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes used in steps (1 1/4\" and 2 1/2\" coarse-thread Kreg pocket-hole screws; optional plugs) are all listed in materials; no conflicting sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Lower long rail 2 1/4\" up (steps[1].body); bottom shelf flush with long rail top and top shelf flush with long rail upper face (viewed step 4 and 6 images); middle shelf positions set by 10 1/4\" spacers; divider offset 11 1/2\" and top divider 11 1/2\"/11\" shown in viewed step 5 and 6 images; shelf leg setback 1 1/2\" shown in step 4 image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "14 reference(s), each in a step with its own image"
+      "search": "14 'as shown'/'cutting diagram' references, each in a step with its own image; viewed steps 4,5,6 images show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames assembled (1), shelves and dividers made (2), short rails attached to shelves (3), bottom shelf onto first frame (4), middle shelves on spacers (5), top shelf (6), second frame last (7); each part exists before use."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "steps[0].body sets the jig for 1 1/2\"-thick material (rails) and then \"set your Pocket-Hole Jig (and bit) for 3/4\"-thick material. Then drill pocket holes centered on one side of each of the Short Rails\"; Short Rails are 1 1/2\" x 1 1/2\" (corrected row), so the 3/4\" setting is used on 1 1/2\" stock. Whether this is intended (screws go into 3/4\" shelf) needs outside knowledge; recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts (four Long Rails, four Legs, four Short Rails; four Shelves, two Shelf Dividers, one Top Shelf Divider) match cut rows; 10 1/4\" spacer = Shelf Divider 10 1/4\" row; heights add: bottom shelf top 3.75 + 10.25 spacer + 0.75 shelf, x2, then 11\" gap to top shelf underside (37.5 - 0.75) agrees with 11\" Top Shelf Divider. (b) all parts installed. (c) no hardware beyond fasteners/glue. (d) ends with second frame attached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8cd4b3354ac76f32.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/02c63d03b8230dd1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c8b88798a3e13013.webp"
+    ]
+  }
 }

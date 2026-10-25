@@ -32,35 +32,75 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; only hit is 'signmaking template' (steps[0], steps[1]), a physical router template/guide kit used with the router, not downloadable content; see gaps."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only part cut, the sign board (steps[0]), is cutList[0] Sign."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0] Sign is the board cut in steps[0] and used in steps 1-6."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected row 3/4 x 5 1/2 x 24 1/2 vs materials[0] 3/4\" thick project board (import S-19: thickness 0.75, width imported 5 vs 5 1/2, length imported 24 vs 24 1/2; cause import)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Single stock type; steps[0] names it: \"cut my 36\" project board to length\". Part 24.5 (corrected) + 1 cut x 1/8 = 24.625 <= 1 x 36 = 36."
     },
     "R6": {
-      "result": "to-read"
+      "result": "n/a",
+      "reason": "No fasteners in steps or materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Letter positions are fixed by the template laid on the board and the name length (steps[0]); edge routing and finishes need no positions.",
+      "search": "steps vs placement words; viewed steps[1] image (photo of finished lettered board, mitre saw, router, template guide box)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "steps[1] 'The box shows the template guides' has its own image; viewed: it shows a box of template guides."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut to length (0), rout letters (1), rout edge (2), sand (3), stain (4), paint (5), clearcoat (6); each follows from the previous."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[0] \"24.5\\\"\" equals corrected cutList[0] length 24 1/2 (live 24 is S-19, cause import); (b) the one part is made and finished; (c) no hardware used; tape and sandpaper are consumables (gaps); (d) steps end with the clear-coated sign."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/025a77e8e39893eb.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "I laid out the signmaking template across my board to see how long the name was, in this case \"Alexanders\" wound up being 24.5\".",
+      "what": "The build needs a physical signmaking template and template guides (steps[0], steps[1]) that appear in neither materials nor tools; and the cut length (24 1/2) is specific to the example name, with no way given to compute it for another name beyond laying out the template."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "What works better is double sided carpet tape, strategically placed on the first and last guides",
+      "what": "Double-sided carpet tape and painter's tape are not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "I started with a lower grit sandpaper and worked up to 400 grit",
+      "what": "Sandpaper is not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

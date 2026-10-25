@@ -7,35 +7,132 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs and Braces are cut in steps 0-1 and have rows; Table Top is the purchased slab (materials[1]) with a row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, Braces and Table Top are all used (steps 0-1, 10)."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[2] no match among parsed stock; unparsed stock present (materials[1])"
+      "reason": "Table Top row (2 x 12 x 48) cannot be matched: materials[1] \"Monkeypod Slab, Choose Table Top Size 48\"\" gives no thickness or width. Leg/Brace rows (2 x 4) are the nominal 2x4 size of materials[0]; no import diff recorded."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0]",
+          "quote": "Board, 2x4 96\" (quantity 1)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut your (4) 2x4 legs to 28.5 inches."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Here you will cut (4) 2x4 braces at 9 inches each."
+        }
+      ],
+      "arithmetic": "Steps name 2x4 stock for every part cut. Legs 4 x 28.5 = 114; braces 4 x 9 = 36; total 150 (+ 7 cuts x 1/8 = 0.875 = 150.875) vs bought 1 x 96 = 96. The four legs alone (114) exceed one board by 18. Shortfall 54.875 is not kerf-only. Material quantity is Kreg's own value (plan not among the 8 plans with defaulted quantities).",
+      "reason": "Materials list one 96\" 2x4 but the legs and braces need 150\" of 2x4."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[5] \"Since ours was 1.25 inches wide, that is the length of screws we used\" matches materials[2] 1.25\" Kreg screws; steps[10] 2\" screws match materials[5] 2\" countersunk screws; no conflicting sizes for one use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "We used (4) 2\" screws in each leg in a staggered pattern. The staggered pattern allows for weight distribution."
+        },
+        {
+          "path": "steps[10].title",
+          "quote": "Attach Legs to Table Top"
+        }
+      ],
+      "reason": "Where the four leg assemblies sit on the slab (inset from ends/edges, spacing) is never given as a number; the viewed step 10 image is a close-up photo of one leg on the slab with no measurement, and no other step or image locates the legs. Search: steps, description, summary for /inch|from the (end|edge)|inset|spacing/ in steps 10-11 found none."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "search": "'as shown' / 'Picture for reference' references (steps 0, 6, 11) each in a step with its own image; viewed step 6 image shows the brace flush on leg edges."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs and braces cut (0-1), holes drilled (3-4), braces joined to legs (6-8), sanded (9), legs attached to top (10); each part exists before use. steps[11] countersink order noted in gaps."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "You will set your board thickness on your Pocket Hole system to your board thickness. Ours here was 1.25 inches thick."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Braces: thicknessIn 2, widthIn 4, lengthIn 9"
+        }
+      ],
+      "reason": "Braces that get the pocket holes are 2x4 (cut list thickness 2; section 9 actual 1 1/2) but the only stated setting is 1.25\". Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "We used (4) 2\" screws in each leg in a staggered pattern."
+        },
+        {
+          "path": "materials[5]",
+          "quote": "2\" Countersunk Screws (quantity 8)"
+        }
+      ],
+      "arithmetic": "(a) steps[10]: 4 screws per leg x 4 legs (cutList[0] Legs quantity 4) = 16 screws needed; materials[5] quantity = 8. Other counts agree: 4 braces x 4 pocket holes (steps[3]: 'Each brace should have 4 holes') = 16 = materials[2] quantity 16.",
+      "reason": "Fastener count in materials is half of what the step uses. (b)(c)(d) otherwise satisfied: braces and legs installed, no non-fastener hardware used."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c019412ffa24c9c0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4ed5098f51a702e6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Countersink the holes just deep enough to allow the head of the screw to sit flush.",
+      "what": "Countersinking the table-top screw holes is placed after steps[10] already attaches the legs with those screws (though it says 'During this step'); order of drilling/countersinking vs driving screws is unclear."
+    },
+    {
+      "path": "materials[1].name",
+      "quote": "Monkeypod Slab, Choose Table Top Size 48\"",
+      "what": "Slab thickness and width are not given in materials or steps, yet cutList[2] gives 2 x 12 x 48."
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Paint (color of choice)",
+      "what": "Paint is listed but no step applies it (searched steps for /paint|stain|finish/i, none), kind consumable.",
+      "kind": "consumable"
+    }
+  ]
 }

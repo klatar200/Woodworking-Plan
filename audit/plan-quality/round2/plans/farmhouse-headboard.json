@@ -200,35 +200,120 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit ('Cutting Diagram' is in the plan's images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps 0, 2, 5, 7 (inner rails/stiles, long and short braces, outer rails, legs, lower/upper cap, back panels) has a cut row; no uncut part is used."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All ten cut rows are cut and installed in steps 0-7."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows: 3/4 x 3 1/2 (1x4), 1 1/2 x 3 1/2 (2x4), 1 1/2 x 5 1/2 (2x6), 3/16 beadboard sheet 30 x 36 fits 48 x 96; Long Brace row 3/4 x 1 1/2 can be ripped from 1x4 (see gaps)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x6, 2x4, 1x4, sheet-0.1875); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x4 x 96\" (quantity 1)"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x4 x 72\" (quantity 1)"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 2x4 x 96\" (quantity 1)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "cut two Inner Rails and two Inner Stiles to length from 1x4 boards"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "cut two one Upper Outer Rail and one Lower Outer Rail to length from 2x4 boards"
+        }
+      ],
+      "arithmetic": "Stock is named for every part (steps 0, 2, 5, 7; Legs 1 1/2 x 5 1/2 match only 2x6 materials[0]). 1x4 (Kreg-corrected): Inner Rail 2 x 46 = 92 + Inner Stile 2 x 30.75 = 61.5 + Short Brace 2 x 25 = 50 + Long Brace 51.625 + Lower Cap 66 = 321.125 (+ ~7 cuts x 1/8) vs bought 96 + 72 = 168; short by 153.1. 2x4: Upper Outer Rail 53 + Lower Outer Rail 53 = 106 (+ 1/8 = 106.125) vs bought 1 x 96 = 96; short by 10.1. 2x6: 2 x 57.75 + 68 = 183.5 <= 3 x 96 = 288 (ok). Sheet: 2 x 30 x 36 = 2160 sq in <= 48 x 96 = 4608 (ok). Material quantities are Kreg's own (plan not among the 8 with defaulted quantities).",
+      "reason": "1x4 and 2x4 materials are far short of the cut list; 2x6 is over-supplied."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1-1/4\" Kreg pocket screws (steps 1, 4, 6), 2 1/2\" Kreg (step 3), 1-1/4\" flathead wood screws (step 5) and 5/8\" flathead wood screws (step 7) all appear in materials[5]-[8]; no conflicting sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Rail spacing 30 3/4\" and brace lengths/angles (51 5/8\", 25\", 23 1/2\", 47\") shown in viewed step 3 and step 0 images; caps centered; panels meet at the X center; inner frame flush with rear faces.",
+      "search": "viewed steps[3], [0] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "10 reference(s), each in a step with its own image"
+      "search": "'Cutting Diagram' / 'as shown' references (steps 0, 2, 3, 5, 7) each in a step with its own image; viewed steps 0 and 3 images show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Inner frame (0-1) and outer frame (2-3) built separately, joined (4), cap assembly built (5) and attached (6), back panels last (7)."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "steps[2].body sets 3/4\" ('With Your Kreg Jig still set up for 3/4\"-thick material, drill a single pocket hole in the end of each Leg ... Also drill pocket holes along one edge of the Upper Outer Rail') while the Kreg-corrected rows give Legs and Upper Outer Rail 1 1/2\" thick; the step text calls the legs 1x6. Whether the 3/4\" setting is intended on 1 1/2\" parts needs outside knowledge; recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Also cut two Legs to length from 1x6 boards."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Leg: quantity 2, thicknessIn 1, widthIn 5, lengthIn 57 (Kreg-corrected 1 1/2 x 5 1/2 x 57 3/4)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x6 x 96\""
+        }
+      ],
+      "arithmetic": "(a) steps[2] sizes the Legs from 1x6 (3/4 thick) but Kreg's cut row is 1 1/2 thick x 5 1/2 and materials contain only 2x6 (1 1/2 x 5 1/2), no 1x6; search materials for /1x6/ found none.",
+      "reason": "Step names stock that is not listed and contradicts the leg row's thickness. (b) all parts installed; (c) no non-fastener hardware; (d) steps end with panels fitted and finish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/436441266e413ea6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f89b6b1be58404de.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3]",
+      "quote": "Long Brace: thicknessIn 0.75, widthIn 1, lengthIn 51 (Kreg-corrected 3/4 x 1 1/2 x 51 5/8)",
+      "what": "The Long Brace row is 1 1/2 wide but the viewed step 0 image draws it the same width as the 3 1/2\" Short Braces and no step says to rip it; width in the row looks inconsistent with the drawing."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "We created a worn look for ours. First, we applied a coat of gray stain, and then added off-white paint after the stain dried. Then we sanded some areas by hand with 120-grit sandpaper",
+      "what": "Stain, paint and sandpaper are not in materials (optional finish).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Then assemble the rails and braces using 1-1/4\" Kreg Pocket-Hole Screws.",
+      "what": "Wood glue is used in step 3 ('spread glue on the ends of the Rails') but is not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

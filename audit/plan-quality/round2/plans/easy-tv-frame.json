@@ -32,35 +32,79 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut in steps (top and bottom pieces, sides) match the two cut rows; grooves are machined in those parts; elastic is a listed material."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both cut rows (Top & Bottom, Sides) are cut and assembled in steps 0, 1 and 4."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows 3/4 x 1.5 x 67 7/8 and 39 1/4 come from the listed .75\" x 1.5\" x 96\" trim."
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 2×67.875 + 2×39.25 + kerf 0 cuts (4 parts − 4 boards, the fewest possible)×1/8 = 214.250″; bought: 4×96 = 384″; 214.250 ≤ 384"
+      "reason": "Single stock type: 2x67.875 + 2x39.25 = 214.25 (+ kerf 4 cuts x 1/8 = 0.5) <= 4x96 = 384; each part fits one 96\" board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fastener in steps is steps[4].body \"1 1/4\" pocket screws\", listed as materials[1] \"Kreg Pocket screws 1 1/4\"\"; staples listed (no size given in steps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Groove size shown in viewed step 2 image (1/4\" deep, 1/2\" tall on back bottom of trim); pocket-hole corners shown in viewed step 4 image; elastic strip positions shown in viewed step 5 image (two vertical straps near each side). Sensor notch is conditional on the TV.",
+      "search": "viewed steps[2], [4], [5] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "search": "4 'as shown in the picture' references, each in a step with its own image; viewed steps 2, 4 show the referenced groove and pocket-hole content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0-1), grooves cut before assembly (2), pocket holes and frame assembly (4), elastic stapled to finished frame (5), finish (6)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill one pocket hole on both ends of the top and bottom pieces as shown in the picture."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" trim but no jig thickness setting is stated; search: no step, material, description or summary mentions a jig setting, and viewed step 4 image only labels 'Pocket holes in top and bottom corners'. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts (top and bottom pieces, sides) match cut rows 2 and 2; (b) all four parts assembled in step 4; (c) elastic and heavy duty staples are in materials; (d) steps end with the finished, painted frame."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/442e9a12541add80.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/12555837d3af5396.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b43c0f610202b00d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "description",
+      "quote": "This frame fits a 75\" tv but I have included a way to adjust the size to fit your tv.",
+      "what": "The size-adjustment method promised in the description is not in any step, cut row or material (searched steps, cutList, materials for /adjust|resize|measure|your tv/i); only fixed 67 7/8 and 39 1/4 lengths are given. The 75\" build is complete without it."
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Elastic",
+      "what": "No length or width is given for the elastic (materials[4], steps[5].body 'Staple the elastic to the back of the frame on each side'); the builder must choose it."
+    }
+  ]
 }
