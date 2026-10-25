@@ -71,38 +71,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[1..8] (top, short/long sides, legs, bottom, top frame pieces) each have a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 7 cut rows are cut in steps 1-5 and used in steps 6-8"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[5] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "reason": "Sweep 'thinner than stock' unknown resolved: materials are named '1/2\" ... board' so 0.5-thick parts (Top 0.5 x 7 x 9.5 from 1/2\" Maple 1x8 (7.25 wide); sides 0.5 x 3 from Oak 1x4 (3.5 wide)) match; Legs 0.75 x 0.75 from the 3/4\" Maple 1x2 (steps[2]); Bottom 0.25 x 5 x 7.5 from the 7 1/2\" x 5\" plywood. Top-frame strips: Kreg source '1/2\" X 3/8\" X 3 3/4\"' is 1/2 thick x 3/8 wide, which the importer re-sorted smallest-first to 0.375 x 0.5 (cause import), so they also come from the 1/2\" poplar."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.25, 1x4, 1x8, 1x2); steps not checked for per-part stock"
+      "reason": "Board lines pass: Oak 1x4 36\": 2 x 8 + 2 x 4.5 = 25 + 4 x 1/8 = 25.5 <= 36; Maple top 9.5 <= 12; legs 4 x 2.5 = 10 + kerf <= 12 (1x2 12\"). Poplar frame: 2 x 7 + 2 x 3.75 = 21.5 in of 3/8\" strips vs 12\" bought, which only works by ripping two 12\" lanes from the 3 1/2\" board (two lanes hold 7 + 3.75 + kerf each); the R5 length-sum rule cannot score lane ripping, and a 3/8\" strip could also come from any listed 1/2\" board, so unknown."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "Use Titebond I wood glue and 1\" pin nails to attach the four legs to the box.",
-          "why": "1\" nail — no material line lists a 1\" fastener"
+          "quote": "Use Titebond I wood glue and 1\" pin nails to attach the four legs to the box."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "5/8\" pin nails"
         }
-      ]
+      ],
+      "reason": "Step 8 uses 1\" pin nails; the only nails in materials are 5/8\" (qty 20). Search of materials[0..9] for /nail/i: only materials[5]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric: dado 1/4 x 1/4 at 1/4\" up; bevel border 1 1/2\" x 1/8\", 3/16\" deep, 8 degrees; rabbet 1/2 x 1/2. Frame fits the box opening; legs at the box corners; lid overhang (9.5 x 7 on an 8 x 5.5 box) fixed by sizes. Positions are consistent: bottom 7.5 x 5 = interior 7 x 4.5 + 2 x 1/4 dado; frame short pieces 3.75 = 4.5 - 2 x 3/8."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Measure the opening of the box and make any small adjustments to the length of the frame components so that the frame will fit snugly inside the box."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Assemble box using short sides. long sides and bottom."
+        }
+      ],
+      "reason": "Step 6 (top frame) needs the box opening, but the box is not assembled until step 7 (and legs in step 8). A dry-fit is not mentioned. Build is still completable (frame sizes are in the cut list), so Fix."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket-hole joints; joints are glue, butt joints, dados and pin nails"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (4 legs 2.5\" long from 12\" board, 2 + 2 sides, 2 + 2 frame strips); every made part is installed; glue, stain, tung oil, sandpaper in materials; steps reach the finished box."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "fill all nail holes and other imperfections with wood putty",
+      "what": "wood putty and 220-grit finish prep; wood putty not in materials"
+    }
+  ],
+  "verdict": "Fix"
 }

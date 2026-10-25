@@ -10,69 +10,91 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Cut 2 pieces of 1x8 to 3-7/8\" and rip to 5-5/8\". Measure in 2-13/16\" and make a mark. Temporarily clamp a piece of scrap wood and use a 1-1/2\" diameter Forstner bit to drill a hole. On the bottom meas",
-          "why": "cut sentence states 3-7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "Cut 2 pieces of 1x5 to 9-3/8\" and rip to 3-7/8\". Drill pocket holes in each end. Clamp the front to the sides and attach using 1-1/4\" pocket screws. Repeat for the other bottle/glass holder assembly.",
-          "why": "cut sentence states 3-7/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 3-7/8\" sizes are the Bottle/Glass Holder Side and Front, both rows exist in the cut list (width 3.75); the size disagreement is recorded under R14(a). Every cut in steps 0-9 has a cut-list row; Middle Upright (step 1) is the right side of the top/bottom bottle holders (cut list Bottle Holder Side 4 = 3 drilled + 1 solid; uprights traced in step 11)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "each of the 8 cut rows matches a cut in steps[0..9] (Back, Middle Upright, Front, Side, Bottom, Bottle/Glass Side and Front, Glass Holder); none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "result": "pass",
+      "reason": "Steps name the stock for every part (1x4, 1x8, 1x3, 1x5). 1x4 96\" x2 = 192: Back 6 x 22.75 = 136.5 + 5 kerf 0.625 = 137.1 <= 192. 1x8 72\": 2x6.25 + 4x2.5 + 2x3.75 = 30 <= 72. 1x3 96\": 3x9.375 + 4x9.375 = 65.6 + 6 kerf <= 96. 1x5 96\": 5x9.375 + 2x9.375 = 65.6 + 6 kerf <= 96. Quantities of 1 involved all fit even as 1."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 1-1/4\" pocket screws, 1-1/4\" wood screws, 2-1/2\" wood screws; all three in materials[4..6]; Forstner 1-1/2\" and 1\" are bits not fasteners; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "e the sides and middle uprights onto the back with a pencil. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a78cc82638a3a11.webp"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": " pencil. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes into the assemblies. Attach the assemblies using 1-1",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a78cc82638a3a11.webp"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "bottom. Lightly trace the sides with a pencil onto the back. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24d0b6d09e9c999a.webp"
-        },
-        {
-          "path": "steps[14].body",
-          "quote": "o the back. From the front drill holes within the pencil lines. From the back use the holes you just drilled as pilot holes to drill countersink holes into the holder. Attach using 1-1/4\" wood screws.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/24d0b6d09e9c999a.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numbers given: middle holder 8\" from bottom (steps[14]), bottom assembly flush with bottom, top-right assembly down 1/2\" (steps[10],[11]), hole positions 2-13/16\", 7/8\", 1-1/4\". Pencil-trace flagged sentences (steps 11, 14) trace the holders already placed by those positions. The remaining vertical positions (top-left bottle holder, lower-right bottle/glass holder) have no number but are shown in the viewed render and photo (24d0b6d0, 6cf9576b), so they pass per the rule."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and assembled in steps 0-9 before being placed on the back in steps 10-14; glass holders attached to back (step 10) after test-fitting; no step undone later except the stated disassembly for finishing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes, apply glue to the edges, clamp and attach using 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock (steps 0, 2, 4, 5, 7, 8, 12, 13); search of whole plan for /setting|jig/ finds no jig thickness setting (only 'jigsaw'); viewed step images show none. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut 2 pieces of 1x8 to 3-7/8\" and rip to 5-5/8\"."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Cut 2 pieces of 1x5 to 9-3/8\" and rip to 3-7/8\"."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Bottle/Glass Holder Side ... \"widthIn\": 3.75"
+        }
+      ],
+      "arithmetic": "Steps give 3-7/8 = 3.875 in for both the B/G holder side length (steps[6]) and B/G front width (steps[7]); cut rows 5 and 6 give 3.75 for both (importDiffs is empty, so not an importer correction). 3.875 - 3.75 = 0.125 in.",
+      "reason": "Size a step gives for a part differs from its cut-list row by 1/8\". All other counts and sizes in steps match the cut list; every made part is installed; hanger in materials; steps reach the finished piece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "3a78cc82638a3a11.webp",
+      "24d0b6d09e9c999a.webp",
+      "d7d346660d070883.webp",
+      "9d59e6731bcd660d.webp",
+      "6cf9576b91358e2c.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[16].body",
+      "quote": "It's easiest to disassemble the wine bar, then stain, and finish.",
+      "what": "finishing refers to an outside page for tips; stain/polyurethane are listed in materials so no gap beyond optional link"
+    }
+  ],
+  "verdict": "Fix"
 }

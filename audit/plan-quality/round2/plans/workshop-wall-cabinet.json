@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cut in steps[0..6] (Sides, Top, Bottom, Divider, Shelf, Door, Cleats, Back) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 8 cut rows are cut in steps 0-6; none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
@@ -154,48 +156,76 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 1x4); steps not checked for per-part stock"
+      "reason": "Lumber passes: Cleat 2 x 16.5 = 33 + 1 kerf 1/8 <= 1x4 48\". Sheets: per rule unknown unless parts' area exceeds area bought; 3/4\" parts 2x12x30 + 3x(11.75x16.5) + 11x16.5 + 17x23.25 = 720 + 581.6 + 181.5 + 395.25 = 1878.4 sq in vs 48x48 = 2304; back 16.5 x 30 = 495 vs 24x48 = 1152; not exceeded."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 1 1/4\" coarse-thread pocket-hole screws, 3/4\" brad nails, 3\" screws, 1/4\" shelf pins; all in materials[3,4,7,8]; hinges and pull in materials[5,6]; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "n. The easiest way to do this is with a Kreg® Shelf Pin Jig. The jig makes it easy to keep the holes consistently spaced and aligned.\nNOTE: The setback spacing (distance from the edge to the shelf-pin",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc979604cfebb93d.webp"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " it easy to keep the holes consistently spaced and aligned.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bc979604cfebb93d.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed images give divider position (5\" gap above Bottom, image 5339f8fa), shelf-pin hole layout (2\" setback, 14 3/4\" and 1 1/4\" spacing, image bc979604), pocket-hole layouts; cleats flush with rear edge; door overlap 1/4\" fixes its position; hinges shown at door edges in image c54c77a1; pull is 'a knob or pull' of choice."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[2].body",
-          "quote": "Cut one Adjustable Shelf to size from 3/4\" plywood, as shown in the cutting diagram. Note that the Shelf is slightly shorter and narrower than the Top, Bottom and Divider. That makes it easy to fit th",
-          "why": "\"as shown\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "quote": "Cut one Adjustable Shelf to size from 3/4\" plywood, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "Step 2 (Shelf and Door) has no image; the other 8 images (all viewed, 4 only at thumbnail size) are the finished photo, a door-closed render and per-part drawings for Sides, Top/Bottom/Divider, Cleat, assembly and back; none shows a cutting diagram for the Shelf or Door. The sizes exist in the cut list (rows 6 and 7), so Fix not Unpublish."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelf-pin holes drilled in Sides before assembly; carcass, cleats, back, then paint, then door and hanging; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Kreg Pocket-Hole Jig set up for 3/4\"-thick material'; Cleats (1x4, 3/4\" thick, steps[3]) are covered by that statement."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Note that the Shelf is slightly shorter and narrower than the Top, Bottom and Divider."
         },
         {
-          "path": "steps[2].body",
-          "quote": "le Shelf to size from 3/4\" plywood, as shown in the cutting diagram. Note that the Shelf is slightly shorter and narrower than the Top, Bottom and Divider. That makes it easy to fit the Shelf into the",
-          "why": "\"diagram\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "path": "cutList[1]",
+          "quote": "Top\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 11, \"lengthIn\": 16 (Kreg-corrected 0.75 x 11.75 x 16.5)"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Adjustable Shelf\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 11, \"lengthIn\": 16 (Kreg-corrected 0.75 x 11 x 16.5)"
         }
-      ]
+      ],
+      "arithmetic": "Step says Shelf is shorter and narrower than Top/Bottom/Divider. Kreg-corrected: width 11 < 11.75 (narrower) but length 16.5 = 16.5 (not shorter; 16.5 - 16.5 = 0). The shelf then equals the 16.5 interior width between the Sides, contradicting 'easy to fit ... and to adjust'. Other numbers add up: Door 17 = 16.5 + 2 x 1/4; Door 23.25 = opening (30 - 0.75 top - 0.75 bottom - 5 - 0.75 divider = 22.75) + 2 x 1/4.",
+      "reason": "Shelf length given by the cut list does not agree with the step's description (likely a typo in Kreg's row). Everything made is installed; hardware is in materials."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "montage m7.png of all 9 images (78179513, 11e89e99, bc979604, 8d45a690, 6c2ca750, 5339f8fa, bf0e783f, 04b25538, c54c77a1)",
+      "5339f8fa4d5661c6.webp",
+      "bc979604cfebb93d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "you can prepare the cabinet for paint. If you don't want to see the plywood edges, fill them before you prime and paint.",
+      "what": "filler, primer, paint and sandpaper not in materials"
+    }
+  ],
+  "verdict": "Fix"
 }

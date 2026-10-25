@@ -55,50 +55,115 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "he frame to the seat using 2\" wood screws as shown by the arrows. Tip: Visit the link under the \"Extras\" tab for more details, including video instructions for upholstering the seat.\nEnjoy your bench!",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The only hit is a 'Tip' pointing to Extras for video instructions on upholstering; the frame (sizes in step images 1-2) and attaching the seat are completable without it. The missing upholstery materials/method are recorded under R14."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the 2x2 pieces as shown on the cut list. Drill pocket holes on the 8-1/2\" pieces"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Frame-See Diagram"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes on the 14\" inch vertical pieces"
+        }
+      ],
+      "reason": "The steps send the builder to the cut list for the 2x2 pieces, but the only 2x2 row is a placeholder (4 x 8\"). The 8-1/2\" crosspieces and 14\" verticals appear only in step text, and the 55\" rails only in the viewed step-1 image (55 in dimension). Counts are not in any text (viewed images show 6 crosspieces and 6 verticals; cut row says 4). The info exists in the plan images, so not Unpublish."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[0].part",
-          "quote": "Frame-See Diagram",
-          "why": "looks like a placeholder or an assembly, not a part"
+          "quote": "Frame-See Diagram"
         }
-      ]
+      ],
+      "reason": "Row is a placeholder/assembly ('See Diagram') with qty 4 and length 8 (the 2x2x8 stock length, importer took stock as the part), matching no part the steps use (8-1/2\", 14\", 55\")."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x12); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material: Kreg-corrected 1.5x1.5 = 2x2 only; 0.75x11.25 = 1x12 only. Frame row 4 x 8 = 32 in <= 4 x 96 = 384 in; Seat 54 <= 1 x 72. (Image-derived frame total 4x55+6x8.5+6x14=355 in plus kerf also fits 384.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 2-1/2\" pocket screws, 2\" wood screws; both in materials; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give rail length (55 in), opening (8.5 in), vertical height (14 in) and show crosspiece and vertical positions; seat placement is relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames built (step 1), joined with verticals (step 2), then seat attached; no step undone."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes on the 8-1/2\" pieces, where the blue arrows point."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1-1/2\" 2x2 pieces; search of all text for /setting|jig|1-1\\/2/ finds no jig thickness setting, and viewed step images 1-2 show none. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "I also upholstered the seat."
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Seat- To be upholstered"
+        }
+      ],
+      "reason": "Seat is upholstered (faux fur per description) but materials list no fabric, foam or staples (search /fabric|fur|foam|staple|batting/i over materials: no match). Hardware/component items missing, upholstery method left to Extras."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "adb4f2fd7504e420.webp",
+      "29639d3cfe456c55.webp",
+      "98e45560af8158b0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "I used a metallic silver spray paint",
+      "what": "spray paint not in materials (finish consumable)"
+    }
+  ],
+  "verdict": "Fix"
 }

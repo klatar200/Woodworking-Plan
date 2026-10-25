@@ -139,21 +139,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " here is made using a Kreg Universal Clamp Trak Kit. This kit comes with instructions for building the top if you’d like to add one. See the links in Extras tab for more information on these products.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The Extras reference in steps[0] is for the optional Clamp Trak benchtop ('if you'd like to add one') and product links; the bench itself is a listed Kreg product assembled 'according to the manufacturer's instructions', and the cabinet build is completable without Extras."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cut in steps[1..8] (Side Panels, Back Panel, Bottom Panel, Door Spacers, Door Stop, Doors) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 6 cut rows are cut in steps 1-8; none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
@@ -164,25 +159,43 @@
       "reason": "sheet layout not judged (area fits: part area 2×15.875×27.625 + 1×15.875×42.125 + 1×25.9375×42.375 + 2×1.125×15.875 + 1×2×42.25 + 2×15.75×19.8125 = 3389.2 sq in; bought 1×48×96 = 4608 sq in)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 5/8\" pan-head screws, 1 1/4\" coarse-thread Kreg screws, washers, hinge screws 'supplied with the hinges'; materials[5,6,7,8] list them; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Panel positions fixed by bench legs/rails; spacers flush with legs; hinge cup positions (2 1/2\" from edges) and pocket-hole positions (4\") shown in viewed images; door stop secured to the top frame rail; pull locations are hardware 'of your choice'."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "ight Legs that are adjustable from 31\" to 39\". The benchtop shown here is made using a Kreg Universal Clamp Trak Kit. This kit comes with instructions for building the top if you’d like to add one. Se",
-          "why": "\"shown here\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        }
-      ]
+      "result": "pass",
+      "reason": "'The benchtop shown here' in steps[0] refers to the photos in images[] (viewed: finished bench with Clamp Trak top); each cut step's 'cut diagram' is its own dimensioned part image (viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bench assembled first, then panels, bottom, spacers, stop, doors; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] 'Set your Kreg jig for 3/4\" thick material' for the Bottom Panel; steps[6] Door Stop is also 3/4\" plywood, covered by that statement."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (2 side panels, 1 back, 1 bottom, 2 spacers, 1 stop, 2 doors; 2 washers = steps 4 and 7; 2 hinge pairs and 2 pulls for 2 doors); doors 2 x 19.8125 = 39.625 fits opening 42.125 - 2 x 1.125 = 39.875; every made part is installed; steps reach the finished cabinet."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "montage m6.png of all 11 images: 15709733, d705d593, c929a59c, 6d360239, 5e98f76c, 1613d8ca, d574c1a6, 82ae2d0c, 30fd6baf, 152030e6, eee70b8a"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "Kreg Dual-Locking Caster Set",
+      "what": "casters are listed and shown on the bench in images but no step mentions installing them (step 0 only says to assemble the bench per manufacturer's instructions)"
+    }
+  ],
+  "verdict": "Ship (unverified)"
 }

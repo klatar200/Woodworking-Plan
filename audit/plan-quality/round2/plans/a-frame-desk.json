@@ -259,21 +259,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "Fill all exposed holes and sand smooth. Paint/stain and seal as desired! Enjoy your new desk!\nBe sure to visit my blog for a full picture tutorial of the build!",
-          "why": "matches \"my blog\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Only hit is steps[6] 'visit my blog for a full picture tutorial', a credit/optional link; every dimension needed is in the cut list and the dimensioned step images."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part in steps[0..5] (A-frame legs and top/middle/bottom rails, shelf supports, back bottom support, top frame rails/stiles, desk top, shelves) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 11 cut rows used: steps 0 (rows 3-6), 1 (row 7), 2 (rows 9-10), 3 (row 8), 5 (rows 0-2)"
     },
     "R4": {
       "result": "pass",
@@ -281,21 +276,62 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x3, 1x3); steps not checked for per-part stock"
+      "reason": "Lumber passes: 2x3 96\" x4 = 384 vs legs 6 x 27.75 + rails 3 x (6.625 + 7.625 + 10.375) + supports 4 x 16 + back support 37.5 = 166.5 + 73.9 + 64 + 37.5 = 341.9 + 20 cuts x 1/8 = 344.4; 1x3 96\" x2 = 192 vs 2 x 59 + 4 x 10 = 158 + 6 kerf. Sheet: per rule unknown unless parts' area exceeds area bought; plywood parts 16x60 + 10.25x16 + 12.25x16 = 1320 sq in vs half sheet (size not written), not exceeded. Steps do not name stock per part, and the 0.75 x 2.5 frame parts could also be ripped from the plywood."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "fasteners in steps: 2 1/2'' and 1 1/4'' pocket-hole screws (steps 0-5); both in materials[3,4]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give rail positions on the A-frame (4\", 12 3/4\", 3 1/2\", overall 11 1/4 / 11 / 16 / 27 3/4), shelf-support positions (4\", 6\", 12 3/4\"), shelf heights (12 1/4\", 5 1/4\"), back support (3 7/8\"), top overhang 1/2\" all sides."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "All 5 'as shown' references are in steps with their own images, viewed and dimensioned."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Three A-frame sides, shelf supports on two, top frame, back support on the third, frame onto sides, then top and shelves; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill 2 1/2'' pocket holes into the rails."
+        }
+      ],
+      "reason": "A-frame rails, shelf supports and back support are 1-1/2\" thick (2x3) and get pocket holes (steps 0, 1, 3); the only jig setting stated is for 3/4\" parts (steps[2] 'attaching the rails to the stiles with 3/4'' pocket holes'). Search of text and viewed images for a 1-1/2\" setting: none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (3 A-frame sides = 6 legs + 3 each rail, 4 shelf supports, 4 frame rails + 2 stiles, 1 back support); numbers add up: top frame 59 = 60 desk top - 2 x 1/2 overhang, frame width 10 + 2 x 2.5 = 15 = 16 - 2 x 1/2; every made part is installed; no hardware beyond screws; steps reach the finished desk."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "7feea034a7bc2f8b.webp",
+      "montage m9.png of all 12 images (e54c9b85, d01eccf5, 0f7990a3, 0e8756ac, 145d2087, 7feea034, 942043ca, 0c8ab750, a786562b, 1fa1696d, 5e316103, f14687a4)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3..6]",
+      "quote": "A-frame top rail / A-frame middle rail / A-frame bottom rail / A-frame legs",
+      "what": "import defect (cause import): Kreg's source rows carry '5 degrees off square' end-cut notes ('Cut 5 degrees off square ...'), which are not in the live cut list or any step; the angle is not stated in plan text (geometry only via image dimensions 11 1/4, 16, 27 3/4)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Use wood glue and clamps to secure your sides",
+      "what": "wood glue (steps 0, 2, 3), wood filler, paint/stain and sealer (step 6) not in materials"
+    }
+  ],
+  "verdict": "Ship (unverified)"
 }

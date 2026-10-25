@@ -151,42 +151,97 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "For more projects and printable plans, including for a corresponding bench, visit www.CharlestonCrafted.com",
-          "why": "matches \"printable\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[9] points to CharlestonCrafted.com for 'more projects and printable plans, including for a corresponding bench' - an optional credit/other project; this table's cut list and steps are self-contained."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..8] (long tops, top ends, angled leg bases, straight legs, base spreader, lips) all have cutList rows; steps[0] says base pieces are two glued 1x4s, which explains the doubled quantities (8/8/2 vs 4/4/1 pieces)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 7 cut rows used by steps 0-8; none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 1x2, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "All of the base pieces are made from two 1x4s glued together."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x4 120\""
+        },
+        {
+          "path": "cutList[2..4]",
+          "quote": "Angled Leg Bases\", \"quantity\": 8 ... \"lengthIn\": 18; Straight Legs\", \"quantity\": 8 ... 29 (29.25); Base Spreader\", \"quantity\": 2 ... 52 (52.25)"
+        }
+      ],
+      "arithmetic": "Steps name 1x4 for every base part and parts are 0.75 x 3.5 (= 1x4 only). Lengths (Kreg-corrected): 8 x 18 + 8 x 29.25 + 2 x 52.25 = 144 + 234 + 104.5 = 482.5 in. Bought: 4 x 120 = 480 in (materials[3] qty 4). 482.5 > 480 before any kerf (18 pieces x 1/8 = 2.25 more), short by 2.5 in (4.75 with kerf), more than the 1/2\" kerf-only allowance. 1x6 and 1x2 lines are sufficient (581 <= 600; 225.5 <= 288).",
+      "reason": "Base lumber bought is shorter than the base parts listed. Pointed 30-degree ends could nest and save some length but the plan does not say so, hence likely."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Attach the Short and Long Lips to the underside of the table on the outside of the Legs using finishing nails and wood glue."
+        }
+      ],
+      "reason": "Finishing nails (no size given) are used but no nail appears in materials; search of materials[0..6] for /nail/i: no match. Pocket screws are listed (2 1/2\" and 1 1/4\") but steps never say which size goes where."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions fixed by the parts or relational: Y-joint where three angles meet, top centered on base, lips on the outside of the legs; 30-degree cut stated; images viewed show the layout."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts glued and cut, legs built, spreader cut, base assembled both ends, top built, top attached, lips last; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill two pocket holes in the other end and connect to the Straight Legs."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Drill two 3/4\" pocket holes on the end of each Leg"
+        }
+      ],
+      "reason": "Base parts are two glued 1x4s (1-1/2\" thick) and get pocket holes (steps 1, 3); the only setting stated is 3/4\" (steps[7], for the top). Search of all steps and viewed images for a 1-1/2\" setting: none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (4 angled base pieces/legs/1 spreader x 2 glued; 7 long tops; 2 top ends; 4 lips); top width 7 x 5.5 = 38.5 = Top End length 38.5; every made part is installed; steps reach the finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "montage m12.png of 327ae33e, 021162a3, 8737dce0, 1ecbf9b0, 96ce20f7, 83f75a33"
+    ]
+  },
+  "gaps": [],
+  "verdict": "Fix"
 }

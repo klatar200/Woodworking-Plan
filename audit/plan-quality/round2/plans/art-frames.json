@@ -29,38 +29,76 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0..6] are the plywood backing and hardwood sides, both in cutList rows 0 and 1; painting is supplied by the builder"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "both cut rows are cut (steps 0, 1) and used (steps 2-4)"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[1] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Sweep could not parse cutList[1] (Kreg source '1/3/4\"' is a typo); steps[1] gives the part as '1/4\" X 1 3/4\" X 24\"', which matches materials[0] 'Oak Hard Wood, 1/4\" X 1 3/4\" 96\"'; backing 0.5 x 1.75 matches materials[1]. Row width 1 vs 1.75 is an import defect (cause import)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.25x1.75, sheet-0.5); steps not checked for per-part stock"
+      "result": "pass",
+      "kerfOnly": true,
+      "reason": "Steps name the stock (steps[0] plywood, steps[1] hardwood) and each part matches exactly one material (0.5 x 1.75 plywood strip; 0.25 x 1.75 oak strip). Each line: 4 x 24 = 96 in vs 1 x 96 = 96 in, zero-kerf fit; 3 cuts x 1/8 = 0.375 in short, <= 1/2 in so kerf-only per ruling."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "/8\" spacers between the frame and the painting sides to insure proper orientation of the picture inside of the frame. Then I used 1 1/4\" pin nails shot into the back of the frame to hold the painting.",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "quote": "Then I used 1 1/4\" pin nails shot into the back of the frame to hold the painting."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "1\" pin nails"
         }
-      ]
+      ],
+      "reason": "Step 6 uses 1 1/4\" pin nails; the only nails in materials are 1\" (used in step 2 for the sides). Search of materials[0..6] for /nail/i: only materials[2]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Frame size is set by the builder's painting (inner dimension painting + 1/4\", stated); sides and backing are the same 1 3/4\" width so they sit flush; spacers 1/8\" stated; nothing else needs a position."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Backing and sides cut, sides glued/pinned to backing, mitered to the painting, glued up, finished, painting inserted last."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket-hole joints; joints are glue, pin nails and mitres"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (4 backing + 4 side strips = one frame of 4 mitered sides); parts made are glued together and finished; glue, stain, finish, sandpaper in materials; steps reach the finished frame. Missing 1 1/4\" nails recorded under R6."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "cutList[1]",
+      "quote": "Frame sides\", \"quantity\": 4, \"thicknessIn\": 0.25, \"widthIn\": 1, \"lengthIn\": 24",
+      "what": "import defect (cause import): Kreg source width '1/3/4\"' garbled to 1; steps[1] says 1 3/4\""
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "I used 1/8\" spacers between the frame and the painting sides",
+      "what": "1/8\" spacers not in materials (scrap stock, consumable-level); 24\" part length is only right for a painting about 20\" square, which the plan never says"
+    }
+  ],
+  "verdict": "Fix"
 }

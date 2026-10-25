@@ -427,21 +427,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[29].body",
-          "quote": "al side mount drawer glides. Find the Amazon link under the Extras tab To size the drawer for standard side mount drawer glides, use the following: Drawer Front & Back - 3/4\" x 14 3/4\" x XXX Drawer Bo",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[29] mentions an Amazon link under Extras for slides and gives an alternate side-mount sizing for those who use other slides; the plan's own materials list under-mount slides and the build is completable as written. The XXX placeholders are recorded in gaps."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every cut in steps[1..27] (side/back stiles and rails, legs, panels, front rails, stretcher, top, trims, bottom, drawer parts and frame) matches a cutList row of the same name and quantity per pedestal x2"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 20 cut rows are used by a step (steps 1-27); none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
@@ -449,28 +444,85 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x2, 2x2); steps not checked for per-part stock"
+      "reason": "Lumber passes (steps name stock per part; trims 3/4x1.5 match only 1x2): 1x3 96\" x9 = 864 vs side stile 12x14.5 + side rail 8x28 + back stile 4x14.5 + back rail 4x28 + top front rail 2x28 + stretcher 2x28.75 + drawer stile 6x13 + drawer top rail 2x27.5 = 814.5 + 40 cuts x 1/8 = 819.5; 1x2 (2x96 + 4x72 = 480) vs 2x28 + 4x32.5 + 4x31 + 2x27.5 = 365 + 12 kerf 1.5; 2x2 2x96 = 192 vs 8x19.5 = 156. Plywood: per rule a sheet check is unknown unless the parts' area exceeds the area bought: parts 11135 sq in vs 3x4608 + 2304 = 16128, so not exceeded and layout not scoreable."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use only '1 1/4\" pocket hole screws' (materials[6]); slides installed 'using the manufacturers instructions'; no other fastener size in any step"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: panels 1-1/2\" from leg bottoms (steps[5]); front rails flush with outer/inner leg faces (steps[7]); back frame flush with outside of legs; trim flush; drawer frame 1/4\" above and 1\" below the front (steps[27]); stretcher 13 5/8\" in viewed image 21bdc767; bottom and pull positions shown in viewed images 34e5/d809 and d8b15f87. Slide placement is delegated to the slide maker's instructions."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Steps cite the 'cutting diagram'/'as shown'; the 27 step images (all viewed in a montage, several at full size) are per-part dimensioned drawings and assembly renders, so the referenced content is shown. Step 0 'cutting diagrams' is satisfied by those per-part drawings."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, panels, front rails, back frame/panel, stretcher, top, bottom, then drawer box and frame, then slides; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states 'pocket hole jig set for 3/4\" stock' and repeats it for every 3/4\" part; leg joints are screwed from the 3/4\" panels/rails; no contradicting setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "k over the project before you begin, just so you’re familiar with all the parts. You’ll also want to note that the materials list and cutting diagrams show everything for building a pair of pedestals.",
-          "why": "\"diagrams\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "path": "steps[27].body",
+          "quote": "the drawer frame protrudes 1/4\" above the Drawer Front at the top, and 1\" below at the bottom."
+        },
+        {
+          "path": "steps[25].body",
+          "quote": "cutting the Drawer Front Top Rail to length from a 1x3 board, and the Drawer Front Bottom Rail from a 1x2 board"
+        },
+        {
+          "path": "cutList[14]",
+          "quote": "Drawer stile\", \"quantity\": 6, \"thicknessIn\": 0.75, \"widthIn\": 2, \"lengthIn\": 13 (Kreg-corrected 0.75 x 2.5 x 13)"
+        },
+        {
+          "path": "cutList[16]",
+          "quote": "Drawer front\", \"quantity\": 2, \"thicknessIn\": 3, \"widthIn\": 14, \"lengthIn\": 26 (Kreg-corrected 0.75 x 14.75 x 26)"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "10\" brushed nickel bar pull"
         }
-      ]
+      ],
+      "arithmetic": "Viewed image 278e0d3a shows the drawer stiles (13) fitted between the two drawer rails, so frame height = top rail 2.5 (1x3, §9) + stile 13 + bottom rail 1.5 (1x2, §9) = 17; with the cut-list rail width 2.5 for all four rails it is 2.5 + 13 + 2.5 = 18. Step 27 requires frame height = drawer front 14.75 + 1/4 + 1 = 16. 17 (or 18) != 16. Separately: materials[8] lists 2 bar pulls (search of all steps for /pull|handle|knob|hardware/ finds none outside materials) and no step installs them, though the finished photo shows pulls.",
+      "reason": "The frame height the steps give does not add up with the drawer frame parts, and the listed pulls are never installed, so the steps do not reach the finished piece as pictured. Fix level (drawers work without pulls and frame mismatch is 1\")."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "34e57202349cfbba.webp",
+      "d809779c69f8962f.webp",
+      "1c84e8a1ac2c1f5c.webp",
+      "21bdc767c3a6a130.webp",
+      "d8b15f87866debeb.webp",
+      "278e0d3a923098d1.webp",
+      "52aff53f762ad6e8.webp",
+      "montage of all 27 step images (m3.png)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[29].body",
+      "quote": "Drawer Front & Back - 3/4\" x 14 3/4\" x XXX Drawer Bottom - 3/4\" x 14 3/4\" x XXX",
+      "what": "alternate side-mount drawer sizes have unfilled XXX lengths; only affects the optional side-mount alternative"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[28].body",
+      "quote": "you can paint your pedestals to complement your washer and dryer",
+      "what": "paint (and sandpaper) not in materials; consumable"
+    }
+  ],
+  "verdict": "Fix"
 }

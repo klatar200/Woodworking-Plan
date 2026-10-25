@@ -19,48 +19,95 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "CROSS SUPPORTS: Cut 3 cross supports with the ends cut at a 30 degree angle.\nSTEEL LEGS: The legs are heavy-duty powder-coated steel legs from Semi-Exact and are 28\" tall (see Extras tab for link).",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "materials[6].name",
-          "quote": "Powder-coated legs from Semi Exact (link in Extras tab), more if you choose to build the bench",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The Extras link is the purchase source for the named Semi Exact steel legs (listed in materials with height 28\") and for optional bench legs; a source link for a purchased component is a credit-level reference, and the table is completable from the plan text and images."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut in steps[1..3] (top boards, stretchers, cross supports) each have a cutList row; legs are purchased; bench boards are in an optional step"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 3 cut rows are used in steps 1-5"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Single stock type (2x6); lengths explicit ('8'' and '10''). Parts: 6 x 84 (Kreg-corrected, 7') + 2 x 80 + 3 x 30 = 504 + 160 + 90 = 754 in, plus 11 cuts x 1/8 = 1.4 -> 755.4 <= 8 x 96 + 120 = 888. Each 84 and 80 piece fits one 96 board (8 boards = 6 + 2); cross supports 90 <= 120."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name only 'pocket holes', bolts as spacers and screws; materials[4] 2\" Kreg Blue-Kote screws and materials[5] small bolts cover them; no step gives a conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Cross-support notch positions (6\" from each end, middle centered) and notch size (5-1/2\" x 1-1/2\") are numbers in viewed image 4f810dfa; the layout of stretchers/cross supports/legs is shown in viewed images 4c27e997 and b94c2c32 (leg positions are shown only graphically)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Step 2 'See diagram on this step' has its own image, viewed: 80\" stretcher with notches and tapers."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top built, stretchers and cross supports cut, cross supports fastened to top, then stretchers and legs; notches in stretchers receive cross supports, so no step undoes another."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Connect the pieces to make the top using pocket holes every 8 inches on the under side of the table top."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1-1/2\" thick 2x6; search of all steps, materials and viewed images (f9a9e120 says 'POCKET HOLES WITH COATED DECK SCREWS') finds no jig thickness setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Stretchers\", \"quantity\": 2, \"thicknessIn\": 2, \"widthIn\": 6, \"lengthIn\": 80"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut 2 stretchers with notches with tapered ends. See diagram on this step for placement."
+        }
+      ],
+      "arithmetic": "Viewed step-2 diagram dimensions the stretcher height as 2-1/2\" (80\" long, 5-1/2\" x 1-1/2\" notches, 45 degree taper 1\" in). Cut-list row is a full 2x6 (Kreg-corrected 1.5 x 5.5 per §9; row says width 6). 5.5 - 2.5 = 3 in must be ripped off; no step or row says to rip, and the notch depth 1.5 leaves 1.0 in of a 2.5 in piece.",
+      "reason": "Size shown for the stretchers (2-1/2\") disagrees with the cut-list row (full 2x6 width) and no rip is stated."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "4f810dfabc5d025b.webp",
+      "4c27e997f26b0f88.webp",
+      "b94c2c32d9e7cc4f.webp",
+      "06a4efb249c98460.webp",
+      "f9a9e120fe309393.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Cut two per bench, and attach to the metal legs.",
+      "what": "optional bench step has no cut-list rows, no board count in materials beyond 'more if you choose to build the bench', and no leg count; optional, so not scored"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Screw steel legs to the underside of the table top.",
+      "what": "screw type/size for attaching the legs is not stated (leg mounting-hole pattern only via the Semi Exact product)"
+    }
+  ],
+  "verdict": "Fix"
 }

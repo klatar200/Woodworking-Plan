@@ -263,44 +263,77 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[1..20] (back/front legs, apron, front and seat slats, seat sides, back slats and supports, arm rails, braces, arms) has a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 13 cut rows are cut and used in steps 1-21; none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x6, 1x4, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every part matches exactly one listed board by thickness x width (Kreg-corrected 0.75 x 5.5 = 1x6, 3.5 = 1x4, 2.5 = 1x3) and steps name 1x6/1x4/1x3 for most. 1x6 96\" x5 = 480 vs 2x42.5 + 26 + 2x23.5 + 26 + 4x38 + 2x34.25 = 404.5 + 12 cuts x 1/8 = 406; 1x4 x2 = 192 vs 2x23.5 + 23.5 + 26 + 2x26.5 = 149.5 + 1; 1x3 x3 = 288 vs 26 + 8x29.5 + 2x3.5 = 269 + 1.4."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "d the first four regular Seat Slats. Position them so one rests against the Front Leg, as shown, and the others are spaced 1/4\" apart. Attach these Seat Slats to the Back Legs using 2\" exterior nails.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "Attach these Seat Slats to the Back Legs using 2\" exterior nails."
         },
         {
           "path": "steps[17].body",
-          "quote": "Now attach the last four Seat Slats. Space them 1/4\" apart, and then nail them to the Seat Sides using 2\" exterior nails.",
-          "why": "2\" nail — no material line lists a 2\" fastener"
+          "quote": "and then nail them to the Seat Sides using 2\" exterior nails."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/2\" exterior nails"
         }
-      ]
+      ],
+      "reason": "Steps call for 2\" nails for the seat slats; the only nails in materials are 1 1/2\". Search of materials[0..6] for /2\" .*nail|nail/i finds only materials[5]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step images give back-leg miter/length, slat gaps 1/2\", support spacing (8\", 20 1/2\", 1 1/4\"), 1 5/16\" and arm overhang dimensions; slat spacing 1/4\" and seat side location are stated in text."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "27 reference(s), each in a step with its own image"
+      "reason": "All 27 references are in steps with their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs, apron, front slat, first slats, seat sides, back (assembled then arc cut before install), arm rails, last slats, braces, arms; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] states 'Kreg Pocket-Hole Jig set for 3/4\" material'; every pocket-hole part is 3/4\" cedar."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (2 back legs, 2 front legs, 8 seat slats = 4 + 4, 4 back slats, 2 arm rails/braces/arms, 1 each apron/front slat/supports); Back Slats 4 x 5.5 + 3 x 1/2 = 23.5 = Upper Back Support 23.5, and 23.5 + 2 x 1 1/4 = 26 = Middle/Lower Back Support; every made part is installed; steps reach the finished chair."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "montage m11.png of 3494cd4a, 9c093272, c44f3899, 7ba79f62, 3c9cab78, 7025b9f9"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[21].body",
+      "quote": "stain your chair. For ours, we used a solid-color deck stain.",
+      "what": "stain and sandpaper not in materials"
+    }
+  ],
+  "verdict": "Fix"
 }

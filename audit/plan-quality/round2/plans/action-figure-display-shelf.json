@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut or assembled in steps[0..6] (sides, top, bottom, shelves, MDF backer) each have a cutList row"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all 5 cut rows are used in steps 0, 2, 4, 5, 6; none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
@@ -58,27 +60,73 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (0.75x3, sheet-0.125); steps not checked for per-part stock"
+      "reason": "Board passes (all board parts are 0.75 x 3 = the one listed board): 2 x 12 + 14 + 14 + 2 x 14 = 80 + 5 cuts x 1/8 = 80.6 <= 96 (8ft). MDF: per rule a sheet check is unknown unless area exceeded; backer 12 x 15.5 = 186 sq in vs 24 x 24 = 576, not exceeded."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach the top and bottom pieces to the side boards using 1-1/4” pocket hole screws. Once that’s done, attach your shelves evenly spaced (in this case the shelves are spaced 3.5” apart.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 1-1/4\" screw is in materials as 'Box of 1 ¼ pocket hole screws' (vulgar-fraction character, same size); brad nails 1\" in materials[3]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf spacing given as a number (3.5\") and relational ('evenly spaced'); top/bottom/sides positions fixed by the parts; backer size given; disc countersinks are in an optional tip; acrylic doors optional."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, sand, drill, paint, assemble, then cut and attach backer; optional acrylic doors last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using your favorite Kreg Pocket-Hole Jig (I used the 720PRO) drill 2 holes at each end of your top and bottom pieces as well as your shelves."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock; search of all steps/materials for /setting|3\\/4.*jig|thick/ finds no jig thickness setting; viewed step image (dc52350e) shows the jig in use with no readable setting. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "attach your shelves evenly spaced (in this case the shelves are spaced 3.5” apart."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Shelf sides\", \"quantity\": 2, \"thicknessIn\": 3, \"widthIn\": 3, \"lengthIn\": 12 (Kreg-corrected 0.75 x 3 x 12)"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "I cut the backer to 12\" x 15-1/2\"."
+        }
+      ],
+      "arithmetic": "Photos show 3 openings (top/bottom boards plus 2 shelves = 4 boards of 0.75). The 12\" backer covers the back and the 15.5 = 14 + 2 x 0.75 width shows sides outside the boards, so overall height is the 12\" side: 4 x 0.75 + 3 openings x 3.5 = 3 + 10.5 = 13.5 > 12; with 12 the openings are (12 - 3)/3 = 3.0. Assumes top/bottom are flush with the side ends (inferred from backer size, not stated).",
+      "reason": "The shelf spacing the step gives cannot fit the 12\" side/backer height; the plan does not say where the top and bottom sit relative to the side ends."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-12",
+    "imagesViewed": [
+      "montage m10.png of all 11 images (c84addee, 624d3fd4, 5fb6ecc1, ef358191, faa40f77, dc52350e, 7e15481b, 76106d10, 9412b7e3, 57d089e8, 7732ef38)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[6..7]",
+      "quote": "1/8” Clear Acrylic Sheet (optional)",
+      "what": "optional acrylic doors and hinges are in an optional tip with no sizes, hinge size or count; not scored"
+    }
+  ],
+  "verdict": "Fix"
 }
