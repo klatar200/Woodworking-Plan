@@ -176,35 +176,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Diagrams referenced in the steps are the step images; no external dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps[0]-[6] (front/back frames, 16.5\" side pieces, three bottom boards, side/back panels, faux drawers, spans between drawers, top) maps to a cut row; legs and spans appear in the viewed frame diagram."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Legs",
-          "why": "no step mentions it (searched steps for leg)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Horizontal End Boards",
-          "why": "no step mentions it (searched steps for horizontal)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Top Span Boards",
-          "why": "no step mentions it (searched steps for span)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Bottom Span Boards",
-          "why": "no step mentions it (searched steps for span)"
-        }
-      ]
+      "result": "pass",
+      "reason": "All 11 rows used: the viewed step-0 diagram shows the 13 3/4\" legs with 46\" top and 43\" bottom spans; Horizontal End Boards are the 16.5\" pieces of steps[1]; rows 4-10 are steps[2]-[6]."
     },
     "R4": {
       "result": "pass",
@@ -212,21 +193,61 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x4, 1x6, 0.75x20); steps not checked for per-part stock"
+      "reason": "Per-part stock not named in the steps, and the 2\" Top Two Faux Drawer Fronts (0.75 x 2 x 43) could come from the 1x4 (materials[1]) or the 1x6 (materials[2]). Reference only: 2x2 parts 4x13.75 + 4x16.5 + 2x46 + 2x43 + 2x43 = 55+66+92+86+86 = 385 <= 5 x 96 = 480; 1x stock 2x43 + 43 + 4x16.5 + 2x43 + 3x43 = 86+43+66+86+129 = 410 <= 672."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used in steps are 2 1/2\" pocket hole screws (steps[0],[1],[5]; materials[9]) and 1 1/4\" pocket hole screws (steps[2]-[5]; materials[10]), 5/8\" handle holes; steps[5] assigns each size to a distinct joint."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed diagrams give dimensions: 46\"/43\" spans, 13 3/4\" legs, bottom span 2 1/4\", base boards 5 1/2\" each with hole locations, faux fronts 2\" / 1 1/4\" / 3 1/2\" with \"Inset 1/8\"\", top 47\" x 20\"; handles \"approximately 14\" from the edge\"; hinge positions are shown in the step-6 diagram (undimensioned), top is \"centered\"."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "note": "4 reference(s), each in a step with its own image",
+      "reason": "Every \"as indicated\"/diagram reference sits in a step with its own diagram image (viewed for steps 0, 2, 5, 6)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames (0), sides (1), base boards (2), panels (3,4), faux fronts (5), top and hinges (6), handles (7), finish (8) is buildable; the base is inserted before the panels."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Secure with wood glue and 2 1/2\" pocket hole screws where indicated."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" (2x2) and 3/4\" (1x6, 1x4) stock; search of all fields for /setting|jig|thickness|depth/ found no jig setting; the four viewed diagrams (38144117eeb3eb9c, 55d41bbf1112d898, e0a2e9b00db5adaa, abbb2fcc4e85b03e) show hole positions but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) \"2 on each side\" = 4 side panels; \"three boards\" = 3 inside bottoms (3 x 5 1/2 = 16.5 = side piece length); 16.5\" pieces and 5\" x 43\" panels match cut rows; viewed 46\"/43\"/13 3/4\"/47\" x 20\" match; (b) every part installed in steps[0]-[6]; (c) hinges (materials[4]) and handles (materials[11]) listed; (d) steps reach the finished table with finish step 8."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/38144117eeb3eb9c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/55d41bbf1112d898.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e0a2e9b00db5adaa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/abbb2fcc4e85b03e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Sand all parts of the coffee table.",
+      "what": "Sandpaper is used but not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ]
 }

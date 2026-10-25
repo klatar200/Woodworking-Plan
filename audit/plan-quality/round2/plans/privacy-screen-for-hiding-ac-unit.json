@@ -7,13 +7,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Self-contained; no external dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame boards (\"legs\", \"horizontal boards\") and fence boards in steps[1]-[4] are the two cut rows; no other part appears."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: Frame Boards steps[1]-[3], Fence Boards steps[4]; frames joined steps[6]."
     },
     "R4": {
       "result": "pass",
@@ -24,29 +27,71 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed stock: Frame Boards 0.75 x 3.5 = 1x4 (materials[0]); Fence Boards 0.75 x 5.5 = 1x6 (materials[1]). 1x4: 8 x 48 = 384 + 8 cuts x 1/8 = 385 <= 6 x 96 = 576. 1x6: 12 x 53 = 636 across 12 boards of 72\" (one 53\" part per board, 53 <= 72)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners in steps: Kreg screws (steps[3]; materials[5] 1\" blue-coat), brad nails (steps[4]; materials[6] 1\"), \"screws\" for joining frames (steps[6]; materials[9] 1.25\" exterior); no size is given twice for one use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Space out your fence boards until you have a desired look. Be sure to keep the boards spaced far enough to allow proper airflow through your privacy screen. Add construction adhesive to the boards alo",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a1fc24d6aa0e49.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Leg length \"5 inches\" is given and marked on each end (steps[1], viewed frame image 49fe64b1653c5293 shows the lower horizontal set above the legs); fence-board spacing \"desired look\" and \"far enough to allow proper airflow\" are as-desired; frames joined \"face of one frame into the side of another\" is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No step refers to a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0), frames laid out (1), pocket holes (2), frames assembled (3), fence boards nailed (4), frames joined (6); finish may be done at any step per steps[5]."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using your Kreg Jig, drill two pocket holes on each end of the horizontal boards. I used holes 'a' and 'c'."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" 1x4 boards; search of all fields for /setting|thickness|depth/ found none. The viewed jig image (c2bb7b710fceb4c1) shows the A/B/C hole guide but no thickness setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps give no counts or sizes to contradict the cut list (8 frame boards = 4 per frame x 2 frames, 12 fence boards = 6 per frame); (b) frames and fence boards are all installed (steps[3],[4],[6]); (c) screws/nails/adhesive/finish are consumables or fasteners in materials; (d) steps reach the connected screen."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49fe64b1653c5293.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/32a1fc24d6aa0e49.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c2bb7b710fceb4c1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de907b8606f75a2e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8adb46e5eb2ea9f4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f503082b1e26c2f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a84e333efdee0eae.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/be9965ccd35b4787.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/014fa6be6f31e319.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Once all of your frames are assembled, connect the frames using adhesive and screws.",
+      "what": "The number of frames and how they are arranged (the finished photos show two frames at a right angle) is never stated in a step."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Add construction adhesive to your boards, then secure the frame with your kreg screws.",
+      "what": "Construction adhesive is used in steps[3],[4],[6] but only \"Outdoor Wood Glue\" is in materials; sandpaper (steps[0]) also absent (consumables).",
+      "kind": "consumable"
+    }
+  ]
 }

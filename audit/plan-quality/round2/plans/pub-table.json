@@ -92,48 +92,79 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "The Pub Chair mention in the description is a cross-reference, not a dependency; steps are self-contained."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Foot Rails, Legs, Aprons, Corner Blocks and Top Boards (steps[0]-[9]) are the five cut rows; no other part appears."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Foot Rails steps[0],[3],[4]; Legs steps[1]; Aprons steps[2]-[4]; Corner Blocks steps[5],[6]; Top Boards steps[7]-[9]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, 1x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock per part and each matches one stock: 2x2 for Foot Rails and Legs, 1x4 for Aprons and Corner Blocks, 1x6 for Top Boards. 2x2: 4 x 29 + 4 x 42 = 116+168 = 284 + 8 cuts x 1/8 = 285 <= 2 x 96 + 2 x 72 = 336 (each 96\" board gives 42+42, each 72\" board 29+29). 1x4: 4 x 29 + 4 x 4 = 132 + 8 cuts x 1/8 = 133 <= 2 x 72 = 144. 1x6: 6 x 33 = 198; 33+33+1/8 = 66.125 <= 72 per board, 3 boards bought."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 2 1/2\" and 1 1/4\" coarse-thread pocket hole screws (steps[3],[4],[8],[9]; materials[5],[4]), 1 1/2\" flathead wood screws (steps[6]; materials[6]), 1/8\" pilot holes (a drill size); no size is used for two different purposes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed diagrams give hole positions (foot rail image a90a7045bce742fc), foot-rail height \"9 1/2\"\" and overall 32\"/33\"/42 3/4\" (image 4080c94e3d32ab9c), top overhang \"1/2\"\" on each side (image f1af598c31befd4f); steps[9] adds \"overhangs the table base equally on all sides\"."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "Cut four Legs to size from a 2 x 2 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Cut four Legs to size from a 2 x 2 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut four Legs to size from a 2 x 2 board, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[1] refers to a cutting diagram but has no image of its own; none of the 5 unattached images viewed (774f803edeea5ef9, d64e6c18c4f832eb, 7d5881d406e32f99, 0b708324d0f86968 photos; 4080c94e3d32ab9c overall dimensions) is a cutting diagram for the Legs. Non-structural: the Leg length is in cutList[1] (42\"), and the overall height 42 3/4\" in the viewed overview is consistent."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Foot rails, legs, aprons cut and drilled (0-2), two assemblies (3) then joined (4), corner blocks (5-6), top made (7-8) and attached last (9)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"pocket hole jig set for 1 1/2\" material\" (2x2 foot rails), steps[2] and steps[7] \"set for 3/4\" material\" (aprons, top boards); the legs get no pocket holes and the corner blocks use pilot holes and wood screws."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) \"four\" Foot Rails/Legs/Aprons/Corner Blocks and \"six Top Boards\" match the cut rows; Kreg-corrected sizes agree with the viewed overview (29\" rails + 2 x 1 1/2\" legs = 32\"; 6 x 5 1/2\" = 33\"; 1/2\" overhang each side); (b) every part is installed (steps[3],[4],[6],[9]); (c) no hardware beyond screws; (d) steps reach the finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/774f803edeea5ef9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d64e6c18c4f832eb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7d5881d406e32f99.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b708324d0f86968.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4080c94e3d32ab9c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a90a7045bce742fc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f1af598c31befd4f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "you can give everything a final sanding. Then apply the stain or finish of your choice.",
+      "what": "Sandpaper and finish are used but not in materials (consumables).",
+      "kind": "consumable"
+    }
+  ]
 }

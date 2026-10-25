@@ -20,42 +20,91 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Self-contained; no external dependency."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Place the shelf pieces over the mirror to determine the length of the slots before cutting these 3/8” wide slots with a jigsaw.",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "The flagged \"3/8 wide slots\" (steps[1]) are a cut made in the shelf pieces, not a part; the three pieces in steps[0] \"Cut three pieces of plywood\" are the three cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: steps[0] cuts them, steps[1] slots the shelves, steps[2] assembles Back, Top shelf, Bottom shelf (viewed image d3a530bff595ed12 labels 46\", 8\", 6\", 3.5\")."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×8×46 + 1×3.5×46 + 1×6×46 = 805.0 sq in; bought 1×48×96 = 4608 sq in)"
+      "result": "pass",
+      "reason": "One sheet type (materials[0], 48 x 96 x 3/4\"). Kreg-corrected parts are three strips 46\" long, widths 8 + 3.5 + 6 = 17.5 (+ 2 rips x 1/8 = 17.75) <= 48 across one sheet; 46 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size is \"1 1/4\" Kreg pocket-hole screws\" (materials[2]); steps[2] says \"pocket holes and screws\" with no other size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Place the shelf pieces over the mirror to determine the length of the slots before cutting these 3/8” wide slots with a jigsaw."
+        }
+      ],
+      "reason": "The 3/8\" slot width is given and its length is set by laying the shelf over the mirror, but where the slot sits across the 3 1/2\" and 6\" shelf widths (distance from front/back edge), and how many pocket holes go where on the Back, are not given as numbers (search of steps[0..2] and description). The viewed images (e75174080511ceed, 2d5fb9418f84b47c) show the slot only as an undimensioned line."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "No step refers to a drawing beyond its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pieces cut (0), shelves slotted (1), then assembled and mounted (2)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Assemble with pocket holes and screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood; search of all fields for /setting|jig|thickness|depth/ found no jig setting; the viewed step-2 image shows only \"POCKET HOLES WITH SCREWS\" arrows."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) \"three pieces\" matches 3 cut rows; Kreg-corrected sizes match the viewed labels 46\", 8\", 6\", 3.5\"; (b) all three parts are assembled in steps[2]; (c) 24\" mirror in materials; (d) steps reach the finished shelf with mirror and wall mounting."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3a530bff595ed12.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e75174080511ceed.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2d5fb9418f84b47c.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "The shelf unit can be attached to the wall by screwing through the back panel in the area that the mirror will cover.",
+      "what": "Wall-mounting screws (and any anchors) are not in materials and no size is given; step phrases it as \"can be attached\"."
+    },
+    {
+      "path": "materials[3].name",
+      "quote": "Polyurethane sealer",
+      "what": "Sealer and sandpaper are listed but no step applies them (consumables).",
+      "kind": "consumable"
+    }
+  ]
 }

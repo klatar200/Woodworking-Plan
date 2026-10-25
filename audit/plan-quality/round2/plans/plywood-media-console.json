@@ -188,35 +188,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "\"cutlist included in the plans above\" is the plan's own cut list; no external dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use generic groups (case, base, supports and shelves, back panel) that together cover all nine cut rows; no part appears that is not in the cut list (search of steps[0..5])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Purple Back",
-          "why": "no step mentions it (searched steps for purple)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Gold Middle Shelf",
-          "why": "no step mentions it (searched steps for gold/shelf)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Red Top/Bottom Shelf",
-          "why": "no step mentions it (searched steps for red/shelf)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Blue Sides",
-          "why": "no step mentions it (searched steps for blue)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Every row falls under a step group: case = Red Top/Bottom + Blue Sides (steps[1]); base = Purple/White Base Supports (steps[2]); \"the rest of the supports and shelves\" = Green Supports, Gold Middle Shelf, Yellow and White Checkered Back Supports (steps[3]); Purple Back (steps[4]). Mapping of the colour names is inferred, see gaps."
     },
     "R4": {
       "result": "pass",
@@ -224,20 +205,90 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.25, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Sheet goods, parts from two sheet types with no per-part stock named. Reference only: 3/4\" parts = 58.5x19 + 2x60x19 + 2x19.5x19 + 2x9.25x19 + 6x2x16 + 2x2x15.875 + 2x2x57 + 2x2x41.625 = 1111.5+2280+741+351.5+192+63.5+228+166.5 = 5134 sq in <= 2 x 48 x 96 = 6144; back 20.75x60 = 1245 <= 3072. No certain shortfall; layout not judged."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size is \"1 1/4\" pocket-hole screws\" (materials[2]); steps[2],[1] say \"pocket holes\" with no other size. Brad nails in steps[4] have no size (see gaps)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the base to the bottom of the case, and insert the rest of the supports and shelves."
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Green Supports quantity 2, 9.25 x 19"
+        }
+      ],
+      "reason": "No step or field gives the height of the middle shelf, the horizontal position of the two Green Supports (dividers), or where the six Purple, two White Base Supports and the Yellow / White Checkered Back Supports go (steps[0..5] contain no measurement at all). The viewed step-3 image (c2fdf7185af1c6e4) and finished photos show divider locations roughly, undimensioned; base and back supports are not visible."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No step refers to a drawing; \"cutlist included in the plans above\" exists."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Case (1), base (2), base joined and supports/shelves inserted (3), back last (4); the back is open until step 4 so the interior parts can be placed."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using pocket holes, assemble the base structure."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood (cutList rows 1-8 Kreg-corrected 0.75); search of all fields for /setting|jig|thickness|depth/ found no jig setting; the 5 step images viewed show no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) no counts or sizes in the steps to compare; (b) case, base, supports, shelves and back panel are all installed (steps[1]-[4]); (c) no hardware beyond screws; brad nails and glue in gaps; (d) steps reach the finished console (finish step 5)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ba7077f9a6d8c7c6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a3d84cd53bc242c7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c2fdf7185af1c6e4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d2cc9d20c7617406.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/02e056be625378f0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1489d4b517b639dd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/52715cd06c85c02f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d7789224c59ef6d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1527b50ee75593c9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1c054dfdd3ad9578.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/72db6e7a4335eea1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0..8].part",
+      "quote": "Purple Back",
+      "what": "Cut-list parts are named by colours (Purple, Gold, Red, Blue, Green, Yellow, White Checkered) that no step or image key explains, so the builder cannot tell which part is which except by size."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "throwing in a few brad nails helps hold the panel in place while the glue dries",
+      "what": "Brad nails are used but not in materials (advisory/optional)."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Assemble the outer structure of the case using glue and a joinery method",
+      "what": "Wood glue is used but not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ]
 }

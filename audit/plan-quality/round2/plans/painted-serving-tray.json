@@ -44,42 +44,66 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Cut diagrams and how-to video are referenced but all dimensions needed are in the cut list/images; no full-plans/PDF dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom (steps[0]), Ends (steps[2]) and Sides (steps[4]) are the three cut rows; no other part cut or assembled (search of steps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: Bottom steps[0], End steps[2],[3], Side steps[4],[5]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (0.5x1.5, 0.5x2.5, sheet-0.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock per part and each matches exactly one material: Ends \"from 1/2\" x 3 board\" = 1/2 x 2 1/2 (materials[1]); Sides \"From a 1/2\" x 2 board\" = 1/2 x 1 1/2 (materials[0]); Bottom plywood (materials[2]). Ends (Kreg 2.5 x 12): 2 x 12 = 24 + 2 cuts x 1/8 = 24.25 <= 36. Sides (Kreg 1.5 x 21.75): each 21.75 <= 36, 2 boards bought (quantity 2) for 2 sides. Bottom 12 x 20 fits 24 x 24 plywood."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is \"3/4\" coarse-thread Kreg pocket-hole screws\" (materials[3]); steps[3],[5] use the same size; no conflicting size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "steps[1] gives no count or spacing for the pocket holes along the long edges or bevel ends (\"as shown\", step has no image; 3 viewed unattached images do not show them). End handle holes are dimensioned in the viewed step-2 image (4 7/8\", 1 1/4\", 3 1/4\" slot, 1\" dia.); Sides hang below the Bottom to align with the Ends, which fixes their height."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "the depth of the jig only to 3/4\" but keep the drill bit setting at 1/2\". Now drill the pocket holes at each beveled end of the Bottom, as shown. Then you can sand the faces of the Bottom panel smooth",
-          "why": "\"as shown\" with no step image; 3 unattached image(s) in images[] to view",
-          "unattachedImages": 3
-        }
-      ]
+      "result": "unknown",
+      "reason": "steps[1] says \"drill the pocket holes at each beveled end of the Bottom, as shown\" but has no image; the three unattached images viewed (b19c5c04b74e24ad, a381e1d644bb155a, b69cfac304665d48) show the finished tray, not the holes. Step 3 image (8743e3ef7b023ab6) not opened."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom cut and drilled (0-1), Ends made (2) then attached (3), Sides cut (4) then attached (5), finish (6)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] states \"Set up your Kreg Pocket-Hole Jig for 1/2\"-thick material\" and the bevel-end depth setting; all pocket-holed parts are 1/2\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps[2] \"1/2\" x 3 board\" and steps[4] \"1/2\" x 2 board\" match Ends 2 1/2 and Sides 1 1/2 stock (Kreg-corrected, nominal names); (b) Bottom, Ends, Sides all installed in steps[3],[5]; (c) glue, milk paint, 1\" drill bit all in materials; (d) steps reach the finished tray."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b19c5c04b74e24ad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a381e1d644bb155a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b69cfac304665d48.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/21e1344f5c226476.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "drill pocket holes along ONLY the long edges of the Bottom",
+      "what": "Number and spacing of pocket holes along the long edges and bevel ends are not given; the 12 screws in materials[3] cannot be matched to a count."
+    }
+  ]
 }

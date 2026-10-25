@@ -7,13 +7,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "steps[20] \"Visit me at TheTaleofanUglyHouse.com\" is a credit; no step needs outside content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps[0]-[19] (seat base, back posts/rail/slats, arm posts, arms, seat slats, pergola posts, base, top supports, 2x2 side supports, middle beam, trim, angled supports, top slats) has a cut row; the middle beam and angled top supports are placed (steps[12],[15]) but their cutting is not described, they are cut rows 3 and 17."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 18 rows are used by a step (rows 6 and 7 are the two Top Trim lengths of steps[13]; row 9/10 the Swing Seat Base of steps[0])."
     },
     "R4": {
       "result": "pass",
@@ -41,38 +44,99 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x6, 1x3, 2x2); steps not checked for per-part stock"
+      "reason": "Parts cut from both \"Pressure Treated Boards, 2x4 96\"\" (materials[0]) and \"Board, 2x4 96\"\" (materials[4]) match the same thickness x width, and steps[15] \"angled supports\" name no stock, so the single-material precondition is not met. Reference only (pooled 2x4): 324+96+60+66+132+168+41+41+15+42+82 = 1067 + 30 cuts x 1/8 = 1070.75 <= 12 x 96 = 1152; PT-only parts 480 vs 5 x 96 = 480 (kerf-only)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Cut 2 2x4 pieces at 20.5\" long for the back end posts. Create two pocket holes on one end of each of your 20.5\" pieces. Screw the two 20.5\" pieces on each end of the seat base as shown in the photo.",
-          "why": "20.5\" screw — no material line lists a 20.5\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "' pieces in half. Each piece should be just under 48\" Use a nail gun to nail the first slat across the back. Place it right against the back posts. Line the front slat up with the base. Use a jigsaw t",
-          "why": "48\" nail — no material line lists a 48\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "half. Each piece should be just under 48\" Use a nail gun to nail the first slat across the back. Place it right against the back posts. Line the front slat up with the base. Use a jigsaw to cut the fr",
-          "why": "48\" nail — no material line lists a 48\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "The sweep's 20.5\"/48\" \"fastener\" hits are part lengths, not fasteners. Fastener sizes in steps: 2\" pocket hole screws (materials[8]), 3\" screws (materials[10]), brad nails 1 1/4\" (materials[11]), 5/16 eye hooks and washers/bolts (materials[5],[15]); no size is given twice for the same use. steps[13] \"2\" wood screws\" and steps[19] \"wood screws\" have no separate material line."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers given for the placements the builder must set: back rail \"2\" from the top\", slats \"2\" apart\", posts \"10\" from each end\" with \"25\" from inside post to inside post\", side supports \"1 1/2\" from the top\", eye hooks \"6\" from the outside\", \"4\" from the ends\", \"6.5\" from the top\", top slats \"6.75\" apart\" with \"4.5\" overhang. Angled brace shape is shown in viewed image 892ae7950becf07d (cut angle undimensioned, see gaps)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "note": "2 reference(s), each in a step with its own image",
+      "reason": "The two \"as shown in the photo\" references (steps[1],[2]) have their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Seat built (0-8) before the pergola (9-15); hardware (16-17) after the frame; top trim (19) last. steps[12] says adding the middle beam after the angled top supports is easier, which is advice, not a blocked order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut 9 1x3\" pieces at 15\" long. Make two pocket holes on each end of your 1x3\"."
+        }
+      ],
+      "reason": "The only jig setting stated is steps[0] \"Set your Kreg Jig at 1 1/2\" (right for the 2x4s). The 9 back slats are 1x3 (cutList[13] thickness 1, nominal 3/4\") and get pocket holes with no 3/4\" setting stated; search of all fields for /setting|jig/ found only steps[0]."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Cut 2 1x4\"s at 7.5\" long."
+        },
+        {
+          "path": "cutList[14]",
+          "quote": "Swing Arm Posts quantity 2, 2 x 4 x 7.5"
+        },
+        {
+          "path": "steps[13].body",
+          "quote": "Attach the 81\" 1X6\" trim pieces to the from and back flush with the top."
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Top Trim quantity 2, 1 x 6 x 84"
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Cut 4 1x3\"x8' pieces in half."
+        },
+        {
+          "path": "cutList[16]",
+          "quote": "Swing Seat Slats quantity 7, 1 x 3 x 48"
+        }
+      ],
+      "reason": "Three step-vs-cut-list conflicts: arm posts are \"1x4\" in the step but 2 x 4 in the cut list (and no 1x4 is in materials); the front/back trim is 81\" in the step but 84\" in the cut list; the step cuts 4 boards in half (8 slats) but the cut list has 7 seat slats.",
+      "arithmetic": "steps[8]: 4 boards x 2 halves = 8 slats vs cutList[16] quantity 7; steps[13] 81 vs cutList[5].lengthIn 84; steps[5] 1x4 (thickness 3/4) vs cutList[14].thicknessIn 2."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/892ae7950becf07d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d409ecf7b0ddb50.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "Add your 15\" base angled 2x4\" supports to the outside of each post starting at the bottom.",
+      "what": "The cut angle of the angled base and top supports (15\" and 20.5\") and where the upper end meets the post are not given as numbers; the viewed brace image shows the shape only."
+    },
+    {
+      "path": "steps[18].body",
+      "quote": "Apply an exterior paint or stain and finish.",
+      "what": "Sandpaper, exterior paint/stain and finish are used but not in materials (consumables).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[17].body",
+      "quote": "Set chain to desired length.",
+      "what": "Chain quantities (48\", 58\", 62\" chains) vs 6 eye hooks and \"Eye hook steel skrews\" quantity 2 are not tied to any step count."
+    }
+  ]
 }

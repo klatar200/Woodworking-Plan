@@ -20,20 +20,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "Vinyl template in steps[4] is an optional personalization the author made themselves; no dependency for the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side poles = \"(2) at 5'\" (steps[0]), top/bottom rails and ladder rails are cut rows 1-2; no uncut part appears in steps[2..3]."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Side Poles",
-          "why": "no step mentions it (searched steps for pol)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Side Poles (cutList[0]) is used: steps[0] \"(2) at 5' in length\" with a 10 degree foot cut, steps[3] \"other 1\" x 4\" x 5' side\"; rows 1 and 2 used in steps[2]."
     },
     "R4": {
       "result": "pass",
@@ -45,21 +41,75 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock (1\" x 4\", 1\" x 3\") and each matches one material. 1x4 (materials[0], 2 x 96\" = 192): 2 x 60 + 2 x 16 = 152, plus 4 cuts x 1/8 = 0.5 -> 152.5 <= 192. 1x3 (materials[1], 96\"): steps[0] says 4 x 16 = 64 (cut list says 3 x 16 = 48), + cuts 0.5 -> 64.5 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is materials[2] \"Kreg Screws - 1-1/4\"\" ; steps[2],[3] say \"Kreg screws\" with no other size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Rail positions are numeric: \"3\" down from the top\", \"5\" up from the bottom\", ladder rails \"9\" apart\"; hole count given \"(2) pocket holes into each end\"; \"centered\" is relational. The viewed step-2 image shows the 3\" measurement being taken on the pole."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No step refers to a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), pocket-drill (1), rails fixed to first pole (2), second pole last (3); sequence is buildable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "After your wood is cut, drill (2) pocket holes into each end of all of your 16\" length boards."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards (1x4/1x3); search of all fields for /setting|jig|thickness|depth/ found no jig setting; step images not opened for a setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "You will then cut your 1\" x 3\" boards to (4) at 16\" in length."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "space your (3) 1\" x 3\" x 16\" boards evenly between the two of the rails"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Ladder Rails quantity 3"
+        }
+      ],
+      "reason": "Step 1 has the builder cut four 1x3 x 16\" boards but step 3 installs three and the cut list has three.",
+      "arithmetic": "steps[0]: 1x3 at 16\" qty (4); steps[2] and cutList[2]: (3) / quantity 3; 4 != 3."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/410ababa988cbd5b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "but angled at a 30 degree",
+      "what": "What is tilted 30 degrees (and about which axis/reference) is not stated; no 30-degree cut appears in steps[0]."
+    }
+  ]
 }

@@ -19,47 +19,68 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "le.\n\n**Tip:** Note - as seen in the video, you can choose to use the powder coated legs (linked in the Extras tab) instead of building your own. Skip this step if you are using the powder-coated legs.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "materials[7].name",
-          "quote": "Powder-coated legs from Semi-Exact (link in Extras tab)",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Both Extras mentions are an optional alternative (powder-coated legs); the step 1 text builds the legs from cut-list parts, so the build completes without them."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top boards, legs, cross supports (steps[0],[1]) are all cut-list rows; search of steps for other parts found none."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 cut rows are used: steps[0] top, steps[1] legs and supports."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "reason": "Parts are 2x6 (2x6 stock listed in materials[0..2]); lengths 72/28/20 fit 6'/8'/10' boards."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock type (treated 2x6) with lengths written. Parts after Kreg correction: 5 x 72 + 4 x 28 + 6 x 20 = 360+112+120 = 592; 15 cuts x 1/8 = 1.875; need 593.875. Bought: 5 x 96 + 1 x 120 + 2 x 72 = 480+120+144 = 744. 593.875 <= 744."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give only one fastener size, in materials[5] (\"2\\\" Kreg Blue-Kote screws\"); washers in materials[6]. steps[2] \"Screw through\" states no size and no two sizes conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole spacing \"every 8 inches\" given; washer gap 1/8\"-1/4\" given; legs \"symmetrically\" is relational. steps[1] image (viewed) shows the leg frame: legs 28\", cross supports 20\", top and bottom support flush between legs."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No step refers to a drawing; steps[1] has its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top (step 0) and leg frames (step 1) are built before they are joined in step 2."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Connect the pieces to make the top using pocket holes every 8 inches on the under side of the table top."
+        }
+      ],
+      "reason": "Pocket holes are used on 2x6 (1 1/2\" thick) in steps[0],[1]; search of all fields for /setting|jig|thickness|1-1\\/2/ found no jig setting; images not checked for a setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts 5 top boards (72\" = Kreg 6'), 4 legs 28\", 6 supports 20\" match cut rows; (b) top, leg frames installed in step 2; (c) powder-coated legs, washers, stain in materials; (d) steps reach the assembled table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bcb81f27b48aec05.webp"
+    ]
+  },
+  "gaps": []
 }

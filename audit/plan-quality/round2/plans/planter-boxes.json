@@ -91,43 +91,86 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut wood to size using miter saw. Refer to attached plans for cut list with sizes.\nSand any wood that will be painted with orbital hand sander.",
-          "why": "matches \"attached plans\""
-        }
-      ]
+      "result": "pass",
+      "reason": "\"Refer to attached plans for cut list with sizes\" (steps[0]) points to the cut list, which is in the plan, and the viewed step images carry the dimensions; no external dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side Pieces, Legs, Top Trim, Slats (steps[1]-[4]) are the four cut rows; no other part cut or assembled."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: side pieces steps[1],[2]; legs steps[2]; trim steps[3]; slats steps[4]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "reason": "Sweep unknown stands: Top Trim (11/16\" thick) and Slats (1\" x 1\") are thinner than any listed stock and would need milling; not judged."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 2x6, 2x2); steps not checked for per-part stock"
+      "reason": "Stock per part not named: trim is \"cedar\" (steps[3]) but materials list unspecified 1x4/2x2/2x6; Slats (1\" x 1\") match no listed material, and the 2x2 (materials[3], 96\") already supplies Legs 4 x 20 = 80, leaving 16\" vs slats 3 x 11.25 = 33.75."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size is \"1 1/2\" Kreg Blue-Kote WR pocket screws\" (materials[4]); steps use \"pocket holes\" with no other size. (Staples: see R14.)"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step images give the placements: three side pieces 5 1/4\" each (15 3/4\") on 20\" legs, 11 1/4\" interior, 14 1/4\" outer, trim 15 1/2\", slats \"11\" from the top\"; slat layout is shown in image 57a5ebebb80f0fbb; pocket holes \"2 ... on the edges of each side piece\"."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "note": "2 reference(s), each in a step with its own image",
+      "reason": "\"attached plans\" in steps[0] has its own step image; no other drawing reference."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and sand (0), drill (1), sides onto legs (2), trim (3), slats (4); each part exists before it is used."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using the Kreg Jig system, drill 2 pocket holes on the edges of each side piece."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" side pieces and 11/16\" trim; search of all fields for /setting|thickness|jig setting|depth/ found none; viewed step-1 image (c56db1398926a4db) shows the jig in use with no legible setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Prepaint the pieces black if desired and attach with staple gun from the top."
+        }
+      ],
+      "reason": "The trim is attached with a staple gun but staples are not in materials. Search of materials[0..6].name for /staple/i found nothing (screws, paint, filler, boards only)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1935ff610ec7de32.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57a5ebebb80f0fbb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c56db1398926a4db.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Fill all holes with wood filler, sand and repaint black.",
+      "what": "Sandpaper is used (steps[0],[3]) but not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ]
 }

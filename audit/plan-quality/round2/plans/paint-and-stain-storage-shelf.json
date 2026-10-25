@@ -7,13 +7,16 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "reason": "No external dependency; steps and cut list are self-contained."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps[0..4] (Top/Middle/Bottom Front and Back, Sides) all have cut rows 0-6."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: steps[0] top fronts/backs, [1] middle, [2] bottom, [3],[4] sides."
     },
     "R4": {
       "result": "pass",
@@ -21,28 +24,76 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 2×11×48 + 2×5×36 + 2×3×36 + 2×3×36 + 2×5×36 + 2×8×36 + 2×6×36 = 3216.0 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "Single sheet type (materials[0] 1/2\" full sheet) but layout not judged: part area 2x11x48 + 2x5x36 + 2x3x36 + 2x3x36 + 2x5x36 + 2x8x36 + 2x6x36 = 3216 sq in <= 4608 bought, so no certain shortfall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener is \"1\" Kreg Pocket Screws\" x 42 (materials[1]); steps state no size. Count check: 6 shelf joints x 3 holes (steps[0..2]) + 6 shelves x 2 sides x 2 holes (steps[3] \"two pocket holes\", steps[4]) = 18+24 = 42."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "the Sides down and lay out each of the shelves on the board. Arrange with spacing and tilt how you like, but ours were done as follows for the height of the front lip of each shelf. Each shelf was ang",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e7f93139bae5ec2.webp"
+          "quote": "Attach with two pocket holes drilled on one side of each shelf."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "using pocket screws in the three pocket holes you drilled"
         }
-      ]
+      ],
+      "reason": "Shelf-lip heights (43/35/29/22/13/4 in) and 15 degree tilt are given. But the location of the \"three pocket holes\" in each front/back joint and the \"two pocket holes\" per shelf end are never given (no number, no step that drills them); the two viewed step images show no holes."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No step refers to a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelves are built (steps 0-2) before being fixed to the sides (3-4); finish last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach a Top Front board to a Top Back board using pocket screws in the three pocket holes you drilled."
+        }
+      ],
+      "reason": "Pocket holes in 1/2\" plywood (cutList[*].thicknessIn 0.5) with no jig setting: search of all fields for /setting|jig|thickness|depth/ found nothing; two viewed images (74706e94ca2f0b81, 4e7f93139bae5ec2) are SketchUp renders with no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 each of top/middle/bottom shelf in steps matches cut quantities 2; 6 shelves match; (b) every shelf and both sides are installed in steps[3],[4]; (c) no hardware beyond pocket screws; (d) steps reach the finished shelf (stain/paint step 5)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/74706e94ca2f0b81.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e7f93139bae5ec2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "using pocket screws in the three pocket holes you drilled",
+      "what": "No step cuts the parts or drills the pocket holes; steps begin at assembly and refer to holes \"you drilled\" that no step makes."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Bust out one of the stains or paints you're about to store on this project and color it as you'd like. Or leave natural.",
+      "what": "Finish used in step 5 is not in materials (optional - \"Or leave natural\").",
+      "kind": "consumable"
+    }
+  ]
 }

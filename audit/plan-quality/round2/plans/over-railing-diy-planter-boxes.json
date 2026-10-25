@@ -106,41 +106,104 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "step 0 says \"Using the cut list provided\"; the cut list is in the plan. No full-plans/PDF/external dependency (sweep search stands). The diagram image footer reads \"Page 1 of 2\" but nothing in the steps needs a page 2."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps[1..5] (bottom supports, sides, exterior piece, side supports) maps to a cut row; \"sides\" in steps[2],[3],[5] are the Ends (cyan pieces in the viewed cutting diagram)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Ends",
-          "why": "no step mentions it (searched steps for end)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Ends (cutList[2]) is used: the viewed cutting-diagram image shows 4 cyan 4.875\" pieces and steps[2] \"attach the sides to the bottom support and exterior piece\"; the other three rows named in steps[1],[4]."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "reason": "Kreg-corrected parts 19/32\" x <=5 1/2\" x <=36\" come from materials[0] \"19/32 in. D x 5-1/2 in. W x 6 ft. H\" pickets."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock type (pickets, materials[0], 6 ft = 72\"). Kreg-corrected lengths, longest dimension of each part: 6 x 36 + 12 x 5.5 + 6 x 5.5 + 4 x 5.5 = 216+66+33+22 = 337; 28 cuts x 1/8 = 3.5; need 340.5. Bought: 5 x 72 = 360. 340.5 <= 360. (Exterior pieces at 2 x 36 = 72 per picket leave zero kerf allowance, kerf-only.)",
+      "kerfOnly": true
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener size; materials[1] 1\" pocket hole screws and materials[2] 1\" brad nails cover the screw/nail options in steps[1..5]. No conflicting sizes."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Drill out holes in the bottom of the planter box to accept the hardware to attach to the railing"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Using brad nails or screws, attach the bottom supports to one of the exterior pieces"
+        }
+      ],
+      "reason": "Position of the railing-hardware holes in the planter bottom is not given (no number in any step/field; viewed hardware image 40a2be711cee2a02 shows a handle-style bracket with no dimension). Spacing of the three bottom supports along the 36\" exterior piece is also not stated and not dimensioned in the viewed diagram."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "reason": "No step says \"as shown\"/\"see diagram\"; step 0 refers to \"the cut list provided\", which exists."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order bottom supports (1) -> ends/sides (2) -> second exterior (3) -> side supports (4) -> last exterior (5) -> fabric (6) -> hardware (7) -> mount (8) is buildable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using brad nails or pocket hole screws, attach the sides to the bottom support and exterior piece"
+        }
+      ],
+      "reason": "Pocket hole screws are an option on 19/32\" stock in steps[2..5]; search of all fields for /setting|jig|thickness/ found none; 5 viewed images show no jig setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Using staples, attach the landscape fabric to prevent all of the soil from being washed away during watering and rain"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Drill out holes in the bottom of the planter box to accept the hardware to attach to the railing"
+        }
+      ],
+      "reason": "Staples, landscape fabric and the railing-attachment hardware are used but absent from materials. Search of materials[].name (3 entries: pickets, pocket screws, brad nails) for /staple|fabric|hardware|bracket|hook|bolt/i found none; description/summary silent."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1184e26a1db3d6cd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5cf0810634d52a45.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/40a2be711cee2a02.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e627427de193cdf2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a9ed4597128347e7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "attach the sides to the bottom support and exterior piece",
+      "what": "Steps call the end pieces \"sides\"; the cut list calls them \"Ends\" (and separate \"Side Supports\"); reader had to use the cutting diagram image to tell them apart."
+    }
+  ]
 }

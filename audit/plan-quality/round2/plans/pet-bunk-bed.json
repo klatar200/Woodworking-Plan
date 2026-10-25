@@ -6,31 +6,29 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].title",
-          "quote": "Get the FREE PDF plans",
-          "why": "matches \"PDF\""
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[3].body",
-          "quote": "Get the full FREE PDF plans for the DIY pet bunk bed at https://www.charlestoncrafted.com/diy-pet-bunk-bed/",
-          "why": "matches \"PDF\""
+          "quote": "Get the full FREE PDF plans for the DIY pet bunk bed at https://www.charlestoncrafted.com/diy-pet-bunk-bed/"
         },
         {
-          "path": "steps[3].body",
-          "quote": "Get the full FREE PDF plans for the DIY pet bunk bed at https://www.charlestoncrafted.com/diy-pet-bunk-bed/",
-          "why": "matches \"https://\""
+          "path": "steps[1].body",
+          "quote": "Attached the two platforms together with four legs and pocket holes."
         }
-      ]
+      ],
+      "reason": "The whole plan is two terse sentences (steps[0],[1]) and a final step sending the builder to the author's \"full FREE PDF plans\". The parts are all dimensioned in the cut list and the viewed images show the platform and leg layout, so the build can be completed without the PDF; what the PDF holds (leg/platform heights, pocket-hole layout) is recorded under R10, not here."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, Platform Bases and Sides (steps[0],[1]) are the three cut rows; steps name no other part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: bases and side railings in steps[0], legs in steps[1]."
     },
     "R4": {
       "result": "fail",
@@ -64,25 +62,84 @@
           "quote": "Sides — qty 6, 2.5 x 24 x 24",
           "why": "no listed material gives this thickness and width"
         }
-      ]
+      ],
+      "reason": "cutList[2] \"Sides\" 2.5 x 24 x 24 matches no listed stock (sheet 0.5, 2x2, 1x3 0.75 x 2.5).",
+      "readerNote": "6 x 24 = 144 equals materials[2] \"Board, 1x3 72\"\" quantity 2 = 2 x 72 = 144, and the viewed step-0 image shows thin side boards, so the row looks like a 1x3 recorded with a stray 2.5 thickness. importDiffs is empty so the source row is unconfirmed: kept as plan/likely."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.5, 2x2, 1x3); steps not checked for per-part stock"
+      "reason": "Per-part stock is not named in the steps and the Sides row (2.5 x 24 x 24) matches no listed material, so the precondition is not met. Reference: Legs 4 x 24 = 96 + 3 cuts x 1/8 = 96.375 vs one 96\" 2x2 (materials[1]) is kerf-only (0.375 <= 1/2)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener size; materials[3] \"Kreg Screws\" lists no size either, so no size is used that is missing and none conflicts."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attached the two platforms together with four legs and pocket holes."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Legs quantity 4, 1.5 x 1.5 x 24"
+        }
+      ],
+      "reason": "Where the upper and lower platform sit on the 24\" legs is not given as a number in any step or field (search for a height/\"from\" measurement found none), and the viewed step-1 image shows legs on one platform only. Pocket-hole count and location are not stated either."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "reason": "No step refers to a drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Platforms built in steps[0], then joined with legs in steps[1]; cushions last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach side railings to platform bases with Kreg pocket holes."
+        }
+      ],
+      "reason": "Pocket holes are used on the 1/2\" bases and the side railings; search of all fields for /setting|jig|thickness|depth/ found no jig setting; the 3 viewed step images (7ac8ecce331529cc, cc8627ac1e9baaf1, 072312b50a7c666f) show none."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) \"four legs\" and \"two platforms\" match cut rows 0 (4) and 1 (2); (b) bases/side railings assembled in steps[0], legs and both platforms joined in steps[1]; (c) no hardware beyond screws (materials[3]); (d) steps reach a finished bunk bed (cushions in steps[2] are the owner's own)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-23",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7ac8ecce331529cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cc8627ac1e9baaf1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/072312b50a7c666f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Add cushions or pet beds for your pets to sleep.",
+      "what": "Cushions/pet beds are not in materials; step reads as owner-supplied and optional."
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Wood Glue",
+      "what": "Glue is listed but no step uses it (consumable, not a failure).",
+      "kind": "consumable"
+    }
+  ]
 }
