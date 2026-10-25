@@ -83,44 +83,72 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " plainer reduce the 1\" x 4\" x 36\" cherry board to a thickness of 1/2\".\nIf using finger joints cut 2 sides 3\" x 8\" and 2 ends 3\" x 5 1/2\"\nIf using butt joints cut 2 sides 3\" x 8\" and 2 ends 3\" x 4 1/2\"",
-          "why": "cut sentence states 4 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Cut the bottom from 1/4\" cherry plywood. I usually cut it 4 15/16\" x 7 7/16\". Use 100 - 220 grit sandpaper to smooth",
-          "why": "cut sentence states 7 7/16\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 4 1/2\" ends is the stated butt-joint alternative (cutList[1] is the finger-joint 5 1/2\" version); flagged 7 7/16\" is the working size of the bottom (see gaps). All parts in steps[1-14] (sides, ends, bottom, top, top insert, legs) are in cutList[0..5]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used (steps[1,3,9,11,7])"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "readerNote": "Sweep unknown resolved: steps[1], [9] and [7] state the thickness reduction (\"reduce the 1\" x 4\" x 36\" cherry board to a thickness of 1/2\"\", \"reduce the 1\" x 8\" x 12\" white hard maple to a 1/2\" thickness\", \"saw down to a dimension of 1\" x 1\"\"); widths fit (3 <= 3.5, 7 <= 7.25, 1 <= 1.5)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x4, 1x8, 2x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock for every part (steps[1] cherry 1x4, [9] maple 1x8, [7] maple 2x2, [3] cherry plywood, [11] maple plywood). All materials have quantity 1, which can only understate.",
+      "arithmetic": "cherry 1x4 36\": 2 x 8 + 2 x 5.5 = 27 + 4 x 1/8 = 27.5 <= 36; maple 1x8 12\": 9.5 <= 12; maple 2x2 12\": 4 x 2.5 = 10 + 4 x 1/8 = 10.5 <= 12; cherry plywood 7.5 x 5 = Box Bottom 5 x 7.5 (zero margin, no cut); maple plywood 5 x 7 >= insert 4.4375 x 6.9375"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1\" 23 gauge pin nails (steps[6,14]) = materials[5]; 4 per leg x 4 legs = 16 = materials[5] quantity"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numeric: dado 1/4 x 1/4 up 1/4, rabbet 3/4, taper mark 1/4\", bevel field 1 1/2 x 1/8, 3/16, 8 degrees, insert 1/16 smaller and centered, 1/4\" plywood spacer for legs; curve shape on the bottom edges is optional (\"You can also choose to leave the bottoms flat\")"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "the single reference is in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "box cut, dadoed, curved, jointed, assembled; legs and top made separately, finished, attached last (steps[14-15])"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket-hole joints (finger/butt joints with pin nails and glue, stated in steps[6])"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "arithmetic (finger-joint box 8 x 5.5 outside): bottom 8 - 2 x 1/2 + 2 x 1/4 = 7.5 and 5.5 - 1 + 0.5 = 5 = cutList[5]; opening 7 x 4.5, insert 1/16 smaller = 6.9375 x 4.4375 = cutList[4] and step[11] \"4 7/16\" x 6 15/16\"\"; top 9.5 x 7 = box + 3/4 each side; 4 legs, 2 1/2\" long = cutList[3]; steps reach the finished box"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "kind": "measurement",
+      "path": "steps[3].body",
+      "quote": "I usually cut it 4 15/16\" x 7 7/16\".",
+      "what": "cutList[5] Box Bottom is 5 x 7.5 (7.5 x 5 stock in materials[3]); the step size is 1/16\" smaller, and the exact-fit size computes to 5 x 7.5"
+    },
+    {
+      "kind": "optional",
+      "path": "steps[4].body",
+      "quote": "I cut shallow curves in the lower sides and ends to add additional detail.",
+      "what": "optional step: curve depth and shape not given"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Use 100 - 220 grit sandpaper to smooth the ends and sides.",
+      "what": "sandpaper is in materials (Sandpaper 80 to 220 grit); no consumable missing"
+    }
+  ]
 }

@@ -35,49 +35,82 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "rooves in the two rails. The bits are adjusted to cut 1/4\" X 3/8\" grooves in the center of the board edges. Alternatively the grooves can also be cut on a table saw. Finish sand with 150 grit sandpape",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "ves in the center stile. The bits are adjusted to cut 1/4\" X 3/8\" grooves in the center of both sides and 1/4\" X 3/8\" tongues on the top and bottom of the central stile. Alternatively the tongues and ",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "t 1/4\" X 3/8\" grooves in the center of both sides and 1/4\" X 3/8\" tongues on the top and bottom of the central stile. Alternatively the tongues and groves can be cut on a table saw. Finish sand with 1",
-          "why": "cut sentence states 3/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 3/8\" values are groove depths and tongue lengths, not parts; every part in steps[1-10] (stiles, rails, center stile, slats, panels, top) is in cutList[0..5]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used in steps[1-10]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "precondition met: every solid part is 0.75 thick and the only 3/4\" stock is materials[0,1] (1x6); panels are the only 0.25 part (materials[2]); quantities 2,3,1",
+      "arithmetic": "1x6: 2x56 + 3x52 + 11 + 6x8 + 61 = 388 + 14 x 1/8 = 389.75 <= 2 x 96 + 3 x 72 = 408 (the step[1] cutting diagram lays them out on the boards)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine pocket screws (steps[8,9]) = materials[3]; 1 1/4\" brad nails (steps[10]) = materials[4]; 42 screws = 6 slats x 2 holes x 2 ends + 3 rails x 3 holes x 2 ends = 24 + 18"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "groove 15 1/2\" to 26 1/2\" from top (steps[2]); slat spacing 4\" spacer; top overhang 1/2\" ends and front, flush at back; rail and slat positions are fixed by the grooves, the 11\" center stile and the 8\" slats (step[1] image: 56 high, 52 between stiles, 7 x 4\" gaps + 6 x 4\" slats = 52)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "diagram references are in steps with their own image (viewed steps[0,1,2,8])"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "grooves, tongues, panels cut before frame assembly; slats then top added"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[7] \"set to 3/4\" for all pockets on this project\"; every pocket-holed part is 3/4\" (steps[6] slats come before the statement but one statement covers all)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "cut out the two outer stiles, the three rails, the one center stile, the eight slats and finally the top piece."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Slats - 3/4\" Red Oak, quantity 6, 0.75 x 4 x 8"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Screw the slat in place insuring that the slat is flush with the frame. (no glue is needed here)"
+        }
+      ],
+      "arithmetic": "step[1] says 8 slats; cutList[3] qty 6; steps[6] \"the six 3/4\" oak slats\"; steps[9] \"Repeat the process five more times\" = 6; 6 x 4 + 7 x 4 spacer = 52 = rail length",
+      "reason": "R14(a): the slat count given in steps[1] (eight) disagrees with the cut list and the other steps (six)."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/386c2b93ec701235.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/551db07b9b95811f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b19784fe1637a45.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57ad2de9dce994df.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "wording",
+      "path": "steps[3].body",
+      "quote": "Select two of the three rails you cut in step 2.",
+      "what": "rails are cut in steps[1]; the same off-by-one numbering appears in steps[6] \"cut in step one\" (correct) vs steps[3]"
+    }
+  ]
 }

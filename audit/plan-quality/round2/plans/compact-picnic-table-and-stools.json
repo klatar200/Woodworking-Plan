@@ -455,40 +455,78 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "all parts named in steps[0-16] (Runner, Uprights, Angled Uprights, Rail, Half Runners, Half Rails, Braces, Inner/Middle/Outer Slats; stool Runners, Uprights, Rails, Half Runners, Half Rails, Braces, Slats) found in cutList[0..16]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 17 cut rows used in steps[0-16]"
     },
     "R4": {
       "result": "unknown",
       "reason": "cutList[7] thinner than stock — would need planing/resawing, not judged; cutList[8] thinner than stock — would need planing/resawing, not judged; cutList[9] thinner than stock — would need planing/resawing, not judged; cutList[16] thinner than stock — would need planing/resawing, not judged"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 6x96); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "precondition met by exact match: thickness x width 1.5 x 3.5 matches only materials[0] (2x4), 1 x 5.5 matches only materials[1] (5/4 x 6 deck board); steps[0,6,9] also name the stock. Quantities 12 and 6, not 1.",
+      "arithmetic": "2x4: table 40 + 4x22 + 4x25.25 + 51 + 2x19.25 + 2x24.75 + 4x8 = 400; stools 4x18 + 16x10.75 + 4x16 + 8x8.25 + 8x7.25 + 16x10 = 592; total 992 + 74 cuts x 1/8 = 1001.25 <= 12 x 96 = 1152. Deck: 4x11 + 4x22.5 + 4x34 + 12x18 = 486 + 24 x 1/8 = 489 <= 6 x 96 = 576."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/2\" (steps[7]) = materials[2]; 2 1/2\" (steps[2-5,10-13]) = materials[3]; 2\" (steps[15]) = materials[6]; no size conflicts"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "As You Work The picnic table and stools have a lot of parts. To make sure duplicate parts are exactly the same length, measure and mark carefully and use a stop block on your miter saw. To keep track ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/64246151577ac4fa.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[0] text is a tip about stop blocks (false positive); viewed images give upright/angled upright marks (3 1/4, 12 3/8), half-runner marks (11 5/8, 2 1/2), brace height 16 1/4, stool upright marks 3 7/8 and 3 1/8, brace pocket-hole block 2 1/2\"; slat gaps 3/8\"; seat circle 17\"; centering/equal spacing relational"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "13 reference(s), each in a step with its own image"
+      "reason": "all \"as shown\"/cutting diagram references are in steps with their own image; viewed step[0] image is the table cutting diagram, step[9] image is the stool cutting diagram"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, frames built, half frames joined, braces added, slats fixed with base upside down; glides last (steps[8,17])"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0,9] \"Adjust your pocket hole jig and drill bit for 1 1/2\"-thick stock\"; steps[6] \"1\"-thick material\" for the slats; each thickness stated"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "part counts agree (full frame 2 uprights + 2 angled uprights, 2 half frames 1+1 each = 4 + 4; 4 braces; stool per-stool 4 uprights, 3 slats x 4 = 12); slats 3 x 5.5 + 2 x 3/8 = 17.25 >= 17\" seat circle; steps reach finished table and stools"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/64246151577ac4fa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dd5d8a3ec9bcda80.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d7834b90f6e18dac.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e679dcc9243a6d5e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/498789c5a856ccab.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94698ac6c9476e3a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5c2d53e880ed1528.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d0d300a07f83cb7d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6d861c55856c0549.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7a2738d9bf71b621.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8432aa193289f1cf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/51a56a0f72dcce53.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "optional",
+      "path": "steps[8].body",
+      "quote": "you can glue cedar pocket-hole plugs into these exposed holes",
+      "what": "plugs and glue optional, not in materials"
+    },
+    {
+      "kind": "measurement",
+      "path": "cutList[11]",
+      "quote": "Stool Upright 1.5 x 3.5 x 10.75 (source \"10 3/4\"\")",
+      "what": "step[9] image shows the Upright at 10 11/16\""
+    }
+  ]
 }

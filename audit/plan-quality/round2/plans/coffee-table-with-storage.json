@@ -287,10 +287,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0-9] (legs, 22\" stretchers, side panels, shelf, bottom aprons, 1x2 upright supports, plywood divider, table top, drawer box front/back/sides/bottom, drawer fronts) all in cutList[0..14]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[11]",
+          "quote": "Back Panel, quantity 2, 0.75 x 7.25 x 24.875 (source \"3/4\" x 24 7/8\" x 7 1/4\"\")"
+        }
+      ],
+      "reason": "Back Panel is never made or installed. Search: steps[0..10] and description/summary for /back/i; only hit is steps[8] \"front and back drawer box pieces\" (drawer box parts, cutList[12]), no back panel/closing panel step."
     },
     "R4": {
       "result": "pass",
@@ -301,25 +312,57 @@
       "reason": "R5 precondition not met: 8 stock types (2x2, 1x4, 1x6, 1x2, 2x6, 1x8, sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "tom of the drawer box and cut 1/4\" plywood to fit. Glue and nail into place with 3/4\" brad nails or use a narrow crown stapler and 3/4\" staples.\nInstall the drawers with the 18\" drawer slides and the ",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged \"1/4\" fastener\" is the 1/4\" plywood bottom, not a fastener; 3/4\" brad nails (steps[8]) = materials[11]; 2 1/2\", 1 1/4\" pocket and 1 1/4\" wood screws all in materials[8-10]; alternative \"3/4\" staples\" noted in gaps",
+      "search": "steps vs fastener sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numeric: stretchers flush top and 1 1/2\" up, shelf top 7 1/4\" down, aprons 1 1/2\" up; divider centered; top centered with equal overhang; drawer fronts 1/8\" gap; slides via Kreg jig. Desktop fastener spacing (three per end) and pull location not numeric (builder-chosen), step 6 image viewed shows no layout"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "only reference is steps[1]/[2]-area \"attached\" false positives; no \"as shown\"/diagram reference without image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frames, panels, shelf, aprons, supports/divider built in order; top fasteners installed before top attach; drawers built and installed before fronts"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" pocket holes stated for panels, shelf, aprons, divider, drawer box (steps[1,2,3,4,8]); 1 1/2\" pocket holes stated for the 1 1/2\" stretchers (steps[0])"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "arithmetic: side panel 2x3.5 + 3x5 = 22 = stretcher length 22; panel 13 = 17.5 - 1.5 - 1.5 - 1.5 gap (stretcher flush top, other 1 1/2\" up); shelf 5 x 5 = 25 = 22 + 2x1.5; drawer opening (50.5 - 0.75)/2 = 24.875 = 22.375 + 1.5 + 2x1/2 slide clearance; drawer front 24.625 = 24.875 - 2x1/8; desktop fasteners 3 per end x 2 = 6 = materials[15]; steps reach finished table"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5e38c6e71b311dec.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Use equal stacks of playing cards to ensure an even, 1/8\" gap",
+      "what": "tool, not material; no consumable missing (glue, sandpaper listed)"
+    },
+    {
+      "kind": "alternative",
+      "path": "steps[8].body",
+      "quote": "use a narrow crown stapler and 3/4\" staples",
+      "what": "staples not in materials; alternative to the listed 3/4\" brad nails"
+    },
+    {
+      "kind": "position",
+      "path": "steps[6].body",
+      "quote": "install three desktop fasteners into each end of the base",
+      "what": "spacing of the three fasteners along each end not stated"
+    }
+  ]
 }

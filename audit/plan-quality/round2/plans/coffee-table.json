@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top, Shelf, Shelf Ends (cut list \"Shelf Sides\", qty 2, 17) all in cutList[0..2]; legs/brackets in materials[4]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 3 cut rows used in steps[0..6]"
     },
     "R4": {
       "result": "pass",
@@ -49,25 +51,48 @@
       "reason": "R5 precondition not met: unparseable stock materials[1]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse-thread pocket screws (steps[5]) = materials[2]; 1 1/4\" flat-head wood screws (steps[6]) = materials[3]; leg bracket screws \"supplied\""
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step images: Top diagram 48 x 23 1/2, 1 3/4 curve depth, Shelf 36 x 20 with 1 1/2 curve depth and 3 1/2 pilot-hole spacing, Shelf End pocket holes 3 5/8 / 9 5/8 / 3 5/8, leg brackets at the Shelf corners at 45 degrees; shelf placement is \"spaced equally\""
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "remove the shelf from the Shelf Ends. You can keep the legs attached. Complete any final sanding, clean all the parts thoroughly, and then apply the finish of your choice. We used a black Gel Stain. O",
-          "why": "\"attached\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged steps[8] \"attached\" is not a drawing reference (false positive); steps[0-3,5] \"as shown\" each have their own step image (viewed steps 0-3 and 7 show the diagrams)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut, curved, edged before assembly (steps[0-4]); ends attached to Top then Shelf then legs"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] \"set your Kreg Pocket-Hole Jig for 3/4\"-thick material\"; only pocket holes are in 3/4\" Shelf Ends"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Shelf Ends qty 2 matches cutList[1]; every part cut is installed (steps[5-7]); steps reach finished table (steps[8]); hardware (legs with brackets, edge banding) in materials"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/08f876dc4c83f523.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6a0ec99e2890bc7f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/85febde74945c685.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ef624f85cc27fd62.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6a684a1a86b2c10e.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Secure the Side to the Top with glue and 1 1/4\" coarse-thread Kreg Pocket-Hole Screws.",
+      "what": "wood glue not in materials"
+    }
+  ]
 }

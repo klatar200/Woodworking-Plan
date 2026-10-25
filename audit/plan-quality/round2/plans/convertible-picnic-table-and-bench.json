@@ -347,43 +347,74 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "support pieces to the top boards (2 min screws for each board). Repeat for other bench top assembly.\nNote: it may be useful to cut 4 pieces of scrap wood ¼” wide to use as a spacer for the top boards.",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "p joints are not desired, cut the table top supports down to 15 1/8\" long instead of 16 1/8\".) On the long side of the table support pieces, mark at ¼” and 7 ¾” up from the bottom. Pre-drill countersi",
-          "why": "cut sentence states 15 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged 1/4\" is the optional scrap spacer in steps[2], not a part; 15 1/8\" is the stated alternative length \"If the lap joints are not desired\" (cutList[4] is 16 1/8 with lap joints). All parts in steps[0-7] (legs, \"leg support A/B\" = Leg spacer A/B, stretcher, tops, supports, arm rest, riser, arm support) are in cutList[0..10]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 11 rows used in steps[0-6]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x6, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "precondition met by exact match: 1.5 x 5.5 matches only 2x6 (materials[0,1]); 1.5 x 3.5 only 2x4 (materials[2,3]). Quantities 4,2,3,3.",
+      "arithmetic": "2x6: 8 x 60 + 8 x 18.125 = 625 + 16 x 1/8 = 627 <= 4 x 120 + 2 x 96 = 672. 2x4: 4x60 + 2x53 + 4x16.125 + 4x12 + 4x13.75 + 4x6.75 + 4x6 + 4x8.75 + 4x3.5 = 613.5 + 34 x 1/8 = 617.75 <= 3 x 120 + 3 x 96 = 648."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only 2 1/2\" screws (steps[0-6]) = materials[9]; hinges \"3\" utility hinge\" materials[4]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "numeric in text and viewed images: spacer A 4 1/8\" up, 8 3/4\"; support inset 3 1/2\" and 1\"; 1/4\" gaps; arm rest 6 3/4\"; table support marks 1/4\" and 7 3/4\"; arm support at about 10\" from back; hinge holes marked in place"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no \"as shown\"/diagram references; images viewed for steps[0-7]"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg sets, stretchers, bench tops, legs on tops, arms, table tops, then hinged to benches (steps[0-7])"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"All pocket holes for this project are for 1 1/2\" material\"; every part is 1.5\" thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree: 4 leg sets x (2 legs + A + B) = 8 legs, 4 A, 4 B; 2 stretchers; 4 assemblies x (2 wide + 1 narrow) = 8 wide, 4 narrow; 4 bench + 4 table supports; 4 arm assemblies; leg 18 1/8 in step[0] image = cutList[1]; steps reach finished convertible table"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f1ba65f856d35235.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/38220d4207c0c80e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2ac996611698b54f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bbebae8669cb0992.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5593618a8fd57942.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b69190b599c61af0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a1068a81981fea7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/56e32a68b8039982.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "optional",
+      "path": "steps[5].body",
+      "quote": "The cut list includes optional lap joints on the table top supports",
+      "what": "the lap joint is never described (cut size or location); optional"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Attach the hinges to the bench and arm supports.",
+      "what": "hinge screws not in materials (probably supplied with hinges)"
+    }
+  ]
 }

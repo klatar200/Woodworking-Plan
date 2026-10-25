@@ -251,10 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-9] (Top, Bottom, Sides, Shelf, Big/Small Dividers, Back, Legs, Top/Low Braces) all in cutList[0..8]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used in steps[0-9]"
     },
     "R4": {
       "result": "pass",
@@ -265,24 +267,78 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": " Sides and hang down 5\" below the Bottom. Using pocket hole screws through the holes on the Bottom, screw into the Legs. - Using a 1\" drill bit, drill a hole in each of the four individual Legs about ",
-          "why": "5\" screw — no material line lists a 5\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged \"5\" screw\" is the 5\" the legs hang below the Bottom; only fastener size is 1 1/4\" Kreg pocket screws (materials[4]); the 2\" dowel pieces come from materials[2] \"1\" dowel\""
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "pocket-hole positions numeric (steps[0]); dividers equal 13\" spacing, aligned to front edges; legs centered on Sides and hang 5\" below; dowel hole 17\" up; low brace position fixed by its 11\" length between the 10 degree legs"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no diagram references"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "base, bottom dividers, shelf, upper dividers, top, back, then legs built and attached (images steps[2,4,8,9] viewed)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill the following pocket holes: - Plywood (1) Top- None (1) Bottom- 2 on each short edge, 5\" in from the long edges"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood and 3/4\" boards but no jig thickness setting is stated anywhere (searched all steps, summary, description for /jig|setting|thick/: only the plywood \"3/4\"\" material names). Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Top/Bottom 2, 0.75 x 22 x 55.75 (source 22\" x 55 3/4\" x 3/4\")"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Shelf 1, 0.75 x 21.25 x 54.5 (source 21 1/4\" x 54 1/2\" x 3/4\")"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Back 1, 0.75 x 19.75 x 54.5 (source 19 3/4\" x 54 1/2\" x 3/4\")"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "attach the three Big Dividers to the Bottom with equal 13\" spacing between them"
+        }
+      ],
+      "arithmetic": "Sides stand on the full-width Bottom (step[2] image): opening = 55.75 - 2 x 0.75 = 54.25. 3 Big Dividers 3 x 0.75 = 2.25 + 4 gaps x 13 = 52 -> 54.25 (agrees). Shelf and Back are 54.5, 1/4\" wider than the 54.25 opening; heights agree: 13 + 0.75 + 6 = 19.75 = Sides.",
+      "reason": "R14(a): the Shelf and Back widths do not fit between the Sides (\"between the Sides\", \"Slide the Back into the space between the Top, Bottom and Sides\")."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7e2de9305634d589.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/33cbbc8a95d9e762.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/df7ad60fdc3c18a1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/42f49fbbf687a925.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "position",
+      "path": "steps[8].body",
+      "quote": "attach a Low Brace between the Legs where both edges come in contact with the Legs.",
+      "what": "low brace height not numeric (fixed by the 11\" length between the 10 degree legs)"
+    }
+  ]
 }

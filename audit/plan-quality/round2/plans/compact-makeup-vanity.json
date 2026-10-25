@@ -227,10 +227,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0-16] matched to cutList[0..12] (Drawer Tops, Sides, Dividers, Back, Hinge Support, Bottom, Lid, Lid Front, Drawer Bottom/Sides/Front/Back, 1/2\" square dowel Drawer Dividers)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 13 cut rows used in steps[0-16]"
     },
     "R4": {
       "result": "pass",
@@ -241,43 +243,97 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x2, 0.5x0.5); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" coarse-thread Kreg screws (steps[2,4,6,11,14,16]) = materials[5]; 1 1/2\" flat-head wood screws (steps[8]) = materials[6]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give all hole/part positions (Back/Hinge Support/Lid Front/Drawer Bottom pocket holes, Bottom screw grid with 1 1/2, 7 3/4, 4/6/8 dims, 3/4\" rear gap); hinges \"about 4\" in from each edge\"; legs shown at the outer front corners in the unattached render (no numeric inset); knobs/cleat/mirror placement relational or builder choice"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Start by cutting Two Drawer Tops to size from 3/4\" plywood, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Start by cutting Two Drawer Tops to size from 3/4\" plywood, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Cut the Lid from a piece of 3/4\" thick plywood as shown in the cutting diagram. Note that the depth of the Lid slightly shorter than the depth of the area if fits in to—by about 1/16\". This is to allo",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " from a piece of 3/4\" thick plywood as shown in the cutting diagram. Note that the depth of the Lid slightly shorter than the depth of the area if fits in to—by about 1/16\". This is to allow for the t",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Start by cutting Two Drawer Tops to size from 3/4\" plywood, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] has no image. All 20 images in the plan were viewed (5 unattached + 15 step images); none is a cutting diagram or shows the Drawer Top size. The size is available in cutList[0] (0.75 x 8.125 x 16). steps[9] (Lid) is resolved: the steps[11] image shows Lid 13 7/16 x 19 5/8."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "assemblies, back, hinge support, bottom, lid, hinges, drawers built in a workable order; hinges removed for finishing then reinstalled (steps[12,17])"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"Set your Kreg Jig for 3/4\" thick material\"; all pocket-holed parts (1x3 pine, 1x2, 3/4\" plywood) are 3/4\" thick (cutList thicknessIn 0.75)"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[17].body",
+          "quote": "After the paint dries, install the leg brackets and legs."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "28\" Ash Table Legs"
+        }
+      ],
+      "reason": "R14(c): the step installs leg brackets; search of materials[*].name for /bracket|plate|hardware/i finds none (materials[7] is only the legs). Brackets may come with the legs, not stated."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "7c6535307eabcdc1",
+      "77f726cd74b47a0a",
+      "53bd5366e0c4803d",
+      "d77d1e52a770e5dd",
+      "c2599746e312bffb",
+      "edd895a1256f0b28",
+      "50f738d03e2c7f3a",
+      "1602cd261ccd907f",
+      "0bc7be462f68c875",
+      "40ec1da5ba7a0870",
+      "d77117c21e1da28c",
+      "3b1231c1c26ce590",
+      "dfc3af2aac180c14",
+      "5c2cf8e27d685899",
+      "b85f4205816bcdf5",
+      "d768a6dc39090d73",
+      "9c3573ba1ddb343e",
+      "5981543e14b4b129",
+      "c96954ca5c165a91",
+      "43ffb3345a56a341"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "Using a coarse grit sand paper, sand about 1/16\" off one long edge of each board.",
+      "what": "sandpaper not in materials"
+    },
+    {
+      "kind": "measurement",
+      "path": "cutList[6]",
+      "quote": "Lid 0.75 x 13.5 x 19.625 (source \"19 5/8\" x 13 1/2\"\")",
+      "what": "steps[11] image shows the Lid at 13 7/16 x 19 5/8, 1/16\" less than the cut-list depth; step 9 says the Lid is \"about 1/16\" shorter\" than the area"
+    },
+    {
+      "kind": "position",
+      "path": "steps[17].body",
+      "quote": "we used a simple metal “Hangman” cleat. It’s easy to install on the wall and vanity following the manufacturer’s instructions.",
+      "what": "wall mounting height and the legs inset from the corner are not given"
+    }
+  ]
 }

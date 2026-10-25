@@ -95,40 +95,97 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0-10] (Leg Blanks/Legs, Long/Short Aprons, Bottom Shelf, Top Boards) all in cutList[0..4]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 cut rows used (Leg Blank qty 8 = 4 laminated legs, steps[0])"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x2, 1x4, 1x6, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "precondition met: steps name the stock for every part (steps[0] 1x2, [2] 1x4, [5] 1x8, [8] 1x6). Quantity-1 materials: the arithmetic passes with 1, a defaulted 1 can only understate.",
+      "arithmetic": "1x2: 8 x 33 = 264 + 8 x 1/8 = 265 <= 4 x 72 = 288 (each board 2 x 33 + 1/8 = 66.125 <= 72); 1x4: 2 x 33 + 2 x 6.5 = 79 + 4 x 1/8 = 79.5 <= 96; 1x6: 2 x 42 + 2 x 1/8 = 84.25 <= 96; 1x8: 35.5 <= 48"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket screws throughout (steps[3,4,7,9,10]) = materials[4]; thread type mismatch noted in gaps"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[1].body",
-          "quote": " tapers will go. Then lay them out, as shown, and cut the tapers using a jigsaw. It’s easiest to start the cuts from the end of the leg. After you cut, sand the tapers—and the rest of each leg—smooth.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/58051f230add45f3.webp"
+          "path": "steps[7].body",
+          "quote": "Position the Bottom shelf at the location shown, and then secure it to the Legs with 1 1/4\" coarse-thread Kreg Pocket-Hole Screws."
         }
-      ]
+      ],
+      "reason": "The shelf height above the floor/legs is never a number. Searched steps[*].body, description, summary for a shelf height or distance; viewed step[7] image and all 5 unattached images (photos and an undimensioned model): no dimension for the shelf height. Other positions are numeric or relational (aprons flush at top and inset 1/8\", taper 6\" long and 1\", top overhangs evenly, bullnose bit depth 5/16 and 3/8 in the step[6] image)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "all 12 \"as shown\"/cutting-diagram references are in steps with their own image (viewed images steps[0-10])"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs laminated and tapered, end assemblies, long aprons, shelf attached to base lying on its side, top built separately then attached"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Set your Kreg Pocket-Hole Jig for 3/4\"-thick material\"; every pocket-holed part is 3/4\" thick (cutList thicknessIn 0.75)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "leg blank 33 - 1 rough = 32 final (step[1] image \"32\"\"); long apron 33 + 2 x 1.5 legs = 36 table length; top 2 x 5.5 = 11 wide x 42; counts match steps; steps reach the finished table"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/58051f230add45f3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cd0133fe3050151c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/183ab554c1102685.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/83cef2c16c7d1330.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7743af01ad36f21e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/07519605456e5bce.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4fcc5d1376234900.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a79f5ff51f77ef87.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c91b80bfd14b4481.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/09e6c47501c656bc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/080729be6df05308.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bb23add005ea4884.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5cacf1aee04e9c8b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2fac58d96e033205.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d1af2306577eb6cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8d8f25a86fe9e8c7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "spec",
+      "path": "steps[7].body",
+      "quote": "1 1/4\" coarse-thread Kreg Pocket-Hole Screws",
+      "what": "materials[4] lists only fine-thread screws and steps[3] says fine-thread was used for the hardwood build; step 7 says coarse-thread"
+    },
+    {
+      "kind": "position",
+      "path": "steps[8].body",
+      "quote": "Drill pocket holes on the underside of one of the boards at the locations shown.",
+      "what": "viewed image shows nine holes with no spacing dimensions"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "then you can apply a finish",
+      "what": "finish not in materials; sandpaper not listed (consumables)"
+    }
+  ]
 }

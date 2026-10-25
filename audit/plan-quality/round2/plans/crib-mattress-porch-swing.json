@@ -287,94 +287,127 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "step[0] \"Cut all your stock to final dimensions\"; every part named in steps[1-4] (2x4s, 2x6, seat supports, backrest boards, arm rests, decorative side boards) corresponds to a cutList row by color in the viewed step renders"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Sheet of Plywood - see orange in cut list photo",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[0].part",
-          "quote": "Sheet of Plywood - see orange in cut list photo",
-          "why": "no step mentions it (searched steps for sheet/plywood/see/orange/list/photo)"
-        },
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[1].part",
-          "quote": "Boards - see red in cut list photo",
-          "why": "looks like a placeholder or an assembly, not a part"
+          "quote": "Boards - see red in cut list photo"
         },
         {
-          "path": "cutList[1].part",
-          "quote": "Boards - see red in cut list photo",
-          "why": "no step mentions it (searched steps for see/red/list/photo)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Boards - see mint green in cut list photo",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Boards - see mint green in cut list photo",
-          "why": "no step mentions it (searched steps for see/mint/green/list/photo)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Board - see neon green in cut list photo",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Board - see neon green in cut list photo",
-          "why": "no step mentions it (searched steps for see/neon/green/list/photo)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Boards - see white in cut list photo",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Boards - see white in cut list photo",
-          "why": "no step mentions it (searched steps for see/white/list/photo)"
+          "path": "cutList[0].part",
+          "quote": "Sheet of Plywood - see orange in cut list photo"
         },
         {
           "path": "cutList[5].part",
-          "quote": "Boards - see pink in cut list photo",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Boards - see pink in cut list photo",
-          "why": "no step mentions it (searched steps for see/pink/list/photo)"
+          "quote": "Boards - see pink in cut list photo"
         }
       ],
-      "flagsOmitted": 8
+      "reason": "All 10 rows are named only by a colour in a \"cut list photo\" (placeholder names, \"pink\" is used for two different rows cutList[5] and [6]). Viewed all 6 images: none is a cut list photo; colours can be matched only by guessing from the coloured renders in steps[1-4]. The rows are real parts, so only Fix."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Sheet of Plywood - see orange in cut list photo, quantity 2, 0.75 x 27.5 x 52"
+        },
+        {
+          "path": "materials[0..4]",
+          "quote": "Board, 2x4 96\" | Board, 2x6 96\" | Board, 1x4 96\" | 2 1/2\" pocket hole screws | 1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "cutList[0] is a 27.5\" wide 3/4\" sheet part; materials has no plywood or sheet (searched materials[*].name for /plywood|sheet|panel/i: none) and the widest listed board is 2x6 (5.5\")."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 2x6, 1x4); steps not checked for per-part stock"
+      "reason": "no plywood material is listed and stock is not named per part; cannot be scored"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" (steps[1-4]) and 1 1/4\" (steps[2,4]) pocket hole screws = materials[3,4]; no conflicting sizes. Hanging hardware: see gaps"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed step[2] render gives back-section dimensions (1 1/2\" gaps between backrest boards, 1\" from leg bottom to the lower board, 13 7/8\" to the first vertical); other positions are shown in the coloured renders (steps[1,3,4]) and fixed by the part sizes; no numeric heights for arm rests/side boards"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no step refers to a diagram/drawing"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "front and back sections built, seat supports added, sections joined, arms and side boards added"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "1. Cut all your stock to final dimensions and add pocket holes where needed."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Use 1 ¼” pocket hole screws and wood glue to attach the backrest."
+        }
+      ],
+      "reason": "No jig thickness setting is stated anywhere (searched steps, summary, description for /jig|setting|set .*thick|3\\/4.*material/); pocket holes go into both 1 1/2\" and 3/4\" parts. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Sheet of Plywood - see orange in cut list photo"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Use 2 ½” pocket hole screws and wood glue to attach the 2x4 support sections to the front frame section."
+        }
+      ],
+      "reason": "R14(b)/(d): the 27.5 x 52 plywood seat deck is never installed. Searched steps[0-5] for /plywood|sheet|seat (deck|panel|board)|mattress/: step[3] \"seat support board\" is attached with 2x4 support sections only; no step lays the deck the crib mattress sits on, and no plywood is in materials. The final render (step[5]) shows a seat panel."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0904fcb9f6db2d60.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf17cc71e41acdf8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/09febe9cf758dac8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb78e2010a811f90.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/98e3952950a661c5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bce0ad1c8cc83cd3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "hardware",
+      "path": "steps[5].body",
+      "quote": "then add your own hardware to hang the swing.",
+      "what": "chains/eye bolts/hanging hardware not in materials or described"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "with 2 ½” pocket hole screws and wood glue.",
+      "what": "wood glue, paint/stain not in materials"
+    }
+  ]
 }

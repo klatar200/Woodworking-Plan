@@ -143,10 +143,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[1-20] (top, legs, sides, back, bottom, front rail, door rails/stiles/panels, tray front/back/sides/bottom, tray holders = cut list \"Tray Supports\") all in cutList[0..12]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 13 cut rows used (steps[1-3] cut all; \"tray holders\" in steps[20] = Tray Supports)"
     },
     "R4": {
       "result": "unknown",
@@ -157,26 +159,112 @@
       "reason": "R5 precondition not met: unparseable stock materials[2]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine pocket screws (steps[8]) = materials[3]; 1\" brad nails (steps[20]) = materials[14]; 2\" hinges (steps[9]) = materials[8]; #8 1 1/2\" woodscrews for corks = materials[9]; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[14].body",
-          "quote": "On the inside of the cabinet mark the position of the hinge mounting plates. Depending on the type of hinge you use you may have to add a spacer board to the side panel to maintain proper hinge spacin",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18d97e75f4f7e097.webp"
+          "path": "steps[13].body",
+          "quote": "On the inside of each door mark the spots where each hinge will be positioned."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Attach the top to the case using 2 inch hinges at the rear."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "assemble the sides, back, bottom, legs and front rail to form main carcass."
         }
-      ]
+      ],
+      "reason": "No number or viewed-image dimension for: the vertical position of the carcass (sides 26 1/4 tall) on the 39 1/4 legs and of the Bottom/Front Rail within it (searched steps and viewed steps[8], [4], [6], [1-2] images: dimensions are only for pocket holes, taper 27\", corner notches 1/2 x 3/4\", tray holder 4\"); the euro hinge positions along the door (steps[13] defers to \"the manufacturer\", no distance); the top hinge positions at the rear. Door stop \"middle bottom\" and the cork pulls are relational / builder choice."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"See diagram\" (steps[6]) and the other reference are in steps with their own image; viewed cut-list diagram (steps[1] image) shows all parts"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "carcass, top, doors, hinges, tray built in a workable order; tray holders and door stop added last"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[5] \"set to 3/4\" for all holes in this design\"; all pocket-holed parts 3/4\" plywood or cherry. The Front Rail gets no drilled pocket holes in any step (see gaps)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Door Stiles Cherry, 0.75 x 2 x 24.25 (source \"3/4\" X 24 1/4\" X 2\"\")"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Door Rails Cherry, qty 4, 0.75 x 2 x 9"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "The bits are adjusted to cut 1/4\" X 1/4\" grooves and 1/4\" X 1/4\" tongues."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Door Panels Cherry Plywood, qty 2, 0.25 x 9 x 21"
+        }
+      ],
+      "arithmetic": "Door height = Door Stile 24.25; panel can span between rails 24.25 - 2 x 2 (rail width) = 20.25 plus 1/4 groove depth at each rail = 20.75, but the Door Panel length is 21 (0.25 more). Widthwise it fits exactly: rail 9 - 2 x 1/4 tongue = 8.5 between stiles + 2 x 1/4 groove = 9.",
+      "reason": "R14(a): the panel is 1/4\" taller than the rail-to-rail groove space, so the door would assemble 1/4\" taller than the stiles (assumes the panel length runs along the stiles and the 1/4\" grooves are in the long edges of rails)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bd1030bad7eb0dc9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4c48ae442dfc23ac.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18d97e75f4f7e097.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fc768b6333b0b0e1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/667eec6fba2f0faa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/025188f218a78e70.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e6aa12d43fffc9c9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fc01fb72ef03e05c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/17f0bce059c33f82.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fa8e4867c1edb45a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/78614803ffd69d9e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab0b0739b35305e2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Smooth with 100 - 150 grit sandpaper.",
+      "what": "sandpaper (100-220 grit) not in materials"
+    },
+    {
+      "kind": "optional",
+      "path": "steps[14].body",
+      "quote": "you may have to add a spacer board to the side panel to maintain proper hinge spacing",
+      "what": "conditional spacer board not in materials or cut list"
+    },
+    {
+      "kind": "joinery",
+      "path": "steps[5].body",
+      "quote": "put pocket holes in the bottom, back and sides as shown",
+      "what": "Front Rail (cutList[9]) joins the legs by \"pocket hole screws\" in steps[8] but no step drills pocket holes in it"
+    },
+    {
+      "kind": "wording",
+      "path": "steps[10].body",
+      "quote": "the four door rails cut in step two",
+      "what": "door rails and panels are cut in steps[1] and steps[3] (step numbers in steps[10], [11], [12] do not match)"
+    }
+  ]
 }

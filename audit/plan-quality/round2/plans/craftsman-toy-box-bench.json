@@ -287,10 +287,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[2-13] (box front/back/bottom/top, box sides, legs, side rails, arm rests, trims, long slats, back slats wide/thin) all in cutList[0..14]"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 15 rows used (Box Top = lid in steps[12-13]; 4 Long Slats: 2 front steps[9], 2 back rail steps[10])"
     },
     "R4": {
       "result": "pass",
@@ -301,25 +303,89 @@
       "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x6, 1x2); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "t up against the side rail at 17 1/4\", secure with glue and screws. Inset a side rail 1/8\" at the bottom of the leg and attach with glue and screws. Repeat for front leg, and use wood glue and 1 1/4\" ",
-          "why": "17 1/4\" screw — no material line lists a 17 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged \"17 1/4\" screw\" is the leg mark position, not a fastener; 1 1/4\" pocket screws and 1 1/4\" brad nails (steps[4-11]) = materials[4,10]"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "Use a concealed hinge template or jig to install 2 full overlay euro hinges for frameless cabintes into the underside of the toy box top."
+        }
+      ],
+      "reason": "Where the two hinges go along the 46 1/8\" lid is never given (search steps[12-13] and viewed images steps[12,13]: only \"about 1 1/2\" from the top of the box back plywood\" for height). All other positions are numeric in text or viewed images (legs 17 1/4/23 1/4, 13 3/4 front trim, slat marks 2 1/8 ... 25 3/8 with symmetric repeat, back rail 1/2\" down)."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut down the plywood according to the plywood cut list and diagram."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut the boards according to the board cut list and diagram."
+        }
+      ],
+      "reason": "The cutting diagrams are not in the plan: steps[0] and steps[1] images are photos of a track saw and a miter saw; viewed 18 of 20 images (all unattached and steps[0-13]); none is a cutting diagram. Every dimension is in the cut list, so the build is not blocked."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "side assemblies, side plywood, trim, box front/back, bottom, front trim, back rail, lid and hinges in workable order"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2,3] \"pocket holes for 3/4\" material\"; all pocket-holed parts are 3/4\" thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "counts agree (2 long slats + 6 rails + 2 wide + 9 thin pocket-holed = cutList; 3 thin, 1 wide, 3 thin, 1 wide, 3 thin = 9 thin + 2 wide); slat marks symmetric (left wide 11 3/4 to 17 1/4, middle thin from 19 3/8, gap 2 1/8 both sides); overall 34 1/2 high = Back Leg 34.5; steps reach the finished bench"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-14",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aaa81c28cde8cbef.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/723ad59a81f95ee9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8f04144eca821a94.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/036a36a9ced25fc2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e3d69f16b1c640d3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e256485d79fea913.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/35edc9ce4f1f55e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4852375965db5836.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a3a5f9426abcecab.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8bc991c8382e1cc8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/693053ff5c9f3a34.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2440e251294f5886.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6abfed32ba524ade.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf7541a8a866b46f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d1f17b12fe9b55df.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b83b32f2db7d6818.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7dfbca6c524fbbba.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23fee23efaa3287d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[14].body",
+      "quote": "Fill any nail holes, pocket holes or blemishes with wood filler/putty.",
+      "what": "wood putty and sandpaper are listed (materials[9,11]); no consumable missing"
+    },
+    {
+      "kind": "wording",
+      "path": "steps[4].body",
+      "quote": "Inset a side rail 1/8\" from the back leg side and butt up against the side rail at 17 1/4\", secure with glue and screws.",
+      "what": "rail placement is only clear from the step[4] image (assemble in order 1-4)"
+    }
+  ]
 }
