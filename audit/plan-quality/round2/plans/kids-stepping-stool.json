@@ -199,51 +199,98 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "d according to the visual cut list in the woodworking plans PDF with a table saw and miter saw. Cut the lengths of the pine boards with a miter saw and be sure to cut angles properly. Then you’ll want",
-          "why": "matches \"PDF\""
+          "quote": "Cut wood according to the visual cut list in the woodworking plans PDF with a table saw and miter saw."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans."
         }
-      ]
+      ],
+      "reason": "Steps send the builder to a PDF for the visual cut list and pocket-hole layout. The live cut list and viewed diagram fcf98c375132f132 supply sizes and hole positions, but the front-leg cut angle appears nowhere (searched whole plan for /22|degree|angle/: only \"be sure to cut angles properly\"; the 22.3 degrees is only in the Kreg source string, see gaps). Likely completable except for that angle, so Fix."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, box frame sides, supports and both treads are cut-list rows; step 0 cuts and rips them from listed materials[0],[1]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: legs steps[4],[5]; frame sides and supports steps[2]; treads steps[0],[3]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; +1 more"
+      "result": "pass",
+      "reason": "From the Kreg source strings in importDiffs: parts are 3/4\" x 1 1/2\" (ripped from 1x3 3/4\" x 2 1/2\", materials[0]) and 1\" treads 8\"/9\" wide (<= 11 1/4\" tread, materials[1]).",
+      "readerNote": "Sweep R4 unknown (thinner-than-stock) resolved: rows correct to 0.75 x 1.5 x L; the sweep read the misparsed 1 x 1 x 3."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x11.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock identified by cross-section. 1x3 (2 x 96\"): 2x12.25 + 2x13.125 + 4x9 + 2x7.8125 + 2x5.5 = 113.4\" + 11 kerfs x 1/8\" = 114.8\" <= 192\", and ripping a 1 1/2\" strip from each 2 1/2\" board gives 2 x 96\" of strip. Tread (1 x 48\"): 11.5 + 12 = 23.5\" + kerf <= 48\"; widths 8 and 9 <= 11.25.",
+      "readerNote": "Sweep R5 unknown resolved to pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" pocket hole screws, 2 1/4\" and 2\" finish nails in steps[3]-[5] are all in materials[2]-[4]; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "t Pine boards to the correct width according to the plans.\n\n**Tip:** Note: The bottom step has an area of overhang on the front edge. If you are using engineered stair treads for steps, like we were, ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95d45e2b4d1d5fb2.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Bottom step top 6 3/4\" up the legs (steps[5]); frame-to-tread and leg placement shown in viewed diagrams c95b9af05263c4b4 and fcf98c375132f132 and fixed by the part sizes; nails \"in each corner\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"as shown in the woodworking plans\" (steps[1]); the pocket-hole layout appears in the plan image fcf98c375132f132 (frames with holes), viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), pocket holes (1), frames (2), frames to treads (3), legs to top frame (4), bottom step at 6 3/4\" mark (5), finish (6-7). Workable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans. We used the Kreg 720 Pro."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" pine; searched all steps/materials/description for a jig thickness setting: none (a jig model is named, no setting); viewed diagram fcf98c375132f132 shows holes only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 frames: 4 long + 2 short + 2 supports match steps[2]; 4 nails per corner; (b) legs, frames, treads all installed (steps[3]-[5]); (c) nails, screws in materials; (d) steps reach painted stool."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/95d45e2b4d1d5fb2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/52bc81de664b9a5c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fcf98c375132f132.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c95b9af05263c4b4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0040c14f46a18044.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0508762b65ad7b2b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "importDiffs[1].source",
+      "quote": "3/4” x 1 ½” x 1’ 1 ⅛” on long side & 1’ 1/4” on short side (Cut at 22.3 Degree Angle at both ends)",
+      "what": "front-leg cut angle (22.3 degrees) and the long/short-side lengths are in the Kreg source but absent from the live plan (cutList[1] reads 1 x 1 x 3); leg angle given nowhere in steps (import cause)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Use wood filler and a putty knife and fill in all the nail holes.",
+      "what": "wood filler not in materials"
+    }
+  ]
 }

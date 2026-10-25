@@ -47,67 +47,120 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The real parts (cabinet bottoms, center shelf, adjustable shelves, dividers, sides, top, doors, French cleat strip) are dimensioned in the step-0 image (c7053e44e25639b6, viewed), which steps[0] calls \"the cut list below\". The structured cut list holds no real parts; recorded under R3."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Cabinet",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
-    },
-    "R4": {
-      "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
-    },
-    "R5": {
       "result": "fail",
       "level": "Fix",
       "confidence": "certain",
       "cause": "plan",
       "evidence": [
         {
-          "path": "materials[0]",
-          "quote": "Plywood, 3/4\" Thick Full Sheet — qty 1"
+          "path": "cutList[0].part",
+          "quote": "Cabinet"
         },
         {
-          "path": "materials[1]",
-          "quote": "Plywood, 3/4\" Thick Half Sheet — qty 1"
-        },
-        {
-          "path": "cutList[0..0]",
-          "quote": "Cabinet — qty 2, 0.75 x 48 x 96 (Kreg-corrected)"
+          "path": "importDiffs[0].source",
+          "quote": "3/4″ x 4′ x 8′ Plywood"
         }
       ],
-      "arithmetic": "part area 2×48×96 = 9216.0 sq in; bought 1×48×96 + 1×48×48 = 6912 sq in; 9216.0 > 6912"
+      "reason": "The only cut-list row is the 4x8 plywood sheet itself (qty 2, 0.75 x 48 x 96), not a part; it matches the sheet drawn in the step-0 image. No cut-list row is a part the steps use."
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "Sweep fail rested on cutList[0] (2 x 48 x 96), which is the stock sheet itself, not a part (importDiffs[0].source \"3/4″ x 4′ x 8′ Plywood\"). Real parts exist only as an image; no valid part list to total.",
+      "readerNote": "Sweep R5 fail rejected: row \"Cabinet\" is the sheet, not a part (see R3)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[1].body",
-          "quote": "Drill picket holes and assemble with wood glue and 1-1/4\" pocket screws. Then drill the shelf pin holes if adjustable shelves are desired, or secure shelves permanently.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "Drill picket holes and assemble with wood glue and 1-1/4\" pocket screws."
         },
         {
-          "path": "steps[2].body",
-          "quote": "e unit. This way the unit will slide into place and lock into the other side of the cleat that is mounted against the wall. Drill picket hoels and attach top of French cleat with 1-1/4\" pocket screws.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "path": "steps[6].body",
+          "quote": "Then level the cleat and finish installing with two screws at each stud."
         }
-      ]
+      ],
+      "reason": "Searched materials[0..2] (Plywood full sheet, Plywood half sheet, European Full Overlay Hinges) and whole plan for /screw|nail|fastener/i in materials: none. 1-1/4\" pocket screws (steps[1], steps[2]) not listed; wall screws (steps[6]) have no size anywhere."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Part sizes and notches (3/4\" x 9-3/4\") are dimensioned in the cut diagram; shelf, divider, pocket-hole, shelf-pin and cleat positions are shown in viewed images eb0c6498b6f11375 and f38f29f4486ea7e1; wall height is the builder's choice (steps[6])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram reference; \"cut list below\" is the step-0 image, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (0), carcass (1), cleat on carcass (2), edges/finish (3-5), hang wall cleat (6), shelves/doors/hinges (7). Order workable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill picket holes and assemble with wood glue and 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood (steps[1], steps[2]); searched all steps/materials/description for a jig setting: none; viewed images eb0c6498b6f11375 and f38f29f4486ea7e1 show hole locations only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) steps give no part counts that contradict; (b) cabinet parts, cleat, doors, shelves are all installed (steps[2],[6],[7]); (c) hinges are in materials; shelf pins and hinge lights are used only in optional steps (see gaps); (d) steps reach hung console."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7053e44e25639b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eb0c6498b6f11375.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f38f29f4486ea7e1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "assemble with wood glue and 1-1/4\" pocket screws",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "applying a thin coat of wood filler to build up the edge",
+      "what": "wood filler / iron-on edge banding not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Time to prime and paint the cabinet.",
+      "what": "primer, paint, danish oil (steps[5]) not in materials"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Install shelf pins and place adjustable shelves as desired.",
+      "what": "shelf pins not in materials; used only for optional adjustable shelves (steps[1] \"if adjustable shelves are desired\")"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "If you have the right hinges, adding a hinge light is really simple",
+      "what": "hinge lights not in materials; optional step"
+    }
+  ]
 }

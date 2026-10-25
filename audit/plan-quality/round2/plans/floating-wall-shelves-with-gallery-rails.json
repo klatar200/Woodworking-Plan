@@ -10,46 +10,71 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, top/bottom, shelves, decorative top and wall attachment piece are all cut-list rows; gallery rails are bought (materials[1])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: steps[0] sides/top/bottom, steps[1] decorative top, steps[2] shelves, steps[3] wall attachment piece."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "result": "pass",
+      "reason": "All cut parts come from one stock, 1x6x8 (materials[0]: 3 x 96\"); gallery rails are purchased, not cut. Total length 2x38 + 2x21.5 + 2x21.5 + 21.5 + 21.5 = 205\"; 8 cuts x 1/8\" = 1\" -> 206\" <= 3 x 96 = 288\". Fits per board: 38+38; 4x21.5; 2x21.5. All widths <= 5.25.",
+      "readerNote": "Sweep R5 unknown resolved to pass: only materials[1] was unparseable and it is not a cut-list stock."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Screw in the wall shelf attachment to the back of the shelf with wood glue and pocket screws.\nThe wall shelf attachment should be 2.5\" wide to allow room to screw into the wall.",
-          "why": "2.5\" screw — no material line lists a 2.5\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 2.5\" is the width of the wall attachment piece (\"should be 2.5\\\" wide\"), not a screw. Pocket screws 1 1/4\" are in materials[2]; steps name no other fastener size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Attach the shelves the same distance apart, measuring from the bottom of the decorative top piece.\nUsing a spacer block will make this step a lot easier!\nMake sure the pocket holes are facing the bott",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bd1bd6173e11b36b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Shelf spacing shown in viewed image bd1bd6173e11b36b as 10 21/64\" x3 from the decorative top; wall piece shown under top (57c42fb327c3ce83, 21 1/2\"); gallery rails \"1/2\\\" back from the front\" in steps[5]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references in any step."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (steps[0]), decorative top (1), shelves (2), wall piece (3), finish (4), rails (5). Nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the top and bottom pieces to the sides of the shelf with pocket holes and wood glue."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards; searched all steps/materials/description for a jig setting: none; viewed step-0 image shows holes only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) wall piece 2.5\" and decorative top 4\" match cut list; 2 gallery rails = 2 middle shelves; (b) every part installed steps[0]-[3], rails steps[5]; (c) super glue, toggle bolts listed; (d) shelf complete."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/deb1803224df621f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bd1bd6173e11b36b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/57c42fb327c3ce83.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[7].name",
+      "quote": "Toggle bolts for wall attachment",
+      "what": "toggle bolts are listed but no step hangs the shelf on the wall or gives wall-fastening positions (steps[3] only says the attachment piece leaves \"room to screw into the wall\")"
+    }
+  ]
 }

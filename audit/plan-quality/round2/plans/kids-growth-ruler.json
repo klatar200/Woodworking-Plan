@@ -47,32 +47,29 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Take 1x6 board and cut it to 84” long. You could make this any length you want. I cut it at 84” because I wanted the board to be same elevation as the door. Than using a random orbital sander, sand th",
-          "why": "cut sentence states 84\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "t it to 84” long. You could make this any length you want. I cut it at 84” because I wanted the board to be same elevation as the door. Than using a random orbital sander, sand the board on all sides.",
-          "why": "cut sentence states 84\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": " the board on the wall above the baseboard. The baseboard is 2 ½” tall, so I had to cut off 2 ½” of the board so that when someone stands on the floor, the ruler will be elevated correctly to give the",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "baseboard. The baseboard is 2 ½” tall, so I had to cut off 2 ½” of the board so that when someone stands on the floor, the ruler will be elevated correctly to give the right reading. Attach the board ",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "The only part, the 84\" ruler board, is cut from listed materials[0] per steps[0]; flagged 84\" and 2 1/2\" are that cut and a trim cut, both from the listed board."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Board"
+        },
+        {
+          "path": "importDiffs[0].source",
+          "quote": "1x8x8'"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Take 1x6 board and cut it to 84” long."
+        }
+      ],
+      "reason": "The only cut-list row is the whole 1x8x8' stock (1 x 0.75 x 7.25 x 96), not a part; the part the step cuts (84\") has no row."
     },
     "R4": {
       "result": "pass",
@@ -80,28 +77,72 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 1×96 + kerf 0 cuts (1 parts − 1 boards, the fewest possible)×1/8 = 96.000″; bought: 1×96 = 96″; 96.000 ≤ 96"
+      "reason": "One part from one board: step cut 84\" (+ 2 1/2\" trimmed off) <= materials[0] 1 x 96\"; the sweep pass also holds (96 <= 96)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "n someone stands on the floor, the ruler will be elevated correctly to give the right reading. Attach the board to the wall using 2 ½” wood screws. That's all; you're done with this Kids Growth Ruler.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "Attach the board to the wall using 2 ½” wood screws."
         }
-      ]
+      ],
+      "reason": "Searched materials[0..6] (Board 1x8, Sharpie, numbers, pre-stain, stain, polyurethane, paper towels) for /screw|fastener/i: none."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Marks every inch with lengths for 0/12 (2\"), 3/6/9 (1 1/2\") and others (1\") given as numbers; foot numbers shown at the lines in viewed images cb63266e8c3584e3 and d171a78f066ddc87; wall height set by the 2 1/2\" baseboard trim."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "No \"as shown\"/diagram references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut and sand (0), stain (1), mark (2), poly (3), numbers (4), wall (5). The 2 1/2\" trim at the bottom removes the 0-2 1/2\" marks, leaving the 2 1/2\" mark at the bottom edge, which sits 2 1/2\" off the floor on the baseboard, so the order works."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes or joinery; the single board is screwed to the wall."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Take 1x6 board and cut it to 84” long."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x8 96\""
+        }
+      ],
+      "reason": "Step 1 names a 1x6 board; materials and cut list give a 1x8 (cutList source 1x8x8'). Searched whole plan for /1x6/: only steps[0] (and the title text of the step)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0e70595ccdaadc80.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cb63266e8c3584e3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d171a78f066ddc87.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/237af2e4ec013a59.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "with a fine grit sand paper (300 and up) sand the board lightly",
+      "what": "sandpaper (300+ and for sanding step 1) and pencil not in materials"
+    }
+  ]
 }

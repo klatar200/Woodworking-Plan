@@ -79,43 +79,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "t screws and wood glue. Of the fourteen shelves, six are fixed (held in place with pocket screws), two upper backs, two lower backs and four aprons also need pocket holes. Please see attached diagram.",
-          "why": "matches \"see attached\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": " edging might be slightly wider than the plywood. If that is the case you can remove the excess using a hand plane or a router with a piloted flush trim bit. (See Extras section for explanations/demo)",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "plywood is often slightly narrower than the stated size, so the attached edging might be slightly wider than the plywood. If that is the case you can remove the excess using a hand plane or a router w",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "\"See attached diagram\" (steps[3]) is the step image; \"See Extras section for explanations/demo\" (steps[4]) concerns an optional flush-trim of excess edging, not needed to complete the build."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "t. By cutting an additional plywood side and wood edging you can make two 37 7/8\" wide bookshelves. The plan can also be modified to add a third or fourth shelving unit if you have a big wall to fill.",
-          "why": "cut sentence states 37 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "For the 75\" wide shelving unit cut the sides, shelves, front/back aprons, lower backs and upper backs from the three 3/4\" plywood sheets. If you want to make two smaller units cut the optional side fr",
-          "why": "cut sentence states 75\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 75\" and 37 7/8\" are overall unit widths, not parts: 3 sides x 0.75 + 2 x 36.375 shelf = 2.25 + 72.75 = 75; 36.375 + 2 x 0.75 = 37.875 = 37 7/8. All cut/assembled parts (sides, shelves, aprons, upper/lower backs, edging) are cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: sides/shelves/aprons/backs in steps[1],[3],[6]; edging rows in steps[2],[4]; optional rows referenced in steps[1],[2]."
     },
     "R4": {
       "result": "pass",
@@ -126,18 +99,54 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x8, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use Kreg 1 1/4\" coarse pocket screws and 1 1/4\" brad nails; both in materials (screw line is typo-garbled \"1 1/1/4\" but same size). No conflicting sizes. Search: /\\d+ ?\\d*\\/?\\d*\"/ over steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Fixed-shelf positions and apron/back placement are shown in viewed assembly image (steps[6], f921ed250c6b704b) schematically without numbers; shelf-pin holes set by the Kreg jig; radius is 3/4\". Relational/pictured placements pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "\"Please see attached diagram\" in steps[3] has its own step image, viewed: pocket-hole layout diagram for aprons, shelves, upper/lower backs."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (steps 1-2), drilled (3), edged (4), pin holes (5), then assembled (6), radius (7), adjustable shelves (8). Nothing needs undoing."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "The shelving unit(s) are held together with pocket screws and wood glue. Of the fourteen shelves, six are fixed (held in place with pocket screws)"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood; searched all steps/materials/description for jig setting/thickness setting/depth: none; viewed step-3 diagram shows hole positions only, no setting. Recorded only (R9 does not count)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 14 shelves = 6 fixed + 8 adjustable; 8 adjustable x 4 pins = 32 shelf pins matches materials; four aprons, 2+2 backs match. (b) all parts installed in steps[6]/[8]. (c) no non-fastener hardware missing (shelf pins listed). (d) steps reach finished unit."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e4a3da5cbf7c77c0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f921ed250c6b704b.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Sand all of the components using 100 then 150 grit sandpaper.",
+      "what": "sandpaper (100/150/220 grit) not in materials; consumable"
+    }
+  ]
 }

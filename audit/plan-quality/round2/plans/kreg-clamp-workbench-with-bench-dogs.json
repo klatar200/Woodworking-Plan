@@ -211,60 +211,105 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " 2x4's to 20.25\". Pre-drill 1.50\" pocket holes according to the attached diagram. Attach the 47.25\" 2x6 to the back of the frame (place 3/4\" scrap underneath for spacing) and attach the 47.25\" 2x4 to ",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "\"according to the attached diagram\" (steps[2]) and \"Following the provided image\" (steps[1]) are the step images (viewed 66311c8644543016, 3777b88ac58eebad); Kreg Trak install instructions are replaced by the plan's own steps[9]-[10]."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All cut parts are cut-list rows; the second 47.25\" 2x4 for the bottom frame is cut from listed 2x4 in steps[2] itself (count issue under R14)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: aprons steps[0]; bottom frame steps[2]; legs steps[4]; supports steps[5]; bench top steps[1]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock identified by cross-section, counting the extra 47.25\" 2x4 steps[2] requires. 2x6 (4 x 96\"): 2x32.25 + 2x47.25 + 4x33.75 = 294\" + kerf; fits 4 boards as 47.25+47.25 | 2x33.75 | 2x33.75 | 2x32.25. 2x4 (4 x 96\"): 2x29.25 + 50.25 + 2x47.25 + 5x20.25 = 304.5\" + kerf; fits 4 boards as 50.25+2x20.25 | 47.25+29.25 | 47.25+29.25 | 3x20.25. Plywood 24 x 45 from quarter sheet 24 x 48.",
+      "readerNote": "Sweep R5 unknown resolved to pass."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the aprons with 1.50 pocket holes and 2.50\" pocket screws."
+        },
         {
           "path": "steps[2].body",
-          "quote": "ush through the face of the thinner material. Drive 2\" wood screws through the 2x4's into the plywood to secure the work surface. Flip the top over to check for gaps and add additional screws as neede",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Drive 2\" wood screws through the 2x4's into the plywood to secure the work surface."
         },
         {
           "path": "steps[5].body",
-          "quote": "Cut (2) 2x4's to 29.25\" and (1) 2x4 to 50.25\". Attach with wood screws 12\" from the ground. The added supports will strengthen the bench and add additional weight to make the work surface more sturdy.",
-          "why": "50.25\" screw — no material line lists a 50.25\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "terial is thicker than the 3/4\" recommended for the machine screws they include. Instead, thread insert the 2.50\" 1/4\" machine bolts hex head first into the Kreg Trak and then feed through the pre-dri",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Attach with wood screws 12\" from the ground."
         }
-      ]
+      ],
+      "reason": "Searched materials[0..8] for /screw|nail/i: only \"1/4\" hex head machine bolts at 2.50\"\". The 2 1/2\" pocket screws and 2\" wood screws are not listed (flagged \"50.25 screw\" and \"3/4 screw\" are a cut length and Kreg's screw-thickness remark, rejected)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Frame, bottom framework, legs (33 3/4\", 5 1/2\") and supports (29 1/4\", 50 1/4\", 12\" off ground) dimensioned in viewed images; Trak spots (45\", 27\") shown in 3777b88ac58eebad; pilot holes \"5 pairs\"/\"4 sets\"; dog-hole spacing and vise spot left to the builder."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "References sit in steps with their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (0), dry fit (1), bottom framework with \"DO NOT ATTACH THE TRAK YET\" (2), legs (4), supports (5), dog holes (6), Trak template, pilot holes, bolts, nuts (7-10), vise (11). Workable."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0],[2],[4]: \"1.50 pocket holes\" (all pocket-hole parts are 2x, 1 1/2\"); plywood is screwed, not pocket-holed."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut the aprons for the frame to length: (1) 2 x 4 x 47.25\", (1) 2 x 6 x 47.25\", (2) 2 x 6 x 32.25\"."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut (1) 2x6 to 47.25\", (1) 2x4 to 47.25\" and (5) 2x4's to 20.25\"."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Side Apron 1 2 4 47.25"
+        }
+      ],
+      "arithmetic": "2x4 x 47.25\" needed: 1 (steps[0]) + 1 (steps[2]) = 2; cut list 2x4 x 47.25\" rows: cutList[6] qty 1 only (searched cutList for length 47.25: rows 1, 2 are 2x6). 2 > 1. Bolts: 5 pairs x 2 + 4 sets x 2 = 18 = materials[8] qty 18 (agrees).",
+      "reason": "Cut list is one 2x4 x 47.25\" short of what the steps cut."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3777b88ac58eebad.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/66311c8644543016.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22927b3f9f17ae27.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3952000aa0ac2fe0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab1d107d1c711531.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c2cd2c435c891538.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "Adding a finish to the bench is completely optional.",
+      "what": "stain, paint, poly, sandpaper (optional finish) not in materials"
+    }
+  ]
 }

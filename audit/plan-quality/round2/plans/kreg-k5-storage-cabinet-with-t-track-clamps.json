@@ -200,25 +200,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "No dependency: the sweep found no PDF/extras reference in steps; \"See extras tab for full video\" is in the description only and the steps and images give the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, base supports, material supports and all drawer parts are cut-list rows; dividers and spacers are cut-list rows pictured in the step-8 assembly image; step 10 sends drawer parts to the cut list."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Sides - Dividers",
-          "why": "no step mentions it (searched steps for divider)"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Outside Spacers",
-          "why": "no step mentions it (searched steps for outside/spacer)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Sides - Dividers\" (6 = 3 per cabinet) and \"Outside Spacers\" (2 5/8\" opening spacers) are shown with dimensions in the step-8 assembly image 3b7aedf9e9a77d3c (viewed), though no step text names them."
     },
     "R4": {
       "result": "pass",
@@ -226,29 +216,64 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 0.5x36); steps not checked for per-part stock"
+      "reason": "Stock widths are not stated: materials[1] \"Poplar, 1/2\" Thick 36\"\" (width missing) and materials[0] \"Plywood, 1/2\" Thick 96\"\" (sheet size ambiguous); only lengths can be checked (poplar parts 56 + 4.9 + 3.9 + 14 + 14 = about 93\" of length vs 3 x 36 = 108\")."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1\" pin nails and 1\" crown staples in materials[2],[3] match steps[6]-[9]; pull bolts come with the pulls (materials[4]); no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "il a crown staple into the inside front of the cabinet side. Then staple the rest of the structure from the bottom. Be careful not misfire a staple into the drawer cavity, as it will be really difficu",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af262d506cdcb61b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged cabinet placement is relational (flush with the front of the base support) and the base layout (cabinet footprints, 12\" / 12 1/2\" / 5 1/2\" / 2 1/4\", slot, handle and through-hole positions, 25\" slot spacing) is dimensioned in viewed images 23325528360274a3, 3a0c2fcdfd16fb57, bfd54c812df105af; pulls at the center of each front."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"according to the image\" (steps[1]) is in a step with its own dimensioned image, viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Base cut and shaped (0-4), supports sized (5), supports and K5 on base (6), cabinets assembled (7) then installed (8), drawers built (9) and pulls fitted (10)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Joints are glue plus staples/pin nails (steps[7],[8],[9]); pocket holes are only an option (\"You can also use pocket holes if you choose\"), so no setting is required."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[7]",
+          "quote": "Sm. Drawer Fronts 2 0.5 1 2 (Kreg source \"2 15/16\" x 1 15/16\" x 1/2\"\")"
+        },
+        {
+          "path": "cutList[8]",
+          "quote": "Outside Spacers 2 0.5 2 2 (Kreg source \"2 5/8\" x 2\" x 1/2\"\")"
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Each part is sized 1/16” shorter than the drawer opening so the drawer can slide easier."
+        }
+      ],
+      "arithmetic": "Large drawer: opening 3 1/2\" (inside spacer, cutList[4] corrected 3.5) - 1/16 = 3.4375 = cutList[5] front (agrees). Small drawer: opening 2 5/8\" (outside spacer width, also the 2 5/8\" label in viewed image 3b7aedf9e9a77d3c; 3 x 0.5 + 3.5 + 2.625 = 7.625 = the 7 5/8\" cabinet width) - 1/16 = 2.5625, but the small front is 2.9375. 2.9375 - 2.5625 = 0.375 (3/8\") too wide.",
+      "reason": "Small drawer parts (front 2 15/16\") are wider than the 2 5/8\" small opening the cabinet drawing defines; step 10 does tell the builder to measure each opening before cutting."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3b7aedf9e9a77d3c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af262d506cdcb61b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/631906391f87402c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/23325528360274a3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3a0c2fcdfd16fb57.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bfd54c812df105af.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/826d32dc56fef708.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0029149fa4a999a2.webp"
+    ]
+  }
 }

@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Length/height frames, angled supports, 21\" side frames (top frame and base width pieces), panels and inlay are all cut-list rows; step names map by dimension (15\", 21\", 48\", panels, inlay)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: frames steps[0],[2]; supports steps[1]; side frames steps[3],[4],[5]; panels steps[3]; inlay steps[6],[7]. Row 12 (0.75 x 0.75 x 3 triangles) is inlay filler with no separate step, not clearly unused."
     },
     "R4": {
       "result": "pass",
@@ -155,45 +157,86 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x2, sheet-0.75, 1x3); steps not checked for per-part stock"
+      "reason": "Steps do not name stock per part (3 stock types). Rough check only: 2x2 parts 4x48+6x15+4x25.375+6x21 = 509.5\" vs 5 x 120\" = 600\"; 1x3 inlay rows 5-11 total 417.5\" vs 5 x 96\" = 480\" (the optional extra 8-10 trial pieces in steps[6] would exceed it)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "cket holes on both ends of the height frame pieces (15\"). Using wood glue and 2 1/2\" pocket hole screws, attach the height frame pieces to the length frame pieces on both ends and in the exact center.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "Using wood glue and 2 1/2\" pocket hole screws, attach the height frame pieces to the length frame pieces"
         },
         {
-          "path": "steps[4].body",
-          "quote": "Using wood glue and 2 1/2\" pocket hole screws, attach the table top frame pieces to the side length frame pieces. Then attach the panels to the side length frame pieces using 1 1/2\" pocket hole screws",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Drill 1 1/2\" pocket holes on either end of the base width frame pieces (2) and attach them between the two side frames using wood glue and 2 1/2\" pocket hole screws.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "path": "materials[3].name",
+          "quote": "2 1/4\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Steps[0],[4],[5] call for 2 1/2\" pocket hole screws for the 2x2 joints; materials list only 2 1/4\" and 1 1/2\" pocket hole screws (searched materials[0..9] for /2 1\\/2/: none). Same use, two different sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "pieces of angled inlay pieces on each side of the table top. It is best not to cut the exact lengths for the remaining pieces that fit, until you measure and mark where they will fit. I found it easie",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/473ac91d89974edd.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged inlay placement is shown in viewed diagrams 473ac91d89974edd and 2c9920ccfffba8cb (herringbone layout, 14 5/8\" pieces, 45 deg cuts, fit-and-cut); angled supports shown with 31 deg cut in 44e94b0ebfcf4a34; center post \"in the exact center\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No \"as shown\"/diagram references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames (0-2), top (3), top to sides (4), base width pieces (5), inlay fit and nail (6-7), finish (8). Workable."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Stated per thickness: steps[3] \"Drill 3/4\" pocket holes ... panels\" (plywood) and steps[0],[3],[5] \"1 1/2\" pocket holes\" on 2x2 ends (1 1/2\" material). No contradiction."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[2]",
+          "quote": "Angled supports 4 x 2 x 2 x 25 (Kreg source \"2\" x 2\" x 25 3/8\"\")"
+        },
+        {
+          "path": "steps[1].image (viewed 44e94b0ebfcf4a34)",
+          "quote": "25 5/8\""
+        }
+      ],
+      "arithmetic": "Kreg-corrected cut list length 25 3/8\" = 25.375\"; step-1 diagram labels the angled support 25 5/8\" = 25.625\"; 25.625 - 25.375 = 0.25\" (1/4\").",
+      "reason": "The angled-support length differs between the cut list and the step diagram."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ed4a352ed0014b64.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/34a1dcdd5dd241d4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b01851830ca03ba9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/09293f5e5354e7ea.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca3f4728e87538b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/473ac91d89974edd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c9920ccfffba8cb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/44e94b0ebfcf4a34.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3]",
+      "quote": "Side frames 6 2 2 21",
+      "what": "steps place 2 base width pieces (steps[5] \"frame pieces (2)\") plus the table-top frame sides and middle (steps[3]; 48 = 2 x 21.75 + 3 x 1.5 implies 3), i.e. 5 of the 6 21\" pieces; no step uses the sixth. Count not stated in steps."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "it is recommended to use a wood conditioner before applying stain",
+      "what": "wood conditioner, wax (optional finish items) not in materials"
+    }
+  ]
 }

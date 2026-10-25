@@ -91,56 +91,68 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "e height of the dividers because of the thickness of the plywood bottom. I have attached my plan with dimensions. Once you have completed your plan cut all of the dividers to size. I used 1/2\" poplar.",
-          "why": "matches \"have attached\""
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "0 - 180 grit sandpaper to smooth all of the dividers and the bottom. Using your design layout measure and mark the position of the dividers on the plywood bottom. See attached example from my project.",
-          "why": "matches \"See attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"I have attached my plan with dimensions\" (steps[2]) and \"See attached example\" (steps[3]) are the step images, which carry the dimensions (viewed 55ceb2f6913af154, e91cca63184d93e8); no external file is needed."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Plywood bottom, five front dividers, middle (center) divider and back divider are all cut-list rows; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used in steps[1]-[4] (bottom, center divider, five front dividers, back divider)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.25, 0.5x5.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Poplar 1/2 x 5 1/2 x 48 (materials[1]) ripped to two 2 1/2\" strips (2 x 2.5 + 1/8 kerf <= 5.5): parts 5x10 + 15.375 + 9.75 = 75.125\" + 7 kerfs x 1/8\" = 76\" <= 2 x 48 = 96\"; strips fill as 4x10 | 10 + 15.375 + 9.75. Plywood 15.375 x 20.25 = 311 sq in <= quarter sheet 24 x 48.",
+      "readerNote": "Sweep R5 unknown resolved to pass."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1\" pin nails and glue; materials[2],[3] match; no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "0 - 180 grit sandpaper to smooth all of the dividers and the bottom. Using your design layout measure and mark the position of the dividers on the plywood bottom. See attached example from my project.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e91cca63184d93e8.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Divider positions are dimensioned in viewed images 55ceb2f6913af154 and e91cca63184d93e8 (6 3/4\" + 8 1/8\" + 1/2\" = 15 3/8\", front dividers at 2 1/8\", 4 3/4\", 7 7/16\", 10 1/8\", 12 3/4\"; 10\" + 9 3/4\" + 1/2\" = 20 1/4\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"attached\" references are in steps with their own images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Measure (1), cut (2), mark bottom (3), glue center divider, then fronts, then back (4), finish (5)."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; glued and pin-nailed (steps[4])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) five front dividers + one center + one back = six silverware compartments and two larger, matching steps[0]; cut-list sizes add to the drawing (6.75 + 8.125 + 0.5 = 15.375); (b) all dividers installed (steps[4]); (c) pin nails, glue, finish listed; (d) steps reach finished insert."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/55ceb2f6913af154.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e91cca63184d93e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a2537dfcdf37844e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c09c3d915ff87d91.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Fill any holes or defects with wood filler.",
+      "what": "wood filler not in materials"
+    }
+  ]
 }

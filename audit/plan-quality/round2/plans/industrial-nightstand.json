@@ -355,85 +355,110 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[22].body",
-          "quote": "Make sure and check out my website Build It Craft It Love It for more awesome, free plans!!",
-          "why": "matches \"my website\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[22] \"check out my website ... for more awesome, free plans\" is a credit/plug; nothing in the build depends on it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rails, legs, boards, drawer parts and slide braces are cut-list rows; \"faux metal accents\" are cut from listed 1/4\" plywood (steps[21]) - size in gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All rows used: rails/legs steps[0]-[5],[10]; boards steps[6]-[12]; braces steps[13]; drawer parts steps[15]-[18]; mitered accents steps[19]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 7 stock types (2x2, 1x6, 1x4, sheet-0.25, 1x3, 1x10, 1x12); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock identified by cross-section, Kreg-corrected lengths. 2x2 (4 x 96\"): 2x25 + 4x22 + 4x18.75 + 4x23.5 + 4x6 = 331\" + 17 cuts x 1/8\" = 333.1\" <= 384\" and boards fill as 4x23.5 | 2x25+2x22 | 2x22+2x18.75+2x6 | 2x18.75+2x6. 1x6 (2 x 120\"): 4x18.75 + 4x16.75 + 2x23.5 = 189\" <= 240\". 1x4 (120\"): 4x16.75 + 2x23.5 = 114\" + 5 kerfs = 114.6\" <= 120\". 1x10 (96\"): 2x19.5 + 2x19 = 77\". 1x12: 21.75\". 1x3: 2x18.75 = 37.5\". 1/4\" ply: 19 x 21 = 399 sq in <= 1152.",
+      "readerNote": "Sweep R5 unknown resolved to pass by per-stock packing."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": " Legs using pocket holes drilled at 1 1/2\" and using 2 1/2\" screws and wood glue to attach!! Also attach the Bottom Back Rail with the same pocket holes, screws and glue! *Black ovals indicate pocket ",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "With the back frame laying on the floor, attach the top side rails to the back frame! Again using pocket holes drilled at 1 1/2\" and using 2 1/2\" screws and wood glue!",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "nt rail...pocket hole placement is not shown in the picture but they are on the back of the legs just as the back ones were done! Still using the same 1 1/2\" pocket holes and 2 1/2\" screws to attach!!",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "using 2 1/2\" screws and wood glue to attach!!"
         },
         {
           "path": "steps[6].body",
-          "quote": "cket hole depth is changing to 3/4\" pocket holes and 1 1/4\" screws! You will still want to glue all joints as best as you can! I alternated my 1x6s and 1x4s, you can arrange them however you would lik",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Flip the nightstand upside down to attach top boards...Using pocket holes drilled at 3/4\" and 1 1/4\" screws and glue!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "Attach front and back shelf rails! Switching back to a pocket hole depth of 1 1/2\" and 2 1/2\" screws and glue to attach!",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Attach shelf boards! And switching back to a pocket hole depth of 3/4\" and using 1 1/4\" screws! Of course, don't forget the glue!! Haha!!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "The pocket hole depth is changing to 3/4\" pocket holes and 1 1/4\" screws!"
         },
         {
           "path": "steps[13].body",
-          "quote": "is actually called...brain fart!!)Just and glue and screw them straight into the side with 1 1/4\" flat head screws...make sure they are completely flush with the board or slightly sunk into the board!",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "screw them straight into the side with 1 1/4\" flat head screws"
         }
-      ]
+      ],
+      "reason": "Searched materials[0..9] for /screw|nail|staple/i: none; the only fastener line is \"Pkg. of furniture tacks\". The steps need 2 1/2\" and 1 1/4\" pocket screws and 1 1/4\" flat head screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf at 3 3/4\" and 11 1/2\" (viewed efa346f3675ab64c), bottom rail 5 1/4\" and overall sizes (viewed 86e994b2c5cf5b72); slide braces and slides pictured (ebc3d775fb8b5788) and set by the Kreg slide jig; face lined up \"just how I want it\" (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "The one picture reference (\"The picture is just for reference\") is in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back frame, side rails, front rails and legs, side boards, top boards (upside down), shelf rails/boards, slide braces, slides, drawer, face, accents, finish. Step numbers run in order; \"(cont)\" steps are photo-only."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"pocket holes drilled at 1 1/2\"\" (2x2); steps[6],[9],[12] \"3/4\" pocket holes\" (1x boards); drawer-box pocket holes shown in viewed image 7748aadb09c67c54 on 3/4\" boards; face glued and brad nailed (steps[18])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[8].name",
+          "quote": "Drawer pull"
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "I usually just glue and staple it to the bottom of my drawer"
+        }
+      ],
+      "reason": "(c) staples (steps[15]) and brad nails (steps[18]) are not in materials[0..9]. (d) the drawer pull in materials[8] is never installed: searched all steps for /pull|handle|knob/i, no match (the finished photo shows one)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-08",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/01dc512e8e7fa733.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ebc3d775fb8b5788.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7748aadb09c67c54.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/86e994b2c5cf5b72.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48d8bc279a9e6d59.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/efa346f3675ab64c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/76ab9367f718e1a6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1d1ffb2a20276eeb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a21704074ec31125.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf6f2d97a7a0e01d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b335e6a4540eaf04.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[21].body",
+      "quote": "I cut the faux metal accents from the left over 1/4\" plywood I had and painted them",
+      "what": "size, count and position of the plywood faux metal accents (attached with furniture tacks) are not given; cutList[4] \"Mitered Accents\" is 2x2 stock mitered 6\" (steps[19]), a different piece"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "using 2 1/2\" screws and wood glue to attach!!",
+      "what": "wood glue, paint, stain not in materials"
+    }
+  ]
 }
