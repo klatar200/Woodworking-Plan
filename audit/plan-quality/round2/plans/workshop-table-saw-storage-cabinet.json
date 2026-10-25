@@ -479,10 +479,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut/assembled (back, bottom, top, sides, divider, apron, drawer fronts/sides/backs/bottoms, door, glides) has a cutList row; searched steps[1..13] vs cutList parts."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 21 rows are used: Door Front steps[12-13], Drawer parts steps[10-11], Front Apron steps[9], glides steps[7], carcass parts steps[1-6]."
     },
     "R4": {
       "result": "pass",
@@ -493,26 +495,71 @@
       "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 1x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" coarse pocket screws and 1 1/4\" brad nails; both listed in materials[4], materials[12]. No conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[12].body",
+          "quote": "Use a drill press with a 1 3/8\" forstner bit to drill the 2 hinge holes in the door using the dimensions recommended by the manufacturer of the hinges."
+        },
         {
           "path": "steps[13].body",
-          "quote": "On the inside of the cabinet mark the position of the hinge mounting plates. Pre drill small holes for the screws that hold the mounting plates. Attach mounting plates as per the hinge manufacturers i",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8fa2e0bd8481c35a.webp"
+          "quote": "On the inside of the cabinet mark the position of the hinge mounting plates."
         }
-      ]
+      ],
+      "reason": "Hinge-cup hole positions and mounting-plate positions are given as no number in the plan; they are delegated to the hinge maker. The step 13 image (viewed) shows the plates with no dimensions. Divider position (12 1/4\"/21 1/2\" bays) and glide heights (3 3/4, 4 1/4, 5 1/4, 7) are shown in viewed step 6 and 7 images, so those pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "steps[1] and steps[7] \"as shown\" each have their own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass assembled (step 6), glides added (7), remaining parts cut to fit (8), apron/drawers/door built then installed/finished in order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2].body \"set to 3/4\\\" for all pockets on this project\"; all pocketed parts are 3/4\" plywood."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Using wood glue and 1 1/4\" pocket screws assemble the four drawers."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "After the finish has dried add door/drawer pulls."
+        }
+      ],
+      "reason": "Drawers are built (step 11) but no later step places them into the cabinet on the glides (searched steps for insert/slide/install/place drawers: none). Everything else (door attach, finish, casters) is reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "plans/53277b28b2ec1f07.webp (step 6)",
+      "plans/a61338a287466be7.webp (step 7)",
+      "plans/8fa2e0bd8481c35a.webp (step 13)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[14].body",
+      "quote": "After the finish has dried add door/drawer pulls.",
+      "what": "Pull positions on door/drawer fronts are not given (no number); treated as as-desired placement."
+    }
+  ]
 }

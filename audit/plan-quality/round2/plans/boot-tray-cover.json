@@ -10,31 +10,111 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides (32\" and 16\") and slats have cutList rows; steps[0],[1],[3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows are used in steps[0],[1],[3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 72\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Sides x2 0.75 x 2.5 x 32"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Sides x2 0.75 x 2.5 x 16"
+        }
+      ],
+      "reason": "The four 0.75 x 2.5 Sides match exactly one listed material (1x3, 3/4 x 2 1/2 per §9), and materials[0] buys quantity 1 at 72\" (no defaulted-quantity diff in importDiffs).",
+      "arithmetic": "1x3 parts: 2 x 32 + 2 x 16 = 64+32 = 96; 3 cuts => +1/8\" x 3 = 0.375 => 96.375 > 1 x 72 = 72, short 24.375\". (1x2: 13 x 16 = 208 + 1.625 = 209.6 <= 2 x 96 + 72 = 264 passes.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" Kreg screws / pocket screws; materials[3] lists 1 1/4\" pocket screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slats \"space the 13 slats evenly\" with a scrap 1x2 (relational); frame sizes 32\"/16\" and tray 29 3/4\" x 14 3/4\" given; viewed steps[3] image shows slats laid inside the frame."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (0), slats prepared (1), slats attached last (3), finish (4)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut all 13 1x2 slats down to 16\" and add 2 pocket holes on each end."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "using 1 1/4\" Kreg screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" slats and (per viewed steps[0] image) in the 1x3 frame pieces with no jig thickness setting anywhere (searched steps, materials, description for setting/jig/thickness); step 0 never says the frame joint uses pocket holes."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut all 13 1x2 slats down to 16\" and add 2 pocket holes on each end."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Pack of 50- 1 1/4\" pocket screws"
+        }
+      ],
+      "reason": "Screw count exceeds the pack: 13 slats x 2 ends x 2 holes = 52 slat screws alone, before the frame corner screws; materials[3] quantity 1 is \"Pack of 50\".",
+      "arithmetic": "13 x 2 x 2 = 52 > 50 (frame screws extra: 4 corners, count not stated)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "54356fe358efcfbf.webp (step 3)",
+      "a40f5d95a70cf194.webp (step 0)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "you will want to treat it with polyurethane for protection",
+      "what": "polyurethane not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Use a scrap piece of 1x2 to space the 13 slats evenly.",
+      "what": "Which face of the scrap 1x2 (3/4\" or 1 1/2\") sets the gap is not stated; 13 x 1.5 = 19.5 of slats in a 30.5\" inner length leaves 11\" for 12-14 gaps."
+    }
+  ]
 }

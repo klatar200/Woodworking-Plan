@@ -47,31 +47,113 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, short/long side aprons, table top boards and bottom shelf slats all in cutList; steps[1]-[4]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used in steps[1]-[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x4, 2x2); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Short side aprons x4, 0.75 x 2.5, Kreg-corrected length 9.5"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Long side aprons x4, 0.75 x 2.5 x 14"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Table top sides x2, 0.75 x 2.5 x 21"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Table top outer edge x2, 0.75 x 2.5 x 20"
+        }
+      ],
+      "reason": "Every 0.75 x 2.5 part matches exactly one listed material (1x3, 3/4 x 2 1/2 per §9); materials[0] buys quantity 1 of \"Board, 1x3 96\\\"\" (no defaulted-quantity diff in importDiffs); required length exceeds it by far.",
+      "arithmetic": "1x3 parts: 4 x 9.5 + 4 x 14 + 2 x 21 + 2 x 20 = 38+56+42+40 = 176; 12 pieces => +1/8\" x 12 = 1.5 => 177.5 > 1 x 96 = 96, short 81.5\". (1x4: 2x22 + 4x12.5 = 94 <= 192 and 2x2: 4x35.25 = 141 <= 144 pass.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" pocket hole screws and 1 1/4\" finish nails; materials[3], [4] list both."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed steps[1] image: top apron 6\" from leg top, apron inset 3/8\", short apron 9 1/2\", legs 35 1/4\"; steps[3]: 1/8\" spacing, board lengths 22\" and 20 3/4\"; overall \"22\\\"diameter top x 36\\\"h\". Shelf slats sit on the bottom aprons (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Aprons on legs (1), joined (2), top on aprons (3), shelf slats on aprons (4); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach short side aprons to legs using wood glue and 1 ¼” pocket hole screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach table top pieces to aprons using wood glue and 1 ¼” pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" aprons with no jig thickness setting stated (searched steps, materials, description for setting/jig/thickness); viewed steps[1] and [3] images show pocket holes and no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Keep 1/8” spacing between boards. Use a jig saw to trim boards to 22” diameter circle."
+        },
+        {
+          "path": "cutList[3..5]",
+          "quote": "Table top middle x2 (3.5 wide), Table top sides x2 (2.5), Table top outer edge x2 (2.5)"
+        }
+      ],
+      "reason": "The top boards cannot reach a 22\" circle: only six boards are listed across the top (2 x 3.5 + 4 x 2.5 = 17\") and five 1/8\" gaps. Viewed steps[3] image shows more boards than are easily counted against these six; cause could be a lost quantity in the source, but the importDiffs show none.",
+      "arithmetic": "Widths 2 x 3.5 + 2 x 2.5 + 2 x 2.5 = 7+5+5 = 17; gaps 5 x 1/8\" = 0.625 => 17.625\" < 22\" diameter named in steps[0] \"22\\\"diameter top x 36\\\"h\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "a7afa6f98c4b8b41.webp (step 3)",
+      "afdaa697dfe52b41.webp (step 1)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[3].lengthIn",
+      "quote": "Table top middle x2 0.75 3.5 22",
+      "what": "Row quantities (2 each) give six boards across; with the lengths 22/21/20 the top is not a 22\" circle."
+    }
+  ]
 }

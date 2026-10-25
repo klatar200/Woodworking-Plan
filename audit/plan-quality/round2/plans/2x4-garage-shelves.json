@@ -30,10 +30,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Brackets (outer boards + interior boards), vertical supports and OSB panels all map to cutList rows (48/96/13/68.5\" boards, 16x96, 16x48 OSB); rows are all named \"Boards\" so roles are inferred (see gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows are used by steps[1]-[5] (bracket boards, vertical supports, OSB panels); \"2 short shelves and 2 long shelves\" = 4x48 / 4x96 outers and 2+2 OSB panels."
     },
     "R4": {
       "result": "pass",
@@ -46,21 +48,63 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material (2x4; 1/2\" OSB). kerfOnly: the OSB parts total exactly one 48x96 sheet with zero kerf.",
+      "kerfOnly": true,
+      "arithmetic": "2x4: 4x48 + 4x96 + 16x13 + 2x68.5 = 192+384+208+137 = 921; 22 sawn pieces x 1/8\" = 2.75 => 923.75 <= 10 x 96 = 960. OSB: 2x16x96 + 2x16x48 = 3072+1536 = 4608 sq in = 48 x 96 sheet; 3 rips of 16\" need 48.25\" => short by 1/4\" kerf only."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only \"screws\" (3\" construction screws, materials[2]) are named in steps; no size conflicts."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach vertical supports to the shelf brackets, and attach shelf brackets to the wall. Make sure you are attaching the brackets to the walls on the studs"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Gather your cut 2x4 pieces and lined them up to create your shelf brackets."
+        }
+      ],
+      "reason": "No step gives the height of any shelf bracket on the vertical supports/wall, where the vertical supports sit along the brackets, or the spacing of the interior 13\" boards (16 boards over 4 brackets: no per-bracket count or spacing in text). Viewed images (steps[2] and steps[4]) are photographs with no dimensions. Searched steps, description, materials, cutList notes for numbers on spacing/height: none."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; \"cut sheet\" in steps[0]/[1] is the plan cut list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "OSB cut (0), 2x4 cut (1), brackets built (2-3), mounted with supports (4), panels laid on top (5)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Pocket holes are only optional (\"If you want a cleaner look, use one of the Kreg pocket hole jigs\"); the primary joint states method and fastener (screws through outer boards into interior boards)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step 2 \"2 short shelves and 2 long shelves\" = 4 outer 48\" and 4 outer 96\" boards (2 per bracket) and 2+2 OSB panels; interior 13\" boards + 2 x 1.5 outers = 16\" = OSB panel width. Everything made is mounted/placed; piece complete."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "5496ec3282f6e99a.webp (step 2)",
+      "86ac020404ac67d1.webp (step 4)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[0..3].part",
+      "quote": "Boards",
+      "what": "All four 2x4 rows are named just \"Boards\"; the plan never states which row is an outer bracket board, an interior cross board (16 x 13) or a vertical support (2 x 68 1/2)."
+    }
+  ]
 }

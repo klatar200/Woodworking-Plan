@@ -263,44 +263,62 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Leg supports, angled cuts, top boards, middle/bottom shelves, top dividers and bottom divider each have a cutList row (searched steps[0-4])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[6].part",
-          "quote": "Long Angled cut (see picture)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Short Angled Cut (See Picture)",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[6]/[7] \"(see picture)\" rows are real parts: steps[0] \"attach the long angled cut to the legs supports ... Attach the short angled cuts\"."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part matches exactly ONE listed material (1.5x3.5 -> 2x4; 1.5x5.5 -> 2x6).",
+      "arithmetic": "2x4: 4x16.5 + 2x30 + 4x15 = 66+60+60 = 186; +1/8\" x 10 cuts = 187.25 <= 2 x 96 = 192. 2x6: 3x50 + 2x39.125 + 2x37.125 + 12.75 + 2x14.25 = 150+78.25+74.25+12.75+28.5 = 343.75; +1/8\" x 10 = 345.0 <= 3 x 120 = 360."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps use 2 1/2\" pocket screws and 1 1/2\" wood screws (materials[2], [3]); \"1 1/2\" pocket hole\" is the jig setting, not a screw."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Leg inset shown as 3\" in viewed steps[2] image; dividers \"12 1/4\\\" from each end\", shelf \"13 1/2\\\" from the Top\", bottom divider \"18 1/4\\\" from one end\" in steps[3]/[4]; angles 40deg/25deg in viewed steps[0] image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "\"see picture\" cutList rows and steps[0] have own step image (viewed, shows 40deg/25deg X)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs built (0), top/shelves built (1), legs on top (2), middle shelf+dividers (3), bottom shelf+divider (4), finish (5)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3].body \"Use 1 1/2\\\" pocket holes and 2 1/2\\\" pocket screws\" and steps[0] \"Drill 1 1/2\\\" pocket hole\"; all pocketed parts are 2x (1.5\")."
+    },
+    "R14": {
+      "result": "unknown",
+      "reason": "steps[3] says the divider is 14.25 (cutList[2]) yet \"The shelf is 13 1/2\\\"\\\" from the Top\"; whether these conflict depends on which faces \"from the Top\" measures between, not stated; viewed steps[3] image has no dimensions. All parts installed and the piece is finished."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "702fdd304c7f2bfe.webp (step 0)",
+      "0674a1f5915aff98.webp (step 2)",
+      "55af510cbcaf1fef.webp (step 3)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "The dividers are 12 1/4\" from each end. The shelf is 13 1/2\"\" from the Top.",
+      "what": "Top divider length is 14 1/4\" (Kreg-corrected cutList[2]) but the shelf is stated 13 1/2\" from the Top; possible 3/4\" mismatch, interpretation unclear."
+    }
+  ]
 }

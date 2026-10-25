@@ -90,32 +90,58 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Back, divider, bottom and shelves are each cut in steps[0]-[2] and have cutList rows (searched steps for cut/cut a piece)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Back Panel/Middle Divider steps[0], Bottom Panel steps[1], Shelves steps[2]-[3]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0]); cutList[2] no match among parsed stock; unparsed stock present (materials[0]); cutList[3] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "reason": "materials[0] \"1x8x8\": NxMxL with L=8<=16 read as 8 ft per §9 (assumption recorded); Kreg-corrected rows 0.75 x 7.25 = 1x8 actual 3/4 x 7 1/4 for all 4 rows."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "reason": "All parts are 0.75 x 7.25 = exactly one listed material (1x8). Length assumed 8 ft (L=8 <= 16, §9); quantity 2 is not a defaulted 1.",
+      "arithmetic": "Parts: 18 + 48 + 47.25 + 5 x 8.5 = 18+48+47.25+42.5 = 155.75; 8 pieces => +1/8\" x 8 = 156.75 <= 2 x 96 = 192. Per board: 48 + 47.25 + 1/8\" = 95.375 <= 96 and 18 + 5 x 8.5 = 60.5."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws are used (materials[1]); no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Divider 3/4\" shorter at bottom, flush top, 5 screws; bottom panel centered and butted; shelf spacing \"as desired\"; back-screws one per shelf; all relational or numeric."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"spacing shown here\" (steps[2]) is in a step with its own image; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back/divider (0), bottom (1), shelves to divider (2), shelves to back (3); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2].body \"Drill 3/4\\\" pocket holes into ONE end of each piece\"; pocketed shelves are 3/4\" (corrected 0.75)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "steps[0] 48\" / 47 1/4\", steps[1] 18\", steps[2] 5 shelves at 8 1/2\" match corrected cutList (48, 47.25, 18, 5 x 8.5). All parts installed; piece is complete."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "center it vertically on the back panel so that the edges are flush at the top. The divider will be 3/4\" shorter than the back at the bottom.",
+      "what": "\"center it vertically\" contradicts \"flush at the top\" / \"3/4\" shorter at the bottom\"; read as centering across the board width, wording unclear."
+    }
+  ]
 }

@@ -107,10 +107,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, arms, arm rests, stretcher rails/back stretcher, front apron, seat side supports, seat slats, back supports, back slats, foot rest all have cutList rows (steps[1]-[11])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 rows are used: steps[1]-[11] (legs/arms 1, foot rest parts 2-4/8, seat supports 5, middle back support 6, arm rests 7, seat slats 8, back slats 9-10, top support 11)."
     },
     "R4": {
       "result": "pass",
@@ -118,20 +120,64 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "reason": "Lengths per stock fit: 1x2 13x19.25 = 250.25 <= 4x96; 1x3 17.75 + 2x20.5 + 2x28 + 2x30 + 3x31 = 267.75 (+1.25 kerf) <= 3x96 = 288; 1x4 2x30 + 19.25 + 2x27 + 19 = 152.25 <= 2x96; 2x2 4x30 = 120 <= 2x72; 2x4 17.75 <= 24. But the 4.5\"-wide parts (foot rest 22.25, middle back support 24.25) fit either materials[3] 1x5 (not in §9) or a rip of materials[4] 1x6 (49 + 46.5 = 95.5 > 72), so it stays unknown."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2\" countersunk screws, 1 1/4\" pocket hole screws, 1 1/4\" countersunk screws, 2\" pocket hole screw; materials[7]-[10] list 2\" wood, 1 1/4\" pocket hole, 1 1/4\" wood, 2\" pocket hole screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give leg length 30\", arm overhang \"1\" overhang at front and side\", stretcher height 2\" and spans 24\"/4\", seat support heights 18\" / 8 1/2\" / 16 3/8\", slat spacing \"1/4\\\" space between slats\", back support 3 1/8\", slat lengths 31\"/25\". Overall size in steps[0]."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; each step has its own diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Arms on front legs (1), stretcher built then on legs (2-3), apron (4), seat supports (5), middle back support to arms and back leg (6), arm rests (7), seat/foot rest (8), slats cut and mounted (9-10), top support (11)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach foot rest side rails to back stretcher using 1 ¼” pocket hole screws."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Attach back bottom support to seat side support rails using 2” pocket hole screw."
+        }
+      ],
+      "reason": "Pocket holes are made in 3/4\" parts and a 1.5\" part but no jig thickness setting is stated in any step, material or description (searched for setting/jig/set to/thickness); the viewed images (steps[1],[3],[5],[8],[9],[10]) show none."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Back slats 7 (2+2+3) x 2.5 = 17.5 <= 17.75 bottom back support; seat slats 13 x 1.5 + 12 x 1/4 = 22.5 fits the 24.5 supports; viewed step 8 image foot rest 22 1/4 x 4 1/2 and slats 19 1/4 match corrected rows. All parts installed; steps reach the finished chair."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "78103fae6a3dc475.webp (step 1)",
+      "a7d35d049bcc0311.webp (step 3)",
+      "1c4c5a5b46648449.webp (step 5)",
+      "a35fc8b7fcd37601.webp (step 8)",
+      "a281ddd41af30961.webp (step 9A)",
+      "142e79a8fe2e69de.webp (step 11)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Use a jigsaw to cut curve into back slats before assembly.",
+      "what": "Curved profiles of the rails (step 3), seat side supports (step 5) and arm/arm rest ends are shown in images but no step or cut list note describes them or gives their radius; only the back-slat curve has a step."
+    }
+  ]
 }

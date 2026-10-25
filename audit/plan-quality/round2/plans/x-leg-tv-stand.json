@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "2\" spindle at a 45 degree angle, then measure approximately 19 inches and make your second 45 degree angle cut. Next cut two small 9 inch spindles with one straight edge, and one 45 degree angle edge.",
-          "why": "cut sentence states 19\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "and make your second 45 degree angle cut. Next cut two small 9 inch spindles with one straight edge, and one 45 degree angle edge. Double check to see if your spindle measurements will be the same as ",
-          "why": "cut sentence states 9\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2] cuts the X spindles (\"Cut the 1/2\\\" spindle at a 45 degree angle ... measure approximately 19 inches ... two small 9 inch spindles\") from materials[3] \"Pine bead, 1/2\\\" Thick 96\\\"\": a step cuts it from listed material. All other parts have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: legs/14\" connectors (steps[1]), 41\" connectors (steps[3],[5]), Console Top (4), Bottom Shelf (6-7)."
     },
     "R4": {
       "result": "pass",
@@ -38,21 +28,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x3, sheet-0.5, 0.5x96); steps not checked for per-part stock"
+      "reason": "Lumber: 2x2 4x23 + 3 kerfs = 92.375 <= 96 pass; 1x3 (2 x 96\") 4x14 + 3x41 = 179 sum fits, per-board packing 41+41+14 = 96 zero-kerf, short 1/8\" kerf only (kerfOnly). Sheet parts (18x45 + 14x41 = 810 + 574 = 1384 sq in) vs \"Half Sheet\" of unstated size: no certain fail, so sheets unknown per rule."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps name no screw size; materials list 1-1/4\" and 1\" Kreg screws; no conflicting sizes in steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Second connector \"14 inches down\", top connector \"flush with the top edge\", frame \"in the center of the top\"; viewed steps[2] image shows X in the frame opening; viewed steps[7] image shows shelf on lower connectors level with the front support \"line it up with the side 1x3 pieces\" (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"as shown\" steps[1] and steps[6] each have a step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pockets (0), end frames (1-2), join frames (3), top (4), front support (5), shelf (6-7); shelf attached with frame inverted from top, reachable."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes into either end of all the 1\"x3\" pieces (all 14\" and 41\")"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Drill pocket holes into 3 sides of the bottom shelf, as shown."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" 1x3s and a 1/2\" plywood shelf, yet no jig thickness setting is stated in any step, material or description (searched /setting|jig|set to|thickness/ in steps, materials, description). Images not examined for a setting on the jig."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 4 legs/4 14\" connectors = 2 end frames; 3 x 41\" = step 3 (two) + step 5 (final). Top 18x45 vs frame 17 x 44 (14 + 2x1.5 legs; 41 + 2x1.5) centers with margin. All made parts installed; steps reach painted piece. 2x2 8' for 4x23."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "1c834cc5594e5d3f.webp (step 2)",
+      "961c92954408702b.webp (step 7)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "Next cut two small 9 inch spindles with one straight edge, and one 45 degree angle edge.",
+      "what": "Number of X assemblies (one per end frame, two total) is not stated; spindle length per X is 19+9+9; total for two (74\") fits the 96\" pine bead."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "It is best to have a snug fit, and glue in place.",
+      "what": "glue not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

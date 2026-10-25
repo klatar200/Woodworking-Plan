@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "unknown",
+      "reason": "steps[5].body \"gluing and nailing 1 x4 aprons to the three visible sides\": the cutList 1x4 aprons (4 long, 4 short) are all consumed by frames in steps[0]-[2] (viewed steps[0]/[2] images show top and 12\" aprons on all four sides), so the three step-5 aprons have no clear cutList row or length; may be the same top aprons, not settleable."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are used: legs/aprons steps[0]-[2], chicken wire supports step[1], roll edge/art shelf/lip step[7], bottom shelf step[6]."
     },
     "R4": {
       "result": "pass",
@@ -46,21 +48,86 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x2, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
+      "reason": "2x2: 4x48 = 192 + 3 x 1/8\" = 192.375 vs 2 x 96 = 192: zero-kerf fit, kerf-only shortfall. 1x4 (150+1.25 <= 192) and 1x2 (166+1 <= 192) fit. 3/4\" parts could come from 1x4 or the plywood, and plywood width is not stated (\"Plywood, 3/4\\\" Thick 24\\\"\"), so precondition not met."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name 1 1/4\" finish nails, pocket hole screws, staples (\"staple gun\"); materials[4]-[6] list 1 1/4\" pocket screws, 1 1/4\" finish nails, 3/8\" staples. No conflicts."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Viewed images give hole 4\" from top, aprons at 3\" and 12\", 19\"/13\"/22\"/48\" sizes. Art shelf height (steps[7]) and chalkboard/dry-erase/pegboard sizes and placements are not numeric in text or the viewed steps[7] image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"as shown\" steps have own step images; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Holes/frames (0), chicken wire frame (1), connect (2), paint then boards stapled (3), wire/pegboard (4), cover raw ends (5), shelf (6), roll edge/art shelf (7)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "The 1x2's are attached to the 1x4's by pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "attach the 1x4 to the 2x2 legs using pocket hole screws on the bottom and glue."
+        }
+      ],
+      "reason": "Pocket holes are used in 3/4\" 1x2/1x4 parts but no jig thickness setting is stated (searched steps, materials, description for setting/jig/thickness); viewed images (steps[0], [2], [5], [7]) are renderings with no jig setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "attach a magnetic chalkboard and the dry erase board on the front and back frames using a staple gun."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the chicken wire to the chicken wire frame using a staple gun. On the opposite end attach the pegboard organizer."
+        }
+      ],
+      "reason": "Magnetic chalkboard, dry erase board, chicken wire and pegboard organizer (and the paper-roll rod seen in the viewed steps[7] image, with 7/8\" holes in steps[0]) are components the steps use but none is in materials[0..6] (2x2, 1x4, 1x2, plywood, pocket screws, finish nails, staples) nor the cutList."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "93a52cebfa78df1e.webp (step 0)",
+      "3cb810326632759f.webp (step 2)",
+      "25a99e230decd9e5.webp (step 7)",
+      "57a2250bd202e4bc.webp (step 5)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "For the bottom shelf, first attach the 1x2 lip to the 1x4 shelf using finish nails and wood glue.",
+      "what": "steps[7] calls the 1x4 + 1x2 lip assembly \"the bottom shelf\" but the cutList \"Bottom shelf\" is the 3/4\" plywood (steps[6]); the 1x4/1x2 pieces are \"Art shelf\"/\"Art shelf lip\"."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Drill 7/8\" holes through the two of the legs for the art paper roll holder.",
+      "what": "The roll holder rod/dowel is never listed, sized or cut."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "attach the 1x4 to the 2x2 legs using pocket hole screws on the bottom and glue",
+      "what": "wood glue consumable",
+      "kind": "consumable"
+    }
+  ]
 }

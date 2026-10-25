@@ -143,31 +143,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Left Side, Right Side, Front, Back (Front/Back x2), Bottom all in cutList; keyhole hangers in materials[2]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used in steps[0]-[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "Exactly one stock type (materials[0] cedar 3/4 x 5 1/2 x 8' = 96\"); quantity 1 is not flagged as a defaulted import quantity (no qty diff in importDiffs).",
+      "arithmetic": "Kreg-corrected lengths: 12 + 11.75 + 2 x 7.25 + 7.25 = 45.5; 5 pieces => +1/8\" x 5 = 46.125 <= 96. Bottom 3.25 wide is a rip of the 5.5 board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name \"pocket hole screws\" with no size; materials[1] lists 1 1/4\". No conflict."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Front set \"3/4\\\" from the front edge\", Bottom between Front and Back using Bottom as spacer, pocket counts per part given; hanger/screw location is relational (on the Back). Viewed steps[3] and [6] images show an open-front A-frame, so no entrance hole position is needed."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no drawing references beyond own-image steps; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (1), back (2), front (3, Bottom as spacer), bottom (4), finish (5), hang (6): each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "(1) Right Side- 2 on 45 degree bevel (set bit for 1/2\" wood)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Right Side x1, thickness 0.75 (Kreg-corrected 0.75 x 5.5 x 11.75)"
+        }
+      ],
+      "reason": "The only jig setting stated is 1/2\" for the Right Side, which is 3/4\" thick (corrected cutList[1]); Front/Back and Bottom pocket holes get no setting. No viewed image shows a setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Four parts are all installed (steps[1]-[4]); hanging via keyhole hangers in steps[6]; piece reaches finished birdhouse. Viewed images show the open-front design consistent with Front 7.25 and 3/4\" setback."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "26c4d41ccdbfdc6b.webp (step 6)",
+      "1bb58b50ec2e7e1c.webp (step 3)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "Attach screws onto the Back of the birdhouse. - Attach keyhole hangers to a post, wall or tree.",
+      "what": "Screws for the keyhole hangers have no size or quantity in materials."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Using wood glue and pocket hole screws, attach the 45 degree end",
+      "what": "glue is in materials[3]; no consumable missing.",
+      "kind": "consumable"
+    }
+  ]
 }

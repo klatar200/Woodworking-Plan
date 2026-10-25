@@ -95,10 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, top/base, top, dividers, supports, drawer box parts, drawer fronts, base molding, bottoms and backing all have cutList rows (searched steps[1]-[12])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 12 rows are used by a step: steps[1]-[12] cover sides, top & base, top, dividers, supports, molding, drawer parts, backing."
     },
     "R4": {
       "result": "pass",
@@ -106,20 +108,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (sheet-0.75, sheet-0.25, 1x2, 1x4, 1x3); steps not checked for per-part stock"
+      "reason": "Lumber passes: 1x2 15x21 + 30x15.5 + 32x17 + 32x19.25 = 315+465+544+616 = 1940, +109 cuts x 1/8\" = 1953.6 <= 24x96 = 2304; 1x3 16x21.5 = 344 + 2 = 346 <= 4x96 = 384; 1x4 24+2x17 = 58 + 0.4 <= 72. Sheet parts (3/4\": 2x17x52.25 + 2x17x21 + 18x24 = 2922.5 sq in; 1/4\": 16x17x20.5 + 22.5x52.25 = 6751.6 sq in) fit the sheets bought with no certain shortfall, so sheets stay unknown per rule."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" pocket hole screws, 1 1/4\" countersunk screws (= materials[6] 1 1/4\" wood screws), 2\", 1 1/4\", 3/4\" finish nails: all listed; no conflicting sizes for the same use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Divider/support spacing given as 2 1/4\" in viewed steps[3] and steps[4] images (scrap spacer), 21\" divider and 15 1/2\" support length shown; \"Start at the top and work down\"; 1/8\" drawer clearance stated."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "no unresolved drawing references; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Carcass (1-2), dividers/supports (3-4), molding (5), drawers built (6-7) then inserted (8) and faced, backing last (9)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach top and bottom to sides using wood glue and 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Create drawer dividers by attaching to sides of carcass using wood glue and 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "Pocket holes are used in 3/4\" parts but no jig thickness setting appears (searched steps, materials, description for setting/jig/set to/thickness; viewed steps[3] and [4] images show 2 1/4\" spacing and a screw callout but no jig setting)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Steps[0] 53\"h x 24\"w x 18\"d matches sides 52.25 + top 0.75 = 53, top 24 x 18. Drawers: 32 sides = 16 x 2, 32 front/back = 16 x 2, box 19.25 + 2x0.75 = 20.75 in a 21\" opening = 1/8\" per side as steps[10] says. Every made part is installed (drawers inserted step 8, faces, backing); steps end with the finished piece."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "627c2d33e5758e79.webp (step 3)",
+      "f5582310021c028d.webp (step 5)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Try to place nails where they will be hidden by hardware.",
+      "what": "Drawer hardware (pulls) is mentioned but no step installs it and none is in materials; not an instruction, treated as optional."
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Attach top and bottom to sides using wood glue",
+      "what": "wood glue not in materials",
+      "kind": "consumable"
+    }
+  ]
 }

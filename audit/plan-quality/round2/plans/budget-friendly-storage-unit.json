@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame sides (9 1/2\" spacers), bottom shelf holders (14 1/2\"), frames (1x3 x 72\") and shelf boards (1x4 x 36\") all in cutList; steps[0]-[5]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: steps[0],[4] frame sides, [1],[3] holders, [4] frames, [3] shelf boards."
     },
     "R4": {
       "result": "pass",
@@ -51,22 +53,96 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x3, 1x4); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x4 120\""
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 1x4 96\""
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Shelf boards x16, 1 x 4 x 36"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x2 72\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x2 120\""
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Frame sides x8, 1 x 2 x 9.5 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Bottom Shelf Holder x8, 1 x 2 x 14.5 (Kreg-corrected)"
+        }
+      ],
+      "reason": "Both nominal stocks are tight to zero kerf and the kerf makes them short; the 1x4 shortfall also fails per-board layout (a 120\" board yields 3 x 36\" and a 96\" board 2 x 36\"). Each 1 x 2 / 1 x 4 part matches exactly one listed stock type; quantities are not defaulted (no materials diff).",
+      "arithmetic": "1x4: 16 x 36 = 576; 16 pieces from 5 boards => 11 cuts x 1/8\" = 1.375 => 577.375 > 4 x 120 + 96 = 576 (short 1.375\", more than 1/2\" so not kerf-only); per board 4 x 3 + 2 = 14 < 16 pieces. 1x2: 8 x 9.5 + 8 x 14.5 = 76+116 = 192; 14 cuts x 1/8\" = 1.75 => 193.75 > 72 + 120 = 192. (1x3: 4 x 72 = 288 = 4 x 72 passes.)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps name 1 1/2\" screws (materials[5]) and unsized \"pocket hole screws\"; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Frame spacers \"at 4\\\", 26 1/2\\\", 49\\\" and one at the top\" (steps[4], confirmed in viewed image), shelf gap 1/4\", four 3\\\" shelves; shelves attach at the spacer levels; holders aligned to the side relationally."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "\"as shown\"/\"see image\" steps each have own step image; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes (0-1), shelves built (3), frames built (4), shelves attached to frames (5)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Prepare all cut pieces with pocket holes. 8 pieces of 9 1/2\" x 1 add pocket holes vertical to each end as shown in the image."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "8 pieces of 14 1/2\" x 1 add pocket holes horizontal as shown."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1x2 (3/4\") pieces but no jig thickness setting is stated in any step, material or description (searched for setting/jig/thickness); viewed steps[3]/[4] images are photos with no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 8 spacers = 2 frames x 4 positions (4\", 26 1/2\", 49\", top); 4 frames boards = 2 frames x 2 uprights; 16 shelf boards = 4 shelves x 4; 8 holders = 4 shelves x 2. Steps reach the finished unit (sanding optional)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-28",
+    "imagesViewed": [
+      "3e25ce5af98dfe16.webp (step 4)",
+      "f168a582c0992217.webp (step 3)"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "You can use wood good, but if you plan on moving or storing the shelf down the road. I advise attaching the shelves without the wood glue.",
+      "what": "wood glue consumable present in materials[6]; no missing consumable.",
+      "kind": "consumable"
+    }
+  ]
 }
