@@ -35,10 +35,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Back and Shelf are the only two parts steps cut; both in cut list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used (steps[0]-[3])."
     },
     "R4": {
       "result": "pass",
@@ -49,43 +51,77 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x10, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock for every part (steps[0]: Back from a 1x10, shelf from 1x6). 1x10: 23.5 <= 24; 1x6: 23.5 <= 24 (corrected rows)."
     },
     "R6": {
-      "result": "to-read"
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "ern shown here, first paint the entire shelf assembly white. Once that coat dries, measure over from the square end of the Back, and then draw a line (at approximately a 55° angle). Mask along the lin",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/feb644e0b6ed1616.webp"
-        }
-      ]
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Back to length from a 1x10 and one shelf to length from 1x6, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[5].body",
+          "quote": "Add 1\" cup hooks below the shelf for hanging keys, etc."
         },
         {
-          "path": "steps[0].body",
-          "quote": "Cut one Back to length from a 1x10 and one shelf to length from 1x6, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "materials[3].name",
+          "quote": "7/8\" nickel-plated cup hooks"
         }
-      ]
+      ],
+      "reason": "Step calls for 1\" cup hooks; the only cup hooks in materials are 7/8\" (two sizes for the same use). 4 hooks are shown in viewed image 482ae5d7ab81f1da, matching materials quantity 4."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Flagged placements are dimensioned in viewed images: shelf 3 1/2\" up the Back (4ac1156165c37bc5), hooks 3 1/2/7/10 1/2/14\" from end and 1\" below shelf (482ae5d7ab81f1da), stripe 9 5/16, 12 3/4, 13 1/4, 15 21/32\" (feb644e0b6ed1616). The 55 degree stripe is decorative."
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "Flag rejected: the 'cutting diagram' content (Back 23 1/2\" x 9 1/4\") is shown in unattached image 4e6097c1972e755c and the same lengths are in the corrected cut list."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, shape, shelf holes, attach shelf, paint, hooks: possible order (hooks after paint)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2]: 'set up for 3/4\" material and drill four pocket holes along the back edge of the shelf' - only pocket-hole joint, 3/4\" stock."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[4].name",
+          "quote": "Sawtooth picture hangers"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Hang the Hooks"
+        }
+      ],
+      "reason": "The piece is wall-mounted and materials list 2 sawtooth hangers (qty 2), but no step installs them or says how the shelf is hung: searched all steps, summary, description for /hanger|sawtooth|wall|mount/ - no match (only 'Hang the Hooks' for the cup hooks). Not Unpublish: the shelf itself is complete."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "first paint the entire shelf assembly white",
+      "what": "materials list primer/white/gold paint but steps never mention primer; masking tape for the stripe not listed (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "4ac1156165c37bc5.webp",
+      "4e6097c1972e755c.webp",
+      "482ae5d7ab81f1da.webp",
+      "feb644e0b6ed1616.webp"
+    ]
+  }
 }

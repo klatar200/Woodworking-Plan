@@ -223,55 +223,106 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "template for the top piece. You can download this from the “Extras” tab. Once you print it, you will need to tape the three pages together so the lines line up. Then, cut along the black lines.\nCut tw",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "l need to print off the template for the top piece. You can download this from the “Extras” tab. Once you print it, you will need to tape the three pages together so the lines line up. Then, cut along",
-          "why": "matches \"download\""
+          "quote": "First, you will need to print off the template for the top piece. You can download this from the “Extras” tab."
         }
-      ]
+      ],
+      "reason": "The curved profile of the two top pieces exists only in the downloadable template (steps[0] image ce64cf4e1bd176d2 shows a traced template with no dimensions). Overall size (2 x 7.25 x 32, legs 29 1/2\", verticals 15 1/2\"/19\") is in cut list/steps, so the build can be completed without the shape: Fix not Unpublish."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top pieces, legs, supports, verticals, back slats, seat slats, arm slats all in cut list; step counts match (12 middle/8 outside back slats, 12 arm slats, 4 seat slats, 4 x 16\" + 2 x 52\" 2x4s)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Each of the 10 cut rows is used by a step (0,3,5,6,7,8,9,10,11,12)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x8, 2x6, 2x2, 2x4, 1x2, 1x4); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Horizontal Back Slats (middle) x12 (corrected 0.75 x 1.5 x 9)"
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Horizontal Back Slats (outside) x8 (corrected 0.75 x 1.5 x 14.75)"
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "Arm Slats x12 [0.75, 1, 16]"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 1x2 96\""
+        },
         {
           "path": "steps[12].body",
-          "quote": "used 1” wide strips. Cut 12 pieces at 16” long and glue and nail in place between the front and back arms. These pieces are supposed to go up and “wrap around” the arms. Use long brad nails—at least 2",
-          "why": "16\" nail — no material line lists a 16\" fastener"
+          "quote": "You can use 1x2s for this if you don’t have a table saw."
         }
-      ]
+      ],
+      "arithmetic": "Steps name 1x2 for back slats (steps[7] 'Cut pieces of 1x2 to fit') and arm slats (steps[12]). Needed: 12 x 9 = 108 + 8 x 14.75 = 118 + 12 x 16 = 192 = 418\". Bought: materials[4] quantity 4 x 96\" = 384\". 418 > 384 even with zero kerf (short 34\"; 31 cuts x 1/8 = 3.875 more). Other stocks checked and cover: 2x8 2x32 + 29.5 = 93.5 + kerf <= 96; 2x6 3 x 29.5 = 88.5 <= 96; 2x4 2x52 + 4x16 = 168 + kerf <= 192; 1x4 4 x 55 = 220 <= 240; 2x2 2 x 15.5 + 19 = 50 <= 96."
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Sweep flag is a false positive (16\" is a part length). Steps use 2 1/2\" and 1 1/4\" pocket screws, 1 1/4\" exterior screws, 2\"+ brad nails - all in materials[6..9]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Seat-support height 16 1/4\" (steps[5],[9]), slat gap 1 7/8\" (steps[7]), support spacing 16\" (steps[10]); other placements relational or shown in viewed image 89aaeb18299d0f9a ('as the picture shows')."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Sweep: 4 references each in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top, legs, top-to-legs, back support, verticals, back slats, seat supports, seat slats, arm slats: each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Each pocket-hole instruction names the thickness: steps[1] 'Drill 1 ½” pocket holes' on 2x stock; steps[8] 'drill ¾” pocket holes' on 1x2; no contradiction."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree between steps and cut list; all parts installed; finishing step reaches finished bench. Wood glue, brad nails, finish listed; filler/plugs/tape are consumables (gaps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "Fill any pocket holes that you will see with wood filler or pocket hole plugs.",
+      "what": "wood filler / pocket hole plugs not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "you will need to tape the three pages together so the lines line up",
+      "what": "tape not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "ce64cf4e1bd176d2.webp",
+      "79aa8ae4b023bb2e.webp",
+      "89aaeb18299d0f9a.webp"
+    ]
+  }
 }

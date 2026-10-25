@@ -67,56 +67,93 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "materials[3].name",
-          "quote": "Multiple glass spice jars - we used these: https://amzn.to/3wZlkLn",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Only link is the Amazon jars link in materials[3] (what the user fills the drawer with); the organizer is built from steps 0-3 without it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "3 Shelf Backs + 3 Shelf Risers are exactly what steps[0]-[3] use (2 risers in the two tiers, 1 final riser in step 3; 3 backs)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used by steps[0]-[3]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 3×4.25×21.75 + 3×1.5×21.75 = 375.2 sq in; bought 1×24×48 = 1152 sq in)"
+      "result": "pass",
+      "reason": "One plywood stock (materials[0] 2' x 4' x 1/2\"). Area 3x4.25x21.75 + 3x1.5x21.75 = 277.3 + 97.9 = 375.2 sq in <= 24x48 = 1152; strip layout: 3x4.25 + 3x1.5 = 17.25\" + 5 kerfs x 1/8 = 17.875\" <= 24\", each 21.75\" <= 48\"."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps say only 'pocket screws'; materials[2] lists 1\" pocket-hole screws; no second size anywhere."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "import",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "t holes in all three Shelf Risers on the long straight edge. - Using pocket screws, attach a Shelf Back to a Shelf Riser with the angled edge of the Shelf Riser angled away from the Back. - Repeat for",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c73328a64a77da7e.webp"
+          "quote": "attach a Shelf Back to a Shelf Riser with the angled edge of the Shelf Riser angled away from the Back."
         },
         {
-          "path": "steps[0].body",
-          "quote": "nd change the 21 3/4\" length to fit your drawer exactly. Also, this is based on a 3 1/2\" tall drawer. If your drawer interior differs in height, you may need to adjust the height of your Shelf Risers.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c73328a64a77da7e.webp"
+          "path": "importDiffs[cutList[1].widthIn].source",
+          "quote": "Cut the Shelf Risers with a 19.5 degree bevel on one long edge"
         }
-      ]
+      ],
+      "reason": "The riser bevel angle is a setting the builder must make. The live plan never gives it: searched all fields of the live plan for /bevel|degree|angle|miter/ - only 'angled edge' in steps[0]. Kreg's source row has the 19.5 degree bevel, dropped by the importer. Viewed image c73328a64a77da7e shows the bevelled riser with no angle."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep: no unresolved references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Two tiers, then third back, then back tier, then final riser: each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill three pocket holes in two of the Shelf Backs."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1/2\" plywood but no jig thickness setting is stated: searched all steps, summary, description, materials for /setting|jig|thickness/ (only 'see tool list' in materials[2]); viewed images c73328a64a77da7e and d8a55e75ac725a77 show none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Part counts consistent (3 backs, 3 risers; 21 3/4\" in steps[0] matches corrected 21.75); every part installed; ends with insert and use. Bracket in steps[4] is optional (gaps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "optional-fastener",
+      "path": "steps[4].body",
+      "quote": "you can add a bracket to the back Shelf Riser if it is sliding around",
+      "what": "bracket is optional; not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Transfer all your spices to the glass spice jars and add labels.",
+      "what": "labels not in materials (consumable/optional)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "c73328a64a77da7e.webp",
+      "d8a55e75ac725a77.webp"
+    ]
+  }
 }

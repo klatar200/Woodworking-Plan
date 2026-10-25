@@ -43,60 +43,84 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": " which end you will want as the top of your bench, then attach the legs to the opposite end using 1” pocket screws.\nFor more pictures and detailed tutorial, see the link under the \"Extras\" tab. Enjoy!",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[5] 'For more pictures and detailed tutorial, see the link under the \"Extras\" tab' is optional extra photos; the build is complete from steps and cut list."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts used: 2 x 4' pieces, 5 x 15\" 1x12 pieces (3 for the H + 2 ends, steps[3]-[4]), frame/legs of 2x2s; all in cut list (viewed images cc61e097aecfd9db, 53fde74d2648a132, a39f358638464864)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Long Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Short Frame Pieces",
-          "why": "no step mentions it (searched steps for frame)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Feet",
-          "why": "no step mentions it (searched steps for feet)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: the steps call the Long/Short Frame Pieces and Feet 'the legs' (steps[2] 'Build the legs', 'Drill pocket holes on the inside of all the 2x2's'); viewed image cc61e097aecfd9db shows one rectangular 2x2 frame with 4 feet = 2 long + 2 short + 4 feet. All rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x12, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Part stock forced by section (0.75x11.25 = 1x12; 1.5x1.5 = 2x2), steps[0] also names 1x12 for the 15\" pieces. 1x12: 2x48 + 5x15 = 96+75 = 171 + 6 cuts x 1/8 = 171.75 <= 2x96 = 192 (board A 48+3x15 = 93.5, board B 48+2x15 = 78.25). 2x2: 2x44.5 + 2x7.25 + 4x3.5 = 89+14.5+14 = 117.5 + kerf <= 2x96 = 192. Kreg-corrected rows used."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2 1/2\" pocket screws (steps[2]) and 1\" pocket screws (steps[3],[5]); both in materials[2],[3]."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Where the H (two 15\" verticals) sits along the 48\" top/bottom - i.e. the compartment widths - has no number in any step or cut row. Viewed image 53fde74d2648a132 shows its approximate position but no dimensions; unknown whether an undimensioned drawing satisfies 'shown in a viewed image'. Shelf height is 'mark the middle' (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "Sweep: 5 references each in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs frame, H, then bench body (H to 4' piece, ends, top), then legs attached: each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes on the 1x12's as shown on the diagram."
+        }
+      ],
+      "reason": "Pocket holes go in 3/4\" 1x12 and 1 1/2\" 2x2 but no jig thickness setting is stated: searched all fields for /setting|jig|thickness/ (no match); viewed images 3e1f257bbecdeab1 and 000b3544f21bcac5 show only hole-location arrows. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 5 x 15\" (steps[0]) = 3 H + 2 ends; 2 x 4' top/bottom; frame 2+2+4 feet matches image. Parts all installed; legs attached last."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Use 1” pocket screws and wood glue on all of the seams.",
+      "what": "wood glue not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "spray paint them with metallic spray paint",
+      "what": "metallic spray paint / stain / paint not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "3e1f257bbecdeab1.webp",
+      "000b3544f21bcac5.webp",
+      "cc61e097aecfd9db.webp",
+      "28dd38f97f875e06.webp",
+      "53fde74d2648a132.webp",
+      "a39f358638464864.webp"
+    ]
+  }
 }

@@ -71,51 +71,73 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " and repeated the cut until it was just a little deeper than ¼”.\nAfter I had my blade depth set right, I adjusted my AccuCut over just to the edge of the cut and cut again. This would give me a dado t",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": " least) 12\" long edges and cut dadoes along the lines about 3/16\" wide and a little over 1/4\" deep--just like the previous dadoes. (See video in extras tab for details) Then, mark 3/4\" from the edges ",
-          "why": "cut sentence states 3/16\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 1/4\" and 3/16\" in steps[2]/[7] are dado depth/width, not parts. Bottom, sides, back, handles, two plexiglass panels are all in the cut list (viewed images 38e9ac993fa4bd70 and 3b5bd82a3f4c504c confirm 10 1/4 x 12 1/2 top panel, 11 7/8 handle, 11 1/4 x 12 back)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All six rows are used (steps 0, 7, 8, 9, 10)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged; cutList[5] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Plywood parts are 3/4\" from 3/4\" plywood (materials[0]); plexiglass rows are 1/8\" per steps[10] ('1/8” thick plexiglass'), bought as listed plexiglass panels (materials[3]), not board stock. Sweep unknown (thinner than stock) does not apply."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×12×12 + 2×12×12 + 1×11.25×12 + 2×0.75×11.875 + 1×11×12.5 + 1×10.25×12.5 = 850.4 sq in; bought 1×24×48 = 1152 sq in)"
+      "result": "pass",
+      "reason": "One plywood stock. Area: 12x12 + 2x(12x12) + 11.25x12 + 2x(0.75x11.875) = 144+288+135+17.8 = 584.8 sq in <= quarter sheet 24x48 = 1152 (area as written in the name's quarter of 48x96). Layout by hand: 24x48 = 8 cells of 12x12; bottom, 2 sides, back use 4; handles come from scrap strip per steps[7]."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "les. VERY CAREFULLY predrill holes for some small 5/8” wood screws.\nI tried to get as close to the edge as I could so the screw would still hold. Honestly, I think the clear Gorilla Glue would have he",
-          "why": "5/8\" screw — no material line lists a 5/8\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Only unlisted size is '5/8” wood screws' in steps[10], which the step itself calls optional ('So those are optional'); recorded in gaps. 1 1/4\" pocket screws and 1 1/4\" brad nails are in materials."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dado positions 1/2\" from front/top edges (steps[1]), depth 'SLIGHTLY over 1/4\"' (steps[2]), handle wiggle length 11 7/8\"; handle placement on plexi shown in viewed image 38e9ac993fa4bd70."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "reason": "Sweep: 7 references each in a step with its own image; viewed two of the diagram images and both show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels and dadoes cut first, handles/plexi cut, box assembled (bottom between sides, then back), plexi slid in; handles glued to plexi."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[9]: 'I chose to use 3/4\" pocket holes and 1 1/4\" pocket hole screws on the bottom panel' - thickness stated for the only pocket-hole thickness (3/4\")."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step values agree with Kreg-corrected rows (handles 11 7/8 = 11.875; plexi 12 1/2 x 10 1/4 and 12 1/2 x 11 in viewed images/cut list); every part installed; steps end with finish and use. Plexiglass is in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "I used some clear Gorilla Glue in the dadoes on the handles",
+      "what": "clear Gorilla Glue is used but only 'Wood glue' is in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "give the wood components a food safe finish",
+      "what": "food-safe finish not in materials (consumable)"
+    },
+    {
+      "kind": "optional-fastener",
+      "path": "steps[10].body",
+      "quote": "VERY CAREFULLY predrill holes for some small 5/8” wood screws.",
+      "what": "5/8\" screws used only in a step the plan marks optional ('So those are optional'); not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "38e9ac993fa4bd70.webp",
+      "3b5bd82a3f4c504c.webp"
+    ]
+  }
 }

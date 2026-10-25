@@ -6,55 +6,67 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Hardware has a left and right side, so be sure to install proper bracket on each side using screws provided. Link to brackets I used in the Extras tab.",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Visit my website www.theAwesomeOrange.com to get more details and photos of this build and other awesome DIY projects!",
-          "why": "matches \"my website\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[5] 'Link to brackets I used in the Extras tab' only points to the source of brackets already listed in materials[5]; steps[8] is a credit. Build completes without either."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Headboard/footboard stiles, rails, 2x4 support, slat supports, side rails all in cut list; viewed headboard image a788b1488c34a473 shows 6 x 2x2 rails + 1 x 2x4 = consistent with rows 0-1 (9 x 2x2 39\" = 2 headboard stiles + 6 rails + 1 footboard bottom stile). Bed slats are bought pre-cut (materials[2] 'Bed Slat, 1x4 39\"')."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut row is used by steps 1-7."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock per part forced by section size (1.5x1.5 = 2x2, 1.5x3.5 = 2x4). 2x4: 2x39 + 2x76 = 230 + kerf 4 x 1/8 = 230.5 <= 3x96 = 288 (each board holds 76, 76, 39+39). 2x2: 9x39 + 2x14 + 2x74 = 351+28+148 = 527 + kerf 13 x 1/8 = 528.625 <= 7x96 = 672. Slats not cut from boards."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" pocket screws (steps[1]), 2\" spax (steps[4]) and 1 1/4\" spax (steps[7]) are each in materials; viewed image 18272ae6fe98dac3 says 'roughly seven (7) 2\" Wood Screws' per rail = 14 matches materials[4] qty 14; 16 slats x 2 = 32 matches materials[6]. Bracket screws 'provided'."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach slat supports to side rails using the 2\" spax screws. I used a couple of bed slats to create the correct amount of spacing from the top.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/18272ae6fe98dac3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged slat-support spacing is given in viewed image 18272ae6fe98dac3 ('3/4\"' with 'Use bed slats as spacers'); headboard rail positions shown in viewed image a788b1488c34a473 (9\" to 2x4, 1 1/2\" gaps); text also gives 1.5\" gaps."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep: no unresolved references."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, footboard, headboard, slat supports onto side rails, brackets, assemble, slats: possible order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill two (2) 2 1/2\" pocket holes on (7 of the 9) 39\" L 2x2 boards & the two (2) 39\"L 2x4 boards using your Kreg pocket hole jig."
+        }
+      ],
+      "reason": "All pocket-hole parts are 1.5\" thick but no jig thickness setting is stated: searched all steps/summary/description for /setting|thickness|jig/ (only 'pocket hole jig' appears); viewed images f49f1b2c618b0c3b, a788b1488c34a473, 18272ae6fe98dac3 show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 7 of 9 2x2 + 2 2x4 drilled (7 = 6 headboard rails + footboard bottom stile); every part installed; steps reach assembled bed with slats."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "18272ae6fe98dac3.webp",
+      "a788b1488c34a473.webp",
+      "f49f1b2c618b0c3b.webp"
+    ]
+  }
 }

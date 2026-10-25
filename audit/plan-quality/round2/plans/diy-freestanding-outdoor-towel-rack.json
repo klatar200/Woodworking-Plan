@@ -187,21 +187,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "For pictures of the build, please visit https://www.anikasdiylife.com/diy-outdoor-towel-rack/ For lots more plans and projects visit www.anikasdiylife.com",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Only link is steps[7] 'For pictures of the build, please visit https://...' - a credit/photo link; steps[0]-[6] and cut list complete the build without it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts in steps (55/43/33 1/2/29 1/2 sides, 20 aprons and slats, 12 3/8 short aprons) match cut rows; 16 x 20 aprons = 8 slats (4 x 2 shelves) + 8 frame aprons."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All six cut rows are used by steps 0-6 (checked each length against step text)."
     },
     "R4": {
       "result": "pass",
@@ -212,30 +207,45 @@
       "arithmetic": "parts: 2×55 + 2×43 + 2×29.5 + 2×33.5 + 16×20 + 4×12.375 + kerf 20 cuts (28 parts − 8 boards, the fewest possible)×1/8 = 694.000″; bought: 8×96 = 768″; 694.000 ≤ 768"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Attach both shelves to the 55\" long frame using pocket hole screws in the short aprons and wood glue. Make sure they are aligned with the 20\" long aprons attached in step 2.",
-          "why": "55\" screw — no material line lists a 55\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Attach the 33 1/2\" and 29 1/2\" frames to the shelves using pocket hole screws in the sides. The distance from each outer frame is 3\".",
-          "why": "1/2\" screw — no material line lists a 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags are false positives (55\" and 1/2\" are part lengths in the sentence). Only fastener is '2\" Coarse Pocket hole screws' in materials; no second size appears in steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Apron heights 6\" and 17 1/2\" (steps[1]), slat spacing 1 3/8\" (steps[3]), middle frames 3\" from outer (steps[6]); inside-frame apron position (top) shown in viewed step images 2a44b0de8195007b and 698d3b41025417d1."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Sweep: one reference, in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames (steps 1-2), shelves (3), then shelves to 55 frame, 43 frame, middle frames (4-6): order is possible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0]: 'Redwood is typically 1 3/8\" x 1 3/8\". Be sure to use that setting on the Kreg Jig' - thickness stated for the only thickness (1.375) that gets pocket holes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (16 x 20 = 8 slats + 8 aprons; 4 x 12 3/8 = 2 per shelf x 2); every part installed; steps reach finished rack. Wood glue is a consumable (gaps)."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Ship",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "using pocket hole screws in the short aprons and wood glue",
+      "what": "wood glue used but not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "2a44b0de8195007b.webp",
+      "698d3b41025417d1.webp"
+    ]
+  }
 }

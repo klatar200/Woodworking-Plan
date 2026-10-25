@@ -248,74 +248,90 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "sweep search stands; no dependency on outside content."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts the steps make (3 panels, sides, side fillers, top support, dividers, back center/sides, aluminum legs) are in the cut list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All ten rows used (steps 1, 4, 5, 6, 7, 8)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[9] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Plywood parts 0.75 from 3/4\" plywood (materials[0]); legs 0.125 x 2 from materials[3] '2\" x 36\" 1/8\"-thick aluminum angle' (matches). Sweep unknown (thinner than wood stock) does not apply to aluminum."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 1×15×60 + 1×15×60 + 1×15×60 + 2×5.5×12.25 + 2×5.5×12.25 + 1×5.5×30 + 2×5.5×15 + 1×5.5×19.75 + 2×5.5×18.375 + 4×2×17.75 = 3752.3 sq in; bought 1×48×96 = 4608 sq in)"
+      "result": "pass",
+      "reason": "One plywood stock (3/4\" full sheet 48x96 = 4608 sq in). Area with the diagram's 15 3/4\" panels: 3x15.75x60 = 2835 + sides 2x5.5x12.25 = 134.75 + fillers 134.75 + top support 5.5x30 = 165 + dividers 2x5.5x15 = 165 + back center 5.5x19.75 = 108.6 + back sides 2x5.5x18.375 = 202.1 = 3745 <= 4608. Layout: 3 panel strips 3x15.75 + 2 kerfs = 47.5 <= 48 across x 60 of the 96 length; remaining 36x48 holds five 5.5\" strips (27.5 + kerf <= 48) for 165.5\" of 5.5\" parts. Aluminum: 4x17.75 = 71 + 2 kerfs <= 2x36 = 72."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4\" coarse-thread pocket screws (materials[1]), #10 x 1\" pan-head screws (materials[2]), 2\" Forstner (materials[7]); no conflicting sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "ut the Top Support to size, as shown in the cutting diagram. With the \"A\" side facing up, lightly mark the location where the access hole is to be drilled. Then you need to drill a 2-diameter hole thr",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3d70d3d751a7d281.webp"
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Measure and mark the locations of the holes on each leg. With a nail, make an indentation at the hole location, this will keep the drill bit from wandering as you start drilling. Secure each leg on a ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/737d708b10494811.webp"
-        },
-        {
-          "path": "steps[15].body",
-          "quote": "With the Legs set, it’s time to finish the TV stand. As crazy as it sounds, the best way to do that is to take the whole thing back apart. That’s part of the beauty of pocket hole construction, though",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        },
-        {
-          "path": "steps[15].body",
-          "quote": "at’s part of the beauty of pocket hole construction, though. Just remove he screws, and you can pull it all apart. Then you can reassemble it all later just as easily. With everything apart, you can s",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        },
-        {
-          "path": "steps[15].body",
-          "quote": " apart. Then you can reassemble it all later just as easily. With everything apart, you can sand all of the pieces and polish the Legs. Sure, this requires extra work, bit with clear access to all the",
-          "why": "placement with no measurement (no step image)",
-          "image": null
-        }
-      ]
+      "result": "pass",
+      "reason": "Every position is dimensioned in viewed images: corner notches 1 3/4 x 1 3/4 (0f80ea2959989594), top-support hole 2\" Dia, 15\" and 2\" (3d70d3d751a7d281), back holes 9 3/16/9 7/8 and 2\" (fe7cd0fbc3bf6555), divider/side layout 18\", 15\", 12 1/4\" (77873d0e610d8a3c), top support 15\" and 7 1/2\" (995ae15815e6e2c7), leg holes 6 1/4\", 5/8\", 1\" (737d708b10494811); leg stick-up 1/4\" in steps[13]."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flag rejected: steps[3] 'as shown in the Tip below' points to the Tip text in the same step body, not a drawing. Other diagram references have their own viewed images with dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts first (steps 1-8), preliminary assembly (top support to top, lower box, top onto middle, legs, back), disassemble, finish, reassemble: each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4]: 'set your pocket hole jig for 3/4\" thick material' - all pocket-hole parts are 3/4\" plywood."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "edges, you can use the knife, or use a veneer edge trimmer, as shown in the Tip below. Lightly sand the cut edges so they’re smooth and flush with the surrounding surfaces.\n\n**Tip:** Trim Edge Banding",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[0..2]",
+          "quote": "3/4\" ply x 15\" x 60\" (importDiffs source for Top/Middle/Bottom Panel; Kreg-corrected width 15)"
+        },
+        {
+          "path": "steps[1].image (viewed 0f80ea2959989594)",
+          "quote": "15 3/4\""
+        },
+        {
+          "path": "cutList[6].part",
+          "quote": "Divider x2 ... 15 (long)"
         }
-      ]
+      ],
+      "arithmetic": "Cut list gives each Top/Middle/Bottom Panel 15\" wide x 60\". The step-1 cutting diagram (viewed) dimensions the same panels 15 3/4\" x 60\" and the unattached overall drawing (0575b9a880859296) shows 15 3/4\" depth. 15 3/4 - 15 = 3/4\" disagreement. The 15\" Divider spans panel depth minus the 3/4\" back (15.75 - 0.75 = 15), matching the diagram, not the cut list. Which is right is not judged; the sources disagree."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[16].body",
+      "quote": "use a flat metal file or sandpaper to take off any burs around the holes",
+      "what": "sandpaper and finishing rags not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "0f80ea2959989594.webp",
+      "3d70d3d751a7d281.webp",
+      "737d708b10494811.webp",
+      "fe7cd0fbc3bf6555.webp",
+      "77873d0e610d8a3c.webp",
+      "f6a48b14a4da3b47.webp",
+      "995ae15815e6e2c7.webp",
+      "f52cd92bc323251c.webp",
+      "1859277c152a89a9.webp",
+      "0575b9a880859296.webp",
+      "5251195e6fb1eaef.webp"
+    ]
+  }
 }

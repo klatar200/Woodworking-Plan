@@ -71,50 +71,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Long/short side sets, bottom, corner supports all in cut list; 4 long = 2 sets of two, 4 short = 2 sets of two (steps[2],[3])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Bottom Panels",
-          "why": "no step mentions it (searched steps for panel)"
-        }
-      ]
+      "result": "pass",
+      "reason": "'Bottom Panels' x2 is the 'bottom piece' built in steps[4]: 2 x corrected 5.5 wide = 11\", matching the 11\" interior shown in viewed image 7340d2351a529bd1 (12 1/2\" short side minus miters); sweep flag rejected."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x36); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Part-to-stock mapping forced by sizes (0.75x5.5 only from 1x6, 0.75x0.75 from the 1\" square dowel). 1x6: 4x36 + 4x12.5 + 2x34.5 = 144+50+69 = 263 + kerf 9 x 1/8 = 264.125 <= 4x96 = 384. Dowel: 4x8 = 32 + 3 x 1/8 = 32.375 <= 36."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": "upports to the inside corners. Attach them from the outside of the planter by shooting 1\" brad nails into each support. This will help keep the beveled corners tight. Add wood glue for extra strength.",
-          "why": "1\" brad — no material line lists a 1\" fastener"
+          "quote": "Attach them from the outside of the planter by shooting 1\" brad nails into each support."
         },
         {
-          "path": "steps[6].body",
-          "quote": "upports to the inside corners. Attach them from the outside of the planter by shooting 1\" brad nails into each support. This will help keep the beveled corners tight. Add wood glue for extra strength.",
-          "why": "1\" nail — no material line lists a 1\" fastener"
+          "path": "materials[2].name",
+          "quote": "1 1/4\" Brad Nails"
         }
-      ]
+      ],
+      "reason": "Step uses 1\" brad nails; the only brad nail in materials is 1 1/4\" (two sizes for the same use, 1\" not listed). Pocket screws 1 1/4\" agree with the viewed image."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Corner supports at inside corners, drainage holes optional ('may want'), pocket-hole spots shown in viewed images; no unspecified required position."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side sets, then bottom (viewed image e9fa6b358a8aa053 shows the box built by attaching the bottom), then corner supports to hold miters. Order possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Build the bottom piece with pocket holes and wood glue."
+        }
+      ],
+      "reason": "All parts are 3/4\" and get pocket holes, but no jig thickness setting is stated: searched all steps, description and summary for /setting|jig|thickness/; viewed images 7161b1a2e0ea1eb3, 7340d2351a529bd1, e9fa6b358a8aa053 show screw length only. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree (4 supports; 2 sets x 2 for sides); bottom and supports installed; sand & seal reaches finished planter; sealer listed. Wood glue consumable in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Attach the large side pieces in sets of two with wood glue, pocket holes, and screws.",
+      "what": "wood glue used throughout but not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "7161b1a2e0ea1eb3.webp",
+      "7340d2351a529bd1.webp",
+      "e9fa6b358a8aa053.webp"
+    ]
+  }
 }

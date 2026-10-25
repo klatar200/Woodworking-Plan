@@ -10,22 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Arm frames (3 x 16 each, legs 35/24, arm rests), seat frame/slats/braces, back rest, X pieces, base all in cut list; 'Bench Slat x7' = 2 front/back rails + 5 slats (steps[1]-[2], viewed 444d84eef6957656)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[8].part",
-          "quote": "X",
-          "why": "no step mentions it (searched steps for its words)"
-        },
-        {
-          "path": "cutList[9].part",
-          "quote": "X",
-          "why": "no step mentions it (searched steps for its words)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: the two 'X' rows are the 18\" and 8\" pieces of steps[6] ('X pieces are cut on a 45 degree angle... long 18\" pieces... two smaller pieces'); viewed image b26a9408d57e6d03 shows 2 X sections of 1 long + 2 short. All other rows used."
     },
     "R4": {
       "result": "pass",
@@ -36,26 +26,89 @@
       "arithmetic": "parts: 5×20 + 7×60 + 2×60 + 6×16 + 2×35 + 2×24 + 2×20.5 + 7×10 + 2×18 + 4×8 + 2×54 + 2×16 + 4×12 + 4×20 + kerf 37 cuts (51 parts − 14 boards, the fewest possible)×1/8 = 1305.625″; bought: 14×96 = 1344″; 1305.625 ≤ 1344"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" pocket screws, 2\" wood screws, 1/4\" x 2 1/2\" carriage bolts, 1/4\" nylock nuts are all in materials; 4 brackets x 2 bolts = 8 matches quantities."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Assemble the base inside frame. Attach each piece with 2 1/2\" Pocket Hole Screws. Spaced approx. 11 5/8\" apart.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1545dc152cde345f.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 11 5/8\" spacing is dimensioned in viewed image 1545dc152cde345f; other positions numeric in steps (10 5/8\" braces, 5/8\" slat gaps, 1 1/4\" back slats, bracket holes 1 3/4/1 1/4/5/8/3/4/5 5/8) or shown (rail heights 6 1/2\"/7\" in 519576a3f193338c, seat 10 1/2\" in f54c564cd2573f14, base 6\" and 2 1/2\" in 7bb3f36bc17a5614, b116032af121647d). Back-rest tilt follows from 'top flush to top of back legs / bottom flush to front of back leg'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "Sweep: 8 references each in a step with its own image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Arm frames, seat frame, slats, braces, back rest, back rest to frame, base sides, base inside frame, brackets: each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the 16\" pieces."
+        }
+      ],
+      "reason": "All pocket-hole parts are 1.5\" (2x4) but no jig thickness setting is stated: searched all steps/summary/description for /setting|thickness|jig/ (no match); viewed images 51857147a99c86cd, 3352f093f950c516 show hole marks only. Recorded only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Assemble the base inside frame. Attach each piece with 2 1/2\" Pocket Hole Screws. Spaced approx. 11 5/8\" apart."
+        },
+        {
+          "path": "cutList[10]",
+          "quote": "Base x2 [1.5, 3.5, 54]"
+        },
+        {
+          "path": "cutList[13]",
+          "quote": "Base x4 [1.5, 3.5, 20]"
+        }
+      ],
+      "arithmetic": "Inside-frame rails are 54\" (cutList[10]) with 11 5/8\" between 1.5\"-thick cross pieces. n pieces: n x 1.5 + (n-1) x 11.625 = 54 -> 13.125n = 65.625 -> n = 5 exactly. Viewed image 1545dc152cde345f shows 5 cross pieces (2 ends + 3 between, three 11 5/8\" gaps plus end gaps). Cut list has only 4 x 20\" 'Base' pieces; the 20\" length matches the image's 20\" span. One cross piece is missing from the cut list. (Stock still covers one more 20\": 1305.625 + 20.125 <= 1344.)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "using wood glue and 2 1/2\" Pocket Hole Screws",
+      "what": "wood glue not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[13].body",
+      "quote": "fill holes with wood filler or pocket hole plugs, stain or paint",
+      "what": "wood filler/plugs, stain or paint not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "519576a3f193338c.webp",
+      "f54c564cd2573f14.webp",
+      "444d84eef6957656.webp",
+      "3352f093f950c516.webp",
+      "8b6391deec693c50.webp",
+      "b26a9408d57e6d03.webp",
+      "51857147a99c86cd.webp",
+      "2c3f221f716e45ad.webp",
+      "7bb3f36bc17a5614.webp",
+      "1545dc152cde345f.webp",
+      "b116032af121647d.webp",
+      "103341d01f2973e4.webp",
+      "c75ed33a58a62746.webp",
+      "11826256b9b21735.webp"
+    ]
+  }
 }

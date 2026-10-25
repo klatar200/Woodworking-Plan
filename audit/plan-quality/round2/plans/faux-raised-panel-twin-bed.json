@@ -383,46 +383,89 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "To add a little style, trim 1/4\" on a 45 deg off of the top board corners. Center the top board on the headboard or foot board then glue and secure with 2\" brad nails or 1 1/4\" screws.\nOptional top co",
-          "why": "cut sentence states 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 'trim 1/4\" on a 45 deg off of the top board corners' is a trim on the Top, not a part. All parts the steps make (panels, legs, rails, tops, slats, bed rails, rail supports, moldings) are in the cut list."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 18 rows are used (steps 1-8; cove rows are the optional cove moldings of steps 3-5)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 9 stock types (sheet-0.75, 2x4, 2x3, 1x4, 1x8, 2x2, 0.5x1.1666666666666667, 0.5x0.5, 0.75x0.75); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[6].name",
+          "quote": "panel cap molding, 1/2 in. x 1-1/6 in. 96\" (quantity 2)"
+        },
+        {
+          "path": "cutList[10]",
+          "quote": "Panel molding x4 (corrected 0.5 x 1.0625 x 27.25)"
+        },
+        {
+          "path": "cutList[11]",
+          "quote": "Hb panel molding x2 (corrected 29.25)"
+        },
+        {
+          "path": "cutList[12]",
+          "quote": "Fb panel molding x2 [0.5, 1, 13]"
+        }
+      ],
+      "arithmetic": "Only panel cap molding (1/2 x 1-1/6 name; parts 0.5 x 1.0625) fits these rows. 4 x 27.25 = 109 + 2 x 29.25 = 58.5 + 2 x 13 = 26 = 193.5\" with zero kerf; bought 2 x 96 = 192\". 193.5 > 192 (short 1.5\"; with 6 cuts x 1/8 = 0.75 short 2.25\") - more than the 1/2\" kerf-only allowance. Likely not certain: the cuts are 45 degree miters and the listed lengths' measuring point is not stated. All other stock covers: 2x4 2 x (54.25 + 31.25) = 171 + kerf <= 192 (each board 85.5); 2x3 4 x 35.25 = 141 <= 192; 1x4 10 x 39 + 2 x 43.75 = 477.5 <= 576; 1x8 2 x 76.5 <= 192; 2x2 2 x 73.5 <= 192; plywood 35.25x37.25 + 19x35.25 = 1983 sq in <= 4608."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" and 2 1/2\" pocket screws, 1\", 2\" and 1 1/4\" brad nails, 2\" wood screws, bed rail fasteners all in materials[9]-[14],[20]; '1 1/4\" screws' in steps[5] is an alternative to 2\" brads."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: panel inset 1/8-1/4\" (steps[1]), molding 4\" in from sides (and 3\" top/bottom on footboard) (steps[3],[4], viewed 64ece2c3bd14b79d), rail support offset 1 1/2\" (viewed 6a39d9bc8996be82), hardware 10\" up and 3/4\" in from outside leg edge (steps[8], viewed 2a864b15652573e2); top board centered; slats evenly spread (relational, 10 shown)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Follow the cut diagram and cut list, cut the parts for the bed. Wait to cut the molding until the headboard and foot board are assembled.",
-          "why": "\"diagram\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Follow the cut diagram and cut list, cut the parts for the bed."
         }
-      ]
+      ],
+      "reason": "Step 1 refers to a cut diagram with no step image. Viewed all four unattached images (4d11bdd23814f49e, efbe1bdc09f754c0, 3a1427533f93b002, b9ca00d3501cef6a): photos and an overall-dimension drawing, no cutting diagram. Every part size is in the cut list, so only the board layout (which part from which board) is missing: Fix, not Unpublish."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, headboard/footboard assembled, molding after assembly (steps[0] says wait), tops, rails, bed assembly, finish last: possible."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1],[2] state both settings: 'pocket holes for 1 1/2\" material' (rails) and 'for 3/4\" material' (panel); viewed ee6742ff5529e6e7 repeats them."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Step numbers agree with corrected cut rows and viewed images: panel molding 27 1/4\" and 29 1/4\" (64ece2c3bd14b79d), bed rail 76 1/2\" and support 73 1/2\" (6a39d9bc8996be82), 10 slats at 39\" (2a864b15652573e2); every part installed; steps reach finished bed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "ee6742ff5529e6e7.webp",
+      "64ece2c3bd14b79d.webp",
+      "6a39d9bc8996be82.webp",
+      "2a864b15652573e2.webp",
+      "4d11bdd23814f49e.webp",
+      "efbe1bdc09f754c0.webp",
+      "3a1427533f93b002.webp",
+      "b9ca00d3501cef6a.webp"
+    ]
+  }
 }

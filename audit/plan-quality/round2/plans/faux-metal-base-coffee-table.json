@@ -6,60 +6,84 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " cutting all your pieces to size, drill pocket holes as per the attached diagram. All 1-1/2\" x 1-1/2\" pieces get two pocket holes on each end, with the exception of the 12\" legs. For the plywood piece",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "ach end, with the exception of the 12\" legs. For the plywood pieces, see attached diagram for locations. NOTE: If you would like a shorter table, this is where you would adjust the length of the legs.",
-          "why": "matches \"see attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 'attached diagram' (steps[0]) is the step's own image e126352b194854ae (viewed, fully dimensioned); the blog URL in steps[10] is 'a more detailed description' of prep work, optional."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, spans, mid spans, top braces, box panels, top all in cut list; viewed step-0 diagram lists the same pieces and sizes."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[4].part",
-          "quote": "Front/Back Panel for Top",
-          "why": "no step mentions it (searched steps for panel)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Side Panels for Top",
-          "why": "no step mentions it (searched steps for panel)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flags rejected: 'Front/Back Panel for Top' and 'Side Panels for Top' are the '4-3/4\" wide plywood pieces' of steps[4] (box); viewed e126352b194854ae shows 2 x 40\" and 2 x 16 1/2\" panels. All rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 2x10, 1.5x96); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "1.5x1.5 stock (materials[1] 4 x 96 2x2 or materials[2] 2x10 ripped into 4 strips): legs 4x12 + spans 6x15 + 4x37 = 48+90+148 = 286 + kerfs <= 4x96 = 384. Plywood half sheet 48x48 = 2304 sq in: 2x(4.75x40) + 2x(4.75x16.5) + 2x(1.5x16.5) + 18x40 = 380 + 156.75 + 49.5 + 720 = 1306 <= 2304; 18\" top + strips fit within 48x48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2-1/2\" and 1-1/4\" pocket screws and 1-1/2\" wood screws (6 = 2 braces x 3), all in materials[3],[4],[10]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Mid-span 11\" and 15\" (4261978c689880e8), braces 11 3/4\" and 16 1/2\" (471c454bc156be77), pocket-hole locations (e126352b194854ae) all dimensioned in viewed images; base lined up with top edges (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "reason": "Sweep: 7 references each in a step with its own image."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Run each of the 1-1/2\" x 1-1/2\" pieces across a router table equipped with a 1/4\" round-over bit on all four sides."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Create two rectangular frames to start the base."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Paint the assembled base using a matte/satin black spray paint. Apply two coats."
+        }
+      ],
+      "reason": "As ordered, the piece-prep step (round over and sand each 1-1/2\" piece) comes after the frames are assembled (steps 1-3) and the top is attached (steps 4-7), when individual pieces can no longer be routed; and 'Paint the assembled base' (steps[11]) comes after the base is attached to the stained top (steps[7]-[9]). Both are out of order; the build can still proceed by doing them earlier, so Fix not Unpublish. Order of steps vs Kreg's source was not compared (import-fidelity.md: only step counts)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "drill pocket holes as per the attached diagram. All 1-1/2\" x 1-1/2\" pieces get two pocket holes on each end"
+        }
+      ],
+      "reason": "Pocket holes in 1.5\" and 3/4\" stock but no jig thickness setting stated: searched all steps/summary/description for /setting|thickness|jig/ (no match); viewed diagrams e126352b194854ae, 471c454bc156be77, 4261978c689880e8 show hole locations only. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 2 frames x (2 legs + 2 x 37) = 4 legs + 4 spans; 4 side + 2 mid = 6 x 15\"; box 40 x (16.5 + 2 x 0.75 = 18) matches 18 x 40 top; 6 wood screws = 2 braces x 3; optional edge banding listed. Steps reach finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "e126352b194854ae.webp",
+      "471c454bc156be77.webp",
+      "4261978c689880e8.webp"
+    ]
+  }
 }

@@ -163,99 +163,93 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/modern-diy-bookshelf/ Video tutorial at - https://youtu.be/8ijBB8Ae5-o",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "For more details on this project, please see - https://www.anikasdiylife.com/modern-diy-bookshelf/ Video tutorial at - https://youtu.be/8ijBB8Ae5-o",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[4] links (blog page, video) are 'For more details'; steps[0]-[3] plus viewed images 306f587b8da1d40b, fab26372e81dede0 carry all dimensions."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom, long side, short side, 5 shelves, 2 backs all in cut list; viewed images show 2 shelves + bottom on the short side and 3 shelves on the long side (5)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows are used by steps[1]-[3]."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[0]",
-          "quote": "Long Side — qty 1, 1.5 x 9.5 x 64 (Kreg-corrected)"
+          "quote": "Long Side x1, Kreg-corrected 1.5 x 9.5 x 64 (importDiffs source: 1 1/2\" x 9 1/2\" x 64\")"
         },
         {
           "path": "cutList[1]",
-          "quote": "Short Side — qty 1, 1.5 x 9.5 x 51.5 (Kreg-corrected)"
+          "quote": "Short Side x1, Kreg-corrected 1.5 x 9.5 x 51.5"
         },
         {
           "path": "cutList[2]",
-          "quote": "Bottom — qty 1, 1.5 x 9.5 x 12 (Kreg-corrected)"
+          "quote": "Bottom x1, Kreg-corrected 1.5 x 9.5 x 12"
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 2x10 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 2x6 72\""
         }
       ],
-      "arithmetic": "cutList[0] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×9.25, 1.5×5.5; cutList[1] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×9.25, 1.5×5.5; cutList[2] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×9.25, 1.5×5.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Long Side — qty 1, 1.5 x 9.5 x 64 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[1]",
-          "quote": "Short Side — qty 1, 1.5 x 9.5 x 51.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        },
-        {
-          "path": "cutList[2]",
-          "quote": "Bottom — qty 1, 1.5 x 9.5 x 12 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "Three parts are 9 1/2\" wide; the widest listed stock is 2x10 = 1 1/2 x 9 1/4 (section 9). 9.5 - 9.25 = 1/4\" too wide. No step glues up or laminates (searched steps for /glue-up|laminat|edge/: only 'wood glue' on joints). The 5 shelves (length 9.5 across 8.75 width) do fit."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x10, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock forced by section (1.5 wide 8.75-9.5 -> 2x10; 5.5 -> 2x6; steps[3] names 2x6 for backs). 2x10: 64 + 51.5 + 12 + 5x9.5 = 175 + 8 kerfs x 1/8 = 176 <= 2x96 = 192 (board A: 64+12+2x9.5 = 95.4; board B: 51.5 + 3x9.5 = 80.1). 2x6: 2x26.5 = 53 + 1/8 <= 72. Width shortfall is scored under R4."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "s. However, you can also use 1x6 boards if you want the shelf closer to the wall. In that case the pocket holes will be made at the 3/4\" thickness setting and attached using 1 1/4\" pocket hole screws.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flag rejected: 1 1/4\" screws appear only in steps[3]'s alternative for 1x6 backs ('you can also use 1x6'); the main build uses 2 1/2\" screws (materials[2]). Alternative recorded in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf spacings 23 1/2\", 12 1/2\", shelf height 8 3/4\", bottom 12\" are dimensioned in viewed images 306f587b8da1d40b and fab26372e81dede0; backs are 'aligned' to the shelves (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Sweep: 4 references each in a step with its own image; images viewed show the drawings."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side 1, side 2, backs, then bottom to second side: each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0]: 'Kreg Jig setup for 1 1/2\" thick material'; steps[3] states the 3/4\" setting for the 1x6 alternative."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Short side check: bottom 1.5 + 23.5 + 1.5 + 23.5 + 1.5 = 51.5 matches cut list 51.5 and image 51 1/2\"; long side 12.5 + 23.5 + 23.5 + 3x1.5 = 64 matches 64\". Part counts agree; steps reach complete shelf."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Attach using 2 1/2\" pocket hole screws and wood glue.",
+      "what": "wood glue not in materials (consumable)"
+    },
+    {
+      "kind": "alternative-fastener",
+      "path": "steps[3].body",
+      "quote": "In that case the pocket holes will be made at the 3/4\" thickness setting and attached using 1 1/4\" pocket hole screws.",
+      "what": "1 1/4\" screws and 1x6 boards only for an alternative build; not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-07",
+    "imagesViewed": [
+      "306f587b8da1d40b.webp",
+      "fab26372e81dede0.webp",
+      "498dcfb6369c3a03.webp"
+    ]
+  }
 }
