@@ -10,31 +10,75 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Posts and spans (steps[0]-[2]) have cut-list rows; step 3 repeats them for the second rack (cut-list quantities 2+2+4 cover two racks)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: Front/Back Posts and Top/Bottom Spans in steps[0]-[2]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock type (materials[0] '3/4\" x 3 1/2\" x 8' boards' x 2, unit explicit). Parts: 4 x 30 + 4 x 7 = 148 in + about 6 x 1/8 kerf = 148.75 in <= 2 x 96 = 192 in."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners: '3/8\" Kreg dowels' (materials[1]) = steps[0] 'two 3/8\" dowel holes'; keyhole hangers have no size in steps or materials. Wall anchors/screws carry no size (missing item recorded under R14)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Drill dowel holes, assemble one rack (steps[1]-[2]), repeat for the second (step 3 'Repeat Steps Two and Three' = steps[1],[2]), finish, hang: order works."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "No pocket holes; the joint method and fasteners are stated (Kreg Dowel Jig, two 3/8\" dowels per end, wood glue; steps[0]-[2])."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hanger positions 4\" from the top and bottom and 10\" between racks are given (steps[5]); dowel positions are set by the jig (two per end, viewed step-0 image shows two dowels at each end); spans go between the posts (fixed by the parts)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Measure and attach anchors and screws to the wall to correspond with the hangers"
+        }
+      ],
+      "reason": "Wall anchors (and screws) are used in steps[5] (not optional) but are not in materials. Search of materials[0..4] for /anchor|screw/i: no match. (Dowel count 4 spans x 2 ends x 2 holes = 16 = materials[1]; keyhole hangers 2 per rack x 2 racks = 4 = materials[2].)"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "add polyurethane if desired to protect the wood in the bathroom",
+      "what": "polyurethane not in materials (optional, 'if desired')"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Start by lining up your Spans and Posts in a rectangle pattern",
+      "what": "no step cuts the boards; cut list widths of 2 in come from a 3 1/2 in board with no ripping instruction (cut list implies it)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "f4b1b4905061c9c9.webp",
+      "8ca624eb5f1bcac6.webp"
+    ]
+  }
 }

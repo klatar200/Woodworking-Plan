@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps (sides, top/bottom, back, mid span, drawer guts front/back/sides, drawer bottom, drawer face, clamp rack small/bottom/outside pieces) has a cut-list row; the optional 3/4 x 3/4 perimeter piece (steps[10]) and edge banding (steps[2]) are explicitly optional."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used in steps[0]-[8] (viewed cut diagram labels each piece with the same dimensions)."
     },
     "R4": {
       "result": "pass",
@@ -21,21 +23,95 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Two sheet types and sheet width not written in the names ('Plywood, 3/4\" Thick 96\"'). 3/4\" parts total 675 + 2x768 + 2x900 + 90 + 2x115 + 2x89.25 + 5x13.125 + 192 + 80 + 192 = about 5039 sq in; not shown to exceed any bought area, so not a certain fail."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "attach DRAWER BOTTOM with wood glue and 1 1/4\" brad nails around the perimeter."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "2\" Brad Nails"
+        }
+      ],
+      "reason": "Steps[4] uses 1 1/4\" brad nails but the only brad nail in materials is 2\" (used in steps[7]). Search of materials for /brad|nail/i: only materials[5]."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Create the base box by attaching each of the SIDES to the TOP / BOTTOM pieces using wood glue and 1-1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes in the approximate locations shown on each piece. See cut list and diagrams first to accurately cut the plywood sheets."
+        }
+      ],
+      "reason": "Pocket holes (and cutting the sheets) are the last step, but steps[0]-[8] already join parts with pocket hole screws. The build can still proceed by doing steps[9] first, so Fix not Unpublish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Drill pocket holes in the approximate locations shown on each piece."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood throughout, no jig thickness setting stated; search of all steps/description for /setting|jig/ finds only 'Kreg Drawer slide jig'; the viewed cut diagram (steps[9] image) shows hole positions but no setting."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Mid span 16\" back from the face (steps[1]); drawer slides 8\" from the top (steps[5]); clamp rack pieces 7\" apart with 5 1/4\" x 2 1/2\" pieces shown in the viewed dimensioned image (steps[6]); drawer face flush (relational); pocket-hole positions shown in the viewed diagram; casters at 'each of the four corners'."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "4 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Interior arithmetic agrees: top 24 wide - 2 x 3/4 sides = 22.5 = back and mid span width; sides 30 high = back height 30; drawer 20 + 2 x 0.75 = 21.5 = drawer bottom width; 5 small pieces at 7 in matches the viewed image. (b) all parts installed. (c) hardware (slides, casters, brads, screws) listed; consumables/optional only. (d) steps reach a finished cart. The drawer pull is bought but never installed (gap)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "Drawer Pull",
+      "what": "drawer pull is in materials and shown in the viewed finished-cart image but no step installs it (search steps for /pull|handle/i: none); its position is therefore also not given"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "use some instant glue or double-sided tape to hold the drawer face in place",
+      "what": "instant glue / double-sided tape not in materials (tip, optional)"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "you can add a 3/4\" x 3/4\" piece of wood around the perimeter of the top",
+      "what": "optional piece not in cut list or materials (optional step)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "cb6013d05d5a9a35.webp",
+      "1d145c58963e211c.webp",
+      "facfbab24812a7a2.webp"
+    ]
+  }
 }

@@ -131,32 +131,120 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Front, back, sides, bottom, top (lid) each have a cut-list row; steps[0],[1],[3],[4] cut them. Wooden letters and ribbon/rope are bought components, handled under R14."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Front/Back steps[0], Sides steps[1],[2], Bottom steps[3], Top steps[4],[5],[12]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x12, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock: front/back/top from the 1x12 (steps[0],[4]), sides from 1x4 (steps[1]); Bottom 3/4 x 3 1/2 matches exactly one listed material (1x4). Kreg-corrected: 1x12 72\" = 72 in vs 12.75 + 17.875 + 11.25 = 41.875 + 3 x 1/8 = 42.25 in; 1x4 48\" = 48 in vs 2 x 14.875 + 9.75 = 39.5 + 3 x 1/8 = 39.875 in. Both fit."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Hinges '1 1/2\" hinges' and '1 1/4\" kreg pocket screws' are the only sized fasteners; steps give no conflicting size (5/8\" forstner bit is a bit, not a fastener)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using wood glue and clamps, glue the top of the mailbox in place"
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Screw one side of each hinge into angled edge of the mailbox top."
+        }
+      ],
+      "reason": "The only top piece (cutList[4], also the mail-slot piece in steps[4]) is glued permanently in steps[5], yet steps[12] hinges it as a lid and steps[9]-[10] sand/paint 'the mailbox and the mailbox top' separately. Viewed step image [12] shows the top as a separate hinged piece. A glued top cannot be hinged; the plan does not say which is meant."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using a Kreg jig, drill pocket holes and then attach the two sides of the mailbox to the back."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock (steps[2],[3]) but no jig thickness setting stated; search of all steps/description for /setting|3\\/4\" setting/ finds none; viewed image steps[5] shows pocket holes with no setting."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given or shown: mail slot 'in the middle' and letters 'centered and equidistant' are relational; hanger holes 'centered and equidistant from the board edge' with the viewed image (steps[6]) showing them near the top corners; hinge placement shown in viewed image steps[12]; bevel angles are given."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Glue wooden letters in place, centered and equidistant from each other."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "thread ribbon or rope through the holes and secure with knots."
+        }
+      ],
+      "reason": "Wooden letters (the 'Letters To Santa' label) and ribbon/rope are used by steps but are not in materials. Search of materials[0..4] for /letter|ribbon|rope|cord/i: no match; neither step is marked optional. Not consumables."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Using wood glue and clamps",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "Give the mailbox and the top of the mailbox a coat of paint.",
+      "what": "paint not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "secure in place with painter's tape",
+      "what": "painter's tape not in materials"
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "Small hobby hook and eye",
+      "what": "hook and eye is bought but no step installs it (search steps for /hook|eye|latch/i: none)"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Either side should be parallel 30-degree beveled edges and 5 inches.",
+      "what": "step says 5 inches for the top; Kreg-corrected cutList[4] is 5 3/8 wide (face not stated); not decidable from the plan"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "003fb516466f8794.webp",
+      "22be464f5c7f42e4.webp",
+      "bf494b79f0dbbd70.webp"
+    ]
+  }
 }

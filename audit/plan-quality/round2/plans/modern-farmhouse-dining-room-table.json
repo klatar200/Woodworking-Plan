@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top (2x12), legs, end aprons, side aprons, center support (steps[0]-[4]) each have a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Top Pieces steps[0], Legs/End Aprons steps[1], Side Aprons steps[2], Center Support steps[4]."
     },
     "R4": {
       "result": "pass",
@@ -64,21 +66,63 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (4x4, 2x4, 2x12); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed material (legs 3 1/2 x 3 1/2 = 4x4; aprons/center support 1 1/2 x 3 1/2 = 2x4; top 1 1/2 x 11 1/4 = 2x12, section 9), and steps[0] names 2x12 for the top. 4x4: 4 x 28.5 = 114 in + 3 x 1/8 <= 2 x 96 = 192 in. 2x4: 2 x 53 + 2 x 26.75 + 30.75 = 190.25 in + 5 x 1/8 <= 2 x 120 = 240 in. 2x12: three 60 in pieces, one per 96 in board."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use '2 1/2\" Pocket Hole Screws' = materials[3] 'Box of 2 1/2\" Kreg Coarse Screws'; steps[4] 'Pocket Hole Screws' gives no conflicting size."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "before attaching your apron pieces to the legs, pre drill Pocket Holes that will allow the screws to go through the apron and into the table top."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the side aprons to the legs using Pocket Holes and 2 1/2\" Pocket Hole Screws."
+        }
+      ],
+      "reason": "The pre-drill step that must come 'before attaching your apron pieces to the legs' is listed after the steps that already attach the end aprons (steps[1]) and side aprons (steps[2]). Reorderable, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Viewed images state the setting: end/side apron and center support drawings read '1 1/2\" Pocket Holes' (all pocket-holed parts are 1.5 in thick 2x stock); top is 2x12, also 1.5 in thick."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed drawings give: center support midpoint (25 3/4\" each side of 30 3/4\" span), apron flush with the leg fronts (also stated in text), top flush with the base (stated in steps[0]); frame 53 + 2 x 3.5 = 60 matches the top."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Top 3 x 11.25 = 33.75 in wide = end apron 26.75 + 2 x 3.5 (legs); side aprons 53 + 2 x 3.5 = 60 = top length 60; center support 30.75 = 33.75 - 2 x 1.5 aprons; viewed drawings give 28 1/2, 26 3/4 and 30 3/4. (b) all parts installed. (c) no unlisted hardware. (d) steps[6] finishes."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Paint or stain in the color of your choice. I used Minwax Weathered Oak. Seal the table.",
+      "what": "sealer/topcoat not in materials (stain is)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "20d9f5cca264624c.webp",
+      "d25f41d4b9c295f2.webp",
+      "2bfacf636f5992bd.webp"
+    ]
+  }
 }

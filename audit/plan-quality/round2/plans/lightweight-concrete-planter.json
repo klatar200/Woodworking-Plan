@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side panels, top, base panels and strips named in steps[0]-[2] all have cut-list rows; search of steps for other parts: none."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: side panels and strips (steps[2]), top cut in steps[1], base panels as 'base plates' (steps[2]). The 6\" strips are not separately mentioned but steps[2] speaks of 'the 1-1/2\" wide strips' as a group."
     },
     "R4": {
       "result": "pass",
@@ -70,20 +72,64 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet size not written in material name"
+      "reason": "Sheet size is not written in materials[0] 'Sheet 3/4\" sanded pine plywood'; Kreg-corrected parts total 2x14x18 + 2x12.5x18 + 12x12 + 6x12 + 4.5x12 + 6x1.5x12 + 4x1.5x6 = 504+450+144+72+54+108+36 = 1368 sq in, which does not exceed a 4608 sq in sheet, so not a certain fail."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener named is '1 1/4\" pocket-hole screws' (materials[1]); steps[2] 'Screw the 1-1/2\" wide strips' states no size. No conflicting sizes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (steps[0]), cut top (steps[1]), strips then tube then concrete (steps[2]) is a workable order. The missing placement of top/base is R14(b)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Use pocket holes to attach the side panels to make a square plywood tube."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" plywood with no jig thickness setting stated; search of steps/description for /setting|jig setting/ finds none; viewed image (assembly diagram) says only 'POCKET HOLES WITH SCREWS'."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Circle size and location are shown in the viewed top-cutting diagram (8\" diameter, centered across 12\" x 12\", cut on the 6\" line). Ledge locations are shown in the viewed exploded assembly diagram; plates sit on the ledges."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Screw the 1-1/2\" wide strips to the narrow side panels to make ledges for the top and base plates."
+        },
+        {
+          "path": "cutList[2..4]",
+          "quote": "Top 12x12; Base 6x12 and Base 4.5x12 (Kreg-corrected)"
+        }
+      ],
+      "reason": "The top halves (cut in steps[1]) and the base panels are never installed: steps[2] makes ledges 'for' them then goes straight to coating. Search of all 3 steps for /place|install|insert|set|glue|attach.*(top|base)/: no step puts them in. Ledges imply drop-in, so Fix not Unpublish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "2eef9921e5b347ea.webp",
+      "5c7f041763dcd354.webp",
+      "e22de5dd47879872.webp"
+    ]
+  }
 }

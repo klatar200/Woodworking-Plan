@@ -487,35 +487,150 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[14].body",
+          "quote": "We provided 1:1 prints if printed on a Size C Sheet, you can use these as a template to cut out the upper arches, or you can draw them out and then use that as a template."
+        }
+      ],
+      "reason": "The arch shapes are given only as 1:1 prints that this plan does not contain; no radius or arch drawing appears in the plan (search of all steps and cutList notes for /radius|arc|curve/: only steps[14] fluting 'radius template'). The text allows drawing your own arches, and arches are decorative trim, so the build can be finished: Fix."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Carcass parts, face frames, glue-ups, arches, columns, trim, shelf bull nose and crown moulding (steps[0]-[19]) all correspond to cut-list rows; the 'square brackets' in steps[12] are a clamping aid."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[20]",
+          "quote": "Crown Moulding qty 2, 0.6875 x 3.25 x 96 (Kreg-corrected); materials[4] 'Poplar, Crown Moulding, 11/16\" X 3 1/4\" X 96\" 11/16\"'"
+        },
+        {
+          "path": "steps[17].body",
+          "quote": "We created the column crown moulding with the router and then glued and nailed them to the columns."
+        }
+      ],
+      "reason": "The purchased crown moulding (cutList[20], materials[4]) is never used: steps[17] makes the column crown moulding with a router (cutList[18]). Search of all steps for /crown/i: only steps[17]. (Cap Stone qty 5 is also never named; see gaps.)"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3]); cutList[1] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3]); cutList[2] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3]); cutList[3] no match among parsed stock; unparsed stock present (materials[0], materials[1], materials[2], materials[3]); +28 more"
+      "result": "pass",
+      "reason": "Sheet parts fit 48 x 96 (longest 76 in x 10 1/2 in). Lumber parts are 3/4, 7/8, 5/8, 1/4 in thick, within the 4/4 poplar (steps[3] 'Plane the rough lumber to desired thickness') and 5/4 red oak (seat 7/8) stock; board widths are not stated for board-foot stock, so widths are not judged."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3]"
+      "reason": "Stock is bought by board foot (materials[0],[1]) and 4x8 plywood sheets. 3/4 in ply parts total about 12,144 sq in (bench: 8 x 12.4063 x 17.1563 + 2 x 12.4063 x 17.5156 + 4 x 13.75 x 20 + 3 x 13.75 x 20; top: 4 x 10.5 x 76 + 3 x 10.5 x 76 + 12 x 9.6563 x 17.1563 + 3 x 9.6563 x 17.5156) vs 3 sheets x 4608 = 13,824 sq in, so no certain fail; 1/2 in ply about 8,270 vs 18,432 sq in."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps state no fastener size: 'screw together face frame', 'cabinet screws', 'brad nails'; materials list 1 1/4 fine and coarse thread screws. No conflicting sizes. Items not in materials are recorded as gaps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sheet breakdown, dados, carcass assembly, face frames, face frames to carcass, arches, uppers, lowers/uppers installed, trim, crown, bull nose: parts exist before the step that uses them."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Drill pocket holes in the rails of the face frames."
+        }
+      ],
+      "reason": "Pocket holes in 3/4 in poplar rails (steps[6],[10]) with no jig thickness setting stated; search of all steps/cutList notes for /setting|jig/ none; viewed images (steps[1],[4],[14]) are process photos with no setting."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Layout and cut the dado's and grooves. we use a dado stack on the upper carcasses and a router on the bench carcasses."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Glue the face of the carcass position and clamp the face frame to the carcass."
+        },
+        {
+          "path": "steps[16].body",
+          "quote": "We glues and nailed the trim to the face frames."
+        }
+      ],
+      "reason": "Positions the builder must set are not given as numbers or shown in a viewed dimensioned image: dado/groove locations, widths and depths (hence shelf heights), face-frame/stile layout, arch, column, cap stone and trim locations, bull nose placement. Viewed step images (steps[1],[4],[14]) are process photos with no dimensions."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "We prepped the edges for the bench seat and then, biscuit, glued and clamped the bench seats."
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "(6/4 Red Oak, Bench Seat) Seat long [Glue Up Panel] qty 3, 0.875 x 5.1875 x 53 (Kreg-corrected)"
+        }
+      ],
+      "reason": "The bench seats are glued up in steps[4] but no later step installs them. Search of steps[5]-[20] for /seat|bench/i: no match (steps[13] installs 'the lowers' i.e. carcasses only). A bench piece is not usable as a seat without it; marked likely because the lowers could be read as including the seats."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[13]",
+      "quote": "(4/4 Poplar, Top Trim) Cap Stone qty 5, 0.875 x 3 x 3.3125",
+      "what": "Cap Stone is not named in any step (search /cap|stone/i: none); its location is covered only by the generic 'Trim out' steps"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Glue and assembly the carcasses.",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[20].body",
+      "quote": "You're ready for prime an paint!",
+      "what": "primer and paint not in materials"
+    },
+    {
+      "kind": "fastener",
+      "path": "steps[8].body",
+      "quote": "Use a hammer a few brad nails into the carcass and cut the heads off",
+      "what": "brad nails (also steps[16],[17],[19]) and 'cabinet screws' (steps[13]) not in materials; no sizes given"
+    },
+    {
+      "kind": "component",
+      "path": "steps[4].body",
+      "quote": "biscuit, glued and clamped the bench seats",
+      "what": "biscuits not in materials; step 13 'shim and screw' uses shims not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "442c6490411587a7.webp",
+      "0b7cf57846d74d79.webp",
+      "4758fa64dc8b7740.webp"
+    ]
+  }
 }

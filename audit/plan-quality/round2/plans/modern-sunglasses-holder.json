@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only part, 3 boards 3/4 x 2 1/2 x 16, is made in steps[0]-[1] (two with pocket holes plus a middle board); no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single row (3 boards) is used in steps[0]-[1]; the viewed step-1 image shows three boards edge-joined into one panel."
     },
     "R4": {
       "result": "pass",
@@ -34,20 +36,72 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "reason": "Stock length '48' in materials[0] 'Hardwood board, 3/4\" x 2 1/2\" x 48' has no explicit unit (section 9). If inches, 3 x 16 = 48 + 2 x 1/8 kerf = 48.25 in vs 48 in, a kerf-only shortfall of 1/4 in (would pass with kerfOnly), but the unit is not written."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fastener is '1 1/4\" pocket hole screws' (materials[1]); steps[1] says 'pocket hole screws' without size; wall nails/screws and keyhole hangers carry no size in steps."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes, glue-up, round corners, drill bungee holes, finish, bungee, hang: each step uses only parts that already exist."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "On two Boards, drill three pocket holes along one long edge."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards with no jig thickness setting stated; search of all steps/description for /setting|jig/ none (only 'Kreg Corner Routing Guide'); viewed images (steps[1],[3],[6]) show none."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Add mounting hardware to the back of the sunglasses holder (I used keyhole hangers)."
+        }
+      ],
+      "reason": "Where the hanging hardware goes on the back (distance from the ends/top, spacing) is not given as a number and the viewed step-6 image shows the front only. Other positions are given: pocket holes at middle and 2\" from each end, bungee holes 1 1/2\" in and 1 1/2\" down."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) three pocket holes per board x 2 boards = 6 screws = materials[1] quantity 6; 16 in boards match the cut list. (b) every board used. (c) bungee, oil, hanging hardware listed; sandpaper is a consumable. (d) steps reach a hung holder."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Sand the piece down with a high grit sandpaper.",
+      "what": "sandpaper not in materials"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Add nails or screws into the wall and hang the board up.",
+      "what": "wall fasteners are not in materials (user-supplied, no size)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "04e4b73afd0d30b2.webp",
+      "268f30316f31a486.webp",
+      "ceb2bc7956ea6eb9.webp"
+    ]
+  }
 }

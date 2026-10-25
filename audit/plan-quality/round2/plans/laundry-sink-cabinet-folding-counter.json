@@ -503,32 +503,145 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (face frame, side/top/bottom/back/interior support panels, toe kick nailer, side trim, ledgers, folding top, door stiles/rails/panel, plywood edge trim) all have cut-list rows; search of steps for cut/assembled parts found none without a row. Temporary ledger is explicitly 'made with scrap wood'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 25 rows are used: face frame (steps[2]), cabinet panels, nailer, toe kick and 'side trim pieces' (steps[4]), ledgers/top (steps[5], [8]), door parts (steps[7]), edge trims (steps[10]). Toe Kick is used in steps[4] (but see R14)."
     },
     "R4": {
       "result": "unknown",
       "reason": "cutList[19] thinner than stock — would need planing/resawing, not judged; cutList[22] thinner than stock — would need planing/resawing, not judged; cutList[23] thinner than stock — would need planing/resawing, not judged; cutList[24] thinner than stock — would need planing/resawing, not judged"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x4, 1x3); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x4 96\""
+        },
+        {
+          "path": "cutList[3..5,21]",
+          "quote": "Cab Support/Toe Kick Nailer .75x3.5x19; Folding Table Back Ledger .75x3.5x56; Side Ledger .75x3.5x27.25; Toe Kick .75x3.5x24 (Kreg-corrected)"
+        }
+      ],
+      "reason": "Four parts of 3/4 x 3 1/2 match exactly one listed material (1x4, actual 3/4 x 3 1/2 per section 9; 1x3 is 3/4 x 2 1/2, plywood is a 48-wide sheet). Steps do not name stock per part, so this rests on the exact-match rule; likely rather than certain.",
+      "arithmetic": "Needed: 19 + 56 + 27.25 + 24 = 126.25 in, plus 3 kerfs x 1/8 = 0.375 -> 126.625 in. Bought: materials[1] 'Board, 1x4 96\"' quantity 1 = 96 in. Short by 30.625 in."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes in steps: lag bolts 4 back + 3 side = 7 = materials[7] '5/16\" Lag bolts - 3 1/2\" inches long' qty 7; hinges '3/4\" overlay soft close hinges' = materials[5]; pocket hole screws, finish nails, wood screws appear in materials with no size anywhere in the steps, so no conflict. Brad nails (steps[10]) are not in materials (recorded as gap)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Order works: cut, pocket holes, face frame, sand, cabinet (panels, back, support, face frame, nailer, trim), counter, stain, door, install counter, sink holes, edge trim, hinges, putty, wall attach. Toe kick omission is R14(b), not an order problem."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using Kreg's pocket hole system, drill pocket holes where needed."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" parts (every cut-list part but the 1/4\" ones) and no jig thickness setting is stated; search of all steps/description for /setting|3\\/4\" setting|jig/ finds none. Viewed images (steps[4],[7],[11]) show none."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "You will have to drill a hole to inlay the hinge into the cabinet door."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "you'll need to cut the holes necessary for drain and plumbing in the cabinet top panel."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "We cut mortise and tenon joints & grooves using the table saw"
+        }
+      ],
+      "reason": "Positions/sizes the builder must set are not given as numbers: hinge location and inlay on the door/face frame, the drain and plumbing hole locations in the top panel and back panel, and the mortise/tenon/groove positions and sizes for the door. Viewed step images (steps[4],[7],[11]) are photos with no dimensions."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "3 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "*Note: toe kick piece is installed after you put into your laundry room"
+        },
+        {
+          "path": "cutList[21]",
+          "quote": "Toe Kick .75 x 3.5 x 24 (Kreg-corrected)"
+        }
+      ],
+      "reason": "Toe Kick is deferred to 'after you put into your laundry room' but no later step installs it. Search of steps[5..13] for /toe kick|kick/i: no match. Not a part the piece is unusable without, so Fix."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "apply wood glue at joints and clamp together",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Apply two coats of stain followed by two to three coats of polyurethane",
+      "what": "stain, polyurethane not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "put 4 quarter-sized dots of silicone in each corner",
+      "what": "silicone not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "Using wood putty that matches your stain color",
+      "what": "wood putty not in materials"
+    },
+    {
+      "kind": "fastener",
+      "path": "steps[10].body",
+      "quote": "Secure with brad nails & wood glue.",
+      "what": "brad nails not in materials (materials list only Finish Nails); no size given"
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Start by adding wood shims under cabinet if necessary.",
+      "what": "wood shims used (conditionally) but not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "ec9ee9e8a64cdd0a.webp",
+      "7618c1b4ba287284.webp",
+      "b4c1f266addc14ac.webp"
+    ]
+  }
 }

@@ -10,32 +10,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Front, back, bottom and sides (steps[0]-[1]) each have a cut-list row; the optional front hole is not a part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Bottom/Front/Back steps[0],[2],[3]; Sides steps[1],[4]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps[0] names 1x6 stock for front/back/bottom (3/4 x 4 rips; only 1x6 is listed) and steps[1] names 1/4\" plywood for sides. 1x6 36\" = 36 in vs 9.5 + 6 + 11.5 = 27 + 3 x 1/8 = 27.375 in. Sides 2 x 11 x 11.5 = 253 sq in from one quarter sheet; no area shortfall shown (sheet size not written in the name, not a certain fail)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "I used 1-1/4 inch nails as that's my most common size used"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "18 gauge brad nails"
+        }
+      ],
+      "reason": "A nail length (1-1/4 inch) is given in steps[4] but materials[3] states only the gauge, no length. Pocket screws: materials[2] 'Kreg 1-1/4\" pocket screws (optional)' is the only screw size and is not contradicted."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut front/back/bottom and sides (steps[0],[1]), then front to bottom, back, sides (steps[2]-[4]), then finish; each part exists before use."
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "Pocket holes are optional here (steps[2] 'Option #1: Drill two pocket holes in each end of the bottom. Option #2: No pocket holes') and no jig setting appears in any step text (search /setting|jig/ none); step images not opened."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Front hole 'at a center mark that fits your fancy' and side curve design are 'as desired'; the constraint 'don't start your curves any lower than 6 inches from the bottom' is a number; bottom/front/back/side placement is fixed by the parts (11 in depth = 0.75 + 9.5 + 0.75 + sides flush)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "2 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 in width, 6 in front, 11.5 back match cutList; depth 0.75 front + 9.5 bottom + 0.75 back = 11 matches Sides width 11. (b) every part installed steps[2]-[4]. (c) only consumables missing. (d) steps reach a finished holder."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Attach the front to the bottom with glue and nails",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "put them all together and tape the stack together",
+      "what": "tape not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "Sand and finish as desired.",
+      "what": "finish/paint not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": []
+  }
 }

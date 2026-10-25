@@ -56,13 +56,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "steps[0] and steps[4] end with 'See plans.' but each has its own dimensioned drawing (viewed) and the text gives every size, so nothing outside the plan is needed; steps[8]'s link is for the exact cushions used (credit)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut-list length (24, 27.5, 30.5, 27 5/8, 25, 22, 29.5) is made in steps[0]-[4]; no step cuts a part without a row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: 24/27.5/30.5 steps[0], 27 5/8 diagonal steps[1], 25 (3 horizontals steps[2] + 4 seat supports steps[3] = 7), 22 and 29.5 steps[4]."
     },
     "R4": {
       "result": "pass",
@@ -73,18 +75,81 @@
       "arithmetic": "parts: 7×25 + 4×24 + 2×30.5 + 2×27.5 + 2×27.625 + 4×22 + 2×29.5 + kerf 15 cuts (23 parts − 8 boards, the fewest possible)×1/8 = 591.125″; bought: 8×96 = 768″; 591.125 ≤ 768"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "'2 1/2\" pocket hole screws' (materials[1]) = steps[0]-[2],[4]; '2 1/2\" wood screws' (materials[2]) = steps[5], viewed image steps[5] '2 1/2\" wood screws'; steps[3] 'pocket hole screws' states no size."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side frames, diagonals, horizontals, seat supports, backrest, backrest attach, fill/finish, cushion: each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in one end."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1.5 in thick 2x2s throughout but no jig thickness setting is stated; search of all steps/description for /setting|jig/ none; viewed images (steps[0],[4],[6]) only label 'Pocket Holes'."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given as numbers: 27 1/2\" piece, diagonal ends 12 1/4\" and 10\", seat supports every 5\", backrest boards 7 1/4\" apart (viewed drawing), horizontals 12 1/4\"/10\"/flush top; backrest 'meets up against the top of your seat frame' is relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "5 reference(s), each in a step with its own image"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "This chair frame is designed to use a deep seat cushion for both the backrest and the seat. These seat cushions are 24\" x 24\", and 4\" thick."
+        }
+      ],
+      "reason": "Seat/back cushions (foam/fabric) are a required component of the finished chair per steps[8] (not marked optional) but are not in materials. Search of materials[0..2] for /cushion/i: none."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Attach the 27 1/2\" board to the 24\" boards, 10\" from the bottom",
+      "what": "viewed step-0 drawing shows this board 5\" from the bottom of the legs (and 17 1/2\" below the top rail), conflicting with the 10\" in the text; plan does not say which is right"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Cut 2- 24\" 2x2's. ... Cut 2- 27 1/2\" 2x2's. ... Cut 2- 30 1/2\" 2x2's.",
+      "what": "counts are given inconsistently (2 of 24 in. would be one side, but 2 of 27 1/2 and 30 1/2 would be both sides); cut list totals 4/2/2 are consistent with the viewed 'Build TWO per chair' drawing"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "using wood glue and 2 1/2\" pocket hole screws",
+      "what": "wood glue not in materials"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Fill all the pocket holes in your chair. Sand and either stain or paint the wood. Make sure to use an outdoor polyurethane",
+      "what": "wood filler, sandpaper, stain/paint, outdoor polyurethane not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "f41120b406308ae2.webp",
+      "dd33386bd5e91848.webp",
+      "d05fa3edb9b057f9.webp"
+    ]
+  }
 }

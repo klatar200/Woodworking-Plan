@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Cross beams, vertical boards, bench lengths, slats and the seat cross support (steps[0],[4],[5],[6],[7]) each have a cut-list row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: ends steps[4], lengths steps[5], seat cross support steps[6] ('2x4 cross beam'), slats steps[7]."
     },
     "R4": {
       "result": "pass",
@@ -142,20 +144,90 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x4); steps not checked for per-part stock"
+      "reason": "Steps name stock for every part (2x4 for frame, '1x4 pine' for slats), but the 2x4 material names 'Board, 2x4 15', 'Board, 2x4 16.5', 'Board, 2x4 48' carry no explicit length unit (section 9: parse length only with a unit), so lengths are not scored. 1x4 side is fine: 14 x 18 = 252 + kerf 4 x 1/8 per board is within 3 x 96 = 288 (5 slats per board)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fastener: 'Exterior 2 1/2 Kreg Screws' (materials[4]) = '2 1/2-inch exterior Kreg screws' (steps[4],[5]); brad nails given without size in both."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, trim edges, pocket holes, ends, join with 48 in lengths, cross beam, slats, finish: each part exists before the step that uses it."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] 'Set your pocket jig for 1 1/2 inch lumber' and steps[5] 'two pocket holes set for 1 1/2 inches' cover every pocket-holed part (all 1.5 in thick 2x4s); slats are glued and brad nailed."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I measured and cut a 2x4 cross beam to provide some extra support and stability. I made pocket holes in either end of my 2x4 and then screwed it in place between the longer 48-inch lengths of wood."
+        }
+      ],
+      "reason": "Where along the 48 in length the cross beam goes is not stated (not centered, not a distance); the viewed step image (cropped to part of the frame) does not show a position either. Other positions are given (middle board top edge 12.25 in from floor, top/bottom aligned, 48s aligned with the middle cross piece)."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Measure 3-inches from saw blade to the fence, and trim the opposite edge of your 2x4"
+        },
+        {
+          "path": "cutList[0]",
+          "quote": "Cross beams for bench ends 1.5 x 3.5 x 15 (Kreg-corrected; rows [1],[2],[4] also width 3.5)"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Bench slats qty 14, 0.75 x 3.5 x 18 (Kreg-corrected)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "two 48-inch pieces of 2x4"
+        }
+      ],
+      "reason": "(1) steps[1]-[2] rip every 2x4 to 3 in wide while the cut list gives width 3.5 for all 2x4 parts. (2) Slat count x width does not fit the 48 in lengths.",
+      "arithmetic": "14 slats x 3 1/2 in = 49 in > 48 in (bench lengths, steps[0]) even with zero gaps; slat width would have to be 3 in or less (not stated) for 14 slats to fit."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[0]",
+      "quote": "Board, 2x4 15 (quantity 6)",
+      "what": "cut list needs seven 15 in 2x4 pieces (rows [0] qty 6 + [4] qty 1); step 0 says 'six 15-inch pieces' and the 7th is cut ad hoc in steps[6]; materials quantity 6 is one piece short"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "applied a pre-stain conditioner, and stained the bench",
+      "what": "pre-stain conditioner and stain not in materials"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "I notched out the corners of the end pieces to allow for a better bit, but this is optional.",
+      "what": "optional notch dimensions not given (optional)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-34",
+    "imagesViewed": [
+      "8d40a6889fcd0280.webp",
+      "85bf95e6db8fd307.webp",
+      "f60b37d5104e20c4.webp"
+    ]
+  }
 }
