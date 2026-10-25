@@ -47,10 +47,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut/attached in steps[0..3] are Back, Top, Front; cutList has exactly those 3 rows (qty 1 each)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all three rows (Back, Top, Front) are cut and attached in steps[0..3]"
     },
     "R4": {
       "result": "pass",
@@ -61,31 +63,39 @@
       "arithmetic": "parts: 1×12 + 1×18 + 1×10 + kerf 2 cuts (3 parts − 1 boards, the fewest possible)×1/8 = 40.250″; bought: 1×48 = 48″; 40.250 ≤ 48"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener used is 1 1/4\" pocket-hole screws (steps[2],[3]) = materials[1]; fine/coarse-thread remark gives alternatives of the same size, not a conflicting size"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "radius given (2 1/2\"); Back and Front pocket-hole parts sizes dimensioned in viewed image 5af0; Front location is deliberately relational (\"Adjust the position of the Front to fit the arm of your sofa or chair\", viewed ade0, and steps[3] \"subtract 1/2\\\" or so\")"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Back, one Top, and one Front to length from a 1x8 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Back, one Top, and one Front to length from a 1x8 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "step 0 \"as shown in the cutting diagram\": no board-layout diagram exists, but viewed image 5af0 (step 1) shows all three parts with the lengths 10\", 12\", 18\" and width 7 1/4\", which are the same values as the cut list; layout of cuts on the 1x8 is not needed (R5 sweep: 40.25\" <= 48\")"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top shaped and Back/Front drilled (steps[1]), Back attached to Top (steps[2]), then Front (steps[3])"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"with your pocket-hole jig set up for 3/4″ material, drill pocket holes in the Back and Front\"; all pocket holes are in 0.75 parts"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 screws = 2 per joint x 2 joints (two holes per part in viewed 5af0); step counts \"one Back, one Top, and one Front\" match cut-list qty 1; (b) all parts installed; (c) stain/paint is in materials; (d) steps reach finished table"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5af0f6028b0d14b2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c5a34e8a94699dd.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ade04d53d61835c9.webp"
+    ]
+  },
+  "gaps": []
 }

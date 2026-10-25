@@ -131,64 +131,94 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0]-[7] (tops, bottoms, sides, middle brace, rails ripped from a 2x6) match cutList rows Top, Base, Sides, Middle Brace, Rails; no other part named"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Base",
-          "why": "no step mentions it (searched steps for base)"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flag resolved: \"Base\" is the \"bottoms\" of steps[0]-[1] (\"Cut tops and bottoms to length\", \"round the bottoms\"), 2 x 44 vs 2 x 36 Tops; all rows are used"
     },
     "R4": {
+      "result": "pass",
+      "reason": "sweep fail on cutList[4] withdrawn: the row source is \"2x2 3/4x74\" and steps[7] says \"We ripped a 2x6 in half for the braces\", so each Rail is half of the 5 1/2\" 2x6 = 1 1/2 x 2 3/4 (the \"2\" thickness is the nominal); other rows are 1 1/2 x 3 1/2 from the 2x4.",
+      "readerNote": "steps[7] \"We ripped a 2x6 in half for the braces to connect the two halves\" resolves the sweep R4 fail"
+    },
+    "R5": {
+      "result": "pass",
+      "reason": "steps name the stock (2x4 parts match only the 2x4; Rails from a 2x6 ripped in half, steps[7]). 2x4: 2 x 44 + 2 x 28.75 + 2 x 36 + 4 x 87 = 565.5 + 5 cuts x 1/8 = 566.1 <= 7 x 96 = 672 (board by board: four 96 boards take the 87 sides, one takes 44 + 44, one 36 + 36, one 2 x 28.75). 2x6: 4 rails x 74 = 296 from 2 boards x 2 rip lanes x 96 = 384 lane-inches."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Assemble the sides using 2 1/2 Blue-Kote screws"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Blue-Kote™ Pocket-Hole Screws (50 ct)"
+        }
+      ],
+      "reason": "steps[5] gives the screw length 2 1/2\" but the only pocket-screw line in materials (materials[4]) states no length (search materials[].name for /2 1\\/2/: no match; \"3\\\" deck screws\" and \"Fence Staples (3/4\\\")\" are other items)."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "numeric: sides 3\" and 6\" from the edges, 5 degrees, middle brace 18\" from the bottom (28 3/4\" long); the four rails and rollerhooks are placed as shown in viewed photos 2bc8 and 8ba1 (rails at the top and at the brace level, hooks spaced along the top rail), which carry no dimensions; hook staples/hole locations are relational"
+    },
+    "R11": {
+      "result": "pass",
+      "reason": "sweep pass stands; every referenced step has its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top/bottom shaped, sides cut, pocket holes drilled, side assemblies built with the middle brace, wire stapled to each side, then both sides joined with rails, then hooks and clips"
+    },
+    "R9": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[4]",
-          "quote": "Rails — qty 4, 2 x 2.75 x 74 (Kreg-corrected)"
+          "path": "steps[4].body",
+          "quote": "Drill pocket holes to attach the top and bottom to the sides"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Cedar 2x4, 2x4x8"
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Cedar 2x6, 2x6x8"
+          "path": "steps[5].body",
+          "quote": "mark (28 3/4\"), cut, pocket hole and install."
         }
       ],
-      "arithmetic": "cutList[4] 2×2.75: no listed stock has thickness 2 (±1/32) with width ≥ 2.75; stock = 1.5×3.5, 1.5×5.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[4]",
-          "quote": "Rails — qty 4, 2 x 2.75 x 74 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "reason": "Pocket holes are drilled in 1 1/2\" stock (2x4 parts) but no jig thickness setting is stated in any step; the viewed step-4 photo (244c) shows a jig dial that is not legible, so no setting is stated there either."
     },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 2x6); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
-    },
-    "R10": {
+    "R14": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "(a) cut list quantities match the pairs described (two halves: 2 Base, 2 Top, 4 Sides, 2 Middle Braces); 2x6 ripped in half gives the 4 Rails (2 boards x 2); (b) all parts installed; (c) wire fencing, staples, clips, rollerhooks listed; (d) steps reach the finished trellis"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2bc8ee5971831f41.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8ba10c96a536ee81.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/244c187028ee96f5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a4f6b08c0b1f99d7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Using a roll of tape as a guide we traced the radius on the tops and bottoms and cut with a Jig saw",
+      "what": "the round/cove radius is given only as \"a roll of tape\"; decorative, no number"
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "Black welded wire fencing (3'x50')",
+      "what": "twine/string for the rollerhooks (steps[8]) is not in materials; contents of the clips, not a structural part"
+    }
+  ]
 }

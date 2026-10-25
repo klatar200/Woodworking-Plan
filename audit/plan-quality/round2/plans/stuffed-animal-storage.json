@@ -167,40 +167,66 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0]-[7] (vertical frame, top frame, bottom frame, hook, side support, top and bottom horizontal supports, 1/4\" plywood bed) all have cutList rows; counts agree (4 vertical = 2 per frame, 2 + 2 horizontal supports)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 8 rows are used in steps[0]-[7]; row names carry routing notes but each is a real part"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[6] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "sweep unknown on cutList[6] resolved: its source text is \"1/8\\\" from edge , 3/4\\\" x 1 1/2\\\" x 24\\\"\" (importDiffs[].source), i.e. 0.75 x 1.5 x 24 from the 1x2; the Kreg-corrected row [0.125, 1.5, 24] is the importer reading the \"1/8\\\" from edge\" note as the thickness. Other rows: 0.75 x 2.5 from 1x3, 0.75 x 1.5 from 1x2, 0.25 bed from the 1/4\" sheet (24.625 x 9.875 fits 24 x 48).",
+      "readerNote": "cutList[6] correctRow thickness 0.125 is an importer parse of the groove note, true thickness 0.75 per source text; cause import"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x2, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "each part matches exactly one listed stock by thickness x width: 0.75 x 2.5 -> 1x3, 0.75 x 1.5 -> 1x2, 0.25 -> sheet. 1x3: 4 x 11.25 + 2 x 13.25 + 2 x 11 + 2 x 6 = 105.5 + 9 cuts x 1/8 = 106.6 <= 2 x 72 = 144. 1x2: 2 x 9.5 + 2 x 24 + 2 x 24 = 115 + 5 x 1/8 = 115.6 <= 2 x 72 = 144. Sheet: 24.625 x 9.875 = 243 sq in <= 24 x 48 = 1152."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1 1/4\" pocket hole screws (materials[3]), 1 1/4\" nails (materials[5], 18 gauge), 1/2\" hex cap screws (materials[4]); no conflicting sizes. Optional plywood alternative in steps[6] reuses the same pocket screws."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "r top and bottom horizontal supports (about 1 1/2-2\" apart). Stagger the marks from the top and bottom. Mark locations for 5 screws on the inside edge of the top frame and 5 on the inside of the side ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e73f4ff67d4415c3.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flag on steps[8] resolved: screw spacing is numeric (\"about 1 1/2-2\\\" apart\", 12 locations; 5 + 5 per end) and shown in viewed image e73f; verticals placed \"flush\"/\"2 1/4\\\" in\", routing \"1/4\\\" depth ... 1/8\\\" from the edge\"; top frame length 11 + 1 1/2 + 3/4 given in steps[1] and viewed image e872"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands (one reference, own step image)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "frame squares built (steps[0]-[3]), horizontal supports routed/drilled, attached, bed slid into grooves, last bottom support attached, then finish, screws and paracord; nothing needs undoing"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "every pocket-holed part is 0.75 thick and steps[0]/[4] state \"2- 3/4\\\" pocket holes\" / \"a single 3/4\\\" pocket hole\" (read as the 3/4\" material setting); other joints give method and fastener (1 1/4\" nails, hex screws)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) top frame 11 + 1 1/2 + 3/4 = 13.25 = cutList[1]; 13.25 - 2 1/4 = 11 matches the 11 bottom frame and the 9 1/2 Side Support fits between verticals (11 - 2 x 0.75 - ... = 9.5 inside faces); 4 vertical = 2 per frame; (b) hooks, side supports, bed and all supports are installed; (c) paracord, hex screws, nails, filler, sandpaper, paint all listed; (d) steps end with the paracord walls"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e73f4ff67d4415c3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e87227b45fb4cd58.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Mark locations for 5 screws on the inside edge of the top frame and 5 on the inside of the side support.",
+      "what": "screw counts add to 12 + 12 on the long wall + (5 + 5) x 2 end walls = 44 against materials[4] \"48\" hex cap screws; 4 more than the steps place (possible spares, not stated); screw quantities are not a part count so not scored"
+    },
+    {
+      "path": "importDiffs cutList[6]",
+      "quote": "1/8\" from edge , 3/4\" x 1 1/2\" x 24\"",
+      "what": "Kreg-corrected row [0.125, 1.5, 24] misreads the routing note as the thickness; true size from the same source text is 3/4 x 1 1/2 x 24 (cause import)"
+    }
+  ]
 }

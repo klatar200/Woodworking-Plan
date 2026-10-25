@@ -23,23 +23,18 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut in steps[0],[4],[7] (plywood strips, 2 x 10 boards, 1x3 and 1x2 trim) all have cutList rows with matching counts (4, 2, 4+4, 4+4)"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Base & Top",
-          "why": "no step mentions it (searched steps for base)"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flag resolved: \"Base & Top\" is the pair of \"(2) 2\\\" x 10\\\" boards\" cut in steps[4] and placed under and over the post in steps[5]-[6] (steps[8] \"top and bottom of your post\"); the step just does not use the words Base/Top"
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
+      "confidence": "certain",
+      "cause": "import",
       "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
@@ -65,30 +60,71 @@
       ],
       "arithmetic": "cutList[1] 2×9.25: no listed stock has thickness 2 (±1/32) with width ≥ 9.25; stock = sheet 0.5, 1.5×9.25, 0.75×2.5, 0.75×1.5",
       "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[1]",
-          "quote": "Base & Top — qty 2, 2 x 9.25 x 10",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "readerNote": "Row [2, 9.25, 10] is the importer sorting \"2\\\" x 10\\\" x 9-1/4\\\"\" smallest-to-largest (2, 9.25, 10) per docs/PLAN_QUALITY_AUDIT.md section 3. steps[4] says: \"Cut (2) 2\\\" x 10\\\" boards to 9-1/4\\\" in length\" and materials[1] is \"Board, 2x10 48\\\"\" (1 1/2 x 9 1/4 actual), so the part is a 2x10 cut to 9 1/4: the real part can come from the listed board. Defect is the import (dimension reorder / nominal), not the plan.",
+      "reason": "importer reorder of nominal 2x10 dims"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.5, 2x10, 1x3, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock for every part. Plywood: 4 x 6 x 36 = 864 sq in <= 48 x 48 = 2304. 2x10: 2 x 9.25 + 1/8 = 18.6 <= 48 (length 9 1/4 from steps[4]). 1x3: 4 x 8 + 4 x 6.5 = 58 + 7 x 1/8 = 58.9 <= 96. 1x2: 4 x 10.875 + 4 x 9.25 = 80.5 + 7 x 1/8 = 81.4 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "fasteners used: 1\" Kreg screws (steps[2],[5],[6]) = materials[5]; 1\" brad nails (steps[3],[8]) = materials[6]; no size conflicts"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Paint or stain then add your hooks."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Hooks - Hobby Lobby"
+        }
+      ],
+      "reason": "Where the 4 hooks go (height up the post, which faces) is never given as a number; steps[9] just says \"add your hooks\", and the viewed step image 48c9 is a hand-held photo with no dimensions. Other placements are relational (centered, flush) or fixed by the parts."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands: step images exist for every referenced step"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "strips ripped and cut, pocket holes drilled, two L assemblies joined into a box, base and top attached, trim cut then attached, then paint and hooks"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"Kreg Jig K5 set to 1/2\\\"\" and every pocket-holed part is 1/2\" plywood; other joints state method and fastener (1\" Kreg screws, 1\" brad nails)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: (4) strips/(4) boards, (2) 2x10, (4)+(4) 1x3, (4)+(4) 1x2, (4) hooks = materials[4] qty 4; box outer 6 + 1/2 = 6 1/2 = Short Trim, 6 1/2 + 2 x 3/4 = 8 = Long Trim; (b) all parts installed; (c) hooks listed; (d) steps reach finished post"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/48c9f92c292f67b6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ed24be4c6b4e0a09.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "then cut your 1\" x 2\" trim into (4) boards at 10-7/8\" in length and (4) boards at 9-1/4\" in length.",
+      "what": "if the 1x2 trim wraps the 9 1/4 base as the short-then-long order in steps[8] suggests, 9 1/4 + 2 x 3/4 (1x2 thickness, section 9) = 10 3/4, 1/8 under the stated 10 7/8; wrap layout not stated, so not scored"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "fill all nail holes and any gaps using wood filler and sand once dry.",
+      "what": "wood filler, paint/stain and sealer are not in materials"
+    }
+  ]
 }

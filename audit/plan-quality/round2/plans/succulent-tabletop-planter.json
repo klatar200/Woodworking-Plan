@@ -71,10 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0]-[3] cut only single and triple planters from the 4x4; cutList has exactly those two rows; no other part named"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both rows (Single Planter, Triple Planter) are the pieces cut in steps[0]-[2]"
     },
     "R4": {
       "result": "pass",
@@ -85,31 +87,44 @@
       "arithmetic": "parts: 1×5.5 + 1×12 + kerf 1 cuts (2 parts − 1 boards, the fewest possible)×1/8 = 17.625″; bought: 1×96 = 96″; 17.625 ≤ 96"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "no fastener or hardware size appears in any step; the only sized item, the 2\"-diameter Forstner bit (steps[2]), is materials[1]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "all positions numeric or shown in viewed images: miter layout 1\" x 1 1/2\" and ~26 degrees (007e: 1/2 / 1 gives about 26.6 degrees), hole 2\" dia x 2\" deep, triple planter top 10\", middle hole centred (\"5\\\" to centre\"), end holes evenly placed with equal walls as drawn in 428c, single hole centred"
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut as many single and or triple planters as you’d like to length from a 4 x 4 x 96\" cedar board, as shown in the cutting diagram. You can get a bunch out of a single board.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut as many single and or triple planters as you’d like to length from a 4 x 4 x 96\" cedar board, as shown in the cutting diagram. You can get a bunch out of a single board.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] \"as shown in the cutting diagram\" has no own image, but viewed image 007e (step 1) shows both parts with their lengths 12\" and 5 1/2\" and 3 1/2\" cross-section, which is the content step 0 needs"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "cut blocks, angle ends, drill holes, then sand/tape/paint, then add plants"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes or other joints; each planter is a single piece of 4x4"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) planter lengths 12 and 5 1/2 match rows; hole count 3/1 matches triple/single; (b) no sub-assemblies; (c) Forstner bit, paint, tape, optional oil listed; (d) steps end with planted planter"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/007e2cc237f681e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/428c2820343499bf.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "pick out some favorite succulent plants, and place them in the holes.",
+      "what": "plants (and any soil) are not in materials; contents of the finished piece, not a build component, so not scored"
+    }
+  ]
 }

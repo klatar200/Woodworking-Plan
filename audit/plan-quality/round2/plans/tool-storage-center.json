@@ -263,17 +263,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0]-[17] (Left Side, Top, Divider, Desk Bottom, Desk Side, Bottom, 3\" and 3 3/4\" spacers, Desk Filler, Desk Top Support, Desk Top, Desk Stop, Pencil Stop, frame pieces, Cleat Support, Pegboard Stops, Pegboard) each have a cutList row"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Divier",
-          "why": "no step mentions it (searched steps for divier)"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flag resolved: \"Divier\" (cutList[2]) is a typo for the \"Divider\" cut in steps[0]; every other row is used (the two Spacers are temporary clamp-on spacers cut in steps[3],[5])"
     },
     "R4": {
       "result": "pass",
@@ -281,21 +276,69 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, sheet-0.25, 1x2, 0.75x0.75); steps not checked for per-part stock"
+      "reason": "Lumber: 1x2 frame parts 2 x 47.75 + 3 x 24 = 167.5 + 4 cuts x 1/8 = 168 <= 2 x 96 = 192 (and 2 x 47.75 + kerf = 95.6 <= one 96 board); 3/4\" square dowel 12 + 14 + 14.625 + 13 + 2 x 32 = 117.6 + kerf <= 4 x 36 = 144 (the two 32\" stops need two boards, the rest 53.6 fits the other two). All pass. The 3/4\" plywood parts come from two sheet lines (24 x 48 and 24 x 24) with an area (about 1206 sq in) below the 1728 sq in bought, which R-2 does not let me call a fail or a pass, so unknown overall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "secure it with a few 1 1/4\" brads."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "1 1/2\" brad nails"
+        }
+      ],
+      "reason": "Steps use 1 1/4\" brad nails (steps[8], [9] \"1 1/4\\\" brad nails\", [10] \"1 1/4\\\" brads\"; the viewed images 168d, fca0 and 265d label \"1 1/4\\\" Brad Nails\") but materials[7] lists 1 1/2\" brad nails: two different sizes for the same use, and the size used is not in materials. Other sizes (1 1/4\" and 1\" coarse Kreg screws, 1 1/4\" flat-head screws) match materials[5],[6],[8]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions are numeric in viewed images: Divider guideline 4 5/8\" and 10 3/4\" (46735), Top Support aligned to that line and 12\" (168d), Desk Stop 1 5/8\" and 13/16\" from edges (fca0), flush/3/4\" frame placement (03c6), spacers 3\" and 3 3/4\"; Pencil Stop on the front edge (265d)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "33 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands (each reference has its own step image); viewed 46735, 168d, fca0, 265d, 03c6 show the referenced dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "case built left to right (side, top, divider, desk bottom with spacers, desk side, bottom), desk parts added, frame built and attached to case, pegboard last, hanger at finish"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"Set your Kreg Pocket-Hole Jig for 3/4\\\"-thick material\"; every pocket-holed part is 0.75"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) widths add up: 7.75 + 0.75 + 14 = 22.5 = Bottom, plus 2 x 0.75 sides = 24 = frame inner width; 47.75 - 12 - 0.75 = 35 = Pegboard height; heights 0.75 + 11.25 = 12 = Left Side; 3 3/4\" = 3\" + 3/4\"; (b) every part is installed; (c) hanger, pegboard, screws listed; (d) steps reach the hung unit"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/46735d2c50ca0393.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/168daaaf254260f4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fca0741062f6d6f7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/265d8fd2b2d56913.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/03c64249a6f39fbc.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Add a couple dabs of glue on one face of the Filler",
+      "what": "wood glue and the oil finish (steps[18]) are not in materials"
+    },
+    {
+      "path": "cutList[2].part",
+      "quote": "Divier",
+      "what": "typo for Divider in the cut list; no effect on followability"
+    }
+  ]
 }

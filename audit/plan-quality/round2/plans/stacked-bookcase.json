@@ -167,40 +167,65 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[0],[2],[4],[7] (six Shelves, six Sides, three Cleats, four Long + four Short Spacers, two Long + two Short Bases) has a cutList row with the same quantity"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 rows are cut and used (steps[0],[2],[4],[7]); no assemblies or placeholders"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x3, 1x4, 1x10); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps name the stock for each part (1x10 shelves/sides; 1x3 cleats/spacers; 1x4 bases), and thickness x width matches exactly that one material. 1x10: 6 x 34.5 + 6 x 12.5 = 282 + 11 cuts x 1/8 = 283.4 <= 3 x 96 = 288. 1x3: 3 x 34.5 + 4 x 31.5 + 4 x 7.75 = 260.5 + 10 cuts x 1/8 = 261.75 <= 3 x 96 + 72 = 360. 1x4: 2 x 31.5 + 2 x 7 = 77 + 3 x 1/8 = 77.4 <= 96.",
+      "arithmetic": "lengths from Kreg-corrected rows (importDiffs correctRow)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1 1/4\" Kreg screws (materials[4]), 1 1/2\" flat-head wood screws (materials[6]); the fine/coarse-thread remark offers a thread alternative at the same 1 1/4\" size, not a second size; #8 countersink bit listed"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "ll sit higher than most moldings used at the base off walls. Second, the base doesn’t have one of the long pieces inset like the spacers. Instead, the Short Bases are cut to a shorter length. When the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5b51f3f24c3164c0.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flag on steps[7] resolved: Long Base pocket-hole positions are dimensioned in viewed image 5b51 (5 3/4\", 15 3/4\", 3/4\"); shelf pocket holes and the six pilot-hole crosses are dimensioned in viewed image d126 (7 1/4\", 17 1/4\", 1 7/8\", 1 1/8\", 1 3/4\" spacing); steps[10] sends the reader to that illustration; insets are numeric (3/4\"); cleat is flush with rear edges"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "19 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; step-0 \"cutting diagram\" has its own image d126 showing the Shelf part with all dimensions, steps[1]/[3]/[10] images 6922, e06f, f992 viewed and show the referenced assembly"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "shelf assemblies built (steps[1]), cleats added, spacer and base assemblies built then fixed to separate shelf assemblies, assemblies stacked upside down (steps[10] image f992); nothing needs undoing"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"set your Kreg Jig for 3/4\\\"-thick material\"; every pocket-holed part (Shelf, Cleat, Long Spacer, Long Base) is 0.75 thick"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts (six Shelves/Sides, three Cleats, four+four Spacers, two+two Bases) equal cut-list quantities; Long Spacer 31 1/2 + 2 x 1 1/2 overhang = Shelf 34 1/2; (b) every made part is installed; (c) anti-tip kit, flat-head screws and countersink bit are in materials; (d) steps reach the finished bookcase"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d12688bd7e58de60.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/692286b3b1448e24.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e06ffecfbeb5c376.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f992631834b55b19.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5b51f3f24c3164c0.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "We applied two coats of a wipe-on polyurethane in a stain sheen.",
+      "what": "topcoat finish is not in materials (only white wood stain)"
+    }
+  ]
 }

@@ -311,10 +311,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps 0-17 (legs, side/top/back rails, shelf backs, shelves, shelf sides, desk back, charger rail, cleats, top, lids, lid stops) matches a cutList.part; counts agree (e.g. steps[8] \"six Shelves\" = row Shelf x6)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 16 rows (Front Leg..Lid Long Stop) are cut/used in steps[0..17]; none is an assembly or placeholder"
     },
     "R4": {
       "result": "pass",
@@ -322,34 +324,83 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x2, 1x4, 1x8, sheet-0.75, 0.25x0.25, 0.75x0.75); steps not checked for per-part stock"
+      "reason": "Per stock (steps name the stock): 2x2 parts 337\" + 16 cuts x 1/8 = 339\" <= 4 x 96\" = 384\"; 1x4 Desk Back 36 + Charger Rail 39 + 1/4 = 75.25 <= 96; 1x8 Shelf Backs 2x22 + Shelves 6x11 = 110 + kerf <= 96+72; 3/4 sq dowel 6 x 4.75 + kerf = 29.1 <= 36 - all pass. But 1/4 sq dowel: 4 x 10.75 + 4 x 5 = 63\" + 7 kerf > 36\" bought (materials[6] \"Square Dowel, 1/4\" x 1/4\" 36\"\" quantity 1), and quantity 1 may be an importer default, so unknown not fail."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used in steps (2 1/2\" and 1 1/4\" coarse-thread pocket-hole screws, 1 1/2\" flat-head wood screws) all appear in materials[8..10]; each size used consistently for its thickness (2 1/2\" into 1 1/2\" stock, 1 1/4\" into 3/4\" stock)"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "Cut two Front Legs and two Back Legs to length from 2x2 boards as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[9].body",
+          "quote": "Next, attach the three shelves, as shown."
         },
         {
-          "path": "steps[0].body",
-          "quote": "Cut two Front Legs and two Back Legs to length from 2x2 boards as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[10].body",
+          "quote": "Position each shelf assembly in the base, making sure that you have the left and right assemblies on the proper sides."
         }
-      ]
+      ],
+      "reason": "The vertical position of the three shelves in each shelf assembly is never given as a number in the text; the viewed step image (73c6) shows the shelves exploded with only 11\" and 7 1/4\" x 11 1/4\" part sizes, no shelf heights, and the overall drawing (2e09) has no shelf heights. Other positions are given in viewed images (Desk Lid hole 3 1/2\" and 3 5/8\", back rails 14 3/4\" and 3 3/4\", cleat spacing 1 1/2\"/4 3/4\", pilot holes 3/4\"). Lid-stop positions (steps[17], \"at the locations shown\") not viewed."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut two Front Legs and two Back Legs to length from 2x2 boards as shown in the cutting diagram."
+        }
+      ],
+      "reason": "No cutting diagram exists: step 0 has no image, and all 5 unattached images were opened (0355, 5f16, f7b1, c4fa are photos, 2e09 is an overall-dimension drawing); step images 14/16 (opened) show part dimensions, not a cut layout. Part sizes are in the cut list, so Fix not Unpublish."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "side assemblies, top rails, back rails, shelf assemblies, final side rails, desk back, charger rail, top/lids install in an order where each exists before use and nothing needs undoing"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "jig settings stated for both thicknesses used: steps[1] \"Set your pocket-hole jig for 1 1/2\"-thick material\", steps[3] \"change your jig (and bit) settings for 3/4\"-thick material\"; steps[8],[12] 3/4\""
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts match rows (six Charger Cleats, four Short Stops + four Long Stops, six Shelves, 4 flat-head screws x4); (b) every made part is installed (lids sit in the top opening, stops glued under lids); (c) no hinge/hardware beyond listed items; (d) steps end at finished desk"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2613893afeb671e3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2e09a77de8312fd4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/20e012db8eaa2b5f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4b700657ef0541bf.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/73c6a84bda8ac330.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4db717ab62aa0c7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/035541284999b6fa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5f16a3e12e29cbd4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f7b130880aeb071a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4fa683b9b836e7d.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "importDiffs cutList[6],[7]",
+      "quote": "3/4\" x 7 1/4\" x 11 1 /4\" pine",
+      "what": "Source text has a space before the slash (\"11 1 /4\", \"22 3 /4\"), so even Kreg-corrected rows give 11 and 22; the viewed step-9 image shows the Shelf as 7 1/4\" x 11 1/4\". Importer parse defect (cause import); not a plan finding."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "If you plan to paint the shelves, as we did, this is a good time to sand the parts and apply paint.",
+      "what": "paint and clear oil (steps[19]) are not in materials; finish consumable only, optional"
+    }
+  ]
 }

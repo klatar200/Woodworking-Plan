@@ -83,57 +83,92 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[0],[4] (Shelf, Back, Front Molding, two End Molding) match all four cutList rows; no other part named in any step, description or materials"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all four rows are cut and used in steps[0]-[5]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 0.75x96); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "each part matches one stock by thickness x width: 0.75 x 3.5 -> 1x4 (materials[0]), 0.75 x 0.75 -> cove molding 3/4\" thick (materials[1]). 1x4: 47.75 + 47.75 + 1/8 kerf = 95.625 <= 96. Molding: 49.25 + 2 x 4.25 = 57.75 + 2 x 1/8 = 58.0 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "only fastener size used is 1 1/4\" coarse-thread pocket-hole screws (steps[3]) = materials[2]"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Then add hangers, and hang the shelf on the wall."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "6\" hangman picture hanging systems"
+        }
+      ],
+      "reason": "Where the two hanging systems go on the 47 3/4\" Back is not given in the text or in any image: step 6 has no image, and the viewed images (b7d1, 2c15, 835f, f0f4, 263d, d2c3, 1d24) show no hanger location. Curve, pocket-hole and miter positions are dimensioned (2 3/8\", 2 3/4\", 4 5/16\", 49 1/4\", 4 1/4\")."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut one Shelf and one Back to length from a 1x4 board, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut one Shelf and one Back to length from a 1x4 board, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut one Shelf and one Back to length from a 1x4 board, as shown in the cutting diagram."
         },
         {
           "path": "steps[4].body",
-          "quote": "Cut one piece of Front Molding to length, as shown in the cutting diagram. Note that each end gets mitered at 45° to allow the molding to wrap around the Shelf. Also cut two pieces of End Molding, mit",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "e piece of Front Molding to length, as shown in the cutting diagram. Note that each end gets mitered at 45° to allow the molding to wrap around the Shelf. Also cut two pieces of End Molding, mitering ",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut one piece of Front Molding to length, as shown in the cutting diagram."
         }
-      ]
+      ],
+      "reason": "steps[0] and steps[4] have no image, and none of the 7 images opened (all 5 unattached: d2c3, 263d, f0f4, 1d24, b7d1, plus 2c15 and 835f) is a cutting diagram; they are photos and part drawings. The part sizes are in the cut list, so Fix not Unpublish."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back drilled and curved, joined to Shelf, then molding mitered and glued, then finish and hangers"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"With your jig set up for 3/4\\\" stock\"; all pocket-holed parts are 0.75"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Front Molding 47.75 + 2 x 0.75 = 49.25 and End Molding 3.5 + 0.75 = 4.25 (mitered long points) match the rows and the viewed 49 1/4\" / 4 1/4\"; 8 pocket holes drawn in viewed 835f = materials[2] qty 8; (b) all parts installed; (c) hanging systems listed; (d) steps reach the hung shelf"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b7d196c0131bb134.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c15a27bf5d6ce2b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/835f12d58a74bc4e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0f44657a02342e2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/263d751fa47dcc0b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d2c3a1766e8092ca.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1d24ec5d4291a1a5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "To hold the pieces in place as the glue sets, use masking tape.",
+      "what": "masking tape and stain/finish are not in materials"
+    }
+  ]
 }

@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts cut/attached in steps[0..9] (legs, sides, back, front dividers, top dividers, top, bottom, drawer box/front/bottom, bottom supports, front divider) each match a cutList.part (\"Desk Front\" = front dividers, \"Desk Front Rail\" = steps[9] front divider per viewed image 5d68)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 13 rows are used by steps[0..9]; none is an assembly or placeholder"
     },
     "R4": {
       "result": "unknown",
@@ -37,60 +39,123 @@
       "reason": "R5 precondition not met: 3 stock types (2x2, 1x24, sheet-0.25); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Attach the sides to the legs with 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[1].body",
-          "quote": "Attach back to the legs using 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Attach front dividers using 1 1/4\" pocket screws and wood glue. A clamp really helps here.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "Attach the top dividers to the front dividers you just attached in step 3. Using 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "Notch out the bottom of the desk with a jigsaw, then attach using 1 1/4\" pocket screws and wood glue.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "er slides and then build the drawer box using 1 1/4\" pocket screws and wood glue. The pocket holes should be facing front as shown in the diagram below. This will hide the pocket holes when you attach",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "nt. Using double sided tape, push the drawer front against the front of the drawer box. Pull the drawer out and using 1 1/4\" screws, drill from the inside of the drawer box to attach the drawer front.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "Attach the sides to the legs with 1 1/4\" pocket screws and wood glue."
         },
         {
           "path": "steps[8].body",
-          "quote": "Attach the bottom supports between the legs using 2\" pocket screws and wood glue. Make sure the bottom of the supports sits 7\" up from the bottom of the desk legs.",
-          "why": "2\" screw — no material line lists a 2\" fastener"
+          "quote": "Attach the bottom supports between the legs using 2\" pocket screws and wood glue."
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "1\" brad nails"
         }
-      ]
+      ],
+      "reason": "Steps use 1 1/4\" pocket screws (steps[0]-[3],[5],[6]), 1 1/4\" screws (steps[7]) and 2\" pocket screws (steps[8]); materials[0..8] list no screw at all (search /screw/i over materials[].name: no match; only \"1\\\" brad nails\" and \"Figure 8 fasteners\")."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the top using figure 8 fasteners."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Attach drawer slides and then build the drawer box using 1 1/4\" pocket screws and wood glue."
+        }
+      ],
+      "reason": "Where the 10 figure-8 fasteners go and where the drawer slides are mounted (height/setback) is not given as a number in the text; none of the 9 viewed images (f776, 51d0, 28d5, 47a8, 29c0, 5d68, 9e58, 94ad, c9ae) shows them. Positions that are shown: 7\" support height (text), 26\" back, 16\" side, 4 1/2\" side height, 12\" opening, 3 1/2\" front height, 9 1/2\" drawer interior."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "steps[6] \"as shown in the diagram below\" has its own viewed image 47a8 (pocket holes on the drawer front, 14\", 9 1/2\", 3\")"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs/sides, back, front and top dividers, top, bottom, drawer slides/box/front, bottom supports and front rail are each made before they are used; nothing needs undoing"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach the sides to the legs with 1 1/4\" pocket screws and wood glue."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "The pocket holes should be facing front as shown in the diagram below."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" and 1 1/2\" parts but no jig thickness setting is stated: no step contains \"jig\", \"setting\" or a thickness setting; viewed images f776, 51d0, 28d5, 47a8 show hole locations only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "{\"part\": \"Desk Top\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 16, \"lengthIn\": 29}"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "{\"part\": \"Desk Side\", \"quantity\": 2, \"thicknessIn\": 0.75, \"widthIn\": 4.5, \"lengthIn\": 16}"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach the top using figure 8 fasteners."
+        }
+      ],
+      "reason": "The viewed step-4 image 9e58 labels the finished top 29\" x 19\"; images 51d0/f776 show the 16\" side between the legs, so depth = 16 + 2 x 1.5 (cutList[6] Desk Legs 1.5 x 1.5) = 19\", and Desk Top Dividers 17.5 = 19 - 2 x 0.75. The Desk Top row gives width 16, 3\" short of the 19\" the images show (no importDiffs entry for cutList[0], so not an importer fraction drop).",
+      "arithmetic": "16 (cutList[2].lengthIn) + 1.5 + 1.5 (cutList[6] leg thickness/width) = 19 = image 9e58 \"19\"\" vs cutList[0].widthIn 16; 19 - 0.75 - 0.75 = 17.5 = cutList[4].lengthIn"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f776c991fefbe8a3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/51d0904452981330.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/28d5bb144c46919c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/47a82cb0584bbecc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/29c010b69ee725d8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5d684e7e4eb64102.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9e5827312adeb869.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/94ad9b42610630f5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c9ae1d6e0a2dfb44.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Using double sided tape, push the drawer front against the front of the drawer box.",
+      "what": "double sided tape not in materials"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Attach the top dividers to the front dividers you just attached in step 3.",
+      "what": "step numbering in text is off by one (the front dividers are attached in the step titled \"3\", which is steps[2]); step titles are bare numbers. Wording only, no value invented."
+    },
+    {
+      "path": "materials[5].name",
+      "quote": "Knob or Hardware of Choice",
+      "what": "knob is listed but no step installs it (steps[7] attaches the drawer front only); viewed photos 94ad and c9ae show a knob; not a required part"
+    }
+  ]
 }

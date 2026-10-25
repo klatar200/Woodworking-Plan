@@ -263,40 +263,64 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part cut in steps[0]-[31] (short/tall headboards, tall/short sides, three rails, guard rail, footboard, plywood bottom, bookshelf sides/bottoms/shelves/divider/backs/tops) has a cutList row with the same quantity (e.g. \"cut three Short Headboard\" = 3, \"four Bookshelf Sides\" = 4, \"three Bookshelf Back\" = 3)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 14 rows are cut and used in steps[0]-[31]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "every pocket-holed board is 0.75 x 5.5, which matches only the 1x6 (steps[0],[2],[4],[5],[8],[10],[12] also say \"from a 1x6\"); plywood bottom is 3/4\" plywood. Lengths from Kreg-corrected rows: 3x25.25 + 2x32 + 2x26 + 2x32 + 3x43 + 26 + 27.5 + 4x18 + 2x27.5 + 2x27.5 + 10.25 + 3x27.5 + 2x29 = 771\" + 19 minimum cuts x 1/8 = 773.4\" <= 8 x 96 + 72 = 840\". Plywood 27.5 x 52.5 fits 48 x 96.",
+      "arithmetic": "28 parts from 9 boards -> at least 19 cuts"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: 1 1/4\" Kreg coarse-thread screws (materials[3]), 1 1/4\" flat-head wood screws incl. \"#8 x 1 1/4\\\"\" (materials[7] qty 12 = 8 footboard pilot holes + 3 in steps[23] + 1 in steps[28]); plugs listed; fine-thread is only the hardwood alternative at the same size"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Mark the location of the Rails on the Short Sides, as shown. Spread glue on pocket-holed end of the two Rails that only have those pocket holes. Attach those two Rails to the Short Sides using 1 1/4\" ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e856b9845bd9ec1.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flag on steps[9] resolved: viewed image 8e85 dimensions the rail position (6 3/4\" up from the lower end of the Short Sides); Tall Side curve R 4 1/2\" and 1\" (e865); footboard pilot holes 4 3/4\", 6\", 1 1/2\", 2\" (22fe); bookshelf 6 3/4\" offset (c7e1)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "38 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; every \"as shown\" step has its own image; viewed 8e85, e865, 22fe, c7e1 show the referenced dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "headboard panel, sides, rails, guard rail, footboard, plywood bottom, then bookshelf sub-assemblies (sides, bottom, back, shelf, divider, top) and finally attached to the footboard; plugs added before the bookshelf"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"set your Kreg Jig for 3/4\\\" material (you’ll leave it on this setting for the entire project)\"; every part is 0.75"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) panel widths 3 x 5.5 + 2 x 5.5 = 27.5 = Footboard/Plywood Bottom width; Bookshelf height 0.75 + 11 + 0.75 + 5.5 = 18 = Bookshelf Side; bookshelf width 27.5 + 2 x 0.75 = 29 = Bookshelf Top; Divider 11 - 0.75 = 10.25; (b) every part made is installed; (c) plugs, driver, finish listed; (d) steps reach finished bed"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8e856b9845bd9ec1.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e865600d73f8c33e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22feb5328a0e0411.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c7e18bb4bebd8b13.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[33].body",
+      "quote": "use a sanding block and 100-grit sandpaper.",
+      "what": "sandpaper is not in materials (wood glue is)"
+    }
+  ]
 }

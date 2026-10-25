@@ -91,84 +91,71 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": " sides of each leg. I have linked a very good U Tube video (Extras section) that describes how to do this on a table saw using a tapering jig. The two tapers start 2 1/2\" from the top of the leg, I ad",
-          "why": "matches \"Extras\""
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "the inside top edge to hold the top assembly on as shown in the attached picture. It is a good idea to mark where you are putting the holes to prevent mistakes. Use 100 then 150 grit sandpaper to smoo",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "kirts and legs. The skirts should be inset 1/4\" from the outside of the legs. See attached diagram. Keep in mind that the edge between the two tapered sides of the legs should face out at each corner.",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "to attach the leg/skirt assembly to the top. The spacing on each side should be equal...on my table it was approximately 3/4\" from the center of the skirt to the edge of the top. See attached diagram.",
-          "why": "matches \"See attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep flags resolved: \"(Extras section)\" is an optional tapering-jig video and a router-bit product mention; the taper itself is fully specified in steps[1] (\"The two tapers start 2 1/2\\\" from the top of the leg ... the bottom of each leg was 1\\\" square\"). \"attached picture/diagram\" refers to step images that exist (steps[2],[4],[5] have images). \"plans also available on buildsomething.com\" is a credit."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts in steps[1]-[7] (four legs, four skirts, plywood top, four top framing strips) match all four cutList rows; no other part named"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all four rows used in steps[1],[2],[3],[7]"
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Leg blanks — qty 4, 1.5 x 1.5 x 25.125 (Kreg-corrected)"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x8 72\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Plywood, 1/2\" Thick 12 1/8\" X 12 1/8\""
-        }
-      ],
-      "arithmetic": "cutList[0] 1.5×1.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 1.5; stock = 0.75×7.25, sheet 0.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Leg blanks — qty 4, 1.5 x 1.5 x 25.125 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "unknown",
+      "reason": "Sweep fail on cutList[0] (1.5 x 1.5 legs) withdrawn: steps[1] says \"If you cannot locate 1 1/2\\\" thick wood you can use two 3/4\\\" boards that you glue together\", and the listed 1x8 is 0.75 x 7.25 (section 9). Remaining part cutList[2] (0.25 thick top framing strips) has no listed 1/4\" stock (only the 3/4\" 1x8 and 1/2\" plywood), so it would need resawing/planing, which section 9 does not let me judge.",
+      "readerNote": "sweep R4 fail on legs reversed by quoted lamination text in steps[1]"
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Legs are glue-ups of two 3/4\" strips (steps[1]) and the strips, 2 1/2\" skirts and 7/8\" framing strips are all ripped from the one 1x8 72\"; steps do not name stock for each part and length-only packing cannot judge ripped lanes, so no sum is computed."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "sizes used: Kreg 1 1/4\" pocket screws (steps[4]) = materials[2] qty 16 (= 4 skirts x 2 ends x 2 holes); four Kreg 1\" pocket screws (steps[5]) = materials[3] qty 4; 5/8\" pin nails (steps[7]) = materials[5]"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "taper start 2 1/2\" and 1\" bottom, skirt inset 1/4\" (steps[4], viewed 4be4), top overhang 3/4\" shown in viewed 3907, pocket-hole counts and layout per step 2 and viewed photo b5a2, frame strip 7/8\" and 12 3/4\" in the cut list"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "8 reference(s), each in a step with its own image"
+      "reason": "sweep pass stands; \"attached picture/diagram\" references have own step images, viewed 3907, 4be4 and b5a2 show the referenced dimensions/holes"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs tapered, skirts drilled, top cut, skirts + legs assembled, base screwed to top, finish, then tile framed; nothing needs undoing"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Kreg pocket screw jig (set to 3/4\\\" for all pockets on this project)\"; skirts are 0.75"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 8 skirt ends x 2 pocket holes = 16 = materials[2] qty 16; four 1\" screws for the top; framing 12 3/4 cut longer than the 12 1/2 finished side for 45 degree miters (steps[7]); top plywood 12 1/32 from the 12 1/8 sheet; (b) all parts installed; (c) tile, stain, oil, pin nails, glue listed; (d) steps reach the finished table"
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/39076852a59bffbb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4be431bcd56bfd9f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b5a2c21928b94829.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "approximately 3/4\" from the center of the skirt to the edge of the top",
+      "what": "text says \"center of the skirt\" but the viewed image 3907 puts the 3/4\" at the top edge to the skirt face; with skirt 8 + 2 x 1 1/2 legs = 11 and top 12 1/32 the overhang is 0.52 = 3/4 - 1/4 inset, so the image is the consistent reading"
+    },
+    {
+      "path": "materials[4].name",
+      "quote": "12' X 12\" Tile",
+      "what": "feet mark (12') where inches are meant; the tile is 12\" x 12\" per steps[3] \"My tile was exactly 12\\\" x 12\\\"\""
+    }
+  ]
 }

@@ -6,42 +6,107 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "mark of the sections of the TIE fighter. For detailed painting instructions visit the \"Extras\" tab.\n(This step can be completed one the shelf is assembled. I found it easier to paint before assembly.)",
-          "why": "matches \"Extras\""
+          "quote": "For detailed painting instructions visit the \"Extras\" tab."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "For more pictures, check out the link in the extras tab."
         }
-      ]
+      ],
+      "reason": "The painted TIE-fighter pattern (where the tape and black paint go) is delegated to an \"Extras\" tab we do not have. Only the paint detail is missing; the wood parts, sizes and assembly are in the plan, so Fix not Unpublish. steps[5] \"Visit ashleygrenon.com\" is a credit/extra-photos link and is not counted."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "parts named in steps[0..3] (wings, 1x8 boards = Shelf) match cutList rows \"TIE Fighter Wings\" x2 and \"Shelf\" x2; searched steps/materials for any other cut part: none"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "both rows (TIE Fighter Wings, Shelf) are used in steps[0..3]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "stock identified by thickness x width: Shelf 0.75 x 7.25 matches the 1x8 (materials[0]); wings 0.75 x 13 match only the 3/4\" plywood quarter sheet (materials[1]). 1x8: 2 x 14 + 1/8 = 28.1 <= 48 ; sheet: 2 x 13 x 13 = 338 sq in <= 24 x 48 = 1152. (If the Shelf were 24 as in viewed image 99c6: 2 x 24 + 1/8 = 48.125 vs 48, a kerf-only shortfall of 1/8\".)"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps give no fastener size anywhere (search steps[].body for /screw|nail|inch size/: only \"pocket holes\"), so there is no size missing from materials; the missing fastener/method is scored under R9"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "wing shape dimensioned in viewed image 825f (13\", 8 63/64\"); shelf-to-wing offsets dimensioned in viewed image 6e8a (3 5/64\", 9 59/64\", 2 49/64\", 4 5/16\"); pocket-hole counts given in steps[1]"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "sweep pass stands: step images exist for every \"as shown\"/diagram reference; viewed 825f, 99c6, 6e8a show the referenced dimensions"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "wings cut (steps[0]), shelf boards drilled (steps[1]) and joined (steps[2]), then attached to wings (steps[3]); painting last, with an explicit option to paint before assembly"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Create pocket hole joints to join the boards. Create 3 pocket holes on the long side of one of the 1x8 boards."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Attach the shelf to each wing."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" boards but no jig thickness setting is stated in any step (viewed images 825f, c4df, 99c6, 6e8a show none), and no screw/fastener or method is named for the shelf-to-shelf or shelf-to-wing joints; materials[0..4] list no fastener."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "{\"part\": \"Shelf\", \"quantity\": 2, \"thicknessIn\": 0.75, \"widthIn\": 7.25, \"lengthIn\": 14}"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x8 48\""
+        }
+      ],
+      "reason": "The step-2 image (viewed, 99c6) dimensions the joined 1x8 shelf boards as 24\" long x 7 1/4\", and the finished-piece photo (viewed, d3f7) shows a long shelf between the wings; the Shelf row says 14\". The 48\" 1x8 bought = 2 x 24, which is what the image shows. No importDiffs entry for cutList[1], so not a fraction drop.",
+      "arithmetic": "cutList[1].lengthIn 14 vs image 99c6 \"24\"\"; 2 x 24 = 48 = materials[0] \"Board, 1x8 48\"\""
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-26",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/825f0bf01f96c822.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4dfbaecc0a3188e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/99c6b4678794bd4f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6e8af444fef43ec6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d3f7e753d9076a86.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "Measure 2\" from the corner and create a line from that point to the midpoint. Cut along the diagonal lines",
+      "what": "text alone is ambiguous; the viewed image 825f resolves the shape (13\" x 13\", top edge 8 63/64\"), so not scored"
+    }
+  ]
 }
