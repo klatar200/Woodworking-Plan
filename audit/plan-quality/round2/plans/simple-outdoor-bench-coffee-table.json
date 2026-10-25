@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (2 top boards 36\", four 14\" foot boards) are the two cut rows; searched steps vs cutList[].part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: Bench Top s5, Bench Sides (Feet) s2-4/6."
     },
     "R4": {
       "result": "pass",
@@ -28,17 +30,63 @@
       "arithmetic": "parts: 2×36 + 4×14 + kerf 4 cuts (6 parts − 2 boards, the fewest possible)×1/8 = 128.500″; bought: 2×72 = 144″; 128.500 ≤ 144"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "No screw length is given in any step and materials[1] 'Kreg Pocket Hole Screws' has none either (searched steps/materials for /\\d.*screw/i: none); no conflicting sizes."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Foot side-hole positions given (3\" from top and bottom, middle); viewed images show the two-hole end positions and the staggered 3+3 holes along the top boards; legs 'flush on the edge' relational. Spacing is shown only in photos (see gaps)."
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram; sweep stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Holes drilled (s2-3), feet joined (s4), top joined (s5), feet attached to top (s6); screw count adds up to materials: feet 2 x (3 side + 4 end) = 14, top 3+3 = 6 (viewed image) = 20."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using a Kreg Jig, drill pocket holes into the side (not the end) of the 2\" x 6\" x 14\" boards"
+        }
+      ],
+      "reason": "All parts are 2x6 with pocket holes; searched all steps/description for /setting|thickness/i: no jig thickness setting stated; viewed jig photos (ca6e264a, 43ca9cc0) show no legible setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: four 14\" boards = two feet of two; two 36\" top boards; all installed; steps reach sanding/stain. Pocket-hole screws total 20 matches the hole counts."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Attach the two 14\" feet together side by side using wood glue",
+      "what": "wood glue (and stain/sealer, step 6) not in materials (consumable)"
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Be sure to stagger the holes so they don't line up to each other",
+      "what": "hole count/spacing along the top boards is given only by the photo (3 per board); no inch values"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/ca6e264a0348b576.webp",
+      "plans/43ca9cc0437f26fd.webp",
+      "plans/ca7ec4b96750f17b.webp",
+      "plans/95183a175a13333f.webp"
+    ]
+  }
 }

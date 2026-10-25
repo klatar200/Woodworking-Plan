@@ -191,32 +191,97 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps 0-9 (Bottom, Side Panels, Bin Sides, Shelf Bottoms, Shelf Ends, End Rail, Side Rails, Cord/Hose Cleats and Stops) has a cut-list row; steps name the stock."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: Cart Bottom s0, Side Panel s1, Bin Side s2-3, Shelf Bottom s4, Shelf End s5, End Rail s7, Side Rail s8, cleats/stops s9-11."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Steps name the stock for every part, so scorable. 1x3 portion passes: Shelf End 4x20 + End Rail 20 + Side Rail 2x23 + Hose Cleat 2x3.5 + Hose Stop 2x5.5 + Cord Cleat 2x2.5 + Cord Stop 2x2.5 = 80+20+46+7+11+5+5 = 174 plus 15 cuts x 1/8 = 175.875 <= 2 x 96 = 192. Sheet portion: area 3x(20x29.25)+2x(5.5x20)+2x(5.5x20) = 1755+220+220 = 2195 <= 48x48 = 2304, so by rule not a certain area fail -> unknown; see gaps for the non-area layout problem.",
+      "result": "unknown"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" coarse-thread pocket screws (listed) and #12 x 3/4\" pan-head screws for casters (listed); no conflicting sizes. Glue is a consumable."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Position the second shelf assembly at the location shown, and secure it using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws, as well."
+        }
+      ],
+      "reason": "Height of the second shelf assembly is not given in any step, cut-list note or material (searched steps/cutList/description for the shelf height: none). Viewed step-6 image (b42080c6) shows the shelf with no dimension. Holder heights (10\", 8 1/2\") ARE dimensioned in the viewed step-11 image, and casters are at the corners."
     },
     "R11": {
-      "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "25 reference(s), each in a step with its own image"
+      "note": "25 reference(s), each in a step with its own image",
+      "result": "pass",
+      "reason": "References to 'cutting diagram' point at dimensions that are all in the cut list; no separate cutting-diagram image exists in the 18 plan images (viewed 10 incl. unattached ones: photos/renders), and the part sizes needed are in cutList. Step images show pocket-hole layout (s0), holders (s11), casters (s12)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Bottom, side panels, bin sides, shelves, rails, holders, casters are added in a buildable order; holders (s9-11) and casters (s12) come after the carcass."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body states 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; every part is 3/4\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 2 Shelf Ends per Shelf Bottom x 2 = 4; 2 Cord Cleats, 2 Hose Cleats, 2 Hose Stops, 2 Cord Stops; 2 Side Rails, 1 End Rail; 2 Bin Sides. Every made part is installed (s3, s6, s7, s8, s10-11, s12 casters); steps reach a finished cart. Casters and #12 screws in materials."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "using glue and 1 1/4\" coarse-thread Kreg Pocket-Hole Screws",
+      "what": "glue not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "adding a simple coat of oil will help protect the wood",
+      "what": "oil finish optional, not in materials (consumable)"
+    },
+    {
+      "path": "materials[1].name",
+      "quote": "Plywood, 3/4\" x 48\" x 48\" board",
+      "what": "Cart Bottom (20x29.25) + 2 Side Panels (20x29.25) cannot be laid out on one 48x48 sheet: two parts side by side need widths 20+20=40 (both 20 wide, 29.25 tall) so the third has 48-40=8 left; any 20-wide and 29.25-wide pair needs 20+29.25=49.25 > 48 in x and also in y. Area (2195 in2 vs 2304) fits but the layout does not (kerf-free). Likely, not certain: derived from the Kreg-corrected rows only."
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "cut them oversized, as shown in the cutting diagram",
+      "what": "Cord Stop oversize amount and radius size are not given in text; decorative end shape only"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/6e53f349e24f392d.webp",
+      "plans/b42080c651e58f03.webp",
+      "plans/7d3c8fe45e19d7b3.webp",
+      "plans/f665443cf6a08402.webp",
+      "plans/a2fe36dde62709bc.webp",
+      "plans/4f95c547697fa485.webp",
+      "plans/5d041a762c4c3e23.webp",
+      "plans/f211874935676172.webp",
+      "plans/3e81e6bd0b34c6f3.webp",
+      "plans/8107693f38c5e777.webp"
+    ]
+  }
 }

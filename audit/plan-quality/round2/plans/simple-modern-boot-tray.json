@@ -71,31 +71,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Frame sides (1x2) and Bottom Slats (1x4) named in steps 1-3 all have cut rows; step 1 counts match (2 + 2 + 8)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 3 rows used: Short/Long Frame Sides s2, Bottom Slats s3."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x2, 1x4); steps not checked for per-part stock"
+      "reason": "Steps name the stock for every part (s1: 1x2 for frame, 1x4 for 8 slats). 1x2: 2x11.75 + 2x36 = 95.5 + 3 cuts x 1/8 = 95.875 <= 96. 1x4: 8x11.75 = 94 + 7 x 1/8 = 94.875 <= 96.",
+      "result": "pass",
+      "arithmetic": "1x2: 23.5 + 72 + 0.375 = 95.875 <= 96; 1x4: 94 + 0.875 = 94.875 <= 96"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws used (steps 2,3), listed in materials[2]."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat spacing 3/4\" given and adds up: inner length 36 - 2x0.75 = 34.5; 8 x 3.5 = 28; 34.5 - 28 = 6.5 over 9 gaps = 0.72 (text says last gap not exact). Slats flush to frame bottom; barrier lip relational."
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'like shown' steps (s2, s3) each have their own step image; sweep stands."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using 1 1/4\" pocket hole screws, attach the short frame pieces between the 36\" long pieces on the ends"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Using a Kreg Pocket Hole Jig, drill 3/4\" pocket holes into the ends of the short frame pieces and into both ends of the slat pieces."
+        }
+      ],
+      "reason": "Pocket holes in the ends of the short frame pieces and slats are drilled in step 6 (index 5), after those pieces were already screwed together in steps 3-4 (index 2-3); in the written order the joints cannot be made. Completable by reading ahead and drilling before step 3, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[5].body: 'drill 3/4\" pocket holes'; all parts 3/4\" thick; setting stated (late in order, see R8)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "I used a piece of tar paper (roofing paper) for this. Simply place the paper onto the tray and fold it to fit snuggly into the tray"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "fill your tray with decorative landscape rocks"
+        }
+      ],
+      "reason": "Moisture barrier (tar paper) and landscape rocks are used by steps but not in materials; searched materials[].name for /tar|paper|barrier|rock|stone/i: no match (materials: 1x2 board, 1x4 board, 1 1/4\" pocket hole screws). Counts otherwise agree (2+2 frame, 8 slats); all parts installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": []
+  }
 }

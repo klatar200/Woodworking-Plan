@@ -143,31 +143,81 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (shelf panels, side panels 11 1/2\", back ledge, drawer front/back/sides/bottom) all have cut rows; searched steps vs cutList[].part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows used: Shelf/Side Panel Pieces s0-1, Back Ledge s2, drawer rows s5-6."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x6, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Each part matches exactly one listed material by thickness x width: 0.75x5.5 -> 1x6 only; 0.75x3.5 -> 1x4 only; 0.25 -> quarter sheet plywood. 1x6: s0 cuts six 24\" pieces = 6x24 = 144 vs 2x72 = 144 bought (needs 4 cuts x 1/8 = 0.5 more, zero-kerf fit exact: short <= 1/2\"). 1x4: Back Ledge 24 + Front 23.75 + Back 22.25 + Sides 2x10.25 = 90.5 (+4 cuts x 1/8 = 91) <= 96. Drawer bottom 10x22.75 fits a quarter sheet.",
+      "result": "pass",
+      "kerfOnly": true,
+      "arithmetic": "1x6: 6 x 24 = 144 (steps[0].body 'Cut 6 pieces of 1x6 to 24\" long') vs 2 x 72 = 144; 1x4: 24+23.75+22.25+10.25+10.25 = 90.5 + 4 x 0.125 = 91 <= 96"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws (listed, 32). Staples appear only in an optional alternative (see gaps)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "cut dadoes in the drawer sides to insert the 1/4\" plywood drawer bottom"
+        }
+      ],
+      "reason": "The builder must set the dado position (height above the bottom edge) and depth/width; searched steps, cutList notes and description for 'dado' and any inch value for it: none given. Viewed step-6 photo (8a1de667) shows the drawer box with no measurement. (Only 22.75 bottom width implies ~1/4\" depth, not stated.)"
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing; sweep stands. 'Check out the YouTube video in the extras tab' (steps[6].body) is an optional visual aid, not needed to build."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels glued (s0), trimmed (s1), ledge cut (s2), assembled (s3-4); drawer built after (s5-6) and fits the opening: inner width 24, drawer front 23.75; sides 3.5 tall vs 3 5/8 gap; Back 22.25 = 23.75 - 2x0.75."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body and steps[3].body say 'drill 3/4\" pocket holes' and steps[6] 'drill 3/4\" pocket holes'; all parts 3/4\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "s0 'Cut 6 pieces of 1x6 to 24\"' = 4 Shelf + 2 for side stock (4 side pieces of 11.5 from 2 boards) matches rows; s1 'two 11 1/2\" long pieces' from one panel matches 4 pieces total x 2 boards. All parts installed; steps end with finger hole in drawer front (1 1/4\" hole saw, center) and finish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Then glue and screw together each of these boards",
+      "what": "wood glue not in materials (consumable)"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "you can simply staple the bottom onto the drawer box after it's assembled",
+      "what": "staples in an optional alternative are not in materials; the alternative 1/2\" or 3/4\" plywood bottom has no cut-list size (optional branch, not scored)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/8a1de66723633584.webp",
+      "plans/b84181abff0dd452.webp",
+      "plans/99dc2cc02f91cee3.webp",
+      "plans/e5085bfbbf2cbd4b.webp"
+    ]
+  }
 }

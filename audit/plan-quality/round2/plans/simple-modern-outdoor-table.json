@@ -10,31 +10,112 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All parts in steps (27.5\" and 24\" leg pieces, 39\" length-wise supports, 20\" width-wise supports, base piece, top boards) have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: top s7-8, legs s2-3, length supports s4, width supports s5, base piece s6."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, 2x2); steps not checked for per-part stock"
+      "reason": "The 2x2 board bought is shorter than the base-piece row. Same defect as R14: step 6 and the step-1 diagram say 39\", so the row's 59 is the wrong value (39 fits).",
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[5]",
+          "quote": "Length-Wise Base Piece x1, 1.5 x 1.5 x 59"
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Board, 2x2 48\" board"
+        }
+      ],
+      "arithmetic": "Only 2x2 part: 1 x 59 = 59\" needed; bought 1 x 48 = 48\"; 59 > 48 (short 11\"). Precondition met: 1.5 x 1.5 matches only the listed 2x2. 2x6: 6x59 + 4x24 + 4x27.5 = 354+96+110 = 560 + 9 cuts x 1/8 = 561.125 <= 4x120 + 96 = 576 (pass); 2x4: 2x39 + 3x20 = 138 + 3 x 1/8 <= 96 + 72 = 168 (pass)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2.5\" pocket hole screws and 2.5\" wood screws, both listed; step 9 counts (4+4 along supports, 3x2 up through legs = 14) match materials[6] quantity 14."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-1 guide shows pocket-hole positions on every part; width-wise supports 'evenly spaced', top 'centered', base piece 'centering', screw counts given (4 and 3). No hole or hardware position left unset."
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'pocket hole guide to the right' is the step-1 image (a cutting/pocket-hole guide, viewed); 'will now look like this' has its own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Pocket holes drilled s1 before assembly; legs, supports, base piece, top, then top to base; step 8's 'Repeat step 8' reference is correct."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as outlined in the pocket hole guide to the right."
+        }
+      ],
+      "reason": "All pocket-hole parts are 1 1/2\" thick; searched all steps/description for /setting|jig|thickness/i: no jig setting stated; viewed pocket-hole guide image (a6563426) shows hole locations only, no setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "attach the 39\" length-wise base piece by centering it on the bottom of the legs"
+        },
+        {
+          "path": "cutList[5]",
+          "quote": "Length-Wise Base Piece quantity 1, thicknessIn 1.5, widthIn 1.5, lengthIn 59"
+        }
+      ],
+      "reason": "Step gives 39\" for the length-wise base piece; the cut row says 59. The viewed step-1 guide labels it '(1) 39\" 2X2 PIECE', so the row is the outlier (source value equals imported value, importDiffs empty). Other counts agree: 2 length supports, 3 width supports, 4+4 leg pieces, 6 top boards (three sets of two); all installed; steps reach finish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "flip the piece you made in step 4 over, and repeat step 3",
+      "what": "Step numbers are off by one (the leg pieces are made in steps 3 and 4; same in steps[4].body 'legs you built in steps 4 and 5'); builder can still follow."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Then glue and clamp two pieces together",
+      "what": "wood glue (top boards) not in materials (consumable)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "finished it with three coats of indoor/outdoor spar urethane",
+      "what": "stain and spar urethane not in materials (consumable); sandpaper/tack cloth in step 0 likewise"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/a6563426e5fc5aef.webp",
+      "plans/6c8be51df217c764.webp",
+      "plans/f0c889893659be66.webp",
+      "plans/c9921571e6c63b2c.webp"
+    ]
+  }
 }

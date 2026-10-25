@@ -131,32 +131,67 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, short rails, long rails and slats in steps 0-3 all have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Legs/Short Rails s1, Long Rails s2, Shelf Slats s3."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x3, 1x2); steps not checked for per-part stock"
+      "reason": "Each part matches exactly one material: 1.5x2.5 -> 2x3; 0.75x1.5 -> 1x2. 2x3: 4x72 + 8x18.75 + 8x46.5 = 288+150+372 = 810 + 11 cuts x 1/8 = 811.375 <= 9x96 = 864. 1x2: 60x23.75 = 1425 + 45 cuts x 1/8 = 1430.625 <= 15x96 = 1440 (4 slats/board: 95 + 0.375 <= 96).",
+      "result": "pass",
+      "arithmetic": "810 + 1.375 = 811.375 <= 864; 1425 + 5.625 = 1430.625 <= 1440"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "2 1/2\" pocket screws (steps 1-2) and 1 1/4\" 18-gauge brads (step 3, viewed image '1 1/4\" brads') both in materials; one size per use."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed images give rail spacing (20\" between four rails per end, top rail at leg top), long rails 3/4\" below the short-rail top, slat gaps 1 1/2\" (15 slats x 1.5 + 16 gaps x 1.5 = 46.5 = long rail length)."
     },
     "R11": {
-      "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "note": "2 reference(s), each in a step with its own image",
+      "result": "pass",
+      "reason": "'like the cut diagram shows' has its own step image (viewed: leg 72\", rails 18 3/4\" and 46 1/2\" with jig setting)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and drilled (s0), ends (s1), long rails 3/4\" below short rail tops (s2), slats last (s3)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0].body: 'set up for 1 1/2\" thick boards'; viewed step-0 image 'Set Jig for 1 1/2\" stock'; slats are brad-nailed (method and fastener stated)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 4 legs, 8 short rails (2 ends x 4 levels), 8 long rails (4 levels x 2), 60 slats = 4 shelves x 15 (viewed); slat 23.75 = short rail 18.75 + 2 x 2.5 leg width; all installed; steps end with slats."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "I jut dabbed a little glue on each one, set it in place",
+      "what": "wood glue not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/aa5126b5ea080021.webp",
+      "plans/747c015a4c9d3701.webp",
+      "plans/c810f1430ddc8a92.webp",
+      "plans/37780d9790997eba.webp"
+    ]
+  }
 }

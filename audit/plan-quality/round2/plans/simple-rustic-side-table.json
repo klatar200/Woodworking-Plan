@@ -107,32 +107,73 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, Arched Ends, Top Center boards and Top Edge boards in steps 0-3 all have cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Leg s1, Arched End s0-1, Top Center s2, Top Edge s2."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 2x6, 2x2); steps not checked for per-part stock"
+      "reason": "Each part matches exactly one listed material (1.5x3.5 -> 2x4; 1.5x5.2/5.5 -> 2x6; 1.5x1.5 -> 2x2). 2x4 8': 4x22 = 88 + 3 cuts x 1/8 = 88.375 <= 96. 2x6 6': 2x11 + 2x21 = 64 + 3 x 1/8 = 64.375 <= 72. 2x2 3': 2x17 = 34 + 1/8 = 34.125 <= 36.",
+      "result": "pass",
+      "arithmetic": "88.375 <= 96; 64.375 <= 72; 34.125 <= 36"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 2 1/2\" pocket hole screws used (steps 1-3), listed in materials[3]."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed diagrams give every position: arch rise 2 3/4\" on a 5 1/2\" board (s0), leg length 22\" and 11\" gap (s1), top pocket-hole layout with 2\" end offsets, 17\" edges and 21\"x11\" top (s2). Arched boards 'flush to the top and the front edge' relational."
     },
     "R11": {
-      "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "note": "2 reference(s), each in a step with its own image",
+      "result": "pass",
+      "reason": "'as shown in the diagram' (steps[2]) has its own step image, viewed: dimensioned pocket-hole layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Arches cut (s0), sides built (s1), top built and top edges cut to fit (s2), top set between legs (s3), finish (s4)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1].body: 'Set your Kreg pocket hole jig to drill holes in 1 1/2\" thick material'; all parts 1 1/2\" thick; s2 repeats it."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[1].widthIn",
+          "quote": "1 1/2\" x 5 1/5\" x 11\""
+        },
+        {
+          "path": "steps[0].image",
+          "quote": "viewed step-0 diagram labels the Arched End height '5 1/2\"' (2 3/4\" + 2 3/4\")"
+        }
+      ],
+      "reason": "Kreg's cut-list text gives the Arched End width as 5 1/5\" (imported as 5.2; the importer read it correctly, importDiffs source), but the step-0 diagram (viewed) dimensions the same board 5 1/2\" (2 3/4 + 2 3/4) and the top boards beside it are 5 1/2\". Otherwise counts agree (2 arched ends, 4 legs, 2 center boards = 11\" wide, 2 edges 17\"); all parts installed; finish reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/4777e89be346f353.webp",
+      "plans/2b2366b10e4cf5a5.webp",
+      "plans/2b78de83d72703e3.webp",
+      "plans/b8268e43e29a0dc1.webp"
+    ]
+  }
 }

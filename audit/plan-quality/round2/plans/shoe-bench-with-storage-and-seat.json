@@ -119,10 +119,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps 0-8 (Front/Back Spans, Legs, Side Braces, Middle Brace, Tops, Slats, End Slats) has a cut-list row (searched steps vs cutList[].part)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 cut rows are used by a step: spans/legs step 1, side+middle braces step 2, Tops step 4, End Slats/Slats step 6."
     },
     "R4": {
       "result": "pass",
@@ -133,17 +135,66 @@
       "arithmetic": "parts: 4×29 + 4×17.25 + 4×14 + 1×14 + 5×38 + 7×15.5 + 2×14 + kerf 19 cuts (27 parts − 8 boards, the fewest possible)×1/8 = 583.875″; bought: 8×96 = 768″; 583.875 ≤ 768"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "attach the End Slats along the Side Braces on the ends of the base, between the Legs. - Using a Slat as a 3/4\" spacer, attach each Slat 3/4\" apart using wood glue and nails."
+        }
+      ],
+      "reason": "Steps use nails with no nail size, and materials lists no nails (materials names: 1x4 boards, 1 1/4\" pocket hole screws, Wood glue, Stain; searched /nail/i across materials: no match). Pocket screws size 1 1/4\" is listed and consistent."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-1/2 images show the upper span flush with leg tops and lower span at leg base, side braces at top and bottom of the legs; step 7 gives 1\" overhang; slat spacing 3/4\" given. Slat run adds up: 2x2.75 + 7x3.5 + 8x0.75 = 36 = 29 + 2x3.5."
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to an absent drawing; sweep stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels built (1), braces on back panel (2), front attached (3), top assembled (4), slats then top (6-7); nothing is fastened before it can be reached."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill pocket holes in the following locations on these boards"
+        }
+      ],
+      "reason": "All parts are 3/4\" thick with pocket holes; searched all steps, materials, description for /setting|jig|thickness/i: no jig thickness setting stated. Step-0 image (viewed) shows the jig dial but no legible setting value."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts match: step 0 (2)+(2) Spans=4, (2)+(2) Side Braces=4, Middle Brace 1, (4)+1 Tops=5, two Legs per panel. Every part installed (middle brace step 2, slats step 6, top step 7); steps reach finish. Top 17.5 = 5x3.5; base 15.5 deep + 2x1\" overhang = 17.5; length 36+2 = 38."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Add a coat of polyurethane to the entire piece",
+      "what": "polyurethane not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/34c3274f22ad10d7.webp",
+      "plans/2939a6713452aa62.webp",
+      "plans/2773db02c7c5c064.webp"
+    ]
+  }
 }

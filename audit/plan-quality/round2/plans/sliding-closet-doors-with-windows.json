@@ -71,31 +71,94 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Stiles, rails, window rail/stiles and panel in steps 1-8 all have cut rows. Steps 6 and 8 call the curved/top 17\" pieces 'door stile' but the viewed step-6 image shows a 17\" x 3 1/2\" piece, i.e. a Door rail row (see gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Door stiles s1-2, Door rails s2-3/6/8, Window rail s5, Window stiles s5/7, Door panel s3."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Steps name stock (1x4 for stiles/rails, window parts ripped from leftover 1x4, panel from 1/4\" sheet). 1x4: 4x84 + 8x17 + 2x17 + 4x4.875 = 336+136+34+19.5 = 525.5 + 12 cuts x 1/8 = 527 <= 6x96 = 576. Panel 2 x (17.375 x 61.875) fits one 48x96 sheet.",
+      "result": "pass",
+      "arithmetic": "525.5 + 1.5 = 527 <= 576"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws used ('pocket hole screws', 'a pocket hole screw'), listed in materials[3]."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numbers/images give groove 1/4\" x 1/4\" starting and stopping 3\" from the ends and 3/8\" from the front, top rail at 68 1/2\" (viewed image), 4 7/8\" window mullion, 17\" rails, curve 1\" to 3 1/2\" (viewed s6 image); window pieces 'centered'. Window height adds up: 84 - 68.5 = 15.5 = 3.5 top piece + 4.875 + 1 + row-2 remainder."
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a diagram it lacks; sweep stands; viewed s0 elevation shows the door layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Grooves routed (s1), bottom rail + stiles (s2), panel and top rail (s3), window parts cut (s4), row 1 with acrylic (s5), curve cut (s6), row 2 and curved piece (s7), top piece (s8); acrylic slides in from the open top before the top is closed."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Attach the rail that has only 1 grooved edge to the bottom of the stiles using wood glue and pocket holes."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" rails and 3/4\" window pieces (steps 2, 3, 5, 7, 8); searched all steps/description/materials for /setting|jig|thickness/i: no jig setting stated; viewed images (s0, s1, s3, s6) show none."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Hang the doors according to the manufacturer's directions for the sliding door hardware you choose."
+        }
+      ],
+      "reason": "Step 10 installs the doors on sliding door hardware (track/rollers) but no hardware is in materials (searched materials[].name and every step for /track|roller|hardware|hanger|slide/i: only this sentence). Materials list: 1x4 boards, 1/4\" plywood, acrylic, pocket hole screws, wood glue. Parts counts otherwise agree (4 stiles = 2 per door, 8 rails = 4 per door, 4 window stiles, 2 window rails, 2 panels, 8 acrylic = 4 per door); door 24 = 2x3.5 + 17; panel height 61.875 spans the 61.5 opening plus grooves."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "On one of the remaining door stiles, measure 1\" down on one side.",
+      "what": "Steps 6 and 8 ('remaining door stiles', 'top door stile') name 17\" rail pieces as stiles; builder must infer they are the Door rails (viewed image shows a 17\" piece)"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "Fill the pocket holes with plugs.",
+      "what": "pocket-hole plugs and finish not in materials (fill/finish consumable)"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "I used beadboard paneling for a decorative look.",
+      "what": "beadboard is an optional alternative to the listed 1/4\" plywood; not scored"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/5298fdcae0498a46.webp",
+      "plans/8f0f1a577c0fa520.webp",
+      "plans/839a1d54743f91e9.webp",
+      "plans/d4e6428fea00daa4.webp"
+    ]
+  }
 }

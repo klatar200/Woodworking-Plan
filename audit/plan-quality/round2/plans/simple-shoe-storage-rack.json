@@ -35,31 +35,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Shelves and end panels in steps 0-2 are the two cut rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used: Shelf s0, End panels s1."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
+      "arithmetic": "30 + 80 + 0.25 = 110.25 <= 120",
       "result": "pass",
-      "arithmetic": "parts: 2×15 + 2×40 + kerf 2 cuts (4 parts − 2 boards, the fewest possible)×1/8 = 110.250″; bought: 1×48 + 1×72 = 120″; 110.250 ≤ 120"
+      "reason": "Steps name the stock (shelf from 6' and 4' 1x12, panels from the 6' remainder). On the published rows: 2x15 + 2x40 = 110 + 2 cuts x 1/8 = 110.25 <= 48 + 72 = 120; per board 40 <= 48 and 40+15+15 = 70 + 0.25 <= 72. With the step's 38 1/2\" shelf it fits more easily."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4\" pocket hole screws used (steps 0, 2), listed in materials[2]; step 2 '(3) ... in each end of each shelf' = 12 matches quantity 12."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step-3 diagram dimensions the shelf positions: 1 1/2\" from top, 3/4\" shelves, 6\" gaps (1.5+0.75+6+0.75+6 = 15 = end panel height); 3 holes per shelf end shown."
     },
     "R11": {
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing; sweep stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelves cut and drilled (s0), end panels cut (s1), assembled (s2), finished (s3)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill (3) pocket holes in each end of each shelf for 1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" shelves; searched all steps/description for /setting|jig|thickness/i: no jig setting stated; viewed SketchUp images show hole positions only."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut one shelf from a 6' 1x12 at 38 1/2\" long and the other shelf from a 4' 1x12 at 38 1/@\" long."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Shelf quantity 2, 3/4\" x 11 1/4\" x 40\" (importDiffs source)"
+        }
+      ],
+      "reason": "Step 0 gives the shelf length as 38 1/2\" (second occurrence typed '38 1/@\"'); the viewed step-1 diagram dimensions it 3' 2 1/2\" (= 38.5) and the assembly leaves 2 x 3/4\" for the end panels (38.5 + 1.5 = 40 overall). The cut-list row says 40 (source '3/4\" x 11 1/4\" x 40\"', importer read it correctly). Counts otherwise agree; all parts installed; finish reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "38 1/@\" long",
+      "what": "typo in the second shelf length ('1/@'); resolved by the viewed diagram (3' 2 1/2\")"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[3].body",
+      "quote": "Fill pocket holes and finish by painting or staining",
+      "what": "wood filler and paint/stain not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/30624eb0ca08a5cd.webp",
+      "plans/52ea64fde8d38481.webp",
+      "plans/d4d33060699e0b41.webp",
+      "plans/cad9ca6d8ebf585f.webp"
+    ]
+  }
 }

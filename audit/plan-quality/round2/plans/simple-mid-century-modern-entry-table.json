@@ -179,32 +179,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (long/short frames, long/short bases, table top, legs) all have cut rows; searched steps vs cutList[].part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows are used by steps 0-4 (frames s1-2, bases s1/s3-4, top s2, legs s3)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 2x2); steps not checked for per-part stock"
+      "reason": "Each part matches exactly one listed material: 1.5x1.5 -> 2x2 only; 0.75x7.25 -> 1x8 only. 2x2: 4x40 + 4x10.125 + 4x33 = 160+40.5+132 = 332.5 + 7 cuts x 1/8 = 333.4 <= 5x96 = 480. 1x8: 40 <= 48.",
+      "result": "pass",
+      "arithmetic": "332.5 + 0.875 = 333.375 <= 480; 40 <= 48"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Screw sizes used: 2 1/2\" (frames, legs, base-to-top) and 1 1/4\" (top to frame), both in materials[2],[3]; no conflicting size for the same use."
     },
     "R10": {
+      "search": "step sentences with a placement trigger and no inch measurement",
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole counts given ('3 Kreg screws along each'); legs at the frame corners and top/frame/base placements are relational; no hole or hardware position left to set."
     },
     "R11": {
-      "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "note": "1 reference(s), each in a step with its own image",
+      "result": "pass",
+      "reason": "Only reference is '(these holes are not shown in photo)'; not a request to see a drawing. Sweep stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Holes drilled s0, frames s1, top to frame s2, legs to base s3, base to top s4; each part exists before use (see gaps for stacking ambiguity)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "add Kreg holes in both sides of the the two longer table frames, the 2 longer table bases, one side of each of the table legs, and all around the 1” table top."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1 1/2\" and 3/4\" parts; searched all steps/description for /setting|jig|thickness/i: no jig setting stated. Viewed step-0 photo shows the jig but no legible setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "Counts agree: 2 long + 2 short each for frame and base ('identical'), 4 legs, 1 top; every part installed (s2, s3, s4); steps reach the finished table (paint/stain note). Cut-row width conflict recorded under gaps (no step gives the numbers)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "cutList[4]",
+      "quote": "Table top x 1 [1x8x40 -> 0.75 x 7.25 x 40]",
+      "what": "Top is one 1x8, 7.25 wide, but each frame/base is 10.125 (short row cutList[1]/[3] source '2x2x10 1/8') + 2 x 1.5 = 13.125 wide outside (or 10.125 if the long rows are the ends). Either way the frame and base are wider than the top they attach to (13.125 > 7.25). Likely a real dimension error; no step gives the width to decide which row is wrong."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Using 2 1/2” Kreg screws, attach table base to the table top.",
+      "what": "Step 2 already attaches the top to one frame, and the base is identical to that frame; the plan never says the base goes against the top frame (or how the two frames stack), so which part the 2 1/2\" screws enter is unstated."
+    }
+  ],
+  "reader": {
+    "batch": "r2-37",
+    "imagesViewed": [
+      "plans/72c27f71aeb9af7a.webp",
+      "plans/ee33bc8c8362bca3.webp",
+      "plans/9b2f9b4301b9d593.webp",
+      "plans/23b33966542f740d.webp"
+    ]
+  }
 }
