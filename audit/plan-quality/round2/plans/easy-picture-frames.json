@@ -35,43 +35,70 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "you’ll need two pieces cut at 17 ½” on the long side, and 10 ½” on the short side. The short side will have the ¼” groove that you created in step one.\n(These measurements are for an 11x14 frame. If y",
-          "why": "cut sentence states 10 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "you’ll need two pieces cut at 20 ½” on the long side, and 13 ½” on the short side. The short side will have the ¼” groove that you created in step one.\n(These measurements are for an 11x14 frame. If y",
-          "why": "cut sentence states 13 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags 10 1/2 and 13 1/2 are the short edges of the mitered pieces: 17 1/2 - 2 x 3 1/2 = 10 1/2 and 20 1/2 - 2 x 3 1/2 = 13 1/2 (1x4 width 3 1/2 per section 9). The pieces themselves are cut-list rows 0-1 (Kreg-corrected 17.5 and 20.5)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows (long sides, short sides) are cut in steps 3-5 and joined in step 7."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] no match among parsed stock; unparsed stock present (materials[0]); cutList[1] no match among parsed stock; unparsed stock present (materials[0])"
+      "result": "pass",
+      "reason": "Materials[0] 'Board, 1x4x96\"' = 0.75 x 3.5 x 96 (NxMxL with explicit inch mark, section 9); both rows are 0.75 x 3.5."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[0]"
+      "result": "pass",
+      "reason": "One stock type (1x4x96\"). Long edges: 2 x 20.5 + 2 x 17.5 = 76 in, + 4 miter cuts x 0.125 = 76.5 <= 1 x 96 = 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size used is 1 1/4\" pocket hole screws (step 7), listed in materials[1]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Groove size 1/4\" x 1/4\" given; image (steps 7/8, viewed) shows the keyhole slots centered on a side; miter lengths are given. Remaining placements are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps[0..8] vs /as shown|see (the )?(diagram|drawing)|diagram|pictured/. Only 'See next steps for more detail' (step 2), which points to steps 3-5 with text."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Groove routed on the board (0) before the miters (2-5), pocket holes (5), assembly (6), then hanging slots (7-8)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using the Kreg 720 pro pocket hole jig, drill pocket holes in both sides of your long boards."
+        }
+      ],
+      "reason": "3/4\" stock gets pocket holes but no jig thickness setting is stated. Search steps for /setting|set (the|your)|thick|3\\/4/: none; the step 5 image (viewed) shows the jig but no readable setting. Recorded only; R9 does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Steps give 17 1/2 and 20 1/2 long-edge lengths = cut-list rows 0-1 corrected (17.5, 20.5); 2 + 2 pieces. (b) both pairs installed in step 7. (c) no hardware beyond screws. (d) step 7-9 finish and hang the frame."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/04c8d36c5ec287d5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/91da8bc3d638f438.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Fill holes with wood putty, let dry, then sand.",
+      "what": "Wood putty is used but not in materials (consumable)."
+    }
+  ]
 }

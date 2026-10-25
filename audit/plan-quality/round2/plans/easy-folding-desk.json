@@ -143,39 +143,62 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Leg tops, angled legs, back legs, desk back and desk top (steps 0-6) each have a cut-list row (rows 0-4); no other part is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows are used: leg tops (step 0), angled legs (step 1), back legs (step 2), desk top (step 3), desk back (steps 4-5)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Corrected rows 1.5x3.5 match listed 2x4 (1.5x3.5); 0.75x5.5x43 desk top matches listed 1x6 (0.75x5.5)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed material: 1.5x3.5 rows -> 2x4 only, 0.75x5.5 desk top -> 1x6 only. 2x4: 2x19 + 2x29.0625 + 2x25.5 + 2x37 = 221.125 in + 7 kerfs x 0.125 = 222.0 <= 3 x 96 = 288. 1x6: 4x43 = 172 + 3 x 0.125 = 172.4 <= 2 x 96 = 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 2 1/2\" pocket hole screws (step 2), 1 1/4\" pocket hole screws (step 3), 1\" wood screws (step 5); all three sizes are in materials[2], [3], [7]. Catch screws are 'included screws'."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Second desk back hinge is '5\" up from the bottom'; catches '6\" in from the sides' and '5\" in from the front'; overhang '1 1/2\"'. Rest is relational (flush, touching, centered)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "Sand and stain/paint the finished pieces. Don't forget to also sand and stain/paint the desk back pieces that are not attached to anything yet.",
-          "why": "\"attached\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "search": "steps[0..8] vs /as shown|see (the )?(diagram|drawing)|diagram|pictured/. No match. The sweep 'attached' hit (steps[4]) reads 'not attached to anything yet' - a part state, not a drawing reference."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (0-1), legs assembled (2), top built (3), then hinges and catches attach finished pieces (5-6); nothing needs undoing."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 2 sets the jig for 1 1/2\" thick material (legs); step 3 sets it for 3/4\" thick material (top). Both thicknesses with pocket holes are covered."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 desk top boards: step 3 glues 3 drilled to the 4th (3 joints); 2 desk backs, 2 hinges. (b) every cut part is installed (steps 2,3,5,6). (c) T-hinges and catches are in materials[4],[5]; glue is in materials[6]. (d) steps 7-8 reach the finished desk."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": []
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "the boards should be 27 5/8\" long from end to end",
+      "what": "Angled leg cut-list length is 29 1/16 (Kreg-corrected); the step's 27 5/8 does not say which edge it is measured on, so whether the two agree cannot be settled from the plan."
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "Place 2 catches on the top of the back legs about 6\" in from the sides and one on the inside of the side legs about 5\" in from the front.",
+      "what": "Reads as 2 + 1 = 3 catches against the 4 catches used and listed (materials[5] qty 4); only correct if 'one' means one per side leg."
+    }
+  ]
 }

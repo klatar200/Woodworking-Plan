@@ -35,40 +35,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bench sides, top/bottom pieces, seat, cubby divider, backing, shelf, frame sides and frame pieces (steps 0-13) are cutList[0]-[7]; corbels and hooks are purchased (materials[6],[7])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used: rows 0,1 steps 0-2,13; row 2 steps 3,5; row 3 steps 3-4; row 4 step 10; row 5 step 11; rows 6,7 steps 6-8."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] no match among parsed stock; unparsed stock present (materials[4]); cutList[3] no match among parsed stock; unparsed stock present (materials[4])"
+      "result": "pass",
+      "reason": "Kreg wrote nominal sizes: 2x8 rows -> listed 2x8; 1 x 16 x 31 and 1 x 14 x 14.25 -> listed 1x16 laminated panel (48\" long); 1x8 shelf -> 1x8; 1x4 frame -> 1x4; 0.25 x 29 x 76 -> listed 1/4\" 4x8 sheet."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[4]"
+      "result": "pass",
+      "reason": "Each part matches exactly one listed material (2x8, 1x16 panel, 1x8, 1x4, 1/4\" sheet). 2x8 (2x96 = 192): 4x17 + 4x26 = 172 + 8 x 0.125 = 173 <= 192. Panel (48): 31 + 14.25 = 45.25 + 0.125 <= 48. 1x4: steps name the 120\" board for the sides (2 x 58.25 = 116.5 <= 120) and the 96\" board for 4 x 22 = 88 <= 96. 1x8 (72): 29. 1/4\" sheet: 29 x 76 fits 48 x 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 2 1/2\" and 1 1/4\" pocket-hole screws, 2\", 1 1/2\" and 3/4\" wood screws, 3/4\" and 1\" brad nails: all in materials[8]-[14]; no use has two sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "best to make pilot holes first to avoid wood splitting). Make sure to sink the wood screw head below the surface of the wood so it doesn't stick up. Repeat if needed from the bottom side of the bench.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5822e15b4fdb9fb2.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Divider centre 14 1/2\", frame crosspiece '10\" down from the top edge', second directly below, corbel top lines up with the top middle 1x4; viewed photos show three evenly spaced hooks under the shelf between the corbels and corbels at the shelf ends."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "search": "4 references ('as shown in the photo', 'as shown'), each in a step with its own image (sweep)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Join your bottom bench piece (pocket hole side facing down) into your two side pieces with 2 1/2\" pocket hole screws and wood glue."
+        },
+        {
+          "path": "steps[13].title",
+          "quote": "Make top & bottom bench pieces"
+        }
+      ],
+      "reason": "The top and bottom bench pieces used in steps 1-2 are only cut and assembled in step 13, the last step, after finishing (step 12). Reordering lets the build proceed, so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "for two of the 17\" pieces, add 2 pocket holes on one side. Using 2 1/2\" pocket hole screws and wood glue"
+        }
+      ],
+      "reason": "Pocket holes in 2x8 (1 1/2\") and 1x4 (3/4\") stock; search steps for /setting|set |thick|jig/: no jig thickness setting stated for either; step images viewed (4, 8-9) show no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) four 17\" and four 26\" 2x8 pieces = cutList rows 0,1; frame: 22 + 2 x 3.5 = 29 = backing/shelf/bench width 29; 17 + 0.75 + 58.25 = 76 = backing height. (b) all parts installed. (c) corbels and hooks in materials. (d) step 12 completes it. See gaps for the divider size."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2278ef0ae38d42ba.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/beef2a9b2a23d4c7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/cfedb8d072678a54.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5822e15b4fdb9fb2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1cac933b318d52ec.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/935b56277133e277.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ab32ddc9bdd54ae6.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "My cubby divider dimensions were about 14 1/2\" x 14\", but you will need to measure for exact measurements",
+      "what": "Step says about 14 1/2 x 14; cut list row 3 (Kreg-corrected) is 1 x 14 x 14.25; builder is told to measure, so recorded as a gap, not a failure."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "Add wood filler over screws on bench top seat (if desired)",
+      "what": "Wood filler is optional and not in materials."
+    }
+  ]
 }

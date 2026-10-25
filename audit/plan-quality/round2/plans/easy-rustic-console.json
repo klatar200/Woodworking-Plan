@@ -263,58 +263,92 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Boards A-H are all in cut-list rows 0-7 (labels in part names); steps 2-7 use only those letters."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Part C",
-          "why": "no step mentions it (searched steps for its words and label C)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Part E",
-          "why": "no step mentions it (searched steps for its words and label E)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Part F",
-          "why": "no step mentions it (searched steps for its words and label F)"
-        },
-        {
-          "path": "cutList[6].part",
-          "quote": "Part G",
-          "why": "no step mentions it (searched steps for its words and label G)"
-        },
-        {
-          "path": "cutList[7].part",
-          "quote": "Part H",
-          "why": "no step mentions it (searched steps for its words and label H)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags for C, E, F, G, H are false: steps[3] 'boards C', steps[2] 'board E', steps[5] 'boards F and H' / 'boards G and B'. All 8 rows are used."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Corrected rows: 0.75x1.5 -> 1x2; 0.75x3.5 (B,C,D,E) -> 1x4; 0.75x5.5 (F,G) -> 1x6; 0.75x7.25 (H) -> 1x8, all listed (section 9)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x8, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each part's thickness x width matches exactly one listed material (1.5->1x2, 3.5->1x4, 5.5->1x6, 7.25->1x8). 1x4 (3 x 120 = 360): 2x43.25 + 2x43 + 4x28.75 + 2x14.25 = 316.0 + 10 cuts x 0.125 = 317.25 <= 360. 1x6 (360): 2x48 + 4x43.25 = 269.0 + 6 x 0.125 <= 360. 1x8 (72): 48 <= 72. 1x2 (96): 4x14.5 = 58 + 4 x 0.125 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener size (step 1: 'If you use pocket hole joints, use a Kreg Jig'); no size is used that is missing from materials, and no two sizes conflict. See gaps for fasteners never named."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Supports '13 3/4\" from the top of the leg' and '25 1/2\"'; E offset '1\"' (image 2 viewed shows the offset apron at the leg tops); aprons C at the top of the leg pairs (image 3 viewed); top shelf and board order relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps[0..8] vs /as shown|see (the )?(diagram|drawing)|diagram|pictured/. No match."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg pairs (2) -> aprons C (3) -> shelf supports (4) -> shelves edge-joined (5) -> top shelf (6) -> lower shelves onto supports (7); lower shelves go in before nothing blocks them (top shelf attached on top of frame)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "If you use pocket hole joints, use a Kreg Jig to drill the pocket holes."
+        }
+      ],
+      "reason": "3/4\" stock; no jig thickness setting stated, and steps 2-7 say only 'attach'/'connect' with no fastener. Search steps for /setting|set |thick|screw|nail|glue/: none. Step 1 image not viewed. Recorded only; R9 does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Part A (Shelf Supports) qty 4, 0.75 x 1.5 x 14.5 (Kreg-corrected)"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Part E qty 2, 0.75 x 3.5 x 14.25 (Kreg-corrected)"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "To form a pair of table legs, sandwich board E between boards D."
+        },
+        {
+          "path": "steps[4] image",
+          "quote": "dimension label '14 1/4\"' on the shelf supports between the two legs (image viewed)"
+        }
+      ],
+      "arithmetic": "E = 14.25 spans exactly between the two D legs, so the gap between them is 14.25; step 4 image labels the support span 14 1/4. Part A is cut 14.5, which is 14.5 - 14.25 = 0.25\" longer than the gap it must fit. Same pattern on shelves: lower shelves B/G = 43.25 long vs the 43\" the step 3 image labels between leg pairs (cutList[2] Part C 43).",
+      "reason": "Shelf support (and lower shelf) lengths exceed the space the steps/images give by 1/4\"."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9d0aad6b05150364.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2646e6f3c9c357cc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ec84b766fae94905.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials",
+      "quote": "Satin Varnish; Wood finish",
+      "what": "Materials list no fasteners or glue at all, and the steps name none (R9 covers the jig setting)."
+    }
+  ]
 }

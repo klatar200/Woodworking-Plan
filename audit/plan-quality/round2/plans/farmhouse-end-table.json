@@ -10,39 +10,111 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "gle supports so that the 62 degree cut end hits at about the 10\" height and the 28 degree cut end hits centered at 1/2\" from the angled edge of the base leg support. Using wood glue and 1 1/4\" nails, ",
-          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag '10\"' is the height mark on the leg (step image: 10\"), not a cut dimension. Angle supports, base/top leg supports, legs, feet, table top supports, plank top and shelf (steps 0-9) are cutList[0]-[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used in steps 0-9 (angle supports 2-3, feet 6, table top supports 7, planks 8, shelf 5)."
     },
     "R4": {
-      "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Plank table top qty 3, 0.75 x 5.5 x 20"
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 2x6 72\""
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Drill 5- 1 1/2\" pocket holes on one side of 2 of the 1x6s."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "down to the planked 2x6s"
+        }
+      ],
+      "arithmetic": "Listed stock for the top is 2x6 = 1.5 x 5.5 (section 9); the cut-list planks are 0.75 thick, and no 1x6 is listed (search materials[].name for /1x6/: none). Steps call the same planks '1x6s' (step 8) and '2x6s' (step 9).",
+      "reason": "Top planks are 0.75\" thick in the cut list but the only listed stock for them is 1.5\" thick."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x2, 1x3, 1x12, 2x6); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Angle Supports qty 8, 0.75 x 1.5 x 12"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x2 96\""
+        }
+      ],
+      "arithmetic": "Angle Supports are 0.75 x 1.5 so only the single listed 1x2 96\" (qty 1, no import diffs recorded) matches. 8 x 12 = 96 in with zero kerf; 7 cuts x 0.125 = 0.875; 96 + 0.875 = 96.875 > 96 bought, short 0.875 (> 1/2\", so not kerf-only). The 62 and 28 degree cut ends add waste.",
+      "reason": "One 96\" 1x2 cannot yield eight 12\" angle supports."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used (1 1/2\" and 2 1/2\" pocket hole screws, 2\" wood screws, 1 1/4\" nails) are all in materials[4],[5],[6],[13]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Leg centring marks (6 1/4\", 7/8\"), angle support heights (10\", 1/2\"), shelf 2 3/8\" from ends, table top supports 1/2\" from ends, 15 and 30 degree cuts, all given in text and the viewed images."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "search": "3 references, each in a step with its own image (sweep)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Leg assembly (0-4), shelf between assemblies (5), feet (6), top supports (7), planked top (8), top attached upside down (9), finish (10)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill 2- 5/8\" pocket holes on both ends of the 21\" long 1x3."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Drill 3- 3/4\" pocket holes along the width (the 11 1/4\" side) of the 1x12."
+        }
+      ],
+      "reason": "Settings are only given in this count-dash-size form: 5/8\" on 0.75\"-thick 1x3 legs but 3/4\" on 0.75\" parts in steps 5 and 7, and 1 1/2\" on the 0.75\" cut-list planks (step 8). Two different settings for the same thickness; recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) base leg support 16 - 2 x 2 3/8 = 11.25 = shelf width; 15\" short side - 2.5 leg = 12.5 / 2 = 6 1/4 mark (image: 15\" shortest side); 8 angle supports = 4 per side x 2. (b) all parts installed. (c) filler, stain, poly, glue in materials. (d) step 10 finishes."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/07a3d252b109bfbb.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a242df6a3153369e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2181dee946f914ed.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/135854b6aa2358f2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "description",
+      "quote": "Dimensions 24 3/4″ tall x 20″ deep x 16″ wide.",
+      "what": "Three 5.5\" top planks (cutList[6]) total 3 x 5.5 = 16.5\" wide, not 16\"."
+    }
+  ]
 }

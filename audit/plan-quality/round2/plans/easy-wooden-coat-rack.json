@@ -31,42 +31,75 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "eck the dimensions before starting to make sure that the piece will fit in your space. For a video tutorial showing the steps to this project, visit the \"Extras\" tab for the link to the YouTube video.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Step 0 points to the 'Extras' tab only for 'a video tutorial'; steps 1-4 plus cut list and images contain the full build, so the link is optional."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The only part, three 23 1/2\" boards (step 1), is cutList[0]; hooks are purchased hardware (materials[1],[2])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "The single row 'Boards' qty 3 is cut in step 1 and joined in step 2."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Corrected row 0.75 x 3.5 x 23.5 matches listed 1x4 (0.75 x 3.5)."
     },
     "R5": {
       "result": "pass",
       "arithmetic": "parts: 3×23.5 + kerf 2 cuts (3 parts − 1 boards, the fewest possible)×1/8 = 70.750″; bought: 1×72 = 72″; 70.750 ≤ 72"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only size named is 1 1/4\" screws (step 2) = materials[3] '1 1/4\" Pocket Hole Screws'; hook screws not sized in steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Front hook positions are shown in the step 4 image (viewed: four evenly spaced on the middle board); back wall-hanger position is a free choice not fixed by the plan. Board layout dimensions given."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut (1), join (2), finish (3), hardware (4)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Join the three boards using pocket holes, wood glue, and 1 1/4\" screws."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards with no jig thickness setting stated; search steps for /setting|set |thick|jig/: no match; step 2 image (viewed) says 'Attach boards with 1 1/4\" pocket hole screws & glue on back' with no setting. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) three 23 1/2\" boards x 3 1/2\" = 10 1/2\" wide, matching image '10 1/2\"' and cutList qty 3; (b) boards joined in step 2, hooks installed in step 4; (c) coat hangers and wall hangers are in materials[1],[2]; (d) step 4 finishes the rack."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6b77a3fd280ce875.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ee1d54a06afe0d43.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0b37c1064037e2d3.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "Join the three boards using pocket holes, wood glue, and 1 1/4\" screws.",
+      "what": "Wood glue is used but not in materials (consumable)."
+    }
+  ]
 }

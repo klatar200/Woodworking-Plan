@@ -7,41 +7,98 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Step 1 mentions the author's SketchUp design only as background; the cut list, step 0 size (42\" x 91\") and images give the build. No full-plans/PDF dependency."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Stiles, rails, X pieces and back-panel boards (steps 2-6) are cutList[0]-[3]; sliding hardware and pull are purchased (materials[3],[4])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows are used: stiles/rails (2,6), X pieces (3,7), panel pieces (4-5)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Rows fit listed boards: 0.75x3.875 stiles and 0.75x5 rails -> 1x6 (5.5); 0.75x5.5 panels -> 1x6; 0.75x3.5 X -> 1x4 (3.5) or 1x6."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x6, 1x4); steps not checked for per-part stock"
+      "reason": "X pieces (0.75x3.5) could come from listed 1x4 or 1x6, and step 2 says 1x6 for all components. 1x6 alone: stiles/panels 10 x 91 on 10 x 96 boards fit and rails 3 x 34.25 = 102.75 + kerf <= 120; X pieces 2 x 57 = 114 fit the 1x4 120\" board only."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[6].body",
-          "quote": " holes to the rails first. Using Kreg Clamps and 1-1/4\" pocket hole screws, assemble the overall frame. You should have a fairly rigid face frame that can be worked on independently of the back panel.",
-          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+          "quote": "Using Kreg Clamps and 1-1/4\" pocket hole screws, assemble the overall frame."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Use wood glue, clamps and a brad nailer to attach the face frame to the back panel."
         }
-      ]
+      ],
+      "reason": "The 1-1/4\" pocket hole screws (and the brad nails for step 10) are used but no fastener is in materials. Search materials[].name for /screw|nail|brad|pocket/: no match (only boards, sliding door hardware, door pull)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Viewed step 1 image shows the three rail positions (top, middle at about half height, bottom) and the X between middle and bottom rails; hardware hung per manufacturer; rest relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs /as shown|see (the )?(diagram|drawing)|diagram|pictured/: no reference without an image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut (2-4), back panel glued up (5), face frame assembled (6) with X (7), sanded/stained separately (8-9), then joined (10), squared (11), finished (12), hung (13)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "I used my Kreg Foreman to add pocket holes to the rails first."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" stock; search steps for /setting|set (the|your)|thick|jig/: no thickness setting stated; step images viewed (1,2,3,6) show none. Recorded only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 42\" wide x 91\" tall (step 0) = stiles 91 and 34.25 + 2 x 3.875 = 42.0; 8 panel boards x 5.5 = 44 (wider than frame by design, step 1). (b) all parts installed. (c) hardware in materials[3],[4]. (d) steps 12-13 hang the door."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8b8eb1982dc42973.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/87a23765072b016f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7ddeb27ff87db4d7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2475377a33605320.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[4].name",
+      "quote": "Door Pull",
+      "what": "A door pull is listed but no step mentions or places it (position never given)."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "I used 1x6 pine lumber for all these components.",
+      "what": "Materials list a 1x4 120\" board, and the 57\" X pieces only fit it; 1x6 stock listed would be short by 114\" if X pieces came from 1x6."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "I used Dark Walnut by Varathane for this door.",
+      "what": "Wood glue, stain, pre-stain conditioner and Polycrylic are used but not in materials (consumables)."
+    }
+  ]
 }

@@ -191,40 +191,86 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every cut part (rails, legs, top slats, base slats, shelf slats, dividers, trim, back panel) has a cut-list row 0-9; steps cut nothing else."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are used by name: steps 0,1,2,4,6,9,10,11 (row 4 'Base S;at' is a typo for Base Slat)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Corrected rows: 0.75x1.5 -> 1x2; 1.5x1.5 -> 2x2; 0.75x5.5 -> 1x6; 0.75x7.25 -> 1x8; dividers 0.75 x 13.25 x 17.75 on listed 3/4\" 24x48 sheet; back 0.25 x 16.25 x 21.5 on listed 1/4\" 24x24 sheet (21.5 <= 24)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (1x2, 2x2, 1x6, 1x8, sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every part matches exactly one listed material by thickness x width. 1x2 (4x96=384): 4x54 + 4x12.5 + 2x16.25 = 298.5 + 10 x 0.125 <= 384. 2x2 (96): 4x22 = 88 + 4 x 0.125 <= 96. 1x6 (2x96+72=264): 3x58 + 2x20 = 214 + 5 x 0.125 <= 264. 1x8 (192): 2x56 + 2x20 = 152 + 4 x 0.125 <= 192. Sheets: dividers 2 x 13.25 x 17.75 = 470.3 sq in <= 24x48 = 1152; back 16.25 x 21.5 = 349.4 <= 24x24 = 576."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used: 1 1/4\" coarse-thread pocket-hole screws (steps 1,3,5,7,8,10) = materials[7]; 1-1/4\" brad nails (step 12) = materials[8]; shelf pins 1/4\" = materials[9]. No conflicting size."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "ing and straight holes, so you’ll have wobble-free shelves.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d42f95681a65303d.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Images viewed give rail heights/flush rules, 1/2\" top overhang, shelf-pin grid (4 1/2\", 1 1/4\", 2\" setback, 3/8\" deep), divider spacing labels, hole positions on back (4\", 5\", 6\"; 1 1/2\" dia) and notch sizes (1 1/8\"). Step 9 sweep flag resolved by the divider image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "27 reference(s), each in a step with its own image"
+      "search": "27 references to 'as shown'/'cutting diagram', each in a step that has its own image (sweep); images 1,4-12 viewed show the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame (0-1), top (2-3), base (4-5), shelves (6-7), top/base installed (8), dividers cut and drilled (9) then installed (10), back last (11-12). Divider screws go into top and base slats already in place."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Jig set for 3/4\" material in steps 0, 4 and 9; all pocket-holed parts (1x2 rails, 1x6/1x8 slats, 3/4\" plywood dividers) are 3/4\" thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Join a Narrow Shelf Slat to a Wide Shelf Slat using 1 1/4\" coarse-thread Kreg Pocket-Hole Screws to create a panel, as shown. Repeat this to make the other shelf assembly."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Then Drill shelf-pin holes, as shown."
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "1/4\" shelf pins"
+        }
+      ],
+      "arithmetic": "Search of steps 8-12 for /shelf|shelves|pin/: step 9 drills shelf-pin holes only. No step installs the two shelf assemblies (made in steps 6-7, cutList[5],[6]) or inserts the 8 shelf pins (materials[9] qty 8). Step 8 installs only 'the Top and Base'.",
+      "reason": "The two adjustable shelves and the shelf pins are made/bought but never placed; adjustable shelves are not a part the stand cannot be used without, so Fix."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4d182dde62a7f3c4.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/df6bf83f7e5fe15b.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ad22bbe91d186836.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b4c227433ed3d7da.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9bf5f4b15d65532d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1e17719901ba33be.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c4cbaff723f1cace.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/03c321a5fc601f0e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d42f95681a65303d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/841915811c50b44f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[5]",
+      "quote": "Wide Shelf Slat 0.75 x 7.25 x 20 (qty 2); Narrow Shelf Slat 0.75 x 5.5 x 20 (qty 2)",
+      "what": "Shelf panels are 20\" long x 12.75\" wide (7.25+5.5, step 6 image), but the step 10 image labels the compartments '17 1/4\"'; 54\" between legs - 2 x 0.75\" dividers - 2 x 17.25\" = 18\" for the middle one. A 20\" shelf fits no compartment as labelled (image labels read at reduced size)."
+    }
+  ]
 }

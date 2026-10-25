@@ -23,55 +23,99 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, side aprons, scallop aprons, shelf supports, shelf boards and top boards (steps 0-8) are cutList[0]-[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows are used: top boards (0), scallop aprons (1,8), shelf supports (2), side aprons (4), shelf boards (6), legs (1-4)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "nominalRows": [
-        "cutList[0]",
-        "cutList[1]",
-        "cutList[2]",
-        "cutList[3]",
-        "cutList[4]",
-        "cutList[5]",
-        "cutList[6]",
-        "cutList[7]"
-      ]
+      "reason": "Kreg nominal rows 1x2, 1x3, 1x4 match listed boards 1x2, 1x3, 1x4 (section 9)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x4, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Each nominal size matches one listed material. 1x2 (96 + 48): 4x23 + 2x13 = 118 + 5 x 0.125 <= 144 (legs 92 + 3 kerfs <= 96). 1x4 (96 + 48): 2x10 + 2x15 + 5x13 = 115 + 9 x 0.125 <= 144. 1x3 (96): 2x13 + 2x15 + 2x17.5 = 91 + 5 x 0.125 = 91.6 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach the bottom shelf boards with brad nails."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "Box 1\" Kreg Screws"
+        }
+      ],
+      "reason": "Step 6 uses brad nails; materials list only 1\" and 1 1/4\" Kreg screws. Search materials[].name for /nail|brad/: no match. Screw sizes used (1\" and 1 1/4\") are listed."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf supports '7\" from the bottom of the leg and centered', top overhang 1 1/2\" / 2 1/2\", 1/4\" shelf gaps, 7 degree apron ends, 3\"/2\" lines and 2 3/4\" lid for scallops; leg splay is shown only in viewed photos (see gaps)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "search": "Step 3 'as shown in the photo above' points to the step 2 photo, viewed: shows both leg frames joined by the shelf supports."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[3].body",
-          "quote": "Attach the front side and back to one another by the shelf supports using 1\" Kreg screws as shown in the photo above.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "Attach both scalloped aprons to the legs."
         },
         {
-          "path": "steps[3].body",
-          "quote": "Attach the front side and back to one another by the shelf supports using 1\" Kreg screws as shown in the photo above.",
-          "why": "\"photo above\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[8].title",
+          "quote": "Cutting the Scalloped Apron"
         }
-      ]
+      ],
+      "reason": "The scalloped aprons are attached in step 1 but the instructions for cutting their angles and scallops are step 8, after assembly and after step 7 'Apply Your Finish'. Reordering fixes it, so Fix."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Joints are screws (step 0, 1\"/1 1/4\" Kreg screws) and nails; the plan never mentions pocket holes or a jig, and the fastener and method are stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) top: 5 x 3.5 = 17.5 = 1x3 length 17.5; 13 + 2 x 2.5 = 18 vs frame 10 + 2 x 1.5 = 13 gives the stated 2 1/2\" overhang; 7 top boards = 5 + 2. (b) all parts installed. (c) no non-fastener hardware. (d) step 7 finishes the table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-17",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e5d974bf88117ecc.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/900c4c062f24e25a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f80d6e270ad95013.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f0ad82e7cdb9e131.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8396a9ce86cdd90e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/75b2ab782fa0f734.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/08e7bb0165c3ed92.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a0f4f9d70f6f09b7.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6f2c470e6eb0ef44.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Legs should be angled outward.",
+      "what": "The leg splay angle and leg end-cut angles are never given as numbers (7 degrees appears only for the apron ends, step 8); only the viewed photos show the splay."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "Fill all the cracks and nail holes with wood filler and sand all over.",
+      "what": "Wood glue, wood filler, stain or paint are used but not in materials (consumables)."
+    }
+  ]
 }
