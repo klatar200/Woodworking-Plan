@@ -95,10 +95,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Box sides, top/bottom, back, trim, doors, door trim, dart holder (steps[0]-[3]) all in cutList[0..7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used in steps[0]-[3]."
     },
     "R4": {
       "result": "pass",
@@ -106,20 +108,77 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet goods, two stocks by thickness (3/4 sheet, 1/4 sheet). Corrected 3/4 area = 400 + 2x5.75x21.5 (247.25) + 2x5.75x20 (230) + 2x6.5x23 (299) + 2.5x9 (22.5) + 2x10.625x21 (446.25) = 1645 sq in <= 48x96 = 4608; 1/4 area = 4x2x21 + 4x2x10.625 = 168 + 85 = 253 <= 24x48 = 1152. Area does not exceed what is bought, so no certain fail; layout not judged (sheet rule)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 1 1/4in pocket hole screws used (steps[0],[1],[2]) = materials[2]; no other fastener sizes given; no conflict."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Once everything is dry, attach the Doors to the Box Sides using hinges."
+        },
+        {
+          "path": "materials[6]",
+          "quote": "Hinges"
+        }
+      ],
+      "reason": "Hinge positions (4 hinges on 21in doors) are given neither in text nor in the viewed step 3/4 images, which show no hinges; search steps for inch values near 'hinge' finds none. Knob placement (centre edge, image 4), dart holder at lower door (image 3/5) and dartboard centred (image 5) are shown and pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep pass stands (no 'as shown' references)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box, back, trim, doors with dart holder, hinge on, hardware, board inserted; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes on each end of the Box Sides, Box Top and Box Bottom."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in plywood parts; search of steps/materials/description for /setting|jig|thickness/i finds only 'see tools list'; step 0 image viewed shows no jig."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Corrected: box interior 20 wide (21.5 less 2 x 3/4) x 20 high = back 20x20; trim 23 = 21.5 + 2 x 3/4 overhang, 6.5 = 5.75 + 3/4 front overhang; doors 2 x 10.625 = 21.25 in 21.5 opening; 4 door sides + 4 top/bottom = 2 doors x 2; 6 dart holes shown in image 3. (b) all parts installed. (c) hinges, knobs, magnet catches, dartboard in materials. (d) ends with dartboard hung."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-dartboard-cabinet-s0.webp",
+      "audit/plan-quality/.img-cache/diy-dartboard-cabinet-s3.webp",
+      "audit/plan-quality/.img-cache/diy-dartboard-cabinet-s4.webp",
+      "audit/plan-quality/.img-cache/diy-dartboard-cabinet-s5.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Attach magnet catches to the inside of the cabinet and their corresponding magnet plates to the inside of the Doors",
+      "what": "magnet plates not listed separately in materials (materials[7] 'Magnet catches' qty 2 for two doors); assumed to include plates"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[0]-[3]",
+      "quote": "wood glue",
+      "what": "glue is listed in materials[3]; no consumable gap"
+    }
+  ]
 }

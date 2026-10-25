@@ -59,10 +59,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts named in steps (box sides, top and bottom, horizontal/vertical dividers, backing) all appear in cutList[0..4]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 cut rows are used: steps[1] sides/top/bottom, steps[2-4] dividers, steps[5] backing."
     },
     "R4": {
       "result": "pass",
@@ -70,20 +72,52 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Two sheet stocks (1/2in quarter sheet, 1/4in 20x17); thickness matches exactly one each, but sheet rule: parts area (2x4.25x19+2x4.25x17+2x4.5x19+2x4.25x16=613 sq in) does not exceed the 24x48=1152 sq in bought, so not a certain fail; no fail evidence."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps use 1 1/4in finish nails (steps[1],[4]) and 3/4in finish nails (steps[5]); both in materials[2],[3]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Notch positions (5in/1/2in/5in/1/2in/5in vertical, 6in/1/2in/6in/1/2in/6in horizontal, 2 1/8in depth) shown in step 2 image, viewed. Dividers inserted to fit; no other unspecified position."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides to top/bottom, then notch dividers, insert, then backing last; order possible."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes; joints are glue + finish nails with sizes stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step 0 overall 20w x 17h x 4 1/2d: top/bottom 19 + 2 sides at 0.5 = 20; sides 17; depth 4.25+0.25 backing=4.5. (b) every part installed. (c) only glue missing from materials (consumable). (d) steps end with backing attached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/craft-paint-storage-s2.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Attach box sides to top and bottom using wood glue and 1 ¼” finish nails.",
+      "what": "wood glue not in materials"
+    },
+    {
+      "path": "cutList[2]",
+      "quote": "Horizontal dividers 0.5 4.5 19 vs Vertical dividers 0.5 4.25 16",
+      "what": "Horizontal dividers are 4 1/2in deep (Kreg source '1/2\" x 4 1/2\" x 19\"') while sides/top/bottom/vertical dividers are 4 1/4in; with the 1/4in backing the box is stated 4 1/2d overall, so a 4 1/2in horizontal divider would not sit flush with the vertical dividers it interlocks with. Possible Kreg inconsistency; not settled from plan text."
+    }
+  ]
 }

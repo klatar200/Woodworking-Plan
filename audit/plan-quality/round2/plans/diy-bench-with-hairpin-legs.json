@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Benchtop end pieces and slats (steps[0]) match cutList[0],[1]; the 1x2 spacer is a scrap listed in materials[1]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both rows used in steps[0],[1],[3]."
     },
     "R4": {
       "result": "pass",
@@ -37,21 +39,50 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Both parts are nominal 2x2 (only 2x2 listed for them, steps[0] 'cut 2x2'); 4 boards x 72in = 288. Parts: 2 x 10.5 + 5 x 36 = 21 + 180 = 201 + 7 cuts x 1/8 = 201.9 <= 288."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 2 1/2in pocket hole screws used (steps[3]) = materials[2]; 20 screws = 5 slats x 2 holes x 2 ends. Hairpin leg screws not mentioned in steps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hairpin legs 2 1/2in in from each end (steps[5]); slat gap set by the 1x2 on its side (steps[3]); pocket hole count given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown' references; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, assemble, stain, attach legs last."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill 2 pocket holes at each end of your 36” long 2x2 boards"
+        }
+      ],
+      "reason": "Pocket holes in 2x2 (1 1/2in actual); search of all steps/materials/description for /setting|jig|thickness/i finds none; the step 1 image viewed shows the jig scale (1 1/2, 3/4, 1/2) but not which setting is selected."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 5 slats x 1 1/2 + 4 gaps x 3/4 (1x2 on its side) = 7.5 + 3 = 10.5 = corrected end piece length (10 1/2in); 20 screws = 5 x 4 ends. (b) all parts installed. (c) hairpin legs in materials[3]. (d) ends with legs attached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-bench-with-hairpin-legs-s1.webp"
+    ]
+  },
+  "gaps": []
 }

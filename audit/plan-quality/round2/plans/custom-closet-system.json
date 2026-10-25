@@ -10,22 +10,46 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Cut and attach shelf supports to the wall and either side of the shelves. This will hold your 'L ' shelves in place."
+        }
+      ],
+      "reason": "Shelf supports are made in steps[7] but are in no cutList row, and the step names no stock, size or count. Search: cutList.part and materials.name vs /support/i has no match (only the 1x3 'securing strip' in steps[5], a different part). The 'L' shelves are explicitly excluded as custom (steps[6]), so only supports are unaccounted."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0..3] used by steps[0]-[3] (side boards and horizontal shelves of the three organizers)."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[1]",
-          "quote": "Middle Shelf - Horizontal Shelves — qty 6, 0.75 x 12 x 12"
+          "quote": "Middle Shelf - Horizontal Shelves 0.75 x 12 x 12"
         },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x12 72\""
+        }
+      ],
+      "arithmetic": "cutList[1] is 0.75 thick x 12 wide; widest listed board is 1x12 = 3/4 x 11 1/4 (§9), 11.25 < 12. No glue-up or lamination in the steps.",
+      "reason": "A 12 in wide part cannot come from any listed board (sweep flag confirmed); the rows written in nominal form (1 x 12 x 80) are treated as nominal by the sweep."
+    },
+    "R5": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "materials[0].name",
           "quote": "Board, 1x8 72\""
@@ -35,40 +59,107 @@
           "quote": "Board, 1x12 72\""
         },
         {
-          "path": "materials[2].name",
-          "quote": "Plywood, 1/2\" Thick 24\""
+          "path": "cutList[0]",
+          "quote": "Middle Shelf - Vertical Side Boards qty 2, 1 x 12 x 80"
         },
         {
-          "path": "materials[3].name",
-          "quote": "Board, 1x3 72\""
+          "path": "cutList[1]",
+          "quote": "Middle Shelf - Horizontal Shelves qty 6, 0.75 x 12 x 12"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Smaller Shelves - Vertical Side Boards qty 4, 0.75 x 8 x 80"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Smaller Shelves - Horizontal Shelves qty 10, 0.75 x 8 x 10"
         }
       ],
-      "arithmetic": "cutList[1] 0.75×12: no listed stock has thickness 0.75 (±1/32) with width ≥ 12; stock = 0.75×7.25, 0.75×11.25, sheet 0.5, 0.75×2.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[1]",
-          "quote": "Middle Shelf - Horizontal Shelves — qty 6, 0.75 x 12 x 12",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x8, 1x12, sheet-0.5, 1x3); steps not checked for per-part stock"
+      "arithmetic": "All four rows are 3/4in-class parts 8-12in wide; only the 1x8 and 1x12 boards are wide enough (1x3 is 2 1/2 wide, plywood is 1/2 thick), so pool them: bought 5 x 72 + 3 x 72 = 576 in. Needed: 2x80 + 6x12 + 4x80 + 10x10 = 160 + 72 + 320 + 100 = 652 in (before kerf) > 576. Also every 80 in side is longer than any listed 72 in board and the steps never join boards.",
+      "reason": "Total part length exceeds total board length bought even with zero kerf, under any assignment of parts to the two boards."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener sizes (only 'pocket holes', 'screw', 'drywall anchors'); materials list 1-1/2in Kreg Screws and no step gives a conflicting size."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Add your hanging clothes bars. Touch up your new closet with one final coat of paint."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Cut and attach shelf supports to the wall and either side of the shelves."
+        }
+      ],
+      "reason": "Clothes bar position/height and shelf-support heights are not given as numbers (materials[6] 4x 'Clothes bar and hardware'); step images 7 and 9 viewed show no dimensions. Shelf heights ('where you desire') and L-shelf levels are builder-chosen and pass; the bar and support positions are not stated as 'as desired'."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'-type reference; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, drill, assemble organizers, mount to wall, then supports and L shelves, bars last; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in each horizontal shelf piece. Two pocket holes in the smaller shelf pieces, three in the larger ones."
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4in shelf pieces (cutList[1],[3]); search of all steps/materials/description for /setting|jig|1\\/2|3\\/4.*setting/ finds no jig thickness setting, and none shown in viewed images (step 4/7/9)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Middle Shelf - Vertical Side Boards 1 x 12 x 80"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "a middle shelf that is 3/4\"x12\"x80\", and two smaller side shelves that measure 3/4\"x8\"x80\""
+        }
+      ],
+      "arithmetic": "cutList[0] thickness 1 vs step 3/4 for the same middle 12x80 piece; cutList[2] is 0.75.",
+      "reason": "Middle side board thickness in the cut list (1) disagrees with the step (3/4); other counts agree: 6 L shelves in steps[6] (three each side) = 'six L shelves' in steps[8]; securing strips 12 / 10 / 10 match shelf widths."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/custom-closet-system-s4.webp",
+      "audit/plan-quality/.img-cache/custom-closet-system-s7.webp",
+      "audit/plan-quality/.img-cache/custom-closet-system-s9.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "fill in any holes or gaps with paint-able silicone before the final coat",
+      "what": "paintable silicone / drywall anchors (steps[5] 'if necessary') not in materials; both conditional"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "This L piece is not contained in the cut list, as it is custom to the size of your closet.",
+      "what": "L shelves (six) have no stock named; width 12 and 8 given, length depends on closet; not scored as missing since the plan states them as custom"
+    }
+  ]
 }

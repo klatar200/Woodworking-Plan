@@ -10,32 +10,68 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Long rails, side rails, legs, slat supports, slats, countertop, countertop support, back rest all in cutList[0..7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used by steps[0]-[13]."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[5] thinner than stock — would need planing/resawing, not judged; cutList[7] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Sweep unknown on cutList[5]/[7] resolved: both are wider than any 1x6 (5.5) but steps[8] 'After gluing and cutting the countertop to size' and steps[12] 'After gluing up the backrest + cutting it to size' state the glue-up; rails (3 wide) rip from 1x4/1x6, slats 0.75x1.5 = 1x2, legs 1.5x1.5 = 2x2."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (0.75x1.5, 1.5x1.5, 0.75x3.5, 0.75x5.5); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Rails: steps[0] names 1x4 for the long rails; both rail rows (3 wide) fit in 2 x 1x4 x 96 = 192in: 2x55 + 2x21 = 152 + 4 x 1/8 = 152.5 <= 192. 1x2 (0.75x1.5 matches only 1x2) qty 4 x 96 = 384: 2x46 + 8x22.5 + 21 = 92 + 180 + 21 = 293 + 11 x 1/8 = 294.4 <= 384. Legs: 4x12 = 48 <= 96 (one 2x2). 1x6 qty 3 x 96 = 288: backrest 2 strips x 58 = 116 + countertop 3 strips x 22.5 = 67.5 = 183.5 (+ kerf ~1.5) <= 288."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/2in pocket screws (steps[3],[13]) and 1 1/4in wood screws (steps[6],[7],[9]) are in materials[5],[12]; figure-8 screws 'provided' (steps[11]) have no size stated and no conflicting size."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Slat/support heights given as 3/4in down (steps[6],[9]); figure-8 fastener positions and backrest placement shown in viewed images (step 10, step 13); slats evenly spaced per image; countertop notch size given 3/4 x 3/4."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "3 reference(s), each in a step with its own image"
+      "reason": "Sweep pass stands; 'as shown in the picture' steps each have own image (steps 5, 6, 10)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Mark the legs and the side rails so that the side rails are flushed to the outside edge of the legs."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Rip the side rails to 3 inches with a table saw and then cut to size."
+        }
+      ],
+      "reason": "Step 2 joins 'side rails' to the legs and says 'You should have two of these', but the side rails are first cut in step 4 and attached to the legs in step 5; step 3 says the long rails attach to the legs. Step 2 appears to mean long rails (names a part before it exists); search of steps[0..3] for 'side rail' finds only step 2."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3]: 'set your pocket jig and bit to 3/4\"'; all pocket-holed parts (rails, backrest) are 0.75in; Mortise Mate setting 3/4in in steps[2]."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Slat length 22.5 = interior width between long rails (24 outside from 2 x 1.5 legs + 21 side rail, less 2 x 3/4 rails); 8 slats = cutList[4]; supports on both sides = 2. (b) every part installed (countertop via figure 8s, backrest via pocket screws). (c) figure-8 fasteners, Velcro, cushion, forstner bit all in materials; glue present. (d) ends with cushion."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-bench-with-attached-side-table-s9.webp",
+      "audit/plan-quality/.img-cache/diy-bench-with-attached-side-table-s10.webp",
+      "audit/plan-quality/.img-cache/diy-bench-with-attached-side-table-s13.webp"
+    ]
+  },
+  "gaps": []
 }

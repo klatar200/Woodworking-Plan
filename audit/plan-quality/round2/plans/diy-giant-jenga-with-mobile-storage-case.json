@@ -179,31 +179,101 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Jenga pieces, top/bottom panels, short and long side panels (steps[0]-[5]) all in cutList[0..4]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used by steps[0]-[5]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x4, 1x8); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x8 72\""
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "Top Panel Pieces qty 2, 0.75 x 7.25 x 21.5 (corrected)"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "Short Side Pieces qty 4, 0.75 x 7.25 x 14.75 (corrected)"
+        },
+        {
+          "path": "cutList[4]",
+          "quote": "Long Side Pieces qty 4, 0.75 x 7.25 x 20"
+        }
+      ],
+      "arithmetic": "Every box part is 0.75 x 7.25 = 1x8, the only listed stock of that size. Bought: materials qty 3 x 72 = 216 in. Needed: top 2 x 21.5 + bottom 2 x 21.5 + short 4 x 14.75 + long 4 x 20 = 43 + 43 + 59 + 80 = 225 in (zero kerf) > 216; with 11 cuts at 1/8 = 226.4. Shortfall 9 in (not kerf-only). Jenga pieces: 2x4 qty 6 x 96 = 576 >= 54 x 10.5 = 567 + kerf passes.",
+      "reason": "Boards bought are 9 in short of the total part length."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4in pocket hole screws (steps[1],[2],[4]) = materials[2] 1 1/4in Kreg Screws; 1 1/4in wood screws (steps[3],[5]) = materials[8]; no conflicts."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Attach top panel with two hinges and lock/latch."
+        }
+      ],
+      "reason": "Hinge positions are not given in text and not visible in the viewed step 6/7 images (latch centred at front is shown; handles on the short sides and casters at corners are shown in step 7). Search of steps for inch values near hinge/lid finds none."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown' references; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels, then box frame, bottom, top with hinges, finish and casters; order possible."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Assemble your 21 1/2\" long top and bottom panels with 1 1/4\" pocket hole screws and wood glue."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in 1x8 pieces (steps[1],[2],[3],[4]); search of steps/materials/description for /setting|jig|thickness/i finds none; step 1 image viewed shows pocket-hole locations and panel size 21 1/2 x 14 1/2 but no jig setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Step 0: 54 pieces at 10 1/2 = cutList[0] corrected; panels 21 1/2 (top, bottom), 14 3/4 short, 20 long agree with cutList[1]-[4]; 4 pieces per side-pair = 2 panels each; box length 20 + 2 x 3/4 = 21.5 = panel length; image shows panel 21 1/2 x 14 1/2 = 2 x 7.25. (b) all parts installed. (c) hinges, lock, casters, handles in materials. (d) ends with handles and casters."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/diy-giant-jenga-with-mobile-storage-case-s1.webp",
+      "audit/plan-quality/.img-cache/diy-giant-jenga-with-mobile-storage-case-s6.webp",
+      "audit/plan-quality/.img-cache/diy-giant-jenga-with-mobile-storage-case-s7.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Add handles and locking casters for easier transportation!",
+      "what": "step says 'locking casters' but materials[5] is '2\" Casters' with no locking type stated; the viewed step 7 image shows four casters."
+    }
+  ]
 }

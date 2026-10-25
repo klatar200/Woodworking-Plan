@@ -7,57 +7,91 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; only hit is description/summary pairing with 'my DIY Storage Box' tutorial under 'extras' which is optional ('or follow these dimensions exactly and pair with...'); build is complete without it."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts in steps (Middle Shelf, Short Sides, 8-1/4in shelves 7+7, Long Sides) match cutList[0..3]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "cutList[0..3] each used in steps[1]-[7]."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "confidence": "certain",
+      "cause": "import",
       "evidence": [
         {
           "path": "cutList[3]",
           "quote": "Shelves — qty 14, 1 x 8.25 x 10"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x10 96\""
+          "path": "steps[2].body",
+          "quote": "each 1\"x10\"x8-1/4\" shelf"
         }
       ],
-      "arithmetic": "cutList[3] 1×8.25: no listed stock has thickness 1 (±1/32) with width ≥ 8.25; stock = 0.75×9.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[3]",
-          "quote": "Shelves — qty 14, 1 x 8.25 x 10",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "Step gives the shelf as 1 x 10 x 8 1/4 (nominal 1x10, length 8 1/4); the cut row lists 8.25 as width and 10 as length because the importer sorts the three numbers smallest-to-largest. Read in step order it is the nominal 1x10 stock, like cutList[0..2].",
+      "reason": "Sweep flag is a dimension reorder (importer defect), not a plan fault."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[3] not 0.75″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "Single stock 1x10 96in x4 = 384in (all parts are 1x10 per steps). Parts: 2x72.75 + 71.25 + 2x17.25 + 14x8.25 = 145.5 + 71.25 + 34.5 + 115.5 = 366.75in; 19 pieces x 1/8 kerf = 2.4in -> 369.1 <= 384.",
+      "note": "Totals pass; see gaps for 1-D packing."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "steps[4] uses 1-1/4in Kreg screws (materials[2]); other joints use pocket-hole screws, 1in in materials[1]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Shelf line positions given in step 1 text (8-1/4in intervals with 3/4in between) and numerically in the viewed image (8-1/4, 9, 17-1/4, 18 ... 63in); pocket hole counts stated, short sides centred relative to guide lines."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'intervals pictured' in steps[1] has its own image, viewed: shows the line positions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Shelves attached to the middle shelf (both sides), then short sides, then long sides one at a time; each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill three pocket holes into either end of the Middle Shelf (1\"x10\"71-1/4\"), and the two Short Side boards (1\"x10\"x17-1/4\")."
+        }
+      ],
+      "reason": "Pocket holes in every part; search of steps/materials/description for /setting|jig|thickness/i finds no jig thickness setting; step 1 image viewed shows no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 7 shelves each side x2 = 14 = cutList[3]; 8 bays x 8-1/4 + 7 x 3/4 = 66 + 5.25 = 71.25 = middle shelf; short side 8.25 + 0.75 + 8.25 = 17.25; long side 71.25 + 2 x 0.75 = 72.75. (b) all parts installed. (c) filler and stain in materials. (d) ends with both long sides attached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-30",
+    "imagesViewed": [
+      "audit/plan-quality/.img-cache/custom-cube-organizer-s1.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "then use a square to ensure each 8-14\" shelf is straight",
+      "what": "'8-14\"' is a typo for 8-1/4\" (also steps[7]); not misleading given steps[2]."
+    },
+    {
+      "path": "materials[0]",
+      "quote": "Board, 1x10 96\" qty 4 vs cutList: 72.75, 72.75, 71.25, 17.25, 17.25, 14 x 8.25",
+      "what": "Totals fit (366.75 of 384in) but the pieces cannot be laid out on 4 boards: each of the three 71-73in pieces leaves 23.25/23.25/24.75in (two 8.25 shelves or one 17.25 side each), a board of shelves alone holds 11 (11 x 8.25 = 90.75 + kerf), so max shelves = 11 + 2 (one slot) = 13 < 14 with the two short sides placed. Likely needs a 5th board; length-packing issue the site optimizer would show, not scored under R5."
+    }
+  ]
 }
