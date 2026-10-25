@@ -1,0 +1,100 @@
+{
+  "slug": "plant-stand-tower",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": false,
+  "importDiffs": [],
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[7].body",
+          "quote": "eautiful plant stand tower. You can stain it or paint it in your favorite finish. You can see the full visual tutorial for this project on my website - https://www.girljustdiy.com/diy-2x4-plant-stand/",
+          "why": "matches \"my website\""
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "eautiful plant stand tower. You can stain it or paint it in your favorite finish. You can see the full visual tutorial for this project on my website - https://www.girljustdiy.com/diy-2x4-plant-stand/",
+          "why": "matches \"https://\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Shelves — qty 5, 1.5 x 9.5 x 20"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x2 72\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 2x10 120\""
+        }
+      ],
+      "arithmetic": "cutList[1] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×1.5, 1.5×9.25",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[1]",
+          "quote": "Shelves — qty 5, 1.5 x 9.5 x 20",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 2 stock types (2x2, 2x10); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "at the overhang is 2\" on each side. Attach with pocket hole screws as in step 6.\nFollow this step for the next two shelves.\nWhen attaching the top shelf follow the same steps, except align the top of ",
+          "why": "2\" screw — no material line lists a 2\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "ensure you have 2\" overhang on each side.\nInsert one pocket hole screw on the left side. Check overhang and insert one pocket hole on the right side. Finish by adding the other two pocket hole screws.",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c170bed928b62ba0.webp"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "From the bottom shelf measure and mark 12.5\" on each leg. Apply a little wood glue to the legs. Place the shelf and check that the overhang is 2\" on each side. Attach with pocket hole screws as in ste",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca9c8eae553d8415.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

@@ -1,0 +1,109 @@
+{
+  "slug": "building-a-modern-custom-dining-table",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].thicknessIn",
+      "source": "1 1/2\" X 6\" X 72\"",
+      "kind": "fraction-dropped",
+      "imported": 1,
+      "correct": 1.5,
+      "correctRow": [
+        1.5,
+        6,
+        72
+      ]
+    },
+    {
+      "path": "cutList[1].thicknessIn",
+      "source": "1 1/2\" X 6\" X 40\"",
+      "kind": "fraction-dropped",
+      "imported": 1,
+      "correct": 1.5,
+      "correctRow": [
+        1.5,
+        6,
+        40
+      ]
+    },
+    {
+      "path": "cutList[2].thicknessIn",
+      "source": "1 1/2\" X 6\" X 30\"",
+      "kind": "fraction-dropped",
+      "imported": 1,
+      "correct": 1.5,
+      "correctRow": [
+        1.5,
+        6,
+        30
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": " be fully surfaced (S4S) to 1 1⁄2” to ensure an even finish. For a demonstration of this step, please reference the video listed in the Extras tab.\nYou can also purchase S4S lumber and skip this step.",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Using a router and template, create a box joint to connect the legs with the table support, as shown here.\nFor a demonstration of this step, please reference the video listed in the Extras tab.",
+          "why": "matches \"Extras\""
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Remove the table legs and install threaded inserts on tabletop using CA glue, as shown in the video in the Extras tab. Repeat step for both sides.",
+          "why": "matches \"Extras\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut all the tabletop, table support, and leg pieces to measure 4” wide using a table saw or track saw.",
+          "why": "cut sentence states 4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 10×72 + 4×40 + 8×30 + kerf 7 cuts (22 parts − 15 boards, the fewest possible)×1/8 = 1120.875″; bought: 15×96 = 1440″; 1120.875 ≤ 1440"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[11].body",
+          "quote": "Place legs on the tabletop. Align the 3/8” holes and secure leg pieces using bolts from the supply list.\nFinish table with preferred wood finish.",
+          "why": "3/8\" bolt — no material line lists a 3/8\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "3 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

@@ -1,0 +1,63 @@
+{
+  "slug": "custom-cube-organizer",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": false,
+  "importDiffs": [],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[3]",
+          "quote": "Shelves — qty 14, 1 x 8.25 x 10"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x10 96\""
+        }
+      ],
+      "arithmetic": "cutList[3] 1×8.25: no listed stock has thickness 1 (±1/32) with width ≥ 8.25; stock = 0.75×9.25",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[3]",
+          "quote": "Shelves — qty 14, 1 x 8.25 x 10",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: cutList[3] not 0.75″ thick, so not all parts come from the one listed stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

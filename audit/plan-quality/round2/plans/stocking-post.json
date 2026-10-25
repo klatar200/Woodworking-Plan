@@ -1,0 +1,94 @@
+{
+  "slug": "stocking-post",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].widthIn",
+      "source": "1/2\" x 6\" x 3'",
+      "kind": "feet-read-as-inches",
+      "imported": 3,
+      "correct": 36,
+      "correctRow": [
+        0.5,
+        6,
+        36
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[1].part",
+          "quote": "Base & Top",
+          "why": "no step mentions it (searched steps for base)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[1]",
+          "quote": "Base & Top — qty 2, 2 x 9.25 x 10"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 1/2\" Thick Half Sheet"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 2x10 48\""
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Board, 1x2 96\""
+        }
+      ],
+      "arithmetic": "cutList[1] 2×9.25: no listed stock has thickness 2 (±1/32) with width ≥ 9.25; stock = sheet 0.5, 1.5×9.25, 0.75×2.5, 0.75×1.5",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[1]",
+          "quote": "Base & Top — qty 2, 2 x 9.25 x 10",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (sheet-0.5, 2x10, 1x3, 1x2); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

@@ -1,0 +1,146 @@
+{
+  "slug": "desk-calendar-pencil-holder",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].widthIn",
+      "source": "3/4\" x 4 1/2\" x 5 5/8\" (on short edge) and 6\" (on long edge)",
+      "kind": "fraction-dropped",
+      "imported": 4,
+      "correct": 4.5,
+      "correctRow": [
+        0.75,
+        4.5,
+        5.625
+      ]
+    },
+    {
+      "path": "cutList[0].lengthIn",
+      "source": "3/4\" x 4 1/2\" x 5 5/8\" (on short edge) and 6\" (on long edge)",
+      "kind": "fraction-dropped",
+      "imported": 5,
+      "correct": 5.625,
+      "correctRow": [
+        0.75,
+        4.5,
+        5.625
+      ]
+    },
+    {
+      "path": "cutList[1].widthIn",
+      "source": "3/4\" x 5 1/4\" x 5 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 5,
+      "correct": 5.25,
+      "correctRow": [
+        0.75,
+        5.25,
+        5.5
+      ]
+    },
+    {
+      "path": "cutList[1].lengthIn",
+      "source": "3/4\" x 5 1/4\" x 5 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 5,
+      "correct": 5.5,
+      "correctRow": [
+        0.75,
+        5.25,
+        5.5
+      ]
+    },
+    {
+      "path": "cutList[2].lengthIn",
+      "source": "3/4\" x 7\" x 9 1/16\" with 5 degree angeled cut on bottom",
+      "kind": "fraction-dropped",
+      "imported": 9,
+      "correct": 9.0625,
+      "correctRow": [
+        0.75,
+        7,
+        9.0625
+      ]
+    },
+    {
+      "path": "cutList[3].widthIn",
+      "source": "3/4\" x 4 1/2\" x 5 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 4,
+      "correct": 4.5,
+      "correctRow": [
+        0.75,
+        4.5,
+        5.5
+      ]
+    },
+    {
+      "path": "cutList[3].lengthIn",
+      "source": "3/4\" x 4 1/2\" x 5 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 5,
+      "correct": 5.5,
+      "correctRow": [
+        0.75,
+        4.5,
+        5.5
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut wood down to size according to the woodworking plans (available in the Extras tab below).\nYou'll need to make a couple angled cuts. For those you can use a double bevel compound miter saw.",
+          "why": "matches \"Extras\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0]",
+          "quote": "Board, 1x8 24\" — qty 1"
+        },
+        {
+          "path": "cutList[0..3]",
+          "quote": "Side Panels — qty 2, 0.75 x 4.5 x 5.625 (Kreg-corrected); Bottom Panel — qty 1, 0.75 x 5.25 x 5.5 (Kreg-corrected); Front Panel — qty 1, 0.75 x 7 x 9.0625 (Kreg-corrected); Back Panel — qty 1, 0.75 x "
+        }
+      ],
+      "arithmetic": "parts: 2×4.5 + 1×5.25 + 1×9.0625 + 1×4.5 + kerf 4 cuts (5 parts − 1 boards, the fewest possible)×1/8 = 28.313″; bought: 1×24 = 24″; 28.313 > 24"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

@@ -1,0 +1,94 @@
+{
+  "slug": "grandkids-stool",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": false,
+  "importDiffs": [],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut (2) side pieces - 11 1/4\" x 11\". Cut 2 1/4\" radius' to the upper edges with a jig saw. Cut a 3 1/2\" radius centered on the bottom edge with a jig saw. Use a router to create the hand holes. Use sp",
+          "why": "cut sentence states 11\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut one seat/step piece - 9 1/4\" x 12 1/2\". Use a pocket hole jig to drill pocket holes as shown. Round over the 0utside edges with a router round over bit.",
+          "why": "cut sentence states 12 1/2\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Board",
+          "why": "no step mentions it (searched steps for board)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[0]",
+          "quote": "Board — qty 1, 0.75 x 12 x 48"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x12 48\""
+        }
+      ],
+      "arithmetic": "cutList[0] 0.75×12: no listed stock has thickness 0.75 (±1/32) with width ≥ 12; stock = 0.75×11.25",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[0]",
+          "quote": "Board — qty 1, 0.75 x 12 x 48",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 1×48 + kerf 0 cuts (1 parts − 1 boards, the fewest possible)×1/8 = 48.000″; bought: 1×48 = 48″; 48.000 ≤ 48"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[3].body",
+          "quote": "Secure one support as shown with 1/4\" pocket hole screws.",
+          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Secure one support as shown with 1/4\" pocket hole screws.",
+          "why": "1/4\" screw — no material line lists a 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "4 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

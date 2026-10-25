@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Rubric | **R-2** (2026-10-19; DECISIONS_LOG) |
-| Current stage | **Stage 8 — DONE 2026-10-23.** Audit complete; decisions for Keagan in `GO_LIVE_FIXES.md` §C |
+| Current stage | **Round 2 in progress (2026-10-25)** — independent re-read of the 586 published plans into `round2/` (39 batches `r2-01..39`, `round2/ledger.json`; prompt `prompts/reader-r2.md`; commit with `prompts/commit-r2.sh <batch>`; `scripts/round2.mjs status|compare`). Round 1 (below) is complete. |
 | Last batch | All 610 read; every Unpublish verifier-checked (v1–v6); Keagan's 2026-10-23 rulings applied |
 | Ledger | 610: all read (583 read + 27 verified) |
 | Verdicts (610) | Unpublish 24 · Fix 427 (+6 Human review) · Ship (unverified) 91 (+2 Human review) · Ship 60 |

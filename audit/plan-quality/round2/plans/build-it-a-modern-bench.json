@@ -1,0 +1,88 @@
+{
+  "slug": "build-it-a-modern-bench",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].lengthIn",
+      "source": "2\" x 4\" x 8'",
+      "kind": "feet-read-as-inches",
+      "imported": 8,
+      "correct": 96,
+      "correctRow": [
+        2,
+        4,
+        96
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[0].body",
+          "quote": "(1) Cut six boards to your desired length, not to exceed 95 inches – especially if purchasing 8′ length (2) Once the ideal length is determined, use a circular saw or a jigsaw to cut the taper at each",
+          "why": "cut sentence states 95\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "he boards at the same time. (3) Cut 10 lengths at 1 foot, 9.5 inches; Cut 12 lengths at 1 foot, 6 inches. (4) Lay one of the longer cut boards on top of the smaller cut boards. (5) Using glue and fast",
+          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "10 lengths at 1 foot, 9.5 inches; Cut 12 lengths at 1 foot, 6 inches. (4) Lay one of the longer cut boards on top of the smaller cut boards. (5) Using glue and fasteners, attach these two boards to ma",
+          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Pressure Treated Southern Yellow Pine",
+          "why": "no step mentions it (searched steps for pressure/treated/southern/yellow/pine)"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "nominalRows": [
+        "cutList[0]"
+      ]
+    },
+    "R5": {
+      "result": "pass",
+      "arithmetic": "parts: 11×96 + kerf 0 cuts (11 parts − 11 boards, the fewest possible)×1/8 = 1056.000″; bought: 11×96 = 1056″; 1056.000 ≤ 1056"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "(1) Lay one of the slats face down on a flat surface. (2) Place one leg assembly on top, eight inches from the end. (3) Use a square to place the leg 90-degrees to the face of the slat. (4) Glue and s",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f77ab42c198c093b.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

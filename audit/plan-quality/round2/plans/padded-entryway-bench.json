@@ -1,0 +1,158 @@
+{
+  "slug": "padded-entryway-bench",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].lengthIn",
+      "source": "1\" x 48 1/2\" x 3\"",
+      "kind": "fraction-dropped",
+      "imported": 48,
+      "correct": 48.5,
+      "correctRow": [
+        1,
+        3,
+        48.5
+      ]
+    },
+    {
+      "path": "cutList[1].lengthIn",
+      "source": "1\" x 16 3/4\" x 3\"",
+      "kind": "fraction-dropped",
+      "imported": 16,
+      "correct": 16.75,
+      "correctRow": [
+        1,
+        3,
+        16.75
+      ]
+    },
+    {
+      "path": "cutList[2].lengthIn",
+      "source": "3/4\" x 15\" x 18 1/2\"",
+      "kind": "fraction-dropped",
+      "imported": 18,
+      "correct": 18.5,
+      "correctRow": [
+        0.75,
+        15,
+        18.5
+      ]
+    },
+    {
+      "path": "cutList[5].lengthIn",
+      "source": "3/4\" x 48 1/2\" x 16\"",
+      "kind": "fraction-dropped",
+      "imported": 48,
+      "correct": 48.5,
+      "correctRow": [
+        0.75,
+        16,
+        48.5
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[6].body",
+          "quote": "d on the cutting diagram, measure to the center and then up 1-3/4\" and place a mark. Then measure half the distance of the straight edge shown (side trim: 2-3/4\"; front trim: ), place a mark for each.",
+          "why": "cut sentence states 1-3/4\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "ure half the distance of the straight edge shown (side trim: 2-3/4\"; front trim: ), place a mark for each. Draw a straight line between the two marks to create the straight line 5-1/2\" in length. Meas",
+          "why": "cut sentence states 2-3/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[6]",
+          "quote": "Front Bottom Trim — qty 1, 1 x 5 x 50"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Side Bottom Trim — qty 2, 1 x 5 x 15"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x3 96\""
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        }
+      ],
+      "arithmetic": "cutList[6] 1×5: no listed stock has thickness 1 (±1/32) with width ≥ 5; stock = 0.75×5.5, 0.75×2.5, sheet 0.75; cutList[7] 1×5: no listed stock has thickness 1 (±1/32) with width ≥ 5; stock = 0.75×5.5, 0.75×2.5, sheet 0.75",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[6]",
+          "quote": "Front Bottom Trim — qty 1, 1 x 5 x 50",
+          "why": "no listed material gives this thickness and width"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Side Bottom Trim — qty 2, 1 x 5 x 15",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 3 stock types (1x6, 1x3, sheet-0.75); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "d a small amount of wood glue to the ends of the top and bottom pieces where they meet against the sides prior to attaching with Kreg 1 1/4\" pocket hole screws. Attach the top and bottom to the sides.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "ges that will attach to the top and bottom. Insert each divider 15 1/4\" in from the sides. Attach each divider with Kreg 1-1/4\" pocket screws. (Make sure each divider is square to the top and bottom).",
+          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Attach seat trim pieces using wood glue on back and sides edges of seat that come in contact with the trim. Using 1-1/4\" Kreg screws to attach from bottom side of seat.",
+          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "2 reference(s), each in a step with its own image"
+    }
+  },
+  "measurementsScoredOn": "kreg-corrected",
+  "verdict": null
+}

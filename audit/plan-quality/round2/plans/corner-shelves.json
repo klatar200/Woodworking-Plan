@@ -1,0 +1,85 @@
+{
+  "slug": "corner-shelves",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].lengthIn",
+      "source": "3/4\" X 23 1/2\" X 5\"",
+      "kind": "fraction-dropped",
+      "imported": 23,
+      "correct": 23.5,
+      "correctRow": [
+        0.75,
+        5,
+        23.5
+      ]
+    },
+    {
+      "path": "cutList[1].lengthIn",
+      "source": "3/4\" X 23 1/2\" X 2\"",
+      "kind": "fraction-dropped",
+      "imported": 23,
+      "correct": 23.5,
+      "correctRow": [
+        0.75,
+        2,
+        23.5
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "flagged",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "), drill five pocket holes in the top back edge as shown in the attached diagram. It is a good idea to mark where you are putting the holes to prevent mistakes. Use 100 - 180 grit sandpaper to smooth ",
+          "why": "matches \"the attached\""
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "et holes. I used a Kreg Pocket hole Jig set at 3/4\". Please see attached diagram. It is a good idea to mark where the pocket holes go so that you end up with the correct number of left and right shelv",
+          "why": "matches \"see attached\""
+        }
+      ]
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "Using a 1/8\" beading router (I use a Freud 80-102) in a router table cut a bead along the lower edge of all three backs. Using a Kreg pocket screw jig (set to 3/4\" for all pockets on this project), dr",
+          "why": "cut sentence states 1/8\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "parts ≤ half the 7.25″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
+    },
+    "R6": {
+      "result": "to-read"
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "5 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

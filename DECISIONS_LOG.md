@@ -370,3 +370,7 @@ Confirmed historically: #1–5, #9. Open: payment processor (#6, deferred). Plan
 ### 2026-10-24 — Unpublish the 24 audit-Unpublish plans
 **Source:** Keagan ("unpublish the 24 plans and reseed prod"), acting on GO_LIVE_FIXES C-01.
 **Binding:** The 24 plans the plan-quality audit marked Unpublish are set to `published:false` in content, taking the catalog from 610 to 586 live plans. The list and reasons are in `audit/plan-quality/REPORT.md` §Stage 8. Re-publishing one needs its failing check fixed in content.
+
+### 2026-10-25 — Plan-quality audit round 2 before the prod reseed
+**Source:** Keagan ("before I do that, do one more round of complete audits of the plans").
+**Binding:** The prod reseed for the 24 unpublished plans waits on a second, independent full read of the 586 published plans. Round-2 readers (Sonnet, 15 plans per batch) start from a fresh sweep and never see round-1 findings. Records go in `audit/plan-quality/round2/`. They apply R-2 with every ruling to date: consumables, R11 widened, kerf-only R5. Afterwards a fresh Opus adjudicator settles every plan where the two rounds land in different buckets (Ship / Fix / Unpublish), and every new Unpublish gets the usual verifier. Any plan that ends at Unpublish is unpublished before the seed.

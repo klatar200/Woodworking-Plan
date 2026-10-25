@@ -1,0 +1,110 @@
+{
+  "slug": "cookbook-hutch",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].widthIn",
+      "source": "3/4\" x 11 1/4\" x 48\"",
+      "kind": "fraction-dropped",
+      "imported": 11,
+      "correct": 11.25,
+      "correctRow": [
+        0.75,
+        11.25,
+        48
+      ]
+    },
+    {
+      "path": "cutList[1].widthIn",
+      "source": "3/4\" x 3 1/2\" x 48\"",
+      "kind": "fraction-dropped",
+      "imported": 3,
+      "correct": 3.5,
+      "correctRow": [
+        0.75,
+        3.5,
+        48
+      ]
+    },
+    {
+      "path": "cutList[2].widthIn",
+      "source": "3/4\" x 3 1/2\" x 48\"",
+      "kind": "fraction-dropped",
+      "imported": 3,
+      "correct": 3.5,
+      "correctRow": [
+        0.75,
+        3.5,
+        48
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "Cut (2) side panels to the dimensions shown out of 1x12 material cut down to 9 3/4\"",
+          "why": "cut sentence states 9 3/4\" — no cut-list dimension or material size matches (corrected values)"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "es to the dimensions shown out of 1x12 material cut down to 9 3/4\". Also drill three pocket holes on the bottom in each end of each shelf and connect to the side panels with two 1 1/4\" pocket hole scr",
+          "why": "cut sentence states 9 3/4\" — no cut-list dimension or material size matches (corrected values)"
+        }
+      ]
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x12, 1x4, 1x2, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[2].body",
+          "quote": "d of the horizontal pieces and join to the vertical pieces with 1 1/4\" pocket hole screws. Also route a 1/4\" rabbet along the inside edge of each piece to accept the plywood/beadboard in the next step",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "o the dimensions shown out of 1x12 material cut down to 9 3/4\". Also drill three pocket holes on the bottom in each end of each shelf and connect to the side panels with two 1 1/4\" pocket hole screws.",
+          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "flagged",
+      "search": "step sentences with a placement trigger and no inch measurement",
+      "flagged": [
+        {
+          "path": "steps[5].body",
+          "quote": "View of the assembly from the front",
+          "why": "placement with no measurement (step has an image — view to settle)",
+          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/442f5a01afe6a3dd.webp"
+        }
+      ]
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

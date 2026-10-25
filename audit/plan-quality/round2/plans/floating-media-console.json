@@ -1,0 +1,113 @@
+{
+  "slug": "floating-media-console",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": true,
+  "importDiffs": [
+    {
+      "path": "cutList[0].thicknessIn",
+      "source": "3/4″ x 4′ x 8′ Plywood",
+      "kind": "numerator-kept",
+      "imported": 3,
+      "correct": 0.75,
+      "correctRow": [
+        0.75,
+        48,
+        96
+      ]
+    },
+    {
+      "path": "cutList[0].widthIn",
+      "source": "3/4″ x 4′ x 8′ Plywood",
+      "kind": "feet-read-as-inches",
+      "imported": 4,
+      "correct": 48,
+      "correctRow": [
+        0.75,
+        48,
+        96
+      ]
+    },
+    {
+      "path": "cutList[0].lengthIn",
+      "source": "3/4″ x 4′ x 8′ Plywood",
+      "kind": "feet-read-as-inches",
+      "imported": 8,
+      "correct": 96,
+      "correctRow": [
+        0.75,
+        48,
+        96
+      ]
+    }
+  ],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "cutList[0].part",
+          "quote": "Cabinet",
+          "why": "looks like a placeholder or an assembly, not a part"
+        }
+      ]
+    },
+    "R4": {
+      "result": "pass",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+    },
+    "R5": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0]",
+          "quote": "Plywood, 3/4\" Thick Full Sheet — qty 1"
+        },
+        {
+          "path": "materials[1]",
+          "quote": "Plywood, 3/4\" Thick Half Sheet — qty 1"
+        },
+        {
+          "path": "cutList[0..0]",
+          "quote": "Cabinet — qty 2, 0.75 x 48 x 96 (Kreg-corrected)"
+        }
+      ],
+      "arithmetic": "part area 2×48×96 = 9216.0 sq in; bought 1×48×96 + 1×48×48 = 6912 sq in; 9216.0 > 6912"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill picket holes and assemble with wood glue and 1-1/4\" pocket screws. Then drill the shelf pin holes if adjustable shelves are desired, or secure shelves permanently.",
+          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "e unit. This way the unit will slide into place and lock into the other side of the cleat that is mounted against the wall. Drill picket hoels and attach top of French cleat with 1-1/4\" pocket screws.",
+          "why": "1-1/4\" screw — no material line lists a 1-1/4\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}

@@ -1,0 +1,82 @@
+{
+  "slug": "kids-bedside-table-with-book-storage",
+  "rubric": "R-2",
+  "batch": null,
+  "importAffected": false,
+  "importDiffs": [],
+  "checks": {
+    "R1": {
+      "result": "pass",
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+    },
+    "R2": {
+      "result": "to-read"
+    },
+    "R3": {
+      "result": "to-read"
+    },
+    "R4": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "evidence": [
+        {
+          "path": "cutList[4]",
+          "quote": "Table top — qty 1, 0.75 x 7.5 x 25.5"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x6 96\""
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x2 24\""
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x8 36\""
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "Plywood, 1/4\" Thick Quarter Sheet"
+        }
+      ],
+      "arithmetic": "cutList[4] 0.75×7.5: no listed stock has thickness 0.75 (±1/32) with width ≥ 7.5; stock = 0.75×5.5, 0.75×1.5, 0.75×7.25, sheet 0.25",
+      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
+      "flagged": [
+        {
+          "path": "cutList[4]",
+          "quote": "Table top — qty 1, 0.75 x 7.5 x 25.5",
+          "why": "no listed material gives this thickness and width"
+        }
+      ]
+    },
+    "R5": {
+      "result": "unknown",
+      "reason": "R5 precondition not met: 4 stock types (1x6, 1x2, 1x8, sheet-0.25); steps not checked for per-part stock"
+    },
+    "R6": {
+      "result": "flagged",
+      "flagged": [
+        {
+          "path": "steps[4].body",
+          "quote": "Attach 1 x 8 cut at 25.5\" as the table top using the pocket hole screws. Leave an inch over hang on all four sides.",
+          "why": "25.5\" screw — no material line lists a 25.5\" fastener"
+        }
+      ]
+    },
+    "R10": {
+      "result": "pass",
+      "search": "step sentences with a placement trigger and no inch measurement"
+    },
+    "R11": {
+      "result": "pass",
+      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
+      "note": "1 reference(s), each in a step with its own image"
+    }
+  },
+  "verdict": null,
+  "measurementsScoredOn": "kreg-corrected"
+}
