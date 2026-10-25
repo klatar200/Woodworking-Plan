@@ -311,39 +311,61 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut has a cutList row: Leg Posts, Inner/Outer Base and Cap, Feet (steps[0]); Outer/Inner/Cross Rails (steps[2]); Top Slats and Breadboard Ends (steps[5])."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[5].part",
-          "quote": "Foot",
-          "why": "no step mentions it (searched steps for foot)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 'Foot' is used: steps[0] 'four Feet' and steps[1] 'attach the Feet' (sweep searched 'foot' only). All 11 rows used."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, 4x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name the stock (4x4 Leg Posts, 2x4 caps/bases/feet/rails, 2x6 slats/breadboards); corrected rows. 2x4: 2*25.5+2*29+2*27.5+2*31+4*7 + 2*66+3*21+2*24.5 = 254+244 = 498 + ~23 cuts*1/8 = 500.9 <= 6*96 = 576. 2x6: 6*90+2*33 = 606 + 1 <= 7*96 = 672. 4x4: 4*20 = 80 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes in steps (3\" woodscrews, 2 1/2\" woodscrews, 2 1/2\" Kreg pocket-hole screws) match materials[3],[4],[5]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given in viewed images: leg-post and cap/base spacing, feet offset 1 3/4\" (step 1 image), rail spacing 21\" / 11 1/2\" (step 3 image: 3*21 + 2*1.5 = 66 = Outer Rail; 11.5 + 1.5 + 11.5 = 24.5 = Cross Rail); top overhangs 'equal' (steps[7])."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "12 reference(s), each in a step with its own image"
+      "reason": "All 12 'as shown'/'cutting diagram' references sit in steps with their own image; step 1 and step 3 images viewed and show the referenced dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "End parts cut (0), end assemblies built with pocket holes (1), rails cut and assembled (2-3), rails attached to ends (4), top slats and breadboards (5-6), top attached last (7); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'set your Kreg Pocket-Hole Jig and bit for 1 1/2\"-thick material'; every pocket-holed part (2x4 rails/ends, 2x6 slats) is 1 1/2\" thick."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts agree: 2 outer, 3 inner, 2 cross rails (steps[2]) = cutList[6]-[8], shown in viewed step 3 image; six slats x 5.5 = 33 = Breadboard End length. (b) every made part installed. (c) all hardware in materials; glue, finish and sandpaper are consumables (gaps). (d) steps reach the finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Now you can glue and screw the parts together",
+      "what": "Wood glue is used throughout but not listed in materials; stain/paint/clear finish (steps[7]) and sandpaper (steps[0]) also unlisted (consumables).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/726d73f0bff10953.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/05c3e5ae6382d79d.webp"
+    ]
+  }
 }

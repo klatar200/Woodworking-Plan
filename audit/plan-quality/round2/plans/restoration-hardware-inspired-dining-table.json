@@ -419,53 +419,67 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps make has a cutList row: top boards, long/short braces (steps[1]), feet (steps[2-3]), leg stack pieces (steps[4-14]), Leg/Table Attachment (steps[16-17]), stretchers (steps[18]), foot bottoms (steps[19])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 rows used; counts reconcile with steps: 2x6 leg pieces 6 = 3 per leg (steps[5],[6],[7]); 2x8/2x6/1x8 beveled 4 each = steps[10-12] + steps[14]; 4x4 pieces 8 = 4 mitered per leg (steps[8]); 1x8 leg pieces 4 = steps[4] + steps[15] per leg."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x10, 2x8, 2x6, 2x4, 4x4, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock is named by row/step or fixed by thickness x width; corrected rows, lengths + 1/8 kerf per cut. 2x10: 4*84 = 336 + 0.5 <= 4*96 = 384. 2x4 (1.5x3.5): 2*63+2*26+45+43+4*24 = 362 + 10*1/8 = 363.25 <= 5*96 = 480. 2x6: 10*24+6*5.875+4*5+2*3.875 = 240+35.25+20+7.75 = 303 + 22*1/8 = 305.75 <= 4*96 = 384. 2x8: 4*6 = 24.5 <= 96. 4x4: 8*7.125 = 57 + 1 <= 96. 1x8: 4*7.25+2*6.25+4*4.125+4*7.125 = 28+12.5+16.5+28.5 = 85.5 + 14*1/8 = 87.25 <= 96. Material quantity 1 on 2x8, 4x4, 1x8 not shown to be an import default."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "eg pieces at 45 degrees off square at 7 1/8\" long! Glue and brad nail the mitered corners together before gluing to the leg! Brad nails aren't long enough so I just used a ton of glue and a heavy pain",
-          "why": "7 1/8\" brad — no material line lists a 7 1/8\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "eces at 45 degrees off square at 7 1/8\" long! Glue and brad nail the mitered corners together before gluing to the leg! Brad nails aren't long enough so I just used a ton of glue and a heavy paint can",
-          "why": "7 1/8\" nail — no material line lists a 7 1/8\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "ces, bevel all sides at 15 degrees off square with the longest edges to the dimensions stated! (6\" x 5 3/4\") Glue and brad nail these to the previous 1x8 small leg piece and repeat for your other leg!",
-          "why": "5 3/4\" brad — no material line lists a 5 3/4\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "ces, bevel all sides at 15 degrees off square with the longest edges to the dimensions stated! (6\" x 5 3/4\") Glue and brad nail these to the previous 1x8 small leg piece and repeat for your other leg!",
-          "why": "5 3/4\" nail — no material line lists a 5 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '7 1/8\"' (steps[8]) and '5 3/4\"' (steps[10]) are part dimensions, not fasteners. Fasteners named: 2 1/2\" pocket-hole screws (materials[6]) and brad nails (materials[7] '2\" brad nails', steps give no nail size); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given/shown: brace layout 63\" / 26\" / 7\" / 8\" / 11\" in viewed step 1 image; foot flat centre 8\" (steps[2]); bevel sizes in steps[10]; notches are marked from the runners (positions fixed by the parts, steps[16]); leg stack 'centered'; stretchers 'centered' on feet/attachers (relational)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references found; sweep pass stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top boards (0), braces (1), feet made (2-3), leg stacked bottom to top (4-15), attachers notched on the braces and fixed to leg (16-17), stretchers (18), foot bottoms (19), finish (20); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "All pocket-holed parts are 1 1/2\" lumber (2x10 boards, 2x4 stretchers/attachers); steps[0] '1 1/2\" pocket holes', steps[17] '1 1/2\" pocket holes' state that thickness."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) leg-piece counts per leg match cutList quantities (see R3); steps[10] '(6\" x 5 3/4\")' = row 11 corrected 1.5x5.75x6; steps[8] '7 1/8\"' = row 9. (b) every made part is installed. (c) brad nails, screws, sandpaper in materials; glue and stain are consumables (gaps). (d) steps reach finished table; the top resting in notched attachers is the stated method with optional screws."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "attach with lots of wood glue and 2 1/2\" pocket hole screws",
+      "what": "Wood glue is used throughout but not listed in materials (consumable).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[20].body",
+      "quote": "I used antique white, followed by classic gray, followed by Jacobean",
+      "what": "Stain not in materials (consumable).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1afba1b1f7c361a9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/44f107742207a5f5.webp"
+    ]
+  }
 }

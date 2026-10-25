@@ -10,69 +10,107 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps has a cutList row: shelf boards (steps[3]), 19\" and 25\" leg boards (steps[0],[4]), 18\" 1x2 joiners (steps[3])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 4 rows used: Shelf Boards, Shelf Joiner Boards steps[3]; Leg Height/Width Boards steps[0],[4]."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
+      "cause": "import",
       "evidence": [
         {
           "path": "cutList[2]",
-          "quote": "Table Leg Width Boards — qty 9, 2.5 x 3 x 25"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x3 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x2 96\""
-        }
-      ],
-      "arithmetic": "cutList[2] 2.5×3: no listed stock has thickness 2.5 (±1/32) with width ≥ 3; stock = 0.75×2.5, 0.75×1.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[2]",
-          "quote": "Table Leg Width Boards — qty 9, 2.5 x 3 x 25",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x2); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Place two of the 18” 1x2 boards across eight of your 48” 1x3 boards and screw in with 1 ¼” wood screws. Repeat until you have three shelf units. 1x2 boards should be placed 6” from each edge.",
-          "why": "48\" screw — no material line lists a 48\" fastener"
+          "quote": "\"part\": \"Table Leg Width Boards\""
         },
         {
           "path": "steps[4].body",
-          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”. Secure with a bolt, washer, and hex nut. The holes drilled with the spade bit will be the placement of the boards. Tighten the nuts to ensure the stability of",
-          "why": "19\" bolt — no material line lists a 19\" fastener"
+          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”."
         }
-      ]
+      ],
+      "reason": "readerNote: cutList[2] reads 2.5 x 3 x 25 (thickness 2.5, width 3), which matches no stock, but steps[4] calls these parts '1x3 @ 25\"', i.e. 3/4 x 2 1/2 x 25; the importer kept the numerator of '3/4' (3) and sorted the numbers (2.5, 3, 25). Real parts come from materials[0] 1x3.",
+      "arithmetic": "cutList[2] [2.5, 3, 25] = sorted [2.5, 3 (numerator of 3/4), 25]; 1x3 actual = 3/4 x 2 1/2 (section 9)",
+      "readerNote": "Sweep fail (cause plan) rejected: steps[4] names these as 1x3 boards; cause is the importer (numerator-kept, sorted dimensions)."
+    },
+    "R5": {
+      "result": "pass",
+      "reason": "Stock named in steps (48\" 1x3 shelf boards, 18\" 1x2 joiners, 19\"/25\" 1x3 leg boards). 1x3: 24*48 + 12*19 + 9*25 = 1152+228+225 = 1605 + ~45 cuts*1/8 = 1610.6 <= 18*96 = 1728. 1x2: 6*18 = 108 + 6/8 <= 2*96 = 192. Two 48\" shelf boards per 96\" board is short only by one 1/8\" kerf.",
+      "kerfOnly": true
+    },
+    "R6": {
+      "result": "pass",
+      "reason": "Flagged '48\"' and '19\"' are board lengths, not fasteners. Fasteners: 1 1/4\" wood screws (steps[3]) = materials[6] (48 = 3 units x 2 joiners x 8 boards); bolt, washer, hex nut (steps[4]) = materials[3]-[5] (18 each); 1 1/4\" pocket-hole screws = materials[2]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: bolt holes 1.25\"/2.25\"/9\"/15.75\" (viewed step 0 image), pocket holes 6\" from each edge (steps[1], viewed image), joiners 6\" from each edge (steps[3], viewed image); leg frames and shelf levels shown in viewed step 4 and final images; shelf boards rest on the cross boards (fixed by the parts)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "'The picture shows the location of the holes' (steps[0]) has its own step image, viewed: gives all hole locations."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Boards cut/drilled (0-1), sanded (2), shelf units (3), leg frames (4), shelf units attached to frames (5); each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes in the 25” boards."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" 1x3 boards but no jig thickness setting is stated; searched all steps/materials/description for /setting|jig|thickness/ (none), and the step 1 image (viewed) shows only hole positions."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Place 3 – 1x3 @ 25” between 3- 1x3 @ 19”."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Drill holes with a 3/8\" spade bit in the (12) 19\" boards and the (9) 25\" boards."
+        },
+        {
+          "path": "cutList[1]",
+          "quote": "\"part\": \"Table Leg Height Boards\""
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Place two of the 18” 1x2 boards across eight of your 48” 1x3 boards"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "\"part\": \"Shelf Joiner Boards\""
+        }
+      ],
+      "reason": "(1) steps[4] gives 3 boards @19 per leg frame, 'Make three of these' = 9, but steps[0] and cutList[1] have 12 (the viewed step 4 image shows each frame with a doubled upright at both ends = 4 boards @19). (2) Eight 1x3 shelf boards (2.5\" each) are 20\" wide but the joiners are 18\" long.",
+      "arithmetic": "(1) 3 frames x 3 boards = 9 vs cutList[1].quantity 12 (steps[0] '(12) 19\" boards'). (2) 8 boards x 2.5 (cutList[0].widthIn) = 20 > cutList[3].lengthIn 18."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77011c130439fc50.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5edafc1153e9891c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca7b0c9fbeb45159.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0c5e22f66d152076.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/70510543a80907e6.webp"
+    ]
+  }
 }

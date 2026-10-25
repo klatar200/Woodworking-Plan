@@ -42,32 +42,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "er without any gaps.\nFor our table, we cut the wood down to 15/16” thick and used 5 pieces to make up the tabletop. We wanted the table to be 45 1/2” wide, so we cut each piece to 48” long and then us",
-          "why": "cut sentence states 15/16\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " 5 pieces to make up the tabletop. We wanted the table to be 45 1/2” wide, so we cut each piece to 48” long and then used 5 pieces of wood to make up the width of about 48”. This gave us a nice square",
-          "why": "cut sentence states 45 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "ating a smooth finish on all sides. The table legs we created were cut down to 2 7/8” wide on all sides and 29” long.\nLastly, head on over to your lathe and turn the wood to the design of your liking.",
-          "why": "cut sentence states 2 7/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "ating a smooth finish on all sides. The table legs we created were cut down to 2 7/8” wide on all sides and 29” long.\nLastly, head on over to your lathe and turn the wood to the design of your liking.",
-          "why": "cut sentence states 29\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 15/16\", 45 1/2\", 2 7/8\", 29\" are finished sizes after planing/turning/circle-cutting, not new parts; every part cut (tabletop pieces, 12 leg pieces, 4 aprons) has a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Tabletop pieces steps[0]-[1] (5 pieces = 2+2+1), Table leg pieces steps[3] (12), Table apron steps[4] (4)."
     },
     "R4": {
       "result": "unknown",
@@ -78,17 +58,63 @@
       "reason": "R5 precondition not met: unparseable stock materials[0], materials[1], materials[2], materials[3], materials[4]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fasteners: 1 1/4\" pocket-hole screws (steps[7]) = materials[5]; kerf-mount brackets and hanger bolts are in materials[6],[8] (hanger-bolt size not stated in steps, so nothing conflicts)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given or fixed by parts: circle radius 22 3/4\" from center (steps[2]); bracket channels and hanger-bolt holes are marked from the bracket and leg/apron alignment (steps[5], fixed by the hardware); apron height on the leg 'right in the middle'; base 'in the middle' of the top; pocket holes 'approx. 5' per apron."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No 'as shown'/diagram references; 'As you'll see in the picture' (steps[1]) has its own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top glue-up and circle (0-2), legs (3), aprons (4), brackets/hanger bolts and base assembly (5), sand/finish (6), base fastened to top (7); each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "add approx. 5 pocket holes to the inside of each piece using your Kreg Pocket-Hole Jig 720PRO"
+        }
+      ],
+      "reason": "The aprons are 1\" thick and get pocket holes, but no jig thickness setting is stated; searched all steps/materials/description for /setting|thickness.*jig|jig.*(set|adjust)/i: none (1\" thickness is stated for the part only)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 5 tabletop pieces (2 x 11, 2 x 9, 1 x 7 = 47\" wide) cover the 45 1/2\" circle; 12 leg pieces = 4 legs x 3 (steps[3]); 4 aprons 23 1/8 x 2 3/4 x 1 (steps[4]) = row 4 corrected; 20 screws = 4 aprons x 5 holes. Step 0 'cut the wood down to 15/16\" thick' is the author's planed thickness of the 1\" cutList stock. (b) legs, aprons, base all installed (steps[5],[7]). (c) brackets and hanger bolts in materials; sandpaper, butcher block sealer, painter's tape are consumables (gaps). (d) steps reach the finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "We started with 80 grit sandpaper, then 120, 220 and finished with 320.",
+      "what": "Sandpaper grits and butcher block sealer used but not in materials (consumables).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "be sure to use painters tape or something on the edges of the scrapwood",
+      "what": "Painter's tape and scrap wood not in materials (consumable/scrap).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "cut a 45 degree edge on the top inside of your table leg",
+      "what": "Size of the 45-degree cut on each leg is not given (left to the bracket).",
+      "kind": "sense"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": []
+  }
 }

@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut has a cutList row (Sides/Back steps[0]; Top/Bottom steps[2]; Drawer Bottoms/Fronts/Sides/Backs steps[4],[5],[6]; Shelf steps[8]; Shelf Edges steps[9]); counts match (two Drawer Backs, four Drawer Sides)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used by name in steps[0]-[10]."
     },
     "R4": {
       "result": "pass",
@@ -142,64 +144,48 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, 0.25x1.5); steps not checked for per-part stock"
+      "reason": "Sheet rule: 3/4\" plywood parts (corrected) 2*11*13.5 + 11*16.5 + 18*18 + 13.5*18 + 2*11*14 + 2*2.5*14 + 4*2.5*12.5 + 2*2.5*14 + 4*13 = 297+181.5+324+243+308+70+125+70+52 = 1670.5 sq in <= 48*48 = 2304, no certain fail so unknown by the sheet rule. 1/4\" poplar passes: 2*4 + 13.5 = 21.5 + 3/8 = 21.875 <= 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sized fasteners: 1 1/4\" coarse-thread Kreg screws (materials[2]) and screws for casters (#10 x 3/4\" panhead, materials[6], 16 = 4 casters x 4; steps[12] does not size them); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given/shown: arched pull 4 1/2\" / 2 1/2\" / 3/4\" (viewed step 5 image), overall 18\" x 13 1/2\" x 12 1/2\", drawer 14\", shelf 4\" (viewed overview image); Bottom overhang 'equally' (steps[3]), casters 'at the corners' (steps[12]), shelf 'at the height that best suits your needs' (steps[10]), drawer slides per manufacturer; drawer stack shown in the overview image."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Now, cut the Top and Bottom to size, as shown in the cut diagram. These parts don’t require pocket holes, so you can sand them smooth after cutting.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Now, cut the Top and Bottom to size, as shown in the cut diagram. These parts don’t require pocket holes, so you can sand them smooth after cutting.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Next, cut two Drawer Backs and four Drawer Sides to width and length, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "Next, cut two Drawer Backs and four Drawer Sides to width and length, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "From a 1/4\" x 2 (1 1/2\" actual width) poplar board, cut two Short Shelf Edges and one Long Shelf Edge to length, as shown in the cut diagram.",
-          "why": "\"as shown\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "From a 1/4\" x 2 (1 1/2\" actual width) poplar board, cut two Short Shelf Edges and one Long Shelf Edge to length, as shown in the cut diagram.",
-          "why": "\"diagram\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "he manufacturer’s instructions, install 12\" drawer slides to mount the drawers. Finally, you can add a cushion to the top for comfort. We used a foam floor mat, and we attached it with spray adhesive.",
-          "why": "\"attached\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        }
-      ]
+      "result": "pass",
+      "reason": "'as shown in the cut diagram' (steps[2],[6],[9]) has no own image and no cutting-diagram image was opened, but the sizes of every part those steps cut are in cutList[3],[0..2],[6],[7],[9],[10] and the viewed overview image repeats 18\" / 13 1/2\" / 14\"; 'attached' in steps[12] is not a reference."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides/Back (0-1), Top/Bottom (2-3), drawers (4-7), shelf and edges (8-10), finish (11), casters/slides/mat (12): each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your Kreg Pocket-Hole Jig for 3/4\"-thick material'; all pocket-holed parts (Sides, Back, Drawer Bottoms, Shelf, drawer parts) are 3/4\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts/sizes agree: 2 sides + back 16.5 between = 18 wide = Top/Bottom width (overview 18\"); Short Shelf Edges 4 = shelf width 4; Long Edge 13.5 = shelf 13 + 2*1/4; drawer sides 12.5 = bottom 11 + 2*3/4; 16 screws = 4 casters x 4. (b) every made part installed. (c) slides, casters, mat, adhesive in materials; finish is a consumable (gaps). (d) steps reach the finished seat."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Ship (unverified)",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "We used a natural oil to protect the plywood",
+      "what": "Oil finish and sandpaper used but not in materials (consumables).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fa7163c180743a74.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f4ae77327ef2adef.webp"
+    ]
+  }
 }

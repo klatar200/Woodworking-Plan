@@ -23,39 +23,80 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[12].body",
-          "quote": "s optional, but suggested if you don't use a box springs. Cut plywood to size (80\" x 60\") and place on top of your support boards. This will give extra stability and prevent the mattress from sagging.",
-          "why": "cut sentence states 60\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Only unlisted cut is the plywood base in steps[12], a step the plan itself marks optional ('This step is optional'); recorded in gaps. All frame parts (legs, planks, top caps, rails, rail supports, supports) are in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 cutList rows are used: legs steps[0-1], Planks steps[4], Top Caps steps[8], Bed Rails/Bed Rail Supports steps[9], Supports and vertical pieces steps[11]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x4, 1x3, 1x6, 1x8, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Per stock type, totals incl 1/8 kerf (steps name 1x4 legs, 1x6 planks, 1x3 caps, 1x8 rails, 2x2 supports): 1x4 6*50+6*23.5=441 +12 cuts*1/8=442.5 <= 6*96=576; 1x3 2*69=138.25 <= 2*72=144; 1x6 8*62=496 <= 8*72=576; 1x8 2*82=164 <= 2*96=192; 2x2 2*80+5*63+5*9=520 +12*1/8=521.5 <= 5*72+2*96=552. No quantity of 1 involved."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes in steps (1 1/4\" pocket hole screws, 2 1/2\" wood screws, 1 3/4\" wood screws) each appear in materials[6],[8],[9]; no conflicting sizes for the same use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "attach the bed rails to the headboard and footboard. Since all bed rail hardware is different, follow the instructions on the package."
+        }
+      ],
+      "reason": "Height at which the bed rails/hardware sit on the legs is never given as a number (searched all steps for a rail height); the step 10 image (viewed) shows rails only unscaled in relation to legs. Notch positions (27 1/2/22 1/2, 16 1/2/7), 1\" cleat offset, top cap 1\" overhang are given."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "The only 'see plans' reference (steps[0] 'See plans for dimensions') has its own step image, viewed: it gives the notch dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs built (steps 0-3), planks slid into leg notches (4-7), top cap (8), rails and rail supports (9), rails attached to head/footboard (10), supports (11) - each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Drill pocket holes on each end of each board."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" planks and top caps but no jig thickness setting is stated; search of all steps/materials/description for /setting|jig|thickness|depth/ found none; the images viewed (steps 0, 10 and unattached) show none."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 notched + 8 sandwich pieces = 6x50 and 6x23 1/2 matches cutList rows 0-1; notch zones 27 1/2 and 16 1/2 (viewed image) = 5 and 3 planks of 5.5 = 8 planks matches Planks 8. (b) all made parts installed. (c) bed rail hardware in materials[7]; glue in materials. (d) steps reach mattress."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[12].body",
+      "quote": "This step is optional, but suggested if you don't use a box springs. Cut plywood to size (80\" x 60\")",
+      "what": "Optional plywood base: no plywood in materials and no cutList row (optional step, so not failed).",
+      "kind": "optional"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22b434071321f65d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f5bb76ad1be28f18.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/af713e5da84d34f3.webp"
+    ]
+  }
 }

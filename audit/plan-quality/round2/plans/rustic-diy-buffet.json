@@ -10,10 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut by steps are in cutList (post legs steps[1]; 2x4 and 1x3 supports steps[2]). The two 20\" x 72\" plywood planks (materials[2]) are used whole as top and bottom shelf; steps[5]-[6] say to cut the post cutouts from the second plank, so no cutList row is needed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 5 rows used: Post Legs steps[1]; Top Supports steps[2]-[4]; Bottom Supports steps[7],[9]."
     },
     "R4": {
       "result": "pass",
@@ -28,28 +30,68 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, 1x3, sheet-0.75, 4x4); steps not checked for per-part stock"
+      "reason": "4x4 post stock length is not stated (materials[3] 'Board, 4x4 Deck or Bannister Posts'), and the plywood is a sheet-type material, so per section 9 the total cannot be scored. Partial: 2x4 4*31.25 + 2*13.5 = 152 + 6/8 <= 2*96 = 192; 1x3 152 + 6/8 <= 192."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[9].body",
-          "quote": "Now you can add the short 1\"X3\" pieces to the sides and screw into the bottom shelf.",
-          "why": "3\" screw — no material line lists a 3\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '3\" screw' is the word '1\"X3\"' (a board). Steps name no fastener sizes (only 'pocket holes' and 'screw'), so none conflicts with materials[4]-[6] (2-1/2\", 1\", 1-1/4\" Kreg screws)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: leg height 35\" (34\"/30\" variants), 2x4s recessed 1\" on all sides (steps[3]), bottom supports '1\" in, and 6\" down' on each leg (steps[7]), shelf cutouts traced from the posts/1x3 plus 1/4\" (steps[5]-[6]); pocket-hole layout shown in viewed step 2 photo; middle-post position fixed by the supports."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Four 'as shown' references each sit in a step with its own image; the step 2 image (viewed) shows the pocket-hole layout."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Posts trimmed (0-1), supports cut/drilled (2), top half laid out and assembled (3-4), shelf cut (5-6), bottom supports (7), shelf and side supports (8-9), finish (10): each part exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Then using a Kreg jig, drill pocket holes into either end, and some shallow pocket holes into one side, as shown."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 2x4 (1 1/2\") and 1x3 (3/4\") parts but no jig thickness setting is stated; searched all steps/materials/description for /setting|thickness/ (none); the step 2 image (viewed) is a photo of drilled holes with no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) cutList counts agree with steps (6 posts, 4+2 top supports, 4+2 bottom supports; long ones first, short side pieces later). Posts' actual width is never stated (see gaps), so the 'less than 1/4\" overhang' claim in steps[3] cannot be checked from section 9. (b) every made part is installed. (c) paint/stain in materials[7]; polyurethane and sandpaper are consumables (gaps). (d) steps reach the finished buffet."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "it should all fit with less than a 1/4\" overhang on the tabletop (or should be flush)",
+      "what": "Posts are listed as 4x4 (section 9: 3 1/2\" actual) but with 3 posts of 3 1/2\" the 2 x 31.25\" supports span 73\" vs the 72\" top (20.5\" vs 20\" deep); the supports only fit if the posts are about 3 1/4\" actual, which the plan never states.",
+      "kind": "sense"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Measure and mark 1\" in, and 6\" down on each leg post.",
+      "what": "Datum for \"6\" down\" is not stated (from the leg foot or the top), and no steps give where the bottom shelf sits relative to the floor.",
+      "kind": "sense"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Don't forget to seal it with a good polyurethane",
+      "what": "Polyurethane and sandpaper used but not in materials (consumables).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/f68ccf5f611c673d.webp"
+    ]
+  }
 }

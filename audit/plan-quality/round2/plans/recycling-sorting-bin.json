@@ -335,69 +335,84 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (Legs, Long/Short Frame Rails, Divider Rails, Base/Side/Front-Back Slats, Lid rails) has a cutList row; step counts 2/4/2/2 for lid rails and 6/4/4/6 for slats match rows 9-12 and 5-8."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used by name in steps[0],[4],[5],[8]; none is an assembly or placeholder."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x6, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock named in steps (2x2 steps[0], 1x6 steps[4], 1x4 steps[8]); corrected rows. 2x2: 4*33.25+4*37.25+4*22.75+2*22.75 = 133+149+91+45.5 = 418.5 + 14 cuts*1/8 = 420.25 <= 5*96 = 480. 1x6: 6*25.75+6*25.75+4*27.25+4*40.25+6*41.75 = 829.5 + 26*1/8 = 832.75 <= 9*96 = 864. 1x4 (listed as 96\" x3 and 48\" x1; combined): 2*42+4*20.5+2*42+2*26 = 302 + 10*1/8 = 303.25 <= 3*96 + 48 = 336 (only 288 without the 48\" board, whose quantity 1 is not shown to be an import default)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "irs are larger. Attach the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end. You can use a hammer and nails for this, but a brad nailer works best. If you don’t have one, yo",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
+          "path": "materials[7].name",
+          "quote": "1-1/4\" brad nails"
         },
         {
           "path": "steps[4].body",
-          "quote": "re larger. Attach the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end. You can use a hammer and nails for this, but a brad nailer works best. If you don’t have one, you hav",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "the Base Slats using glue and 1 1/2\" brad nails—about three brads per board end. You can use a hammer and nails for this, but a brad nailer works best. If you don’t have one, you have a couple choices",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": " ends are flush with the outsides of the Legs. Next, using wood glue and 1 1/2\" brad nails attach the first two Short Side Slats to the Frame Legs—we used four nails at each end to attach these Slats.",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": " ends are flush with the outsides of the Legs. Next, using wood glue and 1 1/2\" brad nails attach the first two Short Side Slats to the Frame Legs—we used four nails at each end to attach these Slats.",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+          "quote": "Attach the Base Slats using glue and 1 1/2\" brad nails"
         },
         {
           "path": "steps[6].body",
-          "quote": "s, set the first Long Front/Back Slats in position so that the ends are flush with the Short Side Slats. Secure these Long Front/Back Slats to the Legs using wood glue and 1 1/2\" brad nails, as shown.",
-          "why": "1 1/2\" brad — no material line lists a 1 1/2\" fastener"
-        },
-        {
-          "path": "steps[6].body",
-          "quote": "s, set the first Long Front/Back Slats in position so that the ends are flush with the Short Side Slats. Secure these Long Front/Back Slats to the Legs using wood glue and 1 1/2\" brad nails, as shown.",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+          "quote": "using wood glue and 1 1/2\" brad nails, as shown"
         }
-      ]
+      ],
+      "reason": "Steps 4, 5 and 6 specify 1 1/2\" brad nails; the only brad nail in materials is 1-1/4\" (searched all materials: no 1 1/2\" nail). Pocket-hole screw sizes (2 1/2\" and 1 1/4\" coarse) do match materials[5],[6]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given or shown: lower rail 1 1/4\" up from leg bottoms (steps[1]), slat gaps 1/2\" / 1 3/8\" (viewed step 4 image; sum 33 + 3*1/2 + 2*1 3/8 = 37.25 = Long Frame Rail), 1/4\" spacers (steps[7]), scrap 2x2 spacers (steps[5]); dividers 'spaced evenly' and flush placements are relational; lid rail layout in viewed step 10 image."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "16 reference(s), each in a step with its own image"
+      "reason": "Each 'as shown' step has its own image; step 4 and step 10 images viewed and show the referenced layout/dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame parts (0), front/back frames (1), joined (2), dividers (3), base slats (4), wall slats (5-7), lid parts/frame/rim (8-10), finish (11); each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your pocket-hole jig for 1 1/2\" material' (2x2 parts, 1.5\" thick) and steps[8] 'Set your pocket-hole jig for 3/4\"-thick material' (lid parts)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: 4 legs, 4 long + 4 short + 2 divider rails; slat counts 6/4/4/6 (steps[5]) = rows 5-8; lid 2/4/2/2 = rows 9-12; viewed step 4 gaps add to the 37.25 rail length. (b) every made part is installed/assembled; (c) no non-fastener hardware used beyond listed cans; (d) steps reach lid and finish."
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "we gave the exterior a light sanding with 120-grit sandpaper. Then we brushed a quick coat of polyurethane",
+      "what": "Sandpaper, polyurethane, dark stain and chalkboard paint used but not in materials (consumables; finish step is described as optional-style, \"you could slip your trash bins\").",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "Using scrap 2x2 pieces as spacers",
+      "what": "Scrap 2x2 spacers and 1/4\"-thick spacers are shop scraps, not listed (no action).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/eb25bc93b45d7384.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/96d24b9708bdf5e3.webp"
+    ]
+  }
 }

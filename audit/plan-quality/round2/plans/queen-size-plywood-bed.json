@@ -71,17 +71,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "The tapers on the legs are 5 1/2\" up the side and 2\" in from the bottom, connect the lines and cut. Take the 4\" leg piece with the pocket holes and place it on the longer edge of the 4 3/4\" piece. Dri",
-          "why": "cut sentence states 5 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 5 1/2\" is a taper layout on the leg ('tapers on the legs are 5 1/2\" up the side and 2\" in from the bottom'), not a part length; every part the steps name (rails, legs, headboard rails/supports/cap, slats, slat supports) has a cutList row (legs 4x4.75 + 2x4 = the 4 3/4\" and 4\" pieces in steps[2])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows used: Long/Short Frame Rails steps[1], Legs steps[2] (4x 4 3/4\" corrected, 2x 4\"), Headboard Supports/Rails/Cap steps[3], Mattress Slats steps[1],[5], Slat Supports steps[1]."
     },
     "R4": {
       "result": "pass",
@@ -93,21 +88,81 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[3]"
+      "reason": "Plywood parts total (corrected rows) 2*9.5*80 + 9.5*63 + 4*4.75*15 + 3*4*44 + 3*3*63 + 2.5*63 + 4*1.5*63 + 2*4*15 = 1520+598.5+285+528+567+157.5+378+120 = 4154 sq in <= 48*96 = 4608, so no certain fail, but R5 sheet rule is unknown unless area is exceeded; edge banding (materials[3]) unparseable. Lumber: 2x2 2*80 = 160 <= 2*80; 1x4 slats 12 <= 13 boards of 61."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only sized fastener is 1 1/4\" pocket screws (steps 1-5), in materials[4]; steps[2] 'drive some screws through the rails' gives no size, so nothing to compare; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions are given or shown: legs flush with top frame rails and 3/4\" past the long rail ends (steps[2]), middle headboard support 25 1/2\" from the inside edge (steps[3]), spacer 3/4\" plywood scrap, pocket-hole locations in the viewed cutting diagram, rail pattern in the viewed step 3 image; slat supports 'along the bottom edge' and slats 'evenly spaced' are relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'pattern shown' (steps[3]) and 'marked in yellow in the diagram' (steps[0]) each have their own step image, both viewed: step 3 shows the thin/thick rail arrangement, step 0 the pocket-hole marks."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Now that you have small pieces of plywood, you should use a table saw to make quick, repeatable cuts at consistent widths."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "I used the Kreg Accu-Cut and a circular saw to break down the 4' x 8' plywood sheet into three, more manageable pieces."
+        }
+      ],
+      "reason": "The step that breaks the full sheet into smaller pieces (steps[6], last) is the prerequisite of steps[0], which opens 'Now that you have small pieces'. The reader can infer it, so the build is not blocked."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "I used the Kreg K5 Pocket Hole Jig to drill the holes marked in yellow in the diagram."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood and 1x4 slats but no jig thickness setting is stated; searched all steps/materials/summary for /setting|thickness.*jig|depth/ and viewed the cutting diagram (steps[0] image): neither shows a setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Lay in the 12 Mattress Slats evenly spaced apart and secure each one of them to the Slat Supports"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Place the Mattress Slat with the pocket holes at the open end of the Bed Frame"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "\"part\": \"Mattress Slats\""
+        }
+      ],
+      "reason": "Steps use 1 pocket-hole slat (steps[1]) plus 12 laid-in slats (steps[5]) = 13; materials[1] lists 13 boards of 1x4 61\" and the viewed cutting diagram (steps[0] image) shows 13 slat strips, but cutList[7] has quantity 12.",
+      "arithmetic": "Slats in steps = 1 + 12 = 13 vs cutList[7].quantity 12 (materials[1].quantity 13). Other counts agree: 6 legs, 3 headboard supports, 3 thick + 4 thin rails."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5082a9bf93e7e9c6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/768bd356e7265c1a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9cdb3d57bad1af56.webp"
+    ]
+  }
 }

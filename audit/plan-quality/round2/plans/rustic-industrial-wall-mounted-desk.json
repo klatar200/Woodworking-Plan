@@ -131,10 +131,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut has a cutList row (support legs/back steps[8]; sides steps[1]; top steps[2]; bottom steps[4]; drawer fronts/backs/sides/bottoms steps[5]-[7]); pipe brace parts are in materials[4]-[7] (2 braces x flange, nipple, elbow, 10\" pipe = 4/4/4/2 shown in the step 10 photo)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used by name in steps[1]-[8]."
     },
     "R4": {
       "result": "pass",
@@ -142,28 +144,77 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.5); steps not checked for per-part stock"
+      "reason": "Sheet rule: 1/2\" plywood parts 13.5*30 + 2*11*12 = 405 + 264 = 669 sq in, no certain fail, so unknown. 1x4 passes: 2*16.25 + 23 + 3*12.75 + 4*31 + 4*13.5 + 4*11 = 315.75 + ~15 cuts/8 = 317.6 <= 4*96 = 384 (3 1/4\" parts are ripped from 1x4 per steps[5])."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Add pocket holes to the side of 3 of the desk top pieces. Using 1 1 /4\" pocket hole screws, combine the 4 desk top pieces together to create one 14\" wide piece of wood.",
-          "why": "4\" screw — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged '4\" screw' is the typo '1 1 /4\"'. Sizes in steps: 1 1/4\" and 1\" pocket-hole screws (materials[2],[3]), 'heavy duty wood screws' (materials[13] 2 1/2\"), #10 wood screws (materials[8], 16 = 4 flanges x 4 holes); no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: sides flush at the outside with the center one centered (steps[1]); pocket-hole positions in the viewed step 1 and step 8 images; sides 15\" apart (viewed step 1 image: 15\" + 15\"); half-circle pull at top center; wall height ~30\" with adjust note; braces from the underside to the lower leg support shown in the viewed finished-desk photos and step 10 photo."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "'as shown in the photo' (steps[10]) has its own step image, viewed: shows the pipe parts and assembled brace."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Attach the desk sides to the front of the desk support with 1 1/4\" pocket hole screws."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Add pocket holes to the top and sides of the back support piece. Attach the leg supports to the sides of the back support"
+        }
+      ],
+      "reason": "The desk support (back support + two leg supports) is first built in steps[8], but steps[1] (sides to the support), steps[3] (top onto the support) and steps[4] (bottom notched around the leg supports) all use it earlier. The build can still be completed by doing steps[8] first."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Add pocket holes to the back and top of the desk sides."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" boards and 1/2\" plywood (steps[6]) but no jig thickness setting is stated; searched all steps/materials/description for /setting|thickness|jig/ (none); the viewed step 1 and step 8 images show hole positions only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 top pieces x 3 1/2 = 14\" deep (steps[2]); legs 16 1/4 + top 3/4 = 17\" tall and 31\" x 14\" (steps[0]); 23 + 2*3.5 leg width = 30 = 15 + 15 sides spacing = Desk bottom 30; drawer 12 + 2*3/4 = 13.5 = front/back. (b) every made part installed. (c) pipe parts, felt, adhesive, stain, polyurethane in materials; sandpaper is a consumable (gaps). (d) steps reach the mounted desk with drawers."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Sand the desk and drawers. Apply a coat of wood stain.",
+      "what": "Sandpaper used but not in materials (consumable).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "cut a half circle on the top center of 2 of the drawer front/back boards",
+      "what": "Size of the half-circle pull is not given.",
+      "kind": "sense"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/182953210ac25cee.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b810b65b155b0e53.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/71095cc40e9be0a8.webp"
+    ]
+  }
 }

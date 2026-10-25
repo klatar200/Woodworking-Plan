@@ -10,27 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "oards, 30 degrees off of square, the longest side measuring 10-1/2\".\nFor each frame: Align 6 trapezoids in a hexagon shape. Measure the exact length between two parallel pieces and cut a scrap piece o",
-          "why": "cut sentence states 10-1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using a router and circle jig, bandsaw, or jigsaw, cut a 3/4\" wide ring with an outer diameter of 17\" and an inner diameter of 15-1/2\".",
-          "why": "cut sentence states 17\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using a router and circle jig, bandsaw, or jigsaw, cut a 3/4\" wide ring with an outer diameter of 17\" and an inner diameter of 15-1/2\".",
-          "why": "cut sentence states 15-1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged 10-1/2\" (steps[1]) is cut 'from 1 x 4 boards' (listed materials[2]) and 17\"/15-1/2\" (steps[2]) is the ring cut from the glued hexagon, so each step names listed stock; box parts (steps[0] 8-1/4 x 28, 9 x 18-5/8, 5-1/2 x 28), plywood panel (steps[5]), center rails (steps[10]) and 1x2 face frames (steps[12]) have cutList rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 6 rows used: Sides/Top & Bottom/Shelf steps[0],[7],[8]; Plywood Panel steps[5]-[7]; Center Rails steps[10]; 'Fame Frame' (sic) = '1 x 2 x 28\" face frames' steps[12]."
     },
     "R4": {
       "result": "pass",
@@ -38,21 +23,66 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 5 stock types (1x12, 1x6, 1x4, sheet-0.25, 0.75x0.75); steps not checked for per-part stock"
+      "reason": "steps[12] says '1 x 2 x 28\" face frames' but materials has no 1x2 and no step names the stock for cutList[5] (0.75 x 1.5 x 28, matches no listed material exactly). Other stock passes: 1x12 2*28+2*18.625 = 93.25 + 3/8 = 93.6 <= 96; 1x6 28 <= 36; square dowel 2*28 = 56 <= 72. 1x4: 12 trapezoids (long side 10-1/2\") would use most of 2*72 = 144, and if the 56\" of face frames came from 1x4 it could fall short, but the source stock is not stated."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Fastener sizes in steps (1-1/4\" screws via 3/4\" pocket holes, 1-1/4\" brads/brad nails) match materials[6] '1-1/4\" pocket hole screws' and materials[7] '1-1/4\" 18 gauge brad nails'; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions given: grooves 3-1/4\" from front edge, stop 1/4\" from ends (steps[0], viewed step 0 image); shelf 8-1/4\" from bottom board (steps[8]); center rails 1-1/2\" from front (steps[10]); panel circles 1-1/4\" / 1\" from edges (steps[5]); pocket holes shown in viewed step 7 image; face frames and mirrors placed flush/in order."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Only reference is 'Following the cut diagram' (steps[0]) which has its own step image (viewed: shows board sizes and groove positions)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Box parts cut/grooved (0), mirror frames made (1-4), panel cut and slid into sides (5-6), top/bottom joined (7), shelf (8), first mirror (9), center rails (10), second mirror (11), face frames (12): each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[7] and steps[8] state '3/4\" pocket holes' for the 3/4\" boards (all pocket-holed parts are 3/4\")."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) text sizes match cutList (8-1/4 x 28, 9 x 18-5/8, 5-1/2 x 28, panel 17-5/8 x 28-1/2); 12 trapezoids = 2 frames x 6; panel height 17-5/8 = 18-5/8 - 2*3/4 + 2*1/4; 16\" mirror fits 15-1/2\" ring ID + 3/8\" rabbet. (b) every made part installed. (c) mirrors in materials[5]; hot glue is a consumable (gaps). (d) steps reach finished cabinet."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Secure in place using hot glue around edges.",
+      "what": "Hot glue used but not in materials (consumable).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "Add 1 x 2 x 28\" face frames",
+      "what": "1x2 stock for face frames is named in the step but absent from materials (stock source unstated; see R5).",
+      "kind": "stock"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Join top and bottom boards to sides using glue and 1-1/4\" screws though 3/4\" pocket holes.",
+      "what": "No step says to drill the pocket holes in the top/bottom boards and shelf; the holes appear only in the step 7 image.",
+      "kind": "sense"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "Cut a 1/4\" x 1/4\" groove along the length of the top and bottom pieces, but stop 1/4\" from either end.",
+      "what": "Top/bottom grooves stop 1/4\" short of each end, yet the panel (28-1/2\" wide, cutList[3]) is 1/2\" wider than the 28\" boards; the panel corners would meet solid wood at the groove stops (not addressed).",
+      "kind": "sense"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b1a6d27db6f07f31.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2241c7a737798f0e.webp"
+    ]
+  }
 }

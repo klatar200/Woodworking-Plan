@@ -251,10 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part the steps cut (Top/Bottom Panels, Side/Top/Bottom Edging, Outside/Inside Panels, Fixed Cabinet/Middle Shelves, Back Panel, Adjustable Shelf, Doors) has a cutList row; steps[8] spacers are 'scrap pieces of 1x6'."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 13 rows are used by name in steps[0]-[11] (Left/Right Top Panels steps[0],[5]; edging steps[1],[2]; Outside/Inside steps[3],[4]; shelves steps[7],[8]; Back steps[9]; Adjustable Shelf and Doors steps[11])."
     },
     "R4": {
       "result": "pass",
@@ -262,35 +264,82 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 1x2); steps not checked for per-part stock"
+      "reason": "Sheet rule: area 3/4\" parts (corrected rows) 370.5+641.25+571.875+571.875+359.375+289.75+257.8125+453.25 = 3515.69 sq in <= 48*96 = 4608 and 1/4\" back 20*46.75 = 935 <= quarter sheet; no certain fail, so unknown by the sheet rule. 1x2 lumber: 4*14.25+2*14.5+48 = 134 + 7 cuts*1/8 = 134.875 <= 72+96 = 168 passes."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sized fasteners (1 1/4\" coarse-thread and fine-thread pocket-hole screws, #8 x 3/4\" pan-head screws, 1/8\" pilot holes) are in materials[4],[5],[6]; no conflicting size for the same use. Hairpin-leg screws are not sized in the steps (see gaps)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "n the ends and edges, then sand lightly to smooth the cuts.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown matches the first-generation Kreg Shelf Pin Jig. The second ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/805611f0f6b1888d.webp"
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "for the door knobs and drill 3/16\" pilot holes in each door. Next, Lay out and drill hinge-cup holes for the full-inset concealed hinges. To do this, you’ll need the instructions that come with the hi",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e1569048594b4e6.webp"
-        }
-      ]
+      "result": "unknown",
+      "reason": "Placements verified numerically or in viewed images: hinge/knob holes 2\" and 1 1/2\" (step 11 image), shelf-pin holes 4 3/8\", 1 1/4\", 2 1/8\" (step 4 image), insets 1/2\" and flush (step 5 image), shelf heights 5 1/2\" / 13 3/4\" (step 8 image). Hinge-cup offset is delegated to the hinge manufacturer. Not settled: cable-hole location and back-screw locations in steps[9] ('Locate and drill the cable hole with a 2\" Forstner bit'); the step 9 image was not opened (4-image cap)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "31 reference(s), each in a step with its own image"
+      "reason": "All 'as shown' references sit in steps with their own image; steps 4, 5, 8, 11 images viewed and show the referenced dimensions/positions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels cut/drilled/banded (0-4), top assemblies (5), side cases onto bottom (6), shelves with spacers (7-8), back (9-10), doors/adjustable shelf made (11), doors mounted (12), finish, knobs, legs, pins, shelf (13): each part exists before its use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your pocket-hole jig for 3/4\" material'; every pocket-holed part (3/4\" plywood and 3/4\" maple edging) is 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[11]",
+          "quote": "\"part\": \"Adjustable Shelf\""
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Cut one Adjustable Shelf to size, as shown in the cutting diagram."
+        }
+      ],
+      "reason": "The viewed step 11 image dimensions the Adjustable Shelf 14 1/4\" x 18 3/4\"; the Kreg-corrected cutList[11] row is 13 3/4\" x 18 3/4\" (importDiffs source '3/4\" x 13 3/4\" x 18 3/4\"'), so the shelf depth differs by 1/2\".",
+      "arithmetic": "Image: 14 1/4 (side dimension) vs cutList[11].widthIn corrected 13.75; 14.25 - 13.75 = 0.5\". Other checks agree: 14.5 top edging = 13 + 1.5; 48 bottom edging = 45 + 2*1.5; 14.5*2 + 19 middle shelf = 48; fixed shelf 12.5 = 14.5 - 0.75 - 1.25."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[13].body",
+      "quote": "We rubbed on three coats of a natural oil finish",
+      "what": "Finish is used but not in materials (consumable).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "then sand lightly to smooth the cuts",
+      "what": "Sandpaper used in steps but not in materials (consumable).",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "then attach the legs as shown",
+      "what": "Screws to attach the hairpin legs are neither sized in steps nor listed in materials (materials[11] lists the legs only).",
+      "kind": "fastener"
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "you can install knobs on the drawers",
+      "what": "The stand has doors, not drawers; stray sentence (also in steps[12]).",
+      "kind": "sense"
+    }
+  ],
+  "reader": {
+    "batch": "r2-24",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4e1569048594b4e6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/805611f0f6b1888d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7c7d15d8e8516ff2.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d082ca2ad93df81a.webp"
+    ]
+  }
 }
