@@ -140,35 +140,89 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit (mirror is a listed material cut by a glass shop)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Mirror Backer, Frame Back (step 0), Frame Sides/Top/Bottom (step 2) and Inner Frame parts (step 3) all have cut rows; the mirror is a listed purchased material."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All eight rows are cut and used in steps 0-8."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows: 3/4 plywood 28 x 66 and 18 x 56 fit a 48 x 96 sheet (28+18 = 46 <= 48 across); 3/4 x 2 1/2 = 1x3; 3/4 x 1 1/2 = 1x2 (see R14 for step 3 naming 1x3)."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x2, 1x3, sheet-0.75); steps not checked for per-part stock"
+      "reason": "Plywood is a full sheet (28x66 + 18x56 = 2856 sq in <= 4608, fits). 1x3: Frame Sides 2 x 67.5 + Top/Bottom 2 x 28 = 191 (+4 cuts x 1/8 = 191.5) <= 2 x 96 = 192 for the outer frame alone, but steps[3].body names a 1x3 for the Inner Frame parts too (2 x 21.5 + 2 x 61 = 165 more), while the row width 1 1/2 and materials[0] 1x2 x 96 (2 boards = 192 >= 165) suggest 1x2; which stock is meant is not settled, so sufficiency is not scored."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "1 1/4\" fine-thread pocket-hole screws (steps 4, 5) and 1 1/4\" flat-head screws (step 8; 'shorter than the combined thickness' 3/4 + 3/4 - 1/4 = 1 1/4) are in materials[3]-[4]; plugs in materials[5]; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Backer-attachment hole pattern (7\" columns, 7\"/8 1/2\"/9\" rows) and pocket holes are dimensioned in the viewed step 1 image; inner frame is centered; mirror/backer centered (steps[7],[8]).",
+      "search": "viewed steps[1], [5], [8] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "search": "9 'as shown'/'cutting diagram' references, each in a step with its own image; viewed steps 1, 5, 8 images show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Back and parts cut (0-3), outer frame (4), inner frame (5), mirror to backer (6), inner frame glued to back and finished (7), mirror/backer screwed from behind last (8)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0], [2], [3] each state 'pocket-hole jig set up for 3/4\" material'; all pocket-holed parts are 3/4\" thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Cut two Inner Frame Sides, one Inner Frame Top, and one Inner Frame Bottom to length from a 1x3 board, as shown in the cutting diagram."
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Inner Frame Sides: thicknessIn 0.75, widthIn 1 (Kreg-corrected 3/4 x 1 1/2 x 61)"
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x2 96\" (quantity 2)"
+        }
+      ],
+      "arithmetic": "(a) Step names 1x3 (3/4 x 2 1/2) but the inner frame rows are 1 1/2 wide, matching the listed 1x2 boards; no step mentions 1x2 (search steps for /1x2/: none) and no rip is described.",
+      "reason": "Step stock contradicts the cut rows and leaves the listed 1x2 unused. (b) all parts installed; (c) mirror, adhesive and plugs listed; (d) ends with mirror and backer screwed in."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/06290065d37fe36e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/836ad1019d740855.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5b8d29464b0ee243.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "1/4\" (6mm) mirror, 20\" x 60\"",
+      "what": "Mirror (20 x 60) is larger than the Mirror Backer it is adhered to (cutList[1] 18 x 56, i.e. 2\" wider and 4\" taller), yet steps[8] centers the mirror/backer assembly inside the inner frame; no step gives the inner frame opening, so the fit is not checkable from the plan."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "First, center the Inner Frame and glue it to the Frame Back. Then, once the glue sets, go ahead and stain or paint the frame assembly.",
+      "what": "Wood glue, stain/paint are not in materials; mounting hardware for hanging on the wall (summary: 'mount it to the wall') is not listed or described (optional: it can lean).",
+      "kind": "consumable"
+    }
+  ]
 }

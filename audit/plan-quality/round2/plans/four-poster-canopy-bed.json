@@ -224,34 +224,105 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; only a social-media credit in steps[10] ('tag @CharlestonCrafted on Instagram'), allowed per section 2"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Posts, Side Rails, Front/Back/Footboard Rails, Headboards, Upper Beams, Slats, Inner Supports, Center Supports and Legs used in steps 0-8 all have rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: Posts (0), Side Rails (1, 5), Front/Back/Footboard Rails (2-4), Headboards (3), Upper Beams (6), Inner Supports/Center Supports/Legs (7), Slats (8)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows: 3/4 x 3 1/2 (1x4 hardwood/pine), 3/4 x 5 1/2 (1x6 hardwood), 1 1/2 x 3 1/2 (2x4) and 1 1/2 x 1 1/2 inner supports (ripped from 2x4, not stated) match section 9."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (0.75x3.5, 0.75x5.5, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "3/4 x 3 1/2 stock (materials[0] hardwood x16 + materials[2] pine x13 = 29 boards x 96\"): 12 posts x 84, 2 beams x 80, 2 beams x 73.5, 13 slats x 76; no two of these fit on one 96\" board (smallest 73.5 + 73.5 = 147 > 96), so 12 + 2 + 2 + 13 = 29 boards needed = 29 bought. 3/4 x 5 1/2 (materials[1] x15): 4 side rails x 80 + 6 rails x 73.5 + 5 headboards x 73.5 = 15 pieces, none pair on one board, = 15 boards bought. 2x4 (x4 = 384\"): centre supports 2 x 77, legs 6 x 9, inner supports 2 x 80 + 2 x 73 (1 1/2 wide, two strips per board): board-length 154 + 54 + 80 + 73 = 361 + kerf <= 384; packing 77+9+9, 77+9+9, 80+9, 73+9+9 gives 7 legs >= 6."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Steps give no fastener sizes; materials list 1 1/4\" and 2 1/2\" pocket hole screws. Unspecified 'screws' in steps 7-8 are in gaps."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Back/Front rail 6\" from bottom, side rails 6\" with 1 1/4\" inside / 3/4\" outside, beams 1\" down, inner supports 1\" down, slat spacer 3 1/2\" are all numbers; legs and center supports are 'evenly spaced' (relational). Headboards stack 'above' the back rail.",
+      "search": "steps vs placement words; viewed steps[8] image (slats on inner supports)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no 'as shown'/'diagram' text references in steps; all steps except 10 have images; viewed step 8 image shows the slats on the supports."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Posts and rails glued (0-2), headboard (3) and footboard (4) assembled, side rails (5), upper beams (6), supports/legs (7), slats (8), mattress (9); each exists before use."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Drill two pocket holes on each end of the Back Rails."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Drill two pocket holes in one end of each Leg and both ends of each Center Support."
+        }
+      ],
+      "reason": "Pocket holes are drilled in glued 1 1/2\" rails and 1 1/2\" 2x4 parts and in 3/4\" boards but no jig thickness setting is stated; search: no step, material or description mentions a jig setting. Recorded only (R9 excluded from verdict)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Starting flush along the Back Rail, use screws to attach a Slat to the Side Inner Supports. ... Using a 3 1/2\" spacer, continue until all Slats are in place."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "Slats (1x4 pine board cuts): quantity 13, widthIn 3 (Kreg-corrected 3/4 x 3 1/2 x 76)"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Side Inner Supports (2x4 board cuts): quantity 2, lengthIn 80"
+        }
+      ],
+      "arithmetic": "13 slats x 3 1/2\" = 45.5; 12 gaps x 3 1/2\" spacer = 42; total 87.5\" along the bed, but the Side Inner Supports the slats are screwed to are 80\" long (Side Rails 80\"). 87.5 > 80 by 7.5\".",
+      "reason": "(a) Slat count x width + spacer gaps does not fit the 80\" the slats run along (assumes the 3 1/2\" spacer is the gap between slats). (b)(c)(d) otherwise satisfied: every part installed, screws unsized (gaps), mattress step reaches finished bed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/678e084936ae609f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "use screws to attach a Slat to the Side Inner Supports. Use the Kreg Quick Flip to drill a pilot hole in each spot before driving a screw into place.",
+      "what": "Screws for slats and for inner supports (steps[7] 'Using wood glue and screws') have no type or size and are not in materials (only pocket hole screws are)."
+    },
+    {
+      "path": "cutList[7]",
+      "quote": "Side Inner Supports (2x4 board cuts): thicknessIn 1, widthIn 1, lengthIn 80 (Kreg-corrected 1 1/2 x 1 1/2 x 80)",
+      "what": "Inner supports are 1 1/2 x 1 1/2 from 2x4 stock but no step says to rip them."
+    },
+    {
+      "path": "materials[6].name",
+      "quote": "Wood glue",
+      "what": "Wood stain is listed but no step applies it; no sandpaper listed.",
+      "kind": "consumable"
+    }
+  ]
 }

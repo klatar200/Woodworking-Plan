@@ -92,35 +92,65 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit ('cutting diagram' is in the plan's images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, Short Rails (step 0), V Rails (step 2) and Slats (step 5) all have cut rows; nothing else is cut."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows are cut and installed in steps 0-5."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows: 1 1/2 x 1 1/2 (2x2), V Rail 3/4 x 2 1/2 x 14 1/4 and Slat 3/4 x 3 1/2 x 12 (1x4) match section 9."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock (2x2 for Legs/Short Rails step 0; 1x4 for V Rails step 2 and Slats step 5). 2x2: 4x26 + 4x9 = 140 (+7 cuts x 1/8 = 140.875) <= 2x72 = 144; per board 26+26+9+9 = 70 (+3/8) <= 72. 1x4: 4x14.25 + 8x12 = 57 + 96 = 153 (+~12 cuts x 1/8 = 154.5) <= 2x96 = 192."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only 2 1/2\" (steps 1) and 1 1/4\" (steps 3, 4, 5) coarse-thread Kreg pocket-hole screws are used; both are in materials[2]-[3]; no conflicting sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Lower rail 3/4\" up from leg ends and upper rail flush (steps[1]); V Rail position 4\", 3/8\", 3/4\" shown in viewed step 3 image; slats flush with leg front face shown in viewed step 5 image (4 x 3 1/2\" slats fill the 14 1/4\" V Rail).",
+      "search": "viewed steps[3], [5] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "9 reference(s), each in a step with its own image"
+      "search": "9 'as shown'/'cutting diagram' references, each in a step with its own image; viewed steps 3 and 5 images show the referenced placement."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame sides built (0-1), V Rails cut and drilled (2), attached to first frame (3), second frame (4), slats last (5), finish (6)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] sets 1 1/2\"-thick for the 2x2 Short Rails; steps[2] resets to 3/4\"-thick for the V Rails; Slats are not drilled."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts (four Legs, four Short Rails, four V Rails, eight slats = 4 + 4) match rows; (b) all parts installed; (c) no hardware other than screws; (d) ends with the assembled, finished rack."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/52a7737bf80cf045.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9ff8813d6a74e023.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "apply the finish, stain, or paint that suits your style",
+      "what": "No finish product in materials; optional.",
+      "kind": "consumable"
+    }
+  ]
 }

@@ -248,35 +248,100 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit ('cutting diagram' is in the plan's images)"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part cut in steps 0, 1, 3, 5, 9, 12, 14, 15 (legs, fillers, blocks, leg braces, rails, frame verticals/horizontals, shade braces, spacer) has a cut row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: Leg/Filler (0-2), Blocks (3), Leg Braces (5-7), Rails (9-10), Frame parts (12-13), Shade Braces (14), Spacer Block (15)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows: 3/4 x 1 1/2 (1x2), 3/4 x 3 1/2 (1x4), 3/4\" plywood blocks 6 1/2 x 6 1/2 (24 x 24 sheet), 5/8 x 5/8 square dowel match materials and section 9."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x2, 1x4, sheet-0.75, 0.625x0.625); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x2 96\" (quantity 2)"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut four Legs to length from 1 x 2 boards as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[14].body",
+          "quote": "Cut two Short Shade Braces and one Long Shade Brace form 1 x 2 boards as shown in the cutting diagram."
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Cut a Spacer Block to size from 1 x 2 board"
+        }
+      ],
+      "arithmetic": "Steps name 1x2 for every 1x2 part (Legs step 0, Leg Fillers step 1, Leg Braces step 5, Shade Braces step 14, Spacer step 15). Kreg-corrected lengths: Legs 4 x 36 = 144 + Leg Filler 4 x 6.5 = 26 + Long Leg Brace 9.1875 + Short Leg Brace 2 x 3.875 = 7.75 + Long Shade Brace 6.75 + Short Shade Brace 2 x 2.625 = 5.25 + Spacer 1.5 = 200.4375 (+ at least 13 cuts x 1/8 = 1.625 -> 202.06) vs bought 2 x 96 = 192. Short by 10.06, not kerf-only. Other stocks fit: 1x4 4 x 5.875 = 23.5 <= 36; square dowel 4 x 22.25 + 8 x 6.75 = 143 <= 5 x 36 = 180 (22.25 + 2 x 6.75 + 2 kerf = 36 per dowel); plywood 2 blocks 6.5 x 6.5 within 24 x 24. Material quantity is Kreg's own (not a defaulted quantity).",
+      "reason": "The 1x2 boards listed cannot supply the 1x2 parts."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fastener size used in steps is 1 1/4\" fine-thread pocket hole screws (steps 4, 6, 7, 8), listed in materials[4]; lamp nipple 6\" and cord set listed; no conflicting sizes."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Bottom brace 8\" up shown in viewed step 7 image; 2\" gap between blocks in steps[8] and viewed step 8 image; block corners 1 1/2\"; legs at the four trimmed corners of the Top Block shown in viewed step 4 image; rails fitted to the base; shade brace flush with frame bottom and spacer aligned to holes (steps[15]); lamp nipple flush to lower block face (steps[11]).",
+      "search": "viewed steps[4], [7], [8], [12], [13] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "23 reference(s), each in a step with its own image"
+      "search": "23 'as shown'/'cutting diagram' references, each in a step with its own image; viewed steps 4, 7, 8, 12, 13 images show the referenced content."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs/fillers (0-2), blocks (3), top block to legs (4), brace assembly built (5-6) and installed (7), bottom block (8), rails fitted and added (9-10), finish and nipple (11), shade frame (12-15), film and mounting (16); each part exists before use. Step 4 text says 'two opposite legs' but the viewed step 4 image shows all four legs on the Top Block (see gaps)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[5].body states \"pocket hole jig set for 3/4\" material\"; all pocket-holed parts (3/4\" plywood blocks, 3/4\" brace stock) are 3/4\" thick; no contrary setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts (four Legs/Fillers, four rails, four Frame Verticals + eight Frame Horizontals = 4 + 4, two Short + one Long braces) match rows; 1 1/2\" corner trim = leg width (steps[3] vs rows 1 1/2); 3/8\" holes match nipple use; (b) every made part is installed; (c) lamp nipple, cord set, tape and film are in materials; (d) steps end with wired lamp. Film sufficiency is noted in gaps."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/69b954d59f8ed85d.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d4c8e43421758384.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9ad0f48564d7a676.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/de6858e2c4acc559.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b6877d334739c47f.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Clue and clamp two opposite legs to the Top Block, and then secure them using 1 1/4\" fine-thread pocket hole screws.",
+      "what": "Text attaches only two opposite legs to the Top Block; no step text attaches the other two legs, though the viewed step 4 image shows all four attached."
+    },
+    {
+      "path": "materials[8].name",
+      "quote": "12\" x 36\" Light Diffuser Roll",
+      "what": "Shade is two 22 1/4 x ~8 rings joined by four 6 3/4 posts (viewed steps 12-13 images; cutList[6]-[7]). Covering the four sides (steps[16]) needs two pieces at least 21 x 6 3/4 (opening of each long side) plus two ends; two 21-long pieces need 42\" of a 12\" wide roll lengthwise or 13.5\" across, but the roll is 12 x 36. Pieces are not specified; recorded as a likely shortfall, not scored."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Glue and clamp one Leg Filler to the each Leg as shown.",
+      "what": "Wood glue, stain and off-white spray paint are used but not in materials.",
+      "kind": "consumable"
+    }
+  ]
 }

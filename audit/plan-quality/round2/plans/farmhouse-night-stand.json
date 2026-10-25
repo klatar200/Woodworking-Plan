@@ -188,34 +188,70 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; no hit"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part used in steps 0-10 (legs, side panels, back panel, dividers, apron, side trim, top, drawer face/sides/front-back/bottom) has a cut row; the 3/4\" spacer in steps[0] is a scrap."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows are used: Legs/Side panels (0), Drawer dividers (1), Back panel (2), Arched Apron (3), Side Trim (4), Top (5), drawer parts (6-8)."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Kreg-corrected rows: 2x2 legs 1 1/2 x 1 1/2; dividers 3/4 x 1 1/2 (1x2); apron/trim 3/4 x 2 1/2 (1x3); faces 3/4 x 7 1/4 (1x8); top 3/4 x 15 within the 16\" finger-joint board; panels and drawer parts from 3/4\" and 1/2\" plywood."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[4]"
+      "reason": "Lumber is sufficient by length: 2x2 4 x 27 = 108 (+0.5 kerf) <= 120; 1x2 3 x 23 = 69 <= 96; 1x3 apron 23 + trim 4 x 11.5 = 69 (+0.6) <= 96; 1x8 faces 2 x 22.875 = 45.75 <= 72. But the plywood stocks are 'Half Sheet' with no numeric size (materials[5], [6]), so sheet sufficiency (1/2\" parts total 4x6.5x12.5 + 4x6x21 + 2x12.5x21 = 325+504+525 = 1354 sq in) cannot be compared, and the top (15 x 26 1/2) could come from the finger-joint board or 3/4\" plywood."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used in steps (1 1/4\" and 1\" pocket hole screws, 1 1/4\" and 1\" 18 ga nails, 2\" wood screws, slide screws 'provided') all in materials[7]-[11],[17]; no conflicting sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Divider spacing 7 1/2\" and top flush (steps[1]); side panel flush with leg tops shown in viewed step 0 image (27\", 19 1/2\", 11 1/2\"); drawer face offsets 1/2\", 3/8\", 1/4\" shown in viewed step 8 image; pull holes 5 1/2\" from each side and centered (steps[10]); slide clearance 1/16\" (steps[9]).",
+      "search": "viewed steps[0], [8] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no 'as shown'/'diagram' references in step text beyond steps that have their own images; all steps have images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides (0), dividers (1), back (2), apron (3), trim (4), top (5), drawers (6-8), slides (9), hardware (10); each part exists before use; step 8 offers the optional face-after-slides order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" setting stated for every 3/4\" part drilled ('Drill 3- 3/4\" pocket holes' steps[0], 'single 3/4\" pocket hole' steps[1], '4- 3/4\"' steps[2], '2- 3/4\"' steps[3]) and 1/2\" for the 1/2\" drawer parts ('2- 1/2\" pocket holes' steps[6]); no contradictions."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts (3 dividers, 4 trim, 2 drawers/faces, 4 holes on back panel sides) match rows; heights add up: dividers 3 x 1 1/2 + 2 x 7 1/2 = 19 1/2 = back/side panel height; legs 27 + top 3/4 = 27 3/4 = description height; width 23 + 2 x 1 1/2 = 26 + 2 x 1/4 lip = 26 1/2 = Top. (b) all parts installed; (c) pulls, slides in materials; (d) ends with painted unit with hardware."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1c8addc01d93e434.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/21e76dce659376b8.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "cutList[8]",
+      "quote": "Drawer sides: thicknessIn 0.5, widthIn 6, lengthIn 12 (Kreg-corrected 1/2 x 6 1/2 x 12 1/2)",
+      "what": "Drawer sides are 6 1/2 tall but drawer fronts/backs (cutList[9], steps[6] '6\" wide') are 6 tall; the step says to attach them flush with the ends of the sides, so the 1/2\" height difference is unexplained."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Fill nail holes and seams with wood filler, let dry, and sand entire thing smooth with 220 grit sandpaper.",
+      "what": "Filler, sandpaper and glue are in materials; no missing consumables found.",
+      "kind": "consumable"
+    }
+  ]
 }

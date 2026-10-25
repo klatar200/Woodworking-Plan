@@ -7,34 +7,83 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i; only hit is a credit/finishing-tips link in steps[4] ('Visit PneumaticAddict.com for finishing tips'), optional per section 2"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Console top (50\"), Side panels (2 x 27 1/2\") and Floating top are cut rows; the four 2\" dowel risers (steps[2]) are cut from listed materials[2] dowel."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows are used: panels steps 0-1, floating top steps 3."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "basis": "Rows 1 1/2 x 11 1/4 match 2x12 (section 9); Floating top 1 1/2 x 14 x 72 matches materials[1] slab 1-1/2\" x 14\" 72\"."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x12, 1.5x14, 1.375x12); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Steps name stock (steps[0] 11-1/4\" panels or 2x12; 1 1/2 x 11 1/4 matches only the 2x12). 50 + 2 x 27.5 = 105 (+3 cuts x 1/8) <= 2 x 96 = 192; per board 50 + 27.5 + 1/8 = 77.6 <= 96. Dowel risers 4 x 2 = 8 <= 12 (materials[2]). Floating top = the 72\" slab."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Add glue to connecting faces and drive 4\" wood screws. Cover holes with plugs and cut flush."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "1/4\" x 4\" lag screws"
+        }
+      ],
+      "reason": "Step 1 uses 4\" wood screws (four per joint, two joints) and plugs (3/8\" per the viewed step 1 image) but materials list only 1/4\" x 4\" lag screws (for the risers), washers, the slab and a dowel. Search materials for /wood screw|plug/i: no match."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Riser holes given as numbers (4\" from the end, 2\" from each long side, countersink 3/8\" deep with 3/4\" forstner, steps[2]); screw line 3/4\" from edge (steps[1]) and four holes shown in the viewed step 1 image; floating top centered on risers (steps[3]).",
+      "search": "viewed steps[1], [2] images"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no 'as shown'/'diagram' text references in steps; all steps have images."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Panels cut (0), console assembled (1), risers drilled and screws set (2), floating top added last (3), finish (4); each part exists before use."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket holes."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) four risers (4 x 2\" dowel) = four holes marked (2 per end x 2 ends = 4) = four lag screws and washers = materials[3], [4]; Floating top 1 1/2 x 14 x 72 matches row 0 and slab; (b) all parts installed; (c) washers, dowel, slab listed (screws/plugs recorded under R6); (d) ends with top attached and finished."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-32",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e9fd3fe109498638.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0a9f46a7e1ec8c99.webp"
+    ]
+  },
+  "gaps": [
+    {
+      "path": "steps[1].body",
+      "quote": "Add glue to connecting faces and drive 4\" wood screws.",
+      "what": "Wood glue and finish are not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "Measure 3/4\" from edge, pre-drill and countersink four holes.",
+      "what": "Spacing of the four holes along each joint is not given in numbers (only drawn in the step 1 image)."
+    }
+  ]
 }
