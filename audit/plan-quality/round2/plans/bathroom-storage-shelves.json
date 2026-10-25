@@ -119,69 +119,81 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut Long/Short Legs (0), Shelf/Top Fillers (2), Braces (4), Shelves (7); each is a cutList row; no other part cut"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used (steps[0],[2],[4],[7]); counts agree: 8 Braces = 4 assemblies of 2 (steps[4],[5]), 6 Shelf Fillers + 2 Top Fillers = 3+1 per leg assembly (steps[3], viewed image f578bcdf092dab21), 4 Shelves (steps[7])"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x2, 1x10); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "steps[0] names 1x2 x 96\"/72\" boards; 0.75x1.5 parts match only 1x2, 0.75x9.25 shelves only 1x10. 1x2 (Kreg-corrected): 2x72 + 2x36 + 6x9.25 + 2x5.25 + 8x4 = 144+72+55.5+10.5+32 = 314 + 22 cuts x 1/8 = 316.75 <= 2x96 + 2x72 = 336; steps[2] leftovers of the two 72\" boards: 6x9.25 + 2x5.25 = 66 + 8/8 = 67 <= 72; steps[4] 8x4 = 32 <= 2x24 = 48. 1x10: 4 x 23.5 = 94 + 3/8 = 94.375 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" coarse-thread Kreg screws (steps[6],[8]) = materials[3]; 2\" wood screws (steps[10]) = materials[6]; wall anchors materials[7]; no conflicting sizes"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions come from viewed images: d627fb906b4ab842 (overall: 36\" to first shelf, 9 1/4\" between shelves, lower brace 12\" / 4\"), f578bcdf092dab21 (3/4\" notches, brace 12\" from end, flush with leg), 34323d6837dcf74f (brace pocket holes 3/8\" / 3/4\"), d77ef7087441d9c7 (shelf pocket holes 4 1/4\"). Arithmetic: 36 + 4 x 3/4 + 3 x 9 1/4 + 5 1/4 = 72 = Long Leg."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[0].body",
-          "quote": "Cut two Long Legs to length from 1x2 x 96\" pine boards, as shown in the cutting diagram. Now, cut two Short Legs to length from two 1x2 x 72\" boards.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "Cut two Long Legs to length from 1x2 x 96\" pine boards, as shown in the cutting diagram. Now, cut two Short Legs to length from two 1x2 x 72\" boards.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Cut two Long Legs to length from 1x2 x 96\" pine boards, as shown in the cutting diagram."
         },
         {
           "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[2].body",
-          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers and two Top Fillers to length, as shown in the cutting diagram.",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "quote": "Using the leftover portions of the 72\" boards, as shown in the cutting diagram, cut six Shelf Fillers"
         }
-      ]
+      ],
+      "reason": "Steps[0],[2],[4],[7] refer to \"the cutting diagram\"; steps[0] and [2] have no image, and viewed images (d627fb906b4ab842, 543209adf0690f98, a3f8a698db426b2c, e7fecde629c46ae5, 115c7dbf9dc5f5d6, 621acb68263fb8f4, 34323d6837dcf74f, f578bcdf092dab21, d77ef7087441d9c7) show no board cutting layout. Step images f60c27563b58b87a, 727a89d90e04fe00, 9effc837f95db2ec not viewed (hence likely). Non-structural: cut list and step text give the lengths and which boards."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "legs glued (1), fillers (2-3), braces made (4-5) then fixed to legs (6), shelves cut and drilled (7) then set in notches (8), finish (9), wall mount last (10)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] \"set up your Kreg Pocket-Hole Jig for 3/4\"-thick material\" before drilling the 3/4\" braces; shelves (steps[7]) are 3/4\" as well; same setting covers both."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts add up (see R3/R10); leftover 72\" boards give 66\" of fillers (R5). (b) every part installed. (c) non-skid pads, 2\" screws, anchors in materials. (d) steps reach mounted shelf. Finish (natural oil, wipe-on polyurethane, steps[9]) is a consumable."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[9].body",
+      "quote": "We used a natural oil to give the project color. After allowing the oil to dry according to the directions, we applied two coats of wipe-on polyurethane",
+      "what": "oil and polyurethane finish not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/d627fb906b4ab842.webp",
+      "plans/543209adf0690f98.webp",
+      "plans/a3f8a698db426b2c.webp",
+      "plans/e7fecde629c46ae5.webp",
+      "plans/115c7dbf9dc5f5d6.webp",
+      "plans/621acb68263fb8f4.webp",
+      "plans/34323d6837dcf74f.webp",
+      "plans/f578bcdf092dab21.webp",
+      "plans/d77ef7087441d9c7.webp"
+    ]
+  }
 }

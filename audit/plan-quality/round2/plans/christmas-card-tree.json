@@ -131,39 +131,62 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut trunk, base boards, limb boards (steps[0]); trunk, base sides/front-back, four limb sizes are all cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 7 rows used; 8 limbs = 4 per side (steps[2],[3]; viewed 3f943a9caf4a0acf shows 4 limbs 10\" then 9 1/2\" apart); base 2 sides + 2 front/back (steps[4], viewed 3c06bc0e4dbe81a2 shows 6\" and 4\" pieces)"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "each part matches exactly one stock: 1.5 x 1.5 -> Board 2x2 72\"; 0.75 x 1.5 -> Board 1x2 96\". 2x2: 48 + 2x6 + 2x4 = 68 + 4 cuts x 1/8 = 68.5 <= 72. 1x2: 2 x (15 + 12 + 9 + 6) = 84 + 8 cuts x 1/8 = 85 <= 96."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" pocket screws (steps[2]) = materials[2] (8 limbs x 2 = 16) and 2 1/2\" pocket screws (steps[4]) = materials[3] (4 base boards x 1 = 4); no conflicts"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "Measure and mark where to drill holes to insert the ring loops to hold the cards. Use a drill bit the same size as the metal on the ring loops to drill a 3/4\" deep hole in the side of the boards. It i",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/8deff7a6e02053d2.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "ring-hole spacing is shown in viewed image 8deff7a6e02053d2 (2 1/2\" and 2\" steps along the 15\", 12\", 9\", 6\" limbs; 5+4+3+2 = 14 per side, 28 total = materials[4]); first limb 10\" up, others 9 1/2\" (steps[2], image 3f943a9caf4a0acf); limbs centered on trunk."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "no \"as shown\"/diagram references in steps"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "boards cut (0), ring holes drilled before limbs (1), limbs attached (2-3), base (4), sand/finish (5), rings glued last (6)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] \"Set your picket hole jig for 3/4\" thick material\" (limbs); steps[4] \"Set your pocket hole jig for 1 1/2\" thick material\" (base)"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 28 rings = 2 sides x (5+4+3+2) per image; 16 and 4 screws match; limb heights 10 + 3 x 9 1/2 = 38.5 <= 48 trunk; (b) all parts attached; (c) rings and glue in materials; (d) ends with rings glued in."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[6].body",
+      "quote": "Place a dot of super glue gel on the stem and place it in the holes drilled for them earlier.",
+      "what": "super glue gel (and stain/paint, steps[5]) not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/8deff7a6e02053d2.webp",
+      "plans/3c06bc0e4dbe81a2.webp",
+      "plans/3f943a9caf4a0acf.webp"
+    ]
+  }
 }

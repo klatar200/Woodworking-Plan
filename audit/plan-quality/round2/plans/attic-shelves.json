@@ -119,38 +119,59 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "add braces underneath this Shelf, however the space below will be fairly small. You can extend the length of the Posts on initial cut to 75 3/4\" to make the top section the same as the lower sections.",
-          "why": "cut sentence states 75 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[7] \"You can extend the length of the Posts on initial cut to 75 3/4\"\" is an optional alternative, not a required cut; every required part (Posts, Side/Front/Back Braces, Shelves) is a cutList row."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used; counts agree: Side Braces 8 = 4 per side x 2 sides (steps[0],[1]); Back Braces 4 and Front Braces 4 = one per shelf level (steps[2],[5],[6]); Shelves 5 = 4 notched + 1 uncut (steps[3])."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[4] no match among parsed stock; unparsed stock present (materials[1])"
+      "reason": "Parts 1.5x3.5 (Kreg-corrected) match the 2x4 material, but cutList[4] Shelves 0.75 thick: materials[1] \"OSB plywood, 4' x 8'\" states no thickness, so thickness cannot be compared (32x48 fits a 48x96 sheet)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[1]"
+      "result": "pass",
+      "reason": "steps do not name stock but every 1.5x3.5 part matches exactly one material (2x4 96\"); shelves match only the OSB. 2x4: Posts 4 x 72.25 = 289 + Side Braces 8 x 25 = 200 + Front 4 x 45 = 180 + Back 4 x 45 = 180 = 849, + 20 cuts x 1/8 = 2.5 -> 851.5 <= 10 x 96 = 960. OSB area 5 x 32 x 48 = 7680 <= 2 x 48 x 96 = 9216."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name only \"pocket hole screws\" and \"screws or nails\" (top shelf); materials give 2 1/2\" Kreg pocket hole screws; no sizes in steps conflict"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "first brace 10 1/4\" up, next 12 3/4\" above, repeated (steps[0]); back/front braces in line with side braces, front brace exactly under the shelf; top shelf on top of posts; notch positions traced from a 2x4 at the corners."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "sides (0,1), back braces (2), notches cut (3), shelf dropped in on braces (4), front brace under shelf (5), repeat bottom to top (6), top shelf last (7)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill two pocket holes in each end of the Side Braces."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 1 1/2\" thick braces (steps[0],[2],[5]) but no jig thickness setting appears anywhere; search of all steps/materials/tools/description for /setting|jig|1 1/2/ found none (only tool slug pocket-hole-jig). Step images not viewed. Recorded only; does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts add up (see R3); side width 25 + 3 1/2 + 3 1/2 = 32 matches Shelves width 32 and 45 + 1 1/2 + 1 1/2 = 48 matches shelf length 48 (Kreg-corrected 1.5x3.5 braces; inferred only as consistency, no mismatch). (b) every part installed. (c) no hardware beyond materials; wood glue listed. (d) ends with top shelf installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": []
+  }
 }

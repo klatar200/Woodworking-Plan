@@ -95,39 +95,69 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "t the Front Window and Rear Window to size from a sheet of .093\"-thick polycarbonate (Lexan), as shown in the cutting diagram. You can cut this material using an inexpensive scoring cutting tool that’",
-          "why": "cut sentence states 093\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] Top/Bottom boards, steps[2] Dividers and Top Cleats, steps[4] Front/Rear Window are all cutList rows; \".093\" in steps[4] is the polycarbonate sheet thickness (materials[4]), not a part dimension."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 6 rows used; counts match: 3 Dividers (3 pilot-hole sets, steps[0],[3]), 2 Top Cleats (2 pilot-hole sets, steps[6]), 2 windows"
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[4] thinner than stock — would need planing/resawing, not judged; cutList[5] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "wood parts 0.75 x 5.5 / 1.5 from Board 1x6 (3/4 x 5 1/2, SS9); windows 0.093 thick match materials[4] \".093\" x 12\" x 24\" polycarbonate sheet\", widths 6 and 4.5 <= 12."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: cutList[4], cutList[5] not 0.75″ thick, so not all parts come from the one listed stock"
+      "result": "pass",
+      "reason": "steps[0],[2] name the cedar 1x6 for every wood part. Literal sum of cut-list lengths (4 x 18 + 3 x 6.25 + 2 x 5.5 = 101.75) exceeds 96, but viewed image 0712416a27946584 shows the Top Cleat as 5 1/2\" tall (= the 1x6 board width) by 1 1/2\" base with parallel 15 deg ends, so it consumes about 1.5\" of board length, not 5.5. Using 1.5: 72 + 18.75 + 3 = 93.75 + 9 cuts x 1/8 = 94.875 <= 1 x 96 (description: \"a single cedar board\"). Polycarbonate: 6 + 4.5 = 10.5 <= 12 wide, 16 <= 24."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps: 1 1/4\" Blue-Kote pocket screws = materials[1]; #10 x 1 1/2\" (steps[3],[6]) = materials[3] (3 dividers x 2 + 2 cleats x 2 = 10); #10 x 3/4\" (steps[8]) = materials[2] (9 holes x 2 windows = 18, image 21ccdd82baf3359c); no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "viewed images give numbers: d365372cc5e12850 (pocket holes 2 1/2\", 4 1/4\"; pilot holes 1 3/8\", 9\", 2 1/8\", 1 5/8\"), 106bd3729eaf592f (dividers 2 3/4\", 8 5/8\", 1\"), 21ccdd82baf3359c (window holes 1\", 3/8\", 8\", 3\", 2 1/4\"), 0712416a27946584 (divider/cleat shapes, 15 deg). Cleats fit between outer dividers (steps[6]); pipe flange \"centered\"."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
       "note": "10 reference(s), each in a step with its own image"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panels (0-1), dividers/cleats cut (2), dividers on bottom (3), windows cut and drilled (4), window holes in dividers (5), cleats (6), finish (7), windows and top (8)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] \"Set your Kreg Jig for 3/4\"-thick material\" for the 3/4\" Top/Bottom boards; other joints give method and screw (steps[3],[6],[8])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 3 dividers/2 cleats/2 windows match steps and images; screw counts add up (R6). (b) every part installed (3,6,8). (c) polycarbonate and cutting tool in materials; pipe flange (steps[8]) is optional. (d) steps end with windows and top on."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "We decided to wipe on a few coats of salad-bowl finish",
+      "what": "finish (optional), 120-grit sandpaper (steps[4]) and masking tape (steps[5]) not in materials (consumables)"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "attach a metal pipe flange to the underside of the Bottom",
+      "what": "pipe flange/pipe for post mounting is an optional use (\"If you want to mount\") and is not in materials"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/d365372cc5e12850.webp",
+      "plans/106bd3729eaf592f.webp",
+      "plans/21ccdd82baf3359c.webp",
+      "plans/0712416a27946584.webp"
+    ]
+  }
 }

@@ -19,65 +19,60 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " 12\" X 7 1/4\" boards. If you are uncomfortable doing this I have attached one site with good information on the process. Please feel free to look at other sites. I normally use my Jet jointer to squar",
-          "why": "matches \"have attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[2] \"I have attached one site with good information on the process\" is an optional reference; the glue-up is fully described in the same step."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name base, cross beams, spacers, bottom spacer, \"top spacer\" (steps[6]); viewed layout ec0b73e462de9c8b shows 12 beams with 11 spacers between plus one on top = 12 Small Spacers, one Bottom Spacer; all are cutList rows"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all rows used; cut diagram e5077de9295c06bc shows 2 x 12 base boards, 12 x 1\" spacers, 2 x 2 3/4\" spacer strip, beams 9/9, 11/11, 13/13, 15/15 and 7, 5 pairs"
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
-      "evidence": [
-        {
-          "path": "cutList[0]",
-          "quote": "Base — qty 1, 0.75 x 12 x 12"
-        },
-        {
-          "path": "materials[0].name",
-          "quote": "Board, 1x8 48\""
-        }
-      ],
-      "arithmetic": "cutList[0] 0.75×12: no listed stock has thickness 0.75 (±1/32) with width ≥ 12; stock = 0.75×7.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Base — qty 1, 0.75 x 12 x 12",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "result": "pass",
+      "reason": "sweep failed Base 0.75 x 12 against 1x8 (7.25 wide), but steps[2] \"we edge glue the two 3/4\" X 12\" X 7 1/4\" boards\" makes the 12\" width (viewed diagram e5077de9295c06bc shows 2 boards of 12\" x 7 1/4\"); other parts are 3/4\" strips ripped from the 1x8.",
+      "readerNote": "steps[2].body: \"For the base we edge glue the two 3/4\" X 12\" X 7 1/4\" boards.\""
     },
     "R5": {
-      "result": "unknown",
-      "reason": "parts ≤ half the 7.25″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
+      "result": "pass",
+      "reason": "one wood stock (1x8 48\" x 7 1/4\"); the plan's diagram e5077de9295c06bc lays all parts on it. Base: 2 x 12 = 24\" of full width; remaining 24\": 8 strips of 3/4\" = 8 x 0.75 + 7 kerfs x 1/8 = 6.875 <= 7.25; strip length needed 2 x (15+13+11+9+7+5) + 12 x 1 + 2.75 = 134.75 <= 8 x 24 = 192. Threaded rod and nuts are hardware."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1/4\" bit and rod/locking nuts (steps[4]-[9]); materials[1] 1/4\" x 24\" coarse threaded rod, materials[2] 1/4\" locking nuts x 2 (steps[9] uses two); no other fasteners"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "holes in \"exact center\", dado rip fence 1/4\" blade 1/16\" (steps[3]), countersinks 1/2\" deep (steps[6],[7]), base 12 x 12; beam order shown in viewed image ec0b73e462de9c8b (shortest at top)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "search": "steps[8] \"as shown in the following picture\" and steps[2] \"A picture of the clamp up follows\" each have a step image (ec0b73e462de9c8b viewed)"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut (1), base glued (2), dados (3), holes (4-6), base finished (7), layout (8), rod assembly (9), sand (10)"
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "no pocket holes; glued edge joint (steps[2]) and rod-and-nut assembly (steps[9]) have method and hardware stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 12 beams and 12 + 1 spacers match steps[3]-[5]; base 2 x 7 1/4 = 14.5 trimmed to 12 (steps[7]); (b) all parts end up on the rod (steps[9]); (c) rod, nuts, glue, sandpaper in materials; (d) steps end with the finished stand."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/ec0b73e462de9c8b.webp",
+      "plans/e5077de9295c06bc.webp",
+      "plans/9796dcfb7cae466d.webp"
+    ]
+  }
 }

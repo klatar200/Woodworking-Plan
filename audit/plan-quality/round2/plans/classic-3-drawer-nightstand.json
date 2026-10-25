@@ -371,10 +371,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut/assemble legs, side/front/back rails, side panels, bottom, drawer parts, drawer fronts (stile/rail/plywood), top plywood, top front/side; each is a cutList row; shims/scrap are optional"
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[15]",
+          "quote": "Back, quantity 1, 0.25 x 19 x 24 (Kreg source 1/4\" x 19 1/2\" x 24\")"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Plywood, 1/4\" Thick Quarter Sheet"
+        }
+      ],
+      "reason": "The 1/4\" Back panel is never installed or mentioned. Search of all steps[0]-[12] (body and title) for /back/: only \"back rails\" (steps[3]) and \"drawer b/f\" (steps[5]); for /1\\/4\" ply|panel/: only the side panel (steps[1]). Viewed step images 27225621a688100d (rear shows only back rails and the open frame) and the finished photos show no back panel step. materials[2] exists only for this row."
     },
     "R4": {
       "result": "pass",
@@ -382,29 +397,53 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (sheet-0.75, sheet-0.5, sheet-0.25, 2x2, 1x2, 0.375x0.375); steps not checked for per-part stock"
+      "reason": "boards pass but sheet layouts are not demonstrated. 2x2: 4 x 27.25 + 19.5 + 2 x 14.25 = 157 + 7/8 <= 2 x 96 = 192. 1x2: 36 + 24 + 58.5 + 21.75 + 116.25 + 39 = 295.5 + 2.5 <= 4 x 96 = 384. 3/4 ply area: 662.6 + 739.5 + 346.5 + 561 + 528 + 287.6 = 3125 <= 4608; 1/2\" parts 3 x 3.625 x 16.375 and 1/4\" Back 19.5 x 24 fit their quarter sheets."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 2 1/2\" pocket screws (steps[0],[2]) = materials[9] (12 = 2 rails x 4 + bottom rail 4), 1 1/4\" (steps[1]-[10]) = materials[8], 1\" pocket screws (steps[7]) = materials[15], 1\" screws (steps[9]) and 1\" brad nails (steps[11]) = materials[14]; no conflicts"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "nd front (3/4\" for the drawer front and 1/4\" inset drawers). If needed add scrap wood (shims) to fill the gap from the side panel inset and legs to mount the drawer runners. Also if your plywood isn't",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9ab2811ede1a770b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "numeric: rails marked 23 1/4\", 8 1/4\", 15 3/4\" from top (viewed fd35e0b479bfa285, 63ed26dcbc9cae2d show marks at rail top), 1/4\" insets, drawer front 19 3/8 x 6 5/8 with 1/16\" gap, runners start about 1\" in, top flush at back and centered, trim bottom 1 1/2\" from top (viewed 648c477c07c25a05); pull position \"as desired\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "steps cite no drawing beyond \"as shown\" in step images (steps[2],[11]); viewed fd35e0b479bfa285 and 648c477c07c25a05 show them"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "leg sets (0), side panels (1), front/back rails (2-3), bottom (4), drawers (5-7), runners (8), fronts on drawers (9), top (10), optional trim (11), finish (12)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "jig settings stated for every thickness used: 1 1/2\" (steps[0],[2]), 3/4\" (steps[1]-[7],[10]), 1/2\" drawer-front plywood (steps[7]); no contradictions"
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 12 x 2 1/2\" screws = 3 rails x 4; drawer fronts 3 x (2 stiles + 2 rails + plywood) = 6 + 6 + 3 rows; drawer width 17 + 2 x 3/4 = 18.5 in 19.5 opening; top front 24 = 21 + 2 x 1.5 and top side 18 = 16.5 + 1.5. (b) every made part installed except the Back (R3). (c) pulls, runners in materials. (d) steps reach finished nightstand."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "Cut 3/8\" square dowel to fit the perimeter of the nightstand.",
+      "what": "trim length is not given; materials give 2 x 36\" = 72\" of dowel. Body outline from cut list: front 19.5 + 2 x 1.5 = 22.5, side 14.25 + 2 x 1.5 = 17.25; all four sides = 2 x (22.5 + 17.25) = 79.5 > 72, front + two sides = 57 <= 72 (steps[11] is optional and does not say which sides)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/27225621a688100d.webp",
+      "plans/9ab2811ede1a770b.webp",
+      "plans/648c477c07c25a05.webp",
+      "plans/fd35e0b479bfa285.webp",
+      "plans/ddd3cfe88212c5c7.webp",
+      "plans/63ed26dcbc9cae2d.webp",
+      "plans/a6b8105715d50714.webp",
+      "plans/d37b564216894395.webp"
+    ]
+  }
 }

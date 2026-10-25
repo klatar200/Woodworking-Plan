@@ -23,10 +23,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps name table top (steps[0]), legs (steps[1]), aprons (steps[2]), base deck (steps[4]); each matches a cutList row (Table Top, Legs, Apron front and back/Apron Sides, Base Deck)"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 5 rows used: Table Top steps[0], Legs steps[1], Apron rows steps[2] (4 x 2x4x47, 4 x 2x4x20), Base Deck steps[4]"
     },
     "R4": {
       "result": "pass",
@@ -38,29 +40,49 @@
       ]
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x4, 4x4, sheet-0.75); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "each part matches exactly one listed material (2x4 apron -> Board 2x4 96\"; 4x4 legs -> Board 4x4 96\"; 3/4 x 24/23 parts -> 3/4\" plywood). 2x4: 4x47 + 4x20 = 188+80 = 268 + 8 cuts x 1/8 = 269 <= 4 x 96 = 384 (also packs 2x47 per board=94.125, so 2 boards + 1 board for the 20s). 4x4: 4 x 29.5 = 118 + 4/8 <= 2 x 96 = 192. Plywood area 2x(24x48)+23x47 = 2304+1081 = 3385 <= 48x96 = 4608; sheet layout not judged. Layout: two 24 x 48 panels side by side use 48 x 48 of the 48 x 96 sheet; 23 x 47 fits in the remaining 48 x 48."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps mention only \"screws\"; no size in steps; materials list 3\" and 1 5/8\" screws; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "slide the base deck in from the side at and angle, then rotate into place.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/112a69ce18f66f7b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[5] deck slides in on bottom aprons; viewed image 112a69ce18f66f7b shows deck resting on the bottom apron frame and the aprons flush with leg ends (also a24c44421a850284). Casters on each corner and top centered are relational."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "top glued up (0), legs (1), apron frames (2), frame assembled (3), deck cut (4) and installed (5) before casters (6) and top (7)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "no pocket holes; joints are glue and screws (steps[3]), top is predrilled and countersunk screws (steps[7])."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) counts match: 2 top panels, 4 legs, 4+4 aprons vs cutList; Legs 29 1/2 matches Kreg-corrected 29.5. (b) all parts installed (steps 3,5,6,7). (c) casters in materials. (d) steps reach finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[0].body",
+      "quote": "Take two pieces of plywood 48\"x24\"x3/4\" and glued them together.",
+      "what": "glue used in steps[0] and steps[3] is not in materials (consumable)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/112a69ce18f66f7b.webp",
+      "plans/a24c44421a850284.webp"
+    ]
+  }
 }

@@ -212,85 +212,109 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "legs are a purchased component named in materials[7] (\"Narrow Concord Island Post\" x 4, 3 x 3 x 34 1/2 in the Kreg source); no plans, PDF or external page is needed. No source for the post is given (see gaps)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[1]-[14] name End/Side Rails, Center Support, Shelves, Shelf edges, Top Boards, Top Long Edges and the cut-off end strips (made from the Top Boards, steps[11]-[12]); all are cutList rows; Legs = purchased posts (materials[7])"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 9 rows used (Leg steps[2]-[8]; Shelf steps[4]; edges steps[5]; Top Board steps[10]-[11]; Top Long Edge steps[12]-[13]); counts: 4 Long + 4 Short edges = 2 shelves x 4 (viewed e08dfdf173e588ad)"
     },
     "R4": {
+      "result": "pass",
+      "reason": "sweep failed Leg 3 x 3 against board stock, but the legs are the purchased posts in materials[7] and steps[0] \"this project uses purchased Legs\". Shelf 0.75 x 22.25 x 38.75 fits the 3/4\" half sheet (either 48 x 48 or 24 x 96); other rows match 1x6, 1x4, 1x2.",
+      "readerNote": "steps[0].body: \"Because this project uses purchased Legs, your first step should be ordering those.\""
+    },
+    "R5": {
+      "result": "pass",
+      "reason": "steps name 1x4 (steps[1]), 1x2 (steps[5]), 1x6 (steps[10]); plywood shelves the half sheet. 1x6: 5 x 47.25 = 236.25 + 4 cuts x 1/8 = 236.75 <= 2 x 96 + 48 = 240 (two 47.25 per 96\" board = 94.625; fifth on the 48\"). 1x4: 2 x 18.25 + 2 x 34.75 + 22.25 = 128.25 + 0.5 <= 96 + 48 = 144. 1x2: 4 x 34.75 + 4 x 14.25 + 2 x 44 = 139 + 57 + 88 = 284 + 10/8 = 285.25 <= 3 x 96 + 48 = 336. Plywood: 2 x 22.25 x 38.75 = 1724 sq in <= half sheet 2304 (fits either 48 x 48 or 24 x 96: 2 x 38.75 + 1/8 <= 96)."
+    },
+    "R6": {
       "result": "fail",
       "level": "Fix",
       "confidence": "likely",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
-          "path": "cutList[0]",
-          "quote": "Leg — qty 4, 3 x 3 x 34.5 (Kreg-corrected)"
+          "path": "steps[11].body",
+          "quote": "using wood glue and 1 1/4\" coarse-thread pocket hole screws"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 1x6 96\""
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 1x6 48\""
-        },
-        {
-          "path": "materials[2].name",
-          "quote": "Board, 1x4 96\""
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Board, 1x4 48\""
-        },
-        {
-          "path": "materials[4].name",
-          "quote": "Board, 1x2 96\""
-        },
-        {
-          "path": "materials[5].name",
-          "quote": "Board, 1x2 48\""
+          "path": "materials[8].name",
+          "quote": "1 1/4\" fine-thread pocket hole screws"
         }
       ],
-      "arithmetic": "cutList[0] 3×3: no listed stock has thickness 3 (±1/32) with width ≥ 3; stock = 0.75×5.5, 0.75×5.5, 0.75×3.5, 0.75×3.5, 0.75×1.5, 0.75×1.5, sheet 0.75",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[0]",
-          "quote": "Leg — qty 4, 3 x 3 x 34.5 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (1x6, 1x4, 1x2, sheet-0.75); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "to-read"
+      "reason": "Steps[2]-[8] use 1 1/4\" fine-thread screws (materials[8]) but steps[11] uses 1 1/4\" coarse-thread screws for the top boards; no coarse-thread screw is in materials (searched materials[0..8] for /coarse/: none). Size agrees (1 1/4\"); thread type differs and is unlisted."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "Next, attach the Shelf assemblies to the same Legs using 1 1/4\" fine-thread pocket hole screws, as shown. Make sure you have the Shelves spaced properly before you drive in the screws.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/aecfb82f149b52a6.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "viewed images give numbers: leg/rail inset 1/4\" (16d082a210a285d9, 24907699a828fab4), shelf notches 2\" x 2\" (230ce3b53d20fde0), shelf positions 4 1/2\" and 18\" (aecfb82f149b52a6, aadc6d9ad9635835), top-board pocket holes 2 3/8\" from ends (2fe520bf948593c6), 1 1/2\" cut-offs (309edd5fb004586f); top centered on the base is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "19 reference(s), each in a step with its own image"
+      "search": "\"as shown\"/\"cutting diagram\" in steps[1],[4],[5],[10],[11]; viewed 23b894a6aa6dec91 (rail cutting diagram), 230ce3b53d20fde0 (shelf), 2fe520bf948593c6 (top boards), e08dfdf173e588ad (edging) show the referenced content"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "rails/support (1), end rails to legs (2), side rail assembly (3), shelves (4-5), base assembled on one leg set then the other (6-8), top built (9-13), top attached last (14)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] \"pocket hole jig set up for 3/4\" material\" (rails), steps[4] shelves 3/4\", steps[10] top boards 3/4\"; all pocketed parts are 3/4\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "cut 1 1/2\" off each end of the Top assembly"
+        },
+        {
+          "path": "cutList[7]",
+          "quote": "Top Board, quantity 5, 0.75 x 5 x 47 (Kreg source \"47 1/4\" *Rough Length*\")"
+        },
+        {
+          "path": "steps[11].image",
+          "quote": "viewed image 309edd5fb004586f labels the trimmed Top \"44\"\" and each cut-off end \"1 1/2\"\""
+        }
+      ],
+      "reason": "Rough length minus the stated 1 1/2\" per end does not give the 44\" final length shown in the image and used by Top Long Edge (cutList[8], 44).",
+      "arithmetic": "47.25 - 2 x 1.5 = 44.25, image/cutList[8] 44; difference 0.25 (rough length would need to be 47.5). Other numbers agree: 5 x 5.5 = 27.5 = image \"27 1/2\"\"; side rail 34.75 + 2 x 3 = 40.75 base length, end rail 18.25 + 6 = 24.25 base width."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[11].body",
+      "quote": "Next, add the Top Boards using wood glue",
+      "what": "wood glue (steps[11],[13]) and the food-safe finish (steps[14]) are not in materials (consumables)"
+    },
+    {
+      "path": "materials[7].name",
+      "quote": "Narrow Concord Island Post",
+      "what": "the purchased legs name a product but give no source, size or part number; only the cut-list 3 x 3 x 34 1/2 describes them (steps[0] says to order them first)"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/23b894a6aa6dec91.webp",
+      "plans/230ce3b53d20fde0.webp",
+      "plans/aecfb82f149b52a6.webp",
+      "plans/2fe520bf948593c6.webp",
+      "plans/aadc6d9ad9635835.webp",
+      "plans/24907699a828fab4.webp",
+      "plans/16d082a210a285d9.webp",
+      "plans/e08dfdf173e588ad.webp",
+      "plans/309edd5fb004586f.webp",
+      "plans/9f0adc6fff70990c.webp"
+    ]
+  }
 }

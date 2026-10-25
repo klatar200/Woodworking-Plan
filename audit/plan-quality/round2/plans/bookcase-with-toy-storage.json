@@ -10,37 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps[0] sides and mid panel, steps[1]-[3] assemble (parts labeled in viewed images), steps[4] shelf and trim; every named part is a cutList row or trim in materials"
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Top",
-          "why": "no step mentions it (searched steps for top)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Front",
-          "why": "no step mentions it (searched steps for front)"
-        },
-        {
-          "path": "cutList[4].part",
-          "quote": "Bottom",
-          "why": "no step mentions it (searched steps for bottom)"
-        },
-        {
-          "path": "cutList[5].part",
-          "quote": "Support",
-          "why": "no step mentions it (searched steps for support)"
-        },
-        {
-          "path": "cutList[8].part",
-          "quote": "Back",
-          "why": "no step mentions it (searched steps for back)"
-        }
-      ]
+      "result": "pass",
+      "reason": "flagged rows Top/Front/Bottom/Support/Back are labeled in viewed images: d34b259230364438 (\"10-1/2\" x 40-1/2\"\" Front, \"16-1/2\" x 40-1/2\"\" Bottom, \"2-3/4\" x 16-1/2\"\" Support, \"19-7/8\" x 34-1/2\"\" Back), 6ca8d4eb3cdffeac (\"Top\", 19-7/8 x 34-1/2), 686ddc978ed62a2d (2 Shelves 9-1/2 x 19-7/8, Shelf Front 2 x 40-1/2). Widths: 2 x 19.875 + 0.75 = 40.5 = Front/Bottom length."
     },
     "R4": {
       "result": "pass",
@@ -48,21 +23,64 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 3.25x48, 0.75x48); steps not checked for per-part stock"
+      "reason": "mixed stock (plywood sheets, baseboard, moulding); parts are sheet parts and layout is not shown. Area only: Sides 2x20x38 1520 + Mid 19.125x34.5 659.8 + Top 12.5x42 525 + Front 425.25 + Bottom 668.25 + Support 45.4 + Shelf 2x9.5x19.875 377.6 + Shelf Front 81 + Back 2x19.875x34.5 1371.4 = 5673.7 sq in <= 2 sheets 2 x 48 x 96 = 9216 sq in, so no certain shortfall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1-1/4\" pocket screws (steps[1]-[4]) and 1-1/4\" brad nails (steps[4]); materials[3],[4] same sizes; no conflicts"
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "unknown",
+      "reason": "Support (2.75 x 16.5) location is not given in text and not dimensioned in viewed images d34b259230364438/6ca8d4eb3cdffeac; cannot tell from the images whether the parts fix it. Pocket-hole marks, side/mid-panel profiles (a0583fad7a2d64fa) and the 13\" shelf dimension (efb73390cee3e4a4) are shown."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "search": "steps[0] \"diagrams shown\" and steps[1]-[4] \"as shown\" each have a step image; viewed a0583fad7a2d64fa shows the side and mid panel cutting diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "shapes cut (0), carcass assembled (1-2), shelf assembled (3), shelf installed then trim (4)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes and begin assembly as shown using 1-1/4\" pocket screws."
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood (steps[1]-[4]) but no jig thickness setting is stated; search of all steps/materials/description for /setting|thickness|3\\/4/ found only the part list; viewed images d34b259230364438, 6ca8d4eb3cdffeac, 686ddc978ed62a2d, efb73390cee3e4a4 show pocket-hole marks and no setting. Recorded only; does not count."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 sides, 2 shelves (image 686ddc978ed62a2d), 2 backs 19.875 x 2 + 0.75 = 40.5 interior width; (b) every part appears installed in images (steps[1]-[4]); (c) trim in materials[1],[2], no other hardware; (d) steps end with shelf and trim installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[4].body",
+      "quote": "Cut base board trim and decorative moulding to length and install using 1-1/4\" brad nails.",
+      "what": "trim lengths are not stated (materials give 48\" pieces); placement only by image arrows"
+    },
+    {
+      "path": "steps[0].image",
+      "quote": "Add large radius ... Add small radius",
+      "what": "viewed image a0583fad7a2d64fa shows \"Add large radius\" and \"Add small radius\" on the side and mid-panel profiles with no radius value"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/a0583fad7a2d64fa.webp",
+      "plans/d34b259230364438.webp",
+      "plans/6ca8d4eb3cdffeac.webp",
+      "plans/686ddc978ed62a2d.webp",
+      "plans/efb73390cee3e4a4.webp"
+    ]
+  }
 }

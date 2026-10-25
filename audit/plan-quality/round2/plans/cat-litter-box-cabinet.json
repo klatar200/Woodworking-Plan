@@ -155,32 +155,21 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Install the interior divider panel in a location that works for you with 1 1/4\" pocket hole screws."
+        }
+      ],
+      "reason": "An \"interior divider panel\" is installed but no cutList row, material or step gives its size or stock. Search: cutList parts (Vertical center support is the rear-frame upright, steps[1] image 4d9ef5d824bbbdc7) and all steps/materials for /divider/ match only steps[6]. Non-structural: the same step says \"You can also eliminate the interior divider panel.\""
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[0].part",
-          "quote": "Vertical corner supports",
-          "why": "no step mentions it (searched steps for vertical/corner/support)"
-        },
-        {
-          "path": "cutList[1].part",
-          "quote": "Horizontal side support",
-          "why": "no step mentions it (searched steps for horizontal/support)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Vertical center support",
-          "why": "no step mentions it (searched steps for vertical/support)"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Horizontal front/back supports",
-          "why": "no step mentions it (searched steps for horizontal/support)"
-        }
-      ]
+      "result": "pass",
+      "reason": "all rows used; flagged supports are shown fully dimensioned in viewed images e15775a9746b1015 (side frame 3 1/2\" posts, 9\" rails, 1'4\" x 2'8\"), 4d9ef5d824bbbdc7 (rear: 2 rails, center support, 3 1/2\" posts), 135571c26090130f, 34f9386f9cbe2ad1 (left frame with 3 rails). Counts: 8 corner supports = 4 frames x 2; side supports 5 = 2 right + 3 left (steps[3] \"eliminate the middle cross piece\"); 4 front/back = 2 + 2; 1 center support."
     },
     "R4": {
       "result": "pass",
@@ -188,21 +177,113 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 7 stock types (1x4, 0.5x72, 0.5x36, 0.75x48, 0.25x48, 1x8, sheet-0.75); steps not checked for per-part stock"
+      "reason": "mixed stock; parts are not all tied to one listed material (bead board, 1/2\" boards and plywood have no stated width, base plywood 46.5 vs \"Plywood, 3/4\" Thick 36\"\"). 1x4 parts alone pass on total length: 8x32 + 5x9 + 25 + 4x41 + 4x24.75 + 4x13.3125 = 256+45+25+164+99+53.25 = 642.25 + 26 cuts x 1/8 = 645.5 <= 14 x 48 = 672 (see gaps for packing)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Cut and install side and rear plywood/beadboard panels utilizing your nail gun."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Utilize your nail gun to install the base trim."
+        }
+      ],
+      "reason": "Steps nail the panels and trim but materials list no nails/brads; search of materials[0..9].name for /nail|brad/: no match (materials[7] is pocket hole screws only). Pocket screw size 1 1/4\" in steps matches materials[7]."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "frame positions fully dimensioned in viewed images (3 1/2\" members, 1'6 3/4\" openings, 2' 1\" openings); base plywood \"2\" up from the bottom\" (steps[5]); top overhang 1 1/2\" (steps[10]); hinge locations at door top/bottom shown in viewed image f5ec6ad6c41a9d2a; interior divider \"a location that works for you\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "search": "steps[8] \"as shown\" has a step image (f5ec6ad6c41a9d2a, viewed, shows the doors with hinges); no other diagram references"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "four frames (0-3), assembled (4), bottom plywood 2\" up (5), panels nailed (6), doors made (7) and hung (8), trim (9), top made (10) and set on (11), finish (12)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Cut and assemble the right side panel utilizing 1 1/4\" pocket hole screws"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" boards (steps[0]-[7]) but no jig thickness setting is stated; search of all steps/materials/description for /setting|thickness|3\\/4/ found none; viewed images (e15775a9746b1015, 4d9ef5d824bbbdc7, 8cf1e3ce7a660c7a, f5ec6ad6c41a9d2a) show dimensions only. Also no fastener or method is stated for fixing the top (steps[10],[11] repeat the same text). Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[13]",
+          "quote": "Top, quantity 1, 0.75 x 19 x 51"
+        },
+        {
+          "path": "steps[10].image",
+          "quote": "viewed image 63656ebb0a07cdf2 dimension labels: 4' 3\" and 1'-6 1/4\""
+        }
+      ],
+      "reason": "Cut-list Top width disagrees with the step image dimension (the step text gives only the 1 1/2\" overhang).",
+      "arithmetic": "Image: 1'-6 1/4\" = 18.25 deep; cutList[13] widthIn 19; 19 - 18.25 = 0.75. Length agrees: 4' + 2 x 1 1/2\" overhang = 51 = cutList lengthIn 51. Otherwise consistent: door 13.3125 + 2 x 3.5 = 20.3125 (image 1'8 5/16\"), 2 doors 40.625 <= 41 opening."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[0].name",
+      "quote": "Board, 1x4 48\" (quantity 14)",
+      "what": "by the R5 total-length test the 1x4 passes, but 17 parts are longer than 24\" (8 x 32, 4 x 41, 4 x 24.75, 1 x 25) and no two fit on one 48\" board (24.75 + 24.75 = 49.5 > 48; 25 + 24.75 = 49.75), so at least 17 boards are needed against 14 bought"
+    },
+    {
+      "path": "steps[11].body",
+      "quote": "Choose the type of wood you would like to utilize and cut to size to allow a 1 1/2\" overhang on the sides and front.",
+      "what": "steps[10] and steps[11] have identical text; the \"Install the top\" step never says how the top is fastened"
+    },
+    {
+      "path": "materials[9].name",
+      "quote": "Door latches - style of your choice",
+      "what": "latches are bought but no step or viewed image (f5ec6ad6c41a9d2a, b2c8ed5c38d7a392) installs or locates them"
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[12].body",
+      "quote": "Finish the cabinet by painting or staining per your preference",
+      "what": "paint/stain and wood glue (if any) not in materials (consumable)"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "Route a 1/4\" recess in the back of the door panels to accept the plywood/beadboard infill.",
+      "what": "recess width is not given: door plywood 13 13/16 x 18 3/4 vs opening 13 5/16 x 17 3/4 (viewed image 8cf1e3ce7a660c7a) = 1/4\" per side in width but 1/2\" per side in height"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/e15775a9746b1015.webp",
+      "plans/4d9ef5d824bbbdc7.webp",
+      "plans/135571c26090130f.webp",
+      "plans/34f9386f9cbe2ad1.webp",
+      "plans/8cf1e3ce7a660c7a.webp",
+      "plans/f5ec6ad6c41a9d2a.webp",
+      "plans/ec1dfec5ab5c8d3c.webp",
+      "plans/fd3e23cba9dcb4ad.webp",
+      "plans/b2c8ed5c38d7a392.webp",
+      "plans/63656ebb0a07cdf2.webp",
+      "plans/620d58d23ce771c3.webp"
+    ]
+  }
 }

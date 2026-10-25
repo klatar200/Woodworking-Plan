@@ -6,52 +6,115 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[8].body",
-          "quote": "Make sure to check out the build video on this one! (linked in the extras tab) https://youtu.be/XBCUHfva6G8 I had a blast producing it and I think you'll find it helpful when tackling this project!",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Make sure to check out additional info over on my blog: (also linked in the extras tab) https://woodshopmike.com/not-your-average-barn-door/ I'd love to know what you all think so let me know! Thanks ",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[9].body",
-          "quote": " check out additional info over on my blog: (also linked in the extras tab) https://woodshopmike.com/not-your-average-barn-door/ I'd love to know what you all think so let me know! Thanks for reading!",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[8] video and steps[9] blog links are credits/optional (\"Make sure to check out\"); every cut part is in the cut list. Hardware install defers to unnamed \"MFG guidelines\" (see gaps)."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps cut center panel (0), 2x6 frame \"to final length and width\" (2); cutList has Top & Bottom Rail, Side Rail, Center Panel; no other part cut"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 3 rows used: Center Panel steps[0]-[1], rails steps[2]-[3]"
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.5, 2x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "2x6 parts (1.5 x 5) match only Board 2x6 96\"; panel (0.5) matches only MDF 1/2\". 2x6: 2 x 28.5 + 2 x 84.5 = 57 + 169 = 226 + 4/8 <= 6 x 96 = 576 (452 + 8/8 = 453 <= 576 even for two doors). MDF panel 29.5 x 75.5 fits one 48 x 96 sheet (area 2227 <= 4608; 2 sheets bought)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use only \"2-1/2\" pocket hole screws\" (steps[3]); materials[2] same size; 3 per joint x 4 joints = 12 matches \"12 2-1/2\" pocket hole screws\""
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "These rollers attach to the door with a bolt and bracket that I cut a pocket for in the back side of the door using my router and a few templates."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "I cut the boards to final length and width and then added the dados as needed."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "I installed the handles using painter's tape to protect the finished door and to mark the hole locations on."
+        }
+      ],
+      "reason": "Positions the builder must set have no number: roller bolt/bracket pocket location and size (steps[4]); dado width/depth/location in the rails (steps[2]; only implied by panel 29.5 x 75.5 vs rails 28.5 and 84.5 - 2 x 5 = 74.5, i.e. 1/2\" each side); handle hole locations (steps[7]); faux tongue-and-groove line spacing (steps[1]). Viewed images 44b992be2bb3c24f (roller pocket), 50023544509080f8 (grooves) and fb725938cfb30b7a (hung door) are photos with no dimensions. Search for inch measurements in steps[1],[2],[4],[7]: none."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps vs as shown/see diagram; no matches"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "panel (0,1), frame parts and dados (2), assemble (3), roller pockets in back of assembled door (4), putty/sand (5), finish (6), hang and handles (7)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "I used (3) 2-1/2\" pocket hole screws per joint."
+        }
+      ],
+      "reason": "Pocket holes drilled in 1 1/2\" rails (steps[3]) but no jig thickness setting stated; search of all steps/materials/description for /setting|thickness|1 1/2/ found none; viewed images (44b992be2bb3c24f, fb725938cfb30b7a, 50023544509080f8) show no setting. Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "MDF, 1/2\" Thick Full Sheet"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Center Panel quantity 1, 0.5 x 29.5 x 75.5"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "I used the Kreg ACS to first cross cut the sheets to their length"
+        }
+      ],
+      "reason": "Materials are bought for two doors but the cut list gives parts for one door. Arithmetic: materials[0] 2 MDF sheets, materials[3] 4 rollers, materials[8] 2 handles, materials[7] 2 bottom guides, materials[2] 24 pocket screws vs steps[3] \"12 2-1/2\" pocket hole screws\" per door; cutList Center Panel qty 1, Side Rail qty 2, Top & Bottom Rail qty 2 = one door. Title/steps say \"Barn Doors\" / \"these doors\".",
+      "arithmetic": "24 screws bought / 12 used per door = 2 doors; cut list = 1 center panel (needs 2) and 4 rails (needs 8)"
     }
   },
   "measurementsScoredOn": "kreg-corrected",
-  "verdict": null
+  "verdict": "Fix",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[7].body",
+      "quote": "using painter's tape to protect the finished door and to mark the hole locations",
+      "what": "painter's tape and sandpaper (80/120/220 grit, steps[5],[6]) are not in materials (consumables)"
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "I then followed the MFG guidelines to install the track and roller hardware.",
+      "what": "track/roller installation (track height, roller position) defers to manufacturer guidelines for hardware that is named only generically in materials (\"Sliding door rollers\", \"8' track sections\")"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/44b992be2bb3c24f.webp",
+      "plans/fb725938cfb30b7a.webp",
+      "plans/50023544509080f8.webp"
+    ]
+  }
 }

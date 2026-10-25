@@ -179,10 +179,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[0]-[10] (Sides, Lower/Center Shelves, Cube/Book/Vertical Dividers, Top, trims, zoo Posts/Top-Bottom/Middle/Spacer) is a cutList row; \"Lower Front/Side Trim\" (steps[4]) = Base Front/Side Trim"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 17 rows used; Toy Shelves (8 x 0.5 x 13.5 x 14) are not named in steps but are the \"remaining shelves\" of steps[11]; viewed image 19b02aaf741ece36 shows 4 + 4 = 8 shelves (blue) in the two side sections, 13.5 = side-to-vertical-unit gap (13 1/2\" from Sides)."
     },
     "R4": {
       "result": "pass",
@@ -190,28 +192,87 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.5); steps not checked for per-part stock"
+      "reason": "two sheet stocks and sheet parts (layout not shown). Area only: 3/4\" parts ~ 7553 sq in (Sides 2072, Lower Shelves 1785, dividers/shelves 1170, vertical dividers 1218, Top 701.4, trims 313, zoo strips 1.5 wide ~ 512) <= 2 x 4608 = 9216; 1/2\" Toy Shelves 8 x 13.5 x 14 = 1512 <= 4608. No certain shortfall."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use pocket hole screws (steps[1]-[3],[7],[8]) and nails (steps[4],[7]); materials[2] 1 1/4\" pocket screws, materials[3] 1 1/4\" brad nails; no conflicting sizes"
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "lf Pins at the appropriate heights for where you want your remaining shelves.\nFill the animal zoo from the top with all your kid’s stuffed animals and pull them through the bungees when you need them!",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a6aea161c52478fa.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "given as numbers: first shelf top 3\" up, shelves 14\"/12\" above, cube dividers and center unit 13 1/2\" from sides, center shelves tops 13\" and 28\", Top overhangs 1/2\" sides / 1 1/2\" front; zoo holes \"evenly spaced across the center\", spacer flush with top; viewed images 19b02aaf741ece36, fb73fb340458b15d and d2ef0cb210e88e96 show the zoo middle frame at mid-height. Zoo hanging position and shelf-pin setback are not numeric (see gaps)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "search": "steps cite no diagram; \"as shown\" absent; steps[1]-[11] have step images"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "pocket holes/bevels first (0), frame (1), shelves/dividers (2), center unit between Top and last shelf (3), trim (4), shelf pin holes (5); zoo: holes drilled before assembly (6), assembled (7-8), painted (9), strung and hung last (10)"
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Drill the following pocket holes on the following pieces:"
+        }
+      ],
+      "reason": "Pocket holes are drilled in 3/4\" plywood/strips (steps[0]-[8]) but no jig thickness setting is stated; search of all steps/materials/description for /setting|thickness|3\\/4/ found none; viewed SketchUp drawings (19b02aaf741ece36, fb73fb340458b15d, d2ef0cb210e88e96, 1627c70915ec8bbd) show no setting. Recorded only; does not count."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[11].body",
+          "quote": "Slide in Kreg Shelf Pins at the appropriate heights for where you want your remaining shelves."
+        },
+        {
+          "path": "materials[0..7].name",
+          "quote": "3/4\" plywood, 4'x8' / 1/2\" plywood / Kreg 1 1/4\" pocket hole screws / 1 1/4\" brad nails / Wood glue / Keyhole brackets / bungee / Paint or stain"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "The Top should be flush along the back with a 1/2\" overhang on each side and a 1 1/2\" overhang on the front."
+        }
+      ],
+      "reason": "(c) shelf pins are hardware used in steps[11] but are not in materials (searched materials[0..7] for /pin/: none). (a) secondary: the stated side overhang does not match the Top length.",
+      "arithmetic": "Shelf pins missing (R14(c)). Overhang: Lower Shelf 42 1/2 (Kreg source \"42 1/2\" x 14\" x 3/4\"\") + 2 x 3/4 Sides = 44; + 2 x 1/2 overhang = 45, but Top = 45 1/4 (Kreg source \"45 1/4\" x 15 1/2\" x 3/4\"\") -> 1/4\" difference (front: 14 + 1 1/2 = 15 1/2 matches)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[10].body",
+      "quote": "attach keyhole brackets to the Spacer and bottom of the Posts",
+      "what": "screws for the keyhole brackets and for hanging the zoo are not listed in materials (consumable-type hardware, size unstated)"
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "Align and drill screws into the side of the bookcase and hang the zoo on the bookcase.",
+      "what": "zoo hanging height/position on the bookcase side and keyhole bracket positions on the Spacer are not given as numbers (viewed image 1627c70915ec8bbd shows only the zoo frame)"
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "following instructions on the jig",
+      "what": "shelf pin hole setback/range is deferred to the Kreg Shelf Pin jig instructions"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/19b02aaf741ece36.webp",
+      "plans/fb73fb340458b15d.webp",
+      "plans/d2ef0cb210e88e96.webp",
+      "plans/1627c70915ec8bbd.webp"
+    ]
+  }
 }

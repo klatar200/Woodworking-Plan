@@ -223,63 +223,78 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Leaving your table saw set at 1 1/4\" rip the boards so that they are 1 1/4\" by 1 1/4\". Then cut the boards to the lengths shown in the attached cut diagram. Sand with 100 grit then 150 grit sandpaper.",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "3/4\" for all holes in this design) drill holes, as shown in the attached diagram, in the table and chair skirt pieces, 12 in total. It is a good idea to mark where the holes will be to prevent mistake",
-          "why": "matches \"the attached\""
-        },
-        {
-          "path": "steps[10].body",
-          "quote": " legs.They should be flush with the outside top of the front legs. The skirts should attach to the outside edge of back legs 11 1/4\" up from the bottoms. See attached diagram. Do this for both chairs.",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "f the legs and the lower back rest is 4\" down from the top. See attached diagram. Do this for both chairs. Now use the Kreg Pine Wood Plugs to fill the 16 pocket holes in the back supports. Using 80 -",
-          "why": "matches \"See attached\""
-        },
-        {
-          "path": "steps[13].body",
-          "quote": " they should also be flush with the top and both ends of the seat. Finally attach the front edges. They should be flush with the top of the seats and the ends of the side edging. See attached diagram.",
-          "why": "matches \"See attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "the \"attached\" cut/pocket/assembly diagrams are the step images (steps[2],[3],[4],[10]-[13] each have an image; viewed 91c10f9d78408e0b, 0270bc252a976d14, a33d6fe03e16de1d, cc57a92a6fd26117 are the diagrams); no external document."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "every part named in steps[1]-[14] (table top, seats, legs, skirts, back rests, top frame, seat edging) is a cutList row; \"Chair Back Supports\" = \"back rests\" (steps[5],[11])"
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "all 15 rows used; counts match viewed diagrams: legs 4 x 19, 4 x 13 1/4, 4 x 26 (91c10f9d78408e0b), skirts 18 1/2, 24 1/2, 10 1/2, 9 1/2 and edging strips (0270bc252a976d14); frame \"Two should be 30\" ... other two 24\"\" (steps[8])."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[2] thinner than stock — would need planing/resawing, not judged; cutList[3] thinner than stock — would need planing/resawing, not judged; cutList[4] thinner than stock — would need planing/resawing, not judged; cutList[11] thinner than stock — would need planing/resawing, not judged; +2 more"
+      "result": "pass",
+      "reason": "legs 1.25 x 1.25 are ripped from 2x4 (steps[2] \"rip 1 1/4\" pine boards from 2X4's\"; image 91c10f9d78408e0b); 3/4 x 2 skirts and 1/4 x 3/4 edging strips are ripped from the 1x8 (image 0270bc252a976d14 \"Rip the 1/4\" seat edges from the pieces left\"); plywood parts 22.5 x 28.5 and 11.75 x 12.5 fit the quarter sheet."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, 1x8, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "the plan's own cut diagrams (viewed) lay the parts on the named stock. 2x4 legs: 4x19 + 4x13.25 + 4x26 = 76+53+104 = 233 + 12 cuts x 1/8 = 234.5 <= 2 strips x (96 + 48) = 288 (diagram 91c10f9d78408e0b shows 96\" and 48\" boards). 1x8 96\" (7 1/4\") holds all 2\"-wide parts and 3/4 strips per 0270bc252a976d14. Plywood quarter sheet 24 x 48: Table Top 22.5 x 28.5 plus two seats 11.75 x 12.5 side by side (23.5 + 1/8 <= 24; 28.5 + 12.5 + 1/8 <= 48)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps use 1 1/4\" coarse pocket screws (steps[6],[9]-[11],[14]) = materials[5] and 1 1/4\" brad nails (steps[8],[13]) = materials[8]; plugs materials[10] = 16 holes (steps[11]); no conflicts"
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "positions given in numbers: skirts flush with leg outsides, table top overlap about 1 1/2\" (30 - 27)/2 = 1.5, chair skirts 11 1/4\" up on back legs (viewed cc57a92a6fd26117), back rests 1/4\" in with top flush and lower 4\" down, 1\" x 1\" seat corner cuts, edging flush."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "13 reference(s), each in a step with its own image"
+      "search": "\"attached diagram\" / \"diagram\" references in steps[2],[3],[4],[10],[11],[13] each have a step image; viewed 91c10f9d78408e0b, 0270bc252a976d14, a33d6fe03e16de1d, cc57a92a6fd26117 show the diagrams"
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "parts cut (1-3), pocket holes (4-5), table legs/skirts (6), top painted (7) then framed (8) then attached (9); chair legs (10), backs (11), seats cut (12), edged (13), attached (14), finish (15)"
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[4] \"Using a Kreg pocket jig (set to 3/4\" for all holes in this design)\"; all pocketed parts are 3/4\"."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) table top assembly: 28.5 + 2 x 3/4 frame = 30 and 22.5 + 1.5 = 24 match the frame lengths in steps[8]; overhang (30 - (24.5 + 2 x 1.25))/2 = 1.5 matches steps[9]; chair skirt bottom 11 1/4 + 2 = 13 1/4 = Front Chair Leg length. (b) every part installed. (c) wood plugs, glue, chalk paint in materials. (d) steps end with finish."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[15].body",
+      "quote": "I used blue painters tape to mask off that area",
+      "what": "painter's tape not in materials (consumable)"
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "cut 45 degree angles on ends of the four table top framing pieces from step 5",
+      "what": "the framing strips are cut in steps[3] (\"Cut 3/4\" pine pieces\"), not \"step 5\" (steps[5] is the back-rest pocket holes); wrong step reference"
+    },
+    {
+      "cause": "import",
+      "path": "cutList[2]",
+      "quote": "Table Legs - Pine thicknessIn 1 widthIn 1",
+      "what": "live leg rows read 1 x 1 / Front Chair Leg 13; Kreg source gives 1 1/4 x 1 1/4 x 19, 26 and 13 1/4"
+    }
+  ],
+  "reader": {
+    "batch": "r2-13",
+    "imagesViewed": [
+      "plans/91c10f9d78408e0b.webp",
+      "plans/0270bc252a976d14.webp",
+      "plans/a33d6fe03e16de1d.webp",
+      "plans/cc57a92a6fd26117.webp"
+    ]
+  }
 }
