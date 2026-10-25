@@ -215,8 +215,8 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 2x2); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Adjudicated: each part's Kreg-corrected section matches exactly one material (0.75 x 3.5 -> 1x4 96\", 1.5 x 1.5 -> 2x2 36\"). 1x4: 2x55 + 13x18 + 4x51.75 + 4x22 + 34x15 + 2x52.5 = 1254 + 59 cuts x 1/8 = 1261.4 <= 16 x 96 = 1536 (every part <= 96). 2x2: 4 x 24 = 96, one per 36\" baluster."
     },
     "R6": {
       "result": "pass",
@@ -240,25 +240,11 @@
       "reason": "steps[1] 'drill two 3/4\" pocket holes on each end of all 1x4 boards EXCEPT for the two 55\" boards'; every pocket-holed part is a 1x4 (0.75\" thick); legs take screws from the panels."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[3].body",
-          "quote": "use the same technique with the thirteen 18\" slats and the 55\" boards, but instead of beginning with a space, begin with the slat lined up flush with the edge of the 55\" board"
-        },
-        {
-          "path": "steps[3].body",
-          "quote": "attaching five 15\" slats to the 22\" boards"
-        }
-      ],
-      "arithmetic": "Lid: 13 slats x 3 1/2 (cutList[1] 1x4) + 12 gaps x 3/4 (steps[2] spacer) = 45.5 + 9 = 54.5 vs 55\" boards, so a 1/2\" shortfall at the end of a 'flush' start. Lid depth = 18 (cutList[1]) + 2 x 3/4 (cutList[0] thickness) = 19.5\", while the side panels are 22\" wide (cutList[3]) so the box is at least 22\" deep: 22 - 19.5 = 2.5\" uncovered. By the same method the front panel works: 12 x 3.5 + 13 x 0.75 = 51.75 and side 5 x 3.5 + 6 x 0.75 = 22.",
-      "reason": "(a) Lid slat count/spacing does not add up to the 55\" boards, and the lid depth built from the stated parts is shorter than the box. Likely, not certain, because the plan never gives the box's outer footprint or the lid overhang."
+      "result": "pass",
+      "reason": "Adjudicated: (a) front 12 x 3 1/2 + 13 x 3/4 = 51.75 (steps[2], cutList[2]); side 5 x 3 1/2 + 6 x 3/4 = 22 (steps[3], cutList[3]); 2x12 + 2x5 = 34 slats (cutList[4]). Lid depth 18 + 2 x 3 1/2 (55\" boards are rails like the front) = 25 = 22 + 2 x 1 1/2 legs; round 1 used 3/4 thickness instead of 3 1/2 width. Lid length 13 x 3 1/2 + 12 x 3/4 = 54.5 vs 55 leaves 1/2\" at the far end; steps[3] states only a flush start, so no stated number is contradicted. (b)-(d) hinge and lid supports in materials; steps reach the finished box."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -276,5 +262,15 @@
       "plans/c5257eb329d4b960.webp"
     ]
   },
-  "gaps": []
+  "gaps": [],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R14"
+    ],
+    "note": "R5 pass; R14 pass: round 1 lid-depth arithmetic used slat thickness, not width (18 + 2 x 3 1/2 = 25 = 22 + 2 x 1 1/2); lid 1/2\" remainder contradicts no stated condition."
+  }
 }

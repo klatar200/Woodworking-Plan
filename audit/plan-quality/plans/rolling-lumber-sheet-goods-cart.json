@@ -795,25 +795,12 @@
       "reason": "R5 precondition not met: 7 stock types (1x2, 1x3, 2x4, 2x6, 2x8, sheet-0.25, sheet-0.75); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[13].body",
-          "quote": "using bolts and washers. Our casters called for 3/8\" bolts, as shown in the materials list."
-        },
-        {
-          "path": "materials[12].name",
-          "quote": "3/8\" x 1 1/2\" lag screws"
-        }
-      ],
-      "reason": "The step says casters are fixed with 3/8\" bolts and points to the materials list, but the materials list contains 3/8\" x 1 1/2\" lag screws (24) and washers; search materials[].name for /bolt/i finds nothing. Fastener type for the same use differs between step and materials. All other sizes (2 1/2\" and 1 1/4\" coarse pocket screws, 4d finish nails) match materials."
+      "result": "pass",
+      "reason": "Adjudicated: sizes agree — steps[13] \"Our casters called for 3/8\\\" bolts, as shown in the materials list\" and materials[12] \"3/8\\\" x 1 1/2\\\" lag screws\" + materials[15] \"3/8\\\" washers\" give the same 3/8\" size; 2 1/2\" and 1 1/4\" coarse pocket screws and 4d finish nails match materials[8],[9],[10]. R6 judges sizes; \"bolts\" vs \"lag screws\" is a naming mismatch, recorded as a gap, not two sizes for one use."
     },
     "R10": {
       "result": "pass",
-      "reason": "Viewed drawings give positions: step 15 notch 3 5/8\" x 3 5/8\" and pocket-hole spacing; step 19 frames 45 3/4\" apart / 24 5/16\"; step 23 caster 6 1/2\"; step 6 trim '1/4” overhang'; step 7 notch '1 1/2” x 1 1/2”'. (The two utility pulls are not placed anywhere; recorded under R14.)"
+      "reason": "Adjudicated (images opened this run): rail positions 7 / 11 / 11 and back stile 46 9/16 in f6096fca31f68b3a (steps[18]); right back dividers 9 / 8 / 8 / 9 in f462fef2d85b8279 (steps[25]); shelf dividers 9 / 8 / 8 / 9 in d273c0a2fe83ca2e (steps[30]); bottom-left dividers 9 / 8 / 8 / 9 in 16f691f54e721c67 (steps[33]). Round 1 evidence also stands: frames 45 3/4 apart (steps[19] image), notch 3 5/8, trim overhang 1/4\" (steps[6]), notch 1 1/2 x 1 1/2 (steps[7]). Utility pulls are not installed at all; recorded under R14."
     },
     "R11": {
       "result": "pass",
@@ -830,7 +817,7 @@
     "R14": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "certain",
+      "confidence": "likely",
       "cause": "plan",
       "evidence": [
         {
@@ -842,7 +829,7 @@
           "quote": "Attach the left back panel/divider assembly to the cart using 1 1/4” coarse-thread pocket hole screws, as shown."
         }
       ],
-      "reason": "Materials list two 6 1/2\" utility pulls (quantity 2), and the viewed finished-cart photos show a handle on the support-frame side, but no step installs or positions them. Search of all step titles/bodies for /pull|handle/i: no match. (a)-(c) otherwise agree: 3+3 stiles and 9 rails per step 14 = cutList 3/3/3+3+3; 6 casters, 24 lag screws, 24 washers = 6 x 4."
+      "reason": "Adjudicated: (d) materials list two 6 1/2\" utility pulls and viewed f4e0b12eb492cb72 (overview) and b08b16a213d2da2e (photo) show a pull on the support-frame end, but no step installs or positions them (search steps[].title/body, description, summary for /pull|handle/i: none). The steps end (steps[34]) without this part. Likely, not certain: the cart is usable without the pull and R14 has no sub-clause written for an unused material. Counts otherwise agree (3+3 stiles, 9 rails, 6 casters x 4 = 24 lag screws/washers)."
     }
   },
   "verdict": "Fix",
@@ -870,5 +857,16 @@
       "quote": "Then cut one Shelf Panel, one Shelf Back, and four Shelf Dividers to size from the sheet, as well.",
       "what": "Step 27/28 name a 'Shelf Back' but the cutList row and step 29 call the same part 'Shelf bottom' (6 1/2 x 45 3/4, corrected); no cutList row is named 'Shelf Back'."
     }
-  ]
+  ],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship (unverified)",
+    "decided": [
+      "R6",
+      "R10",
+      "R14"
+    ],
+    "note": "R6 pass (3/8\" size consistent; bolt vs lag-screw naming is a gap); R10 pass (divider and rail spacing dimensioned in viewed step images); R14 upheld at Fix/likely: two listed utility pulls shown on the finished cart are never installed."
+  }
 }

@@ -22,8 +22,8 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x10, 2x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Adjudicated: each part's thickness x width matches exactly one material (cutList 2x10 rows -> materials[0] \"Board, 2\\\"x10\\\"x8'\", 2x4 rows -> materials[1] \"Board, 2\\\"x4\\\"x8'\"). 2x10: 51 + 2x20 = 91 + 3 cuts x 1/8 = 91.375 <= 96 (viewed 57546cac513cd926 shows 20 + 51 + 20 with scrap ends). 2x4: 2x32 = 64 + 2 x 1/8 <= 96. No import-default quantity flagged."
     },
     "R6": {
       "result": "pass",
@@ -31,7 +31,7 @@
     },
     "R10": {
       "result": "pass",
-      "reason": "Viewed 596e81d5c01e7e5f shows where supports and legs sit on the top, screw order, and pocket-hole direction (arrows); no numeric inset/overhang is given but the image shows the placement. Cut angles 15 degrees in steps[0],[1] and images."
+      "reason": "Adjudicated: positions are fixed by the parts or relational and shown in viewed 596e81d5c01e7e5f (steps[2]): the two 2x4 supports run along the long edges of the top, each leg stands against the 15-degree ends of the supports (leg spacing fixed by the 32\" supports), assembly symmetric on the 51\" top. Cut angles 15 degrees in steps[0],[1]. No unstated position the parts leave open."
     },
     "R11": {
       "result": "pass",
@@ -59,7 +59,7 @@
       "reason": "(a) 20 + 51 + 20 = 91\" of 96\" 2x10 (viewed 57546cac513cd926) and 2 x 32 = 64\" of 96\" 2x4 match cutList. (b) every part installed. (c) screws, oil in materials. (d) steps reach the finished bench with 'Use sealer'."
     }
   },
-  "verdict": "Ship (unverified)",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -74,5 +74,15 @@
       "plans/596e81d5c01e7e5f.webp"
     ]
   },
-  "gaps": []
+  "gaps": [],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R5",
+      "R10"
+    ],
+    "note": "R5 pass (part section matches one material each; fits); R10 pass: placements are relational/fixed by parts and shown in viewed 596e81d5c01e7e5f."
+  }
 }

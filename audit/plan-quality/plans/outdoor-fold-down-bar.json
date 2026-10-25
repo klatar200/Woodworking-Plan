@@ -191,8 +191,8 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x8, 1x3); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Adjudicated: steps name the stock per part (1x8: steps[0] Sides, [1] Shelf/Bottom, [5] Wide Top, [8] Door Boards, [13] Latch Block; 1x3: steps[3] Wall Cleats, [5] Narrow Top, [11] Braces), Kreg-corrected rows. 1x8: 2x24.75 + 2x27.5 + 31 + 3x29 + 5.25 = 227.75 + kerf <= 2x96 + 72 = 264; packs [31,29,29], [29,27.5,27.5,5.25], 72\" [24.75,24.75]. 1x3: 2x27.5 + 31 = 86 + 3/8 <= 96; 2x20 = 40 + 1/4 <= 48."
     },
     "R6": {
       "result": "pass",
@@ -223,14 +223,10 @@
       "evidence": [
         {
           "path": "steps[15].body",
-          "quote": "install the eye screws, the door chains, the magnetic latch and the door pull where shown."
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Cut the Wide Top board from a 1x8 and the Narrow Top as shown in the cutting diagram. Drill pocket holes in the Wide Top at the locations shown."
+          "quote": "Next, install the eye screws, the door chains, the magnetic latch and the door pull where shown."
         }
       ],
-      "reason": "(c) Eye screws are used in steps[15] but a search of materials[].name for /eye/i finds none (materials: 1 1/4\" and 2 1/2\" Kreg screws, hinges, 1 1/4\" flat-head screws, magnetic catch, jack chain, pull, hooks, bottle opener). (b) steps[4] is titled 'Install the Wall Cleats' but its body is a word-for-word copy of steps[5] (cutting the Top boards); no step text attaches the cleats made in steps[3] (search /cleat/i hits only steps[3], steps[4].title, steps[16]); viewed image 8278078dd6b00c4c shows both cleats on the back, so the placement exists only as a picture. Wall anchors in steps[16] are conditional ('if you're unable to locate wall studs') and not in materials."
+      "reason": "Adjudicated: (c) eye screws are used in steps[15] but no materials[].name matches /eye/i (materials: Kreg screws, hinges, flat-head screws, magnetic catch, jack chain, pull, hooks, bottle opener, glue, stain). Round 1's (b) cleat claim is not upheld: steps[4] title \"Install the Wall Cleats\" with viewed image 8278078dd6b00c4c shows the cleats installed. Conditional wall anchors (steps[16]) not counted."
     }
   },
   "verdict": "Fix",
@@ -270,5 +266,15 @@
       "kind": "consumable",
       "what": "Sandpaper and rag are used but not in materials."
     }
-  ]
+  ],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R14"
+    ],
+    "note": "R5 pass; R14 upheld on eye screws only (used in steps[15], absent from materials); cleat install is shown in viewed step-4 image."
+  }
 }

@@ -155,8 +155,8 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x3, 1x6); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Adjudicated: steps name the stock for every part (steps[1],[2],[3],[5],[7],[9],[11] \"from 1x3 boards\"; steps[14] \"from 1x6 boards\"), Kreg-corrected rows. 1x3: 8x17.75 + 4x8.875 + 4x11 + 2x66 + 12 + 2x66 + 4x17.625 = 568 + 27 cuts x 1/8 = 571.4 <= 8x72 + 96 = 672; packs as 4 x [66], [4x17.75], [4x17.75], [4x17.625], [4x11 + 12], 96\" [4x8.875]. 1x6: 3x76 + 3/8 <= 3x96, each 76 <= 96."
     },
     "R6": {
       "result": "pass",
@@ -167,17 +167,8 @@
       "reason": "viewed images give pocket-hole offsets (3/4\"), angle-stretcher holes (7/8\", 1 1/4\"), center rail 32 5/8\" each side, center-stretcher offset 5 1/4\", overall 76x16 1/2x18; seat overhang equal (relational)"
     },
     "R11": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[0].body",
-          "quote": "review the procedures, materials list, and cutting diagram."
-        }
-      ],
-      "reason": "steps[0] has no image and no viewed image (4 unattached: photo, overall-dimension drawing, table+bench, base) is a board cutting diagram. Every part's size/angle is nevertheless shown in its own step image and cutList, so no build information is lost."
+      "result": "pass",
+      "reason": "Adjudicated: steps[0] \"review the procedures, materials list, and cutting diagram\" — the plan uses \"as shown in the cutting diagram\" in steps[1]-[11],[14] for the dimensioned part drawing attached to each step; viewed ed676e54946586a5 (steps[1]) shows Leg 17 3/4 x 2 1/2 with 5 degree ends and pocket-hole location. The referenced cutting information is present for every part."
     },
     "R8": {
       "result": "pass",
@@ -192,7 +183,7 @@
       "reason": "counts match cutList (8 Legs, 4 Short Rails, 4 End Stretchers, 2 Long Rails, 1 Center Rail, 2 Center Stretchers, 4 Angle Stretchers, 3 Seat); doubled parts are installed in step 13; viewed dims agree with corrected cut rows (17 3/4, 17 5/8, 12, 2 1/2); steps reach finished bench"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -215,5 +206,15 @@
       "1b14a03e39e0ece1"
     ]
   },
-  "gaps": []
+  "gaps": [],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R11"
+    ],
+    "note": "R5 pass (steps name 1x3/1x6 per part; fits); R11 pass: the plan's \"cutting diagram\" is the per-part dimensioned drawings attached to steps 1-14."
+  }
 }
