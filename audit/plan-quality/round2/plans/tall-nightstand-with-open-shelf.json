@@ -355,67 +355,95 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "ble saw jig with a few scraps and some clamps to make quick work of cutting leg tapers on the table saw. I will be sharing my tapered leg jig for this build on my blog https://housefulofhandmade.com/.",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "ble saw jig with a few scraps and some clamps to make quick work of cutting leg tapers on the table saw. I will be sharing my tapered leg jig for this build on my blog https://housefulofhandmade.com/.",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[0] blog mention is for an optional taper jig; the taper is fully specified (\"5\" up from the bottom and 3/8\" in from the side\"). steps[16] is a credit."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "One of the shelf boards needs to be ripped down to 5\" wide. Then drill pocket holes set for 3/4\" thick material in both ends of the shelf boards. For the front board, make sure the pocket holes are no",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Every part cut in steps (leg tapers, side tops/braces/panels, center braces, shelf boards, corbels, top front, top boards, back support, drawer box parts) has a cut-list row. Flagged 5\" is a rip of one shelf board: 5.5 + 5.5 + 5 = 16 = 14.5 side depth + 1.5 overhang (step 7)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[9].part",
+          "quote": "Top drawer front"
+        },
+        {
+          "path": "cutList[10].part",
+          "quote": "Botton drawer front"
+        },
+        {
+          "path": "steps[15].body",
+          "quote": "Install the drawers with drawer slides that require 1/2\" clearance on each side."
+        }
+      ],
+      "reason": "Rows 9 and 10 (drawer fronts 0.75 x 5.5 x 18.75 and 0.75 x 7.25 x 18.75) are never cut or attached. Search of every step sentence matching /front|face|drawer/: only \"drawer box front/back\" (the 1/2\" box parts, rows 12 and 14), the open-shelf front board and the corbel/top-front steps; no step mentions a drawer front."
     },
     "R4": {
       "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "reason": "Corrected rows fit stock: 1.5 x 1.5 from 2x2, 3/4 x 3.5 from 1x4, 3/4 x 1.5 from 1x2, 3/4 x 5.5 from 1x6, 3/4 x 7.25 from 1x8, drawer boxes from 1/2\" ply, bottoms from 1/4\" ply."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 7 stock types (1x6, 1x4, 1x2, 2x2, 1x8, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock is unambiguous by cross-section. 1x6 (2x96): 3x19 + 3x23 + 18.75 = 144.75 + kerf <= 192. 1x4 120\": 8x11.5 + 19 = 111 + kerf <= 120. 1x2 120\": 2x11.5 + 3x19 + 22.5 = 102.5 + kerf <= 120. 2x2 (2x96): 4x28 + 4x11.5 + 2x7.25 = 172.5 + 10 cuts x 1/8 <= 192. 1x8 24\": 18.75. Sheets: 649 sq in of 1/2\" and 420 sq in of 1/4\"."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[12].body",
-          "quote": "ck pieces. Make sure to drill pocket holes so they are on the opposite side of the board as the groove. Attach the side pieces to one of the front/back pieces with wood glue and 1\" pocket hole screws.",
-          "why": "1\" screw — no material line lists a 1\" fastener"
+          "quote": "Attach the side pieces to one of the front/back pieces with wood glue and 1\" pocket hole screws."
         },
         {
-          "path": "steps[14].body",
-          "quote": "Attach the other drawer box front/back to close up the box with 1\" pocket hole screws and wood glue. Ensure the box stays square.",
-          "why": "1\" screw — no material line lists a 1\" fastener"
+          "path": "materials[7].name",
+          "quote": "1 1/4\" pocket hole screws"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "2 1/2\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "Steps 13 and 15 use 1\" pocket-hole screws for the 1/2\" drawer boxes; materials list only 1 1/4\" and 2 1/2\" pocket-hole screws. Search: no materials[].name contains 1\" pocket screws."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Taper 5\" and 3/8\"; side tops \"6\" down\"; center braces 12 1/2\" and 20 3/4\" down; shelf overhang 1 1/2\"; corbels 3/4\" down; top 1/4\" overhang; slides 1/2\" clearance. Figure-8 fastener and pull locations are relational/\"cabinet hardware jig\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "The single \"as shown\" reference is in a step with its own image; no image was needed to settle another check."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Tapered legs, sides, center braces, shelf, second side, corbels/top front, back support, top, drawer boxes, then drawers installed after finish."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated for each thickness: \"set for 3/4\" thick material\", \"set for 1 1/2\" thick material\" (side braces), \"set for 1/2\" thick material\" (drawer boxes)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 5.5 + 5.5 + 5 = 16; drawer opening 20.75 - 12.5 - 0.75 = 7.5 = false front 7.25 + 2 x 1/8 (bottom drawer); drawer box 17 + 2 x 1/2\" = 18 = 19 interior - 2 x 1/2\" slide clearance. (b) all parts made are installed (drawer fronts are R3). (c) figure-8 fasteners, slides, pulls, glue, nails, screws are in materials. (d) steps reach a finished nightstand apart from the drawer fronts."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "One of the shelf boards needs to be ripped down to 5\" wide.",
+      "what": "cutList[5] shows all three shelf boards at 5.5 wide; the step rips one to 5."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": []
+  },
+  "verdict": "Fix"
 }

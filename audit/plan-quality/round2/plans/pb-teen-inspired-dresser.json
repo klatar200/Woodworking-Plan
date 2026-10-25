@@ -431,52 +431,128 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Cut the 4x4 legs and attach flush with each corner of the dresser body using wood glue and 2 1/2\" wood screws through the plywood bottom.",
-          "why": "cut sentence states 2 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"2 1/2\\\"\" is a screw size (R6), not a cut. Every cut part named in steps (sides, tops, drawer faces, plywood bottom, 1x2 frame, verticals, 4x4 legs, 2x2 spacer, 1x4 rear supports, drawer pieces) has a cut-list row."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "cutList[20].part",
-          "quote": "Backing",
-          "why": "no step mentions it (searched steps for backing)"
+          "quote": "Backing"
+        },
+        {
+          "path": "materials[8].name",
+          "quote": "1/8\" hardboard backing, 1/4\" Thick Full Sheet"
         }
-      ]
+      ],
+      "reason": "cutList[20] Backing (0.125 x 32.5 x 47.5 corrected) is never cut or attached. Search: \"back\" in all steps matches only \"backs\" of drawer fronts/backs and \"rear ...\" parts; no step mentions backing, hardboard, or a back panel."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[8] thinner than stock — would need planing/resawing, not judged"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "cutList[8]",
+          "quote": "Plywood bottom"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "Cut plywood bottom. Drill 3/4\" pocket holes into plywood bottom."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Plywood, 1/2\" Thick Full Sheet"
+        }
+      ],
+      "reason": "Plywood bottom is 3/4 x 20 x 46.5 (corrected). Listed sheet goods are 1/2\" and 1/4\" thick (materials[6], [7], [8]); no listed board is >=20\" wide (widest 1x8 = 7 1/4 per section 9). No material gives a 3/4\" x 20\" panel and no step says to glue one up."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 9 stock types (1x6, 1x8, 1x2, 1x4, 4x4, 2x2, sheet-0.5, sheet-0.25, sheet-0.125); steps not checked for per-part stock"
+      "reason": "Nine stock types and steps do not name stock per part; precondition not met. (Per-stock sanity: 1x8 225\" of 288\", 1x6 ~401\" of 480\", 1x2 131\" of 192\", 1x4 93\" of 96\".)"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "Cut the 4x4 legs and attach flush with each corner of the dresser body using wood glue and 2 1/2\" wood screws through the plywood bottom.",
-          "why": "2 1/2\" screw — no material line lists a 2 1/2\" fastener"
+          "quote": "attach flush with each corner of the dresser body using wood glue and 2 1/2\" wood screws through the plywood bottom."
+        },
+        {
+          "path": "materials[12].name",
+          "quote": "1 1/4\" coarse thread pocket screws"
         }
-      ]
+      ],
+      "reason": "Steps use 2 1/2\" wood screws; materials list only 1 1/4\" and 1\" pocket screws and 5/8\", 2\", 1\" brad nails. Search: no materials[].name matches /wood screw|2 1\\/2/."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Horizontals given as 9 1/2\" (step 3); verticals placed by dimensions in viewed step-4 image (14 1/2\", 30 1/2\", 22 1/2\"); spacer \"flush with bottom vertical frame piece\" (step-6 image); rear supports 6 3/4\" and 7 1/4\" in viewed step-7 image. Slides defer to manufacturer instructions; pulls/knobs as desired; faces relational (1/8\" gaps)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Steps 4 and 7 cite \"the illustration\"; their step images were viewed and show the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides/tops built, plywood bottom and top attached, 1x2 horizontals then verticals, legs, spacer, rear supports, then drawers, slides, faces. Interior height 32.25-0.75=31.5 = 9.5x3+1.5x2 so frame spacing in step 3 is consistent."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "3/4\" pocket holes on 3/4\" parts (steps 1-4, 7), 1/2\" pocket holes on 1/2\" drawer parts (step 8); no contradiction."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "attach to 1/4\" rear braces"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "Cut the 1x4 rear drawer bracket supports to size"
+        },
+        {
+          "path": "cutList[11]",
+          "quote": "Rear drawer bracket supports*"
+        }
+      ],
+      "reason": "(a) Step 10 gives \"1/4\" rear braces\" but the only rear brace part is cutList[11] Rear drawer bracket supports, cut from 1x4 (0.75 thick) in step 7; no 1/4\" brace is cut anywhere. Other checks: faces 2x5.5 = 11 vs \"10 7/8\" high\" (with 1/8 gap); drawer counts 4/2/1 = 7 match 7 slide sets; (b)(c)(d) otherwise pass."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Rip a 4x8 sheet of 1x2\" veneer plywood into 7 3/4\" strips.",
+      "what": "No \"1x2\" veneer plywood in materials; drawer parts are 0.5 thick and the only matching sheet is \"Plywood, 1/2\" Thick Full Sheet\" (likely typo; not corrected here)."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Join together with wood glue and 1 1/4\" pocket screws.",
+      "what": "Wood glue is used throughout but is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/4769d842bf4f2a8a.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2954b9f1cdbe9703.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9cab6cce09821ef5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1988f6cc260b8c1d.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

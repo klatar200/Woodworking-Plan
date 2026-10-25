@@ -6,95 +6,110 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "eautiful plant stand tower. You can stain it or paint it in your favorite finish. You can see the full visual tutorial for this project on my website - https://www.girljustdiy.com/diy-2x4-plant-stand/",
-          "why": "matches \"my website\""
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "eautiful plant stand tower. You can stain it or paint it in your favorite finish. You can see the full visual tutorial for this project on my website - https://www.girljustdiy.com/diy-2x4-plant-stand/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[7] link to \"full visual tutorial ... on my website\" is a credit/extra; every cut, position and fastener needed is in the plan itself."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only parts cut are legs (cutList[0]) and shelves (cutList[1]); steps name no other part."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Both cut rows (Legs, Shelves) are used in steps 1-6."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
           "path": "cutList[1]",
-          "quote": "Shelves — qty 5, 1.5 x 9.5 x 20"
+          "quote": "Shelves"
         },
         {
-          "path": "materials[0].name",
-          "quote": "Board, 2x2 72\""
+          "path": "steps[0].body",
+          "quote": "Just as 2\"x10\" are 1.5\" x 9.5\""
         },
         {
           "path": "materials[1].name",
           "quote": "Board, 2x10 120\""
         }
       ],
-      "arithmetic": "cutList[1] 1.5×9.5: no listed stock has thickness 1.5 (±1/32) with width ≥ 9.5; stock = 1.5×1.5, 1.5×9.25",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[1]",
-          "quote": "Shelves — qty 5, 1.5 x 9.5 x 20",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
+      "arithmetic": "Shelves width 9.5 (cutList[1], no import diff). Section 9: 2x10 actual = 1 1/2 x 9 1/4 = 9.25. 9.5 - 9.25 = 0.25\" wider than the only listed board that has 1.5\" thickness and width above 1.5. No step describes a glue-up (search: \"glue\" appears only for attaching legs/shelves).",
+      "reason": "Shelf width 9.5 cannot be cut from a 2x10 (9.25 per section 9); the plan itself states 2x10 is 9.5."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (2x2, 2x10); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock is unambiguous by cross-section. 2x10 120\": 5 x 20 = 100 + 4 cuts x 1/8 = 0.5 -> 100.5 <= 120. 2x2 72\": 4 legs of 57.5 from 4 boards, one per board (57.5 <= 72). Width issue is R4.",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "at the overhang is 2\" on each side. Attach with pocket hole screws as in step 6.\nFollow this step for the next two shelves.\nWhen attaching the top shelf follow the same steps, except align the top of ",
-          "why": "2\" screw — no material line lists a 2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"2\\\" overhang\" is a placement, not a screw. Steps never state a screw size; materials list 2-1/2\" pocket hole screws only. 40 screws = 5 shelves x 8 holes (viewed step-3 image)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "ensure you have 2\" overhang on each side.\nInsert one pocket hole screw on the left side. Check overhang and insert one pocket hole on the right side. Finish by adding the other two pocket hole screws.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c170bed928b62ba0.webp"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "From the bottom shelf measure and mark 12.5\" on each leg. Apply a little wood glue to the legs. Place the shelf and check that the overhang is 2\" on each side. Attach with pocket hole screws as in ste",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca9c8eae553d8415.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Viewed step-4 image gives 2\" overhang, 1.5\" leg, 13\" leg spacing; step-5 image and text give 12 1/2\" shelf spacing; step 2 gives pocket marks at 2\" and 3.5\". Back legs placed against shelf edge, flush with bottom shelf."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"see picture example\" (step 2) and \"as illustrated\" (step 3) each have a step image; viewed, they show the marks and holes."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, mark/drill, front legs + shelves, then back legs. 5 shelves x 1.5 + 4 gaps x 12.5 = 57.5 = leg length."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "Drill pocket holes on the underside of each shelf as illustrated."
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "2-1/2\" Pocket Hole Screws (Soft Wood)"
+        }
+      ],
+      "reason": "Pocket holes in 1.5\" shelves; no jig thickness setting stated. Search of whole plan for /setting|depth|collar/ found none; viewed step-2/step-3 images show no setting number (only a jig marked B C). Images 0-1, 6-9 not viewed."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 legs = 2 front + 2 back; 5 shelves; 20\" shelf = 13 + 2x1.5 + 2x2 overhang. 57.5 = 5x1.5 + 4x12.5. (b) all parts installed. (c) no hardware beyond screws. (d) finished piece reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Apply a little wood glue to the bottom of each leg",
+      "what": "Wood glue is used but not in materials."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[8].body",
+      "quote": "Take the time before assembly to sand all your pieces.",
+      "what": "Sandpaper is not in materials."
+    },
+    {
+      "path": "steps[8].body",
+      "quote": "Take the time before assembly to sand all your pieces.",
+      "what": "Sanding step says \"before assembly\" but is the last step; step 5 also cross-references \"as in step 6\" for the bottom-shelf step, which is the 5th step as ordered here, suggesting an order change; the importer preserves page order, so it comes from the Kreg page."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c170bed928b62ba0.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ca9c8eae553d8415.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2281e788043db72c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/00455fd41371279e.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

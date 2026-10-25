@@ -35,22 +35,25 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "h the base from the antique sewing machine, cut 2 boards to 14 inches long. Center your sewing machine base, which is (in this case) 23 inches wide and 12 inches deep) onto the underside of your table",
-          "why": "cut sentence states 14\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "cut 2 boards to 14 inches long."
         },
         {
           "path": "steps[8].body",
-          "quote": " onto the underside of your table top.\nSecure the newly cut 14 inch boards to the table top with 2.5 inch screws, be sure to pre-drill so you do not affect the perfection of your table top!\nOnce the 1",
-          "why": "cut sentence states 14\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Secure the newly cut 14 inch boards to the table top with 2.5 inch screws"
         }
-      ]
+      ],
+      "reason": "The two 14\" base-mounting boards are cut and installed in step 9 but have no cut-list row, and the step names no stock (\"2 boards\"). Search: cutList parts are only Main Table Top Boards, End Caps, Flip-Up Leaves; materials list one lumber type (2x8). Quantity and length are given, so the build can be completed."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Main boards (steps 2-4), end caps (step 5), leaves (step 7 \"add leaves\") are all referenced. Flip-up leaves are optional but named."
     },
     "R4": {
       "result": "pass",
@@ -58,52 +61,85 @@
     },
     "R5": {
       "result": "pass",
-      "arithmetic": "parts: 5×39 + 2×36.1875 + 2×36.1875 + kerf 0 cuts (9 parts − 9 boards, the fewest possible)×1/8 = 339.750″; bought: 9×96 = 864″; 339.750 ≤ 864"
+      "reason": "One lumber stock (2x8 96\"): 5x39 + 4x36.1875 = 195 + 144.75 = 339.75, plus the two 14\" boards = 28 -> 367.75 + kerf <= 9 x 96 = 864."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[8].body",
-          "quote": "the newly cut 14 inch boards to the table top with 2.5 inch screws, be sure to pre-drill so you do not affect the perfection of your table top!\nOnce the 14 inch boards are secured, use bolts through t",
-          "why": "2.5\" screw — no material line lists a 2.5\" fastener"
+          "quote": "Secure the newly cut 14 inch boards to the table top with 2.5 inch screws, be sure to pre-drill"
         },
         {
-          "path": "steps[8].body",
-          "quote": " the perfection of your table top!\nOnce the 14 inch boards are secured, use bolts through the holes of the sewing machine base to attach it to the 14 inch boards. We added a pipe clamp for extra help.",
-          "why": "14\" bolt — no material line lists a 14\" fastener"
+          "path": "steps[4].body",
+          "quote": "Soap your screws, set your drill/driver 8 or 10 and attach."
+        },
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x8 96\""
         }
-      ]
+      ],
+      "reason": "Steps use pocket-hole screws (no size stated), 2.5\" screws and bolts for the base; materials has three lines (2x8 boards, drop-leaf hinges, leaf supports) and no fasteners at all. Search: no materials[].name matches /screw|bolt|nail/."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Pocket holes: 5 along each long edge and 2 at each end, shown in the viewed step-4 image; end caps measured from the assembled top. Base position is \"centered\" and its bolt points follow the base's own holes. Leaf hinge/support positions are not given, but leaves are optional (see gaps)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Flagged word \"attached\" is not a reference to a drawing; no step cites a diagram."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Cut, sand/stain edges, assemble 5 boards, end caps, finish, hardware, base. Step 8 (weathering) says \"After sanding, and before staining\" but is listed late (see gaps); it does not block the build."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[4].body",
-          "quote": "Once your 5 main boards are attached, you can measure the length for your end caps. The end cap length will depend on how closely your boards are attached in step 4. The end caps for this table were 3",
-          "why": "\"attached\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "e end cap length will depend on how closely your boards are attached in step 4. The end caps for this table were 36 and 3/16ths during this build.\nMeasure & cut the end caps, then sand & stain the edg",
-          "why": "\"attached\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "fore assembling.\nClamp your 5 main boards which are already attached to each other, and clamp your end cap securely. Soap your screws, set your drill/driver 8 or 10 and attach. If the board moves or t",
-          "why": "\"attached\" with no step image; 2 unattached image(s) in images[] to view",
-          "unattachedImages": 2
+          "path": "steps[3].body",
+          "quote": "mark 5 equally spaced pocketholes and arrows. On the ends of these boards, mark 2 equally spaced pocketholes"
         }
-      ]
+      ],
+      "reason": "Pocket holes in 1 1/2\" 2x8 with no jig thickness setting. Search for /setting|collar|depth|jig/: only \"Set your drill/driver to 8 or 10\" (driver clutch). Viewed step-4 image shows hole counts and arrows, no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 5 main boards 39\" + 2 end caps 36 3/16 (5 x 7.25 = 36.25 wide); 4 hinges for 2 leaves. (b) end caps, base boards installed; leaves optional (\"If you would like\"). (c) hinges and supports are in materials. (d) steps reach a finished table."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[6].body",
+      "quote": "If you would like to add leaves that hang down and flip up when needed, use Rockler metal leaf table supports and straight edge hinges from Rockler.",
+      "what": "Optional leaves (cutList[2], hinges, supports in materials) have no cutting, hinge position or install instructions."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "After sanding, and before staining, beat the boards up with chains, hammers, screws, nails",
+      "what": "Weathering step must come before the staining in step 3 but is listed after assembly, finish and hardware; step 5 also refers to \"step 4\" for the staining step, so step numbering/order is off."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[2].body",
+      "quote": "sand each piece for about 5 minutes using 80 grit sandpaper on all sides",
+      "what": "Sandpaper, vinegar/steel wool, Danish oil, deck stain and polyurethane (steps 3, 6) are not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/410be9d81be465fa.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a056d8ca1b625d1f.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/84e4d95f204ab90a.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

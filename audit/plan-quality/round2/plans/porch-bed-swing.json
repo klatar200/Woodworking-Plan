@@ -283,87 +283,106 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[12].body",
-          "quote": "Make sure and visit http://builditcraftitloveit.com for more DIY projects!",
-          "why": "matches \"http://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[12] link is a \"more DIY projects\" credit; all dimensions, positions and fasteners are in the plan."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "ke, I placed mine in pairs to create the cutout shape, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up",
-          "why": "cut sentence states 7 1/8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "reate the cutout shape, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to",
-          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
-          "why": "cut sentence states 7 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[7].body",
-          "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
-          "why": "cut sentence states 1\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"7 1/8\"\", \"1\"\", \"7 1/4\"\" in steps[7] are slat spacings (and step says spacing is optional), not cut parts. Every part named in steps maps to a cut row: front/back frame, side frame, mattress supports (row 1, q8 = 2 + 6), side rails 15.5 and 21, bottom side/back supports, slats, top side/back supports, rope hangers."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 cut rows are used in steps 1-11 (row 1 serves steps 1 and 2)."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: unparseable stock materials[2]"
+      "result": "pass",
+      "reason": "Stock is unambiguous by cross-section (5.5 wide = 2x6, 3.5 wide = 2x4); finial line (materials[2]) is not lumber. 2x6: 2x56 + 8x28.25 + 4x15.5 + 4x21 = 112+226+62+84 = 484; 18 pieces x 1/8 = 2.25 -> 486.25 <= 6x96 = 576. 2x4: 2x21.25 + 53 + 10x14 + 2x29.75 + 59 + 2x70 = 42.5+53+140+59.5+59+140 = 494; +2.25 = 496.25 <= 6x96 = 576. Quantities 6/6, not 1."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[7].body",
-          "quote": "pe, every 7 1/8\" on the sides, leaving a 1\" gap in the middle of the two pair and 7 1/4\" along the back with a 1\" gap in between the pairs. Staple up through the bottom supports to hold them in place.",
-          "why": "1\" staple — no material line lists a 1\" fastener"
-        },
-        {
-          "path": "steps[8].body",
-          "quote": "Attach top back supports (1- 1 1/2\" x 3 1/2\" x 59\") Countersink this on the ends and staple each decorative slat through the top back support.",
-          "why": "59\" staple — no material line lists a 59\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Attach top side support (2- 1 1/2\" x 3 1/2\" x 29 3/4\") countersink screws and staple into decorative slats.",
-          "why": "29 3/4\" screw — no material line lists a 29 3/4\" fastener"
-        },
-        {
-          "path": "steps[9].body",
-          "quote": "Attach top side support (2- 1 1/2\" x 3 1/2\" x 29 3/4\") countersink screws and staple into decorative slats.",
-          "why": "29 3/4\" staple — no material line lists a 29 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "All R6 flags are part lengths misread as fasteners. Screw size 2 1/2\" is consistent across steps 1,2,4,5 and matches materials[3] \"Kreg 2 1/2\" Blue coated screws\". Staples have no size stated (see R14)."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Predrill holes for your u-bolts in the bottom rope hangers (2- 1 1/2\" x 3 1/2\" x 70\")."
+        },
+        {
+          "path": "materials[4].name",
+          "quote": "Ubolts"
+        }
+      ],
+      "reason": "Location of the u-bolt holes along each 70\" rope hanger (hardware position) is never given as a number. Search: \"u-bolt\"/\"ubolt\" occurs only in steps[10] and materials[4]. Viewed step-11 and step-12 images and the three unattached photos show no u-bolt positions. (Hanger overhang 5 1/2\" and \"1 1/2\" from the front and back\" are given; the holes are not.)"
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "\"as illustrated\" / \"photos\" references each have a step image; viewed images show the pocket holes and overhangs."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frame, mattress supports, back frame, rails, bottom supports, then slats, then top supports, then hangers. Check: 6 supports x 5.5 + 5 gaps x 4 = 53 = 56 - 2x1.5 interior."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 1 states \"1 1/2\" pocket holes\" for the 1 1/2\" thick stock and all later joints say \"still using 1 1/2\" pocket holes\"."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Staple up through the bottom supports to hold them in place."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "staple into decorative slats."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Predrill holes for your u-bolts"
+        }
+      ],
+      "reason": "(c) Steps 8-10 use staples; no materials[].name matches /staple/ (materials: 2x6, 2x4, finials, screws, Ubolts, glue, paint). (d) Step 11 only predrills u-bolt holes; no step installs the u-bolts or says what hangs the swing (rope appears in the photos and in the part name \"rope hangers\" but not in steps or materials). Numbers agree otherwise: hanger 70 = 5.5 + 59 + 5.5 (top back support 59); slats q10 = 6 back + 2x2 sides (viewed step-8 image)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[11].body",
+      "quote": "hang that baby up on your front porch!",
+      "what": "No rope/chain or ceiling hardware appears in materials or steps; only the u-bolts are listed and they are never installed."
+    },
+    {
+      "kind": "consumable",
+      "path": "materials[5].name",
+      "quote": "Outdoor wood glue",
+      "what": "No consumable gap: glue is listed. Note crib mattress (description) is not in materials and no mattress size is given."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fb4337414626e5f3.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/db8b2cfca6bfe924.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/52c4421fae54d5e5.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/49118c97257edc60.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/60fff49070fa7e2c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/3c717b22229c7085.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/891d74b1659f2a51.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/bf6e66bc95eb700d.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

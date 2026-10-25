@@ -10,29 +10,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "st bring all parts down to their final dimensions and ensure the legs are square.\nCut a ¾\" x ¾\" rabbit on the top inside edge of the lower rails if you want to build the lower cabinet at a later time.",
-          "why": "cut sentence states 3/4\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Parts made (legs, top sections, stretchers/rails) have rows; flagged 3/4\" is a rabbet size, not a part. Viewed step-7 image labels the 18\" piece and 4\" height, matching the Short Apron row."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[1].part",
-          "quote": "Long Aprons",
-          "why": "no step mentions it (searched steps for apron)"
-        },
-        {
-          "path": "cutList[2].part",
-          "quote": "Short Aprons",
-          "why": "no step mentions it (searched steps for apron)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"Long/Short Aprons\" are used under other names: steps say \"stretchers\", \"lower rails\", \"front and back long rails\" (steps 4, 8). Quantities agree: 2 long rails (front/back), 4 short (2 per side, upper and lower, viewed image of step 7)."
     },
     "R4": {
       "result": "pass",
@@ -43,24 +26,57 @@
       "arithmetic": "parts: 8×30 + 2×31 + 4×18 + 16×60 + kerf 10 cuts (30 parts − 20 boards, the fewest possible)×1/8 = 1335.250″; bought: 20×96 = 1920″; 1335.250 ≤ 1920"
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "drill the counter sunk holes for the 5\" lag screws now"
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "5\" Spax Lag Screws"
+        },
         {
           "path": "steps[5].body",
-          "quote": "ket hole because it is supplementing the tenons. If you do not have the HD jig then use the two 2 ¼\" coarse thread screws.\n(I forgot to drill the pocket holes so I did this after they were assembled).",
-          "why": "2 1/4\" screw — no material line lists a 2 1/4\" fastener"
+          "quote": "If you do not have the HD jig then use the two 2 ¼\" coarse thread screws."
         }
-      ]
+      ],
+      "reason": "(1) The viewed step-7 image text reads \"4” lag screws to connect the base to the top.\" while step 7 and materials say 5\" lags: two sizes for one use. (2) Step 6 offers 2 1/4\" coarse-thread screws as the no-HD-jig alternative; no materials line lists that size (only \"Kreg HD Pocket Hole Screws\", no size)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dog holes: 3/4\" at 1 1/2\" from front and 2\" from right edge, 4\" spacing; top offset \"your own\"; lag holes \"2 per top section ... 4 per side\"; tenon and lag positions shown in the viewed step-6/step-7 images; section gap 2\" is fixed by flush placement."
     },
     "R11": {
       "result": "pass",
       "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+    },
+    "R9": {
+      "result": "unknown",
+      "reason": "Joints use the Kreg HD jig; no text states a jig setting (search for /setting|collar|depth/: none) and viewed step-6 image shows none, but whether the HD jig has a thickness setting is outside section 9."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 8 leg pieces -> 4 legs; 2 top sections x 8 = 16 (cutList[3] q16); 2 loose tenons x 12 joints = 24 dominos (materials[5]); 1 HD screw x 12 joints = 12 (materials[6]); 2 lags x 2 sections x 2 sides = 8 (materials[7]). Top 2 x 12 + 2\" gap = 26 = short apron 18 + 2 x 4 leg width. (b) legs, rails, top all installed. (c) glue, sandpaper, finish listed. (d) finished bench reached."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Laminate legs and top sections, cut to size, cut joinery and lag holes, assemble sides then rails, attach top last (unglued); each step uses only parts made earlier."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/d6ef8f1384eebd84.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/046f19e8cbb74383.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/58eebf77e5aedbe6.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7137fff3da718a53.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

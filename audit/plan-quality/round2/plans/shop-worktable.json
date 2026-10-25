@@ -332,105 +332,157 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Description link (www.tidbits-cami.com) is for \"more details and other DIY building projects\"; steps carry all dimensions."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "Cut a 2x4 at 36 1/2\" and install using pocket holes on the ends with glue and screws in the center of the bottom shelf as seen in the picture. Cut a 1/2\" plywood to 39 1/2\"x60\". Cut a 3 1/2\" square ou",
-          "why": "cut sentence states 36 1/2\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "your miter saw width, attach the other two boards. My miter saw measured 20 inches wide so I measured 10 inches on either side of the center board and checked the distance with my saw just to be sure.",
-          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Parts in steps 1-13 have cut-list rows, except the bottom-shelf 2x4 at 36 1/2\" and the 39 1/2\" x 60\" 1/2\" plywood panel, which step 4 itself cuts from listed 2x4 / 1/2\" plywood (see gaps). Flagged \"10\\\"\" is a measuring offset."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 16 rows are used in steps 1-13 (pocket sides/tops/back steps 6-9, drawer parts steps 10-11, saw shelf step 13)."
     },
     "R4": {
       "result": "fail",
       "level": "Fix",
-      "confidence": "likely",
+      "confidence": "certain",
       "cause": "plan",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)",
       "evidence": [
         {
+          "path": "steps[0].body",
+          "quote": "Cut three 4x4 boards at 30 inches long each"
+        },
+        {
           "path": "cutList[2]",
-          "quote": "Legs — qty 4, 3.5 x 3.5 x 30 (Kreg-corrected)"
+          "quote": "Legs"
         },
         {
           "path": "materials[0].name",
           "quote": "Board, 2x4 96\""
+        }
+      ],
+      "arithmetic": "Legs are 3.5 x 3.5 x 30 (Kreg-corrected, cutList[2]). Section 9: only a 4x4 is 3 1/2 x 3 1/2; the largest listed lumber thickness is 2x4 = 1 1/2 and the only other thick stock is 1x4 (3/4). Search: no materials[].name matches /4x4/, and no step describes gluing up a leg.",
+      "reason": "Legs cannot come from any listed material; 4x4 boards are used in step 1 but not in materials."
+    },
+    "R5": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x4 96\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Cut two 2x4's at 53 inches long, and two 2x4's at 32 1/2\" long."
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "Cut a 2x4 at 36 1/2\""
+        },
+        {
+          "path": "steps[12].body",
+          "quote": "Cut two 2x4 boards at 24 1/2\" inches"
         },
         {
           "path": "materials[1].name",
           "quote": "Plywood, 3/4\" Thick Full Sheet"
         },
         {
-          "path": "materials[2].name",
-          "quote": "Plywood, 1/2\" Thick Full Sheet"
-        },
-        {
-          "path": "materials[3].name",
-          "quote": "Plywood, 1/2\" Thick Half Sheet"
-        },
-        {
-          "path": "materials[4].name",
-          "quote": "Board, 1x4 96\""
+          "path": "steps[4].body",
+          "quote": "Cut a sheet of 3/4\" plywood to 48\"x72\"."
         }
       ],
-      "arithmetic": "cutList[2] 3.5×3.5: no listed stock has thickness 3.5 (±1/32) with width ≥ 3.5; stock = 1.5×3.5, sheet 0.75, sheet 0.5, sheet 0.5, 0.75×3.5",
-      "note": "likely: a glue-up or lamination the steps describe would resolve it — reader confirms",
-      "flagged": [
-        {
-          "path": "cutList[2]",
-          "quote": "Legs — qty 4, 3.5 x 3.5 x 30 (Kreg-corrected)",
-          "why": "no listed material gives this thickness and width"
-        }
-      ]
-    },
-    "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (2x4, sheet-0.75, sheet-0.5, 1x4); steps not checked for per-part stock"
+      "arithmetic": "2x4 (steps name 2x4 for each): 2x53 + 2x32.5 + 2x60 + 2x42 + 36.5 + 2x24.5 + 2x20 + 2x23 = 106+65+120+84+36.5+49+40+46 = 546.5 (before kerf) > 5 x 96 = 480, short 66.5 (510 even without step 4 center board). 3/4\" plywood (steps 5, 6, 8): table top 48x72 = 3456; 4 pocket sides 3x24 = 288; 2 pocket tops 24x26 = 1248; sum = 4992 > one full sheet 48x96 = 4608, over by 384 sq in; after the 48x72 top only 48x24 = 1152 sq in remains.",
+      "reason": "Materials buy fewer 2x4 board-feet and less 3/4\" plywood than the steps cut. Quantities are 5 and 1; Stage 2 recorded no defaulted-quantity flag."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "0 inches and two 2x4's at 42 inches. Using clamps, glue and screws, attach the two 60 inch boards on the long side of the table with the tops matching the tops of the legs and the ends matching the si",
-          "why": "42\" screw — no material line lists a 42\" fastener"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "/2\". Adjust the 22 1/2\" dimension if needed. Using glue and screws, attach the bottom inside of the already assembled sides and back of the two drawers. Cut 2 pieces of 1x4 pine to 26 inches long, adj",
-          "why": "22 1/2\" screw — no material line lists a 22 1/2\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"42\\\"\" and \"22 1/2\\\"\" are board lengths. Staples (1 1/4\"), lags (3/8\" x 3/4\", step 14), 1\" and 2 1/4\" jig screws and glue are in materials; steps give no conflicting fastener sizes."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "for the pocket top came to the exact height of my Miter saw. Be sure to measure your saw and adjust the height of these pieces accordingly. Attach two boards to the two ends of the table top with glue",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/16884e07dacdfea9.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Bottom frame \"at the 24 inch marks\" (viewed step-2 image shows it low on the legs), pocket boards 10\" either side of center, 3 1/2\" corner notches, caster lags on each leg. Saw-shelf location and notch are stated to depend on the builder's saw."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "4 reference(s), each in a step with its own image"
+      "reason": "Each \"as pictured/shown\" step has its own step image."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Legs, bottom frame, top frame, shelf, top, pockets and drawers, saw shelf, casters follow a possible order."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Using the kreg pocket hole jig, make pocket holes on both ends of all 4 boards."
+        },
+        {
+          "path": "steps[9].body",
+          "quote": "Drill two pocket holes on one end of each of the four pieces."
+        }
+      ],
+      "reason": "Pocket holes in 1 1/2\" 2x4s (step 2) and 1/2\" plywood (step 10) with no jig thickness setting. Search for /setting|collar|depth/ across the plan found nothing; viewed step-2 image shows no setting. Not every image was opened."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Unpublish",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "Cut a sheet of 3/4\" plywood to 48\"x72\". Using the Kreg Rip-Cut saw attachment made this a cinch."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut three 4x4 boards at 30 inches long each"
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Legs"
+        }
+      ],
+      "arithmetic": "(a) Step 1 cuts three legs; cutList[2] has qty 4 and step 14 puts casters on \"each of the legs\" (materials: \"Locking casters 4\\\" tall\" qty 4).",
+      "reason": "(b) The table top is cut in step 5 but no step fastens it to the base. Search of every step sentence containing \"top\" or screw/staple/attach near \"table\": step 3 attaches the frame tops to legs, step 6 attaches pocket sides \"to the two ends of the table top\", step 13 notches \"the top of the table\"; none attaches the top to the frame. (a) leg count disagrees (3 vs 4)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "Cut a 2x4 at 36 1/2\" and install using pocket holes on the ends with glue and screws in the center of the bottom shelf",
+      "what": "The 36 1/2\" 2x4 and the 39 1/2\" x 60\" 1/2\" plywood shelf panel (step 4) are cut by the steps but absent from the cut list."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "Attach the two 42 inch boards in the same manner as above but with the ends matching the outside edges of the 60 inch boards as pictured.",
+      "what": "Bottom short rails 32.5 + 2 legs x 3.5 = 39.5 between long boards, + 2 x 1.5 = 42.5 outside edges vs the 42\" cut (cutList[4]); half-inch difference under this reading of \"ends matching the outside edges\"."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[1].body",
+      "quote": "Using glue and screws, attach the boards",
+      "what": "Glue is listed (materials[12]); no consumable gap beyond sandpaper (step 14) which is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e4d400e4b0c44b72.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9dd07b8f562c6826.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/ccf23f87b800c4e8.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/16884e07dacdfea9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b0ca081dc992a110.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/22284211256ca0b4.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

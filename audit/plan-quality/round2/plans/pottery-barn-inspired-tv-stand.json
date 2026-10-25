@@ -29,68 +29,153 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to ",
-          "why": "cut sentence states 8\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to ",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to ",
-          "why": "cut sentence states 6\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "wo 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long in between each board to create your \"drawer like\" cabinet doors. Glue and nail 2 - 1x3\" to the b",
-          "why": "cut sentence states 5\" — no cut-list dimension or material size matches (corrected values)"
+          "quote": "Glue and nail 2 - 1x3\" to the back of the planked boards to hold your door together."
         }
-      ]
+      ],
+      "reason": "Door cleats (\"2 - 1x3\"\") are assembled but have no cut-list row and no length is given. Search: no cutList[].part matches /cleat|brace|batten/ except Shelf braces (13\", used for shelves, step 10); the viewed step-4 image shows two long cleats on the door back. Flagged 8\"/5\"/6\" numbers in step 4 are board names; the door boards and 1x2 spacers do have rows (cutList[5], [6], [7])."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every row is used: sides/bottom support (steps 1-2), top (3), shelves (4, 11), door boards and spacers (5), inserts (7), trim (8), braces/small shelves (11)."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[7] Kreg text not parseable"
+      "result": "pass",
+      "reason": "Parts 14.5-16\" wide come only from the 3/4\" sheet (fits 48 x 96); 2.5\" and 3.5\" parts from 1x3/1x4; door boards 7.25/5.5 and 1.5\" spacers can be ripped from the 3/4\" sheet. Steps name 1x8/1x6/1x2 stock not listed (see R14)."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x3, 1x4, sheet-0.25); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Plywood, 3/4\" Thick Full Sheet"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Attach both of your sides to the 1x3/bottom support"
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Cut 1x3\" boards and nail to the sides of each cubby."
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x3 96\""
+        }
+      ],
+      "arithmetic": "Sheet: parts wider than any listed board must come from the one 3/4\" sheet (48x96 = 4608 sq in): Sides 2x15.5x33 = 1023; Bottom & Middle Shelf 2x15.5x48 = 1488; Top 16x50 = 800; Middle Inserts 2x15.5x23 = 713; Small inside shelves 3x14.5x15 = 652.5. Sum = 4676.5 > 4608 (68.5 sq in over, before the door boards and spacers if those are plywood, and before kerf). 1x3 (steps name 1x3 for these): Bottom support 48 + 6 braces x 13 = 78 -> 126 (+ kerf) > 1 board x 96 = 96, short 30; door cleats (\"2 - 1x3\"\", no length) add more.",
+      "reason": "Plywood area and 1x3 length both exceed what materials buy (quantity 1 each; Stage 2 recorded no defaulted-quantity flag)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "Cut 1x3\" boards and nail to the sides of each cubby. We placed ours directly in the middle. The height is personal preference. Your shelf will then lay on top of the 1x3's. Your shelf should sit back ",
-          "why": "3\" nail — no material line lists a 3\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"3\\\" nail\" is the board name 1x3. Pocket screws 1 1/4\" (steps 1-3, 7) match materials[7]; finishing nails (step 8) have no size and materials[10] lists 2\" finishing nails; backer nails have no size stated. No two sizes for one use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "the middle. The height is personal preference. Your shelf will then lay on top of the 1x3's. Your shelf should sit back an inch from the front.\nRepeat this step for the inside of the cabinets as well.",
-          "why": "placement with no measurement (no step image)",
-          "image": null
+          "path": "steps[5].body",
+          "quote": "Attach the cabinet doors to the sides using euro hinges. Make sure to leave an even gap around the sides of the doors."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "Euro Hinges"
         }
-      ]
+      ],
+      "reason": "Hinge location on door/side (distance from top and bottom, cup distance) is never given as a number. Search: \"hinge\" appears only in steps[5] and materials[6]; the viewed step-6 image shows a hinge close-up with no dimension. Other positions pass: middle shelf 23 3/8\" (step 4), shelf setback \"an inch from the front\", bottom shelf rests on the bottom support (viewed step-1/2 images), braces \"directly in the middle\"/personal preference."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a drawing or \"as shown\"."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Attach both of your sides to the 1x3/bottom support using 1 1/4\" pocket holes screws."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Using the 3/4\" setting on your Kreg Jig, make 4-5 pocket holes in the top of your sides as well as 4-5 pocket holes in the bottom and top shelves."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "Cut 1x3\" boards and nail to the sides of each cubby."
+        }
+      ],
+      "reason": "Pocket holes are drilled in step 12 of 13, after steps 1-7 already join the parts with pocket screws; shelf braces (step 11) are nailed inside the cubbies and cabinets after the top, doors and inserts are on and after finishing (step 10). A builder following the order as written cannot drill holes in parts already joined; the build can proceed by reordering, so Fix. Importer preserves page order (import-kreg-plans.mjs steps0.map), so this is Kreg's order."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Step 12 states \"the 3/4\" setting on your Kreg Jig\"; all pocket-hole parts are 3/4\" thick."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "The back should be flush. The sides and the front should over hang 3/4\"."
+        },
+        {
+          "path": "cutList[2]",
+          "quote": "Top"
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "Lay two 1x8\" boards cut to 15.5\" long and a 1x6\" board cut to 15.5\" above them with 1x2\"s cut to 15.5\" long"
+        }
+      ],
+      "arithmetic": "(a) Carcass width = shelf 48 (cutList[1]) + 2 sides x 0.75 = 49.5 (shelf sits between the sides in the viewed step-2 image; bottom trim 49.375 corrected agrees). Top = 50 (cutList[2]) -> overhang (50-49.5)/2 = 0.25 per side, not 3/4. Front: top 16 - side depth 15.5 = 0.5, not 3/4. (c) Step 5 uses 1x8, 1x6 and 1x2 boards; search materials for /1x8|1x6|1x2/: none (materials list only 3/4\" plywood, 1x3, 1x4, 1/4\" backer).",
+      "reason": "Overhang in step 3 does not match the Top row (needs 51 x 16 1/4 for 3/4\" overhangs), and door stock named in step 5 is not in materials (1/4\" backer, plywood or 1x2 alternatives are not stated in the steps)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "kind": "consumable",
+      "path": "steps[4].body",
+      "quote": "Glue and nail 2 - 1x3\" to the back of the planked boards",
+      "what": "Wood glue used but not in materials."
+    },
+    {
+      "path": "materials[11].name",
+      "quote": "Magnetic Catch for the doors",
+      "what": "Magnetic catches are listed (qty 2) but no step installs them or gives a position."
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "Space the top shelf 23 3/8\" from the Bottom Shelf.",
+      "what": "Middle Inserts are cut 23 tall (cutList[3]) while the shelf spacing is 23 3/8\"; plan does not say which surfaces the 23 3/8\" is measured between, so whether the 3/8\" difference is intended is not determinable."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/0c902f79b032be03.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/edb08aeb8fe23d6c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/6854ca8e55eb04c9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/b44908928c33b657.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7fe090c2f035d9ae.webp"
+    ]
+  },
+  "verdict": "Fix"
 }

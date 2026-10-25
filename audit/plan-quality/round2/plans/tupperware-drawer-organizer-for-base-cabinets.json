@@ -143,60 +143,66 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sides, back, box front, shelf, dividers, drawer front, bottom and filler pieces all have cut-list rows. The 3/4\" spacer block in step 17 is cut from leftover 3/4\" plywood and depends on the reader's cabinet."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[7].part",
-          "quote": "Bottom filler pieces",
-          "why": "no step mentions it (searched steps for filler)"
-        }
-      ]
+      "result": "pass",
+      "reason": "\"Bottom filler pieces\" are step 14 (\"Screw or nail on the bottom pieces of 1/4\" plywood\"); all other rows are used in steps 1-13."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Sheet parts by thickness. 3/4\" (4608 sq in): 2x18.5x21.5 + 16.5x18.5 + 4.375x16.5 + 5x6.25x8.25 + 7x16.5 + 6x18 = 795.5+305.25+72.2+257.8+115.5+108 = 1654.3. 1/2\" 24x24: bottom 17 x 20.5 fits. 1/4\" 24x24: 2 x 7 x 16.5 = 231 of 576."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[16].body",
-          "quote": "same length as the drawer slides. I used 3/4\" plywood.\nThen screw in the drawer slides to the spacers, put the Tupperware drawer on top and pull out the slides. Screw the Tupperware drawer into the sl",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Flagged \"3/4\\\" screw\" is the plywood thickness of the spacer. Steps use 1 1/4\" pocket screws and 1 1/4\" wood screws, both in materials (materials[5], [6])."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[10].body",
-          "quote": "Screw the shelf dividers in as shown in the picture. Use 1 1/4\" wood screw and wood glue. Make sure they are spaced evenly apart. They should be screwed in from the back and the bottom of the shelf.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/865e3aa0fb82960e.webp"
-        },
-        {
-          "path": "steps[16].body",
-          "quote": "r slides to the spacers, put the Tupperware drawer on top and pull out the slides. Screw the Tupperware drawer into the slides from the bottom. Make sure it moves nice and smooth and adjust if needed.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c474ae60c5a2fe9d.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Shelf \"8 1/4\" down from the top\"; grooves 1/2\" up, 1/2\" wide, 1/4\" deep; dividers 2 1/8\" apart in the viewed step-11 image (5 x 3/4 + 6 x 2 1/8 = 16.5 = shelf length); center slide set on spacer blocks in the viewed step-17 image; handle shape and top rounding are \"up to you\"."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "7 reference(s), each in a step with its own image"
+      "reason": "All \"as shown/picture\" steps have their own image; viewed images show the dimensions."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Grooves, back to sides, bottom slid in, front, shelf (8 1/4\" down), dividers, drawer front, fillers, edge banding, finish, install."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Steps 2, 3 and 8 state \"pocket hole jig to 3/4\"\" / \"3/4\" pocket holes\" for the 3/4\" plywood parts; no other pocket-hole thickness."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) drawer width 16.5 + 2 x 0.75 = 18 = drawer front and 18\" slides; bottom 17 = 16.5 + 2 x 1/4\" groove, 20.5 = 21.5 - 2 x 0.75 + 2 x 1/4; dividers 8.25 tall = shelf depth below top 8 1/4\". (b) all parts installed. (c) slides, banding, glue, screws listed. (d) steps reach the finished organizer."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "2' x 2' x 1/4\" plywood, 24\" x 24\" x 1/2\"",
+      "what": "Name gives 1/4\" plywood but dimensions 24\" x 24\" x 1/2\"; the filler pieces (cutList[7]) are 0.25 thick."
+    },
+    {
+      "kind": "consumable",
+      "path": "steps[5].body",
+      "quote": "I recommend sanding all the pieces now",
+      "what": "Sandpaper is not in materials."
+    }
+  ],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/865e3aa0fb82960e.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/c474ae60c5a2fe9d.webp"
+    ]
+  },
+  "verdict": "Ship"
 }

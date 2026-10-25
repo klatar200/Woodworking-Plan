@@ -115,62 +115,100 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Visit https://www.charlestoncrafted.com/diy-toddler-workbench-plans/ for more photos and the behind the scenes of the build! You can also get lots of other plans for great kid projects on our site!",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[11].body",
-          "quote": "Visit https://www.charlestoncrafted.com/diy-toddler-workbench-plans/ for more photos and the behind the scenes of the build! You can also get lots of other plans for great kid projects on our site!",
-          "why": "matches \"our site\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[11] link is a credit (\"more photos and the behind the scenes\"); every dimension and position is in the plan."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts cut and assembled in steps (front/back legs, horizontal beams 2 + 3, side beams, side/back/bottom plywood, doors, top, pegboard) all have cut-list rows."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 10 rows are used in steps 1-10."
     },
     "R4": {
-      "result": "pass",
-      "basis": "Kreg-corrected cut rows vs board materials (§9)"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "readerNote": "Sweep passed R4 by matching cutList[9] to the 1/2\" plywood sheet; the part is a pegboard and the only pegboard listed is 1/4\" thick.",
+      "evidence": [
+        {
+          "path": "cutList[9].part",
+          "quote": "Pegboard"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Pegboard, 1/4\" Thick Quarter Sheet"
+        }
+      ],
+      "arithmetic": "cutList[9] thickness 0.5 (no import diff for this row) vs materials[2] pegboard 0.25 thick. 0.5 - 0.25 = 0.25\" thicker than any listed pegboard; the 1/2\" plywood (materials[1]) is not pegboard.",
+      "reason": "Pegboard part is 1/2\" thick in the cut list but the only pegboard listed is 1/4\"."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, sheet-0.5, sheet-0.25); steps not checked for per-part stock"
+      "reason": "1x4 checks out: 2x18 + 2x32 + 5x24 + 4x10.5 = 262 + 13 cuts x 1/8 <= 3 x 96 = 288 (packs into 3 boards). The 1/2\" plywood \"Half Sheet\" and pegboard \"Quarter Sheet\" have no dimensions in their names, so sheet area is unknown (1/2\" ply parts total 1306.75 sq in)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[9].body",
-          "quote": "Attach the pegboard piece to the back of the kid workbench using 1/2\" or 3/4\" screws.",
-          "why": "3/4\" screw — no material line lists a 3/4\" fastener"
+          "quote": "Attach the pegboard piece to the back of the kid workbench using 1/2\" or 3/4\" screws."
+        },
+        {
+          "path": "materials[5].name",
+          "quote": "1 1/4\" Kreg Screws"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "1\" Kreg Screws"
         }
-      ]
+      ],
+      "reason": "Step 10 calls for 1/2\" or 3/4\" screws; materials list only 1 1/4\" and 1\" Kreg screws. Search: no materials[].name has a 1/2\" or 3/4\" screw. Hinge screws are not listed either."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": " Legs. Connect one beam flush with the top of the Back Legs. The other two Horizontal Beams should be lined up with the beams from the front section. One should be 2\" up from the bottom and one should",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a628cd116ef59ad9.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Beam heights 2\" and 18\" up and flush tops (step text, viewed step-3 image); knobs \"centered ... 1\" in from the edge\"; hinges shown at upper and lower door edge in the viewed step-8 image; pegboard position shown in the viewed step-10 image (between top beam and bench top)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step cites a drawing; step images show the assemblies."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Front and back frames, side beams, plywood sides/back, bottom, doors, top, pegboard. Opening check: 18 - 2 - 3.5 - 3.5 = 9 = door/side/back plywood height."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[0].body",
+          "quote": "Add pocket holes in the ends of the Horizontal Beams and the Side Beams."
+        }
+      ],
+      "reason": "Pocket holes in 3/4\" boards and 1/2\" plywood with no jig thickness setting. Search for /setting|collar|depth/: none. Viewed images (steps 3, 8, 10) show no setting; other images not opened."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 2 front + 3 back horizontal beams = 5; 4 side beams; 2 doors x 2 hinges = 4; 2 knobs. Back pegboard 11 tall vs opening 28.5 - 18 = 10.5 (overlaps behind frame). (b) all parts installed. (c) hinges, knobs, pegboard, glue listed. (d) steps reach a finished bench."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [],
+  "reader": {
+    "batch": "r2-04",
+    "imagesViewed": [
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a628cd116ef59ad9.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/97bbf794f869f52c.webp",
+      "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/e7c65166872a52b7.webp"
+    ]
+  },
+  "verdict": "Fix"
 }
