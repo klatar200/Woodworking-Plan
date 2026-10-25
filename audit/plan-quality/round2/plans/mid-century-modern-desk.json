@@ -731,10 +731,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps[0],[2],[4],[8],[12],[14] (edging, panels, rail, backs, dividers, cabinet parts, shelf, door, drawer parts) has a cutList row. Shims in steps[13] are a consumable-type item (gaps)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 25 rows are used by a step: top steps[0-1], bottom steps[2-3], rail steps[4-5], dividers/backs steps[4,6], cabinet steps[8-10], shelf/door steps[12-13], drawers steps[14-15]."
     },
     "R4": {
       "result": "pass",
@@ -742,42 +744,98 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.5, 1x2); steps not checked for per-part stock"
+      "reason": "Lengths pass: 1x2 parts as listed = 2x94.75 + 2x45.75 + 4x20.75 + 41.5 + 6x4 + 3x14.25 + 4x18 + 14.125 = 558.375in (+ ~1/8 x 23 cuts) vs materials[3] 6 x 96 = 576in. Sheet parts (3/4in ~4376 sq in vs full + half sheet; 1/2in ~809 sq in vs half sheet) do not exceed what is bought but layout is not judged (sheet rule = unknown unless area exceeds). Row 94.75 is itself wrong, see R14."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps (1 1/4\" pocket-hole, 1\" panhead pocket-hole, #8 x 2\", #8 x 1 1/2\", 1 1/4\" flathead, #12 x 5/8\" panhead) all appear in materials[4-8],[11]; no size conflicts for one use."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": " to length from 1x2 boards, as shown in the cutting diagram. Measure and mark carefully to make sure all of the like parts are exactly the same length. Also cut the Top Panel to size from 3/4\" plywood",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/2c52ed9b52fff36c.webp"
-        },
-        {
-          "path": "steps[10].body",
-          "quote": "Now you can assemble the cabinet, as shown. Make sure that you align all of the pieces properly so that the cabinet top assembly is set back. This will provide space for the cabinet door when it gets ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/611dbce8160c9a9b.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric in viewed drawings: countersunk-hole spacing 5 1/2\", 9\", 3/8\" (2c52..), divider spacing 5\"/14 1/4\"/23 1/4\"/1 1/2\" (b31b.., 2eca..), bottom overhang 3\" and 1 1/2\" (2eca.., 1b1e..), rail 5\" from the ends (b728..), cabinet top set back 3/4\" (611d..), shelf-pin holes 5 7/8\" and 1\" (4dfa..), door pull holes 5\" and 3 3/4\" (6028..), drawer front pull holes 5 3/16\"/3 3/4\" (a95f..). Hinge, catch and strike positions are only pictured (8c80..), which counts as shown; legs sit in the corners formed by the edging (relational).",
+      "readerNote": "Sweep R10 flags steps[0] and steps[10] settled by images 2c52.. and 611d.."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "Every 'as shown in the cutting diagram' step has its own dimensioned part drawing as its step image (steps[0] 2c52.., steps[2] a557.., steps[4] b81a.., steps[8] 4dfa.., steps[12] 6028.., steps[14] a95f..; all viewed), and steps[9] 'edging as shown' is covered by 4dfa..; all 18 images viewed."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Top and bottom assemblies, rail, divider/back assembly, bottom, cabinet (screws driven from inside the cabinet top), door/shelf, drawers, finish: each exists before use (viewed images 2c52.., b31b.., 2eca.., 1b1e..)."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'jig set for 3/4\" material' stated in steps[0],[2],[4],[8],[12]; 'set for ½” material' with Micro-Pocket block in steps[14] for the 1/2in drawer parts. No contradiction."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[9].body",
-          "quote": "Use a shelf-pin jig to drill shelf-pin holes 3/8\" deep, centered top-to-bottom, in the inside faces of the Side Panels. After that, you can attach the edging as shown to all of the cabinet parts.",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "cutList[0]",
+          "quote": "\"part\": \"Top Long Edging\", \"quantity\": 2, \"thicknessIn\": 0.75, \"widthIn\": 1, \"lengthIn\": 94"
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "\"part\": \"Top Panel\""
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Make sure the ends of the edging are flush with the edges of the Top Panel and edges of the panel are flush."
+        },
+        {
+          "path": "cutList[9]",
+          "quote": "\"part\": \"Divider Panel\", \"quantity\": 3, \"thicknessIn\": 3, \"widthIn\": 4, \"lengthIn\": 17"
         }
-      ]
+      ],
+      "arithmetic": "Viewed drawing 2c52.. (steps[0]) labels the Top panel 46 3/4\" and the Top Long Edging 49 3/4\" (overall desk 49 3/4\" in image 2658..); the same pattern holds for the bottom pair (Bottom Panel 42 3/4\" + 3\" = 45 3/4\" = cutList[1], image a557..). cutList[0] (Kreg-corrected 0.75 x 1.5 x 94.75; Top Panel Kreg-corrected 0.75 x 20.75 x 46.75) says 94.75 (Kreg source '3/4\" x 1 1/2\" x 94 3/4\"'), almost twice the 49 3/4\" the drawing gives, so the row is wrong in Kreg's own cut list (cause plan). Second mismatch: viewed drawing b81a.. (steps[4]) dimensions the Divider Panel 17 3/4\" while cutList[9] (Kreg-corrected 0.75 x 4 x 17.25, source '3/4\" ply x 4\" x 17 1/4\"') says 17 1/4\".",
+      "reason": "(a) Top Long Edging length in the cut list (94.75) contradicts the step drawing (49 3/4\") and the Top Panel (46 3/4\"); Divider Panel is 17 3/4\" in the drawing but 17 1/4\" in the cut list. (b),(c),(d) pass: every part installed, hardware listed, desk reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[13].name",
+      "quote": "1 1/2\" no-mortise door hinges",
+      "what": "Quantity 1 vs steps[13] 'screw the no-mortise hinges' (plural) and image 8c80.. showing two hinges; may be an importer default."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "inserting shims to center it vertically in the opening",
+      "what": "Shims not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[1].body",
+      "quote": "attaching the End Edging using glue and 1 1/4\" pocket-hole screws",
+      "what": "Wood glue used in several steps is not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "3d95d9ca68f5ea2f",
+      "42a4f18809fab1e2",
+      "36fe8be946906443",
+      "fbf7a2dfa57e8075",
+      "265841348d4bc074",
+      "2c52ed9b52fff36c",
+      "a5574c7177947777",
+      "b81aca68ea7b2cbe",
+      "b72859ee193e2561",
+      "b31bb3085a447383",
+      "2eca4842ced9b5d1",
+      "4dfac7a1b667f7fd",
+      "611dbce8160c9a9b",
+      "1b1ebec4de80c7c9",
+      "6028476df6eaf8b8",
+      "8c80c058cb925ff4",
+      "a95f0a8f47dbe3a7",
+      "32ce351214007ed2"
+    ]
+  }
 }

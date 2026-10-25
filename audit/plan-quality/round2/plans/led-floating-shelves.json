@@ -55,21 +55,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "materials[3].name",
-          "quote": "LED Light kit (linked in \"Extras\")",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "materials[3] 'LED Light kit (linked in \"Extras\")' is a purchase link for a product (step 6 describes a generic LED strip); build can proceed with any strip. The missing drawings are scored under R11/R10."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Top, Bottom, Sides, Back (steps[0]) are all in cutList; plugs in materials; no other part is made."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All four rows used (steps[0], [3], [8], [10], [11])."
     },
     "R4": {
       "result": "pass",
@@ -80,25 +75,115 @@
       "reason": "R5 precondition not met: 3 stock types (sheet-0.75, sheet-0.25, 0.125x1); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "Glue and screw the two sides to the top of the shelve."
+        },
+        {
+          "path": "steps[11].body",
+          "quote": "Add the bottom to the shelf and glue and screw into place with the pocket holes"
+        }
+      ],
+      "reason": "Screws are used to join the shelf but no screw (pocket-hole or otherwise) or size appears in materials (search materials.name vs /screw|nail|fastener/i: no match; only 'Kreg wood plugs'); no step states a screw size either."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
-    },
-    "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "route a 1/2\" channel as noted on the plans 3/8\" deep on the top piece."
+        },
+        {
+          "path": "steps[4].body",
+          "quote": "To easily and securely hand this on the wall you can add key holes to the back."
+        },
         {
           "path": "steps[9].body",
-          "quote": "If your LED's have a controller and switch. Add a hole to the back (noted in drawings for the linked LED kit) to allow the remote to active and control the LED lightning.",
-          "why": "\"drawings\" with no step image; 4 unattached image(s) in images[] to view",
-          "unattachedImages": 4
+          "quote": "Add a hole to the back (noted in drawings for the linked LED kit)"
         }
-      ]
+      ],
+      "reason": "Channel length/inset from the end for the LED strip and lens channels, the back-groove distance from the edge, keyhole positions and the controller hole location/size are not given as numbers (steps give only widths/depths). Viewed images 53bc.. (routed channel in a board), f2bb.. (grooved board end with pocket holes), e1ff.. (routed boards) carry no dimensions. Only back-groove ends '1/8\"' and channel widths/depths are numeric."
+    },
+    "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[9].body",
+          "quote": "Add a hole to the back (noted in drawings for the linked LED kit) to allow the remote to active and control the LED lightning."
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "route a 3/4\" channel as noted on the plans 1/8\" deep on the top piece."
+        }
+      ],
+      "reason": "steps[1], [2], [9] point to 'plans'/'drawings' that are not in the plan. Images opened: the four unattached ones (54a2.., 375c.., bed2.., abdc..) are finished-shelf photos (abdc.. a remote control), step images 53bc.., f2bb.., e1ff.., 736e.., 341f.. are workshop photos with no dimensions or drawing. The other step images were not opened (steps[5],[6],[10]-[16] show finishing/assembly photos per titles); likely. Non-structural (LED channel/controller hole), so Fix."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, channels/grooves routed, LED strip placed and keyholes done before assembly; sides to top, back slid in, bottom last; acrylic and electronics after finishing. Step 3 tip and step 7 both add pocket holes to sides before assembly (duplicate, not conflicting)."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[7].body",
+          "quote": "Add four pocket holes to each side"
+        }
+      ],
+      "reason": "Pocket holes drilled in 3/4\" plywood sides (steps[3], [7]); no jig thickness setting stated (search all steps, materials, description vs /setting|jig|collar|depth|thickness/i: only router depths). Viewed image 736e.. shows the jig with a drill but no legible setting; e1ff.. shows routed boards only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 pocket holes per side x 2 sides = 8 = 'fill the 8 pocket holes' (steps[7], steps[12]); one Top, Bottom, Back and two Sides all installed. (b) every part installed. (c) LED kit and plugs listed; tape/silicone/glue/paint are consumables. (d) steps reach the finished shelf (viewed photos 375c.., bed2..)."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[2].name",
+      "quote": "Clear Acrylic, 20\" x 1\" 1/8\"",
+      "what": "Acrylic 1\" wide vs 'route a 3/4\" channel' for the lens in steps[2]; steps[15] says to bend/insert the ends under the sides, but a 1\" strip into a 3/4\" channel is not reconciled."
+    },
+    {
+      "path": "steps[15].body",
+      "quote": "Add and secure the Acrylic lens in place using silicone or glue.",
+      "what": "Silicone/glue/hot glue and painter's tape (steps[6]) not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[14].body",
+      "quote": "Add your desired finish, we primed and painted the shelf black",
+      "what": "Primer/paint not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "54a26202266cd54a",
+      "375cdb87a611f1f6",
+      "bed2b5e6eb98dc54",
+      "abdced00db2b5808",
+      "53bcc73f0cee5fce",
+      "f2bb8e2f48df486b",
+      "e1ffbb52d66a979e",
+      "736e0e91e24c3da3",
+      "341ff8234c29fd05"
+    ]
+  }
 }

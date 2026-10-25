@@ -167,46 +167,90 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Leg, Short Rail, End Stretcher, Long Rail, Center Rail, Center Stretcher, Angle Stretcher and Top (steps[1]-[14]) all have cutList rows; quantities (8, 4, 4, 2, 1, 2, 4, 5) match the 'cut eight/four/four/two/one/two/four/five' wording."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used in steps[1]-[14]; doubled parts (8 legs -> 4 thick legs, twin layers in steps[13]) are explained in steps[0],[1],[13]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x4, 1x3, 1x8); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Every step names its stock. 1x4 (materials[0] 9 x 72 + materials[1] 2 x 96 = 840in): Legs 8x29.625 + Short Rails 4x23.75 + End Stretchers 4x27.625 + Long Rails 2x52 + Center Rail 28.625 + Center Stretchers 2x52 = 679.125 + 27 cuts x 1/8 = 682.5 <= 840. 1x3 (2 x 72 = 144): Angle Stretchers 4x31.1875 = 124.75 + 0.5 <= 144. 1x8 (5 x 96): Top 5 x 76 (one per board)."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[4].body",
-          "quote": "ng glue and 1 1/4\" pocket-hole screws. We chose fine-thread screws for our alder hardwood. You can find more about choosing screws in the how-to video below. Clamp the pieces during assembly to keep t",
-          "why": "4\" screw — no material line lists a 4\" fastener"
-        }
-      ]
+      "result": "pass",
+      "reason": "Only fastener size in steps is 1 1/4\" pocket-hole screws (steps[4]), listed in materials[4]; sweep flag '4\" screw' is that 1 1/4\" screw. Brads in steps[13] are optional ('If you have a brad nailer', see gaps)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Positions shown with numbers in viewed images: Center Rail 25 5/8\" each side (cdfa..), Center Stretcher 12 3/4\" (3cdf..), Angle Stretchers 13 9/16\" (f393..); end stretcher 'X equal on both legs' and top overhang 'equal' are relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "'cut diagram/cutting diagrams' (steps[0],[1],[2]...) - each step has its own part diagram image (a151.., ee64.. viewed) and overall drawing f2b6.. shows 76 x 36 1/4 x 29 1/4."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, end assemblies, long rails, center rail, stretchers, angle stretchers, second layer, top, top attached to base."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'set your Kreg Jig for 3/4\"-thick material (the setting you'll use throughout this project)'; all parts are 3/4in."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "look at the procedures, the materials list, and the cutting diagrams. You’ll see that most parts of the base are double thickness. This makes the table stronger, and helps with the traditional farmhou",
-          "why": "\"diagrams\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[11].body",
+          "quote": "Cut four Angle Stretchers to length from 1x3 boards so that the ends have opposing 45° angles, as shown in the cutting diagram."
+        },
+        {
+          "path": "cutList[6]",
+          "quote": "\"part\": \"Angle Stretcher\", \"quantity\": 4, \"thicknessIn\": 0.75, \"widthIn\": 3, \"lengthIn\": 31"
+        },
+        {
+          "path": "materials[2].name",
+          "quote": "Board, 1x3 72\""
         }
-      ]
+      ],
+      "arithmetic": "Step and materials use 1x3 (actual width 2 1/2\" per section 9) and viewed diagram ee64.. dimensions the Angle Stretcher 2 1/2\" wide x 31 3/16\", but Kreg's cut-list width is 3 1/2\" (importDiffs cutList[6]: source '3/4\" x 3 1/2\" x 31 3/16\" alder', a 1x4 width). 3.5 > 2.5.",
+      "reason": "(a) cut-list width contradicts the step stock and drawing. (b),(c),(d) pass: all parts installed, no missing hardware, finished table reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[13].body",
+      "quote": "If you have a brad nailer, though, you can use just a couple of clamps to hold the pieces in place, and then drive in brads",
+      "what": "Brads are optional and not in materials.",
+      "kind": "optional"
+    },
+    {
+      "path": "steps[17].body",
+      "quote": "We used a “Java” colored gel stain, followed by two coats of satin wipe-on urethane.",
+      "what": "Finish not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "f2b69860c7a56fa3",
+      "a151ebee934e0055",
+      "cdfac9cbb4302f69",
+      "3cdfa1ea55275891",
+      "5f7e848e07e7f652",
+      "f393ebe2ed680e3c",
+      "ee64c62f280a1bad"
+    ]
+  }
 }

@@ -71,51 +71,93 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Parts the steps make (spindles, pedestal ends, top, two bottom boards) are all in cutList; lamp kit pipe/nuts/washers/shade/bulb in materials. See R14 for the part-count mismatch."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[2].part",
-          "quote": "Top and upper board of the bottom assembly",
-          "why": "looks like a placeholder or an assembly, not a part"
-        },
-        {
-          "path": "cutList[3].part",
-          "quote": "Lower board bottom assembly",
-          "why": "looks like a placeholder or an assembly, not a part"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags rejected: cutList[2] 'Top and upper board of the bottom assembly' (qty 2) = top (steps[3],[9]) + upper bottom board (steps[5],[8]); cutList[3] 'Lower board bottom assembly' = lower bottom board (steps[5],[8]). Both are real parts, not assemblies."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "parts ≤ half the 5.5″ stock width can be ripped side by side; length-only total does not apply (rubric note 1)"
+      "result": "pass",
+      "reason": "One stock: materials[0] 'Board, 1x6 48\"' (actual 3/4 x 5 1/2 x 48 per §9 and steps[1]). Square parts (widest 5\") take 5 + 2x4.5 + 2x3.5 = 21in of length; the 5 spindles (0.75 x 0.75 x 11.75) ripped side by side need 5x0.75 + 4x1/8 = 4.25in of the 5.5in width over 11.75in of length. 21 + 11.75 = 32.75 + 8 cuts x 1/8 = 33.75 <= 48. Cutting diagram image 3ac0.. shows the same fit."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Only fasteners: 1 1/4\" brad nails (steps[7], materials[3]); 1 1/2\" lamp pipe with 2 nuts and 2 washers (steps[9], materials[6-8]). No conflicts."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric in viewed images: holes 25/64\" and 1\" countersunk (0747..), pedestal-end notches 3/4\" and 1 3/8\" setbacks (c34e..), 2 1/2\" hole and 5/16\" cord hole (fd24..), reveal 3/8\" (52be..); top/bottom centering is relational."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
+      "result": "pass",
+      "reason": "steps[1] 'following diagram' has image 3ac0.. (cutting diagram viewed); steps[10] 'cover images shown here' - unattached image 054f.. is the finished lamp (viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, rounded, drilled (steps[2]-[6]); pedestal assembled, bottom assembled, then top and bottom attached; finish, then lamp kit wired, felt last."
+    },
+    "R9": {
+      "result": "n/a",
+      "reason": "No pocket-hole joints; glue and 1 1/4\" brad nails stated (steps[7])."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[10].body",
-          "quote": "lar. They are in our guest bedroom and are the cover images shown here. After finishing is complete the lamp kit can be installed and wired. If you are uncomfortable doing this please seek professiona",
-          "why": "\"shown here\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
+          "path": "steps[1].body",
+          "quote": "Cut out the eleven parts."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "bore 2 1/2\" holes through the center of 4 1/2\" and 5 1/2\" bottom boards."
+        },
+        {
+          "path": "cutList[3]",
+          "quote": "\"part\": \"Lower board bottom assembly\", \"quantity\": 1, \"thicknessIn\": 0.75, \"widthIn\": 5, \"lengthIn\": 5"
+        },
+        {
+          "path": "steps[2].body",
+          "quote": "the 5 inch square and the two 4 ½ inch squares need to be rounded over"
         }
-      ]
+      ],
+      "arithmetic": "Cut list quantities: 5 spindles + 2 pedestal ends + 2 (4.5in) + 1 (5in) = 10, not 'eleven'. Cutting diagram (image 3ac0..) draws 11 parts: 5 spindles + squares 5, 5, 4 1/4, 4 1/4, 3 1/2, 3 1/2, i.e. two 5in and two 4 1/4in squares vs cut list one 5in and two 4.5in (Kreg-corrected). Lower bottom board is 5 in cutList[3] and steps[2] and image 52be.., but 5 1/2 in steps[5] and image fd24.. Image 0747.. (steps[3]) dimensions the top piece 4 1/4\" while steps[3] says '4 1/2\" top piece' and Kreg-corrected cutList[2] is 4.5.",
+      "reason": "(a) part count and sizes disagree between step text, diagrams and cut list; the finished-lamp photos (054f.., 3477..) show a top plate and a two-step base but the part sizes cannot be read from them. (c) felt: steps[10] 'cover the bottom with felt' - felt is not in materials (search materials.name vs /felt|pad|fabric/i: no match); no size given. (b),(d) pass."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Now all you need to do is cover the bottom with felt and pick out a lampshade.",
+      "what": "Felt is a component not in materials and has no size (counted in R14)."
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Use wood filler on all of the nail holes",
+      "what": "Wood filler, Minwax tung oil and compressed air are not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "3ac09e7f6dce6329",
+      "07472c1a9a08b922",
+      "c34ee6eb0ef52926",
+      "fd24f634f555c9a1",
+      "52be2e4aa7f0bfd5",
+      "054fb7dda87e1f68",
+      "3477fa0328e4e84d"
+    ]
+  }
 }

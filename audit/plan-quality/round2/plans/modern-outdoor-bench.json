@@ -319,21 +319,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "description",
-          "quote": " our friends from Kreg Tool and Build Something for the design of this Modern Outdoor Storage Bench. Match it exactly or put your own spin on it! Build along with us https://www.builderschallenge.com/",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "The only link is 'Build along with us https://www.builderschallenge.com/' in description (credit/optional); every part, cut diagram and illustration needed is in the plan."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Part A/B/C/D, Long Slats, Short Slats, Leg, Block, Filler (steps[0],[5]) all have cutList rows with matching quantities."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows used: layers steps[1]-[4], slats/legs steps[5]-[6], blocks/fillers steps[8]-[10]."
     },
     "R4": {
       "result": "pass",
@@ -344,26 +339,84 @@
       "arithmetic": "parts: 4×19.5 + 4×18.75 + 6×16.5 + 7×15.75 + 2×67.5 + 5×48 + 7×16.1875 + 6×8.75 + 6×4.375 + kerf 37 cuts (47 parts − 10 boards, the fewest possible)×1/8 = 933.938″; bought: 10×96 = 960″; 933.938 ≤ 960"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 2 1/2\" Kreg Blue-Kote screws (materials[2]) and 2 1/2\" exterior flat head wood screws (materials[3]); no conflicts."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Box Layer 2, second from the bottom, is the shelf layer. It's made from 2 - Part B, and 5 Part D. Space each Part D equally, about 2 3/4\" apart, and secure them to each Part B with 2 1/2\" Kreg Blue- K",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/7f465c9f7a387a99.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric: Part D spacing 'about 2 3/4\" apart', layer 4 'inset ... about 3/8\" on each side'; box position and slat layout shown in viewed images 314f.., 5773.., ec7d..; leg/curve cuts dimensioned in image 0a18...",
+      "readerNote": "Gap between the short slats is set by a 'temporary spacer' of unstated size (gaps)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "19 reference(s), each in a step with its own image"
+      "reason": "Sweep stands: every 'as shown / illustration / Cut Diagram' step has its own image (8c73.., 0a18.., c14b.. viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Layers built and set aside (steps[1]-[4]), slat/leg assemblies, curves, fillers/blocks, slats joined, assembly flipped, layers 4, 3, 2, 1 stacked."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[0] 'Set your pocket hole jig for 1 1/2\" thick material'; every part is 2x4 (1 1/2in)."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[13].body",
+          "quote": "Position Box Layer 1 (made from 2 - Box Part B, 2 - Box Part D) to match the orientation of Box Layer 3"
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Starting with the first Box Layer, which will become the bottom of the box. Assemble 2 - Part A, and 2 Part C as shown in the illustration."
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "Box Part A"
+        },
+        {
+          "path": "cutList[1].part",
+          "quote": "Box Part B"
+        }
+      ],
+      "arithmetic": "Layers per steps[1]-[4]: L1 = 2A + 2C, L2 = 2B + 5D, L3 = 2A + 2C, L4 = 2B + 2D -> A 4, B 4, D 7, C 4 (+2 used on the slats, steps[9]-[10] = 6) matching the cut list. steps[13] gives Layer 1 as 2B + 2D, which would need B = 2+2+2 = 6 and D = 5+2+2 = 9 and only 2 A; viewed image 5773.. shows Layer 1 as the 16 1/2\" x 19 1/2\" (A/C) frame.",
+      "reason": "(a) step 13 composition of Layer 1 contradicts step 1, the cut list and the image. (b),(c),(d) pass: every part installed, hardware and pot listed, bench reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[9].body",
+      "quote": "Lay a temporary spacer on the Long Slat where shown.",
+      "what": "Size of the spacer / gap between the short slats is not stated (image c14b.. shows a spacer but only a '16 1/2\"' dimension)."
+    },
+    {
+      "path": "materials[3].name",
+      "quote": "2 1/2\" exterior flat head wood screw",
+      "what": "Quantity 2 for screws used at every filler, block and slat joint; likely an importer default (materials[3]).",
+      "kind": "quantity"
+    },
+    {
+      "path": "steps[14].body",
+      "quote": "apply your favorite exterior stain or oil",
+      "what": "Finish not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "8c73f1c5d8f59e19",
+      "0a18a8d7979304ae",
+      "c14b226c9577be2e",
+      "314f6555383881d6",
+      "5773022e28d01ac2",
+      "ec7d58eabcf05841",
+      "4bf37a56e4b1b6aa"
+    ]
+  }
 }

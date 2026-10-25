@@ -251,10 +251,12 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Tower Side/Top/Bottom/Shelf/Rail, Cubby Side/Top/Bottom/Shelf/Rail and Ledger (steps[0],[1],[11]) all have cutList rows with matching counts (4, 2, 2, 10, 2; 2, 1, 1, 1, 1; 1)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 11 rows used: steps[1] rails, steps[4]-[5] tower, steps[8]-[9] cubby, steps[11] ledger, steps[13] 'slip in the shelves'."
     },
     "R4": {
       "result": "pass",
@@ -262,42 +264,71 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, sheet-0.75); steps not checked for per-part stock"
+      "reason": "1x4 stock passes: Tower Rails 2x10 + Cubby Rail 22 + Ledger 72 = 114in (+3 cuts x 1/8 = 114.375) <= materials[0] 2 x 72 = 144. 3/4in plywood (materials[1] 2 x 48x96 = 9216 sq in) parts area 4 x 15.75x70.5 + 2 x 11.5x15.75 + 2 x 11.5x15.75 + 10 x 9.875x15.75 + 2 x 15.75x22.5 + 2 x 15.75x23.5 + 15.75x21.875 = 8514.8 sq in < 9216, so sheet rule = unknown (layout not judged)."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps: 1-1/4\" coarse-thread Kreg pocket-hole screws (materials[2]); #12 x 3\" screws (materials[4]); shelf pins (materials[3]); heavy-duty wall anchors (materials[7]). No conflicts."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[3].body",
-          "quote": "and to align the holes from side to side for level shelves.\nNOTE: The setback spacing (distance from the edge to the shelf-pin holes) shown throughout this plan matches the first-generation Kreg Shelf",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/dab2e8fd6499c770.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric in viewed drawings: shelf-pin holes 2\", 5 1/2\", 6 1/8\", 1 1/4\", 6 1/4\" (dab2..), cubby 2\", 7 1/2\", 8 1/8\" (e8ad..), pocket holes 3\", 4 7/8\" (cd7c.. / bbde..), ledger top edge '12\" above the floor' (steps[11]), rods 42\"/40\"/82\"/72\" (1add..), tower/cubby spacing 10\"/22\"/46 1/2\". Rod positions beyond the drawing are 'up to you' (relational)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "Cut the plywood parts to size from 3/4\" plywood, as shown in the cutting diagram. You’ll need four Tower Sides, two Tower Tops, two Tower Bottoms, and ten Tower Shelves. You’ll also need to cut two Cu",
-          "why": "\"as shown\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "od parts to size from 3/4\" plywood, as shown in the cutting diagram. You’ll need four Tower Sides, two Tower Tops, two Tower Bottoms, and ten Tower Shelves. You’ll also need to cut two Cubby Sides, on",
-          "why": "\"diagram\" with no step image; 5 unattached image(s) in images[] to view",
-          "unattachedImages": 5
-        }
-      ]
+      "result": "pass",
+      "reason": "'as shown' steps have their own drawings (steps[1]-[13] images viewed: dab2.., 9035.., 4c70.., 48885.., e8ad.., cd7c.., b47a.., 9064..). 'cutting diagram' (steps[0],[1]) is not among the 17 images (5 unattached ones opened: 3 lifestyle photos, 1add.. assembly drawing), but every part size in it is in cutList.",
+      "readerNote": "No cutting-diagram image exists; part sizes are in the cut list, so not a blocker (gap)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut, rails drilled, towers and cubby assembled, painted, ledger installed, towers/cubby mounted, shelves and rods last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[1] 'Kreg Pocket-Hole jig set up for 3/4\"-thick material' covers all parts (all 3/4in ply or 1x4); other joints: #12x3\" screws into studs stated."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) step counts 'four Tower Sides, two Tops, two Bottoms, ten Tower Shelves', 'two Tower Rails and one Cubby Rail' match cutList; wall anchors 'two per tower and cubby' = 6 (materials[7]); shelf pins 44 = 11 shelves x 4; overall width 11.5 + 23.5 + 11.5 = 46.5 matches '46 1/2\"' (image 1add..); Tower Top 11.5 = 10 + 2 x 0.75. (b) every part installed. (c) rods, brackets, anchors listed. (d) finished organizer reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "as shown in the cutting diagram",
+      "what": "No cutting diagram image in the plan; sheet layout is not shown (part sizes are in cutList)."
+    },
+    {
+      "path": "steps[10].body",
+      "quote": "fill them with wood filler or spackling compound",
+      "what": "Wood filler/spackle and paint are not in materials.",
+      "kind": "consumable"
+    },
+    {
+      "path": "materials[5].name",
+      "quote": "8' Closet Rods (cut to fit)",
+      "what": "Rod lengths for each of the (four, per image 1add..) rods are not stated; depends on the closet."
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "c743e7941e8bef95",
+      "c25c856fe0ed778f",
+      "9c78cf29756669cd",
+      "9769ab4743f38f82",
+      "1add442d49a72562",
+      "dab2e8fd6499c770",
+      "e8adec0691e2623e",
+      "9035f3cfd168ef2f",
+      "4c701d205819c3ce",
+      "48885bc2c9b73884",
+      "bbde59aa3d2ef39f",
+      "cd7cc8fd97f8754e",
+      "b47a10863bdc7f2c",
+      "9064b1f1a3189807"
+    ]
+  }
 }

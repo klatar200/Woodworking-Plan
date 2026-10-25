@@ -347,47 +347,144 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Every part named in steps maps to a cutList row (legs, rails, supports, sides, seat, drawer box, drawer front, lattice, moldings). Drawer bottom (steps[8]) has no row but the step says to use listed 1/4\" plywood (materials[3]); its size is noted in gaps."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 18 cutList rows are used: frames steps[0-1], sides steps[2], slide rails steps[3]/[5], rails steps[6], drawer steps[7-11], moldings steps[12]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 6 stock types (2x2, 1x3, 1x2, sheet-0.25, sheet-0.5, 0.25x96); steps not checked for per-part stock"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 2x2 96\""
+        },
+        {
+          "path": "cutList[0].part",
+          "quote": "Legs"
+        },
+        {
+          "path": "steps[3].body",
+          "quote": "This needs to be flush with the 2x2s so the drawer slides can be screwed in later!"
+        }
+      ],
+      "arithmetic": "Kreg-corrected rows 1.5 x 1.5 (importDiffs cutList[0-3]): Legs 4 x 18 = 72 + Top Rails 2 x 28 = 56 + Side Rails 4 x 15 = 60 + Bottom Rails 2 x 25 = 50 = 238in of 2x2. Bought: materials[0] 2 x 96\" = 192in. 238 > 192, short by 46in with zero kerf (not kerf-only).",
+      "reason": "Only 'likely': steps do not name 2x2 stock for every part (stock deduced from the 1.5x1.5 section and steps[3] '2x2s'). Quantity 2 is not a 1-default case."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[8].body",
-          "quote": "awer to the drawer box! I just used 1/4\" plywood, glued and brad nailed to the bottom, but if you are afraid of it not being sturdy enough, you can always use 1/2\" plywood...you will just need to purc",
-          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
+          "path": "steps[5].body",
+          "quote": "Use 3/4\" pocket holes and 1 1/4\" pocket hole screws...and of course glue!"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "2 1/2\" Pocket Hole Screws"
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "1\" pocket hole screws"
+        },
+        {
+          "path": "materials[9].name",
+          "quote": "1 1/4\" brad nails"
         }
-      ]
+      ],
+      "reason": "1 1/4\" pocket hole screws are used in steps[5] but materials list pocket screws only in 2 1/2\" and 1\" (search materials.name vs /pocket/i and /1 1\\/4/i: the 1 1/4\" match is brad nails, a different item). Sweep flag steps[8] '1/4\" brad' rejected: the text is '1/4\" plywood, glued and brad nailed' - the 1/4\" is the plywood."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "This needs to be flush with the 2x2s so the drawer slides can be screwed in later!"
+        },
         {
           "path": "steps[7].body",
-          "quote": "to measure your actual space before building the drawer box! I usually attach my drawer slides to the inside of my piece and then measure in between them to get the best measurement for the drawer! At",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/9eb521e0727a6fe7.webp"
+          "quote": "I usually attach my drawer slides to the inside of my piece and then measure in between them to get the best measurement for the drawer!"
         }
-      ]
+      ],
+      "reason": "The height at which the drawer-slide guide rails go (and where the 8\" drawer box sits behind the 15 1/4\" front) is not a number in any step; viewed image 8285.. shows rails low in the opening labelled only '15\"' (length), image 9eb5.. shows the box labelled 16\", 8\", 22 3/4\". Frame positions that ARE shown: '1\" up from bottom' (image cbc9..) and plywood 'set back 1/4\"' (steps[2]), so those pass."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "steps[0] 'frames that are pictured' has its own diagram image (viewed cbc9..)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Frames, then sides, slide guides, seat, supports, decorative rails, drawer box/bottom/front, then drawer placed and trim; each part exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "Settings stated: steps[0] 'drilled at 1 1/2\" depth' (1 1/2\" stock), steps[2]/[4] '1/2\" holes' (1/2\" ply, covers drawer box steps[7]), steps[5] '3/4\" pocket holes' (3/4\" supports). No contradiction."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "so the drawer slides can be screwed in later!"
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "I usually attach my drawer slides to the inside of my piece"
+        }
+      ],
+      "reason": "(c) drawer slides are hardware used in steps[3]/[7] but absent from materials (search materials.name vs /slide|glide|runner/i: no match; the drawer-slide screws are not named either). (a),(b),(d): 4 legs/2+2 rails/4 side rails, 4 supports (2 top + 2 slide rails) agree; every part is installed; steps reach the finished bench."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[8].body",
+      "quote": "Attach the bottom of the drawer to the drawer box! I just used 1/4\" plywood, glued and brad nailed to the bottom",
+      "what": "Drawer bottom has no cutList row or dimensions."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "I added some really small molding that I found at Home Depot to the inside of the drawer lattice, and along the bottom",
+      "what": "Optional extra molding not in materials or cutList, no size (step presented as an extra).",
+      "kind": "optional"
+    },
+    {
+      "path": "steps[14].body",
+      "quote": "In case anyone is interested in the laundry basket that fits quite well in the bench, I used the Rubberaid Flex N' Carry",
+      "what": "Basket is optional and not in materials; the bench interior size for it is not stated."
+    },
+    {
+      "path": "steps[0].body",
+      "quote": "along with glue will be used to attach!",
+      "what": "Wood glue used throughout is not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "cbc9d2aba9015930",
+      "8285a5147f12d3c2",
+      "cb11f1d4ef5a04fb",
+      "9eb521e0727a6fe7"
+    ]
+  }
 }

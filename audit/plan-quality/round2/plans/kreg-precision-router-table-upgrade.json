@@ -6,38 +6,25 @@
   "importDiffs": [],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[11].body",
-          "quote": "Make sure to check out the build video on this one!\nhttps://youtu.be/UsMGt0roXhY\nI had a blast producing it and I think you'll find it helpful when tackling this project!",
-          "why": "matches \"https://\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage\nI'd love to know what you all think so let me know!\nThanks for reading!",
-          "why": "matches \"my blog\""
-        },
-        {
-          "path": "steps[12].body",
-          "quote": "Make sure to checkout additional info over on my blog:\nhttps://woodshopmike.com/how-to-improve-your-router-table-storage\nI'd love to know what you all think so let me know!\nThanks for reading!",
-          "why": "matches \"https://\""
-        }
-      ]
+      "result": "pass",
+      "reason": "Only a YouTube build-video link (steps[11]) and the author's blog link (steps[12], 'additional info') - credit/optional; no step, cut row or material requires full plans, PDF or paid page to complete the build."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[4].body",
+          "quote": "I wanted to be able to see inside the dust collection area so I used some scrap acrylic I had on hand and made the handles from some left over Walnut."
+        }
+      ],
+      "reason": "Window handles are made in steps[4] from walnut that is in no cutList row and no materials line (search: cutList.part and materials.name vs /walnut|handle|pull/i - no match) and no size is given; viewed photos 1673.. and af5f.. show two vertical walnut handles on the acrylic window. Non-structural. Switch bracket and shims are made from the listed 3/4\" scrap board/plywood so pass R2 (sizes in gaps)."
     },
     "R3": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "cutList[3].part",
-          "quote": "Back",
-          "why": "no step mentions it (searched steps for back)"
-        }
-      ]
+      "result": "pass",
+      "reason": "cutList[3] Back is not named in any step, but steps[0] cuts 'all of the parts that will be used to frame out the base' and steps[1] assembles the base; no evidence it is unused."
     },
     "R4": {
       "result": "pass",
@@ -48,17 +35,116 @@
       "reason": "R5 precondition not met: unparseable stock materials[2], materials[3]"
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "search": "steps searched for screw/fastener sizes: none stated in any step; materials list 1\" pocket hole screw and 1/2\" flat head screw; no conflicting sizes for one use."
     },
     "R10": {
-      "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "To set up the dust collection, I used the 2-1/2\" expanding hose from rockler along with a port and Y fitting. These were secured in place with tin strapping."
+        },
+        {
+          "path": "steps[10].body",
+          "quote": "I notched around the C-channel cross member on the router table."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "This is undoubtedly the most cumbersome step of the entire project!"
+        }
+      ],
+      "reason": "Positions the builder must set have no numbers in the text: where and how large the port opening in the side panel is (viewed still 5359.. shows a port plate low on the side panel, no dimension); the size/location of the divider notch (viewed still 23d6.. shows a bandsaw cut on a panel, no dimension); where the two Divider and one Horizontal Divider sit in the base (steps[1] gives no measurement; still c1d4.. shows a tape measure across the compartments with no readable value). The finished layout is only shown qualitatively (hero photos af5f.., 14cb..), so 'likely'.",
+      "readerNote": "Sweep R10 pass searched only sentences with a placement trigger; the omitted positions above are not in the text."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep stands; no step refers to a diagram or drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts are cut (steps[0]) before assembly; drawer boxes, shims and fronts follow in order. steps[3] drills pocket holes after steps[1] assembles the base, but the text says the holes are drilled 'so that I can easily assemble the panels', a presentation-order oddity, not an impossible build.",
+      "readerNote": "steps[1] assembly precedes steps[3] pocket-hole drilling; builder can drill first."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[3].body",
+          "quote": "With all of the panels cut, I drill pocket holes so that I can easily assemble the panels inside of the router table base."
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "My go to method for drawer boxes is using pocket hole construction. The boxes are built from 1/2\" ply with 1/4\" ply for the bottom."
+        }
+      ],
+      "reason": "1/2\" plywood gets pocket holes; no jig thickness setting is stated (search: all steps, description, materials vs /setting|jig|thickness setting|collar|depth/i - none). Viewed stills 8f20.. (a plywood panel on a benchtop machine) and 5ce4.. (screwing a drawer box together) show no jig or setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "along with a port and Y fitting. These were secured in place with tin strapping."
+        }
+      ],
+      "reason": "(c) port, Y fitting and tin strapping are hardware/components used in steps[8] but absent from materials (search materials.name vs /port|fitting|y-|strap|wye/i - only the hose kit and hose clamps match). Likely, because the contents of the listed hose kit are not stated in the plan. (a),(b),(d): hero photo af5f.. shows 4 small drawers, 1 large drawer and the window, matching cutList (8/8/4/4 small parts, 2/2/1/1 large), 5 slides, 4 magnets; all made parts are installed."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[2].body",
+      "quote": "I built a bracket from some scrap 3/4\" plywood and used Starbond CA glue to assemble it.",
+      "what": "Switch bracket has no dimensions and no cutList row; where it mounts is only 'right hand side'."
+    },
+    {
+      "path": "steps[2].body",
+      "quote": "used Starbond CA glue to assemble it",
+      "what": "CA glue not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[6].body",
+      "quote": "I used a combination of 3/4\", 1/2\", and 1/4\" pieces to build out the appropriate amount for the push to open drawer slides to mount to.",
+      "what": "Shim sizes/count are not given ('appropriate amount'); depends on the builder's table, no measurement supplied."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "used double sided tape to temporarily attach them before screwing them in place",
+      "what": "Double-sided tape not in materials",
+      "kind": "consumable"
+    },
+    {
+      "path": "materials[2].name",
+      "quote": "Arylic, 1/4\" Thick 1x1",
+      "what": "Window opening size is not stated anywhere, so it cannot be checked that the 1x1 acrylic suits it; 'Arylic' typo."
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "af5f8ce0a6435085",
+      "14cb43e676bf1f04",
+      "c1d42d7c9dd2cebb",
+      "5cf7c43a3a6e6b78",
+      "23d6807864660bf3",
+      "5359ad0440ca5a49",
+      "167389d655d886a6",
+      "07dc8ec1ca44716f",
+      "5ce4469d92f7372f",
+      "8f20087252504092",
+      "b350949b76a3274b"
+    ]
+  }
 }

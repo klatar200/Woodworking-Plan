@@ -68,20 +68,15 @@
   "checks": {
     "R1": {
       "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
+      "reason": "Trak & Stop Kit is marked '(optional)' in materials[8] and steps[1] 'The side wings were built using instructions that come with that kit' concerns the saw station, not the hood; hood is completed from the plan alone."
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "This dust hood was built to fit a 10\" sliding compound miter saw. The dimensions are generous, and should fit a lot of saws out there, but before you start cutting parts, you’ll want to double check t",
-          "why": "cut sentence states 10\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flag rejected: steps[0] '10\" sliding compound miter saw' describes the saw the hood was built for, not a cut. Parts made (Side x2, Back, Lower Back, Top, Bottom) are all in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All five rows used: Side steps[2], Back steps[3], Lower Back steps[4], Top steps[7], Bottom steps[9]."
     },
     "R4": {
       "result": "pass",
@@ -89,28 +84,70 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "sheet layout not judged (area fits: part area 2×23.75×26.25 + 1×6.5×31 + 1×22.5×31 + 1×31×31 + 1×13.5×31 = 3525.4 sq in; bought 1×48×96 = 4608 sq in)"
+      "reason": "Single sheet stock (materials[0] 3/4in full sheet). Area of the Kreg-corrected parts 2x23.75x26.25 + 6.5x31 + 22.5x31 + 31x31 + 13.5x31 = 3525.4 sq in < 48x96 = 4608; sheet rule is unknown unless area exceeds the sheet."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes in steps (1 1/4\" coarse-thread pocket-hole screws; #8 x 3/4\" pan-head wood screws) appear in materials[1] and materials[3]. Saw-mounting bolts (steps[13]) have no size in any step (gap)."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Dust port openings are dimensioned in viewed drawings (Back: 6\" x 6\", 12 1/2\" across, 3\" down; Lower Back: 6\" x 6\", 12 1/2\", 2\"); side shape dimensioned (image 0eab..); other placements relational ('as shown' with overall drawing 3b6c..)."
     },
     "R11": {
-      "result": "flagged",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "flagged": [
-        {
-          "path": "steps[1].body",
-          "quote": "oodworking dust collector that has 4\"-diameter hose. So, we attached dust hoods of that size. If you’re using a shop vacuum instead, you can get ports that work with 2 1/4\" or 2 1/2\" hose. You’ll want",
-          "why": "\"attached\" with no step image; 6 unattached image(s) in images[] to view",
-          "unattachedImages": 6
-        }
-      ]
+      "result": "pass",
+      "reason": "'as shown in the cutting diagram' steps each have a part drawing image (steps[2] 0eab.., steps[3] d84b.., steps[4] 9730.. viewed). Sweep flag steps[1] 'attached' is the hoods attached to a collector, no drawing referenced."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, back pieces, top, bottom cut and drilled; backs to side one, top, bottom, then second side; finish, hoods, saw mounted last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[3] 'Set your pocket-hole jig for 3/4\"-thick material' covers all 3/4in plywood parts; no contradiction."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) two Sides, 2 hoods/8 pan-head screws agree; Side 23.75 x 26.25 matches drawing 0eab..; Back 22.5 x 31 and Lower Back 13.5 x 31 match drawings; overall 32 1/2\" = 31 + 2x3/4. (b) every part installed. (c) hoods, hose, clamps, Y fitting listed. (d) finished hood reached at steps[12]."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Ship (unverified)",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[10].body",
+      "quote": "Position the Bottom in place on the Side as shown. Apply glue to the edge and secure the Top to the Side with 1 1/4\" coarse-thread pocket-hole screws.",
+      "what": "Step titled 'Attach the Bottom' says 'secure the Top'; part name appears to be wrong (Top is attached in steps[8])."
+    },
+    {
+      "path": "steps[13].body",
+      "quote": "Then you can bolt your saw down.",
+      "what": "Bolts/hardware to mount the saw are not in materials and no size given (depends on the saw)."
+    },
+    {
+      "path": "materials[5].name",
+      "quote": "Dust-collection hose",
+      "what": "Hose, Y fitting and clamps (materials[5-7]) are listed but no step connects them."
+    },
+    {
+      "path": "steps[12].body",
+      "quote": "adding a coat or two of wipe-on varnish",
+      "what": "Varnish is not in materials (optional finish).",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "4be7da832659344d",
+      "741da5b4f1c0fd99",
+      "8ffeabcd31fef61a",
+      "46eb06cf9ad01f6a",
+      "3b6cd251221602ea",
+      "0dd2398cee68bc5b",
+      "0eab753147cc8e4b",
+      "d84b876a9fe0a7fd",
+      "97307a5b8bba8246"
+    ]
+  }
 }

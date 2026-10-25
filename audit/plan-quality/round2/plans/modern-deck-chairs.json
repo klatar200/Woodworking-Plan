@@ -10,58 +10,98 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Side pieces (steps[0]), seat slats, apron, back slats, back side pieces, back trim (steps[2]-[7]) all have cutList rows; lag bolts, washers, glides, screws in materials."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 7 rows are used: sides steps[0-1], seat slats steps[2], apron steps[3], back slats/back side pieces steps[4], back trim steps[7]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (2x6, 2x4, 1x4); steps not checked for per-part stock"
+      "result": "pass",
+      "reason": "Stock not named for every part, so scored on pooled totals. 2x6 (materials[0], 2 x 96 = 192in): 4 x 32 = 128 (5in parts need 2x6; 4 x 1/8 kerf = 0.5) <= 192. Remaining 1 1/2in-thick parts (all <= 3.5in wide) = 2x32 + 5x20 + 5x17 + 20 + 2x20 = 309in (+ 15 cuts x 1/8) vs 2x4 (materials[1], 4 x 96 = 384) plus spare 2x6. 1x4: 2 x 20 = 40 <= 96. Slat arithmetic: 5 x 3.5 + 4 x 0.625 = 20 matches 'overall seat depth of 20\"'."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[7].body",
-          "quote": "To hide the pocket holes on the seat back attach the 1 x 3.25\" x 20 pieces using wood glue and 1 1/4\" brand nails. *Note - be sure wood glue is rated for the outdoors.",
-          "why": "1 1/4\" nail — no material line lists a 1 1/4\" fastener"
+          "quote": "attach the 1 x 3.25\" x 20 pieces using wood glue and 1 1/4\" brand nails."
+        },
+        {
+          "path": "materials[3].name",
+          "quote": "3\" x 3/8\" Lag Bolts"
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "2.5\" Blue (Outdoor) Pocket Holes Screws"
         }
-      ]
+      ],
+      "reason": "1 1/4\" brad nails are used in steps[7] but no nail/brad appears in materials (search materials.name vs /nail|brad/i: no match). Pocket screws (2.5\"), lag bolts and washers used in steps[2]-[6] are listed. Sweep flag steps[7] confirmed."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[2].body",
-          "quote": "ecessed the seat slats .75\" from the top of the side pieces. The first seat slat was inset from front of side pieces by .75\". I left a gap of .625\" (5/8) between each slat which gives an overall seat ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/585161c0c14c7131.webp"
+          "path": "steps[10].body",
+          "quote": "I also recessed them so they wouldn't be super visible, by drilling a 1.25\" hole with a forester bit recessed .5\"."
         },
         {
-          "path": "steps[3].body",
-          "quote": "h to side pieces using 2.5\" blue outdoor pocket hole screws. I inset the front apron .75\" from front of side pieces and down 3\" from top of side pieces. The apron was installed at the same 15* angle t",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/77a07025a66ae509.webp"
-        },
-        {
-          "path": "steps[5].body",
-          "quote": "then again at 5.75\" and 6.5\", making a mark a each location. And then measure down from the top at 1.5\" and 3\". Where your lines intersect is where you will drill your holes for the lag bolts to hold ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5e4689fb719d74fe.webp"
+          "path": "materials[5].name",
+          "quote": "Threaded Furniture Glides"
         }
-      ]
+      ],
+      "reason": "Foot (glide) locations and count are not given: step gives hole diameter and recess depth only; search of all steps for /feet|glide/i finds steps[10] and materials[5] only; viewed image 1d57.. is a close-up of one recess with no dimensions. All other placements are numeric (steps[2] .75\", .625\"; steps[3] 3\"; steps[5] 5\", 5.75\", 6.5\", 1.5\", 3\")."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "No step refers to a drawing or 'as shown'; sweep stands."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Side glue-up and angle cuts, slats and apron, back assembly, lag-bolt holes, backs attached, trim, finish, feet last."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'Drill 1.5\" Pocket Holes' stated in steps[2],[3],[4] for the 1 1/2in-thick parts; the 3/4in back trim is glued and nailed (method and fastener stated)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) Back Trim '1 x 3.25\" x 20' x2 matches cutList[6]; side width 5 + 5 + 2.75 = 12.75 matches steps[0]; back piece 5 x 3.5 + 4 x 0.625 = 20 and 17 + 2 x 1.5 = 20 match 'overall back piece of 20\" x 20\"'; 4 lag bolts/washers = 2 holes per side x 2. (b) all parts installed. (c) glides listed. (d) finished chair reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[0].body",
+      "quote": "*NOTE: Use wood glue that is rated for outside.",
+      "what": "Outdoor wood glue is not in materials; exterior paint/finish (steps[8]) neither.",
+      "kind": "consumable"
+    },
+    {
+      "path": "steps[9].body",
+      "quote": "Visit www.theAwesomeOrange.com to see more pictures of this build, some tips and tricks, and to see what finish I used on my chairs.",
+      "what": "Credit/optional link; finish choice is not required to build."
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "81a95f771582565a",
+      "585161c0c14c7131",
+      "5e4689fb719d74fe",
+      "1d57de9b24afdf43"
+    ]
+  }
 }

@@ -199,21 +199,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[6].body",
-          "quote": "wer into drawer front. Then remove screw from hardware hole and install hardware. If you need more detailed information on how to do this, I put a link in the Extras section to a detailed description.",
-          "why": "matches \"Extras\""
-        }
-      ]
+      "result": "pass",
+      "reason": "steps[6] 'I put a link in the Extras section to a detailed description' is optional detail; the drawer-front method (spacers, one screw through the hardware hole, four screws from inside) is fully written in steps[6]. steps[7] Clamp Trak kit is marked '- Optional' in materials[7]."
     },
     "R2": {
-      "result": "to-read"
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[10].body",
+          "quote": "Depending on your clamps, make wooden clamp hooks to add clamps. A triangle with with a flat top and pocket holes into the cart were plenty strong enough to hold all my clamps."
+        }
+      ],
+      "reason": "Clamp hooks are made in steps[10] but have no cutList row, size or listed material (search cutList.part and materials.name vs /hook|clamp rack|triangle/i: only the optional 'Kreg Universal Clamp Track Kit'). Non-structural and builder-dependent, so Fix/likely; all structural parts (uprights, shelves, drawers, doors, tops) are in cutList."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 14 rows are used: Top/Bottom steps[0],[3]; uprights steps[1]-[2]; shelves steps[2]; Second Top steps[7]; Middle Shelf and Cleat steps[8]; drawer sides/fronts/bottoms steps[4],[6]; Drawer Slides steps[5]; Sliding Doors steps[9]."
     },
     "R4": {
       "result": "pass",
@@ -221,29 +225,81 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Sheet-only stock; 3/4in parts area (Kreg-corrected) 2x32x56 + 2x10x29.5 + 2x14.25x29.5 + 12.25x29.5 + 2x29.5x32 + 5x14.25x18.25 + 28.25x53.75 + 29x30.25 + 20x5x11 + 5x5.75x13.25 + 10x0.75x11 + 2x1.5x29 = 12610 sq in < 3 x 4608 = 13824; 1/4in parts 4x16x29.75 + 5x11x12.5 = 2591 < 4608. Sheet rule = unknown unless area exceeds."
     },
     "R6": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Sizes used in steps: 1 1/4\" coarse pocket-hole screws (materials[3]), 1 1/4\" wood screws (materials[4]), 1 1/4\" 18 ga brad nails (materials[8]), 1\" lag screws and washers (materials[5-6], 16 = 4 per caster). Cleat 'wood screws' has no size given, no conflict."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[5].body",
-          "quote": "Install wooden drawer slides starting from the bottom. Put 2 3/4\" spacer blocks on the bottom and then install wooden drawer slide on top using wood glue and 1 1/4\" 18 ga brad nails. Then after first ",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/5554a0192e5ceb56.webp"
-        }
-      ]
+      "result": "pass",
+      "reason": "Numeric: tracks start 10 3/4\", end 41\", 1/2\" and 1\" from edge (steps[0], image 72e4..); spacer blocks 4 1/2\", 2 3/4\", 5 1/8\" (steps[2],[5], image 5554..); finger hole '2\" down, 2\" from side' (image c84e..); dados 2\" from top/1/4\" deep (steps[4]). Casters at the four corners, knob placement and clamp hooks shown in viewed photos (d480.., 35d8.., 3b2d..); cleat/finger-hole 'desired' placement is relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'see picture' (steps[0]) has image 72e4.. showing the dado start/end; each other step has its own dimensioned drawing (1f83.., a62c.., 5554.., a4a1..)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Tracks routed first; clamp and shelf sections, top, drawers and slides, fronts, second top and track, cleats/shelf, doors, casters last - each exists before use."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "'3/4\" pocket holes' stated in steps[1]-[4]; all parts are 3/4in plywood."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[6].body",
+          "quote": "Drill hole(s) for desired drawer hardware. Then line up bottom drawer front with drawer"
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "Then remove screw from hardware hole and install hardware."
+        }
+      ],
+      "reason": "(c) Drawer pulls/knobs are hardware installed in steps[6] and shown on all five drawer fronts in viewed photo 35d8.., but are absent from materials (search materials.name vs /pull|knob|handle|hardware/i: no match). (a) 5 drawers = 20 box sides + 5 fronts + 5 bottoms + 10 slides, 4 casters = 16 lags/washers agree with cutList. (b) all parts installed; (d) finished cart reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "you will need to insight the track 1 1/2\" farther than instructions",
+      "what": "Position of the optional Clamp Trak depends on Kreg's separate manufacturer instructions, which are not in the plan."
+    },
+    {
+      "path": "steps[5].body",
+      "quote": "NOTE: Slides should be slightly less than 3/4\" so that drawer glide freely. Waxing slides will also help",
+      "what": "cutList[12] Drawer Slides is 0.75 x 0.75 x 11 but the step says slides should be slightly less than 3/4\"; size not reconciled."
+    },
+    {
+      "path": "steps[4].body",
+      "quote": "Assemble drawers sides using 1 1/4\" coarse pocket holes screws and wood glue.",
+      "what": "Wood glue, wax and playing cards (spacers) not in materials.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "72e454cdeed70b40",
+      "1f83800cb26e3079",
+      "a62c2efae2e7d98d",
+      "5554a0192e5ceb56",
+      "b039a0ef96fea1b8",
+      "e916585f39e01cd9",
+      "c84e648f8aba6813",
+      "3b2d49cbf05ef89f",
+      "a4a1d6d6de43fe39",
+      "39b59211de1cdcb8",
+      "d48041b541513728",
+      "35d82352e916b546"
+    ]
+  }
 }

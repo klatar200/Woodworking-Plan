@@ -113,47 +113,131 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Bottom Board, Hanger Board, Side Boards are the only parts (steps[0],[1],[4]); 8 plugs come from scrap of the listed poplar (steps[5]). The leather strap is a component scored under R14(c)."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All three rows are assembled in steps[4]: sides to bottom, hanger board clamped between."
     },
     "R4": {
-      "result": "unknown",
-      "reason": "cutList[0] thinner than stock — would need planing/resawing, not judged; cutList[1] thinner than stock — would need planing/resawing, not judged; cutList[2] thinner than stock — would need planing/resawing, not judged"
+      "result": "pass",
+      "reason": "Kreg-corrected rows are 0.75 x 2.5 x 30 / 28.5 / 11, exactly the 1x3 actual (3/4 x 2 1/2) in materials[0]; sweep 'unknown' came from the uncorrected 2in widths (import S-19).",
+      "readerNote": "Sweep R4 unknown was computed on uncorrected rows."
     },
     "R5": {
-      "result": "unknown",
-      "reason": "stock length not written (§9)"
+      "result": "pass",
+      "reason": "One stock: materials[0] 'Poplar, 1\" x 3\" x 8''' = 96in. Parts 30 + 28.5 + 2x11 = 80.5in; + 3 cuts x 1/8 = 0.375 -> 80.875 <= 96. materials[0] quantity is not among the importDiffs defaults.",
+      "kerfOnly": false
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[4].body",
-          "quote": " side pieces to the bottom at the pre-drilled pocket hole joints with 1 ¼” pocket hole screws. For the top hanger board, you’ll need to clamp it into place with a VersaGrip bar clamp before attaching.",
-          "why": "1 1/4\" screw — no material line lists a 1 1/4\" fastener"
+          "quote": "with 1 ¼” pocket hole screws"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Pocket Hole Coarse-Thread Screws, Zinc (see tools)"
         }
-      ]
+      ],
+      "reason": "The step gives a 1 1/4\" screw; the materials line has no length (search materials.name and notes vs /1 1\\/4|1 ¼|length/i: no match; tools entries carry no note)."
     },
     "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "Using the custom plug cutter drill guide kit and the 720Pro, use scrap wood left over from the 1x3 poplar to make 8 pocket hole plugs. Add the plugs to each pocket hole with wood glue and let dry.",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1dd5cb7f378f3451.webp"
+          "path": "steps[2].body",
+          "quote": "On the back of the hanger board (where the pocket holes have been drilled), drill the keyholes with a router and keyhole slot bit."
+        },
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans on the side boards and hanger board."
         }
-      ]
+      ],
+      "reason": "Keyhole positions along the 28.5in hanger board and the pocket-hole positions on the hanger board are not given as numbers; viewed images 7a5e.. and f58d.. are photos with no dimensions. Strap height is only shown pictorially (images 4d55.., 6855..); strap length/width are not stated either."
     },
     "R11": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans"
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "Cut wood according to the visual cut list in the woodworking plans"
+        }
+      ],
+      "reason": "Steps point to a 'woodworking plans' drawing that is not in the plan; the 8 images opened (d71c.., f58d.., 7a5e.., 7e5b.., 4d55.., 6855.., 5013.., a50e..) are photos with no drawing (the cut list itself is in cutList, so steps[0] is covered). Not all 13 images opened, hence likely. Non-structural, Fix."
+    },
+    "R8": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "1 reference(s), each in a step with its own image"
+      "reason": "Cut, drill pocket holes, keyholes on hanger board, sand, assemble, plug, sand, seal, strap, hang - each part exists before use; steps[2] keyholes are drilled on the hanger board before assembly."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill pocket holes as shown in the woodworking plans on the side boards and hanger board. We used the Kreg 720 Pro."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in poplar; no jig thickness setting stated (search steps, materials vs /setting|thickness|collar|depth/i: none). Viewed image f58d.. shows the jig, no legible setting."
+    },
+    "R14": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[8].body",
+          "quote": "add the leather strap to the front. Wrap it around the edges and staple it to the backside."
+        }
+      ],
+      "reason": "(c) the leather strap (a component, not a consumable) is not in materials (search materials.name vs /leather|strap|belt/i: no match) and has no size. (a) 8 screws and 8 plugs agree. (b) all parts installed. (d) finished rack reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "materials[6].name",
+      "quote": "1/2\" staples",
+      "what": "Quantity 1 is an import default (importDiffs); 'Hot glue gun sticks' (materials[7]) is never used in any step."
+    },
+    {
+      "path": "steps[7].body",
+      "quote": "We applied 4 light coats and rubbed it down with 0000 steel wool over the last coat",
+      "what": "Lacquer and steel wool are consumables already in materials; no gap beyond defaulted quantities.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "d71c83b9c9a1a340",
+      "f58dbd56b137cf44",
+      "7a5ef32776d2e668",
+      "7e5b84aa49b44e7c",
+      "4d557f7acb55e964",
+      "6855323ead8e03f2",
+      "501367191ac7a9ed",
+      "a50ed2e842f9e206"
+    ]
+  }
 }

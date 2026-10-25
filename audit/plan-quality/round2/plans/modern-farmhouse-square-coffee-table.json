@@ -251,52 +251,106 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Legs, top frame supports, bottom shelf supports, angled supports, bottom shelf, top center boards, outer top sides and center support all have cutList rows matching steps[0]-[6]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 8 rows used: legs/supports steps[0]-[1], angled steps[2], shelf steps[3], center support steps[4], top boards steps[5]."
     },
     "R4": {
       "result": "pass",
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 4 stock types (sheet-0.75, 1x8, 1x4, 2x2); steps not checked for per-part stock"
-    },
-    "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "Using glue and 1\" Kreg screws assemble the top. Start by assembling the center 1x8\"s.\nAdd the right and left 1x4\"s next.\nAdd the last two side 1x4\"s making sure you cut them to size to guarantee a snu",
-          "why": "1\" screw — no material line lists a 1\" fastener"
-        }
-      ]
-    },
-    "R10": {
-      "result": "flagged",
-      "search": "step sentences with a placement trigger and no inch measurement",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Using 2\" Kreg screws attach the angled, side supports. Supports should run from the bottom shelf support to the top support bar.\nGlue and nail in place with brad nails.\nWe recommend you cut these to f",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/708db60f997ca697.webp"
+          "path": "materials[2].name",
+          "quote": "Board, 1x4 120\""
         },
         {
-          "path": "steps[6].body",
-          "quote": "ttach the top of the table to the base using 2\" wood screws. Screw up from the bottom of the top supports into the table top, just barely sinking the screws.\n*If you choose to make pocket holes in the",
-          "why": "placement with no measurement (step has an image — view to settle)",
-          "image": "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/fc4c037e32a5e211.webp"
+          "path": "cutList[6]",
+          "quote": "\"part\": \"Outer Table Top Sides\", \"quantity\": 4"
+        },
+        {
+          "path": "steps[5].body",
+          "quote": "Add the right and left 1x4\"s next.\nAdd the last two side 1x4\"s making sure you cut them to size to guarantee a snug fit."
         }
-      ]
+      ],
+      "arithmetic": "The steps name 1x4 for the outer sides. 4 x 35.75 = 143in needed vs materials[2] quantity 1 x 120in = 120in (no importDiffs default recorded for materials): short by 23in with zero kerf, not kerf-only. Other stock passes: 1x8 4 x 29 = 116 (+0.375 kerf) <= 120; 2x2 pooled 4x17.5 + 4x30.75 + 4x30.75 + 8x14.5 + 30.75 = 462.75 <= 5 x 96 + 48 = 528."
+    },
+    "R6": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Glue and nail in place with brad nails."
+        },
+        {
+          "path": "materials[7].name",
+          "quote": "2\" Wood Screws or 1 1/4\" Kreg Screws"
+        }
+      ],
+      "reason": "Brad nails are used in steps[2] but no nail/brad is in materials (search materials.name vs /nail|brad/i: no match) and no size is given. Screw sizes used (2\", 1\", 1 1/4\" Kreg, 2\" wood) are all listed; sweep flag steps[5] '1\" screw' is listed (materials[6], misspelled)."
+    },
+    "R10": {
+      "result": "pass",
+      "reason": "Numeric: bottom support '3\" up from the ground', angled supports '14 1/2\"', shelf 'flush or 1/4\" lip', top overhang '1\" ... each side' (image fc4c..); top support, angled supports and mitered frame shown in viewed images 708d.., faf0.., aaf3..; rest relational (flush)."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i"
+      "reason": "Sweep stands; no step refers to an absent drawing."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Sides, base, angled supports, shelf, top support, top assembly, top attached, finish."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Using glue and 1\" Kreg screws assemble the top."
+        },
+        {
+          "path": "steps[6].body",
+          "quote": "*If you choose to make pocket holes in the top supports, use 1 1/4\" Kreg screws to attach the top."
+        }
+      ],
+      "reason": "Kreg pocket screws join 1 1/2in 2x2s (steps[0]-[4]) and 3/4in top boards (steps[5]; image aaf3.. shows pocket-hole slots) but no jig thickness setting is stated anywhere (search steps, materials, description vs /setting|jig|thickness|collar|depth/i: none); viewed images 708d.., faf0.., aaf3.., fc4c.. are SketchUp drawings with pocket-hole slots but no setting."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 4 top + 4 bottom supports = 2 per side x 2 (steps[0]-[1]); 8 angled supports at '14 1/2\"' match cutList[3]; outer top side 35.75 vs base 30.75 + 3 = 33.75 gives the 1\" overhang on each side shown in image fc4c... (b) all parts installed. (c) no hardware beyond screws. (d) table reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[5].body",
+      "quote": "Using glue and 1\" Kreg screws assemble the top.",
+      "what": "Wood glue used throughout is not in materials; paint, stain and antiquing wax (steps[7]) neither.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "708db60f997ca697",
+      "faf0c61111c40a59",
+      "aaf3b7ad549ba8c3",
+      "fc4c037e32a5e211"
+    ]
+  }
 }

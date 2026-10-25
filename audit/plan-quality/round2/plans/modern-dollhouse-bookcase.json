@@ -119,61 +119,112 @@
       "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i"
     },
     "R2": {
-      "result": "flagged",
-      "flagged": [
-        {
-          "path": "steps[0].body",
-          "quote": "llowing: the tops of the (2) 24\" side pieces, the top of (1) 8 1/4\" divider piece, the bottom of the (2) 4\" chimney pieces, and both ends of the (2) 27\" roof pieces. The miter cuts on the ends of the ",
-          "why": "cut sentence states 8 1/4\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "ottom of the (2) 4\" chimney pieces, and both ends of the (2) 27\" roof pieces. The miter cuts on the ends of the 27\" roof pieces should be the same direction, turning the rectangle into a parallelogram",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        },
-        {
-          "path": "steps[0].body",
-          "quote": "f the (2) 27\" roof pieces. The miter cuts on the ends of the 27\" roof pieces should be the same direction, turning the rectangle into a parallelogram.\nPolish your pieces with an orbital sander. Use fi",
-          "why": "cut sentence states 27\" — no cut-list dimension or material size matches (corrected values)"
-        }
-      ]
+      "result": "pass",
+      "reason": "Sweep flags rejected: the 8 1/4\" and 27\" values in steps[0] are the Kreg source lengths of cutList[2] and cutList[3] ('3/4\" x 7 1/4\" ... cut to 8 1/4\"' / 'cut to 27\"') which the importer could not parse (importDiffs kind 'unchecked'; live rows show 8 x 7); cause import. Every part the steps make has a row.",
+      "readerNote": "Live cutList[0-3] hold placeholder dims (7 x 8) from an importer parse failure; scored on Kreg source text."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All 9 rows are real parts used by steps: shelving steps[1],[8], sides steps[8], dividers steps[3],[4], roof steps[4], trims steps[5], plywood backs steps[5], chimney steps[7]."
     },
     "R4": {
       "result": "unknown",
-      "reason": "cutList[0] Kreg text not parseable; cutList[1] Kreg text not parseable; cutList[2] Kreg text not parseable; cutList[3] Kreg text not parseable; +2 more"
+      "reason": "Kreg source rows: 3/4 x 7 1/4 parts match 1x8 (3/4 x 7 1/4) and 1/4in back pieces (19.25 x 40, 16.5 x 40) fit a sheet, but trim stock 'Board, 1/2x2' is not in the section 9 table so its width cannot be compared with the 1 1/2in trim parts."
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 3 stock types (1x8, 2x2, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Lumber passes on Kreg source rows: 1x8 parts 3 x 39.5 + 2 x 24 + 3 x 8.25 + 2 x 27 = 245.25in (+ ~10 cuts x 1/8) vs materials 2 x 120 + 36 = 276in (board 1 = 3 x 39.5 = 118.5 + 0.375 kerf <= 120); trim 42 + 2 x 7.5 = 57 vs 48 + 24 (42 from the 48, 2 x 7.5 from the 24). The 1/4in plywood parts do not exceed the full sheet but the sheet rule is unknown unless area exceeds."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[5].body",
-          "quote": "Attach the 1/4\" plywood backing using a nail gun. Here is a photo of the bottom part of the backing attached. Then attach your 1/2\" x 1 1/2\" trim pieces around the bottom using a nail gun.",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
+          "path": "steps[3].body",
+          "quote": "Use a nail gun to secure in place."
         },
         {
           "path": "steps[5].body",
-          "quote": "Attach the 1/4\" plywood backing using a nail gun. Here is a photo of the bottom part of the backing attached. Then attach your 1/2\" x 1 1/2\" trim pieces around the bottom using a nail gun.",
-          "why": "1 1/2\" nail — no material line lists a 1 1/2\" fastener"
+          "quote": "Attach the 1/4\" plywood backing using a nail gun."
+        },
+        {
+          "path": "materials[6].name",
+          "quote": "1 1/4\" pocket hole screws"
         }
-      ]
+      ],
+      "reason": "A nail gun is used in steps[3],[4],[5],[7] but no nail or brad (any size) is in materials (search materials.name vs /nail|brad|staple|pin/i: no match) and no step gives a nail size. Sweep flags steps[5] '1/4\"'/'1 1/2\"' are the plywood and trim dimensions, rejected."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Numeric: shelves '8 1/4\" apart', bottom shelf '3/4\" from the bottom', dividers '15\" from the left/right side'. Chimney and top divider positions are shown in viewed images eb33.., 9479.., 21c8.. (counts as shown); trim/backing relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "2 reference(s), each in a step with its own image"
+      "reason": "'as illustrated' (steps[2]) and 'as pictured' (steps[4]) have images 9602.. and 9479.. showing the shelf spacing and divider (viewed)."
+    },
+    "R8": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[2].body",
+          "quote": "Continue by assembling the middle and top shelving pieces, each 8 1/4\" apart as illustrated."
+        },
+        {
+          "path": "steps[8].body",
+          "quote": "Begin assembling the shelving by positioning one of the 39.5\" shelving pieces between the two 24\" side pieces."
+        }
+      ],
+      "reason": "The sides-and-bottom-shelf assembly is the last step (steps[8]) but steps[2]-[7] (shelves, dividers, roof, back, trim, chimney) build on it; steps[2] 'Continue' presupposes it. Build can proceed once reordered (step text itself says 'Begin assembling'), so Fix."
+    },
+    "R9": {
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[1].body",
+          "quote": "Drill (4) pocket holes in the ends of each 39.5\" shelving piece."
+        }
+      ],
+      "reason": "Pocket holes in 3/4in stock; no jig thickness setting stated anywhere (search steps, materials, description vs /setting|jig|thickness|collar|depth/i: none). Viewed image f0d1.. shows the drilled boards only."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) 24 pocket screws = 3 shelves x 2 ends x 4 holes (steps[1]); step lengths 24\", 8 1/4\", 4\", 27\", 39.5\" match Kreg source rows; 2 chimney pieces from 2 scraps. (b) all parts installed (steps[3],[4],[7],[8]). (c) hardware listed. (d) finished unit reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[7].body",
+      "quote": "Glue together the two small, 30-degree mitered pieces of 2\" by 2\" using wood glue and a clamp.",
+      "what": "Chimney pieces are 1 1/2 x 1 1/2 x 4 in the Kreg-corrected row but the step says 2\" by 2\" (nominal 2x2); not a conflict if read as nominal."
+    },
+    {
+      "path": "materials[8].name",
+      "quote": "Varathane Water-Based Polyurethane, Matte",
+      "what": "Stain, polyurethane, paints and sandpaper are in materials; nothing missing there.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "eb3347cb9f635f44",
+      "ed67d354d5d59984",
+      "f0d161f10d767bf6",
+      "9602a1973ac3e4ed",
+      "3859bd35c136dac9",
+      "9479961c90e53ad3",
+      "21c8566164c81ea7",
+      "a79ea9a64d2effee"
+    ]
+  }
 }

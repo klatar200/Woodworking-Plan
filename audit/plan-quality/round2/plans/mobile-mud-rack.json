@@ -19,21 +19,16 @@
   ],
   "checks": {
     "R1": {
-      "result": "flagged",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "flagged": [
-        {
-          "path": "steps[2].body",
-          "quote": "Pull the following parts: sides x 2 / ends x 2 - Using the attached drawings, layout and mark all your locations for holes. Prior to drilling your pocket holes - check your jig and your drill collar t",
-          "why": "matches \"the attached\""
-        }
-      ]
+      "result": "pass",
+      "reason": "'attached drawings' (steps[1], steps[2]) are the step images 77c3.. (End shape and pocket holes) and a0d4.. (Side with pocket holes), both viewed and dimensioned; nothing external is required."
     },
     "R2": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "Base, Sides, End, Vertical, Shelf Sides, Shelf Base in cutList cover every part the steps make; the optional hangers are in materials[7]."
     },
     "R3": {
-      "result": "to-read"
+      "result": "pass",
+      "reason": "All six rows used (Base steps[3], Sides/End steps[1-4], Vertical steps[5], Shelf Sides steps[6],[9], Shelf Base steps[7],[9])."
     },
     "R4": {
       "result": "pass",
@@ -41,38 +36,73 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (sheet-0.75, sheet-0.25); steps not checked for per-part stock"
+      "reason": "Two sheet stocks; area 3/4in parts (24x48 + 2x5.25x48 + 2x9x22.5 + 2x6x48 + 4x6x46.5 = 3753 sq in) < 48x96 = 4608 and 1/4in parts 2x7.5x45 = 675 sq in; sheet rule = unknown unless area exceeds."
     },
     "R6": {
-      "result": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
           "path": "steps[5].body",
-          "quote": "untersink bit, or a 3/8\" drill bit, open up the hole so the screw head sits flat when fully seated. Apply wood glue between the two parts and screw it in place. Repeat the same process for the other s",
-          "why": "3/8\" screw — no material line lists a 3/8\" fastener"
+          "quote": "We are attaching these with (4) 1-1/4\" drywall screws and wood glue."
         },
         {
-          "path": "steps[7].body",
-          "quote": "Using the shelf base (1/4\") plywood, wood glue and 18ga brad nails, secure it to the bottom of the 2 upper shelf sides. If you plan on using this shelf for heavier items, screws can be used in place o",
-          "why": "1/4\" brad — no material line lists a 1/4\" fastener"
+          "path": "materials[3].name",
+          "quote": "1 1/2\" drywall screws (course thread)"
         },
         {
-          "path": "steps[7].body",
-          "quote": "sing the shelf base (1/4\") plywood, wood glue and 18ga brad nails, secure it to the bottom of the 2 upper shelf sides. If you plan on using this shelf for heavier items, screws can be used in place of",
-          "why": "1/4\" nail — no material line lists a 1/4\" fastener"
+          "path": "steps[11].body",
+          "quote": "Secure with button head phillips wood screw."
         }
-      ]
+      ],
+      "reason": "The verticals use 1-1/4\" drywall screws but materials list only 1 1/2\" drywall screws (materials[3]) and 1 1/4\" Kreg pocket screws (materials[2]) - two different sizes for the same use. Casters are fastened with a 'button head phillips wood screw' that is in no materials line and has no size (search materials.name vs /button|phillips|caster screw/i: only '2\" swivel casters'). Sweep flags steps[5] '3/8\"' (a drill bit) and steps[7] '1/4\"' (the plywood) rejected."
     },
     "R10": {
       "result": "pass",
-      "search": "step sentences with a placement trigger and no inch measurement"
+      "reason": "Hole layouts dimensioned in images 77c3.. and a0d4..; lower shelf '18\"' down from top of verticals (steps[8]); casters '3/4\" from each side and end' (steps[11]); verticals 'centered on the end panels'; hooks '(6)... evenly spaced' relational."
     },
     "R11": {
       "result": "pass",
-      "search": "steps vs /as shown|shown (in|below|above|on|here)|see (the )?(diagram|drawing|…)|diagram|drawing|pictured|attached/i",
-      "note": "5 reference(s), each in a step with its own image"
+      "reason": "Sweep stands; each 'drawing' reference has its own dimensioned image (77c3.., a0d4.. viewed)."
+    },
+    "R8": {
+      "result": "pass",
+      "reason": "Parts cut and pocket holed, base assembled, verticals, upper shelf, 18in mark, lower shelf, finish, casters, hooks."
+    },
+    "R9": {
+      "result": "pass",
+      "reason": "steps[2] 'make sure it is set to 3/4\"' covers all pocket holes in 3/4in ply; other joints stated (glue + drywall screws, glue + brads)."
+    },
+    "R14": {
+      "result": "pass",
+      "reason": "(a) End 9 x 22 1/2 in steps[1] matches Kreg-corrected cutList[2]; hooks 28 = 6 x 2 sides x 2 shelves (24) + 4 optional end hangers (steps[12]). Shelf Base 7.5 = 6 + 2x0.75 and 45 = 46.5 - 2x0.75. (b) all parts installed. (c) casters and hangers listed. (d) finished rack reached."
     }
   },
-  "verdict": null,
-  "measurementsScoredOn": "kreg-corrected"
+  "verdict": "Fix",
+  "measurementsScoredOn": "kreg-corrected",
+  "gaps": [
+    {
+      "path": "steps[3].body",
+      "quote": "It is the end user's choice to plug the holes with paintable Kreg Paint Grade Wood Plug.",
+      "what": "Optional plugs not in materials (step marks them optional).",
+      "kind": "optional"
+    },
+    {
+      "path": "steps[3].body",
+      "quote": "run a bead of wood glue on the bottom edge of the side and the end parts",
+      "what": "Wood glue is in materials[4]; paint (steps[10]) is not.",
+      "kind": "consumable"
+    }
+  ],
+  "reader": {
+    "batch": "r2-09",
+    "imagesViewed": [
+      "77c3fc7f75c227cd",
+      "a0d42b66995042a6",
+      "0184cdac67d10f11",
+      "933d141611a2dbe9"
+    ]
+  }
 }
