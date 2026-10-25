@@ -85,24 +85,11 @@
     },
     "R5": {
       "result": "unknown",
-      "reason": "Sheet goods: area of plywood parts 3x144 + 11.25x12 + 2x0.75x11.875 = 567 + 17.8 sq in < 1152 sq in bought (24x48), so no certain fail; layout not judged per R-2."
+      "reason": "One plywood stock (materials[0] 'Plywood, 3/4\" Thick Quarter Sheet'). Kreg-corrected part area: 12x12 + 2 x 12x12 + 11.25x12 + 2 x 0.75x11.875 = 144 + 288 + 135 + 17.8 = 584.8 sq in <= 24 x 48 = 1152. R5's sheet rule: a fitting area is `unknown` (only an area overrun is a certain fail), so round 2's layout-based pass is not available."
     },
     "R6": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[10].body",
-          "quote": "VERY CAREFULLY predrill holes for some small 5/8” wood screws."
-        },
-        {
-          "path": "materials",
-          "quote": "1 1/4\" pocket hole screws | 1 1/4\" brad nails (no 5/8\" screw listed)"
-        }
-      ],
-      "reason": "Searched all materials for '5/8' and 'wood screw': none. Step presents the screws as optional ('So those are optional'), hence likely."
+      "result": "pass",
+      "reason": "Adjudicated: the only unlisted size is steps[10] '5/8” wood screws', which the step itself makes optional ('a couple added screws don’t hurt. So those are optional. I think if I was doing it over, I’d skip them.'); optional-only items do not fail (same principle as the R14(c) optional ruling). Used sizes 1 1/4\" pocket screws (steps[9]) = materials[1]; nails = materials[2] '1 1/4\" brad nails'."
     },
     "R10": {
       "result": "pass",
@@ -125,7 +112,7 @@
       "reason": "Steps/diagrams agree with corrected cut list: handle 11 7/8 (steps[7] 'about 11 7/8\"' vs row 3), front plexi 12 1/2 x 11 and top 12 1/2 x 10 1/4 in viewed images vs rows 4-5, back 11 1/4 in viewed step-9 image vs row 2 (12 - 3/4 bottom = 11 1/4). All parts installed; plexiglass listed in materials; steps end with a finished box."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -139,5 +126,15 @@
       "plans/38e9ac993fa4bd70.webp",
       "plans/881779eb4aad3d8c.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R6"
+    ],
+    "note": "R6 pass (5/8\" screws explicitly optional); R5 unknown under the sheet rule (area fits)."
   }
 }

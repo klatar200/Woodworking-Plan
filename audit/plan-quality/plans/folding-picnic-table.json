@@ -136,21 +136,8 @@
       "reason": "R5 precondition not met: 3 stock types (2x2, 2x6, 2x4); steps not checked for per-part stock"
     },
     "R6": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "The bolt is only 2 ½” long and the two boards are 3” thick together"
-        },
-        {
-          "path": "steps[4].body",
-          "quote": "I used 3” bolts and need to replace them with the shorter bolts and deeper holes."
-        }
-      ],
-      "reason": "Two bolt sizes are given for the same use (2 1/2\" in materials[4] and steps[4], 3\" in the author's note) and the note says 'deeper holes' while the step says 'a 1” wide hole ½” deep'. The 2 1/2\" size is the one in materials; the 3\" mention is a leftover author note, so likely rather than certain. Other fasteners match: 2 1/2\" pocket screws = materials[3]; 6 bolts/nuts/washers = 3 per leg assembly x 2 (steps[6])."
+      "result": "pass",
+      "reason": "Adjudicated: the plan gives one bolt size. steps[4] 'The bolt is only 2 ½” long' matches materials[4] '2 ½” long ⅜” hex bolts'; the 3\" mention is the author saying it was the wrong size ('I used 3” bolts and need to replace them with the shorter bolts and deeper holes'), not a second size for the use. 2 ½” pocket screws = materials[3]; 6 bolts/nuts/washers = materials[4..6]."
     },
     "R10": {
       "result": "pass",
@@ -173,7 +160,7 @@
       "reason": "(a) 9 slats per top piece x 5 1/2\" + 8 gaps x 3/4\" = 49 1/2\" + 6\" = 55 1/2\" = Top edges (cutList[0]); 18 slats = 2 tops x 9; (b) all parts installed; (c) bolts, nuts, washers, glue in materials; (d) steps reach the finished, foldable table"
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship (unverified)",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -187,5 +174,14 @@
       "a44204a5fd41e1da",
       "87208ccf58ce26a9"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship (unverified)",
+    "decided": [
+      "R6"
+    ],
+    "note": "R6 pass: the 3\" bolt is the author's rejected size, the plan's bolt is the 2 1/2\" one in materials[4]."
   }
 }

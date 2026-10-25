@@ -463,26 +463,22 @@
       "reason": "all 26 rows are used by steps[0]-[16]."
     },
     "R4": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
+      "result": "unknown",
       "evidence": [
         {
           "path": "cutList[23]",
-          "quote": "Hutch door center panel (plexiglass) - qty 2, 0.125 x 9.25 x 15.25 (Kreg-corrected: 1/8\" x 9 1/4\" x 15 1/4\")"
+          "quote": "Hutch door center panel (plexiglass)"
         },
         {
           "path": "materials[6].name",
           "quote": "18\" x 24\" 0.093 thick plexiglass"
         }
       ],
-      "arithmetic": "part thickness 0.125 vs stock 0.093 (difference 0.032\" > 1/32\"); the two 9.25 x 15.25 panels fit the 18 x 24 sheet (15.25 <= 18; 2 x 9.25 = 18.5 <= 24)",
-      "reason": "listed plexiglass is thinner than the cut-list part; steps[15] groove is 1/8\" wide so the 0.093 sheet would still fit, hence likely a nominal-size labelling difference. All other parts match their stock (1x3 0.75x2.5, 1x2 0.75x1.5, 1x6 0.75x5.5, 3/4 and 1/4 plywood, 1/4x3/4 trim)."
+      "reason": "Kreg-corrected cutList[23] is 1/8\" x 9 1/4\" x 15 1/4\" (0.125) and the only plexiglass is 0.093 thick; whether a 0.093 sheet is the panel the plan calls 1/8\" (it fits the 1/8\" groove of steps[15]) is acrylic nominal-vs-actual sizing, not in §9 -> Human review. Area fits: 2 x 9.25 x 15.25 = 282.1 <= 18 x 24 = 432. All wood/plywood rows match §9 sizes and fit 48 x 96."
     },
     "R5": {
       "result": "unknown",
-      "reason": "six stock types and steps do not name stock for every part. Reference: 1x3 parts 4x34+4x15+4x17.75+44.5+46+4x8.75+4x19.75=471.5 + kerf ~2.8 <= 5x96=480; 1x2 parts 459 <= 576; 1x6 3x48 = 3x48 bought; trim 106 <= 144; 3/4\" plywood area 7239 <= 2x4608."
+      "reason": "Lumber sums pass with stock identified by thickness x width (Kreg-corrected): 1x3 4x34+4x15+4x17.75+44.5+46+4x8.75+4x19.75 = 471.5 + 22 x 1/8 = 474.25 <= 5 x 96 = 480; 1x2 459 + 15 x 1/8 = 460.9 <= 6 x 96 = 576; 1x6 3 x 48 = 144 <= 3 x 48 = 144 (no cuts); trim 4x16.25+4x10.25 = 106 <= 3 x 48 = 144. Sheets: 3/4\" ply part area 7238.9 <= 2 x 4608, 1/4\" ply 403.6 <= quarter sheet — R5's sheet rule makes a fitting area `unknown`, not pass."
     },
     "R6": {
       "result": "pass",
@@ -503,7 +499,7 @@
           "quote": "Install the door hardware with the Kreg Cabinet Hardware Jig for accurate positioning of the hardware holes."
         }
       ],
-      "reason": "no distance from the door top/bottom for the 2 hinges per door (materials[12] 8 hinges) and no pull location is given in text, and steps[19] has no image (searched all steps and materials for a hinge or pull position; 'doors fit properly' is the only guide); the viewed images show no hardware positions. All other positions are given: taper 5 1/2\" x 1 1/2\" and 2 1/2\" x 1\" (steps[0]), shelf/rail flush positions (steps[2],[3], viewed 48c5f5793de9f919), hutch parts 3/4\" in from back (steps[9],[13]), door grooves 1/4\" x 1/4\" and 1/8\" x 1/4\" stopping 2 1/4\" from edges (steps[7],[15])."
+      "reason": "Hinge positions on each door (materials[12] 8 hinges = 2 per door; distance from the door top/bottom and cup distance from the edge) and the pull location (materials[11] 4 pulls) are not given as numbers; steps[19] has no image and searched steps[0..21] for a hinge or pull position: none. Naming a jig does not state the position. Likely, not certain: hinge type is left open (\"If using concealed hinges\"), so the cup distance depends on hardware outside the plan. All other positions are numbered or relational (tapers steps[0], grooves steps[7],[15], set-backs steps[9],[13])."
     },
     "R11": {
       "result": "pass",
@@ -522,7 +518,7 @@
       "reason": "counts and sizes agree: 3 face-frame rails, 1 stile, 2 buffet shelves, 4 buffet door rails/stiles for 2 doors; hutch door opening = rails 8.75 + 2x1/4 groove = 9.25 and stiles 19.75-5+0.5 = 15.25 match the plexiglass 9.25 x 15.25; panel 13.125 x 15.375 = 17.75-5+0.5-1/8 and 15+0.5-1/8; 8 hinges = 4 doors x 2, 4 pulls, 2 mending plates; hutch depth 12\" less 3/4\" back = 11.25\" shelf; every made part is installed."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Fix + Human review",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -536,5 +532,17 @@
       "72484bcc8a4069b9.webp",
       "48c5f5793de9f919.webp"
     ]
+  },
+  "humanReview": "R4: cutList[23] plexiglass panel 1/8\" vs listed \"0.093 thick plexiglass\" (acrylic nominal vs actual thickness is not in §9)",
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship (unverified) + Human review",
+    "decided": [
+      "R4",
+      "R5",
+      "R10"
+    ],
+    "note": "R10 fail Fix likely (hinge and pull positions not given); R4 unknown + Human review (0.093 vs 1/8 acrylic); R5 unknown (sheet rule)."
   }
 }

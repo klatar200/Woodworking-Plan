@@ -140,40 +140,25 @@
   ],
   "checks": {
     "R1": {
-      "result": "pass",
-      "search": "all fields vs /full plans?|extras?|pdf|download|printable|template|pattern|http|purchase|buy .*plan|my (blog|website|site|shop)|attached/i",
-      "sweepResult": "flagged",
-      "flagged": [
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "certain",
+      "cause": "plan",
+      "evidence": [
         {
-          "path": "steps[0].body",
-          "quote": "d in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood into manageable str",
-          "why": "matches \"Extras\"",
-          "confirmed": false,
-          "reason": "Optional ('There is also'); the strip widths and lengths are given in steps[0..2] and agree with the corrected cut list."
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " and diagram provided in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood",
-          "why": "matches \"PDF\"",
-          "confirmed": false,
-          "reason": "Same optional note."
-        },
-        {
-          "path": "steps[0].body",
-          "quote": " diagram provided in the Parts section. There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project. The first step is to break down the plywood int",
-          "why": "matches \"download\"",
-          "confirmed": false,
-          "reason": "Same optional note."
+          "path": "steps[5].body",
+          "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part."
         },
         {
           "path": "steps[5].body",
-          "quote": "The measured drawings in the Extras section indicate where pocket holes should be drilled in each part. Layout these locations with a pencil and square to aid in lining up the jig when drilling. Mark ",
-          "why": "matches \"Extras\"",
-          "confirmed": false,
-          "viewed": true,
-          "reason": "Pocket-hole locations exist only in the Extras drawings (steps[5] image, viewed, shows the printed drawing book, unreadable; the 4 unattached images, viewed, are photos of the finished shelf). But steps[8..11] say which parts join with pocket screws and which way the holes face, and steps[13] gives the wall holes '32” apart', so the build can be completed without the PDF. Recorded as a gap, not an R1 failure."
+          "quote": "Mark out all the pocket holes on all the pieces per the plans."
+        },
+        {
+          "path": "steps[0].body",
+          "quote": "There is also a PDF download in the Extras section that contains detailed measured 3D drawings for this project."
         }
-      ]
+      ],
+      "reason": "steps[5] is not an optional note: it directs the builder to lay out every pocket hole from the Extras PDF, which the plan does not contain (viewed steps[5] image shows the printed drawing book, unreadable). The build can still be completed (steps[8]-[11] name each pocket-screw joint and facing; steps[13] gives the wall holes '32” apart'), so R-2 Fix, not pass: round 1 judged completability alone, which is R-1."
     },
     "R2": {
       "result": "pass",
@@ -204,12 +189,21 @@
       "reason": "No jig thickness setting in any text field (steps[6] 'Setup your jig and drill all of the pocket holes in each part.'; searched all fields for /set to|setting|thickness/i: no hit). All parts are 3/4\". steps[6] image not viewed (not sweep-flagged), so absence across the plan is not established."
     },
     "R10": {
-      "result": "pass",
-      "reason": "Numbered: shelf raised 3/4” (steps[8]), 3” chase gap (steps[9]), side angle marks 1-1/2”/4-1/2” (steps[2]), wall holes 16” apart (steps[12]), bottom pocket holes 32” apart (steps[13]). Cord holes whose positions the text omits ('mark the shelf for the 5 holes ... The bottom also gets marked for a through hole', steps[5]) are shown in viewed images: steps[7] image shows the 5 shelf holes evenly spaced in a row along one long edge; steps[10] image shows the bottom's single hole near the middle of its length. Remaining pocket holes sit along joints the parts fix (steps[8..11] name each joint and the facing 'with the pocket holes facing the back').",
-      "viewed": [
-        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/1ad5ce09cbb3b58e.webp",
-        "https://pub-b845b7e7b4924e4d8f2520661b54734d.r2.dev/plans/a31285da2aba18bf.webp"
-      ]
+      "result": "fail",
+      "level": "Fix",
+      "confidence": "likely",
+      "cause": "plan",
+      "evidence": [
+        {
+          "path": "steps[5].body",
+          "quote": "Also, mark the shelf for the 5 holes that will be drilled for the power cords to be fed through. The bottom also gets marked for a through hole."
+        },
+        {
+          "path": "steps[7].body",
+          "quote": "The shelf gets 1-1/2” holes and the bottom gets a 2” hole."
+        }
+      ],
+      "reason": "Hole sizes are given but not where the cord holes go; they must fall over the 3\" chase (steps[9] 'There should be a 3” gap between the chase front and the back'), yet no edge distance or spacing is stated (searched steps[5],[7],[9],[14]). Viewed steps[7] image 1ad5ce09cbb3b58e shows 5 holes in a row near one long edge, evenly spaced (spacing passes as relational), but the row's offset from the edge is not readable; viewed a31285da2aba18bf shows the bottom hole, undimensioned. Likely: the photo shows the row's general placement."
     },
     "R11": {
       "result": "pass",
@@ -222,7 +216,7 @@
     }
   },
   "gaps": [],
-  "verdict": "Ship (unverified)",
+  "verdict": "Fix",
   "reader": {
     "batch": "calib-4",
     "imagesViewed": [
@@ -241,5 +235,15 @@
     "upheld": [],
     "refuted": []
   },
-  "measurementsScoredOn": "kreg-corrected"
+  "measurementsScoredOn": "kreg-corrected",
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Ship (unverified)",
+    "round2": "Fix",
+    "decided": [
+      "R1",
+      "R10"
+    ],
+    "note": "R1 fail Fix certain (pocket-hole layout only in the Extras PDF, build still completable); R10 fail Fix likely (cord-hole offset over the chase not given)."
+  }
 }

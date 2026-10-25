@@ -59,8 +59,19 @@
       "basis": "Kreg-corrected cut rows vs board materials (§9)"
     },
     "R5": {
-      "result": "unknown",
-      "reason": "R5 precondition not met: 2 stock types (1x4, 1x2); steps not checked for per-part stock"
+      "result": "pass",
+      "evidence": [
+        {
+          "path": "materials[0].name",
+          "quote": "Board, 1x4 (3/4\" x 3 1/2\") 3' long"
+        },
+        {
+          "path": "materials[1].name",
+          "quote": "Board, 1x2 (3/4\" x 1 1/2\") 4' long"
+        }
+      ],
+      "arithmetic": "Stock per part: Kreg-corrected cutList[0] 0.75 x 3.5 matches only materials[0] (1x4), cutList[1] 0.75 x 1.5 matches only materials[1] (1x2); part names also say '1x4'/'1x2'. 1x4: 2 x 17 = 34 + 1 cut x 1/8 = 34.125 <= 1 x 36 = 36. 1x2: 4 x 9.5 = 38 + 4 cuts x 1/8 = 38.5 <= 1 x 48 = 48. Quantity 1 lines are Kreg's own (no qty-default in importDiffs).",
+      "reason": "Each part matches exactly one listed material by thickness x width (ruling), both stocks cover their parts with kerf."
     },
     "R6": {
       "result": "pass",
@@ -84,21 +95,11 @@
       "reason": "steps[1]: \"With your pocket hole jig set for 3/4\\\" thick material\" covers the 3/4\" center pieces."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[4].body",
-          "quote": "To hide your pocket holes, glue pocket hole plugs into them, then sand till they are flush with the board."
-        }
-      ],
-      "arithmetic": "Search of materials[0..3] (1x4 board, 1x2 board, 1 1/4\" pocket hole screws, wood glue) for /plug/i finds nothing; steps[4] says to glue pocket hole plugs.",
-      "reason": "A non-fastener item used by a step (pocket hole plugs) is not in materials (steps[4] offers making plugs with a plug cutter, but that tool/option is not required by the step)."
+      "result": "pass",
+      "reason": "Adjudicated: pocket-hole plugs (steps[4] 'To hide your pocket holes, glue pocket hole plugs into them, then sand till they are flush') are a cosmetic hole filler, the same role as filler in the consumables ruling, and the step offers cutting them from the project wood ('use the plug cutter attachment on the pocket hole jig to make plugs'); not a R14(c) failure. (a) 4 center pieces x 9 1/2\" agree with the 9 1/2\" opening (steps[0]); (b) all parts installed; (d) steps reach the finished carrier."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -112,5 +113,15 @@
       "plans/9cdca9676b9acd0d.webp"
     ]
   },
-  "gaps": []
+  "gaps": [],
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R5",
+      "R14"
+    ],
+    "note": "R5 pass (each part matches one stock; 34.125<=36, 38.5<=48); R14 pass (plugs are cosmetic filler, consumable)."
+  }
 }

@@ -156,17 +156,8 @@
       "readerNote": "steps[3] 'For a visual aid to help get those X's right, please visit my blog (link in the extras tab)' is an optional aid: step text gives 30 and 21 degree angles and the viewed step-1 cut diagram gives every X piece length."
     },
     "R2": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[3].body",
-          "quote": "Start by cutting four larger pieces first with 30 degree angles on each end (cut the angle on the 2\" side), and then cut the smaller pieces down to size."
-        }
-      ],
-      "reason": "Step cuts 'the smaller pieces' of each X but cutList has only one X row (cutList[5] 'Large X-Legs'); searched cutList parts for /small|X/i. The small pieces (4, 7 7/8 and 6 5/8) appear only in the viewed step-1 cut diagram, no step/row gives count or size in text. Non-structural (X bracing)."
+      "result": "pass",
+      "reason": "Adjudicated: steps[3] says to cut the small X pieces from the large ones: 'Start by cutting four larger pieces first with 30 degree angles on each end ... and then cut the smaller pieces down to size' — i.e. from cutList[5] 'Large X-Legs' (qty 4). Viewed cut diagram a20725e02c28937b lays out 2 'LRG. X LEG' (16\") plus small X leg cuts 7 7/8\" and 6 5/8\" on listed 2x4 stock (materials[0]); viewed 8e9be45764f5df07 shows each X = one long piece + two short pieces ('Attach all three pieces'). Non-structural either way."
     },
     "R3": {
       "result": "pass",
@@ -210,32 +201,11 @@
       "reason": "Pocket holes drilled in 1 1/2\" (2x4) stock; searched all steps/materials for a jig thickness setting: none; viewed images (steps 1, 3, 4-6, 8) show none. Recorded only; not counted."
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[3].body",
-          "quote": "Start by cutting four larger pieces first with 30 degree angles on each end"
-        },
-        {
-          "path": "cutList[5]",
-          "quote": "Large X-Legs ... quantity 4, 2 x 4 x 16"
-        },
-        {
-          "path": "images step[1] cut diagram (viewed)",
-          "quote": "LRG. X LEG (two pieces, 16\") ; label 'Inside angles cut @ 21 degrees' ; '@ 30 degrees'"
-        },
-        {
-          "path": "images step[3] X diagram (viewed)",
-          "quote": "Outside Angles Cut @ 35 Degrees"
-        }
-      ],
-      "reason": "Count: step text and cutList say 4 large X legs, the viewed cut diagram lays out 2 'LRG. X LEG' cuts plus 4 small cuts (3 pieces per X in the step-3 image, 2 frames show an X). Angle: step text and cut diagram say 30 degrees, the step-3 diagram labels the outside angle 35 degrees."
+      "result": "pass",
+      "reason": "Adjudicated: (a) count — viewed overview dfff169d06dcb358 and 685f04c79a86ea1a show 2 X's (end frames only), each 1 long + 2 short pieces (8e9be45764f5df07); steps[3] cuts 'four larger pieces' and then 'the smaller pieces down to size', so 2 of the 4 cutList[5] pieces become the 4 short pieces (7 7/8 + 6 5/8 = 14 1/2 <= 16), consistent with the diagram's 2 long + 4 short. Round 1's count mismatch does not hold. The angle labels (text/cut diagram '30 degree', 8e9be45764f5df07 'Outside Angles Cut @ 35 Degrees') differ, but steps[3] tells the builder to scribe the angles in place ('used a pencil to mark where my cuts would be ... you may want to do this as well'); an angle label is not a cut-list count/size, so it is a gap, not R14. (b) all parts installed; (d) steps reach the finished bench."
     }
   },
-  "verdict": "Fix",
+  "verdict": "Ship",
   "verifier": {
     "ran": false,
     "upheld": [],
@@ -252,5 +222,15 @@
       "plans/685f04c79a86ea1a.webp",
       "plans/0a37f2d354875e53.webp"
     ]
+  },
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship",
+    "decided": [
+      "R2",
+      "R14"
+    ],
+    "note": "R2/R14 pass: small X pieces are cut down from the 4 large X-legs (2 X frames x 1 long + 2 short); 30 vs 35 degree label is a gap, angles are scribed in place."
   }
 }

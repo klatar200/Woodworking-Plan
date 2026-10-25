@@ -84,21 +84,8 @@
       "reason": "Pocket holes are drilled in 1-1/2\" parts A/B/C (cutList thicknessIn 1.5); searched all steps, description and materials for a jig/thickness setting (/setting|jig|1-1\\/2.*thick/i): none stated"
     },
     "R14": {
-      "result": "fail",
-      "level": "Fix",
-      "confidence": "likely",
-      "cause": "plan",
-      "evidence": [
-        {
-          "path": "steps[5].body",
-          "quote": "you'll need to cut 2ea pieces of 2x4 at 8\" long - Then cut them in half with your miter saw at 45\"."
-        },
-        {
-          "path": "materials[1].name",
-          "quote": "Board, 2x3 72\""
-        }
-      ],
-      "reason": "Step 5 uses 2x4 clamping blocks (also biscuits/dowels, pin nailer nails); materials list only 1x6 and 2x3 boards. Searched materials for /2x4|biscuit|dowel|brad|pin/i: no match. Parts (a),(b),(d) otherwise agree: 4 x 5.5\" = 22\" panel width (steps[2]), 33\" + 17\" = 50\" (steps[3-4])"
+      "result": "pass",
+      "reason": "Adjudicated: (c) the items round 1 cited are not plan materials. steps[5] 'cut 2ea pieces of 2x4 at 8\" long - Then cut them in half ... You will need these for clamping up the mitered edge' are temporary clamping blocks pinned on and later removed ('you'll use filler to fill the holes later'), a shop aid like the clamps, not part of the piece; biscuits are a recommendation the step leaves to the builder ('I recommend biscuits (#0) ... Short dowels will work as well ... Once you've figured out your alignment method'); 18ga pins are fasteners (R6 territory). (a) 4 x 5.5 = 22\" panel (steps[2]); 33 + 17 = 50 = cutList[0] length (steps[3]-[4]). (b) leg parts A x2, B, C assembled in steps[6], leg attached steps[9]. (d) steps reach the finished table."
     }
   },
   "verifier": {
@@ -120,5 +107,14 @@
       "what": "Taper angle for parts A and C is not in the live plan. Kreg source (importDiffs[0]/[2]) says '10.5 degree tapered cuts on both ends (parrellel)' and '10.5 degree miters tapered in on the bottom'; no step or cut-list field carries 10.5. Dropped by the importer (cause: import)."
     }
   ],
-  "verdict": "Fix"
+  "verdict": "Ship (unverified)",
+  "adjudication": {
+    "date": "2026-10-25",
+    "round1": "Fix",
+    "round2": "Ship (unverified)",
+    "decided": [
+      "R14"
+    ],
+    "note": "R14 pass: 2x4 clamping blocks are a removed shop aid and biscuits a builder-choice alignment aid, not missing materials; R9 certain/likely difference does not count."
+  }
 }
